@@ -96,6 +96,7 @@ export default class CardanoComposeTransaction extends AbstractMethod<
                 ) {
                     return { type: 'error', error: 'UTXO_BALANCE_INSUFFICIENT' };
                 }
+
                 if (error instanceof CoinSelectionError && error.code === 'UTXO_VALUE_TOO_SMALL') {
                     return { type: 'error', error: 'UTXO_VALUE_TOO_SMALL' };
                 }

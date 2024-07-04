@@ -117,6 +117,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             // @ts-expect-error sendForm doesn't exists anymore
             db.deleteObjectStore('sendForm');
         }
+
         // object store for send form
         db.createObjectStore('sendFormDrafts');
     }
@@ -139,6 +140,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             // @ts-expect-error fiatRates doesn't exists anymore
             db.deleteObjectStore('fiatRates');
         }
+
         // @ts-expect-error fiatRates doesn't exists anymore
         db.createObjectStore('fiatRates');
     }
@@ -398,6 +400,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                         refreshToken: state.provider.token,
                     };
                 }
+
                 // @ts-expect-error
                 delete state.provider.token;
 
@@ -514,6 +517,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (accountsToUpdate.includes(tx.tx.symbol)) {
                 return null;
             }
+
             tx.tx.internalTransfers = [];
 
             return tx;
@@ -536,6 +540,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (tx.tx.symbol === 'trop') {
                 return null;
             }
+
             tx.tx.tokens.forEach(token => {
                 // @ts-expect-error
                 token.contract = token.address;
@@ -552,6 +557,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (account.symbol === 'trop') {
                 return null;
             }
+
             account.tokens?.forEach(token => {
                 // @ts-expect-error
                 token.contract = token.address;
@@ -602,8 +608,10 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 38) {
         await updateAll(transaction, 'devices', device => {
             const { features } = device;
+
             if (!features.internal_model) {
                 let deviceInternalModel;
+
                 switch (features.model.toUpperCase()) {
                     case 'T':
                         deviceInternalModel = DeviceModelInternal.T2T1;
@@ -613,18 +621,21 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                         deviceInternalModel = DeviceModelInternal.T1B1;
                         break;
                 }
+
                 device.features.internal_model = deviceInternalModel;
             }
 
             return device;
         });
     }
+
     if (oldVersion < 39) {
         await updateAll(transaction, 'accounts', account => {
             // @ts-expect-error
             if (!account.metadata?.fileName || !account.metadata?.aesKey) {
                 return;
             }
+
             account.metadata = {
                 key: account.metadata.key,
                 1: {
@@ -671,6 +682,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 providers: [],
                 enabled: metadata.enabled,
             };
+
             // @ts-expect-error
             if (metadata.provider) {
                 let clientId: string;
@@ -693,6 +705,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                         break;
                     default:
                 }
+
                 // @ts-expect-error
                 updatedMetadata.providers[0] = { ...metadata.provider, clientId, data: {} };
                 updatedMetadata.selectedProvider = {
@@ -746,6 +759,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             if (!metadata.selectedProvider) {
                 metadata.selectedProvider = { labels: '', passwords: '' };
             }
+
             if (!metadata.selectedProvider.passwords) {
                 metadata.selectedProvider.passwords = '';
             }

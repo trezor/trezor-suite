@@ -36,6 +36,7 @@ export const selectDeviceBalancesPerNetwork = memoize(
             if (!assets[account.symbol]) {
                 assets[account.symbol] = [];
             }
+
             assets[account.symbol]?.push(account.formattedBalance);
         });
 

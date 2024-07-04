@@ -12,6 +12,7 @@ export const ActionRenderer = ({ render: View, ...props }: ActionRendererProps) 
     const { type, seen, device } = props.notification;
 
     let action: NotificationViewProps['action'];
+
     switch (type) {
         case DEVICE.CONNECT:
             action = {

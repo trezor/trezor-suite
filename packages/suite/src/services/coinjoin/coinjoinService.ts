@@ -36,9 +36,11 @@ export class CoinjoinService {
         settings?: CoinjoinNetworksConfig;
     }) {
         if (this.instances[network]) return this.instances[network] as CoinjoinServiceInstance;
+
         const config = settings ?? getCoinjoinConfig(network);
         const [backend, client] = await loadInstance({ ...config, prison });
         const instance = { backend, client };
+
         if (!isDesktop()) {
             // display client log directly in console
             client.on('log', ({ level, payload }) => console[level](payload));
@@ -59,6 +61,7 @@ export class CoinjoinService {
 
     static removeInstance(network: NetworkSymbol) {
         const instance = this.instances[network];
+
         if (instance) {
             instance.backend.disable();
             instance.client.disable();

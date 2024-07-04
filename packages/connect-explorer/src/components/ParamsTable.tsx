@@ -26,6 +26,7 @@ const SingleParam = ({
     const complexObjects = ['Object', 'Union', 'Intersect'];
     let hasDescendants = complexObjects.includes(value[Kind]);
     let typeLink: string | undefined;
+
     if (value[Kind] === 'Union') {
         // Show descendants for unions only if they contain complex objects
         hasDescendants = value.anyOf.some((v: TSchema) => complexObjects.includes(v[Kind]));
@@ -43,15 +44,18 @@ const SingleParam = ({
         hasDescendants = false;
         typeLink = `#${value.$id}`;
     }
+
     if (value[Kind] === 'Object' && Object.keys(value.properties).length === 0) {
         // No properties, don't show descendants or the object itself
         return null;
     }
+
     // Get the type name
     const typeName = getTypeName(value, hasDescendants);
 
     // Required can also be undefined (for example union)
     let isRequired: boolean | undefined;
+
     if (schema?.required?.includes(name)) {
         isRequired = true;
     } else if (value[Optional] === 'Optional') {
@@ -59,15 +63,19 @@ const SingleParam = ({
     }
 
     let description;
+
     if (descriptions?.[name]) {
         description = descriptions[name];
     } else if (value.description) {
         description = value.description;
     } else if (isTopLevel && topLevelSchema?.$id && name) {
         const key = topLevelSchema?.$id + '.' + name;
+
         if (descriptions?.[key]) description = descriptions[key];
+
         if (descriptionDictionary[key]) description = descriptionDictionary[key];
     }
+
     if (!description && name) {
         if (descriptionDictionary[name]) description = descriptionDictionary[name];
     }
@@ -108,6 +116,7 @@ type ParamsTableProps = {
 export const ParamsTable = ({ schema, topLevelSchema, descriptions }: ParamsTableProps) => {
     const topLevelSchemaCurrent = topLevelSchema ?? schema;
     const common = { topLevelSchema: topLevelSchemaCurrent, descriptions };
+
     if (schema[Kind] === 'Union') {
         return schema.anyOf?.map((param: TSchema, i: number) => (
             <>

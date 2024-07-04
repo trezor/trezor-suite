@@ -8,16 +8,21 @@ export const formatAmount = (n: string, coinInfo: CoinInfo) =>
 
 export const formatTime = (n: number) => {
     if (!n || n <= 0) return 'No time estimate';
+
     const hours = Math.floor(n / 60);
     const minutes = n % 60;
     let res = '';
+
     if (hours !== 0) {
         res += `${hours} hour`;
+
         if (hours > 1) {
             res += 's';
         }
+
         res += ' ';
     }
+
     if (minutes !== 0) {
         res += `${minutes} minutes`;
     }
@@ -39,6 +44,7 @@ const isHexString = (value: string, length?: number) => {
     if (typeof value !== 'string' || !value.match(/^(0x|0X)?[0-9A-Fa-f]*$/)) {
         return false;
     }
+
     if (length && value.length !== 2 + 2 * length) {
         return false;
     }
@@ -49,12 +55,15 @@ const isHexString = (value: string, length?: number) => {
 // from (toBuffer) https://github.com/ethereumjs/ethereumjs-util/blob/master/index.js
 export const messageToHex = (message: string) => {
     let buffer: Buffer;
+
     if (isHexString(message)) {
         let clean = stripHexPrefix(message);
+
         // pad left even
         if (clean.length % 2 !== 0) {
             clean = `0${clean}`;
         }
+
         buffer = Buffer.from(clean, 'hex');
     } else {
         buffer = Buffer.from(message);
@@ -68,9 +77,11 @@ export const deepTransform = (transform: (str: string) => string) => {
         if (typeof value === 'string') {
             return transform(value) as T;
         }
+
         if (Array.isArray(value)) {
             return value.map(recursion) as T;
         }
+
         if (value && typeof value === 'object') {
             return Object.entries(value).reduce(
                 (obj, [k, v]) => ({ ...obj, [k]: recursion(v) }),

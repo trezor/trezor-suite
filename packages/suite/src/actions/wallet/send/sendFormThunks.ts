@@ -57,6 +57,7 @@ export const getSendFormDraftThunk = createThunk(
         if (!isSelectedAccountLoaded || G.isNullable(selectedAccountKey)) return;
 
         const accountDraft = sendFormDrafts[selectedAccountKey];
+
         if (accountDraft) {
             // draft is a read-only redux object. make a copy to be able to modify values
             return JSON.parse(JSON.stringify(accountDraft)) as FormState;
@@ -201,6 +202,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         { dispatch, getState },
     ) => {
         const device = selectDevice(getState());
+
         if (!device || !selectedAccount) return;
 
         const enhancedPrecomposedTransaction = await dispatch(

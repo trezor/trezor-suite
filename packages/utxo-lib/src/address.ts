@@ -28,6 +28,7 @@ export function fromBase58Check(address: string, network = BITCOIN_NETWORK): Bas
 export function fromBech32(address: string): Bech32Result {
     let result: ReturnType<typeof bech32.decode> | undefined;
     let version: number;
+
     try {
         result = bech32.decode(address);
     } catch (e) {
@@ -36,10 +37,12 @@ export function fromBech32(address: string): Bech32Result {
 
     if (result) {
         [version] = result.words;
+
         if (version !== 0) throw new TypeError(`${address} uses wrong encoding`);
     } else {
         result = bech32m.decode(address);
         [version] = result.words;
+
         if (version === 0) throw new TypeError(`${address} uses wrong encoding`);
     }
 
@@ -93,26 +96,31 @@ export function fromOutputScript(output: Buffer, network = BITCOIN_NETWORK) {
     } catch (e) {
         // empty
     }
+
     try {
         return payments.p2sh({ output, network }).address as string;
     } catch (e) {
         // empty
     }
+
     try {
         return payments.p2wpkh({ output, network }).address as string;
     } catch (e) {
         // empty
     }
+
     try {
         return payments.p2wsh({ output, network }).address as string;
     } catch (e) {
         // empty
     }
+
     try {
         return payments.p2tr({ output, network }).address as string;
     } catch (e) {
         // empty
     }
+
     try {
         return toFutureSegwitAddress(output, network);
     } catch (e) {
@@ -130,6 +138,7 @@ function decodeAddress(address: string, network: Network) {
     } catch {
         try {
             const { data, prefix, version } = fromBech32(address);
+
             if (prefix === network.bech32) {
                 return { success: true, format: 'bech32', version, hash: data } as const;
             }
@@ -152,10 +161,12 @@ function identifyAddressType(
 ) {
     if (format === 'base58') {
         if (version === network.pubKeyHash) return 'p2pkh' as const;
+
         if (version === network.scriptHash) return 'p2sh' as const;
     } else if (format === 'bech32') {
         if (version === 0) {
             if (hash.length === 20) return 'p2wpkh' as const;
+
             if (hash.length === 32) return 'p2wsh' as const;
         } else if (version === 1 && hash.length === 32) {
             return 'p2tr' as const;
@@ -201,13 +212,16 @@ export function getAddressType(address: string, network = BITCOIN_NETWORK) {
 
 export function toOutputScript(address: string, network = BITCOIN_NETWORK) {
     const { success, format, version, hash, error } = decodeAddress(address, network);
+
     if (success) {
         const type = identifyAddressType(format, version, hash, network);
+
         if (type !== 'unknown') {
             return createOutputScript(type, hash, version);
         }
     } else if (error === 'bech32-invalid-prefix') {
         throw new Error(`${address} has an invalid prefix`);
     }
+
     throw new Error(`${address} has no matching Script`);
 }

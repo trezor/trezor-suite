@@ -86,10 +86,12 @@ const reportAnalyticsOnboardingCompleted = (isTrackingAllowed: boolean) => {
     // For users who have not allowed tracking, enable analytics just for reporting
     // the OnboardingCompleted event and then disable it again.
     if (!isTrackingAllowed) analytics.enable();
+
     analytics.report({
         type: EventType.OnboardingCompleted,
         payload: { analyticsPermission: isTrackingAllowed },
     });
+
     if (!isTrackingAllowed) analytics.disable();
 };
 

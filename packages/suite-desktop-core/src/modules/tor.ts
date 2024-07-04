@@ -55,6 +55,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
         } else {
             type = TorStatus.Disabled;
         }
+
         mainThreadEmitter.emit('module/tor-status-update', type);
         mainWindow.webContents.send('tor/status', {
             type,
@@ -67,6 +68,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
                 type: 'slow',
             });
         }
+
         if (bootstrapEvent.type === 'progress') {
             logger.info(
                 'tor',
@@ -96,6 +98,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
         if (shouldEnableTor === true) {
             setProxy(`socks5://${host}:${port}`);
             tor.torController.on('bootstrap/event', handleBootstrapEvent);
+
             try {
                 await tor.start();
             } catch (error) {
@@ -170,6 +173,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
     const socksTimeout = 30000; // this value reflects --SocksTimeout flag set by TorController config
     mainThreadEmitter.on('module/reset-tor-circuits', event => {
         const lastResetDiff = Date.now() - lastCircuitResetTime;
+
         if (lastResetDiff > socksTimeout) {
             logger.debug('tor', `Close active circuits. Triggered by identity ${event.identity}`);
             lastCircuitResetTime = Date.now();

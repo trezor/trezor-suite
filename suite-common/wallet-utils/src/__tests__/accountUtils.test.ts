@@ -139,11 +139,13 @@ describe('account utils', () => {
 
     it('getSelectedNetwork', () => {
         const res = getNetwork('btc');
+
         if (res) {
             expect(res.name).toEqual('Bitcoin');
         } else {
             expect(res).toBeNull();
         }
+
         expect(getNetwork('doesntexist')).toBeNull();
     });
 

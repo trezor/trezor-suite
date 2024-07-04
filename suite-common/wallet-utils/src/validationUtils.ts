@@ -5,6 +5,7 @@ import { Account } from '@suite-common/wallet-types';
 
 const getNetworkType = (symbol: Account['symbol']) => {
     if (symbol === 'regtest') return symbol;
+
     const testnets = getTestnetSymbols();
 
     return testnets.includes(symbol) ? 'testnet' : 'prod';
@@ -42,6 +43,7 @@ export const isAddressDeprecated = (address: string, symbol: Account['symbol']) 
     if (symbol === 'ltc' && address.startsWith('3') && isAddressValid(address, 'btc')) {
         return 'LTC_ADDRESS_INFO_URL';
     }
+
     // BCH starting with "1" and valid with a BTC format
     if (symbol === 'bch' && address.startsWith('1') && isAddressValid(address, 'btc')) {
         return 'HELP_CENTER_CASHADDR_URL';
@@ -83,6 +85,7 @@ export const isHexValid = (value: string, prefix?: string) => {
     }
 
     if (value.length % 2 !== 0) return false;
+
     // TODO: ETH may contain uppercase? does BTC as well?
     if (!/^[0-9A-Fa-f]+$/.test(value)) return false;
 

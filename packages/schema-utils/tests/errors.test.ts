@@ -20,6 +20,7 @@ describe('Assert', () => {
         const schema = Type.Object({ type: Type.Number() });
         const value = { type: 'string' };
         expect(() => Assert(schema, value)).toThrow(InvalidParameter);
+
         // Check error message
         try {
             Assert(schema, value);
@@ -32,6 +33,7 @@ describe('Assert', () => {
         const schema = Type.Object({ type: Type.Number() });
         const value = {};
         expect(() => Assert(schema, value)).toThrow(InvalidParameter);
+
         // Check error message
         try {
             Assert(schema, value);
@@ -44,6 +46,7 @@ describe('Assert', () => {
         const schema = Type.Object({ type: Type.Uint() });
         const value = { type: 'xyz' };
         expect(() => Assert(schema, value)).toThrow(InvalidParameter);
+
         // Check error message
         try {
             Assert(schema, value);
@@ -56,6 +59,7 @@ describe('Assert', () => {
         const schema = Type.Object({ type: Type.String({ minLength: 3 }) });
         const value = { type: 'A' };
         expect(() => Assert(schema, value)).toThrow(InvalidParameter);
+
         // Check error message
         try {
             Assert(schema, value);

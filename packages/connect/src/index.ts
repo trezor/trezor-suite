@@ -63,7 +63,9 @@ const onCoreEvent = (message: CoreEventMessage) => {
         case RESPONSE_EVENT: {
             const { id = 0, success } = message;
             const resolved = messagePromises.resolve(id, { id, success, payload });
+
             if (!resolved) _log.warn(`Unknown message id ${id}`);
+
             break;
         }
         case DEVICE_EVENT:
@@ -126,6 +128,7 @@ const initCore = () => {
 
 const call: CallMethod = async params => {
     let core;
+
     try {
         core = coreManager.get() ?? (await coreManager.getPending()) ?? (await initCore());
     } catch (error) {
@@ -151,9 +154,11 @@ const call: CallMethod = async params => {
 
 const uiResponse = (response: UiResponseEvent) => {
     const core = coreManager.get();
+
     if (!core) {
         throw ERRORS.TypedError('Init_NotInitialized');
     }
+
     core.handleMessage(response);
 };
 
@@ -165,6 +170,7 @@ const requestLogin = async (params: any) => {
         // TODO: set message listener only if _core is loaded correctly
         const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
             const { data } = event;
+
             if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
                 try {
                     const payload = await callback();
@@ -198,6 +204,7 @@ const requestLogin = async (params: any) => {
 
 const cancel = (error?: string) => {
     const core = coreManager.get();
+
     if (!core) {
         throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
     }

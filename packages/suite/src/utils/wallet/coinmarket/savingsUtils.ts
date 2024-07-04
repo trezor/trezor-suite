@@ -32,6 +32,7 @@ export const getFiatAmountEffective = (
 ) => {
     if (fiatAmount === CustomPaymentAmountKey) {
         const customFiatAmountNumber = Number(customFiatAmount);
+
         if (
             !customFiatAmount ||
             Number.isNaN(customFiatAmountNumber) ||
@@ -54,6 +55,7 @@ export const calculateAnnualSavings = (
 ) => {
     let annualSavingsFiatAmount = 0;
     let annualSavingsCryptoAmount = '0';
+
     if (paymentFrequency && rate && (fiatAmount || customFiatAmount)) {
         const fiatAmountEffective = getFiatAmountEffective(fiatAmount, customFiatAmount);
         annualSavingsFiatAmount =

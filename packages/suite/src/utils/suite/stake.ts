@@ -113,21 +113,25 @@ const unstake = async ({
             details: 'tokenBalances',
             descriptor: from,
         });
+
         if (!accountInfo.success) {
             throw new Error(accountInfo.payload.error);
         }
 
         const { autocompoundBalance } = accountInfo.payload?.misc?.stakingPools?.[0] ?? {};
+
         if (!autocompoundBalance) {
             throw new Error('Failed to get the autocompound balance');
         }
 
         const balance = new BigNumber(fromWei(autocompoundBalance, 'ether'));
+
         if (balance.lt(amount)) {
             throw new Error(`Max Amount For Unstake ${balance}`);
         }
 
         const UINT16_MAX = 65535 | 0; // asm type annotation
+
         // Check for type overflow
         if (interchanges > UINT16_MAX) {
             interchanges = UINT16_MAX;
@@ -154,6 +158,7 @@ const unstake = async ({
                 },
             },
         });
+
         if (!estimatedFee.success) {
             throw new Error(estimatedFee.payload.error);
         }
@@ -181,21 +186,25 @@ const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBaseArgs)
             details: 'tokenBalances',
             descriptor: from,
         });
+
         if (!accountInfo.success) {
             throw new Error(accountInfo.payload.error);
         }
 
         const { withdrawTotalAmount, claimableAmount } =
             accountInfo.payload?.misc?.stakingPools?.[0] ?? {};
+
         if (!withdrawTotalAmount || !claimableAmount) {
             throw new Error('Failed to get the claimable or withdraw total amount');
         }
 
         const requested = new BigNumber(fromWei(withdrawTotalAmount, 'ether'));
         const readyForClaim = new BigNumber(fromWei(claimableAmount, 'ether'));
+
         if (requested.isZero()) {
             throw new Error('No amount requested for unstake');
         }
+
         if (!readyForClaim.eq(requested)) throw new Error('Unstake request not filled yet');
 
         const ethNetwork = getEthNetworkForWalletSdk(symbol);
@@ -221,6 +230,7 @@ const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBaseArgs)
                 },
             },
         });
+
         if (!estimatedFee.success) {
             throw new Error(estimatedFee.payload.error);
         }
@@ -458,9 +468,11 @@ export const getStakeTxGasLimit = async ({
         Ethereum.selectNetwork(getEthNetworkForWalletSdk(symbol));
 
         let txData;
+
         if (ethereumStakeType === 'stake') {
             txData = await stake({ from, amount, symbol, identity });
         }
+
         if (ethereumStakeType === 'unstake') {
             // Increase allowedInterchangeNum to enable instant unstaking.
             txData = await unstake({
@@ -471,6 +483,7 @@ export const getStakeTxGasLimit = async ({
                 identity,
             });
         }
+
         if (ethereumStakeType === 'claim') {
             txData = await claimWithdrawRequest({ from, symbol, identity });
         }

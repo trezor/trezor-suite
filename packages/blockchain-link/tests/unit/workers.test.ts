@@ -140,6 +140,7 @@ describe('Worker', () => {
                 }
             };
         }
+
         try {
             blockchain.settings.worker = 'foo.bar';
             await blockchain.connect();
@@ -190,6 +191,7 @@ describe('Worker', () => {
                 }
             };
         }
+
         try {
             blockchain.settings.worker = 'foo.bar';
             await blockchain.connect();

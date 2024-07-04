@@ -18,6 +18,7 @@ const setMock = (mock: any) => {
                         if (mock.reject) {
                             return reject(mock.reject);
                         }
+
                         if (typeof mock.response === 'string') {
                             return resolve(mock.response);
                         }

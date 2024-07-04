@@ -30,6 +30,7 @@ const setTrezorConnectFixtures = (fixture?: any) => {
 
             return fixture.getAddress;
         }
+
         // trigger multiple button requests
         if (buttonRequest) {
             buttonRequest({ code: 'ButtonRequest_Address' });

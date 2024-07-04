@@ -12,14 +12,17 @@ export const useDetectPortalTarget = (selectRef: RefObject<SelectInstance<Option
     useEffect(() => {
         let parent = selectRef.current?.inputRef?.parentElement;
         let count = 0;
+
         while (parent) {
             if (parent.id === MODAL_CONTENT_ID) {
                 setMenuPortalTarget(document.body);
                 break;
             }
+
             if (count > 5) {
                 break;
             }
+
             parent = parent.parentElement;
             count++;
         }

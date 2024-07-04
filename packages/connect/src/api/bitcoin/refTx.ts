@@ -34,6 +34,7 @@ export const requireReferencedTransactions = (
     if (coinInfo?.shortcut === 'ZEC' || coinInfo?.shortcut === 'TAZ') {
         return !(options.version && options.version >= 5);
     }
+
     const inputTypes = ['SPENDTAPROOT', 'EXTERNAL'];
 
     return !!inputs.find(input => !inputTypes.find(t => t === input.script_type));
@@ -77,14 +78,18 @@ export const parseTransactionHexes = (network?: Network) => (hexes: string[]) =>
 // extend refTx object with optional data
 const enhanceTransaction = (refTx: RefTransaction, srcTx: BitcoinJsTransaction): RefTransaction => {
     const extraData = srcTx.getExtraData();
+
     if (extraData) {
         refTx.extra_data = extraData.toString('hex');
     }
+
     const specific = srcTx.getSpecificData();
+
     if (specific) {
         if (specific.type === 'zcash' && specific.versionGroupId && refTx.version >= 3) {
             refTx.version_group_id = specific.versionGroupId;
         }
+
         if (specific.type === 'dash' && srcTx.type && srcTx.version >= 3) {
             refTx.version |= srcTx.type << 16;
         }
@@ -122,6 +127,7 @@ const transformOrigTransaction = (
         const currentInput = currentInputs.find(
             inp => inp.prev_hash === prev_hash && inp.prev_index === input.index,
         );
+
         if (!currentInput?.address_n) {
             throw TypedError(
                 'Method_InvalidParameter',
@@ -151,9 +157,11 @@ const transformOrigTransaction = (
         i: number,
     ): Required<RefTransaction>['outputs'][number] => {
         const parsed = parseOutputScript(output.script, coinInfo.network);
+
         switch (parsed.type) {
             case 'data': {
                 const op_return_data = parsed.data?.shift()?.toString('hex'); // shift OP code
+
                 if (typeof op_return_data !== 'string') {
                     throw TypedError(
                         'Method_InvalidParameter',
@@ -264,6 +272,7 @@ export const validateReferencedTransactions = ({
     coinInfo: BitcoinNetworkInfo;
 }): RefTransaction[] | undefined => {
     if (!Array.isArray(transactions) || transactions.length === 0) return; // allow empty, they will be downloaded later...
+
     // collect sets of transactions defined by inputs/outputs
     const refTxs = requireReferencedTransactions(inputs) ? getReferencedTransactions(inputs) : [];
     const origTxs = getOrigTransactions(inputs, outputs); // NOTE: origTxs are used in RBF
@@ -290,6 +299,7 @@ export const validateReferencedTransactions = ({
 
             return transformReferencedTransaction(srcTx);
         }
+
         // validate common fields
         Assert(
             Type.Object({

@@ -7,9 +7,12 @@ import type { SocketBase, SocketOptions } from './base';
 
 export const createSocket = (url: string, options?: SocketOptions): SocketBase => {
     const parsed = parseElectrumUrl(url);
+
     if (!parsed) throw new CustomError('Invalid electrum url');
+
     const { host, port, protocol } = parsed;
     const { timeout, keepAlive, proxyAgent } = options || {};
+
     // Onion address is TCP over Tor
     if (proxyAgent /* host.endsWith('.onion') */) {
         return new TorSocket({
@@ -20,6 +23,7 @@ export const createSocket = (url: string, options?: SocketOptions): SocketBase =
             proxyAgent,
         });
     }
+
     switch (protocol) {
         case 't': // TCP socket
             return new TcpSocket({ host, port, timeout, keepAlive });

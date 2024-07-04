@@ -117,6 +117,7 @@ export const init = async (container: HTMLElement) => {
     }
 
     const loadModules = await desktopApi.loadModules(null);
+
     if (!loadModules.success) {
         // loading failed, render error with theme provider without redux and do not continue
         root.render(<ErrorScreen error={loadModules.error} />);

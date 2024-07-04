@@ -81,6 +81,7 @@ export const sendFeedback =
     async (dispatch: Dispatch) => {
         const url = getUrl(type);
         const params = new URLSearchParams({ ...payload });
+
         try {
             await fetch(`${url}?${params.toString()}`, {
                 method: 'GET',

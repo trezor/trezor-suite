@@ -9,6 +9,7 @@ export const parseFirmwareHeaders = (buff: Buffer) => {
     let trezorImageHeader = '';
 
     let restbuff: Buffer | undefined;
+
     if (vendorHeader === 'TRZV') {
         const vendorHeaderLength = buff.readUInt32LE(4);
         trezorImageHeader = buff

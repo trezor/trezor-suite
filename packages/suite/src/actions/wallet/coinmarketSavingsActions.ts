@@ -69,6 +69,7 @@ export type CoinmarketSavingsAction =
 export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
     const savingsList = await invityAPI.getSavingsList();
     const providerInfos: { [name: string]: SavingsProviderInfo } = {};
+
     if (savingsList?.providers) {
         savingsList.providers.forEach(e => (providerInfos[e.name] = e));
     }
@@ -82,6 +83,7 @@ export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
                 .map(c => c.toLowerCase())
                 .forEach(c => supportedFiatCurrencies.add(c));
         }
+
         p.tradedCoins.map(c => c.toLowerCase()).forEach(c => supportedCryptoCurrencies.add(c));
         p.supportedCountries.forEach(c => supportedCountries.add(c));
     });

@@ -50,14 +50,17 @@ export const checkFirmwareAuthenticity = createThunk(
             selectors: { selectDevice },
         } = extra;
         const device = selectDevice(getState());
+
         if (!device) {
             throw new Error('device is not connected');
         }
+
         const result = await TrezorConnect.checkFirmwareAuthenticity({
             device: {
                 path: device.path,
             },
         });
+
         if (result.success) {
             if (result.payload.valid) {
                 dispatch(
@@ -181,6 +184,7 @@ export const firmwareUpdate = createThunk(
             dispatch(firmwareActions.setError(firmwareUpdateResponse.payload.error));
         } else {
             const { check } = firmwareUpdateResponse.payload;
+
             if (check === 'mismatch') {
                 handleFwHashMismatch(device);
             } else if (check === 'other-error') {

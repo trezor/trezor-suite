@@ -121,12 +121,15 @@ export const TransactionReviewOutputList = ({
     const { options, selectedFee } = precomposedForm;
     let isCoinControlEnabled = false;
     let hasCoinControlBeenOpened = false;
+
     if ('isCoinControlEnabled' in precomposedForm) {
         ({ isCoinControlEnabled } = precomposedForm);
     }
+
     if ('hasCoinControlBeenOpened' in precomposedForm) {
         ({ hasCoinControlBeenOpened } = precomposedForm);
     }
+
     const broadcastEnabled = options.includes('broadcast');
 
     const reportTransactionCreatedEvent = (action: 'sent' | 'copied' | 'downloaded' | 'replaced') =>
@@ -155,6 +158,7 @@ export const TransactionReviewOutputList = ({
         if (networkType === 'solana') {
             setIsSending?.();
         }
+
         if (decision) {
             decision.resolve(true);
 
@@ -163,6 +167,7 @@ export const TransactionReviewOutputList = ({
     };
     const handleCopy = () => {
         const result = copyToClipboard(signedTx!.tx);
+
         if (typeof result !== 'string') {
             dispatch(
                 notificationsActions.addToast({

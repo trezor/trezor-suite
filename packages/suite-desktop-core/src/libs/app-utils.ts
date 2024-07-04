@@ -8,6 +8,7 @@ export const restartApp = () => {
     logger.info('app', `Relaunching app with ${process.argv.slice(1).join(', ')} arguments.`);
 
     const options: Electron.RelaunchOptions = { args: process.argv };
+
     if (process.env.APPIMAGE) {
         options.execPath = process.env.APPIMAGE;
         options.args = options.args ?? [];

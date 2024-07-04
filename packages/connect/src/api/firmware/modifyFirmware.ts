@@ -28,6 +28,7 @@ export const shouldStripFwHeaders = (features: Features) => {
  */
 export const stripFwHeaders = (fw: ArrayBuffer) => {
     const fwView = new Uint8Array(fw);
+
     // this condition was added in order to upload firmware process being equivalent as in trezorlib python code
     if (
         String.fromCharCode(...Array.from(fwView.slice(0, 4))) === 'TRZR' &&

@@ -223,6 +223,7 @@ const coinmarketReducer = (
                     trades.push(trade);
                     draft.trades = trades;
                 }
+
                 break;
             case COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO:
                 draft.exchange.exchangeInfo = action.exchangeInfo;

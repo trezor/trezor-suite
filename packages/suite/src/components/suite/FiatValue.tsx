@@ -111,6 +111,7 @@ export const FiatValue = ({
                 />
             </SameWidthNums>
         ) : null;
+
         if (!children) return fiatValueComponent;
 
         return children({
@@ -119,6 +120,7 @@ export const FiatValue = ({
             timestamp: historicRate ? null : currentRate?.lastTickerTimestamp ?? null,
         });
     }
+
     if (!children) return null;
 
     return children({ value: null, rate: null, timestamp: null });

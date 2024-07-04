@@ -21,7 +21,9 @@ const initWebUsbButton = (showLoader: boolean) => {
     const button = webusbContainer.getElementsByTagName('button')[0];
     const { core, iframe, settings } = getState();
     let usb: USB | null = null;
+
     if (core) usb = window.navigator.usb;
+
     if (iframe) usb = iframe.navigator.usb;
 
     button.innerHTML = '<span class="plus"></span><span class="text">Pair devices</span>';
@@ -32,6 +34,7 @@ const initWebUsbButton = (showLoader: boolean) => {
                 if (settings?.env !== 'webextension') {
                     throw ERRORS.TypedError('Popup_ConnectionMissing');
                 }
+
                 window.postMessage(
                     {
                         type: POPUP.EXTENSION_USB_PERMISSIONS,
@@ -53,6 +56,7 @@ const initWebUsbButton = (showLoader: boolean) => {
 
                 return;
             }
+
             await window.navigator.usb.requestDevice({
                 filters: TREZOR_USB_DESCRIPTORS,
             });
@@ -64,6 +68,7 @@ const initWebUsbButton = (showLoader: boolean) => {
                     event: UI_EVENT,
                     type: TRANSPORT.REQUEST_DEVICE,
                 });
+
                 if (showLoader) {
                     showView('loader');
                 }
@@ -74,9 +79,11 @@ const initWebUsbButton = (showLoader: boolean) => {
             }
         } catch (error) {
             console.error(error);
+
             if (error instanceof DOMException && error.name === 'NotFoundError') {
                 return;
             }
+
             reactEventBus.dispatch({
                 type: 'error',
                 detail: 'iframe-failure',
@@ -89,9 +96,11 @@ const initWebUsbButton = (showLoader: boolean) => {
 
 export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
     if (!payload) return;
+
     if (!payload.devices || !Array.isArray(payload.devices) || payload.devices.length === 0) {
         // No device connected
         showView('connect');
+
         if (payload.webusb) {
             initWebUsbButton(true);
         }
@@ -100,6 +109,7 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
     }
 
     showView('select-device');
+
     if (payload.webusb) {
         initWebUsbButton(false);
     }
@@ -119,6 +129,7 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
     )[0] as HTMLInputElement;
 
     const { settings } = getState();
+
     if (settings?.useCoreInPopup && settings.env === 'webextension') {
         rememberCheckbox.checked = true;
     }
@@ -128,6 +139,7 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
         if (d1.type === 'unreadable' && d2.type !== 'unreadable') {
             return 1;
         }
+
         if (d1.type !== 'unreadable' && d2.type === 'unreadable') {
             return -1;
         }
@@ -138,6 +150,7 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
     payload.devices.forEach(device => {
         const deviceButton = document.createElement('button');
         deviceButton.className = 'list';
+
         if (device.type !== 'unreadable') {
             deviceButton.addEventListener('click', () => {
                 postMessage(
@@ -183,6 +196,7 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
                 // default explanation: contact support
 
                 let explanationContent = `Please <a href="${TREZOR_SUPPORT_URL}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">contact support.</a>`;
+
                 // linux + LIBUSB_ERROR handling
                 if (
                     systemInfo?.os.family === 'Linux' &&
@@ -190,10 +204,12 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
                 ) {
                     explanationContent = `Please install <a href="${SUITE_UDEV_URL}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Udev rules</a> to use Trezor device.`;
                 }
+
                 // webusb error handling (top priority)
                 if (payload.webusb) {
                     explanationContent = `Please install <a href="${SUITE_BRIDGE_URL}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Bridge</a> to use Trezor device.`;
                 }
+
                 deviceButton.disabled = true;
                 deviceName.textContent = 'Unrecognized device';
                 explanation.innerHTML = `${device.error}<br />${explanationContent}`;

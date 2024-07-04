@@ -20,6 +20,7 @@ function byteLength(tx: TransactionBase, _ALLOW_WITNESS = true) {
     const hasWitnesses = _ALLOW_WITNESS && tx.hasWitnesses();
     byteLength += tx.ins.reduce((sum, input) => {
         sum += 32 + 4 + 1 + 4; // prevOut hash + index + tree + sequence
+
         if (hasWitnesses) {
             nWitness += 1;
             sum += 8 + 4 + 4; // value + height + block index
@@ -28,9 +29,11 @@ function byteLength(tx: TransactionBase, _ALLOW_WITNESS = true) {
 
         return sum;
     }, 0);
+
     if (hasWitnesses) {
         byteLength += varuint.encodingLength(nWitness);
     }
+
     byteLength += varuint.encodingLength(tx.outs.length);
     byteLength += tx.outs.reduce((sum, output) => {
         sum += 8 + 2; // value + script version
@@ -125,6 +128,7 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
     if (tx.version !== DECRED_TX_VERSION) {
         throw new Error('Unsupported Decred transaction version');
     }
+
     if (tx.type !== DECRED_TX_SERIALIZE_FULL && tx.type !== DECRED_TX_SERIALIZE_NO_WITNESS) {
         throw new Error('Unsupported Decred transaction type');
     }
@@ -145,7 +149,9 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
     for (let i = 0; i < voutLen; i++) {
         const value = bufferReader.readUInt64String();
         const version = bufferReader.readUInt16();
+
         if (version !== DECRED_SCRIPT_VERSION) throw new Error('Unsupported Decred script version');
+
         tx.outs.push({
             value,
             decredVersion: version,
@@ -158,7 +164,9 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
 
     if (tx.type === DECRED_TX_SERIALIZE_FULL) {
         const count = bufferReader.readVarInt();
+
         if (count !== vinLen) throw new Error('Non equal number of ins and witnesses');
+
         tx.ins.forEach(vin => {
             vin.decredWitness = {
                 value: bufferReader.readUInt64String(),
@@ -170,6 +178,7 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
     }
 
     if (options.nostrict) return tx;
+
     if (bufferReader.offset !== buffer.length) throw new Error('Transaction has unexpected data');
 
     return tx;

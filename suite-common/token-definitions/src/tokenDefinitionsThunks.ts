@@ -52,6 +52,7 @@ export const getTokenDefinitionThunk = createThunk(
             const decodedJws = decode(jws);
 
             const algorithmInHeader = decodedJws?.header.alg;
+
             if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
                 throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
             }

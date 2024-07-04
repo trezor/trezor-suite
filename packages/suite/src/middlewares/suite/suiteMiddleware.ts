@@ -38,6 +38,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
     }
 
     if (action.type === METADATA.SET_DEVICE_METADATA) return true;
+
     if (action.type === METADATA.SET_DEVICE_METADATA_PASSWORDS) return true;
 
     if (Object.values(DEVICE).includes(action.type)) return true;
@@ -49,6 +50,7 @@ const suite =
     (next: Dispatch) =>
     (action: Action): Action => {
         const prevApp = api.getState().router.app;
+
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
             api.dispatch(appChanged(action.payload.app));
         }
@@ -86,6 +88,7 @@ const suite =
                 if (action.payload.protocol) {
                     api.dispatch(handleProtocolRequest(action.payload.protocol));
                 }
+
                 if (action.payload.desktopUpdate?.firstRun) {
                     api.dispatch(
                         notificationsActions.addToast({
@@ -94,6 +97,7 @@ const suite =
                         }),
                     );
                 }
+
                 break;
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED:

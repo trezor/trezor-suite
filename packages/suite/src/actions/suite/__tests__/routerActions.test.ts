@@ -61,6 +61,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             store.dispatch(routerActions.init());
+
             if (f.result) {
                 expect(store.getState().router).toEqual(f.result);
             } else {
@@ -95,6 +96,7 @@ describe('Suite Actions', () => {
 
             require('src/support/history').default.location.hash = `#${f.hash}`;
             store.dispatch(routerActions.goto(f.url as any, { preserveParams: f.preserveHash }));
+
             if (f.result) {
                 expect(store.getActions()[0].payload.url).toEqual(f.result);
                 expect(store.getActions().length).toEqual(1);

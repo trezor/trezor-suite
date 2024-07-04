@@ -24,7 +24,9 @@ export const createUiPromiseManager = (interactionTimeout: () => void) => {
         const uiPromise = _uiPromises.find(p => p.id === event.type) as
             | UiPromise<typeof event.type>
             | undefined;
+
         if (!uiPromise) return false;
+
         uiPromise.resolve(event);
         _uiPromises = _uiPromises.filter(p => p !== uiPromise);
 

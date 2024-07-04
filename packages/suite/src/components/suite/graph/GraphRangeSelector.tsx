@@ -146,6 +146,7 @@ export const GraphRangeSelector = ({
                     $selected={range.label === selectedRange.label}
                     onClick={() => {
                         setSelectedRange(range);
+
                         if (onSelectedRange) {
                             onSelectedRange(range);
                         }

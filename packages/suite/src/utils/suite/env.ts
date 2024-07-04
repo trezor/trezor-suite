@@ -41,6 +41,7 @@ export const submitRequestForm = async (
         });
 
         if (!document.body) return;
+
         document.body.appendChild(form);
         form.submit();
     }

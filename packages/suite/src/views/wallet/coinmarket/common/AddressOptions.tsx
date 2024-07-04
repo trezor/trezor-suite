@@ -113,6 +113,7 @@ export const AddressOptions = <TFieldValues extends AddressOptionsFormState>({
                     menuPlacement={menuPlacement}
                     formatOptionLabel={(accountAddress: AccountAddress) => {
                         if (!accountAddress) return null;
+
                         const formattedCryptoAmount = formatNetworkAmount(
                             accountAddress.balance || '0',
                             receiveSymbol as Account['symbol'],

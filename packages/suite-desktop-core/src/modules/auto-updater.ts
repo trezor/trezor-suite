@@ -32,6 +32,7 @@ export const SERVICE_NAME = 'auto-updater';
 
 export const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
+
     if (!isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
         logger.info(SERVICE_NAME, 'Disabled via feature flag');
 
@@ -219,6 +220,7 @@ export const init: Module = ({ mainWindow, store }) => {
             SERVICE_NAME,
             `Cancel update request (in progress: ${b2t(!!updateCancellationToken)})`,
         );
+
         if (updateCancellationToken) {
             updateCancellationToken.cancel();
         }

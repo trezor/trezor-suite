@@ -56,11 +56,13 @@ const initStore = (preloadedState: State) => {
     });
     store.subscribe(() => {
         const action = store.getActions().pop();
+
         if (action) {
             const { suite, messageSystem, wallet } = store.getState();
 
             store.getState().suite = suiteReducer(suite, action);
             store.getState().messageSystem = messageSystemReducer(messageSystem, action);
+
             if (wallet) store.getState().wallet = WalletReducers(wallet, action);
 
             store.getActions().push(action);

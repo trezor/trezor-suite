@@ -24,9 +24,11 @@ export function Collapse({
         const container = containerRef.current;
         const inner = innerRef.current;
         const animation = animationRef.current;
+
         if (animation) {
             clearTimeout(animation);
         }
+
         if (initialRender.current || !container || !inner) return;
 
         container.classList.toggle('nx-duration-500', !isOpen);

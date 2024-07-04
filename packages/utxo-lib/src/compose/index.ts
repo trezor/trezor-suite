@@ -15,6 +15,7 @@ export function composeTx<
     Change extends ComposeChangeAddress,
 >(request: ComposeRequest<Input, Output, Change>): ComposeResult<Input, Output, Change> {
     const coinselectRequest = validateAndParseRequest(request);
+
     if ('error' in coinselectRequest) {
         return coinselectRequest;
     }

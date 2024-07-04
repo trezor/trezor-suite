@@ -49,6 +49,7 @@ export const BiometricsBottomSheet = () => {
         let timerId: ReturnType<typeof setTimeout>;
         const checkBiometrics = async () => {
             const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
+
             if (isBiometricsAvailable && !isBiometricsOptionEnabled) {
                 timerId = setTimeout(() => {
                     if (isMounted) {
@@ -75,6 +76,7 @@ export const BiometricsBottomSheet = () => {
 
     const handleEnable = async () => {
         const result = await toggleBiometricsOption();
+
         if (result === 'enabled') {
             setIsVisible(false);
             setIsBiometricsInitialSetupFinished(true);

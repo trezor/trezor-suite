@@ -54,7 +54,9 @@ export const createDeferredManager = <T = any>(
             (prev, { deadline }) => (prev && deadline ? Math.min : Math.max)(prev, deadline),
             0,
         );
+
         if (timeoutHandle) clearTimeout(timeoutHandle);
+
         timeoutHandle = nearestDeadline
             ? // eslint-disable-next-line @typescript-eslint/no-use-before-define
               setTimeout(timeoutCallback, Math.max(nearestDeadline - now, 0)) // TODO min safe interval instead of zero?
@@ -77,6 +79,7 @@ export const createDeferredManager = <T = any>(
         const deferred = createDeferred<T, number>(promiseId);
         const deadline = timeout && Date.now() + timeout;
         promises.push({ ...deferred, deadline });
+
         if (timeout) replanTimeout();
 
         return { promiseId, promise: deferred.promise };
@@ -85,6 +88,7 @@ export const createDeferredManager = <T = any>(
     const extract = (promiseId: number) => {
         const index = promises.findIndex(({ id }) => id === promiseId);
         const [promise] = index >= 0 ? promises.splice(index, 1) : [undefined];
+
         if (promise?.deadline) replanTimeout();
 
         return promise;
@@ -107,6 +111,7 @@ export const createDeferredManager = <T = any>(
     const rejectAll = (error: Error) => {
         promises.forEach(promise => promise.reject(error));
         const deleted = promises.splice(0, promises.length);
+
         if (deleted.length) replanTimeout();
     };
 

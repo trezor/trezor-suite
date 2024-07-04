@@ -69,6 +69,7 @@ export default class StellarSignTransaction extends AbstractMethod<
 
     _ensureFirmwareSupportsParams() {
         const { params } = this;
+
         if (
             params.transaction.operations &&
             params.transaction.operations.find(o => o.type === 'manageBuyOffer')

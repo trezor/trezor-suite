@@ -16,6 +16,7 @@ export const init: Module = ({ mainWindow }) => {
         if (httpReceiver) {
             return httpReceiver.getInfo();
         }
+
         // External request handler
         const receiver = createHttpReceiver();
         httpReceiver = receiver;

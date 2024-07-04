@@ -20,6 +20,7 @@ export const TokenTransferAddressLabel = ({
     if (type === 'self') {
         return <Translation id="TR_SENT_TO_SELF" />;
     }
+
     if (type === 'sent') {
         return (
             <BlurWrapper $isBlurred={isPhishingTransaction}>

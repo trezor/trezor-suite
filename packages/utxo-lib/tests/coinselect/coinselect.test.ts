@@ -40,6 +40,7 @@ describe('coinselect index', () => {
             });
 
             expect(utils.serialize(actual)).toEqual(expected);
+
             if (actual.inputs) {
                 const feedback = coinselect({
                     txType: 'p2pkh',

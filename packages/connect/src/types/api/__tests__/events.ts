@@ -14,6 +14,7 @@ import {
 export const events = (api: TrezorConnect) => {
     api.on(DEVICE_EVENT, event => {
         event.type.toLowerCase();
+
         if (event.type === 'button') {
             const { payload } = event;
             payload.device.type.toLowerCase();
@@ -22,8 +23,10 @@ export const events = (api: TrezorConnect) => {
 
             return;
         }
+
         const { payload } = event;
         payload.path.toLowerCase();
+
         if (payload.type === 'acquired') {
             payload.mode.toLowerCase();
             payload.firmware.toLowerCase();
@@ -58,6 +61,7 @@ export const events = (api: TrezorConnect) => {
             // event.payload.version;
             // event.payload.outdated;
         }
+
         if (event.type === TRANSPORT.ERROR) {
             event.payload.bridge?.changelog.toLowerCase();
         }
@@ -76,17 +80,21 @@ export const events = (api: TrezorConnect) => {
             // event.payload.error;
             // event.payload.response;
         }
+
         if (event.type === UI.REQUEST_BUTTON) {
             if (event.payload.code === 'ButtonRequest_ConfirmOutput') {
                 //
             }
+
             if (event.payload.code === 'ButtonRequest_FirmwareUpdate') {
                 //
             }
+
             // @ts-expect-error
             if (event.payload.code === 'foo') {
                 //
             }
+
             event.payload.data?.address.toLowerCase();
             event.payload.device.label.toLowerCase();
         }
@@ -95,6 +103,7 @@ export const events = (api: TrezorConnect) => {
             if (event.payload.type === 'PinMatrixRequestType_Current') {
                 //
             }
+
             // @ts-expect-error
             if (event.payload.type === 'foo') {
                 //
@@ -117,6 +126,7 @@ export const events = (api: TrezorConnect) => {
     api.on<AccountInfo | null>(UI.BUNDLE_PROGRESS, event => {
         event.progress as number;
         event.error?.toLowerCase();
+
         if (event.response?.empty === false) {
             event.response.availableBalance.toLowerCase();
         }
@@ -147,10 +157,12 @@ export const events = (api: TrezorConnect) => {
                 event.payload.shortcut.toLowerCase();
             }
         }
+
         if (event.type === BLOCKCHAIN.BLOCK) {
             event.payload.blockHash.toLowerCase();
             event.payload.blockHeight as number;
         }
+
         if (event.type === BLOCKCHAIN.NOTIFICATION) {
             event.payload.notification.descriptor.toLowerCase();
             event.payload.notification.tx.targets.map(t => (t.isAddress ? t.amount : t.n));

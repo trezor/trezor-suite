@@ -43,6 +43,7 @@ export const onDeviceTransactionReviewThunk = createThunk<
 
         if (!network)
             return rejectWithValue('Failed to derive account network from account symbol.');
+
         const composeContext: ComposeActionContext = {
             account,
             network,
@@ -76,6 +77,7 @@ export const onDeviceTransactionReviewThunk = createThunk<
 
         if (!precomposedTransaction)
             return rejectWithValue('Thunk prepareTransactionForSigningThunk failed.');
+
         const signTransactionResponse = await requestPrioritizedDeviceAccess(() =>
             dispatch(
                 signTransactionThunk({

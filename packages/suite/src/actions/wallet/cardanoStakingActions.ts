@@ -56,6 +56,7 @@ export const validatePendingTxOnBlock =
         // To prevent the user from sending multiple staking tx we need to track that we are waiting for confirmation for the tx that was already sent.
         // As a failsafe, we will reset `pendingStakeTx` after tx expires (ttl is set to 2 hours), allowing user to retry the action.
         const network = getNetwork(block.coin.shortcut.toLowerCase());
+
         if (!network || network.networkType !== 'cardano') return;
 
         const accounts = getState().wallet.accounts.filter(
@@ -81,6 +82,7 @@ export const validatePendingTxOnBlock =
 
             // separate pending tx used for nicer UI
             const pendingStakeTx = dispatch(getPendingStakeTx(account));
+
             if (pendingStakeTx && timestamp - pendingStakeTx.ts > CARDANO_DEFAULT_TTL_OFFSET) {
                 dispatch(setPendingStakeTx(account, null));
             }
@@ -90,6 +92,7 @@ export const validatePendingTxOnBlock =
 export const validatePendingStakeTxOnTx =
     (account: Account, txs: WalletAccountTransaction[]) => (dispatch: Dispatch) => {
         if (account.networkType !== 'cardano') return;
+
         const pendingTx = dispatch(getPendingStakeTx(account));
 
         // remove pending stake tx only if the incoming tx had blockHeight set
@@ -136,6 +139,7 @@ export const fetchTrezorPools = (network: 'ADA' | 'tADA') => async (dispatch: Di
             network: cardanoNetwork,
         });
     }
+
     dispatch({
         type: CARDANO_STAKING.SET_FETCH_LOADING,
         loading: false,

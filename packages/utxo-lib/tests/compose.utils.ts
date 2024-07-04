@@ -51,6 +51,7 @@ const NONSEGWIT_INPUT_SCRIPT_TYPES = ['SPENDADDRESS', 'SPENDMULTISIG'];
 
 function getVarIntSize(length: number) {
     if (length < 253) return 1;
+
     if (length < 65536) return 3;
 
     return 5;
@@ -58,7 +59,9 @@ function getVarIntSize(length: number) {
 
 function getOpPushSize(length: number) {
     if (length < 76) return 1;
+
     if (length < 256) return 2;
+
     if (length < 65536) return 3;
 
     return 5;
@@ -97,10 +100,12 @@ export class TxWeightCalculator {
             if (input.script_type === 'SPENDTAPROOT') {
                 throw new Error('Multisig not supported for Taproot yet');
             }
+
             const n = input.multisig.nodes
                 ? input.multisig.nodes.length
                 : input.multisig.pubkeys.length;
             let multisig_script_size = _TXSIZE_MULTISIGSCRIPT + n * (1 + _TXSIZE_PUBKEY);
+
             if (SEGWIT_INPUT_SCRIPT_TYPES.includes(input.script_type)) {
                 multisig_script_size += getVarIntSize(multisig_script_size);
             } else {
@@ -123,6 +128,7 @@ export class TxWeightCalculator {
             this.counter += 4 * input_script_size;
         } else if (SEGWIT_INPUT_SCRIPT_TYPES.includes(input.script_type)) {
             this.segwit_inputs_count += 1;
+
             if (input.script_type === 'SPENDP2SHWITNESS') {
                 // add script_sig size
                 if (input.multisig) {
@@ -133,10 +139,12 @@ export class TxWeightCalculator {
             } else {
                 this.counter += 4; // empty script_sig (1 byte)
             }
+
             this.counter += 1 + input_script_size; // discounted witness
         } else if (input.script_type === 'EXTERNAL') {
             const witness_size = 0;
             const script_sig_size = 0;
+
             if (input.ownership_proof) {
                 // TODO:
                 // script_sig, witness = ownership.read_scriptsig_witness(
@@ -176,6 +184,7 @@ export class TxWeightCalculator {
         let total = this.counter;
         total += 4 * getVarIntSize(this.inputs_count);
         total += 4 * getVarIntSize(this.outputs_count);
+
         if (this.segwit_inputs_count) {
             total += _TXSIZE_SEGWIT_OVERHEAD;
             // add one byte of witness stack item count per non-segwit input
@@ -204,9 +213,11 @@ export function verifyTxBytes(
         if (out.type === 'opreturn') {
             calc.addOutput({ length: 2 + out.dataHex.length / 2 });
         }
+
         if (out.type === 'payment') {
             calc.addOutput({ length: baddress.toOutputScript(out.address, network).length });
         }
+
         if (out.type === 'change') {
             calc.addOutputByKey(txType); // change output
         }

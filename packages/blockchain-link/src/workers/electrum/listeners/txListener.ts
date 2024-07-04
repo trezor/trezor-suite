@@ -18,9 +18,13 @@ type Payload<T extends { type: string; payload: any }> = Extract<
 // TODO optimize if neccessary
 const mostRecent = (previous: HistoryTx | undefined, current: HistoryTx) => {
     if (previous === undefined) return current;
+
     if (previous.height === -1) return previous;
+
     if (current.height === -1) return current;
+
     if (previous.height === 0) return previous;
+
     if (current.height === 0) return current;
 
     return previous.height >= current.height ? previous : current;
@@ -34,13 +38,17 @@ export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
 
     const onTransaction = async ([scripthash, _status]: StatusChange) => {
         const { descriptor, addresses } = addressManager.getInfo(scripthash);
+
         if (descriptor === scripthash) {
             // scripthash was subscribed to only internally, not explicitly from Suite
             return;
         }
+
         const history = await api().request('blockchain.scripthash.get_history', scripthash);
         const recent = history.reduce<HistoryTx | undefined>(mostRecent, undefined);
+
         if (!recent) return;
+
         const [tx] = await getTransactions(api(), [recent]);
         worker.post({
             id: -1,

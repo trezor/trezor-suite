@@ -175,6 +175,7 @@ export const RecoveryStep = () => {
             />
         );
     }
+
     if (status === 'finished' && error) {
         // Recovery finished with error, user is recommended to wipe the device and start over
         return (

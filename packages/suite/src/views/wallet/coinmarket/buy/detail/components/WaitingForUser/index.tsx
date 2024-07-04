@@ -66,6 +66,7 @@ const WaitingForUser = ({ trade, account, providerName }: WaitingForUserProps) =
         setIsWorking(true);
         const returnUrl = await createTxLink(trade, account);
         const response = await invityAPI.getBuyTradeForm({ trade, returnUrl });
+
         if (response) {
             dispatch(submitRequestForm(response.form));
         }

@@ -31,17 +31,21 @@ export const useCoinjoinUnavailableUtxos = ({
         if (!coinjoinClient?.allowedInputAmounts) return;
 
         const imprisonedUtxo = coinjoinAccount?.prison?.[getUtxoOutpoint(utxo)];
+
         if (imprisonedUtxo?.errorCode === WabiSabiProtocolErrorCode.InputBanned) {
             return translationString('TR_UTXO_SHORT_BANNED_IN_COINJOIN');
         }
+
         if (imprisonedUtxo?.errorCode === WabiSabiProtocolErrorCode.InputLongBanned) {
             return translationString('TR_UTXO_LONG_BANNED_IN_COINJOIN');
         }
 
         const amountBN = new BigNumber(utxo.amount);
+
         if (amountBN.lt(coinjoinClient.allowedInputAmounts.min)) {
             return translationString('TR_AMOUNT_TOO_SMALL_FOR_COINJOIN');
         }
+
         if (amountBN.gt(coinjoinClient.allowedInputAmounts.max)) {
             return translationString('TR_AMOUNT_TOO_BIG_FOR_COINJOIN');
         }

@@ -125,9 +125,11 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
 
         // notifications
         const notifications: { [key: string]: JSX.Element } = {};
+
         if (state?.transport?.outdated) {
             notifications['bridge-outdated'] = <BridgeUpdateNotification key="bridge-outdated" />;
         }
+
         messages.forEach(message => {
             if (message?.type === UI_REQUEST.FIRMWARE_OUTDATED) {
                 notifications[message.type] = <FirmwareUpdateNotification key={message.type} />;

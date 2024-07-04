@@ -50,6 +50,7 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
 
             return;
         }
+
         navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
             screen: AddCoinAccountStackRoutes.AddCoinAccount,
             params: {

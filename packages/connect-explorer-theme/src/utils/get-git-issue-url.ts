@@ -10,6 +10,7 @@ export const getGitIssueUrl = ({
     labels?: string;
 }): string => {
     const repo = gitUrlParse(repository);
+
     if (!repo) throw new Error('Invalid `docsRepositoryBase` URL!');
 
     if (repo.resource.includes('gitlab')) {
@@ -19,6 +20,7 @@ export const getGitIssueUrl = ({
             labels ? `&issue[description]=/label${encodeURIComponent(` ~${labels}\n`)}` : ''
         }`;
     }
+
     if (repo.resource.includes('github')) {
         return `${repo.protocol}://${repo.resource}/${repo.owner}/${
             repo.name

@@ -48,6 +48,7 @@ describe('selectRound', () => {
 
     afterAll(() => {
         jest.clearAllMocks();
+
         if (server) server.close();
     });
 
@@ -180,6 +181,7 @@ describe('selectRound', () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
             if (url.endsWith('/select-inputs-for-round')) {
                 spy();
+
                 if (data.MiningFeeRate === 1) {
                     reject(500, { error: 'ExpectedRuntimeError' });
                 } else {
@@ -188,6 +190,7 @@ describe('selectRound', () => {
                     });
                 }
             }
+
             resolve();
         });
 
@@ -237,6 +240,7 @@ describe('selectRound', () => {
                 spy();
                 resolve([]);
             }
+
             resolve();
         });
 
@@ -289,6 +293,7 @@ describe('selectRound', () => {
                 spy();
                 resolve({ Indices: [0] });
             }
+
             resolve();
         });
 
@@ -324,6 +329,7 @@ describe('selectRound', () => {
                 spy();
                 resolve({ Indices: [0] });
             }
+
             resolve();
         });
 
@@ -362,6 +368,7 @@ describe('selectRound', () => {
                 });
                 resolve({ Indices });
             }
+
             resolve();
         });
 
@@ -430,6 +437,7 @@ describe('selectRound', () => {
                     Indices,
                 });
             }
+
             resolve();
         });
 
@@ -518,6 +526,7 @@ describe('selectRound', () => {
                 spy();
                 resolve([]);
             }
+
             resolve();
         });
 

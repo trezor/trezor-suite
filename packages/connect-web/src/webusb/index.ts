@@ -5,6 +5,7 @@ import { config } from '@trezor/connect/src/data/config';
 // handle message received from connect.js
 const onload = () => {
     const exists = document.getElementsByTagName('button');
+
     if (exists && exists.length > 0) {
         return;
     }
@@ -13,6 +14,7 @@ const onload = () => {
     button.className = 'default';
     button.onclick = async () => {
         const { usb } = navigator;
+
         if (usb) {
             try {
                 await usb.requestDevice({ filters: config.webusb });

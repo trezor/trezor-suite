@@ -16,6 +16,7 @@ Buffer.prototype.subarray = function subarray(start, end) {
 
     if (start < 0) {
         start += len;
+
         if (start < 0) start = 0;
     } else if (start > len) {
         start = len;
@@ -23,6 +24,7 @@ Buffer.prototype.subarray = function subarray(start, end) {
 
     if (end < 0) {
         end += len;
+
         if (end < 0) end = 0;
     } else if (end > len) {
         end = len;

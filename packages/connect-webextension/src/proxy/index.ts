@@ -86,6 +86,7 @@ const call: CallMethod = async (params: any) => {
             type: IFRAME.CALL,
             payload: params,
         });
+
         if (response) {
             return response;
         }

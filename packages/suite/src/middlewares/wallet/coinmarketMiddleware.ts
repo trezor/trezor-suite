@@ -38,6 +38,7 @@ const coinmarketMiddleware =
                 api.dispatch(coinmarketCommonActions.setLoading(true));
 
                 const { invityServerEnvironment } = api.getState().suite.settings.debug;
+
                 if (invityServerEnvironment) {
                     invityAPI.setInvityServersEnvironment(invityServerEnvironment);
                 }

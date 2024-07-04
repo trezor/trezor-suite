@@ -46,9 +46,11 @@ describe('TrezorConnect passphrase', () => {
                 },
                 useEmptyPassphrase: true,
             });
+
             if (!walletDefault.success) {
                 throw new Error(`default Wallet exception: ${walletDefault.payload.error}`);
             }
+
             const xpub = await TrezorConnect.getPublicKey({
                 device: {
                     instance: 0,
@@ -68,9 +70,11 @@ describe('TrezorConnect passphrase', () => {
                     state: undefined, // reset state from previous tests on this instance
                 },
             });
+
             if (!walletA.success) {
                 throw new Error(`Wallet A exception: ${walletA.payload.error}`);
             }
+
             const xpubA = await TrezorConnect.getPublicKey({
                 device: {
                     instance: 1,
@@ -89,9 +93,11 @@ describe('TrezorConnect passphrase', () => {
                     instance: 2,
                 },
             });
+
             if (!walletB.success) {
                 throw new Error(`Wallet B exception: ${walletB.payload.error}`);
             }
+
             const xpubB = await TrezorConnect.getPublicKey({
                 device: {
                     instance: 2,
@@ -170,9 +176,11 @@ describe('TrezorConnect passphrase', () => {
                 state: undefined, // reset state from previous tests on this instance
             },
         });
+
         if (!walletA.success) {
             throw new Error(`Wallet A exception: ${walletA.payload.error}`);
         }
+
         const xpubA = await TrezorConnect.getPublicKey({
             device: {
                 instance: 0,
@@ -204,9 +212,11 @@ describe('TrezorConnect passphrase', () => {
             },
             useEmptyPassphrase: true,
         });
+
         if (!walletDefault.success) {
             throw new Error(`default Wallet exception: ${walletDefault.payload.error}`);
         }
+
         const xpub = await TrezorConnect.getPublicKey({
             device: {
                 instance: 0,
@@ -226,9 +236,11 @@ describe('TrezorConnect passphrase', () => {
                 state: undefined, // restet state from previous tests on instance 0
             },
         });
+
         if (!walletA.success) {
             throw new Error(`Wallet A exception: ${walletA.payload.error}`);
         }
+
         const xpubA = await TrezorConnect.getPublicKey({
             device: {
                 instance: 1,
@@ -247,9 +259,11 @@ describe('TrezorConnect passphrase', () => {
                 instance: 2,
             },
         });
+
         if (!walletB.success) {
             throw new Error(`Wallet B exception: ${walletB.payload.error}`);
         }
+
         const xpubB = await TrezorConnect.getPublicKey({
             device: {
                 instance: 2,

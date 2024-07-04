@@ -231,6 +231,7 @@ export const setBusyScreen =
         const uniquePhysicalDevices = uniqueDeviceStates.reduce(
             (result, state) => {
                 const device = devices.find(d => d.connected && d.state === state);
+
                 if (device && !result.find(d => d.id === device.id)) {
                     return result.concat(device);
                 }
@@ -280,6 +281,7 @@ export const pauseCoinjoinSession =
         if (!account) {
             return;
         }
+
         // get @trezor/coinjoin client if available
         const client = getCoinjoinClient(account.symbol);
 
@@ -308,6 +310,7 @@ export const stopCoinjoinSession =
         // cancelCoinjoinAuthorization should be called only if there is no other registered coinjoin account
         const device = selectDevices(state).find(d => d.state === account.deviceState);
         let shouldCancelAuthorization = device?.connected;
+
         if (device) {
             // find all instances of this physical device
             const devices = selectDevices(state);
@@ -325,6 +328,7 @@ export const stopCoinjoinSession =
             const otherRegisteredAccounts = otherAccounts.flatMap(a =>
                 state.wallet.coinjoin.accounts.filter(cja => cja.key === a.key && cja.session),
             );
+
             if (otherRegisteredAccounts.length > 0) {
                 shouldCancelAuthorization = false;
             }
@@ -410,6 +414,7 @@ export const onCoinjoinRoundChanged =
                 const accountsReachingMaxRounds = coinjoinAccountsWithSession.filter(
                     ({ session }) => session?.signedRounds?.length === session?.maxRounds,
                 );
+
                 if (accountsReachingMaxRounds.length) {
                     dispatch(openModal({ type: 'more-rounds-needed' }));
                     accountsReachingMaxRounds.forEach(({ key }) => {
@@ -474,12 +479,15 @@ const getOwnershipProof =
             const coinjoinAccount = coinjoin.accounts.find(r => r.key === key);
             const realAccount = accounts.find(a => a.key === key);
             const utxos = groupUtxosByAccount[key];
+
             if (!coinjoinAccount || !realAccount) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account not found'));
 
                 return [];
             }
+
             const { session } = coinjoinAccount;
+
             // do not provide ownership if requested account is no longer authorized
             if (!session || session.paused || session.signedRounds.length >= session.maxRounds) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account without session'));
@@ -488,6 +496,7 @@ const getOwnershipProof =
             }
 
             const device = devices.find(d => d.state === realAccount.deviceState);
+
             if (!device?.connected) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Device disconnected'));
 
@@ -520,9 +529,11 @@ const getOwnershipProof =
                     device,
                     bundle,
                 });
+
                 if (proof.success) {
                     proof.payload.forEach((p, i) => {
                         if (!utxos[i]) return; // double check if data from Trezor corresponds with request
+
                         response.inputs.push({
                             outpoint: utxos[i].outpoint,
                             ownershipProof: p.ownership_proof,
@@ -531,6 +542,7 @@ const getOwnershipProof =
 
                     return;
                 }
+
                 utxos.forEach(u => {
                     response.inputs.push({ outpoint: u.outpoint, error: proof.payload?.error });
                 });
@@ -591,6 +603,7 @@ const signCoinjoinTx =
             const coinjoinAccount = coinjoin.accounts.find(r => r.key === key);
             const realAccount = accounts.find(a => a.key === key);
             const utxos = groupUtxosByAccount[key];
+
             if (!coinjoinAccount || !realAccount) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account not found'));
 
@@ -598,6 +611,7 @@ const signCoinjoinTx =
             }
 
             const { session, rawLiquidityClue } = coinjoinAccount;
+
             if (!session || session.signedRounds.length >= session.maxRounds) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Account without session'));
 
@@ -605,6 +619,7 @@ const signCoinjoinTx =
             }
 
             const device = devices.find(d => d.state === realAccount.deviceState);
+
             if (!device?.connected) {
                 response.inputs.push(...coinjoinResponseError(utxos, 'Device disconnected'));
 
@@ -713,6 +728,7 @@ export const onCoinjoinClientRequest = (data: CoinjoinRequestEvent[]) => (dispat
             if (request.type === 'ownership') {
                 return dispatch(getOwnershipProof(request));
             }
+
             if (request.type === 'signature') {
                 return dispatch(signCoinjoinTx(request));
             }
@@ -726,19 +742,23 @@ export const initCoinjoinService =
         const state = getState();
         const { clients, debug, accounts } = state.wallet.coinjoin;
         const knownClient = clients[symbol];
+
         if (knownClient?.status === 'loading') return;
 
         // find already running instance of @trezor/coinjoin client
         const knownService = CoinjoinService.getInstance(symbol);
+
         if (knownService && knownClient?.status === 'loaded') {
             return knownService;
         }
 
         const isCoinjoinDisabledByFeatureFlag = selectIsFeatureDisabled(state, Feature.coinjoin);
+
         // retry if client was not enabled properly until now
         if (knownService && knownClient?.status === 'unavailable') {
             if (!isCoinjoinDisabledByFeatureFlag) {
                 const status = await knownService.client.enable();
+
                 if (status.success) {
                     dispatch(clientEnableSuccess(symbol, status));
                 }
@@ -757,6 +777,7 @@ export const initCoinjoinService =
             .filter(account => account.symbol === symbol && account.prison)
             .flatMap(account => {
                 const realAccount = selectAccountByKey(state, account.key);
+
                 if (!realAccount) return [];
 
                 const utxos = realAccount.utxo!.map(getUtxoOutpoint);
@@ -766,12 +787,14 @@ export const initCoinjoinService =
 
                 return Object.keys(account.prison!).flatMap(id => {
                     const inmate = account.prison![id];
+
                     // clear outdated info with Infinity sentence
                     if (inmate.sentenceEnd === Infinity) {
                         // utxos which are no longer in account (spent utxos)
                         if (inmate.type === 'input' && !utxos.includes(id)) {
                             return [];
                         }
+
                         // change addresses with transfers (used addresses)
                         if (inmate.type === 'output' && usedChange.includes(id)) {
                             return [];
@@ -793,11 +816,13 @@ export const initCoinjoinService =
                 prison,
                 settings: { ...config, ...debug?.coinjoinConfigOverride?.[symbol] },
             });
+
             if (isCoinjoinDisabledByFeatureFlag) {
                 dispatch(clientEnableFailed(symbol));
 
                 return service;
             }
+
             const { client } = service;
             const status = await client.enable();
             // handle status change

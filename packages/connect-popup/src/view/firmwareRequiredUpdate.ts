@@ -6,7 +6,9 @@ import { showView } from './common';
 
 export const firmwareRequiredUpdate = (device: UiRequestUnexpectedDeviceMode['payload']) => {
     const view = showView('firmware-update');
+
     if (!device.features) return;
+
     if (!device.firmwareRelease) return;
 
     // showView return type has undefined in union (if react component is available);

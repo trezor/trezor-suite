@@ -43,6 +43,7 @@ class DropboxProvider extends AbstractMetadataProvider {
         if (!this.auth.getAccessToken()) {
             return false;
         }
+
         // refresh token is present, refresh it and return true
         try {
             await this.auth.refreshAccessToken(['']);
@@ -118,6 +119,7 @@ class DropboxProvider extends AbstractMetadataProvider {
             if (result.has_more) {
                 console.error('Dropbox account that has more then 10000 files in Trezor folder');
             }
+
             if (result?.matches?.length > 0) {
                 // check whether the file is in the regular folder ...
                 let match = result.matches.find(
@@ -218,6 +220,7 @@ class DropboxProvider extends AbstractMetadataProvider {
 
     async getProviderDetails() {
         const token = this.auth.getRefreshToken();
+
         if (!token) return this.error('AUTH_ERROR', 'token is missing');
 
         try {
@@ -263,6 +266,7 @@ class DropboxProvider extends AbstractMetadataProvider {
             if (err.status >= 500) {
                 return this.error('PROVIDER_ERROR', message);
             }
+
             switch (err.status) {
                 case 400:
                     return this.error('BAD_INPUT_ERROR', message);

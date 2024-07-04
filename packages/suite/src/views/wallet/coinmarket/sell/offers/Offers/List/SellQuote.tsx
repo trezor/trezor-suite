@@ -111,6 +111,7 @@ export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
         if (amountInCrypto) {
             const cryptoAmount = Number(quote.cryptoStringAmount);
             const symbol = quote.cryptoCurrency;
+
             if (quote.minCrypto && cryptoAmount < quote.minCrypto) {
                 return (
                     <Translation
@@ -132,6 +133,7 @@ export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
                     />
                 );
             }
+
             if (quote.maxCrypto && cryptoAmount > quote.maxCrypto) {
                 return (
                     <Translation
@@ -155,6 +157,7 @@ export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
             }
         } else {
             const fiatAmount = Number(quote.fiatStringAmount);
+
             if (quote.minFiat && fiatAmount < quote.minFiat) {
                 return (
                     <Translation
@@ -176,6 +179,7 @@ export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
                     />
                 );
             }
+
             if (quote.maxFiat && fiatAmount > quote.maxFiat) {
                 return (
                     <Translation
@@ -217,6 +221,7 @@ export const SellQuote = ({ className, quote, amountInCrypto }: QuoteProps) => {
         useCoinmarketSellOffersContext();
     const { tag, infoNote } = getTagAndInfoNote(quote);
     const { paymentMethod, paymentMethodName, exchange, error, bankAccounts } = quote;
+
     if (!exchange || !sellInfo) return null;
 
     // show bank account verification info if no verified account and no error and BANK_ACCOUNT flow

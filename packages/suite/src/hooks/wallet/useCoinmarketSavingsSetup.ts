@@ -82,6 +82,7 @@ export const useSavingsSetup = ({
                     } else {
                         navigateToSavingsSetupWaiting();
                     }
+
                     break;
                 case 'SetSavingsParameters':
                     navigateToSavingsSetupContinue();
@@ -138,14 +139,17 @@ export const useSavingsSetup = ({
             const provider = providers.find(provider =>
                 provider.supportedCountries.includes(countryEffective || ''),
             );
+
             if (
                 provider &&
                 (!fiatAmount || !paymentFrequency || provider.name !== selectedProvider?.name)
             ) {
                 dispatch(setSelectedProvider(provider));
+
                 if (!fiatAmount || !provider.setupPaymentAmounts.includes(fiatAmount)) {
                     setValue('fiatAmount', provider.defaultPaymentAmount.toString());
                 }
+
                 if (
                     !paymentFrequency ||
                     !provider.setupPaymentFrequencies.includes(paymentFrequency)
@@ -169,6 +173,7 @@ export const useSavingsSetup = ({
 
     useEffect(() => {
         const requestForm = getDraft(account.descriptor) as Parameters<typeof submitRequestForm>[0];
+
         if (isDesktop() && requestForm && isSubmitted) {
             dispatch(submitRequestForm(requestForm));
             navigateToSavingsSetupWaiting();
@@ -192,6 +197,7 @@ export const useSavingsSetup = ({
     const onSubmit = useCallback(
         async (formValues: SavingsSetupFormState) => {
             const { customFiatAmount, fiatAmount, paymentFrequency, country } = formValues;
+
             if (selectedProvider && country) {
                 if (
                     await dispatch(openCoinmarketSavingsConfirmModal(selectedProvider.companyName))
@@ -206,12 +212,14 @@ export const useSavingsSetup = ({
                         returnUrl: await createReturnLink(),
                     };
                     const formResponse = await invityAPI.initSavingsTrade(savingsParameters);
+
                     if (formResponse?.form) {
                         // NOTE: Edge case handling: User while on Invity web page, can open Suite.
                         // Suite will redirect the user to "waiting" page where is button,
                         // which leads to Invity web page again in case that user
                         // closed Invity web page before the savings flow was finished.
                         saveDraft(account.descriptor, formResponse.form);
+
                         if (!isDesktop()) {
                             dispatch(submitRequestForm(formResponse?.form));
                         }

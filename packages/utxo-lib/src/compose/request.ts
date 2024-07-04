@@ -25,6 +25,7 @@ type Request = ComposeRequest<ComposeInput, ComposeOutput, ComposeChangeAddress>
 
 function validateAndParseFeeRate(rate: unknown) {
     const feeRate = typeof rate === 'string' ? Number(rate) : rate;
+
     if (
         typeof feeRate !== 'number' ||
         Number.isNaN(feeRate) ||
@@ -46,14 +47,17 @@ function transformInput(
     if (typeof utxo.coinbase !== 'boolean') {
         throw new Error('Missing coinbase');
     }
+
     if (typeof utxo.own !== 'boolean') {
         throw new Error('Missing own');
     }
+
     if (typeof utxo.confirmations !== 'number') {
         throw new Error('Missing confirmations');
     }
 
     const value = bignumberOrNaN(utxo.amount);
+
     if (!value) {
         throw new Error('Invalid amount');
     }
@@ -102,8 +106,10 @@ function transformOutput(
     network: Network,
 ): CoinSelectOutput {
     const script = { length: OUTPUT_SCRIPT_LENGTH[txType] };
+
     if (output.type === 'payment') {
         const value = bignumberOrNaN(output.amount);
+
         if (!value) throw new Error('Invalid amount');
 
         return {
@@ -111,8 +117,10 @@ function transformOutput(
             script: toOutputScript(output.address, network),
         };
     }
+
     if (output.type === 'payment-noaddress') {
         const value = bignumberOrNaN(output.amount);
+
         if (!value) throw new Error('Invalid amount');
 
         return {
@@ -120,22 +128,26 @@ function transformOutput(
             script,
         };
     }
+
     if (output.type === 'opreturn') {
         return {
             value: bignumberOrNaN('0', true),
             script: p2data({ data: [Buffer.from(output.dataHex, 'hex')] }).output as Buffer,
         };
     }
+
     if (output.type === 'send-max') {
         return {
             script: toOutputScript(output.address, network),
         };
     }
+
     if (output.type === 'send-max-noaddress') {
         return {
             script,
         };
     }
+
     throw new Error('Unknown output type');
 }
 
@@ -163,10 +175,12 @@ function validateAndParseOutputs(
     const result: CoinSelectOutput[] = [];
     for (let i = 0; i < outputs.length; i++) {
         const output = outputs[i];
+
         if (output.type === 'send-max-noaddress' || output.type === 'send-max') {
             if (sendMaxOutputIndex >= 0) {
                 return incorrectOutputError(i, 'Multiple send-max');
             }
+
             sendMaxOutputIndex = i;
         }
 
@@ -203,11 +217,13 @@ function validateAndParseChangeOutput(
 
 export function validateAndParseRequest(request: Request): CoinSelectRequest | ComposeResultError {
     const feeRate = validateAndParseFeeRate(request.feeRate);
+
     if (!feeRate) {
         return { type: 'error', error: 'INCORRECT-FEE-RATE' };
     }
 
     const longTermFeeRate = validateAndParseFeeRate(request.longTermFeeRate);
+
     if (request.longTermFeeRate != null && !longTermFeeRate) {
         return { type: 'error', error: 'INCORRECT-FEE-RATE' };
     }
@@ -215,16 +231,19 @@ export function validateAndParseRequest(request: Request): CoinSelectRequest | C
     const txType = request.txType || 'p2pkh';
 
     const inputs = validateAndParseUtxos(txType, request);
+
     if ('error' in inputs) {
         return inputs;
     }
 
     const outputs = validateAndParseOutputs(txType, request);
+
     if ('error' in outputs) {
         return outputs;
     }
 
     const changeOutput = validateAndParseChangeOutput(txType, request);
+
     if ('error' in changeOutput) {
         return changeOutput;
     }

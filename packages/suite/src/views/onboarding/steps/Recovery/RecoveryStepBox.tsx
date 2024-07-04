@@ -24,6 +24,7 @@ const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
         if (recovery.status === 'select-recovery-type') {
             return dispatch(setStatus('initial'));
         }
+
         // allow to change recovery settings for T1B1 in case of error
         if (
             recovery.status === 'finished' &&
@@ -40,6 +41,7 @@ const RecoveryStepBox = (props: OnboardingStepBoxProps) => {
         if (recovery.status === 'finished' && recovery.error) {
             return true;
         }
+
         if (!['finished', 'in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
             return true;
         }

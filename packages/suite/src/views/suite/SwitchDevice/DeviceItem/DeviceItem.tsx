@@ -55,6 +55,7 @@ export const DeviceItem = ({
             device.type === 'unacquired' ||
             deviceStatus === 'used-in-other-window' ||
             deviceStatus === 'was-used-in-other-window';
+
         if (needsAcquire) {
             dispatch(acquireDevice(device));
         } else {

@@ -67,6 +67,7 @@ test.beforeEach(async ({ page }) => {
         if (!request.url().startsWith('http://127.0.0.1:21325')) {
             return;
         }
+
         requests.push({ url: request.url() });
     });
 
@@ -76,9 +77,11 @@ test.beforeEach(async ({ page }) => {
         if (!response.url().startsWith('http://127.0.0.1:21325')) {
             return;
         }
+
         if (response.url().endsWith('release/2')) {
             releasePromise!.resolve(undefined);
         }
+
         console.log(requestIndex, response.status(), response.url());
         requestIndex++;
         responses.push({

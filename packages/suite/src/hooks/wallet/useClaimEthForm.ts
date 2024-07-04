@@ -119,6 +119,7 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
+
         if (composedTx && composedTx.type === 'final') {
             const result = await dispatch(
                 signTransaction(values, composedTx as PrecomposedTransactionFinal),
@@ -151,6 +152,7 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
 
 export const useClaimEthFormContext = () => {
     const ctx = useContext(ClaimEthFormContext);
+
     if (ctx === null) throw Error('useClaimEthFormContext used without Context');
 
     return ctx;

@@ -29,6 +29,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const loadTokenInfo = useCallback(
         async (acc: Account, contractAddress: string) => {
             if (!acc) return;
+
             setIsFetching(true);
             const response = await TrezorConnect.getAccountInfo({
                 coin: acc.symbol,
@@ -43,6 +44,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 const isInvalidToken = response.payload.tokens?.find(
                     t => t.contract === t.name && t.decimals === 0 && !t.symbol,
                 );
+
                 if (!isInvalidToken) {
                     setTokenInfo(response.payload.tokens);
                 } else {
@@ -57,6 +59,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                     }),
                 );
             }
+
             setIsFetching(false);
         },
         [translationString],
@@ -87,6 +90,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
         } else {
             setError(null);
         }
+
         setTokenInfo(undefined);
         setContractAddress(addr);
     };

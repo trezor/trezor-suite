@@ -30,6 +30,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
 
     const handlePress = () => {
         if (!onPress) return;
+
         onPress(symbol);
     };
 

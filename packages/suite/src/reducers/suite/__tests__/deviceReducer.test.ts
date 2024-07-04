@@ -85,6 +85,7 @@ describe('SUITE.SELECT_DEVICE', () => {
             // console.log('afterSTATE', state);
             state.devices.forEach((device, i) => {
                 expect(device).toMatchObject(f.result[i]);
+
                 if (f.ts[i] > 0) {
                     expect(device.ts).toBeGreaterThan(0);
                 } else {

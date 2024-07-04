@@ -183,6 +183,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         ) {
             return 'done';
         }
+
         const rebootToBootloaderNotSupported =
             uiEvent?.type === UI.FIRMWARE_RECONNECT && !uiEvent.payload.disconnected;
         const rebootToBootloaderCancelled = device?.connected && device?.mode !== 'bootloader';

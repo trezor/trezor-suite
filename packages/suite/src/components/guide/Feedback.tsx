@@ -148,9 +148,11 @@ export const Feedback = ({ type }: FeedbackProps) => {
         if (routePattern.startsWith('/accounts/coinmarket')) {
             return 'trade';
         }
+
         if (routePattern.startsWith('/accounts/send')) {
             return 'send';
         }
+
         if (routePattern.startsWith('/accounts/receive')) {
             return 'receive';
         }
@@ -187,6 +189,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
             firmware_revision: device?.features?.revision || '',
             firmware_type: device?.firmwareType || '',
         };
+
         if (type === 'BUG') {
             dispatch(
                 sendFeedback({
@@ -212,6 +215,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                 }),
             );
         }
+
         dispatch(setView('GUIDE_DEFAULT'));
         analytics.report({
             type: EventType.GuideFeedbackSubmit,

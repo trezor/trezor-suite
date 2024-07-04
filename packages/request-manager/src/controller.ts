@@ -53,9 +53,11 @@ export class TorController extends EventEmitter {
 
     private startBootstrap() {
         this.status = TOR_CONTROLLER_STATUS.Bootstrapping;
+
         if (this.bootstrapSlownessChecker) {
             clearTimeout(this.bootstrapSlownessChecker);
         }
+
         // When Bootstrap starts we wait time defined in bootstrapSlowThreshold and if after that time,
         // it has not being finalized, then we send slow event. We know that Bootstrap is going on since
         // we received, at least, first Bootstrap events from ControlPort.
@@ -135,6 +137,7 @@ export class TorController extends EventEmitter {
         const bootstrap: BootstrapEvent[] = bootstrapParser(message);
         bootstrap.forEach(event => {
             if (event.type !== 'progress') return;
+
             if (event.progress && !this.getIsBootstrapping()) {
                 // We consider that bootstrap has started when we receive any bootstrap event and
                 // Tor is not bootstrapping yet.
@@ -142,9 +145,11 @@ export class TorController extends EventEmitter {
                 // an error will be thrown when `maxTriesWaiting` is reached in `waitUntilAlive`.
                 this.startBootstrap();
             }
+
             if (event.progress === BOOTSTRAP_EVENT_PROGRESS.Done) {
                 this.successfullyBootstrapped();
             }
+
             this.emit('bootstrap/event', event);
         });
     }
@@ -157,14 +162,17 @@ export class TorController extends EventEmitter {
                 // If TOR is starting and we want to cancel it.
                 return;
             }
+
             if (triesCount >= this.maxTriesWaiting) {
                 throw new Error(
                     `Timeout waiting for TOR control port: \n${errorMessages.join('\n')}`,
                 );
             }
+
             try {
                 const isConnected = await this.controlPort.connect();
                 const isAlive = this.controlPort.ping();
+
                 if (isConnected && isAlive && this.getIsCircuitEstablished()) {
                     // It is running so let's not wait anymore.
                     return;
@@ -178,6 +186,7 @@ export class TorController extends EventEmitter {
                     errorMessages.push(error.message);
                 }
             }
+
             await createTimeoutPromise(this.waitingTime);
 
             return waitUntilResponse(triesCount + 1);
@@ -191,6 +200,7 @@ export class TorController extends EventEmitter {
             if (this.getIsCircuitEstablished()) {
                 return resolve(TOR_CONTROLLER_STATUS.CircuitEstablished);
             }
+
             if (this.getIsBootstrapping()) {
                 return resolve(TOR_CONTROLLER_STATUS.Bootstrapping);
             }

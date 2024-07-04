@@ -64,6 +64,7 @@ export const FirmwareModal = ({
         if (device?.status !== 'available') {
             dispatch(acquireDevice(device));
         }
+
         dispatch(closeModalApp());
         resetReducer();
     };

@@ -160,12 +160,14 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
         dispatch(saveQuoteRequest(request));
         dispatch(saveCachedAccountInfo(account.symbol, account.index, account.accountType));
         const allQuotes = await invityAPI.getBuyQuotes(request);
+
         if (allQuotes) {
             const [quotes, alternativeQuotes] = processQuotes(allQuotes);
             dispatch(saveQuotes(quotes, alternativeQuotes));
         } else {
             dispatch(clearQuotes());
         }
+
         navigateToBuyOffers();
     };
 

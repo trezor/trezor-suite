@@ -90,6 +90,7 @@ const Footer = () => {
                             value={value}
                             formatOptionLabel={(option: CountryOption) => {
                                 const labelParts = getCountryLabelParts(option.label);
+
                                 if (!labelParts) return null;
 
                                 return (

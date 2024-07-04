@@ -8,6 +8,7 @@ const { bufferUtils } = require('@trezor/utils');
 // Step 1.
 // Go to blockchain explorer and find referenced tx by input.prev_hash and locate tx HEX
 const hex = '';
+
 if (!hex) throw new Error('tx hex not provided');
 
 // Step 2. set network
@@ -27,14 +28,18 @@ const binOutputsMap = output => ({
 
 const enhanceTransaction = (refTx, srcTx) => {
     const extraData = srcTx.getExtraData();
+
     if (extraData) {
         refTx.extra_data = extraData.toString('hex');
     }
+
     const specific = srcTx.getSpecificData();
+
     if (specific) {
         if (specific.type === 'zcash' && specific.versionGroupId && refTx.version >= 3) {
             refTx.version_group_id = specific.versionGroupId;
         }
+
         if (specific.type === 'dash' && srcTx.type && srcTx.version >= 3) {
             refTx.version |= srcTx.type << 16;
         }

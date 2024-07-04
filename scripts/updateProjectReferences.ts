@@ -71,6 +71,7 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
             };
 
             let workspaceConfig;
+
             try {
                 workspaceConfig = fs.existsSync(workspaceConfigPath)
                     ? JSON.parse(fs.readFileSync(workspaceConfigPath).toString())
@@ -125,6 +126,7 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
 
             // Copy references also to tsconfig.lib.json if exists
             const workspaceLibConfigPath = path.resolve(workspacePath, 'tsconfig.lib.json');
+
             if (fs.existsSync(workspaceLibConfigPath)) {
                 try {
                     const workspaceLibConfig = JSON.parse(

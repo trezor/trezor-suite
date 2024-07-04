@@ -25,6 +25,7 @@ const shouldRefetchAccount = ({
     refetchLimitMs?: number;
 }) => {
     const lastFetchTime = accountLastFetchTime[accountKey];
+
     if (!lastFetchTime) return true;
 
     return Date.now() - lastFetchTime > refetchLimitMs;
@@ -68,6 +69,7 @@ export const onBlockchainConnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
     async ({ symbol }: { symbol: string }, { dispatch }) => {
         const network = getNetwork(symbol.toLowerCase());
+
         if (!network) return;
 
         await dispatch(
@@ -85,6 +87,7 @@ export const onBlockchainNotificationThunk = createThunk(
     (payload: BlockchainNotification, { dispatch, getState }) => {
         const { descriptor } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();
+
         if (!isNetworkSymbol(symbol)) {
             return;
         }
@@ -96,6 +99,7 @@ export const onBlockchainNotificationThunk = createThunk(
         );
 
         if (!account) return;
+
         if (!shouldRefetchAccount({ accountKey: account.key })) return;
 
         // Sometimes we randomly get notifications for all transactions in account at once, which would trigger lot of fetches.

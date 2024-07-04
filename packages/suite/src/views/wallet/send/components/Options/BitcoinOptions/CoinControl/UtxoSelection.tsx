@@ -178,6 +178,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const handleCheckbox = () => toggleUtxoSelection(utxo);
     const showTransactionDetail: MouseEventHandler = e => {
         e.stopPropagation(); // do not trigger the checkbox
+
         if (transaction) {
             dispatch(openModal({ type: 'transaction-detail', tx: transaction }));
         }

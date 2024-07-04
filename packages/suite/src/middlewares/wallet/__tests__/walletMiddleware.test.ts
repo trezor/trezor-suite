@@ -116,8 +116,10 @@ describe('walletMiddleware', () => {
             });
 
             const { subscribe, disconnect } = f.result;
+
             if (subscribe) {
                 expect(TrezorConnect.blockchainSubscribe).toHaveBeenCalledTimes(subscribe.called);
+
                 if (subscribe.called) {
                     // @ts-expect-error
                     const accounts = subscribe.accounts?.map(a => getWalletAccount(a));

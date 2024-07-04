@@ -86,6 +86,7 @@ export class TrezorBridgeMock extends EventEmitter {
 
     start(fakeBridgeCommunication) {
         this.requests = fakeBridgeCommunication;
+
         if (this.listenTimeout) {
             clearTimeout(this.listenTimeout);
         }

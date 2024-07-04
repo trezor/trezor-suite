@@ -35,6 +35,7 @@ export const getEthereumDefinitions = async ({
             chainId ? 'chain-id' : 'slip44'
         }/${chainId ?? slip44}/network.dat`;
         const networkDefinition = await fetch(networkDefinitionUrl);
+
         if (networkDefinition.status === 200) {
             definitions.encoded_network = await networkDefinition.arrayBuffer();
         } else if (networkDefinition.status !== 404) {
@@ -52,6 +53,7 @@ export const getEthereumDefinitions = async ({
                 chainId ? 'chain-id' : 'slip44'
             }/${chainId ?? slip44}/token-${lowerCaseContractAddress}.dat`;
             const tokenDefinition = await fetch(tokenDefinitionUrl);
+
             if (tokenDefinition.status === 200) {
                 definitions.encoded_token = await tokenDefinition.arrayBuffer();
             } else if (tokenDefinition.status !== 404) {

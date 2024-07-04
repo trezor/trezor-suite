@@ -34,6 +34,7 @@ describe('selectedAccount Actions', () => {
             const state = getInitialState(f.initialState);
             const store = initStore(state);
             const selectedAccountState = store.dispatch(syncSelectedAccount(f.action as any));
+
             if (f.result) {
                 expect(selectedAccountState).toMatchObject(f.result as any);
             } else {

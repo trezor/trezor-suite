@@ -74,6 +74,7 @@ export class Logger implements ILogger {
     private async prepareWriteStream({ writeToDisk, outputFile, outputPath }: Options) {
         if (this.logLevel > 0 && writeToDisk) {
             const stream = await this.stream;
+
             if (stream !== undefined) {
                 // Do not create a new file if there is one currently open.
                 return stream;
@@ -101,6 +102,7 @@ export class Logger implements ILogger {
 
             return fs.createWriteStream(path.join(outputPath, this.format(outputFile)));
         }
+
         this.exit();
     }
 
@@ -120,6 +122,7 @@ export class Logger implements ILogger {
         }
 
         const logLevel = logLevels.indexOf(level);
+
         if (this.logLevel < logLevel) {
             return;
         }
@@ -175,6 +178,7 @@ export class Logger implements ILogger {
         // write to memory
         if (this.options.writeToMemory) {
             this.memory.push({ date, level, topic, text });
+
             if (this.memory.length > this.options.memoryCap) {
                 this.memory.shift();
             }
@@ -185,6 +189,7 @@ export class Logger implements ILogger {
         }
 
         const stream = await this.stream;
+
         if (stream !== undefined) {
             stream.write(`${message}\n`);
         }
@@ -230,6 +235,7 @@ export class Logger implements ILogger {
         }
 
         const stream = await this.stream;
+
         if (stream !== undefined) {
             stream.end();
         }

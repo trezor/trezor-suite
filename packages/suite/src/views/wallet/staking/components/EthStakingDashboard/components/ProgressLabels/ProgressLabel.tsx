@@ -41,6 +41,7 @@ const ProgressLabelItem = styled.div<{
         if ($progressState === 'active') {
             return theme.textAlertYellow;
         }
+
         if ($progressState === 'done') {
             return theme.textPrimaryDefault;
         }
@@ -96,6 +97,7 @@ const IconWrapper = styled.div<{ $progressState: ProgressLabelState }>`
         if ($progressState === 'active') {
             return theme.backgroundAlertYellowSubtleOnElevation0;
         }
+
         if ($progressState === 'done') {
             return theme.backgroundPrimarySubtleOnElevation0;
         }
@@ -133,6 +135,7 @@ export const ProgressLabel = ({ children, progressState = 'stale' }: ProgressLab
 
         const resizeObserver = new ResizeObserver(() => {
             const clientHeight = ref.current?.clientHeight ?? DEFAULT_LABEL_HEIGHT;
+
             if (clientHeight !== currentHeight) {
                 setCurrentHeight(clientHeight);
             }

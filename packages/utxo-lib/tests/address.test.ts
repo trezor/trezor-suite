@@ -11,6 +11,7 @@ describe('address', () => {
     describe('fromBase58Check', () => {
         fixtures.standard.forEach(f => {
             if (!f.base58check) return;
+
             it(`decodes ${f.base58check} (${f.network})`, () => {
                 const decode = baddress.fromBase58Check(f.base58check, getNetwork(f.network));
                 expect(decode.version).toEqual(f.version);
@@ -30,6 +31,7 @@ describe('address', () => {
     describe('fromBech32', () => {
         fixtures.standard.forEach(f => {
             if (!f.bech32) return;
+
             it(`decodes ${f.bech32}`, () => {
                 const actual = baddress.fromBech32(f.bech32);
                 expect(actual.version).toEqual(f.version);
@@ -77,6 +79,7 @@ describe('address', () => {
     describe('toBase58Check', () => {
         fixtures.standard.forEach(f => {
             if (!f.base58check) return;
+
             it(`encodes ${f.hash} (${f.network})`, () => {
                 const address = baddress.toBase58Check(
                     Buffer.from(f.hash, 'hex'),

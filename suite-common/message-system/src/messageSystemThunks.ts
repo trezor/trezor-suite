@@ -72,6 +72,7 @@ export const fetchConfigThunk = createThunk(
                 }
 
                 const algorithmInHeader = decodedJws?.header.alg;
+
                 if (algorithmInHeader !== JWS_SIGN_ALGORITHM) {
                     throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
                 }

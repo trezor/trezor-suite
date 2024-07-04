@@ -46,6 +46,7 @@ const grepForValue = (word: string, path: string) => {
 const getTestFiles = async (): Promise<string[]> => {
     const { group } = await argv;
     let command;
+
     if (group) {
         // for arrays
         // command = getGrepCommand(stage.split(',').join('\\|'))
@@ -86,20 +87,26 @@ function parse(expected: any, str: any): any {
     if (str && typeof str !== 'string') {
         throw new Error(`Expected string, got ${str} (type ${typeof str})`);
     }
+
     if (expected === 'string') {
         return str;
     }
+
     if (expected === 'number') {
         const asNum = parseInt(str, 10);
+
         if (Number.isNaN(asNum)) {
             throw new Error(`Expected number, got ${str} (type ${typeof str})`);
         }
 
         return asNum;
     }
+
     if (expected === 'boolean') {
         if (str === 'true') return true;
+
         if (str === 'false') return false;
+
         throw new Error(`Expected boolean, got ${str} (type ${typeof str})`);
     }
 }
@@ -172,6 +179,7 @@ const runTests = async () => {
             '[run_tests.js] TRACK_SUITE_URL env not specified or CYPRESS_updateSnapshots is set. No logs will be uploaded',
         );
     }
+
     const finalTestFiles = (await getTestFiles()).sort((a: string, b: string) =>
         a.localeCompare(b),
     );
@@ -295,6 +303,7 @@ const runTests = async () => {
                             );
                             break;
                         }
+
                         // or continue
                         console.log(
                             `[run_tests.js] failed in run number ${testRunNumber} of ${allowedRuns}`,

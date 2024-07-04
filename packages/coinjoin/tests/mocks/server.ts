@@ -159,6 +159,7 @@ const handleRequest = (
 
     const url = request.url?.substring(1);
     const defaultResponse = DEFAULT[url as keyof typeof DEFAULT] ?? {};
+
     if (typeof defaultResponse === 'function') {
         const r = defaultResponse.call(null, requestData);
         response.setHeader('Content-Type', 'application/json');
@@ -179,6 +180,7 @@ const rejectRequest = (res: http.ServerResponse, code: number, error?: any) => {
     if (res.writableEnded) return;
 
     res.statusCode = code;
+
     try {
         const json = JSON.stringify(error);
         res.setHeader('Content-Type', 'application/json');
@@ -186,6 +188,7 @@ const rejectRequest = (res: http.ServerResponse, code: number, error?: any) => {
     } catch (e) {
         res.write(error ?? '');
     }
+
     res.end();
 };
 

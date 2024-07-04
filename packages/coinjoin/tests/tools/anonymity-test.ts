@@ -68,11 +68,14 @@ const CACHE_PARAMS = `${CACHE_DIR}/anonymityScoreParams.json`;
     // check if account is already discovered and cached
     const transactions: Parameters<typeof getAnonymityScores>[0] = [];
     let cached = false;
+
     try {
         const content = fs.readFileSync(CACHE_ACCOUNT_INFO);
+
         if (content) {
             console.log(`Serving accountInfo from cache...`);
             const accountInfo = JSON.parse(content.toString('utf-8'));
+
             if (accountInfo.descriptor === descriptor) {
                 transactions.push(...accountInfo.history.transactions);
                 cached = true;

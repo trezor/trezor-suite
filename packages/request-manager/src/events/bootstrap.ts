@@ -14,6 +14,7 @@ const statusParser = (status: string): RegExpMatchArray | null =>
 
 export const bootstrapParser = (message: string): BootstrapEvent[] => {
     const clientStatusGroups = clientStatusGroupParser(message);
+
     if (!clientStatusGroups) {
         return [];
     }

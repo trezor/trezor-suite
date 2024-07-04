@@ -7,12 +7,14 @@ export class ParallelRequestsCache {
 
     async cache<T>(keys: (string | number | undefined)[], fn: () => Promise<T>): Promise<T> {
         const key = keys.join('-');
+
         if (this.promises[key]) {
             // Cache hit
             return this.promises[key].promise;
         }
 
         this.promises[key] = createDeferred();
+
         try {
             const res = await fn();
             this.promises[key].resolve(res);

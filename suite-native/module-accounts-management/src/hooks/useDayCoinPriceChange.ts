@@ -26,6 +26,7 @@ export const useDayCoinPriceChange = (networkSymbol?: NetworkSymbol | null) => {
     useEffect(() => {
         const getPrices = async () => {
             if (!networkSymbol) return;
+
             const currentTimestamp = getUnixTime(Date.now());
             const yesterdayTimestamp = currentTimestamp - UNIX_DAY;
 

@@ -11,6 +11,7 @@ export const validateAddressParameters = (addressParameters: CardanoAddressParam
     if (addressParameters.path) {
         validatePath(addressParameters.path);
     }
+
     if (addressParameters.stakingPath) {
         validatePath(addressParameters.stakingPath);
     }
@@ -49,16 +50,19 @@ export const addressParametersToProto = (
     addressParameters: CardanoAddressParameters,
 ): PROTO.CardanoAddressParametersType => {
     let path: number[] = [];
+
     if (addressParameters.path) {
         path = validatePath(addressParameters.path, 3);
     }
 
     let stakingPath: number[] = [];
+
     if (addressParameters.stakingPath) {
         stakingPath = validatePath(addressParameters.stakingPath, 3);
     }
 
     let certificatePointer;
+
     if (addressParameters.certificatePointer) {
         certificatePointer = {
             block_index: addressParameters.certificatePointer.blockIndex,
@@ -82,6 +86,7 @@ export const addressParametersFromProto = (
     addressParameters: PROTO.CardanoAddressParametersType,
 ): CardanoAddressParameters => {
     let certificatePointer;
+
     if (addressParameters.certificate_pointer) {
         certificatePointer = {
             blockIndex: addressParameters.certificate_pointer.block_index,

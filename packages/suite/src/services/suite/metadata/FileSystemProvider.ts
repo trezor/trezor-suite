@@ -32,6 +32,7 @@ class FileSystemProvider extends AbstractMetadataProvider {
 
     async getFileContent(file: string) {
         const result = await desktopApi.metadataRead({ file });
+
         if (!result.success && result.code !== 'ENOENT') {
             return this.error('PROVIDER_ERROR', result.error);
         }
@@ -46,6 +47,7 @@ class FileSystemProvider extends AbstractMetadataProvider {
             file,
             content: hex,
         });
+
         if (!result.success) {
             return this.error('PROVIDER_ERROR', result.error);
         }

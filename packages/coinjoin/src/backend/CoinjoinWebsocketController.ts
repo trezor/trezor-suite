@@ -44,6 +44,7 @@ export class CoinjoinWebsocketController {
     }: CoinjoinWebsocketParams): Promise<BlockbookAPI> {
         const socketId = this.getSocketId(url, identity);
         let socket = this.sockets[socketId];
+
         if (!socket) {
             socket = new BlockbookAPI({
                 timeout,
@@ -54,20 +55,24 @@ export class CoinjoinWebsocketController {
             });
             this.sockets[socketId] = socket;
         }
+
         if (!socket.isConnected()) {
             try {
                 await socket.connect();
             } catch (err) {
                 delete this.sockets[socketId];
                 socket.dispose();
+
                 if (
                     identifyWsError(err) === 'ERROR_FORBIDDEN' &&
                     identity === this.defaultIdentity
                 ) {
                     this.defaultIdentity = resetIdentityCircuit(this.defaultIdentity);
                 }
+
                 throw err;
             }
+
             this.logger?.debug(`WS OPENED ${socketId}`);
             socket.once('disconnected', () => {
                 this.logger?.debug(`WS CLOSED ${socketId}`);

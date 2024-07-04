@@ -34,6 +34,7 @@ const progressInfoReducer = (
                 messageId: 'TR_COINJOIN_DISCOVERY_BLOCK_PROGRESS',
             };
         }
+
         // mempool stage with progress, simply calculate, but only for 0th iteration
         if (!info.progress.iteration) {
             const { current, total } = info.progress;

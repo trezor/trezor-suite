@@ -16,12 +16,14 @@ const paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
  */
 export function parseArrayType(arrayTypeName: string) {
     const arrayMatch = paramTypeArray.exec(arrayTypeName);
+
     if (arrayMatch === null) {
         throw ERRORS.TypedError(
             'Runtime',
             `typename ${arrayTypeName} could not be parsed as an EIP-712 array`,
         );
     }
+
     const [_, entryTypeName, arraySize] = arrayMatch;
 
     return {
@@ -44,6 +46,7 @@ function twosComplement(number: BigNumber, bytes: number) {
             'Int byte size must be between 1 and 32 (8 and 256 bits)',
         );
     }
+
     // Determine value range
     const minValue = new BigNumber(2).exponentiatedBy(bytes * 8 - 1).negated();
     const maxValue = minValue.negated().minus(1);
@@ -67,17 +70,21 @@ function twosComplement(number: BigNumber, bytes: number) {
 function intToHex(number: BigNumber | bigint | number | string, bytes: number, signed: boolean) {
     // @ts-expect-error bigint typ not supported in BigNumber, but supported in runtime
     let bigNumber = new BigNumber(number);
+
     if (signed) {
         bigNumber = twosComplement(bigNumber, bytes);
     }
+
     if (bigNumber.isNegative()) {
         throw ERRORS.TypedError(
             'Runtime',
             `Cannot convert negative number to unsigned interger: ${number}`,
         );
     }
+
     const hex = bigNumber.toString(16);
     const hexChars = bytes * 2;
+
     if (hex.length > hexChars) {
         throw ERRORS.TypedError(
             'Runtime',
@@ -99,16 +106,20 @@ export function encodeData(typeName: string, data: any) {
     if (paramTypeBytes.test(typeName) || typeName === 'address') {
         return messageToHex(data);
     }
+
     if (typeName === 'string') {
         return Buffer.from(data, 'utf-8').toString('hex');
     }
+
     const numberMatch = paramTypeNumber.exec(typeName);
+
     if (numberMatch) {
         const [_, intType, bits] = numberMatch;
         const bytes = Math.ceil(parseInt(bits, 10) / 8);
 
         return intToHex(data, bytes, intType === 'int');
     }
+
     if (typeName === 'bool') {
         return data ? '01' : '00';
     }
@@ -138,6 +149,7 @@ export function getFieldType(
     types: EthereumSignTypedDataTypes,
 ): PROTO.EthereumFieldType {
     const arrayMatch = paramTypeArray.exec(typeName);
+
     if (arrayMatch) {
         const [_, arrayItemTypeName, arraySize] = arrayMatch;
         const entryType = getFieldType(arrayItemTypeName, types);
@@ -150,6 +162,7 @@ export function getFieldType(
     }
 
     const numberMatch = paramTypeNumber.exec(typeName);
+
     if (numberMatch) {
         const [_, type, bits] = numberMatch;
 
@@ -160,6 +173,7 @@ export function getFieldType(
     }
 
     const bytesMatch = paramTypeBytes.exec(typeName);
+
     if (bytesMatch) {
         const [_, size] = bytesMatch;
 
@@ -170,6 +184,7 @@ export function getFieldType(
     }
 
     const fixedSizeTypeMatch = paramTypesMap[typeName as keyof typeof paramTypesMap];
+
     if (fixedSizeTypeMatch) {
         return {
             data_type: fixedSizeTypeMatch,

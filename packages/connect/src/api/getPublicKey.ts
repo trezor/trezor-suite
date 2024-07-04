@@ -35,11 +35,13 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
 
         this.params = payload.bundle.map(batch => {
             let coinInfo: BitcoinNetworkInfo | undefined;
+
             if (batch.coin) {
                 coinInfo = getBitcoinNetwork(batch.coin);
             }
 
             const address_n = validatePath(batch.path, coinInfo ? 3 : 0);
+
             if (coinInfo && !batch.crossChain) {
                 validateCoinPath(address_n, coinInfo);
             } else if (!coinInfo) {

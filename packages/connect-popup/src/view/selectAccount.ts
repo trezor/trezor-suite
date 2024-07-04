@@ -11,6 +11,7 @@ import { container, showView, postMessage } from './common';
 
 const setHeader = (payload: UiRequestSelectAccount['payload']) => {
     const h3 = container.getElementsByTagName('h3')[0];
+
     if (payload.type === 'end') {
         h3.innerHTML = `Select ${payload.coinInfo.label} account`;
     } else {
@@ -44,6 +45,7 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
             for (let i = 0; i < buttons.length; i++) {
                 const button = buttons[i];
                 const type = button.getAttribute('data-tab');
+
                 if (type && accountTypes.indexOf(type as DiscoveryAccountType) >= 0) {
                     button.onclick = () => {
                         selectAccountContainer.className = `select-account ${type}`;
@@ -63,6 +65,7 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
 
     // set header
     setHeader(payload);
+
     if (!accounts) return;
 
     const buttons = {
@@ -74,6 +77,7 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
 
     const handleClick = (event: Event) => {
         if (!(event.currentTarget instanceof HTMLElement)) return;
+
         const index = event.currentTarget.getAttribute('data-index');
         postMessage(createUiResponse(UI.RECEIVE_ACCOUNT, parseInt(index as string, 10)));
         showView('loader');
@@ -81,6 +85,7 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
 
     const removeEmptyButton = (buttonContainer: Element) => {
         const defaultButton = buttonContainer.querySelectorAll('.account-default')[0];
+
         if (defaultButton) {
             buttonContainer.removeChild(defaultButton);
         }
@@ -92,6 +97,7 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
                 <span class="account-title"></span>
                 <span class="account-status"></span>`;
         }
+
         const title = button.getElementsByClassName('account-title')[0];
         const status = button.getElementsByClassName('account-status')[0];
         title.innerHTML = account.label;
@@ -102,6 +108,7 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
         } else {
             status.innerHTML = account.empty ? 'New account' : account.balance;
             const buttonDisabled = payload.preventEmpty && account.empty;
+
             if (buttonDisabled) {
                 button.setAttribute('disabled', 'disabled');
             } else {
@@ -114,6 +121,7 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
     accounts.forEach((account, index) => {
         const buttonContainer = buttons[account.type];
         const existed = buttonContainer.querySelectorAll(`[data-index="${index}"]`)[0];
+
         if (!existed) {
             const button = document.createElement('button');
             button.className = 'list';

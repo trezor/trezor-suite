@@ -11,6 +11,7 @@ export const reloadApp = (delay = 0) => {
             window.location.reload();
         }
     };
+
     if (delay) {
         setTimeout(reloadFn, delay);
     } else {

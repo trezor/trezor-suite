@@ -28,6 +28,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                     localCurrency: selectLocalCurrency(getState()),
                 }),
             );
+
             if (!isNative()) {
                 dispatch(
                     fetchFiatRatesThunk({
@@ -54,6 +55,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             const { localCurrency } = action.payload;
             // We need to pass localCurrency as a parameter, because it is not yet updated in the store
             dispatch(fetchFiatRatesThunk({ rateType: 'current', localCurrency }));
+
             if (!isNative()) {
                 dispatch(
                     fetchFiatRatesThunk({
@@ -62,6 +64,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                     }),
                 );
             }
+
             dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
         }
 
@@ -72,6 +75,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                     localCurrency: selectLocalCurrency(getState()),
                 }),
             );
+
             if (!isNative()) {
                 dispatch(
                     fetchFiatRatesThunk({

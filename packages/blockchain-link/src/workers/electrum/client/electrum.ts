@@ -49,6 +49,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
                 name,
                 protocolVersion,
             );
+
             // Simplified version of BlueWallet's heuristics. Might be improved later.
             // https://github.com/BlueWallet/BlueWallet/blob/509add5c59a4f84e0f49b4d3891ed5a650e2adb2/blue_modules/BlueElectrum.js#L146
             if (
@@ -57,6 +58,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
             ) {
                 this.batchingDisabled = true;
             }
+
             (this as ElectrumAPI).on('blockchain.headers.subscribe', this.onBlock.bind(this));
             this.lastBlock = await (this as ElectrumAPI).request('blockchain.headers.subscribe');
         } catch (err) {
@@ -81,6 +83,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
 
     private onBlock(blocks: BlockHeader[]) {
         const [last] = blocks.sort((a, b) => b.height - a.height);
+
         if (last) this.lastBlock = last;
     }
 
@@ -93,6 +96,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
     private keepAliveHandle?: ReturnType<typeof setInterval>;
     private keepAlive() {
         if (!this.socket) return;
+
         this.keepAliveHandle = setInterval(async () => {
             if (
                 this.timeLastCall !== 0 &&
@@ -108,6 +112,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
 
     onClose() {
         super.onClose();
+
         if (this.keepAliveHandle) clearInterval(this.keepAliveHandle);
     }
 }

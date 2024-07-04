@@ -10,6 +10,7 @@ export const setTranslationMode = (value: boolean) => {
     if (value !== isTranslationMode()) {
         if (value) localStorage.setItem(TRANSLATION_MODE_FLAG, 'true');
         else localStorage.removeItem(TRANSLATION_MODE_FLAG);
+
         window.location.reload();
     }
 };
@@ -42,7 +43,9 @@ export const watchOsLocale = (callback: (loc: Locale) => void) => {
  */
 export const ensureLocale = (loc: string): Locale => {
     const translationMode = isTranslationMode();
+
     if (translationMode) return TRANSLATION_PSEUDOLANGUAGE;
+
     if (loc === TRANSLATION_PSEUDOLANGUAGE) return DEFAULT_LOCALE;
 
     return isLocale(loc) ? loc : DEFAULT_LOCALE;

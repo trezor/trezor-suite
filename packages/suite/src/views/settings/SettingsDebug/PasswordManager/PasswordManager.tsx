@@ -42,6 +42,7 @@ export const PasswordManager = () => {
     if (!device?.state) {
         return <SectionItem>Connect and authorized device</SectionItem>;
     }
+
     if (providerConnecting) {
         return <SectionItem>Connecting...</SectionItem>;
     }

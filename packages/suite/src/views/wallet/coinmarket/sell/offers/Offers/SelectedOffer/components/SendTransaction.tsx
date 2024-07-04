@@ -60,6 +60,7 @@ export const SendTransaction = () => {
         useCoinmarketSellOffersContext();
     useWatchSellTrade(account, trade);
     const t = trade?.data || selectedQuote;
+
     if (!t || !t.exchange) return null;
 
     const {

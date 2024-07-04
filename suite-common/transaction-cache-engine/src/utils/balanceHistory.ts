@@ -25,13 +25,16 @@ const getAccountBalanceHistoryBTC = ({
 
         for (let i = 0; i < tx.details.vin.length; i++) {
             const tai = tx.details.vin[i];
+
             if (tai?.isOwn && tai.value) {
                 const taiValue = new BigNumber(tai.value);
+
                 if (ownInputIndex < 0) {
                     ownInputIndex = i;
                 }
 
                 sentSat = sentSat.plus(taiValue);
+
                 if (ownInputIndex === i) {
                     countSentToSelf = true;
                 }
@@ -40,6 +43,7 @@ const getAccountBalanceHistoryBTC = ({
 
         for (let i = 0; i < tx.details.vout.length; i++) {
             const tao = tx.details.vout[i];
+
             if (tao?.isOwn && tao.value) {
                 const taoValue = new BigNumber(tao.value);
                 receivedSat = receivedSat.plus(taoValue);
@@ -121,6 +125,7 @@ export const getAccountBalanceHistory = ({
     coin: NetworkSymbol;
 }): AccountBalanceHistory[] => {
     const networkType = getNetworkType(coin);
+
     switch (networkType) {
         case 'bitcoin':
             return getAccountBalanceHistoryBTC({ transactions });

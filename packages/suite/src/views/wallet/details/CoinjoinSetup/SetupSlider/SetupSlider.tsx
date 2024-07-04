@@ -69,10 +69,12 @@ export const SetupSlider = ({
     };
     const handleSliderChange: ChangeEventHandler<HTMLInputElement> = e => {
         let value = Number(e.target.value);
+
         // Adjust position for a logarithmic slider.
         if (modifyPosition) {
             value = modifyPosition(value);
         }
+
         handleChange(value);
     };
     // Adjust arrow controls for a logarithmic slider.

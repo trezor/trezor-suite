@@ -27,6 +27,7 @@ const initialState: State = {
 
 const updateError = (draft: State) => {
     const failedGraphData = draft.data.filter(d => d.error);
+
     if (failedGraphData.length > 0) {
         draft.error = failedGraphData.map(a => a.account);
     } else {
@@ -42,6 +43,7 @@ const update = (draft: State, payload: GraphData) => {
             d.account.descriptor === account.descriptor &&
             d.account.symbol === account.symbol,
     );
+
     if (dataIndex !== -1) {
         draft.data[dataIndex].data = data;
         draft.data[dataIndex].error = error;
@@ -110,6 +112,7 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
                 if (accountsActions.removeAccount.match(action)) {
                     remove(draft, action.payload);
                 }
+
                 break;
             }
             // no default

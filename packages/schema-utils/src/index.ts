@@ -37,6 +37,7 @@ function FindErrorInUnion(error: ValueError) {
     const currentValue: any = error.value;
     const unionMembers: TSchema[] = error.schema.anyOf;
     const hasValidMember = unionMembers.find(unionSchema => Validate(unionSchema, currentValue));
+
     if (!hasValidMember) {
         // Find possible matches by literals
         const possibleMatchesByLiterals = unionMembers.filter(unionSchema => {
@@ -47,6 +48,7 @@ function FindErrorInUnion(error: ValueError) {
                     propertySchema.const && propertySchema.const !== currentValue[property],
             );
         });
+
         if (possibleMatchesByLiterals.length === 1) {
             // There is only one possible match
             Assert(possibleMatchesByLiterals[0], currentValue);
@@ -72,6 +74,7 @@ function FindErrorInUnion(error: ValueError) {
 export function Assert<T extends TSchema>(schema: T, value: unknown): asserts value is Static<T> {
     const errors = [...Errors(schema, value)];
     let [error] = errors;
+
     while (error) {
         if (error.path === '/' && errors.length > 1) {
             // This might be a nested error, try to find the root cause
@@ -84,6 +87,7 @@ export function Assert<T extends TSchema>(schema: T, value: unknown): asserts va
             // String instead of number, try to autocast
             const currentValue = error.value;
             const parsedNumber = Number(currentValue);
+
             if (!Number.isNaN(parsedNumber) && currentValue === parsedNumber.toString()) {
                 // Autocast successful
                 const pathParts = error.path.slice(1).split('/');
@@ -94,6 +98,7 @@ export function Assert<T extends TSchema>(schema: T, value: unknown): asserts va
         } else {
             throw new InvalidParameter(error.message, error.path, error.type, error.value);
         }
+
         errors.shift();
         [error] = errors;
     }
@@ -111,6 +116,7 @@ export function AssertWeak<T extends TSchema>(
                 // We consider this error to be serious
                 throw e;
             }
+
             console.warn('Method params validation failed', e);
         } else {
             throw e;

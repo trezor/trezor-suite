@@ -55,6 +55,7 @@ const registerOutput = async (
         const address = changeAddresses.find(
             a => !round.prison.isDetained(a.address) && !assignedAddresses.includes(a),
         );
+
         if (!address) {
             const detained = changeAddresses.filter(a => round.prison.isDetained(a.address));
             logger.error(
@@ -94,6 +95,7 @@ const registerOutput = async (
 
                         return tryToRegisterOutput(false);
                     }
+
                     if (error.errorCode === WabiSabiProtocolErrorCode.NotEnoughFunds) {
                         logger.error(
                             `NotEnoughFunds. Amount: ${amountCredentials[0].Value} Delta: ${outputAmountCredentials.CredentialsRequest.Delta} FeeRate: ${roundParameters.MiningFeeRate}`,
@@ -141,6 +143,7 @@ export const outputRegistration = async (
     let phaseStep = 0;
 
     logger.info(`outputRegistration: ~~${round.id}~~`);
+
     // TODO:
     // - decide if there is only 1 account registered should i abaddon this round and blame it on some "youngest" input?
     // - maybe if there is only 1 account inputs are so "far away" from each other that it is wort to mix anyway?
@@ -155,6 +158,7 @@ export const outputRegistration = async (
         await Promise.all(
             decomposedGroup.map(({ accountKey, outputs }) => {
                 const account = accounts.find(a => a.accountKey === accountKey);
+
                 if (!account) throw new Error(`Unknown account ~~${accountKey}~~`);
 
                 const assignedAddresses: AccountAddress[] = [];

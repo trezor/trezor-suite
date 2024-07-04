@@ -41,7 +41,9 @@ export const cardanoConnectPatch = (getEnabledNetworks: () => string[]) => {
         .forEach(key => {
             // typescript complains about params and return type, need to be "any"
             const original: any = TrezorConnect[key as ConnectKey];
+
             if (!original) return;
+
             (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
                 const enabledNetworks = getEnabledNetworks();
                 const cardanoEnabled = !!enabledNetworks.find(a => a === 'ada' || a === 'tada');

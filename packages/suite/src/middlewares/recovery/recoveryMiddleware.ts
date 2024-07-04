@@ -42,6 +42,7 @@ const recovery =
                     seed: 'recovery-in-progress',
                 }),
             );
+
             if (!analytics.confirmed) {
                 // If you connect T2T1 in recovery mode to fresh Suite, you should see analytics opt-out option first.
                 api.dispatch(recoveryActions.setStatus('in-progress'));

@@ -74,9 +74,11 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
                 });
 
                 const decoded = decodeEthereumDefinition(definitions);
+
                 if (decoded.network) {
                     this.params[i].network = ethereumNetworkInfoFromDefinition(decoded.network);
                 }
+
                 if (definitions.encoded_network) {
                     this.params[i].encoded_network = definitions.encoded_network;
                 }
@@ -88,8 +90,10 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         if (this.params.length === 1) {
             return getNetworkLabel('Export #NETWORK address', this.params[0].network);
         }
+
         const requestedNetworks = this.params.map(b => b.network);
         const uniqNetworks = getUniqueNetworks(requestedNetworks);
+
         if (uniqNetworks.length === 1 && uniqNetworks[0]) {
             return getNetworkLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
         }
@@ -138,6 +142,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
                     ...batch,
                     show_display: false,
                 });
+
                 if (typeof batch.address === 'string') {
                     if (
                         stripHexPrefix(batch.address).toLowerCase() !==

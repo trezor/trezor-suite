@@ -220,6 +220,7 @@ export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
     const signMethods = ['signMessage', 'ethereumSignMessage'];
     const verifyUrls = ['/method/verifyMessage', '/method/ethereumVerifyMessage'];
     const index = signMethods.indexOf(name);
+
     if (index < 0) return null;
 
     return <Button onClick={() => onClick(verifyUrls[index])}>Verify response</Button>;
@@ -256,6 +257,7 @@ export const Method = () => {
     useEffect(() => {
         // Don't override code when in manual mode
         if (!javascriptCode || manualMode) return;
+
         // Strip the function name and the brackets
         const start = javascriptCode.indexOf('(');
         const end = javascriptCode.lastIndexOf(')');

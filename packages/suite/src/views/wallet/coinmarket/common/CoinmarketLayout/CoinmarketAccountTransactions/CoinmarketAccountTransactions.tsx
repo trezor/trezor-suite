@@ -62,6 +62,7 @@ export const CoinmarketAccountTransactions = () => {
         .filter(t => t.account.descriptor === account.descriptor)
         .sort((a, b) => {
             if (a.date > b.date) return -1;
+
             if (a.date < b.date) return 1;
 
             return 0;
@@ -111,6 +112,7 @@ export const CoinmarketAccountTransactions = () => {
                                     />
                                 );
                             }
+
                             if (trade.tradeType === 'sell') {
                                 return (
                                     <SellTransaction
@@ -121,6 +123,7 @@ export const CoinmarketAccountTransactions = () => {
                                     />
                                 );
                             }
+
                             if (trade.tradeType === 'exchange') {
                                 return (
                                     <ExchangeTransaction
@@ -131,6 +134,7 @@ export const CoinmarketAccountTransactions = () => {
                                     />
                                 );
                             }
+
                             if (trade.tradeType === 'spend') {
                                 return (
                                     <SpendTransaction
@@ -140,6 +144,7 @@ export const CoinmarketAccountTransactions = () => {
                                     />
                                 );
                             }
+
                             if (trade.tradeType === 'savings') {
                                 return (
                                     <SavingsTransaction

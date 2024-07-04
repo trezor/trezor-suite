@@ -71,6 +71,7 @@ describe('Coinmarket Common Actions', () => {
                 ),
             );
             expect(store.getState().wallet.coinmarket.buy.addressVerified).toEqual(f.result.value);
+
             if (f.result && f.result.action) {
                 expect(store.getActions().pop()).toMatchObject(f.result.action);
             }
@@ -92,6 +93,7 @@ describe('Coinmarket Common Actions', () => {
             expect(store.getState().wallet.coinmarket.exchange.addressVerified).toEqual(
                 f.result.value,
             );
+
             if (f.result && f.result.action) {
                 expect(store.getActions().pop()).toMatchObject(f.result.action);
             }

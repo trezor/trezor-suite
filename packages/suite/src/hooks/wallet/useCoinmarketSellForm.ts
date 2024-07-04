@@ -135,6 +135,7 @@ export const useCoinmarketSellForm = ({
                 accounts,
                 chunkify,
             );
+
             if (initState.formValues && address) {
                 initState.formValues.outputs[0].address = address;
 
@@ -268,6 +269,7 @@ export const useCoinmarketSellForm = ({
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
             clearErrors(CRYPTO_INPUT);
             const currency: typeof defaultCurrency | undefined = getValues(FIAT_CURRENCY_SELECT);
+
             if (!fiatRate?.rate || !currency) return;
 
             const cryptoValue = fromFiatCurrency(amount, network.decimals, fiatRate.rate);
@@ -296,10 +298,12 @@ export const useCoinmarketSellForm = ({
 
     useEffect(() => {
         if (!composedLevels) return;
+
         const values = getValues();
         const { setMaxOutputId } = values;
         const selectedFeeLevel = selectedFee || 'normal';
         const composed = composedLevels[selectedFeeLevel];
+
         if (!composed) return;
 
         if (composed.type === 'final') {
@@ -307,6 +311,7 @@ export const useCoinmarketSellForm = ({
                 setValue(CRYPTO_INPUT, composed.max, { shouldValidate: true, shouldDirty: true });
                 clearErrors(CRYPTO_INPUT);
             }
+
             dispatch(saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed }));
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit, { shouldDirty: true });
         }
@@ -323,9 +328,11 @@ export const useCoinmarketSellForm = ({
 
     useDidUpdate(() => {
         const cryptoInputValue = getValues(CRYPTO_INPUT);
+
         if (!cryptoInputValue) {
             return;
         }
+
         const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
         setValue(CRYPTO_INPUT, conversion(cryptoInputValue, network.decimals), {
             shouldValidate: true,
@@ -352,8 +359,10 @@ export const useCoinmarketSellForm = ({
         };
         dispatch(saveQuoteRequest(request));
         const allQuotes = await invityAPI.getSellQuotes(request);
+
         if (Array.isArray(allQuotes)) {
             const limits = getAmountLimits(request, allQuotes);
+
             if (limits) {
                 setAmountLimits(limits);
             } else {
@@ -404,6 +413,7 @@ export const useCoinmarketSellForm = ({
 
 export const useCoinmarketSellFormContext = () => {
     const context = useContext(SellFormContext);
+
     if (context === null) throw Error('SellFormContext used without Context');
 
     return context;

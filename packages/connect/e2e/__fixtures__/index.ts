@@ -169,6 +169,7 @@ let fixtures = [
 
 const includedMethods = process.env.TESTS_INCLUDED_METHODS;
 const excludedMethods = process.env.TESTS_EXCLUDED_METHODS;
+
 if (includedMethods) {
     const methodsArr = includedMethods.split(',');
     fixtures = fixtures.filter(f => methodsArr.some(includedM => includedM === f.method));
@@ -180,7 +181,9 @@ if (includedMethods) {
 // sort by mnemonic to avoid emu re-loading
 const result = fixtures.sort((a, b) => {
     if (!a.setup.mnemonic || !b.setup.mnemonic) return 0;
+
     if (a.setup.mnemonic > b.setup.mnemonic) return 1;
+
     if (b.setup.mnemonic > a.setup.mnemonic) return -1;
 
     return 0;

@@ -114,6 +114,7 @@ export const coinjoinMiddleware =
         if (action.type === SUITE.READY) {
             const state = api.getState();
             const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
+
             if (!isCoinjoinBlockedByTor) {
                 api.dispatch(coinjoinAccountActions.restoreCoinjoinAccounts());
             }
@@ -126,6 +127,7 @@ export const coinjoinMiddleware =
                     ? undefined
                     : action.payload.symbol;
             const isCoinjoinBlockedByTor = selectIsCoinjoinBlockedByTor(state);
+
             if (!isCoinjoinBlockedByTor) {
                 // find all coinjoin accounts (for specific network when initiating action is network-specific)
                 const coinjoinAccounts = state.wallet.accounts.filter(
@@ -173,6 +175,7 @@ export const coinjoinMiddleware =
                         ),
                     );
                 }
+
                 api.dispatch(coinjoinAccountActions.pauseAllCoinjoinSessions());
             } else if (action.payload === 'Enabled') {
                 api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
@@ -185,16 +188,20 @@ export const coinjoinMiddleware =
             const state = api.getState();
             const { accountKey, status } = action.payload;
             const session = selectCoinjoinAccountByKey(state, accountKey)?.session;
+
             if (status === 'out-of-sync' && session && !session?.paused && !session?.starting) {
                 const isAccountInCriticalPhase =
                     selectIsAccountWithSessionInCriticalPhaseByAccountKey(state, accountKey);
+
                 if (!isAccountInCriticalPhase) {
                     api.dispatch(coinjoinClientActions.pauseCoinjoinSession(accountKey));
                 }
             } else if (status === 'ready' && session?.paused) {
                 const account = selectAccountByKey(state, accountKey);
+
                 if (account) {
                     const blocker = selectCoinjoinSessionBlockerByAccountKey(state, account.key);
+
                     if (!blocker)
                         api.dispatch(coinjoinAccountActions.restoreCoinjoinSession(account.key));
                 }
@@ -206,14 +213,18 @@ export const coinjoinMiddleware =
         if (action.type === ROUTER.LOCATION_CHANGE || action.type === SUITE.LOCK_DEVICE) {
             const state = api.getState();
             const { locks } = state.suite;
+
             if (!locks.includes(SUITE.LOCK_TYPE.DEVICE) && !locks.includes(SUITE.LOCK_TYPE.UI)) {
                 const previousRoute = state.router.settingsBackRoute.name;
+
                 if (previousRoute === 'wallet-send') {
                     api.dispatch(coinjoinAccountActions.restorePausedCoinjoinSessions());
                 } else {
                     const accountKey = state.wallet.selectedAccount.account?.key;
+
                     if (accountKey) {
                         const session = selectCoinjoinAccountByKey(state, accountKey)?.session;
+
                         if (
                             state.router.route?.name === 'wallet-send' &&
                             !session?.paused &&

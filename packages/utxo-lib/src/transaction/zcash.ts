@@ -107,7 +107,9 @@ function byteLength(tx: TransactionBase<ZcashSpecific>) {
     const getJoinSplitsSize = () => {
         if (tx.version < ZCASH_JOINSPLITS_SUPPORT_VERSION || tx.version >= ZCASH_NU5_VERSION)
             return 0;
+
         const joinSplitsLen = txSpecific.joinsplits.length;
+
         if (joinSplitsLen < 1) return varIntSize(joinSplitsLen);
 
         return (
@@ -247,6 +249,7 @@ function toBuffer(tx: TransactionBase<ZcashSpecific>, buffer?: Buffer, initialOf
             joinsplit.macs.forEach(nullifier => {
                 bufferWriter.writeSlice(nullifier);
             });
+
             if (joinsplit.zkproof.type === 'sapling') {
                 bufferWriter.writeSlice(joinsplit.zkproof.sA);
                 bufferWriter.writeSlice(joinsplit.zkproof.sB);
@@ -261,10 +264,12 @@ function toBuffer(tx: TransactionBase<ZcashSpecific>, buffer?: Buffer, initialOf
                 writeCompressedG1(joinsplit.zkproof.gK);
                 writeCompressedG1(joinsplit.zkproof.gH);
             }
+
             joinsplit.ciphertexts.forEach(ciphertext => {
                 bufferWriter.writeSlice(ciphertext);
             });
         });
+
         if (txSpecific.joinsplits.length > 0) {
             bufferWriter.writeSlice(txSpecific.joinsplitPubkey);
             bufferWriter.writeSlice(txSpecific.joinsplitSig);
@@ -296,6 +301,7 @@ function toBuffer(tx: TransactionBase<ZcashSpecific>, buffer?: Buffer, initialOf
 // Override TransactionBase.getExtraData
 function getExtraData(tx: TransactionBase<ZcashSpecific>) {
     if (tx.version < ZCASH_JOINSPLITS_SUPPORT_VERSION || tx.version >= ZCASH_NU5_VERSION) return;
+
     const offset =
         4 + // header
         (tx.version >= ZCASH_OVERWINTER_VERSION ? 8 : 0) + // 4 for nVersionGroupId and nExpiryHeight
@@ -363,6 +369,7 @@ function getOutputsDigest(outs: any[]) {
 // https://zips.z.cash/zip-0244#t-2-transparent-digest
 function getTransparentDigest(tx: TransactionBase<ZcashSpecific>) {
     let buffer: Buffer;
+
     if (tx.ins.length || tx.outs.length) {
         const writer = new BufferWriter(Buffer.alloc(32 * 3));
         writer.writeSlice(getPrevoutsDigest(tx.ins));
@@ -381,6 +388,7 @@ function getHash(tx: TransactionBase<ZcashSpecific>, _forWitness = false) {
     if (tx.version < ZCASH_NU5_VERSION) {
         return hash256(toBuffer(tx));
     }
+
     // https://zips.z.cash/zip-0244#id4
     const writer = new BufferWriter(Buffer.alloc(32 * 4));
     writer.writeSlice(getHeaderDigest(tx));
@@ -585,6 +593,7 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
                 ciphertexts,
             });
         }
+
         if (joinSplitsLen > 0) {
             txSpecific.joinsplitPubkey = bufferReader.readSlice(32);
             txSpecific.joinsplitSig = bufferReader.readSlice(64);
@@ -603,10 +612,12 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
         if (bufferReader.readVarInt() !== 0) {
             throw Error('Unexpected vSpendsSapling vector');
         }
+
         // empty vOutputsSapling vector
         if (bufferReader.readVarInt() !== 0) {
             throw Error('Unexpected vOutputsSapling vector');
         }
+
         // empty orchard bytes
         if (bufferReader.readUInt8() !== 0x00) {
             throw Error('Unexpected orchard byte');
@@ -614,6 +625,7 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
     }
 
     if (options.nostrict) return tx;
+
     if (bufferReader.offset !== buffer.length) throw new Error('Transaction has unexpected data');
 
     return tx;

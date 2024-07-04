@@ -201,6 +201,7 @@ export const PassphraseTypeCardLegacy = (props: PassphraseTypeCardLegacyProps) =
     const submit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
             if (!enabled) return;
+
             onSubmit(value, passphraseOnDevice);
         },
         [enabled, onSubmit],
@@ -233,17 +234,21 @@ export const PassphraseTypeCardLegacy = (props: PassphraseTypeCardLegacyProps) =
                 const fill = new Array(Math.abs(diff)).fill(''); // make space for new string
                 newValue.splice(pos + diff, 0, ...fill); // shift current value
             }
+
             // removed
             if (diff > 0) {
                 newValue.splice(pos, diff);
             }
         }
+
         for (let i = 0; i < len; i++) {
             const char = tmpValue.charAt(i);
+
             if (char !== DOT) {
                 newValue[i] = char;
             }
         }
+
         if (len < newValue.length) {
             // Check if last keypress was backspace or delete
             if (backspacePressed || deletePressed) {
@@ -368,6 +373,7 @@ export const PassphraseTypeCardLegacy = (props: PassphraseTypeCardLegacyProps) =
                                             if (typeof ref.current?.selectionStart === 'number') {
                                                 caretRef.current = ref.current.selectionStart;
                                             }
+
                                             setShowPassword(!showPassword);
                                         }}
                                         data-test="@passphrase/show-toggle"

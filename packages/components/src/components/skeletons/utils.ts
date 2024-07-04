@@ -27,6 +27,7 @@ export const shimmerEffect = css<{ $elevation: Elevation }>`
 
 export const getValue = (value: string | number | undefined) => {
     if (!value) return null;
+
     if (typeof value === 'number') return `${value}px`;
 
     return value;

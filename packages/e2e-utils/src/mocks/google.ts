@@ -62,6 +62,7 @@ export class GoogleMock {
 
                 return;
             }
+
             next();
         });
 
@@ -94,9 +95,12 @@ export class GoogleMock {
                 .replace(/\r?\n|\r/g, '');
 
             const json = JSON.parse(jsonStr);
+
             if (id) {
                 const file = Object.values(this.files).find(f => f.id === id);
+
                 if (!file) throw new Error('no such file exists');
+
                 file.data = data;
             } else {
                 const file = new GoogleFile(uuidv4(), json.name, data);
@@ -139,9 +143,11 @@ export class GoogleMock {
             const { id } = req.params;
             console.log('[mockGoogleDrive]: get', req.params.id);
             const file = Object.values(this.files).find(f => f.id === id);
+
             if (file) {
                 return res.send(file.data);
             }
+
             res.status(404);
             res.send({
                 error: {
@@ -189,6 +195,7 @@ export class GoogleMock {
 
     stop() {
         console.log('[mockGoogleDrive]: start');
+
         if (this.server) {
             this.server.close();
         }

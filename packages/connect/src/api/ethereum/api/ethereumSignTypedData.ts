@@ -118,6 +118,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
     async run() {
         const cmd = this.device.getCommands();
         const { address_n, definitions } = this.params;
+
         if (this.device.features.internal_model === DeviceModelInternal.T1B1) {
             Assert(
                 Type.Object({
@@ -172,6 +173,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         while (response.type === 'EthereumTypedDataStructRequest') {
             const { name: typeDefinitionName } = response.message;
             const typeDefinition = types[typeDefinitionName];
+
             if (typeDefinition === undefined) {
                 throw ERRORS.TypedError(
                     'Runtime',
@@ -204,6 +206,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
             let memberTypeName: string;
 
             const [rootIndex, ...nestedMemberPath] = member_path;
+
             switch (rootIndex) {
                 case 0:
                     memberData = domain;
@@ -232,6 +235,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
             }
 
             let encodedData;
+
             // If we were asked for a list, first sending its length and we will be receiving
             // requests for individual elements later
             if (Array.isArray(memberData)) {

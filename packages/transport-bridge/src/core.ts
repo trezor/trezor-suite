@@ -76,6 +76,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
             const bufferSegment = buffers[i];
 
             const result = await api.write(path, bufferSegment, signal);
+
             if (!result.success) {
                 return result;
             }
@@ -97,6 +98,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
 
                         return result.payload;
                     }
+
                     logger?.debug(`core: readUtil partial result: error: ${result.error}`);
                     throw new Error(result.error);
                 });
@@ -141,6 +143,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
             path: acquireInput.path,
             previous: acquireInput.previous === 'null' ? null : acquireInput.previous,
         });
+
         if (!acquireIntentResult.success) {
             return acquireIntentResult;
         }
@@ -151,6 +154,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         if (!openDeviceResult.success) {
             return openDeviceResult;
         }
+
         await sessionsClient.acquireDone({ path: acquireInput.path });
 
         return acquireIntentResult;
@@ -161,6 +165,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
+
         if (!sessionsResult.success) {
             return sessionsResult;
         }
@@ -184,11 +189,13 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
+
         if (!sessionsResult.success) {
             logger?.error(`core: call: retrieving path error: ${sessionsResult.error}`);
 
             return sessionsResult;
         }
+
         const { path } = sessionsResult.payload;
         logger?.debug(`core: call: retrieved path ${path} for session ${session}`);
 
@@ -199,15 +206,18 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
 
             return openResult;
         }
+
         logger?.debug(`core: call: api.openDevice done`);
 
         logger?.debug('core: call: writeUtil');
         const writeResult = await writeUtil({ path, data, signal });
+
         if (!writeResult.success) {
             logger?.error(`core: call: writeUtil ${writeResult.error}`);
 
             return writeResult;
         }
+
         logger?.debug('core: call: readUtil');
 
         return readUtil({ path, signal });
@@ -229,9 +239,11 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         if (!sessionsResult.success) {
             return sessionsResult;
         }
+
         const { path } = sessionsResult.payload;
 
         const openResult = await api.openDevice(path, false, signal);
+
         if (!openResult.success) {
             return openResult;
         }
@@ -247,9 +259,11 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         if (!sessionsResult.success) {
             return sessionsResult;
         }
+
         const { path } = sessionsResult.payload;
 
         const openResult = await api.openDevice(path, false, signal);
+
         if (!openResult.success) {
             return openResult;
         }

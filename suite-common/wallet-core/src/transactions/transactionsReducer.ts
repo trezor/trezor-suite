@@ -79,9 +79,11 @@ export const updateTransaction = (
 ) => {
     initializeAccount(state, account.key);
     const accountTxs = state.transactions[account.key];
+
     if (!accountTxs) return;
 
     const index = accountTxs.findIndex(t => t && t.txid === txid);
+
     if (accountTxs[index]) {
         accountTxs[index] = {
             ...accountTxs[index]!,
@@ -102,11 +104,13 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                 const { key, txid, tx } = payload;
                 const accountTxs = initializeAccount(state, key);
                 const index = accountTxs.findIndex(t => t && t.txid === txid);
+
                 if (accountTxs[index]) accountTxs[index] = tx;
             })
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
                 const { account, txs } = payload;
                 const transactions = state.transactions[account.key];
+
                 if (transactions) {
                     state.transactions[account.key] = transactions.filter(
                         tx => !txs.some(t => t.txid === tx?.txid),
@@ -115,14 +119,18 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             })
             .addCase(transactionsActions.addTransaction, (state, { payload }) => {
                 const { transactions, account, page, perPage } = payload;
+
                 if (transactions.length < 1) return;
+
                 initializeAccount(state, account.key);
                 const accountTxs = state.transactions[account.key];
 
                 if (!accountTxs) return;
+
                 transactions.forEach((transaction, i) => {
                     // first we need to make sure that transaction is not undefined, then check if transactionid matches
                     const existingTx = findTransaction(transaction.txid, accountTxs);
+
                     if (!existingTx) {
                         // add a new transaction
                         if (page && perPage) {
@@ -290,6 +298,7 @@ export const selectTransactionBlockTimeById = (
     accountKey: AccountKey,
 ) => {
     const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+
     if (transaction?.blockTime) {
         return transaction.blockTime * 1000;
     }
@@ -333,6 +342,7 @@ export const selectTransactionConfirmations = (
     accountKey: AccountKey,
 ) => {
     const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
+
     if (!transaction) return 0;
 
     const blockchainHeight = selectBlockchainHeightBySymbol(state, transaction.symbol);

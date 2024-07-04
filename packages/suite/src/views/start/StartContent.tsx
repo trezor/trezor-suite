@@ -29,6 +29,7 @@ export const StartContent = () => {
         } else {
             analytics.disable();
         }
+
         if (recovery.status === 'in-progress') {
             // T2T1 remember the recovery state and should continue with recovery
             dispatch(rerun());

@@ -99,6 +99,7 @@ export const AccountGroup = forwardRef(
 
         const onClick = () => {
             setIsOpen(!isOpen);
+
             if (isOpen) {
                 setPreviouslyOpen(false);
             }

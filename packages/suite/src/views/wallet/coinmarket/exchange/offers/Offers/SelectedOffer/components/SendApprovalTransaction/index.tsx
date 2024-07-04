@@ -111,10 +111,12 @@ const SendApprovalTransactionComponent = () => {
                     selectedQuote.status = response.status;
                     selectedQuote.error = response.error;
                     selectedQuote.approvalType = undefined;
+
                     if (selectedQuote.dexTx) {
                         confirmTrade(selectedQuote.dexTx.from);
                     }
                 }
+
                 resetRefresh();
             });
         }
@@ -125,6 +127,7 @@ const SendApprovalTransactionComponent = () => {
     if (!selectedQuote) return null;
 
     const { exchange, dexTx } = selectedQuote;
+
     if (!exchange || !dexTx) return null;
 
     const providerName =
@@ -145,6 +148,7 @@ const SendApprovalTransactionComponent = () => {
 
     const selectApprovalValue = (type: ExtendedDexApprovalType) => {
         setApprovalType(type);
+
         if (type !== 'APPROVED') {
             selectedQuote.approvalType = type;
             confirmTrade(dexTx.from);
@@ -343,10 +347,12 @@ const SendApprovalTransactionComponent = () => {
                             // if the last step was change in approval, we have to recompute the swap request
                             if (selectedQuote.approvalType) {
                                 selectedQuote.approvalType = undefined;
+
                                 if (!(await confirmTrade(dexTx.from))) {
                                     return;
                                 }
                             }
+
                             setExchangeStep('SEND_TRANSACTION');
                         }}
                     >

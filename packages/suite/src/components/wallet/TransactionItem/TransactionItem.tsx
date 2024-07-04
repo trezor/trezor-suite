@@ -137,6 +137,7 @@ export const TransactionItem = memo(
 
         const openTxDetailsModal = (rbfForm?: boolean) => {
             if (isActionDisabled) return; // open explorer
+
             dispatch(
                 openModal({
                     type: 'transaction-detail',

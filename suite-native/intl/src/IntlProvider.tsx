@@ -8,6 +8,7 @@ const flatten = (obj: Record<string, any>, prefix = '') => {
     Object.keys(obj).forEach(key => {
         const value = obj[key];
         const prefixedKey = prefix ? `${prefix}.${key}` : key;
+
         if (typeof value === 'object') {
             Object.assign(result, flatten(value, prefixedKey));
         } else {

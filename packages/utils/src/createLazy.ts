@@ -16,6 +16,7 @@ export const createLazy = <T, TArgs extends Array<any>>(
             valuePromise.reject(new Error('Disposed during initialization'));
             valuePromise = undefined;
         }
+
         if (value !== undefined) {
             disposeLazy?.(value);
             value = undefined;
@@ -24,6 +25,7 @@ export const createLazy = <T, TArgs extends Array<any>>(
 
     const getOrInit = (...args: TArgs) => {
         if (value !== undefined) return Promise.resolve(value);
+
         if (!valuePromise) {
             const deferred = createDeferred<T>();
             valuePromise = deferred;

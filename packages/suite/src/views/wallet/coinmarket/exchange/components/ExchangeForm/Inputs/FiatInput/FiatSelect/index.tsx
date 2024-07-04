@@ -39,11 +39,13 @@ const FiatSelect = () => {
                                 fetchAttemptTimestamp: Date.now() as Timestamp,
                             }),
                         );
+
                         if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
                             const rate = updateFiatRatesResult.payload as number;
 
                             updateFiatCurrency(selected, rate);
                         }
+
                         setAmountLimits(undefined);
                     }}
                     data-test="@coinmarket/exchange/fiat-select"

@@ -19,6 +19,7 @@ export const getTransactionReviewOutputState = (
     buttonRequestsCount: number,
 ): ReviewOutputState => {
     if (index === buttonRequestsCount - 1) return 'active';
+
     if (index < buttonRequestsCount - 1) return 'success';
 
     return undefined;
@@ -57,6 +58,7 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
                             currentToken.contract ===
                             `${policyGroup.policyId}${token.assetNameBytes}`,
                     );
+
                     if (!accountToken) return;
 
                     const fingerprint = accountToken.name
@@ -175,6 +177,7 @@ const constructOldFlow = ({
         // 2. fee
         // 3. output
         outputs.unshift({ type: 'fee', value: precomposedTx.fee });
+
         if (hasRippleDestinationTag && precomposedForm.rippleDestinationTag) {
             outputs.unshift({
                 type: 'destination-tag',
@@ -268,6 +271,7 @@ const constructNewFlow = ({
                 }
 
                 outputs.push({ type: 'address', value: o.address });
+
                 if (!isSolana && !isUpdatedEthereumSendFlow) {
                     outputs.push({
                         type: 'amount',

@@ -52,6 +52,7 @@ export const useSavingsOverview = ({
         (savingsTrade?.fiatCurrency || '') as FiatCurrencyCode,
     );
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+
     if (fiatRate?.rate && savingsTrade?.fiatCurrency) {
         savingsFiatSum = new BigNumber(savingsCryptoSum)
             .multipliedBy(fiatRate?.rate)
@@ -79,6 +80,7 @@ export const useSavingsOverview = ({
 
 export const useSavingsOverviewContext = () => {
     const context = useContext(SavingsOverviewContext);
+
     if (context === null) throw Error('SavingsOverviewContext used without Context');
 
     return context;

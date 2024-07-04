@@ -41,6 +41,7 @@ export const ReceiveAddressCard = ({
                 alertVariant: 'success',
             } as const;
         }
+
         if (networkSymbol === 'ada' && isUnverifiedAddressRevealed) {
             return {
                 alertTitle: (
@@ -49,6 +50,7 @@ export const ReceiveAddressCard = ({
                 alertVariant: 'info',
             } as const;
         }
+
         if (isEthereumTokenAddress) {
             return {
                 alertTitle: (

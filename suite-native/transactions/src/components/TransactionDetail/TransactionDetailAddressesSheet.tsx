@@ -32,6 +32,7 @@ const copyContainerStyle = prepareNativeStyle(utils => ({
 
 export const formatAddressLabel = (addressType: AddressesType, count: number) => {
     const labelPrefix = addressType === 'inputs' ? 'From' : 'To';
+
     if (count > 1) {
         return `${labelPrefix} · ${count}`;
     }

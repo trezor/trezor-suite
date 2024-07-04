@@ -106,6 +106,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
                     ...batch,
                     show_display: false,
                 });
+
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
                         throw ERRORS.TypedError('Method_AddressNotMatch');

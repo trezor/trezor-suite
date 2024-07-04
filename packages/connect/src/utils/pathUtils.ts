@@ -21,22 +21,27 @@ const PATH_NEGATIVE_VALUES = ERRORS.TypedError(
 
 export const getHDPath = (path: string): number[] => {
     const parts = path.toLowerCase().split('/');
+
     if (parts[0] !== 'm') throw PATH_NOT_VALID;
 
     return parts
         .filter(p => p !== 'm' && p !== '')
         .map(p => {
             let hardened = false;
+
             if (p.endsWith("'")) {
                 hardened = true;
                 p = p.substring(0, p.length - 1);
             }
+
             let n = parseInt(p, 10);
+
             if (Number.isNaN(n)) {
                 throw PATH_NOT_VALID;
             } else if (n < 0) {
                 throw PATH_NEGATIVE_VALUES;
             }
+
             if (hardened) {
                 // hardened index
                 n = toHardened(n);
@@ -57,7 +62,9 @@ export const isTaprootPath = (path: number[] | undefined) =>
 
 export const getAccountType = (path: number[] | undefined) => {
     if (isTaprootPath(path)) return 'p2tr';
+
     if (isBech32Path(path)) return 'p2wpkh';
+
     if (isSegwitPath(path)) return 'p2sh';
 
     return 'p2pkh';
@@ -72,6 +79,7 @@ export const getScriptType = (
     if (!Array.isArray(path) || path.length < 1) return undefined;
 
     const p1 = fromHardened(path[0]);
+
     switch (p1) {
         case 44:
             return 'SPENDADDRESS';
@@ -123,6 +131,7 @@ export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptTy
             if (path.length < 4) return undefined;
 
             const p3 = fromHardened(path[3]);
+
             switch (p3) {
                 case 0:
                     return 'PAYTOMULTISIG';
@@ -151,11 +160,13 @@ export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptTy
 
 export const validatePath = (path: DerivationPath, length = 0, base = false): number[] => {
     let valid: number[] | undefined;
+
     if (typeof path === 'string') {
         valid = getHDPath(path);
     } else if (Array.isArray(path)) {
         valid = path.map((p: any) => {
             const n = parseInt(p, 10);
+
             if (Number.isNaN(n)) {
                 throw PATH_NOT_VALID;
             } else if (n < 0) {
@@ -165,7 +176,9 @@ export const validatePath = (path: DerivationPath, length = 0, base = false): nu
             return n;
         });
     }
+
     if (!valid) throw PATH_NOT_VALID;
+
     if (length > 0 && valid.length < length) throw PATH_NOT_VALID;
 
     return base ? valid.splice(0, 3) : valid;
@@ -175,6 +188,7 @@ export const getSerializedPath = (path: number[]) =>
     `m/${path
         .map(i => {
             const s = (i & ~HD_HARDENED).toString();
+
             if (i & HD_HARDENED) {
                 return `${s}'`;
             }
@@ -211,6 +225,7 @@ export const fixPath = <
     if (utxo.address_n && Array.isArray(utxo.address_n)) {
         utxo.address_n = utxo.address_n.map(i => i >>> 0);
     }
+
     // make sure that address_n is an array
     if (utxo.address_n && typeof utxo.address_n === 'string') {
         utxo.address_n = getHDPath(utxo.address_n);

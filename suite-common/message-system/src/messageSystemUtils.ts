@@ -160,6 +160,7 @@ export const validateDeviceCompatibility = (
     if (!deviceConditions.length) {
         return !device;
     }
+
     if (!device || !device.features) {
         return false;
     }

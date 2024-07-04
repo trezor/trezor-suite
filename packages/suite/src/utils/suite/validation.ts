@@ -57,11 +57,13 @@ export const validateLimits =
         if (value && amountLimits) {
             const symbol = amountLimits.currency.toLowerCase() as NetworkSymbol;
             let minCrypto = 0;
+
             if (amountLimits.minCrypto) {
                 minCrypto = areSatsUsed
                     ? Number(networkAmountToSatoshi(amountLimits.minCrypto.toString(), symbol))
                     : amountLimits.minCrypto;
             }
+
             if (amountLimits.minCrypto && Number(value) < minCrypto) {
                 return translationString('TR_VALIDATION_ERROR_MINIMUM_CRYPTO', {
                     minimum: formatter.format(amountLimits.minCrypto.toString(), {
@@ -72,11 +74,13 @@ export const validateLimits =
             }
 
             let maxCrypto = 0;
+
             if (amountLimits.maxCrypto) {
                 maxCrypto = areSatsUsed
                     ? Number(networkAmountToSatoshi(amountLimits.maxCrypto.toString(), symbol))
                     : amountLimits.maxCrypto;
             }
+
             if (amountLimits.maxCrypto && Number(value) > maxCrypto) {
                 return translationString('TR_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
                     maximum: formatter.format(amountLimits.maxCrypto.toString(), {
@@ -103,6 +107,7 @@ export const validateLimitsBigNum =
         if (value && amountLimits) {
             const symbol = amountLimits.currency.toLowerCase() as NetworkSymbol;
             let minCrypto = new BigNumber(0);
+
             if (amountLimits.minCrypto) {
                 minCrypto = areSatsUsed
                     ? new BigNumber(
@@ -110,6 +115,7 @@ export const validateLimitsBigNum =
                       )
                     : new BigNumber(amountLimits.minCrypto);
             }
+
             if (amountLimits.minCrypto && new BigNumber(value).lt(minCrypto)) {
                 return translationString('TR_VALIDATION_ERROR_MINIMUM_CRYPTO', {
                     minimum: formatter.format(amountLimits.minCrypto.toString(), {
@@ -120,6 +126,7 @@ export const validateLimitsBigNum =
             }
 
             let maxCrypto = new BigNumber(0);
+
             if (amountLimits.maxCrypto) {
                 maxCrypto = areSatsUsed
                     ? new BigNumber(
@@ -127,6 +134,7 @@ export const validateLimitsBigNum =
                       )
                     : new BigNumber(amountLimits.maxCrypto);
             }
+
             if (amountLimits.maxCrypto && new BigNumber(value).gt(maxCrypto)) {
                 return translationString('TR_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
                     maximum: formatter.format(amountLimits.maxCrypto.toString(), {
@@ -173,6 +181,7 @@ export const validateReserveOrBalance =
         }
 
         const amountBig = new BigNumber(value);
+
         if (amountBig.gt(formattedAvailableBalance)) {
             const reserve =
                 account.networkType === 'ripple'

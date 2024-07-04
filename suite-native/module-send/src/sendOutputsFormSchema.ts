@@ -86,6 +86,7 @@ export const sendOutputsFormValidationSchema = yup.object({
                         'The value is lower than dust threshold.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
                             if (!context || !value) return false;
+
                             const { networkSymbol, networkFeeInfo } = context;
 
                             if (!networkSymbol || !networkFeeInfo) return false;
@@ -103,6 +104,7 @@ export const sendOutputsFormValidationSchema = yup.object({
                         'Amount is higher than available balance.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
                             if (!context || !value) return false;
+
                             const { networkSymbol, networkFeeInfo, availableAccountBalance } =
                                 context;
 

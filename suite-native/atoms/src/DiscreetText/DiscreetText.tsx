@@ -37,6 +37,7 @@ export const DiscreetText = ({
     };
 
     const { fontSize } = typographyStylesBase[variant];
+
     if (!children) return null;
 
     return (

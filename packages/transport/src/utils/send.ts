@@ -17,6 +17,7 @@ export const createChunks = (data: Buffer, chunkHeader: Buffer, chunkSize: numbe
     const chunks = [data.subarray(0, chunkSize)];
     // create following chunks prefixed with chunkHeader
     let position = chunkSize;
+
     while (position < data.byteLength) {
         const sliceEnd = Math.min(position + chunkSize - chunkHeader.byteLength, data.byteLength);
         const slice = data.subarray(position, sliceEnd);

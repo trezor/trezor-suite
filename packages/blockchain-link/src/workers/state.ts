@@ -13,11 +13,14 @@ export class WorkerState {
 
     private validateAddresses(addr: string[]) {
         if (!Array.isArray(addr)) throw new CustomError('invalid_param', '+addresses');
+
         const seen: string[] = [];
 
         return addr.filter(a => {
             if (typeof a !== 'string') return false;
+
             if (seen.indexOf(a) >= 0) return false;
+
             seen.push(a);
 
             return true;
@@ -44,11 +47,13 @@ export class WorkerState {
 
     private validateAccounts(acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] {
         if (!Array.isArray(acc)) throw new CustomError('invalid_param', '+accounts');
+
         const seen: string[] = [];
 
         return acc.filter(a => {
             if (a && typeof a === 'object' && typeof a.descriptor === 'string') {
                 if (seen.indexOf(a.descriptor) >= 0) return false;
+
                 seen.push(a.descriptor);
 
                 return true;
@@ -84,10 +89,14 @@ export class WorkerState {
     getAccount(address: string): SubscriptionAccountInfo | undefined {
         return this.accounts.find(a => {
             if (a.descriptor === address) return true;
+
             if (a.addresses) {
                 const { change, used, unused } = a.addresses;
+
                 if (change.find(ad => ad.address === address)) return true;
+
                 if (used.find(ad => ad.address === address)) return true;
+
                 if (unused.find(ad => ad.address === address)) return true;
             }
 
@@ -139,6 +148,7 @@ export class WorkerState {
     removeEmpty(obj: Record<string, any>) {
         Object.keys(obj).forEach(key => {
             if (Array.isArray(obj[key])) obj[key].map((o: any) => this.removeEmpty(o));
+
             if (obj[key] && typeof obj[key] === 'object') this.removeEmpty(obj[key]);
             else if (obj[key] === undefined) delete obj[key];
         });

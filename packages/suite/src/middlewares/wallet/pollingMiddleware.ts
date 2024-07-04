@@ -15,12 +15,14 @@ const pollingMiddleware =
 
         if (action.type === POLLING.REQUEST) {
             const polling = api.getState().wallet.pollings[action.key];
+
             if (polling) {
                 if (polling.counter >= polling.maxPollingRequestCount) {
                     api.dispatch(pollingActions.stopPolling(action.key));
 
                     return action;
                 }
+
                 Promise.resolve(polling.pollingFunction()).then(() => {
                     const timeoutId = window.setTimeout(() => {
                         api.dispatch(pollingActions.request(action.key, timeoutId));

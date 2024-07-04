@@ -112,6 +112,7 @@ export const extraDependencies: ExtraDependencies = {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
             payload.backendSettings.forEach(backend => {
                 const blockchain = state[backend.key];
+
                 if (blockchain) {
                     blockchain.backends = backend.value;
                 }
@@ -121,9 +122,11 @@ export const extraDependencies: ExtraDependencies = {
             const { txs } = payload;
             txs.forEach(item => {
                 const k = getAccountKey(item.tx.descriptor, item.tx.symbol, item.tx.deviceState);
+
                 if (!state.transactions[k]) {
                     state.transactions[k] = [];
                 }
+
                 state.transactions[k][item.order] = item.tx;
             });
         },
@@ -176,7 +179,9 @@ export const extraDependencies: ExtraDependencies = {
             const { deviceState, metadata } = payload;
             const index = state.devices.findIndex((d: TrezorDevice) => d.state === deviceState);
             const device = state.devices[index];
+
             if (!device) return;
+
             device.metadata = metadata;
         },
         setDeviceMetadataPasswordsReducer: (
@@ -188,7 +193,9 @@ export const extraDependencies: ExtraDependencies = {
             const { deviceState, metadata } = payload;
             const index = state.devices.findIndex((d: TrezorDevice) => d.state === deviceState);
             const device = state.devices[index];
+
             if (!device) return;
+
             device.passwords = metadata;
         },
         storageLoadDevices: (state, { payload }: StorageLoadAction) => {

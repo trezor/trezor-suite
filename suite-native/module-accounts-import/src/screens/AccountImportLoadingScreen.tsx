@@ -58,6 +58,7 @@ export const AccountImportLoadingScreen = ({
             await sleep(1000);
             showImportError(error, () => {
                 if (!onRetry) return;
+
                 onRetry();
 
                 // This is needed because handleResult calls safelyShowImportError, which calls handleResult,

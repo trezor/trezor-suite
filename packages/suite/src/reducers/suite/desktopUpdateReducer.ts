@@ -41,6 +41,7 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
                     draft.enabled = true;
                     draft.allowPrerelease = action.payload.desktopUpdate.allowPrerelease;
                 }
+
                 break;
             case DESKTOP_UPDATE.CHECKING:
                 draft.state = UpdateState.Checking;

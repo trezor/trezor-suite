@@ -17,8 +17,10 @@ export class BridgeProcess extends BaseProcess {
                 },
             });
             this.logger.debug(this.logTopic, `Checking status (${resp.status})`);
+
             if (resp.status === 200) {
                 const data = await resp.json();
+
                 if (data?.version) {
                     return {
                         service: true,

@@ -14,8 +14,11 @@ interface FileProps {
 const File = ({ disabled, field, onChange }: FileProps) => {
     const onFilesAdded: ChangeEventHandler<HTMLInputElement> = evt => {
         if (disabled) return;
+
         const files = evt?.target.files;
+
         if (!files || files.length === 0) return;
+
         const file = files[0];
         const reader = new FileReader();
         reader.onload = event => {

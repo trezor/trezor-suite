@@ -22,13 +22,16 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
 
         const identity: PROTO.IdentityType = {};
         const settings: ConnectSettings = DataManager.getSettings();
+
         if (settings.origin) {
             const [proto, host, port] = settings.origin.split(':');
             identity.proto = proto;
             identity.host = host.substring(2);
+
             if (port) {
                 identity.port = port;
             }
+
             identity.index = 0;
         }
 
@@ -76,6 +79,7 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
             this.params.challenge_hidden = payload.challengeHidden;
             this.params.challenge_visual = payload.challengeVisual;
         }
+
         const cmd = this.device.getCommands();
         const { message } = await cmd.typedCall('SignIdentity', 'SignedIdentity', this.params);
 

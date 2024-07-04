@@ -95,6 +95,7 @@ const Offers = () => {
     useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-exchange" />);
 
     if (!quotesRequest) return null;
+
     const hasLoadingFailed = !(fixedQuotes && floatQuotes && dexQuotes);
     const noOffers =
         hasLoadingFailed ||

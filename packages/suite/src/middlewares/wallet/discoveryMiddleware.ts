@@ -35,6 +35,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // do not close user context modals during discovery
         if (action.type === UI.CLOSE_UI_WINDOW && discoveryIsRunning) {
             const { modal } = prevState;
+
             if (modal.context === MODAL.CONTEXT_USER) {
                 return action;
             }
@@ -42,6 +43,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         // consider if discovery should be interrupted
         let interruptionIntent = action.type === deviceActions.selectDevice.type;
+
         if (action.type === ROUTER.LOCATION_CHANGE) {
             interruptionIntent =
                 getApp(action.payload.url) !== 'wallet' &&
@@ -66,12 +68,14 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         }
 
         const nextState = getState();
+
         if (nextState.router.app !== 'wallet' && nextState.router.app !== 'dashboard')
             return action;
 
         let authorizationIntent = false;
         const { locks } = nextState.suite;
         const device = selectDevice(nextState);
+
         // 1. selected device is acquired but doesn't have a state
         if (
             device &&
@@ -85,6 +89,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         // 2. selected device becomes acquired from unacquired or connected from disconnected
         let becomesConnected = false;
+
         if (deviceActions.updateSelectedDevice.match(action)) {
             const prevDevice = prevState.device.selectedDevice;
             const becomesAcquired = !!(
@@ -99,6 +104,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
                 device &&
                 device.connected
             );
+
             if (becomesAcquired) {
                 authorizationIntent = true;
             }
@@ -143,6 +149,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             accountsActions.changeAccountVisibility.match(action)
         ) {
             const discovery = selectDeviceDiscovery(getState());
+
             if (
                 device &&
                 device.connected &&

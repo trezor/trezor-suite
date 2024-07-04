@@ -39,6 +39,7 @@ import { sanitizeHex } from './ethUtils';
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
         const total = new BigNumber(amount).plus(fee);
+
         if (total.isNaN()) {
             console.error('calculateTotal: Amount is not a number', amount, fee);
 
@@ -56,11 +57,13 @@ export const calculateTotal = (amount: string, fee: string): string => {
 export const calculateMax = (availableBalance: string, fee: string): string => {
     try {
         const max = new BigNumber(availableBalance).minus(fee);
+
         if (max.isNaN()) {
             console.error('calculateMax: Amount is not a number', availableBalance, fee);
 
             return '0';
         }
+
         if (max.isLessThan(0)) return '0';
 
         return max.toFixed();
@@ -80,8 +83,10 @@ export const calculateEthFee = (gasPrice?: string, gasLimit?: string): string =>
     if (!gasPrice || !gasLimit) {
         return '0';
     }
+
     try {
         const result = new BigNumber(gasPrice).times(gasLimit);
+
         if (result.isNaN()) throw new Error('NaN');
 
         return result.toFixed();
@@ -195,8 +200,11 @@ export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<
 
 export const getFeeUnits = (networkType: NetworkType) => {
     if (networkType === 'ethereum') return 'GWEI';
+
     if (networkType === 'ripple') return 'Drops';
+
     if (networkType === 'cardano') return 'Lovelaces/B';
+
     if (networkType === 'solana') return 'Lamports';
 
     return 'sat/B';
@@ -214,9 +222,12 @@ export const findComposeErrors = <T extends FieldValues>(
     prefix?: string,
 ) => {
     const composeErrors: FieldPath<T>[] = [];
+
     if (!errors || typeof errors !== 'object') return composeErrors;
+
     Object.keys(errors).forEach(key => {
         const val = errors[key];
+
         if (val) {
             if (Array.isArray(val)) {
                 // outputs
@@ -253,6 +264,7 @@ export const getBitcoinComposeOutputs = (
     isSatoshis?: boolean,
 ) => {
     const result: ComposeOutput[] = [];
+
     if (!values || !Array.isArray(values.outputs)) return result;
 
     const { setMaxOutputId } = values;
@@ -269,6 +281,7 @@ export const getBitcoinComposeOutputs = (
 
         const { address } = output;
         const isMaxActive = setMaxOutputId === index;
+
         if (isMaxActive) {
             if (address) {
                 result.push({
@@ -304,8 +317,10 @@ export const getBitcoinComposeOutputs = (
     const hasIncompleteOutput = values.outputs.find(
         (o, i) => setMaxOutputId !== i && o && o.address && !o.amount,
     );
+
     if (hasIncompleteOutput) {
         const finalOutput = result.find(o => o.type === 'send-max' || o.type === 'payment');
+
         if (finalOutput) {
             // replace to *-noaddress
             finalOutput.type =
@@ -324,11 +339,15 @@ export const getExternalComposeOutput = (
     network: Network,
 ) => {
     if (!values || !Array.isArray(values.outputs) || !values.outputs[0]) return;
+
     const out = values.outputs[0];
+
     if (!out || typeof out !== 'object') return;
+
     const { address, amount, token } = out;
 
     const isMaxActive = typeof values.setMaxOutputId === 'number';
+
     if (!isMaxActive && !amount) return; // incomplete Output
 
     const tokenInfo = findToken(account.tokens, token);
@@ -336,6 +355,7 @@ export const getExternalComposeOutput = (
     const amountInSatoshi = amountToSatoshi(amount, decimals);
 
     let output: ExternalOutput;
+
     if (isMaxActive) {
         if (address) {
             output = {
@@ -378,14 +398,18 @@ export const restoreOrigOutputsOrder = (
         .map(output => {
             const index = origOutputs.findIndex((prevOutput, i) => {
                 if (usedIndex.includes(i)) return false;
+
                 if (prevOutput.type === 'opreturn' && output.script_type === 'PAYTOOPRETURN')
                     return true;
+
                 if (prevOutput.type === 'change' && output.address_n) return true;
+
                 if (prevOutput.type === 'payment' && output.address === prevOutput.address)
                     return true;
 
                 return false;
             });
+
             if (index >= 0) {
                 usedIndex.push(index);
 
@@ -397,7 +421,9 @@ export const restoreOrigOutputsOrder = (
         .sort((a, b) => {
             if (typeof a.orig_index === 'undefined' && typeof b.orig_index === 'undefined')
                 return 0;
+
             if (typeof b.orig_index === 'undefined') return -1;
+
             if (typeof a.orig_index === 'undefined') return 1;
 
             return a.orig_index - b.orig_index;
@@ -450,6 +476,7 @@ export const getExcludedUtxos = ({
     utxos?.forEach(utxo => {
         const outpoint = getUtxoOutpoint(utxo);
         const anonymity = (anonymitySet && anonymitySet[utxo.address]) || 1;
+
         if (new BigNumber(utxo.amount).lt(Number(dustLimit))) {
             // is lower than dust limit
             excludedUtxos[outpoint] = 'dust';

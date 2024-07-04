@@ -8,11 +8,13 @@ const cacheFiles = (dir, cache = {}) => {
     const dirFiles = fs.readdirSync(dir);
     dirFiles.forEach(file => {
         const filePath = path.resolve(dir, file);
+
         if (fs.statSync(filePath).isDirectory()) {
             cacheFiles(filePath, cache);
         } else if (file.endsWith('.json')) {
             // use shortened hash
             const key = file.substring(0, 6);
+
             if (cache[key]) throw Error(`TX_CACHE duplicated key: ${key} file: ${file}`);
 
             try {

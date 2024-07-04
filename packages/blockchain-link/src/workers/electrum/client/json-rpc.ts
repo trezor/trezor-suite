@@ -74,12 +74,14 @@ export class JsonRpcClient {
 
     protected response(response: any) {
         const { id, method, params, result, error } = response;
+
         if (!id) {
             // Notification
             this.emitter.emit(method, params);
         } else {
             // Response
             const callback = this.callbacks[id];
+
             if (callback) {
                 delete this.callbacks[id];
                 callback(error, result);

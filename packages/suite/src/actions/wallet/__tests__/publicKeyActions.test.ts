@@ -19,6 +19,7 @@ const setTrezorConnectFixtures = (fixture: any) => {
 
             return fixture.getPublicKey;
         }
+
         // trigger multiple button requests
         if (buttonRequest) {
             buttonRequest({ code: 'ButtonRequest_PublicKey' });
@@ -79,9 +80,11 @@ interface StateOverrides {
 
 const initStore = (stateOverrides?: StateOverrides) => {
     const preloadedState = JSON.parse(JSON.stringify(rootReducer(undefined, { type: 'init' })));
+
     if (stateOverrides?.device) {
         preloadedState.device = stateOverrides.device;
     }
+
     if (stateOverrides?.networkType) {
         preloadedState.wallet.selectedAccount.account.networkType = stateOverrides.networkType;
     }

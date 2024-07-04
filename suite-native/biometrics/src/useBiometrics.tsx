@@ -50,6 +50,7 @@ export const useBiometrics = () => {
                     } else if (isUserAuthenticated) {
                         setIsBiometricsOverlayVisible(false);
                     }
+
                     break;
 
                 case 'background':

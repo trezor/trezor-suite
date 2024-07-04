@@ -99,6 +99,7 @@ export const useGuideSearch = (query: string, pageRoot: GuideCategory | null) =>
             search(query, pageMap)
                 .then(res => {
                     if (!active) return;
+
                     setSearchResult(res);
                 })
                 .finally(() => setLoading(false));

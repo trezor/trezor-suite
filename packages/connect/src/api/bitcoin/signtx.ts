@@ -36,13 +36,17 @@ const requestPrevTxInfo = ({
     refTxs,
 }: SignTxHelperProps) => {
     const { tx_hash } = details;
+
     if (!tx_hash) {
         throw ERRORS.TypedError('Runtime', 'requestPrevTxInfo: unknown details.tx_hash');
     }
+
     const tx = refTxs[tx_hash.toLowerCase()];
+
     if (!tx) {
         throw ERRORS.TypedError('Runtime', `requestPrevTxInfo: Requested unknown tx: ${tx_hash}`);
     }
+
     if (request_type === 'TXINPUT') {
         // bin_outputs not present in tx = invalid RefTransaction object
         if (!tx.bin_outputs)
@@ -55,6 +59,7 @@ const requestPrevTxInfo = ({
             tx: { input: tx.inputs[details.request_index] },
         });
     }
+
     if (request_type === 'TXOUTPUT') {
         // bin_outputs not present in tx = invalid RefTransaction object
         if (!tx.bin_outputs)
@@ -67,6 +72,7 @@ const requestPrevTxInfo = ({
             tx: { output: tx.bin_outputs[details.request_index] },
         });
     }
+
     if (request_type === 'TXORIGINPUT') {
         // outputs not present in tx = invalid RefTransaction object
         if (!tx.outputs)
@@ -79,6 +85,7 @@ const requestPrevTxInfo = ({
             tx: { input: tx.inputs[details.request_index] },
         });
     }
+
     if (request_type === 'TXORIGOUTPUT') {
         // outputs not present in tx = invalid RefTransaction object
         if (!tx.outputs)
@@ -91,19 +98,23 @@ const requestPrevTxInfo = ({
             tx: { output: tx.outputs[details.request_index] },
         });
     }
+
     if (request_type === 'TXEXTRADATA') {
         if (typeof details.extra_data_len !== 'number') {
             throw ERRORS.TypedError('Runtime', 'requestPrevTxInfo: Missing extra_data_len');
         }
+
         if (typeof details.extra_data_offset !== 'number') {
             throw ERRORS.TypedError('Runtime', 'requestPrevTxInfo: Missing extra_data_offset');
         }
+
         if (typeof tx.extra_data !== 'string') {
             throw ERRORS.TypedError(
                 'Runtime',
                 `requestPrevTxInfo: No extra data for transaction ${tx.hash}`,
             );
         }
+
         const data = tx.extra_data;
         const dataLen = details.extra_data_len;
         const dataOffset = details.extra_data_offset;
@@ -111,6 +122,7 @@ const requestPrevTxInfo = ({
 
         return typedCall('TxAckPrevExtraData', 'TxRequest', { tx: { extra_data_chunk } });
     }
+
     if (request_type === 'TXMETA') {
         const data = tx.extra_data;
         const meta = {
@@ -127,6 +139,7 @@ const requestPrevTxInfo = ({
 
         return typedCall('TxAckPrevMeta', 'TxRequest', { tx: meta });
     }
+
     throw ERRORS.TypedError('Runtime', `requestPrevTxInfo: Unknown request type: ${request_type}`);
 };
 
@@ -142,13 +155,16 @@ const requestSignedTxInfo = ({
             tx: { input: inputs[details.request_index] },
         });
     }
+
     if (request_type === 'TXOUTPUT') {
         return typedCall('TxAckOutput', 'TxRequest', {
             tx: { output: outputs[details.request_index] },
         });
     }
+
     if (request_type === 'TXPAYMENTREQ') {
         const req = paymentRequests[details.request_index];
+
         if (!req) {
             throw ERRORS.TypedError(
                 'Runtime',
@@ -164,18 +180,21 @@ const requestSignedTxInfo = ({
             signature: req.signature,
         });
     }
+
     if (request_type === 'TXMETA') {
         throw ERRORS.TypedError(
             'Runtime',
             'requestSignedTxInfo: Cannot read TXMETA from signed transaction',
         );
     }
+
     if (request_type === 'TXEXTRADATA') {
         throw ERRORS.TypedError(
             'Runtime',
             'requestSignedTxInfo: Cannot read TXEXTRADATA from signed transaction',
         );
     }
+
     throw ERRORS.TypedError(
         'Runtime',
         `requestSignedTxInfo: Unknown request type: ${request_type}`,
@@ -186,6 +205,7 @@ const requestSignedTxInfo = ({
 // can be either signed transaction itself of prev transaction
 const requestTxAck = (props: SignTxHelperProps) => {
     const { tx_hash } = props.txRequest.details;
+
     if (tx_hash) {
         return requestPrevTxInfo(props);
     }
@@ -199,9 +219,11 @@ const saveTxSignatures = (
     signatures: string[],
 ) => {
     const { signature_index, signature, serialized_tx } = txRequest;
+
     if (serialized_tx) {
         serializedTx.push(serialized_tx);
     }
+
     if (typeof signature_index === 'number') {
         if (!signature) {
             throw ERRORS.TypedError(
@@ -209,13 +231,16 @@ const saveTxSignatures = (
                 'saveTxSignatures: Unexpected null in trezor:TxRequestSerialized signature.',
             );
         }
+
         signatures[signature_index] = signature;
     }
 };
 
 const processTxRequest = async (props: SignTxHelperProps): Promise<SignedTransaction> => {
     const { txRequest, serializedTx, signatures } = props;
+
     if (txRequest.serialized) saveTxSignatures(txRequest.serialized, serializedTx, signatures);
+
     if (txRequest.request_type === 'TXFINISHED') {
         return Promise.resolve({
             signatures,

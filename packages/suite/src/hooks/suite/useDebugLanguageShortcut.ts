@@ -29,14 +29,17 @@ export const useDebugLanguageShortcut = () => {
                 if (isLanguageAutodetect) {
                     dispatch(setAutodetect({ language: false }));
                 }
+
                 dispatch(setLanguage(languages[nextIndex].value || 'en'));
             }
 
             if (event.ctrlKey && event.key === KEYBOARD_CODE.FUNCTION_KEY_SEVEN) {
                 const nextIndex = (currentIndex - 1 + languages.length) % languages.length;
+
                 if (isLanguageAutodetect) {
                     dispatch(setAutodetect({ language: false }));
                 }
+
                 dispatch(setLanguage(languages[nextIndex].value));
             }
         },

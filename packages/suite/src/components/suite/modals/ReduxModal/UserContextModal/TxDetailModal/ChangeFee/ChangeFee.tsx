@@ -140,6 +140,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
 
 export const ChangeFee = (props: Omit<ChangeFeeProps, 'selectedAccount' | 'rbfParams'>) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
     if (selectedAccount.status !== 'loaded' || !props.tx.rbfParams) {
         return null;
     }

@@ -266,6 +266,7 @@ export type NetworkTypes = keyof typeof NETWORK_TYPES;
 
 export function isNetworkType(type: NetworkTypes, network?: Network) {
     if (typeof type !== 'string' || !network || !NETWORK_TYPES[type]) return false;
+
     try {
         typeforce(
             {

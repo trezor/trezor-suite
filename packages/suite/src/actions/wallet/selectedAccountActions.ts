@@ -36,6 +36,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
 
     // waiting for discovery
     const discovery = selectDeviceDiscovery(state);
+
     if (!device.state || !discovery) {
         return {
             status: 'loading',
@@ -81,6 +82,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
             f.index === params.accountIndex &&
             f.accountType === params.accountType,
     );
+
     // discovery for requested network failed
     if (failed) {
         return {
@@ -106,6 +108,7 @@ const getAccountState = (state: AppState): SelectedAccountStatus => {
                     params,
                 };
             }
+
             if (account.status === 'error') {
                 return {
                     status: 'exception',
@@ -188,12 +191,15 @@ const actions = [
 export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getState: GetState) => {
     // ignore not listed actions
     if (actions.indexOf(action.type) < 0) return;
+
     const state = getState();
+
     // ignore if not in wallet
     if (state.router.app !== 'wallet') return;
 
     // get new state
     const newState = getAccountState(state);
+
     if (!newState) return;
 
     // find differences

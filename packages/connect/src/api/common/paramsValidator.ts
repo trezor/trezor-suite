@@ -21,6 +21,7 @@ const invalidParameter = (message: string) => ERRORS.TypedError('Method_InvalidP
 export function validateParams<P extends Record<string, any>>(params: P, schema: Param[]): P {
     schema.forEach(field => {
         const value = params[field.name];
+
         if (field.required && value == null) {
             // required parameter not found
             throw invalidParameter(`Parameter "${field.name}" is missing.`);
@@ -46,6 +47,7 @@ export function validateParams<P extends Record<string, any>>(params: P, schema:
                     return count;
                 }
             }, 0);
+
             // every case ended with error = no type match
             if (!success) {
                 throw invalidParameter(
@@ -60,6 +62,7 @@ export function validateParams<P extends Record<string, any>>(params: P, schema:
             if (!Array.isArray(value)) {
                 throw invalidParameter(`Parameter "${name}" has invalid type. "${type}" expected.`);
             }
+
             if (!field.allowEmpty && value.length < 1) {
                 throw invalidParameter(`Parameter "${name}" is empty.`);
             }
@@ -69,6 +72,7 @@ export function validateParams<P extends Record<string, any>>(params: P, schema:
                     `Parameter "${name}" has invalid type. "string|number" expected.`,
                 );
             }
+
             if (
                 (typeof value === 'number' && !Number.isSafeInteger(value)) ||
                 !/^(?:[1-9]\d*|\d)$/.test(
@@ -107,10 +111,12 @@ export const getFirmwareRange = (
 ) => {
     const range = JSON.parse(JSON.stringify(currentRange)) as FirmwareRange;
     const models = Object.keys(range) as DeviceModelInternal[];
+
     // set minimum required firmware from coins.json (coinInfo)
     if (coinInfo) {
         models.forEach(model => {
             const supportVersion = coinInfo.support ? coinInfo.support[model] : false;
+
             if (supportVersion === false) {
                 range[model].min = '0';
             } else if (
@@ -132,6 +138,7 @@ export const getFirmwareRange = (
             if (rule.methods) {
                 return rule.methods.includes(method);
             }
+
             // check if rule applies to capability
             if (rule.capabilities) {
                 return rule.capabilities.includes(method);
@@ -150,6 +157,7 @@ export const getFirmwareRange = (
                 // @ts-expect-error
                 return rule.coinType === coinType;
             }
+
             if (rule.coin) {
                 // rule for coin shortcut
                 // @ts-expect-error
@@ -167,6 +175,7 @@ export const getFirmwareRange = (
         if (rule.min) {
             models.forEach(model => {
                 const modelMin = rule.min[model];
+
                 if (modelMin) {
                     if (
                         modelMin === '0' ||
@@ -178,10 +187,12 @@ export const getFirmwareRange = (
                 }
             });
         }
+
         if (rule.max) {
             models.forEach(model => {
                 // @ts-expect-error same issue as in coinType above, config needs to be typed not inferred.
                 const modelMax = rule.max[model];
+
                 if (modelMax) {
                     if (
                         modelMax === '0' ||

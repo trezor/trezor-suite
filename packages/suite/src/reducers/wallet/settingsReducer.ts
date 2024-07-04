@@ -27,6 +27,7 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
                     const { localCurrency } = action.payload;
                     draft.localCurrency = localCurrency;
                 }
+
                 break;
             }
             case WALLET_SETTINGS.SET_HIDE_BALANCE:
@@ -37,6 +38,7 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
                 if (walletSettingsActions.changeNetworks.match(action)) {
                     draft.enabledNetworks = action.payload;
                 }
+
                 break;
             }
 
@@ -46,6 +48,7 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
                 } else {
                     delete draft.lastUsedFeeLevel[action.symbol];
                 }
+
                 break;
             case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 draft.bitcoinAmountUnit = action.payload;

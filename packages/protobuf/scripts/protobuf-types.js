@@ -76,7 +76,9 @@ const parseEnum = (itemName, item) => {
 
 const parseMessage = (messageName, message, depth = 0) => {
     if (messageName === 'google') return;
+
     const value = [];
+
     // add comment line
     if (!depth) value.push(`// ${messageName}`);
     // declare nested enums
@@ -91,6 +93,7 @@ const parseMessage = (messageName, message, depth = 0) => {
     if (message.values) {
         return parseEnum(messageName, message);
     }
+
     if (!message.fields || !Object.keys(message.fields).length) {
         // few types are just empty objects, make it one line
         value.push(`export type ${messageName} = {};`);
@@ -98,6 +101,7 @@ const parseMessage = (messageName, message, depth = 0) => {
     } else {
         // find patch
         const definition = DEFINITION_PATCH[messageName];
+
         if (definition) {
             // replace whole declaration
             value.push(definition);
@@ -112,14 +116,17 @@ const parseMessage = (messageName, message, depth = 0) => {
                 const rule = fieldRule === 'required' || fieldRule === 'repeated' ? ': ' : '?: ';
                 // find patch for "type"
                 let type = TYPE_PATCH[fieldKey] || FIELD_TYPES[field.type] || field.type;
+
                 // automatically convert all amount and fee fields to UINT_TYPE
                 if (['amount', 'fee'].includes(fieldName)) {
                     type = UINT_TYPE;
                 }
+
                 // array
                 if (field.rule === 'repeated') {
                     type = type.split('|').length > 1 ? `Array<${type}>` : `${type}[]`;
                 }
+
                 value.push(`    ${fieldName}${rule}${type};`);
             });
             // close type declaration
@@ -128,6 +135,7 @@ const parseMessage = (messageName, message, depth = 0) => {
             value.push('');
         }
     }
+
     // type doest have to be e
     const exact = message.fields && Object.values(message.fields).find(f => f.rule === 'required');
     types.push({
@@ -162,11 +170,13 @@ Object.keys(ORDER).forEach(key => {
 
     // find indexes
     const indexOfDependency = types.findIndex(t => t && t.name === key);
+
     if (indexOfDependency === -1) {
         logError(`Type from key: '${key}' not found in the 'types' variable!`)
     }
 
     const indexOfDependant = types.findIndex(t => t && t.name === ORDER[key]);
+
     if (indexOfDependant === -1) {
         logError(`Type from value: '${ORDER[key]}' not found in the 'types' variable!`)
     }

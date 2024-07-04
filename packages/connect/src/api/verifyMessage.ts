@@ -19,12 +19,14 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
         Assert(VerifyMessageSchema, payload);
 
         const coinInfo = getBitcoinNetwork(payload.coin);
+
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         } else {
             // check required firmware with coinInfo support
             this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
         }
+
         const messageHex = payload.hex
             ? messageToHex(payload.message)
             : Buffer.from(payload.message, 'utf8').toString('hex');
@@ -40,6 +42,7 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
 
     get info() {
         const coinInfo = getBitcoinNetwork(this.payload.coin);
+
         if (!coinInfo) {
             return 'Verify message';
         }

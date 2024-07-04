@@ -102,6 +102,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!device?.features) {
         return;
     }
+
     dispatch(setError(''));
 
     if (device.features.internal_model === DeviceModelInternal.T1B1) {
@@ -154,6 +155,7 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
 const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
     const { router } = getState();
     const device = selectDevice(getState());
+
     if (!device?.features) {
         return;
     }
@@ -185,6 +187,7 @@ const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
         if (router.app !== 'onboarding') {
             dispatch(routerActions.goto('onboarding-index'));
         }
+
         dispatch(onboardingActions.goToStep('recovery'));
         dispatch(onboardingActions.addPath('recovery'));
         dispatch(recoverDevice());

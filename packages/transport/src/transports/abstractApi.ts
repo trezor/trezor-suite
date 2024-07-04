@@ -76,6 +76,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             if (!enumerateResult.success) {
                 return enumerateResult;
             }
+
             // partial descriptors with path
             const descriptors = enumerateResult.payload;
 
@@ -137,6 +138,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 this.releaseUnconfirmed[path] = session;
                 this.listenPromise[path] = createDeferred();
             }
+
             const releaseIntentResponse = await this.sessionsClient.releaseIntent({
                 session,
             });
@@ -146,6 +148,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             }
 
             const releasePromise = this.releaseDevice(releaseIntentResponse.payload.path);
+
             if (onClose) return this.success(undefined);
 
             await releasePromise;
@@ -177,6 +180,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
                     session,
                 });
+
                 if (!getPathBySessionResponse.success) {
                     // session not found means that device was disconnected
                     if (getPathBySessionResponse.error === 'session not found') {
@@ -185,6 +189,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                     return this.error({ error: ERRORS.UNEXPECTED_ERROR });
                 }
+
                 const { path } = getPathBySessionResponse.payload;
 
                 try {
@@ -217,6 +222,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                                 if (result.success) {
                                     return result.payload;
                                 }
+
                                 throw new Error(result.error);
                             }),
                         protocol,
@@ -247,9 +253,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
                     session,
                 });
+
                 if (!getPathBySessionResponse.success) {
                     return this.error({ error: getPathBySessionResponse.error });
                 }
+
                 const { path } = getPathBySessionResponse.payload;
 
                 try {
@@ -296,9 +304,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
                     session,
                 });
+
                 if (!getPathBySessionResponse.success) {
                     return this.error({ error: getPathBySessionResponse.error });
                 }
+
                 const { path } = getPathBySessionResponse.payload;
 
                 try {

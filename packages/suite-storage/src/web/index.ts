@@ -88,6 +88,7 @@ class CommonDB<TDBStructure> {
                 };
             } else {
                 const idbAvailable = !!indexedDB || !!window.indexedDB || !!global.indexedDB;
+
                 if (idbAvailable) {
                     resolve(true);
                 } else {
@@ -100,6 +101,7 @@ class CommonDB<TDBStructure> {
         if (this.supported === undefined) {
             const isAvailable = await CommonDB.isDBAvailable();
             this.supported = isAvailable;
+
             if (!isAvailable) {
                 console.warn("Couldn't get an access to IndexedDB.");
             }
@@ -140,19 +142,23 @@ class CommonDB<TDBStructure> {
             },
             blocked: () => {
                 this.blocked = true;
+
                 // Called if there are older versions of the database open on the origin, so this version cannot open.
                 if (this.onBlocked) {
                     this.onBlocked();
                 }
+
                 // wait 1 sec before closing the db to let app enough time to finish all requests
                 this.closeAfterTimeout();
             },
             blocking: () => {
                 // Called if this connection is blocking a future version of the database from opening.
                 this.blocking = true;
+
                 if (this.onBlocking) {
                     this.onBlocking();
                 }
+
                 // wait 1 sec before closing the db to let app enough time to finish all requests
                 this.closeAfterTimeout();
             },
@@ -169,6 +175,7 @@ class CommonDB<TDBStructure> {
                 );
                 this.onDowngrade();
             }
+
             throw error;
         });
     }
@@ -226,8 +233,10 @@ class CommonDB<TDBStructure> {
         upsert?: boolean,
     ) => {
         const db = await this.getDB();
+
         // jest won't resolve tx.done when 'items' is empty array
         if (items.length === 0) return Promise.resolve();
+
         const tx = db.transaction(store, 'readwrite');
 
         const keys: StoreKey<TDBStructure, StoreNames<TDBStructure>>[] = [];
@@ -298,6 +307,7 @@ class CommonDB<TDBStructure> {
         const tx = db.transaction(store, 'readwrite');
         const index = tx.store.index(indexName);
         const result = await index.get(key);
+
         if (result) {
             Object.assign(result, updateObject);
             this.notify(store, [result]);
@@ -337,6 +347,7 @@ class CommonDB<TDBStructure> {
         const tx = db.transaction(store, 'readwrite');
         const txIdIndex = tx.store.index(indexName);
         let cursor = await txIdIndex.openCursor(IDBKeyRange.only(key));
+
         while (cursor) {
             cursor.delete();
             this.notify(store, cursor.value ? [cursor.value] : []);
@@ -355,8 +366,10 @@ class CommonDB<TDBStructure> {
     ) => {
         const db = await this.getDB();
         const tx = db.transaction(store);
+
         if (indexName) {
             const index = tx.store.index(indexName);
+
             if (filters && filters.key !== undefined) {
                 if (filters.offset !== undefined || filters.count !== undefined) {
                     // cursor with keyrange for given accountId (covers all timestamps)
@@ -365,9 +378,11 @@ class CommonDB<TDBStructure> {
                     );
                     const items = [];
                     let counter = 0;
+
                     if (cursor) {
                         // move cursor in position
                         if (filters.offset) cursor = await cursor.advance(filters.offset);
+
                         while (cursor && (!filters.count || counter < filters.count)) {
                             // iterate unless cursor returns null or we have enough items (count param)
                             items.push(cursor.value);
@@ -379,6 +394,7 @@ class CommonDB<TDBStructure> {
 
                     return items;
                 }
+
                 // if offset and count params are undefined just use getAll on index instead of cursor.
                 // all txs for given accountId
                 // bound([accountId, undefined], [accountId, '']) should cover all timestamps
@@ -391,6 +407,7 @@ class CommonDB<TDBStructure> {
                 // get items in reverse order
                 let cursor = await index.openCursor(undefined, 'prev');
                 const items = [];
+
                 while (cursor) {
                     items.push(cursor.value);
 
@@ -411,6 +428,7 @@ class CommonDB<TDBStructure> {
         const db = await this.getDB();
         let cursor = await db.transaction(store).store.openCursor();
         const resp = [];
+
         while (cursor) {
             resp.push({
                 key: cursor.key,
@@ -434,6 +452,7 @@ class CommonDB<TDBStructure> {
             const { length } = list;
             for (let i = 0; i < length; i++) {
                 const storeName = list.item(i);
+
                 if (storeName) {
                     names.push(storeName);
                 }
@@ -463,6 +482,7 @@ class CommonDB<TDBStructure> {
         const { length } = list;
         for (let i = 0; i < length; i++) {
             const storeName = list.item(i);
+
             if (storeName) {
                 db.deleteObjectStore(storeName);
             }

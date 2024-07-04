@@ -69,6 +69,7 @@ export const Icon = ({
             if (path.hasAttribute('fill')) {
                 path.setAttribute('fill', strokeColor);
             }
+
             path.setAttribute('stroke', strokeColor);
         });
         svg.setAttribute('width', `${iconSize}px`);

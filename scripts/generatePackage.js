@@ -32,6 +32,7 @@ const exitWithErrorMessage = errorMessage => {
 
 (async () => {
     const newPackage = process.argv?.[2];
+
     if (!newPackage || typeof newPackage !== 'string' || !newPackage.includes('/')) {
         exitWithErrorMessage(
             `${chalk.bold.red('Please enter package scope and name -')} ${chalk.italic.red(
@@ -43,6 +44,7 @@ const exitWithErrorMessage = errorMessage => {
     const [packageScope, packageName] = newPackage.split('/');
 
     const validScopes = Object.keys(scopes);
+
     if (!validScopes.includes(packageScope)) {
         exitWithErrorMessage(
             chalk.bold.red(
@@ -55,11 +57,13 @@ const exitWithErrorMessage = errorMessage => {
 
     const packagePath = `${scopes[packageScope].path}/${packageName}`;
     const workspacesNames = Object.keys(getWorkspacesList());
+
     if (fs.existsSync(packagePath)) {
         exitWithErrorMessage(
             chalk.bold.red(`Folder ${packagePath} already exists! Please choose different name.`),
         );
     }
+
     if (workspacesNames.includes(newPackage)) {
         exitWithErrorMessage(
             chalk.bold.red(`Package ${newPackage} already exists! Please choose different name.`),

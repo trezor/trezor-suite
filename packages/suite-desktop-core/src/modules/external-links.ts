@@ -30,6 +30,7 @@ export const init: Module = ({ mainWindow, store }) => {
 
         if (url !== mainWindow.webContents.getURL()) {
             const torSettings = store.getTorSettings();
+
             if (torSettings.running) {
                 // TODO: Replace with in-app modal
                 const result = dialog.showMessageBoxSync(mainWindow, {
@@ -48,6 +49,7 @@ export const init: Module = ({ mainWindow, store }) => {
                     return { action: 'deny' };
                 }
             }
+
             logger.info(SERVICE_NAME, `${url} opened in default browser`);
         }
 

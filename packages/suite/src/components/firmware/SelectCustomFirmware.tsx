@@ -52,6 +52,7 @@ export const SelectCustomFirmware = ({
     ) => {
         const fw = await firmware.arrayBuffer();
         const validationError = validateFirmware(fw, device);
+
         if (validationError) {
             setError({ id: validationError });
         } else {

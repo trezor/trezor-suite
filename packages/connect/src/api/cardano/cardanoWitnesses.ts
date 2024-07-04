@@ -36,6 +36,7 @@ export const gatherWitnessPaths = (
             ) {
                 _insert(certificate.path);
             }
+
             poolOwners.forEach(poolOwner => {
                 if (poolOwner.staking_key_path) _insert(poolOwner.staking_key_path);
             });

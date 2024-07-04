@@ -94,6 +94,7 @@ describe('Firmware Actions', () => {
                 if (f.result.state) {
                     expect(result).toMatchObject(f.result.state);
                 }
+
                 if (f.result.actions) {
                     expect(filterThunkActionTypes(store.getActions())).toMatchObject(
                         f.result.actions,
@@ -110,6 +111,7 @@ describe('Firmware Actions', () => {
                 const store = mockStore(state);
                 store.subscribe(() => updateStore(store));
                 store.dispatch(f.action);
+
                 if (f.result) {
                     if (f.result.state) {
                         expect(store.getState()).toMatchObject(f.result.state);

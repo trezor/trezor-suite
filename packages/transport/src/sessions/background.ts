@@ -185,9 +185,11 @@ export class SessionsBackground extends TypedEmitter<{
      */
     private acquireDone(payload: AcquireDoneRequest) {
         this.clearLock();
+
         if (!this.descriptors[payload.path]) {
             return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
         }
+
         this.descriptors[payload.path].session = `${this.lastSessionId}`;
 
         return Promise.resolve(
@@ -223,6 +225,7 @@ export class SessionsBackground extends TypedEmitter<{
 
     private getPathBySession({ session }: GetPathBySessionRequest) {
         const path = this.getPathFromSessions({ session });
+
         if (!path) {
             return this.error(ERRORS.SESSION_NOT_FOUND);
         }
@@ -261,6 +264,7 @@ export class SessionsBackground extends TypedEmitter<{
 
     private clearLock() {
         const lock = this.locksQueue[0];
+
         if (lock) {
             this.locksQueue[0].dfd.resolve(undefined);
             this.locksQueue.shift();
@@ -272,6 +276,7 @@ export class SessionsBackground extends TypedEmitter<{
     private async waitForUnlocked(myIndex: number) {
         if (myIndex > 0) {
             const beforeMe = this.locksQueue.slice(0, myIndex);
+
             if (beforeMe.length) {
                 await Promise.all(beforeMe.map(lock => lock.dfd.promise));
             }

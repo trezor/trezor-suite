@@ -135,6 +135,7 @@ const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => 
 const getTransactionHex = async (request: Request<MessageTypes.GetTransactionHex>) => {
     const api = await request.connect();
     const { hex } = await api.getTransaction(request.payload);
+
     if (!hex) throw new CustomError(`Missing hex of ${request.payload}`);
 
     return {
@@ -190,6 +191,7 @@ const onMempoolTx = ({ post }: Context, payload: MempoolTransactionNotification)
 
 const onTransaction = ({ state, post }: Context, event: AddressNotification) => {
     if (!event.tx) return;
+
     const descriptor = event.address;
     // check if there is subscribed account with received address
     const account = state.getAccount(descriptor);
@@ -226,6 +228,7 @@ const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo
     const api = await ctx.connect();
     const { state } = ctx;
     state.addAccounts(accounts);
+
     if (!state.getSubscription('notification')) {
         api.on('notification', ev => onTransaction(ctx, ev));
         state.addSubscription('notification');
@@ -239,6 +242,7 @@ const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
     const api = await ctx.connect();
     const { state } = ctx;
     state.addAddresses(addresses);
+
     if (!state.getSubscription('notification')) {
         api.on('notification', ev => onTransaction(ctx, ev));
         state.addSubscription('notification');
@@ -249,6 +253,7 @@ const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
 
 const subscribeBlock = async (ctx: Context) => {
     if (ctx.state.getSubscription('block')) return { subscribed: true };
+
     const api = await ctx.connect();
     ctx.state.addSubscription('block');
     api.on('block', ev => onNewBlock(ctx, ev));
@@ -258,6 +263,7 @@ const subscribeBlock = async (ctx: Context) => {
 
 const subscribeFiatRates = async (ctx: Context, currency?: string) => {
     const api = await ctx.connect();
+
     if (!ctx.state.getSubscription('fiatRates')) {
         ctx.state.addSubscription('fiatRates');
         api.on('fiatRates', ev => onNewFiatRates(ctx, ev));
@@ -268,6 +274,7 @@ const subscribeFiatRates = async (ctx: Context, currency?: string) => {
 
 const subscribeMempool = async (ctx: Context) => {
     const api = await ctx.connect();
+
     if (!ctx.state.getSubscription('mempool')) {
         ctx.state.addSubscription('mempool');
         api.on('mempool', ev => onMempoolTx(ctx, ev));
@@ -280,6 +287,7 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
     const { payload } = request;
 
     let response: { subscribed: boolean };
+
     if (payload.type === 'accounts') {
         response = await subscribeAccounts(request, payload.accounts);
     } else if (payload.type === 'addresses') {
@@ -308,6 +316,7 @@ const unsubscribeAccounts = async (
 
     const api = await connect();
     const subscribed = state.getAddresses();
+
     if (subscribed.length < 1) {
         // there are no subscribed addresses left
         // remove listeners
@@ -323,11 +332,14 @@ const unsubscribeAccounts = async (
 
 const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: string[]) => {
     const api = await connect();
+
     // remove accounts
     if (!addresses) {
         state.removeAccounts(state.getAccounts());
     }
+
     const subscribed = state.removeAddresses(addresses || state.getAddresses());
+
     if (subscribed.length < 1) {
         // there are no subscribed addresses left
         // remove listeners
@@ -343,6 +355,7 @@ const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: str
 
 const unsubscribeBlock = async ({ state, connect }: Context) => {
     if (!state.getSubscription('block')) return { subscribed: false };
+
     const api = await connect();
     api.removeAllListeners('block');
     state.removeSubscription('block');
@@ -352,6 +365,7 @@ const unsubscribeBlock = async ({ state, connect }: Context) => {
 
 const unsubscribeFiatRates = async ({ state, connect }: Context) => {
     if (!state.getSubscription('fiatRates')) return { subscribed: false };
+
     const api = await connect();
     api.removeAllListeners('fiatRates');
     state.removeSubscription('fiatRates');
@@ -361,6 +375,7 @@ const unsubscribeFiatRates = async ({ state, connect }: Context) => {
 
 const unsubscribeMempool = async ({ state, connect }: Context) => {
     if (!state.getSubscription('mempool')) return { subscribed: false };
+
     const api = await connect();
     api.removeAllListeners('mempool');
     state.removeSubscription('mempool');
@@ -371,6 +386,7 @@ const unsubscribeMempool = async ({ state, connect }: Context) => {
 const unsubscribe = async (request: Request<MessageTypes.Unsubscribe>) => {
     const { payload } = request;
     let response: { subscribed: boolean };
+
     if (payload.type === 'accounts') {
         response = await unsubscribeAccounts(request, payload.accounts);
     } else if (payload.type === 'addresses') {
@@ -434,6 +450,7 @@ class BlockbookWorker extends BaseWorker<BlockbookAPI> {
             this.api.dispose();
             this.api.removeAllListeners();
         }
+
         super.cleanup();
     }
 

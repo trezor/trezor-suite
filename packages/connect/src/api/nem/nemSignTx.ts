@@ -77,9 +77,11 @@ const mosaicCreationMessage = (tx: $T.NEMMosaicCreationTransaction): PROTO.NEMMo
     };
 
     const { properties } = tx.mosaicDefinition;
+
     if (Array.isArray(properties)) {
         properties.forEach(property => {
             const { name, value } = property;
+
             switch (name) {
                 case 'divisibility':
                     definition.divisibility = parseInt(value, 10);

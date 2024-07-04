@@ -70,6 +70,7 @@ const AnalyticsSwitchRow = () => {
 
             return;
         }
+
         analytics.disable();
     };
 

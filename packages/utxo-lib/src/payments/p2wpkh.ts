@@ -60,7 +60,9 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'hash', () => {
         if (a.output) return a.output.subarray(2, 22);
+
         if (a.address) return _address().data;
+
         if (a.pubkey || o.pubkey) return bcrypto.hash160(a.pubkey! || o.pubkey!);
     });
     lazy.prop(o, 'output', () => {
@@ -70,6 +72,7 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'pubkey', () => {
         if (a.pubkey) return a.pubkey;
+
         if (!a.witness) return;
 
         return a.witness[1];
@@ -86,6 +89,7 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'witness', () => {
         if (!a.pubkey) return;
+
         if (!a.signature) return;
 
         return [a.signature, a.pubkey];
@@ -94,12 +98,17 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
     // extended validation
     if (opts.validate) {
         let hash = Buffer.from([]);
+
         if (a.address) {
             const { prefix, version, data } = _address();
+
             if (network && network.bech32 !== prefix)
                 throw new TypeError('Invalid prefix or Network mismatch');
+
             if (version !== 0x00) throw new TypeError('Invalid address version');
+
             if (data.length !== 20) throw new TypeError('Invalid address data');
+
             hash = data;
         }
 
@@ -111,6 +120,7 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
         if (a.output) {
             if (a.output.length !== 22 || a.output[0] !== OPS.OP_0 || a.output[1] !== 0x14)
                 throw new TypeError('Output is invalid');
+
             if (hash.length > 0 && !hash.equals(a.output.subarray(2)))
                 throw new TypeError('Hash mismatch');
             else hash = a.output.subarray(2);
@@ -118,24 +128,30 @@ export function p2wpkh(a: Payment, opts?: PaymentOpts): Payment {
 
         if (a.pubkey) {
             const pkh = bcrypto.hash160(a.pubkey);
+
             if (hash.length > 0 && !hash.equals(pkh)) throw new TypeError('Hash mismatch');
             else hash = pkh;
+
             if (!ecc.isPoint(a.pubkey) || a.pubkey.length !== 33)
                 throw new TypeError('Invalid pubkey for p2wpkh');
         }
 
         if (a.witness) {
             if (a.witness.length !== 2) throw new TypeError('Witness is invalid');
+
             if (!bscript.isCanonicalScriptSignature(a.witness[0]))
                 throw new TypeError('Witness has invalid signature');
+
             if (!ecc.isPoint(a.witness[1]) || a.witness[1].length !== 33)
                 throw new TypeError('Witness has invalid pubkey');
 
             if (a.signature && !a.signature.equals(a.witness[0]))
                 throw new TypeError('Signature mismatch');
+
             if (a.pubkey && !a.pubkey.equals(a.witness[1])) throw new TypeError('Pubkey mismatch');
 
             const pkh = bcrypto.hash160(a.witness[1]);
+
             if (hash.length > 0 && !hash.equals(pkh)) throw new TypeError('Hash mismatch');
         }
     }

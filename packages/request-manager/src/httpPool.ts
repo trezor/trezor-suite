@@ -13,11 +13,13 @@ export const createRequestPool = (interceptorOptions: InterceptorOptions) => {
             const { statusCode } = response;
 
             const isNetworkMisbehaving = timeRequestTook > requestTimeoutLimit;
+
             if (isNetworkMisbehaving) {
                 interceptorOptions.handler({
                     type: 'NETWORK_MISBEHAVING',
                 });
             }
+
             interceptorOptions.handler({
                 type: 'INTERCEPTED_RESPONSE',
                 host,

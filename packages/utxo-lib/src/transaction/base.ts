@@ -153,6 +153,7 @@ export class TransactionBase<S = undefined> {
             this.ins[index].witness.length < 1
         )
             return;
+
         const { witness } = this.ins[index];
         const chunks = witness.reduce(
             (arr, chunk) => arr.concat([getChunkSize(chunk.length), chunk]),

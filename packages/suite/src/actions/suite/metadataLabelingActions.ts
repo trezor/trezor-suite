@@ -56,6 +56,7 @@ const fetchMetadata =
         }
 
         const entityMetadata = entity[encryptionVersion];
+
         if (!entityMetadata) {
             throw new Error('trying to fetch entity without metadata');
         }
@@ -85,6 +86,7 @@ const fetchMetadata =
                 console.error('fetchMetadata: addressLabels missing in metadata file');
                 decryptedData.addressLabels = {};
             }
+
             if (!decryptedData.outputLabels) {
                 console.error('fetchMetadata: outputLabels missing in metadata file');
                 decryptedData.outputLabels = {};
@@ -107,6 +109,7 @@ export const setAccountMetadataKey =
             // account keys can't be set without device keys
             return account;
         }
+
         try {
             const metaKey = metadataUtils.deriveMetadataKey(deviceMetaKey, account.metadata.key);
             const fileName = metadataUtils.deriveFilenameForLabeling(metaKey, encryptionVersion);
@@ -141,6 +144,7 @@ const syncMetadataKeys =
         if (!device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) {
             return;
         }
+
         const targetAccounts = getState().wallet.accounts.filter(
             acc => !acc.metadata[encryptionVersion]?.fileName && acc.deviceState === device.state,
         );
@@ -156,6 +160,7 @@ const syncMetadataKeys =
 export const fetchAndSaveMetadata =
     (deviceStateArg?: string) => async (dispatch: Dispatch, getState: GetState) => {
         const provider = selectSelectedProviderForLabels(getState());
+
         if (!provider) return;
 
         let device = deviceStateArg
@@ -176,6 +181,7 @@ export const fetchAndSaveMetadata =
                 dataType: 'labels',
             }),
         );
+
         if (!providerInstance) {
             return;
         }
@@ -188,6 +194,7 @@ export const fetchAndSaveMetadata =
             device = deviceStateArg
                 ? selectDeviceByState(getState(), deviceStateArg)
                 : selectDevice(getState());
+
             if (!device?.state || !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) return;
 
             dispatch(syncMetadataKeys(device));
@@ -238,6 +245,7 @@ export const fetchAndSaveMetadata =
                     }),
                 );
             }
+
             // If there is no interval set, it means that error occurred in the first fetch
             // in such case, display error notification
             dispatch(
@@ -252,12 +260,15 @@ export const fetchAndSaveMetadata =
 
 export const fetchAndSaveMetadataForAllDevices = () => (dispatch: Dispatch, getState: GetState) => {
     const metadata = selectMetadata(getState());
+
     if (!metadata.enabled) {
         return;
     }
+
     const devices = selectDevices(getState());
     devices.forEach(device => {
         if (!device.state || !device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) return;
+
         dispatch(fetchAndSaveMetadata(device.state));
     });
 };
@@ -276,6 +287,7 @@ export const addDeviceMetadata =
             });
 
         const { fileName, aesKey } = device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION] || {};
+
         if (!fileName || !aesKey) {
             return Promise.resolve({
                 success: false as const,
@@ -311,6 +323,7 @@ export const addDeviceMetadata =
                 dataType: 'labels',
             }),
         );
+
         if (!providerInstance) {
             // provider should always be set here
             return Promise.resolve({ success: false as const, error: 'no provider instance' });
@@ -351,6 +364,7 @@ export const addAccountMetadata =
                 error: `filename of version ${METADATA_LABELING.ENCRYPTION_VERSION} does not exist for account ${account.path}`,
             });
         }
+
         const data = provider.data[fileName];
 
         const nextMetadata = cloneObject(
@@ -367,6 +381,7 @@ export const addAccountMetadata =
                 }
 
                 delete nextMetadata.outputLabels[payload.txid][payload.outputIndex];
+
                 if (Object.keys(nextMetadata.outputLabels[payload.txid]).length === 0) {
                     delete nextMetadata.outputLabels[payload.txid];
                 }
@@ -420,6 +435,7 @@ export const addAccountMetadata =
                 dataType: 'labels',
             }),
         );
+
         if (!providerInstance) {
             // provider should always be set here
             return Promise.resolve({ success: false as const, error: 'no provider instance' });
@@ -511,6 +527,7 @@ export const addMetadata =
                             dataType: 'labels',
                         }),
                     );
+
                     if (providerInstance) {
                         dispatch(
                             metadataProviderActions.handleProviderError({
@@ -553,6 +570,7 @@ export const init =
         }
 
         dispatch({ type: METADATA.SET_INITIATING, payload: true });
+
         if (getState().metadata.error?.[device.state]) {
             // remove error note about failed migration potentially set in a previous run
             dispatch({
@@ -573,6 +591,7 @@ export const init =
             const result = await dispatch(
                 setDeviceMetadataKey(device, METADATA_LABELING.ENCRYPTION_VERSION),
             );
+
             if (!result?.success) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
                 dispatch({ type: METADATA.SET_EDITING, payload: undefined });
@@ -600,6 +619,7 @@ export const init =
         // 4. connect to provider
         if (!selectSelectedProviderForLabels(getState())) {
             const providerResult = await dispatch(metadataProviderActions.initProvider());
+
             if (!providerResult) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
                 dispatch({ type: METADATA.SET_EDITING, payload: undefined });
@@ -639,9 +659,11 @@ export const init =
             // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
             metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
                 const device = selectDevice(getState());
+
                 if (!getState().suite.online || !device?.state) {
                     return;
                 }
+
                 dispatch(fetchAndSaveMetadata(device.state));
             }, 10000);
         }

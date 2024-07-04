@@ -32,11 +32,14 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
 
     const isNotSameDevice = useMemo(() => {
         const prevDeviceId = prevDevice?.id;
+
         // if no device was connected before, assume it is same device
         if (!prevDeviceId) {
             return false;
         }
+
         const deviceId = device?.id;
+
         if (!deviceId) {
             // we don't know
             return null;
@@ -65,7 +68,9 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
         // Then the device will get auto locked and requests to show a PIN matrix next before changing its setting.
         // (which could happen on Final step where we set device name and homescreen)
         if (!device?.features) return null;
+
         if (activeStepId === 'set-pin') return null; // Step for setting up a PIN handles all by itself
+
         if (showPinMatrix) {
             return <PinMatrix device={device} />;
         }
@@ -76,6 +81,7 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     }
 
     const pinComponent = getPinComponent();
+
     if (pinComponent) {
         return (
             <OnboardingStepBox
@@ -87,6 +93,7 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
             </OnboardingStepBox>
         );
     }
+
     if (UnexpectedStateComponent) {
         return <UnexpectedContainer>{UnexpectedStateComponent}</UnexpectedContainer>;
     }

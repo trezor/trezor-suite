@@ -30,6 +30,7 @@ export const DiscreetCanvas = ({ width, height, fontSize, text, color }: Discree
     const {
         utils: { colors },
     } = useNativeStyles();
+
     if (!font) return null;
 
     // Set blur dynamically to make look texts of any size look the same.

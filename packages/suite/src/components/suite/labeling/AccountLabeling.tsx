@@ -36,6 +36,7 @@ export const AccountLabeling = ({ account }: AccountProps) => {
     if (device && !accounts.find(a => a.deviceState === device.state)) {
         // account is not associated with selected device, add wallet label
         const accountDevice = findAccountDevice(accounts[0], devices);
+
         if (accountDevice) {
             return (
                 <span>

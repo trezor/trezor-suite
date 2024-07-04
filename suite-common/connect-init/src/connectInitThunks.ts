@@ -96,7 +96,9 @@ export const connectInitThunk = createThunk(
         wrappedMethods.forEach(key => {
             // typescript complains about params and return type, need to be "any"
             const original: any = TrezorConnect[key];
+
             if (!original) return;
+
             (TrezorConnect[key] as any) = async (params: any) => {
                 dispatch(lockDevice(true));
                 const result = await synchronize(() => original(params));
@@ -117,11 +119,13 @@ export const connectInitThunk = createThunk(
             });
         } catch (error) {
             let formattedError: string;
+
             if (typeof error === 'string') {
                 formattedError = error;
             } else {
                 formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
             }
+
             throw new Error(formattedError);
         }
     },

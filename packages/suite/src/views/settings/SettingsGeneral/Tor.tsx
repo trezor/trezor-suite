@@ -39,10 +39,12 @@ export const Tor = () => {
                     type: 'disable-tor-stop-coinjoin',
                 }),
             );
+
             if (isKeepRunningTor) {
                 return;
             }
         }
+
         try {
             await dispatch(toggleTor(!isTorEnabled));
         } catch {

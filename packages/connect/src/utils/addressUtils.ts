@@ -7,6 +7,7 @@ import type { BitcoinNetworkInfo } from '../types';
 const isValidBase58Address = (address: string, network: BitcoinNetworkInfo['network']) => {
     try {
         const decoded = BitcoinJSAddress.fromBase58Check(address, network);
+
         if (decoded.version !== network.pubKeyHash && decoded.version !== network.scriptHash) {
             return false;
         }
@@ -21,6 +22,7 @@ const isValidBase58Address = (address: string, network: BitcoinNetworkInfo['netw
 const isValidBech32Address = (address: string, network: BitcoinNetworkInfo['network']) => {
     try {
         const decoded = BitcoinJSAddress.fromBech32(address);
+
         if (decoded.prefix !== network.bech32) {
             return false;
         }

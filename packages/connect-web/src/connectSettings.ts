@@ -5,6 +5,7 @@ export const getEnv = () => {
     if (typeof chrome !== 'undefined' && typeof chrome.runtime?.onConnect !== 'undefined') {
         return 'webextension';
     }
+
     if (typeof navigator !== 'undefined') {
         if (
             typeof navigator.product === 'string' &&
@@ -12,7 +13,9 @@ export const getEnv = () => {
         ) {
             return 'react-native';
         }
+
         const userAgent = navigator.userAgent.toLowerCase();
+
         if (userAgent.indexOf(' electron/') > -1) {
             return 'electron';
         }
@@ -44,12 +47,14 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}): Conn
     const settings = { popup: true, ...input };
     // For debugging purposes `connectSrc` could be defined in `global.__TREZOR_CONNECT_SRC` variable
     let globalSrc: string | undefined;
+
     if (typeof window !== 'undefined') {
         // @ts-expect-error not defined in globals outside of the package
         globalSrc = window.__TREZOR_CONNECT_SRC;
     } else if (typeof global !== 'undefined') {
         globalSrc = global.__TREZOR_CONNECT_SRC;
     }
+
     if (typeof globalSrc === 'string') {
         settings.connectSrc = globalSrc;
         settings.debug = true;
@@ -57,6 +62,7 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}): Conn
 
     if (typeof window !== 'undefined' && typeof window.location?.search === 'string') {
         const query = processQueryString(window.location.search, ['trezor-connect-src']);
+
         // For debugging purposes `connectSrc` could be defined in url query of hosting page. Usage:
         // https://3rdparty-page.com/?trezor-connect-src=https://localhost:8088/
         if (query['trezor-connect-src']) {

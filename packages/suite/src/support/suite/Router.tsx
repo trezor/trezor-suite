@@ -24,6 +24,7 @@ const RouterComponent = () => {
     useEffect(() => {
         const onPopState = () => {
             const canGoBack = dispatch(onBeforePopState());
+
             if (!canGoBack) {
                 history.go(1);
             }

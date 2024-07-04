@@ -60,11 +60,13 @@ const FiatAmount = ({
         required: translationString('TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED'),
         validate: (value: string) => {
             const numberValue = Number(value);
+
             if (minimumPaymentAmountLimit && numberValue < minimumPaymentAmountLimit) {
                 return translationString('TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM', {
                     amount: minimumPaymentAmountLimit,
                 });
             }
+
             if (maximumPaymentAmountLimit && numberValue > maximumPaymentAmountLimit) {
                 return translationString('TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MAXIMUM', {
                     amount: maximumPaymentAmountLimit,

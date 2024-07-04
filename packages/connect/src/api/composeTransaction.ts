@@ -71,9 +71,11 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         ]);
 
         const coinInfo = getBitcoinNetwork(payload.coin);
+
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
+
         // validate backend
         isBackendSupported(coinInfo);
 
@@ -85,9 +87,11 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         let total = new BigNumber(0);
         payload.outputs.forEach(out => {
             const output = validateHDOutput(out, coinInfo);
+
             if ('amount' in output && typeof output.amount === 'string') {
                 total = total.plus(output.amount);
             }
+
             outputs.push(output);
         });
 
@@ -164,6 +168,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         return feeLevels.map(level => {
             composer.composeCustomFee(level.feePerUnit);
             const tx = { ...composer.composed.custom }; // needs to spread otherwise flow has a problem with ComposeResult vs PrecomposedTransaction (max could be undefined)
+
             if (tx.type === 'final') {
                 return {
                     ...tx,
@@ -171,6 +176,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
                     outputs: tx.outputs.map(outputToTrezor),
                 };
             }
+
             if (tx.type === 'nonfinal') {
                 return {
                     ...tx,
@@ -192,6 +198,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         // wait for fee selection
         const response = await this.selectFee(account, utxo);
+
         // check for interruption
         if (!this.discovery) {
             throw ERRORS.TypedError(
@@ -312,6 +319,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         // try to compose multiple transactions with different fee levels
         // check if any of composed transactions is valid
         const hasFunds = composer.composeAllFeeLevels();
+
         if (!hasFunds) {
             // show error view
             this.postMessage(createUiMessage(UI.INSUFFICIENT_FUNDS));
@@ -339,6 +347,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         composer: TransactionComposer,
     ): Promise<SignedTransaction | 'change-account'> {
         const resp = await this.createUiPromise(UI.RECEIVE_FEE).promise;
+
         switch (resp.payload.type) {
             case 'compose-custom':
                 // recompose custom fee level with requested value
@@ -374,6 +383,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         let refTxs: RefTransaction[] = [];
         const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
         const refTxsIds = getReferencedTransactions(inputs);
+
         if (requiredRefTxs && refTxsIds.length > 0) {
             refTxs = await this.getBlockchain()
                 .then(blockchain => blockchain.getTransactionHexes(refTxsIds))
@@ -416,6 +426,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
     dispose() {
         const { discovery } = this;
+
         if (discovery) {
             discovery.stop();
             discovery.removeAllListeners();

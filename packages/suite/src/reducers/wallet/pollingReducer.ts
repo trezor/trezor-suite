@@ -19,13 +19,16 @@ const pollingReducer = (state: PollingState = initialState, action: Action): Pol
                         counter: 0,
                     };
                 }
+
                 break;
             case POLLING.REQUEST: {
                 const polling = draft[action.key];
+
                 if (polling) {
                     polling.counter += 1;
                     polling.timeoutId = action.timeoutId;
                 }
+
                 break;
             }
             case POLLING.STOP: {

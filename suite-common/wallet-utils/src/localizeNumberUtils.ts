@@ -23,9 +23,11 @@ export const localizeNumber = (
 
     const getDecimalsLength = () => {
         const originalDecimalsLength = amount.decimalPlaces() ?? 0;
+
         if (originalDecimalsLength < minDecimals) {
             return minDecimals;
         }
+
         if (maxDecimals !== undefined && originalDecimalsLength > maxDecimals) {
             // Remove trailing zeroes after formatting:
             return new BigNumber(amount.toFixed(maxDecimals)).decimalPlaces() ?? maxDecimals;

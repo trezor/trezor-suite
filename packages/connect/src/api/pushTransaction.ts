@@ -26,9 +26,11 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         Assert(PushTransactionSchema, payload);
 
         const coinInfo = getCoinInfo(payload.coin);
+
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
+
         // validate backend
         isBackendSupported(coinInfo);
 

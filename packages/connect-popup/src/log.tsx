@@ -84,9 +84,11 @@ const logInConsole = (logs: any[]) => {
     // the logs are printed in the correct timestamp order.
     logDebounceCache.push(...logs);
     logDebounceCache.sort((a, b) => a.timestamp - b.timestamp);
+
     if (logDebounceTimeout) {
         clearTimeout(logDebounceTimeout);
     }
+
     logDebounceTimeout = setTimeout(() => {
         logDebounceCache.forEach(log => {
             const { prefix, css, message } = log;
@@ -111,6 +113,7 @@ const useLogWorker = (setLogs: React.Dispatch<React.SetStateAction<any[]>>) => {
         } else {
             logWorker.port.onmessage = function (event) {
                 const { data } = event;
+
                 switch (data.type) {
                     case 'get-logs':
                         logInConsole(data.payload);

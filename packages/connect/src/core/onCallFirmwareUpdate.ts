@@ -89,10 +89,12 @@ const waitForReconnectedDevice = async (
             }),
         );
         await createTimeoutPromise(2000);
+
         try {
             const path = deviceList.getFirstDevicePath();
             reconnectedDevice = deviceList.getDevice(path);
         } catch {}
+
         i++;
         log.debug('onCallFirmwareUpdate', 'waiting for device to reconnect', i);
     } while (
@@ -297,6 +299,7 @@ export const onCallFirmwareUpdate = async ({
     log.debug('onCallFirmwareUpdate with params: ', params);
 
     const device = await initDevice(params?.device?.path);
+
     if (!device.firmwareRelease) {
         throw ERRORS.TypedError('Runtime', 'device.firmwareRelease is not set');
     }
@@ -406,12 +409,14 @@ export const onCallFirmwareUpdate = async ({
                 );
             }
         }
+
         await device.release();
 
         // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
         if (device.features.major_version === 1) {
             await createTimeoutPromise(2000);
         }
+
         reconnectedDevice = await waitForReconnectedDevice(
             { bootloader: true, method: 'auto' },
             { deviceList, device, log, postMessage, abortSignal },
@@ -493,6 +498,7 @@ export const onCallFirmwareUpdate = async ({
 
             const isValid = await firmwareCheck(reconnectedDevice, device, stripped, postMessage);
             await reconnectedDevice.release();
+
             if (isValid) {
                 log.debug('onCallFirmwareUpdate', 'installed fw hash and calculated hash match');
 

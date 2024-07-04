@@ -22,6 +22,7 @@ describe('TrezorConnect.unlockPath', () => {
         const unlockPath = await TrezorConnect.unlockPath({
             path: "m/10025'",
         });
+
         if (!unlockPath.success) throw new Error(unlockPath.payload.error);
 
         expect(unlockPath.payload).toMatchObject({
@@ -97,6 +98,7 @@ describe('TrezorConnect.unlockPath', () => {
         const unlockPath = await TrezorConnect.unlockPath({
             path: "m/10025'",
         });
+
         if (!unlockPath.success) throw new Error(unlockPath.payload.error);
 
         expect(unlockPath.payload).toMatchObject({
@@ -157,6 +159,7 @@ describe('TrezorConnect.unlockPath', () => {
         const unlockPath = await TrezorConnect.unlockPath({
             path: "m/10025'",
         });
+
         if (!unlockPath.success) throw new Error(unlockPath.payload.error);
 
         expect(unlockPath.payload).toMatchObject({

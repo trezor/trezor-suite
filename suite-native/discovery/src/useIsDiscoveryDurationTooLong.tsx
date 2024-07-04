@@ -16,6 +16,7 @@ export const useIsDiscoveryDurationTooLong = () => {
 
     useEffect(() => {
         let interval: ReturnType<typeof setInterval>;
+
         if (isDiscoveryActive && startDiscoveryTimestamp) {
             interval = setInterval(() => {
                 if (performance.now() - startDiscoveryTimestamp > DISCOVERY_DURATION_TRESHOLD) {

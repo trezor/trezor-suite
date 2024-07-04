@@ -104,6 +104,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
         if (wantCrypto) {
             const cryptoAmount = Number(quote.receiveStringAmount);
             const symbol = quote.receiveCurrency;
+
             if (quote.minCrypto && cryptoAmount < quote.minCrypto) {
                 return (
                     <Translation
@@ -125,6 +126,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
                     />
                 );
             }
+
             if (quote.maxCrypto && cryptoAmount > quote.maxCrypto) {
                 return (
                     <Translation
@@ -148,6 +150,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
             }
         } else {
             const fiatAmount = Number(quote.fiatStringAmount);
+
             if (quote.minFiat && fiatAmount < quote.minFiat) {
                 return (
                     <Translation
@@ -169,6 +172,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
                     />
                 );
             }
+
             if (quote.maxFiat && fiatAmount > quote.maxFiat) {
                 return (
                     <Translation

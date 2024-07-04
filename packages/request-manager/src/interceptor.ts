@@ -29,6 +29,7 @@ const getIdentityForAgent = (options: Readonly<http.RequestOptions>) => {
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
         return getIdentityName(options.headers['Proxy-Authorization']);
     }
+
     if (options.headers?.Upgrade === 'websocket') {
         // Create random identity for each websocket connection
         return `WebSocket/${options.host}/${getWeakRandomId(16)}`;
@@ -49,6 +50,7 @@ const interceptNetSocketConnect = (context: InterceptorContext) => {
     const originalSocketWrite = net.Socket.prototype.write;
     net.Socket.prototype.write = function (data, ...args) {
         const overloadedHeaders: string[] = [];
+
         if (typeof data === 'string' && /Allowed-Headers/gi.test(data)) {
             const headers = data.split('\r\n');
             const allowedHeaders = headers
@@ -60,6 +62,7 @@ const interceptNetSocketConnect = (context: InterceptorContext) => {
 
                 headers.forEach(line => {
                     const [key, value] = line.split(': ');
+
                     if (key && value) {
                         if (allowedKeys.some(allowed => new RegExp(`^${allowed}`, 'i').test(key))) {
                             overloadedHeaders.push(line);
@@ -89,6 +92,7 @@ const interceptNetSocketConnect = (context: InterceptorContext) => {
         const [options, callback] = args;
         let request: typeof options;
         let details: string;
+
         if (Array.isArray(options)) {
             // Websocket in clear-net contains array where first element is SocketConnectOpts
             [request] = options;
@@ -130,6 +134,7 @@ const interceptNetConnect = (context: InterceptorContext) => {
         const [options, callback] = args;
 
         let details: string;
+
         if (typeof options === 'object') {
             if ('port' in options) {
                 // TcpNetConnectOpts
@@ -234,6 +239,7 @@ const overloadWebsocketHandshake = (
     ) {
         delete url.agent;
     }
+
     if (
         typeof url === 'object' &&
         !isWhitelistedHost(url.host, context.whitelistedHosts) && // difference between overloadHttpRequest
@@ -249,6 +255,7 @@ const interceptHttp = (context: InterceptorContext) => {
 
     http.request = (...args) => {
         const overload = overloadHttpRequest(context, 'http', ...args);
+
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
 
@@ -263,6 +270,7 @@ const interceptHttp = (context: InterceptorContext) => {
 
     http.get = (...args) => {
         const overload = overloadWebsocketHandshake(context, 'http', ...args);
+
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
 
@@ -278,6 +286,7 @@ const interceptHttps = (context: InterceptorContext) => {
 
     https.request = (...args) => {
         const overload = overloadHttpRequest(context, 'https', ...args);
+
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
 
@@ -292,6 +301,7 @@ const interceptHttps = (context: InterceptorContext) => {
 
     https.get = (...args) => {
         const overload = overloadWebsocketHandshake(context, 'https', ...args);
+
         if (overload) {
             const [identity, ...overloadedArgs] = overload;
 
@@ -307,6 +317,7 @@ const interceptTlsConnect = (context: InterceptorContext) => {
 
     tls.connect = (...args) => {
         const [options] = args;
+
         if (typeof options === 'object') {
             context.handler({
                 type: 'INTERCEPTED_REQUEST',

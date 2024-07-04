@@ -77,6 +77,7 @@ const MiddleNarrow = styled.div`
 const SelectedOffer = () => {
     const { account, selectedQuote, exchangeInfo, exchangeStep, receiveAccount } =
         useCoinmarketExchangeOffersContext();
+
     if (!selectedQuote) return null;
 
     return (

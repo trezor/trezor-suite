@@ -130,6 +130,7 @@ const initTrezorConnect = async (TrezorUserEnvLink, options) => {
 // "1.9.3-1.9.6" - skip for FW gte 1.9.3 && lte 1.9.6
 const skipTest = rules => {
     if (!rules || !Array.isArray(rules)) return;
+
     const fwModel = firmware.substring(0, 1);
     const fwMaster = firmware.includes('-main');
     const rule = rules
@@ -142,6 +143,7 @@ const skipTest = rules => {
 
             // is within range
             const [from, to] = skip.split('-');
+
             if (
                 !fwMaster &&
                 from &&
@@ -160,6 +162,7 @@ const skipTest = rules => {
                 // lower
                 return true;
             }
+
             if (
                 (fwMaster && skip.startsWith('>')) ||
                 (!fwMaster &&
@@ -169,6 +172,7 @@ const skipTest = rules => {
                 // greater
                 return true;
             }
+
             if (!fwMaster && versionUtils.isEqual(firmware, skip)) {
                 // exact
                 return true;

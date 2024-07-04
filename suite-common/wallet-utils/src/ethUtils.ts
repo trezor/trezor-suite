@@ -6,6 +6,7 @@ export const padLeftEven = (hex: string): string => (hex.length % 2 !== 0 ? `0${
 
 export const sanitizeHex = ($hex: string): string => {
     const hex = $hex.toLowerCase().substring(0, 2) === '0x' ? $hex.substring(2) : $hex;
+
     if (hex === '') return '';
 
     return `0x${padLeftEven(hex)}`;

@@ -83,9 +83,11 @@ export const useHandleDeviceConnection = () => {
             // so this prevents from redirect being duplicated.
             const isPreviousRouteOnboarding =
                 navigation.getState()?.routes.at(-1)?.name === RootStackRoutes.Onboarding;
+
             if (isPreviousRouteOnboarding) {
                 return;
             }
+
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {

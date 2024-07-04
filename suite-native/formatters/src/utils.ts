@@ -36,9 +36,11 @@ export const formatNumberWithThousandCommas = (
 
     const getDecimalsLength = () => {
         const originalDecimalsLegth = amount.decimalPlaces() ?? 0;
+
         if (originalDecimalsLegth < minDecimals) {
             return minDecimals;
         }
+
         if (maxDecimals !== undefined && originalDecimalsLegth > maxDecimals) {
             // Remove trailing zeroes after formatting:
             return new BigNumber(amount.toFixed(maxDecimals)).decimalPlaces() ?? maxDecimals;

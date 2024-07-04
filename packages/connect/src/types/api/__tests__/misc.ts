@@ -9,6 +9,7 @@ export const cipherKeyValue = async (api: TrezorConnect) => {
         askOnDecrypt: false,
         iv: 'advanced',
     });
+
     if (kv.success) {
         kv.payload.value.toLowerCase();
     }
@@ -50,6 +51,7 @@ export const requestLogin = async (api: TrezorConnect) => {
         // @ts-expect-error
         a.payload.address.toLowerCase();
     }
+
     // sync call
     api.requestLogin({
         challengeHidden: 'a',
@@ -68,11 +70,13 @@ export const requestLogin = async (api: TrezorConnect) => {
 
 export const setProxy = async (api: TrezorConnect) => {
     const proxy = await api.setProxy({ proxy: 'socks://localhost:9050' });
+
     if (proxy.success) {
         proxy.payload.message.toLowerCase();
     } else {
         proxy.payload.error.toLowerCase();
     }
+
     api.setProxy({
         proxy: {
             type: 5,

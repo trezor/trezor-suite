@@ -261,6 +261,7 @@ export const buildTokenTransferTransaction = async (
     const isReceiverAddressSystemAccount = toAddressOwner === SYSTEM_PROGRAM_PUBLIC_KEY;
 
     let finalReceiverAddress = toAddress;
+
     if (isReceiverAddressSystemAccount) {
         // Step 3: If not, check if the receiver owns an associated token account
         if (toTokenAccount) {

@@ -58,6 +58,7 @@ if (isCI) {
     if (!process.env.EXPO_PUBLIC_ENVIRONMENT) {
         throw new Error('Missing EXPO_PUBLIC_ENVIRONMENT env variable');
     }
+
     if (!process.env.SENTRY_AUTH_TOKEN && buildType !== 'debug') {
         throw new Error('Missing SENTRY_AUTH_TOKEN env variable');
     }

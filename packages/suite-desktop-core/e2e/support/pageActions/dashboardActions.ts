@@ -39,9 +39,11 @@ class DashboardActions {
                 hasText: walletName,
             },
         );
+
         if (await wallet.isVisible()) {
             await wallet.locator('[data-test$="eject-button"]').click();
         }
+
         await wallet.waitFor({ state: 'detached' });
     }
 

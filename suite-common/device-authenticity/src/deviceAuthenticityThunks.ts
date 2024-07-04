@@ -20,6 +20,7 @@ export const checkDeviceAuthenticityThunk = createThunk(
             selectors: { selectDevice },
         } = extra;
         const device = selectDevice(getState());
+
         if (!device) {
             throw new Error('device is not connected');
         }

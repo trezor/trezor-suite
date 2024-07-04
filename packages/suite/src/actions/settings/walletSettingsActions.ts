@@ -45,6 +45,7 @@ export const setDiscreetMode = (toggled: boolean) => (dispatch: Dispatch, getSta
         type: WALLET_SETTINGS.SET_HIDE_BALANCE,
         toggled,
     });
+
     if (!getState().suite.flags.discreetModeCompleted) {
         dispatch(suiteActions.setFlag('discreetModeCompleted', true));
     }
@@ -62,11 +63,13 @@ export const changeCoinVisibility =
     (dispatch: Dispatch, getState: GetState) => {
         let { enabledNetworks } = getState().wallet.settings;
         const isAlreadyHidden = enabledNetworks.find(coin => coin === symbol);
+
         if (!shouldBeVisible) {
             enabledNetworks = enabledNetworks.filter(coin => coin !== symbol);
         } else if (!isAlreadyHidden) {
             enabledNetworks = [...enabledNetworks, symbol];
         }
+
         dispatch(changeNetworks(enabledNetworks));
 
         analytics.report({
@@ -81,7 +84,9 @@ export const changeCoinVisibility =
 export const setLastUsedFeeLevel =
     (feeLevel?: FeeLevel) => (dispatch: Dispatch, getState: GetState) => {
         const { selectedAccount } = getState().wallet;
+
         if (selectedAccount.status !== 'loaded') return;
+
         dispatch({
             type: WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL,
             symbol: selectedAccount.account.symbol,
@@ -91,6 +96,7 @@ export const setLastUsedFeeLevel =
 
 export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
     const { selectedAccount, settings } = getState().wallet;
+
     if (selectedAccount.status !== 'loaded') return;
 
     return settings.lastUsedFeeLevel[selectedAccount.account.symbol];

@@ -35,10 +35,15 @@ export const useSendFormFields = ({
 
             const { outputs } = getValues();
             const output = outputs ? outputs[outputIndex] : undefined;
+
             if (!output || output.type !== 'payment') return;
+
             const { fiat } = output;
+
             if (typeof fiat !== 'string') return; // fiat input not registered (testnet or fiat not available)
+
             const inputName = `outputs.${outputIndex}.fiat` as const;
+
             if (!amount) {
                 // reset fiat value (Amount field has error)
                 if (fiat.length > 0) {
@@ -47,6 +52,7 @@ export const useSendFormFields = ({
 
                 return;
             }
+
             // calculate Fiat value
             if (!fiatRate?.rate) return;
 
@@ -55,6 +61,7 @@ export const useSendFormFields = ({
                 : amount;
 
             const fiatValue = toFiatCurrency(formattedAmount, fiatRate.rate, 2);
+
             if (fiatValue) {
                 setValue(inputName, fiatValue, { shouldValidate: true });
             }
@@ -76,10 +83,12 @@ export const useSendFormFields = ({
     const setMax = useCallback(
         (outputIndex: number, active: boolean) => {
             clearErrors([`outputs.${outputIndex}.amount`, `outputs.${outputIndex}.fiat`]);
+
             if (!active) {
                 setValue(`outputs.${outputIndex}.amount`, '');
                 setValue(`outputs.${outputIndex}.fiat`, '');
             }
+
             setValue('setMaxOutputId', active ? undefined : outputIndex);
         },
         [clearErrors, setValue],
@@ -104,6 +113,7 @@ export const useSendFormFields = ({
     ) => {
         if (fallbackValue !== undefined) {
             const stateValue = getValues(fieldName);
+
             if (stateValue !== undefined) return stateValue;
 
             return fallbackValue;
@@ -120,8 +130,10 @@ export const useSendFormFields = ({
             // do not use RBF if disabled
             return;
         }
+
         const enabledOptions = getValues('options') || [];
         const isEnabled = enabledOptions.includes(option);
+
         if (isEnabled) {
             setValue(
                 'options',

@@ -105,6 +105,7 @@ export const AssetsView = () => {
         if (!assets[a.symbol]) {
             assets[a.symbol] = [];
         }
+
         assets[a.symbol].push(a);
     });
 
@@ -113,6 +114,7 @@ export const AssetsView = () => {
     const assetsData: AssetTableRowType[] = networks
         .map(symbol => {
             const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
+
             if (!network) {
                 console.error('unknown network');
 

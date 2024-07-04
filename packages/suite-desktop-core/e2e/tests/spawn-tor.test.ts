@@ -11,6 +11,7 @@ const turnOnTorInSettings = async (window: Page, shouldEnableTor = true) => {
     const torIAlreadyEnabled = await window.isChecked(
         '[data-test="@settings/general/tor-switch"] > input',
     );
+
     if ((shouldEnableTor && torIAlreadyEnabled) || (!shouldEnableTor && !torIAlreadyEnabled)) {
         // If tor is already enabled, we return early.
         return;

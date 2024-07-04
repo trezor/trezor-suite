@@ -57,6 +57,7 @@ export abstract class BaseProcess {
         this.logTopic = `process-${this.processName}`;
 
         const { system } = this.getPlatformInfo();
+
         if (!this.isSystemSupported(system)) {
             this.logger.error(this.logTopic, `Unsupported system (${system})`);
         }
@@ -171,6 +172,7 @@ export abstract class BaseProcess {
 
             resolveTimeout = setInterval(async () => {
                 const currentStatus = await this.status();
+
                 // We make sure that the service is available and then stop listening for initial error.
                 if (currentStatus.service && this.process) {
                     clearTimeout(resolveTimeout);

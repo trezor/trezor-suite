@@ -16,6 +16,7 @@ import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 
 export const getOutputState = (index: number, buttonRequestsCount: number) => {
     if (index === buttonRequestsCount - 1) return 'active';
+
     if (index < buttonRequestsCount - 1) return 'success';
 
     return undefined;
@@ -54,6 +55,7 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
                             accountToken.contract ===
                             `${policyGroup.policyId}${token.assetNameBytes}`,
                     );
+
                     if (!accountToken) return;
 
                     const fingerprint = accountToken.name
@@ -172,6 +174,7 @@ const constructOldFlow = ({
         // 2. fee
         // 3. output
         outputs.unshift({ type: 'fee', value: precomposedTx.fee });
+
         if (hasRippleDestinationTag && precomposedForm.rippleDestinationTag) {
             outputs.unshift({
                 type: 'destination-tag',

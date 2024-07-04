@@ -168,6 +168,7 @@ export const TokenList = ({
                 payload: { symbol: network.symbol, action: routeName },
             });
         }
+
         dispatch(goto(routeName, options));
     };
 

@@ -20,6 +20,7 @@ const selectTransactionTargetAddresses = memoizeWithArgs(
         const transaction = selectTransactionByTxidAndAccountKey(state, txid, accountKey);
 
         const transactionTargets = selectTransactionTargets(state, txid, accountKey);
+
         if (G.isNullable(transaction) || G.isNullable(transactionTargets)) return [];
 
         const isSentTransactionType = transaction.type === 'sent';

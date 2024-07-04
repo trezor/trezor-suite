@@ -5,6 +5,7 @@ import { container, showView, postMessage } from './common';
 
 const isSubmitButtonDisabled = (isDisabled: boolean) => {
     const submitButton = container.getElementsByClassName('submit')[0];
+
     if (isDisabled) {
         submitButton.setAttribute('disabled', 'disabled');
     } else {
@@ -43,6 +44,7 @@ const backspacePin = () => {
 
 const pinKeyboardHandler = (event: KeyboardEvent) => {
     event.preventDefault();
+
     switch (event.keyCode) {
         case 13:
             // enter,
@@ -109,6 +111,7 @@ export const initPinView = (payload: UiRequestDeviceAction['payload']) => {
         buttons.item(i).addEventListener('click', event => {
             if (event.target instanceof HTMLElement) {
                 const val = event.target.getAttribute('data-value');
+
                 if (val) {
                     addPin(+val);
                 }

@@ -17,7 +17,9 @@ const useFetchMessages = (locale: Locale) => {
                     : await import(`@trezor/suite-data/files/translations/${locale}.json`)
                           .then(res => res.default)
                           .catch(() => ({}));
+
             if (!active) return;
+
             setMessages({ ...enMessages, ...messages });
         };
         fetchMessages();
@@ -48,6 +50,7 @@ export const ConnectedIntlProvider = ({ children }: ConnectedIntlProviderProps) 
                     if (err.message.includes('MISSING_TRANSLATION')) {
                         return;
                     }
+
                     console.error(err);
                 }
             }}

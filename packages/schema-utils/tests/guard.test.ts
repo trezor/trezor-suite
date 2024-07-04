@@ -12,6 +12,7 @@ describe('type-guard', () => {
         expect(unknown.foo).toBe('bar');
 
         expect(Validate(schema, unknown)).toBe(true);
+
         if (Validate(schema, unknown)) {
             // @ts-expect-no-error
             expect(unknown.foo).toBe('bar');

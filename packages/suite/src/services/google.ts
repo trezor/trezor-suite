@@ -117,6 +117,7 @@ class Client {
             if (refreshToken) {
                 Client.refreshToken = refreshToken;
             }
+
             if (accessToken) {
                 Client.accessToken = accessToken;
             }
@@ -143,6 +144,7 @@ class Client {
 
     static async getAccessToken() {
         await Client.initPromise;
+
         if (!Client.accessToken && Client.refreshToken && Client.flow === 'code') {
             try {
                 const res = await fetch(`${Client.authServerUrl}/google-oauth-refresh`, {
@@ -156,9 +158,11 @@ class Client {
                     },
                 });
                 const json = await res.json();
+
                 if (!json?.access_token) {
                     throw new Error('Could not refresh access token.');
                 }
+
                 Client.accessToken = json.access_token;
             } catch {
                 await Client.forceImplicitFlow();
@@ -181,6 +185,7 @@ class Client {
     static async authorize() {
         await Client.initPromise;
         const redirectUri = await getOauthReceiverUrl();
+
         if (!redirectUri) return;
 
         const random = getCodeChallenge();
@@ -231,9 +236,11 @@ class Client {
                 });
 
                 const json = await res.json();
+
                 if (!json?.access_token || !json?.refresh_token) {
                     throw new Error('Could not retrieve the tokens.');
                 }
+
                 Client.accessToken = json.access_token;
                 Client.refreshToken = json.refresh_token;
             } catch {
@@ -392,6 +399,7 @@ class Client {
         if (!forceReload && Client.nameIdMap[name]) {
             return Client.nameIdMap[name];
         }
+
         try {
             // request to list files might have already been dispatched and exist as unresolved promise, so wait for it here in that case
             if (Client.listPromise) {
@@ -400,6 +408,7 @@ class Client {
 
                 return Client.nameIdMap[name];
             }
+
             // refresh nameIdMap
             Client.listPromise = Client.list({
                 query: { spaces: 'appDataFolder' },
@@ -433,6 +442,7 @@ class Client {
             const query = new URLSearchParams(apiParams.query as Record<string, string>).toString();
             url += `?${query}`;
         }
+
         const fetchOptions = {
             ...fetchParams,
             headers: {
@@ -455,6 +465,7 @@ class Client {
                 Authorization: `Bearer ${Client.accessToken}`,
             });
             let response = await fetch(url, fetchOptions);
+
             if (!isRetry && response.status === 401 && Client.refreshToken) {
                 // refresh access token if expired and attempt the request again
                 Client.accessToken = '';

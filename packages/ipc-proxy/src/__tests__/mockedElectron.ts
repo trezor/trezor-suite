@@ -35,11 +35,13 @@ class IpcMainMock extends EventEmitter {
                 );
             });
         }
+
         if (this.renderer.listenerCount('__invoke') < 1) {
             this.renderer.on('__invoke', async (resolve, reject, event, ...args: any[]) => {
                 if (!this.invokes[event]) {
                     reject(new Error(`Method ${event} not handled`));
                 }
+
                 try {
                     const result = await this.invokes[event]('[Electron.IpcMainEvent]', ...args);
                     resolve(result);

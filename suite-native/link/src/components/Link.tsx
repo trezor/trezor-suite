@@ -68,6 +68,7 @@ export const Link = ({
         } else if (onPress) {
             onPress();
         }
+
         e.stopPropagation();
     };
 

@@ -25,14 +25,18 @@ export function decodeBlake256Key(key: string) {
 export function decodeBlake256(address: string) {
     const bytes = bs58.decode(address);
     const buffer = Buffer.from(bytes);
+
     if (buffer.length !== 26) throw new Error(`${address} invalid address length`);
+
     let payload;
+
     try {
         payload = decodeBlake(buffer);
     } catch (e) {
         if (e instanceof Error) {
             throw new Error(`${address} ${e.message}`);
         }
+
         throw new Error(`${address} ${e}`);
     }
 
@@ -57,8 +61,10 @@ export function decodeAddress(address: string, network = BITCOIN_NETWORK) {
     // Zcash and Decred add an extra prefix resulting in a bigger (22 bytes) payload.
     // Identify them by checking if the version is multibyte (2 bytes instead of 1)
     let payload: Buffer;
+
     if (isNetworkType('bitcoinCash', network)) {
         if (!bchaddrjs.isCashAddress(address)) throw Error(`${address} is not a cash address`);
+
         payload = Buffer.from(bs58check.decode(bchaddrjs.toLegacyAddress(address)));
     } else {
         payload = Buffer.from(decode(address, network));
@@ -66,6 +72,7 @@ export function decodeAddress(address: string, network = BITCOIN_NETWORK) {
 
     // TODO: 4.0.0, move to "toOutputScript"
     if (payload.length < 21) throw new TypeError(`${address} is too short`);
+
     if (payload.length > 22) throw new TypeError(`${address} is too long`);
 
     const multibyte = payload.length === 22;
@@ -85,6 +92,7 @@ export function encodeAddress(hash: Buffer, version: number, network = BITCOIN_N
     const offset = multibyte ? 2 : 1;
 
     const payload = Buffer.allocUnsafe(size);
+
     if (multibyte) {
         payload.writeUInt16BE(version, 0);
     } else {

@@ -68,6 +68,7 @@ export const loadExchangeInfo = async (): Promise<ExchangeInfo> => {
         if (p.buyTickers) {
             buySymbolsArray.push(...p.buyTickers);
         }
+
         if (p.sellTickers) {
             sellSymbolsArray.push(...p.sellTickers);
         }

@@ -195,6 +195,7 @@ const Overview = (props: WithCoinmarketProps) => {
     if (isSavingsTradeLoading || !savingsTrade) {
         return <Translation id="TR_LOADING" />;
     }
+
     const { symbol } = account;
     // NOTE: Planned payments are sorted in descending order by plannedPaymentAt.
     const followingPayment = savingsTradePayments?.[0];

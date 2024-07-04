@@ -173,6 +173,7 @@ export const getCoinjoinConfig = (
     const settings = config
         ? config[environment ?? (Object.keys(config)[0] as CoinjoinServerEnvironment)]
         : undefined;
+
     if (!settings)
         throw new Error(`Missing settings for coinjoin network ${network} env ${environment}`);
 

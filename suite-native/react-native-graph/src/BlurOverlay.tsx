@@ -7,6 +7,7 @@ export const BlurOverlay = ({ isVisible, blur = 2 }: { isVisible: boolean; blur?
     const blurAmount = useSharedValue(0);
     useEffect(() => {
         blurAmount.value = 0;
+
         if (isVisible) {
             blurAmount.value = withTiming(blur, { duration: 300 });
         }

@@ -84,6 +84,7 @@ export const openDeferredModal =
                 decision: dfd,
             },
         });
+
         try {
             return dfd.promise;
         } catch (error) {

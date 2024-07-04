@@ -258,6 +258,7 @@ export const ResizableBox = ({
             if (newWidth === 0) {
                 setNewWidth(rect.width);
             }
+
             if (newHeight === 0) {
                 setNewHeight(rect.height);
             }

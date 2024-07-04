@@ -85,6 +85,7 @@ export const AutoScalingInput = forwardRef<HTMLInputElement, Props>(
                 if (ref && typeof ref === 'object') {
                     ref.current = e;
                 }
+
                 if (ref && typeof ref === 'function') {
                     ref(e);
                 }

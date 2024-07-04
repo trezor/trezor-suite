@@ -22,6 +22,7 @@ const processTxRequest = async (
 
         return response.message;
     }
+
     await typedCall(type, 'BinanceTxRequest', params);
     index++;
 

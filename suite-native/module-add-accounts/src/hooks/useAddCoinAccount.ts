@@ -269,6 +269,7 @@ export const useAddCoinAccount = () => {
         accountType?: AccountType;
     }) => {
         clearNetworkWithTypeToBeAdded();
+
         if (!device?.state) {
             showGeneralErrorAlert();
 
@@ -311,6 +312,7 @@ export const useAddCoinAccount = () => {
 
         if (!account) {
             let screen = AppTabsRoutes.HomeStack;
+
             if (flowType === 'accounts') {
                 screen = AppTabsRoutes.AccountsStack;
             } else if (flowType === 'receive') {

@@ -17,6 +17,7 @@ export const useBackendReconnection = (
 
     useEffect(() => {
         if (!resolveTime) return;
+
         const interval = setInterval(() => {
             const secToResolve = Math.round((resolveTime - new Date().getTime()) / 1000);
             setTime(secToResolve);
@@ -30,6 +31,7 @@ export const useBackendReconnection = (
     const reconnect = async () => {
         setProgress(true);
         const r: any = await dispatch(reconnectBlockchainThunk({ coin, identity }));
+
         if (!r.success) {
             setProgress(false);
         }

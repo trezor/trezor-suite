@@ -158,6 +158,7 @@ describe('HttpServer', () => {
             (name: string, end?: boolean) =>
             (req: any, res: any, next: (req: any, res: any) => void) => {
                 calledHandlers.push(name);
+
                 if (end) res.end('ok');
                 else next(req, res);
             };

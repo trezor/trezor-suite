@@ -78,6 +78,7 @@ const getLines = (
             },
         ];
     }
+
     if (isUpdatedSendFlow) {
         return [
             {

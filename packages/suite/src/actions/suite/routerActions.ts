@@ -55,8 +55,11 @@ export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) 
 export const onLocationChange =
     (url: string, anchor?: AnchorType) => (dispatch: Dispatch, getState: GetState) => {
         const unlocked = dispatch(onBeforePopState());
+
         if (!unlocked) return;
+
         const { router } = getState();
+
         if (router.url === url && router.app !== 'unknown') return null;
         // TODO: check if the view is not locked by the device request
 
@@ -110,10 +113,13 @@ export const goto =
 
         const { suite, router } = getState();
         const hasRouterLock = suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
+
         if (hasRouterLock) {
             dispatch(suiteActions.lockRouter(false));
         }
+
         const unlocked = dispatch(onBeforePopState());
+
         if (!unlocked) return;
 
         const urlBase = getPrefixedURL(getRoute(routeName, params));
@@ -127,6 +133,7 @@ export const goto =
 
             return;
         }
+
         const newUrl = `${urlBase}${preserveParams ? history.location.hash : ''}`;
         dispatch(onLocationChange(newUrl, anchor));
 
@@ -175,6 +182,7 @@ export const initialRedirection = () => (dispatch: Dispatch, getState: GetState)
     const route = findRoute(history.location.pathname + history.location.hash);
 
     const { initialRun } = getState().suite.flags;
+
     // only do initial redirection of route is valid
     // otherwise do nothing -> just show 404 page
     if (!route) {

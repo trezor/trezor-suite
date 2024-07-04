@@ -61,9 +61,11 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         })
         .addCase(firmwareActions.setError, (state, { payload }) => {
             state.error = payload;
+
             if (payload) {
                 state.status = 'error';
             }
+
             state.uiEvent = undefined;
         })
         .addCase(firmwareActions.setTargetType, (state, { payload }) => {

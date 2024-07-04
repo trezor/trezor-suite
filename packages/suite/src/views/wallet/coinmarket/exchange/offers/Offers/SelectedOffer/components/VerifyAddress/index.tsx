@@ -133,6 +133,7 @@ const VerifyAddressComponent = () => {
             : undefined,
         validate: value => {
             let valid = true;
+
             if (value) {
                 if (selectedQuote?.extraFieldDescription?.type === 'hex') {
                     valid = isHexValid(value);
@@ -140,6 +141,7 @@ const VerifyAddressComponent = () => {
                     valid = isInteger(value);
                 }
             }
+
             if (!valid) {
                 return translationString('TR_EXCHANGE_EXTRA_FIELD_INVALID', extraFieldDescription);
             }

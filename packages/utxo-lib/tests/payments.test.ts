@@ -69,11 +69,13 @@ import * as utils from './payments.utils';
 
         // cross-verify dynamically too
         if (!fixtures.dynamic) return;
+
         const { depends, details } = fixtures.dynamic;
 
         details.forEach((f: any) => {
             const detail = utils.preform(f);
             const disabled: any = {};
+
             if (f.disabled)
                 f.disabled.forEach((k: string) => {
                     disabled[k] = true;
@@ -81,6 +83,7 @@ import * as utils from './payments.utils';
 
             for (const key in depends) {
                 if (key in disabled) continue;
+
                 const dependencies = depends[key];
 
                 dependencies.forEach((dependency: any) => {
@@ -90,12 +93,15 @@ import * as utils from './payments.utils';
                     dependency.forEach((d: any) => {
                         utils.from(d, detail, args);
                     });
+
                     if (detail.network) {
                         args.network = detail.network;
                     }
+
                     if (detail.amount) {
                         args.amount = detail.amount;
                     }
+
                     const expected = utils.from(key, detail);
 
                     it(`${f.description}, ${key} derives from ${JSON.stringify(

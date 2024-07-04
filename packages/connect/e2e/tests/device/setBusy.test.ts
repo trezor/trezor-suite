@@ -32,6 +32,7 @@ describe('TrezorConnect.setBusy', () => {
             expiry_ms: 3000,
             keepSession: true, // keep session
         });
+
         if (!setBusy.success) throw new Error(setBusy.payload.error);
 
         expect(busy).toBe(true);
@@ -40,7 +41,9 @@ describe('TrezorConnect.setBusy', () => {
         await new Promise(resolve => setTimeout(resolve, 3000));
 
         const features = await TrezorConnect.getFeatures();
+
         if (!features.success) throw new Error(features.payload.error);
+
         expect(features.payload.busy).toBe(false);
     });
 
@@ -48,19 +51,24 @@ describe('TrezorConnect.setBusy', () => {
         const busy = await TrezorConnect.setBusy({
             expiry_ms: 5000,
         });
+
         if (!busy.success) throw new Error(busy.payload.error);
 
         let features: Awaited<ReturnType<typeof TrezorConnect.getFeatures>>;
 
         features = await TrezorConnect.getFeatures();
+
         if (!features.success) throw new Error(features.payload.error);
+
         expect(features.payload.busy).toBe(true);
 
         // reset expiry
         await TrezorConnect.setBusy({});
 
         features = await TrezorConnect.getFeatures();
+
         if (!features.success) throw new Error(features.payload.error);
+
         // not busy
         expect(features.payload.busy).toBe(false);
     });
@@ -79,6 +87,7 @@ describe('TrezorConnect.setBusy', () => {
             expiry_ms: 15000,
             keepSession: true, // keep session
         });
+
         if (!setBusy.success) throw new Error(setBusy.payload.error);
 
         expect(busy).toBe(true);

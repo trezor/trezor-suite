@@ -8,6 +8,7 @@ import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     let message;
+
     if (device && !device.connected) {
         message = <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />;
     } else if (discoveryIsRunning) {
@@ -57,6 +58,7 @@ export const AddAccountButton = ({
                 device,
             }),
         );
+
         if (closeMenu) closeMenu();
     };
 

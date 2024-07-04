@@ -31,14 +31,18 @@ const verifyAvailability = ({
     if (coinjoinAccounts.length > 0) {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED" />;
     }
+
     const capability = unavailableCapabilities?.coinjoin;
+
     if (capability === 'no-support') {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT" />;
     }
+
     // regtest coinjoin account enabled in web app for development
     if (!isDesktop() && !(isDevEnv && symbol === 'regtest')) {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY" />;
     }
+
     if (capability === 'update-required') {
         return <Translation id="MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED" />;
     }
@@ -80,12 +84,14 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
         };
 
         setIsLoading(true);
+
         // Checking if Tor is enable and if not open modal to force the user to enable it to use coinjoin.
         // Tor only works in desktop so checking we are running desktop.
         if (!isTorEnabled && isDesktop()) {
             const continueWithTor = await dispatch(
                 openDeferredModal({ type: 'request-enable-tor' }),
             );
+
             if (continueWithTor === RequestEnableTorResponse.Back) {
                 // Going back to the previous screen.
                 dispatch(
@@ -97,6 +103,7 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
 
                 return;
             }
+
             if (continueWithTor === RequestEnableTorResponse.Skip) {
                 await createAccount();
 
@@ -106,9 +113,11 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
             // Triggering Tor process and displaying Tor loading to give user feedback of Tor progress.
             dispatch(toggleTor(true));
             const isTorLoaded = await dispatch(openDeferredModal({ type: 'tor-loading' }));
+
             // When Tor was not loaded it means there was an error or user canceled it, stop the coinjoin account activation.
             if (!isTorLoaded) return;
         }
+
         await createTimeoutPromise(1000); // TODO fix properly: https://github.com/trezor/trezor-suite/issues/6902
         await createAccount();
     };

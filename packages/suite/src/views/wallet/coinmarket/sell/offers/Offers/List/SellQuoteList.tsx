@@ -93,6 +93,7 @@ export const SellQuoteList = ({ isAlternative, quotes }: ListProps) => {
     const { quotesRequest, timer } = useCoinmarketSellOffersContext();
 
     if (!quotesRequest) return null;
+
     const { fiatStringAmount, fiatCurrency, amountInCrypto } = quotesRequest;
 
     return (

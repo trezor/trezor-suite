@@ -10,6 +10,7 @@ export const prioritizeEndpoints = (urls: string[]) =>
         .map((url): [string, number] => {
             const hostname = parseHostname(url);
             let priority = Math.random();
+
             if (hostname === 'localhost' || hostname === '127.0.0.1') {
                 priority += 2;
             } else if (hostname?.endsWith('.onion')) {

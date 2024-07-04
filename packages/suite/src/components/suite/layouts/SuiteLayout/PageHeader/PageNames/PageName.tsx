@@ -27,6 +27,7 @@ export const PageName = ({ backRoute }: PageNameProps) => {
     if (selectedAccount && isAccountTabPage) {
         return <AccountName selectedAccount={selectedAccount} />;
     }
+
     if (selectedAccount) {
         return <AccountSubpageName selectedAccount={selectedAccount} backRoute={backRoute} />;
     }

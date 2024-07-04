@@ -23,6 +23,7 @@ export const getBaseFee = async (api: Connection, message: Message) => {
         ),
     });
     const result = await api.getFeeForMessage(messageWithoutComputeBudget);
+
     // The result can be null, for example if the transaction blockhash is invalid.
     // In this case, we should fall back to the default fee.
     if (result.value == null) {

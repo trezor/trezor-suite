@@ -136,6 +136,7 @@ export const Switch = ({
 
     const handleChange = () => {
         if (isDisabled) return;
+
         onChange(!isChecked);
     };
 

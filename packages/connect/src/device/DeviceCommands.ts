@@ -39,6 +39,7 @@ const logger = initLog('DeviceCommands');
 
 const assertType = (res: DefaultMessageResponse, resType: MessageKey | MessageKey[]) => {
     const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
+
     if (!splitResTypes.includes(res.type)) {
         throw ERRORS.TypedError(
             'Runtime',
@@ -173,6 +174,7 @@ export class DeviceCommands {
         }
 
         let publicKey: Messages.PublicKey;
+
         if (params.show_display || !validation) {
             publicKey = await this.getPublicKey(params, unlockPath);
         } else {
@@ -220,10 +222,12 @@ export class DeviceCommands {
     ) {
         if (!script_type) {
             script_type = getScriptType(address_n);
+
             if (script_type === 'SPENDMULTISIG' && !multisig) {
                 script_type = 'SPENDADDRESS';
             }
         }
+
         if (multisig && multisig.pubkeys) {
             // convert xpub strings to HDNodeTypes
             multisig.pubkeys.forEach(pk => {
@@ -232,6 +236,7 @@ export class DeviceCommands {
                 }
             });
         }
+
         const response = await this.typedCall('GetAddress', 'Address', {
             address_n,
             coin_name: coinInfo.name,
@@ -329,6 +334,7 @@ export class DeviceCommands {
         const res = await this.callPromise.promise;
 
         this.callPromise = undefined;
+
         if (!res.success) {
             logger.warn('Received error', res.error);
             throw new Error(res.error);
@@ -363,10 +369,12 @@ export class DeviceCommands {
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
         }
+
         // Assert message type
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
         Assert(Messages.MessageType.properties[type], msg ?? {});
         const response = await this._commonCall(type, msg);
+
         try {
             assertType(response, resType);
         } catch (error) {
@@ -385,6 +393,7 @@ export class DeviceCommands {
 
     async _commonCall(type: MessageKey, msg?: DefaultMessageResponse['message']) {
         const resp = await this.call(type, msg);
+
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
         }
@@ -398,12 +407,14 @@ export class DeviceCommands {
         if (res.type === 'Failure') {
             const { code } = res.message;
             let { message } = res.message;
+
             // T1B1 does not send any message in firmware update
             // https://github.com/trezor/trezor-firmware/issues/1334
             // @ts-expect-error, TODO: https://github.com/trezor/trezor-suite/issues/5299
             if (code === 'Failure_FirmwareError' && !message) {
                 message = 'Firmware installation failed';
             }
+
             // Failure_ActionCancelled message could be also missing
             // https://github.com/trezor/connect/issues/865
             // @ts-expect-error, TODO: https://github.com/trezor/trezor-suite/issues/5299
@@ -426,6 +437,7 @@ export class DeviceCommands {
 
         if (res.type === 'ButtonRequest') {
             this._cancelableRequestBySend = true;
+
             if (res.message.code === '_Deprecated_ButtonRequest_PassphraseType') {
                 // for backwards compatibility stick to old message type
                 // which was part of protobuf in versions < 2.3.0
@@ -483,11 +495,13 @@ export class DeviceCommands {
             return this._promptPassphrase().then(
                 response => {
                     const { passphrase, passphraseOnDevice, cache } = response;
+
                     if (legacyT1) {
                         this.device.setInternalState(cache ? passphrase : undefined);
 
                         return this._commonCall('PassphraseAck', { passphrase });
                     }
+
                     if (legacy) {
                         return this._commonCall('PassphraseAck', { passphrase, _state: state });
                     }
@@ -540,6 +554,7 @@ export class DeviceCommands {
                 this._cancelableRequest = reject;
                 this.device.emit(DEVICE.PIN, this.device, type, (err, pin) => {
                     this._cancelableRequest = undefined;
+
                     if (err || pin == null) {
                         reject(err);
                     } else {
@@ -564,6 +579,7 @@ export class DeviceCommands {
                     this.device,
                     (response: PassphrasePromptResponse, error?: Error) => {
                         this._cancelableRequest = undefined;
+
                         if (error) {
                             reject(error);
                         } else {
@@ -590,6 +606,7 @@ export class DeviceCommands {
             this._cancelableRequest = reject;
             this.device.emit(DEVICE.WORD, this.device, type, (err, word) => {
                 this._cancelableRequest = undefined;
+
                 if (err || word == null) {
                     reject(err);
                 } else {
@@ -623,6 +640,7 @@ export class DeviceCommands {
                 descriptorChecksum: resp.descriptorChecksum,
             };
         }
+
         if (coinInfo.type === 'ethereum') {
             const resp = await this.ethereumGetAddress({ address_n });
 
@@ -631,6 +649,7 @@ export class DeviceCommands {
                 address_n,
             };
         }
+
         if (coinInfo.shortcut === 'ADA' || coinInfo.shortcut === 'tADA') {
             if (typeof derivationType === 'undefined')
                 throw new Error('Derivation type is not specified');
@@ -645,6 +664,7 @@ export class DeviceCommands {
                 address_n,
             };
         }
+
         if (coinInfo.shortcut === 'XRP' || coinInfo.shortcut === 'tXRP') {
             const { message } = await this.typedCall('RippleGetAddress', 'RippleAddress', {
                 address_n,
@@ -685,6 +705,7 @@ export class DeviceCommands {
         if (this.disposed) {
             return;
         }
+
         this.dispose();
 
         if (!this._cancelableRequestBySend) {
@@ -694,11 +715,13 @@ export class DeviceCommands {
 
             return;
         }
+
         /**
          * Bridge version =< 2.0.28 has a bug that doesn't permit it to cancel
          * user interactions in progress, so we have to do it manually.
          */
         const { name, version } = this.transport;
+
         if (name === 'BridgeTransport' && !versionUtils.isNewer(version, '2.0.28')) {
             try {
                 await this.device.legacyForceRelease();

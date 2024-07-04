@@ -52,6 +52,7 @@ export function createTransaction<Input extends ComposeInput, Change extends Com
     const defaultPermutation: number[] = [];
     const convertedOutputs = result.outputs.map((output, index) => {
         defaultPermutation.push(index);
+
         if (request.outputs[index]) {
             return convertOutput(output, request.outputs[index]);
         }

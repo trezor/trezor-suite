@@ -46,9 +46,11 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
         if (!account.addresses || !account.utxo) return;
 
         const composeOutputs = getBitcoinComposeOutputs(formValues, account.symbol, isSatoshis);
+
         if (composeOutputs.length < 1) return;
 
         const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
         if (formValues.selectedFee === 'custom') {
             predefinedLevels.push({
@@ -59,6 +61,7 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
         }
 
         let sequence; // Must be undefined for final transaction.
+
         if (formValues.options.includes('bitcoinRBF')) {
             // RBF is set, add sequence to inputs
             sequence = BTC_RBF_SEQUENCE;
@@ -124,6 +127,7 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
         });
 
         const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
+
         // there is no valid tx in predefinedLevels and there is no custom level
         if (!hasAtLeastOneValid && !wrappedResponse.custom) {
             const { minFee } = feeInfo;
@@ -136,6 +140,7 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
             let maxFee = new BigNumber(lastKnownFee).minus(rangeGap);
             // generate custom levels in range from lastKnownFee minus customGap to feeInfo.minFee (coinInfo in @trezor/connect)
             const customLevels: FeeLevel[] = [];
+
             while (maxFee.gte(minFee)) {
                 customLevels.push({
                     feePerUnit: maxFee.toString(),
@@ -157,6 +162,7 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
 
             if (customLevelsResponse.success) {
                 const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
+
                 if (customValid >= 0) {
                     wrappedResponse.custom = customLevelsResponse.payload[
                         customValid
@@ -173,6 +179,7 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
             if (tx.type !== 'error') {
                 // round to
                 tx.feePerByte = new BigNumber(tx.feePerByte).decimalPlaces(2).toString();
+
                 if (typeof tx.max === 'string') {
                     tx.max = isSatoshis ? tx.max : formatNetworkAmount(tx.max, account.symbol);
                 }
@@ -312,9 +319,11 @@ export const signBitcoinSendFormTransactionThunk = createThunk(
         };
 
         const response = await TrezorConnect.signTransaction(signPayload);
+
         if (!response.success) {
             // catch manual error from TransactionReviewModal
             if (response.payload.error === 'tx-cancelled') return;
+
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',

@@ -15,17 +15,21 @@ const MAX_ENTRIES = 1000;
 
 function handleMessage(event: MessageEvent<LogMessage>, port: MessagePort) {
     const { type, data } = event;
+
     switch (type) {
         case 'add-log':
             messages.push(data);
+
             if (messages.length > MAX_ENTRIES) {
                 messages.shift();
             }
+
             if (subscriberPorts.length > 0) {
                 subscriberPorts.forEach(subscriberPort => {
                     subscriberPort.postMessage({ type: 'log-entry', payload: data });
                 });
             }
+
             break;
         case 'get-logs':
             port.postMessage({ type: 'get-logs', payload: messages });

@@ -85,12 +85,14 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             timer.loading();
             invityAPI.createInvityAPIKey(account.descriptor);
             const allQuotes = await invityAPI.getExchangeQuotes(quotesRequest);
+
             if (Array.isArray(allQuotes)) {
                 if (allQuotes.length === 0) {
                     timer.stop();
 
                     return;
                 }
+
                 const [fixedQuotes, floatQuotes, dexQuotes] = splitToQuoteCategories(
                     allQuotes,
                     exchangeInfo,
@@ -103,6 +105,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
                 setInnerFloatQuotes(undefined);
                 setInnerDexQuotes(undefined);
             }
+
             timer.reset();
         }
     }, [account.descriptor, exchangeInfo, quotesRequest, selectedQuote, timer]);
@@ -130,6 +133,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             exchangeInfo?.providerInfos && quote.exchange
                 ? exchangeInfo?.providerInfos[quote.exchange]
                 : null;
+
         if (quotesRequest) {
             const result = await openCoinmarketExchangeConfirmModal(
                 provider?.companyName,
@@ -137,6 +141,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
                 quote.send,
                 quote.receive,
             );
+
             if (result) {
                 setSelectedQuote(quote);
                 timer.stop();
@@ -156,6 +161,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
                     !unavailableCapabilities[n.symbol] &&
                     ((n.isDebugOnly && isDebug) || !n.isDebugOnly),
             );
+
             if (receiveNetworks.length > 0) {
                 // get accounts of the current symbol belonging to the current device
                 setSuiteReceiveAccounts(
@@ -172,15 +178,18 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
                 return;
             }
         }
+
         setSuiteReceiveAccounts(undefined);
     }, [accounts, device, exchangeStep, receiveNetwork, selectedQuote, isDebug]);
 
     const confirmTrade = async (address: string, extraField?: string, trade?: ExchangeTrade) => {
         let ok = false;
         const { address: refundAddress } = getUnusedAddressFromAccount(account);
+
         if (!trade) {
             trade = selectedQuote;
         }
+
         if (!trade || !refundAddress) return false;
 
         if (trade.isDex && !trade.fromAddress) {
@@ -194,6 +203,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             refundAddress,
             extraField,
         });
+
         if (!response) {
             addNotification({
                 type: 'error',
@@ -216,6 +226,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             ok = true;
         } else if (response.status === 'CONFIRM') {
             setSelectedQuote(response);
+
             if (response.isDex) {
                 if (exchangeStep === 'RECEIVING_ADDRESS' || trade.approvalType === 'ZERO') {
                     setExchangeStep('SEND_APPROVAL_TRANSACTION');
@@ -225,6 +236,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             } else {
                 setExchangeStep('SEND_TRANSACTION');
             }
+
             ok = true;
         } else {
             // CONFIRMING, SUCCESS
@@ -233,6 +245,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             ok = true;
             navigateToExchangeDetail();
         }
+
         setCallInProgress(false);
 
         return ok;
@@ -261,6 +274,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             if (result?.success) {
                 const { txid } = result.payload;
                 const quote = { ...selectedQuote };
+
                 if (selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO') {
                     quote.receiveTxHash = txid;
                     quote.status = 'CONFIRMING';
@@ -286,6 +300,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
 
             return;
         }
+
         if (
             selectedQuote &&
             selectedQuote.orderId &&
@@ -305,6 +320,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
                 undefined,
                 ['broadcast', 'bitcoinRBF'],
             );
+
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {
                 await saveTrade(selectedQuote, account, new Date().toISOString());
@@ -357,6 +373,7 @@ CoinmarketExchangeOffersContext.displayName = 'CoinmarketExchangeOffersContext';
 
 export const useCoinmarketExchangeOffersContext = () => {
     const context = useContext(CoinmarketExchangeOffersContext);
+
     if (context === null) throw Error('CoinmarketExchangeOffersContext used without Context');
 
     return context;

@@ -48,6 +48,7 @@ export const loadSellInfo = async (): Promise<SellInfo> => {
     const sellList = await invityAPI.getSellList();
 
     const providerInfos: { [name: string]: SellProviderInfo } = {};
+
     if (sellList?.providers) {
         sellList.providers.forEach(provider => (providerInfos[provider.name] = provider));
     }
@@ -60,6 +61,7 @@ export const loadSellInfo = async (): Promise<SellInfo> => {
                 .map(currency => currency.toLowerCase())
                 .forEach(currency => supportedFiatCurrencies.add(currency));
         }
+
         p.tradedCoins.forEach(coin => supportedCryptoCurrencies.add(coin));
     });
 

@@ -68,6 +68,7 @@ function toBuffer(
 
 function getExtraData(tx: TransactionBase<DashSpecific>) {
     if (!tx.specific?.extraPayload) return;
+
     const extraDataLength = varuint.encode(tx.specific.extraPayload.length);
 
     return Buffer.concat([extraDataLength, tx.specific.extraPayload]);
@@ -92,6 +93,7 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
     tx.version = bufferReader.readInt32();
     tx.type = tx.version >> 16;
     tx.version &= 0xffff;
+
     if (tx.version === 3 && (tx.type < DASH_NORMAL || tx.type > DASH_QUORUM_COMMITMENT)) {
         throw new Error('Unsupported Dash transaction type');
     }
@@ -122,6 +124,7 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
     }
 
     if (options.nostrict) return tx;
+
     if (bufferReader.offset !== buffer.length) throw new Error('Transaction has unexpected data');
 
     return tx;

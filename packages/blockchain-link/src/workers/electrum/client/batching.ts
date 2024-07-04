@@ -30,11 +30,15 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
 
             return;
         }
+
         const { queue } = this;
         queue.push(message);
+
         if (this.batchTimer) clearTimeout(this.batchTimer);
+
         this.batchTimer = setTimeout(() => {
             this.batchTimer = undefined;
+
             while (queue.length) {
                 const q = queue.splice(0, this.maxQueueLength);
                 const content = q.length > 1 ? `[${q.join(',')}]` : q[0];
@@ -46,6 +50,7 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
     protected onMessage(body: string) {
         const msg = JSON.parse(body);
         this.log('RECEIVED:', msg);
+
         if (Array.isArray(msg)) {
             msg.forEach(this.response, this);
         } else {

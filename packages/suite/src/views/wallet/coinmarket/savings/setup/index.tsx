@@ -178,6 +178,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                         isSearchable
                         formatOptionLabel={(option: CountryOption) => {
                             const labelParts = getCountryLabelParts(option.label);
+
                             if (!labelParts) return null;
 
                             return (

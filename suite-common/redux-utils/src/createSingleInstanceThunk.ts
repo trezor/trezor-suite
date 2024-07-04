@@ -16,6 +16,7 @@ function ensureSingleRunningInstance<T extends (...args: any[]) => Promise<any>>
     return function (this: any, ...args: Parameters<T>): ReturnType<T> {
         // It's fine to hardcode first argument as key, because thunks has only one argument (second argument is thunkAPI which is not important for this case)
         const key = JSON.stringify(args[0]);
+
         if (!ongoingPromises.has(key)) {
             const promise = func.apply(this, args).finally(() => {
                 ongoingPromises.delete(key);

@@ -36,6 +36,7 @@ const main = async () => {
     }
 
     let data: TokenStructure;
+
     if (type === 'nft') {
         data = await fetchNftData(assetPlatformId, structure);
     } else {

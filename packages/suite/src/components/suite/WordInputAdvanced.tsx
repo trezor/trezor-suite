@@ -51,6 +51,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
             if (event.code === KEYBOARD_CODE.BACK_SPACE) {
                 backspace();
             }
+
             switch (event.code) {
                 // numeric and numpad
                 case KEYBOARD_CODE.DIGIT_ONE:

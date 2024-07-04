@@ -48,8 +48,10 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         if (this.params.length === 1) {
             return getNetworkLabel('Export #NETWORK public key', this.params[0].network);
         }
+
         const requestedNetworks = this.params.map(b => b.network);
         const uniqNetworks = getUniqueNetworks(requestedNetworks);
+
         if (uniqNetworks.length === 1 && uniqNetworks[0]) {
             return getNetworkLabel('Export multiple #NETWORK public keys', uniqNetworks[0]);
         }

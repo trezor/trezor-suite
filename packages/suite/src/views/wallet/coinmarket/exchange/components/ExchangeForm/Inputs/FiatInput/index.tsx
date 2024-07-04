@@ -43,6 +43,7 @@ const FiatInput = () => {
             control={control}
             onChange={value => {
                 setValue('setMaxOutputId', undefined);
+
                 if (fiatError) {
                     setValue(CRYPTO_INPUT, '');
                 } else {

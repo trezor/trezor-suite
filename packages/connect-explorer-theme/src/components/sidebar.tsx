@@ -77,6 +77,7 @@ export function Sidebar({
                     boundary: containerRef.current,
                 });
             };
+
             if (menu) {
                 // needs for mobile since menu has transition transform
                 setTimeout(scroll, 300);

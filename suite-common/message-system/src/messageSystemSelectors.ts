@@ -62,6 +62,7 @@ export const selectContextMessageContent = memoizeWithArgs(
         const message = activeContextMessages.find(
             activeContextMessage => activeContextMessage.context?.domain === domain,
         );
+
         if (!message) return;
 
         return {

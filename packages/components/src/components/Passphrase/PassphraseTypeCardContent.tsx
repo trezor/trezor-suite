@@ -99,17 +99,21 @@ export const PassphraseTypeCardContent = ({
                 const fill = new Array(Math.abs(diff)).fill(''); // make space for new string
                 newValue.splice(pos + diff, 0, ...fill); // shift current value
             }
+
             // removed
             if (diff > 0) {
                 newValue.splice(pos, diff);
             }
         }
+
         for (let i = 0; i < len; i++) {
             const char = tmpValue.charAt(i);
+
             if (char !== DOT) {
                 newValue[i] = char;
             }
         }
+
         if (len < newValue.length) {
             // Check if last keypress was backspace or delete
             if (backspacePressed || deletePressed) {
@@ -167,6 +171,7 @@ export const PassphraseTypeCardContent = ({
                                                     caretRef.current =
                                                         innerRef.current.selectionStart;
                                                 }
+
                                                 setShowPassword(!showPassword);
                                             }}
                                             data-test="@passphrase/show-toggle"

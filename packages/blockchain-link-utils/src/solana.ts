@@ -246,6 +246,7 @@ export const getTargets = (
             if (txType === 'self') {
                 return true;
             }
+
             // ignore all targets for unknown transactions
             if (txType === 'unknown') {
                 return false;
@@ -408,6 +409,7 @@ export const getAmount = (
     if (!accountEffect) {
         return '0';
     }
+
     if (txType === 'self') {
         return accountEffect.amount?.abs().toString();
     }
@@ -488,6 +490,7 @@ export const getTokens = (
         if (isAccountDestination && isAccountSource) {
             return 'self';
         }
+
         if (isAccountDestination) {
             return 'recv';
         }

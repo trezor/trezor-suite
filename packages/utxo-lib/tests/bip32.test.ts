@@ -14,21 +14,31 @@ type Fixture = F[number] & {
 
 function verify(hd: BIP32.BIP32Interface, prv: boolean, f: Fixture, network: NETWORKS.Network) {
     expect(hd.chainCode.toString('hex')).toEqual(f.chainCode);
+
     if (typeof f.depth === 'number') expect(hd.depth).toEqual(f.depth >>> 0);
+
     if (typeof f.index === 'number') expect(hd.index).toEqual(f.index >>> 0);
+
     expect(hd.compressed).toEqual(true);
     expect(hd.fingerprint.toString('hex')).toEqual(f.fingerprint);
     expect(hd.identifier.toString('hex')).toEqual(f.identifier);
     expect(hd.publicKey.toString('hex')).toEqual(f.pubKey);
+
     if (prv) expect(hd.toBase58()).toEqual(f.base58Priv);
+
     if (prv) expect(hd.privateKey?.toString('hex')).toEqual(f.privKey);
+
     if (prv) expect(hd.toWIF()).toEqual(f.wif);
+
     if (!prv) expect(() => hd.toWIF()).toThrowError(/Missing private key/);
+
     if (!prv) expect(hd.privateKey).toEqual(undefined);
+
     expect(hd.neutered().toBase58()).toEqual(f.base58);
     expect(hd.isNeutered()).toEqual(!prv);
 
     if (!f.children) return;
+
     if (!prv && f.children.some(x => x.hardened)) return;
 
     // test deriving path from master
@@ -44,6 +54,7 @@ function verify(hd: BIP32.BIP32Interface, prv: boolean, f: Fixture, network: NET
     let shd = hd;
     f.children.forEach((cf: any) => {
         if (cf.m === undefined) return;
+
         if (cf.hardened) {
             shd = shd.deriveHardened(cf.m);
         } else {

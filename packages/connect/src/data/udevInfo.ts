@@ -25,6 +25,7 @@ export const getUdevInfo = () => info;
 
 export const suggestUdevInstaller = (platform?: string) => {
     const info = getUdevInfo();
+
     // check if preferred field was already added
     if (!info.packages.find(p => p.preferred)) {
         if (platform) {

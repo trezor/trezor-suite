@@ -42,6 +42,7 @@ export const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: T
                     if (typeof height === 'number') {
                         svg.setAttribute('height', `${height}px`);
                     }
+
                     svg.setAttribute('fill', theme.iconDefault);
                 }}
                 loading={Loading}

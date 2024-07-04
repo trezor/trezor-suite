@@ -35,6 +35,7 @@ export class CoinjoinProcess extends BaseProcess {
                 },
             });
             this.logger.debug(this.logTopic, `Checking status (${resp.status})`);
+
             if (resp.status === 200) {
                 const { Version } = await resp.json();
                 this.logger.debug(this.logTopic, `WabiSabiClientLibrary version: ${Version}`);

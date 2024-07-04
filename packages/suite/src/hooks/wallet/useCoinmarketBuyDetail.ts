@@ -20,6 +20,7 @@ export const useCoinmarketBuyDetail = ({ selectedAccount }: UseCoinmarketBuyDeta
             trade.tradeType === 'buy' &&
             (trade.key === transactionId || trade.data?.originalPaymentId === transactionId),
     ) as TradeBuy;
+
     if (invityServerEnvironment) {
         invityAPI.setInvityServersEnvironment(invityServerEnvironment);
     }
@@ -39,6 +40,7 @@ CoinmarketBuyDetailContext.displayName = 'CoinmarketBuyDetailContext';
 
 export const useCoinmarketBuyDetailContext = () => {
     const context = useContext(CoinmarketBuyDetailContext);
+
     if (context === null) throw Error('CoinmarketBuyDetailContext used without Context');
 
     return context;

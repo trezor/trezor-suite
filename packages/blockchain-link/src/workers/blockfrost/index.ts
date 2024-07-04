@@ -142,6 +142,7 @@ const onTransaction = ({ state, post }: Context, event: BlockfrostTransaction) =
 
 const subscribeBlock = async (ctx: Context) => {
     if (ctx.state.getSubscription('block')) return { subscribed: true };
+
     const api = await ctx.connect();
     ctx.state.addSubscription('block');
     api.on('block', ev => onNewBlock(ctx, ev));
@@ -153,6 +154,7 @@ const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo
     const api = await ctx.connect();
     const { state } = ctx;
     state.addAccounts(accounts);
+
     if (!state.getSubscription('notification')) {
         api.on('notification', ev => onTransaction(ctx, ev));
         state.addSubscription('notification');
@@ -165,6 +167,7 @@ const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
     const api = await ctx.connect();
     const { state } = ctx;
     state.addAddresses(addresses);
+
     if (!state.getSubscription('notification')) {
         api.on('notification', ev => onTransaction(ctx, ev));
         state.addSubscription('notification');
@@ -177,6 +180,7 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
     const { payload } = request;
 
     let response: { subscribed: boolean };
+
     if (payload.type === 'accounts') {
         response = await subscribeAccounts(request, payload.accounts);
     } else if (payload.type === 'addresses') {
@@ -195,6 +199,7 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
 
 const unsubscribeBlock = async ({ state, connect }: Context) => {
     if (!state.getSubscription('block')) return { subscribed: false };
+
     const api = await connect();
     api.removeAllListeners('block');
     state.removeSubscription('block');
@@ -210,6 +215,7 @@ const unsubscribeAccounts = async (
 
     const api = await connect();
     const subscribed = state.getAddresses();
+
     if (subscribed.length < 1) {
         // there are no subscribed addresses left
         // remove listeners
@@ -225,11 +231,14 @@ const unsubscribeAccounts = async (
 
 const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: string[]) => {
     const socket = await connect();
+
     // remove accounts
     if (!addresses) {
         state.removeAccounts(state.getAccounts());
     }
+
     const subscribed = state.removeAddresses(addresses || state.getAddresses());
+
     if (subscribed.length < 1) {
         // there are no subscribed addresses left
         // remove listeners
@@ -247,6 +256,7 @@ const unsubscribe = async (request: Request<MessageTypes.Unsubscribe>) => {
     const { payload } = request;
 
     let response: { subscribed: boolean };
+
     if (payload.type === 'accounts') {
         response = await unsubscribeAccounts(request, payload.accounts);
     } else if (payload.type === 'addresses') {
@@ -296,6 +306,7 @@ class BlockfrostWorker extends BaseWorker<BlockfrostAPI> {
             this.api.dispose();
             this.api.removeAllListeners();
         }
+
         super.cleanup();
     }
 

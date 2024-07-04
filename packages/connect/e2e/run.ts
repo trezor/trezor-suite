@@ -36,13 +36,16 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     if (firmwareArg === '2-latest') {
         Object.assign(emulatorStartOpts, { version: latest2 });
     }
+
     if (firmwareArg === '1-latest') {
         Object.assign(emulatorStartOpts, { version: latest1 });
     }
+
     // no firmwareArg and not loading from url at the same time - provide fallback
     if (!firmwareArg && !firmwareUrl) {
         Object.assign(emulatorStartOpts, { version: latest2 });
     }
+
     if (firmwareUrl) {
         Object.assign(emulatorStartOpts, {
             type: 'emulator-start-from-url',
@@ -74,6 +77,7 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     if (!TrezorUserEnvLink.firmwares) {
         throw new Error('firmwares not loaded');
     }
+
     const emulatorStartOpts = getEmulatorOptions(TrezorUserEnvLink.firmwares);
 
     argv.globals = {

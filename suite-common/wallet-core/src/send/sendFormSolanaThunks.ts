@@ -38,6 +38,7 @@ const calculate = (
     token?: TokenInfo,
 ): PrecomposedTransaction => {
     const feeInLamports = feeLevel.feePerTx;
+
     if (feeInLamports == null) throw new Error('Invalid fee.');
 
     let amount: string;
@@ -45,6 +46,7 @@ const calculate = (
     const availableTokenBalance = token
         ? amountToSatoshi(token.balance!, token.decimals)
         : undefined;
+
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = availableTokenBalance || calculateMax(availableBalance, feeInLamports);
         amount = max;
@@ -127,6 +129,7 @@ export const composeSolanaSendFormTransactionThunk = createThunk(
     async ({ formValues, formState }: ComposeTransactionThunkArguments, { getState }) => {
         const { account, network, feeInfo } = formState;
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
+
         if (!composeOutputs) return; // no valid Output
 
         const { output, decimals, tokenInfo } = composeOutputs;
@@ -200,6 +203,7 @@ export const composeSolanaSendFormTransactionThunk = createThunk(
         let fetchedFee: string | undefined;
         let fetchedFeePerUnit: string | undefined;
         let fetchedFeeLimit: string | undefined;
+
         if (estimatedFee.success) {
             // We access the array directly like this because the fee response from the solana worker always returns an array of size 1
             const feeLevel = estimatedFee.payload.levels[0];
@@ -235,9 +239,11 @@ export const composeSolanaSendFormTransactionThunk = createThunk(
         // update errorMessage values (symbol)
         Object.keys(wrappedResponse).forEach(key => {
             const tx = wrappedResponse[key];
+
             if (tx.type !== 'error') {
                 tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
             }
+
             if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
                 tx.errorMessage = {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
@@ -274,6 +280,7 @@ export const signSolanaSendFormTransactionThunk = createThunk(
             return;
 
         if (selectedAccount.networkType !== 'solana') return;
+
         const { token } = precomposedTransaction;
 
         const { blockhash, blockHeight: lastValidBlockHeight } = selectBlockchainBlockInfoBySymbol(
@@ -352,6 +359,7 @@ export const signSolanaSendFormTransactionThunk = createThunk(
         if (!signature.success) {
             // catch manual error from ReviewTransaction modal
             if (signature.payload.error === 'tx-cancelled') return;
+
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',

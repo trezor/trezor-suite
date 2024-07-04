@@ -108,6 +108,7 @@ const analyticsMiddleware =
                         },
                     });
                 }
+
                 break;
             }
             case DEVICE.DISCONNECT:
@@ -181,6 +182,7 @@ const analyticsMiddleware =
                         },
                     });
                 }
+
                 break;
             case ROUTER.ANCHOR_CHANGE:
                 if (action.payload) {
@@ -193,6 +195,7 @@ const analyticsMiddleware =
                         },
                     });
                 }
+
                 break;
             case COINJOIN.SESSION_COMPLETED:
             case COINJOIN.SESSION_PAUSE:
@@ -205,6 +208,7 @@ const analyticsMiddleware =
                     state,
                     action.payload.accountKey,
                 );
+
                 if (coinjoinAccount && anonymityGainToReport !== null) {
                     analytics.report(
                         {
@@ -218,6 +222,7 @@ const analyticsMiddleware =
                     );
                     api.dispatch(updateLastAnonymityReportTimestamp(action.payload.accountKey));
                 }
+
                 break;
             }
 

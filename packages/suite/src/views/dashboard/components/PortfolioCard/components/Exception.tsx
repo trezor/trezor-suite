@@ -107,12 +107,16 @@ interface ExceptionProps {
 
 const discoveryFailedMessage = (discovery?: Discovery) => {
     if (!discovery) return '';
+
     if (discovery.error) return <div>{discovery.error}</div>;
+
     // group all failed networks into array of errors
     const networkError: string[] = [];
     const details = discovery.failed.reduce((value, account) => {
         const n = accountUtils.getNetwork(account.symbol)!;
+
         if (networkError.includes(account.symbol)) return value;
+
         networkError.push(account.symbol);
 
         return value.concat(
@@ -191,7 +195,9 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                         action: async () => {
                             // enable passphrase
                             const result = await dispatch(applySettings({ use_passphrase: true }));
+
                             if (!result || !result.success) return;
+
                             // restart discovery
                             dispatch(restartDiscovery());
                         },

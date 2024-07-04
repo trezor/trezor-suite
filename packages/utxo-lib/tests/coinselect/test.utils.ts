@@ -4,6 +4,7 @@ import { INPUT_SCRIPT_LENGTH, OUTPUT_SCRIPT_LENGTH } from '../../src/coinselect/
 function addScriptLength(values: any[], scriptLength: number) {
     return values.map(xx => {
         const x = xx;
+
         if (x.script === undefined) {
             x.script = { length: scriptLength };
         }
@@ -14,6 +15,7 @@ function addScriptLength(values: any[], scriptLength: number) {
 
 function valueToBN(vinVout: VinVoutFixture) {
     if (typeof vinVout === 'string') return { value: new BN(vinVout) };
+
     if (vinVout.value) {
         return { ...vinVout, value: new BN(vinVout.value) };
     }
@@ -35,6 +37,7 @@ export function addScriptLengthToExpected(expected: { inputs?: any[]; outputs?: 
     if (expected.inputs != null) {
         newExpected.inputs = expected.inputs.map(input => {
             const newInput = { ...input, type: 'p2pkh' };
+
             if (newInput.script == null) {
                 newInput.script = { length: INPUT_SCRIPT_LENGTH.p2pkh };
             }
@@ -46,6 +49,7 @@ export function addScriptLengthToExpected(expected: { inputs?: any[]; outputs?: 
     if (expected.outputs != null) {
         newExpected.outputs = expected.outputs.map(output => {
             const newOutput = { ...output };
+
             if (newOutput.script == null) {
                 newOutput.script = { length: OUTPUT_SCRIPT_LENGTH.p2pkh };
             }

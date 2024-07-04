@@ -161,6 +161,7 @@ export const toggleTor =
 
         if (!shouldEnable && hasOnlyOnionBackends) {
             const res = await dispatch(modalActions.openDeferredModal({ type: 'disable-tor' }));
+
             if (!res) return;
         }
 

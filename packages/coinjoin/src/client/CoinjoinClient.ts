@@ -37,6 +37,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         this.status = new Status(settings);
         this.status.on('update', event => {
             this.onStatusUpdate(event);
+
             if (event.changed.length > 0) {
                 this.emit('status', event);
             }
@@ -89,6 +90,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         if (this.accounts.find(a => a.accountKey === account.accountKey)) {
             throw new Error('Trying to register account that already exists');
         }
+
         this.logger.info(`Register account ~~${account.accountKey}~~`);
 
         const candidate = new Account(account, this.network);
@@ -116,6 +118,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
     updateAccount(account: RegisterAccountParams) {
         this.logger.info(`Update account ~~${account.accountKey}~~`);
         const accountToUpdate = this.accounts.find(a => a.accountKey === account.accountKey);
+
         if (accountToUpdate) {
             this.rounds.forEach(round => round.updateAccount(account));
 
@@ -148,9 +151,11 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         const changed: typeof rounds = [];
         response.forEach(event => {
             const currentRound = this.rounds.find(r => r.id === event.roundId);
+
             if (currentRound) {
                 currentRound.resolveRequest(event);
                 const statusRound = this.status.rounds.find(r => r.Id === event.roundId);
+
                 if (statusRound) {
                     changed.push(statusRound);
                 }
@@ -184,6 +189,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         const roundsToProcess = await Promise.all(
             changed.flatMap(round => {
                 const currentRound = this.rounds.find(r => r.id === round.Id);
+
                 if (currentRound) {
                     // try to finish/interrupt current running process on changed round (if any)
                     // and update fresh data from Status
@@ -219,6 +225,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
                 this.prison.releaseBlameOfInmates(newRound.blameOf);
 
                 roundsToProcess.push(newRound);
+
                 if (!this.rounds.find(r => r.id === newRound.id)) {
                     // start follow round in Status
                     this.status.startFollowRound(newRound);
@@ -232,10 +239,12 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
                         this.status.stopFollowRound(round.id);
                         // remove round from the list
                         this.rounds = this.rounds.filter(r => r.id !== newRound.id);
+
                         // set Status mode
                         if (this.rounds.length === 0) {
                             this.status.setMode(this.accounts.length > 0 ? 'enabled' : 'idle');
                         }
+
                         // try to create new round immediately if previous didn't fail
                         if (round.failed.length === 0) {
                             this.onStatusUpdate({ changed: [], rounds: this.status.rounds });
@@ -263,6 +272,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
 
         // check for wallet requests
         const requests = processedRounds.flatMap(round => round.getRequest() || []);
+
         if (requests.length > 0) {
             this.emit('request', requests);
         }

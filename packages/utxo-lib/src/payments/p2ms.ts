@@ -21,6 +21,7 @@ function stacksEqual(a: Buffer[], b: Buffer[]): boolean {
 export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     if (!a.input && !a.output && !(a.pubkeys && a.m !== undefined) && !a.signatures)
         throw new TypeError('Not enough data');
+
     opts = Object.assign({ validate: true }, opts || {});
 
     function isAcceptableSignature(x: Buffer | number): boolean {
@@ -51,6 +52,7 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     let decoded = false;
     function decode(output: Buffer | Stack): void {
         if (decoded) return;
+
         decoded = true;
         chunks = bscript.decompile(output) as Stack;
         o.m = (chunks[0] as number) - OP_INT_BASE;
@@ -60,7 +62,9 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
 
     lazy.prop(o, 'output', () => {
         if (!a.m) return;
+
         if (!o.n) return;
+
         if (!a.pubkeys) return;
 
         return bscript.compile(
@@ -74,6 +78,7 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'm', () => {
         if (!o.output) return;
+
         decode(o.output);
 
         return o.m;
@@ -85,6 +90,7 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'pubkeys', () => {
         if (!a.output) return;
+
         decode(a.output);
 
         return o.pubkeys;
@@ -114,18 +120,24 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
     if (opts.validate) {
         if (a.output) {
             decode(a.output);
+
             if (!typeforce.Number(chunks[0])) throw new TypeError('Output is invalid');
+
             if (!typeforce.Number(chunks[chunks.length - 2]))
                 throw new TypeError('Output is invalid');
+
             if (chunks[chunks.length - 1] !== OPS.OP_CHECKMULTISIG)
                 throw new TypeError('Output is invalid');
 
             if (o.m! <= 0 || o.n! > 16 || o.m! > o.n! || o.n !== chunks.length - 3)
                 throw new TypeError('Output is invalid');
+
             if (!o.pubkeys!.every(x => ecc.isPoint(x))) throw new TypeError('Output is invalid');
 
             if (a.m !== undefined && a.m !== o.m) throw new TypeError('m mismatch');
+
             if (a.n !== undefined && a.n !== o.n) throw new TypeError('n mismatch');
+
             if (a.pubkeys && !stacksEqual(a.pubkeys, o.pubkeys!))
                 throw new TypeError('Pubkeys mismatch');
         }
@@ -133,6 +145,7 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
         if (a.pubkeys) {
             if (a.n !== undefined && a.n !== a.pubkeys.length)
                 throw new TypeError('Pubkey count mismatch');
+
             o.n = a.pubkeys.length;
 
             if (o.n < o.m!) throw new TypeError('Pubkey count cannot be less than m');
@@ -140,16 +153,19 @@ export function p2ms(a: Payment, opts?: PaymentOpts): Payment {
 
         if (a.signatures) {
             if (a.signatures.length < o.m!) throw new TypeError('Not enough signatures provided');
+
             if (a.signatures.length > o.m!) throw new TypeError('Too many signatures provided');
         }
 
         if (a.input) {
             if (a.input[0] !== OPS.OP_0) throw new TypeError('Input is invalid');
+
             if (o.signatures!.length === 0 || !o.signatures!.every(isAcceptableSignature))
                 throw new TypeError('Input has invalid signature(s)');
 
             if (a.signatures && !stacksEqual(a.signatures, o.signatures!))
                 throw new TypeError('Signature mismatch');
+
             if (a.m !== undefined && a.m !== a.signatures!.length)
                 throw new TypeError('Signature count mismatch');
         }

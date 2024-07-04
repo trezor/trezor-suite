@@ -2,6 +2,7 @@ import { TrezorConnect } from '../../..';
 
 export const blockchainEstimateFee = async (api: TrezorConnect) => {
     const simple = await api.blockchainEstimateFee({ coin: 'btc' });
+
     if (simple.success) {
         const { payload } = simple;
         payload.blockTime.toFixed();
@@ -17,6 +18,7 @@ export const blockchainEstimateFee = async (api: TrezorConnect) => {
                 // @ts-expect-error blocks not present
                 level.blocks.toFixed();
             }
+
             level.feePerUnit.toLowerCase();
             level.feeLimit?.toLocaleLowerCase();
             level.feePerTx?.toLocaleLowerCase();
@@ -27,6 +29,7 @@ export const blockchainEstimateFee = async (api: TrezorConnect) => {
         coin: 'btc',
         request: { feeLevels: 'smart' },
     });
+
     if (smart.success) {
         const { payload } = smart;
         payload.blockTime.toFixed();
@@ -36,9 +39,11 @@ export const blockchainEstimateFee = async (api: TrezorConnect) => {
             if (level.label === 'custom') {
                 level.blocks.toFixed();
             }
+
             if (level.label === 'normal') {
                 level.feePerUnit.toLowerCase();
             }
+
             if (level.label === 'high' || level.label === 'low' || level.label === 'economy') {
                 level.feeLimit?.toLocaleLowerCase();
                 level.feePerTx?.toLocaleLowerCase();
@@ -71,6 +76,7 @@ export const blockchainEstimateFee = async (api: TrezorConnect) => {
 
 export const blockchainGetTransactions = async (api: TrezorConnect) => {
     const txs = await api.blockchainGetTransactions({ coin: 'btc', txs: ['txid'] });
+
     if (txs.success) {
         txs.payload.forEach(raw => {
             raw.txid.toLowerCase();
@@ -99,6 +105,7 @@ export const others = async (api: TrezorConnect) => {
         accounts,
         coin: 'btc',
     });
+
     if (subscribeAccounts.success) {
         return subscribeAccounts.payload.subscribed === false ? 0 : 1;
     }
@@ -111,6 +118,7 @@ export const others = async (api: TrezorConnect) => {
         accounts,
         coin: 'btc',
     });
+
     if (unsubscribeAccounts.success) {
         return unsubscribeAccounts.payload.subscribed === false ? 0 : 1;
     }
@@ -120,6 +128,7 @@ export const others = async (api: TrezorConnect) => {
     });
 
     const disconnect = await api.blockchainDisconnect({ coin: 'btc' });
+
     if (disconnect.success) {
         return disconnect.payload.disconnected === false ? 0 : 1;
     }
@@ -128,6 +137,7 @@ export const others = async (api: TrezorConnect) => {
         coin: 'btc',
         blockchainLink: undefined,
     });
+
     if (customBackend.success) {
         return customBackend.payload === false ? 0 : 1;
     }

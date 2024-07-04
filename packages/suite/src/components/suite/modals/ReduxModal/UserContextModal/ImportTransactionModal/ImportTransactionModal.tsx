@@ -38,6 +38,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
 
                 return;
             }
+
             onCsvResult(reader.result);
         };
         reader.onerror = () => {

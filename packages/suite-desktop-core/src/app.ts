@@ -47,9 +47,12 @@ const createMainWindow = (winBounds: WinBounds) => {
 
     mainWindow.on('resize', () => {
         if (resizeDebounce) return;
+
         resizeDebounce = setTimeout(() => {
             resizeDebounce = null;
+
             if (!mainWindow) return;
+
             const winBound = mainWindow.getBounds() as WinBounds;
             Store.getStore().setWinBounds(winBound);
             logger.debug('app', 'new winBounds saved');
@@ -77,6 +80,7 @@ const init = async () => {
 
     // https://www.electronjs.org/docs/all#apprequestsingleinstancelock
     const singleInstance = app.requestSingleInstanceLock();
+
     if (!singleInstance) {
         logger.warn('main', 'Second instance detected, quitting...');
         app.quit();
@@ -126,6 +130,7 @@ const init = async () => {
     app.on('second-instance', () => {
         // Someone tried to run a second instance, we should focus our window.
         if (mainWindow.isMinimized()) mainWindow.restore();
+
         mainWindow.focus();
     });
 

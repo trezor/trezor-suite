@@ -10,6 +10,7 @@ export const getChunkHeader = (_data: Buffer) => {
 
 export const encode: TransportProtocolEncode = (data, options) => {
     const { messageType } = options;
+
     if (typeof messageType === 'string') {
         throw new Error(`Unsupported message type ${messageType}`);
     }

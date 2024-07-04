@@ -70,6 +70,7 @@ describe('CoinjoinFilterController', () => {
             it(description, async () => {
                 const controller = new CoinjoinFilterController(client, COINJOIN_BACKEND_SETTINGS);
                 const iterator = controller.getFilterIterator(params);
+
                 if (error) {
                     await expect(() => iterator.next()).rejects.toThrow(error);
                 } else {

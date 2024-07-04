@@ -81,6 +81,7 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
         const { onRequest, onAddListener, onRemoveListener } = await onCreateInstance(
             ...constructorParams,
         );
+
         if (onAddListener) {
             ipcMain.on(
                 `${instancePrefix}/add-listener`,

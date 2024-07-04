@@ -20,14 +20,17 @@ const transformSigner = (signer: Signer) => {
     let type = 0;
     let key: string | undefined;
     const { weight } = signer;
+
     if ('ed25519PublicKey' in signer) {
         const keyPair = Keypair.fromPublicKey(signer.ed25519PublicKey);
         key = keyPair.rawPublicKey().toString('hex');
     }
+
     if ('preAuthTx' in signer && signer.preAuthTx instanceof Buffer) {
         type = 1;
         key = signer.preAuthTx.toString('hex');
     }
+
     if ('sha256Hash' in signer && signer.sha256Hash instanceof Buffer) {
         type = 2;
         key = signer.sha256Hash.toString('hex');
@@ -171,10 +174,12 @@ export const transformTransaction = (path: string, transaction: Transaction) => 
             // stringify is not necessary, Buffer is also accepted
             operation.value = operation.value.toString('hex');
         }
+
         if (operation.type === 'manageBuyOffer') {
             operation.amount = operation.buyAmount;
             delete operation.buyAmount;
         }
+
         operation.type = o.type;
 
         return operation;

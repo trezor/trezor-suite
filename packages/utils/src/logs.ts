@@ -21,6 +21,7 @@ export class Log {
         this.prefix = prefix;
         this.enabled = enabled;
         this.messages = [];
+
         if (logWriter) {
             this.logWriter = logWriter;
         }
@@ -53,6 +54,7 @@ export class Log {
                 console.error('There was an error adding log message', err, message);
             }
         }
+
         if (this.messages.length > this.MAX_ENTRIES) {
             this.messages.shift();
         }
@@ -64,6 +66,7 @@ export class Log {
 
     log(...args: any[]) {
         this.addMessage({ level: 'log', prefix: this.prefix }, ...args);
+
         if (this.enabled) {
             // eslint-disable-next-line no-console
             console.log(`%c${this.prefix}`, this.css, ...args);
@@ -72,6 +75,7 @@ export class Log {
 
     error(...args: any[]) {
         this.addMessage({ level: 'error', prefix: this.prefix }, ...args);
+
         if (this.enabled) {
             console.error(`%c${this.prefix}`, this.css, ...args);
         }
@@ -79,6 +83,7 @@ export class Log {
 
     info(...args: any[]) {
         this.addMessage({ level: 'info', prefix: this.prefix }, ...args);
+
         if (this.enabled) {
             // eslint-disable-next-line no-console
             console.info(`%c${this.prefix}`, this.css, ...args);
@@ -87,6 +92,7 @@ export class Log {
 
     warn(...args: any[]) {
         this.addMessage({ level: 'warn', prefix: this.prefix }, ...args);
+
         if (this.enabled) {
             console.warn(`%c${this.prefix}`, this.css, ...args);
         }
@@ -94,6 +100,7 @@ export class Log {
 
     debug(...args: any[]) {
         this.addMessage({ level: 'debug', prefix: this.prefix }, ...args);
+
         if (this.enabled) {
             if (this.css) {
                 // eslint-disable-next-line no-console

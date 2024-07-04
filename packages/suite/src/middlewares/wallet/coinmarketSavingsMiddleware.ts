@@ -18,6 +18,7 @@ const coinmarketSavingsMiddleware =
         if (action.type === COINMARKET_SAVINGS.LOAD_SAVINGS_TRADE_RESPONSE) {
             const { account } = api.getState().wallet.selectedAccount;
             const { savingsInfo } = api.getState().wallet.coinmarket.savings;
+
             if (account && savingsInfo) {
                 invityAPI.getSavingsTrade().then(savingsTradeResponse => {
                     if (savingsTradeResponse) {
@@ -25,6 +26,7 @@ const coinmarketSavingsMiddleware =
                             coinmarketSavingsActions.saveSavingsTradeResponse(savingsTradeResponse),
                         );
                         const { trade } = savingsTradeResponse;
+
                         if (trade) {
                             if (isDesktop() && trade.status === 'SetSavingsParameters') {
                                 const pollingKey =
@@ -63,6 +65,7 @@ const coinmarketSavingsMiddleware =
             const { account, status } = api.getState().wallet.selectedAccount;
             const { selectedProvider, isWatchingKYCStatus } =
                 api.getState().wallet.coinmarket.savings;
+
             if (account && status === 'loaded' && selectedProvider && !isWatchingKYCStatus) {
                 const pollingKey = `coinmarket-savings-kyc/${account.descriptor}` as const;
                 const apiKey = invityAPI.getCurrentApiKey();
@@ -102,6 +105,7 @@ const coinmarketSavingsMiddleware =
 
         if (action.type === COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS) {
             const { account, status } = api.getState().wallet.selectedAccount;
+
             if (account && status === 'loaded') {
                 const pollingKey = `coinmarket-savings-kyc/${account.descriptor}` as const;
                 api.dispatch(pollingActions.stopPolling(pollingKey));

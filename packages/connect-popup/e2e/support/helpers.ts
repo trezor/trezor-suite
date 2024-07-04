@@ -66,6 +66,7 @@ const getExtensionPage = async () => {
     // https://playwright.dev/docs/chrome-extensions#testing
     // It looks like the only way to get extension ID from a MV3 web extension in playwright is having serviceworker loaded.
     let [background] = browserContext.serviceWorkers();
+
     if (!background) background = await browserContext.waitForEvent('serviceworker');
 
     // https://github.com/microsoft/playwright/issues/5593#issuecomment-949813218
@@ -95,6 +96,7 @@ export const getContexts = async (
             explorerPage: originalPage,
         };
     }
+
     const { page, url, browserContext } = await getExtensionPage();
 
     return {
@@ -116,6 +118,7 @@ export const openPopup = (
     } else {
         triggerPopup.push(explorerPage.waitForEvent('popup'));
     }
+
     triggerPopup.push(explorerPage.click("div[data-test='@api-playground/collapsible-box']"));
     triggerPopup.push(explorerPage.click("button[data-test='@submit-button']"));
 
@@ -124,6 +127,7 @@ export const openPopup = (
 
 export const checkHasLogs = async (logPage: Page) => {
     const locator = await logPage.locator("button[data-test='@log-container/download-button']");
+
     if (await locator.isVisible()) {
         return true;
     }
@@ -149,6 +153,7 @@ export const setConnectSettings = async (
     _isWebExtension?: boolean,
 ) => {
     await explorerPage.goto(formatUrl(explorerUrl, `settings/index.html`));
+
     /*if (isWebExtension) {
         // When webextension and using service-worker we need to wait for handshake is confirmed with proxy.
         await explorerPage.waitForSelector("div[data-test='@settings/handshake-confirmed']");
@@ -156,14 +161,17 @@ export const setConnectSettings = async (
     if (trustedHost) {
         await waitAndClick(explorerPage, ['@checkbox/trustedHost']);
     }
+
     if (connectSrc) {
         (await explorerPage.waitForSelector("input[data-test='@input/connectSrc']")).fill(
             connectSrc,
         );
     }
+
     if (process.env.CORE_IN_POPUP) {
         await waitAndClick(explorerPage, ['@checkbox/useCoreInPopup']);
     }
+
     await waitAndClick(explorerPage, ['@submit-button']);
 };
 

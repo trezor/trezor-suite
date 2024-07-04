@@ -42,6 +42,7 @@ export const useProgressLabelsData = ({
                 id: 1,
                 progressState: (() => {
                     if (!isStakeConfirming && isStakePending) return 'active';
+
                     if (!isStakeConfirming && !isStakePending) return 'done';
 
                     return 'stale';

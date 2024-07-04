@@ -144,6 +144,7 @@ export function Navbar({ flatDirectories, items }: NavBarProps): ReactElement {
                                 </NavbarMenu>
                             );
                         }
+
                         const page = pageOrMenu as PageItem;
                         let href = page.href || page.route || '#';
 

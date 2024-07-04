@@ -26,13 +26,16 @@ export function split(
     const utxos = filterCoinbase(utxosOrig, coinbase);
 
     const fee = getFee(utxos, outputs, feeRate, options);
+
     if (outputs.length === 0) return { fee };
 
     const inAccum = sumOrNaN(utxos);
     const outAccum = sumOrNaN(outputs, true);
+
     if (!inAccum) return { fee };
 
     const remaining = inAccum.sub(outAccum).sub(new BN(fee));
+
     if (remaining.lt(ZERO)) return { fee };
 
     const unspecified = outputs.reduce((a, x) => a + (!bignumberOrNaN(x.value) ? 1 : 0), 0);

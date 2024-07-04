@@ -13,6 +13,7 @@ export const createInterceptor = (): RequestInterceptor => {
     ) => {
         for (let i = 0; i < beforeRequestListeners.length; ++i) {
             const res = beforeRequestListeners[i](details);
+
             if (res) {
                 callback(res);
 

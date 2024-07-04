@@ -84,6 +84,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                     variant: 'default',
                     message: <Translation id="moduleReceive.deviceCancelError" />,
                 });
+
                 if (navigation.canGoBack()) {
                     navigation.goBack();
                 }

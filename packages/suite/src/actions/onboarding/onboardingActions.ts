@@ -77,6 +77,7 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     const stepsInPath = steps.filter(step => isStepUsed(step, getState));
 
     const prevStep = findPrevStep(getState().onboarding.activeStepId, stepsInPath);
+
     // steps listed in case statements contain path decisions, so we need
     // to remove saved paths from reducers to let user change it again.
     switch (prevStep.id) {
@@ -124,6 +125,7 @@ const updateBackupType = (payload: BackupType): OnboardingAction => ({
 
 const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectDevice(getState());
+
     if (!device) return;
 
     dispatch(setDeviceTutorialStatus('active'));

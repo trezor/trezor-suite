@@ -27,14 +27,17 @@ export class CachingElectrumClient extends ElectrumClient {
     private async cacheRequest(status: Status, method: string, params: any[]) {
         const descriptor = [method, ...params].join(':');
         const cached = this.cache[descriptor];
+
         if (cached) {
             const [cachedStatus, cachedResponse] = cached;
+
             if (cachedStatus === status) {
                 this.cached++;
 
                 return cachedResponse;
             }
         }
+
         const response = await super.request(method, ...params);
         this.cache[descriptor] = [status, response];
 
@@ -43,10 +46,12 @@ export class CachingElectrumClient extends ElectrumClient {
 
     private async trySubscribe(scripthash: string): Promise<Status> {
         const status = this.statuses[scripthash];
+
         if (status !== undefined) {
             // Already subscribed, just return latest status
             return status;
         }
+
         // Subscribe to the new scripthash and store the status
         const newStatus = await super.request('blockchain.scripthash.subscribe', scripthash);
         this.statuses[scripthash] = newStatus;
@@ -56,6 +61,7 @@ export class CachingElectrumClient extends ElectrumClient {
 
     async request(method: string, ...params: any[]) {
         this.total++;
+
         switch (method) {
             case 'blockchain.scripthash.get_history':
             case 'blockchain.scripthash.get_balance':
@@ -67,6 +73,7 @@ export class CachingElectrumClient extends ElectrumClient {
             }
             case 'blockchain.transaction.get': {
                 const curBlock = this.lastBlock?.hex;
+
                 if (curBlock === undefined) break;
 
                 return this.cacheRequest(curBlock, method, params);
@@ -91,6 +98,7 @@ export class CachingElectrumClient extends ElectrumClient {
 
     protected response(response: any) {
         const { method, params } = response;
+
         // presence of 'method' field implies that it's a notification
         switch (method) {
             case 'blockchain.scripthash.subscribe': {
@@ -101,6 +109,7 @@ export class CachingElectrumClient extends ElectrumClient {
             default:
                 break;
         }
+
         super.response(response);
     }
 

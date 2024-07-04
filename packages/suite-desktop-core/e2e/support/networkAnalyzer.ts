@@ -17,6 +17,7 @@ export class NetworkAnalyzer {
                     const outputGroupParser = (message: string) =>
                         message && message.trim().match(/electron .*/gm);
                     const group = outputGroupParser(stdout);
+
                     if (group) {
                         const groupParsed = group.map(output => {
                             const parsed = output

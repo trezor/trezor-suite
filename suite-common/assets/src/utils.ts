@@ -15,6 +15,7 @@ export const calculateAssetsPercentage = <T>(
 
     return assetsData.map(asset => {
         const fiatBalance = Number(asset.fiatBalance);
+
         if (fiatTotal === 0 || Number.isNaN(asset.fiatBalance) || fiatBalance === 0) {
             return { ...asset, fiatPercentage: 0, fiatPercentageOffset: 0 };
         }

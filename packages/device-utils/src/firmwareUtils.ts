@@ -8,6 +8,7 @@ export const getFirmwareVersionArray = (device?: Device): VersionArray | null =>
     if (!device?.features) {
         return null;
     }
+
     const { features } = device;
 
     if (isDeviceInBootloaderMode(device)) {
@@ -23,7 +24,9 @@ export const getFirmwareVersion = (device?: Device) => {
     if (!device?.features) {
         return '';
     }
+
     const { features } = device;
+
     if (isDeviceInBootloaderMode(device)) {
         return features.fw_major
             ? `${features.fw_major}.${features.fw_minor}.${features.fw_patch}`

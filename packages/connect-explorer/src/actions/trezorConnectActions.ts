@@ -91,11 +91,14 @@ export const init =
 
         if (process?.env?.__TREZOR_CONNECT_SRC && host !== 'connect.trezor.io') {
             let src = process?.env?.__TREZOR_CONNECT_SRC;
+
             if (isRelativePath(src)) {
                 src = `${window.location.origin}${src}`;
             }
+
             window.__TREZOR_CONNECT_SRC = src;
         }
+
         // yarn workspace @trezor/connect-explorer dev starts @trezor/connect-web on localhost port
         // so we may use it
         if (!window.__TREZOR_CONNECT_SRC && host.startsWith('localhost')) {
@@ -113,6 +116,7 @@ export const init =
             if (options.connectSrc.slice(-1) !== '/') {
                 options.connectSrc += '/';
             }
+
             try {
                 // Verify if valid by loading core.js, if this file exists we can assume the connectSrc is valid
                 await testLoadingScript(options.connectSrc + 'js/core.js');

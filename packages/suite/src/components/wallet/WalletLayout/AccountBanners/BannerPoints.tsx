@@ -20,6 +20,7 @@ const Point = styled.div`
 
 export const BannerPoints = ({ points }: BannerPointsProps) => {
     const theme = useTheme();
+
     if (points.length === 0) return null;
 
     return (

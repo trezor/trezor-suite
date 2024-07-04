@@ -136,6 +136,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
                     ...batch,
                     show_display: false,
                 });
+
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
                         throw ERRORS.TypedError('Method_AddressNotMatch');

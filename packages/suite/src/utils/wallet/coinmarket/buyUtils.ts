@@ -23,24 +23,30 @@ export function getAmountLimits(
         if (!quote.error) {
             return;
         }
+
         if (request.wantCrypto) {
             const amount = Number(quote.receiveStringAmount);
+
             if (quote.minCrypto && amount < quote.minCrypto) {
                 minAmount = Math.min(minAmount || 1e28, quote.minCrypto);
             }
+
             if (quote.maxCrypto && amount > quote.maxCrypto) {
                 maxAmount = Math.max(maxAmount || 0, quote.maxCrypto);
             }
         } else {
             const amount = Number(quote.fiatStringAmount);
+
             if (quote.minFiat && amount < quote.minFiat) {
                 minAmount = Math.min(minAmount || 1e28, quote.minFiat);
             }
+
             if (quote.maxFiat && amount > quote.maxFiat) {
                 maxAmount = Math.max(maxAmount || 0, quote.maxFiat);
             }
         }
     }
+
     if (minAmount) {
         if (!maxAmount) {
             return request.wantCrypto
@@ -57,8 +63,10 @@ export function getAmountLimits(
 // split the quotes to base and alternative and assign order and payment ids
 export function processQuotes(allQuotes: BuyTrade[]): [BuyTrade[], BuyTrade[]] {
     if (!allQuotes) allQuotes = [];
+
     allQuotes.forEach(q => {
         q.orderId = uuidv4();
+
         if (!q.paymentId) {
             q.paymentId = uuidv4();
         }
@@ -131,6 +139,7 @@ export const getCryptoOptions = (
     supportedSymbols: Set<CryptoSymbol>,
 ) => {
     const cryptoSymbol = networkToCryptoSymbol(networkSymbol);
+
     if (!cryptoSymbol) {
         return [];
     }

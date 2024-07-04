@@ -8,6 +8,7 @@ const getTestPattern = () => {
     const root = path.resolve(__dirname, './tests');
     const basename = __filename.split('/').reverse()[0];
     const pos = process.argv.indexOf(`e2e/${basename}`);
+
     if (process.argv[pos + 1]) {
         // if yes add full path
         return process.argv.slice(pos + 1).map(f => `${root}/**/${f}.test.ts`);

@@ -53,6 +53,7 @@ const combineFiatRates = (fiatRates: RatesByTimestamps, accountRates: RatesByTim
             } else {
                 for (let timestampRate in accountRates[fiatRateKey]) {
                     const timestamp = timestampRate as unknown as Timestamp;
+
                     if (
                         accountRates[fiatRateKey].hasOwnProperty(timestamp) &&
                         !fiatRates[fiatRateKey][timestamp]
@@ -106,6 +107,7 @@ export const selectHistoricRatesByTransactions = (
                     if (!selectedRates[fiatRateKey]) {
                         selectedRates[fiatRateKey] = {};
                     }
+
                     selectedRates[fiatRateKey][timestamp] = historicRates[fiatRateKey][timestamp];
                 }
             }
@@ -132,6 +134,7 @@ export const fetchTransactionsRates = async (
             localCurrency,
             isElectrumBackend,
         );
+
         if (results && 'tickers' in results) {
             rates.push({
                 tickerId,

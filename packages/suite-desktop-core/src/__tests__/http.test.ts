@@ -26,7 +26,9 @@ describe('http receiver', () => {
             await receiver.start();
 
             const address = receiver.getServerAddress();
+
             if (!address) return; // ts-stuff
+
             const url = `http://${address.address}:${address.port}${f.path}`;
 
             expect(spy).toHaveBeenLastCalledWith('server/listening', {

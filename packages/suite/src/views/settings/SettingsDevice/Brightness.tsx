@@ -22,6 +22,7 @@ export const Brightness = ({ isDeviceLocked }: DeviceLabelProps) => {
 
     const handleClick = async () => {
         const result = await TrezorConnect.setBrightness({});
+
         if (result.success) {
             analytics.report({
                 type: EventType.SettingsDeviceChangeBrightness,

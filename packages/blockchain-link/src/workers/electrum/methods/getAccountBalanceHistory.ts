@@ -17,12 +17,14 @@ const transformAddress = (addr: AddressHistory) => ({
 const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], groupBy = 3600) => {
     const result: Res['payload'] = [];
     let i = 0;
+
     while (i < txs.length) {
         const time = Math.floor(txs[i].blockTime / groupBy) * groupBy;
         let j = i;
         let received = 0;
         let sent = 0;
         let sentToSelf = 0;
+
         while (j < txs.length && txs[j].blockTime < time + groupBy) {
             const {
                 type,
@@ -30,6 +32,7 @@ const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], gro
                 fee,
                 details: { vin, vout, totalInput, totalOutput },
             } = txs[j];
+
             if (type === 'recv') received += Number.parseInt(amount, 10);
             else if (type === 'sent')
                 sent += Number.parseInt(amount, 10) + Number.parseInt(fee, 10);
@@ -48,8 +51,10 @@ const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], gro
                 received += myTotalOutput;
                 sentToSelf += Math.min(myTotalInput, myTotalOutput);
             }
+
             j++;
         }
+
         result.push({
             time,
             txs: j - i,
@@ -73,6 +78,7 @@ const getAccountBalanceHistory: Api<Req, Res> = async (
     const network = client.getInfo()?.network;
 
     const parsed = tryGetScripthash(descriptor, network);
+
     if (parsed.valid) {
         history = await client.request('blockchain.scripthash.get_history', parsed.scripthash);
         addresses = undefined;

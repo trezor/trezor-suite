@@ -59,6 +59,7 @@ const getBridgeInstance = (store: Dependencies['store']) => {
         const newBridgeRollout = Math.round(Math.random() * 100) / 100;
         store.setBridgeSettings({ ...store.getBridgeSettings(), newBridgeRollout });
     }
+
     const newBridgeRollout = store.getBridgeSettings().newBridgeRollout || 0;
     // note that this variable is duplicated with UI
     const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.1;
@@ -103,6 +104,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
 
     ipcMain.handle('bridge/toggle', async (_: unknown) => {
         const status = await handleBridgeStatus(bridge, mainWindow);
+
         try {
             if (status.service) {
                 await bridge.stop();
@@ -172,6 +174,7 @@ export const init: Module = dependencies => {
 
     return () => {
         if (loaded) return;
+
         loaded = true;
         // TODO intentionally not awaited to mimic previous behavior, resolve later!
         load(dependencies);

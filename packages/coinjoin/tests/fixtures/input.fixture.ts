@@ -13,6 +13,7 @@ export const createInput = (
         amount: options?.amount || 1,
         anonymityLevel: 1,
     });
+
     if (options) {
         Object.keys(options).forEach(key => {
             // @ts-expect-error key-value unsolvable problem

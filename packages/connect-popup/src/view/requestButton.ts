@@ -7,9 +7,11 @@ let toastTimeout: NodeJS.Timeout | undefined;
 
 const showToast = () => {
     const toast = container.querySelectorAll('.toast')[0];
+
     if (toastTimeout) {
         clearTimeout(toastTimeout);
     }
+
     toastTimeout = setTimeout(() => {
         toast.classList.remove('visible');
     }, 3000);
@@ -20,6 +22,7 @@ const showAddressValidation = (payload: UiRequestButton['payload']) => {
     showView('check-address');
     const { data } = payload;
     const dataContainer = container.querySelectorAll('.button-request-data')[0];
+
     if (!data || data.type !== 'address') {
         if (dataContainer.parentNode) {
             dataContainer.parentNode.removeChild(dataContainer);

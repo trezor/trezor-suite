@@ -52,6 +52,7 @@ export const UnecoCoinjoinModal = () => {
     );
 
     const dispatch = useDispatch();
+
     if (!account) {
         return null;
     }

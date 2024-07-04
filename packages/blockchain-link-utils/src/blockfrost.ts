@@ -58,12 +58,14 @@ const hexToString = (input: string): string => {
 
 const getSubtype = (tx: Pick<BlockfrostTransaction, 'txData'>) => {
     const withdrawal = tx.txData.withdrawal_count > 0;
+
     if (withdrawal) {
         return 'withdrawal';
     }
 
     const registrations = tx.txData.stake_cert_count;
     const delegations = tx.txData.delegation_count;
+
     if (registrations === 0 && delegations === 0) return;
 
     if (registrations > 0) {
@@ -164,6 +166,7 @@ export const filterTokenTransfers = (
                 );
 
                 let amount = '0';
+
                 if (type === 'sent') {
                     amount = isChange ? '0' : asset.quantity;
                 } else if (type === 'recv') {
@@ -264,6 +267,7 @@ export const transformTransaction = (
         // none of the input is mine but and output or token transfer is mine
         type = 'recv';
         amount = '0';
+
         if (incoming.length > 0) {
             targets = incoming;
             // recalculate amount, sum all incoming vout
@@ -272,6 +276,7 @@ export const transformTransaction = (
     } else {
         type = 'sent';
         targets = outputs.filter(o => internal.indexOf(o) < 0);
+
         // regular targets
         if (voutLength) {
             // bitcoin-like transaction

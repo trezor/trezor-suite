@@ -81,6 +81,7 @@ describe('topologicalSort', () => {
             inputs.forEach(input => {
                 it(JSON.stringify(input), () => {
                     const tst = () => topologicalSort(input, precedes, tie);
+
                     if (!output) expect(tst).toThrow();
                     else expect(tst()).toEqual(output);
                 });

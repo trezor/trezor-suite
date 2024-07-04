@@ -51,6 +51,7 @@ export function ensureSingleRunningInstance<T extends (...args: any[]) => Promis
 
     return function (this: any, ...args: Parameters<T>): ReturnType<T> {
         const key = JSON.stringify(args);
+
         if (!ongoingPromises.has(key)) {
             const promise = func.apply(this, args).finally(() => {
                 ongoingPromises.delete(key);
@@ -99,6 +100,7 @@ export function TrackRunningTransactionFetches() {
     ) {
         function replacementMethod(this: any, args: AccountUniqueParams) {
             const key = getAccountUniqueKey(args);
+
             if (!transactionFetchesPromises.has(key)) {
                 const operation = originalMethod
                     .apply(this, [args])
@@ -122,6 +124,7 @@ export function WaitUntilFetchIsFinished() {
     return function (originalMethod: any, _context: ClassMethodDecoratorContext) {
         async function replacementMethod(this: any, args: AccountUniqueParams) {
             const key = getAccountUniqueKey(args);
+
             if (transactionFetchesPromises.has(key)) {
                 try {
                     await transactionFetchesPromises.get(key);

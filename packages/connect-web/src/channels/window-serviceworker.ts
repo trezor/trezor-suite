@@ -23,6 +23,7 @@ export class WindowServiceWorkerChannel<
             channel,
             sendFn: (message: any) => {
                 if (!this.port) throw new Error('port not assigned');
+
                 this.port.postMessage(message);
             },
         });
@@ -39,6 +40,7 @@ export class WindowServiceWorkerChannel<
                 message: Message<IncomingMessages>,
             ) => {
                 if (message.channel.here === this.channel.here) return;
+
                 this.onMessage(message);
             },
         );
@@ -47,6 +49,7 @@ export class WindowServiceWorkerChannel<
 
     disconnect() {
         if (!this.isConnected) return;
+
         this.port?.disconnect();
         this.isConnected = false;
     }

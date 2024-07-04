@@ -59,6 +59,7 @@ export const IconButton = ({
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (onClick === undefined) return;
+
         onClick(e);
         e.stopPropagation();
     };

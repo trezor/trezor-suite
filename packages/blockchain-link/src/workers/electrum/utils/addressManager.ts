@@ -78,7 +78,9 @@ export const createAddressManager = (getNetwork: () => Network | undefined) => {
     const getInfo = (scripthash: string) => {
         const [address, _sh] =
             Object.entries(subscribedAddrs).find(([_addr, sh]) => sh === scripthash) || [];
+
         if (!address) return { descriptor: scripthash };
+
         const [account, addresses] =
             Object.entries(subscribedAccs).find(
                 ([_acc, { change, unused, used }]) =>

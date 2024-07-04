@@ -12,6 +12,7 @@ const config: DocsThemeConfig = {
     primarySaturation: 40,
     useNextSeoProps() {
         const { asPath } = useRouter();
+
         if (asPath !== '/') {
             return {
                 titleTemplate: '%s – Trezor Connect Explorer',

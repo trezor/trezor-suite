@@ -44,6 +44,7 @@ class GoogleProvider extends AbstractMetadataProvider {
     private async _getFileContent(file: string) {
         try {
             const id = await GoogleClient.getIdByName(file);
+
             if (!id) {
                 return this.ok(undefined);
             }
@@ -56,6 +57,7 @@ class GoogleProvider extends AbstractMetadataProvider {
                 },
                 id,
             );
+
             if (response) {
                 return this.ok(Buffer.from(response, 'hex'));
             }
@@ -80,6 +82,7 @@ class GoogleProvider extends AbstractMetadataProvider {
             // search for file by name with forceReload=true parameter to make sure that we do not save
             // two files with the same name but different ids
             const id = await GoogleClient.getIdByName(file, true);
+
             if (id) {
                 await GoogleClient.update(
                     {
@@ -94,6 +97,7 @@ class GoogleProvider extends AbstractMetadataProvider {
 
                 return this.ok();
             }
+
             await GoogleClient.create(
                 {
                     body: {
@@ -203,6 +207,7 @@ class GoogleProvider extends AbstractMetadataProvider {
         if (message.includes('Failed to fetch')) {
             return this.error('CONNECTIVITY_ERROR', 'Internet connection problem');
         }
+
         // todo: more fine grained errors for google drive
         // https://developers.google.com/drive/api/v3/handle-errors
         switch (err?.error?.code) {

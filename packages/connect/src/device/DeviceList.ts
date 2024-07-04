@@ -77,6 +77,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
 
         const transports: ConnectSettings['transports'] = [...(settings.transports || [])];
+
         if (!transports.length) {
             transports.push('BridgeTransport');
         }
@@ -120,6 +121,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 }
             } else if (typeof transportType === 'function' && 'prototype' in transportType) {
                 const transportInstance = new transportType(transportCommonArgs);
+
                 if (isTransportInstance(transportInstance)) {
                     this.transports.push(transportInstance);
                 }
@@ -128,6 +130,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 if (!transportType.getMessage()) {
                     transportType.updateMessages(messages);
                 }
+
                 this.transports.push(transportType);
             } else {
                 // runtime check
@@ -155,6 +158,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
             for (const transport of this.transports) {
                 this.transport = transport;
                 const result = await this.transport.init().promise;
+
                 if (result.success) {
                     lastError = undefined;
                     break;
@@ -181,6 +185,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 diff.disconnected.forEach(descriptor => {
                     const path = descriptor.path.toString();
                     const device = this.devices[path];
+
                     if (device) {
                         device.disconnect();
                         delete this.devices[path];
@@ -201,6 +206,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     if (priority || penalty) {
                         await resolveAfter(501 + penalty + 100 * priority, null).promise;
                     }
+
                     if (this.creatingDevicesDescriptors[path].session == null) {
                         await this._createAndSaveDevice(descriptor);
                     } else {
@@ -265,6 +271,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     d.forEach(descriptor => {
                         const path = descriptor.path.toString();
                         const device = this.devices[path];
+
                         if (device) {
                             _log.debug('Event', e, device.toMessageObject());
                             this.emit(e, device.toMessageObject());
@@ -276,6 +283,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 // in subsequent transport.acquire calls
                 diff.descriptors.forEach(d => {
                     this.creatingDevicesDescriptors[d.path] = d;
+
                     if (this.devices[d.path]) {
                         this.devices[d.path].originalDescriptor = {
                             session: d.session,
@@ -315,6 +323,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
             } else {
                 this.emit(TRANSPORT.START, this.getTransportInfo());
             }
+
             this.transport.handleDescriptorsChange(descriptors);
             this.transport.listen();
         } catch (error) {
@@ -325,9 +334,11 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     private resolveTransportEvent() {
         this.transportStartPending--;
+
         if (autoResolveTransportEventTimeout) {
             clearTimeout(autoResolveTransportEventTimeout);
         }
+
         if (this.transportStartPending === 0) {
             this.emit(TRANSPORT.START, this.getTransportInfo());
         }
@@ -406,6 +417,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         if (autoResolveTransportEventTimeout) {
             clearTimeout(autoResolveTransportEventTimeout);
         }
+
         // release all devices
         Promise.all(this.allDevices().map(device => device.dispose())).then(() => {
             // now we can be relatively sure that release calls have been dispatched
@@ -443,6 +455,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     addAuthPenalty(device: Device) {
         if (!device.isInitialized() || device.isBootloader() || !device.features.device_id) return;
+
         const deviceID = device.features.device_id;
         const penalty = this.penalizedDevices[deviceID]
             ? this.penalizedDevices[deviceID] + 500
@@ -461,6 +474,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     removeAuthPenalty(device: Device) {
         if (!device.isInitialized() || device.isBootloader() || !device.features.device_id) return;
+
         const deviceID = device.features.device_id;
         delete this.penalizedDevices[deviceID];
     }
@@ -468,11 +482,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
     // main logic
     private async handle(descriptor: Descriptor) {
         const path = descriptor.path.toString();
+
         try {
             // "regular" device creation
             await this._takeAndCreateDevice(descriptor);
         } catch (error) {
             _log.debug('Cannot create device', error);
+
             if (
                 error.code === 'Device_NotFound' ||
                 error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
@@ -517,6 +533,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 await this.handle(descriptor);
             }
         }
+
         delete this.creatingDevicesDescriptors[path];
     }
 

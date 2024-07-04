@@ -19,11 +19,13 @@ Object.keys(messages as unknown as Message[]).forEach((key: string) => {
     if (!ids[messages[key].id]) {
         ids[messages[key].id] = 0;
     }
+
     ids[messages[key].id] += 1;
 
     if (!defaultMessages[messages[key].defaultMessage]) {
         defaultMessages[messages[key].defaultMessage] = 0;
     }
+
     defaultMessages[messages[key].defaultMessage] += 1;
 });
 

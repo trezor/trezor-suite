@@ -44,6 +44,7 @@ const getButtonLabelId = ({
     if (currentFwVersion && availableFwVersion && currentFwVersion === availableFwVersion) {
         return 'TR_UP_TO_DATE';
     }
+
     switch (device.firmware) {
         case 'valid':
             return 'TR_UP_TO_DATE';

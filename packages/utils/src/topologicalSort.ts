@@ -16,9 +16,12 @@ export const topologicalSort = <T>(
         arrayPartition(verts, succ => !verts.some(pred => precedes(pred, succ)));
 
     let elem = elements;
+
     while (elem.length) {
         const [roots, rest] = filterRoots(elem);
+
         if (!roots.length) throw new Error('Cycle detected');
+
         result.push(...(tie ? roots.sort(tie) : roots));
         elem = rest;
     }

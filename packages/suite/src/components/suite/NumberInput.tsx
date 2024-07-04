@@ -143,6 +143,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
                 if (lastSymbol !== '0') {
                     // disallow entering more than one separator
                     const secondToLastSymbol = rawValue.at(-2);
+
                     if (secondToLastSymbol && DECIMAL_SEPARATORS.includes(secondToLastSymbol)) {
                         return;
                     }
@@ -194,6 +195,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
 
             // read cursor position before formatting
             let { selectionStart: cursorPosition } = inputRef.current;
+
             if (cursorPosition === null) return;
 
             const { thousandsSeparator } = getLocaleSeparators(locale);
@@ -201,10 +203,12 @@ export const NumberInput = <TFieldValues extends FieldValues>({
             // Ctrl+D on Mac
             const isDeleteKeyUsed =
                 pressedKey === 'Delete' || pressedKey.toLocaleLowerCase() === 'd';
+
             // handle deleting a thousands separator with a DEL key,
             // otherwise the number instantly gets formatted back to having that separator
             if (inputValue.length < previousDisplayValue.length && isDeleteKeyUsed) {
                 const deletedCharacter = previousDisplayValue.at(cursorPosition);
+
                 // is not needed for numbers without group separators (≤3 chars)
                 if (deletedCharacter === thousandsSeparator && inputValue.length > 3) {
                     inputValue =
@@ -230,7 +234,9 @@ export const NumberInput = <TFieldValues extends FieldValues>({
             // format and set display value
             const currentValueLength = inputRef.current?.value.length || 0;
             const formattedValue = formatDisplayValue(inputValue, cleanInput);
+
             if (formattedValue === undefined) return;
+
             const formattedValueLength = formattedValue.length;
 
             if (previousFormValueRef.current !== cleanInput) {
@@ -249,6 +255,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
                 // because the form is not updated yet after calling `onChange()`,
                 // the value of `invalid` here is the one before this change has been handled
                 const hasErrorStateChanged = hasError !== invalid;
+
                 if (hasErrorStateChanged) {
                     // delaying it because the form needs some time to update the error state
                     // TODO: get rid of `onChangeCallback()` entirely and use the `watch` method from react-hook form
@@ -263,6 +270,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
             // detect if separators have been added/removed
             // do not move the cursor in case of 123,456 => 1,123,456 (it moves 1 additional char if unhandled)
             const lengthDelta = formattedValueLength - currentValueLength;
+
             if (
                 lengthDelta > 0 &&
                 cursorPosition !== 1 &&
@@ -303,6 +311,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
             }
 
             const { selectionStart, selectionEnd, value } = inputRef.current;
+
             if (selectionStart === null || selectionEnd === null) {
                 return;
             }
@@ -325,6 +334,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
             }
 
             const { selectionStart, selectionEnd, value } = inputRef.current;
+
             if (selectionStart === null || selectionEnd === null) {
                 return;
             }
@@ -358,6 +368,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
             }
 
             const { selectionStart: cursorPosition, selectionEnd, value } = inputRef.current;
+
             if (cursorPosition === null || cursorPosition !== selectionEnd) {
                 return;
             }
@@ -380,6 +391,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
         }
 
         const { selectionStart, selectionEnd, value } = inputRef.current;
+
         if (selectionStart === selectionEnd) {
             handleCursorShift(-1, -1);
         }
@@ -387,8 +399,10 @@ export const NumberInput = <TFieldValues extends FieldValues>({
         if (selectionStart === null || selectionEnd === null) {
             return;
         }
+
         const selectedPart = value.substring(selectionStart, selectionEnd);
         const { thousandsSeparator } = getLocaleSeparators(locale);
+
         // do not allow selecting group separators to avoid unwanted behavior
         if (selectedPart.length === 1 && selectedPart.at(0) === thousandsSeparator) {
             inputRef.current.selectionEnd = selectionStart;
@@ -401,6 +415,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
             const pressedKey = e.key;
 
             if (pressedKey === 'ArrowRight') handleCursorShift(0, 1);
+
             if (pressedKey === 'ArrowLeft') handleCursorShift(-2, -1);
         },
         [handleCursorShift],

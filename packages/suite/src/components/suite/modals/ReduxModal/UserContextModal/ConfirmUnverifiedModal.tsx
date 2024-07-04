@@ -55,8 +55,10 @@ export const ConfirmUnverifiedModal = ({
     const enablePassphraseAndContinue = async () => {
         if (!device.available) {
             const result = await dispatch(applySettings({ use_passphrase: true }));
+
             if (!result || !result.success) return;
         }
+
         dispatch(verify());
     };
     const continueUnverified = () => dispatch(showUnverified());

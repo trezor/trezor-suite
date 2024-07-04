@@ -89,6 +89,7 @@ export const sortByBIP44AddressIndex = <T extends { path: string }>(
 export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;
     const tokens = path.match(regEx);
+
     if (!tokens || tokens.length !== 6) {
         return null;
     }
@@ -185,7 +186,9 @@ export const getTitleForNetwork = (symbol: NetworkSymbol) => {
 
 export const getAccountTypePrefix = (path: string) => {
     if (typeof path !== 'string') return null;
+
     const coinType = path.split('/')[2];
+
     switch (coinType) {
         case `501'`: {
             return 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE';
@@ -197,8 +200,10 @@ export const getAccountTypePrefix = (path: string) => {
 
 export const getBip43Type = (path: string) => {
     if (typeof path !== 'string') return 'unknown';
+
     // https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
     const bip43 = path.split('/')[1];
+
     switch (bip43) {
         case `86'`:
             return 'bip86';
@@ -219,12 +224,19 @@ export const getBip43Type = (path: string) => {
 
 export const getAccountTypeName = (path: string) => {
     const accountTypePrefix = getAccountTypePrefix(path);
+
     if (accountTypePrefix) return `${accountTypePrefix}_NAME` as const;
+
     const bip43 = getBip43Type(path);
+
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_NAME';
+
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_NAME';
+
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_NAME';
+
     if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY';
+
     if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_SLIP25_NAME';
 
     return 'TR_ACCOUNT_TYPE_BIP44_NAME';
@@ -232,12 +244,19 @@ export const getAccountTypeName = (path: string) => {
 
 export const getAccountTypeTech = (path: string) => {
     const accountTypePrefix = getAccountTypePrefix(path);
+
     if (accountTypePrefix) return `${accountTypePrefix}_TECH` as const;
+
     const bip43 = getBip43Type(path);
+
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_TECH';
+
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_TECH';
+
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_TECH';
+
     if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY';
+
     if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_SLIP25_TECH';
 
     return 'TR_ACCOUNT_TYPE_BIP44_TECH';
@@ -245,12 +264,19 @@ export const getAccountTypeTech = (path: string) => {
 
 export const getAccountTypeDesc = (path: string) => {
     const accountTypePrefix = getAccountTypePrefix(path);
+
     if (accountTypePrefix) return `${accountTypePrefix}_DESC` as const;
+
     const bip43 = getBip43Type(path);
+
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_DESC';
+
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_DESC';
+
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_DESC';
+
     if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY_DESC';
+
     if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_SLIP25_DESC';
 
     return 'TR_ACCOUNT_TYPE_BIP44_DESC';
@@ -258,6 +284,7 @@ export const getAccountTypeDesc = (path: string) => {
 
 export const getAccountTypeUrl = (path: string) => {
     const bip43 = getBip43Type(path);
+
     switch (bip43) {
         case 'bip86':
             return HELP_CENTER_TAPROOT_URL;
@@ -282,6 +309,7 @@ export const stripNetworkAmount = (amount: string, decimals: number) =>
 export const formatAmount = (amount: BigNumberValue, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
+
         if (bAmount.isNaN()) {
             throw new Error('Amount is not a number');
         }
@@ -295,6 +323,7 @@ export const formatAmount = (amount: BigNumberValue, decimals: number) => {
 export const amountToSatoshi = (amount: BigNumberValue, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
+
         if (bAmount.isNaN()) {
             throw new Error('Amount is not a number');
         }
@@ -309,6 +338,7 @@ export const amountToSatoshi = (amount: BigNumberValue, decimals: number) => {
 export const satoshiAmountToBtc = (amount: BigNumberValue) => {
     try {
         const satsAmount = new BigNumber(amount);
+
         if (satsAmount.isNaN()) {
             throw new Error('Amount is not a number');
         }
@@ -375,6 +405,7 @@ export const sortByCoin = (accounts: Account[]) =>
 
             return accountType === b.accountType && n.symbol === b.symbol;
         });
+
         if (aIndex === bIndex) return a.index - b.index;
 
         return aIndex - bIndex;
@@ -516,6 +547,7 @@ export const enhanceAddresses = (
             if (page?.index !== 1) return oldAddresses ?? addresses;
 
             const pendingTxs = transactions.filter(({ blockHeight = 0 }) => blockHeight <= 0);
+
             if (!pendingTxs.length) return addresses;
 
             const pendingTransfers = countAddressTransfers(pendingTxs);
@@ -540,6 +572,7 @@ export const enhanceUtxo = (
     accountIndex: Account['index'],
 ): Account['utxo'] => {
     if (!utxos) return undefined;
+
     if (networkType !== 'cardano') return utxos;
 
     const accountIndexStr = accountIndex.toString();
@@ -580,8 +613,10 @@ export const getTokensFiatBalance = (
         );
 
         const tokenFiatRate = rates?.[tokenFiatRateKey];
+
         if (tokenFiatRate?.rate && t.balance) {
             const tokenBalance = toFiatCurrency(t.balance, tokenFiatRate.rate, 2);
+
             if (tokenBalance) {
                 totalBalance = totalBalance.plus(tokenBalance);
             }
@@ -698,6 +733,7 @@ export const getAccountSpecific = (
     networkType: Network['networkType'],
 ) => {
     const { misc } = accountInfo;
+
     if (networkType === 'ripple') {
         return {
             networkType,
@@ -802,9 +838,11 @@ export const accountSearchFn = (
 ) => {
     // if coin filter is active and account symbol doesn't match return false and don't continue the search
     const coinFilterMatch = coinFilter ? account.symbol === coinFilter : true;
+
     if (!coinFilterMatch) return false;
 
     const searchString = rawSearchString?.trim().toLowerCase();
+
     if (!searchString) return true; // no search string
 
     const network = getNetwork(account.symbol);
@@ -885,11 +923,13 @@ export const getUtxoFromSignedTransaction = ({
     // append utxo created by this transaction
     tx.outputs.forEach((output, vout) => {
         let addr: AccountAddress | undefined;
+
         if (!receivingAccount && 'address_n' in output && output.address_n) {
             // find change address
             const serialized = output.address_n.slice(3, 5).join('/');
             addr = account.addresses?.change.find(a => a.path.endsWith(serialized));
         }
+
         if ('address' in output) {
             // find self address
             addr = addresses.find(a => a.address === output.address);
@@ -939,9 +979,11 @@ export const getPendingAccount = ({
 }) => {
     // calculate availableBalance
     let availableBalanceBig = new BigNumber(account.availableBalance);
+
     if (!receivingAccount) {
         availableBalanceBig = availableBalanceBig.minus(tx.feeDifference || tx.totalSpent);
     }
+
     // get utxo
     const utxo = getUtxoFromSignedTransaction({
         account,
@@ -1015,6 +1057,7 @@ export const getUtxoOutpoint = (utxo: { txid: string; vout: number }) => {
     if (utxo.txid.length !== 64) {
         throw new Error('Invalid length of txid');
     }
+
     const hash = bufferUtils.reverseBuffer(Buffer.from(utxo.txid, 'hex'));
     const buffer = Buffer.allocUnsafe(36);
     hash.copy(buffer);
@@ -1040,9 +1083,13 @@ export const isSameUtxo = (a: AccountUtxo, b: AccountUtxo) =>
  */
 export const isAddressBasedNetwork = (networkType: NetworkType) => {
     if (networkType === 'bitcoin') return false;
+
     if (networkType === 'cardano') return false;
+
     if (networkType === 'ethereum') return true;
+
     if (networkType === 'ripple') return true;
+
     if (networkType === 'solana') return true;
 
     // Checks that all networkType options were handled.

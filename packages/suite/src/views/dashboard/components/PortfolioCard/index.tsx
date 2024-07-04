@@ -64,6 +64,7 @@ const PortfolioCard = memo(() => {
     // 3. Discovery stops (no accounts added), Loading unmounted, new instance of DashboardGraph gets mounted
 
     let body = null;
+
     if (discoveryStatus && discoveryStatus.status === 'exception') {
         body = <Exception exception={discoveryStatus} discovery={discovery} />;
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {

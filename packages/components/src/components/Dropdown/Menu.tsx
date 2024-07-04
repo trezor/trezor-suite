@@ -189,6 +189,7 @@ const MenuItem = ({
         }
 
         onClick?.();
+
         if (shouldCloseOnClick) {
             setToggled(false);
         }
@@ -265,6 +266,7 @@ const getNextIndex =
         if (keyboardKey === 'ArrowUp') {
             const getPrevIndex = (current: number) => (current > 0 ? current - 1 : lastIndex);
             nextIndex = getPrevIndex(nextIndex);
+
             // skip disabled items
             while (flatGroupItems[nextIndex].isDisabled) {
                 nextIndex = getPrevIndex(nextIndex);
@@ -272,6 +274,7 @@ const getNextIndex =
         } else if (keyboardKey === 'ArrowDown') {
             const getNextIndex = (current: number) => (current < lastIndex ? current + 1 : 0);
             nextIndex = getNextIndex(nextIndex);
+
             // skip disabled items
             while (flatGroupItems[nextIndex].isDisabled) {
                 nextIndex = getNextIndex(nextIndex);
@@ -367,6 +370,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                     e.preventDefault();
 
                     const focusedItem = flatGroupItems[focusedItemIndex];
+
                     if (focusedItem.id === 'addon') {
                         addon?.onClick?.();
                     } else {

@@ -170,6 +170,7 @@ export const TransactionTarget = ({
 
     const copyAddress = () => {
         let payload: ToastPayload = { type: 'copy-to-clipboard' };
+
         if (!target?.addresses) {
             // probably should not happen?
             payload = {
@@ -178,6 +179,7 @@ export const TransactionTarget = ({
             };
         } else {
             const result = copyToClipboard(target.addresses.join());
+
             if (typeof result === 'string') {
                 payload = {
                     type: 'error',
@@ -185,6 +187,7 @@ export const TransactionTarget = ({
                 };
             }
         }
+
         dispatch(notificationsActions.addToast(payload));
     };
 

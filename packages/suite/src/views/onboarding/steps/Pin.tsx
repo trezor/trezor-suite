@@ -47,6 +47,7 @@ const SetPinStep = () => {
             // They are used to show better context-aware UI/texts (Right now it only changes a header from "Set a new PIN" to "Confirm PIN").
             // As the whole process on T2T1 is done via touchscreen we don't really need to track anything besides 'initial' and 'success' states.
             const buttonRequests = device.buttonRequests.map(r => r.code);
+
             if (buttonRequests.includes('PinMatrixRequestType_NewFirst')) {
                 if (buttonRequests.includes('PinMatrixRequestType_NewSecond')) {
                     setStatus('repeat-pin');

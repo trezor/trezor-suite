@@ -88,10 +88,12 @@ const getVersionName = ({ latestVersion, prerelease }: VersionNameProps): string
         // fallback for undefined version
         return '';
     }
+
     if (!prerelease) {
         // regular case
         return latestVersion;
     }
+
     if (!latestVersion.includes('-')) {
         // add beta label for pre-releases, but prevent versions like '21.10.1-alpha-beta'
         return `${latestVersion}-beta`;

@@ -39,11 +39,13 @@ export function sstxcommitment(a: Payment, opts?: PaymentOpts): Payment {
 
     lazy.prop(o, 'hash', () => {
         if (a.output) return a.output.subarray(2, 22);
+
         if (a.address) return _address().hash;
     });
 
     lazy.prop(o, 'output', () => {
         if (!o.hash || !a.amount) return;
+
         // https://github.com/trezor/trezor-firmware/blob/c1843f9f9fa16f3ffa91a4beef4bc1133436fb41/core/src/apps/bitcoin/scripts_decred.py
         const buf = Buffer.allocUnsafe(o.hash.length + 10);
         const writer = new BufferWriter(buf);
@@ -58,22 +60,29 @@ export function sstxcommitment(a: Payment, opts?: PaymentOpts): Payment {
     // extended validation
     if (opts.validate) {
         let hash = Buffer.from([]);
+
         if (a.address) {
             const { version, hash: aHash } = _address();
+
             if (version !== network.pubKeyHash)
                 throw new TypeError('Invalid version or Network mismatch');
+
             if (aHash.length !== 20) throw new TypeError('Invalid address');
+
             hash = aHash;
         }
+
         if (a.hash) {
             if (hash.length > 0 && !hash.equals(a.hash)) throw new TypeError('Hash mismatch');
             else hash = a.hash;
         }
+
         if (a.output) {
             if (a.output.length !== 32 || a.output[0] !== OPS.OP_RETURN)
                 throw new TypeError('sstxcommitment output is invalid');
 
             const hash2 = a.output.subarray(2, 22);
+
             if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
         }
     }

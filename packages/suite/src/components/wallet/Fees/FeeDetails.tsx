@@ -138,8 +138,11 @@ const RippleDetails = ({ networkType, selectedLevel, showFee }: DetailsProps) =>
 
 export const FeeDetails = (props: DetailsProps) => {
     const { networkType } = props;
+
     if (networkType === 'bitcoin') return <BitcoinDetails {...props} />;
+
     if (networkType === 'ethereum') return <EthereumDetails {...props} />;
+
     if (networkType === 'ripple') return <RippleDetails {...props} />;
 
     return null;

@@ -84,6 +84,7 @@ export class Parser {
         // Remove the environment-specific part of the path
         // and the locale.
         const id = path.slice(this.source.length + 3);
+
         if (id.length !== 0) {
             return id;
         }

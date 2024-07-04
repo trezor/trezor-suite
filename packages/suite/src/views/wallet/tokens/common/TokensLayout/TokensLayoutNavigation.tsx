@@ -124,6 +124,7 @@ export const TokensLayoutNavigation = ({
                 payload: { symbol: account.symbol, action: 'add-token' },
             });
         }
+
         dispatch(openModal({ type: 'add-token' }));
     };
 

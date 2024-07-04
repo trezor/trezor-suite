@@ -60,6 +60,7 @@ export class CoinjoinPrison extends TypedEmitter<CoinjoinPrisonEvents> {
 
         let id: string;
         let type: CoinjoinPrisonInmate['type'];
+
         if ('outpoint' in inmate) {
             type = 'input';
             id = inmate.outpoint;
@@ -89,6 +90,7 @@ export class CoinjoinPrison extends TypedEmitter<CoinjoinPrisonEvents> {
 
     isDetained(inmate: string | DetainObject) {
         let id: string;
+
         if (typeof inmate === 'string') {
             id = inmate;
         } else if ('outpoint' in inmate) {

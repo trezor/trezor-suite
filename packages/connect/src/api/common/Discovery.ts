@@ -62,6 +62,7 @@ export class Discovery extends EventEmitter {
             // path utility wrapper. bip44 purpose can be set as well
             const getDescriptor = (purpose: number, index: number) =>
                 getAccountAddressN(coinInfo, index, { purpose });
+
             // add bech32/p2wpkh discovery type
             if (coinInfo.xPubMagicSegwitNative) {
                 this.types.push({
@@ -69,6 +70,7 @@ export class Discovery extends EventEmitter {
                     getPath: getDescriptor.bind(this, 84),
                 });
             }
+
             // if (coinInfo.taproot) {
             // TODO: enable taproot/p2tr discovery type in popup
             // this.types.push({
@@ -83,6 +85,7 @@ export class Discovery extends EventEmitter {
                     getPath: getDescriptor.bind(this, 49),
                 });
             }
+
             // add legacy/p2pkh discovery type (normal if bech32 and segwit are not supported)
             this.types.push({
                 type: 'p2pkh',
@@ -100,6 +103,7 @@ export class Discovery extends EventEmitter {
     async start(details?: GetAccountInfo['details']) {
         const limit = 10; // TODO: move to options
         this.interrupted = false;
+
         while (!this.completed && !this.interrupted) {
             const accountType = this.types[this.typeIndex];
             const label = `Account #${this.index + 1}`;
@@ -116,6 +120,7 @@ export class Discovery extends EventEmitter {
             if (!descriptor) {
                 throw ERRORS.TypedError('Runtime', 'Discovery: descriptor not found');
             }
+
             if (this.interrupted) return;
 
             const account: DiscoveryAccount = {
@@ -140,6 +145,7 @@ export class Discovery extends EventEmitter {
                 descriptor: account.descriptor,
                 details,
             });
+
             if (this.interrupted) return;
 
             // remove previously added incomplete account info

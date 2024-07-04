@@ -3,6 +3,7 @@ import { TrezorConnect } from '../../..';
 export const eosGetPublicKey = async (api: TrezorConnect) => {
     // regular
     const singlePK = await api.eosGetPublicKey({ path: 'm/44' });
+
     if (singlePK.success) {
         const { payload } = singlePK;
         payload.path.map(a => a);
@@ -15,6 +16,7 @@ export const eosGetPublicKey = async (api: TrezorConnect) => {
 
     // bundle
     const bundlePK = await api.eosGetPublicKey({ bundle: [{ path: 'm/44' }] });
+
     if (bundlePK.success) {
         bundlePK.payload.forEach(item => {
             item.path.map(a => a.toFixed());

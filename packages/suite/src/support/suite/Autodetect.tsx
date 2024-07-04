@@ -18,10 +18,13 @@ const Autodetect = () => {
 
     useEffect(() => {
         if (!autodetectTheme) return;
+
         const osTheme = getOsTheme();
+
         if (osTheme !== currentTheme) {
             setTheme(osTheme);
         }
+
         const unwatch = watchOsTheme(setTheme);
 
         return () => unwatch();
@@ -29,10 +32,13 @@ const Autodetect = () => {
 
     useEffect(() => {
         if (!autodetectLanguage) return;
+
         const osLocale = getOsLocale(currentLanguage);
+
         if (osLocale !== currentLanguage) {
             setLanguage(osLocale);
         }
+
         const unwatch = watchOsLocale(setLanguage);
 
         return () => unwatch();

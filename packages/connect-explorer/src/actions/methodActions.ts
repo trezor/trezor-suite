@@ -80,9 +80,11 @@ export const onSetManualMode = (manualMode: boolean) => ({
 
 export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => {
     const { method } = getState();
+
     if (!method?.name) throw new Error('method name not specified');
 
     const connectMethod = TrezorConnect[method.name];
+
     if (typeof connectMethod !== 'function') {
         dispatch(
             onResponse({
@@ -103,6 +105,7 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
 
 export const onVerify = () => (dispatch: Dispatch, getState: GetState) => {
     const { method } = getState();
+
     if (!method) throw new Error('method not specified');
 
     const verifyMethodValues = {

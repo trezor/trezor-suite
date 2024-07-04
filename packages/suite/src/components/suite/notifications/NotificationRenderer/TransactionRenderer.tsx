@@ -43,6 +43,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
 
     const networkAccounts = findAccountsByNetwork(symbol, accounts);
     const found = findAccountsByDescriptor(descriptor, networkAccounts);
+
     // fallback: account not found, it should never happen tho
     if (!found.length) return <View {...props} />;
 
@@ -66,9 +67,11 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
             action={{
                 onClick: () => {
                     const deviceToSelect = accountDevice || device;
+
                     if (deviceToSelect?.id !== currentDevice?.id) {
                         dispatch(selectDeviceThunk({ device: deviceToSelect }));
                     }
+
                     const txAnchor = getTxAnchor(tx?.txid);
                     dispatch(
                         goto(destinationRoute, {

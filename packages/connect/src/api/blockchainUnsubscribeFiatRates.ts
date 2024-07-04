@@ -29,9 +29,11 @@ export default class BlockchainUnsubscribeFiatRates extends AbstractMethod<
         ]);
 
         const coinInfo = getCoinInfo(payload.coin);
+
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
+
         // validate backend
         isBackendSupported(coinInfo);
 

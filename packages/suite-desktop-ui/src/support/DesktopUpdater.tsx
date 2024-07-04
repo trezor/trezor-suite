@@ -53,6 +53,7 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         if (!desktopUpdate.enabled) {
             return;
         }
+
         desktopApi.on('update/checking', checking);
         desktopApi.on('update/available', available);
         desktopApi.on('update/not-available', notAvailable);

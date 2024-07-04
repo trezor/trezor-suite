@@ -3,6 +3,7 @@ import { TrezorConnect } from '../../..';
 export const binanceGetAddress = async (api: TrezorConnect) => {
     // regular
     const singleAddress = await api.binanceGetAddress({ path: 'm/44' });
+
     if (singleAddress.success) {
         const { payload } = singleAddress;
         payload.address.toLowerCase();
@@ -14,6 +15,7 @@ export const binanceGetAddress = async (api: TrezorConnect) => {
 
     // bundle
     const bundleAddress = await api.binanceGetAddress({ bundle: [{ path: 'm/44' }] });
+
     if (bundleAddress.success) {
         bundleAddress.payload.forEach(item => {
             item.address.toLowerCase();
@@ -56,6 +58,7 @@ export const binanceGetAddress = async (api: TrezorConnect) => {
 export const binanceGetPublicKey = async (api: TrezorConnect) => {
     // regular
     const singlePK = await api.binanceGetPublicKey({ path: 'm/44' });
+
     if (singlePK.success) {
         const { payload } = singlePK;
         payload.path.filter(a => a);
@@ -67,6 +70,7 @@ export const binanceGetPublicKey = async (api: TrezorConnect) => {
 
     // bundle
     const bundlePK = await api.binanceGetPublicKey({ bundle: [{ path: 'm/44' }] });
+
     if (bundlePK.success) {
         bundlePK.payload.forEach(item => {
             item.path.filter(a => a);

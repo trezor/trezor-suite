@@ -121,13 +121,16 @@ test.afterEach(async ({ context: _context }, testInfo) => {
         // skip afterEach of skipped tests
         return;
     }
+
     log('afterEach', 'starting');
     const context = browserContext || _context;
     const logPage = context.pages().find(p => p.url().endsWith('log.html'));
+
     if (logPage) {
         await logPage.bringToFront();
         const hasLogs = await checkHasLogs(logPage);
         log(`hasLogs: ${hasLogs}`);
+
         if (hasLogs) {
             log('afterEach', 'downloading logs');
             await downloadLogs(
@@ -145,6 +148,7 @@ test.afterEach(async ({ context: _context }, testInfo) => {
         await context.close();
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
+
     await createTimeoutPromise(WAIT_AFTER_TEST);
 });
 

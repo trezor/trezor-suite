@@ -134,6 +134,7 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
         if (device) {
             onSelectDevice(device);
         }
+
         setIsDeviceManagerVisible(false);
         navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
             screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,

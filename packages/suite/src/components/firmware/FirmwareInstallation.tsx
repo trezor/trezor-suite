@@ -61,6 +61,7 @@ export const FirmwareInstallation = ({
                 </SelectDevice>
             );
         }
+
         if (status === 'done') {
             return (
                 <Button variant="primary" onClick={onSuccess} data-test="@firmware/continue-button">

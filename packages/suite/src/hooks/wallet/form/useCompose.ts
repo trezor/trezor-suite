@@ -59,15 +59,18 @@ export const useCompose = <TFieldValues extends FormState>({
     const composeRequest = useCallback(
         async (field = defaultFieldRef.current) => {
             if (!state) return;
+
             // reset precomposed transactions
             setComposedLevels(undefined);
             // set ref for later use in useEffect
             composeRequestIDRef.current += 1;
             // clear errors from previous compose process
             const composeErrors = findComposeErrors(errors);
+
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
+
             // set field value for later use in updateComposedValues
             setComposeField(field);
             // start composing
@@ -109,8 +112,10 @@ export const useCompose = <TFieldValues extends FormState>({
     const updateComposedValues = useCallback(
         (composed: PrecomposedTransaction | PrecomposedTransactionCardano) => {
             const values = getValues();
+
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
+
                 if (!errorMessage) {
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
@@ -136,12 +141,14 @@ export const useCompose = <TFieldValues extends FormState>({
                     // setError to the all `Amount` fields, composeField is not specified (load draft case)
                     values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
+
                 setLoading(false);
 
                 return;
             }
 
             const composeErrors = findComposeErrors(errors);
+
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
@@ -157,6 +164,7 @@ export const useCompose = <TFieldValues extends FormState>({
     const onFeeLevelChange = useCallback(
         (prev: FormState['selectedFee'], current: FormState['selectedFee']) => {
             if (!composedLevels) return;
+
             if (current === 'custom') {
                 // set custom level from previously selected level
                 const prevLevel = composedLevels[prev || 'normal'];
@@ -185,15 +193,18 @@ export const useCompose = <TFieldValues extends FormState>({
             // try to switch to nearest possible composed transaction
             const shouldSwitch =
                 !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
+
             if (shouldSwitch && composed.type === 'error') {
                 // find nearest possible tx
                 const nearest = Object.keys(composedLevels)
                     .reverse()
                     .find((key): key is FeeLevel['label'] => composedLevels[key].type !== 'error');
+
                 // switch to it
                 if (nearest) {
                     composed = composedLevels[nearest];
                     setValue('selectedFee', nearest);
+
                     if (nearest === 'custom') {
                         // @ts-expect-error: type = error already filtered above
                         const { feePerByte, feeLimit } = composed;
@@ -223,6 +234,7 @@ export const useCompose = <TFieldValues extends FormState>({
     useEffect(() => {
         // do nothing if there are no composedLevels
         if (!composedLevels) return;
+
         switchToNearestFee(composedLevels);
     }, [composedLevels, switchToNearestFee]);
 
@@ -232,6 +244,7 @@ export const useCompose = <TFieldValues extends FormState>({
         const precomposedTransaction = composedLevels
             ? composedLevels[values.selectedFee || 'normal']
             : undefined;
+
         if (precomposedTransaction && precomposedTransaction.type === 'final') {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]TransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)

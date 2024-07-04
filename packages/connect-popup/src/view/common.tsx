@@ -34,6 +34,7 @@ export const createTooltip = (text: string) => {
 export const clearLegacyView = () => {
     // clear and hide legacy views
     const container = document.getElementById('container');
+
     if (container) {
         container.innerHTML = '';
         container.style.display = 'none';
@@ -44,14 +45,17 @@ const renderLegacyView = (className: string) => {
     container!.style.display = 'flex';
 
     const view = views.getElementsByClassName(className);
+
     if (view) {
         const viewItem = view.item(0);
+
         if (viewItem) {
             container.innerHTML = viewItem.outerHTML;
         }
     } else {
         const unknown = views.getElementsByClassName('unknown-view');
         const unknownItem = unknown.item(0);
+
         if (unknownItem) {
             container.innerHTML = unknownItem.outerHTML;
         }
@@ -69,8 +73,11 @@ export const showView = (component: string) => {
 export const getIframeElement = () => {
     // try find iframe in opener window
     if (!window.opener) return;
+
     const { frames } = window.opener;
+
     if (!frames) return; // electron will return undefined
+
     let iframe: Window | undefined;
     for (let i = 0; i < frames.length; i++) {
         try {
@@ -117,6 +124,7 @@ export const initMessageChannelWithIframe = async (
         ]);
 
     const iframe = getIframeElement();
+
     // Webextension doesn't have iframe element defined here since there is not `window.opener` reference
     // so they only rely on receiving `POPUP.HANDSHAKE` message from iframe to make sure it is available.
     if (!iframe && settings.env !== 'webextension') {
@@ -180,21 +188,25 @@ export const initMessageChannelWithIframe = async (
 // this method can be used from anywhere
 export const postMessage = (message: CoreRequestMessage) => {
     const { broadcast, iframe, core } = getState();
+
     if (core) {
         core.handleMessage(message);
 
         return;
     }
+
     if (broadcast) {
         broadcast.postMessage(message);
 
         return;
     }
+
     if (iframe) {
         iframe.postMessage(message, window.location.origin);
 
         return;
     }
+
     throw ERRORS.TypedError('Popup_ConnectionMissing');
 };
 
@@ -203,6 +215,7 @@ export const postMessageToParent = (message: CoreEventMessage) => {
         here: '@trezor/connect-popup',
         peer: '@trezor/connect-web',
     };
+
     if (window.opener) {
         // post message to parent and wait for POPUP.INIT message
         window.opener.postMessage(message, '*');

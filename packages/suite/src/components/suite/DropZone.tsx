@@ -35,19 +35,23 @@ export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
     const readFileContent = useCallback(
         (file?: File) => {
             setFilename(file?.name);
+
             if (!file) {
                 setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
 
                 return;
             }
+
             if (allowedExtensions.length) {
                 const extRegex = new RegExp(`\\.(${allowedExtensions.join('|')})$`, 'i');
+
                 if (!extRegex.test(file.name)) {
                     setError({ id: 'TR_DROPZONE_ERROR_FILETYPE' });
 
                     return;
                 }
             }
+
             setError(undefined);
             onSelect(file, setError);
         },
@@ -79,6 +83,7 @@ export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
         (event: DragEvent) => {
             event.preventDefault();
             event.currentTarget?.classList?.remove('dragging');
+
             if (event.dataTransfer) {
                 readFileContent(event.dataTransfer.files[0]);
             } else {
@@ -91,6 +96,7 @@ export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
     const onInputChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
             event.stopPropagation();
+
             if (event.target?.value && event.target.files) {
                 readFileContent(event.target.files[0]);
             } else {

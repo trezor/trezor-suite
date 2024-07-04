@@ -163,6 +163,7 @@ describe('Status', () => {
         jest.spyOn(http, 'coordinatorRequest').mockImplementation((url, _b, options) => {
             if (url === 'status') {
                 const id = options?.identity;
+
                 if (id && !identities.includes(id)) {
                     identities.push(id);
                 }
@@ -245,6 +246,7 @@ describe('Status', () => {
                 } else {
                     resolve();
                 }
+
                 request++;
             } else {
                 resolve();
@@ -334,6 +336,7 @@ describe('Status', () => {
                     RoundStates: [{}],
                 });
             }
+
             resolve();
         });
 

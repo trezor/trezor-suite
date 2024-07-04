@@ -38,7 +38,9 @@ describe('api/udp', () => {
         abortController.abort();
 
         const result = await promise;
+
         if (result.success) throw new Error('Unexpected success');
+
         expect(result.error).toContain('Aborted by signal');
     });
 
@@ -59,7 +61,9 @@ describe('api/udp', () => {
         abortController.abort();
 
         const result = await promise;
+
         if (result.success) throw new Error('Unexpected success');
+
         expect(result.error).toContain('Aborted by signal');
     });
 
@@ -79,7 +83,9 @@ describe('api/udp', () => {
         abortController.abort();
 
         const result = await promise;
+
         if (result.success) throw new Error('Unexpected success');
+
         expect(result.error).toContain('Aborted by signal');
     });
 });

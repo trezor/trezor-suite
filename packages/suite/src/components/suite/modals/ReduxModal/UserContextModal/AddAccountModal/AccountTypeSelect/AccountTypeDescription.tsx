@@ -20,6 +20,7 @@ export const AccountTypeDescription = ({
     hasMultipleAccountTypes,
 }: AccountTypeDescriptionProps) => {
     if (!hasMultipleAccountTypes) return null;
+
     const accountTypeUrl = getAccountTypeUrl(bip43Path);
     const accountTypeDesc = getAccountTypeDesc(bip43Path);
 

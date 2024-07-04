@@ -22,9 +22,13 @@ export type TxOptions = TransactionOptions & {
 class Transaction extends TransactionBase<dash.DashSpecific | zcash.ZcashSpecific> {
     constructor(options: TxOptions = {}) {
         super(options);
+
         if (isNetworkType('dash', this.network)) return dash.fromConstructor(options);
+
         if (isNetworkType('decred', this.network)) return decred.fromConstructor(options);
+
         if (isNetworkType('peercoin', this.network)) return peercoin.fromConstructor(options);
+
         if (isNetworkType('zcash', this.network)) return zcash.fromConstructor(options);
 
         return bitcoin.fromConstructor(options);
@@ -36,8 +40,11 @@ class Transaction extends TransactionBase<dash.DashSpecific | zcash.ZcashSpecifi
 
     static fromBuffer(buffer: Buffer, options: TransactionOptions = {}) {
         if (isNetworkType('dash', options.network)) return dash.fromBuffer(buffer, options);
+
         if (isNetworkType('decred', options.network)) return decred.fromBuffer(buffer, options);
+
         if (isNetworkType('peercoin', options.network)) return peercoin.fromBuffer(buffer, options);
+
         if (isNetworkType('zcash', options.network)) return zcash.fromBuffer(buffer, options);
 
         return bitcoin.fromBuffer(buffer, options);

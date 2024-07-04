@@ -86,6 +86,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
         required: translationString('DATA_NOT_SET'),
         validate: (value = '') => {
             if (!isHexValid(value)) return translationString('DATA_NOT_VALID_HEX');
+
             if (value.length > 80 * 2) return translationString('DATA_HEX_TOO_BIG');
         },
     });

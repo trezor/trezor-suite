@@ -102,6 +102,7 @@ export const TorProgressBar = ({
 }: TorProgressBarProps) => {
     let message: 'TR_ENABLING_TOR' | 'TR_ENABLING_TOR_FAILED' | 'TR_DISABLING_TOR' =
         'TR_ENABLING_TOR';
+
     if (isTorError) {
         message = 'TR_ENABLING_TOR_FAILED';
     } else if (isTorDisabling) {

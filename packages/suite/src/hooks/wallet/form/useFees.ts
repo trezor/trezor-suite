@@ -55,6 +55,7 @@ export const useFees = <TFieldValues extends FormState>({
     const selectedFee = watch('selectedFee');
     useEffect(() => {
         if (selectedFeeRef.current === selectedFee) return;
+
         selectedFeeRef.current = selectedFee;
         const { feePerUnit, feeLimit } = getValues();
         feePerUnitRef.current = feePerUnit;
@@ -69,6 +70,7 @@ export const useFees = <TFieldValues extends FormState>({
         if (selectedFeeRef.current !== 'custom') return;
 
         let updateField: FieldPath<FormState> | undefined;
+
         if (feePerUnitRef.current !== feePerUnit) {
             feePerUnitRef.current = feePerUnit;
             updateField = 'feePerUnit';
@@ -84,6 +86,7 @@ export const useFees = <TFieldValues extends FormState>({
             if (composeRequest) {
                 composeRequest(updateField);
             }
+
             // save last used fee
             if (
                 saveLastUsedFeeRef.current &&
@@ -103,7 +106,9 @@ export const useFees = <TFieldValues extends FormState>({
     useEffect(() => {
         if (estimatedFeeLimitRef.current !== estimatedFeeLimit) {
             estimatedFeeLimitRef.current = estimatedFeeLimit;
+
             if (selectedFeeRef.current !== 'custom') return;
+
             if (estimatedFeeLimit) {
                 // NOTE: do not update it here, so it can be properly processed by watch
                 // feeLimitRef.current = estimatedFeeLimit;
@@ -118,6 +123,7 @@ export const useFees = <TFieldValues extends FormState>({
 
         let feePerUnit;
         let feeLimit;
+
         if (level === 'custom') {
             // switching to custom FeeLevel for the first time
             const currentLevel = feeInfo.levels.find(
@@ -141,6 +147,7 @@ export const useFees = <TFieldValues extends FormState>({
         }
 
         setValue('selectedFee', level);
+
         // update local references
         if (typeof feePerUnit === 'string' && typeof feeLimit === 'string') {
             feePerUnitRef.current = feePerUnit;

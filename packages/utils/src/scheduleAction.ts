@@ -25,7 +25,9 @@ const abortedByTimeout = () => new Error('Aborted by timeout');
 const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
     new Promise<void>((resolve, reject) => {
         if (clear.aborted) return reject();
+
         if (ms === undefined) return resolve();
+
         const timeout = setTimeout(resolve, ms);
         const onClear = () => {
             clearTimeout(timeout);
@@ -38,6 +40,7 @@ const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
 const rejectAfterMs = (ms: number | undefined, reason: () => Error, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
         if (clear.aborted) return reject();
+
         const timeout = ms !== undefined ? setTimeout(() => reject(reason()), ms) : undefined;
         const onClear = () => {
             clearTimeout(timeout);
@@ -50,7 +53,9 @@ const rejectAfterMs = (ms: number | undefined, reason: () => Error, clear: Abort
 const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
         if (clear.aborted) return reject();
+
         if (signal?.aborted) return reject(abortedBySignal());
+
         const onAbort = () => reject(abortedBySignal());
         signal?.addEventListener('abort', onAbort);
         const onClear = () => {
@@ -64,8 +69,11 @@ const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) 
 const resolveAction = async <T>(action: ScheduledAction<T>, clear: AbortSignal) => {
     const aborter = new AbortController();
     const onClear = () => aborter.abort();
+
     if (clear.aborted) onClear();
+
     clear.addEventListener('abort', onClear);
+
     try {
         return await new Promise<T>(resolve => resolve(action(aborter.signal)));
     } finally {
@@ -82,9 +90,11 @@ const attemptLoop = async <T>(
     // Tries only (attempts - 1) times, because the last attempt throws its error
     for (let a = 0; a < attempts - 1; a++) {
         if (clear.aborted) break;
+
         const aborter = new AbortController();
         const onClear = () => aborter.abort();
         clear.addEventListener('abort', onClear);
+
         try {
             return await attempt(a, aborter.signal);
         } catch {

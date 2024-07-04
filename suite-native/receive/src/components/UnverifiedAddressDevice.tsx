@@ -72,6 +72,7 @@ export const UnverifiedAddressDevice = ({
             if (translationY < -PAN_GESTURE_THRESHOLD) {
                 setActivePage(2);
             }
+
             if (translationY > PAN_GESTURE_THRESHOLD) {
                 setActivePage(1);
             }
@@ -83,6 +84,7 @@ export const UnverifiedAddressDevice = ({
 
     const handlePaginationButtonPress = () => {
         if (!isPaginationEnabled || !isAddressRevealed) return;
+
         setActivePage(activePage === 1 ? 2 : 1);
     };
 

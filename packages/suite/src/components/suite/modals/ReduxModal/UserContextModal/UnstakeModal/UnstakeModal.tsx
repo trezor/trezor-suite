@@ -16,6 +16,7 @@ export const UnstakeModal = ({ onCancel }: UnstakeModalModalProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const { account, status } = selectedAccount;
+
     // it shouldn't be possible to open this modal without having selected account
     if (!account || status !== 'loaded') return null;
 

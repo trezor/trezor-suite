@@ -33,6 +33,7 @@ export const getBridgeInfo = (): BridgeInfo => info;
 
 export const suggestBridgeInstaller = (platform?: string) => {
     const info = getBridgeInfo();
+
     // check if preferred field was already added
     if (!info.packages.find(p => p.preferred)) {
         if (platform) {

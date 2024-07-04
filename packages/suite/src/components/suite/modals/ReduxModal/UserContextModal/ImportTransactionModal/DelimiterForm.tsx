@@ -46,6 +46,7 @@ export const DelimiterForm = ({ value, onChange }: DelimiterFormProps) => {
                         // reset delimiter value in parent component
                         onChange(undefined);
                     }
+
                     setCustom(!custom);
                 }}
                 isChecked={!custom}

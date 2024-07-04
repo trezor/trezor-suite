@@ -29,6 +29,7 @@ const deriveHmac = (metadataKey: string) => {
 
 export const deriveAesKey = (metadataKey: string) => {
     const hash = deriveHmac(metadataKey);
+
     if (hash.length !== 64 && Buffer.byteLength(hash) !== 64) {
         throw new Error(
             `Strange buffer length when deriving account hmac ${hash.length} ; ${Buffer.byteLength(
@@ -36,6 +37,7 @@ export const deriveAesKey = (metadataKey: string) => {
             )}`,
         );
     }
+
     const secondHalf = hash.subarray(32, 64);
 
     return secondHalf.toString('hex');
@@ -86,6 +88,7 @@ export const encrypt = async (input: Record<string, any> | string, aesKey: strin
     if (typeof aesKey === 'string') {
         aesKey = Buffer.from(aesKey, 'hex');
     }
+
     const iv = await getRandomIv();
     const stringified = JSON.stringify(input);
     const buffer = Buffer.from(stringified, 'utf8');
@@ -125,10 +128,13 @@ export const decrypt = (input: Buffer, key: string | Buffer) => {
  */
 export const urlHashParams = (hash: string) => {
     const result: { [param: string]: string } = {};
+
     if (!hash) return result;
+
     if (hash[0] === '#') {
         hash = hash.substring(1, hash.length);
     }
+
     const parts = hash.split('&');
     parts.forEach(part => {
         const [key, value] = part.split('=');

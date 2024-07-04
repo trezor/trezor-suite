@@ -103,6 +103,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
 
     useEffect(() => {
         const option = options[selectedOption];
+
         if ('legacyConfig' in option) {
             actions.onSetMethod(option.legacyConfig);
         } else {
@@ -114,11 +115,13 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
         // Get default index from URL search params
         const urlParams = new URLSearchParams(window.location.search);
         const subMethodTitle = urlParams.get('submethod');
+
         if (subMethodTitle) {
             // Find option that contains submethod title
             const index = options.findIndex(option =>
                 option.title.toLowerCase().includes(subMethodTitle.toLowerCase()),
             );
+
             if (index >= 0) {
                 setSelectedOption(index);
             }

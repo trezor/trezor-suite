@@ -129,6 +129,7 @@ test('Basic web extension MV3', async () => {
     // https://playwright.dev/docs/chrome-extensions#testing
     // It looks like the only way to get extension ID from a MV3 web extension in playwright is having serviceworker loaded.
     let [background] = browserContext.serviceWorkers();
+
     if (!background) background = await browserContext.waitForEvent('serviceworker');
 
     const extensionId = background.url().split('/')[2];

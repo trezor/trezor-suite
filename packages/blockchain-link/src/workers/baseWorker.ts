@@ -56,8 +56,10 @@ export abstract class BaseWorker<API> {
 
     debug(...args: any[]) {
         if (!this.settings.debug) return;
+
         const debugPrefix = `[Worker "${this.settings.name}"]:`;
         const fn: keyof typeof console = args[0];
+
         if (fn === 'warn' || fn === 'error') {
             // eslint-disable-next-line no-console
             console[fn](debugPrefix, ...args.slice(1));
@@ -134,6 +136,7 @@ export abstract class BaseWorker<API> {
     // other messages are handled by each WorkerModule separately
     async messageHandler(event: { data: Message }) {
         if (!event.data) return true;
+
         const { data } = event;
         const { id } = data;
 
@@ -147,18 +150,21 @@ export abstract class BaseWorker<API> {
 
             return true;
         }
+
         if (data.type === MESSAGES.CONNECT) {
             await this.connect();
             this.post({ id, type: RESPONSES.CONNECT, payload: true });
 
             return true;
         }
+
         if (data.type === MESSAGES.DISCONNECT) {
             this.disconnect();
             this.post({ id, type: RESPONSES.DISCONNECTED, payload: true });
 
             return true;
         }
+
         if (data.type === MESSAGES.TERMINATE) {
             this.disconnect();
             this.cleanup();
@@ -169,10 +175,12 @@ export abstract class BaseWorker<API> {
 
     errorResponse(id: number, error: unknown) {
         const payload = { code: '', message: '' };
+
         if (error instanceof Error) {
             payload.message = error.message;
             payload.code = error instanceof CustomError && error.code ? error.code : '';
         }
+
         this.post({
             id,
             type: RESPONSES.ERROR,

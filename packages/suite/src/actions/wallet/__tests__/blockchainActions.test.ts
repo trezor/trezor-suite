@@ -128,6 +128,7 @@ describe('Blockchain Actions', () => {
             );
             const actions = filterThunkActionTypes(store.getActions());
             expect(actions).toMatchObject(f.actions);
+
             if (actions.length) {
                 // wait for reconnection timeout
                 const timeout = actions[0].payload.time - new Date().getTime() + 500;
@@ -175,6 +176,7 @@ describe('Blockchain Actions', () => {
                 actions.forEach((action, index) => {
                     expect(action.type).toEqual(result[index]);
                 });
+
                 if (f.resultTxs) {
                     const txs = store.getState().wallet.transactions.transactions;
                     Object.keys(txs).forEach(key => {

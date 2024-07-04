@@ -70,6 +70,7 @@ export class WindowWindowChannel<
 
     disconnect() {
         if (!this.isConnected) return;
+
         this._windowHere.removeEventListener('message', this._listener);
         this.isConnected = false;
     }

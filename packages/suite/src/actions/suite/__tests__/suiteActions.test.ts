@@ -149,6 +149,7 @@ describe('Suite Actions', () => {
             const state = getInitialState({}, f.state.device);
             const store = initStore(state);
             await store.dispatch(selectDeviceThunk({ device: f.device }));
+
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -163,6 +164,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state.suite, f.state.device, undefined);
             const store = initStore(state);
             await store.dispatch(handleDeviceConnect(f.device));
+
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
@@ -181,15 +183,18 @@ describe('Suite Actions', () => {
                 payload: f.device,
             });
             store.dispatch(handleDeviceDisconnect(f.device));
+
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).pop()?.type).toEqual(
                     deviceActions.deviceDisconnect.type,
                 );
             } else {
                 const action = store.getActions().pop();
+
                 if (f.result.type) {
                     expect(action.type).toEqual(f.result.type);
                 }
+
                 expect(action.payload).toEqual(f.result.payload);
             }
         });
@@ -214,6 +219,7 @@ describe('Suite Actions', () => {
             const store = initStore(state);
             const changed = store.dispatch(observeSelectedDevice());
             expect(changed).toEqual(f.changed);
+
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
@@ -234,6 +240,7 @@ describe('Suite Actions', () => {
             const expectedActions = filterThunkActionTypes(
                 discardMockedConnectInitActions(store.getActions()),
             );
+
             if (!f.result) {
                 expect(expectedActions.length).toEqual(0);
             } else {
@@ -252,11 +259,13 @@ describe('Suite Actions', () => {
             });
             const store = initStore(state);
             await store.dispatch(authorizeDeviceThunk());
+
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
                 const action = store.getActions().pop();
                 expect(action?.type).toEqual(f.result);
+
                 if (f.deviceReducerResult) {
                     const devices = selectDevices(store.getState());
                     devices.forEach((d, i) => {
@@ -276,6 +285,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(undefined, f.state);
             const store = initStore(state);
             await store.dispatch(authConfirm());
+
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {

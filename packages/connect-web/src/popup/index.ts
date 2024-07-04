@@ -19,6 +19,7 @@ import { WindowWindowChannel } from '../channels/window-window';
 const checkIfTabExists = (tabId: number | undefined) =>
     new Promise(resolve => {
         if (!tabId) return resolve(false);
+
         function callback() {
             if (chrome.runtime.lastError) {
                 resolve(false);
@@ -131,6 +132,7 @@ export class PopupManager extends EventEmitter {
             // Web
             this.channel.on('message', this.handleMessage.bind(this));
         }
+
         this.channel.init();
     }
 
@@ -140,6 +142,7 @@ export class PopupManager extends EventEmitter {
         // check if current popup window is still open
         if (this.settings.useCoreInPopup && this.popupWindow?.mode === 'tab') {
             const currentPopupExists = await checkIfTabExists(this.popupWindow?.tab?.id);
+
             if (!currentPopupExists) {
                 this.clear();
             }
@@ -189,6 +192,7 @@ export class PopupManager extends EventEmitter {
 
         this.closeInterval = setInterval(() => {
             if (!this.popupWindow) return;
+
             if (this.popupWindow.mode === 'tab' && this.popupWindow.tab.id) {
                 chrome.tabs.get(this.popupWindow.tab.id, tab => {
                     if (!tab) {
@@ -221,6 +225,7 @@ export class PopupManager extends EventEmitter {
         if (this.isWebExtensionWithTab()) {
             chrome.windows.getCurrent(currentWindow => {
                 this.logger.debug('opening popup. currentWindow: ', currentWindow);
+
                 // Request coming from extension popup,
                 // create new window above instead of opening new tab
                 if (currentWindow.type !== 'normal') {
@@ -261,7 +266,9 @@ export class PopupManager extends EventEmitter {
             });
         } else {
             const windowResult = window.open(url, 'modal');
+
             if (!windowResult) return;
+
             this.popupWindow = { mode: 'window', window: windowResult };
         }
 
@@ -368,10 +375,12 @@ export class PopupManager extends EventEmitter {
         } else if (data.type === POPUP.LOADED) {
             // in case of webextension where bootstrap message is not sent
             if (this.openTimeout) clearTimeout(this.openTimeout);
+
             if (this.popupPromise) {
                 this.popupPromise.resolve();
                 this.popupPromise = undefined;
             }
+
             // popup is successfully loaded
             this.iframeHandshakePromise?.promise.then(payload => {
                 // send ConnectSettings to popup
@@ -387,6 +396,7 @@ export class PopupManager extends EventEmitter {
             });
         } else if (data.type === POPUP.CANCEL_POPUP_REQUEST) {
             clearTimeout(this.requestTimeout);
+
             if (this.popupPromise) {
                 this.close();
             }
@@ -408,10 +418,12 @@ export class PopupManager extends EventEmitter {
             clearTimeout(this.requestTimeout);
             this.requestTimeout = undefined;
         }
+
         if (this.openTimeout) {
             clearTimeout(this.openTimeout);
             this.openTimeout = undefined;
         }
+
         if (this.closeInterval) {
             clearInterval(this.closeInterval);
             this.closeInterval = undefined;
@@ -432,9 +444,11 @@ export class PopupManager extends EventEmitter {
 
         if (this.popupWindow.mode === 'tab') {
             let _e = chrome.runtime.lastError;
+
             if (this.popupWindow.tab.id) {
                 chrome.tabs.remove(this.popupWindow.tab.id, () => {
                     _e = chrome.runtime.lastError;
+
                     if (_e) {
                         this.logger.error('closed with error', _e);
                     }
@@ -445,6 +459,7 @@ export class PopupManager extends EventEmitter {
         }
 
         this.popupWindow = undefined;
+
         if (this.settings?.useCoreInPopup) {
             this.channel.clear();
         }
@@ -470,6 +485,7 @@ export class PopupManager extends EventEmitter {
         if (this.popupPromise) {
             await this.popupPromise.promise;
         }
+
         // post message to popup window
         if (this.popupWindow?.mode === 'window') {
             this.popupWindow.window.postMessage(message, this.origin);
@@ -498,6 +514,7 @@ export class PopupManager extends EventEmitter {
                 error: POPUP.CLOSED,
             });
         }
+
         this.emit(POPUP.CLOSED);
     }
 }

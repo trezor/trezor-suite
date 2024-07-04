@@ -70,6 +70,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     const _rchunks = lazy.value(() => bscript.decompile(a.redeem!.input!)) as StackFunction;
 
     let { network } = a;
+
     if (!network) {
         network = (a.redeem && a.redeem.network) || BITCOIN_NETWORK;
     }
@@ -78,6 +79,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
     lazy.prop(o, 'address', () => {
         if (!o.hash) return;
+
         const words = bech32.toWords(o.hash);
         words.unshift(0x00);
 
@@ -85,7 +87,9 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'hash', () => {
         if (a.output) return a.output.subarray(2);
+
         if (a.address) return _address().data;
+
         if (o.redeem && o.redeem.output) return bcrypto.sha256(o.redeem.output);
     });
     lazy.prop(o, 'output', () => {
@@ -126,13 +130,16 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         }
 
         if (!a.redeem) return;
+
         if (!a.redeem.output) return;
+
         if (!a.redeem.witness) return;
 
         return ([] as Buffer[]).concat(a.redeem.witness, a.redeem.output);
     });
     lazy.prop(o, 'name', () => {
         const nameParts = ['p2wsh'];
+
         if (o.redeem !== undefined && o.redeem.name !== undefined) nameParts.push(o.redeem.name!);
 
         return nameParts.join('-');
@@ -141,12 +148,17 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     // extended validation
     if (opts.validate) {
         let hash = Buffer.from([]);
+
         if (a.address) {
             const { prefix, version, data } = _address();
+
             if (prefix !== network.bech32)
                 throw new TypeError('Invalid prefix or Network mismatch');
+
             if (version !== 0x00) throw new TypeError('Invalid address version');
+
             if (data.length !== 32) throw new TypeError('Invalid address data');
+
             hash = data;
         }
 
@@ -158,7 +170,9 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         if (a.output) {
             if (a.output.length !== 34 || a.output[0] !== OPS.OP_0 || a.output[1] !== 0x20)
                 throw new TypeError('Output is invalid');
+
             const hash2 = a.output.subarray(2);
+
             if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
             else hash = hash2;
         }
@@ -183,14 +197,17 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
                 // match hash against other sources
                 const hash2 = bcrypto.sha256(a.redeem.output);
+
                 if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
                 else hash = hash2;
             }
 
             if (a.redeem.input && !bscript.isPushOnly(_rchunks()))
                 throw new TypeError('Non push-only scriptSig');
+
             if (a.witness && a.redeem.witness && !stacksEqual(a.witness, a.redeem.witness))
                 throw new TypeError('Witness and redeem.witness mismatch');
+
             if (
                 (a.redeem.input && _rchunks().some(chunkHasUncompressedPubkey)) ||
                 (a.redeem.output &&
@@ -202,8 +219,10 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
         if (a.witness && a.witness.length > 0) {
             const wScript = a.witness[a.witness.length - 1];
+
             if (a.redeem && a.redeem.output && !a.redeem.output.equals(wScript))
                 throw new TypeError('Witness and redeem.output mismatch');
+
             if (
                 a.witness.some(chunkHasUncompressedPubkey) ||
                 (bscript.decompile(wScript) || []).some(chunkHasUncompressedPubkey)

@@ -14,6 +14,7 @@ const filterAddressChunksByPagination = (
     activePage: DevicePaginationActivePage,
 ) => {
     const paginationEmptyChunk = '    ';
+
     if (activePage === 1) {
         return [...addressChunks.slice(0, 15), paginationEmptyChunk];
     }

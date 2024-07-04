@@ -23,6 +23,7 @@ export const CodeEditor = ({ code, codeChange, schema }: CodeEditorProps) => {
             if (s.type === 'Uint') {
                 s.type = ['number', 'string'];
             }
+
             if (s.properties) {
                 Object.entries(s.properties).forEach(([_, v]) => {
                     inner(v);

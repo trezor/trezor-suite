@@ -63,13 +63,16 @@ export class TorControlPort {
                     .match(
                         /^250 AUTHCHALLENGE SERVERHASH=([a-fA-F0-9]+) SERVERNONCE=([a-fA-F0-9]+)$/,
                     );
+
                 if (authchallengeResponse) {
                     let cookieString;
+
                     try {
                         cookieString = await getCookieString(this.options.torDataDir);
                     } catch (error) {
                         reject(new Error('TOR control port control_auth_cookie cannot be read'));
                     }
+
                     const serverNonce = authchallengeResponse[2];
                     const authString = `${cookieString}${this.clientNonce}${serverNonce}`;
 
@@ -115,6 +118,7 @@ export class TorControlPort {
         if (!this.isSocketConnected) {
             return false;
         }
+
         try {
             return !!this.write('GETINFO');
         } catch (error) {
@@ -131,6 +135,7 @@ export class TorControlPort {
         return new Promise<TorCommandResponse>(resolve => {
             this.socket.once('data', data => {
                 const payload = data.toString();
+
                 if (/250 OK\r?\n/.test(payload)) {
                     resolve({ success: true, payload });
                 } else {
@@ -159,11 +164,14 @@ export class TorControlPort {
      */
     async getCircuits() {
         const status = await this.getInfo('circuit-status');
+
         if (status.success) {
             // helper fn to read values
             const getValue = (key: string, values: string[], quoted = false) => {
                 const value = values.find(v => v.startsWith(key));
+
                 if (!value) return;
+
                 const resp = quoted ? value.match(/"(.*?)"/) : value.split('=');
 
                 return resp ? resp[1] : undefined;

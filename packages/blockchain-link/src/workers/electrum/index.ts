@@ -48,6 +48,7 @@ const onRequest = async <T extends Message>(
     request: Request<T>,
 ): Promise<Reply<typeof request.type>> => {
     const client = await request.connect();
+
     switch (request.type) {
         case MESSAGES.GET_INFO:
             return {
@@ -192,6 +193,7 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
         if (this.api) {
             this.api.close();
         }
+
         super.cleanup();
     }
 

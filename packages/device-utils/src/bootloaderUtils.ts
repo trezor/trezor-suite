@@ -8,6 +8,7 @@ export const getBootloaderVersion = (device?: Device) => {
     if (!device?.features) {
         return '';
     }
+
     const { features } = device;
 
     if (isDeviceInBootloaderMode(device) && features.major_version) {

@@ -79,6 +79,7 @@ export const Switch = ({ isChecked, onChange, isDisabled = false }: SwitchProps)
 
     const handlePress = () => {
         if (isDisabled) return;
+
         onChange(!isChecked);
     };
 

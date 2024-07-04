@@ -16,6 +16,7 @@ describe('helpers/signtxVerify', () => {
             const call = () =>
                 // @ts-expect-error partial params
                 verifyTx(f.getHDNode || getHDNode, f.inputs, f.outputs, f.tx, coinInfo);
+
             if (f.error) {
                 await expect(call()).rejects.toThrow(f.error);
             } else {

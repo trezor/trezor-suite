@@ -74,6 +74,7 @@ export const ConfigProvider = ({
             ]),
         ),
     };
+
     if (process.env.NODE_ENV !== 'production' && !isValidated) {
         try {
             themeSchema.parse(theme);
@@ -84,9 +85,11 @@ export const ConfigProvider = ({
                 )}`,
             );
         }
+
         validateMeta(pageOpts.pageMap);
         isValidated = true;
     }
+
     const extendedConfig: Config = {
         newNextLinkBehavior: false,
         ...theme,

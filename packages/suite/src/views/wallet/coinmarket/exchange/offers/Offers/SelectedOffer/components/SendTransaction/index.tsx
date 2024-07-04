@@ -39,9 +39,13 @@ const Address = styled.div``;
 const SendTransactionComponent = () => {
     const { account, callInProgress, selectedQuote, exchangeInfo, sendTransaction } =
         useCoinmarketExchangeOffersContext();
+
     if (!selectedQuote) return null;
+
     const { exchange, sendAddress } = selectedQuote;
+
     if (!exchange) return null;
+
     const providerName =
         exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuote.exchange;
 

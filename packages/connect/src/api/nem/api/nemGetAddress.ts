@@ -60,6 +60,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
         // set info
         if (this.params.length === 1) {
             let network = 'Unknown';
+
             switch (this.params[0].network) {
                 case MAINNET:
                     network = 'Mainnet';
@@ -115,6 +116,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
 
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
+
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.show_display) {
@@ -122,6 +124,7 @@ export default class NEMGetAddress extends AbstractMethod<'nemGetAddress', Param
                     ...batch,
                     show_display: false,
                 });
+
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
                         throw ERRORS.TypedError('Method_AddressNotMatch');

@@ -56,6 +56,7 @@ export const rmDirRecursive = (folder: string) => {
     if (fs.existsSync(folder)) {
         fs.readdirSync(folder).forEach(file => {
             const curPath = `${folder}/${file}`;
+
             if (fs.lstatSync(curPath).isDirectory()) {
                 rmDirRecursive(curPath);
             } else {

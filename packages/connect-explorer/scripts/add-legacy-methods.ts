@@ -17,6 +17,7 @@ function findNameInMenu(url: string) {
             if (method.url === url) {
                 found = method.name;
             }
+
             if (method.children) {
                 method.children.forEach((subMethod: any) => {
                     if (subMethod.url === url) {
@@ -44,15 +45,18 @@ function findFilesForMethod(method: string) {
     );
     filesData.forEach(dir => {
         if (dir.includes('.')) return;
+
         const methods = fs.readdirSync(
             path.join(__dirname, `../../connect-explorer/src/data/methods/${dir}`),
         );
         methods.forEach(file => {
             if (!file.endsWith('.ts')) return;
+
             const content = fs.readFileSync(
                 path.join(__dirname, `../../connect-explorer/src/data/methods/${dir}/${file}`),
                 'utf-8',
             );
+
             if (content.includes(`name = '${method}'`) || content.includes(`name: '${method}'`)) {
                 console.log(content);
                 const methods = [...content.matchAll(/url: '(.*)'/g)].map((match, i) => ({
@@ -76,6 +80,7 @@ function handleMethod(filePath: string) {
         path.join(__dirname, `../src/pages/methods/${filePath}`),
         'utf-8',
     );
+
     if (!content.includes('ApiPlayground') || content.includes('No payload')) return;
 
     const method = content.match(/method: '(.*)'/)?.[1];
@@ -129,12 +134,14 @@ function convertAll() {
         const files = fs.readdirSync(path.join(__dirname, `../src/pages/methods/${methodType}`));
         files.forEach(file => {
             if (!file.endsWith('.mdx')) return;
+
             handleMethod(path.join(methodType, file));
         });
     });
 }
 
 const arg = process.argv[2];
+
 if (arg === '--all') {
     convertAll();
 } else {

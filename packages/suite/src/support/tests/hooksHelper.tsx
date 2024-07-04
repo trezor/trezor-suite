@@ -24,6 +24,7 @@ export const renderWithProviders = (store: any, children: ReactNode) => {
 export const waitForLoader = (text = /Loading/i) => {
     try {
         const loading = screen.queryByText(text);
+
         if (loading) {
             return waitForElementToBeRemoved(() => screen.queryByText(text), { timeout: 5000 });
         }
@@ -74,11 +75,14 @@ export const actionSequence = <A extends UserAction[]>(
         (p, action) =>
             p.then(async () => {
                 const element = findByTestId(action.element);
+
                 if (action.type === 'hover') {
                     await user.hover(element);
                 }
+
                 if (action.type === 'click') {
                     const isDisabled = element.getAttributeNames().includes('disabled');
+
                     if (isDisabled) {
                         throw new Error('Unable to perform pointer interaction');
                     }
@@ -89,6 +93,7 @@ export const actionSequence = <A extends UserAction[]>(
                     const typeUser = userEvent.setup(
                         action.delay ? { delay: action.delay } : undefined,
                     );
+
                     if (!value) {
                         await typeUser.clear(element);
                     } else {
@@ -106,6 +111,7 @@ export const actionSequence = <A extends UserAction[]>(
                 if (action.expectRerender) {
                     await waitForRender();
                 }
+
                 // action complete. run test
                 if (callback) callback(action);
             }),

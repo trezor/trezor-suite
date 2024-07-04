@@ -47,6 +47,7 @@ test('reporting', async ({ page }) => {
         if (!request.url().startsWith('https://data.trezor.io/')) {
             return;
         }
+
         requests.push({ url: request.url() });
     });
 

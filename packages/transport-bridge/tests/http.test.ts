@@ -129,9 +129,11 @@ describe('http', () => {
                     url,
                     method: 'GET',
                 });
+
                 if (!response.success) {
                     throw new Error(response.error);
                 }
+
                 expect(response.payload).toContain('<html');
 
                 await trezordNode.stop();
@@ -149,9 +151,11 @@ describe('http', () => {
                 url,
                 method: 'POST',
             });
+
             if (!response.success) {
                 throw new Error(response.error);
             }
+
             expect(response.payload).toEqual({ version: trezordNode.version });
             await trezordNode.stop();
         });
@@ -167,9 +171,11 @@ describe('http', () => {
                 url,
                 method: 'POST',
             });
+
             if (!response.success) {
                 throw new Error(response.error);
             }
+
             expect(response.payload).toEqual([{ path: '1', session: null }]);
             await trezordNode.stop();
         });
@@ -309,6 +315,7 @@ describe('http', () => {
                     if (this.disposed) {
                         return;
                     }
+
                     bridgeApiCall({
                         url: this.url,
                         method: 'POST',

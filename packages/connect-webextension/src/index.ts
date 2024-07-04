@@ -81,7 +81,9 @@ const initProxyChannel = () => {
     channel.init();
     channel.on('message', message => {
         const { id, payload, type } = message;
+
         if (!payload) return;
+
         const { method, settings } = payload;
 
         if (type === POPUP.INIT) {

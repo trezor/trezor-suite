@@ -7,6 +7,7 @@ export const createCooldown = (cooldownMs: number) => {
 
     return () => {
         const now = Date.now();
+
         if (now - last >= cooldownMs) {
             last = now;
 

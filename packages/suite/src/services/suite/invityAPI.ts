@@ -185,6 +185,7 @@ class InvityAPI {
                 if (output.error) {
                     return output;
                 }
+
                 throw Error(`Request rejected with status ${response.status}`);
             });
         });
@@ -209,6 +210,7 @@ class InvityAPI {
     getSymbolsInfo = async (): Promise<CryptoSymbolsResponse> => {
         try {
             const response = await this.request(this.SYMBOLS_INFO, {}, 'GET');
+
             if (!response || response.length === 0) {
                 return [];
             }
@@ -224,6 +226,7 @@ class InvityAPI {
     getExchangeList = async (): Promise<ExchangeListResponse | []> => {
         try {
             const response = await this.request(this.EXCHANGE_LIST, {}, 'GET');
+
             if (!response || response.length === 0) {
                 return [];
             }

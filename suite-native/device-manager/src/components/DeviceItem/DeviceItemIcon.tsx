@@ -22,6 +22,7 @@ export const DeviceItemIcon = ({ deviceId }: DeviceItemIconProps) => {
     if (deviceId === PORTFOLIO_TRACKER_DEVICE_ID) {
         return <Icon name="database" color="iconDefault" size={ICON_SIZE} />;
     }
+
     if (deviceModel !== null) {
         return <DeviceModelIcon deviceModel={deviceModel} size={ICON_SIZE} />;
     }

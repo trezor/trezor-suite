@@ -35,6 +35,7 @@ export const useCoinmarketSavingsSetupWaiting = ({
 
             return;
         }
+
         if (
             savingsTrade?.kycStatus &&
             SavingsTradeKYCFinalStatuses.includes(savingsTrade.kycStatus)
@@ -51,6 +52,7 @@ export const useCoinmarketSavingsSetupWaiting = ({
 
     useEffect(() => {
         const pollingKey = `coinmarket-savings-trade/${account.descriptor}` as const;
+
         if (!dispatch(isPolling(pollingKey))) {
             // NOTE: Suite Desktop and Web application might be still open -> start polling savings trade,
             // so the user sees refreshed UI after successful completion of savings flow on Invity.io page,
@@ -68,6 +70,7 @@ export const useCoinmarketSavingsSetupWaiting = ({
 
     const handleGoToInvity = useCallback(async () => {
         const form = getDraft(account.descriptor) as Parameters<typeof submitRequestForm>[0];
+
         if (form) {
             dispatch(submitRequestForm(form));
         } else if (
@@ -86,8 +89,10 @@ export const useCoinmarketSavingsSetupWaiting = ({
                 paymentFrequency: savingsTrade.paymentFrequency,
                 returnUrl: await createReturnLink(),
             });
+
             if (formResponse?.form) {
                 saveDraft(account.descriptor, formResponse.form);
+
                 if (!isDesktop()) {
                     dispatch(submitRequestForm(formResponse?.form));
                 }

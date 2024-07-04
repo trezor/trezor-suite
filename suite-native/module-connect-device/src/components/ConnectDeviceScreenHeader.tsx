@@ -53,6 +53,7 @@ export const ConnectDeviceScreenHeader = ({
             });
         } else {
             TrezorConnect.cancel('pin-cancelled');
+
             if (navigation.canGoBack()) {
                 navigation.goBack();
             }

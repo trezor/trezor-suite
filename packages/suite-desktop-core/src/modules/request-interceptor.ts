@@ -22,12 +22,14 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
         if (event.type === 'INTERCEPTED_REQUEST') {
             logger.debug(SERVICE_NAME, `${event.method} - ${event.details}`);
         }
+
         if (event.type === 'INTERCEPTED_RESPONSE') {
             logger.debug(
                 SERVICE_NAME,
                 `request to ${event.host} took ${event.time}ms and responded with status code ${event.statusCode}`,
             );
         }
+
         if (event.type === 'NETWORK_MISBEHAVING') {
             logger.debug(SERVICE_NAME, 'networks is misbehaving');
             mainWindow.webContents.send('tor/status', {

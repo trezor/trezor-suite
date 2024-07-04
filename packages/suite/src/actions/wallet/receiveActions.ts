@@ -77,6 +77,7 @@ export const showAddress =
             dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
         } else {
             dispatch(modalActions.onCancel());
+
             // special case: device no-backup permissions not granted
             if (response.payload.code === 'Method_PermissionsNotGranted') return;
 

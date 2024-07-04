@@ -19,24 +19,30 @@ export function getAmountLimits(
         if (!quote.error) {
             return;
         }
+
         if (request.amountInCrypto) {
             const amount = Number(quote.cryptoStringAmount);
+
             if (quote.minCrypto && amount < quote.minCrypto) {
                 minAmount = Math.min(minAmount || 1e28, quote.minCrypto);
             }
+
             if (quote.maxCrypto && amount > quote.maxCrypto) {
                 maxAmount = Math.max(maxAmount || 0, quote.maxCrypto);
             }
         } else {
             const amount = Number(quote.fiatStringAmount);
+
             if (quote.minFiat && amount < quote.minFiat) {
                 minAmount = Math.min(minAmount || 1e28, quote.minFiat);
             }
+
             if (quote.maxFiat && amount > quote.maxFiat) {
                 maxAmount = Math.max(maxAmount || 0, quote.maxFiat);
             }
         }
     }
+
     if (minAmount) {
         if (!maxAmount) {
             return request.amountInCrypto
@@ -53,6 +59,7 @@ export function getAmountLimits(
 // split the quotes to base and alternative and assign order and payment ids
 export function processQuotes(allQuotes: SellFiatTrade[]): [SellFiatTrade[], SellFiatTrade[]] {
     if (!allQuotes) allQuotes = [];
+
     allQuotes.forEach(q => {
         q.orderId = uuidv4();
         q.paymentId = uuidv4();
@@ -80,13 +87,17 @@ export const createQuoteLink = async (
     } else {
         hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.cryptoCurrency}`;
     }
+
     if (orderId) {
         hash = `p-${hash}/${orderId}`;
     }
+
     if (composedInfo.selectedFee && composedInfo.selectedFee !== 'normal') {
         hash += `/${composedInfo.selectedFee}`;
+
         if (composedInfo.selectedFee === 'custom') {
             hash += `/${composedInfo.composed?.feePerByte}`;
+
             if (composedInfo.composed?.feeLimit) {
                 hash += `/${composedInfo.composed?.feeLimit}`;
             }

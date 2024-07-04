@@ -12,6 +12,7 @@ const listeners: Record<string, (e: any) => void> = {};
 let fixtures: Record<string, any> | Record<string, any>[] | undefined;
 const getNextFixture = (_methodName: string) => {
     const fixture = Array.isArray(fixtures) ? fixtures.shift() : fixtures;
+
     if (typeof fixture === 'function') return fixture();
 
     return fixture;
@@ -71,6 +72,7 @@ methods.off = jest.fn((event: string, _cb) => {
 });
 methods.composeTransaction = jest.fn(async _params => {
     const fixture = getNextFixture('composeTransaction');
+
     if (fixture && typeof fixture.delay === 'number') {
         await new Promise(resolve => setTimeout(resolve, fixture.delay));
     }

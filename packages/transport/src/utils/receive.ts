@@ -13,11 +13,14 @@ async function receiveRest(
     if (offset >= expectedLength) {
         return;
     }
+
     const data = await receiver();
+
     // sanity check
     if (data == null) {
         throw new Error('Received no data.');
     }
+
     const length = offset + data.byteLength - chunkHeader.byteLength;
     Buffer.from(data).copy(result, offset, chunkHeader.byteLength, length);
 

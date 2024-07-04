@@ -11,12 +11,14 @@ describe('api/bitcoin/Fees', () => {
 
     it('Bitcoin smart FeeLevels exact match', async () => {
         const coinInfo = getBitcoinNetwork('Bitcoin');
+
         if (!coinInfo) throw new Error('coinInfo is missing');
 
         const spy = jest
             .spyOn(BlockchainLink.prototype, 'estimateFee')
             .mockImplementation(params => {
                 if (!params.blocks) return Promise.resolve([]);
+
                 const response = params.blocks.map(block => {
                     const reduce = Math.floor(block / 10) * 379; // every 10th result is lower
                     const fee = 10000 - reduce;
@@ -44,14 +46,17 @@ describe('api/bitcoin/Fees', () => {
 
     it('Bitcoin smart FeeLevels with unknown results in the response', async () => {
         const coinInfo = getBitcoinNetwork('Bitcoin');
+
         if (!coinInfo) throw new Error('coinInfo is missing');
 
         const spy = jest
             .spyOn(BlockchainLink.prototype, 'estimateFee')
             .mockImplementation(params => {
                 if (!params.blocks) return Promise.resolve([]);
+
                 const response = params.blocks.map(block => {
                     if (block < 20 && block % 3 === 0) return { feePerUnit: '-1' }; // each third requested block returns unknown value
+
                     const reduce = Math.floor(block / 2) * 379; // every second known result is lower
                     const fee = 10000 - reduce;
 
@@ -73,14 +78,17 @@ describe('api/bitcoin/Fees', () => {
 
     it('Testnet smart FeeLevels with unknown results in the response', async () => {
         const coinInfo = getBitcoinNetwork('Testnet');
+
         if (!coinInfo) throw new Error('coinInfo is missing');
 
         const spy = jest
             .spyOn(BlockchainLink.prototype, 'estimateFee')
             .mockImplementation(params => {
                 if (!params.blocks) return Promise.resolve([]);
+
                 const response = params.blocks.map(block => {
                     if (block < 5) return { feePerUnit: '-1' }; // first 5 requested blocks are unknown
+
                     const reduce = Math.floor(block / 2) * 379; // every second known result is lower
                     const fee = 10000 - reduce;
 

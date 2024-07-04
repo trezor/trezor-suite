@@ -52,6 +52,7 @@ const isSVG = (image: ImageType): image is SvgImage => image in SVG_IMAGES;
 export const Image = (props: ImageProps) => {
     if ('image' in props) {
         const { image, ...rest } = props;
+
         if (isPNG(image)) {
             return (
                 <StyledImage

@@ -96,6 +96,7 @@ export default class BinanceGetAddress extends AbstractMethod<'binanceGetAddress
         const responses: MethodReturnType<typeof this.name> = [];
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
+
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.show_display) {
@@ -103,6 +104,7 @@ export default class BinanceGetAddress extends AbstractMethod<'binanceGetAddress
                     ...batch,
                     show_display: false,
                 });
+
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
                         throw ERRORS.TypedError('Method_AddressNotMatch');

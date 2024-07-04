@@ -73,6 +73,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
             case 'first-info':
                 const goToStepNextStep = () => {
                     setIsSubmitted(true);
+
                     if (isChecked1 && isChecked2) {
                         setStep('second-info');
                     }

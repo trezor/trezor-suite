@@ -55,6 +55,7 @@ describe('TrezorConnect Actions', () => {
         });
         const state = getInitialState();
         const store = initStore(state);
+
         try {
             await store.dispatch(connectInitThunk()).unwrap();
         } catch (error) {
@@ -69,6 +70,7 @@ describe('TrezorConnect Actions', () => {
         }));
         const state = getInitialState();
         const store = initStore(state);
+
         try {
             await store.dispatch(connectInitThunk()).unwrap();
         } catch (error) {
@@ -80,6 +82,7 @@ describe('TrezorConnect Actions', () => {
         testMocks.setTrezorConnectFixtures(() => 'Iframe error');
         const state = getInitialState();
         const store = initStore(state);
+
         try {
             await store.dispatch(connectInitThunk()).unwrap();
         } catch (error) {

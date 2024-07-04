@@ -128,26 +128,31 @@ export const composeSendFormTransactionThunk = createThunk(
         // eslint-disable-next-line require-await
     ) => {
         const { account } = formState;
+
         if (account.networkType === 'bitcoin') {
             return dispatch(
                 composeBitcoinSendFormTransactionThunk({ formValues, formState }),
             ).unwrap();
         }
+
         if (account.networkType === 'ethereum') {
             return dispatch(
                 composeEthereumSendFormTransactionThunk({ formValues, formState }),
             ).unwrap();
         }
+
         if (account.networkType === 'ripple') {
             return dispatch(
                 composeRippleSendFormTransactionThunk({ formValues, formState }),
             ).unwrap();
         }
+
         if (account.networkType === 'cardano') {
             return dispatch(
                 composeCardanoSendFormTransactionThunk({ formValues, formState }),
             ).unwrap();
         }
+
         if (account.networkType === 'solana') {
             return dispatch(
                 composeSolanaSendFormTransactionThunk({ formValues, formState }),
@@ -164,12 +169,14 @@ export const cancelSignSendFormTransactionThunk = createThunk(
         } = extra;
         const serializedTx = selectSendSerializedTx(getState());
         dispatch(sendFormActions.discardTransaction());
+
         // if transaction is not signed yet interrupt signing in TrezorConnect
         if (!serializedTx) {
             TrezorConnect.cancel('tx-cancelled');
 
             return;
         }
+
         // otherwise just close modal
         dispatch(onModalCancel());
     },
@@ -198,6 +205,7 @@ const synchronizeSentTransactionThunk = createThunk(
                 tx: precomposedTransaction,
                 txid,
             });
+
             if (pendingAccount) {
                 // manually add fake pending tx as we don't have the data about mempool txs
                 dispatch(
@@ -362,6 +370,7 @@ export const signTransactionThunk = createThunk(
         // signTransaction by Trezor
         let serializedTx: string | undefined;
         let signedTx: BlockbookTransaction | undefined;
+
         // Type guard to differentiate between PrecomposedTransactionFinal and PrecomposedTransactionFinalCardano
         if (isCardanoTx(selectedAccount, precomposedTransaction)) {
             serializedTx = await dispatch(
@@ -372,6 +381,7 @@ export const signTransactionThunk = createThunk(
             ).unwrap();
         } else {
             const { networkType } = selectedAccount;
+
             if (networkType === 'bitcoin') {
                 const response = await dispatch(
                     signBitcoinSendFormTransactionThunk({
@@ -383,6 +393,7 @@ export const signTransactionThunk = createThunk(
                 serializedTx = response?.serializedTx;
                 signedTx = response?.signedTransaction;
             }
+
             if (networkType === 'ethereum') {
                 serializedTx = await dispatch(
                     signEthereumSendFormTransactionThunk({
@@ -392,6 +403,7 @@ export const signTransactionThunk = createThunk(
                     }),
                 ).unwrap();
             }
+
             if (networkType === 'ripple') {
                 serializedTx = await dispatch(
                     signRippleSendFormTransactionThunk({
@@ -401,6 +413,7 @@ export const signTransactionThunk = createThunk(
                     }),
                 ).unwrap();
             }
+
             if (networkType === 'solana') {
                 serializedTx = await dispatch(
                     signSolanaSendFormTransactionThunk({
@@ -444,6 +457,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
     ) => {
         const device = selectDevice(getState());
         const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
+
         if (!device) return rejectWithValue('Device not found');
 
         // native RBF is available since FW 1.9.4/2.3.5
@@ -502,6 +516,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
 
             enhancedPrecomposedTransaction.isTokenKnown = isTokenKnown;
         }
+
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
         dispatch(
             sendFormActions.storePrecomposedTransaction({

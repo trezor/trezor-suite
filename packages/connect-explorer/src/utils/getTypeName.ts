@@ -2,6 +2,7 @@ import { Hint, Kind, TSchema } from '@sinclair/typebox';
 
 export const getTypeName = (value: TSchema, hasDescendants?: boolean) => {
     let typeName = value[Kind];
+
     if (value[Kind] === 'Array') {
         const childTypeName = getTypeName(value.items);
         typeName = childTypeName ? `Array<${childTypeName}>` : 'Array';
@@ -11,6 +12,7 @@ export const getTypeName = (value: TSchema, hasDescendants?: boolean) => {
         } else {
             typeName = JSON.stringify(value.const);
         }
+
         if (value.$id) {
             typeName = value.$id + ' (' + typeName + ')';
         }
@@ -20,6 +22,7 @@ export const getTypeName = (value: TSchema, hasDescendants?: boolean) => {
             if (value[Hint] === 'Enum' && v[Kind] === 'Literal' && typeof v.const === 'string') {
                 return false;
             }
+
             // Filter union number indexes - unnecessary to display
             if (v[Kind] === 'Literal' && (v.const === i || v.const === i.toString())) {
                 return false;
@@ -27,9 +30,11 @@ export const getTypeName = (value: TSchema, hasDescendants?: boolean) => {
 
             return true;
         });
+
         if (itemsFiltered.length > 0) {
             typeName = itemsFiltered?.map((v: TSchema) => getTypeName(v)).join(' | ');
         }
+
         if (value[Hint] === 'Enum') {
             typeName = 'Enum: ' + typeName;
         }

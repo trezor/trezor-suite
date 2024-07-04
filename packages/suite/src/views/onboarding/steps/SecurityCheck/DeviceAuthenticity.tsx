@@ -55,6 +55,7 @@ export const DeviceAuthenticity = () => {
                 />
             );
         }
+
         if (!isWaitingForConfirmation) {
             return <Translation id="TR_AUTHENTICATE_DEVICE_DESCRIPTION" />;
         }

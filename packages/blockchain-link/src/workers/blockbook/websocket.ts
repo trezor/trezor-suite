@@ -33,6 +33,7 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
     protected createWebsocket() {
         // url validation
         let { url } = this.options;
+
         if (typeof url !== 'string') {
             throw new CustomError('websocket_no_url');
         }
@@ -41,6 +42,7 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
         if (url.startsWith('http')) {
             url = url.replace('http', 'ws');
         }
+
         if (!url.endsWith('/websocket')) {
             const suffix = url.endsWith('/') ? 'websocket' : '/websocket';
             url += suffix;

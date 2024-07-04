@@ -57,10 +57,13 @@ export default class CardanoGetNativeScriptHash extends AbstractMethod<
 
     scriptToProto(script: CardanoNativeScript): PROTO.CardanoNativeScript {
         let scripts: PROTO.CardanoNativeScript[] = [];
+
         if (script.scripts) {
             scripts = script.scripts.map(nestedScript => this.scriptToProto(nestedScript));
         }
+
         let keyPath: number[] = [];
+
         if (script.keyPath) {
             keyPath = validatePath(script.keyPath, 3);
         }

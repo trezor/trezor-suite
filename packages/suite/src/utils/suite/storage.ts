@@ -23,6 +23,7 @@ export const serializeDevice = (device: AcquiredDevice, forceRemember?: true) =>
         connected: false,
         buttonRequests: [],
     };
+
     if (forceRemember) sd.forceRemember = true;
 
     return sd;

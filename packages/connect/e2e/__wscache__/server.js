@@ -14,21 +14,26 @@ const createServer = () => {
 
     const processRequest = (ws, params, message) => {
         const request = JSON.parse(message);
+
         if (!request) {
             throw new Error('Unknown WsCacheServer request');
         }
+
         const serverResponses = DEFAULT_RESPONSES[params.type];
+
         if (!serverResponses) {
             throw new Error(`Unknown WsCacheServer responses for ${params.type}`);
         }
 
         const field = params.type === 'blockbook' ? 'method' : 'command';
         const command = request[field];
+
         if (!command) {
             throw new Error(`Unknown WsCacheServer request without ${field}`);
         }
 
         const fn = serverResponses[command];
+
         if (!fn) {
             throw new Error(`Unknown WsCacheServer response for ${command}`);
         }

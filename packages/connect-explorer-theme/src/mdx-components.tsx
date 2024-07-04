@@ -33,8 +33,11 @@ function HeadingLink({
 
     useEffect(() => {
         if (!id) return;
+
         const heading = obRef.current;
+
         if (!heading) return;
+
         slugs.set(heading, [id, (context.index += 1)]);
         observer?.observe(heading);
 
@@ -95,6 +98,7 @@ const findSummary = (children: ReactNode) => {
         }
 
         let c = child;
+
         if (
             !summary &&
             child &&
@@ -111,6 +115,7 @@ const findSummary = (children: ReactNode) => {
                 key: index,
             });
         }
+
         restChildren.push(c);
     });
 
@@ -193,6 +198,7 @@ export const getComponents = ({
     return {
         section: props => {
             const maxRank = 2;
+
             if (
                 !isRawLayout &&
                 props.className === 'heading' &&
@@ -200,6 +206,7 @@ export const getComponents = ({
                 frontMatter.auto_sections !== false
             ) {
                 const children = props?.children as ReactNode[];
+
                 if (!children || !Array.isArray(children)) return children;
 
                 const showInCard = (el: ReactNode) =>

@@ -50,6 +50,7 @@ describe('connectionConfirmation', () => {
             if (url.includes('connection-confirmation')) {
                 spy(data.AliceId);
             }
+
             resolve();
         });
         const response = await connectionConfirmation(
@@ -101,6 +102,7 @@ describe('connectionConfirmation', () => {
                 spy();
                 resolve({});
             }
+
             resolve();
         });
         const response = await connectionConfirmation(
@@ -148,11 +150,13 @@ describe('connectionConfirmation', () => {
         server?.addListener('test-request', ({ url, resolve }) => {
             if (url.includes('connection-confirmation')) {
                 timestamps.push(Date.now());
+
                 if (spy.mock.calls.length < 3) {
                     setTimeout(() => resolve({}), 500); // delay first responses
                 } else {
                     resolve();
                 }
+
                 spy();
             } else {
                 resolve();
@@ -221,6 +225,7 @@ describe('connectionConfirmation', () => {
 
         server?.addListener('test-request', ({ url, resolve }) => {
             resolve();
+
             if (url.includes('input-unregistration')) {
                 done();
             }
@@ -236,6 +241,7 @@ describe('connectionConfirmation', () => {
                     reject(404);
                 }
             }
+
             resolve();
         });
         const response = await connectionConfirmation(

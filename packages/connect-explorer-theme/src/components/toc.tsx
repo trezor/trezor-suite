@@ -45,6 +45,7 @@ export function TOC({ headings, filePath }: TOCProps): ReactElement {
 
     useEffect(() => {
         if (!activeSlug) return;
+
         const anchor = tocRef.current?.querySelector(`li > a[href="#${activeSlug}"]`);
 
         if (anchor) {

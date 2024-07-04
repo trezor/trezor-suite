@@ -28,6 +28,7 @@ export const convertXpub = (
     requestedNetwork?: Network,
 ) => {
     const node = bip32.fromBase58(xpub, originalNetwork);
+
     if (requestedNetwork) {
         // override network of BIP32Interface
         node.network = requestedNetwork;
@@ -42,6 +43,7 @@ export const convertBitcoinXpub = (xpub: string, network: Network) => {
         // it's bitcoin-like => return xpub
         return xpub;
     }
+
     const node = bip32.fromBase58(xpub); // use default bitcoin magic
 
     // override network of BIP32Interface
@@ -56,6 +58,7 @@ const pubKey2bjsNode = (key: PROTO.PublicKey | PROTO.EthereumPublicKey, network?
     const bjsNode = pubNode2bjsNode(keyNode, network);
     const bjsXpub = bjsNode.toBase58();
     const keyXpub = convertXpub(key.xpub, network);
+
     if (bjsXpub !== keyXpub) {
         throw ERRORS.TypedError(
             'Runtime',

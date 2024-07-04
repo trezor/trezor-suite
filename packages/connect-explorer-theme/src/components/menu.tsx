@@ -129,6 +129,7 @@ export function Menu({
     useEffect(() => {
         // Only on route change
         if (route === prevRoute.current) return;
+
         prevRoute.current = route;
 
         if (defaultActiveCoin !== activeCoin) setActiveCoin(defaultActiveCoin);
@@ -154,6 +155,7 @@ export function Menu({
     const [clickCounter, setClickCounter] = useState(0);
     const handleClickMisc = () => {
         setClickCounter(clickCounter + 1);
+
         if (clickCounter < 5) return;
 
         router.push('/settings');
@@ -258,6 +260,7 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                 delete TreeState[item.route];
             }
         };
+
         if (config.sidebar.autoCollapse) updateAndPruneTreeState();
         else updateTreeState();
     }, [activeRouteInside, focusedRouteInside, item.route, config.sidebar.autoCollapse]);
@@ -302,9 +305,11 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                     const clickedToggleIcon = ['svg', 'path'].includes(
                         (e.target as HTMLElement).tagName.toLowerCase(),
                     );
+
                     if (clickedToggleIcon) {
                         e.preventDefault();
                     }
+
                     if (isLink) {
                         // If it's focused, we toggle it. Otherwise, always open it.
                         if (active || clickedToggleIcon) {
@@ -313,11 +318,14 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                             TreeState[item.route] = true;
                             setMenu(false);
                         }
+
                         rerender({});
 
                         return;
                     }
+
                     if (active) return;
+
                     TreeState[item.route] = !open;
                     rerender({});
                 }}

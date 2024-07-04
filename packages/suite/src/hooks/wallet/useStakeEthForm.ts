@@ -224,6 +224,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
             setIsAmountForWithdrawalWarningShown(false);
             setIsAdviceForWithdrawalWarningShown(false);
+
             if (!currentRate) return;
 
             const cryptoValue = fromFiatCurrency(amount, network.decimals, currentRate?.rate);
@@ -286,10 +287,12 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     const { translationString } = useTranslation();
     useEffect(() => {
         if (!composedLevels) return;
+
         const values = getValues();
         const { setMaxOutputId } = values;
         const selectedFeeLevel = selectedFee;
         const composed = composedLevels[selectedFeeLevel];
+
         if (!composed) return;
 
         if (composed.type === 'final') {
@@ -327,6 +330,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
+
         if (composedTx && composedTx.type === 'final') {
             setIsLoading(true);
             const result = await dispatch(
@@ -334,6 +338,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             );
 
             setIsLoading(false);
+
             if (result?.success) {
                 clearForm();
             }
@@ -382,6 +387,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
 export const useStakeEthFormContext = () => {
     const ctx = useContext(StakeEthFormContext);
+
     if (ctx === null) throw Error('useStakeEthFormContext used without Context');
 
     return ctx;

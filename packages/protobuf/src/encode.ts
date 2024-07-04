@@ -13,6 +13,7 @@ const transform = (fieldType: string, value: any) => {
         // normal flow
         return Buffer.from(value, 'hex');
     }
+
     if (typeof value === 'number' && !Number.isSafeInteger(value)) {
         throw new RangeError('field value is not within safe integer range');
     }
@@ -35,6 +36,7 @@ export function patch(Message: Type, payload: any) {
         if (typeof value === 'undefined') {
             return;
         }
+
         // primitive type
         if (isPrimitiveField(field.type)) {
             if (field.repeated) {
@@ -45,9 +47,11 @@ export function patch(Message: Type, payload: any) {
 
             return;
         }
+
         // repeated
         if (field.repeated) {
             const fieldType = Message.lookupTypeOrEnum(field.type);
+
             if (fieldType instanceof Enum) {
                 // NOTE: Enum doesn't require patching both string (keys) and number values are accepted
                 patched[key] = value;

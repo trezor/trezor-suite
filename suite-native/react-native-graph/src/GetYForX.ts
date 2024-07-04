@@ -28,10 +28,12 @@ const solveCubic = (a: number, b: number, c: number, d: number): number[] => {
         a = b;
         b = c;
         c = d;
+
         if (Math.abs(a) < 1e-8) {
             // Linear case, ax+b=0
             a = b;
             b = c;
+
             if (Math.abs(a) < 1e-8) {
                 // Degenerate case
                 return [];
@@ -41,7 +43,9 @@ const solveCubic = (a: number, b: number, c: number, d: number): number[] => {
         }
 
         const D = b * b - 4 * a * c;
+
         if (Math.abs(D) < 1e-8) return [-b / (2 * a)];
+
         if (D > 0) return [(-b + Math.sqrt(D)) / (2 * a), (-b - Math.sqrt(D)) / (2 * a)];
 
         return [];
@@ -60,6 +64,7 @@ const solveCubic = (a: number, b: number, c: number, d: number): number[] => {
         roots = [0].concat(p < 0 ? [Math.sqrt(-p), -Math.sqrt(-p)] : []);
     } else {
         const D = (q * q) / 4 + (p * p * p) / 27;
+
         if (Math.abs(D) < 1e-8) {
             // D = 0 -> two roots
             roots = [(-1.5 * q) / p, (3 * q) / p];
@@ -112,6 +117,7 @@ export const cubicBezierYForX = (
         .map(root => round(root, precision))
         .filter(root => root >= 0 && root <= 1);
     const t = ts[0];
+
     if (t == null) return 0;
 
     return cubicBezier(t, a.y, b.y, c.y, d.y);
@@ -130,13 +136,16 @@ export const selectCurve = (cmds: PathCommand[], x: number): Cubic | undefined =
     let from: Vector = vec(0, 0);
     for (let i = 0; i < cmds.length; i++) {
         const cmd = cmds[i];
+
         if (cmd == null) return undefined;
+
         if (cmd[0] === PathVerb.Move) {
             from = vec(cmd[1], cmd[2]);
         } else if (cmd[0] === PathVerb.Cubic) {
             const c1 = vec(cmd[1], cmd[2]);
             const c2 = vec(cmd[3], cmd[4]);
             const to = vec(cmd[5], cmd[6]);
+
             if (x >= from.x && x <= to.x) {
                 return {
                     from,
@@ -145,6 +154,7 @@ export const selectCurve = (cmds: PathCommand[], x: number): Cubic | undefined =
                     to,
                 };
             }
+
             from = to;
         }
     }
@@ -156,6 +166,7 @@ export const getYForX = (cmds: PathCommand[], x: number, precision = 2): number 
     'worklet';
 
     const c = selectCurve(cmds, x);
+
     if (c == null) return undefined;
 
     return cubicBezierYForX(x, c.from, c.c1, c.c2, c.to, precision);

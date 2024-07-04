@@ -22,6 +22,7 @@ export const dispose = () => {
             // do nothing
         }
     }
+
     instance = null;
     timeout = 0;
 };
@@ -38,6 +39,7 @@ const injectStyleSheet = () => {
     if (!instance) {
         throw ERRORS.TypedError('Init_IframeBlocked');
     }
+
     const doc = instance.ownerDocument;
     const head = doc.head || doc.getElementsByTagName('head')[0];
     const style = document.createElement('style');
@@ -58,6 +60,7 @@ const injectStyleSheet = () => {
 export const init = async (settings: ConnectSettings) => {
     initPromise = createDeferred();
     const existedFrame = document.getElementById('trezorconnect') as HTMLIFrameElement;
+
     if (existedFrame) {
         instance = existedFrame;
     } else {
@@ -74,6 +77,7 @@ export const init = async (settings: ConnectSettings) => {
     }
 
     let src: string;
+
     if (settings.env === 'web') {
         const manifestString = settings.manifest ? JSON.stringify(settings.manifest) : 'undefined'; // note: btoa(undefined) === btoa('undefined') === "dW5kZWZpbmVk"
         const manifest = `version=${settings.version}&manifest=${encodeURIComponent(
@@ -85,9 +89,11 @@ export const init = async (settings: ConnectSettings) => {
     }
 
     instance.setAttribute('src', src);
+
     if (settings.webusb) {
         console.warn('webusb option is deprecated. use `transports: ["WebUsbTransport"] instead`');
     }
+
     if (navigator.usb) {
         instance.setAttribute('allow', 'usb');
     }
@@ -103,9 +109,11 @@ export const init = async (settings: ConnectSettings) => {
 
             return;
         }
+
         try {
             // if hosting page is able to access cross-origin location it means that the iframe is not loaded
             const iframeOrigin = instance.contentWindow?.location.origin;
+
             if (!iframeOrigin || iframeOrigin === 'null') {
                 handleIframeBlocked();
 
@@ -116,6 +124,7 @@ export const init = async (settings: ConnectSettings) => {
         }
 
         let extension: string | undefined;
+
         if (
             typeof chrome !== 'undefined' &&
             chrome.runtime &&
@@ -147,6 +156,7 @@ export const init = async (settings: ConnectSettings) => {
     } else {
         instance.onload = onLoad;
     }
+
     // inject iframe into host document body
     if (document.body) {
         document.body.appendChild(instance);
@@ -161,8 +171,10 @@ export const init = async (settings: ConnectSettings) => {
             if (instance.parentNode) {
                 instance.parentNode.removeChild(instance);
             }
+
             instance = null;
         }
+
         throw e;
     } finally {
         window.clearTimeout(timeout);
@@ -174,6 +186,7 @@ export const postMessage = (message: CoreRequestMessage) => {
     if (!instance) {
         throw ERRORS.TypedError('Init_IframeBlocked');
     }
+
     instance.contentWindow?.postMessage(message, origin);
 };
 

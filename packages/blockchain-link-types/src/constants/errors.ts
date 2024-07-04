@@ -30,6 +30,7 @@ export class CustomError extends Error {
                 code.indexOf(PREFIX) === 0 ? code.substring(PREFIX.length, code.length) : code;
             this.code = `${PREFIX}${c}`;
             const msg = ERROR[c];
+
             if (typeof msg === 'string') {
                 if (this.message === '') {
                     this.message = msg;

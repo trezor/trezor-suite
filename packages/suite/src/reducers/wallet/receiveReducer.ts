@@ -8,6 +8,7 @@ export type State = ReceiveInfo[];
 
 const showAddress = (draft: State, path: string, address: string) => {
     const receiveInfo = draft.find(r => r.address === address);
+
     if (receiveInfo) {
         receiveInfo.isVerified = true;
     } else {
@@ -21,6 +22,7 @@ const showAddress = (draft: State, path: string, address: string) => {
 
 const showUnverifiedAddress = (draft: State, path: string, address: string) => {
     const receiveInfo = draft.find(r => r.address === address);
+
     if (receiveInfo) {
         receiveInfo.isVerified = false;
     } else {

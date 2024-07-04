@@ -124,9 +124,11 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             typeof payload.allowSeedlessDevice === 'boolean' ? payload.allowSeedlessDevice : false;
         this.allowDeviceMode = [];
         this.requireDeviceMode = [];
+
         if (this.allowSeedlessDevice) {
             this.allowDeviceMode = [UI.SEEDLESS];
         }
+
         // Determine the type based on the method name
         this.network = 'bitcoin';
         (Object.keys(NETWORK.TYPES) as NETWORK.NetworkType[]).forEach(key => {
@@ -158,6 +160,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     private getOriginPermissions() {
         const origin = DataManager.getSettings('origin');
+
         if (!origin) {
             return [];
         }
@@ -168,6 +171,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     checkPermissions() {
         const originPermissions = this.getOriginPermissions();
         let notPermitted = [...this.requiredPermissions];
+
         if (originPermissions.length > 0) {
             // check if permission was granted
             notPermitted = notPermitted.filter(np => {
@@ -178,6 +182,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
                 return !granted;
             });
         }
+
         this.requiredPermissions = notPermitted;
     }
 
@@ -192,10 +197,12 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         // check if this will be first time granted permission to read this device
         // if so, emit "device_connect" event because this wasn't send before
         let emitEvent = false;
+
         if (this.requiredPermissions.indexOf('read') >= 0) {
             const wasAlreadyGranted = originPermissions.filter(
                 p => p.type === 'read' && p.device === this.device.features.device_id,
             );
+
             if (wasAlreadyGranted.length < 1) {
                 emitEvent = true;
             }
@@ -230,24 +237,29 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         if (this.skipFirmwareCheck) {
             return;
         }
+
         const { device } = this;
 
         // do not do fw range check for devices in BL mode as fw version of T1B1 in BL mode is not defined
         if (!device.features || device.isBootloader()) return;
+
         const range = this.firmwareRange[device.features.internal_model];
 
         if (device.firmwareStatus === 'none') {
             return UI.FIRMWARE_NOT_INSTALLED;
         }
+
         if (!range) {
             // range not known only for custom (unknown) models
             return;
         }
+
         if (range.min === '0') {
             return UI.FIRMWARE_NOT_SUPPORTED;
         }
 
         const version = device.getVersion().join('.');
+
         if (
             device.firmwareStatus === 'required' ||
             !versionUtils.isNewerOrEqual(version, range.min)
@@ -262,6 +274,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     isManagementRestricted() {
         const { popup, origin } = DataManager.getSettings();
+
         if (popup && this.requiredPermissions.includes('management')) {
             const host = getHost(origin);
             const allowed = DataManager.getConfig().management.find(

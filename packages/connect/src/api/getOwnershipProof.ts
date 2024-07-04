@@ -31,6 +31,7 @@ export default class GetOwnershipProof extends AbstractMethod<
             const coinInfo = getBitcoinNetwork(batch.coin || address_n);
             const script_type = batch.scriptType || getScriptType(address_n);
             this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
+
             if (batch.preauthorized) {
                 this.preauthorized = batch.preauthorized;
             }
@@ -63,9 +64,11 @@ export default class GetOwnershipProof extends AbstractMethod<
         const cmd = this.device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
+
             if (this.preauthorized) {
                 await cmd.preauthorize(true);
             }
+
             const { message } = await cmd.typedCall('GetOwnershipProof', 'OwnershipProof', batch);
             responses.push({
                 ...message,

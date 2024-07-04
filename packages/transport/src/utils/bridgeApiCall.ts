@@ -61,6 +61,7 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
     });
 
     let res: Response;
+
     try {
         res = await fetch(options.url, fetchOptions);
     } catch (err) {
@@ -68,6 +69,7 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
     }
 
     let resParsed: Record<string, unknown> | string;
+
     try {
         resParsed = await res.text();
         resParsed = parseResult(resParsed);
@@ -91,9 +93,11 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
         if (errStr === BRIDGE_ERROR_DEVICE_CLOSED) {
             return error({ error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE });
         }
+
         if (errStr === BRIDGE_MALFORMED_PROTOBUF) {
             return error({ error: PROTOCOL_MALFORMED });
         }
+
         if (errStr === BRIDGE_MALFORMED_WIRE_FORMAT) {
             return error({ error: PROTOCOL_MALFORMED });
         }

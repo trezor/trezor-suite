@@ -13,6 +13,7 @@ export const initSharedLogger = (workerSrc: string) => {
         if (!SharedWorker) {
             throw new Error('SharedWorker is not supported');
         }
+
         worker = new SharedWorker(workerSrc);
         worker.port.start();
 

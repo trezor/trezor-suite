@@ -86,6 +86,7 @@ describe('Golomb filtering', () => {
 
                 expect(filter([])).toBe(false);
                 expect(filter(missScripts)).toBe(false);
+
                 if (hitScripts.length) {
                     expect(filter(hitScripts)).toBe(true);
                     expect(filter([...missScripts, hitScripts[0]])).toBe(true);

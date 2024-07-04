@@ -46,7 +46,9 @@ export function p2data(a: Payment, opts?: PaymentOpts): Payment {
     if (opts.validate) {
         if (a.output) {
             const chunks = bscript.decompile(a.output);
+
             if (chunks![0] !== OPS.OP_RETURN) throw new TypeError('Output is invalid');
+
             if (!chunks!.slice(1).every(typeforce.Buffer)) throw new TypeError('Output is invalid');
 
             if (a.data && !stacksEqual(a.data, o.data as Buffer[]))

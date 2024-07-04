@@ -67,6 +67,7 @@ export const validateFirmware = (
     if (!firmwareFormat) {
         return 'TR_FIRMWARE_VALIDATION_UNRECOGNIZED_FORMAT';
     }
+
     if (!FORMAT_MAP[firmwareFormat].includes(deviceModelInternal)) {
         return 'TR_FIRMWARE_VALIDATION_UNMATCHING_DEVICE';
     }
@@ -76,6 +77,7 @@ export const validateFirmware = (
     if (isT1V2 && firmwareFormat === FirmwareFormat.T1) {
         return 'TR_FIRMWARE_VALIDATION_TOO_OLD';
     }
+
     if (!isT1V2 && firmwareFormat === FirmwareFormat.T1_V2) {
         return 'TR_FIRMWARE_VALIDATION_T1_V2';
     }

@@ -129,6 +129,7 @@ const loadPdfMake = async () => {
         .default;
     const fonts = (await import(/* webpackChunkName: "pdfFonts" */ 'pdfmake/build/vfs_fonts'))
         .default;
+
     if (fonts?.pdfMake?.vfs) {
         pdfMake.vfs = fonts.pdfMake.vfs;
     }
@@ -185,6 +186,7 @@ const prepareContent = (
                     if (!target?.addresses?.length || !target?.amount) {
                         return null;
                     }
+
                     const targetData = {
                         ...sharedData,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
@@ -370,6 +372,7 @@ const preparePdf = (
 
         fieldKeys.forEach(field => {
             const record = item[field];
+
             if (record) {
                 line.push(record);
             }

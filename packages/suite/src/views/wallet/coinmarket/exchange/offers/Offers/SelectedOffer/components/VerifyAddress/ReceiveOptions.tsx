@@ -88,11 +88,13 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
         });
         selectAccountOptions.push({ type: 'ADD_SUITE' });
     }
+
     selectAccountOptions.push({ type: 'NON_SUITE' });
 
     const selectAccountOption = (option: AccountSelectOption) => {
         setSelectedAccountOption(option);
         setReceiveAccount(option.account);
+
         if (option.account) {
             const { address } = getUnusedAddressFromAccount(option.account);
             setValue('address', address, { shouldValidate: true });
@@ -138,6 +140,7 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
                 switch (option.type) {
                     case 'SUITE': {
                         if (!option.account) return null;
+
                         const { symbol, formattedBalance } = option.account;
 
                         return (

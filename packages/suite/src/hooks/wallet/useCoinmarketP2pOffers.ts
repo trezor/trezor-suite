@@ -66,6 +66,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
 
     const selectQuote = async (quote: P2pQuote) => {
         const provider = providers ? providers[quote.provider] : null;
+
         if (await dispatch(openCoinmarketP2pConfirmModal(provider?.companyName, quote.assetCode))) {
             setSelectedQuote(quote);
             timer.stop();
@@ -119,6 +120,7 @@ CoinmarketP2pOffersContext.displayName = 'CoinmarketP2pOffersContext';
 
 export const useCoinmarketP2pOffersContext = () => {
     const context = useContext(CoinmarketP2pOffersContext);
+
     if (context === null) throw Error('CoinmarketP2pOffersContext used without Context');
 
     return context;

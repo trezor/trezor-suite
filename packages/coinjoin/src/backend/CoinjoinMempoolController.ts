@@ -57,6 +57,7 @@ export class CoinjoinMempoolController {
 
     private onTransactionAdd(tx: BlockbookTransaction) {
         const filteredAddresses = getAllTxAddresses(tx).filter(this.filter ?? (() => true));
+
         if (filteredAddresses.length) {
             const collidingTxids = filteredAddresses
                 .flatMap(address => this.addressTxids.get(address) ?? [])
@@ -71,6 +72,7 @@ export class CoinjoinMempoolController {
 
             filteredAddresses.forEach(address => {
                 const record = this.addressTxids.get(address);
+
                 if (record) record.push(tx.txid);
                 else this.addressTxids.set(address, [tx.txid]);
             });
@@ -79,12 +81,15 @@ export class CoinjoinMempoolController {
 
     private onTransactionRemove(txid: string) {
         const tx = this.mempool.get(txid);
+
         if (tx) {
             const addresses = getAllTxAddresses(tx);
             addresses.forEach(address => {
                 const addressTxids = this.addressTxids.get(address);
+
                 if (addressTxids) {
                     const newAddressTxids = addressTxids.filter(addrTxid => addrTxid !== tx.txid);
+
                     if (newAddressTxids.length) this.addressTxids.set(address, newAddressTxids);
                     else this.addressTxids.delete(address);
                 }
@@ -139,6 +144,7 @@ export class CoinjoinMempoolController {
 
         let { receive, change } = addressController;
         let iteration = 0;
+
         while (receive.length || change.length) {
             const scripts = receive
                 .concat(change)
@@ -147,6 +153,7 @@ export class CoinjoinMempoolController {
             await promiseAllSequence(
                 filters.map(([txid, matchAny], index) => async () => {
                     if (matchAny(scripts)) await addTx(txid);
+
                     if (progressCooldown())
                         onProgressInfo?.({
                             stage: 'mempool',
@@ -167,18 +174,21 @@ export class CoinjoinMempoolController {
 
     async start() {
         if (this._status === 'running') return;
+
         await this.client.subscribeMempoolTxs(this.onTxAdd, this.onDisconnect);
         this._status = 'running';
     }
 
     async stop() {
         if (this._status === 'stopped') return;
+
         await this.client.unsubscribeMempoolTxs(this.onTxAdd, this.onDisconnect);
         this._status = 'stopped';
     }
 
     async update(force?: boolean) {
         const now = new Date().getTime();
+
         if (now - this.lastPurge < MEMPOOL_PURGE_CYCLE && !force) return;
 
         const mempoolTxids = await this.client

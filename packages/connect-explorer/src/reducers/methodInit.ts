@@ -34,6 +34,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                     name: [key, field.name].filter(v => v).join('.'),
                     optional: field.optional || schema[Optional] === 'Optional',
                 };
+
                 // If the array is optional, set the items to an empty array by default
                 if (output.type === 'array') {
                     if (output.optional) {
@@ -64,6 +65,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
         return schema.allOf?.flatMap(schemaToFields);
     } else if (schema[Kind] === 'Union') {
         const onlyLiterals = schema.anyOf?.every((s: TSchema) => s[Kind] === 'Literal');
+
         if (onlyLiterals) {
             const filtered = schema.anyOf?.filter(
                 (s: TSchema, i: number) => s.const !== i.toString(),
@@ -98,6 +100,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                         if (isFieldBasic(field)) {
                             field.value = field.value ?? schema.default;
                         }
+
                         if (array.length === 1) {
                             field.optional = schema[Optional] === 'Optional';
                         }

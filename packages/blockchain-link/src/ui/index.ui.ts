@@ -10,11 +10,14 @@ const instances: BlockchainLink[] = [];
 
 const handleClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
+
     if (target.nodeName.toLowerCase() !== 'button') return;
+
     const network: string = getInputValue('network-type');
 
     // const blockchain: Blockchain<Ripple> = BlockchainLink.get('Ripple Testnet');
     const blockchain = instances.find(b => b.settings.name === network);
+
     if (!blockchain) return;
 
     const parentContainer = target.parentElement;
@@ -57,6 +60,7 @@ const handleClick = (event: MouseEvent) => {
             } catch (error) {
                 onError(error);
             }
+
             break;
         }
         case 'get-tx': {
@@ -68,6 +72,7 @@ const handleClick = (event: MouseEvent) => {
             } catch (error) {
                 onError(error);
             }
+
             break;
         }
 
@@ -185,6 +190,7 @@ const handleClick = (event: MouseEvent) => {
             } catch (error) {
                 onError(error);
             }
+
             break;
         }
 
@@ -209,6 +215,7 @@ const handleClick = (event: MouseEvent) => {
             } catch (error) {
                 onError(error);
             }
+
             break;
         }
         case 'get-account-balance-history': {
@@ -228,6 +235,7 @@ const handleClick = (event: MouseEvent) => {
             } catch (error) {
                 onError(error);
             }
+
             break;
         }
 
@@ -249,6 +257,7 @@ const handleClick = (event: MouseEvent) => {
             } catch (error) {
                 onError(error);
             }
+
             break;
         }
 
@@ -271,10 +280,12 @@ const prepareResponse = (parent: HTMLElement, response: any, isError = false) =>
     div.appendChild(pre);
 
     const otherResponses = parent.getElementsByClassName('response');
+
     if (otherResponses.length > 0) {
         if (otherResponses.length >= 3) {
             parent.removeChild(otherResponses[2]);
         }
+
         parent.insertBefore(div, otherResponses[0]);
     } else {
         parent.appendChild(div);
@@ -288,27 +299,34 @@ const handleError = (parent: any, error: any) =>
 
 const handleBlockEvent = (blockchain: BlockchainLink, notification: any): void => {
     const network: string = getInputValue('network-type');
+
     if (blockchain.settings.name !== network) return;
+
     const parent = document.getElementById('notification-block') as HTMLElement;
     prepareResponse(parent, notification);
 };
 
 const handleMempoolEvent = (blockchain: BlockchainLink, notification: any): void => {
     const network = getInputValue('network-type');
+
     if (blockchain.settings.name !== network) return;
+
     const parent = document.getElementById('notification-mempool') as HTMLElement;
     prepareResponse(parent, notification.txid);
 };
 
 const handleFiatRatesEvent = (blockchain: BlockchainLink, notification: any): void => {
     const network: string = getInputValue('network-type');
+
     if (blockchain.settings.name !== network) return;
+
     const parent = document.getElementById('notification-fiat-rates') as HTMLElement;
     prepareResponse(parent, notification);
 };
 
 const handleNotificationEvent = (blockchain: BlockchainLink, notification: any) => {
     const network: string = getInputValue('network-type');
+
     if (blockchain.settings.name !== network) return;
 
     const parent = document.getElementById('notification-address') as HTMLElement;
@@ -347,6 +365,7 @@ const init = (instances: any[]) => {
     select.innerHTML = instances
         .map(i => {
             const b = i.blockchain;
+
             if (i.selected) {
                 fillValues(i.data);
 

@@ -145,6 +145,7 @@ export const SellTransaction = ({ trade, providers, account }: SellTransactionPr
 
     const viewDetail = () => {
         dispatch(saveTransactionId(trade.key || ''));
+
         if (trade.data.status === 'SUBMITTED' || trade.data.status === 'SEND_CRYPTO') {
             // continue to the sell flow
             dispatch(
@@ -177,6 +178,7 @@ export const SellTransaction = ({ trade, providers, account }: SellTransactionPr
 
             return;
         }
+
         dispatch(
             goto('wallet-coinmarket-sell-detail', {
                 params: {

@@ -10,6 +10,7 @@ export function setDeepValue(obj: any, [prop, ...path]: string[], value: any) {
         obj[prop] = value;
     } else {
         if (!(prop in obj)) obj[prop] = {};
+
         setDeepValue(obj[prop], path, value);
     }
 }

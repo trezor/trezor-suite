@@ -83,6 +83,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
         // We need to delay the loading a bit, because when switching between cached timeframes, it will break the
         // path interpolation animation.
         let timeout: ReturnType<typeof setTimeout>;
+
         if (loading) {
             timeout = setTimeout(() => {
                 setDelayedLoading(true);
@@ -99,6 +100,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
     const extremaFromGraphPoints = useMemo(() => getExtremaFromGraphPoints(points), [points]);
     const axisLabels = useMemo(() => {
         if (areLabelsHidden) return;
+
         if (extremaFromGraphPoints?.max && extremaFromGraphPoints?.min) {
             return {
                 TopAxisLabel: () => (

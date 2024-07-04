@@ -54,6 +54,7 @@ export const groupBalanceMovementEvents = (
 
             return;
         }
+
         groups.push(currentGroup);
         currentGroup = [balanceMovement];
     });
@@ -121,6 +122,7 @@ export const getAccountMovementEvents = async ({
                 descriptor,
             });
         }
+
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,
             identity,

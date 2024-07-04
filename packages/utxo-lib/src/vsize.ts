@@ -8,21 +8,25 @@ const isKnownInputAddress = (type: string): type is keyof typeof INPUT_SCRIPT_LE
 
 const toVin = (network: Network) => (address: string) => {
     const type = getAddressType(address, network);
+
     if (isKnownInputAddress(type)) {
         return {
             type,
             script: { length: INPUT_SCRIPT_LENGTH[type] },
         } as const;
     }
+
     throw new Error(`Unknown input address '${address}'`);
 };
 
 const toVout = (network: Network) => (address: string) => {
     let length;
+
     try {
         length = BitcoinJsAddress.toOutputScript(address, network).length;
     } catch {
         const msg = address.match(/^OP_RETURN (.*)$/)?.pop();
+
         if (msg) {
             length = msg.match(/^\(.*\)$/)
                 ? msg.length // ascii

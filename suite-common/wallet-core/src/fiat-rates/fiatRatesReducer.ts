@@ -39,6 +39,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                         ticker,
                     };
                 }
+
                 state[rateType][fiatRateKey] = currentRate;
             })
             .addCase(updateFiatRatesThunk.fulfilled, (state, action) => {

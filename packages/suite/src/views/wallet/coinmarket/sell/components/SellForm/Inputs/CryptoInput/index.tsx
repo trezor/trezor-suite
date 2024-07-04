@@ -119,6 +119,7 @@ const CryptoInput = () => {
                                         t.symbol === invitySymbol &&
                                         t.contract === selected.token?.contract,
                                 );
+
                                 if (ethereumTypeNetworkSymbols.includes(token)) {
                                     setValue(CRYPTO_TOKEN, null);
                                     setValue('outputs.0.address', account.descriptor);
@@ -131,6 +132,7 @@ const CryptoInput = () => {
                                     // set token address for ERC20 transaction to estimate the fees more precisely
                                     setValue('outputs.0.address', tokenData?.contract ?? '');
                                 }
+
                                 composeRequest();
                             }}
                             value={value}

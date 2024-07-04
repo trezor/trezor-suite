@@ -43,6 +43,7 @@ export class DataManager {
         for (const model in DeviceModelInternal) {
             const firmwareKey = `firmware-${model.toLowerCase()}`;
             const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
+
             // Check if the firmware data exists for this model
             if (this.assets[firmwareKey]) {
                 parseFirmware(this.assets[firmwareKey], modelType);
@@ -58,6 +59,7 @@ export class DataManager {
     static getSettings<T extends keyof ConnectSettings>(key: T): ConnectSettings[T];
     static getSettings(key?: keyof ConnectSettings) {
         if (!this.settings) return null;
+
         if (typeof key === 'string') {
             return this.settings[key];
         }

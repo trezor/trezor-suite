@@ -15,12 +15,14 @@ export class PowerSaveBlocker {
 
             return;
         }
+
         this.logger.info('power-save-blocker', 'Start blocking power save');
         this.powerSaveBlockerId = powerSaveBlocker.start('prevent-display-sleep');
     }
 
     stopBlockingPowerSave() {
         if (!this.powerSaveBlockerId || !this.isBlocking(this.powerSaveBlockerId)) return;
+
         this.logger.info('power-save-blocker', 'Stop blocking power save');
         powerSaveBlocker.stop(this.powerSaveBlockerId);
         this.powerSaveBlockerId = null;

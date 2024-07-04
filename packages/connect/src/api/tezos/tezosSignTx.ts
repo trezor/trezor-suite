@@ -131,6 +131,7 @@ export const createTx = (
 
         if (transaction.parameters_manager) {
             const { parameters_manager } = transaction;
+
             if (parameters_manager.set_delegate) {
                 message = {
                     ...message,

@@ -25,6 +25,7 @@ export class RateLimiter {
             new Date().getTime(),
             this.lastFetchTimestamp,
         );
+
         if (msSinceLastFetch < this.delayMs) {
             this.queued += 1;
             this.totalDelay += this.delayMs;
@@ -35,6 +36,7 @@ export class RateLimiter {
         this.lastFetchTimestamp = new Date().getTime();
         const results = await scheduleAction(signal => fn(signal), { timeout: this.timeoutMs });
         this.queued -= 1;
+
         if (this.queued === 0) {
             // if all queued requests were fired, we need to reset totalDelay to properly delay next batch of requests
             this.totalDelay = 0;

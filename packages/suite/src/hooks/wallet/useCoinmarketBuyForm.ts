@@ -74,9 +74,11 @@ export const useCoinmarketBuyForm = ({
 
     useDidUpdate(() => {
         const cryptoInputValue = getValues(CRYPTO_INPUT);
+
         if (!cryptoInputValue) {
             return;
         }
+
         const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
         setValue(CRYPTO_INPUT, conversion(cryptoInputValue, network.decimals), {
             shouldValidate: true,
@@ -141,9 +143,11 @@ export const useCoinmarketBuyForm = ({
         dispatch(saveQuoteRequest(request));
         dispatch(saveCachedAccountInfo(account.symbol, account.index, account.accountType));
         const allQuotes = await invityAPI.getBuyQuotes(request);
+
         if (Array.isArray(allQuotes)) {
             const [quotes, alternativeQuotes] = processQuotes(allQuotes);
             const limits = getAmountLimits(request, quotes);
+
             if (limits) {
                 setAmountLimits(limits);
             } else {
@@ -188,6 +192,7 @@ export const useCoinmarketBuyForm = ({
 
 export const useCoinmarketBuyFormContext = () => {
     const context = useContext(BuyFormContext);
+
     if (context === null) throw Error('BuyFormContext used without Context');
 
     return context;

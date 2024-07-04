@@ -18,6 +18,7 @@ export function LocaleSwitch({ lite, className }: LocaleSwitchProps): ReactEleme
     const { locale, asPath } = useRouter();
 
     const options = config.i18n;
+
     if (!options.length) return null;
 
     const selected = options.find(l => locale === l.locale);

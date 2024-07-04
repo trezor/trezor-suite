@@ -75,9 +75,11 @@ export class CoinjoinAddressController {
 
         for (let i = 0; i < derived.length; ++i) {
             const txs = getTxs(derived[i]);
+
             if (txs.length) {
                 onTxs?.(txs);
                 const missing = lookout + i + 1 - derived.length;
+
                 if (missing > 0) {
                     derived.push(...this.deriveMore(type, derived.length, missing));
                 }

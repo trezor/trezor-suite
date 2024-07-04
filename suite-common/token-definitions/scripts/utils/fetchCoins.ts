@@ -7,6 +7,7 @@ import { CoinData } from '../types';
 
 const getContractAddress = (assetPlatformId: string, platforms: CoinData['platforms']) => {
     const address = platforms[assetPlatformId];
+
     if (address) {
         if (assetPlatformId === 'cardano') {
             return blockfrostUtils.parseAsset(address).policyId;
@@ -31,8 +32,10 @@ export const fetchCoinData = async (assetPlatformId: string, structure: string) 
     };
 
     let data: CoinData[];
+
     try {
         const response = await fetch(`${COIN_LIST_URL}?${params.toString()}`, options);
+
         if (!response.ok) {
             const { error } = await response.json();
 
@@ -49,6 +52,7 @@ export const fetchCoinData = async (assetPlatformId: string, structure: string) 
     if (structure === 'advanced') {
         return data.reduce<AdvancedTokenStructure>((acc, { platforms, symbol, name }) => {
             const contractAddress = getContractAddress(assetPlatformId, platforms);
+
             if (contractAddress) {
                 acc[contractAddress] = { symbol, name };
             }

@@ -58,6 +58,7 @@ export const createThread = <P, T extends EventEmitter>(init: (params: P) => T |
 
     process.parentPort.on('message', async ({ data }) => {
         if (!isValidThreadRequest(data)) return;
+
         try {
             switch (data.type) {
                 case 'init':
@@ -72,6 +73,7 @@ export const createThread = <P, T extends EventEmitter>(init: (params: P) => T |
                 }
                 case 'subscribe': {
                     const { event } = data.payload;
+
                     if (!obj.listenerCount(event)) {
                         obj.on(event, payload => fire(event, payload));
                     }

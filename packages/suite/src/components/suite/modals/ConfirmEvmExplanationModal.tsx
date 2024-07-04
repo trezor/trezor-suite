@@ -95,9 +95,11 @@ export const ConfirmEvmExplanationModal = ({
     const dispatch = useDispatch();
     const close = () => {
         dispatch(onCancel());
+
         if (!account?.symbol) {
             return;
         }
+
         dispatch({
             type: SUITE.EVM_CONFIRM_EXPLANATION_MODAL,
             symbol: account?.symbol,

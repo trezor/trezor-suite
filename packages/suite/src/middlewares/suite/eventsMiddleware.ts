@@ -40,7 +40,9 @@ const eventsMiddleware =
             // get TrezorDevice from @trezor/connect:Device object
             const devices = selectDevices(api.getState());
             const device = devices.find(d => d.path === action.payload.device.path);
+
             if (!device) return action; // this shouldn't happen
+
             const seen = deviceUtils.isSelectedDevice(
                 action.payload.device,
                 selectDevice(api.getState()),
@@ -51,6 +53,7 @@ const eventsMiddleware =
                 .notifications.filter(
                     n => n.type === DEVICE.CONNECT_UNACQUIRED && device.path === n.device.path,
                 );
+
             if (toRemove.length > 0) api.dispatch(notificationsActions.remove(toRemove));
 
             if (!device.features) {
@@ -70,6 +73,7 @@ const eventsMiddleware =
         if (deviceActions.selectDevice.match(action)) {
             // Find and mark all notification associated (new connected!, update required etc)
             if (!action.payload) return action;
+
             const notifications = api
                 .getState()
                 .notifications.filter(
@@ -78,6 +82,7 @@ const eventsMiddleware =
                         !n.seen &&
                         deviceUtils.isSelectedDevice(action.payload, n.device),
                 );
+
             if (notifications.length > 0) {
                 api.dispatch(notificationsActions.resetUnseen(notifications));
             }

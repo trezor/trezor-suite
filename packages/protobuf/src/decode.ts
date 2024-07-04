@@ -33,11 +33,13 @@ const transform = (field: Field, value: any) => {
     if ('valuesById' in field.resolvedType!) {
         return field.resolvedType.valuesById[value];
     }
+
     // message type
     if (field.resolvedType!.fields) {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
         return messageToJSON(value, field.resolvedType!.fields);
     }
+
     // should not happen
     throw new Error(`transport: decode: case not handled: ${field}`);
 };
@@ -50,6 +52,7 @@ export function messageToJSON(
     if (!MessageParam) {
         return {};
     }
+
     // get rid of Message.prototype references
     const { ...message } = MessageParam;
     const res: { [key: string]: any } = {};

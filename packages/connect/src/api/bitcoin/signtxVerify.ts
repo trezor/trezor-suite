@@ -29,6 +29,7 @@ const derivePubKeyHash = async (
 
         return node.derive(address_n[address_n.length - 1]);
     }
+
     // custom address_n
     const response = await getHDNode({ address_n }, { coinInfo, unlockPath });
 
@@ -129,6 +130,7 @@ export const verifyTx = async (
 
         if (outputs[i].amount) {
             const { amount } = outputs[i];
+
             if (amount.toString() !== bitcoinTx.outs[i].value) {
                 throw ERRORS.TypedError(
                     'Runtime',
@@ -138,6 +140,7 @@ export const verifyTx = async (
         }
 
         const scriptA = await deriveOutputScript(getHDNode, outputs[i], coinInfo, unlockPath);
+
         if (scriptA && scriptA.compare(scriptB) !== 0) {
             throw ERRORS.TypedError('Runtime', `verifyTx: Output ${i} scripts differ`);
         }
@@ -176,14 +179,17 @@ export const verifyTicketTx = async (
         const scriptB = bitcoinTx.outs[i].script;
         const output = outputs[i];
         let scriptA;
+
         if (i === 0) {
             const { amount } = output;
+
             if (amount !== bitcoinTx.outs[i].value) {
                 throw ERRORS.TypedError(
                     'Runtime',
                     `verifyTicketTx: Wrong output amount at output ${i}. Requested: ${amount}, signed: ${bitcoinTx.outs[i].value}`,
                 );
             }
+
             scriptA = BitcoinJsPayments.sstxpkh({
                 address: output.address,
                 network: coinInfo.network,
@@ -196,6 +202,7 @@ export const verifyTicketTx = async (
                     `verifyTicketTx: Output 1 should not have address.`,
                 );
             }
+
             if (!output.address_n) {
                 throw ERRORS.TypedError(
                     'Runtime',
@@ -211,12 +218,14 @@ export const verifyTicketTx = async (
             }).output;
         } else {
             const { amount } = output;
+
             if (amount !== bitcoinTx.outs[i].value) {
                 throw ERRORS.TypedError(
                     'Runtime',
                     `verifyTicketTx: Wrong output amount at output ${i}. Requested: ${amount}, signed: ${bitcoinTx.outs[i].value}`,
                 );
             }
+
             scriptA = BitcoinJsPayments.sstxchange({
                 address: output.address,
                 network: coinInfo.network,

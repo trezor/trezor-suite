@@ -17,6 +17,7 @@ const buttonRequest =
         // catch passphrase request and respond immediately with `passphraseOnDevice: true` without action propagation
         if (action.type === UI.REQUEST_PASSPHRASE) {
             const device = selectDevice(api.getState());
+
             if (
                 device &&
                 device.features &&
@@ -47,6 +48,7 @@ const buttonRequest =
                 },
                 router: { route },
             } = api.getState();
+
             if (
                 ['cardano', 'ethereum'].includes(account?.networkType || '') &&
                 ['wallet-send', 'wallet-staking', 'wallet-index'].includes(route?.name || '')
@@ -95,6 +97,7 @@ const buttonRequest =
                         }),
                     );
                 }
+
                 break;
             case ONBOARDING.SET_STEP_ACTIVE:
             case checkDeviceAuthenticityThunk.fulfilled.type:

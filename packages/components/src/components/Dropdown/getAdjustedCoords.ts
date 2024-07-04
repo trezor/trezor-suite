@@ -35,57 +35,71 @@ export const getAdjustedCoords = ({
                 x -= MENU_DEFAULT_OFFSET;
                 y -= MENU_DEFAULT_OFFSET;
             }
+
             break;
         case 'top-left':
             x = x + offsetX - width;
             y = y + offsetY - height;
+
             if (toggleDimensions) {
                 x += toggleDimensions.width + MENU_DEFAULT_OFFSET;
                 y -= MENU_DEFAULT_OFFSET;
             }
+
             break;
         case 'bottom-right':
             x = x + offsetX - width;
             y += offsetY;
+
             if (toggleDimensions) {
                 x += toggleDimensions.width + MENU_DEFAULT_OFFSET;
                 y += toggleDimensions.height + MENU_DEFAULT_OFFSET;
             }
+
             break;
         case 'right-top':
             x += offsetX;
             y += offsetY;
+
             if (toggleDimensions) {
                 x += toggleDimensions.width + MENU_DEFAULT_OFFSET;
             }
+
             break;
         case 'right-bottom':
             x += offsetX;
             y = y + offsetY - height;
+
             if (toggleDimensions) {
                 x += toggleDimensions.width + MENU_DEFAULT_OFFSET;
                 y += toggleDimensions.height + MENU_DEFAULT_OFFSET;
             }
+
             break;
         case 'left-top':
             x = x + offsetX - width;
             y += offsetY;
+
             if (toggleDimensions) {
                 x -= MENU_DEFAULT_OFFSET;
             }
+
             break;
         case 'left-bottom':
             x = x + offsetX - width;
             y = y + offsetY - height;
+
             if (toggleDimensions) {
                 x -= MENU_DEFAULT_OFFSET;
                 y += toggleDimensions.height + MENU_DEFAULT_OFFSET;
             }
+
             break;
         case 'bottom-left':
         default:
             x += offsetX;
             y += offsetY;
+
             if (toggleDimensions) {
                 x -= MENU_DEFAULT_OFFSET;
                 y += toggleDimensions.height + MENU_DEFAULT_OFFSET;

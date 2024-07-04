@@ -36,10 +36,12 @@ export const useSendFormOutputs = ({
         (index: number) => {
             const values = getValues();
             const { setMaxOutputId } = values;
+
             if (setMaxOutputId === index) {
                 // reset setMaxOutputId
                 setValue('setMaxOutputId', undefined);
             }
+
             if (typeof setMaxOutputId === 'number' && setMaxOutputId > index) {
                 // reduce setMaxOutputId
                 setValue('setMaxOutputId', setMaxOutputId - 1);
@@ -55,6 +57,7 @@ export const useSendFormOutputs = ({
         const values = getValues();
         const lastOutput = values.outputs[values.outputs.length - 1];
         const isLastOutputDirty = lastOutput.address.length > 0 || lastOutput.amount.length > 0;
+
         if (isLastOutputDirty) {
             outputsFieldArray.append({ ...DEFAULT_OPRETURN });
         } else {
@@ -70,6 +73,7 @@ export const useSendFormOutputs = ({
 
     const removeOpReturn = (index: number) => {
         const values = getValues();
+
         if (values.outputs.length > 1) {
             removeOutput(index);
         } else {
@@ -87,6 +91,7 @@ export const useSendFormOutputs = ({
                 { keepErrors: true },
             );
         }
+
         composeRequest('outputs.0.amount');
     };
 

@@ -19,6 +19,7 @@ export const getVinVoutScript = (vinvout: { data?: string; script?: string }) =>
     if (vinvout.data) {
         return Buffer.from(vinvout.data, 'hex');
     }
+
     if (vinvout.script) {
         return bscript.fromASM(vinvout.script);
     }

@@ -27,6 +27,7 @@ export const getSignatureByEthereumDataHex = (dataHex: string) => `0x${dataHex.s
 
 export const getTxStakeNameByDataHex = (dataHex: string | undefined): StakeType | null => {
     if (!dataHex) return null;
+
     const signature = getSignatureByEthereumDataHex(dataHex);
 
     return isStakeTypeTx(signature) ? signatureToStakeNameMap[signature] : null;

@@ -3,6 +3,7 @@ const ELECTRUM_URL_REGEX = /^(?:([a-zA-Z0-9.-]+)|\[([a-f0-9:]+)\]):([0-9]{1,5}):
 
 export const parseElectrumUrl = (url: string) => {
     const match = url.match(ELECTRUM_URL_REGEX);
+
     if (!match) return undefined;
 
     return {

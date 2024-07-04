@@ -120,6 +120,7 @@ export const createCoinjoinRound = (
     }: CreateCoinjoinRoundOptions,
 ) => {
     const R = { ...DEFAULT_ROUND };
+
     if (statusRound) {
         Object.keys(statusRound).forEach(key => {
             // @ts-expect-error key-value unsolvable problem

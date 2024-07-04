@@ -201,6 +201,7 @@ export const DEFAULT_THEME: DocsThemeConfig = {
     editLink: {
         component: function EditLink({ className, filePath, children }) {
             const editUrl = useGitEditUrl(filePath);
+
             if (!editUrl) {
                 return null;
             }
@@ -373,6 +374,7 @@ export const DEEP_OBJECT_KEYS = Object.entries(DEFAULT_THEME)
     .map(([key, value]) => {
         const isObject =
             value && typeof value === 'object' && !Array.isArray(value) && !isValidElement(value);
+
         if (isObject) {
             return key;
         }

@@ -8,9 +8,11 @@ import { renderComponent } from '../utils';
 
 export function Banner(): ReactElement | null {
     const { banner } = useConfig();
+
     if (!banner.text) {
         return null;
     }
+
     const hideBannerScript = `try{if(localStorage.getItem(${JSON.stringify(
         banner.key,
     )})==='0'){document.body.classList.add('nextra-banner-hidden')}}catch(e){}`;
@@ -40,6 +42,7 @@ export function Banner(): ReactElement | null {
                             } catch {
                                 /* ignore */
                             }
+
                             document.body.classList.add('nextra-banner-hidden');
                         }}
                     >

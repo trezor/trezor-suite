@@ -80,6 +80,7 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                 if (level === 'error') {
                     sentryError(settings.network, payload);
                 }
+
                 (logger as any)[level](SERVICE_NAME, `${BACKEND_CHANNEL} ${payload}`);
             });
 
@@ -92,6 +93,7 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
             return {
                 onRequest: (method, params) => {
                     logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} call ${method}`);
+
                     if (method === 'disable') {
                         backend.dispose();
                         backends.splice(backends.indexOf(backend), 1);
@@ -126,6 +128,7 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                 if (level === 'error') {
                     sentryError(settings.network, payload);
                 }
+
                 logger[level](SERVICE_NAME, `${CLIENT_CHANNEL} ${payload}`);
             });
             clients.push(client);
@@ -133,11 +136,13 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
             return {
                 onRequest: async (method, params) => {
                     logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} call ${method}`);
+
                     if (method === 'enable') {
                         logger.debug(
                             SERVICE_NAME,
                             `${CLIENT_CHANNEL} binary enable on port ${port}`,
                         );
+
                         try {
                             await synchronize(() => coinjoinMiddleware.start());
                         } catch (err) {
@@ -145,6 +150,7 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                             throw err; // pass this error to suite toast
                         }
                     }
+
                     if (method === 'disable') {
                         clients.splice(clients.indexOf(client), 1);
 
@@ -152,13 +158,16 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                             logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} binary stop`);
                             synchronize(killCoinjoinProcess);
                         }
+
                         if (!clients.some(cli => cli.getAccounts().length > 0)) {
                             powerSaveBlocker.stopBlockingPowerSave();
                         }
                     }
+
                     if (method === 'registerAccount') {
                         powerSaveBlocker.startBlockingPowerSave();
                     }
+
                     if (method === 'unregisterAccount') {
                         if (!clients.some(cli => cli.getAccounts().length > 0)) {
                             powerSaveBlocker.stopBlockingPowerSave();
@@ -219,6 +228,7 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                     payload: 'Suite closed in critical phase',
                 });
             }
+
             cli.disable();
         });
         clients.splice(0, clients.length);

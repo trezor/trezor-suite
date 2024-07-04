@@ -49,6 +49,7 @@ let _popupMessagePort: (MessagePort | BroadcastChannel) | undefined;
 const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
     // ignore messages from myself (chrome bug?)
     if (event.source === window || !event.data) return;
+
     const { data } = event;
     const core = coreManager.get();
     const id = 'id' in data && typeof data.id === 'number' ? data.id : 0;
@@ -92,6 +93,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
 
                 return;
             }
+
             // reassign to current MessagePort
             [_popupMessagePort] = event.ports;
             _popupMessagePort.onmessage = message => handleMessage(message);
@@ -173,6 +175,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
 
     // ignore messages from domain other then parent.window or popup.window or chrome extension
     const eventOrigin = getOrigin(event.origin);
+
     if (
         !isTrustedDomain &&
         eventOrigin !== DataManager.getSettings('origin') &&
@@ -213,11 +216,13 @@ const postMessage = (message: CoreEventMessage) => {
     // popup handshake is resolved automatically
     if (!usingPopup) {
         const core = coreManager.get();
+
         if (core && message.type === UI.REQUEST_UI_WINDOW) {
             core.handleMessage({ type: POPUP.HANDSHAKE });
 
             return;
         }
+
         if (message.type === POPUP.CANCEL_POPUP_REQUEST) {
             return;
         }
@@ -226,6 +231,7 @@ const postMessage = (message: CoreEventMessage) => {
     if (!trustedHost && !handshake && message.event === TRANSPORT_EVENT) {
         return;
     }
+
     // check if permissions to read from device is granted
     if (!trustedHost && message.event === DEVICE_EVENT && !filterDeviceEvent(message)) {
         return;
@@ -244,7 +250,9 @@ const postMessage = (message: CoreEventMessage) => {
 
     if (!usingPopup || shouldUiEventBeSentToHost(message)) {
         let origin = DataManager.getSettings('origin');
+
         if (!origin || origin.indexOf('file://') >= 0) origin = '*';
+
         message.channel = { here: '@trezor/connect-iframe', peer: '@trezor/connect-web' };
         window.parent.postMessage(message, origin);
     }
@@ -273,8 +281,10 @@ const shouldUiEventBeSentToHost = (message: CoreEventMessage) => {
 
 const filterDeviceEvent = (message: DeviceEvent) => {
     if (!message.payload) return false;
+
     const features =
         'device' in message.payload ? message.payload.device.features : message.payload.features;
+
     if (features) {
         const origin = DataManager.getSettings('origin')!;
 
@@ -297,6 +307,7 @@ const filterDeviceEvent = (message: DeviceEvent) => {
 
 const init = async (payload: IFrameInit['payload'], origin: string) => {
     if (DataManager.getSettings('origin')) return; // already initialized
+
     const parsedSettings = parseConnectSettings(
         {
             ...payload.settings,
@@ -308,6 +319,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
     if (parsedSettings.popup && typeof BroadcastChannel !== 'undefined') {
         // && parsedSettings.env !== 'web'
         const broadcastID = `${parsedSettings.env}-${parsedSettings.timestamp}`;
+
         try {
             // Firefox > Privacy & Security > block cookies from unvisited websites
             // throws DOMException: The operation is insecure.
@@ -319,6 +331,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
     }
 
     let logWriterFactory;
+
     if (parsedSettings.sharedLogger !== false) {
         logWriterFactory = initLogWriterWithWorker(LogWorker);
         // `logWriterProxy` is used here to pass to shared logger worker logs from

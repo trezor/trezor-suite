@@ -158,6 +158,7 @@ export const useUtxoSelection = ({
             );
             setValue('isCoinControlEnabled', true);
         }
+
         composeRequest();
     };
 
@@ -171,6 +172,7 @@ export const useUtxoSelection = ({
     // uncheck a UTXO or check it and enable coin control
     const toggleUtxoSelection = (utxo: AccountUtxo) => {
         const alreadySelectedUtxo = selectedUtxos.find(selected => isSameUtxo(selected, utxo));
+
         if (alreadySelectedUtxo) {
             // uncheck the UTXO if already selected
             setValue(
@@ -188,6 +190,7 @@ export const useUtxoSelection = ({
             setValue('selectedUtxos', selectedUtxosNew);
             setValue('isCoinControlEnabled', true);
         }
+
         composeRequest();
     };
 

@@ -37,6 +37,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
 
     const action = (...gotoArgs: Parameters<typeof goto>) => {
         dispatch(goto(...gotoArgs));
+
         if (closeMobileNavigation) closeMobileNavigation();
     };
 

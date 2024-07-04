@@ -47,7 +47,9 @@ export const getRoundCandidates = ({
         )
         .flatMap(round => {
             const current = coinjoinRounds.find(r => r.id === round.Id);
+
             if (current) return current;
+
             // try to create new CoinjoinRound
             try {
                 return roundGenerator(round, prison, options);
@@ -128,6 +130,7 @@ export const getAccountCandidates = ({
         const availableAddresses = account.changeAddresses.filter(
             addr => !prison.isDetained(addr.address),
         );
+
         if (availableAddresses.length < ROUND_SELECTION_MAX_OUTPUTS) {
             logger.info(`Skip candidate ~~${accountKey}~~. Not enough change addresses`);
             skippedAccounts.push({
@@ -155,12 +158,15 @@ export const getAccountCandidates = ({
 
         if (bannedUtxos.length > 0) {
             let tooManyBannedUtxos = false;
+
             if (bannedUtxos.length > whitelistedUtxos.length * 0.4) {
                 // most of utxos are temporary banned
                 tooManyBannedUtxos = true;
             }
+
             const bannedAmount = bannedUtxos.reduce((sum, utxo) => sum + utxo.amount, 0);
             const totalAmount = whitelistedUtxos.reduce((sum, utxo) => sum + utxo.amount, 0);
+
             if (bannedAmount > totalAmount * 0.4) {
                 // most of amount is temporary banned
                 tooManyBannedUtxos = true;
@@ -179,9 +185,11 @@ export const getAccountCandidates = ({
 
         // exclude account utxos which are unavailable
         const utxos = whitelistedUtxos.filter(utxo => !registeredOutpoints.includes(utxo.outpoint));
+
         if (utxos.length > 0) {
             if (account.skipRounds) {
                 const [low, high] = account.skipRounds;
+
                 // skip reached lower limit
                 // or skip randomly (20% chance with [4, 5] settings)
                 if (
@@ -197,6 +205,7 @@ export const getAccountCandidates = ({
 
                     return [];
                 }
+
                 account.skipRoundCounter++;
             }
 
@@ -265,6 +274,7 @@ const selectInputsForBlameRound = ({
         const inputs: CoinjoinRound['inputs'] = [];
         accountCandidates.forEach(account => {
             const utxos = account.blameOf ? account.blameOf[round.blameOf] : null;
+
             if (utxos && utxos.length > 0) {
                 logger.info(
                     `Found blame round for account ~~${account.accountKey}~~ with ${utxos.length} inputs`,
@@ -395,6 +405,7 @@ export const selectInputsForRound = async ({
     // find Round with maximum possible utxos
     const sumUtxosInRounds = utxoSelection.map(acc => acc.reduce((a, b) => a + b.length, 0));
     const maxUtxosInRound = Math.max(...sumUtxosInRounds);
+
     if (maxUtxosInRound < 1) {
         logger.info('No results from selectInputsForRound');
 
@@ -417,6 +428,7 @@ export const selectInputsForRound = async ({
         const outputFee = Math.floor((getOutputSize(account.scriptType) * feeRate) / 1000);
         const totalValue = selectedUtxos.reduce((a, b) => a + b.amount, 0);
         const effectiveValue = totalValue - outputFee - selectedUtxos.length * inputFee;
+
         if (effectiveValue < selectedRound.roundParameters.AllowedOutputAmounts.Min) {
             // skip round if effective value is too low
             // https://github.com/zkSNACKs/WalletWasabi/issues/10759
@@ -458,6 +470,7 @@ export const selectRound = async ({
     const unregisteredAccountKeys = unregisteredAccounts.map(({ accountKey }) => accountKey);
 
     logger.info('Looking for rounds');
+
     if (options.affiliationId && !runningAffiliateServer) {
         logger.warn('Affiliate server is not running. Round selection ignored');
         setSessionPhase({
@@ -476,6 +489,7 @@ export const selectRound = async ({
         options,
         prison,
     });
+
     if (roundCandidates.length < 1) {
         logger.info('No suitable rounds');
 
@@ -505,6 +519,7 @@ export const selectRound = async ({
         accountCandidates,
         options,
     });
+
     if (!newRound) {
         logger.info('No suitable utxos');
         setSessionPhase({

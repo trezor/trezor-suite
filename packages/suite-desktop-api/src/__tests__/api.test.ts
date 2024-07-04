@@ -2,6 +2,7 @@ import { ipcRenderer } from './ipcRenderer';
 import { getDesktopApi } from '../main';
 
 const api = getDesktopApi(ipcRenderer);
+
 if (!api) throw new Error('desktopApi not initialized');
 
 describe('DesktopApi', () => {
@@ -139,6 +140,7 @@ describe('DesktopApi', () => {
             const result = await api.metadataWrite(content);
             expect(spy).toHaveBeenCalledWith('metadata/write', content);
             expect(result.success).toBe(true);
+
             if (result.success) {
                 expect(result.payload).toBe(undefined);
             } else {
@@ -162,6 +164,7 @@ describe('DesktopApi', () => {
             const result = await api.metadataRead(content);
             expect(spy).toHaveBeenCalledWith('metadata/read', content);
             expect(result.success).toBe(true);
+
             if (result.success) {
                 expect(result.payload).toBe('file-content');
             } else {
@@ -227,6 +230,7 @@ describe('DesktopApi', () => {
             const result = await api.clearUserData();
             expect(spy).toHaveBeenCalledWith('user-data/clear');
             expect(result.success).toBe(true);
+
             if (result.success) {
                 expect(result.payload).toBe(undefined);
             } else {
@@ -258,6 +262,7 @@ describe('DesktopApi', () => {
             const result = await api.installUdevRules();
             expect(spy).toHaveBeenCalledWith('udev/install');
             expect(result.success).toBe(true);
+
             if (result.success) {
                 expect(result.payload).toBe(undefined);
             } else {

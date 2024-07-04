@@ -29,9 +29,11 @@ export const DestinationTag = ({ close }: DestinationTagProps) => {
         required: translationString('DESTINATION_TAG_NOT_SET'),
         validate: (value = '') => {
             const amountBig = new BigNumber(value);
+
             if (amountBig.isNaN()) {
                 return translationString('DESTINATION_TAG_IS_NOT_NUMBER');
             }
+
             if (!isInteger(value) || amountBig.lt(0) || amountBig.gt(U_INT_32)) {
                 return translationString('DESTINATION_TAG_IS_NOT_VALID');
             }

@@ -9,6 +9,7 @@ const getMethodModule = (method: IFrameCallMessage['payload']['method']) =>
 
 export const getMethod = async (message: IFrameCallMessage): Promise<AbstractMethod<any>> => {
     const { method } = message.payload;
+
     if (typeof method !== 'string') {
         throw TypedError('Method_InvalidParameter', 'Message method is not set');
     }

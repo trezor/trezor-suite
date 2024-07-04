@@ -12,6 +12,7 @@ export function ServerSideErrorPage(): ReactElement | null {
     const mounted = useMounted();
     const { asPath } = useRouter();
     const { content, labels } = config.serverSideError;
+
     if (!content) {
         return null;
     }

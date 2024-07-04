@@ -60,6 +60,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
     if (lifecycle.status === 'error') {
         throw new Error(lifecycle.error);
     }
+
     if (lifecycle.status === 'db-error') {
         return <DatabaseUpgradeModal variant={lifecycle.error} />;
     }
@@ -85,6 +86,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
     // i don't like how it's not clear which layout is used
     // and that the prerequisite screen is handled multiple times
     const FullscreenApp = getFullscreenApp(router.route);
+
     if (FullscreenApp !== undefined) {
         return <FullscreenApp />;
     }

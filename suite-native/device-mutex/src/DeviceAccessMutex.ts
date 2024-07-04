@@ -16,6 +16,7 @@ class DeviceAccessMutex {
                 this.taskQueue.splice(1, 0, () => resolve(true));
             });
         }
+
         this.isLocked = true;
 
         return Promise.resolve(true);
@@ -28,6 +29,7 @@ class DeviceAccessMutex {
                 this.taskQueue.push(resolve);
             });
         }
+
         this.isLocked = true;
 
         return Promise.resolve(true);
@@ -35,6 +37,7 @@ class DeviceAccessMutex {
 
     unlock() {
         const resolve = this.taskQueue.shift();
+
         if (resolve) {
             // If there is a task in queue, execute it.
             resolve?.(true);

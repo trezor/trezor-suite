@@ -13,6 +13,7 @@ function addAttributesToMainApplication(androidManifest, attributes) {
     const application = manifest['application'].find(
         item => item.$['android:name'] === '.MainApplication',
     );
+
     if (!application) {
         console.warn('withAndroidMainApplicationAttributes: No .MainApplication?');
 

@@ -47,6 +47,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
     const variant = message?.[0]?.startsWith(WARNING_EMOJI) ? 'warning' : 'primary';
 
     let updatedMessage: string[] | undefined;
+
     if (message?.[0]) {
         // Copy the array and mutate the first element so that it does not affect the original array nested in the children prop
         updatedMessage = [...message];

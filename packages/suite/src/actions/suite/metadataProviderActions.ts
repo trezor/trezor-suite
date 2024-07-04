@@ -111,6 +111,7 @@ export const disconnectProvider =
         (Object.keys(fetchIntervals) as FetchIntervalTrackingId[]).forEach(
             (id: FetchIntervalTrackingId) => {
                 const [trackedDataType, trackedClientId] = id.split('-');
+
                 if (trackedDataType === dataType && trackedClientId === clientId) {
                     clearInterval(fetchIntervals[id]);
                     delete fetchIntervals[id];
@@ -129,6 +130,7 @@ export const disconnectProvider =
             await provider.disconnect();
             providerInstance[dataType] = undefined;
         }
+
         // flush reducer
         dispatch({
             type: METADATA.REMOVE_PROVIDER,
@@ -249,14 +251,17 @@ export const connectProvider =
         );
 
         const isConnected = await providerInstance.isConnected();
+
         if (!isConnected) {
             const connectionResult = await providerInstance.connect();
+
             if ('error' in connectionResult) {
                 return connectionResult.error;
             }
         }
 
         const providerDetails = await providerInstance.getProviderDetails();
+
         if (!providerDetails.success) {
             dispatch(
                 handleProviderError({

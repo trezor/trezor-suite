@@ -14,6 +14,7 @@ export const error = <E>({ error, message }: { error: E; message?: string }) => 
 
 export const unknownError = <E>(err: Error, expectedErrors: E[]) => {
     const expectedErr = expectedErrors.find(eE => eE === err.message);
+
     if (expectedErr) {
         return error({ error: expectedErr });
     }

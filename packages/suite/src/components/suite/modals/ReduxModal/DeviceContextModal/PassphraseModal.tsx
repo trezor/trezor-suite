@@ -67,6 +67,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
             if (!isViewOnlyModeVisible) {
                 setSubmitted(true);
             }
+
             dispatch(onPassphraseSubmit({ value, passphraseOnDevice: !!passphraseOnDevice }));
         },
         [dispatch, setSubmitted, isViewOnlyModeVisible],

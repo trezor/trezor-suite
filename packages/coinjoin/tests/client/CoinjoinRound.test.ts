@@ -141,6 +141,7 @@ describe(`CoinjoinRound`, () => {
                 // fail on second input
                 reject(500, { errorCode: 'InputBanned', exceptionData: {} });
             }
+
             resolve();
         });
 
@@ -165,6 +166,7 @@ describe(`CoinjoinRound`, () => {
                 // fail on second input of account-B
                 reject(500, { errorCode: 'InputBanned', exceptionData: {} });
             }
+
             resolve();
         });
 
@@ -202,9 +204,11 @@ describe(`CoinjoinRound`, () => {
             if (url.endsWith('/input-registration')) {
                 registrationSpy();
             }
+
             if (url.endsWith('/connection-confirmation')) {
                 confirmationSpy();
             }
+
             resolve();
         });
 

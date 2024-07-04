@@ -20,10 +20,12 @@ export const init = async (api: TrezorConnect) => {
     api.manifest({ email: 1 });
 
     const settings = await api.getSettings();
+
     if (settings.success) {
         const { payload } = settings;
         payload.manifest?.appUrl.toLowerCase();
         payload.connectSrc?.toLowerCase();
+
         if (payload.debug === true && payload.popup === true) {
             //
         }

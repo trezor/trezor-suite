@@ -26,6 +26,7 @@ export class BackendManager {
     async getOrConnect({ coinInfo, postMessage, identity }: BackendParams): Promise<Blockchain> {
         const coinIdentity = `${coinInfo.shortcut}/${identity ?? DEFAULT_IDENTITY}` as const;
         let backend = this.instances[coinIdentity];
+
         if (!backend) {
             backend = new Blockchain({
                 coinInfo: this.patchCoinInfo(coinInfo),
@@ -75,6 +76,7 @@ export class BackendManager {
 
     isSupported(coinInfo: CoinInfo) {
         const info = this.custom[coinInfo.shortcut] || coinInfo.blockchainLink;
+
         if (!info) {
             throw ERRORS.TypedError('Backend_NotSupported');
         }
@@ -82,6 +84,7 @@ export class BackendManager {
 
     setCustom(shortcut: CoinShortcut, blockchainLink?: BlockchainLink) {
         this.setPreferred(shortcut, undefined);
+
         if (blockchainLink) {
             this.custom[shortcut] = blockchainLink;
         } else {

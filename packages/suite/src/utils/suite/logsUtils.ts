@@ -162,6 +162,7 @@ export const getApplicationLog = (log: LogEntry[], redactSensitiveData = false) 
         };
 
         let redactedAction = entry.payload;
+
         if (redactSensitiveData) {
             redactedAction = redactAction(entry);
         }

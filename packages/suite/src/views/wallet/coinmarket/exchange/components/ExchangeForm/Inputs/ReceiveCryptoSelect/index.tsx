@@ -89,10 +89,12 @@ const buildOptions = (
         )
         .reduce((options, coin) => {
             let category = options.find(option => option.label === coin.category);
+
             if (!category) {
                 category = { label: coin.category, options: [] };
                 options.push(category);
             }
+
             const coinSymbol = cryptoToCoinSymbol(coin.symbol);
             category.options.push({
                 label: coinSymbol,

@@ -110,6 +110,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                 lastFetchTimestamp.current = fetchTimestamp;
 
                 setIsLoading(true);
+
                 try {
                     const points = await getMultipleAccountBalanceHistoryWithFiat({
                         accounts,
@@ -146,8 +147,10 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                 } catch (err) {
                     // If the fetch was interrupted by a new fetch, do not set error.
                     if (lastFetchTimestamp.current !== fetchTimestamp) return;
+
                     setError(err.message);
                 }
+
                 setIsLoading(false);
             }
         },

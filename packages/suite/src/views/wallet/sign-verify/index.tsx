@@ -190,6 +190,7 @@ const SignVerify = () => {
         if (withCopy) {
             copy();
         }
+
         dispatch(goto('wallet-index', { preserveParams: true }));
     };
 

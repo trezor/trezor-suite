@@ -6,6 +6,7 @@ export const useOnClickOutside = (
 ) => {
     useEffect(() => {
         if (!elementRefs?.length) return;
+
         const listener = (event: MouseEvent | TouchEvent) => {
             let clickInsideElements = false;
 
@@ -15,6 +16,7 @@ export const useOnClickOutside = (
                     clickInsideElements = true;
                 }
             });
+
             if (clickInsideElements) return;
 
             callback(event);

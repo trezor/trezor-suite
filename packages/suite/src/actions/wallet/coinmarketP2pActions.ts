@@ -29,6 +29,7 @@ export const loadP2pInfo = async (): Promise<P2pInfo> => {
     const supportedCountries: string[] = [];
     p2pInfo?.providers.forEach(provider => {
         providers[provider.name] = provider;
+
         if (provider.isActive) {
             supportedCoins.push(...provider.tradedCoins.map(c => c.toLowerCase()));
             supportedCurrencies.push(...provider.tradedCurrencies.map(c => c.toLowerCase()));

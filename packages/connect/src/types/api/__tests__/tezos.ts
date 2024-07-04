@@ -3,6 +3,7 @@ import { TrezorConnect } from '../../..';
 export const tezosGetAddress = async (api: TrezorConnect) => {
     // regular
     const singleAddress = await api.tezosGetAddress({ path: 'm/44' });
+
     if (singleAddress.success) {
         const { payload } = singleAddress;
         payload.address.toLowerCase();
@@ -14,6 +15,7 @@ export const tezosGetAddress = async (api: TrezorConnect) => {
 
     // bundle
     const bundleAddress = await api.tezosGetAddress({ bundle: [{ path: 'm/44' }] });
+
     if (bundleAddress.success) {
         bundleAddress.payload.forEach(item => {
             item.address.toLowerCase();
@@ -56,6 +58,7 @@ export const tezosGetAddress = async (api: TrezorConnect) => {
 export const tezosGetPublicKey = async (api: TrezorConnect) => {
     // regular
     const singlePK = await api.tezosGetPublicKey({ path: 'm/44' });
+
     if (singlePK.success) {
         const { payload } = singlePK;
         payload.path.map(a => a);
@@ -67,6 +70,7 @@ export const tezosGetPublicKey = async (api: TrezorConnect) => {
 
     // bundle
     const bundlePK = await api.tezosGetPublicKey({ bundle: [{ path: 'm/44' }] });
+
     if (bundlePK.success) {
         bundlePK.payload.forEach(item => {
             item.path.map(a => a);

@@ -95,6 +95,7 @@ export const getMinMaxValueFromData = <TType extends TypeName>(
     if (!data || data.length === 0) {
         return [0, 0];
     }
+
     let maxSent = new BigNumber(extractSentValue(data[0]) || 0);
     let maxReceived = new BigNumber(extractReceivedValue(data[0]) || 0);
     let maxBalance = new BigNumber(extractBalanceValue(data[0]) || 0);
@@ -112,9 +113,11 @@ export const getMinMaxValueFromData = <TType extends TypeName>(
         if (newSentValue.gt(maxSent)) {
             maxSent = newSentValue;
         }
+
         if (newReceivedValue.gt(maxReceived)) {
             maxReceived = newReceivedValue;
         }
+
         if (newBalanceValue.gt(maxBalance)) {
             maxBalance = newBalanceValue;
         }
@@ -123,12 +126,14 @@ export const getMinMaxValueFromData = <TType extends TypeName>(
         if ((minSent === undefined || newSentValue.lt(minSent)) && newSentValue.gt(0)) {
             minSent = newSentValue;
         }
+
         if (
             (minReceived === undefined || newReceivedValue.lt(minReceived)) &&
             newReceivedValue.gt(0)
         ) {
             minReceived = newReceivedValue;
         }
+
         if ((minBalance === undefined || newBalanceValue.lt(minBalance)) && newBalanceValue.gt(0)) {
             minBalance = newBalanceValue;
         }
@@ -178,6 +183,7 @@ export const calcYDomain = (
     const maxValueMultiplier = scale === 'linear' ? 1.2 : 10;
 
     let minValue: number;
+
     if (scale === 'linear') {
         minValue = 0;
     } else {
@@ -190,6 +196,7 @@ export const calcYDomain = (
 
     // no txs, but there could be non zero balance we still need to show
     const lastBalanceBn = lastBalance ? new BigNumber(lastBalance) : null;
+
     if (lastBalanceBn && lastBalanceBn.gt(0)) {
         return [minValue, lastBalanceBn.toNumber() * 1.2];
     }
@@ -214,6 +221,7 @@ export const calcXDomain = (
     const end = lastData && lastTick < lastData.time ? lastData.time : lastTick;
 
     let xPadding;
+
     switch (range.label) {
         case 'all':
             xPadding = 3600 * 24 * 30; // 30 days
@@ -231,6 +239,7 @@ export const calcXDomain = (
             } else {
                 xPadding = 3600 * 24 * 14; // 14 days
             }
+
             break;
         default: // 12 hours
             xPadding = 3600 * 12;

@@ -125,9 +125,11 @@ const actionCallback = (
             result.composeTransactionCalls,
         );
     }
+
     if (typeof result.estimateFeeCalls === 'number') {
         expect(TrezorConnect.blockchainEstimateFee).toHaveBeenCalledTimes(result.estimateFeeCalls);
     }
+
     if (typeof result.getAccountInfoCalls === 'number') {
         expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(result.getAccountInfoCalls);
     }
@@ -149,11 +151,13 @@ const actionCallback = (
             expect(composeTransactionsParams).toMatchObject(result.composeTransactionParams);
         }
     }
+
     if (result.estimateFeeParams) {
         expect(TrezorConnect.blockchainEstimateFee).toHaveBeenLastCalledWith(
             expect.objectContaining(result.estimateFeeParams),
         );
     }
+
     if (result.getAccountInfoParams) {
         expect(TrezorConnect.getAccountInfo).toHaveBeenLastCalledWith(
             expect.objectContaining(result.getAccountInfoParams),
@@ -172,6 +176,7 @@ const actionCallback = (
             Object.keys(result.composedLevels).forEach(key => {
                 const expectedLevel = result.composedLevels[key];
                 const level = composedLevels[key];
+
                 if (expectedLevel) {
                     expect(level).toMatchObject(expectedLevel);
                 } else {
@@ -196,6 +201,7 @@ const actionCallback = (
             const expectedError = result.errors[key];
             // @ts-expect-error key: string
             const error = errors[key];
+
             if (expectedError) {
                 expect(error).toMatchObject(expectedError);
             } else {
@@ -267,6 +273,7 @@ describe('useSendForm hook', () => {
                 // wait for first render
                 await waitForLoader();
                 await waitForOutputsRender();
+
                 // execute user actions sequence
                 if (f.actions) {
                     await actionSequence(f.actions, a => actionCallback(callback, a));
@@ -295,6 +302,7 @@ describe('useSendForm hook', () => {
                     </SendIndex>,
                 );
                 await waitFor(() => findByTestId(/outputs\.[0-9]+\.address/));
+
                 // execute user actions sequence
                 if (f.actions) {
                     await actionSequence(f.actions, a => actionCallback(callback, a));
@@ -330,6 +338,7 @@ describe('useSendForm hook', () => {
                 store.subscribe(() => {
                     const actions = filterThunkActionTypes(store.getActions());
                     const lastAction = actions[actions.length - 1];
+
                     if (lastAction.payload?.decision) {
                         lastAction.payload.decision.resolve(true); // always resolve push tx request
                     }

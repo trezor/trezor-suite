@@ -36,12 +36,14 @@ const FiatInput = () => {
             limits: (value: string) => {
                 if (value && amountLimits) {
                     const amount = Number(value);
+
                     if (amountLimits.minFiat && amount < amountLimits.minFiat) {
                         return translationString('TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT', {
                             minimum: amountLimits.minFiat,
                             currency: amountLimits.currency,
                         });
                     }
+
                     if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
                         return translationString('TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT', {
                             maximum: amountLimits.maxFiat,

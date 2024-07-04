@@ -26,6 +26,7 @@ const findDeviceIndexByPath = (devices: TrezorConnectDevice[], path: string): nu
 
 const addDevice = (state: ConnectState, device: TrezorConnectDevice): ConnectState => {
     const index: number = findDeviceIndexByPath(state.devices, device.path);
+
     if (index > -1) {
         state.devices[index] = device;
     } else {
@@ -43,10 +44,13 @@ const removeDevice = (state: ConnectState, device: TrezorConnectDevice): Connect
     if (state.selectedDevice === device.path) {
         state.selectedDevice = undefined;
     }
+
     const index: number = findDeviceIndexByPath(state.devices, device.path);
+
     if (index > -1) {
         state.devices.splice(index, 1);
     }
+
     if (state.devices.length === 1) {
         state.selectedDevice = state.devices[0].path;
     }
@@ -58,6 +62,7 @@ const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): Conn
     const newState = {
         ...state,
     };
+
     if (!newState.options) {
         newState.options = {
             manifest: {
@@ -66,6 +71,7 @@ const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): Conn
             },
         };
     }
+
     // @ts-expect-error field name must be key of options
     newState.options[field.name] = value;
 

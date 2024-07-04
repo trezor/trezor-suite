@@ -57,6 +57,7 @@ class TestUsbTransport extends AbstractApiTransport {
         });
     }
 }
+
 // we cant directly use abstract class (UsbTransport)
 const initTest = async () => {
     let abortController = new AbortController();
@@ -327,6 +328,7 @@ describe('Usb', () => {
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
                 .promise;
             expect(acquireRes.success).toEqual(true);
+
             if (!acquireRes.success) return;
 
             expect(acquireRes.payload).toEqual('1');
@@ -358,6 +360,7 @@ describe('Usb', () => {
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
                 .promise;
             expect(acquireRes.success).toEqual(true);
+
             if (!acquireRes.success) return;
 
             expect(acquireRes.payload).toEqual('1');
@@ -395,6 +398,7 @@ describe('Usb', () => {
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
                 .promise;
             expect(acquireRes.success).toEqual(true);
+
             if (!acquireRes.success) return;
 
             const writeSpy = jest
@@ -434,6 +438,7 @@ describe('Usb', () => {
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
                 .promise;
             expect(acquireRes.success).toEqual(true);
+
             if (!acquireRes.success) return;
 
             expect(acquireRes.payload).toEqual('1');
@@ -456,6 +461,7 @@ describe('Usb', () => {
             await transport.enumerate().promise;
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
                 .promise;
+
             if (!acquireRes.success) return;
 
             const { promise, abort } = transport.call({

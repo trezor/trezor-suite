@@ -45,6 +45,7 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
      */
     async run(params: any): Promise<true> {
         if (this.utility) throw new Error('Process already running');
+
         const utilityPath = path.join(THREADS_DIR_PATH, `${this.settings.name}.js`);
         const utility = utilityProcess.fork(utilityPath);
         await new Promise((resolve, reject) => {
@@ -56,12 +57,14 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
         // Process is considered running as long as `this.utility` is set, so `exit` event
         // should always trigger `clean()` which will unset it
         this.utility = utility;
+
         try {
             await this.sendMessage('init', params);
             await promiseAllSequence(
                 // Resubscribe to formerly subscribed events (in case of reviving the process because of `keepAlive`)
                 this.eventNames().map(event => () => this.sendMessage('subscribe', { event })),
             );
+
             if (this.settings.keepAlive) {
                 // In case of `keepAlive`, replace the clean alone with clean + rerun as an exit handler
                 utility.removeAllListeners('exit');
@@ -117,6 +120,7 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
 
     private sendMessage(type: ThreadRequestType, payload?: any) {
         if (!this.utility) throw new Error('Process not running');
+
         const id = this.messageId++;
         const dfd = createDeferred<any, number>(id);
         this.promises.set(id, dfd);
@@ -128,8 +132,10 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
     private onMessage(message: any) {
         if (isValidThreadResponse(message)) {
             const promise = this.promises.get(message.id);
+
             if (promise) {
                 this.promises.delete(message.id);
+
                 if (message.success) {
                     promise.resolve(message.payload);
                 } else {

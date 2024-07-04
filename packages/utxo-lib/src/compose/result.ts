@@ -20,6 +20,7 @@ import {
 export function getErrorResult(error: unknown): ComposeResultError {
     const message = error instanceof Error ? error.message : `${error}`;
     const known = COMPOSE_ERROR_TYPES.find(e => e === message);
+
     if (known) {
         return { type: 'error', error: known };
     }

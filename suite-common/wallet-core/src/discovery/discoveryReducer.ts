@@ -18,16 +18,19 @@ const initialState: DiscoveryState = [];
 
 const update = (draft: DiscoveryState, payload: PartialDiscovery, resolve?: boolean) => {
     const index = draft.findIndex(f => f.deviceState === payload.deviceState);
+
     if (index >= 0) {
         const dfd = draft[index].running;
         draft[index] = {
             ...draft[index],
             ...payload,
         };
+
         if (resolve && dfd) {
             dfd.resolve();
             delete draft[index].running;
         }
+
         if (!payload.error) {
             delete draft[index].error;
         }
@@ -40,12 +43,14 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
         builder
             .addCase(discoveryActions.createDiscovery, (state, { payload }) => {
                 const index = state.findIndex(d => d.deviceState === payload.deviceState);
+
                 if (index < 0) {
                     state.push(payload);
                 }
             })
             .addCase(discoveryActions.startDiscovery, (state, { payload }) => {
                 const index = state.findIndex(f => f.deviceState === payload.deviceState);
+
                 if (index >= 0) {
                     state[index] = {
                         ...state[index],

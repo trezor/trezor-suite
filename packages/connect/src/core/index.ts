@@ -63,13 +63,16 @@ const _log = initLog('Core');
 const postMessage = (message: CoreEventMessage) => {
     if (message.event === RESPONSE_EVENT) {
         const index = _callMethods.findIndex(call => call && call.responseID === message.id);
+
         if (index >= 0) {
             _callMethods.splice(index, 1);
+
             if (_callMethods.length === 0) {
                 waitForFirstMethod = createDeferred();
             }
         }
     }
+
     _core.emit(CORE_EVENT, message);
 };
 
@@ -137,6 +140,7 @@ const initDevice = async (devicePath?: string) => {
             !device || !!device?.unreadableError || (device.isUnacquired() && !!isUsingPopup);
     } else {
         const devices = _deviceList.asArray();
+
         if (devices.length === 1 && (!isWebUsb || !isUsingPopup)) {
             // there is only one device available. use it
             device = _deviceList.getDevice(devices[0].path);
@@ -169,6 +173,7 @@ const initDevice = async (devicePath?: string) => {
         // check again for available devices
         // there is a possible race condition before popup open
         const devices = _deviceList.asArray();
+
         if (
             devices.length === 1 &&
             devices[0].type !== 'unreadable' &&
@@ -190,6 +195,7 @@ const initDevice = async (devicePath?: string) => {
             // wait for device selection
             if (uiPromises.exists(UI.RECEIVE_DEVICE)) {
                 const { payload } = await uiPromises.get(UI.RECEIVE_DEVICE);
+
                 if (payload.remember) {
                     const { label, path, state } = payload.device;
                     storage.save(store => {
@@ -201,6 +207,7 @@ const initDevice = async (devicePath?: string) => {
                         return store;
                     });
                 }
+
                 device = _deviceList.getDevice(payload.device.path);
             }
         }
@@ -243,6 +250,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
     const isUsingPopup = DataManager.getSettings('popup') ?? false;
 
     const firmwareException = method.checkFirmwareRange();
+
     if (firmwareException) {
         if (isUsingPopup) {
             if (firmwareException === UI.FIRMWARE_NOT_COMPATIBLE) {
@@ -254,6 +262,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
                 postMessage(createUiMessage(UI.FIRMWARE_NOT_COMPATIBLE, device.toMessageObject()));
 
                 const uiResp = await uiPromise.promise;
+
                 if (!uiResp.payload) {
                     throw ERRORS.TypedError('Method_PermissionsNotGranted');
                 }
@@ -279,8 +288,10 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
         method.allowDeviceMode,
         method.requireDeviceMode,
     );
+
     if (unexpectedMode) {
         device.keepSession = false;
+
         if (isUsingPopup) {
             // wait for popup handshake
             await waitForPopup();
@@ -300,6 +311,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
 
     // check and request permissions [read, write...]
     method.checkPermissions();
+
     if (!trustedHost && method.requiredPermissions.length > 0) {
         // wait for popup window
         await waitForPopup();
@@ -323,6 +335,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
     }
 
     const deviceNeedsBackup = device.features.backup_availability === 'Required';
+
     if (deviceNeedsBackup) {
         if (
             method.noBackupConfirmationMode === 'always' ||
@@ -369,6 +382,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
     // ask for confirmation [export xpub, export info, sign message]
     if (!trustedHost) {
         const requestConfirmation = method.confirmation;
+
         if (requestConfirmation) {
             // wait for popup window
             await waitForPopup();
@@ -385,6 +399,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
 
             // wait for user action
             const confirmed = await uiPromise.promise.then(({ payload }) => payload);
+
             if (!confirmed) {
                 // interrupt process and go to "final" block
                 return Promise.reject(ERRORS.TypedError('Method_Cancel'));
@@ -394,9 +409,11 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
 
     // Make sure that device will display pin/passphrase
     const isDeviceUnlocked = device.features.unlocked;
+
     if (method.useDeviceState) {
         try {
             let invalidDeviceState = await getInvalidDeviceState(device, method.preauthorized);
+
             if (isUsingPopup) {
                 while (invalidDeviceState) {
                     const uiPromise = uiPromises.create(UI.INVALID_PASSPHRASE_ACTION, device);
@@ -408,6 +425,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
                     );
                     // wait for user response
                     const uiResp = await uiPromise.promise;
+
                     if (uiResp.payload) {
                         // reset internal device state and try again
                         device.setInternalState(undefined);
@@ -486,6 +504,7 @@ const onCall = async (message: IFrameCallMessage) => {
     const useCoreInPopup = DataManager.getSettings('useCoreInPopup');
 
     const { preferredDevice } = storage.loadForOrigin(origin) || {};
+
     if (preferredDevice && !message.payload.device) {
         message.payload.device = preferredDevice;
     }
@@ -493,6 +512,7 @@ const onCall = async (message: IFrameCallMessage) => {
     // find method and parse incoming params
     let method: AbstractMethod<any>;
     let messageResponse: CoreEventMessage;
+
     try {
         method = await methodSynchronize(async () => {
             _log.debug('loading method...');
@@ -526,11 +546,13 @@ const onCall = async (message: IFrameCallMessage) => {
                 // cancel popup request
                 postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
             }
+
             const response = await method.run();
             messageResponse = createResponseMessage(method.responseID, true, response);
         } catch (error) {
             messageResponse = createResponseMessage(method.responseID, false, { error });
         }
+
         postMessage(messageResponse);
 
         return Promise.resolve();
@@ -554,6 +576,7 @@ const onCall = async (message: IFrameCallMessage) => {
 
     // find device
     let device: Device;
+
     try {
         device = await initDevice(method.devicePath);
     } catch (error) {
@@ -566,6 +589,7 @@ const onCall = async (message: IFrameCallMessage) => {
             // cancel popup request
             postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         }
+
         // TODO: this should not be returned here before user agrees on "read" perms...
         postMessage(createResponseMessage(responseID, false, { error }));
         throw error;
@@ -577,6 +601,7 @@ const onCall = async (message: IFrameCallMessage) => {
     const previousCall = _callMethods.filter(
         call => call && call !== method && call.devicePath === method.devicePath,
     );
+
     if (previousCall.length > 0 && method.overridePreviousCall) {
         // set flag for each pending method
         previousCall.forEach(call => {
@@ -587,6 +612,7 @@ const onCall = async (message: IFrameCallMessage) => {
         const overrideError = ERRORS.TypedError('Method_Override');
         _overridePromise = device.override(overrideError);
         await _overridePromise;
+
         // if current method was overridden while waiting for device.override result
         // return response with status false
         if (method.overridden) {
@@ -656,6 +682,7 @@ const onCall = async (message: IFrameCallMessage) => {
     if (!device.getInternalState() && useCoreInPopup && env === 'webextension') {
         // Restore internal state if available
         const { preferredDevice } = storage.loadForOrigin(origin) || {};
+
         if (
             preferredDevice?.internalState &&
             preferredDevice?.internalStateExpiration &&
@@ -670,6 +697,7 @@ const onCall = async (message: IFrameCallMessage) => {
         if (_overridePromise) {
             await _overridePromise;
         }
+
         const innerAction = () =>
             inner(method, device).then(response => {
                 messageResponse = response;
@@ -697,6 +725,7 @@ const onCall = async (message: IFrameCallMessage) => {
             if (_deviceList && error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS) {
                 await _deviceList.enumerate();
             }
+
             messageResponse = createResponseMessage(method.responseID, false, { error });
         }
     } finally {
@@ -714,6 +743,7 @@ const onCall = async (message: IFrameCallMessage) => {
                 // Wait for device to switch to bootloader
                 // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
                 await resolveAfter(1000).promise;
+
                 // call Device.run with empty function to fetch new Features
                 // (acquire > Initialize > nothing > release)
                 try {
@@ -772,6 +802,7 @@ const closePopup = () => {
     if (popupPromise.isWaiting()) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
     }
+
     postMessage(createUiMessage(UI.CLOSE_UI_WINDOW));
 };
 
@@ -787,9 +818,11 @@ const onDeviceButtonHandler = async (
 ) => {
     // wait for popup handshake
     const addressRequest = request.code === 'ButtonRequest_Address';
+
     if (!addressRequest || (addressRequest && method.useUi)) {
         await waitForPopup();
     }
+
     const data =
         typeof method.getButtonRequestData === 'function' && request.code
             ? method.getButtonRequestData(request.code)
@@ -807,6 +840,7 @@ const onDeviceButtonHandler = async (
             data,
         }),
     );
+
     if (addressRequest && !method.useUi) {
         postMessage(createUiMessage(UI.ADDRESS_VALIDATION, data));
     }
@@ -890,14 +924,17 @@ const onPopupClosed = (customErrorMessage?: string) => {
     const error = customErrorMessage
         ? ERRORS.TypedError('Method_Cancel', customErrorMessage)
         : ERRORS.TypedError('Method_Interrupted');
+
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
     if (_deviceList && _deviceList.asArray().length > 0) {
         _deviceList.allDevices().forEach(d => {
             d.keepSession = false; // clear session on release
+
             if (d.isUsedHere()) {
                 _overridePromise = d.interruptionFromUser(error);
             } else {
                 const success = uiPromises.resolve({ type: DEVICE.DISCONNECT, payload: undefined });
+
                 if (!success) {
                     _callMethods.forEach(m => {
                         postMessage(createResponseMessage(m.responseID, false, { error }));
@@ -912,6 +949,7 @@ const onPopupClosed = (customErrorMessage?: string) => {
         uiPromises.rejectAll(error);
         popupPromise.reject(error);
     }
+
     cleanup();
 };
 
@@ -926,6 +964,7 @@ const onPopupClosed = (customErrorMessage?: string) => {
 const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
     // update list of devices in popup
     const promiseExists = uiPromises.exists(UI.RECEIVE_DEVICE);
+
     if (promiseExists && _deviceList) {
         const list = _deviceList.asArray();
         const isWebUsb = _deviceList.transportType() === 'WebUsbTransport';
@@ -1003,6 +1042,7 @@ const initDeviceList = async (transportReconnect?: boolean) => {
             _deviceList = undefined;
 
             postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
+
             // if transport fails during app lifetime, try to reconnect
             if (transportReconnect) {
                 const { promise, timeout } = resolveAfter(1000, null);
@@ -1018,12 +1058,14 @@ const initDeviceList = async (transportReconnect?: boolean) => {
         );
 
         _deviceList.init();
+
         if (_deviceList) {
             await _deviceList.waitForTransportFirstEvent();
         }
     } catch (error) {
         _deviceList = undefined;
         postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
+
         if (!transportReconnect) {
             throw error;
         } else {
@@ -1117,11 +1159,14 @@ export class Core extends EventEmitter {
 
     dispose() {
         disposeBackend();
+
         if (_deviceListInitTimeout) {
             clearTimeout(_deviceListInitTimeout);
         }
+
         this.removeAllListeners();
         this.abortController.abort();
+
         if (_deviceList) {
             _deviceList.dispose();
         }
@@ -1145,6 +1190,7 @@ export class Core extends EventEmitter {
         if (!_deviceList) {
             return;
         }
+
         _deviceList.enumerate();
     }
 
@@ -1156,6 +1202,7 @@ export class Core extends EventEmitter {
         if (logWriterFactory) {
             setLogWriter(logWriterFactory);
         }
+
         try {
             await DataManager.load(settings);
             enableLog(DataManager.getSettings('debug'));
@@ -1193,7 +1240,9 @@ export class Core extends EventEmitter {
 
 const disableWebUSBTransport = async () => {
     if (!_deviceList) return;
+
     if (_deviceList.transportType() !== 'WebUsbTransport') return;
+
     // override settings
     const settings = DataManager.getSettings();
 
@@ -1201,9 +1250,11 @@ const disableWebUSBTransport = async () => {
         const transportStr = settings.transports?.filter(
             transport => typeof transport !== 'object',
         );
+
         if (transportStr.includes('WebUsbTransport')) {
             settings.transports.splice(settings.transports.indexOf('WebUsbTransport'), 1);
         }
+
         if (!transportStr.includes('BridgeTransport')) {
             settings.transports!.unshift('BridgeTransport');
         }

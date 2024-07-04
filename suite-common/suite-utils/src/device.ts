@@ -21,8 +21,11 @@ export const getConnectedDeviceStatus = (device: TrezorDevice | undefined) => {
         device.mode === 'bootloader' && device.features?.firmware_present === true;
 
     if (isInBlWithFwPresent) return 'bootloader';
+
     if (device.features?.initialized) return 'initialized';
+
     if (device.features?.no_backup) return 'seedless';
+
     if (device.type === 'unreadable') return 'unreadable';
 
     return 'ok';
@@ -33,27 +36,35 @@ export const getStatus = (device: TrezorDevice) => {
         if (!device.connected) {
             return 'disconnected';
         }
+
         if (!device.available) {
             return 'unavailable';
         }
+
         if (device.mode === 'bootloader') {
             return 'bootloader';
         }
+
         if (device.mode === 'initialize') {
             return 'initialize';
         }
+
         if (device.mode === 'seedless') {
             return 'seedless';
         }
+
         if (device.firmware === 'required') {
             return 'firmware-required';
         }
+
         if (device.status === 'occupied') {
             return 'used-in-other-window';
         }
+
         if (device.status === 'used') {
             return 'was-used-in-other-window';
         }
+
         if (device.firmware === 'outdated') {
             return 'firmware-recommended';
         }
@@ -137,6 +148,7 @@ export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevic
 
 export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: TrezorDevice) => {
     if (!selected || !device) return false;
+
     if (!selected.id || selected.mode === 'bootloader') return selected.path === device.path;
 
     return selected.id === device.id;
@@ -163,6 +175,7 @@ export const getCoinUnavailabilityMessage = (reason: UnavailableCapability) => {
  */
 export const getNewInstanceNumber = (devices: TrezorDevice[], device: TrezorDevice | Device) => {
     if (!device.features) return undefined;
+
     // find all instances with device "device_id"
     // and sort them by instance number
     const affectedDevices = devices
@@ -217,12 +230,14 @@ export const getSelectedDevice = (
 ): TrezorDevice | undefined => {
     // selected device is not acquired
     if (!device.features) return devices.find(d => d.path === device.path);
+
     const { path, instance } = device;
 
     return devices.find(d => {
         if ((!d.features || d.mode === 'bootloader') && d.path === path) {
             return true;
         }
+
         if (d.instance === instance && d.features && d.id === device.id) {
             return true;
         }
@@ -289,7 +304,9 @@ export const sortByTimestamp = (devices: TrezorDevice[]): TrezorDevice[] =>
     // In unit tests some devices have undefined ts
     devices.sort((a, b) => {
         if (!a.ts && !b.ts) return 0; // both devices has undefined ts, keep their pos
+
         if (!b.ts && a.ts) return -1;
+
         if (!a.ts && b.ts) return 1;
 
         return b.ts - a.ts;
@@ -305,28 +322,37 @@ export const sortByPriority = (a: TrezorDevice, b: TrezorDevice) => {
 
     // 1
     if (!b.features && !a.features) return 0;
+
     if (!b.features && a.features) return 1;
+
     if (!b.features || !a.features) return -1;
 
     // 2
     if (a.forceRemember !== b.forceRemember) {
         if (!a.forceRemember && b.forceRemember) return 1;
+
         if (a.forceRemember && !b.forceRemember) return -1;
     }
 
     // 3
     if (a.mode !== 'normal' && b.mode !== 'normal') return 0;
+
     if (b.mode !== 'normal') return 1;
+
     if (a.mode !== 'normal') return -1;
 
     // 4
     if (a.firmware !== 'valid' && b.firmware !== 'valid') return 0;
+
     if (b.firmware !== 'valid') return 1;
+
     if (a.firmware !== 'valid') return -1;
 
     // 5
     if (!b.ts && !a.ts) return 0;
+
     if (!b.ts && a.ts) return -1;
+
     if (!b.ts || !a.ts) return 1;
 
     return b.ts - a.ts;
@@ -355,6 +381,7 @@ export const getDeviceInstances = (
         )
         .sort((a, b) => {
             if (!a.instance) return -1;
+
             if (!b.instance) return 1;
 
             return a.instance > b.instance ? 1 : -1;
@@ -371,10 +398,13 @@ export const getDeviceInstancesGroupedByDeviceId = (devices: TrezorDevice[]): Ac
         if (!device.features || !device.id) {
             return deviceGroups;
         }
+
         const existingGroupIndex = deviceGroups.findIndex(group => group[0].id === device.id);
+
         if (existingGroupIndex === -1) {
             // If the device ID is not yet in the accumulator, add a new group
             const newGroup = getDeviceInstances(device, devices);
+
             if (newGroup.length > 0) {
                 deviceGroups.push(newGroup);
             }
@@ -394,9 +424,12 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) =>
         .reduce((result, dev) => {
             // unacquired devices always return empty array
             const instances = getDeviceInstances(dev, devices);
+
             if (instances.length < 1) return result.concat(dev);
+
             // `device_id` already exists in result
             const alreadyExists = result.find(r => r.features && dev.features && r.id === dev.id);
+
             if (alreadyExists) return result;
 
             // base (np passphrase) or first passphrase instance
@@ -419,6 +452,7 @@ export const getSortedDevicesWithoutInstances = (
         .filter(d => d?.id !== excludedDeviceId && d?.id)
         .sort((a, b) => {
             if (!a.connected) return -1;
+
             if (!b.connected) return 1;
 
             return 0;

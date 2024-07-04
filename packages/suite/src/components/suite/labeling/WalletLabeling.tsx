@@ -20,6 +20,7 @@ export const useWalletLabeling = () => {
     const defaultAccountLabelString = useCallback(
         ({ device }: { device: TrezorDevice }) => {
             if (device.useEmptyPassphrase) return translationString('TR_NO_PASSPHRASE_WALLET');
+
             if (!device.walletNumber) return undefined;
 
             return translationString('TR_PASSPHRASE_WALLET', { id: device.walletNumber });
@@ -37,6 +38,7 @@ export const useGetWalletLabel = ({ device, shouldUseDeviceLabel }: WalletLabell
     const { walletLabel } = useSelector(state => selectLabelingDataForWallet(state, device.state));
 
     let label: string | undefined;
+
     if (walletLabel) {
         label = walletLabel;
     } else if (device.state) {

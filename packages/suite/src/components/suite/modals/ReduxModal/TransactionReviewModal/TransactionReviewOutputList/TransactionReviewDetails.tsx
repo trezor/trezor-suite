@@ -117,6 +117,7 @@ const prettify = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
 export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetailsProps) => {
     const theme = useTheme();
+
     if (tx.inputs.length === 0) return null; // BTC-only, TODO: eth/ripple
 
     return (

@@ -44,6 +44,7 @@ export function accumulative(
     // check if required utxo is enough
     if (requiredUtxos.length > 0) {
         const requiredIsEnough = finalize(requiredUtxos, outputs, feeRate, options);
+
         if (requiredIsEnough.inputs) {
             return requiredIsEnough;
         }

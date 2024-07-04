@@ -59,6 +59,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         if (this.pingTimeout) {
             clearTimeout(this.pingTimeout);
         }
+
         this.pingTimeout = setTimeout(
             this.onPing.bind(this),
             this.options.pingTimeout || DEFAULT_PING_TIMEOUT,
@@ -67,7 +68,9 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
 
     private onTimeout() {
         const { ws } = this;
+
         if (!ws) return;
+
         this.messages.rejectAll(new CustomError('websocket_timeout'));
         ws.close();
     }
@@ -93,7 +96,9 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
 
     protected sendMessage(message: Record<string, any>) {
         const { ws } = this;
+
         if (!ws) throw new CustomError('websocket_not_initialized');
+
         const { promiseId, promise } = this.messages.create();
 
         const req = { id: promiseId.toString(), ...message };
@@ -121,6 +126,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
 
             if (!messageSettled) {
                 const subs = this.subscriptions.find(s => s.id === id);
+
                 if (subs) {
                     subs.callback(data);
                 }
@@ -139,6 +145,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
 
     protected removeSubscription(type: keyof T) {
         const index = this.subscriptions.findIndex(s => s.type === type);
+
         if (index >= 0) {
             // remove previous subscriptions
             this.subscriptions.splice(index, 1);
@@ -167,6 +174,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         const connectionTimeout = setTimeout(
             () => {
                 ws.emit('error', new CustomError('websocket_timeout'));
+
                 try {
                     ws.once('error', () => {}); // hack; ws throws uncaughtably when there's no error listener
                     ws.close();
@@ -198,6 +206,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
 
     private init() {
         const { ws } = this;
+
         if (!ws || !this.isConnected()) {
             throw Error('Websocket init cannot be called');
         }

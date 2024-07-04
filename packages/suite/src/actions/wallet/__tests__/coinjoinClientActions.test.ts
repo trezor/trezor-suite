@@ -120,6 +120,7 @@ describe('coinjoinClientActions', () => {
                     f.result.trezorConnectCalledTimes,
                 );
             }
+
             if (f.result.trezorConnectCallsWith) {
                 expect(TrezorConnect.setBusy).toHaveBeenLastCalledWith(
                     expect.objectContaining(f.result.trezorConnectCallsWith),

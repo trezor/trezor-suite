@@ -14,6 +14,7 @@ export function httpRequest(url: string, type: 'binary'): Promise<ArrayBuffer>;
 export function httpRequest(url: string, type: 'json'): Promise<Record<string, any>>;
 export function httpRequest(url: any, type: any) {
     const asset = getAssetByUrl(url);
+
     if (!asset) {
         return /^https?/.test(url) ? browserHttpRequest(url, type) : fs.readFile(url);
     }

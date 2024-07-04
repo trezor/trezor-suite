@@ -60,6 +60,7 @@ describe('analyzeTransactions', () => {
                     Results: calcAnonymity(data.Transactions),
                 });
             }
+
             resolve();
         });
 

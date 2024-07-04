@@ -46,8 +46,10 @@ export const removeDraft = async (accountKey: string) => {
 
 export const saveAccountDraft = (account: Account) => async (_: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
+
     const { drafts } = getState().wallet.send;
     const draft = drafts[account.key];
+
     if (draft) {
         return db.addItem('sendFormDrafts', draft, account.key, true);
     }
@@ -62,7 +64,9 @@ const removeAccountDraft = async (account: Account) => {
 export const saveCoinjoinAccount =
     (accountKey: string) => async (_: Dispatch, getState: GetState) => {
         const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
+
         if (!coinjoinAccount || !(await db.isAccessible())) return;
+
         const serializedAccount = serializeCoinjoinAccount(coinjoinAccount);
 
         return db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
@@ -91,6 +95,7 @@ export const removeCoinjoinAccount = async (accountKey: string, state: AppState)
     await db.removeItemByPK('coinjoinAccounts', accountKey);
 
     const savedCoinjoinAccounts = await db.getItemsExtended('coinjoinAccounts');
+
     if (!savedCoinjoinAccounts.length) {
         removeCoinjoinRelatedSetting(state);
     }
@@ -98,6 +103,7 @@ export const removeCoinjoinAccount = async (accountKey: string, state: AppState)
 
 export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
+
     const { debug } = getState().wallet.coinjoin;
     db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
 };
@@ -134,6 +140,7 @@ const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: st
 
 export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => {
     if (!(await db.isAccessible())) return;
+
     if (!device || !device.features || !device.state) return;
 
     return db.addItem('devices', serializeDevice(device, forceRemember), device.state, true);
@@ -147,6 +154,7 @@ const removeAccount = async (account: Account) => {
 
 export const removeAccountTransactions = async (account: Account) => {
     if (!(await db.isAccessible())) return;
+
     await db.removeItemByIndex('txs', 'accountKey', [
         account.descriptor,
         account.symbol,
@@ -183,6 +191,7 @@ export const removeAccountWithDependencies = (getState: GetState) => (account: A
 
 export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
+
     if (!device.state) return;
 
     const accounts = getState().wallet.accounts.filter(a => a.deviceState === device.state);
@@ -225,6 +234,7 @@ export const saveAccountHistoricRates =
     (accountKey: string, historicRates: RatesByTimestamps) =>
     async (_dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return Promise.resolve();
+
         const allTxs = getState().wallet.transactions.transactions;
         const accTxs = allTxs[accountKey] || [];
 
@@ -236,6 +246,7 @@ export const saveAccountHistoricRates =
 export const saveAccountTransactions =
     (account: Account) => async (_dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return Promise.resolve();
+
         const allTxs = getState().wallet.transactions.transactions;
         const accTxs = allTxs[account.key] || [];
 
@@ -249,7 +260,9 @@ export const rememberDevice =
     (device: TrezorDevice, remember: boolean, forcedRemember?: true) =>
     async (dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return;
+
         if (!device || !device.features || !device.state) return;
+
         if (!remember) {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             dispatch(forgetDeviceMetadataError(device));
@@ -298,6 +311,7 @@ export const rememberDevice =
 
 export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
+
     await db.addItem(
         'walletSettings',
         {
@@ -311,6 +325,7 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
 export const saveBackend =
     (coin: Network['symbol']) => async (_dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return;
+
         await db.addItem(
             'backendSettings',
             getState().wallet.blockchain[coin].backends,
@@ -321,6 +336,7 @@ export const saveBackend =
 
 export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
+
     const { suite } = getState();
     db.addItem(
         'suiteSettings',
@@ -338,6 +354,7 @@ export const saveTokenManagement =
     (networkSymbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>
     async (_dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return;
+
         const { tokenDefinitions } = getState();
         const tokenDefinitionsType = tokenDefinitions[networkSymbol]?.[type];
         const data = tokenDefinitionsType?.[status];
@@ -407,6 +424,7 @@ export const saveDeviceMetadataError =
         if (!(await db.isAccessible())) return;
 
         const { metadata } = getState();
+
         if (device.state && metadata?.error?.[device.state]) {
             const { error } = metadata;
             await saveMetadata({ error });
@@ -418,6 +436,7 @@ export const forgetDeviceMetadataError =
         if (!(await db.isAccessible())) return;
 
         const { metadata } = getState();
+
         if (device.state && metadata?.error) {
             const next = cloneObject(metadata.error);
             delete next[device.state];
@@ -444,6 +463,7 @@ export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: Get
 
 export const saveFirmware = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
+
     const { firmware } = getState();
 
     db.addItem('firmware', { firmwareHashInvalid: firmware.firmwareHashInvalid }, 'firmware', true);

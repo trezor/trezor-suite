@@ -20,6 +20,7 @@ export const xpubFormValidationSchema = yup.object({
                 if (!networkSymbol) return false;
 
                 const networkType = getNetworkType(networkSymbol);
+
                 if (!isAddressBasedNetwork(networkType)) return true;
 
                 return (

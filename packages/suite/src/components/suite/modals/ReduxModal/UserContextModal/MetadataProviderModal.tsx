@@ -63,6 +63,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
     const connect = async (type: MetadataProviderType) => {
         setIsLoading(type);
         const result = await dispatch(connectProvider({ type }));
+
         // window close indicates user action, user knows what happened, no need to show an error message
         if (result === 'window closed') {
             setIsLoading('');
@@ -70,6 +71,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
             // stop here, user might have changed his decision and wants to use another provider
             return;
         }
+
         if (typeof result === 'string') {
             setError(result);
             setIsLoading('');

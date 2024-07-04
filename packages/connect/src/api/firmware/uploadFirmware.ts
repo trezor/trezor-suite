@@ -61,19 +61,23 @@ export const uploadFirmware = async (
         postConfirmationMessage(device);
         const length = payload.byteLength;
         let response = await typedCall('FirmwareErase', ['FirmwareRequest', 'Success'], { length });
+
         while (response.type !== 'Success') {
             // NOTE: offset and message are present in T2
             const start = response.message.offset!;
             const end = response.message.offset! + response.message.length!;
             const chunk = payload.slice(start, end);
+
             // in this moment, device is still displaying 'update firmware dialog', no firmware process is in progress yet
             if (start > 0) {
                 postProgressMessage(device, Math.round((start / length) * 100), postMessage);
             }
+
             response = await typedCall('FirmwareUpload', ['FirmwareRequest', 'Success'], {
                 payload: chunk,
             });
         }
+
         postProgressMessage(device, 100, postMessage);
 
         return response.message;

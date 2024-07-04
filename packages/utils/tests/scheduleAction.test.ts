@@ -50,6 +50,7 @@ describe('scheduleAction', () => {
                 // abort on third attempt
                 aborter.abort();
             }
+
             i++;
             throw new Error('Runtime error');
         });
@@ -68,6 +69,7 @@ describe('scheduleAction', () => {
             if (i >= 2) {
                 return Promise.resolve('Foo');
             }
+
             i++;
             throw new Error('Runtime error');
         });

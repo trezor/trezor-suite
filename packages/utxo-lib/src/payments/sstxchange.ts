@@ -36,6 +36,7 @@ export function sstxchange(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'hash', () => {
         if (a.output) return a.output.subarray(4, 24);
+
         if (a.address) return _address().hash;
     });
     lazy.prop(o, 'output', () => {
@@ -54,17 +55,23 @@ export function sstxchange(a: Payment, opts?: PaymentOpts): Payment {
     // extended validation
     if (opts.validate) {
         let hash: Buffer = Buffer.from([]);
+
         if (a.address) {
             const { version, hash: aHash } = _address();
+
             if (version !== network.pubKeyHash)
                 throw new TypeError('Invalid version or Network mismatch');
+
             if (aHash.length !== 20) throw new TypeError('Invalid address');
+
             hash = aHash;
         }
+
         if (a.hash) {
             if (hash.length > 0 && !hash.equals(a.hash)) throw new TypeError('Hash mismatch');
             else hash = a.hash;
         }
+
         if (a.output) {
             if (
                 a.output.length !== 26 ||
@@ -78,6 +85,7 @@ export function sstxchange(a: Payment, opts?: PaymentOpts): Payment {
                 throw new TypeError('sstxchange output is invalid');
 
             const hash2 = a.output.subarray(4, 24);
+
             if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
         }
     }

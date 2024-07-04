@@ -350,6 +350,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         );
         const changedSessions = nextDescriptors.filter(d => {
             const currentDescriptor = this.descriptors.find(x => x.path === d.path);
+
             if (currentDescriptor) {
                 return currentDescriptor.session !== d.session;
             }
@@ -407,6 +408,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         if (this.stopped) {
             return;
         }
+
         const diff = this.getDiff(nextDescriptors);
         this.logger?.debug('nextDescriptors', nextDescriptors, 'diff', diff);
 
@@ -426,6 +428,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
             }
 
             const listenedPathChanged = diff.changedSessions.find(d => d.path === path);
+
             if (!listenedPathChanged) {
                 return;
             }
@@ -439,6 +442,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
                         this.error({ error: ERRORS.SESSION_WRONG_PREVIOUS }),
                     );
                 }
+
                 delete this.acquiredUnconfirmed[path];
             }
 
@@ -511,6 +515,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
             })
                 .catch(err => {
                     const expectedErrors = [ERRORS.ABORTED_BY_TIMEOUT, ERRORS.ABORTED_BY_SIGNAL];
+
                     if (errors) {
                         (expectedErrors as E[]).push(...errors);
                     }

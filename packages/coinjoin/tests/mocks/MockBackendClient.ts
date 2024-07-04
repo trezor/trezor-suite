@@ -62,12 +62,16 @@ export class MockBackendClient extends CoinjoinBackendClient {
             }
             case 'getTransaction': {
                 const tx = this.transactions.find(t => t.txid === params[0]);
+
                 if (tx) return Promise.resolve(tx as any);
+
                 break;
             }
             case 'getBlock': {
                 const block = this.blocks.find(b => b.height === params[0]);
+
                 if (block) return Promise.resolve(block as any);
+
                 break;
             }
             case 'getMempoolFilters': {
@@ -83,9 +87,11 @@ export class MockBackendClient extends CoinjoinBackendClient {
 
                 if (this.blocks[this.blocks.length - 1].hash === bestKnownBlockHash)
                     return Promise.resolve({ blockFiltersBatch: [] });
+
                 const from = this.blocks.findIndex(
                     ({ previousBlockHash }) => previousBlockHash === bestKnownBlockHash,
                 );
+
                 if (from >= 0)
                     return Promise.resolve({
                         blockFiltersBatch: this.blocks
@@ -97,6 +103,7 @@ export class MockBackendClient extends CoinjoinBackendClient {
             }
             // no default
         }
+
         throw new Error('not found');
     }
 

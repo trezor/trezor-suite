@@ -36,6 +36,7 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
                 { name: 'specific', type: 'object' },
                 { name: 'feeLevels', type: 'string' },
             ]);
+
             if (request.specific) {
                 validateParams(request.specific, [
                     { name: 'conservative', type: 'boolean' },
@@ -47,11 +48,13 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
                 ]);
             }
         }
+
         const coinInfo = getCoinInfo(payload.coin);
 
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
+
         // validate backend
         isBackendSupported(coinInfo);
 
@@ -71,14 +74,17 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
             dustLimit: coinInfo.type === 'bitcoin' ? coinInfo.dustLimit : undefined,
             levels: [],
         };
+
         if (request && request.feeLevels) {
             const fees = new FeeLevels(coinInfo);
+
             // TODO: https://github.com/trezor/trezor-suite/issues/5340
             // smart fees for DOGE are not relevant since their fee policy changed, see @trezor/utxo-lib/compose: baseFee
             if (request.feeLevels === 'smart' && coinInfo.shortcut !== 'DOGE') {
                 const backend = await initBlockchain(coinInfo, this.postMessage, identity);
                 await fees.load(backend);
             }
+
             feeInfo.levels = fees.levels;
         } else {
             const backend = await initBlockchain(coinInfo, this.postMessage, identity);

@@ -45,6 +45,7 @@ const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => 
             // is already installed!
             return null;
         }
+
         if (features.firmware_present && features.major_version === 2) {
             // little different situation is with model 2, where in bootloader (and with some fw installed)
             // we actually know the firmware version
@@ -166,6 +167,7 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
 
     if (major_version === 2 && bootloader_mode) {
         const fwVersion = [fw_major, fw_minor, fw_patch];
+
         if (versionUtils.isVersionArray(fwVersion)) {
             // in bootloader, T2T1, T2B1 knows its firmware, so we still may filter "by firmware".
             return filterSafeListByFirmware(releases, fwVersion);
@@ -173,6 +175,7 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
 
         return filterSafeListByBootloader(releases, firmwareVersion);
     }
+
     if (major_version === 1 && bootloader_mode) {
         // T1B1 does not know its firmware, we need to filter by bootloader. this has the consequence
         // that we do not know if the version we find in the end is newer than the actual installed version
@@ -195,9 +198,11 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
         // no available releases - should never happen for official firmware, only custom
         return null;
     }
+
     if (!isStrictFeatures(features)) {
         throw new Error('Features of unexpected shape provided.');
     }
+
     if (!isValidReleases(releases)) {
         throw new Error(`Release object in unexpected shape.`);
     }
@@ -247,6 +252,7 @@ export const getFirmwareStatus = (features: Features) => {
     if (features.firmware_present === false) {
         return 'none';
     }
+
     // for T1B1 in bootloader, what device reports as firmware version is in fact bootloader version, so we can
     // not safely tell firmware version
     if (features.major_version === 1 && features.bootloader_mode) {

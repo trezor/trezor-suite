@@ -9,9 +9,11 @@ describe('random', () => {
             const ids: any = {};
             for (let i = 0; i < 10; i++) {
                 const random = getWeakRandomId(10);
+
                 if (!ids[random]) {
                     ids[random] = 0;
                 }
+
                 ids[random]++;
             }
             Object.values(ids).forEach(id => {

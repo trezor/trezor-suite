@@ -66,6 +66,7 @@ export class TransactionCacheEngine {
     @TrackRunningTransactionFetches()
     async addAccount({ coin, descriptor }: AccountUniqueParams) {
         await this.awaitInit();
+
         if (await this.accountExists({ coin, descriptor })) {
             return;
         }
@@ -107,6 +108,7 @@ export class TransactionCacheEngine {
     }: AccountUniqueParams & { pageSize: number }) {
         await this.awaitInit();
         debugLog(`Fetching transactions for ${coin} - ${descriptor}`, { pageSize });
+
         if (!(await this.accountExists({ coin, descriptor }))) {
             throw new Error(
                 'Account not registered. Please register it first using TransactionCacheEngine.addAccount',
@@ -136,6 +138,7 @@ export class TransactionCacheEngine {
                 pageSize,
                 ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
             });
+
             if (!result.success) {
                 throw new Error(result.payload.error);
             }

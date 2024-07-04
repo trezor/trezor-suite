@@ -21,9 +21,11 @@ export const patchResponse = (obj: any) => {
         Object.keys(obj).forEach(key => {
             const newKey = camelCaseToPascalCase(key);
             obj[newKey] = obj[key];
+
             if (key !== newKey) {
                 delete obj[key];
             }
+
             // skip whole AffiliateData object because:
             // - keys are Round.Id hash and should not be PascalCased
             // - values contains affiliate flag "trezor" which is not in PascalCased
@@ -42,6 +44,7 @@ const createHeaders = (options: RequestOptions) => {
         'Content-Type': 'application/json; charset=utf-8',
         'Accept-Encoding': 'gzip',
     };
+
     // add custom headers to requests which are intercepted by @trezor/request-manager package.
     // - Proxy-Authorization: used to create/use TOR circuit
     // - Allowed-Headers: used to restrict headers sent to wabisabi api
@@ -50,6 +53,7 @@ const createHeaders = (options: RequestOptions) => {
         headers['Proxy-Authorization'] = `Basic ${options.identity}`;
         headers['Allowed-Headers'] = 'Accept-Encoding;Content-Type;Content-Length;Host';
     }
+
     // blockbook api requires 'User-Agent' to be set
     // same as in @trezor/blockchain-link/src/workers/blockbook/websocket
     if (typeof options.userAgent === 'string') {

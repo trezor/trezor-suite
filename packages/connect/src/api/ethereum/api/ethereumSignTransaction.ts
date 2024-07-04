@@ -38,6 +38,7 @@ type Params = {
 
 const strip = deepTransform(value => {
     let stripped = stripHexPrefix(value);
+
     // pad left even
     if (stripped.length % 2 !== 0) {
         stripped = `0${stripped}`;
@@ -97,6 +98,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
         if (this.params.tx.chainId === 1 && !this.params.tx.data) {
             return;
         }
+
         const slip44 = getSlip44ByPath(this.params.path);
         const definitions = await getEthereumDefinitions({
             chainId: this.params.tx.chainId,
@@ -106,6 +108,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
         this.params.definitions = definitions;
 
         const decoded = decodeEthereumDefinition(definitions);
+
         if (decoded.network) {
             this.params.network = ethereumNetworkInfoFromDefinition(decoded.network);
         }

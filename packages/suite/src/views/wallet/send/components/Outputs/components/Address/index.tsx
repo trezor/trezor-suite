@@ -139,6 +139,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         url: addressDeprecatedUrl,
                     };
                 }
+
                 break;
             case 'checksum':
                 return {
@@ -168,6 +169,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         validate: {
             deprecated: (value: string) => {
                 const url = isAddressDeprecated(value, symbol);
+
                 if (url) {
                     setAddressDeprecatedUrl(url);
 

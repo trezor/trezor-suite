@@ -70,6 +70,7 @@ export const sendOutput = async (typedCall: any, outputWithData: OutputWithData)
     const { output, tokenBundle, inlineDatum, referenceScript } = outputWithData;
 
     await typedCall('CardanoTxOutput', 'CardanoTxItemAck', output);
+
     if (tokenBundle) {
         for (const assetGroup of tokenBundle) {
             await typedCall('CardanoAssetGroup', 'CardanoTxItemAck', {

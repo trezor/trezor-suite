@@ -77,6 +77,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
         if (this.pingTimeout) {
             clearTimeout(this.pingTimeout);
         }
+
         this.pingTimeout = setTimeout(
             this.onPing.bind(this),
             this.options.pingTimeout || DEFAULT_PING_TIMEOUT,
@@ -85,9 +86,12 @@ class TrezorUserEnvLinkClass extends EventEmitter {
 
     onTimeout() {
         const { ws } = this;
+
         if (!ws) return;
+
         if (ws.listenerCount('open') > 0) {
             ws.emit('error', 'Websocket timeout');
+
             try {
                 ws.close();
             } catch (error) {
@@ -120,7 +124,9 @@ class TrezorUserEnvLinkClass extends EventEmitter {
         // period of inactivity.
         await this.connect();
         const { ws } = this;
+
         if (!ws) throw NOT_INITIALIZED;
+
         const id = this.messageID;
 
         const dfd = createDeferred<{ response: any }>(id);
@@ -162,6 +168,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
                 } else {
                     dfd.resolve(resp);
                 }
+
                 this.messages.splice(this.messages.indexOf(dfd), 1);
             }
         } catch (error) {
@@ -171,6 +178,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
         if (this.messages.length === 0) {
             this.clearConnectionTimeout();
         }
+
         this.setPingTimeout();
     }
 
@@ -186,6 +194,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
         return new Promise(resolve => {
             // url validation
             let { url } = this.options;
+
             if (typeof url !== 'string') {
                 throw new Error('websocket_no_url');
             }
@@ -193,6 +202,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
             if (url.startsWith('https')) {
                 url = url.replace('https', 'wss');
             }
+
             if (url.startsWith('http')) {
                 url = url.replace('http', 'ws');
             }
@@ -223,9 +233,11 @@ class TrezorUserEnvLinkClass extends EventEmitter {
 
     init() {
         const { ws } = this;
+
         if (!ws || !this.isConnected()) {
             throw Error('Websocket init cannot be called');
         }
+
         // clear timeout from this.connect
         this.clearConnectionTimeout();
 
@@ -256,14 +268,17 @@ class TrezorUserEnvLinkClass extends EventEmitter {
         if (this.pingTimeout) {
             clearTimeout(this.pingTimeout);
         }
+
         if (this.connectionTimeout) {
             clearTimeout(this.connectionTimeout);
         }
 
         const { ws } = this;
+
         if (this.isConnected()) {
             this.disconnect();
         }
+
         if (ws) {
             ws.removeAllListeners();
         }
@@ -284,10 +299,12 @@ class TrezorUserEnvLinkClass extends EventEmitter {
                 if (i === limit - 1) {
                     console.log(`cant connect to trezor-user-env: ${error}\n`);
                 }
+
                 await delay(1000);
 
                 try {
                     const res = await fetch(USER_ENV_URL.DASHBOARD);
+
                     if (res.status === 200) {
                         console.log('trezor-user-env is online');
 
@@ -295,6 +312,7 @@ class TrezorUserEnvLinkClass extends EventEmitter {
                     }
                 } catch (err) {
                     error = err.message;
+
                     // using process.stdout.write instead of console.log since the latter always prints also newline
                     // but in karma, this code runs in browser and process is not available.
                     if (typeof process !== 'undefined') {

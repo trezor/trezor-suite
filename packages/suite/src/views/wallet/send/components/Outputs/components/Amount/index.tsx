@@ -155,6 +155,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const isWithRate = !!currentRate?.rate || !!currentRate?.isLoading;
 
     let decimals: number;
+
     if (token) {
         decimals = token.decimals;
     } else if (shouldSendInSats) {

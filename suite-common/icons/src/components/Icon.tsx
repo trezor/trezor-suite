@@ -36,6 +36,7 @@ const getColorCode = (color: Exclude<IconColor, 'svgSource'>, themeColors: Color
     if (isReanimatedSharedValue(color)) {
         return color.value;
     }
+
     if (isCSSColor(color)) {
         return color;
     }

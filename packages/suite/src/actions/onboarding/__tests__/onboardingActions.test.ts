@@ -71,6 +71,7 @@ describe('Onboarding Actions', () => {
             const store = mockStore(getInitialState(f.initialState));
             store.dispatch(f.action());
             const stateAfter = store.getState().onboarding;
+
             if (f.expect.toMatchObject) {
                 expect(stateAfter).toMatchObject(f.expect.toMatchObject);
             }

@@ -15,6 +15,7 @@ export const isVersionArray = (arr: unknown): arr is VersionArray => {
     // Check for invalid numbers in the array
     for (let i = 0; i < arr.length; i++) {
         const versionNumber = arr[i];
+
         if (typeof versionNumber !== 'number' || versionNumber < 0) {
             return false;
         }
@@ -31,6 +32,7 @@ const parse = (versionArr: VersionArray) => ({
 
 const split = (version: string) => {
     const arr = version.split('.').map(v => Number(v));
+
     if (!isVersionArray(arr)) {
         throw new Error(`version string is in wrong format: ${version}`);
     }
@@ -53,9 +55,11 @@ export const isNewer = (versionX: VersionInput, versionY: VersionInput) => {
     if (parsedX.major - parsedY.major !== 0) {
         return parsedX.major > parsedY.major;
     }
+
     if (parsedX.minor - parsedY.minor !== 0) {
         return parsedX.minor > parsedY.minor;
     }
+
     if (parsedX.patch - parsedY.patch !== 0) {
         return parsedX.patch > parsedY.patch;
     }

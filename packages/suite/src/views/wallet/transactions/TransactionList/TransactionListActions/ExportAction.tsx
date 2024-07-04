@@ -53,6 +53,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
             });
 
             setIsExportRunning(true);
+
             try {
                 await dispatch(
                     fetchAllTransactionsForAccountThunk({

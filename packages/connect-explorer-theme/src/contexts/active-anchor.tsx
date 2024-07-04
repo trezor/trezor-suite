@@ -31,6 +31,7 @@ export const useSlugs = () => useContext(SlugsContext);
 export const ActiveAnchorProvider = ({ children }: { children: ReactNode }): ReactElement => {
     const [activeAnchor, setActiveAnchor] = useState<ActiveAnchor>({});
     const observerRef = useRef<IntersectionObserver | null>(null);
+
     if (IS_BROWSER && !observerRef.current) {
         observerRef.current = new IntersectionObserver(
             entries => {
@@ -57,10 +58,12 @@ export const ActiveAnchorProvider = ({ children }: { children: ReactNode }): Rea
                     let largestIndexAboveViewport = -1;
                     for (const s in ret) {
                         ret[s].isActive = false;
+
                         if (ret[s].insideHalfViewport && ret[s].index < smallestIndexInViewport) {
                             smallestIndexInViewport = ret[s].index;
                             activeSlug = s;
                         }
+
                         if (
                             smallestIndexInViewport === Infinity &&
                             ret[s].aboveHalfViewport &&

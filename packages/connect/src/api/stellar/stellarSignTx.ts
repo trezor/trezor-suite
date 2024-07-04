@@ -22,6 +22,7 @@ const processTxRequest = async (
 
         return response.message;
     }
+
     await typedCall(type, 'StellarTxOpRequest', op);
 
     return processTxRequest(typedCall, operations, index + 1);
@@ -226,6 +227,7 @@ export const stellarSignTx = async (
     const operations: StellarOperationMessage[] = [];
     tx.operations.forEach(op => {
         const transformed = transformOperation(op);
+
         if (transformed) {
             operations.push(transformed);
         }

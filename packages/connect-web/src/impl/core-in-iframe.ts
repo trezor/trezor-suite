@@ -71,9 +71,11 @@ export class CoreInIframe implements ConnectFactoryDependencies {
         this.eventEmitter.removeAllListeners();
         iframe.dispose();
         this._settings = parseConnectSettings();
+
         if (this._popupManager) {
             this._popupManager.close();
         }
+
         window.removeEventListener('message', this.boundHandleMessage);
         window.removeEventListener('unload', this.boundDispose);
 
@@ -99,7 +101,9 @@ export class CoreInIframe implements ConnectFactoryDependencies {
             case RESPONSE_EVENT: {
                 const { id = 0, success, payload } = message;
                 const resolved = this._messagePromises.resolve(id, { id, success, payload });
+
                 if (!resolved) this._log.warn(`Unknown message id ${id}`);
+
                 break;
             }
             case DEVICE_EVENT:
@@ -123,9 +127,11 @@ export class CoreInIframe implements ConnectFactoryDependencies {
                     iframe.clearTimeout();
                     break;
                 }
+
                 if (message.type === IFRAME.LOADED) {
                     iframe.initPromise.resolve();
                 }
+
                 if (message.type === IFRAME.ERROR) {
                     iframe.initPromise.reject(message.payload.error as any);
                 }
@@ -193,6 +199,7 @@ export class CoreInIframe implements ConnectFactoryDependencies {
             if (!this._popupManager) {
                 this._popupManager = this.initPopupManager();
             }
+
             this._popupManager.request();
 
             // auto init with default settings
@@ -232,6 +239,7 @@ export class CoreInIframe implements ConnectFactoryDependencies {
             const { promiseId, promise } = this._messagePromises.create();
             iframe.postMessage({ id: promiseId, type: IFRAME.CALL, payload: params });
             const response = await promise;
+
             if (response) {
                 if (
                     !response.success &&
@@ -243,6 +251,7 @@ export class CoreInIframe implements ConnectFactoryDependencies {
 
                 return response;
             }
+
             if (this._popupManager) {
                 this._popupManager.unlock();
             }
@@ -250,6 +259,7 @@ export class CoreInIframe implements ConnectFactoryDependencies {
             return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
         } catch (error) {
             this._log.error('__call error', error);
+
             if (this._popupManager) {
                 this._popupManager.clear(false);
             }
@@ -262,6 +272,7 @@ export class CoreInIframe implements ConnectFactoryDependencies {
         if (!iframe.instance) {
             throw ERRORS.TypedError('Init_NotInitialized');
         }
+
         iframe.postMessage(response);
     }
 
@@ -276,6 +287,7 @@ export class CoreInIframe implements ConnectFactoryDependencies {
             // TODO: set message listener only if iframe is loaded correctly
             const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
                 const { data } = event;
+
                 if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
                     try {
                         const payload = await callback();
@@ -312,6 +324,7 @@ export class CoreInIframe implements ConnectFactoryDependencies {
         if (!iframe.instance) {
             throw ERRORS.TypedError('Init_NotInitialized');
         }
+
         iframe.postMessage({ type: TRANSPORT.DISABLE_WEBUSB });
     }
 

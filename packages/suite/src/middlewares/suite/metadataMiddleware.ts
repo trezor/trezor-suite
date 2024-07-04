@@ -35,6 +35,7 @@ const metadata =
                 if (api.getState().metadata.editing) {
                     api.dispatch(metadataLabelingActions.setEditing(undefined));
                 }
+
                 break;
             default:
             // no default

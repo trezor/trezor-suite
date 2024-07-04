@@ -25,16 +25,19 @@ export const useDiscovery = () => {
                 status: 'loading',
                 type: 'waiting-for-device',
             };
+
         if (device.authFailed)
             return {
                 status: 'exception',
                 type: 'auth-failed',
             };
+
         if (device.authConfirm)
             return {
                 status: 'exception',
                 type: 'auth-confirm-failed',
             };
+
         if (!device.state)
             return {
                 status: 'loading',

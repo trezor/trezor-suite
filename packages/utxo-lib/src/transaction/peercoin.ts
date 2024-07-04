@@ -68,6 +68,7 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
     tx.locktime = bufferReader.readUInt32();
 
     if (options.nostrict) return tx;
+
     if (bufferReader.offset !== buffer.length) throw new Error('Transaction has unexpected data');
 
     return tx;

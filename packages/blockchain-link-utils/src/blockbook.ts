@@ -39,12 +39,14 @@ export const filterTokenTransfers = (
     if (typeof addresses === 'string') {
         addresses = [addresses];
     }
+
     // neither addresses or transfers are missing
     if (!addresses || !Array.isArray(addresses) || !transfers || !Array.isArray(transfers))
         return [];
 
     const all: (string | null)[] = addresses.map(a => {
         if (typeof a === 'string') return a;
+
         if (typeof a === 'object' && typeof a.address === 'string') return a.address;
 
         return null;
@@ -66,6 +68,7 @@ export const filterTokenTransfers = (
             const isOutgoing = transfer.to && all.indexOf(transfer.to) >= 0;
 
             let type: TokenTransfer['type'];
+
             if (isIncoming && isOutgoing) {
                 type = 'self';
             } else if (isIncoming) {
@@ -107,6 +110,7 @@ export const filterEthereumInternalTransfers = (
                 const isOutgoing = to === address;
 
                 let type: InternalTransfer['type'];
+
                 if (isIncoming && isOutgoing) {
                     type = 'self';
                 } else if (isIncoming) {
@@ -287,6 +291,7 @@ export const transformTokenInfo = (
     tokens: BlockbookAccountInfo['tokens'],
 ): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
+
     const info = tokens.reduce((arr, token) => {
         if (token.type === 'XPUBAddress') return arr;
 
@@ -305,6 +310,7 @@ export const transformAddresses = (
     tokens: BlockbookAccountInfo['tokens'],
 ): AccountAddresses | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
+
     const addresses = tokens.reduce((arr, t) => {
         if (t.type !== 'XPUBAddress') return arr;
 
@@ -321,6 +327,7 @@ export const transformAddresses = (
     }, [] as Address[]);
 
     if (addresses.length < 1) return undefined;
+
     const internal = addresses.filter(a => a.path.split('/')[4] === '1');
     const external = addresses.filter(a => internal.indexOf(a) < 0);
 
@@ -333,6 +340,7 @@ export const transformAddresses = (
 
 export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo => {
     let page;
+
     if (typeof payload.page === 'number') {
         page = {
             index: payload.page,
@@ -340,10 +348,12 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
             total: payload.totalPages,
         };
     }
+
     // Blockbook is used for both Bitcoin-like and Ethereum-like networks; there is no parameter to distinguish them.
     // However, the nonce is specific to Ethereum, so we can determine the network type based on its availability.
     const isEVM = typeof payload.nonce === 'string';
     let misc: AccountInfo['misc'];
+
     if (isEVM) {
         misc = {
             nonce: payload.nonce,
@@ -359,6 +369,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     const unconfirmedBalance = new BigNumber(payload.unconfirmedBalance);
 
     let availableBalance = payload.balance;
+
     if (!unconfirmedBalance.isNaN()) {
         if (!isEVM) {
             availableBalance = unconfirmedBalance.plus(payload.balance).toString();
@@ -370,6 +381,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
             availableBalance = unconfirmedBalance.plus(payload.balance).toString();
         }
     }
+
     const empty =
         payload.txs === 0 &&
         payload.unconfirmedTxs === 0 &&

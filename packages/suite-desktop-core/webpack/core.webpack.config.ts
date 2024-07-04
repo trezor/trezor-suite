@@ -69,7 +69,9 @@ const config: webpack.Configuration = {
         filename: '[name].js',
         chunkFilename: a => {
             const chunkName = a.chunk?.name;
+
             if (chunkName && /-worker$/.test(chunkName)) return `workers/${chunkName}.js`;
+
             if (chunkName && /-api$/.test(chunkName)) return `coins/${chunkName}.js`;
 
             return '[name].js';

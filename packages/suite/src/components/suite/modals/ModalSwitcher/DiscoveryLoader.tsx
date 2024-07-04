@@ -18,6 +18,7 @@ const Expand = styled.div`
 
 export const DiscoveryLoader = () => {
     const device = useSelector(selectDevice);
+
     if (!device) return null;
 
     return (

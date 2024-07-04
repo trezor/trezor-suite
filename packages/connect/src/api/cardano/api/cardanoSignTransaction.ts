@@ -113,6 +113,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
                 // @ts-expect-error
                 payload.auxiliaryData.catalystRegistrationParameters;
         }
+
         // @ts-expect-error
         if (payload.auxiliaryData && payload.auxiliaryData.governanceRegistrationParameters) {
             console.warn(
@@ -135,11 +136,13 @@ export default class CardanoSignTransaction extends AbstractMethod<
         const outputsWithData = payload.outputs.map(transformOutput);
 
         let certificatesWithPoolOwnersAndRelays: CertificateWithPoolOwnersAndRelays[] = [];
+
         if (payload.certificates) {
             certificatesWithPoolOwnersAndRelays = payload.certificates.map(transformCertificate);
         }
 
         let withdrawals: PROTO.CardanoTxWithdrawal[] = [];
+
         if (payload.withdrawals) {
             withdrawals = payload.withdrawals.map(withdrawal => ({
                 path: withdrawal.path ? validatePath(withdrawal.path, 5) : undefined,
@@ -150,16 +153,19 @@ export default class CardanoSignTransaction extends AbstractMethod<
         }
 
         let mint: AssetGroupWithTokens[] = [];
+
         if (payload.mint) {
             mint = tokenBundleToProto(payload.mint);
         }
 
         let auxiliaryData;
+
         if (payload.auxiliaryData) {
             auxiliaryData = transformAuxiliaryData(payload.auxiliaryData);
         }
 
         let additionalWitnessRequests: Path[] = [];
+
         if (payload.additionalWitnessRequests) {
             additionalWitnessRequests = payload.additionalWitnessRequests.map(witnessRequest =>
                 validatePath(witnessRequest, 3),
@@ -167,11 +173,13 @@ export default class CardanoSignTransaction extends AbstractMethod<
         }
 
         let collateralInputsWithPath: CollateralInputWithPath[] = [];
+
         if (payload.collateralInputs) {
             collateralInputsWithPath = payload.collateralInputs.map(transformCollateralInput);
         }
 
         let requiredSigners: PROTO.CardanoTxRequiredSigner[] = [];
+
         if (payload.requiredSigners) {
             requiredSigners = payload.requiredSigners.map(requiredSigner => ({
                 key_path: requiredSigner.keyPath
@@ -186,6 +194,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             : undefined;
 
         let referenceInputs: PROTO.CardanoTxReferenceInput[] = [];
+
         if (payload.referenceInputs) {
             referenceInputs = payload.referenceInputs.map(transformReferenceInput);
         }
@@ -324,8 +333,10 @@ export default class CardanoSignTransaction extends AbstractMethod<
         }
         // auxiliary data
         let auxiliaryDataSupplement: CardanoAuxiliaryDataSupplement | undefined;
+
         if (this.params.auxiliaryData) {
             const { cvote_registration_parameters } = this.params.auxiliaryData;
+
             if (cvote_registration_parameters) {
                 this.params.auxiliaryData = modifyAuxiliaryDataForBackwardsCompatibility(
                     this.params.auxiliaryData,
@@ -340,6 +351,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
 
             // TODO: https://github.com/trezor/trezor-suite/issues/5299
             const auxiliaryDataType: any = PROTO.CardanoTxAuxiliaryDataSupplementType[message.type];
+
             if (auxiliaryDataType !== PROTO.CardanoTxAuxiliaryDataSupplementType.NONE) {
                 auxiliaryDataSupplement = {
                     type: auxiliaryDataType,
@@ -353,8 +365,10 @@ export default class CardanoSignTransaction extends AbstractMethod<
                     governanceSignature: message.cvote_registration_signature,
                 };
             }
+
             await typedCall('CardanoTxHostAck', 'CardanoTxItemAck');
         }
+
         // mint
         if (this.params.mint.length > 0) {
             await typedCall('CardanoTxMint', 'CardanoTxItemAck', {
@@ -370,6 +384,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
                 }
             }
         }
+
         // collateral inputs
         for (const { collateralInput } of this.params.collateralInputsWithPath) {
             await typedCall('CardanoTxCollateralInput', 'CardanoTxItemAck', collateralInput);
@@ -378,10 +393,12 @@ export default class CardanoSignTransaction extends AbstractMethod<
         for (const requiredSigner of this.params.requiredSigners) {
             await typedCall('CardanoTxRequiredSigner', 'CardanoTxItemAck', requiredSigner);
         }
+
         // collateral return
         if (this.params.collateralReturnWithData) {
             await sendOutput(typedCall, this.params.collateralReturnWithData);
         }
+
         // reference inputs
         for (const referenceInput of this.params.referenceInputs) {
             await typedCall('CardanoTxReferenceInput', 'CardanoTxItemAck', referenceInput);

@@ -53,9 +53,11 @@ export const Data = ({ close }: DataProps) => {
     const handleClose = () => {
         resetDefaultValue(inputAsciiName);
         resetDefaultValue(inputHexName);
+
         if (amount === '0') {
             setAmount(0, '');
         }
+
         close();
     };
 
@@ -68,11 +70,13 @@ export const Data = ({ close }: DataProps) => {
                 ),
                 { shouldValidate: true },
             );
+
             if (!event.target.value && amount === '0') {
                 setAmount(0, '');
             } else if (event.target.value && amount === '') {
                 setAmount(0, '0');
             }
+
             composeTransaction(isHex ? inputHexName : inputAsciiName);
         };
 
@@ -85,6 +89,7 @@ export const Data = ({ close }: DataProps) => {
             if (value && !isHexValid(value, '0x')) {
                 return translationString('DATA_NOT_VALID_HEX');
             }
+
             if (value && value.length > 8192 * 2) {
                 return translationString('DATA_HEX_TOO_BIG'); // 8192 bytes limit for protobuf single message encoding in FW
             }

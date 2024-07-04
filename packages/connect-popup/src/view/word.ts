@@ -57,6 +57,7 @@ const initWordMatrixView = (payload: UiRequestDeviceAction['payload']) => {
 
     const keyboardHandler = (event: KeyboardEvent) => {
         event.preventDefault();
+
         switch (event.keyCode) {
             // numeric and numpad
             case 49:
@@ -107,6 +108,7 @@ const initWordMatrixView = (payload: UiRequestDeviceAction['payload']) => {
         buttons.item(i).addEventListener('click', (event: Event) => {
             if (event.target instanceof HTMLElement) {
                 const val = event.target.getAttribute('data-value');
+
                 if (val) {
                     submit(val);
                 }

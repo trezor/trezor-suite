@@ -22,6 +22,7 @@ export const formatDurationStrict = (seconds: number, locale?: Locale) =>
 
 export const calcTicks = (startDate: Date, endDate: Date) => {
     let timestamps = [];
+
     if (differenceInMonths(endDate, startDate) <= 1) {
         timestamps = eachDayOfInterval({ start: startDate, end: endDate });
     } else {
@@ -33,6 +34,7 @@ export const calcTicks = (startDate: Date, endDate: Date) => {
 
 export const calcTicksFromData = (data: { time: number }[]) => {
     if (!data || data.length < 1) return [];
+
     const startDate = data.reduce(
         (min, current) => (current.time < min ? current.time : min),
         data[0].time,
@@ -78,6 +80,7 @@ export const calcTicksFromData = (data: { time: number }[]) => {
  */
 export const getBlockbookSafeTime = (timestamp?: number) => {
     const currentTimestamp = getUnixTime(new Date());
+
     if (timestamp && differenceInMinutes(currentTimestamp * 1000, timestamp * 1000) > 3) {
         // timestamp is older than 3 mins, no adjustment needed
         return timestamp;
@@ -99,6 +102,7 @@ export const resetTime = (ts: number, resetDay?: boolean) => {
     let sanitizedTimestamp = fromUnixTime(ts);
 
     sanitizedTimestamp = startOfDay(sanitizedTimestamp);
+
     if (resetDay) {
         sanitizedTimestamp = startOfMonth(sanitizedTimestamp);
     }
@@ -124,6 +128,7 @@ export const resetUTCTime = (ts: number, resetDay?: boolean) => {
     if (resetDay) {
         sanitizedTimestamp = fromUnixTime(sanitizedTimestamp.setUTCDate(1) / 1000);
     }
+
     const sanitizedUnixTimestamp = getUnixTime(sanitizedTimestamp);
 
     return sanitizedUnixTimestamp;

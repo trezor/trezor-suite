@@ -67,12 +67,14 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             timer.loading();
             invityAPI.createInvityAPIKey(account.descriptor);
             const allQuotes = await invityAPI.getSellQuotes(quotesRequest);
+
             if (Array.isArray(allQuotes)) {
                 if (allQuotes.length === 0) {
                     timer.stop();
 
                     return;
                 }
+
                 const [quotes, alternativeQuotes] = processQuotes(allQuotes);
                 setInnerQuotes(quotes);
                 setInnerAlternativeQuotes(alternativeQuotes);
@@ -80,6 +82,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                 setInnerQuotes(undefined);
                 setInnerAlternativeQuotes(undefined);
             }
+
             timer.reset();
         }
     }, [account.descriptor, quotesRequest, selectedQuote, timer]);
@@ -105,6 +108,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
             dispatch(setIsFromRedirect(false));
         }
+
         if (!timer.isLoading && !timer.isStopped) {
             if (timer.resetCount >= 40) {
                 timer.stop();
@@ -131,7 +135,9 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             sellInfo?.providerInfos && quote.exchange
                 ? sellInfo.providerInfos[quote.exchange]
                 : undefined;
+
         if (!quotesRequest || !provider) return;
+
         setCallInProgress(true);
         // orderId is part of the quote link if redirect to payment gate with a concrete quote
         // without the orderId the return link will point to offers
@@ -147,6 +153,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             returnUrl,
         });
         setCallInProgress(false);
+
         if (response) {
             if (response.trade.error && response.trade.status !== 'LOGIN_REQUEST') {
                 console.log(`[doSellTrade] ${response.trade.error}`);
@@ -159,6 +166,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
                 return undefined;
             }
+
             if (
                 response.trade.status === 'LOGIN_REQUEST' ||
                 response.trade.status === 'SITE_ACTION_REQUEST' ||
@@ -170,6 +178,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                     setSelectedQuote(response.trade);
                     setSellStep('SEND_TRANSACTION');
                 }
+
                 dispatch(submitRequestForm(response.tradeForm?.form));
 
                 return undefined;
@@ -177,6 +186,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
             return response.trade;
         }
+
         const errorMessage = 'No response from the server';
         console.log(`[doSellTrade] ${errorMessage}`);
         dispatch(
@@ -192,6 +202,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             sellInfo?.providerInfos && quote.exchange
                 ? sellInfo.providerInfos[quote.exchange]
                 : null;
+
         // for BANK_ACCOUNT flow a message is shown if bank account is not verified
         if (provider?.flow === 'BANK_ACCOUNT') {
             return (
@@ -212,6 +223,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             const result = await dispatch(
                 openCoinmarketSellConfirmModal(provider?.companyName, quote.cryptoCurrency),
             );
+
             if (result) {
                 // empty quoteId means the partner requests login first, requestTrade to get login screen
                 if (!quote.quoteId || needToRegisterOrVerifyBankAccount(quote)) {
@@ -226,8 +238,10 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
     const confirmTrade = async (bankAccount: BankAccount) => {
         if (!selectedQuote) return;
+
         const quote = { ...selectedQuote, bankAccount };
         const response = await doSellTrade(quote);
+
         if (response) {
             setSelectedQuote(response);
             setSellStep('SEND_TRANSACTION');
@@ -236,6 +250,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
     const addBankAccount = async () => {
         if (!selectedQuote) return;
+
         await doSellTrade(selectedQuote);
     };
 
@@ -243,6 +258,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         // destinationAddress may be set by useWatchSellTrade hook to the trade object
         const destinationAddress =
             selectedQuote?.destinationAddress || trade?.data?.destinationAddress;
+
         if (
             selectedQuote &&
             selectedQuote.orderId &&
@@ -260,6 +276,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                 cryptoStringAmount,
                 destinationPaymentExtraId,
             );
+
             if (result?.success) {
                 // send txid to the server as confirmation
                 const { txid } = result.payload;
@@ -270,6 +287,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                     destinationPaymentExtraId,
                 };
                 const response = await invityAPI.doSellConfirm(quote);
+
                 if (!response) {
                     dispatch(
                         notificationsActions.addToast({
@@ -336,6 +354,7 @@ CoinmarketSellOffersContext.displayName = 'CoinmarketSellOffersContext';
 
 export const useCoinmarketSellOffersContext = () => {
     const context = useContext(CoinmarketSellOffersContext);
+
     if (context === null) throw Error('CoinmarketSellOffersContext used without Context');
 
     return context;

@@ -45,6 +45,7 @@ export const removeDraft =
     (prefix: FormDraftKeyPrefix) => (key: string) => (dispatch: Dispatch, getState: GetState) => {
         const { formDrafts } = getState().wallet;
         const formDraftKey = getFormDraftKey(prefix, key);
+
         if (formDrafts[formDraftKey]) {
             dispatch({
                 type: FORM_DRAFT.REMOVE_DRAFT,

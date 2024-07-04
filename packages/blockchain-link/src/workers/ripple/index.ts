@@ -22,6 +22,7 @@ const transformError = (error: any) => {
     if (error instanceof RippleError) {
         const code =
             error.name === 'TimeoutError' ? 'websocket_timeout' : 'websocket_error_message';
+
         if (error.data) {
             return new CustomError(code, `${error.name} ${error.data.error_message}`);
         }
@@ -126,6 +127,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
                 payload: account,
             } as const;
         }
+
         throw error;
     }
 
@@ -199,6 +201,7 @@ const pushTransaction = async ({ connect, payload }: Request<MessageTypes.PushTr
             payload: info.tx_json.hash,
         } as const;
     }
+
     throw new Error(info.resultMessage);
 };
 
@@ -208,9 +211,11 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
     // investigate more...
     let drops = api.xrpToDrops(fee);
+
     if (new BigNumber(drops).gt('2000')) {
         drops = '12';
     }
+
     const payload =
         request.payload && Array.isArray(request.payload.blocks)
             ? request.payload.blocks.map(() => ({ feePerUnit: drops }))
@@ -238,8 +243,10 @@ const onNewBlock = ({ post }: Context, event: any) => {
 
 const onTransaction = ({ state, post }: Context, event: any) => {
     if (event.type !== 'transaction') return;
+
     // ignore transactions other than Payment
     const tx = event.transaction;
+
     if (event.transaction.TransactionType !== 'Payment') return;
 
     const notify = (descriptor: string) => {
@@ -258,8 +265,11 @@ const onTransaction = ({ state, post }: Context, event: any) => {
 
     const subscribed = state.getAddresses();
     const sent = subscribed.find(a => a === tx.Account);
+
     if (sent) notify(sent);
+
     const recv = subscribed.find(a => a === tx.Destination);
+
     if (recv) notify(recv);
 };
 
@@ -270,11 +280,13 @@ const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo
     const prevAddresses = state.getAddresses();
     state.addAccounts(accounts);
     const uniqueAddresses = state.getAddresses().filter(a => prevAddresses.indexOf(a) < 0);
+
     if (uniqueAddresses.length > 0) {
         if (!state.getSubscription('notification')) {
             api.connection.on('transaction', ev => onTransaction(ctx, ev));
             state.addSubscription('notification');
         }
+
         await api.request('subscribe', {
             accounts_proposed: uniqueAddresses,
         });
@@ -295,6 +307,7 @@ const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
             // api.connection.on('ledgerClosed', onLedgerClosed);
             state.addSubscription('transaction');
         }
+
         const request = {
             // accounts: uniqueAddresses,
             accounts_proposed: uniqueAddresses,
@@ -322,6 +335,7 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
     const { payload } = request;
 
     let response: { subscribed: boolean };
+
     if (payload.type === 'accounts') {
         response = await subscribeAccounts(request, payload.accounts);
     } else if (payload.type === 'addresses') {
@@ -341,6 +355,7 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
 const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: string[]) => {
     // remove accounts
     const api = await connect();
+
     if (!addresses) {
         const all = state.getAddresses();
         state.removeAccounts(state.getAccounts());
@@ -354,6 +369,7 @@ const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: str
             accounts_proposed: addresses,
         });
     }
+
     if (state.getAccounts().length < 1) {
         // there are no subscribed addresses left
         // remove listeners
@@ -374,6 +390,7 @@ const unsubscribeAccounts = async (ctx: Context, accounts?: SubscriptionAccountI
 
 const unsubscribeBlock = async ({ state, connect }: Context) => {
     if (!state.getSubscription('ledger')) return;
+
     const api = await connect();
     api.removeAllListeners('ledger');
     state.removeSubscription('ledger');
@@ -424,9 +441,11 @@ class RippleWorker extends BaseWorker<RippleAPI> {
         if (this.pingTimeout) {
             clearTimeout(this.pingTimeout);
         }
+
         if (this.api) {
             this.api.removeAllListeners();
         }
+
         super.cleanup();
     }
 
@@ -440,12 +459,14 @@ class RippleWorker extends BaseWorker<RippleAPI> {
             timeout: this.settings.timeout || DEFAULT_TIMEOUT, // timeout is used for request and heartbeat (ping), see node_modules/ripple-lib/dist/npm/common/connection.js
             connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT, // connectionTimeout is used only for connection
         };
+
         // proxy agent is available only in suite because of the patch.
         // it will fail in standalone trezor-connect implementation where this patch is not present.
         // TODO: https://github.com/trezor/trezor-suite/issues/4942
         if (RippleAPI._ALLOW_AGENT) {
             options.agent = this.proxyAgent;
         }
+
         const api = new RippleAPI(options);
         // disable websocket auto reconnecting
         // workaround for RippleApi which doesn't have possibility to disable reconnection
@@ -505,6 +526,7 @@ class RippleWorker extends BaseWorker<RippleAPI> {
         if (this.pingTimeout) {
             clearTimeout(this.pingTimeout);
         }
+
         this.pingTimeout = setTimeout(
             () => this.onPing(),
             this.settings.pingTimeout || DEFAULT_PING_TIMEOUT,
@@ -520,6 +542,7 @@ class RippleWorker extends BaseWorker<RippleAPI> {
             } catch (error) {
                 this.debug(`Error in timeout ping request: ${error}`);
             }
+
             // reset timeout
             this.setPingTimeout();
         } else {

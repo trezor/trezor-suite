@@ -63,6 +63,7 @@ export const replaceTransactionThunk = createThunk(
         const actions = origTransactions.flatMap(origTx => {
             let newTx: WalletAccountTransaction;
             const affectedAccount = selectAccountByKey(getState(), origTx.key);
+
             if (!affectedAccount) return []; // skip, highly unlikely
 
             if (signedTransaction) {
@@ -136,6 +137,7 @@ export const addFakePendingTxThunk = createThunk(
                     findAccountsByAddress(account.symbol, output.addresses[0], accounts).forEach(
                         affectedAccount => {
                             if (affectedAccount.key === account.key) return accounts;
+
                             if (!result[affectedAccount.key]) {
                                 result[affectedAccount.key] = affectedAccount;
                             }
@@ -151,6 +153,7 @@ export const addFakePendingTxThunk = createThunk(
 
         Object.keys(affectedAccounts).forEach(key => {
             const affectedAccount = affectedAccounts[key];
+
             if (!precomposedTransaction.prevTxid) {
                 // create and profile pending transaction for affected account if it's not a replacement tx
                 const affectedAccountTransaction = blockbookUtils.transformTransaction(
@@ -250,9 +253,11 @@ export const fetchTransactionsPageThunk = createThunk(
     ) => {
         // console.log('fetchTransactionsPageThunk', accountKey, page, perPage, forceRefetch);
         const account = selectAccountByKey(getState(), accountKey);
+
         if (!account) {
             throw new Error(`Account not found: ${accountKey}`);
         }
+
         if (!isTrezorConnectBackendType(account.backendType)) {
             throw new Error(`Unsupported backend type: ${account.backendType}`);
         }
@@ -320,6 +325,7 @@ export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk(
         { dispatch, getState, signal },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
+
         if (!account) {
             throw new Error(`Account not found: ${accountKey}`);
         }

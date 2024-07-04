@@ -50,6 +50,7 @@ const isValidChildrenElement = (children: Array<React.ReactNode>) =>
             if (child.type === Button || child.type === IconButton) {
                 return true;
             }
+
             if (child.type === Tooltip && React.isValidElement(child.props.children)) {
                 const tooltipChild = child.props.children;
 

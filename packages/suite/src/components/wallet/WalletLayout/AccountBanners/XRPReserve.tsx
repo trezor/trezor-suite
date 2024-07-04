@@ -10,6 +10,7 @@ interface XRPReserveProps {
 
 export const XRPReserve = ({ account }: XRPReserveProps) => {
     if (account?.networkType !== 'ripple') return null;
+
     const bigBalance = new BigNumber(account.balance);
     const bigReserve = new BigNumber(account.misc.reserve);
 

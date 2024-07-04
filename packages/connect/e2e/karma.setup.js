@@ -8,7 +8,9 @@ jasmine.getEnv().beforeAll(() => {
         toMatchObject: _obj => ({
             compare: (actual, expected) => {
                 const success = { pass: true, message: 'passed' };
+
                 if (actual === expected) return success;
+
                 if (expected === null || typeof expected !== 'object') {
                     return {
                         pass: false,

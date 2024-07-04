@@ -41,6 +41,7 @@ export const useCoinmarketRecomposeAndSign = () => {
 
                 return;
             }
+
             // prepare the fee levels, set custom values from composed
             // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
             const formValues: FormState = {
@@ -79,6 +80,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                         formState: formState as UseSendFormState,
                     }),
                 ).unwrap();
+
                 if (
                     !normalLevels ||
                     !normalLevels.normal ||
@@ -86,6 +88,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                     !normalLevels.normal.feeLimit
                 ) {
                     let errorMessage: string | undefined;
+
                     if (
                         normalLevels?.normal?.type === 'error' &&
                         normalLevels?.normal?.errorMessage
@@ -95,9 +98,11 @@ export const useCoinmarketRecomposeAndSign = () => {
                             normalLevels.normal.errorMessage.values as { [key: string]: any },
                         );
                     }
+
                     if (!errorMessage) {
                         errorMessage = 'Missing fee level';
                     }
+
                     dispatch(
                         notificationsActions.addToast({
                             type: 'sign-tx-error',
@@ -107,6 +112,7 @@ export const useCoinmarketRecomposeAndSign = () => {
 
                     return;
                 }
+
                 formValues.feeLimit = normalLevels.normal.feeLimit;
             }
 
@@ -114,6 +120,7 @@ export const useCoinmarketRecomposeAndSign = () => {
             const composedLevels = await dispatch(
                 composeSendFormTransactionThunk({ formValues, formState }),
             ).unwrap();
+
             if (!selectedFee || !composedLevels) {
                 dispatch(
                     notificationsActions.addToast({
@@ -124,19 +131,23 @@ export const useCoinmarketRecomposeAndSign = () => {
 
                 return;
             }
+
             const precomposedToSign = composedLevels[selectedFee];
 
             if (!precomposedToSign || precomposedToSign.type !== 'final') {
                 let errorMessage: string | undefined;
+
                 if (precomposedToSign?.type === 'error' && precomposedToSign.errorMessage) {
                     errorMessage = translationString(
                         precomposedToSign.errorMessage.id,
                         precomposedToSign.errorMessage.values as { [key: string]: any },
                     );
                 }
+
                 if (!errorMessage) {
                     errorMessage = 'Cannot create transaction';
                 }
+
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',

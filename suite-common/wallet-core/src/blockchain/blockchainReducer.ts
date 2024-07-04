@@ -34,6 +34,7 @@ export type BlockchainRootState = { wallet: { blockchain: BlockchainState } };
 export const blockchainInitialState: BlockchainNetworks = networksCompatibility.reduce(
     (state, network) => {
         if (network.accountType) return state;
+
         state[network.symbol] = {
             connected: false,
             explorer: network.explorer,
@@ -72,6 +73,7 @@ const writeIdentityConnection = (
 
 const connect = (draft: BlockchainState, info: BlockchainInfo) => {
     const network = getNetwork(info.coin.shortcut.toLowerCase());
+
     if (!network) return;
 
     if (info.identity) {
@@ -122,6 +124,7 @@ const error = (draft: BlockchainState, payload: BlockchainError) => {
         coin: { shortcut: symbol },
     } = payload;
     const network = getNetwork(symbol.toLowerCase());
+
     if (!network) return;
 
     if (identity) {
@@ -139,6 +142,7 @@ const error = (draft: BlockchainState, payload: BlockchainError) => {
 
 const update = (draft: BlockchainState, block: BlockchainBlock) => {
     const network = getNetwork(block.coin.shortcut.toLowerCase());
+
     if (!network) return;
 
     draft[network.symbol] = {
@@ -150,6 +154,7 @@ const update = (draft: BlockchainState, block: BlockchainBlock) => {
 
 const reconnecting = (draft: BlockchainState, payload: BlockchainReconnecting) => {
     const network = getNetwork(payload.coin.shortcut.toLowerCase());
+
     if (!network) return;
 
     if (payload.identity) {
@@ -173,6 +178,7 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
             })
             .addCase(blockchainActions.setBackend, (state, action) => {
                 const { coin, type } = action.payload;
+
                 if (type === 'default') {
                     delete state[coin].backends.selected;
                 } else if (!action.payload.urls.length) {
@@ -230,6 +236,7 @@ export const selectBlockchainHeightBySymbol = memoizeWithArgs(
 export const selectBlockchainExplorerBySymbol = memoizeWithArgs(
     (state: BlockchainRootState, symbol?: NetworkSymbol) => {
         if (!symbol) return null;
+
         const blockchain = selectNetworkBlockchainInfo(symbol)(state);
 
         return blockchain.explorer;

@@ -41,6 +41,7 @@ export const LoadingLine = ({
         if (progress.value < 1) {
             return rect(0, 0, width * progress.value, height);
         }
+
         const x = interpolate(progress.value, [1, 2], [0, width]);
 
         return rect(x, 0, width, height);
@@ -48,6 +49,7 @@ export const LoadingLine = ({
 
     const compensatedStrokeWidth = useMemo(() => {
         if (!defaultPathFigma) return DEFAULT_STROKE_WIDTH;
+
         // Fitbox will scale the path to fit the screen, so we need to compensate for the stroke width
         const defaultPathBounds = defaultPathFigma.getBounds();
         const strokeChangeRatio = defaultPathBounds.width / width;

@@ -99,10 +99,12 @@ describe('Check device authenticity', () => {
 
             const actions = store.getActions();
             const expectedActions = [checkDeviceAuthenticityThunk.pending.type];
+
             if (f.expectedToastType) {
                 expectedActions.splice(1, 0, notificationsActions.addToast.type);
                 expect(actions[1].payload.type).toBe(f.expectedToastType);
             }
+
             if (f.device) {
                 expectedActions.push(deviceAuthenticityActions.result.type);
                 expectedActions.push(checkDeviceAuthenticityThunk.fulfilled.type);
@@ -110,6 +112,7 @@ describe('Check device authenticity', () => {
             } else {
                 expectedActions.push(checkDeviceAuthenticityThunk.rejected.type);
             }
+
             expect(actions.map(action => action.type)).toEqual(expectedActions);
         });
     });

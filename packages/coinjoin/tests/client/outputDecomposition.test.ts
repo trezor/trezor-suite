@@ -45,9 +45,11 @@ describe('outputRegistration', () => {
                         OutputAmounts: f.outputAmounts,
                     });
                 }
+
                 if (url.endsWith('/credential-issuance')) {
                     spy();
                 }
+
                 resolve();
             });
 

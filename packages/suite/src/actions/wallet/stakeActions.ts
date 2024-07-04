@@ -22,6 +22,7 @@ import { openModal } from '../suite/modalActions';
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) => (dispatch: Dispatch) => {
         const { account } = formState;
+
         if (account.networkType === 'ethereum') {
             return dispatch(stakeFormEthereumActions.composeTransaction(formValues, formState));
         }
@@ -34,16 +35,19 @@ export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getS
     const { serializedTx, precomposedForm } = getState().wallet.stake;
     dispatch(stakeActions.requestSignTransaction());
     dispatch(stakeActions.requestPushTransaction());
+
     // if transaction is not signed yet interrupt signing in TrezorConnect
     if (!serializedTx) {
         TrezorConnect.cancel('tx-cancelled');
 
         return;
     }
+
     // otherwise just close modal and open stake modal
     dispatch(modalActions.onCancel());
 
     const { ethereumStakeType } = precomposedForm ?? {};
+
     if (ethereumStakeType && !isSuccessTx) {
         dispatch(openModal({ type: ethereumStakeType }));
     }
@@ -55,6 +59,7 @@ const pushTransaction =
         const { serializedTx, precomposedTx } = getState().wallet.stake;
         const { account } = getState().wallet.selectedAccount;
         const device = selectDevice(getState());
+
         if (!serializedTx || !precomposedTx || !account) return;
 
         const sentTx = await TrezorConnect.pushTransaction({
@@ -90,6 +95,7 @@ const pushTransaction =
                     }),
                 );
             }
+
             if (stakeType === 'unstake') {
                 dispatch(
                     notificationsActions.addToast({
@@ -98,6 +104,7 @@ const pushTransaction =
                     }),
                 );
             }
+
             if (stakeType === 'claim') {
                 dispatch(
                     notificationsActions.addToast({
@@ -169,6 +176,7 @@ export const signTransaction =
 
         // signTransaction by Trezor
         let serializedTx: string | undefined;
+
         if (account.networkType === 'ethereum') {
             serializedTx = await dispatch(
                 stakeFormEthereumActions.signTransaction(formValues, enhancedTxInfo),
@@ -180,6 +188,7 @@ export const signTransaction =
             dispatch(modalActions.onCancel());
 
             const { ethereumStakeType } = formValues;
+
             if (ethereumStakeType) {
                 dispatch(openModal({ type: ethereumStakeType }));
             }
@@ -199,6 +208,7 @@ export const signTransaction =
         const decision = await dispatch(
             modalActions.openDeferredModal({ type: 'review-transaction' }),
         );
+
         if (decision) {
             // push tx to the network
             return dispatch(pushTransaction(formValues.ethereumStakeType));

@@ -93,7 +93,9 @@ export const updateFeeInfoThunk = createThunk(
             selectors: { selectFeeInfo },
         } = extra;
         const network = getNetwork(symbol.toLowerCase());
+
         if (!network) return;
+
         const blockchainInfo = selectNetworkBlockchainInfo(network.symbol)(getState());
         const feeInfo = selectFeeInfo(network.symbol)(getState());
 
@@ -116,6 +118,7 @@ export const updateFeeInfoThunk = createThunk(
                     },
                 },
             });
+
             if (result.success) {
                 newFeeInfo = {
                     ...result.payload,
@@ -133,6 +136,7 @@ export const updateFeeInfoThunk = createThunk(
                     feeLevels: 'smart',
                 },
             });
+
             if (result.success) {
                 newFeeInfo = {
                     ...result.payload,
@@ -199,6 +203,7 @@ export const initBlockchainThunk = createThunk(
         await setBackendsToConnect(backends);
 
         const accounts = selectAccounts(getState());
+
         if (accounts.length <= 0) {
             // continue suite initialization
             return;
@@ -238,6 +243,7 @@ export const subscribeBlockchainThunk = createThunk(
             symbol,
             selectAccounts(getState()),
         ).filter(a => isTrezorConnectBackendType(a.backendType)); // do not subscribe accounts with unsupported backend type
+
         if (!accountsToSubscribe.length) return;
 
         const paramsArray = useIdentities
@@ -340,6 +346,7 @@ export const onBlockchainConnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
     async (symbol: string, { dispatch }) => {
         const network = getNetwork(symbol.toLowerCase());
+
         if (!network) return;
 
         await dispatch(
@@ -382,12 +389,14 @@ export const onBlockchainNotificationThunk = createThunk(
         } = extra;
         const { descriptor, tx } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();
+
         if (!isNetworkSymbol(symbol)) {
             return;
         }
 
         const networkAccounts = findAccountsByNetwork(symbol, selectAccounts(getState()));
         const accounts = findAccountsByDescriptor(descriptor, networkAccounts);
+
         if (!accounts.length) {
             return;
         }
@@ -434,6 +443,7 @@ export const onBlockchainDisconnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainDisconnectThunk`,
     (error: BlockchainError, { getState }) => {
         const network = getNetwork(error.coin.shortcut.toLowerCase());
+
         if (!network) return;
 
         const blockchain = selectBlockchainState(getState());

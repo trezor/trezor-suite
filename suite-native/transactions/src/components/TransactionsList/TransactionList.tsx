@@ -157,6 +157,7 @@ export const TransactionList = ({
         } catch (e) {
             // Do nothing
         }
+
         // It's usually too fast so loading indicator only flashes for a moment, which is not nice
         setTimeout(() => setIsRefreshing(false), 1500);
     }, [dispatch, accountKey, fetchTransactions]);
@@ -193,6 +194,7 @@ export const TransactionList = ({
             if (typeof item === 'string') {
                 return renderSectionHeader({ section: { monthKey: item } });
             }
+
             const isFirstInSection = typeof data.at(index - 1) === 'string';
             const isLastInSection =
                 typeof data.at(index + 1) === 'string' || index === data.length - 1;

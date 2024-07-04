@@ -81,11 +81,13 @@ export class Blockchain {
         this.onDisconnected = options.onDisconnected;
 
         const { blockchainLink } = options.coinInfo;
+
         if (!blockchainLink) {
             throw ERRORS.TypedError('Backend_NotSupported');
         }
 
         const worker = getWorker(blockchainLink.type);
+
         if (!worker) {
             throw ERRORS.TypedError(
                 'Backend_WorkerMissing',
@@ -126,6 +128,7 @@ export class Blockchain {
     /** should be called only once, from Blockchain.init() method */
     private async initLink() {
         let info;
+
         try {
             await this.link.connect();
             info = await this.link.getInfo();
@@ -223,16 +226,19 @@ export class Blockchain {
         const { blocks } = request;
         // cache should be used if there is no specific data (ethereum case) and requested blocks are already cached/downloaded
         const useCache = !request.specific && Array.isArray(blocks) && blocks.length > 0;
+
         if (useCache) {
             // estimated fee levels cache is valid for 20 minutes
             const outdated = Date.now() - this.feeTimestamp > 20 * 60 * 1000;
             const unknownBlocks = outdated
                 ? blocks
                 : blocks.filter(block => !this.feeForBlock[block]);
+
             if (unknownBlocks.length < 1) {
                 // all requested blocks are valid an known, return cached result
                 return blocks.map(block => this.feeForBlock[block]);
             }
+
             // reset old values
             this.feeForBlock = [];
             // get new values

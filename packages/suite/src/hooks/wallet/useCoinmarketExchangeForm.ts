@@ -136,6 +136,7 @@ export const useCoinmarketExchangeForm = ({
                 accounts,
                 chunkify,
             );
+
             if (initState?.formValues && address) {
                 initState.formValues.outputs[0].address = address;
 
@@ -241,7 +242,9 @@ export const useCoinmarketExchangeForm = ({
     const updateFiatValue = useCallback(
         (amount: string) => {
             const currency: { value: string; label: string } | undefined = getValues(FIAT_CURRENCY);
+
             if (!fiatRate?.rate || !currency) return;
+
             const cryptoAmount =
                 amount && shouldSendInSats ? formatAmount(amount, network.decimals) : amount;
             const fiatValue = toFiatCurrency(cryptoAmount, fiatRate.rate, 2);
@@ -252,10 +255,12 @@ export const useCoinmarketExchangeForm = ({
 
     const updateFiatCurrency = (currency: { label: string; value: string }, rate: number) => {
         if (!rate || !currency) return;
+
         const amount = getValues(CRYPTO_INPUT) as string;
         const formattedAmount = new BigNumber(
             shouldSendInSats ? formatAmount(amount, network.decimals) : amount,
         );
+
         if (
             formattedAmount &&
             !formattedAmount.isNaN() &&
@@ -271,7 +276,9 @@ export const useCoinmarketExchangeForm = ({
 
     const updateSendCryptoValue = (amount: string, decimals: number) => {
         const currency: { value: string; label: string } | undefined = getValues(FIAT_CURRENCY);
+
         if (!fiatRate?.rate || !currency) return;
+
         const cryptoValue = fromFiatCurrency(amount, decimals, fiatRate.rate);
         const formattedCryptoValue =
             cryptoValue && shouldSendInSats
@@ -301,10 +308,12 @@ export const useCoinmarketExchangeForm = ({
 
     useEffect(() => {
         if (!composedLevels) return;
+
         const values = getValues();
         const { setMaxOutputId } = values;
         const selectedFeeLevel = selectedFee || 'normal';
         const composed = composedLevels[selectedFeeLevel];
+
         if (!composed) return;
 
         if (composed.type === 'error' && composed.errorMessage) {
@@ -320,6 +329,7 @@ export const useCoinmarketExchangeForm = ({
                 updateFiatValue(composed.max);
                 clearErrors(CRYPTO_INPUT);
             }
+
             dispatch(saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed }));
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
         }
@@ -337,9 +347,11 @@ export const useCoinmarketExchangeForm = ({
 
     useDidUpdate(() => {
         const cryptoInputValue = getValues(CRYPTO_INPUT) as string;
+
         if (!cryptoInputValue) {
             return;
         }
+
         const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
         const cryptoAmount = conversion(cryptoInputValue, network.decimals);
         setValue(CRYPTO_INPUT, cryptoAmount, {
@@ -356,6 +368,7 @@ export const useCoinmarketExchangeForm = ({
             unformattedOutputAmount && shouldSendInSats
                 ? formatAmount(unformattedOutputAmount, network.decimals)
                 : unformattedOutputAmount;
+
         if (formValues.receiveCryptoSelect) {
             const request: ExchangeTradeQuoteRequest = {
                 receive: formValues.receiveCryptoSelect.cryptoSymbol!,
@@ -365,8 +378,10 @@ export const useCoinmarketExchangeForm = ({
             };
             dispatch(saveQuoteRequest(request));
             const allQuotes = await invityAPI.getExchangeQuotes(request);
+
             if (Array.isArray(allQuotes)) {
                 const limits = getAmountLimits(allQuotes);
+
                 if (limits) {
                     setAmountLimits(limits);
                 } else {
@@ -422,6 +437,7 @@ export const useCoinmarketExchangeForm = ({
 
 export const useCoinmarketExchangeFormContext = () => {
     const context = useContext(ExchangeFormContext);
+
     if (context === null) throw Error('ExchangeFormContext used without Context');
 
     return context;

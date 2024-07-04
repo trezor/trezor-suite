@@ -16,6 +16,7 @@ export const useDebounce = () => {
         async <F extends AsyncFunction | SyncFunction>(fn: F): Promise<ReturnType<F>> => {
             // clear previous timeout
             if (timeout.current) clearTimeout(timeout.current);
+
             // set new timeout
             const timeoutDfd = createDeferred();
             const newTimeout = setTimeout(timeoutDfd.resolve, 300);

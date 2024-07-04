@@ -140,6 +140,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     useEffect(() => {
         if (account.networkType === 'ethereum' && !isSetMaxActive) {
             const amountValue = getValues(`outputs.${outputId}.amount`) as string;
+
             if (amountValue) setAmount(outputId, amountValue);
         }
     }, [outputId, tokenWatch, setAmount, getValues, account.networkType, isSetMaxActive]);
@@ -187,10 +188,13 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
                         );
                         // clear errors in Amount input
                         clearErrors(amountInputName);
+
                         // remove Amount if isSetMaxActive or ETH data options are enabled
                         if (isSetMaxActive || dataEnabled) setAmount(outputId, '');
+
                         // remove ETH data option
                         if (dataEnabled) toggleOption('ethereumData');
+
                         // compose (could be prevented because of Amount error from re-validation above)
                         composeTransaction(amountInputName);
                     }}

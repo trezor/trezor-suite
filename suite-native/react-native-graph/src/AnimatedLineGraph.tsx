@@ -205,6 +205,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
             // view is not yet measured!
             return;
         }
+
         if (pointsInRange.length < 1) {
             // points are still empty!
             return;
@@ -237,6 +238,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         if (gradientPath != null) {
             const previous = gradientPaths.value;
             let from: SkPath = previous.to ?? straightLine;
+
             if (previous.from != null && interpolateProgress.value < 1)
                 from = from.interpolate(previous.from, interpolateProgress.value) ?? from;
 
@@ -255,6 +257,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
 
         const previous = paths.value;
         let from: SkPath = previous.to ?? straightLine;
+
         if (previous.from != null && interpolateProgress.value < 1)
             from = from.interpolate(previous.from, interpolateProgress.value) ?? from;
 

@@ -30,14 +30,17 @@ export const initialState: MethodState = {
 // Converts the fields into a params object
 export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = {}) => {
     const params = $params;
+
     if (field.omit) {
         return params;
     }
+
     if (field.optional && ((!field.value && field.value !== 0) || field.value === '')) {
         return params;
     }
 
     let value: any;
+
     if ('defaultValue' in field) {
         if (field.defaultValue !== field.value) {
             value = field.value;
@@ -61,6 +64,7 @@ export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = 
             if (typeof field.value !== 'function') {
                 throw new Error('Invalid function');
             }
+
             value = field.value;
         } catch (error) {
             value = `Invalid function, ${error.toString()}`;
@@ -86,6 +90,7 @@ export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = 
     } else {
         value = field.value;
     }
+
     if (field.name) {
         setDeepValue(params, field.name.split('.'), value);
     } else {
@@ -128,6 +133,7 @@ export const updateParamsNested = (schema: Field<any>[]) => {
                 const batchParams = updateParamsNested(batch);
                 arr.push(batchParams);
             });
+
             if (arr.length > 0 || !field.optional) {
                 if (field.name) {
                     setDeepValue(params, field.name.split('.'), arr);
@@ -137,6 +143,7 @@ export const updateParamsNested = (schema: Field<any>[]) => {
             }
         } else if (field.type === 'union') {
             const innerParams = updateParamsNested(field.current);
+
             if (field.name) {
                 setDeepValue(params, field.name.split('.'), innerParams);
             } else {
@@ -165,6 +172,7 @@ export const setAffectedValues = (state: MethodState, field: Field<unknown>) => 
     if (!field.affect) return field;
 
     const data = field.data?.find(d => d.value === field.value);
+
     if (data && data.affectedValue) {
         const affectedFieldNames = !Array.isArray(field.affect) ? [field.affect] : field.affect;
         const values = !Array.isArray(data.affectedValue)
@@ -172,12 +180,15 @@ export const setAffectedValues = (state: MethodState, field: Field<unknown>) => 
             : data.affectedValue;
 
         let root: Field<any>[] | undefined;
+
         if (field?.path && field.path.length > 0) {
             // Resolve neihboring fields by path
             let depth = 0;
+
             while (depth < field.path.length) {
                 const key = field.path?.[depth++];
                 const bundle = state.fields.find(f => f.name === key);
+
                 if (bundle?.type === 'array' && bundle.items) {
                     const _index = field.path?.[depth++];
                     root = bundle.items?.find((_batch, index) => index === _index);
@@ -191,8 +202,10 @@ export const setAffectedValues = (state: MethodState, field: Field<unknown>) => 
 
         affectedFieldNames.forEach((af, index) => {
             const affectedField = root?.find(f => f.name === af);
+
             if (affectedField && isFieldBasic(affectedField)) {
                 affectedField.value = values[index];
+
                 if (state.name === 'composeTransaction') {
                     affectedField.value = values;
                 }
@@ -200,6 +213,7 @@ export const setAffectedValues = (state: MethodState, field: Field<unknown>) => 
         });
     } else if (field.affect && typeof field.affect === 'string' && field.value) {
         const affectedField = state.fields.find(f => f.name === field.affect);
+
         if (affectedField) {
             // @ts-expect-error todo: what is this?
             affectedField.value = field.value;
@@ -215,9 +229,11 @@ export const prepareBundle = (field: Field<unknown>) => {
         field.items.forEach((batch, index) => {
             batch.forEach(batchField => {
                 batchField.path = [field.name, index];
+
                 if (field.path) {
                     batchField.path = [...field.path, ...batchField.path];
                 }
+
                 if (batchField.type === 'array' || batchField.type === 'union') {
                     prepareBundle(batchField);
                 }
@@ -230,10 +246,13 @@ export const prepareBundle = (field: Field<unknown>) => {
             } else if (field.name) {
                 batchField.name = field.name;
             }
+
             batchField.path = [field.name];
+
             if (field.path) {
                 batchField.path = [...field.path, ...batchField.path];
             }
+
             if (batchField.type === 'array' || batchField.type === 'union') {
                 prepareBundle(batchField);
             }

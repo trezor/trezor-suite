@@ -3,6 +3,7 @@ import { TrezorConnect } from '../../..';
 export const stellarGetAddress = async (api: TrezorConnect) => {
     // regular
     const singleAddress = await api.stellarGetAddress({ path: 'm/44' });
+
     if (singleAddress.success) {
         const { payload } = singleAddress;
         payload.address.toLowerCase();
@@ -14,6 +15,7 @@ export const stellarGetAddress = async (api: TrezorConnect) => {
 
     // bundle
     const bundleAddress = await api.stellarGetAddress({ bundle: [{ path: 'm/44' }] });
+
     if (bundleAddress.success) {
         bundleAddress.payload.forEach(item => {
             item.address.toLowerCase();

@@ -24,6 +24,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
     if (device.mode === 'initialize') {
         dispatch(routerActions.goto('suite-start'));
     }
+
     // firmware none (T2T1) or unknown (T1B1) indicates freshly unpacked device
     if (
         device.mode === 'bootloader' &&
@@ -53,6 +54,7 @@ const redirect =
 
         if (locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
             next(action);
+
             // router is locked, no redirect except for switch-device modal app
             if (
                 deviceActions.selectDevice.match(action) &&

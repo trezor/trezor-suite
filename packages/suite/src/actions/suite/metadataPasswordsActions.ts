@@ -23,6 +23,7 @@ export const fetchPasswords =
                 dataType: 'passwords',
             }),
         );
+
         if (!provider) {
             return;
         }
@@ -30,6 +31,7 @@ export const fetchPasswords =
         // this triggers renewal of access token if needed. Otherwise multiple requests
         // to renew access token are issued by every provider.getFileContent
         const response = await provider.getProviderDetails();
+
         if (!response.success) {
             return dispatch(
                 metadataProviderActions.handleProviderError({
@@ -110,9 +112,11 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             askOnEncrypt: true,
             askOnDecrypt: true,
         });
+
         if (!res.success) {
             throw new Error(res.payload.error);
         }
+
         const encryptionKey = res.payload.value.substring(
             res.payload.value.length / 2,
             res.payload.value.length,
@@ -141,6 +145,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             },
         });
         const selectedProvider = selectSelectedProviderForPasswords(getState());
+
         if (!selectedProvider) {
             await dispatch(
                 metadataProviderActions.connectProvider({
@@ -163,10 +168,12 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     device = selectDevice(getState());
     const selectedProvider = selectSelectedProviderForPasswords(getState());
+
     if (!selectedProvider || !device?.state) {
         // ts, should not happen
         return;
     }
+
     const fetchIntervalTrackingId: FetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
         'passwords',
         selectedProvider.clientId,
@@ -181,6 +188,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             if (!getState().suite.online || !device?.state || !fileName || !aesKey) {
                 return;
             }
+
             dispatch(
                 fetchPasswords({
                     fileName,
@@ -197,6 +205,7 @@ export const addPasswordMetadata =
         if (!payload.note) {
             return Promise.resolve({ success: false, error: 'required field (note) missing' });
         }
+
         const provider = selectSelectedProviderForPasswords(getState());
         const providerInstance = dispatch(
             metadataProviderActions.getProviderInstance({

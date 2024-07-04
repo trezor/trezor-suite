@@ -29,6 +29,7 @@ export const referencePointAtom = atom<FiatGraphPointWithCryptoBalance | null>(n
 const percentageChangeAtom = atom(get => {
     const selectedPoint = get(selectedPointAtom);
     const referencePoint = get(referencePointAtom);
+
     if (!referencePoint) return 0;
 
     return percentageDiff(referencePoint.value, selectedPoint.value);

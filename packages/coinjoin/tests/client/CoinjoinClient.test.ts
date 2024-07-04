@@ -27,13 +27,16 @@ describe(`CoinjoinClient`, () => {
                     AffiliateInformation: AFFILIATE_INFO,
                 });
             }
+
             resolve();
         });
 
         const cli = new CoinjoinClient(server?.requestOptions);
 
         const status = await cli.enable();
+
         if (!status.success) throw new Error(`Client not enabled ${status.error}`);
+
         expect(status.rounds.length).toBeGreaterThan(0);
         expect(status.coordinationFeeRate.rate).toBeGreaterThan(0);
 
@@ -109,6 +112,7 @@ describe(`CoinjoinClient`, () => {
                     ],
                 });
             }
+
             resolve();
         });
 

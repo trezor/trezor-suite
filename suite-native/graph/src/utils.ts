@@ -16,6 +16,7 @@ const minAndMaxGraphPointArrayItemIndex = (points: FiatGraphPoint[]) => {
             maxValue = point.value;
             maxIndex = index;
         }
+
         if (point.value < minValue) {
             minValue = point.value;
             minIndex = index;
@@ -34,6 +35,7 @@ const getAxisLabelPercentagePosition = (position: number, maxPosition: number) =
 
 export const getExtremaFromGraphPoints = (points: FiatGraphPoint[]) => {
     const numberOfPoints = points.length;
+
     if (numberOfPoints > 0) {
         const { maxIndex, minIndex } = minAndMaxGraphPointArrayItemIndex(points);
 

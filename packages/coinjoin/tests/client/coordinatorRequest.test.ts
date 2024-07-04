@@ -100,6 +100,7 @@ describe('http', () => {
         server?.addListener('test-request', ({ request, response, resolve }) => {
             spy();
             const identity = request.headers['proxy-authorization'];
+
             if (identity && identity.split(':').length > 1) {
                 // handle request to change identity and resolve properly
                 resolve();
@@ -194,6 +195,7 @@ describe('http', () => {
                     },
                 });
             }
+
             if (url.endsWith('/get-exception')) {
                 reject(500, {
                     type: 'Exception',

@@ -21,6 +21,7 @@ export class UdpApi extends AbstractApi {
 
     listen() {
         if (this.listening) return;
+
         this.listening = true;
 
         const enumerateRecursive = () => {
@@ -119,6 +120,7 @@ export class UdpApi extends AbstractApi {
                 if (message.toString() === 'PONGPONG') {
                     return;
                 }
+
                 onClear();
 
                 resolve(this.success(message));
@@ -143,6 +145,7 @@ export class UdpApi extends AbstractApi {
 
     private async ping(path: string, signal?: AbortSignal) {
         await this.write(path, Buffer.from('PINGPING'), signal);
+
         if (signal?.aborted) {
             throw new Error(ERRORS.ABORTED_BY_SIGNAL);
         }

@@ -81,8 +81,10 @@ export const DecreasedOutputs = () => {
     if (!showDecreasedOutputs || typeof setMaxOutputId !== 'number') return null;
 
     let reducedAmount: ReactNode = null;
+
     if (composedLevels) {
         const precomposedTx = composedLevels[selectedFee || 'normal'];
+
         if (precomposedTx.type === 'final') {
             reducedAmount = (
                 <ReducedAmount>
@@ -103,6 +105,7 @@ export const DecreasedOutputs = () => {
     const useRadio = formValues.outputs.filter(o => typeof o.address === 'string').length > 1;
 
     let decreaseWarning: TranslationKey = 'TR_DECREASE_TX';
+
     if (account.accountType === 'coinjoin') {
         if (coinjoinRegisteredUtxos.length > 0) {
             decreaseWarning = 'TR_UTXO_REGISTERED_IN_COINJOIN_RBF_WARNING';
@@ -121,6 +124,7 @@ export const DecreasedOutputs = () => {
                     <OutputsWrapper>
                         {formValues.outputs.flatMap((o, i) => {
                             if (typeof o.address !== 'string') return null;
+
                             const isChecked = setMaxOutputId === i;
 
                             return (

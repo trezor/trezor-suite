@@ -94,11 +94,13 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
                         if (!hide.includes(contractAddress) && !show.includes(contractAddress)) {
                             hide = [...hide, contractAddress];
                         }
+
                         show = show.filter(address => address !== contractAddress);
                     } else if (status === TokenManagementAction.SHOW) {
                         if (!show.includes(contractAddress) && !hide.includes(contractAddress)) {
                             show = [...show, contractAddress];
                         }
+
                         hide = hide.filter(address => address !== contractAddress);
                     }
 

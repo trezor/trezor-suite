@@ -51,6 +51,7 @@ export const SuiteBanners = () => {
 
     let banner = null;
     let priority = 0;
+
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
         banner = <FirmwareHashMismatch />;
         priority = 91;

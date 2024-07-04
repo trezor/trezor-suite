@@ -15,10 +15,13 @@ export function info(res: UnknownPayload) {
     if (isString(res)) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
+
     const { version } = res;
+
     if (typeof version !== 'string') {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
+
     const configured = !!res.configured;
 
     return success({ version, configured });
@@ -36,9 +39,11 @@ export function devices(res: UnknownPayload) {
     if (isString(res)) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
+
     if (!(res instanceof Array)) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
+
     if (
         res.some(
             o =>
@@ -71,7 +76,9 @@ export function acquire(res: UnknownPayload) {
     if (isString(res)) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
+
     const { session } = res;
+
     if (typeof session !== 'string') {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }

@@ -24,6 +24,7 @@ export const init: Module = () => {
     const store = Store.getStore();
 
     const theme = store.getThemeSettings();
+
     if (theme !== 'system') {
         logger.info(SERVICE_NAME, `Setting app window UI theme to ${theme}.`);
         nativeTheme.themeSource = theme;

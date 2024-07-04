@@ -37,6 +37,7 @@ export const BottomRightFloatingBar = ({ onAnalyticsConfirm }: BottomRightFloati
     const isInitialTrackingEnabled = initialStorage.tracking_enabled !== false;
 
     let content;
+
     switch (view) {
         case View.AnalyticsConsent:
             content = (

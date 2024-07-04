@@ -111,6 +111,7 @@ export default defineConfig({
                 },
                 metadataSetFileContent: async ({ provider, file, content, aesKey }) => {
                     const encrypted = await metadataUtils.encrypt(content, aesKey);
+
                     switch (provider) {
                         case 'dropbox':
                             mocked.dropbox.files[file] = encrypted;
@@ -166,7 +167,9 @@ export default defineConfig({
                     });
                     await bridge.init().promise;
                     const enumerateRes = await bridge.enumerate().promise;
+
                     if (!enumerateRes.success) return null;
+
                     await bridge.acquire({
                         input: { path: enumerateRes.payload[0].path, previous: null },
                     }).promise;
@@ -192,10 +195,12 @@ export default defineConfig({
                     const { dir, recursive, force } = opts;
                     // just a security check so that we do accidentally wipe something we don't want
                     const restrictedPath = path.join(__dirname, '..', config.downloadsFolder);
+
                     if (!dir.startsWith(restrictedPath) && !force) {
                         console.warn('trying to rmDir ', dir);
                         throw new Error(`'it is not allowed to rm outside ${restrictedPath}`);
                     }
+
                     if (fs.existsSync(dir)) {
                         fs.rmdirSync(dir, { recursive });
                     }

@@ -19,6 +19,7 @@ export const useDevice = (): Result => {
     const isLocked = useCallback(
         (ignoreDisconnectedDevice = false) => {
             if (!device?.connected && !ignoreDisconnectedDevice) return true;
+
             if (locks.includes(SUITE.LOCK_TYPE.DEVICE) || locks.includes(SUITE.LOCK_TYPE.UI))
                 return true;
 

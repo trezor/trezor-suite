@@ -10,9 +10,11 @@ const replaceMeta = (
     if (item?.kind === 'Folder' && item.children) {
         // Remove existing Meta if exists
         const metaIndex = item.children.findIndex(page => page.kind === 'Meta');
+
         if (metaIndex !== -1) {
             item.children.splice(metaIndex, 1);
         }
+
         // Add Meta with capitalized names
         item.children.push({
             kind: 'Meta',
@@ -36,6 +38,7 @@ export const patchedNormalizePages = (
     const methodsFolder = params.list.find(
         page => page.kind === 'Folder' && page.name === 'methods',
     );
+
     if (methodsFolder?.kind === 'Folder') {
         // Methods folders should have capitalized names
         replaceMeta(methodsFolder, page => [page.name, capitalize(page.name)]);

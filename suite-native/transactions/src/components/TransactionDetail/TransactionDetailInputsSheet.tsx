@@ -69,6 +69,7 @@ export const TransactionDetailInputsSheet = ({
     );
 
     if (G.isNull(transactionTransfers)) return null;
+
     const { externalTransfers, internalTransfers, tokenTransfers } = transactionTransfers;
     const { inputsCount, outputsCount } = getTransactionInputsAndOutputsCount(externalTransfers);
 

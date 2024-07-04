@@ -44,7 +44,9 @@ export const getRawLiquidityClue = (
 ): Promise<middleware.RawLiquidityClue> => {
     // find most recent coinjoin transaction in history
     const cjTx = transactions.find(tx => tx.type === 'joint');
+
     if (!cjTx) return Promise.resolve(null);
+
     const externalAmounts = cjTx.details.vout
         .flatMap(vout => transformVinVout(vout, options.network))
         .filter(vout => !('address' in vout))

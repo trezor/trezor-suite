@@ -24,9 +24,11 @@ export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisc
         Assert(CoinObj, payload);
 
         const coinInfo = getCoinInfo(payload.coin);
+
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
+
         // validate backend
         isBackendSupported(coinInfo);
 

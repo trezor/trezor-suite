@@ -7,9 +7,13 @@ const ZERO = Buffer.alloc(1, 0);
 
 export function toDER(x: Buffer) {
     let i = 0;
+
     while (x[i] === 0) ++i;
+
     if (i === x.length) return ZERO;
+
     x = x.subarray(i);
+
     if (x[0] & 0x80) return Buffer.concat([ZERO, x], 1 + x.length);
 
     return x;
@@ -17,6 +21,7 @@ export function toDER(x: Buffer) {
 
 export function fromDER(x: Buffer) {
     if (x[0] === 0x00) x = x.subarray(1);
+
     const buffer = Buffer.alloc(32, 0);
     const bstart = Math.max(0, 32 - x.length);
     x.copy(buffer, bstart);
@@ -28,6 +33,7 @@ export function fromDER(x: Buffer) {
 export function decode(buffer: Buffer) {
     const hashType = buffer.readUInt8(buffer.length - 1);
     const hashTypeMod = hashType & ~0x80;
+
     if (hashTypeMod <= 0 || hashTypeMod >= 4) throw new Error(`Invalid hashType ${hashType}`);
 
     const decoded = bip66.decode(buffer.subarray(0, -1));
@@ -48,6 +54,7 @@ export function encode(signature: Buffer, hashType: number) {
     );
 
     const hashTypeMod = hashType & ~0x80;
+
     if (hashTypeMod <= 0 || hashTypeMod >= 4) throw new Error(`Invalid hashType ${hashType}`);
 
     const hashTypeBuffer = Buffer.allocUnsafe(1);

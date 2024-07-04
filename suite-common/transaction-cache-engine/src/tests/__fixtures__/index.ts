@@ -45,6 +45,7 @@ export const connectGetAccountInfoMock = async ({
     coin,
 }: Params<GetAccountInfo>) => {
     const mockResult = await results[coin];
+
     if (!mockResult) throw new Error(`Mock result for coin ${coin} not found`);
 
     if (coin === 'xrp') return xrpAccountInfoResult;

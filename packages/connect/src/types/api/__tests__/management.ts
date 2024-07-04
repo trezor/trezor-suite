@@ -11,14 +11,17 @@ export const management = async (api: TrezorConnect) => {
         no_backup: false,
         backup_type: 0,
     });
+
     if (reset.success) reset.payload.message.toLowerCase();
 
     const wipe = await api.wipeDevice();
+
     if (wipe.success) wipe.payload.message.toLowerCase();
 
     const flags = await api.applyFlags({
         flags: 1,
     });
+
     if (flags.success) flags.payload.message.toLowerCase();
 
     const settings = await api.applySettings({
@@ -28,19 +31,23 @@ export const management = async (api: TrezorConnect) => {
         label: 'My Trezor',
         safety_checks: 'Strict',
     });
+
     if (settings.success) settings.payload.message.toLowerCase();
 
     const backup = await api.backupDevice({});
+
     if (backup.success) backup.payload.message.toLowerCase();
 
     const pin = await api.changePin({
         remove: true,
     });
+
     if (pin.success) pin.payload.message.toLowerCase();
 
     const fwBinary = await api.firmwareUpdate({
         binary: new ArrayBuffer(0),
     });
+
     if (fwBinary.success) {
         fwBinary.payload.check.toLocaleLowerCase();
     }
@@ -69,8 +76,10 @@ export const management = async (api: TrezorConnect) => {
         type: PROTO.RecoveryType.DryRun,
         word_count: 24,
     });
+
     if (recovery.success) recovery.payload.message.toLowerCase();
 
     const reboot = await api.rebootToBootloader();
+
     if (reboot.success) reboot.payload.message.toLowerCase();
 };

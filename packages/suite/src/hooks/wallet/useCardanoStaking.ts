@@ -33,6 +33,7 @@ const getDeviceAvailability = (
             reason: 'DEVICE_DISCONNECTED',
         } as const;
     }
+
     if (locks.includes(SUITE.LOCK_TYPE.DEVICE)) {
         return {
             status: false,
@@ -58,6 +59,7 @@ export const getReasonForDisabledAction = (reason: ActionAvailability['reason'])
 
 export const useCardanoStaking = (): CardanoStaking => {
     const account = useSelector(state => state.wallet.selectedAccount.account);
+
     if (!account || account.networkType !== 'cardano') {
         throw Error('useCardanoStaking used for other network');
     }
@@ -102,6 +104,7 @@ export const useCardanoStaking = (): CardanoStaking => {
     const prepareTxPlan = useCallback(
         async (action: 'delegate' | 'withdrawal') => {
             const changeAddress = getUnusedChangeAddress(account);
+
             if (!changeAddress || !account.utxo || !account.addresses) return null;
 
             const addressParameters = getAddressParameters(account, changeAddress.path);
@@ -148,12 +151,15 @@ export const useCardanoStaking = (): CardanoStaking => {
     const calculateFeeAndDeposit = useCallback(
         async (action: 'delegate' | 'withdrawal') => {
             setLoading(true);
+
             try {
                 const composeRes = await prepareTxPlan(action);
+
                 if (composeRes) {
                     if (composeRes.txPlan.type === 'error') {
                         throw new Error(composeRes.txPlan.error);
                     }
+
                     setFee(composeRes.txPlan.fee);
                     setDeposit(composeRes.txPlan.deposit);
                     const actionAvailability: ActionAvailability =
@@ -188,11 +194,13 @@ export const useCardanoStaking = (): CardanoStaking => {
     const signAndPushTransaction = useCallback(
         async (action: 'delegate' | 'withdrawal') => {
             const composeRes = await prepareTxPlan(action);
+
             if (!composeRes) return;
 
             const { txPlan, certificates, withdrawals } = composeRes;
 
             if (!txPlan || txPlan.type === 'nonfinal') return;
+
             if (txPlan.type === 'error') throw new Error(txPlan.error);
 
             const res = await trezorConnect.cardanoSignTransaction({
@@ -214,6 +222,7 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             if (!res.success) {
                 if (res.payload.error === 'tx-cancelled') return;
+
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
@@ -259,6 +268,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         async (action: 'delegate' | 'withdrawal') => {
             setError(undefined);
             setLoading(true);
+
             try {
                 await signAndPushTransaction(action);
             } catch (error) {
@@ -282,6 +292,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                     );
                 }
             }
+
             setLoading(false);
         },
         [dispatch, signAndPushTransaction],

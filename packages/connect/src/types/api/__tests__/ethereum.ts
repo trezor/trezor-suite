@@ -15,6 +15,7 @@ export const ethereumGetAddress = async (api: TrezorConnect) => {
 
     // bundle
     const bundleAddress = await api.ethereumGetAddress({ bundle: [{ path: 'm/44' }] });
+
     if (bundleAddress.success) {
         bundleAddress.payload.forEach(item => {
             item.address.toLowerCase();
@@ -74,6 +75,7 @@ export const ethereumGetPublicKey = async (api: TrezorConnect) => {
 
     // bundle
     const bundlePK = await api.ethereumGetPublicKey({ bundle: [{ path: 'm/44' }] });
+
     if (bundlePK.success) {
         bundlePK.payload.forEach(item => {
             item.path.map(a => a);
@@ -153,17 +155,20 @@ export const signVerifyMessage = async (api: TrezorConnect) => {
         message: 'foo',
         hex: false,
     });
+
     if (sign.success) {
         const { payload } = sign;
         payload.address.toLowerCase();
         payload.signature.toLowerCase();
     }
+
     const verify = await api.ethereumVerifyMessage({
         address: 'a',
         signature: 'a',
         message: 'foo',
         hex: false,
     });
+
     if (verify.success) {
         const { payload } = verify;
         payload.message.toLowerCase();

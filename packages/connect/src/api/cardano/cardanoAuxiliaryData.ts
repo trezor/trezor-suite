@@ -45,6 +45,7 @@ const transformCvoteRegistrationParameters = (
         // @ts-expect-error
         cVoteRegistrationParameters.votePublicKey = cVoteRegistrationParameters.votingPublicKey;
     }
+
     // @ts-expect-error
     if (cVoteRegistrationParameters.rewardAddressParameters) {
         console.warn('Please use paymentAddressParameters instead of rewardAddressParameters.');
@@ -55,11 +56,13 @@ const transformCvoteRegistrationParameters = (
 
     Assert(CardanoCVoteRegistrationParameters, cVoteRegistrationParameters);
     const { paymentAddressParameters } = cVoteRegistrationParameters;
+
     if (paymentAddressParameters) {
         validateAddressParameters(paymentAddressParameters);
     }
 
     const { delegations } = cVoteRegistrationParameters;
+
     if (delegations && delegations.length > MAX_DELEGATION_COUNT) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
@@ -87,6 +90,7 @@ export const transformAuxiliaryData = (
     Assert(CardanoAuxiliaryData, auxiliaryData);
 
     let cVoteRegistrationParameters;
+
     if (auxiliaryData.cVoteRegistrationParameters) {
         cVoteRegistrationParameters = transformCvoteRegistrationParameters(
             auxiliaryData.cVoteRegistrationParameters,
@@ -103,6 +107,7 @@ export const modifyAuxiliaryDataForBackwardsCompatibility = (
     auxiliary_data: PROTO.CardanoTxAuxiliaryData,
 ): PROTO.CardanoTxAuxiliaryData => {
     const { cvote_registration_parameters } = auxiliary_data;
+
     if (cvote_registration_parameters?.payment_address_parameters) {
         cvote_registration_parameters.payment_address_parameters =
             modifyAddressParametersForBackwardsCompatibility(

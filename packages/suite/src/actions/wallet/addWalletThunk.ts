@@ -20,6 +20,7 @@ export const redirectAfterWalletSelectedThunk = createThunk<void, void, void>(
         // Preserve route for dashboard or wallet context only. Redirect from other routes to dashboard index.
         const isWalletOrDashboardContext =
             backgroundRoute && ['wallet', 'dashboard'].includes(backgroundRoute.app);
+
         if (!isWalletOrDashboardContext) {
             await dispatch(goto('suite-index'));
         }
@@ -27,6 +28,7 @@ export const redirectAfterWalletSelectedThunk = createThunk<void, void, void>(
         // Subpaths of wallet are not available to all account types (e.g. Tokens tab not available to BTC accounts).
         const isWalletSubpath =
             backgroundRoute?.app === 'wallet' && backgroundRoute?.name !== 'wallet-index';
+
         if (isWalletSubpath) {
             await dispatch(goto('wallet-index'));
         }
@@ -69,6 +71,7 @@ export const addWalletThunk = createThunk<void, { walletType: WalletType }, void
             } else {
                 selectDeviceInstance({ device: instances[0] });
             }
+
             dispatch(redirectAfterWalletSelectedThunk());
         }
     },

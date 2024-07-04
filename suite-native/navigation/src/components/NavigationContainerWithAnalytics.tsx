@@ -21,6 +21,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
     const themeColors = useMemo(() => {
         // setting theme colors to match the background color of the screen to prevent white flash on screen change in dark mode
         const isDarkTheme = isDarkColor(colors.backgroundSurfaceElevation0);
+
         if (isDarkTheme) {
             return {
                 ...DarkTheme,

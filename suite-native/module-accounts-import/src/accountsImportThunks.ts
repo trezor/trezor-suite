@@ -29,6 +29,7 @@ const getAccountTypeFromDescriptor = (
     // account type supported only for btc and ltc
     if (networkSymbol !== 'btc' && networkSymbol !== 'ltc' && networkSymbol !== 'test')
         return 'imported';
+
     const { paymentType } = getXpubOrDescriptorInfo(descriptor);
 
     return paymentTypeToAccountType[paymentType];

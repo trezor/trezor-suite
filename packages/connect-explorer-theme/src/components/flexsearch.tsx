@@ -130,9 +130,11 @@ const loadIndexesImpl = async (basePath: string, locale: string): Promise<void> 
 const loadIndexesPromises = new Map<string, Promise<void>>();
 const loadIndexes = (basePath: string, locale: string): Promise<void> => {
     const key = basePath + '@' + locale;
+
     if (loadIndexesPromises.has(key)) {
         return loadIndexesPromises.get(key)!;
     }
+
     const promise = loadIndexesImpl(basePath, locale);
     loadIndexesPromises.set(key, promise);
 
@@ -148,6 +150,7 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
 
     const doSearch = (searchString: string) => {
         if (!searchString) return;
+
         const [pageIndex, sectionIndex] = indexes[locale];
 
         // Show the results for the top 5 pages
@@ -178,12 +181,16 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
             for (let j = 0; j < sectionResults.length; j++) {
                 const { doc } = sectionResults[j];
                 const isMatchingTitle = doc.display !== undefined;
+
                 if (isMatchingTitle) {
                     pageTitleMatches[i]++;
                 }
+
                 const { url, title } = doc;
                 const content = doc.display || doc.content;
+
                 if (occurred[url + '@' + content]) continue;
+
                 occurred[url + '@' + content] = true;
                 searchResults.push({
                     _page_rk: i,
@@ -223,6 +230,7 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
                     if (a._page_rk === b._page_rk) {
                         return a._section_rk - b._section_rk;
                     }
+
                     if (pageTitleMatches[a._page_rk] !== pageTitleMatches[b._page_rk]) {
                         return pageTitleMatches[b._page_rk] - pageTitleMatches[a._page_rk];
                     }
@@ -242,11 +250,13 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
         async (active: boolean) => {
             if (active && !indexes[locale]) {
                 setLoading(true);
+
                 try {
                     await loadIndexes(basePath, locale);
                 } catch (e) {
                     setError(true);
                 }
+
                 setLoading(false);
             }
         },
@@ -255,18 +265,23 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
 
     const handleChange = async (value: string) => {
         setSearch(value);
+
         if (loading) {
             return;
         }
+
         if (!indexes[locale]) {
             setLoading(true);
+
             try {
                 await loadIndexes(basePath, locale);
             } catch (e) {
                 setError(true);
             }
+
             setLoading(false);
         }
+
         doSearch(value);
     };
 

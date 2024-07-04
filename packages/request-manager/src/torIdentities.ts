@@ -23,6 +23,7 @@ export class TorIdentities {
             if (this.identities[user]) {
                 this.removeIdentity(user);
             }
+
             this.passwords[user] = password;
         }
 

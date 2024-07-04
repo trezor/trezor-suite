@@ -17,10 +17,12 @@ export const initConfirmationView = (data: UiRequestConfirmation['payload']) => 
     const cancelButton = container.getElementsByClassName('cancel')[0] as HTMLButtonElement;
 
     const { label, customConfirmButton, customCancelButton } = data;
+
     if (customConfirmButton) {
         confirmButton.innerText = customConfirmButton.label;
         confirmButton.classList.add(customConfirmButton.className);
     }
+
     if (customCancelButton) {
         confirmButton.innerText = customCancelButton.label;
         confirmButton.classList.add(customCancelButton.className);

@@ -28,6 +28,7 @@ export const hangDetect = (
         const timeoutCallback = async () => {
             // TODO: what happen if handshake will be fired up after timeout?
             const result = await showDialog(mainWindow);
+
             if (result === 'wait') {
                 logger.info('hang-detect', 'Delaying check');
                 timeout = setTimeout(timeoutCallback, HANG_WAIT);

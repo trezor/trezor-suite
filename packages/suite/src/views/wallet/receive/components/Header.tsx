@@ -15,6 +15,7 @@ export const Header = ({ account }: HeaderProps) => {
     const title = (
         <Translation id="RECEIVE_TITLE" values={{ symbol: account.symbol.toUpperCase() }} />
     );
+
     if (account.networkType === 'bitcoin') {
         return (
             <Content>
@@ -26,6 +27,7 @@ export const Header = ({ account }: HeaderProps) => {
             </Content>
         );
     }
+
     if (account.networkType === 'ethereum') {
         return (
             <Content>

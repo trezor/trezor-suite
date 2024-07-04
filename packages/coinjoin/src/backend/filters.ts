@@ -33,6 +33,7 @@ export const getAddressScript = (address: string, network: Network) =>
 
 export const getFilter = (filterHex: string, { P, M, key }: FilterParams = {}) => {
     if (!filterHex) return () => false;
+
     const filter = createFilter(Buffer.from(filterHex, 'hex'), { P, M });
     const keyBuffer = key ? Buffer.from(key, 'hex').subarray(0, KEY_SIZE) : ZERO_KEY;
 
@@ -41,6 +42,7 @@ export const getFilter = (filterHex: string, { P, M, key }: FilterParams = {}) =
 
 export const getMultiFilter = (filterHex: string, { P, M, key }: FilterParams = {}) => {
     if (!filterHex) return () => false;
+
     const filter = createFilter(Buffer.from(filterHex, 'hex'), { P, M });
     const keyBuffer = key ? Buffer.from(key, 'hex').subarray(0, KEY_SIZE) : ZERO_KEY;
 

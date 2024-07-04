@@ -34,6 +34,7 @@ export class DropboxMock {
 
                 return;
             }
+
             next();
         });
 
@@ -47,6 +48,7 @@ export class DropboxMock {
             console.log('[dropbox]: token');
 
             const { grant_type } = req.query;
+
             if (grant_type === 'authorization_code') {
                 return res.send({
                     uid: '123',
@@ -204,6 +206,7 @@ export class DropboxMock {
 
     stop() {
         console.log('[mockDropbox]: stop');
+
         if (this.server) {
             this.server.close();
         }

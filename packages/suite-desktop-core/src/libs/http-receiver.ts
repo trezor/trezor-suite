@@ -82,6 +82,7 @@ export const createHttpReceiver = () => {
         allowReferers(['', '127.0.0.1', 'www.dropbox.com']), // No referer is sent by Google, Dropbox sends referer when using Safari
         (request, response) => {
             const { search } = url.parse(request.url, true);
+
             if (search) {
                 // send data back to main window
                 httpReceiver.emit('oauth/response', { search });
@@ -104,6 +105,7 @@ export const createHttpReceiver = () => {
         allowReferers(['', 'localhost:3000', '*.invity.io', 'invity.io']),
         (request, response) => {
             const { query } = url.parse(request.url, true);
+
             if (query && query.p) {
                 httpReceiver.emit('buy/redirect', query.p.toString());
             }
@@ -149,6 +151,7 @@ export const createHttpReceiver = () => {
         allowReferers(['']), // No referer
         (request, response) => {
             const { query } = url.parse(request.url, true);
+
             if (query && query.p) {
                 httpReceiver.emit('sell/redirect', query.p.toString());
             }

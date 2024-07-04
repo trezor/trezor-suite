@@ -31,6 +31,7 @@ workers.forEach(instance => {
                 server.setFixtures(f.serverFixtures);
                 // @ts-expect-error
                 const promise = blockchain.estimateFee(f.params);
+
                 if (!f.error) {
                     expect(await promise).toEqual(f.response);
                 } else {

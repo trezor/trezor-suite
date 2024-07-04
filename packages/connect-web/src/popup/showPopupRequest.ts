@@ -46,6 +46,7 @@ export const showPopupRequest = (open: () => void, cancel: () => void) => {
     const button = div.getElementsByClassName('trezorconnect-open')[0] as HTMLButtonElement;
     button.onclick = () => {
         open();
+
         if (document.body) {
             document.body.removeChild(div);
         }
@@ -54,6 +55,7 @@ export const showPopupRequest = (open: () => void, cancel: () => void) => {
     const close = div.getElementsByClassName('trezorconnect-close')[0] as HTMLDivElement;
     close.onclick = () => {
         cancel();
+
         if (document.body) {
             document.body.removeChild(div);
         }

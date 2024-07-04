@@ -140,9 +140,11 @@ export function formatCryptoAmountAsAmount(
     decimals = 8,
 ): string {
     let digits = 4;
+
     if (baseAmount < 1) {
         digits = 6;
     }
+
     if (baseAmount < 0.01) {
         digits = decimals;
     }
@@ -180,6 +182,7 @@ const SendSwapTransactionComponent = () => {
     if (!selectedQuote) return null;
 
     const { exchange, dexTx, receive, receiveStringAmount } = selectedQuote;
+
     if (!exchange || !dexTx) return null;
 
     const providerName =
@@ -200,6 +203,7 @@ const SendSwapTransactionComponent = () => {
 
     const changeSlippage = (value: string) => {
         setSlippage(value);
+
         if (value !== 'CUSTOM') {
             setCustomSlippage(value);
             selectedQuote.swapSlippage = value;
@@ -211,6 +215,7 @@ const SendSwapTransactionComponent = () => {
     const changeCustomSlippage = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setCustomSlippage(value);
+
         if (!value) {
             setCustomSlippageError({
                 type: 'error',
@@ -219,7 +224,9 @@ const SendSwapTransactionComponent = () => {
 
             return;
         }
+
         const slippage = new BigNumber(value);
+
         if (slippage.isNaN() || value.startsWith('.') || value.endsWith('.')) {
             setCustomSlippageError({
                 type: 'error',

@@ -13,6 +13,7 @@ export const useDefaultUrls = (
             if (result.success) {
                 setLink(result.payload.blockchainLink);
             }
+
             setIsLoading(false);
         });
     }, [coin]);

@@ -93,6 +93,7 @@ export class CoinjoinFilterController {
                 for (const filter of filters) {
                     const filterParams = { M, P, key: zeroedKey ? undefined : filter.blockHash };
                     yield { ...filter, filterParams };
+
                     if (progressCooldown())
                         onProgressInfo?.({
                             stage: 'block',

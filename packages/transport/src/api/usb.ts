@@ -55,6 +55,7 @@ export class UsbApi extends AbstractApi {
                     `usb: unreadable hid device connected. device: ${this.formatDeviceForLog(event.device)}`,
                 );
             });
+
             if (nonHidDevices.length) {
                 await this.createDevices(nonHidDevices, this.abortController.signal)
                     .then(newDevices => {
@@ -70,6 +71,7 @@ export class UsbApi extends AbstractApi {
 
         this.usbInterface.ondisconnect = event => {
             const { device } = event;
+
             if (!device.serialNumber) {
                 this.logger?.debug(
                     `usb: ondisconnect: device without serial number:, ${device.productName}, ${device.manufacturerName}`,
@@ -80,6 +82,7 @@ export class UsbApi extends AbstractApi {
             }
 
             const index = this.devices.findIndex(d => d.path === device.serialNumber);
+
             if (index > -1) {
                 this.devices.splice(index, 1);
                 this.emit('transport-interface-change', this.devicesToDescriptors());
@@ -112,6 +115,7 @@ export class UsbApi extends AbstractApi {
 
     private matchDeviceType(device: USBDevice) {
         const isBootloader = device.productId === WEBUSB_BOOTLOADER_PRODUCT;
+
         if (device.deviceVersionMajor === 2) {
             if (isBootloader) {
                 return DEVICE_TYPE.TypeT2Boot;
@@ -139,6 +143,7 @@ export class UsbApi extends AbstractApi {
         if (!signal) {
             return method();
         }
+
         if (signal.aborted) {
             return Promise.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         }
@@ -197,6 +202,7 @@ export class UsbApi extends AbstractApi {
         | typeof ERRORS.UNEXPECTED_ERROR
     > {
         const device = this.findDevice(path);
+
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
@@ -218,6 +224,7 @@ export class UsbApi extends AbstractApi {
             return this.success(res.data.buffer);
         } catch (err) {
             this.logger?.error(`usb: device.transferIn error ${err}`);
+
             if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
             }
@@ -231,9 +238,11 @@ export class UsbApi extends AbstractApi {
 
     public async write(path: string, buffer: Buffer, signal?: AbortSignal) {
         const device = this.findDevice(path);
+
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
+
         const newArray = new Uint8Array(this.chunkSize);
         newArray.set(new Uint8Array(buffer));
 
@@ -247,6 +256,7 @@ export class UsbApi extends AbstractApi {
             this.logger?.debug(
                 `usb: device.transferOut done. device: ${this.formatDeviceForLog(device)}`,
             );
+
             if (result.status !== 'ok') {
                 this.logger?.error(`usb: device.transferOut status not ok: ${result.status}`);
                 throw new Error('transfer out status not ok');
@@ -255,6 +265,7 @@ export class UsbApi extends AbstractApi {
             return this.success(undefined);
         } catch (err) {
             this.logger?.error(`usb: device.transferOut error ${err}`);
+
             if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
             }
@@ -273,6 +284,7 @@ export class UsbApi extends AbstractApi {
         for (let i = 0; i < 5; i++) {
             this.logger?.debug(`usb: openDevice attempt ${i}`);
             const res = await this.openInternal(path, first, signal);
+
             if (res.success || signal?.aborted) {
                 return res;
             }
@@ -285,6 +297,7 @@ export class UsbApi extends AbstractApi {
 
     private async openInternal(path: string, first: boolean, signal?: AbortSignal) {
         const device = this.findDevice(path);
+
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
@@ -317,6 +330,7 @@ export class UsbApi extends AbstractApi {
                     `usb: device.selectConfiguration error ${err}. device: ${this.formatDeviceForLog(device)}`,
                 );
             }
+
             try {
                 // reset fails on ChromeOS and windows
                 this.logger?.debug('usb: device.reset');
@@ -331,6 +345,7 @@ export class UsbApi extends AbstractApi {
                 // empty
             }
         }
+
         try {
             this.logger?.debug(`usb: device.claimInterface: ${INTERFACE_ID}`);
             // claim device for exclusive access by this app
@@ -354,6 +369,7 @@ export class UsbApi extends AbstractApi {
 
     public async closeDevice(path: string) {
         const device = this.findDevice(path);
+
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
@@ -375,6 +391,7 @@ export class UsbApi extends AbstractApi {
                 // ignore
             }
         }
+
         if (device.opened) {
             try {
                 this.logger?.debug(`usb: device.close`);
@@ -399,6 +416,7 @@ export class UsbApi extends AbstractApi {
 
     private findDevice(path: string) {
         const device = this.devices.find(d => d.path === path);
+
         if (!device) {
             return;
         }
@@ -424,6 +442,7 @@ export class UsbApi extends AbstractApi {
                 const { serialNumber } = device;
                 let path =
                     serialNumber == null || serialNumber === '' ? 'bootloader' : serialNumber;
+
                 if (path === 'bootloader') {
                     this.logger?.debug('usb: device without serial number!');
                     bootloaderId++;
@@ -483,6 +502,7 @@ export class UsbApi extends AbstractApi {
             this.usbInterface.onconnect = null;
             this.usbInterface.ondisconnect = null;
         }
+
         this.abortController.abort();
     }
 }

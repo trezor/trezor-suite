@@ -183,6 +183,7 @@ export const transactionSigning = async (
     logger.info(`transactionSigning: ~~${round.id}~~`);
 
     const inputsWithError = round.inputs.filter(input => input.error);
+
     if (inputsWithError.length > 0) {
         inputsWithError.forEach(input => {
             logger.error(`Trying to sign input with assigned error ${input.error?.message}`);
@@ -192,6 +193,7 @@ export const transactionSigning = async (
     }
 
     const alreadyRequested = round.inputs.some(input => input.requested?.type === 'signature');
+
     if (alreadyRequested) {
         logger.error(`Signature request was not fulfilled`);
 
@@ -217,6 +219,7 @@ export const transactionSigning = async (
 
     try {
         const inputsWithoutWitness = round.inputs.filter(input => !input.witness);
+
         if (inputsWithoutWitness.length > 0) {
             round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
             const transactionData = getTransactionData(round, options);

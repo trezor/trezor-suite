@@ -59,6 +59,7 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
     ) => {
         validateChannel(channelName);
         const ipcEventName = `${channelName}/${instanceId}/event-listener/${eventName}`;
+
         if (ipcRenderer.listenerCount(ipcEventName)) {
             ipcRenderer.removeAllListeners(ipcEventName);
         } else {
@@ -67,6 +68,7 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
                 ipcEventName,
             ]);
         }
+
         ipcRenderer.on(ipcEventName, (_, event) => listener(event));
     };
 

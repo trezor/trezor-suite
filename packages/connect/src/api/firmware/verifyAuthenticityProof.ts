@@ -17,6 +17,7 @@ const verifySignature = async (rawKey: Buffer, data: Uint8Array, signature: Uint
     // Unfortunately `crypto-browserify`.subtle polyfill is missing so needs to be referenced directly from window object (if exists)
     // https://github.com/browserify/crypto-browserify/issues/221
     const SubtleCrypto = typeof window !== 'undefined' ? window.crypto.subtle : crypto.subtle;
+
     if (!SubtleCrypto) {
         throw new Error('SubtleCrypto not supported');
     }
@@ -60,9 +61,11 @@ export const verifyAuthenticityProof = async ({
     deviceModel,
 }: AuthenticityProofData): Promise<AuthenticateDeviceResult> => {
     const modelConfig = config[deviceModel];
+
     if (!modelConfig) {
         throw new Error(`Pubkeys for ${deviceModel} not found in config`);
     }
+
     const { caPubKeys, debug } = modelConfig;
 
     // 1. parse x509 CA certificate from AuthenticityProof
@@ -111,12 +114,15 @@ export const verifyAuthenticityProof = async ({
 
     // 4. validate DEVICE certificate subject (Trezor features internal_model)
     const [subject] = deviceCert.tbsCertificate.subject;
+
     // subject algorithm (OID) https://www.alvestrand.no/objectid/2.5.4.3.html
     if (!subject.parameters || subject.algorithm !== '2.5.4.3') {
         throw new Error('Missing certificate subject');
     }
+
     // slice 4 bytes from the subject (internal model)
     const subjectValue = Buffer.from(subject.parameters.asn1.contents.subarray(0, 4)).toString();
+
     if (subjectValue !== deviceModel) {
         return {
             valid: false,

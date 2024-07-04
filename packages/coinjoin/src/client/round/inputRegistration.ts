@@ -24,10 +24,12 @@ const registerInput = async (
     options: CoinjoinRoundOptions,
 ): Promise<Alice> => {
     const { logger } = options;
+
     if (input.error) {
         logger.warn(`Trying to register input with error ${input.error}`);
         throw input.error;
     }
+
     // stop here and request for ownership proof from the wallet
     if (!input.ownershipProof) {
         logger.info(`Waiting for ~~${input.outpoint}~~ ownership proof`);
@@ -88,6 +90,7 @@ const registerInput = async (
                     // abort remaining delayed candidates to register (if exists) registration is not going to happen for them anyway
                     signal.dispatchEvent(new Event('abort'));
                 }
+
                 if (error.errorCode === WabiSabiProtocolErrorCode.InputBanned) {
                     const sentenceEnd =
                         'BannedUntil' in error.exceptionData
@@ -98,6 +101,7 @@ const registerInput = async (
                         sentenceEnd,
                     });
                 }
+
                 if (error.errorCode === WabiSabiProtocolErrorCode.InputLongBanned) {
                     // track blacklist ban if it happens
                     logger.error(error.message);

@@ -97,6 +97,7 @@ export const useCoinmarketSpend = ({
                     .then(response => {
                         if (response && response.length > 0) {
                             const quote = response[0];
+
                             if (quote.error === undefined) {
                                 setVoucherSiteUrl(quote.siteUrl);
                             } else {
@@ -146,6 +147,7 @@ export const useCoinmarketSpend = ({
     useEffect(() => {
         const sign = async (trade: SellVoucherTrade) => {
             const success = await signTransaction();
+
             if (success) {
                 await invityAPI.confirmVoucherTrade(trade);
                 const date = new Date().toISOString();
@@ -153,23 +155,28 @@ export const useCoinmarketSpend = ({
                 setShowLeaveModal(false);
             }
         };
+
         if (composedLevels && trade) {
             // reset trade so that it is not called multiple times
             setTrade(undefined);
             const transactionInfo = composedLevels.normal;
+
             if (transactionInfo.type === 'final') {
                 sign(trade);
             } else {
                 let errorMessage: string | undefined;
+
                 if (transactionInfo?.type === 'error' && transactionInfo.errorMessage) {
                     errorMessage = translationString(
                         transactionInfo.errorMessage.id,
                         transactionInfo.errorMessage.values as { [key: string]: any },
                     );
                 }
+
                 if (!errorMessage) {
                     errorMessage = 'Cannot create transaction';
                 }
+
                 addNotification({
                     type: 'error',
                     error: errorMessage,
@@ -236,6 +243,7 @@ export const useCoinmarketSpend = ({
                         });
                         composeRequest();
                         setTrade(trade);
+
                         if (desktopApi.available) {
                             desktopApi.appFocus();
                         }
@@ -274,6 +282,7 @@ export const useCoinmarketSpend = ({
         const endpointIframe = await desktopApi.getHttpReceiverAddress('/spend-iframe');
         const handleMessageEndpoint =
             await desktopApi.getHttpReceiverAddress('/spend-handle-message');
+
         if (voucherSiteUrl && handleMessageEndpoint) {
             const endpointWithParams = `${endpointIframe}?voucherSiteUrl=${encodeURIComponent(
                 voucherSiteUrl,
@@ -294,6 +303,7 @@ export const useCoinmarketSpend = ({
 
 export const useCoinmarketSpendContext = () => {
     const context = useContext(SpendContext);
+
     if (context === null) throw Error('SpendContext used without Context');
 
     return context;

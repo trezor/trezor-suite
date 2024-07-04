@@ -42,7 +42,9 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
 
     const handleShowAddressAndRemoveButtonRequests = async () => {
         await handleShowAddress();
+
         if (!device) return;
+
         dispatch(removeButtonRequests({ device }));
     };
 

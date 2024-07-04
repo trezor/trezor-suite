@@ -22,11 +22,13 @@ export const initUserData = () => {
     if (isDevEnv) {
         const userDataDirDefault = app.getPath('userData');
         const userDataDir = `${userDataDirDefault}-local`;
+
         try {
             fs.accessSync(userDataDir, fs.constants.R_OK);
         } catch {
             fs.mkdirSync(userDataDir);
         }
+
         app.setPath('userData', userDataDir);
     }
 };
@@ -120,6 +122,7 @@ export const rename = async (
 
 export const clear = async (): Promise<InvokeResult> => {
     const dir = path.normalize(app.getPath('userData'));
+
     try {
         await fs.promises.rm(dir, { recursive: true, force: true });
 
@@ -138,8 +141,10 @@ export const getInfo = () => ({
 
 export const open = async (directory: string): Promise<InvokeResult> => {
     const dir = path.join(app.getPath('userData'), directory);
+
     try {
         const errorMessage = await shell.openPath(dir);
+
         if (errorMessage) {
             throw new Error(errorMessage);
         }

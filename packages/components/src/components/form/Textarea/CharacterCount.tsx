@@ -25,6 +25,7 @@ export const CharacterCount = ({ value, maxLength, characterCount }: CharacterCo
         if (characterCount === true && value !== undefined && maxLength !== undefined) {
             return `${value.length} / ${maxLength}`;
         }
+
         // uncontrolled component
         if (typeof characterCount === 'object') {
             return `${characterCount.current ?? 0} / ${characterCount.max}`;

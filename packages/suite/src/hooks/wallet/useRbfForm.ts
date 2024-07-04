@@ -73,6 +73,7 @@ const getFeeInfo = (
     rbfParams: RbfTransactionParams,
 ) => {
     if (networkType === 'bitcoin') return getBitcoinFeeInfo(info, rbfParams.feeRate);
+
     if (networkType === 'ethereum') return getEthereumFeeInfo(info, rbfParams.feeRate);
 
     return info;
@@ -123,6 +124,7 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
         // transform original outputs
         const outputs = rbfParams.outputs.flatMap(o => {
             if (o.type === 'change') return [];
+
             if (o.type === 'opreturn') {
                 return {
                     ...DEFAULT_OPRETURN,
@@ -224,12 +226,15 @@ export const useRbf = (props: UseRbfProps) => {
     // If automatically composed transaction throws NOT-ENOUGH-FUNDS error
     useEffect(() => {
         if (account.networkType !== 'bitcoin' || !composedLevels) return;
+
         const { selectedFee, setMaxOutputId, outputs } = getValues();
         const tx = composedLevels[selectedFee || 'normal'];
+
         // sometimes tx is undefined (e.g. when fee level is changed during the initial compose)
         if (!tx) return;
 
         const isSetMaxUsed = typeof setMaxOutputId === 'number';
+
         if (tx.type === 'final') {
             if (!isSetMaxUsed) {
                 // reducing change is possible. do not use DecreasedOutputs ever in that case
@@ -287,6 +292,7 @@ RbfContext.displayName = 'RbfContext';
 // Provide combined context of `react-hook-form` with custom values as RbfContextValues
 export const useRbfContext = () => {
     const ctx = useContext(RbfContext);
+
     if (ctx === null) throw Error('useRbfContext used without Context');
 
     return ctx;

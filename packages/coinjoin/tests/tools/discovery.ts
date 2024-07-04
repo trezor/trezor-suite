@@ -12,7 +12,9 @@ const isSupportedNetwork = (network: string): network is (typeof supportedNetwor
 
 export const getAccountInfoParams = (network: string, descriptor: string) => {
     if (!network) throw new Error('network arg missing');
+
     if (!isSupportedNetwork(network)) throw new Error('unsupported network');
+
     if (!descriptor) throw new Error('descriptor arg missing');
 
     const config: CoinjoinBackendSettings = getCoinjoinConfig(network);
@@ -36,7 +38,9 @@ export const getAccountInfo = async ({
 
     backend.on(`progress-info/${descriptor}`, e => {
         const now = new Date().toLocaleTimeString();
+
         if ('activity' in e) console.log('🔄', now, e.stage, e.activity);
+
         if (e.progress) console.log('⌛', now, e.progress.current);
     });
 

@@ -3,6 +3,7 @@ import { TrezorConnect } from '../../..';
 export const getAddress = async (api: TrezorConnect) => {
     // regular
     const singleAddress = await api.getAddress({ path: 'm/44' });
+
     if (singleAddress.success) {
         const { payload } = singleAddress;
         payload.address.toLowerCase();
@@ -14,6 +15,7 @@ export const getAddress = async (api: TrezorConnect) => {
 
     // bundle
     const bundleAddress = await api.getAddress({ bundle: [{ path: 'm/44' }] });
+
     if (bundleAddress.success) {
         bundleAddress.payload.forEach(item => {
             item.address.toLowerCase();
@@ -58,6 +60,7 @@ export const getAddress = async (api: TrezorConnect) => {
 export const getPublicKey = async (api: TrezorConnect) => {
     // regular
     const singlePK = await api.getPublicKey({ path: 'm/44' });
+
     if (singlePK.success) {
         const { payload } = singlePK;
         payload.path.map(a => a);
@@ -75,6 +78,7 @@ export const getPublicKey = async (api: TrezorConnect) => {
 
     // bundle
     const bundlePK = await api.getPublicKey({ bundle: [{ path: 'm/44' }] });
+
     if (bundlePK.success) {
         bundlePK.payload.forEach(item => {
             item.path.map(a => a);
@@ -465,6 +469,7 @@ export const signTransaction = async (api: TrezorConnect) => {
 
 export const pushTransaction = async (api: TrezorConnect) => {
     const push = await api.pushTransaction({ tx: 'serializedTX', coin: 'btc' });
+
     if (push.success) {
         push.payload.txid.toLowerCase();
     }
@@ -483,6 +488,7 @@ export const composeTransaction = async (api: TrezorConnect) => {
         outputs: [],
         coin: 'btc',
     });
+
     if (compose.success) {
         compose.payload.serializedTx.toLowerCase();
     }
@@ -504,14 +510,17 @@ export const composeTransaction = async (api: TrezorConnect) => {
 
     if (precompose.success) {
         const tx = precompose.payload[0];
+
         if (tx.type === 'error') {
             tx.error.toLowerCase();
         }
+
         if (tx.type === 'nonfinal') {
             tx.bytes.toFixed();
             tx.feePerByte.toLowerCase();
             tx.inputs.map((a: any) => a);
         }
+
         if (tx.type === 'final') {
             tx.inputs.map((a: any) => a);
             tx.outputs.map((a: any) => a);
@@ -545,22 +554,28 @@ export const getAccountInfo = async (api: TrezorConnect) => {
         },
         defaultAccountType: 'p2sh',
     });
+
     if (account.success) {
         const { payload } = account;
+
         if (payload.empty === false) {
             payload.path?.toLowerCase();
         }
+
         payload.descriptor.toLowerCase();
         payload.balance.toLowerCase();
         payload.availableBalance.toLowerCase();
+
         if (payload.tokens) {
             payload.tokens.map((t: { contract: string }) => t.contract.toLowerCase());
         }
+
         if (payload.addresses) {
             payload.addresses.used.map((a: { address: string }) => a.address.toLowerCase());
             payload.addresses.unused.map((a: { address: string }) => a.address.toLowerCase());
             payload.addresses.change.map((a: { address: string }) => a.address.toLowerCase());
         }
+
         if (payload.utxo) {
             payload.utxo.map(u => u.address.toLowerCase());
         }
@@ -617,6 +632,7 @@ export const getAccountDescriptor = async (api: TrezorConnect) => {
         derivationType: 2,
         suppressBackupWarning: true,
     });
+
     if (account.success) {
         const { payload } = account;
         payload.descriptor.toLowerCase();
@@ -650,17 +666,20 @@ export const getAccountDescriptor = async (api: TrezorConnect) => {
 
 export const signMessage = async (api: TrezorConnect) => {
     const sign = await api.signMessage({ path: 'm/44', coin: 'btc', message: 'foo' });
+
     if (sign.success) {
         const { payload } = sign;
         payload.address.toLowerCase();
         payload.signature.toLowerCase();
     }
+
     const verify = await api.verifyMessage({
         address: 'a',
         signature: 'a',
         message: 'foo',
         coin: 'btc',
     });
+
     if (verify.success) {
         const { payload } = verify;
         payload.message.toLowerCase();
@@ -669,6 +688,7 @@ export const signMessage = async (api: TrezorConnect) => {
 
 export const getOwnershipId = async (api: TrezorConnect) => {
     const result = await api.getOwnershipId({ path: 'm/44' });
+
     if (result.success) {
         const { payload } = result;
         payload.ownership_id.toLowerCase();
@@ -687,6 +707,7 @@ export const getOwnershipId = async (api: TrezorConnect) => {
 
     // bundle
     const bundleId = await api.getOwnershipId({ bundle: [{ path: 'm/44' }] });
+
     if (bundleId.success) {
         bundleId.payload.forEach(item => {
             item.ownership_id.toLowerCase();
@@ -703,6 +724,7 @@ export const getOwnershipId = async (api: TrezorConnect) => {
 
 export const getOwnershipProof = async (api: TrezorConnect) => {
     const result = await api.getOwnershipProof({ path: 'm/44' });
+
     if (result.success) {
         const { payload } = result;
         payload.ownership_proof.toLowerCase();
@@ -725,6 +747,7 @@ export const getOwnershipProof = async (api: TrezorConnect) => {
 
     // bundle
     const bundleId = await api.getOwnershipProof({ bundle: [{ path: 'm/44' }] });
+
     if (bundleId.success) {
         bundleId.payload.forEach(item => {
             item.ownership_proof.toLowerCase();
@@ -747,6 +770,7 @@ export const authorizeCoinjoin = async (api: TrezorConnect) => {
         maxCoordinatorFeeRate: 100,
         maxFeePerKvbyte: 100,
     });
+
     if (result.success) {
         const { payload } = result;
         payload.message.toLowerCase();

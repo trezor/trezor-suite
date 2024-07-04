@@ -225,6 +225,7 @@ window.addEventListener('load', () => {
             // Outdated browser: update Chrome
             setBody(updateChrome);
         }
+
         if (supportedBrowser.name === 'firefox') {
             // Outdated browser: update Firefox
             setBody(updateFirefox);

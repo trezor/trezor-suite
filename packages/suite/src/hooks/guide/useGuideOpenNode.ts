@@ -17,7 +17,9 @@ export const useGuideOpenNode = () => {
 
             return;
         }
+
         const node = getNodeById(id, indexNode);
+
         if (!node) {
             console.error(`Guide node with id: ${id} was not found.`);
 

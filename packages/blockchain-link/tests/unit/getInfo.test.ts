@@ -29,6 +29,7 @@ workers.forEach(instance => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
                 const promise = blockchain.getInfo();
+
                 if (!f.error) {
                     expect(await promise).toEqual({
                         ...f.response,

@@ -9,6 +9,7 @@ export const getChunkHeader = (_data: Buffer) => Buffer.alloc(0);
 // it is because bridge does some parts of the protocol itself (like chunking)
 export const encode: TransportProtocolEncode = (data, options) => {
     const { messageType } = options;
+
     if (typeof messageType === 'string') {
         throw new Error(`Unsupported message type ${messageType}`);
     }

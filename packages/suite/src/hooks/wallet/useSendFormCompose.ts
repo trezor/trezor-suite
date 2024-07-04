@@ -98,9 +98,11 @@ export const useSendFormCompose = ({
             composeRequestID.current++;
             // clear errors from previous compose process
             const composeErrors = findComposeErrors(errors);
+
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
+
             // set state value for later use in updateComposedValues function
             setComposeField(field);
             // start composing
@@ -165,8 +167,10 @@ export const useSendFormCompose = ({
     const updateComposedValues = useCallback(
         (composed: PrecomposedTransaction | PrecomposedTransactionCardano) => {
             const values = getValues();
+
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
+
                 if (!errorMessage) {
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
@@ -199,12 +203,14 @@ export const useSendFormCompose = ({
                     // setError to the all `Amount` fields, composeField not specified (load draft case)
                     values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
+
                 setLoading(false);
 
                 return;
             }
 
             const composeErrors = findComposeErrors(errors);
+
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
@@ -213,11 +219,13 @@ export const useSendFormCompose = ({
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
 
             const { setMaxOutputId } = values;
+
             // set calculated and formatted "max" value to `Amount` input
             if (typeof setMaxOutputId === 'number' && composed.max) {
                 setAmount(setMaxOutputId, composed.max);
                 setDraftSaveRequest(true);
             }
+
             setLoading(false);
         },
         [
@@ -247,21 +255,25 @@ export const useSendFormCompose = ({
         // try to switch to nearest possible composed transaction
         const shouldSwitch =
             !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
+
         if (shouldSwitch && composed.type === 'error') {
             // find nearest possible tx
             const nearest = (Object.keys(composedLevels) as FeeLevel['label'][]).find(
                 key => composedLevels[key].type !== 'error',
             );
+
             // switch to it
             if (nearest) {
                 composed = composedLevels[nearest];
                 setValue('selectedFee', nearest);
+
                 if (nearest === 'custom') {
                     // @ts-expect-error: type = error already filtered above
                     const { feePerByte, feeLimit } = composed;
                     setValue('feePerUnit', feePerByte);
                     setValue('feeLimit', feeLimit || '');
                 }
+
                 setDraftSaveRequest(true);
             }
             // or do nothing, use default composed tx
@@ -279,6 +291,7 @@ export const useSendFormCompose = ({
     const onFeeLevelChange = useCallback(
         (prev: FormState['selectedFee'], current: FormState['selectedFee']) => {
             if (!composedLevels) return;
+
             if (current === 'custom') {
                 // set custom level from previously selected level
                 const prevLevel = composedLevels[prev || 'normal'];
@@ -293,6 +306,7 @@ export const useSendFormCompose = ({
                 const currentLevel = composedLevels[current || 'normal'];
                 updateComposedValues(currentLevel);
             }
+
             setDraftSaveRequest(true);
         },
         [composedLevels, updateComposedValues],
@@ -311,6 +325,7 @@ export const useSendFormCompose = ({
         ) {
             return; // account didn't change
         }
+
         if (!isDirty) {
             // there was no interaction with the form, just update state.account
             updateContext({ account });
@@ -324,9 +339,11 @@ export const useSendFormCompose = ({
         composeRequestID.current++;
         // clear errors from compose process
         const composeErrors = findComposeErrors(errors);
+
         if (composeErrors.length > 0) {
             clearErrors(composeErrors);
         }
+
         // start composing
         setLoading(true);
         updateContext({ account });

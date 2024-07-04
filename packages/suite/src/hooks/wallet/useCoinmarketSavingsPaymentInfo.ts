@@ -32,13 +32,16 @@ export const useSavingsPaymentInfo = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const handleSubmit = useCallback(async () => {
         setIsSubmitting(true);
+
         if (savingsTrade) {
             const response = await invityAPI.doSavingsTrade({ trade: savingsTrade });
+
             if (response) {
                 dispatch(saveSavingsTradeResponse(response));
                 navigateToSavingsOverview();
             }
         }
+
         setIsSubmitting(false);
     }, [dispatch, navigateToSavingsOverview, savingsTrade]);
 

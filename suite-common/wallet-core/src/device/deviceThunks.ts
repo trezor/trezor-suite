@@ -119,6 +119,7 @@ export const createDeviceInstanceThunk = createThunk<
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
         if (!device.features) return rejectWithValue({ error: 'features-unavailable' });
+
         if (!device.features.passphrase_protection) {
             const response = await TrezorConnect.applySettings({
                 device,
@@ -179,7 +180,9 @@ export const handleDeviceDisconnect = createThunk(
         const selectedDevice = selectDeviceSelector(getState());
         const routerApp = selectRouterApp(getState());
         const devices = selectDevices(getState());
+
         if (!selectedDevice) return;
+
         if (selectedDevice.path !== device.path) return;
 
         /**
@@ -196,6 +199,7 @@ export const handleDeviceDisconnect = createThunk(
         // device is still present in reducer (remembered or candidate to remember)
         const devicePresent = getSelectedDevice(selectedDevice, devices);
         const deviceInstances = getDeviceInstances(selectedDevice, devices);
+
         if (deviceInstances.length > 0) {
             // if selected device is gone from reducer, switch to first instance
             if (!devicePresent) {
@@ -243,9 +247,11 @@ export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
     if (!selectedDevice) return false;
 
     const deviceFromReducer = getSelectedDevice(selectedDevice, devices);
+
     if (!deviceFromReducer) return true;
 
     const changed = isChanged(selectedDevice, deviceFromReducer);
+
     if (changed) {
         dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
     }
@@ -262,7 +268,9 @@ export const acquireDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/acquireDevice`,
     async (requestedDevice: TrezorDevice | undefined, { dispatch, getState }) => {
         const selectedDevice = selectDeviceSelector(getState());
+
         if (!selectedDevice && !requestedDevice) return;
+
         const device = requestedDevice || selectedDevice;
 
         const response = await TrezorConnect.getFeatures({
@@ -388,6 +396,7 @@ export const authorizeDeviceThunk = createThunk<
             if (settings.isViewOnlyModeVisible) {
                 const newDevice = selectDeviceSelector(getState());
                 dispatch(deviceActions.selectDevice(newDevice));
+
                 if (response.payload.error === 'enter-passphrase-back') {
                     dispatch(extra.thunks.openSwitchDeviceDialog());
                 }
@@ -420,6 +429,7 @@ export const authConfirm = createThunk(
     `${DEVICE_MODULE_PREFIX}/authConfirm`,
     async (_, { dispatch, getState, extra }) => {
         const device = selectDeviceSelector(getState());
+
         if (!device) return false;
 
         const response = await TrezorConnect.getDeviceState({
@@ -458,6 +468,7 @@ export const authConfirm = createThunk(
 
                 return;
             }
+
             dispatch(
                 notificationsActions.addToast({
                     type: 'auth-confirm-error',
@@ -524,6 +535,7 @@ const sortDevices = (devices: TrezorDevice[]) => {
         if (a.id === b.id) {
             return 0;
         }
+
         if (a.id === PORTFOLIO_TRACKER_DEVICE_ID) {
             return 1;
         }
@@ -647,6 +659,7 @@ export const onPassphraseSubmit = createThunk(
         { dispatch, getState },
     ) => {
         const device = selectDevice(getState());
+
         if (!device) return;
 
         if (!device.state) {

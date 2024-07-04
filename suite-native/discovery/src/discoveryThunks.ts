@@ -126,6 +126,7 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
             );
 
             const discoveryStartTime = selectDiscoveryStartTimeStamp(getState());
+
             // Discovery analytics duration tracking
             if (discoveryStartTime !== null) {
                 const endTime = performance.now();
@@ -143,6 +144,7 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
 
 const getAccountInfoDetailsLevel = (coin: NetworkSymbol) => {
     const networkType = getNetworkType(coin);
+
     // For Cardano we need to fetch at least one tx otherwise it will not generate correctly new receive addresses (xpub instead of address)
     if (networkType === 'cardano') return { details: 'txs', pageSize: 1 } as const;
 
@@ -161,9 +163,11 @@ const getCardanoSupportedAccountTypesThunk = createThunk(
         { dispatch, getState },
     ) => {
         const device = selectDeviceByState(getState(), deviceState);
+
         if (!device) {
             return undefined;
         }
+
         const availableCardanoDerivationsResponse = await requestDeviceAccess(() =>
             dispatch(getAvailableCardanoDerivationsThunk({ deviceState, device })).unwrap(),
         );
@@ -479,6 +483,7 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
         const discoveryNetworksTotalCount = supportedNetworksSymbols.length;
 
         let availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] | undefined;
+
         if (supportedNetworks.some(network => network.networkType === 'cardano')) {
             availableCardanoDerivations = await dispatch(
                 getCardanoSupportedAccountTypesThunk({
@@ -513,6 +518,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         const device = selectDeviceByState(getState(), deviceState);
 
         const discovery1 = selectDeviceDiscovery(getState());
+
         if (discovery1) {
             console.warn(
                 `Warning discovery for device ${deviceState} already exists. Skipping discovery.`,
@@ -551,6 +557,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
 
         // We need to check again here because it's possible that things changed in the meantime because async thunks
         const discovery2 = selectDeviceDiscovery(getState());
+
         if (!discovery2) {
             return;
         }

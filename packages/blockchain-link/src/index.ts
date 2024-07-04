@@ -14,7 +14,9 @@ import type { Events } from '@trezor/blockchain-link-types/src/events';
 
 const workerWrapper = (factory: BlockchainSettings['worker']): Worker | Promise<Worker> => {
     if (typeof factory === 'function') return factory();
+
     if (typeof factory === 'string' && typeof Worker !== 'undefined') return new Worker(factory);
+
     // use custom worker
     throw new CustomError('worker_not_found');
 };
@@ -36,6 +38,7 @@ const initWorker = async (settings: BlockchainSettings) => {
 
     worker.onmessage = (message: any) => {
         if (message.data.type !== MESSAGES.HANDSHAKE) return;
+
         clearTimeout(timeout);
         worker.postMessage({
             type: MESSAGES.HANDSHAKE,
@@ -48,6 +51,7 @@ const initWorker = async (settings: BlockchainSettings) => {
         clearTimeout(timeout);
         worker.onmessage = null;
         worker.onerror = null;
+
         try {
             worker.terminate();
         } catch (error) {
@@ -279,6 +283,7 @@ class BlockchainLink extends TypedEmitter<Events> {
     // worker messages handler
     onMessage: (event: { data: ResponseTypes.Response }) => void = event => {
         if (!event.data) return;
+
         const { data } = event;
 
         if (data.id === -1) {
@@ -298,11 +303,14 @@ class BlockchainLink extends TypedEmitter<Events> {
         if (data.type === RESPONSES.CONNECTED) {
             this.emit('connected');
         }
+
         if (data.type === RESPONSES.DISCONNECTED) {
             this.emit('disconnected');
         }
+
         if (data.type === RESPONSES.NOTIFICATION) {
             const notification = data.payload;
+
             if (notification.type === 'block') {
                 this.throttler.throttle('block', () => {
                     this.emit(notification.type, notification.payload);

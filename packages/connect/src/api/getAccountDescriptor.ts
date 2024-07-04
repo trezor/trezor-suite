@@ -38,9 +38,11 @@ export default class GetAccountDescriptor extends AbstractMethod<
         this.params = payload.bundle.map(batch => {
             // validate coin info
             const coinInfo = getCoinInfo(batch.coin);
+
             if (!coinInfo) {
                 throw ERRORS.TypedError('Method_UnknownCoin');
             }
+
             // validate path
             const address_n = validatePath(batch.path, 3);
 
@@ -74,6 +76,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
                     values: [],
                 };
             }
+
             keys[b.coinInfo.label].values.push(b.address_n);
         });
 
@@ -85,11 +88,13 @@ export default class GetAccountDescriptor extends AbstractMethod<
                 str.push('<span>');
                 str.push(k);
                 str.push(' ');
+
                 if (typeof acc === 'string') {
                     str.push(acc);
                 } else {
                     str.push(getAccountLabel(acc, details.coinInfo));
                 }
+
                 str.push('</span>');
             });
         });
@@ -115,6 +120,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
                 DEFAULT_FIRMWARE_RANGE,
             );
             const exception = super.checkFirmwareRange();
+
             if (exception) {
                 invalid.push({
                     index: i,
@@ -123,6 +129,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
                 });
             }
         }
+
         // return invalid ranges in custom error
         if (invalid.length > 0) {
             throw ERRORS.TypedError('Method_Discovery_BundleException', JSON.stringify(invalid));
@@ -140,6 +147,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
             error?: string,
         ) => {
             if (!this.hasBundle || this.disposed) return;
+
             // send progress to UI
             this.postMessage(
                 createUiMessage(UI.BUNDLE_PROGRESS, {

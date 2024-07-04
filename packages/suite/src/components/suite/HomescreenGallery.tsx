@@ -47,6 +47,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const deviceModelInternal = device?.features?.internal_model;
 
     if (!deviceModelInternal) return null;
+
     const setHomescreen = async (imagePath: string, image: AnyImageName) => {
         if (isLocked()) return;
 

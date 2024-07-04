@@ -19,6 +19,7 @@ function CustomReporter(rootConfig, logger) {
 
         onSpecComplete: (_browser, spec) => {
             log.info(spec.success ? '✓' : '✖', spec.fullName);
+
             if (!spec.success) {
                 log.info(spec);
             }
@@ -59,6 +60,7 @@ function WsCachePreprocessor(logger) {
 
             return;
         }
+
         const log = logger.create('preprocessor.WsCachePreprocessor');
         const json = transformCoinsJson(JSON.parse(content));
         log.info('Processing coins.json...');
@@ -69,6 +71,7 @@ WsCachePreprocessor.$inject = ['logger'];
 
 function WebSocketServerFactory(args, config, logger) {
     if (process.env.TESTS_USE_WS_CACHE !== 'true') return;
+
     const log = logger.create('framework.WebSocketServer');
 
     log.info('Starting websocket server...');

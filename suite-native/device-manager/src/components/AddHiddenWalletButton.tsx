@@ -46,6 +46,7 @@ export const AddHiddenWalletButton = () => {
 
     const handleAddHiddenWallet = () => {
         if (!device) return;
+
         setIsDeviceManagerVisible(false);
 
         dispatch(createDeviceInstanceThunk({ device, useEmptyPassphrase: false }));

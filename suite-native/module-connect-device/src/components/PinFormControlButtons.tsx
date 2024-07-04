@@ -60,6 +60,7 @@ export const PinFormControlButtons = () => {
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
+
         reset();
     }, [navigation, reset]);
 

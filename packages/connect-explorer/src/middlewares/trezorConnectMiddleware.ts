@@ -15,9 +15,11 @@ export const trezorConnectMiddleware =
         if ([SET_SCHEMA, SET_METHOD].includes(action.type) && !prevConnectOptions) {
             const connectSrc = getQueryVariable('src');
             const options = {};
+
             if (connectSrc) {
                 Object.assign(options, { connectSrc });
             }
+
             api.dispatch(init(options));
         }
     };

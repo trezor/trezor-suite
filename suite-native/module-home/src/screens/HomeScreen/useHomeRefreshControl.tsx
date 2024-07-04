@@ -22,6 +22,7 @@ export const useHomeRefreshControl = ({
 
     const handleRefresh = useCallback(async () => {
         setIsRefreshing(true);
+
         try {
             await Promise.all([
                 portfolioContentRef.current?.refetchGraph?.(),
@@ -30,6 +31,7 @@ export const useHomeRefreshControl = ({
         } catch (error) {
             // Do nothing
         }
+
         setIsRefreshing(false);
     }, [dispatch, portfolioContentRef]);
 

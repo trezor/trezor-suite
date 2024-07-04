@@ -30,6 +30,7 @@ const validatePoolRelay = (relay: CardanoPoolRelay) => {
         if (!relay.hostName) {
             throw ERRORS.TypedError('Method_InvalidParameter', 'hostName must be supplied');
         }
+
         if (!relay.port) {
             throw ERRORS.TypedError('Method_InvalidParameter', 'port must be supplied');
         }
@@ -55,6 +56,7 @@ const validatePoolOwners = (owners: CardanoPoolOwner[]) => {
     });
 
     const ownersAsPathCount = owners.filter(owner => !!owner.stakingKeyPath).length;
+
     if (ownersAsPathCount !== 1) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
@@ -71,6 +73,7 @@ const validatePoolParameters = (poolParameters: CardanoPoolParameters) => {
 
 const validateDRep = (dRep: CardanoDRep) => {
     Assert(CardanoDRep, dRep);
+
     if (dRep.type === PROTO.CardanoDRepType.KEY_HASH && !dRep.keyHash) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',

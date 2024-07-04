@@ -41,6 +41,7 @@ const onDisable = () => {
 
 export const initAnalytics = () => {
     let trackingId = storage.load().tracking_id;
+
     if (!trackingId) {
         trackingId = getRandomId();
         saveTrackingId(trackingId);

@@ -35,6 +35,7 @@ export const buildCryptoOption = (networkSymbol: NetworkSymbol) => ({
 /** @deprecated */
 export const invityApiSymbolToSymbol = (symbol?: string) => {
     if (!symbol) return 'UNKNOWN';
+
     const lowercaseSymbol = symbol.toLowerCase();
     const result = suiteToInvitySymbols.find(s => s.invitySymbol === lowercaseSymbol);
 
@@ -44,6 +45,7 @@ export const invityApiSymbolToSymbol = (symbol?: string) => {
 /** @deprecated */
 export const symbolToInvityApiSymbol = (symbol?: string) => {
     if (!symbol) return 'UNKNOWN';
+
     const result = suiteToInvitySymbols.find(s => s.suiteSymbol === symbol.toLowerCase());
 
     return result ? result.invitySymbol : symbol;
@@ -55,6 +57,7 @@ export const getSendCryptoOptions = (
     coinDefinitions?: TokenDefinitions[DefinitionType.COIN],
 ) => {
     const cryptoSymbol = networkToCryptoSymbol(account.symbol);
+
     if (!cryptoSymbol) {
         return [];
     }
@@ -75,6 +78,7 @@ export const getSendCryptoOptions = (
             }
 
             const tokenCryptoSymbol = tokenToCryptoSymbol(token.symbol, account.symbol);
+
             if (!tokenCryptoSymbol) {
                 return;
             }
@@ -109,6 +113,7 @@ export const getUnusedAddressFromAccount = (account: Account) => {
         case 'cardano':
         case 'bitcoin': {
             const firstUnused = account.addresses?.unused[0];
+
             if (firstUnused) {
                 return { address: firstUnused.address, path: firstUnused.path };
             }
@@ -130,12 +135,14 @@ export const getUnusedAddressFromAccount = (account: Account) => {
 export const getCountryLabelParts = (label: string) => {
     try {
         const parts = label.split(' ');
+
         if (parts.length === 1) {
             return {
                 flag: '',
                 text: label,
             };
         }
+
         const flag = parts[0];
         parts.shift();
         const text = parts.join(' ');
@@ -156,6 +163,7 @@ export const getComposeAddressPlaceholder = async (
     // the address is later replaced by the address of the sell
     // as a precaution, use user's own address as a placeholder
     const { networkType } = account;
+
     switch (networkType) {
         case 'bitcoin': {
             // use legacy (the most expensive) address for fee calculation
@@ -170,13 +178,16 @@ export const getComposeAddressPlaceholder = async (
                         network.symbol === account.symbol && network.accountType === 'segwit',
                 ) ||
                 network;
+
             if (legacy && device) {
                 // try to get the already discovered legacy account
                 const legacyPath = `${legacy.bip43Path.replace('i', '0')}`;
                 const legacyAccount = accounts?.find(a => a.path === legacyPath);
+
                 if (legacyAccount?.addresses?.unused[0]) {
                     return legacyAccount?.addresses?.unused[0].address;
                 }
+
                 // if it is not discovered, get an address from trezor
                 const result = await TrezorConnect.getAddress({
                     device,
@@ -186,6 +197,7 @@ export const getComposeAddressPlaceholder = async (
                     showOnTrezor: false,
                     chunkify,
                 });
+
                 if (result.success) {
                     return result.payload.address;
                 }
@@ -208,9 +220,13 @@ export const getComposeAddressPlaceholder = async (
 
 export const mapTestnetSymbol = (symbol: Network['symbol']) => {
     if (symbol === 'test') return 'btc';
+
     if (symbol === 'tsep') return 'eth';
+
     if (symbol === 'thol') return 'eth';
+
     if (symbol === 'txrp') return 'xrp';
+
     if (symbol === 'tada') return 'ada';
 
     return symbol;
@@ -219,8 +235,10 @@ export const mapTestnetSymbol = (symbol: Network['symbol']) => {
 export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
     let tag = '';
     let infoNote = (quote?.infoNote || '').trim();
+
     if (infoNote.startsWith('#')) {
         const splitNote = infoNote?.split('#') || [];
+
         if (splitNote.length === 3) {
             // infoNote contains "#badge_text#info_note_text"
             [, tag, infoNote] = splitNote;

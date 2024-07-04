@@ -44,9 +44,11 @@ export const isPolling = (key: PollingKey) => (_: Dispatch, getState: GetState) 
 
 export const stopPolling = (key: PollingKey) => (dispatch: Dispatch, getState: GetState) => {
     const polling = getState().wallet.pollings[key];
+
     if (polling?.timeoutId) {
         window.clearTimeout(polling.timeoutId);
     }
+
     dispatch({
         type: POLLING.STOP,
         key,

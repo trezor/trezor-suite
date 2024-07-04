@@ -108,6 +108,7 @@ const getAccountBalanceHistory = async ({
                 descriptor,
             });
         }
+
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,
             identity,
@@ -185,6 +186,7 @@ export const getFiatRatesForNetworkInTimeFrame = async ({
         fiatCurrency,
         isElectrumBackend,
     );
+
     if (G.isNullable(fiatRates)) return null;
 
     const formattedFiatRates = fiatRates.tickers.map((ticker, index) => ({

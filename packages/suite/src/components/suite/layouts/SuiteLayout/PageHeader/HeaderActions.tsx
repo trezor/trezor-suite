@@ -51,6 +51,7 @@ export const HeaderActions = () => {
                 payload: { symbol: account.symbol, action: routeName },
             });
         }
+
         dispatch(goto(routeName, options));
     };
 

@@ -61,22 +61,27 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
             // validate coin info
             const coinInfo = getCoinInfo(batch.coin);
+
             if (!coinInfo) {
                 throw ERRORS.TypedError('Method_UnknownCoin');
             }
+
             // validate backend
             isBackendSupported(coinInfo);
             // validate path if exists
             let address_n: number[] = [];
+
             if (batch.path) {
                 address_n = validatePath(batch.path, 3);
                 // since there is no descriptor device will be used
                 willUseDevice = typeof batch.descriptor !== 'string';
             }
+
             if (!batch.path && !batch.descriptor) {
                 if (payload.bundle.length > 1) {
                     throw Error('Discovery for multiple coins in not supported');
                 }
+
                 // device will be used in Discovery
                 willUseDevice = true;
             }
@@ -124,6 +129,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                         values: [],
                     };
                 }
+
                 keys[b.coinInfo.label].values.push(b.descriptor || b.address_n);
             });
 
@@ -137,11 +143,13 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     str.push('<span>');
                     str.push(k);
                     str.push(' ');
+
                     if (typeof acc === 'string') {
                         str.push(acc);
                     } else {
                         str.push(getAccountLabel(acc, details.coinInfo));
                     }
+
                     str.push('</span>');
                 });
             });
@@ -160,6 +168,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         if (this.params.length === 1) {
             return super.checkFirmwareRange();
         }
+
         // for trusted mode check each batch and return error with invalid bundle indexes
         // find invalid ranges
         const invalid = [];
@@ -171,6 +180,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 DEFAULT_FIRMWARE_RANGE,
             );
             const exception = super.checkFirmwareRange();
+
             if (exception) {
                 invalid.push({
                     index: i,
@@ -179,6 +189,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 });
             }
         }
+
         // return invalid ranges in custom error
         if (invalid.length > 0) {
             throw ERRORS.TypedError('Method_Discovery_BundleException', JSON.stringify(invalid));
@@ -195,6 +206,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
         const sendProgress = (progress: number, response: AccountInfo | null, error?: string) => {
             if (!this.hasBundle || (this.device && this.device.getCommands().disposed)) return;
+
             // send progress to UI
             this.postMessage(
                 createUiMessage(UI.BUNDLE_PROGRESS, {
@@ -226,6 +238,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                                 ? request.derivationType
                                 : PROTO.CardanoDerivationType.ICARUS_TREZOR,
                         );
+
                     if (accountDescriptor) {
                         descriptor = accountDescriptor.descriptor;
                         legacyXpub = accountDescriptor.legacyXpub;
@@ -276,6 +289,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 if (this.disposed) break;
 
                 let utxo: AccountUtxo[] | undefined;
+
                 if (
                     isUtxoBased(request.coinInfo) &&
                     typeof request.details === 'string' &&
@@ -309,6 +323,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 }
             }
         }
+
         if (this.disposed) return new Promise<typeof responses>(() => []);
 
         return this.hasBundle ? responses : responses[0]!;
@@ -385,6 +400,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         });
 
         let utxo: AccountUtxo[] | undefined;
+
         if (
             isUtxoBased(coinInfo) &&
             typeof request.details === 'string' &&
@@ -403,6 +419,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     dispose() {
         this.disposed = true;
         const { discovery } = this;
+
         if (discovery) {
             discovery.removeAllListeners();
             discovery.stop();

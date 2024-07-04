@@ -6,11 +6,13 @@ export const toFiatCurrency = (amount: string, rate?: number, decimals = 2) => {
     }
 
     let formattedAmount = amount;
+
     if (typeof amount === 'string') {
         formattedAmount = amount.replace(',', '.');
     }
 
     const localAmount = new BigNumber(formattedAmount).times(rate);
+
     if (localAmount.isNaN()) {
         return null;
     }
@@ -24,6 +26,7 @@ export const fromFiatCurrency = (localAmount: string, decimals: number, rate?: n
     }
 
     let formattedLocalAmount = localAmount;
+
     if (typeof localAmount === 'string') {
         formattedLocalAmount = localAmount.replace(',', '.');
     }

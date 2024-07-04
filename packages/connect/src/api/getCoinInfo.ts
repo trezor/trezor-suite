@@ -21,6 +21,7 @@ export default class GetCoinInfo extends AbstractMethod<'getCoinInfo', Params> {
         Assert(CoinObj, payload);
 
         const coinInfo = getCoinInfo(payload.coin);
+
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }

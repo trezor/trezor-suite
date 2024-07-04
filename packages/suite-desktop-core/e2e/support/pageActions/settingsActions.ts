@@ -20,6 +20,7 @@ class SettingsActions {
         desiredLocation: 'debug' | 'general' | 'device' | 'wallet',
     ) {
         let desiredLocationTestid: string;
+
         switch (desiredLocation) {
             case 'debug':
                 desiredLocationTestid = '@settings/debug/github';
@@ -37,6 +38,7 @@ class SettingsActions {
             default:
                 throw new Error('Unknown location, check your selector.');
         }
+
         await window.getByTestId(`@settings/menu/${desiredLocation}`).click();
         await window
             .locator(`[data-test="${desiredLocationTestid}"]`)

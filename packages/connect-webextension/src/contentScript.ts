@@ -35,6 +35,7 @@ window.addEventListener('message', event => {
     ) {
         return;
     }
+
     if (event.data?.type === POPUP.LOADED) {
         window.postMessage(
             {

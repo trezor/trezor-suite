@@ -80,6 +80,7 @@ describe('inputRegistration', () => {
                     IsPayingZeroCoordinationFee: true,
                 });
             }
+
             if (url.endsWith('/get-real-credential-requests')) {
                 resolve({
                     RealCredentialRequests: {
@@ -89,6 +90,7 @@ describe('inputRegistration', () => {
                     },
                 });
             }
+
             resolve();
         });
 
@@ -141,6 +143,7 @@ describe('inputRegistration', () => {
                 expect(input.realAmountCredentials?.CredentialsRequest.Delta).toEqual(123448017); // remix
                 expect(input.realVsizeCredentials?.CredentialsRequest.Delta).toEqual(187);
             }
+
             if (input.outpoint === 'B1') {
                 expect(input.realAmountCredentials?.CredentialsRequest.Delta).toEqual(123449307); // remix
                 expect(input.realVsizeCredentials?.CredentialsRequest.Delta).toEqual(197);
@@ -150,6 +153,7 @@ describe('inputRegistration', () => {
                 expect(input.realAmountCredentials?.CredentialsRequest.Delta).toEqual(123077647); // coordinator fee
                 expect(input.realVsizeCredentials?.CredentialsRequest.Delta).toEqual(187);
             }
+
             if (input.outpoint === 'B2') {
                 expect(input.realAmountCredentials?.CredentialsRequest.Delta).toEqual(123078937); // coordinator fee
                 expect(input.realVsizeCredentials?.CredentialsRequest.Delta).toEqual(197);
@@ -159,10 +163,12 @@ describe('inputRegistration', () => {
                 expect(input.realAmountCredentials?.CredentialsRequest.Delta).toEqual(991227); // plebs
                 expect(input.realVsizeCredentials?.CredentialsRequest.Delta).toEqual(187);
             }
+
             if (input.outpoint === 'B3') {
                 expect(input.realAmountCredentials?.CredentialsRequest.Delta).toEqual(992517); // plebs
                 expect(input.realVsizeCredentials?.CredentialsRequest.Delta).toEqual(197);
             }
+
             input.clearConfirmationInterval();
         });
     });
@@ -174,6 +180,7 @@ describe('inputRegistration', () => {
                     reject(500, { error: 'ExpectedRuntimeError' });
                 }
             }
+
             resolve();
         });
         const response = await inputRegistration(
@@ -203,6 +210,7 @@ describe('inputRegistration', () => {
             if (input.outpoint === 'A3') {
                 expect(input.registrationData).toMatchObject({ AliceId: expect.any(String) });
             }
+
             input.clearConfirmationInterval();
         });
     });
@@ -215,6 +223,7 @@ describe('inputRegistration', () => {
 
                 return;
             }
+
             resolve();
         });
 
@@ -242,6 +251,7 @@ describe('inputRegistration', () => {
             if (url.endsWith('/get-real-credential-requests')) {
                 reject(500, { error: 'ExpectedRuntimeError' });
             }
+
             resolve();
         });
         const response = await inputRegistration(
@@ -263,8 +273,10 @@ describe('inputRegistration', () => {
                 if (spy.mock.calls.length < 2) {
                     resolve({}); // return data without realCredentials
                 }
+
                 spy();
             }
+
             resolve();
         });
 
@@ -290,6 +302,7 @@ describe('inputRegistration', () => {
             if (url.endsWith('/connection-confirmation')) {
                 spy();
             }
+
             resolve();
         });
 
@@ -319,6 +332,7 @@ describe('inputRegistration', () => {
                 spy();
                 resolve({});
             }
+
             resolve();
         });
 

@@ -84,6 +84,7 @@ export const ViewOnlyRadios = ({
     const isDeviceConnected = device?.connected && device?.available;
     const handleConfirm = (newValue: boolean) => {
         const isValueChanged = isViewOnlyActive !== newValue;
+
         if (isValueChanged) {
             if (newValue === false && !isDeviceConnected) {
                 setContentType('disabling-view-only-ejects-wallet');

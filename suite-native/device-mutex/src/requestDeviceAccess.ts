@@ -10,6 +10,7 @@ export const requestDeviceAccess = async <TParams extends unknown[], TReturnType
     ...callbackParams: TParams
 ): DeviceAccessResponse<TReturnType> => {
     const wasLockSuccessful = await deviceAccessMutex.lock();
+
     if (!wasLockSuccessful) return DEVICE_ACCESS_ERROR;
 
     const response = await deviceCallback(...callbackParams);
@@ -26,6 +27,7 @@ export const requestPrioritizedDeviceAccess = async <TParams extends unknown[], 
     ...callbackParams: TParams
 ): DeviceAccessResponse<TReturnType> => {
     const wasLockSuccessful = await deviceAccessMutex.prioritizedLock();
+
     if (!wasLockSuccessful) return DEVICE_ACCESS_ERROR;
 
     const response = await deviceCallback(...callbackParams);

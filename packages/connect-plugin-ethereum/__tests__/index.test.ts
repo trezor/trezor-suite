@@ -23,6 +23,7 @@ describe('typedData', () => {
                 expect(messageToHex(domain_separator_hash)).toEqual(
                     messageToHex(test.parameters.domain_separator_hash),
                 );
+
                 if (message_hash && test.parameters.message_hash) {
                     expect(messageToHex(message_hash)).toEqual(
                         messageToHex(test.parameters.message_hash),

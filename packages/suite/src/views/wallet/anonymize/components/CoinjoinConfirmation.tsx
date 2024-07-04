@@ -137,6 +137,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         if (coinjoinSessionBlockedMessage) {
             return coinjoinSessionBlockedMessage;
         }
+
         if (!termsConfirmed) {
             return <Translation id="TR_CONFIRM_CONDITIONS" />;
         }

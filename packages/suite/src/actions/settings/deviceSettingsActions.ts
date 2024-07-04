@@ -20,13 +20,16 @@ export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
+
         if (!device) return;
+
         const result = await TrezorConnect.applySettings({
             device: {
                 path: device.path,
             },
             ...params,
         });
+
         if (result.success) {
             dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
         } else {
@@ -49,6 +52,7 @@ export const changePin =
             },
             ...params,
         });
+
         if (result.success) {
             if (!skipSuccessToast) {
                 dispatch(notificationsActions.addToast({ type: 'pin-changed' }));
@@ -82,6 +86,7 @@ export const changeWipeCode =
             },
             remove,
         });
+
         if (result.success) {
             dispatch(
                 notificationsActions.addToast({
@@ -97,7 +102,9 @@ export const changeWipeCode =
 
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectDevice(getState());
+
     if (!device) return;
+
     const bootloaderMode = device.mode === 'bootloader';
     const devices = selectDevices(getState());
     // collect devices with old "device.id" to be removed (see description below)
@@ -138,6 +145,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         // edit 1: disconnecting the device wiped from bootloader mode is also necessary
         // edit 2: encountered libusb error with bridge 2.0.27. so let's enforce disconnecting for all devices
         dispatch(deviceActions.requestDeviceReconnect());
+
         if (state.router.app === 'settings') {
             // redirect to index to close the settings and show initial device setup
             dispatch(routerActions.goto('suite-index'));
@@ -210,6 +218,7 @@ export const changeLanguage = createThunk(
                 ['Failed to fetch', 'NetworkError when attempting to fetch resource.'].includes(
                     result.payload.error,
                 );
+
             if (isFetchError) {
                 dispatch(notificationsActions.addToast({ type: 'firmware-language-fetch-error' }));
             } else {

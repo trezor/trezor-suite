@@ -65,6 +65,7 @@ export const coordinatorRequest = async <R = void>(
 
     const request = async (signal?: AbortSignal) => {
         let response;
+
         try {
             const method = options.method === 'GET' ? httpGet : httpPost;
             response = await method(requestUrl, body, { ...options, signal });
@@ -88,6 +89,7 @@ export const coordinatorRequest = async <R = void>(
                 // and stop scheduledAction. those errors will not be resolved by retrying
                 return { error: e as Error };
             }
+
             throw e;
         }
 
@@ -116,11 +118,13 @@ export const coordinatorRequest = async <R = void>(
     }
 
     const result = parseResult(response.headers, text);
+
     if (response.ok) {
         return result;
     }
 
     const protocolError = patchResponse(result);
+
     // catch WabiSabiProtocolException
     if (typeof protocolError === 'object' && 'ErrorCode' in protocolError) {
         throw new WabiSabiProtocolException(protocolError);

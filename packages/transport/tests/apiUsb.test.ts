@@ -55,7 +55,9 @@ describe('api/usb', () => {
         abortController.abort();
 
         const result = await promise;
+
         if (result.success) throw new Error('Unexpected success');
+
         expect(result.error).toContain('Aborted by signal');
     });
 
@@ -80,7 +82,9 @@ describe('api/usb', () => {
         abortController.abort();
 
         const result = await promise;
+
         if (result.success) throw new Error('Unexpected success');
+
         expect(result.message).toContain('Aborted by signal');
     });
 
@@ -96,7 +100,9 @@ describe('api/usb', () => {
         abortController.abort();
 
         const result = await promise;
+
         if (result.success) throw new Error('Unexpected success');
+
         expect(result.message).toContain('Aborted by signal');
     });
 
@@ -121,7 +127,9 @@ describe('api/usb', () => {
         abortController.abort();
 
         const result = await promise;
+
         if (result.success) throw new Error('Unexpected success');
+
         expect(result.message).toContain('Aborted by signal');
     });
 

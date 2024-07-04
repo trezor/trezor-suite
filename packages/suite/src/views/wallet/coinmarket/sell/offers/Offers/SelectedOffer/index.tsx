@@ -66,6 +66,7 @@ const Middle = styled.div`
 
 export const SelectedOffer = () => {
     const { account, selectedQuote, sellInfo, sellStep } = useCoinmarketSellOffersContext();
+
     if (!selectedQuote) return null;
 
     return (

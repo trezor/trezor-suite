@@ -39,6 +39,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
         const unlockPath = await TrezorConnect.unlockPath({
             path: ADDRESS_N("m/10025'"),
         });
+
         if (!unlockPath.success) throw new Error(unlockPath.payload.error);
 
         const auth = await TrezorConnect.authorizeCoinjoin({
@@ -211,6 +212,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                 state: undefined, // reset state from previous tests on this instance
             },
         });
+
         if (!walletDefault.success || !walletA.success) {
             throw new Error(`Wallet state exception`);
         }

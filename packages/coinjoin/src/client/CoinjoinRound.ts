@@ -127,9 +127,11 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         this.amountCredentialIssuerParameters = round.AmountCredentialIssuerParameters;
         this.vsizeCredentialIssuerParameters = round.VsizeCredentialIssuerParameters;
         const roundParameters = getRoundParameters(round);
+
         if (!roundParameters) {
             throw new Error('Missing CoinjoinRound roundParameters');
         }
+
         this.roundParameters = roundParameters;
         this.commitmentData = getCommitmentData(options.coordinatorName, round.Id);
         const { phaseDeadline, roundDeadline } = getCoinjoinRoundDeadlines({
@@ -236,11 +238,13 @@ export class CoinjoinRound extends TypedEmitter<Events> {
 
     async process(accounts: Account[]) {
         const { info: log } = this.logger;
+
         if (this.inputs.length === 0) {
             log('Trying to process round without inputs');
 
             return this;
         }
+
         await this.processPhase(accounts);
 
         const [inputs, failed] = arrayPartition(this.inputs, input => !input.error);
@@ -252,6 +256,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
             const failedAccounts = failed.map(input => input.accountKey).filter(arrayDistinct);
             this.inputs = inputs.filter(input => {
                 const shouldBeExcluded = failedAccounts.includes(input.accountKey);
+
                 if (shouldBeExcluded) {
                     input.clearConfirmationInterval();
                 }
@@ -293,6 +298,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     private processPhase(accounts: Account[]) {
         this.lock = createRoundLock(this.options.signal);
         const processOptions = { ...this.options, signal: this.lock.signal };
+
         // try to run process on CoinjoinRound
         switch (this.phase) {
             case RoundPhase.InputRegistration:
@@ -321,6 +327,7 @@ export class CoinjoinRound extends TypedEmitter<Events> {
     getRequest(): CoinjoinRequestEvent | void {
         if (this.phase === RoundPhase.InputRegistration) {
             const inputs = this.inputs.filter(input => !input.ownershipProof && !input.requested);
+
             if (inputs.length > 0) {
                 inputs.forEach(input => {
                     this.logger.info(`Requesting ownership for ~~${input.outpoint}~~`);
@@ -335,8 +342,10 @@ export class CoinjoinRound extends TypedEmitter<Events> {
                 };
             }
         }
+
         if (this.phase === RoundPhase.TransactionSigning) {
             const inputs = this.inputs.filter(i => !i.witness && !i.requested);
+
             if (inputs.length > 0 && this.transactionData && this.liquidityClues) {
                 this.setSessionPhase(SessionPhase.TransactionSigning);
                 inputs.forEach(input => {
@@ -359,12 +368,16 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         const { info: log } = this.logger;
         inputs.forEach(i => {
             const input = this.inputs.find(a => a.outpoint === i.outpoint);
+
             if (!input) return;
+
             // reset request in input
             input.resolveRequest();
+
             if ('error' in i) {
                 log(`Resolving ${type} request for ~~${i.outpoint}~~ with error. ${i.error}`);
                 input.setError(new Error(i.error));
+
                 if (type === 'ownership') {
                     // wallet request respond with error, account (device) is busy,
                     // detain whole account for short while and try again later
@@ -418,10 +431,12 @@ export class CoinjoinRound extends TypedEmitter<Events> {
         if (inputs.length < 1) return;
 
         let breaking = false;
+
         if (this.phase > RoundPhase.InputRegistration) {
             // unregistered in critical phase, breaking the round
             breaking = true;
         }
+
         if (inputs.length === this.inputs.length || !this.inputs.filter(i => !i.error).length) {
             // no more inputs left in round, breaking the round
             breaking = true;

@@ -34,6 +34,7 @@ export const selectTransactionReviewOutputs = (
         account?.symbol,
         decreaseOutputId,
     );
+
     if (!account || !device || !precomposedForm || !precomposedTx) return null;
 
     const outputs = constructTransactionReviewOutputs({

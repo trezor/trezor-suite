@@ -14,6 +14,7 @@ export const filterObjectKeys = <O extends Record<string, any>>(
 ): O =>
     D.keys(obj).reduce((result, key) => {
         const isKeyFiltered = filterKeys.some(filterKey => key.toString().includes(filterKey));
+
         if (isKeyFiltered) {
             return result;
         } else {

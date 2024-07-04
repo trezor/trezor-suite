@@ -18,6 +18,7 @@ export type FeesRootState = {
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
 const initialState = networksCompatibility.reduce((state, network) => {
     if (network.accountType) return state;
+
     state[network.symbol] = {
         blockHeight: 0,
         blockTime: 10,

@@ -13,7 +13,9 @@ export const init: Module = ({ store }) => {
 
     const setProxy = (ifRunning = false) => {
         const tor = store.getTorSettings();
+
         if (ifRunning && !tor.running) return Promise.resolve();
+
         const payload = tor.running ? { proxy: `socks://${tor.host}:${tor.port}` } : { proxy: '' };
         logger.info(SERVICE_NAME, `${tor.running ? 'Enable' : 'Disable'} proxy ${payload.proxy}`);
 
@@ -24,6 +26,7 @@ export const init: Module = ({ store }) => {
         onCreateInstance: () => ({
             onRequest: async (method, params) => {
                 logger.debug(SERVICE_NAME, `call ${method}`);
+
                 if (method === 'init') {
                     const response = await TrezorConnect[method](...params);
                     await setProxy(true);

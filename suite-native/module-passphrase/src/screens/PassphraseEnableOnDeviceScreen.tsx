@@ -55,6 +55,7 @@ export const PassphraseEnableOnDeviceScreen = () => {
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
+
         TrezorConnect.cancel();
     };
 

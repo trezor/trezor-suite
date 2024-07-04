@@ -102,6 +102,7 @@ const initStore = (state: State) => {
                     action.payload.decision.resolve(true);
             }
         }
+
         const { metadata, device, wallet } = store.getState();
         store.getState().metadata = metadataReducer(metadata, action);
         store.getState().wallet.accounts = accountsReducer(wallet.accounts, action);
@@ -158,6 +159,7 @@ describe('Metadata Actions', () => {
         it(`setDeviceMetadataKey - ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataLabelingActions.setDeviceMetadataKey(...f.params));
+
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -184,6 +186,7 @@ describe('Metadata Actions', () => {
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params
             await store.dispatch(metadataLabelingActions.addDeviceMetadata(f.params));
+
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             }
@@ -198,6 +201,7 @@ describe('Metadata Actions', () => {
             await store.dispatch(metadataLabelingActions.addAccountMetadata(f.params));
 
             const result = store.getActions();
+
             if (!f.result) {
                 expect(result.length).toEqual(0);
             } else {
@@ -243,6 +247,7 @@ describe('Metadata Actions', () => {
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params
             const result = await store.dispatch(metadataActions.enableMetadata());
+
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -257,6 +262,7 @@ describe('Metadata Actions', () => {
             const store = initStore(getInitialState(f.initialState));
             // @ts-expect-error, params
             const result = await store.dispatch(metadataActions.disableMetadata());
+
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -270,6 +276,7 @@ describe('Metadata Actions', () => {
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataLabelingActions.init(false));
+
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -283,6 +290,7 @@ describe('Metadata Actions', () => {
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataActions.disposeMetadata(...f.params));
+
             if (f.result) {
                 expect(store.getState()).toMatchObject(f.result);
             }
@@ -294,6 +302,7 @@ describe('Metadata Actions', () => {
             // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataActions.disposeMetadataKeys(...f.params));
+
             if (f.result) {
                 expect(store.getState()).toMatchObject(f.result);
             }

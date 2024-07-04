@@ -100,13 +100,16 @@ export class BackendWebsocketServerMock extends WebSocket.Server {
     private processRequest(client: any, data: any) {
         try {
             const request = JSON.parse(data);
+
             if (!request) {
                 throw new Error('Unknown request');
             }
+
             if (this.backendType === 'blockbook') {
                 if (typeof request.method !== 'string') {
                     throw new Error('Unknown blockbook request without method');
                 }
+
                 // emit event for test case
                 this.emit(`blockbook_${request.method}`, request);
 
@@ -117,6 +120,7 @@ export class BackendWebsocketServerMock extends WebSocket.Server {
                 if (typeof request.command !== 'string') {
                     throw new Error('Unknown blockfrost request without method');
                 }
+
                 this.emit(`blockfrost_${request.command}`, request);
 
                 return this.sendResponse(client, request.command, request);
@@ -126,6 +130,7 @@ export class BackendWebsocketServerMock extends WebSocket.Server {
                 if (typeof request.command !== 'string') {
                     throw new Error('Unknown ripple request without command');
                 }
+
                 this.emit(`ripple_${request.command}`, request);
 
                 return this.sendResponse(client, request.command, request);
@@ -149,8 +154,10 @@ export class BackendWebsocketServerMock extends WebSocket.Server {
         if (Array.isArray(fixtures)) {
             // find nearest fixture with requested method
             const fixtureIndex = fixtures.findIndex(f => f && f.method === method);
+
             if (fixtureIndex >= 0) {
                 const fixture = fixtures[fixtureIndex];
+
                 if (typeof fixture.response === 'function') {
                     data = await fixture.response(request);
                 } else {
@@ -200,6 +207,7 @@ export class BackendWebsocketServerMock extends WebSocket.Server {
                     });
                     resolve();
                 };
+
                 if (typeof action.delay === 'number') {
                     setTimeout(doSend, action.delay);
                 } else {

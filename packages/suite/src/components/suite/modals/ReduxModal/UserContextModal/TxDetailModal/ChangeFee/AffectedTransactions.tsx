@@ -16,6 +16,7 @@ const ChainedTxs = styled.div`
 
 export const AffectedTransactions = ({ showChained }: { showChained: () => void }) => {
     const { chainedTxs } = useRbfContext();
+
     if (!chainedTxs) return null;
 
     return (

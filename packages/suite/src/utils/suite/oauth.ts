@@ -58,6 +58,7 @@ const handleResponse = (
     onError: (error: any) => void,
 ) => {
     if (!message.search && !message.hash) return;
+
     let parsedMessage;
 
     if (message.search) {
@@ -120,9 +121,12 @@ const getWebHandlerInstance = (
     if (webHandlerInstance) {
         window.removeEventListener('message', webHandlerInstance);
     }
+
     webHandlerInstance = (e: MessageEvent<Message>) => {
         if (window.location.origin !== e.origin) return;
+
         if (!e.data.search && !e.data.hash) return;
+
         if (e.data.key !== 'trezor-oauth') return;
 
         handleResponse(

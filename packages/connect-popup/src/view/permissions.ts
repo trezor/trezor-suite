@@ -79,6 +79,7 @@ export const initPermissionsView = (payload: UiRequestPermission['payload']) => 
 
     const { settings } = getState();
     hostName.innerText = settings?.hostLabel ?? settings?.origin ?? '';
+
     if (payload && Array.isArray(payload.permissions)) {
         payload.permissions.forEach(p => {
             const permissionText = getPermissionText(p, payload.device.label);

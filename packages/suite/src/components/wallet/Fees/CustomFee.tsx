@@ -84,6 +84,7 @@ export const CustomFee = <TFieldValues extends FormState>({
     const isComposedFeeRateDifferent =
         !feePerUnitError && composedFeePerByte && feePerUnitValue !== composedFeePerByte;
     let feeDifferenceWarning;
+
     if (isComposedFeeRateDifferent && networkType === 'bitcoin') {
         const baseFee = getValues('baseFee');
         feeDifferenceWarning = (
@@ -115,6 +116,7 @@ export const CustomFee = <TFieldValues extends FormState>({
             ...sharedRules.validate,
             feeLimit: (value: string) => {
                 const feeBig = new BigNumber(value);
+
                 if (estimatedFeeLimit && feeBig.lt(estimatedFeeLimit)) {
                     return translationString('CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED');
                 }
@@ -136,6 +138,7 @@ export const CustomFee = <TFieldValues extends FormState>({
             }),
             range: (value: string) => {
                 const feeBig = new BigNumber(value);
+
                 if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
                     return translationString('CUSTOM_FEE_NOT_IN_RANGE', { minFee, maxFee });
                 }

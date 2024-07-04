@@ -202,9 +202,12 @@ export const BitcoinOptions = () => {
                 <Locktime
                     close={() => {
                         resetDefaultValue('bitcoinLockTime');
+
                         // close additional form
                         if (!rbfEnabled) toggleOption('bitcoinRBF');
+
                         if (!broadcastEnabled) toggleOption('broadcast');
+
                         toggleOption('bitcoinLockTime');
                         composeTransaction();
                     }}

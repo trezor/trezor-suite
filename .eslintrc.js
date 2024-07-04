@@ -276,7 +276,12 @@ module.exports = {
         'prefer-numeric-literals': 'error',
         'padding-line-between-statements': [
             'error',
-            { blankLine: 'always', prev: '*', next: 'return' },
+            // Before and after class declaration, if, while, switch, try
+            { "blankLine": "always", "prev": "*", "next": ["class", "if", "while", "switch", "try"] },
+            { "blankLine": "always", "prev": ["class", "if", "while", "switch", "try"], "next": "*" },
+
+            // Before return statements
+            { "blankLine": "always", "prev": "*", "next": "return" }
         ],
     },
     overrides: [

@@ -22,6 +22,7 @@ const binaryToDecimal = (bignum: Uint8Array | number[], minDigits = 1) => {
             result[j] = '0'.charCodeAt(0) + (x % 10);
             carry = (x / 10) | 0;
         }
+
         while (carry) {
             result.push('0'.charCodeAt(0) + (carry % 10));
             carry = (carry / 10) | 0;
@@ -41,10 +42,12 @@ const serialize = (s?: string) => {
             `Eos serialization error, "${typeof s}" should be a string`,
         );
     }
+
     const charToSymbol = (c: number) => {
         if (c >= 'a'.charCodeAt(0) && c <= 'z'.charCodeAt(0)) {
             return c - 'a'.charCodeAt(0) + 6;
         }
+
         if (c >= '1'.charCodeAt(0) && c <= '5'.charCodeAt(0)) {
             return c - '1'.charCodeAt(0) + 1;
         }
@@ -56,9 +59,11 @@ const serialize = (s?: string) => {
     let bit = 63;
     for (let i = 0; i < s.length; ++i) {
         let c = charToSymbol(s.charCodeAt(i));
+
         if (bit < 5) {
             c <<= 1;
         }
+
         for (let j = 4; j >= 0; --j) {
             if (bit >= 0) {
                 a[Math.floor(bit / 8)] |= ((c >> j) & 1) << bit % 8;
@@ -79,15 +84,19 @@ const parseQuantity = (s: string): PROTO.EosAsset => {
             `Eos serialization error. Expected string containing asset, got: ${typeof s}`,
         );
     }
+
     s = s.trim();
     let pos = 0;
     let amount = '';
     let precision = 0;
+
     if (s[pos] === '-') {
         amount += '-';
         ++pos;
     }
+
     let foundDigit = false;
+
     while (
         pos < s.length &&
         s.charCodeAt(pos) >= '0'.charCodeAt(0) &&
@@ -97,14 +106,17 @@ const parseQuantity = (s: string): PROTO.EosAsset => {
         amount += s[pos];
         ++pos;
     }
+
     if (!foundDigit) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
             'Eos serialization error. Asset must begin with a number',
         );
     }
+
     if (s[pos] === '.') {
         ++pos;
+
         while (
             pos < s.length &&
             s.charCodeAt(pos) >= '0'.charCodeAt(0) &&
@@ -115,12 +127,14 @@ const parseQuantity = (s: string): PROTO.EosAsset => {
             ++pos;
         }
     }
+
     const symbol = s.substring(pos).trim();
 
     const a = [precision & 0xff];
     for (let i = 0; i < symbol.length; ++i) {
         a.push(symbol.charCodeAt(i));
     }
+
     while (a.length < 8) {
         a.push(0);
     }
@@ -170,6 +184,7 @@ const parseDate = (d: string) => {
             'Eos serialization error. Header.expiration should be string or number',
         );
     }
+
     if (d.substring(d.length - 1, d.length) !== 'Z') {
         d += 'Z';
     }
@@ -350,6 +365,7 @@ export const validate = (tx: EosSDKTransaction) => {
 const CHUNK_SIZE = 2048;
 const getDataChunk = (data: string, offset: number) => {
     if (!data || offset < 0 || data.length < offset) return '';
+
     const o = offset > 0 ? data.length - offset * 2 : 0;
 
     return data.substring(o, o + CHUNK_SIZE * 2);
@@ -385,7 +401,9 @@ const processTxRequest = async (
 
             return response.message;
         }
+
         ack = await typedCall('EosTxActionAck', 'EosTxActionRequest', params);
+
         if (lastChunk) {
             index++;
         }
@@ -395,6 +413,7 @@ const processTxRequest = async (
 
             return response.message;
         }
+
         ack = await typedCall('EosTxActionAck', 'EosTxActionRequest', action);
         index++;
     }

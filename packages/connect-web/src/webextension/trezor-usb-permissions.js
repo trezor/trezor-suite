@@ -21,6 +21,7 @@ const switchToPopupTab = event => {
             },
             current => {
                 if (current.length < 0) return;
+
                 chrome.tabs.remove(current[0].id);
             },
         );
@@ -33,6 +34,7 @@ const switchToPopupTab = event => {
         },
         tabs => {
             if (tabs.length < 0) return;
+
             chrome.tabs.update(tabs[0].id, { active: true });
         },
     );
@@ -41,9 +43,11 @@ const switchToPopupTab = event => {
 window.addEventListener('message', event => {
     if (event.data === 'usb-permissions-init') {
         const iframe = document.getElementById('trezor-usb-permissions');
+
         if (!iframe || !(iframe instanceof HTMLIFrameElement)) {
             throw new Error('trezor-usb-permissions missing or incorrect dom type');
         }
+
         iframe.contentWindow.postMessage(
             {
                 type: 'usb-permissions-init',

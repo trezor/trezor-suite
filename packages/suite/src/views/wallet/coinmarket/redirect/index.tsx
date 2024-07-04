@@ -25,6 +25,7 @@ const CoinmarketRedirect = () => {
     useEffect(() => {
         // get rid of parameters appended by some partners to url which we pass to them
         const params = router?.hash?.split('?')[0].split('/');
+
         if (!params) return;
 
         const redirectCommonParams = {
@@ -48,12 +49,14 @@ const CoinmarketRedirect = () => {
         if (redirectCommonParams.routeType === 'sell-offers') {
             let feeIndex = 9;
             let orderId: string | undefined;
+
             if (params[4].startsWith('p-')) {
                 feeIndex = 10;
                 params[4] = params[4].substring(2);
 
                 orderId = params[9];
             }
+
             redirectToSellOffers({
                 ...redirectCommonParams,
                 amountInCrypto: params[4] === 'qc',

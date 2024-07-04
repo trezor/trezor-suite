@@ -33,6 +33,7 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
 
     let text;
     let nextStep: AnyStepId;
+
     switch (activeStepId) {
         case STEP.ID_SECURITY_STEP:
         case STEP.ID_BACKUP_STEP:

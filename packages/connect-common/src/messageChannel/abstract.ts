@@ -91,6 +91,7 @@ export abstract class AbstractMessageChannel<
     public init() {
         if (!this.handshakeFinished) {
             this.handshakeFinished = createDeferred();
+
             if (this.legacyMode) {
                 // Bypass handshake for communication with legacy components
                 // We add a delay for enough time for the other side to be ready
@@ -98,6 +99,7 @@ export abstract class AbstractMessageChannel<
                     this.handshakeFinished?.resolve();
                 }, 500);
             }
+
             if (!this.lazyHandshake) {
                 // When `lazyHandshake` handshakeWithPeer will start when received channel-handshake-request.
                 this.handshakeWithPeer();
@@ -152,6 +154,7 @@ export abstract class AbstractMessageChannel<
         // Older code used to send message as a data property of the message object.
         // This is a workaround to keep backward compatibility.
         let message = _message;
+
         if (
             this.legacyMode &&
             message.type === undefined &&
@@ -173,6 +176,7 @@ export abstract class AbstractMessageChannel<
                 // To wrong peer
                 return;
             }
+
             if (!channel?.here || this.channel.peer !== channel.here) {
                 // From wrong peer
                 return;
@@ -187,6 +191,7 @@ export abstract class AbstractMessageChannel<
                 },
                 { usePromise: false, useQueue: false },
             );
+
             if (this.lazyHandshake) {
                 // When received channel-handshake-request in lazyHandshake mode we start from this side.
                 this.handshakeWithPeer();
@@ -194,6 +199,7 @@ export abstract class AbstractMessageChannel<
 
             return;
         }
+
         if (type === 'channel-handshake-confirm') {
             this.handshakeFinished?.resolve(undefined);
 
@@ -204,7 +210,9 @@ export abstract class AbstractMessageChannel<
             this.messagePromises[id].resolve({ id, payload, success });
             delete this.messagePromises[id];
         }
+
         const messagePromisesLength = Object.keys(this.messagePromises).length;
+
         if (messagePromisesLength > 5) {
             this.logger?.warn(
                 `too many message promises (${messagePromisesLength}). this feels unexpected!`,
@@ -218,6 +226,7 @@ export abstract class AbstractMessageChannel<
     // todo: outgoing messages should be typed
     postMessage(message: any, { usePromise = true, useQueue = true } = {}) {
         message.channel = this.channel;
+
         if (!usePromise) {
             try {
                 this.sendFn(message);

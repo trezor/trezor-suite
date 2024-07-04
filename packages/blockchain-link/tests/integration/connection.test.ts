@@ -85,6 +85,7 @@ backends.forEach((b, i) => {
         it('Connect error (no server field)', async () => {
             // @ts-expect-error invalid value
             blockchain.settings.server = null;
+
             try {
                 await blockchain.connect();
             } catch (error) {
@@ -94,6 +95,7 @@ backends.forEach((b, i) => {
 
         it('Connect error (server field empty array)', async () => {
             blockchain.settings.server = [];
+
             try {
                 await blockchain.connect();
             } catch (error) {
@@ -104,6 +106,7 @@ backends.forEach((b, i) => {
         it('Connect error (server field invalid type)', async () => {
             // @ts-expect-error invalid value
             blockchain.settings.server = 1;
+
             try {
                 await blockchain.connect();
             } catch (error) {
@@ -123,6 +126,7 @@ backends.forEach((b, i) => {
                 // @ts-expect-error invalid value
                 { foo: 'bar' },
             ];
+
             try {
                 await blockchain.connect();
             } catch (error) {

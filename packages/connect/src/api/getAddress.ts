@@ -44,6 +44,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         this.params = payload.bundle.map(batch => {
             const path = validatePath(batch.path, 1);
             let coinInfo: BitcoinNetworkInfo | undefined;
+
             if (batch.coin) {
                 coinInfo = getBitcoinNetwork(batch.coin);
             }
@@ -89,8 +90,10 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         if (this.params.length === 1) {
             return getLabel('Export #NETWORK address', this.params[0].coinInfo);
         }
+
         const requestedNetworks = this.params.map(b => b.coinInfo);
         const uniqNetworks = getUniqueNetworks(requestedNetworks);
+
         if (uniqNetworks.length === 1 && uniqNetworks[0]) {
             return getLabel('Export multiple #NETWORK addresses', uniqNetworks[0]);
         }
@@ -127,6 +130,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         chunkify,
     }: Params) {
         const cmd = this.device.getCommands();
+
         if (unlockPath) {
             await cmd.unlockPath(unlockPath);
         }
@@ -148,6 +152,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
 
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
+
             // silently get address and compare with requested address
             // or display as default inside popup
             if (batch.show_display) {
@@ -155,6 +160,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
                     ...batch,
                     show_display: false,
                 });
+
                 if (typeof batch.address === 'string') {
                     if (batch.address !== silent.address) {
                         throw ERRORS.TypedError('Method_AddressNotMatch');

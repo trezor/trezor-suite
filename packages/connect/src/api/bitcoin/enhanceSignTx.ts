@@ -14,16 +14,20 @@ export const enhanceSignTx = (
         if (typeof options.overwintered !== 'boolean') {
             options.overwintered = true;
         }
+
         // use NU5 version and version_group_id
         if (typeof options.version !== 'number') {
             options.version = 5;
         }
+
         if (typeof options.version_group_id !== 'number') {
             options.version_group_id = 0x26a7270a;
         }
+
         // use branch_id from backend or fallback to default
         if (typeof options.branch_id !== 'number') {
             const backend = findBackend(coinInfo.shortcut);
+
             if (backend && backend.serverInfo?.consensusBranchId) {
                 options.branch_id = backend.serverInfo.consensusBranchId;
             } else {
@@ -31,36 +35,45 @@ export const enhanceSignTx = (
             }
         }
     }
+
     // komodo
     if (coinInfo.shortcut === 'KMD') {
         if (typeof options.overwintered !== 'boolean') {
             options.overwintered = true;
         }
+
         if (typeof options.version !== 'number') {
             options.version = 4;
         }
+
         if (typeof options.version_group_id !== 'number') {
             options.version_group_id = 0x892f2085;
         }
+
         if (typeof options.branch_id !== 'number') {
             options.branch_id = 0x76b809bb;
         }
     }
+
     // koto
     if (coinInfo.shortcut === 'KOTO') {
         if (typeof options.overwintered !== 'boolean') {
             options.overwintered = true;
         }
+
         if (typeof options.version !== 'number') {
             options.version = 4;
         }
+
         if (typeof options.version_group_id !== 'number') {
             options.version_group_id = 0x892f2085;
         }
+
         if (typeof options.branch_id !== 'number') {
             options.branch_id = 0x2bb40e60;
         }
     }
+
     // peercoin
     if (coinInfo.shortcut === 'PPC' || coinInfo.shortcut === 'tPPC') {
         if (typeof options.timestamp !== 'number') {

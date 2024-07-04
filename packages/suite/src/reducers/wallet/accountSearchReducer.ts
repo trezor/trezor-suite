@@ -35,6 +35,7 @@ const accountSearchReducer = (state: State = initialState, action: Action): Stat
                     draft.coinFilter = undefined;
                     draft.searchString = undefined;
                 }
+
                 break;
             }
             case deviceActions.selectDevice.type:

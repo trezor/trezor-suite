@@ -10,6 +10,7 @@ const getIpcMethods = (ipcProxy: IpcProxyApi, channelName: string, instanceId: s
 
     const create = async (constructorParams: any) => {
         if (created) return true;
+
         // Handshake with electron main
         await ipcProxy.create(channelName, instanceId, constructorParams);
         created = true;
@@ -29,6 +30,7 @@ const getIpcMethods = (ipcProxy: IpcProxyApi, channelName: string, instanceId: s
 
     const setOrClearHandler = (eventName: string) => {
         const eventListeners = listeners.filter(l => l.eventName === eventName);
+
         if (eventListeners.length) {
             ipcProxy.setHandler(channelName, instanceId, eventName, (event: any) =>
                 eventListeners.forEach(l => l.listener(...event)),
@@ -74,6 +76,7 @@ export const createIpcProxy = async <T extends object>(
     const proxyName = options?.proxyName || 'ipcProxy';
 
     const ipcProxyApi = getIpcProxyApi(proxyName);
+
     if (!ipcProxyApi) {
         throw new Error(`${proxyName} not found`);
     }

@@ -37,6 +37,7 @@ export const usePasswords = () => {
 
     const disconnect = useCallback(() => {
         console.log('disconnect, selectedProvider', selectedProvider);
+
         if (!selectedProvider) return;
 
         dispatch(
@@ -50,6 +51,7 @@ export const usePasswords = () => {
 
     const savePasswords = (nextId: number, passwordEntry: PasswordEntry) => {
         if (!fileName || !aesKey) return;
+
         dispatch(
             metadataPasswordsActions.addPasswordMetadata(nextId, passwordEntry, fileName, aesKey),
         );

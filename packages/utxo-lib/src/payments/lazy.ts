@@ -26,6 +26,7 @@ export function value<T>(f: () => T): () => T {
 
     return (): T => {
         if (value !== undefined) return value;
+
         value = f();
 
         return value;

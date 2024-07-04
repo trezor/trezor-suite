@@ -88,6 +88,7 @@ const calculateProgress =
             if (discovery.networks.includes(a.symbol)) {
                 loaded++;
                 const indexBeyondLimit = a.index + 1 >= LIMIT;
+
                 if (a.empty && !a.visible) {
                     total -= indexBeyondLimit ? 0 : LIMIT - a.index - 1;
                 } else if (indexBeyondLimit) {
@@ -125,14 +126,18 @@ const handleProgressThunk = createThunk(
     ) => {
         // get fresh discovery data
         const discovery = selectDiscoveryByDeviceState(getState(), deviceState);
+
         // ignore progress event when:
         // 1. discovery is not running (interrupted/stopped/complete)
         if (!discovery || discovery.status >= DiscoveryStatus.STOPPING) return;
+
         // 2. account network is no longer part of discovery (network disabled in wallet settings)
         if (!discovery.networks.includes(item.coin)) return;
+
         // process event
         const { response, error } = event;
         let { failed } = discovery;
+
         if (error || !response) {
             failed = failed.concat([
                 {
@@ -153,6 +158,7 @@ const handleProgressThunk = createThunk(
                 }),
             );
         }
+
         // calculate progress
         const progress = dispatch(
             calculateProgress({
@@ -164,6 +170,7 @@ const handleProgressThunk = createThunk(
         // change auth confirm field only if metadata are not enabled
         // otherwise authConfirm is processed in `start() > process response`
         let { authConfirm } = discovery;
+
         if (authConfirm && response && !metadataEnabled) {
             authConfirm = response.empty;
         }
@@ -184,6 +191,7 @@ export const stopDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/stop`,
     (_, { dispatch, getState }) => {
         const discovery = selectDeviceDiscovery(getState());
+
         if (discovery && discovery.running) {
             dispatch(
                 interruptDiscovery({
@@ -313,6 +321,7 @@ export const getAvailableCardanoDerivationsThunk = createThunk(
                 icarusTrezorPubKeyResult,
                 ledgerPubKeyResult,
             ].find(r => !r.success);
+
             if (derivationFail && !derivationFail.success) {
                 error = derivationFail.payload.error;
                 code = derivationFail.payload.code;
@@ -338,6 +347,7 @@ export const getAvailableCardanoDerivationsThunk = createThunk(
             // all pub keys are the same
             return ['normal'];
         }
+
         if (icarusPubKey === icarusTrezorPubKey) {
             // ledger pub key is different
             return ['normal', 'ledger'];
@@ -416,6 +426,7 @@ export const startDiscoveryThunk = createThunk(
         }
 
         let { availableCardanoDerivations } = discovery;
+
         // This will run only during first discovery (on per device basis).
         // List of available derivations will be
         // stored inside `availableCardanoDerivations` after first run
@@ -427,10 +438,12 @@ export const startDiscoveryThunk = createThunk(
             availableCardanoDerivations = await dispatch(
                 getAvailableCardanoDerivationsThunk({ deviceState, device }),
             ).unwrap();
+
             if (!availableCardanoDerivations) {
                 // Edge case where getAvailableCardanoDerivations dispatches error, stops discovery and returns undefined.
                 return;
             }
+
             dispatch({
                 type: updateDiscovery.type,
                 payload: {
@@ -457,6 +470,7 @@ export const startDiscoveryThunk = createThunk(
                     keepSession: false,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 });
+
                 if (authConfirm) {
                     dispatch(requestAuthConfirm());
                 }
@@ -515,7 +529,9 @@ export const startDiscoveryThunk = createThunk(
         if (result.success) {
             // fetch fresh data from reducer
             const currentDiscovery = selectDiscoveryByDeviceState(getState(), deviceState);
+
             if (!currentDiscovery) return;
+
             // discovery process is still in authConfirm mode (not changed by handleProgress function)
             // and there is at least one used account in response
             // try generate metadata keys before next bundle request
@@ -535,6 +551,7 @@ export const startDiscoveryThunk = createThunk(
                 // try to generate device metadata master key
                 await dispatch(initMetadata(false));
             }
+
             if (currentDiscovery.status === DiscoveryStatus.RUNNING) {
                 await dispatch(startDiscoveryThunk()); // try next index
             } else if (currentDiscovery.status === DiscoveryStatus.STOPPING) {
@@ -559,12 +576,14 @@ export const startDiscoveryThunk = createThunk(
                     const coins: { index: number; coin: string; exception: string }[] = JSON.parse(
                         result.payload.error,
                     );
+
                     if (!coins || !Array.isArray(coins)) {
                         // throw error to prevent execution. error will be processed in lower block
                         throw new Error(
                             `Unexpected JSON error response from TrezorConnect: ${result.payload.error}`,
                         );
                     }
+
                     const failed: Discovery['failed'] = coins.map(c => ({
                         index: 0,
                         symbol: bundle[c.index].coin,
@@ -694,7 +713,9 @@ export const restartDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/restart`,
     async (_, { dispatch, getState }) => {
         const discovery = selectDeviceDiscovery(getState());
+
         if (!discovery) return;
+
         const progress = dispatch(
             calculateProgress({
                 ...discovery,

@@ -18,6 +18,7 @@ export const getAccountAddressN = (
     if (!coinInfo) {
         throw ERRORS.TypedError('Method_UnknownCoin');
     }
+
     const index = typeof accountIndex === 'number' ? accountIndex : 0;
     const options = {
         purpose: 44,
@@ -28,13 +29,16 @@ export const getAccountAddressN = (
     if (coinInfo.type === 'bitcoin') {
         return [toHardened(options.purpose), toHardened(options.coinType), toHardened(index)];
     }
+
     // see: https://github.com/cardano-foundation/CIPs/blob/master/CIP-1852/CIP-1852.md
     if (coinInfo.shortcut === 'ADA' || coinInfo.shortcut === 'tADA') {
         return [toHardened(1852), toHardened(options.coinType), toHardened(index)];
     }
+
     if (coinInfo.type === 'ethereum') {
         return [toHardened(options.purpose), toHardened(options.coinType), toHardened(0), 0, index];
     }
+
     if (coinInfo.shortcut === 'tXRP') {
         // FW bug: https://github.com/trezor/trezor-firmware/issues/321
         return [toHardened(options.purpose), toHardened(144), toHardened(index), 0, 0];
@@ -60,6 +64,7 @@ export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
 
         return `${prefix} <span>account #${account + 1}</span>`;
     }
+
     const account = fromHardened(path[4]);
 
     return `account #${account + 1}`;
@@ -68,6 +73,7 @@ export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
 export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo) => {
     let hasSegwit = false;
     let coinLabel = 'Unknown coin';
+
     if (coinInfo) {
         coinLabel = coinInfo.label;
         hasSegwit = coinInfo.segwit;
@@ -87,6 +93,7 @@ export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo)
         account = fromHardened(path[3]);
         realAccountId = account + 1;
         prefix = 'Export Copay ID of';
+
         if (p2 === 48) {
             accountType = 'multisig';
         } else if (p2 === 44) {

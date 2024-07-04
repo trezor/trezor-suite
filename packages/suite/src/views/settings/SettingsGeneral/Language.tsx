@@ -82,9 +82,11 @@ export const Language = () => {
                 autodetectLanguage: value === 'system',
             },
         });
+
         if ((value === 'system') !== autodetectLanguage) {
             dispatch(setAutodetect({ language: !autodetectLanguage }));
         }
+
         if (value !== 'system') {
             dispatch(setLanguage(value));
         }

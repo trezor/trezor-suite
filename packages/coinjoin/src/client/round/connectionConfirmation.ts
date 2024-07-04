@@ -26,9 +26,11 @@ const confirmInput = async (
         options.logger.warn(`Trying to confirm input with error ${input.error}`);
         throw input.error;
     }
+
     if (!input.registrationData || !input.realAmountCredentials || !input.realVsizeCredentials) {
         throw new Error(`Trying to confirm unregistered input ~~${input.outpoint}~~`);
     }
+
     if (input.confirmedAmountCredentials && input.confirmedVsizeCredentials) {
         options.logger.info(`Input ~~${input.outpoint}~~ already confirmed. Skipping.`);
 
@@ -151,6 +153,7 @@ export const confirmationInterval = (
                 ) {
                     input.setError(error);
                 }
+
                 logger.warn(`Confirmation interval with error ${error.message}`);
                 // do nothing. confirmationInterval might be aborted by Round phase change.
                 // error (if it's relevant) will be processed in next phase in confirmInput
@@ -167,6 +170,7 @@ export const confirmationInterval = (
 
             // We only need to unregister if Alice wouldn't be removed automatically by the coordinator - otherwise just leave it there.
             const wouldBeRemovedByBackend = round.phaseDeadline - intervalDelay - Date.now() > 0;
+
             if (!wouldBeRemovedByBackend && input.registrationData) {
                 coordinator
                     .inputUnregistration(round.id, input.registrationData.AliceId, {
@@ -197,6 +201,7 @@ export const connectionConfirmation = async (
         inputs.map(input => {
             const interval =
                 input.getConfirmationInterval() || confirmationInterval(round, input, options);
+
             if (!input.getConfirmationInterval()) {
                 input.setConfirmationInterval(interval);
             }

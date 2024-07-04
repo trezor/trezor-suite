@@ -145,6 +145,7 @@ export const isPoolOverSaturated = (pool: StakePool, additionalStake?: string) =
 
 export const getStakePoolForDelegation = (trezorPools: PoolsResponse, accountBalance: string) => {
     let pool = trezorPools.next;
+
     if (isPoolOverSaturated(pool, accountBalance)) {
         pool = trezorPools.pools[0];
     }
@@ -168,6 +169,7 @@ export const formatMaxOutputAmount = (
 ) => {
     // Converts 'max' amount returned from coinselection in lovelaces (or token equivalent) to ADA (or token unit)
     if (!maxOutput || !maxAmount) return maxAmount;
+
     if (maxOutput.assets.length === 0) {
         // output without asset, convert lovelaces to ADA
         return formatNetworkAmount(maxAmount, account.symbol);

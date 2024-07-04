@@ -9,6 +9,7 @@ const enhancers: any[] = [];
 const middleware = [thunk, trezorConnectMiddleware];
 
 let composedEnhancers: any;
+
 if (process.env.NODE_ENV === 'development') {
     const excludeLogger = (_getState: any, action: any): boolean => {
         const excluded: Array<string> = ['LOG_TO_EXCLUDE', 'log__add'];
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV === 'development') {
     if (typeof window !== 'undefined') {
         // @ts-expect-error
         const { devToolsExtension } = window;
+
         if (typeof devToolsExtension === 'function') {
             enhancers.push(devToolsExtension());
         }

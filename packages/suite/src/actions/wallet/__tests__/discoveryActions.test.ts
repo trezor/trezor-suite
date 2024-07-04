@@ -59,6 +59,7 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
         if (typeof fixture === 'undefined') {
             return paramsError('Default error. Fixtures not set');
         }
+
         // this promise will be resolved by TrezorConnect.cancel
         if (fixture instanceof Promise) {
             return fixture;
@@ -69,9 +70,11 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
         }
 
         const { connect } = fixture;
+
         if (connect.error) {
             // error code is used in case where one of requested coins is not supported
             const { code, error } = connect.error;
+
             if (code) {
                 delete connect.error; // reset this value, it shouldn't be used in next iteration
 
@@ -90,6 +93,7 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
 
             if (connect.interruption) {
                 const interrupted = connect.interruption.indexOf(param.path!);
+
                 if (interrupted >= 0) {
                     connect.interruption[interrupted] = 'interruption-item-used';
 
@@ -105,6 +109,7 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
             if (connect.usedAccounts) {
                 connect.usedAccounts.some(a => {
                     const found = a.indexOf(accountType) >= 0;
+
                     if (found && param.path !== a) {
                         isEmpty = false;
 
@@ -118,6 +123,7 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
             if (connect.failedAccounts) {
                 connect.failedAccounts.some(a => {
                     const found = a.indexOf(accountType) >= 0;
+
                     if (found && param.path === a) {
                         isFailed = true;
 
@@ -218,6 +224,7 @@ describe('Discovery Actions', () => {
             // set fixtures in @trezor/connect
             setTrezorConnectFixtures(f);
             const store = initStore(getInitialState(f.device));
+
             if (f.enabledNetworks) {
                 store.dispatch(
                     walletSettingsActions.changeNetworks(f.enabledNetworks as NetworkSymbol[]),
@@ -233,6 +240,7 @@ describe('Discovery Actions', () => {
             await store.dispatch(startDiscoveryThunk());
 
             const result = store.getState().wallet.discovery[0];
+
             if (f.result) {
                 expect(result.failed).toEqual(f.result.failed);
                 expect(result.loaded).toEqual(result.total);
@@ -255,9 +263,11 @@ describe('Discovery Actions', () => {
             store.subscribe(() => {
                 const actions = store.getActions();
                 const a = actions[actions.length - 1];
+
                 if (accountsActions.createAccount.match(a)) {
                     // call "stop" if added account is a trigger from fixtures
                     const trigger = f.trigger.find(t => a.payload.path.indexOf(t) >= 0);
+
                     if (trigger) {
                         store.dispatch(stopDiscoveryThunk());
                     }
@@ -276,6 +286,7 @@ describe('Discovery Actions', () => {
                 await store.dispatch(startDiscoveryThunk());
                 const actions = filterThunkActionTypes(store.getActions());
                 const lastAction = actions.pop();
+
                 if (lastAction?.type === discoveryActions.stopDiscovery.type) {
                     // since interruption is always called after account creation
                     // correct order for recent actions is: stop < update < interrupt (discoveryActions.handleProgress)
@@ -308,9 +319,11 @@ describe('Discovery Actions', () => {
             store.subscribe(() => {
                 const actions = store.getActions();
                 const a = actions[actions.length - 1];
+
                 if (accountsActions.createAccount.match(a)) {
                     // call "updateNetworkSettings" if added account is a trigger from fixtures
                     const trigger = f.trigger.find(t => a.payload.path.indexOf(t.path) >= 0);
+
                     if (trigger) {
                         store.dispatch(
                             walletSettingsActions.changeNetworks(
@@ -346,10 +359,12 @@ describe('Discovery Actions', () => {
     unavailableCapabilities.forEach(f => {
         it(`Change network: ${f.description}`, () => {
             const state = getInitialState();
+
             if (f.device) {
                 state.device.selectedDevice = f.device;
                 state.device.devices = [f.device];
             }
+
             const store = initStore(state);
             store.dispatch(
                 createDiscoveryThunk({
@@ -514,6 +529,7 @@ describe('Discovery Actions', () => {
         store.subscribe(() => {
             const actions = store.getActions();
             const a = actions[actions.length - 1];
+
             if (a.type === discoveryActions.updateDiscovery.type && a.payload.status === 1) {
                 // catch bundle update called from 'start()' and remove discovery before TrezorConnect response
                 store.dispatch(discoveryActions.removeDiscovery('device-state'));
@@ -541,6 +557,7 @@ describe('Discovery Actions', () => {
         store.subscribe(() => {
             const actions = filterThunkActionTypes(store.getActions());
             const a = actions[actions.length - 1];
+
             if (a.type === discoveryActions.updateDiscovery.type && a.payload.status === 1) {
                 // catch bundle update called from 'start()' and stop discovery before TrezorConnect response
                 store.dispatch(

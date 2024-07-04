@@ -227,6 +227,7 @@ describe('transaction utils', () => {
     fixtures.findChainedTransactions.forEach(f => {
         it(`findChainedTransactions: ${f.description}`, () => {
             const chained = findChainedTransactions(f.descriptor, f.txid, f.transactions as any);
+
             if (!chained || !f.result) {
                 expect(chained).toEqual(f.result);
 

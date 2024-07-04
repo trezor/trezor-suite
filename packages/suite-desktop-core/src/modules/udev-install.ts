@@ -67,6 +67,7 @@ export const init: Module = () => {
 
             pkexec.on('exit', code => {
                 logger.debug(SERVICE_NAME, `pkexec exit with code ${code}`);
+
                 if (code === 0) {
                     resolve({ success: true });
                 } else if (code === 126) {

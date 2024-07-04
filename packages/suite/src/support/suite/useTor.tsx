@@ -29,6 +29,7 @@ export const useTor = () => {
             desktopApi.on('tor/status', (newStatus: TorStatusEvent) => {
                 const { type } = newStatus;
                 dispatch(updateTorStatus(type));
+
                 if (type === TorStatus.Misbehaving) {
                     // When network is slow for some reason but still working we display toast message
                     // to let the user know that it is going to take some time but it's working.
@@ -39,6 +40,7 @@ export const useTor = () => {
                     );
                 }
             });
+
             if (!isTorEnabling) {
                 desktopApi.getTorStatus();
             }

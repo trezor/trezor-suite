@@ -43,6 +43,7 @@ const fixtures = [...ethereumDefinitionFixture, ...commonFixtures.tests]
                 success: false,
             },
         ];
+
         if (parameters.data.primaryType === 'EIP712Domain') {
             legacyResults = [
                 {

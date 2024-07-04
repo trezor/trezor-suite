@@ -88,6 +88,7 @@ const TooltipLabel = ({
             />
         );
     }
+
     if (symbol === 'bch') {
         // additional tooltip with BCH addresses explanation
         return (
@@ -151,6 +152,7 @@ export const FreshAddress = ({
         if (coinjoinDisallowReveal) {
             return <Translation id="RECEIVE_ADDRESS_COINJOIN_DISALLOW" />;
         }
+
         if (!firstFreshAddress) {
             return <Translation id="RECEIVE_ADDRESS_LIMIT_REACHED" />;
         }

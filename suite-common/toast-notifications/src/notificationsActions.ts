@@ -41,6 +41,7 @@ export const addToastOnce = createActionWithExtraDeps(
     `${ACTION_PREFIX}/addToastOnce`,
     (payload: ToastPayload, { getState, dispatch }): NotificationEntry | undefined => {
         const notifications = selectVisibleNotificationsByType(getState(), payload.type);
+
         if (notifications.length > 0) {
             return;
         }

@@ -31,6 +31,7 @@ const detectDelimiter = (text: string, delimiters: string[]) => {
 const parseLine = (line: string, delimiter: string, columns: string[]) => {
     // skip empty lines
     if (!line.length) return {};
+
     // split string to cells using delimiter
     const cells = line.split(delimiter);
     const output: Result = {};
@@ -38,6 +39,7 @@ const parseLine = (line: string, delimiter: string, columns: string[]) => {
         const key = columns[index];
         // strip double quotes and whitespace
         const cleanValue = value.replace(/^"|"$/g, '').trim();
+
         if (typeof key === 'string') {
             // skip csv header (value is one of column keys)
             if (!columns.includes(cleanValue.toLowerCase())) {
@@ -61,6 +63,7 @@ export const parseCSV = (text: string, columns: string[] = [], delimiter?: strin
     const result: Result[] = [];
     lines.forEach(line => {
         const output = parseLine(line, d, columns);
+
         if (Object.keys(output).length) {
             // use only valid lines
             result.push(output);

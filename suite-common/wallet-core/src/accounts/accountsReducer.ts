@@ -64,7 +64,9 @@ const remove = (state: Account[], accounts: Account[]) => {
 
 const setMetadata = (state: Account[], account: Account) => {
     const index = state.findIndex(a => a.key === account.key);
+
     if (!state[index]) return;
+
     state[index].metadata = account.metadata;
 };
 
@@ -110,6 +112,7 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             .addCase(accountsActions.renameAccount, (state, action) => {
                 const { accountKey, accountLabel } = action.payload;
                 const accountByAccountKey = state.find(account => account.key === accountKey);
+
                 if (accountByAccountKey) accountByAccountKey.accountLabel = accountLabel;
             })
             .addCase(accountsActions.changeAccountVisibility, (state, action) => {
@@ -117,12 +120,14 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             })
             .addCase(accountsActions.startCoinjoinAccountSync, (state, action) => {
                 const account = state.find(findCoinjoinAccount(action.payload.accountKey));
+
                 if (account) {
                     account.syncing = true;
                 }
             })
             .addCase(accountsActions.endCoinjoinAccountSync, (state, action) => {
                 const account = state.find(findCoinjoinAccount(action.payload.accountKey));
+
                 if (account) {
                     account.syncing = undefined;
                     account.status = action.payload.status;
@@ -180,6 +185,7 @@ export const selectDeviceAccountsForNetworkSymbolAndAccountType = memoizeWithArg
         if (!networkSymbol || !accountType) {
             return [];
         }
+
         const accounts = selectDeviceAccounts(state);
 
         return accounts.filter(
@@ -199,6 +205,7 @@ export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = (
     if (!networkSymbol || !accountType || accountIndex === undefined || accountIndex < 0) {
         return undefined;
     }
+
     const accounts = selectDeviceAccountsForNetworkSymbolAndAccountType(
         state,
         networkSymbol,
@@ -305,6 +312,7 @@ export const selectFormattedAccountType = (
     accountKey: AccountKey,
 ): string | null => {
     const account = selectAccountByKey(state, accountKey);
+
     if (!account) return null;
 
     const { networkType, accountType } = account;
@@ -348,6 +356,7 @@ export const selectDeviceAccountKeyByDescriptorAndNetworkSymbol = (
     networkSymbol?: NetworkSymbol,
 ): AccountKey | null => {
     if (!accountDescriptor || !networkSymbol) return null;
+
     const account = selectDeviceAccountByDescriptorAndNetworkSymbol(
         state,
         accountDescriptor,

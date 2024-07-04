@@ -79,6 +79,7 @@ export const useBottomSheetAnimation = ({
                     },
                     () => {
                         if (onClose) runOnJS(onClose)(false);
+
                         if (setIsCloseScrollEnabled) runOnJS(setIsCloseScrollEnabled)(true);
                     },
                 );
@@ -103,6 +104,7 @@ export const useBottomSheetAnimation = ({
         if (nativeEvent.contentOffset.y <= 0 && !isCloseScrollEnabled) {
             setIsCloseScrollEnabled(true);
         }
+
         if (nativeEvent.contentOffset.y > 0 && isCloseScrollEnabled) {
             setIsCloseScrollEnabled(false);
         }
@@ -117,11 +119,14 @@ export const useBottomSheetAnimation = ({
         },
         onActive: (event, context) => {
             const { translationY } = event;
+
             if (translationY < 0) return;
+
             translatePanY.value = translationY + context.translatePanY;
         },
         onEnd: event => {
             const { translationY, velocityY } = event;
+
             if (translationY > 50 && velocityY > 2) {
                 runOnJS(closeSheetAnimated)();
             } else {

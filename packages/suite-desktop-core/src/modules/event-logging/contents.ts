@@ -52,8 +52,11 @@ export const init: Module = ({ mainWindow }) => {
         const levels = ['debug', 'info', 'warn', 'error'] as const;
         mainWindow.webContents.on('console-message', (_, level, message, line, sourceId) => {
             const method = levels[level];
+
             if (!method) return;
+
             if (message.startsWith('%c')) return; // ignore redux-logger
+
             if (message.startsWith('console.groupEnd')) return; // ignore redux-logger
 
             logger[method](

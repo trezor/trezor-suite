@@ -32,8 +32,11 @@ export function isPushOnly(value: Stack) {
 
 function asMinimalOP(buffer: Buffer) {
     if (buffer.length === 0) return OPS.OP_0;
+
     if (buffer.length !== 1) return;
+
     if (buffer[0] >= 1 && buffer[0] <= 16) return OP_INT_BASE + buffer[0];
+
     if (buffer[0] === 0x81) return OPS.OP_1NEGATE;
 }
 
@@ -66,6 +69,7 @@ export function compile(chunks: Buffer | Stack) {
         if (types.Buffer(chunk)) {
             // adhere to BIP62.3, minimal push policy
             const opcode = asMinimalOP(chunk);
+
             if (opcode !== undefined) {
                 buffer.writeUInt8(opcode, offset);
                 offset += 1;
@@ -107,6 +111,7 @@ export function decompile(buffer: Buffer | Stack) {
 
             // did reading a pushDataInt fail? empty script
             if (d === null) return [];
+
             i += d.size;
 
             // attempt to read too much data? empty script
@@ -117,6 +122,7 @@ export function decompile(buffer: Buffer | Stack) {
 
             // decompile minimally
             const op = asMinimalOP(data);
+
             if (op !== undefined) {
                 chunks.push(op);
             } else {
@@ -144,7 +150,9 @@ export function toASM(chunks: Buffer | Stack) {
             // data?
             if (types.Buffer(chunk)) {
                 const op = asMinimalOP(chunk);
+
                 if (op === undefined) return chunk.toString('hex');
+
                 chunk = op;
             }
 
@@ -161,6 +169,7 @@ export function fromASM(asm: string) {
         asm.split(' ').map(chunkStr => {
             // opcode?
             if (OPS[chunkStr] !== undefined) return OPS[chunkStr];
+
             typeforce(types.Hex, chunkStr);
 
             // data!
@@ -175,6 +184,7 @@ export function toStack(chunks0: Buffer | Stack) {
 
     return chunks?.map(op => {
         if (types.Buffer(op)) return op;
+
         if (op === OPS.OP_0) return Buffer.allocUnsafe(0);
 
         return scriptNumber.encode(op - OP_INT_BASE);
@@ -194,6 +204,7 @@ export function isDefinedHashType(hashType: number) {
 
 export function isCanonicalScriptSignature(buffer: Buffer) {
     if (!types.Buffer(buffer)) return false;
+
     if (!isDefinedHashType(buffer[buffer.length - 1])) return false;
 
     return bip66.check(buffer.subarray(0, -1));

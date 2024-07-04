@@ -25,6 +25,7 @@ const parseAddresses = ({ address, addresses, type, hex }: TxOut['scriptPubKey']
             isAddress: false,
         };
     }
+
     const addrs = !address ? addresses || [] : [address];
 
     return {

@@ -27,6 +27,7 @@ export const selectEthereumAccountTokenInfo = (
     tokenAddress?: TokenAddress,
 ): TokenInfoBranded | null => {
     const account = selectAccountByKey(state, accountKey);
+
     if (!account || !account.tokens) return null;
 
     return (
@@ -83,6 +84,7 @@ export const selectEthereumTokenHasFiatRates = (
     tokenSymbol?: TokenSymbol,
 ) => {
     if (!tokenSymbol) return false;
+
     const fiatCurrencyCode = selectFiatCurrencyCode(state);
     const fiatRateKey = getFiatRateKeyFromTicker(
         {
@@ -171,6 +173,7 @@ export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
         ethereumAccountKey: string,
     ): TokenInfoBranded[] => {
         const account = selectAccountByKey(state, ethereumAccountKey);
+
         if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
 
         return A.filter(account.tokens ?? [], token =>
@@ -189,6 +192,7 @@ export const selectIsEthereumAccountWithTokensWithFiatRates = (
     ethereumAccountKey: AccountKey,
 ): boolean => {
     const account = selectAccountByKey(state, ethereumAccountKey);
+
     if (!account || G.isNullable(account.tokens) || !isEthereumAccountSymbol(account.symbol))
         return false;
 

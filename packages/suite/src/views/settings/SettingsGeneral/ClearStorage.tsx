@@ -14,6 +14,7 @@ export const ClearStorage = () => {
     const handleClick = async () => {
         localStorage.clear();
         dispatch(removeDatabase());
+
         if (desktopApi.available) {
             // Reset the desktop-specific store.
             desktopApi.clearStore();
@@ -21,6 +22,7 @@ export const ClearStorage = () => {
             // redirect to / and reload the web
             await dispatch(goto('suite-index'));
         }
+
         reloadApp();
     };
 

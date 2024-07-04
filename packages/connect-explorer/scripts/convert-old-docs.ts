@@ -8,12 +8,14 @@ function convertFile(filename: string) {
         path.join(__dirname, `../../../docs/packages/connect/methods/${filename}.md`),
         'utf-8',
     );
+
     if (!oldFile || oldFile === null) {
         throw new Error(`File not found: ${filename}.md`);
     }
 
     const title = oldFile.match(/## (.*)/)?.[1];
     const method = oldFile.match(/TrezorConnect\.(\w*)\(/)?.[1];
+
     if (!title || !method) {
         console.error('Title or method not found:', title, method, filename);
 
@@ -35,6 +37,7 @@ function convertFile(filename: string) {
         'device',
     ];
     let subdirectory = subdirectories.find(d => filename.startsWith(d)) ?? '.';
+
     if (
         [
             'composeTransaction',
@@ -66,6 +69,7 @@ function convertFile(filename: string) {
     ) {
         subdirectory = 'device';
     }
+
     if (!subdirectory) {
         subdirectory = 'other';
     }
@@ -78,9 +82,11 @@ function convertFile(filename: string) {
         __dirname,
         `../../../packages/connect/src/types/api/${method}.ts`,
     );
+
     if (!fs.existsSync(typeDefPath)) {
         throw new Error(`Type definition not found: ${typeDefPath}`);
     }
+
     const typeDef = fs.readFileSync(typeDefPath, 'utf-8');
     const paramTypes = [...typeDef.matchAll(/ Params\<([^\>]*)\>/gims)]
         .map(m => m[1])
@@ -110,6 +116,7 @@ function convertFile(filename: string) {
     const exportedFromFile = [...typeDef.matchAll(/^export type (.*) = /gim)]
         .map(m => m[1])
         .filter(t => paramTypes.find(p => t.includes(p.split('.')[0])));
+
     if (exportedFromFile.length > 0) {
         importTypesList?.push(
             `import { ${exportedFromFile.join(', ')} } from '@trezor/connect/src/types/api/${method}';`,
@@ -119,6 +126,7 @@ function convertFile(filename: string) {
     // Prepare playground and params table
     let playground = '',
         paramsTable;
+
     if (paramTypes.length > 0) {
         const playgroundMethods = paramTypes
             .map(s => `{ title: '${s}', method: '${method}', schema: ${s} }`)
@@ -149,31 +157,40 @@ function convertFile(filename: string) {
         .replace(/^\> \:note\: (.*)$/gim, (_, p1) => `<Callout type="info">${p1}</Callout>`)
         .replace('[Optional common params](commonParams.md)', '<CommonParamsLink />')
         .replace(/\.\.\/path\.md/g, '/details/path');
+
     if (paramsTable) {
         newFile = newFile.replace(
             /^\#\#\# Params(?:(?!^### ).)*/gims,
             `### Params\n<CommonParamsLink />\n\n${paramsTable}\n\n`,
         );
     }
+
     const localImportPath = subdirectory !== '.' ? '../../..' : `../..`;
+
     if (newFile.includes('</Callout>'))
         importTypesList?.push(`import { Callout } from 'nextra/components';`);
+
     if (bundledParamTypes.length > 0)
         importTypesList?.push(`import { Bundle } from '@trezor/connect/src/types';`);
+
     if (paramsTable?.includes('<Param '))
         importTypesList?.push(`import { Param } from '${localImportPath}/components/Param';`);
+
     if (paramsTable?.includes('<ParamsTable '))
         importTypesList?.push(
             `import { ParamsTable } from '${localImportPath}/components/ParamsTable';`,
         );
+
     if (newFile?.includes('<CommonParamsLink '))
         importTypesList?.push(
             `import { CommonParamsLink } from '${localImportPath}/components/CommonParamsLink';`,
         );
+
     if (playground)
         importTypesList?.push(
             `import { ApiPlayground } from '${localImportPath}/components/ApiPlayground';`,
         );
+
     const importTypes = importTypesList?.join('\n')?.replace(/import type/g, 'import');
 
     const output = `
@@ -189,6 +206,7 @@ ${newFile}
             recursive: true,
         });
     }
+
     const outputPath = path.join(
         __dirname,
         `../src/pages/methods/`,
@@ -212,12 +230,14 @@ function convertAll() {
     const files = fs.readdirSync(path.join(__dirname, '../../../docs/packages/connect/methods'));
     files.forEach(file => {
         if (!file.endsWith('.md')) return;
+
         const filename = file.replace('.md', '');
         convertFile(filename);
     });
 }
 
 const filename = process.argv[2];
+
 if (filename === '--all') {
     convertAll();
 } else {

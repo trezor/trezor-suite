@@ -175,6 +175,7 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
         const selectedOptionIndex = options.findIndex(option => option.value === selectedOptionIn);
 
         let option;
+
         if (e.key === 'ArrowLeft') {
             const previousIndex = selectedOptionIndex - 1;
 

@@ -61,6 +61,7 @@ export class CoreInPopup implements ConnectFactoryDependencies {
     public dispose() {
         this.eventEmitter.removeAllListeners();
         this._settings = parseConnectSettings();
+
         if (this._popupManager) {
             this._popupManager.close();
         }
@@ -87,15 +88,19 @@ export class CoreInPopup implements ConnectFactoryDependencies {
         if (!newSettings.transports?.length) {
             newSettings.transports = ['BridgeTransport', 'WebUsbTransport'];
         }
+
         newSettings.useCoreInPopup = true;
+
         if (typeof window !== 'undefined' && window?.location?.origin) {
             newSettings.origin = window.location.origin;
         }
+
         const equalSettings = JSON.stringify(oldSettings) === JSON.stringify(newSettings);
         this._settings = newSettings;
 
         if (!this._popupManager || !equalSettings) {
             if (this._popupManager) this._popupManager.close();
+
             this._popupManager = new popup.PopupManager(this._settings, {
                 logger: this.popupManagerLogger,
             });

@@ -83,9 +83,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
 
         const coinInfo = getBitcoinNetwork(payload.coin);
+
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
+
         // set required firmware from coinInfo support
         this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
         this.preauthorized = payload.preauthorized;
@@ -98,6 +100,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 'two sources of referential transactions were passed. payload.refTxs have precedence',
             );
         }
+
         const refTxs = validateReferencedTransactions({
             transactions: payload.refTxs || payload.account?.transactions,
             inputs,
@@ -111,11 +114,13 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 typeof output.amount === 'string' &&
                 !Object.prototype.hasOwnProperty.call(output, 'op_return_data'),
         );
+
         if (outputsWithAmount.length > 0) {
             const total: BigNumber = outputsWithAmount.reduce(
                 (bn, output) => bn.plus(typeof output.amount === 'string' ? output.amount : '0'),
                 new BigNumber(0),
             );
+
             if (total.lt(coinInfo.dustLimit)) {
                 throw ERRORS.TypedError(
                     'Method_InvalidParameter',
@@ -167,9 +172,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         // TODO: validate inputs address_n's === same account
         const accountPath = inputs.find(i => i.address_n);
+
         if (!accountPath || !accountPath.address_n) {
             throw ERRORS.TypedError('Runtime', 'Account not found');
         }
+
         const address_n = accountPath.address_n.slice(0, 3);
         const node = await device.getCommands().getHDNode({ address_n }, { coinInfo });
         const account = await blockchain.getAccountInfo({
@@ -216,6 +223,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                   .then(async rawOrigTxs => {
                       // if sender account addresses not provided, fetch account info from the blockbook
                       const accountAddresses = addresses ?? (await this.fetchAddresses(blockchain));
+
                       if (!accountAddresses) return [];
 
                       return transformOrigTransactions(
@@ -253,6 +261,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
 
         let bitcoinTx: Awaited<ReturnType<typeof verifyTx>> | undefined;
+
         if (params.options.decred_staking_ticket) {
             await verifyTicketTx(
                 device.getCommands().getHDNode.bind(device.getCommands()),

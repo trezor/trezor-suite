@@ -20,6 +20,7 @@ export const useRecovery = () => {
     const modal = useSelector(state => state.modal);
 
     let wordRequestInputType;
+
     if (modal.context === MODAL.CONTEXT_DEVICE) {
         // checks modal reducer if device requested to show word input and which type
         wordRequestInputType = getWordRequestInputType(modal.windowType);

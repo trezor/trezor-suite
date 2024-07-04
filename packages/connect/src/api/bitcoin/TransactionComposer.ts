@@ -78,6 +78,7 @@ export class TransactionComposer {
     // Composing fee levels for SelectFee view in popup
     composeAllFeeLevels() {
         const { levels } = this.feeLevels;
+
         if (this.utxos.length < 1) return false;
 
         this.composed = {};
@@ -85,9 +86,11 @@ export class TransactionComposer {
         levels.forEach(level => {
             if (level.feePerUnit !== '0') {
                 const tx = this.compose(level.feePerUnit);
+
                 if (tx.type === 'final') {
                     atLeastOneValid = true;
                 }
+
                 this.composed[level.label] = tx;
             }
         });
@@ -95,10 +98,12 @@ export class TransactionComposer {
         if (!atLeastOneValid) {
             const lastLevel = levels[levels.length - 1];
             let lastFee = new BigNumber(lastLevel.feePerUnit);
+
             while (lastFee.gt(this.coinInfo.minFee) && this.composed.custom === undefined) {
                 lastFee = lastFee.minus(1);
 
                 const tx = this.compose(lastFee.toString());
+
                 if (tx.type === 'final') {
                     this.feeLevels.updateCustomFee(lastFee.toString());
                     this.composed.custom = tx;
@@ -116,6 +121,7 @@ export class TransactionComposer {
     composeCustomFee(fee: string) {
         const tx = this.compose(fee);
         this.composed.custom = tx;
+
         if (tx.type === 'final') {
             this.feeLevels.updateCustomFee(tx.feePerByte);
         } else {
@@ -128,6 +134,7 @@ export class TransactionComposer {
         const { levels } = this.feeLevels;
         levels.forEach(level => {
             const tx = this.composed[level.label];
+
             if (tx && tx.type === 'final') {
                 list.push({
                     name: level.label,
@@ -151,7 +158,9 @@ export class TransactionComposer {
     compose(feeRate: string): ComposeResult {
         const { account, coinInfo, baseFee } = this;
         const { addresses } = account;
+
         if (!addresses) return { type: 'error', error: 'ADDRESSES-NOT-SET' };
+
         // find not used change address or fallback to the last in the list
         const changeAddress =
             addresses.change.find(a => !a.transfers) ||

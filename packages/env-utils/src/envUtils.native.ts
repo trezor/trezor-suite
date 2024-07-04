@@ -67,6 +67,7 @@ const getPlatformLanguages = () => getLocales().map(language => language.languag
 
 const getOsName = () => {
     if (isAndroid()) return 'android';
+
     if (isIOs()) return 'ios';
 
     return '';

@@ -58,6 +58,7 @@ export const useWatchBuyTrade = (account: Account, trade: TradeBuy) => {
                     };
                     dispatch(saveBuyTrade(tradeData, account, newDate));
                 }
+
                 if (response.status && BuyTradeFinalStatuses.includes(response.status)) {
                     removeDraft(account.key);
                 }
@@ -103,6 +104,7 @@ export const useWatchExchangeTrade = (account: Account, trade: TradeExchange) =>
                     };
                     dispatch(saveExchangeTrade(tradeData, account, newDate));
                 }
+
                 if (response.status && ExchangeTradeFinalStatuses.includes(response.status)) {
                     removeDraft(account.key);
                 }
@@ -152,11 +154,14 @@ export const useWatchSellTrade = (account: Account, trade?: TradeSell) => {
                         status: response.status,
                         error: response.error,
                     };
+
                     if (response.destinationAddress) {
                         tradeData.destinationAddress = response.destinationAddress;
                         tradeData.destinationPaymentExtraId = response.destinationPaymentExtraId;
                     }
+
                     dispatch(saveSellTrade(tradeData, account, newDate));
+
                     if (response.status && SellFiatTradeFinalStatuses.includes(response.status)) {
                         removeDraft(account.key);
                     }

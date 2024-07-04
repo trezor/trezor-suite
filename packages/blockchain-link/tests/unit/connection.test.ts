@@ -4,6 +4,7 @@ import BlockchainLink from '../../src';
 
 const getMethod = (instanceName: string) => {
     let method: string;
+
     switch (instanceName) {
         case 'blockfrost':
             method = 'GET_BLOCK';
@@ -63,6 +64,7 @@ workers.forEach(instance => {
                     delay: 400, // wait 0.4 sec. to send response
                 },
             ]);
+
             try {
                 blockchain.settings.timeout = 200;
                 await blockchain.getInfo();
@@ -167,6 +169,7 @@ workers.forEach(instance => {
         it('Connect error (no server field)', async () => {
             // @ts-expect-error invalid server value
             blockchain.settings.server = null;
+
             try {
                 await blockchain.connect();
                 fail('Did not throw');
@@ -177,6 +180,7 @@ workers.forEach(instance => {
 
         it('Connect error (server field empty array)', async () => {
             blockchain.settings.server = [];
+
             try {
                 await blockchain.connect();
                 fail('Did not throw');
@@ -188,6 +192,7 @@ workers.forEach(instance => {
         it('Connect error (server field invalid type)', async () => {
             // @ts-expect-error invalid value
             blockchain.settings.server = 1;
+
             try {
                 await blockchain.connect();
                 fail('Did not throw');
@@ -203,6 +208,7 @@ workers.forEach(instance => {
 
         it('Websocket connection closed without error before connection.open event', async () => {
             if (instance.name !== 'ripple') return;
+
             // auto reconnect RippleApi issue: https://github.com/ripple/ripple-lib/issues/1068
             server.removeAllListeners('connection');
             server.on('connection', (ws: any) => ws.close());
@@ -229,6 +235,7 @@ workers.forEach(instance => {
                 // @ts-expect-error invalid value
                 { foo: 'bar' },
             ];
+
             try {
                 await blockchain.connect();
                 fail('Did not throw');

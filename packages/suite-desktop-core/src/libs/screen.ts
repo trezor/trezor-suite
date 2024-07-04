@@ -10,6 +10,7 @@ export const getInitialWindowSize = () => {
     const { bounds } = screen.getPrimaryDisplay();
 
     let width = Math.floor(bounds.width * WINDOW_SIZE_FACTOR);
+
     if (width <= MIN_WIDTH) {
         width = MIN_WIDTH;
     } else if (width >= MAX_WIDTH) {
@@ -17,6 +18,7 @@ export const getInitialWindowSize = () => {
     }
 
     let height = Math.floor(bounds.height * WINDOW_SIZE_FACTOR);
+
     if (height <= MIN_HEIGHT) {
         height = MIN_HEIGHT;
     } else if (height >= MAX_HEIGHT) {

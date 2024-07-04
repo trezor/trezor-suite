@@ -48,6 +48,7 @@ describe('transactionSigning', () => {
             if (url.endsWith('/update-liquidity-clue')) {
                 resolve({ RawLiquidityClue: data.ExternalAmounts[0] });
             }
+
             resolve();
         });
 
@@ -288,6 +289,7 @@ describe('transactionSigning', () => {
         server?.addListener('test-request', ({ url, resolve, data, reject }) => {
             if (url.endsWith('/transaction-signature')) {
                 spy();
+
                 if (data.InputIndex === 1) {
                     if (!alreadyProvided) {
                         alreadyProvided = true;
@@ -297,6 +299,7 @@ describe('transactionSigning', () => {
                     }
                 }
             }
+
             resolve();
         });
 
@@ -357,6 +360,7 @@ describe('transactionSigning', () => {
             if (url.endsWith('/transaction-signature')) {
                 reject(500, { ErrorCode: 'WrongPhase' });
             }
+
             resolve();
         });
 

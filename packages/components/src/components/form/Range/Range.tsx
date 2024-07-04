@@ -135,11 +135,13 @@ export const Range = ({
 
     const handleLabelClick: RangeProps['onLabelClick'] = value => {
         if (disabled || !onLabelClick) return;
+
         onLabelClick(value);
     };
 
     useLayoutEffect(() => {
         if (!lastLabelRef.current) return;
+
         setLabelsElWidth(lastLabelRef.current?.getBoundingClientRect().width);
     }, [lastLabelRef, setLabelsElWidth]);
 

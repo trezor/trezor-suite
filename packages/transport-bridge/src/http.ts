@@ -149,6 +149,7 @@ export class TrezordNode {
                     if (req.headers.origin) {
                         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
                     }
+
                     next(req, res);
                 },
             ]);
@@ -163,6 +164,7 @@ export class TrezordNode {
 
                             return res.end(str({ error: result.error }));
                         }
+
                         res.end(str(result.payload.descriptors));
                     });
                 },
@@ -198,6 +200,7 @@ export class TrezordNode {
 
                                 return res.end(str({ error: result.error }));
                             }
+
                             res.end(str({ session: result.payload.session }));
                         });
                 },
@@ -218,6 +221,7 @@ export class TrezordNode {
 
                                 return res.end(str({ error: result.error }));
                             }
+
                             res.end(str({ session: req.params.session }));
                         });
                 },
@@ -240,6 +244,7 @@ export class TrezordNode {
 
                                 return res.end(str({ error: result.error }));
                             }
+
                             res.end(str(result.payload));
                         });
                 },
@@ -257,6 +262,7 @@ export class TrezordNode {
 
                                 return res.end(str({ error: result.error }));
                             }
+
                             res.end(str(result.payload));
                         });
                 },
@@ -279,6 +285,7 @@ export class TrezordNode {
 
                                 return res.end(str({ error: result.error }));
                             }
+
                             res.end();
                         });
                 },

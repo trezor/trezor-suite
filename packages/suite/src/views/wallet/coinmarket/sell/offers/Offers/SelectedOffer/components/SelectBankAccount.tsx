@@ -115,7 +115,9 @@ export const SelectBankAccount = () => {
     const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(
         selectedQuote?.bankAccounts ? selectedQuote?.bankAccounts[0] : undefined,
     );
+
     if (!selectedQuote || !selectedQuote.bankAccounts) return null;
+
     const { bankAccounts } = selectedQuote;
 
     return (

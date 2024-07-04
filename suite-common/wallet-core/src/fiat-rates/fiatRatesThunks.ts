@@ -109,6 +109,7 @@ export const updateFiatRatesThunk = createThunk(
         }
 
         const hasCoinDefinitions = getNetworkFeatures(ticker.symbol).includes('coin-definitions');
+
         if (ticker.tokenAddress && hasCoinDefinitions && !forceFetchToken) {
             const isTokenKnown = selectIsSpecificCoinDefinitionKnown(
                 getState(),
@@ -198,6 +199,7 @@ export const periodicFetchFiatRatesThunk = createThunk(
         if (ratesTimeouts[rateType]) {
             clearTimeout(ratesTimeouts[rateType]!);
         }
+
         await dispatch(fetchFiatRatesThunk({ rateType, localCurrency }));
         ratesTimeouts[rateType] = setTimeout(() => {
             dispatch(periodicFetchFiatRatesThunk({ rateType, localCurrency }));

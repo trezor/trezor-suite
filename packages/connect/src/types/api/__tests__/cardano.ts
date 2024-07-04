@@ -30,6 +30,7 @@ export const cardanoGetAddress = async (api: TrezorConnect) => {
         protocolMagic: 0,
         networkId: 0,
     });
+
     if (singleAddress.success) {
         const { payload } = singleAddress;
         payload.address.toLowerCase();
@@ -39,23 +40,28 @@ export const cardanoGetAddress = async (api: TrezorConnect) => {
         payload.serializedStakingPath.toLowerCase();
         const { addressParameters } = payload;
         addressParameters.addressType.toFixed();
+
         if (Array.isArray(addressParameters.path)) {
             addressParameters.path.map(p => p);
         } else {
             addressParameters.path?.toLowerCase();
         }
+
         if (Array.isArray(addressParameters.stakingPath)) {
             addressParameters.stakingPath.map(p => p);
         } else {
             addressParameters.stakingPath?.toLowerCase();
         }
+
         addressParameters.stakingKeyHash?.toLowerCase();
         const { certificatePointer } = addressParameters;
+
         if (certificatePointer) {
             certificatePointer.blockIndex.toFixed();
             certificatePointer.txIndex.toFixed();
             certificatePointer.certificateIndex.toFixed();
         }
+
         addressParameters.paymentScriptHash?.toLowerCase();
         addressParameters.stakingScriptHash?.toLowerCase();
         // @ts-expect-error, payload is not a bundle
@@ -84,6 +90,7 @@ export const cardanoGetAddress = async (api: TrezorConnect) => {
             },
         ],
     });
+
     if (bundleAddress.success) {
         bundleAddress.payload.forEach(item => {
             item.address.toLowerCase();
@@ -93,23 +100,28 @@ export const cardanoGetAddress = async (api: TrezorConnect) => {
             item.serializedStakingPath.toLowerCase();
             const { addressParameters } = item;
             addressParameters.addressType.toFixed();
+
             if (Array.isArray(addressParameters.path)) {
                 addressParameters.path.map(p => p);
             } else {
                 addressParameters.path?.toLowerCase();
             }
+
             if (Array.isArray(addressParameters.stakingPath)) {
                 addressParameters.stakingPath.map(p => p);
             } else {
                 addressParameters.stakingPath?.toLowerCase();
             }
+
             addressParameters.stakingKeyHash?.toLowerCase();
             const { certificatePointer } = addressParameters;
+
             if (certificatePointer) {
                 certificatePointer.blockIndex.toFixed();
                 certificatePointer.txIndex.toFixed();
                 certificatePointer.certificateIndex.toFixed();
             }
+
             addressParameters.paymentScriptHash?.toLowerCase();
             addressParameters.stakingScriptHash?.toLowerCase();
         });
@@ -194,6 +206,7 @@ export const cardanoGetNativeScriptHash = async (api: TrezorConnect) => {
 export const cardanoGetPublicKey = async (api: TrezorConnect) => {
     // regular
     const singlePK = await api.cardanoGetPublicKey({ path: 'm/44' });
+
     if (singlePK.success) {
         const { payload } = singlePK;
         payload.path.map(p => p);
@@ -206,6 +219,7 @@ export const cardanoGetPublicKey = async (api: TrezorConnect) => {
 
     // bundle
     const bundlePK = await api.cardanoGetPublicKey({ bundle: [{ path: 'm/44' }] });
+
     if (bundlePK.success) {
         bundlePK.payload.forEach(item => {
             item.path.map(p => p);
@@ -414,6 +428,7 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
             witness.chainCode?.toLowerCase();
         });
         const { auxiliaryDataSupplement } = payload;
+
         if (auxiliaryDataSupplement) {
             const { type, auxiliaryDataHash, cVoteRegistrationSignature } = auxiliaryDataSupplement;
             type.toFixed();

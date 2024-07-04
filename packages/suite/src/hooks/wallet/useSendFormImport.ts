@@ -39,6 +39,7 @@ export const useSendFormImport = ({
     const importTransaction = async () => {
         // open ImportTransactionModal and get parsed csv
         const result = await dispatch(importSendFormRequestThunk()).unwrap();
+
         if (!result || result.length < 1) return; // cancelled
 
         let rates: { currency: string; rate?: number }[] = [];
@@ -94,6 +95,7 @@ export const useSendFormImport = ({
                 if (itemCurrency === network.symbol) {
                     // csv amount in crypto currency
                     const cryptoAmount = item.amount || '';
+
                     if (shouldSendInSats) {
                         // try to convert to satoshis
                         output.amount = amountToSatoshi(cryptoAmount, network.decimals);
@@ -126,6 +128,7 @@ export const useSendFormImport = ({
                 } else if (tokens) {
                     // csv amount in ERC20 currency
                     const token = tokens.find(t => t.symbol === itemCurrency);
+
                     if (token) {
                         output.token = token.contract;
                         output.amount = item.amount || '';

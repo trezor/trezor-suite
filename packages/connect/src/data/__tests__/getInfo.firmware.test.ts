@@ -107,6 +107,7 @@ describe('getInfo() in normal (firmware) mode', () => {
     fixtures.forEach(f => {
         it(f.desc, () => {
             const result = getInfo({ features: f.features, releases: f.releases });
+
             if (f.result) {
                 expect(result).toMatchObject(f.result);
             } else if (f.result === null) {

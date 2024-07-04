@@ -64,14 +64,18 @@ const assertSuccess = async (page: Page) => {
  */
 const exportPublicKey = async (page: Page, iteration: number) => {
     const confirmBtn = 'button.confirm';
+
     // withe the exception of the first iteration, continue to the next test
     if (iteration !== 0) await page.locator('button:has-text("Next")').click();
+
     const popup = await getConnectPopup(page);
+
     // click on "Don't ask again" in the first iteration
     if (iteration === 0) {
         await handleAnalyticsConfirm(popup);
         await handleDontAskAgain(popup);
     }
+
     await popup.waitForSelector(confirmBtn, { state: 'visible' });
     await popup.click(confirmBtn);
     await assertSuccess(page);
@@ -85,6 +89,7 @@ const exportPublicKey = async (page: Page, iteration: number) => {
 const signTransaction = async (page: Page, iteration: number) => {
     await page.locator('button:has-text("Next")').click();
     const popup = await getConnectPopup(page);
+
     if (iteration === 0) await handleDontAskAgain(popup);
 
     await popup.waitForSelector('//p[contains(., "Check recipient")]', {
@@ -93,6 +98,7 @@ const signTransaction = async (page: Page, iteration: number) => {
         strict: false,
     });
     let confirmOnTrezorScreenStilVisible = true;
+
     while (confirmOnTrezorScreenStilVisible) {
         try {
             await popup.waitForSelector('//p[contains(., "Check recipient")]', {

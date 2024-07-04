@@ -28,6 +28,7 @@ export const TruncateWithTooltip = ({
 
     useEffect(() => {
         if (!containerRef.current || !scrollWidth || !scrollHeight) return;
+
         const resizeObserver = new ResizeObserver(entries => {
             const { inlineSize: elementWidth, blockSize: elementHeight } =
                 entries[0].borderBoxSize?.[0];

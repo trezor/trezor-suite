@@ -10,6 +10,7 @@ export const useGuideKeyboard = () => {
         (event: KeyboardEvent) => {
             if (event.key === KEYBOARD_CODE.ESCAPE) {
                 if (isModalOpen) return;
+
                 if (isGuideOpen) {
                     closeGuide();
                 }
@@ -18,6 +19,7 @@ export const useGuideKeyboard = () => {
             if (event.key === KEYBOARD_CODE.FUNCTION_KEY_ONE) {
                 if (!isGuideOpen) openGuide();
                 else closeGuide();
+
                 event.preventDefault();
             }
         },

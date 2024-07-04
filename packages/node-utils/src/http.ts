@@ -71,6 +71,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
     public getServerAddress() {
         const address = this.server.address();
+
         if (!address || typeof address === 'string') {
             // this is only for typescript
             // net.AddressInfo may also be string for a server listening on a pipe or Unix domain socket, the name is returned as a string.
@@ -83,6 +84,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     getRouteAddress(pathname: string) {
         const address = this.getServerAddress();
         const route = this.routes.find(r => r.pathname === pathname);
+
         if (!route) return;
 
         return `http://${address.address}:${address.port}${route.pathname}`;
@@ -129,6 +131,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             this.server.listen(port, '127.0.0.1', undefined, () => {
                 this.logger.info('Server started');
                 const address = this.getServerAddress();
+
                 if (address) {
                     this.emitter.emit('server/listening', address);
                 }
@@ -149,6 +152,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 if (err) {
                     this.logger.info('trying to close server which was not running');
                 }
+
                 this.logger.info('Server stopped');
                 this.emitter.emit('server/closed');
                 resolve();
@@ -221,6 +225,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 const matchedSegments = segments.filter(
                     (segment, index) => segment === routeSegments[index],
                 );
+
                 if (matchedSegments.length > acc.matchedSegments.length) {
                     return { route, matchedSegments };
                 }
@@ -249,6 +254,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         });
 
         const { pathname } = url.parse(request.url, true);
+
         if (!pathname) {
             const msg = `url ${request.url} could not be parsed`;
             this.emitter.emit('server/error', msg);
@@ -256,9 +262,11 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
             return;
         }
+
         this.logger.info(`Handling request for ${request.method} ${pathname}`);
 
         const route = this.findBestMatchingRoute(pathname, request.method);
+
         if (!route) {
             this.emitter.emit('server/error', `Route not found for ${request.method} ${pathname}`);
             this.logger.warn(`Route not found for ${request.method} ${pathname}`);
@@ -272,6 +280,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
             return;
         }
+
         const paramsSegments = pathname
             .replace(route.pathname, '')
             .split('/')
@@ -316,6 +325,7 @@ const checkOrigin = ({
     const { origin } = request.headers;
     const origins = allowedOrigin ?? [];
     let isOriginAllowed = false;
+
     // Allow all origins
     if (origins.includes('*')) {
         isOriginAllowed = true;
@@ -327,6 +337,7 @@ const checkOrigin = ({
             return new URL(origin).hostname.endsWith(new URL(o).hostname);
         });
     }
+
     if (!isOriginAllowed) {
         logger.warn(`Origin rejected for ${pathname}`);
         logger.warn(`- Received: origin: '${origin}'`);
@@ -352,6 +363,7 @@ const checkReferer = ({
     const { referer } = request.headers;
     const referers = allowedReferer ?? [];
     let isRefererAllowed = false;
+
     // Allow all origins
     if (referers.includes('*')) {
         isRefererAllowed = true;
@@ -363,6 +375,7 @@ const checkReferer = ({
     } else {
         // Domain of referer has to be in the allowed origins for that endpoint
         let domain: string;
+
         try {
             domain = new URL(referer).hostname;
         } catch (err) {

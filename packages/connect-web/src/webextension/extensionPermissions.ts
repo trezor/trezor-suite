@@ -30,6 +30,7 @@ const init = (label: string) => {
 
     usbButton.onclick = async () => {
         const { usb } = navigator;
+
         if (usb) {
             try {
                 await usb.requestDevice({ filters: config.webusb });

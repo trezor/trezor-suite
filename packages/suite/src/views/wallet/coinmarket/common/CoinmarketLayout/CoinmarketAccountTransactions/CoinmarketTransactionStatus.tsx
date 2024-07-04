@@ -30,6 +30,7 @@ const StyledIcon = styled(Icon)`
 
 const getBuyTradeData = (status: BuyTradeStatus, theme: SuiteThemeColors) => {
     const message = getBuyStatusMessage(status);
+
     switch (message) {
         case 'TR_BUY_STATUS_PENDING':
         case 'TR_BUY_STATUS_ACTION_REQUIRED':
@@ -62,6 +63,7 @@ const getBuyTradeData = (status: BuyTradeStatus, theme: SuiteThemeColors) => {
 
 const getSellTradeData = (status: SellTradeStatus, theme: SuiteThemeColors) => {
     const message = getSellStatusMessage(status);
+
     switch (message) {
         case 'TR_SELL_STATUS_PENDING':
             return {
@@ -87,6 +89,7 @@ const getSellTradeData = (status: SellTradeStatus, theme: SuiteThemeColors) => {
 
 const getExchangeTradeData = (status: ExchangeTradeStatus, theme: SuiteThemeColors) => {
     const message = getExchangeStatusMessage(status);
+
     switch (message) {
         case 'TR_EXCHANGE_STATUS_CONFIRMING':
         case 'TR_EXCHANGE_STATUS_CONVERTING':
@@ -126,6 +129,7 @@ const getSpendTradeData = (theme: SuiteThemeColors) =>
 
 const getSavingsTradeData = (status: SavingsTradeItemStatus, theme: SuiteThemeColors) => {
     const message = getSavingsStatusMessage(status);
+
     switch (message) {
         case 'TR_SAVINGS_STATUS_PENDING':
             return {
@@ -165,6 +169,7 @@ interface StatusProps {
 export const CoinmarketTransactionStatus = ({ trade, className, tradeType }: StatusProps) => {
     const theme = useTheme();
     let data: StatusData;
+
     switch (tradeType) {
         case 'buy':
             data = getBuyTradeData(trade.status as BuyTradeStatus, theme);

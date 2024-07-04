@@ -108,6 +108,7 @@ const createAccount = (
         rawLiquidityClue: null, // NOTE: liquidity clue is calculated from tx history. default value is `null`
     };
     const index = draft.accounts.findIndex(a => a.key === account.key);
+
     if (index < 0) draft.accounts.push(coinjoinAccount);
     else draft.accounts[index] = coinjoinAccount;
 };
@@ -117,7 +118,9 @@ const setLiquidityClue = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account) return;
+
     account.rawLiquidityClue = payload.rawLiquidityClue;
 };
 
@@ -126,7 +129,9 @@ const updateSetupOption = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account) return;
+
     if (payload.isRecommended) {
         delete account.setup;
     } else {
@@ -146,7 +151,9 @@ const updateTargetAnonymity = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account?.setup) return;
+
     account.setup.targetAnonymity = payload.targetAnonymity;
 };
 
@@ -155,7 +162,9 @@ const updateMaxMingFee = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account?.setup) return;
+
     account.setup.maxFeePerVbyte = payload.maxFeePerVbyte;
 };
 
@@ -164,7 +173,9 @@ const toggleSkipRounds = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account?.setup) return;
+
     account.setup.skipRounds = !account.setup.skipRounds;
 };
 
@@ -173,7 +184,9 @@ const createSession = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account) return;
+
     account.session = {
         ...payload.params,
         timeCreated: Date.now(),
@@ -197,6 +210,7 @@ const updateSession = (
     }: ExtractActionPayload<typeof COINJOIN.SESSION_ROUND_CHANGED>,
 ) => {
     const account = getAccount(draft, accountKey);
+
     if (!account || !account.session) return;
 
     const { roundPhase } = account.session;
@@ -223,7 +237,9 @@ const sessionTxSigned = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_TX_SIGNED>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account || !account.session) return;
+
     account.rawLiquidityClue = payload.rawLiquidityClue;
     account.session = {
         ...account.session,
@@ -236,10 +252,13 @@ const addTxCandidate = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_TX_CANDIDATE>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account) return;
+
     if (!account.transactionCandidates) {
         account.transactionCandidates = [];
     }
+
     if (!account.transactionCandidates.some(tx => tx.roundId !== payload.roundId)) {
         account.transactionCandidates.push({ roundId: payload.roundId });
     }
@@ -251,10 +270,12 @@ const removeTxCandidate = (
 ) => {
     payload.accountKeys.forEach(key => {
         const account = getAccount(draft, key);
+
         if (account && account.transactionCandidates) {
             account.transactionCandidates = account.transactionCandidates.filter(
                 tx => tx.roundId !== payload.round.id,
             );
+
             if (account.transactionCandidates.length < 1) {
                 delete account.transactionCandidates;
             }
@@ -267,7 +288,9 @@ const updateSessionStarting = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_STARTING>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account || !account.session) return;
+
     if (payload.isStarting) {
         account.session = {
             ...account.session,
@@ -283,6 +306,7 @@ const completeSession = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_COMPLETED>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (account?.session) {
         delete account.session;
     }
@@ -293,6 +317,7 @@ const stopSession = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UNREGISTER>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (account?.session) {
         delete account.session;
     }
@@ -303,6 +328,7 @@ const pauseSession = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_PAUSE>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account || !account.session) return;
 
     delete account.session.roundPhase;
@@ -317,6 +343,7 @@ const restoreSession = (
     payload: ExtractActionPayload<typeof COINJOIN.SESSION_RESTORE>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account || !account.session) return;
 
     delete account.session.paused;
@@ -331,7 +358,9 @@ const saveCheckpoint = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_DISCOVERY_PROGRESS>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account) return;
+
     const checkpointNew = payload.progress.checkpoint;
     const checkpoints = (account.checkpoints ?? [])
         .filter(({ blockHeight }) => blockHeight < checkpointNew.blockHeight)
@@ -344,7 +373,9 @@ const initClient = (
     payload: ExtractActionPayload<typeof COINJOIN.CLIENT_ENABLE>,
 ) => {
     const exists = draft.clients[payload.symbol];
+
     if (exists) return;
+
     draft.clients[payload.symbol] = {
         ...CLIENT_STATUS_FALLBACK,
         status: 'loading',
@@ -367,7 +398,9 @@ const updateClientStatus = (
     payload: ExtractActionPayload<typeof COINJOIN.CLIENT_STATUS>,
 ) => {
     const client = draft.clients[payload.symbol];
+
     if (!client) return;
+
     draft.clients[payload.symbol] = {
         ...client,
         ...transformCoinjoinStatus(payload.status),
@@ -413,6 +446,7 @@ const updateSessionPhase = (
         if (!session) {
             return;
         }
+
         const previousSessionPhase = session.sessionPhaseQueue.at(-1) ?? 0;
         const roundPhase = getRoundPhaseFromSessionPhase(phase);
         const isFirstRoundPhase = roundPhase === RoundPhase.InputRegistration;
@@ -460,12 +494,15 @@ const addAnonymityLevel = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_ADD_ANONYMITY_LEVEL>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account) return;
+
     if (!account.anonymityGains) {
         account.anonymityGains = {
             history: [],
         };
     }
+
     account.anonymityGains.history.unshift({ level: payload.level, timestamp: Date.now() });
     account.anonymityGains.history = cleanAnonymityGains(account.anonymityGains.history);
 };
@@ -475,7 +512,9 @@ const updateLastReportTimestamp = (
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP>,
 ) => {
     const account = getAccount(draft, payload.accountKey);
+
     if (!account?.anonymityGains) return;
+
     account.anonymityGains.lastReportTimestamp = Date.now();
 };
 
@@ -498,6 +537,7 @@ export const coinjoinReducer = (
                 if (action.payload.accountType === 'coinjoin') {
                     createAccount(draft, action.payload);
                 }
+
                 break;
             case COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE:
                 setLiquidityClue(draft, action.payload);
@@ -527,11 +567,13 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.ACCOUNT_DISCOVERY_RESET: {
                 const account = getAccount(draft, action.payload.accountKey);
+
                 if (account) {
                     account.checkpoints = action.payload.checkpoint
                         ? [action.payload.checkpoint]
                         : [];
                 }
+
                 break;
             }
             case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
@@ -649,6 +691,7 @@ export const selectTargetAnonymityByAccountKey = (
     accountKey: AccountKey,
 ) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+
     if (!coinjoinAccount) return;
 
     return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
@@ -674,11 +717,14 @@ export const selectCurrentCoinjoinBalanceBreakdown = (state: CoinjoinRootState) 
 export const selectRegisteredUtxosByAccountKey = memoizeWithArgs(
     (state: CoinjoinRootState, accountKey: AccountKey) => {
         const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+
         if (!coinjoinAccount?.prison) return;
+
         const { prison, session, transactionCandidates } = coinjoinAccount;
 
         return Object.keys(prison).reduce<typeof prison>((result, key) => {
             const inmate = prison[key];
+
             // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
             if (
                 inmate.roundId &&
@@ -928,31 +974,41 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     if (selectSessionByAccountKey(state, accountKey)?.starting) {
         return 'SESSION_STARTING';
     }
+
     if (selectIsFeatureDisabled(state, Feature.coinjoin)) {
         return 'FEATURE_DISABLED';
     }
+
     if (selectCoinjoinClient(state, accountKey)?.status === 'unavailable') {
         return 'COORDINATOR_UNAVAILABLE';
     }
+
     if (!state.suite.online) {
         return 'OFFLINE';
     }
+
     if (selectIsNothingToAnonymizeByAccountKey(state, accountKey)) {
         return 'NOTHING_TO_ANONYMIZE';
     }
+
     if (selectIsCoinjoinBlockedByTor(state)) {
         return 'TOR_DISABLED';
     }
+
     if (!['connected', 'firmware-recommended'].includes(selectDeviceStatus(state) ?? '')) {
         return 'DEVICE_DISCONNECTED';
     }
+
     const account = selectAccountByKey(state, accountKey);
+
     if (account?.backendType === 'coinjoin' && account?.status === 'out-of-sync') {
         return 'ACCOUNT_OUT_OF_SYNC';
     }
+
     if (selectIsDeviceLocked(state)) {
         return 'DEVICE_LOCKED';
     }
+
     if (selectHasAnonymitySetError(state)) {
         return 'ANONYMITY_ERROR';
     }

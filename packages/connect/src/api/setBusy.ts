@@ -23,6 +23,7 @@ export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
     async run() {
         const cmd = this.device.getCommands();
         const { message } = await cmd.typedCall('SetBusy', 'Success', this.params);
+
         if (this.keepSession && !!this.params.expiry_ms) {
             // NOTE: DEVICE.CHANGED will not be emitted because session is not released
             // change device features and trigger event manually

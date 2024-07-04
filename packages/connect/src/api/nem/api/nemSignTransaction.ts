@@ -24,6 +24,7 @@ export default class NEMSignTransaction extends AbstractMethod<
         if ((payload?.transaction as any)?.timestamp) {
             payload.transaction.timeStamp = (payload.transaction as any).timestamp;
         }
+
         // TODO: weak assert for compatibility purposes (issue #10841)
         AssertWeak(NEMSignTransactionSchema, payload);
 

@@ -29,6 +29,7 @@ export const NavLinks = ({ flatDirectories, currentIndex }: NavLinkProps): React
     let next = navigation.next && flatDirectories[currentIndex + 1];
 
     if (prev && !prev.isUnderCurrentDocsTree) prev = false;
+
     if (next && !next.isUnderCurrentDocsTree) next = false;
 
     if (!prev && !next) return null;

@@ -103,6 +103,7 @@ export const withEditable =
                             if (event.key === 'Enter') {
                                 submit(value);
                             }
+
                             if (event.key === 'Escape') {
                                 onBlur();
                             }

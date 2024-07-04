@@ -79,6 +79,7 @@ export const Header = ({
     );
 
     let actions = null;
+
     if (!isWalletLoading && !isWalletError) {
         if (isWalletEmpty) {
             actions = (

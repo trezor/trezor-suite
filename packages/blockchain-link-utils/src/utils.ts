@@ -12,12 +12,14 @@ export const filterTargets = (addresses: Addresses, targets: VinVout[]): VinVout
     if (typeof addresses === 'string') {
         addresses = [addresses];
     }
+
     // neither addresses or targets are missing
     if (!addresses || !Array.isArray(addresses) || !targets || !Array.isArray(targets)) return [];
 
     const all = addresses
         .map(a => {
             if (typeof a === 'string') return a;
+
             if (typeof a === 'object' && typeof a.address === 'string') return a.address;
 
             return undefined;
@@ -51,9 +53,11 @@ const adjustHeight = ({ blockHeight }: { blockHeight?: number }) =>
 export const sortTxsFromLatest = (transactions: Transaction[]) => {
     const txs = transactions.slice().sort((a, b) => adjustHeight(b) - adjustHeight(a));
     let from = 0;
+
     while (from < txs.length - 1) {
         const fromHeight = adjustHeight(txs[from]);
         let to = from + 1;
+
         if (fromHeight === adjustHeight(txs[to])) {
             do {
                 to++;
@@ -63,6 +67,7 @@ export const sortTxsFromLatest = (transactions: Transaction[]) => {
             );
             txs.splice(from, toposorted.length, ...toposorted);
         }
+
         from = to;
     }
 

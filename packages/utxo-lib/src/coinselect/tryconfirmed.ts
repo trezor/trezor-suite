@@ -73,6 +73,7 @@ export function tryConfirmed(
                 unusable = unusableH;
 
                 const result = algorithm(usable, outputs, feeRate, optionsIn);
+
                 if (result.inputs) {
                     return result;
                 }

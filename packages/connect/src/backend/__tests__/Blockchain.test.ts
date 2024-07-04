@@ -12,6 +12,7 @@ describe('backend/Blockchain', () => {
         jest.useFakeTimers();
 
         const coinInfo = getBitcoinNetwork('Bitcoin');
+
         if (!coinInfo) throw new Error('coinInfo is missing');
 
         const spy = jest.spyOn(BlockchainLink.prototype, 'estimateFee');
@@ -42,6 +43,7 @@ describe('backend/Blockchain', () => {
 
     it('cache estimated fees (ethereum-like)', async () => {
         const coinInfo = getEthereumNetwork('Ethereum');
+
         if (!coinInfo) throw new Error('coinInfo is missing');
 
         const spy = jest.spyOn(BlockchainLink.prototype, 'estimateFee');

@@ -80,6 +80,7 @@ export const SliderInput = forwardRef<
         }
 
         const number = Number(target.value);
+
         if (Number.isNaN(number) || number > MAX_ALLOWED_INTEGER) {
             return;
         }

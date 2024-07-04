@@ -69,9 +69,11 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                 <Translation id={isTimestamp ? 'LOCKTIME_TIMESTAMP' : 'LOCKTIME_BLOCKHEIGHT'} />
             );
         }
+
         if (type === 'fee') {
             outputLabel = <Translation id={getFeeLabel(networkType)} />;
         }
+
         if (type === 'contract') {
             if (networkType === 'solana') {
                 outputLabel = <Translation id="TR_TOKEN" />;
@@ -79,15 +81,19 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                 outputLabel = <Translation id="TR_CONTRACT" />;
             }
         }
+
         if (type === 'address' || type === 'regular_legacy') {
             outputLabel = <Translation id="TR_RECIPIENT_ADDRESS" />;
         }
+
         if (type === 'amount') {
             outputLabel = <Translation id="TR_AMOUNT_SENT" />;
         }
+
         if (type === 'destination-tag') {
             outputLabel = <Translation id="DESTINATION_TAG" />;
         }
+
         if (type === 'gas') {
             outputLabel = <Translation id="TR_GAS_PRICE" />;
         }
@@ -95,6 +101,7 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
         let outputValue = value;
         let outputSymbol;
         let fiatVisible = false;
+
         if (token) {
             outputValue = formatAmount(value, token.decimals);
             outputSymbol = token.symbol as NetworkSymbol;

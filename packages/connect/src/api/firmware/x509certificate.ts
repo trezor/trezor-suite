@@ -20,12 +20,15 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
     function getTag() {
         let tag = byteArray[0] & 0x1f;
         position += 1;
+
         if (tag === 0x1f) {
             tag = 0;
+
             while (byteArray[position] >= 0x80) {
                 tag = tag * 128 + byteArray[position] - 0x80;
                 position += 1;
             }
+
             tag = tag * 128 + byteArray[position] - 0x80;
             position += 1;
         }
@@ -62,9 +65,11 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
 
     if (length === 0x80) {
         length = 0;
+
         while (byteArray[position + length] !== 0 || byteArray[position + length + 1] !== 0) {
             length += 1;
         }
+
         byteLength = position + length + 2;
         contents = byteArray.subarray(position, position + length);
     } else {
@@ -87,6 +92,7 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
 const derToAsn1List = (byteArray: Uint8Array) => {
     const result = [];
     let nextPosition = 0;
+
     while (nextPosition < byteArray.length) {
         const nextPiece = derToAsn1(byteArray.subarray(nextPosition));
         result.push(nextPiece);
@@ -124,10 +130,12 @@ export const fixSignature = (byteArray: Uint8Array) => {
         const newChunk = new Uint8Array(chunkLength + 2);
         // set first two bytes: original value and new length of the chunk
         newChunk.set([chunk.raw[0], chunkLength]);
+
         // optionally add 0
         if (offset > 0) {
             newChunk.set([0], 2);
         }
+
         // fill new chunk with data
         newChunk.set(data, 2 + offset);
         newLength += newChunk.length;
@@ -153,6 +161,7 @@ const parseSignatureValue = (asn1: Asn1) => {
     if (asn1.cls !== 0 || asn1.tag !== 3 || asn1.structured) {
         throw new Error('Bad signature value. Not a BIT STRING.');
     }
+
     const { unusedBits, bytes } = derBitStringValue(asn1.contents);
 
     return {
@@ -164,12 +173,15 @@ const parseSignatureValue = (asn1: Asn1) => {
 const derObjectIdentifierValue = (byteArray: Uint8Array) => {
     let oid = `${Math.floor(byteArray[0] / 40)}.${byteArray[0] % 40}`;
     let position = 1;
+
     while (position < byteArray.length) {
         let nextInteger = 0;
+
         while (byteArray[position] >= 0x80) {
             nextInteger = nextInteger * 0x80 + (byteArray[position] & 0x7f);
             position += 1;
         }
+
         nextInteger = nextInteger * 0x80 + byteArray[position];
         position += 1;
         oid += `.${nextInteger}`;
@@ -188,14 +200,19 @@ const parseAlgorithmIdentifier = (asn1: Asn1) => {
     if (asn1.cls !== 0 || asn1.tag !== 16 || !asn1.structured) {
         throw new Error('Bad algorithm identifier. Not a SEQUENCE.');
     }
+
     const pieces = derToAsn1List(asn1.contents);
+
     if (pieces.length > 2) {
         throw new Error('Bad algorithm identifier. Contains too many child objects.');
     }
+
     const encodedAlgorithm = pieces[0];
+
     if (encodedAlgorithm.cls !== 0 || encodedAlgorithm.tag !== 6 || encodedAlgorithm.structured) {
         throw new Error('Bad algorithm identifier. Does not begin with an OBJECT IDENTIFIER.');
     }
+
     const algorithm = derObjectIdentifierValue(encodedAlgorithm.contents);
 
     return {
@@ -229,7 +246,9 @@ const parseSubjectPublicKeyInfo = (asn1: Asn1) => {
     if (asn1.cls !== 0 || asn1.tag !== 16 || !asn1.structured) {
         throw new Error('Bad SPKI. Not a SEQUENCE.');
     }
+
     const pieces = derToAsn1List(asn1.contents);
+
     if (pieces.length !== 2) {
         throw new Error('Bad SubjectPublicKeyInfo. Wrong number of child objects.');
     }
@@ -253,10 +272,12 @@ const parseUtcTime = (time: Asn1) => {
     // tag: 24 = GeneralizedTime (YYYYMMDDhhmmZ)
     let offset = 4;
     let yearOffset = 0;
+
     if (time.tag === 23) {
         offset = 2;
         yearOffset = 2000;
     }
+
     const utc = Buffer.from(time.contents).toString();
     const year = yearOffset + Number(utc.substring(0, offset));
     const month = Number(utc.substring(offset, offset + 2)) - 1;
@@ -304,7 +325,9 @@ const parseTBSCertificate = (asn1: Asn1) => {
     if (asn1.cls !== 0 || asn1.tag !== 16 || !asn1.structured) {
         throw new Error("This can't be a TBSCertificate. Wrong data type.");
     }
+
     const pieces = derToAsn1List(asn1.contents);
+
     if (pieces.length < 7) {
         throw new Error('Bad TBS Certificate. There are fewer than the seven required children.');
     }
@@ -331,10 +354,13 @@ const parseTBSCertificate = (asn1: Asn1) => {
  */
 export const parseCertificate = (byteArray: Uint8Array) => {
     const asn1 = derToAsn1(byteArray);
+
     if (asn1.cls !== 0 || asn1.tag !== 16 || !asn1.structured) {
         throw new Error("This can't be an X.509 certificate. Wrong data type.");
     }
+
     const pieces = derToAsn1List(asn1.contents);
+
     if (pieces.length !== 3) {
         throw new Error('Certificate contains more than the three specified children.');
     }

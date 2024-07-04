@@ -12,10 +12,12 @@ export const resolveDescriptorForTaproot = ({ response, publicKey }: Params) => 
 
         // This is here to keep backwards compatibility, suite and blockbooks are still using `'` over `h`
         const openingSquareBracketSplit = xpub.split('[');
+
         if (openingSquareBracketSplit.length === 2) {
             const [beforeOpeningBracket, afterOpeningBracket] = openingSquareBracketSplit;
 
             const closingSquareBracketSplit = afterOpeningBracket.split(']');
+
             if (closingSquareBracketSplit.length === 2) {
                 const [path, afterClosingBracket] = closingSquareBracketSplit;
 

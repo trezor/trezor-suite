@@ -138,6 +138,7 @@ describe('bridge', () => {
         });
 
         expect(session1.success).toBe(true);
+
         if (!session1.success) {
             return;
         }
@@ -190,6 +191,7 @@ describe('bridge', () => {
         const session1 = await bridge1.acquire({ input: { previous: null, path: '1' } }).promise;
 
         expect(session1).toEqual({ success: true, payload: '1' });
+
         if (!session1.success) {
             return;
         }

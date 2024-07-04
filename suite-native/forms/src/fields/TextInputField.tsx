@@ -27,6 +27,7 @@ export const TextInputField = forwardRef<TextInput, FieldProps>(
 
         const handleOnBlur = () => {
             hookFormOnBlur();
+
             if (onBlur) {
                 onBlur();
             }

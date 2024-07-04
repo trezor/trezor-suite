@@ -69,6 +69,7 @@ const TransactionListHeaderContent = ({
     if (isGraphDisplayed) {
         return <AccountDetailGraph accountKey={accountKey} />;
     }
+
     if (isTokenAccount) {
         return <AccountDetailTokenHeader accountKey={accountKey} tokenContract={tokenContract} />;
     }

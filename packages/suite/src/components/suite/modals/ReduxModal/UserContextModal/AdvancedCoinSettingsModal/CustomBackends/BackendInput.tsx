@@ -19,6 +19,7 @@ export const BackendInput = ({ url, isActive, isLoading, onRemove }: BackendInpu
         if (isLoading) {
             return <Spinner size={18} />;
         }
+
         if (isActive) {
             return ActiveStatus;
         }

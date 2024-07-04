@@ -16,6 +16,7 @@ const Protocol = () => {
         if (search) {
             const query = new URLSearchParams(search);
             const uri = query.get('uri');
+
             if (uri) {
                 handleProtocolRequest(uri);
             }

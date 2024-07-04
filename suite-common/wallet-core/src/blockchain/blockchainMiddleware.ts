@@ -29,6 +29,7 @@ export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps(
                         cardanoFetchTrezorPools(action.payload.coin.shortcut as 'ADA' | 'tADA'),
                     );
                 }
+
                 break;
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK:
                 dispatch(updateFeeInfoThunk(action.payload.coin.shortcut));

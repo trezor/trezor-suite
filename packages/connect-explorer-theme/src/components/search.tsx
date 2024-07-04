@@ -55,6 +55,7 @@ export function Search({
         const down = (e: globalThis.KeyboardEvent): void => {
             const activeElement = document.activeElement as HTMLElement;
             const tagName = activeElement?.tagName.toLowerCase();
+
             if (
                 !input.current ||
                 !tagName ||
@@ -62,6 +63,7 @@ export function Search({
                 activeElement?.isContentEditable
             )
                 return;
+
             if (
                 e.key === '/' ||
                 (e.key === 'k' && (e.metaKey /* for Mac */ || /* for non-Mac */ e.ctrlKey))
@@ -102,12 +104,14 @@ export function Search({
                         const el = ulRef.current?.querySelector<HTMLAnchorElement>(
                             `li:nth-of-type(${active + 2}) > a`,
                         );
+
                         if (el) {
                             e.preventDefault();
                             handleActive({ currentTarget: el });
                             el.focus();
                         }
                     }
+
                     break;
                 }
                 case 'ArrowUp': {
@@ -115,20 +119,24 @@ export function Search({
                         const el = ulRef.current?.querySelector<HTMLAnchorElement>(
                             `li:nth-of-type(${active}) > a`,
                         );
+
                         if (el) {
                             e.preventDefault();
                             handleActive({ currentTarget: el });
                             el.focus();
                         }
                     }
+
                     break;
                 }
                 case 'Enter': {
                     const result = results[active];
+
                     if (result && composition) {
                         void router.push(result.route);
                         finishSearch();
                     }
+
                     break;
                 }
                 case 'Escape': {
@@ -197,6 +205,7 @@ export function Search({
                 </span>
             );
         }
+
         if (loading) {
             return (
                 <span className="nx-flex nx-select-none nx-justify-center nx-gap-2 nx-p-8 nx-text-center nx-text-sm nx-text-gray-400">
@@ -205,6 +214,7 @@ export function Search({
                 </span>
             );
         }
+
         if (results.length > 0) {
             return results.map(({ route, prefix, children, id }, i) => (
                 <Fragment key={id}>

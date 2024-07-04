@@ -18,8 +18,10 @@ const tryConfirmBySignatureStatus = async (
     };
 
     let currentBlockHeight = await getCurrentBlockHeight();
+
     while (currentBlockHeight <= lastValidBlockHeight) {
         const signatureStatus = await api.getSignatureStatus(signature);
+
         if (
             signatureStatus.value != null &&
             signatureStatus.value.confirmationStatus === COMMITMENT
@@ -28,9 +30,11 @@ const tryConfirmBySignatureStatus = async (
         }
 
         await new Promise(resolve => setTimeout(resolve, 5000));
+
         if (abortSignal.aborted) {
             return signature;
         }
+
         await api.sendRawTransaction(txBuffer, { skipPreflight: true, maxRetries: 0 });
         currentBlockHeight = await getCurrentBlockHeight();
     }
@@ -49,6 +53,7 @@ const tryConfirmBySignatureSubscription = (api: Connection, signature: string) =
                 if (result.err != null) {
                     reject(result.err);
                 }
+
                 resolve(signature);
             },
             COMMITMENT,
@@ -82,6 +87,7 @@ export const confirmTransactionWithResubmit = async (
     ]);
 
     abortController.abort();
+
     if (subscriptionId != null) {
         api.removeSignatureListener(subscriptionId);
     }

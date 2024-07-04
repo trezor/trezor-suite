@@ -69,12 +69,14 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             timer.loading();
             invityAPI.createInvityAPIKey(account.descriptor);
             const allQuotes = await invityAPI.getBuyQuotes(quotesRequest);
+
             if (Array.isArray(allQuotes)) {
                 if (allQuotes.length === 0) {
                     timer.stop();
 
                     return;
                 }
+
                 const [quotes, alternativeQuotes] = processQuotes(allQuotes);
                 setInnerQuotes(quotes);
                 innerQuotesFilterReducer.dispatch({
@@ -90,6 +92,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                 setInnerQuotes(undefined);
                 setInnerAlternativeQuotes(undefined);
             }
+
             timer.reset();
         }
     }, [
@@ -126,16 +129,19 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
     const selectQuote = async (quote: BuyTrade) => {
         const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
+
         if (quotesRequest) {
             const result = await openCoinmarketBuyConfirmModal(
                 provider?.companyName,
                 quote.receiveCurrency,
             );
+
             if (result) {
                 // empty quoteId means the partner requests login first, requestTrade to get login screen
                 if (!quote.quoteId) {
                     const returnUrl = await createQuoteLink(quotesRequest, account);
                     const response = await invityAPI.doBuyTrade({ trade: quote, returnUrl });
+
                     if (response) {
                         if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
                             submitRequestForm(response.tradeForm.form);
@@ -161,6 +167,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
     const goToPayment = async (address: string) => {
         setCallInProgress(true);
+
         if (!selectedQuote) return;
 
         const returnUrl = await createTxLink(selectedQuote, account);
@@ -182,14 +189,17 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             });
         } else {
             saveTrade(response.trade, account, new Date().toISOString());
+
             if (response.tradeForm) {
                 submitRequestForm(response.tradeForm.form);
             }
+
             if (isDesktop()) {
                 saveTransactionDetailId(response.trade.paymentId);
                 goto('wallet-coinmarket-buy-detail', { params: selectedAccount.params });
             }
         }
+
         setCallInProgress(false);
     };
 
@@ -219,6 +229,7 @@ CoinmarketBuyOffersContext.displayName = 'CoinmarketBuyOffersContext';
 
 export const useCoinmarketBuyOffersContext = () => {
     const context = useContext(CoinmarketBuyOffersContext);
+
     if (context === null) throw Error('CoinmarketBuyOffersContext used without Context');
 
     return context;

@@ -50,15 +50,18 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
     const composeRequest = useCallback(
         async (field = defaultFieldRef.current) => {
             if (!state) return;
+
             // reset precomposed transactions
             setComposedLevels(undefined);
             // set ref for later use in useEffect
             composeRequestIDRef.current += 1;
             // clear errors from previous compose process
             const composeErrors = findComposeErrors(errors);
+
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
+
             // set field value for later use in updateComposedValues
             setComposeField(field);
             // start composing
@@ -98,8 +101,10 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
     const updateComposedValues = useCallback(
         (composed: PrecomposedTransaction) => {
             const values = getValues();
+
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
+
                 if (!errorMessage) {
                     // composed tx doesn't have an errorMessage (Translation props)
                     // this error is unexpected and should be handled in sendFormActions
@@ -125,12 +130,14 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                     // setError to the all `Amount` fields, composeField is not specified (load draft case)
                     values.outputs.forEach((_, i) => setError(`outputs.${i}.amount`, formError));
                 }
+
                 setLoading(false);
 
                 return;
             }
 
             const composeErrors = findComposeErrors(errors);
+
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
@@ -146,6 +153,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
     const onFeeLevelChange = useCallback(
         (prev: StakeFormState['selectedFee'], current: StakeFormState['selectedFee']) => {
             if (!composedLevels) return;
+
             if (current === 'custom') {
                 // set custom level from previously selected level
                 const prevLevel = composedLevels[prev || 'normal'];
@@ -172,15 +180,18 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
             // try to switch to nearest possible composed transaction
             const shouldSwitch =
                 !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
+
             if (shouldSwitch && composed.type === 'error') {
                 // find nearest possible tx
                 const nearest = Object.keys(composedLevels)
                     .reverse()
                     .find((key): key is FeeLevel['label'] => composedLevels[key].type !== 'error');
+
                 // switch to it
                 if (nearest) {
                     composed = composedLevels[nearest];
                     setValue('selectedFee', nearest);
+
                     if (nearest === 'custom') {
                         // @ts-expect-error: type = error already filtered above
                         const { feePerByte, feeLimit } = composed;
@@ -190,6 +201,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 }
                 // or do nothing, use default composed tx
             }
+
             // composed transaction does not exists (should never happen)
             if (!composed) return;
 
@@ -209,6 +221,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
     useEffect(() => {
         // do nothing if there are no composedLevels
         if (!composedLevels) return;
+
         switchToNearestFee(composedLevels);
     }, [composedLevels, switchToNearestFee]);
 

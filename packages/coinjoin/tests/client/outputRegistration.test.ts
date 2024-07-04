@@ -51,6 +51,7 @@ describe('outputRegistration', () => {
                 // do not accept **any** output
                 reject(500, { ErrorCode: 'AlreadyRegisteredScript' });
             }
+
             resolve();
         });
 

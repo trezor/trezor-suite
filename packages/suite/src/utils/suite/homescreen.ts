@@ -61,6 +61,7 @@ const imageToCanvas = (image: HTMLImageElement, deviceModelInternal: DeviceModel
     canvas.width = width;
 
     const ctx = canvas.getContext('2d');
+
     if (ctx == null) {
         throw new Error('2D context is null');
     }
@@ -119,6 +120,7 @@ const evenPad = (val: string) => {
 const chunkString = (size: number, str: string) => {
     const re = new RegExp(`.{1,${size}}`, 'g');
     const result = str.match(re);
+
     if (!result) return [];
 
     return result;
@@ -166,9 +168,11 @@ const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) =>
     header += rightPad(4, width.toString(16));
     header += rightPad(4, height.toString(16));
     let length = Number(packed.length).toString(16);
+
     if (length.length % 2 > 0) {
         length = evenPad(length);
     }
+
     length = chunkString(2, length).reverse().join('');
     header += rightPad(8, length);
 
@@ -251,9 +255,11 @@ export const validateImageColors = (
                     const green = imageData.data[index + 1];
                     const blue = imageData.data[index + 2];
                     const alpha = imageData.data[index + 3];
+
                     if (alpha !== 255) {
                         throw new Error(ImageValidationError.UnexpectedAlpha);
                     }
+
                     const isBlack = red === 0 && green === 0 && blue === 0;
                     const isWhite = red === 255 && green === 255 && blue === 255;
 
@@ -282,15 +288,18 @@ export const validateImage = async (file: File, deviceModelInternal: DeviceModel
 
         return ImageValidationError.InvalidFormatOnlyJpg;
     }
+
     if (
         !isValidImageWidth(image, deviceModelInternal) ||
         !isValidImageHeight(image, deviceModelInternal)
     ) {
         return ImageValidationError.InvalidDimensions;
     }
+
     if (isProgressiveJPG(arrayBuffer, deviceModelInternal)) {
         return ImageValidationError.ProgressiveJpgFormat;
     }
+
     if (!isValidImageSize(file, deviceModelInternal)) {
         return ImageValidationError.InvalidSize;
     }

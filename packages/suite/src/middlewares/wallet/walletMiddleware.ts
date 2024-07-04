@@ -108,6 +108,7 @@ const walletMiddleware =
                 (nextRouter.app !== 'wallet' && !nextRouter.route?.isForegroundApp) ||
                 (nextRouter.app === 'wallet' && nextRouter.hash !== prevRouter.hash);
         }
+
         if (resetReducers) {
             api.dispatch(accountsActions.disposeAccount());
             api.dispatch(sendFormActions.dispose());

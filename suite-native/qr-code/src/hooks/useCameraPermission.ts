@@ -46,11 +46,13 @@ export const useCameraPermission = () => {
 
     const requestCameraPermission = useCallback(async () => {
         const status = await checkCameraPermissionStatus();
+
         if (status === PermissionStatus.UNDETERMINED) {
             await BarCodeScanner.requestPermissionsAsync();
         } else if (status === PermissionStatus.DENIED) {
             await Linking.openSettings();
         }
+
         checkCameraPermissionStatus();
     }, [checkCameraPermissionStatus]);
 

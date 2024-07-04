@@ -68,6 +68,7 @@ describe('Transaction', () => {
                     expect(input.index).toEqual(expected.index);
                     expect(input.decredTree).toEqual(expected.tree);
                     expect(input.sequence).toEqual(expected.sequence);
+
                     if (tx.hasWitnesses() && input.decredWitness) {
                         const witness = input.decredWitness;
                         expect(witness.script.toString('hex')).toEqual(expected.script);
@@ -209,6 +210,7 @@ describe('Transaction', () => {
         fixturesBitcoin.valid.forEach(f => {
             it(`get tx witnesses: ${f.whex ? 'true' : 'false'}`, () => {
                 const tx = Transaction.fromHex(f.whex || f.hex);
+
                 if (f.whex) {
                     tx.ins.forEach((input, i) => {
                         const witness = tx.getWitness(i);
@@ -309,7 +311,9 @@ describe('Transaction', () => {
             it(`Dash: ${f.description}`, () => {
                 const tx = Transaction.fromHex(f.hex, { network: NETWORKS.dashTest });
                 const specificData = tx.getSpecificData();
+
                 if (specificData?.type !== 'dash') throw Error('not a dash tx');
+
                 expect(specificData.extraPayload?.toString('hex')).toEqual(f.raw.extraPayload);
             });
         });
@@ -318,7 +322,9 @@ describe('Transaction', () => {
             it(`Zcash: ${f.description}`, () => {
                 const tx = Transaction.fromHex(f.hex, { network: NETWORKS.zcash });
                 const specificData = tx.getSpecificData();
+
                 if (specificData?.type !== 'zcash') throw Error('not a zcash tx');
+
                 expect(specificData.versionGroupId).toEqual(
                     typeof f.raw.versionGroupId === 'number'
                         ? f.raw.versionGroupId
@@ -332,6 +338,7 @@ describe('Transaction', () => {
                 if (f.raw.valueBalance) {
                     expect(specificData.valueBalance).toEqual(f.raw.valueBalance);
                 }
+
                 if (f.raw.nShieldedSpend) {
                     const shieldedSpend = specificData.vShieldedSpend;
                     for (let i = 0; i < f.raw.nShieldedSpend; ++i) {

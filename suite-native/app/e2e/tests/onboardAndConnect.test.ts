@@ -33,6 +33,7 @@ describe('Go through onboarding and connect Trezor.', () => {
         if (platform === 'android') {
             await TrezorUserEnvLink.api.stopEmu();
         }
+
         await device.terminateApp();
     });
 

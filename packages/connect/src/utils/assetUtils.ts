@@ -26,8 +26,10 @@ export const getAssetByUrl = (url: string) => {
     }
 
     const firmwareMatch = fileUrl.match(/\/firmware\/(\w+)\/releases\.json$/);
+
     if (firmwareMatch) {
         const modelKey = firmwareMatch[1].toUpperCase();
+
         if (isDeviceModel(modelKey)) {
             return firmwareAssets[modelKey];
         }

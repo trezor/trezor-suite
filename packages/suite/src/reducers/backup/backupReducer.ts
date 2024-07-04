@@ -24,6 +24,7 @@ const handleToggleCheckboxByKey = (draft: BackupState, key: ConfirmKey) => {
 
         return;
     }
+
     draft.userConfirmed.splice(
         draft.userConfirmed.findIndex(r => r === key),
         1,

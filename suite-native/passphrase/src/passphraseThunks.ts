@@ -66,6 +66,7 @@ export const retryPassphraseAuthenticationThunk = createThunk(
         const device = selectDevice(getState());
 
         if (!device) return;
+
         dispatch(deviceActions.removeButtonRequests({ device }));
         dispatch(authorizeDeviceThunk({ shouldIgnoreDeviceState: true }));
     },

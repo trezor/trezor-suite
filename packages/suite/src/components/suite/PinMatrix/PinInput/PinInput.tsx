@@ -57,6 +57,7 @@ export const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
         if (isSubmitting) {
             return 'TR_VERIFYING_PIN';
         }
+
         if (isWipeCode) {
             return 'TR_ENTER_WIPECODE';
         }

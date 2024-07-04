@@ -32,9 +32,12 @@ export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?
     // if both are missing the blockHeight don't change their order
     const blockA = (a.blockHeight || 0) > 0 ? a.blockHeight : 0;
     const blockB = (b.blockHeight || 0) > 0 ? b.blockHeight : 0;
+
     if (!blockA && !blockB) return 0;
+
     // tx with no blockHeight comes first
     if (!blockA) return -1;
+
     if (!blockB) return 1;
 
     return blockB - blockA;
@@ -116,6 +119,7 @@ export const groupJointTransactions = (transactions: WalletAccountTransaction[])
     transactions
         .reduce<WalletAccountTransaction[][]>((prev, tx) => {
             const last = prev.pop();
+
             if (!last) return [[tx]];
 
             return tx.type === 'joint' && last[0].type === 'joint'
@@ -155,11 +159,13 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
 
         if (tx.type === 'self') {
             const cardanoWithdrawal = formatCardanoWithdrawal(tx);
+
             if (cardanoWithdrawal) {
                 totalAmount = totalAmount.plus(cardanoWithdrawal);
             }
 
             const cardanoDeposit = formatCardanoDeposit(tx);
+
             if (cardanoDeposit) {
                 totalAmount = totalAmount.minus(cardanoDeposit);
             }
@@ -184,6 +190,7 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
             if (internalTx.type === 'sent') {
                 totalAmount = totalAmount.minus(amountInternal);
             }
+
             if (internalTx.type === 'recv') {
                 totalAmount = totalAmount.plus(amountInternal);
             }
@@ -209,6 +216,7 @@ export const sumTransactionsFiat = (
 
         if (tx.type === 'self') {
             const cardanoWithdrawal = formatCardanoWithdrawal(tx);
+
             if (cardanoWithdrawal) {
                 totalAmount = totalAmount.plus(
                     toFiatCurrency(cardanoWithdrawal, historicRate, -1) ?? 0,
@@ -216,6 +224,7 @@ export const sumTransactionsFiat = (
             }
 
             const cardanoDeposit = formatCardanoDeposit(tx);
+
             if (cardanoDeposit) {
                 totalAmount = totalAmount.minus(
                     toFiatCurrency(cardanoDeposit, historicRate, -1) ?? 0,
@@ -269,6 +278,7 @@ export const sumTransactionsFiat = (
             if (internalTx.type === 'sent') {
                 totalAmount = totalAmount.minus(amountInternalFiat);
             }
+
             if (internalTx.type === 'recv') {
                 totalAmount = totalAmount.plus(amountInternalFiat);
             }
@@ -287,6 +297,7 @@ export const findTransactions = (
 ) =>
     Object.keys(transactions).flatMap(key => {
         const tx = findTransaction(txid, transactions[key]);
+
         if (!tx) return [];
 
         return [{ key, tx }];
@@ -312,6 +323,7 @@ export const findChainedTransactions = (
                 if (othersTxs.includes(tx.txid)) {
                     result.others = result.others.filter(t => t.txid !== tx.txid);
                 }
+
                 result.own.push(tx);
 
                 return true;
@@ -393,6 +405,7 @@ export const analyzeTransactions = (
     // If there are no known confirmed txs
     // remove all known and add all fresh
     const gotConfirmedTxs = knownRest.some(tx => !isPending(tx));
+
     if (!gotConfirmedTxs) {
         return filterAnalyzeResult({
             newTransactions: fresh.filter(tx => !isPending(tx)),
@@ -407,6 +420,7 @@ export const analyzeTransactions = (
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;
         const isLast = i + 1 === fresh.length;
+
         if (!height || height <= 0) {
             // add pending tx
             addTxs.push(tx);
@@ -416,12 +430,14 @@ export const analyzeTransactions = (
             // use simple for loop to have possibility to `break`
             for (index; index < len; index++) {
                 const kTx = knownSorted[index];
+
                 // known tx is pending, it will be removed
                 // move sliceIndex, set firstKnownIndex
                 if (isPending(kTx)) {
                     firstKnownIndex = index + 1;
                     sliceIndex = index + 1;
                 }
+
                 // known tx is "older"
                 if (!isPending(kTx) && kTx.blockHeight! < height) {
                     // set sliceIndex
@@ -432,9 +448,11 @@ export const analyzeTransactions = (
                     newTxs.push(tx);
                     break;
                 }
+
                 // known tx is on the same height
                 if (kTx.blockHeight === height) {
                     firstKnownIndex = index + 1;
+
                     // known tx changed (rollback)
                     if (kTx.blockHash !== tx.blockHash) {
                         // set sliceIndex
@@ -442,6 +460,7 @@ export const analyzeTransactions = (
                         // this fresh tx is not new but needs to be added (replace kTx)
                         addTxs.push(tx);
                     }
+
                     break;
                 }
             }
@@ -462,6 +481,7 @@ export const getTxOperation = (
     if (type === 'sent' || (!ignoreSelf && type === 'self')) {
         return 'negative';
     }
+
     if (type === 'recv') {
         return 'positive';
     }
@@ -501,6 +521,7 @@ export const getTargetAmount = (
 ) => {
     const txAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
     const validTxAmount = txAmount && txAmount !== '0';
+
     if (!target) {
         return validTxAmount ? txAmount : null;
     }
@@ -510,6 +531,7 @@ export const getTargetAmount = (
 
     const amount = target.amount && formatNetworkAmount(target.amount, transaction.symbol);
     const validTargetAmount = amount && amount !== '0';
+
     if (!sentToSelfTarget && validTargetAmount) {
         // show target amount for all non "sent to myself" targets
         return amount;
@@ -600,7 +622,9 @@ const getBitcoinRbfParams = (
     account: Account,
 ): RbfTransactionParams | undefined => {
     if (account.networkType !== 'bitcoin') return;
+
     if (tx.type === 'recv' || !tx.rbf || !tx.details || !isPending(tx)) return; // ignore non rbf and mined transactions
+
     const { vin, vout } = tx.details;
 
     const changeAddresses = account.addresses ? account.addresses.change : [];
@@ -610,6 +634,7 @@ const getBitcoinRbfParams = (
     const utxo = vin.flatMap(input => {
         // find input AccountAddress
         const addr = allAddresses.find(a => input.addresses?.includes(a.address));
+
         if (!addr) return []; // skip utxo, TODO: set some error? is it even possible?
 
         // re-create utxo from the input
@@ -633,6 +658,7 @@ const getBitcoinRbfParams = (
             // blockbook sends output.hex as scriptPubKey with additional prefix where: 6a - OP_RETURN and XX - data len. this field should be parsed by @trezor/utxo-lib
             // blockbook sends ascii data in output.address[0] field in format: "OP_RETURN (ASCII-VALUE)". as a workaround we are extracting ascii data from here
             const dataAscii = output.addresses![0].match(/^OP_RETURN \((.*)\)/)?.pop(); // strip ASCII data from brackets
+
             if (dataAscii) {
                 outputs.push({
                     type: 'opreturn',
@@ -648,6 +674,7 @@ const getBitcoinRbfParams = (
                 amount: output.value!,
                 formattedAmount: formatNetworkAmount(output.value!, account.symbol),
             });
+
             if (changeOutput) {
                 changeAddress = changeOutput;
             }
@@ -780,6 +807,7 @@ const numberSearchFilter = (
 ) => {
     const targetAmounts = getTargetAmounts(transaction);
     const op = getTxOperation(transaction.type);
+
     if (!op) {
         return false;
     }
@@ -787,6 +815,7 @@ const numberSearchFilter = (
     return (
         targetAmounts.filter(targetAmount => {
             let bnTargetAmount = new BigNumber(targetAmount);
+
             if (op === 'negative') {
                 bnTargetAmount = bnTargetAmount.negated();
             }
@@ -829,6 +858,7 @@ export const simpleSearchTransactions = (
 
     // If it's an amount search (starting with <, > or = operator)
     const searchOperator = searchOperators.find(k => search.startsWith(k));
+
     if (searchOperator) {
         // Remove search operator from search string
         search = search.replace(searchOperator, '').trim();
@@ -836,6 +866,7 @@ export const simpleSearchTransactions = (
         // Is date?
         if (searchDateRegex.test(search)) {
             const timestamp = +new Date(`${search}T00:00:00Z`) / 1000;
+
             switch (searchOperator) {
                 case '>':
                     return transactions.filter(t => t.blockTime && t.blockTime > timestamp);
@@ -876,6 +907,7 @@ export const simpleSearchTransactions = (
     if (!Number.isNaN(search)) {
         const foundTxsForNumber = transactions.flatMap(t => {
             const targetAmounts = getTargetAmounts(t);
+
             if (targetAmounts.filter(targetAmount => targetAmount.includes(search)).length === 0) {
                 return [];
             }
@@ -938,6 +970,7 @@ export const advancedSearchTransactions = (
 
     // Split by OR operator first
     let orSplit = search.split('|').filter(s => s.trim() !== '');
+
     if (!orSplit || orSplit.length === 1) {
         orSplit = [search.replace('|', '')];
     }
@@ -947,6 +980,7 @@ export const advancedSearchTransactions = (
         ...orSplit.flatMap(or => {
             // And searches (only keep results that appear X (split) times)
             const andSplit = or.split('&');
+
             if (!andSplit || andSplit.length === 1) {
                 return simpleSearchTransactions(
                     transactions,
@@ -1004,9 +1038,11 @@ export const groupTokensTransactionsByContractAddress = (
         if (tx.tokens && tx.tokens.length > 0) {
             tx.tokens.forEach(token => {
                 const groupKey = token.contract as TokenAddress;
+
                 if (!groupedTokensTxs[groupKey]) {
                     groupedTokensTxs[groupKey] = [];
                 }
+
                 groupedTokensTxs[groupKey].push(tx);
             });
         }

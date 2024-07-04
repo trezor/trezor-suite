@@ -6,6 +6,7 @@
 
 const observer = new MutationObserver(() => {
     const appElement = document.getElementById('app');
+
     if (appElement) {
         observer.disconnect();
 

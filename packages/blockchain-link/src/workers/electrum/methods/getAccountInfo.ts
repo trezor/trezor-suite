@@ -64,6 +64,7 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
     const network = client.getInfo()?.network;
 
     const parsed = tryGetScripthash(descriptor, network);
+
     if (parsed.valid) {
         const { confirmed, unconfirmed, history } = await Promise.all([
             client.request('blockchain.scripthash.get_balance', parsed.scripthash),
@@ -95,6 +96,7 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
             page: details === 'txs' ? getPagination(pageSize, transactions ?? []) : undefined,
         };
     }
+
     const discover = discoverAddress(client);
     const receive = await discovery(discover, descriptor, 'receive', network).then(
         getBalances(client),

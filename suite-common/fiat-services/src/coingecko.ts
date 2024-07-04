@@ -19,6 +19,7 @@ const rateLimiter = new RateLimiter(1_000, 15_000);
 const fetchCoinGecko = async (url: string) => {
     try {
         const res = await rateLimiter.limit(signal => fetchUrl(url, { signal }));
+
         if (!res.ok) {
             console.warn(`Coingecko: Fiat rates failed to fetch: ${res.status}`);
 
@@ -40,6 +41,7 @@ const fetchCoinGecko = async (url: string) => {
  */
 const buildCoinUrl = (ticker: TickerId) => {
     const { coingeckoId } = networks[ticker.symbol];
+
     if (!coingeckoId) {
         console.error('buildCoinUrl: cannot find coingecko asset platform id for ', ticker);
 
@@ -60,12 +62,15 @@ const buildCoinUrl = (ticker: TickerId) => {
  */
 export const fetchCurrentFiatRates = async (ticker: TickerId) => {
     const coinUrl = buildCoinUrl(ticker);
+
     if (!coinUrl) return null;
+
     const urlParams =
         'tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&localization=false';
     const url = `${coinUrl}?${urlParams}`;
 
     const rates = await fetchCoinGecko(url);
+
     if (!rates) return null;
 
     return {
@@ -113,6 +118,7 @@ export const getFiatRatesForTimestamps = async (
 ): Promise<HistoricalResponse | null> => {
     const coinUrl = buildCoinUrl(ticker);
     const urlEndpoint = `market_chart/range`;
+
     if (!coinUrl) return null;
 
     // sort timestamps chronologically to get the minimum and maximum values
@@ -127,6 +133,7 @@ export const getFiatRatesForTimestamps = async (
 
     // returns pairs of [timestamp, fiatRate]
     const response = await fetchCoinGecko(url);
+
     if (!response?.prices || response?.prices.length === 0) {
         return null;
     }
@@ -159,6 +166,7 @@ export const fetchLastWeekRates = async (
     const urlEndpoint = `market_chart`;
     const urlParams = `vs_currency=${fiatCurrencyCode}&days=7`;
     const coinUrl = buildCoinUrl(ticker);
+
     if (!coinUrl) return null;
 
     const { symbol } = ticker;
@@ -168,6 +176,7 @@ export const fetchLastWeekRates = async (
         ts: Math.floor(d[0] / 1000),
         rates: { [fiatCurrencyCode]: d[1] },
     }));
+
     if (!tickers) return null;
 
     return {

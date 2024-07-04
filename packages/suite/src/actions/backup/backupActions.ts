@@ -44,6 +44,7 @@ export const backupDevice =
     (params: Parameters<typeof TrezorConnect.backupDevice>[0] = {}, skipSuccessToast?: boolean) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
+
         if (!device) {
             return dispatch(
                 notificationsActions.addToast({
@@ -64,6 +65,7 @@ export const backupDevice =
                 path: device.path,
             },
         });
+
         if (!result.success) {
             dispatch(notificationsActions.addToast({ type: 'backup-failed' }));
             dispatch({
@@ -81,6 +83,7 @@ export const backupDevice =
             if (!skipSuccessToast) {
                 dispatch(notificationsActions.addToast({ type: 'backup-success' }));
             }
+
             dispatch({
                 type: BACKUP.SET_STATUS,
                 payload: 'finished',

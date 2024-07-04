@@ -200,6 +200,7 @@ const getLocalizedActions = (type: MetadataAddPayload['type']) => {
         edited: <Translation id="TR_LABELING_EDITED_LABEL" />,
         remove: <Translation id="TR_LABELING_REMOVE_LABEL" />,
     };
+
     switch (type) {
         case 'outputLabel':
             return {
@@ -295,6 +296,7 @@ export const MetadataLabeling = ({
                 ),
             );
         }
+
         dispatch(setEditing(payload.defaultValue));
     };
 
@@ -325,13 +327,16 @@ export const MetadataLabeling = ({
                 value: value || undefined,
             }),
         );
+
         // payload.defaultValue might change during next render, this comparison
         // ensures that success state does not appear if it is no longer relevant
         if (isSubscribedToSubmitResult.current === payload.defaultValue) {
             setPending(false);
+
             if (result) {
                 setShowSuccess(true);
             }
+
             timeout = setTimeout(() => {
                 setShowSuccess(false);
             }, 2000);

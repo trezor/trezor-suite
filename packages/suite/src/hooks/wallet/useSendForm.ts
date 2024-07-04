@@ -126,10 +126,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const getLoadedValues = useCallback(
         (loadedState?: Partial<FormState>) => {
             const feeEnhancement: Partial<FormState> = {};
+
             if (!loadedState || !loadedState.selectedFee) {
                 const lastUsedFee = dispatch(getLastUsedFeeLevel());
+
                 if (lastUsedFee) {
                     feeEnhancement.selectedFee = lastUsedFee.label;
+
                     if (lastUsedFee.label === 'custom') {
                         feeEnhancement.feePerUnit = lastUsedFee.feePerUnit;
                         feeEnhancement.feeLimit = lastUsedFee.feeLimit;
@@ -238,7 +241,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     const loadTransaction = async () => {
         const outputs = await importTransaction();
+
         if (!outputs) return; // ignore empty result (cancelled or error)
+
         setComposedLevels(undefined);
         const values = getLoadedValues({ outputs });
         // keepDefaultValues will set `isDirty` flag to true
@@ -246,6 +251,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         setLoading(false);
         validateImportedTransaction(async () => {
             const valid = await trigger();
+
             if (valid) {
                 composeRequest();
             }
@@ -258,6 +264,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         const precomposedTransaction = composedLevels
             ? composedLevels[values.selectedFee || 'normal']
             : undefined;
+
         if (precomposedTransaction && precomposedTransaction.type === 'final') {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]SendFormTransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
@@ -271,6 +278,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             ).unwrap();
 
             setLoading(false);
+
             if (result?.success) {
                 resetContext();
                 dispatch(goto('wallet-index', { preserveParams: true }));
@@ -306,11 +314,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
                 sendFormUtils.setAmount(outputIndex, formattedAmount);
             }
+
             if (protocol.sendForm.address) {
                 setValue(`outputs.${outputIndex}.address`, protocol.sendForm.address, {
                     shouldValidate: true,
                 });
             }
+
             dispatch(fillSendForm(false));
             composeRequest();
         }
@@ -351,6 +361,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // handle draft change
     useEffect(() => {
         if (!draft.current) return;
+
         composeDraft(draft.current);
         draft.current = undefined;
     }, [draft, composeDraft]);
@@ -358,9 +369,11 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // handle draftSaveRequest
     useEffect(() => {
         if (!draftSaveRequest) return;
+
         if (Object.keys(formState.errors).length === 0) {
             dispatch(saveSendFormDraftThunk({ formState: getValues() }));
         }
+
         setDraftSaveRequest(false);
     }, [dispatch, draftSaveRequest, setDraftSaveRequest, getValues, formState.errors]);
 
@@ -405,6 +418,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 // Provide combined context of `react-hook-form` with custom values as SendContextValues
 export const useSendFormContext = () => {
     const ctx = useContext(SendContext);
+
     if (ctx === null) throw Error('useSendFormContext used without Context');
 
     return ctx;

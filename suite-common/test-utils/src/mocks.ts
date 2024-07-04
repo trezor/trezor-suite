@@ -197,6 +197,7 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
  */
 const getSuiteDevice = (dev?: Partial<TrezorDevice>, feat?: Partial<Features>): TrezorDevice => {
     const device = getConnectDevice(dev, feat);
+
     if (device.type === 'acquired') {
         return {
             useEmptyPassphrase: true,
@@ -427,6 +428,7 @@ const getMessageSystemConfig = (
 
 const getGuideNode = (type: string, id?: string): GuideNode => {
     let result: GuideNode;
+
     if (type === 'page' && id === '/') {
         result = {
             type: 'page',
@@ -524,6 +526,7 @@ const intlMock = {
 
 const mockedBlockchainNetworks = networksCompatibility.reduce((result, network) => {
     if (network.accountType) return result;
+
     result[network.symbol] = {
         connected: false,
         explorer: network.explorer,

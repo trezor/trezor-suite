@@ -57,6 +57,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     }
 
     const deviceModelInternal = device.features.internal_model;
+
     if (!deviceModelInformation[deviceModelInternal]) {
         // disallow homescreen updates for unknown/custom models
         return null;
@@ -64,6 +65,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     const resetUpload = () => {
         setCustomHomescreen('');
+
         if (fileInputElement.current) {
             fileInputElement.current.value = '';
         }
@@ -71,6 +73,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     const onUploadHomescreen = async (files: FileList | null) => {
         if (!files || !files.length) return;
+
         const file = files[0];
 
         const validationResult = await validateImage(file, deviceModelInternal);

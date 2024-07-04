@@ -13,6 +13,7 @@ const splitString = (str?: string, len?: number) => {
     if (str == null) {
         return ['', ''];
     }
+
     const first = str.slice(0, len);
     const second = str.slice(len);
 
@@ -33,6 +34,7 @@ const processTxRequest = async (
         let v = request.signature_v;
         const r = request.signature_r;
         const s = request.signature_s;
+
         if (v == null || r == null || s == null) {
             throw ERRORS.TypedError('Runtime', 'processTxRequest: Unexpected request');
         }

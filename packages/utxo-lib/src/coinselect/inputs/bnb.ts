@@ -23,12 +23,14 @@ const MAX_TRIES = 1000000;
 function calculateEffectiveValues(utxos: CoinSelectInput[], feeRate: number) {
     return utxos.map(utxo => {
         const value = bignumberOrNaN(utxo.value);
+
         if (!value) {
             return {
                 utxo,
                 effectiveValue: ZERO,
             };
         }
+
         const effectiveFee = getFeeForBytes(feeRate, inputBytes(utxo));
         const effectiveValue = value.sub(new BN(effectiveFee));
 
@@ -61,6 +63,7 @@ function search(
     let remaining = effectiveUtxos.reduce((a, x) => x.effectiveValue.add(a), ZERO);
 
     let depth = 0;
+
     while (!done) {
         if (tries <= 0) {
             // Too many tries, exit
@@ -82,6 +85,7 @@ function search(
                 // At the first utxo, no possible selections, so exit
                 return null;
             }
+
             backtrack = true;
         } else {
             // Continue down this branch
@@ -117,6 +121,7 @@ function search(
             selectedAccum = selectedAccum.sub(effectiveUtxos[depth].effectiveValue);
             depth++;
         }
+
         tries--;
     }
 
@@ -139,6 +144,7 @@ export function bnb(
     options: CoinSelectOptions,
 ): CoinSelectResult {
     if (options.baseFee) return { fee: 0 }; // TEMP: disable bnb algorithm for DOGE
+
     if (utxos.find(u => u.required)) return { fee: 0 }; // TODO: enable bnb algorithm if required utxos are defined
 
     // cost of change: cost of additional output in current tx (fee) + minimum possible value of that output (dust)
@@ -156,6 +162,7 @@ export function bnb(
     const outputsBytes = transactionBytes([], outputs);
     const outputsFee = getFeeForBytes(feeRate, outputsBytes);
     const outputsTotalValue = sumOrNaN(outputs);
+
     if (!outputsTotalValue) return { fee: 0 };
 
     // target = total amount that needs to be covered (all outputs + fee)
@@ -169,6 +176,7 @@ export function bnb(
         .filter(({ effectiveValue }) => effectiveValue.gt(ZERO) && effectiveValue.lte(targetRange))
         .sort((a, b) => {
             const subtract = b.effectiveValue.sub(a.effectiveValue).toNumber();
+
             if (subtract !== 0) {
                 return subtract;
             }
@@ -181,12 +189,14 @@ export function bnb(
         (total, { effectiveValue }) => total.add(effectiveValue),
         ZERO,
     );
+
     if (utxosTotalEffectiveValue.lt(target)) {
         return { fee: 0 };
     }
 
     // start searching
     const selected = search(effectiveUtxos, target, targetRange);
+
     if (selected !== null) {
         const inputs: CoinSelectInput[] = [];
 

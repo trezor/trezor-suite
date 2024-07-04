@@ -70,6 +70,7 @@ export const DeviceSelector = () => {
             // clear animation timers on unmount
             () => {
                 if (shakeAnimationTimerRef.current) clearTimeout(shakeAnimationTimerRef.current);
+
                 if (stateAnimationTimerRef.current) clearTimeout(stateAnimationTimerRef.current);
             },
         [],

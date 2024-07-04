@@ -84,6 +84,7 @@ export const parseConnectSettings = (
     }
 
     const knownHost = getHostLabel(settings.extension || settings.origin || '');
+
     if (knownHost) {
         settings.hostLabel = knownHost.label;
         settings.hostIcon = knownHost.icon;

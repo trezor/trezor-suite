@@ -33,6 +33,7 @@ export const updateCustomFee = (payload: UpdateCustomFee['payload']) => {
     fees.push(...payload.feeLevels);
 
     const customFee = fees.find(f => f.name === 'custom');
+
     if (customFee) {
         if (customFee.fee === '0') {
             customFeeLabel.innerHTML = 'Insufficient funds';
@@ -53,12 +54,14 @@ export const updateCustomFee = (payload: UpdateCustomFee['payload']) => {
 
 const validation = (coinInfo: BitcoinNetworkInfo) => {
     const sendButton = container.getElementsByClassName('send-button')[0] as HTMLButtonElement;
+
     if (!selectedFee) {
         sendButton.setAttribute('disabled', 'disabled');
         sendButton.innerHTML = 'Send';
 
         return;
     }
+
     const selectedName = selectedFee.getAttribute('data-fee') || 'custom';
     const selectedValue = fees.find(f => f.name === selectedName);
 
@@ -93,6 +96,7 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
         if (level.name === 'custom') return;
 
         let feeName: string = level.name;
+
         if (level.name === 'normal' && level.fee !== '0') {
             feeName = `<span>${level.name}</span>
                 <span class="fee-subtitle">recommended</span>`;
@@ -137,6 +141,7 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
             if (selectedFee) {
                 selectedFee.classList.remove('active');
             }
+
             selectedFee = event.currentTarget;
             selectedFee.classList.add('active');
 
@@ -161,14 +166,17 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
 
         const composedCustomFee = fees.find(f => f.name === 'custom');
         let customFeeDefaultValue: string | undefined = '0';
+
         if (!composedCustomFee) {
             if (selectedFee) {
                 const selectedName = selectedFee.getAttribute('data-fee');
                 const selectedValue = fees.find(f => f.name === selectedName);
+
                 if (selectedValue && selectedValue.fee !== '0') {
                     customFeeDefaultValue = selectedValue.feePerByte;
                 }
             }
+
             if (customFeeDefaultValue === '0') {
                 customFeeDefaultValue = '1'; // TODO: get normal
             }
@@ -187,12 +195,14 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
         setTimeout(() => {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             input.oninput = handleCustomFeeChange;
+
             if (defaultValue) {
                 input.value = defaultValue.toString();
                 const event = document.createEvent('Event');
                 event.initEvent('input', true, true);
                 input.dispatchEvent(event);
             }
+
             input.focus();
         }, 1);
     };
@@ -248,6 +258,7 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
 
     sendButton.onclick = () => {
         if (!selectedFee) return;
+
         const selectedName = selectedFee.getAttribute('data-fee');
         postMessage(
             createUiResponse(UI.RECEIVE_FEE, {
@@ -260,6 +271,7 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
 
     // select default fee level
     const defaultLevel = feeList.querySelectorAll<HTMLButtonElement>('[data-fee="normal"]')[0];
+
     if (defaultLevel) {
         defaultLevel.click();
     } else {

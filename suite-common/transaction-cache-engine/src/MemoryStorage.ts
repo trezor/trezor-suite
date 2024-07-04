@@ -31,6 +31,7 @@ export class MemoryStorage implements TransactionCacheEngineStorage {
         if (await this.accountExist(account)) {
             return;
         }
+
         const accountUniqueKey = getAccountUniqueKey(account);
         this.accounts[accountUniqueKey] = account;
     }

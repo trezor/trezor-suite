@@ -17,6 +17,7 @@ const fetchNftPage = async (page: number, assetPlatformId: string): Promise<NftD
 
     try {
         const response = await fetch(`${NFT_LIST_URL}?${params.toString()}`, options);
+
         if (!response.ok) {
             const { error } = await response.json();
 

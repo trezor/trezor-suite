@@ -21,6 +21,7 @@ const StyledCard = styled(Card)`
 
 const SelectedOffer = () => {
     const { account, selectedQuote, providersInfo } = useCoinmarketBuyOffersContext();
+
     if (!selectedQuote) return null;
 
     return (

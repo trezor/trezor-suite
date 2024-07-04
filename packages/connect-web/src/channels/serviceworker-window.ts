@@ -37,6 +37,7 @@ export class ServiceWorkerWindowChannel<
             channel,
             sendFn: (message: any) => {
                 if (!this.port) throw new Error('port not assigned');
+
                 this.port.postMessage(message);
             },
             logger,
@@ -52,6 +53,7 @@ export class ServiceWorkerWindowChannel<
     connect() {
         chrome.runtime.onConnect.addListener(port => {
             if (port.name !== this.name) return;
+
             // Ignore port if name does match, but port created by different popup
             if (this.currentId?.() && this.currentId?.() !== port.sender?.tab?.id) return;
 
@@ -75,11 +77,14 @@ export class ServiceWorkerWindowChannel<
                 // If service worker is running in web extension and other env of this webextension
                 // want to communicate with service worker it should be whitelisted.
                 const webextensionId = chrome?.runtime?.id;
+
                 if (webextensionId) {
                     whitelist.push(`chrome-extension://${webextensionId}`);
                 }
+
                 // For Firefox the webextensionId is different from the URL
                 const webextensionUrl = chrome?.runtime?.getURL('');
+
                 if (webextensionUrl) {
                     // Without trailing slash
                     whitelist.push(webextensionUrl.slice(0, -1));
@@ -93,6 +98,7 @@ export class ServiceWorkerWindowChannel<
 
                     return;
                 }
+
                 if (!whitelist.includes(origin)) {
                     this.logger?.error(
                         'connect-webextension/messageChannel/extensionPort/onMessage',
@@ -116,6 +122,7 @@ export class ServiceWorkerWindowChannel<
 
     disconnect() {
         if (!this.isConnected) return;
+
         this.port?.disconnect();
         this.clear();
         this.isConnected = false;

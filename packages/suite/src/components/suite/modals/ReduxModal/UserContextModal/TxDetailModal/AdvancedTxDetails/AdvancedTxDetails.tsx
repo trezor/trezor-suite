@@ -76,6 +76,7 @@ export const AdvancedTxDetails = ({
     } else if (selectedTab === 'chained' && chainedTxs) {
         content = <ChainedTxs txs={chainedTxs} explorerUrl={explorerUrl} network={network} />;
     }
+
     const { elevation } = useElevation();
 
     return (

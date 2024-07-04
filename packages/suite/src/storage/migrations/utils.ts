@@ -16,6 +16,7 @@ export const updateAll = async <
     update: (old: OldValueType) => StoreValue<SuiteDBSchema, T> | null | void,
 ): Promise<void> => {
     let cursor = await transaction.objectStore(store).openCursor();
+
     while (cursor) {
         const oldObj = cursor.value as OldValueType;
         const newObj = update(oldObj);

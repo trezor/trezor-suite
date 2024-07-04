@@ -148,6 +148,7 @@ export const DeviceItemLegacy = ({
         // Preserve route for dashboard or wallet context only. Redirect from other routes to dashboard index.
         const isWalletOrDashboardContext =
             backgroundRoute && ['wallet', 'dashboard'].includes(backgroundRoute.app);
+
         if (!isWalletOrDashboardContext) {
             await dispatch(goto('suite-index'));
         }
@@ -155,6 +156,7 @@ export const DeviceItemLegacy = ({
         // Subpaths of wallet are not available to all account types (e.g. Tokens tab not available to BTC accounts).
         const isWalletSubpath =
             backgroundRoute?.app === 'wallet' && backgroundRoute?.name !== 'wallet-index';
+
         if (isWalletSubpath) {
             await dispatch(goto('wallet-index'));
         }
@@ -178,6 +180,7 @@ export const DeviceItemLegacy = ({
             device.type === 'unacquired' ||
             deviceStatus === 'used-in-other-window' ||
             deviceStatus === 'was-used-in-other-window';
+
         if (needsAcquire) {
             dispatch(acquireDevice(device));
         } else {
@@ -188,6 +191,7 @@ export const DeviceItemLegacy = ({
     const onDeviceSettingsClick = async () => {
         // await needed otherwise it just selects first account (???)
         await dispatch(goto('settings-device'));
+
         if (!isSelected) {
             dispatch(selectDeviceThunk({ device }));
         }

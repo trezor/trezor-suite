@@ -36,9 +36,11 @@ export default class BlockchainSubscribe extends AbstractMethod<'blockchainSubsc
         }
 
         const coinInfo = getCoinInfo(payload.coin);
+
         if (!coinInfo) {
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
+
         // validate backend
         isBackendSupported(coinInfo);
 
@@ -62,6 +64,7 @@ export default class BlockchainSubscribe extends AbstractMethod<'blockchainSubsc
         let result = { subscribed: false };
 
         if (blocks) result = await backend.subscribeBlocks();
+
         if (accounts) result = await backend.subscribeAccounts(accounts);
 
         return result;

@@ -30,6 +30,7 @@ workers.forEach(instance => {
                 server.setFixtures(f.serverFixtures);
                 // @ts-expect-error incorrect params
                 const promise = blockchain.getAccountUtxo(f.params);
+
                 if (!f.error) {
                     expect(await promise).toEqual(f.response);
                 } else {

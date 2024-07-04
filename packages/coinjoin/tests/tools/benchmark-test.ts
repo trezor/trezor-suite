@@ -22,6 +22,7 @@ const stripHeaders = () => {
     const originalSocketWrite = net.Socket.prototype.write;
     net.Socket.prototype.write = function (data, ...args) {
         const overloadedHeaders: string[] = [];
+
         if (typeof data === 'string' && /Allowed-Headers/gi.test(data)) {
             const headers = data.split('\r\n');
             const allowedHeaders = headers
@@ -33,6 +34,7 @@ const stripHeaders = () => {
 
                 headers.forEach(line => {
                     const [key, value] = line.split(': ');
+
                     if (key && value) {
                         if (allowedKeys.some(allowed => new RegExp(`^${allowed}`, 'i').test(key))) {
                             overloadedHeaders.push(line);
@@ -93,6 +95,7 @@ const filtersFromWasabi = async (hash: string) => {
     );
 
     if (response.status === 204) return [];
+
     if (response.status === 200) {
         const buffer = await response.buffer();
         const { filters }: { filters: string[] } = JSON.parse(buffer.toString());
@@ -104,6 +107,7 @@ const filtersFromWasabi = async (hash: string) => {
             return blockHash;
         });
     }
+
     throw new Error(`${response.status} ${response.statusText}`);
 };
 
@@ -147,6 +151,7 @@ const getWebsocket = async () => {
                     id,
                     data: { error, blockFiltersBatch },
                 } = resp;
+
                 if (reqID !== id || error) {
                     reject(new Error(`Error ${id} ${reqID} ${error.message}`));
                 } else {
@@ -176,6 +181,7 @@ const getWebsocket = async () => {
     console.time('Wasabi filters');
 
     let batch = await filtersFromWasabi(bestKnownHash);
+
     while (batch.length === batchSize) {
         batch = await filtersFromWasabi(batch[batchSize - 1]);
     }
@@ -189,6 +195,7 @@ const getWebsocket = async () => {
     const filtersFromBlockbook = await getWebsocket();
 
     batch = await filtersFromBlockbook(bestKnownHash);
+
     while (batch.length === batchSize) {
         batch = await filtersFromBlockbook(batch[batchSize - 1]);
     }

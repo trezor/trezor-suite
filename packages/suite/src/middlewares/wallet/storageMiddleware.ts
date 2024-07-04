@@ -54,6 +54,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             ) {
                 const { payload } = action;
                 const device = findAccountDevice(payload, selectDevices(api.getState()));
+
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([payload]);
@@ -67,6 +68,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (isAnyOf(metadataActions.setAccountAdd)(action)) {
                 const device = findAccountDevice(action.payload, selectDevices(api.getState()));
+
                 // if device is remembered, and there is a change in account.metadata (metadataActions.setAccountLoaded), update database
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([action.payload]);
@@ -92,6 +94,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             ) {
                 const { account } = action.payload;
                 const device = findAccountDevice(account, selectDevices(api.getState()));
+
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.removeAccountTransactions(account);
@@ -108,9 +111,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 const { account } = action.payload;
                 const device = findAccountDevice(account, selectDevices(api.getState()));
                 const historicRates = selectHistoricFiatRates(api.getState());
+
                 // update only historic rates for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.removeAccountHistoricRates(account.key);
+
                     if (historicRates) {
                         api.dispatch(
                             storageActions.saveAccountHistoricRates(account.key, historicRates),
@@ -134,9 +139,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 const { deviceState } = action.payload;
                 const devices = selectDevices(api.getState());
                 const device = devices.find(d => d.state === deviceState);
+
                 // update discovery for remembered device
                 if (isDeviceRemembered(device)) {
                     const discovery = selectDiscoveryByDeviceState(api.getState(), deviceState);
+
                     if (discovery) {
                         storageActions.saveDiscovery([serializeDiscovery(discovery)]);
                     }
@@ -203,6 +210,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             if (sendFormActions.storeDraft.match(action)) {
                 const device = selectDevice(api.getState());
                 const { formState, accountKey } = action.payload;
+
                 // save drafts for remembered device
                 if (isDeviceRemembered(device)) {
                     storageActions.saveDraft(formState, accountKey);
@@ -252,9 +260,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     const device = devices.find(
                         d => d.state === action.payload.account.deviceState,
                     );
+
                     if (isDeviceRemembered(device)) {
                         storageActions.saveGraph([action.payload]);
                     }
+
                     break;
                 }
                 case COINMARKET_COMMON.SAVE_TRADE: {
@@ -270,29 +280,35 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
                 case METADATA.SET_ERROR_FOR_DEVICE: {
                     const device = selectDeviceByState(api.getState(), action.payload.deviceState);
+
                     if (isDeviceRemembered(device) && device) {
                         api.dispatch(storageActions.saveDeviceMetadataError(device));
                     }
+
                     break;
                 }
                 // au, this hurts, I need to call saveDevice manually. saved device should be updated automatically
                 // anytime any of its properties change
                 case METADATA.SET_DEVICE_METADATA: {
                     const device = selectDeviceByState(api.getState(), action.payload.deviceState);
+
                     if (isDeviceRemembered(device) && device) {
                         storageActions.saveDevice({
                             ...device,
                             metadata: action.payload.metadata,
                         });
                     }
+
                     break;
                 }
                 case FORM_DRAFT.STORE_DRAFT: {
                     const device = selectDevice(api.getState());
+
                     // save drafts for remembered device
                     if (isDeviceRemembered(device)) {
                         storageActions.saveFormDraft(action.key, action.formDraft);
                     }
+
                     break;
                 }
                 case FORM_DRAFT.REMOVE_DRAFT:
@@ -313,9 +329,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     const account = selectAccountByKey(api.getState(), action.payload.accountKey);
                     const device =
                         account && findAccountDevice(account, selectDevices(api.getState()));
+
                     if (device && isDeviceRemembered(device)) {
                         api.dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey));
                     }
+
                     break;
                 }
                 case COINJOIN.CLIENT_PRISON_EVENT: {
@@ -325,6 +343,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     affectedAccounts.forEach(key => {
                         const account = selectAccountByKey(state, key);
                         const device = account && findAccountDevice(account, devices);
+
                         if (device && isDeviceRemembered(device)) {
                             api.dispatch(storageActions.saveCoinjoinAccount(key));
                         }

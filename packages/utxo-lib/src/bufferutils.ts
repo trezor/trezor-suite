@@ -14,8 +14,11 @@ import * as types from './types';
 
 export function verifuint(value: number, max: number) {
     if (typeof value !== 'number') throw new Error('cannot write a non-number as a number');
+
     if (value < 0) throw new Error('specified a negative value for writing an unsigned value');
+
     if (value > max) throw new Error('value out of range');
+
     if (Math.floor(value) !== value) throw new Error('value has a fractional component');
 }
 
@@ -65,6 +68,7 @@ export function writeUInt64LEasString(buffer: Buffer, value: string | number, of
     if (typeof value !== 'string') {
         return writeUInt64LE(buffer, value, offset);
     }
+
     const v = new Int64LE(value);
     v.toBuffer().copy(buffer, offset);
 
@@ -171,6 +175,7 @@ export class BufferWriter {
         if (this.buffer.length < this.offset + slice.length) {
             throw new Error('Cannot write slice out of bounds');
         }
+
         this.offset += slice.copy(this.buffer, this.offset);
     }
 
@@ -256,6 +261,7 @@ export class BufferReader {
         if (this.buffer.length < this.offset + n) {
             throw new Error('Cannot read slice out of bounds');
         }
+
         const result = this.buffer.subarray(this.offset, this.offset + n);
         this.offset += n;
 

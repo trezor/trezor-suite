@@ -50,6 +50,7 @@ export const CoinmarketTransactionId = ({
     const dispatch = useDispatch();
     const copy = () => {
         const result = copyToClipboard(transactionId);
+
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }

@@ -82,6 +82,7 @@ export const useSavingsSetupContinue = ({
         if (savingsTrade && selectedProvider) {
             let fiatAmount =
                 savingsTrade.fiatStringAmount || selectedProvider.defaultPaymentAmount.toString();
+
             if (fiatAmount && !selectedProvider.setupPaymentAmounts.includes(fiatAmount)) {
                 fiatAmount = CustomPaymentAmountKey;
             }
@@ -142,6 +143,7 @@ export const useSavingsSetupContinue = ({
 
                 if (response) {
                     dispatch(saveSavingsTradeResponse(response));
+
                     switch (response.trade?.status) {
                         case 'ConfirmPaymentInfo':
                             navigateToSavingsPaymentInfo();

@@ -16,6 +16,7 @@ export const removeTransactionEventsThunk = createThunk(
     (txs: { txid: string }[], { dispatch, getState }) => {
         txs.forEach(tx => {
             const entries = findTransactionEvents(tx.txid, selectNotifications(getState()));
+
             if (entries.length > 0) dispatch(notificationsActions.remove(entries));
         });
     },
@@ -25,6 +26,7 @@ export const removeAccountEventsThunk = createThunk(
     `${ACTION_PREFIX}/removeAccountEventsThunk`,
     (descriptor: string, { dispatch, getState }) => {
         const entries = findTransactionEvents(descriptor, selectNotifications(getState()));
+
         if (entries.length > 0) dispatch(notificationsActions.remove(entries));
     },
 );

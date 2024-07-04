@@ -25,6 +25,7 @@ export const logsSlice = createSlice({
                 state.logEntries.push({
                     ...action.payload,
                 });
+
                 if (state.logEntries.length > MAX_ENTRIES) {
                     state.logEntries.shift();
                 }

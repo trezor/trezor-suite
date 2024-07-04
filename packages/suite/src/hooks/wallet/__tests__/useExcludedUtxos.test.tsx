@@ -83,6 +83,7 @@ describe('useExcludedUtxos', () => {
 
     it('changing account props', () => {
         const props = initialProps();
+
         if (!props.account.addresses) throw new Error('invalid props');
 
         const { unmount, rerender } = render(<Component {...props} />);
@@ -127,6 +128,7 @@ describe('useExcludedUtxos', () => {
 
     it('changing target anonymity', () => {
         const props = initialProps();
+
         if (!props.targetAnonymity) throw new Error('invalid props');
 
         const { unmount, rerender } = render(<Component {...props} />);

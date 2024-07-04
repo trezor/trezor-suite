@@ -62,8 +62,10 @@ export const Locktime = ({ close }: LocktimeProps) => {
     const handleLocktimeChange = () => {
         if (!error) {
             if (rbfEnabled) toggleOption('bitcoinRBF');
+
             if (broadcastEnabled) toggleOption('broadcast');
         }
+
         composeTransaction(inputName);
     };
 
@@ -75,9 +77,11 @@ export const Locktime = ({ close }: LocktimeProps) => {
             if (amountBig.lte(0)) {
                 return translationString('LOCKTIME_IS_TOO_LOW');
             }
+
             if (!isInteger(value)) {
                 return translationString('LOCKTIME_IS_NOT_INTEGER');
             }
+
             // max unix timestamp * 2 (2147483647 * 2)
             if (amountBig.gt(4294967294)) {
                 return translationString('LOCKTIME_IS_TOO_BIG');

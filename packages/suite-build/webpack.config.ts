@@ -10,6 +10,7 @@ import web from './configs/web.webpack.config';
 import desktop from './configs/desktop.webpack.config';
 
 const configs = [base];
+
 if (isDev) {
     configs.push(dev);
 }

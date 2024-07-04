@@ -6,9 +6,11 @@ const getAnonymityStatus = (targetAnonymity: number) => {
     if (targetAnonymity < AnonymityStatus.Bad) {
         return AnonymityStatus.Bad;
     }
+
     if (targetAnonymity < AnonymityStatus.Medium) {
         return AnonymityStatus.Medium;
     }
+
     if (targetAnonymity < AnonymityStatus.Good) {
         return AnonymityStatus.Good;
     }

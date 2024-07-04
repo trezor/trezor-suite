@@ -12,6 +12,7 @@ export function NotFoundPage(): ReactElement | null {
     const mounted = useMounted();
     const { asPath } = useRouter();
     const { content, labels } = config.notFound;
+
     if (!content) {
         return null;
     }

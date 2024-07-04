@@ -70,6 +70,7 @@ export const useCoinmarketRedirect = () => {
                 fiatStringAmount: amount,
             };
         }
+
         dispatch(coinmarketBuyActions.saveQuoteRequest(request));
         dispatch(coinmarketBuyActions.setIsFromRedirect(true));
         dispatch(
@@ -110,6 +111,7 @@ export const useCoinmarketRedirect = () => {
                 fiatStringAmount: amount,
             };
         }
+
         dispatch(coinmarketSellActions.saveQuoteRequest(request));
         dispatch(coinmarketSellActions.setIsFromRedirect(true));
         const composed = {

@@ -26,6 +26,7 @@ export const init: Module = ({ mainWindow }) => {
             logger.info(SERVICE_NAME, 'Hiding the app after the main window has been closed');
 
             event.preventDefault();
+
             // this is a workaround for black screen issue when trying to close an maximized window
             if (mainWindow.isFullScreen()) {
                 mainWindow.once('leave-full-screen', () => mainWindow.hide());

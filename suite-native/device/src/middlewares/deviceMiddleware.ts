@@ -60,6 +60,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             dispatch(handleDeviceDisconnect(action.payload.device));
 
             const deviceState = action.payload.device.state;
+
             if (deviceState) {
                 const accounts = selectAccountsByDeviceState(getState(), deviceState);
                 dispatch(accountsActions.removeAccount(accounts));
@@ -77,6 +78,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                 if (isUsbDeviceConnectFeatureEnabled) {
                     dispatch(selectDeviceThunk(action.payload));
                 }
+
                 break;
             case DEVICE.DISCONNECT:
                 dispatch(handleDeviceDisconnect(action.payload));

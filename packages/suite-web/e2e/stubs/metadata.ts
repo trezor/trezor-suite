@@ -14,6 +14,7 @@ export const rerouteMetadataToMockProvider = (
     options: Parameters<typeof fetch>[1],
 ) => {
     let url;
+
     try {
         url = new URL(uri);
     } catch (_err) {

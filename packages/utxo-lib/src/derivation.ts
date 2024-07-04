@@ -41,6 +41,7 @@ const validateVersion = (version: number): version is VersionBytes =>
 
 const getVersion = (xpub: string) => {
     const version = Buffer.from(decode(xpub)).readUInt32BE();
+
     if (!validateVersion(version)) throw new Error(`Unknown xpub version: ${xpub}`);
 
     return version;
@@ -115,12 +116,15 @@ export const getXpubOrDescriptorInfo = (descriptor: string, network: Network = b
     if (descriptor.startsWith('pkh(')) {
         return getDescriptorInfo('p2pkh', descriptor, network);
     }
+
     if (descriptor.startsWith('sh(wpkh(')) {
         return getDescriptorInfo('p2sh', descriptor, network);
     }
+
     if (descriptor.startsWith('wpkh(')) {
         return getDescriptorInfo('p2wpkh', descriptor, network);
     }
+
     if (descriptor.startsWith('tr(')) {
         return getDescriptorInfo('p2tr', descriptor, network);
     }

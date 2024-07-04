@@ -35,6 +35,7 @@ export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
         const { action, label, link, anchor } = cta;
 
         let onClick: () => Window | Promise<void> | null;
+
         if (action === 'internal-link') {
             // @ts-expect-error: impossible to add all href options to the message system config json schema
             onClick = () => dispatch(goto(link, { anchor, preserveParams: true }));

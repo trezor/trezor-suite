@@ -27,6 +27,7 @@ export const getRoundEvents = <T extends CoinjoinStateEvent['Type']>(
 
 export const getRoundParameters = (round: Round) => {
     const events = getRoundEvents('RoundCreated', round.CoinjoinState.Events);
+
     if (events.length < 1) return;
 
     const [{ RoundParameters }] = events;
@@ -101,6 +102,7 @@ type PartialCoinjoinRound = {
 
 export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
     const now = Date.now();
+
     switch (round.Phase) {
         case RoundPhase.InputRegistration: {
             const deadline =
@@ -155,6 +157,7 @@ export const getCoinjoinRoundDeadlines = (round: PartialCoinjoinRound) => {
 
 export const estimatePhaseDeadline = (round: Round) => {
     const roundParameters = getRoundParameters(round);
+
     if (!roundParameters) return 0;
 
     const { phaseDeadline } = getCoinjoinRoundDeadlines({
@@ -236,6 +239,7 @@ export const getAffiliateRequest = (base64data?: string) => {
     const signature = reader.readSlice(64);
     // read left overs, each byte = one element of coinjoin_flags_array
     const flags: number[] = [];
+
     while (reader.offset < reader.buffer.length) {
         flags.push(reader.readUInt8());
     }

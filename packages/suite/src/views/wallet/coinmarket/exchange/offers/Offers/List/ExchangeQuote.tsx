@@ -125,6 +125,7 @@ const DexFooter = styled.div`
 function getQuoteError(quote: ExchangeTrade) {
     const cryptoAmount = Number(quote.sendStringAmount);
     const symbol = quote.send;
+
     if (quote.min && cryptoAmount < quote.min) {
         return (
             <Translation
@@ -146,6 +147,7 @@ function getQuoteError(quote: ExchangeTrade) {
             />
         );
     }
+
     if (quote.max && quote.max !== 'NONE' && cryptoAmount > quote.max) {
         return (
             <Translation
@@ -204,6 +206,7 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
     let approvalFeeFiat: string | null = null;
     let swapFee: number | undefined;
     let swapFeeFiat: string | null = null;
+
     if (quote.isDex && quote.approvalGasEstimate && quote.swapGasEstimate && feePerByte) {
         approvalFee = quote.approvalGasEstimate * Number(feePerByte) * 1e-9;
         approvalFeeFiat = toFiatCurrency(approvalFee.toString(), fiatRate?.rate, 2);
@@ -213,6 +216,7 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
         if (quote.send === account.symbol.toUpperCase() && !errorQuote) {
             // if base currency, it is necessary to check that there is some value left for the fees
             const maxAmount = new BigNumber(account.formattedBalance).minus(approvalFee);
+
             if (maxAmount.minus(new BigNumber(quote.sendStringAmount || '0')).isNegative()) {
                 errorQuote = true;
                 noFundsForFeesError = translationString('TR_EXCHANGE_DEX_OFFER_NO_FUNDS_FEES', {

@@ -18,9 +18,11 @@ export const initBrowserView = (systemInfo: SystemInfo): Promise<boolean> => {
     }
 
     const permitted = storage.load().browser;
+
     if (permitted) {
         return Promise.resolve(true);
     }
+
     showView('browser-not-supported');
 
     const h3 = container.getElementsByTagName('h3')[0];
@@ -41,6 +43,7 @@ export const initBrowserView = (systemInfo: SystemInfo): Promise<boolean> => {
                     browser: true,
                 }));
             }
+
             showView('loader');
             resolve(true);
         };

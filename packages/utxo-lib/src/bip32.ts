@@ -247,6 +247,7 @@ class BIP32 implements BIP32Interface {
 
         // Private parent key -> private child key
         let hd: BIP32Interface;
+
         if (!this.isNeutered()) {
             // ki = parse256(IL) + kpar (mod n)
             const ki = ecc.privateAdd(this.privateKey, IL);
@@ -296,6 +297,7 @@ class BIP32 implements BIP32Interface {
         typeforce(BIP32Path, path);
 
         let splitPath = path.split('/');
+
         if (splitPath[0] === 'm') {
             if (this.parentFingerprint) throw new TypeError('Expected master, got child');
 
@@ -304,11 +306,13 @@ class BIP32 implements BIP32Interface {
 
         return splitPath.reduce((prevHd, indexStr) => {
             let index;
+
             if (indexStr.slice(-1) === `'`) {
                 index = parseInt(indexStr.slice(0, -1), 10);
 
                 return prevHd.deriveHardened(index);
             }
+
             index = parseInt(indexStr, 10);
 
             return prevHd.derive(index);
@@ -317,13 +321,17 @@ class BIP32 implements BIP32Interface {
 
     sign(hash: Buffer, lowR?: boolean): Buffer {
         if (!this.privateKey) throw new Error('Missing private key');
+
         if (lowR === undefined) lowR = this.lowR;
+
         if (lowR === false) {
             return ecc.sign(hash, this.privateKey);
         }
+
         let sig = ecc.sign(hash, this.privateKey);
         const extraData = Buffer.alloc(32, 0);
         let counter = 0;
+
         // if first try is lowR, skip the loop
         // for second try and on, add extra entropy counting up
         while (sig[0] > 0x7f) {
@@ -346,11 +354,14 @@ export function fromBase58(inString: string, network?: Network): BIP32Interface 
             ? bs58check.decodeBlake256Key(inString)
             : bs58check.decode(inString, network),
     );
+
     if (buffer.length !== 78) throw new TypeError('Invalid buffer length');
+
     network = network || BITCOIN;
 
     // 4 bytes: version bytes
     const version = buffer.readUInt32BE(0);
+
     if (version !== network.bip32.private && version !== network.bip32.public)
         throw new TypeError('Invalid network version');
 
@@ -359,6 +370,7 @@ export function fromBase58(inString: string, network?: Network): BIP32Interface 
 
     // 4 bytes: the fingerprint of the parent's key (0x00000000 if master key)
     const parentFingerprint = buffer.readUInt32BE(5);
+
     if (depth === 0) {
         if (parentFingerprint !== 0x00000000) throw new TypeError('Invalid parent fingerprint');
     }
@@ -366,6 +378,7 @@ export function fromBase58(inString: string, network?: Network): BIP32Interface 
     // 4 bytes: child number. This is the number i in xi = xpar/i, with xi the key being serialized.
     // This is encoded in MSB order. (0x00000000 if master key)
     const index = buffer.readUInt32BE(9);
+
     if (depth === 0 && index !== 0) throw new TypeError('Invalid index');
 
     // 32 bytes: the chain code
@@ -375,6 +388,7 @@ export function fromBase58(inString: string, network?: Network): BIP32Interface 
     // 33 bytes: private key data (0x00 + k)
     if (version === network.bip32.private) {
         if (buffer.readUInt8(45) !== 0x00) throw new TypeError('Invalid private key');
+
         const k = buffer.subarray(46, 78);
 
         hd = fromPrivateKeyLocal(k, chainCode, network, depth, index, parentFingerprint);
@@ -407,8 +421,11 @@ export function fromPublicKey(
 
 export function fromSeed(seed: Buffer, network?: Network): BIP32Interface {
     typeforce(typeforce.Buffer, seed);
+
     if (seed.length < 16) throw new TypeError('Seed should be at least 128 bits');
+
     if (seed.length > 64) throw new TypeError('Seed should be at most 512 bits');
+
     network = network || BITCOIN;
 
     const I = crypto.hmacSHA512(Buffer.from('Bitcoin seed', 'utf8'), seed);

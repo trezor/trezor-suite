@@ -115,6 +115,7 @@ export const ConfirmValueModal = ({
 
     const copy = () => {
         const result = copyToClipboard(value);
+
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }

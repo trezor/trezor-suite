@@ -21,6 +21,7 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
 
         const path = validatePath(payload.path);
         let coinInfo: BitcoinNetworkInfo | undefined;
+
         if (payload.coin) {
             coinInfo = getBitcoinNetwork(payload.coin);
             validateCoinPath(path, coinInfo);

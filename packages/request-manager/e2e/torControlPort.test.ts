@@ -25,6 +25,7 @@ describe('TorControlPort', () => {
             // Make sure there is `torDataDir` directory.
             mkdir(torDataDir);
         }
+
         await writeFile(controlAuthCookiePath, 'test');
     });
 

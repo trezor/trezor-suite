@@ -54,6 +54,7 @@ const getPlacementData = (
 
     let coordsToUse: Coords;
     let toggleDimensions;
+
     if (clickPos) {
         coordsToUse = clickPos;
     } else {
@@ -151,6 +152,7 @@ export const Dropdown = forwardRef(
 
         const setToggled = (isToggled: boolean) => {
             if (onToggle) onToggle(isToggled);
+
             setIsToggledState(isToggled);
         };
 
@@ -182,6 +184,7 @@ export const Dropdown = forwardRef(
             }
 
             setToggled(!isToggled);
+
             if (renderOnClickPosition) {
                 setClickPos({ x: e.pageX, y: e.pageY });
             }

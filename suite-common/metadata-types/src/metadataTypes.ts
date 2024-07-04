@@ -131,6 +131,7 @@ export abstract class AbstractMetadataProvider {
     ok<T>(payload: T): Success<T>;
     ok(payload?: any) {
         const success = true as const;
+
         if (payload) {
             return {
                 success,

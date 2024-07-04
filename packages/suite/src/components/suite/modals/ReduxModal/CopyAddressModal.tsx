@@ -34,9 +34,11 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
 
     const onCopyAddress = () => {
         const result = copyToClipboard(address);
+
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }
+
         onCancel();
     };
 

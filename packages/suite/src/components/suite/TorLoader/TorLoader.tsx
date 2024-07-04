@@ -37,11 +37,14 @@ export const TorLoader = ({ callback, ModalWrapper }: TorLoadingScreenProps) => 
         if (isDisabling) {
             return;
         }
+
         if (progress === 100) {
             setProgress(0);
         }
+
         if (torBootstrap && torBootstrap.current) {
             setProgress(torBootstrap.current);
+
             if (torBootstrap.current === torBootstrap.total) {
                 dispatch(updateTorStatus(TorStatus.Enabled));
                 callback(true);

@@ -70,6 +70,7 @@ filteredFixtures.forEach(f => {
                 wipe: true,
                 save_screenshots: true,
             });
+
             // @ts-expect-error
             if (!f.device.wiped) {
                 // @ts-expect-error
@@ -78,6 +79,7 @@ filteredFixtures.forEach(f => {
                 });
                 await TrezorUserEnvLink.send({ type: 'emulator-allow-unsafe-paths' });
             }
+
             await TrezorUserEnvLink.api.startBridge();
         }
 

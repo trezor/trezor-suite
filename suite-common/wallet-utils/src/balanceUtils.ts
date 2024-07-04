@@ -29,6 +29,7 @@ export const formatCoinBalance = (value: string, locale = 'en') => {
 
         // indicate the dust
         const noDecimalsLeft = fixedBalanceBig.modulo(2).toFixed() === '0';
+
         if (noDecimalsLeft) {
             return localizeNumber(fixedBalanceBig, locale, 2);
         }

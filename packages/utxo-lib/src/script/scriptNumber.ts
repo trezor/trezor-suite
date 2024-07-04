@@ -2,8 +2,11 @@
 
 export function decode(buffer: Buffer, maxLength = 4, minimal = true) {
     const { length } = buffer;
+
     if (length === 0) return 0;
+
     if (length > maxLength) throw new TypeError('Script number overflow');
+
     if (minimal) {
         if ((buffer[length - 1] & 0x7f) === 0) {
             if (length <= 1 || (buffer[length - 2] & 0x80) === 0)
@@ -35,9 +38,13 @@ export function decode(buffer: Buffer, maxLength = 4, minimal = true) {
 
 function scriptNumSize(i: number) {
     if (i > 0x7fffffff) return 5;
+
     if (i > 0x7fffff) return 4;
+
     if (i > 0x7fff) return 3;
+
     if (i > 0x7f) return 2;
+
     if (i > 0x00) return 1;
 
     return 0;

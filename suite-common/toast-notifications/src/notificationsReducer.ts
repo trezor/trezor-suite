@@ -9,6 +9,7 @@ export const notificationsReducer = createReducer(initialState, builder => {
     builder
         .addCase(notificationsActions.close, (state, { payload }) => {
             const item = state.find(n => n.id === payload);
+
             if (item) item.closed = true;
         })
         .addCase(notificationsActions.resetUnseen, (state, { payload }) => {
@@ -19,6 +20,7 @@ export const notificationsReducer = createReducer(initialState, builder => {
             } else {
                 payload.forEach(p => {
                     const item = state.find(n => n.id === p.id);
+
                     if (item) item.seen = true;
                 });
             }

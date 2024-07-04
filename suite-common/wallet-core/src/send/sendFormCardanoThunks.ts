@@ -28,9 +28,11 @@ export const composeCardanoSendFormTransactionThunk = createThunk(
     async ({ formValues, formState }: ComposeTransactionThunkArguments, { dispatch }) => {
         const { account, feeInfo } = formState;
         const changeAddress = getUnusedChangeAddress(account);
+
         if (!changeAddress || !account.utxo || !account.addresses) return;
 
         const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+
         if (formValues.selectedFee === 'custom') {
             predefinedLevels.push({
                 label: 'custom',
@@ -75,6 +77,7 @@ export const composeCardanoSendFormTransactionThunk = createThunk(
         const wrappedResponse: PrecomposedLevelsCardano = {};
         response.payload.forEach((t, index) => {
             const tx: PrecomposedTransactionCardano = t;
+
             switch (tx.type) {
                 case 'final':
                     // convert from lovelace units to ADA
@@ -109,6 +112,7 @@ export const composeCardanoSendFormTransactionThunk = createThunk(
                             );
                             break;
                     }
+
                     break;
                 // no default
             }
@@ -176,6 +180,7 @@ export const signCardanoSendFormTransactionThunk = createThunk(
         if (!res.success) {
             // catch manual error from TransactionReviewModal
             if (res.payload.error === 'tx-cancelled') return;
+
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',

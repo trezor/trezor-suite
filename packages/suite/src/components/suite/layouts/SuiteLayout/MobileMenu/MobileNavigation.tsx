@@ -101,6 +101,7 @@ export const MobileNavigation = ({ closeMobileNavigation }: MobileNavigationProp
                                         setCoinFilter(undefined);
                                         setSearchString(undefined);
                                     }
+
                                     dispatch(goto(route));
                                     closeMobileNavigation?.();
                                 }

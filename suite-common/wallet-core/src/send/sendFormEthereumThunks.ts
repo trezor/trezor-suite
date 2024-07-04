@@ -47,6 +47,7 @@ const calculate = (
     const availableTokenBalance = token
         ? amountToSatoshi(token.balance!, token.decimals)
         : undefined;
+
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = availableTokenBalance || calculateMax(availableBalance, feeInSatoshi);
         amount = max;
@@ -113,6 +114,7 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
     async ({ formValues, formState }: ComposeTransactionThunkArguments, { dispatch }) => {
         const { account, network, feeInfo } = formState;
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
+
         if (!composeOutputs) return; // no valid Output
 
         const { output, tokenInfo, decimals } = composeOutputs;
@@ -143,6 +145,7 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
 
         if (estimatedFee.success) {
             customFeeLimit = estimatedFee.payload.levels[0].feeLimit;
+
             if (formValues.ethereumAdjustGasLimit && customFeeLimit) {
                 customFeeLimit = new BigNumber(customFeeLimit)
                     .multipliedBy(new BigNumber(formValues.ethereumAdjustGasLimit))
@@ -161,10 +164,12 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
         // FeeLevels are read-only
         const levels = customFeeLimit ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
         const predefinedLevels = levels.filter(l => l.label !== 'custom');
+
         // update predefined levels with customFeeLimit (gasLimit from data size or erc20 transfer)
         if (customFeeLimit) {
             predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit));
         }
+
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
         if (formValues.selectedFee === 'custom') {
             predefinedLevels.push({
@@ -189,10 +194,12 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
         // update errorMessage values (symbol)
         Object.keys(wrappedResponse).forEach(key => {
             const tx = wrappedResponse[key];
+
             if (tx.type !== 'error') {
                 tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
                 tx.estimatedFeeLimit = customFeeLimit;
             }
+
             if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
                 tx.errorMessage = {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
@@ -288,6 +295,7 @@ export const signEthereumSendFormTransactionThunk = createThunk(
         if (!signedTx.success) {
             // catch manual error from TransactionReviewModal
             if (signedTx.payload.error === 'tx-cancelled') return;
+
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',

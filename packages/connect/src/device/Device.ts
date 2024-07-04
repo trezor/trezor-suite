@@ -162,6 +162,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     static fromDescriptor(transport: Transport, originalDescriptor: Descriptor) {
         const descriptor = { ...originalDescriptor, session: null };
+
         try {
             const device: Device = new Device(transport, descriptor);
 
@@ -192,11 +193,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
         });
         const acquireResult = await this.acquirePromise.promise;
         this.acquirePromise = undefined;
+
         if (!acquireResult.success) {
             if (this.runPromise) {
                 this.runPromise.reject(new Error(acquireResult.error));
                 delete this.runPromise;
             }
+
             throw acquireResult.error;
         }
 
@@ -212,6 +215,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (this.commands) {
             this.commands.dispose();
         }
+
         this.commands = new DeviceCommands(this, this.transport, sessionID);
     }
 
@@ -224,6 +228,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         ) {
             if (this.commands) {
                 this.commands.dispose();
+
                 if (this.commands.callPromise) {
                     await this.commands.callPromise.promise;
                 }
@@ -236,6 +241,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
             const releaseResponse = await this.releasePromise.promise;
             this.releasePromise = undefined;
+
             if (releaseResponse.success) {
                 this.activitySessionID = null;
                 this.originalDescriptor.session = null;
@@ -280,6 +286,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (this.runPromise) {
             await this.interruptionFromUser(error);
         }
+
         if (this.releasePromise) {
             await this.releasePromise.promise;
         }
@@ -293,6 +300,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.runPromise.reject(error);
             delete this.runPromise;
         }
+
         if (this.commands) {
             await this.commands.cancel();
         }
@@ -311,6 +319,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (this.commands) {
             this.commands.dispose();
         }
+
         if (this.runPromise) {
             this.runPromise.reject(ERRORS.TypedError('Device_UsedElsewhere'));
             delete this.runPromise;
@@ -450,6 +459,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 this.setInternalState(undefined);
             }
         }
+
         this.instance = instance;
     }
 
@@ -504,12 +514,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const expectedState = this.getExternalState();
         const state = await this.getCommands().getDeviceState();
         const uniqueState = `${state}@${this.features.device_id || 'device_id'}:${this.instance}`;
+
         if (!this.useLegacyPassphrase() && this.features.session_id) {
             this.setInternalState(this.features.session_id);
         }
+
         if (expectedState && expectedState !== uniqueState) {
             return uniqueState;
         }
+
         if (!expectedState) {
             this.setExternalState(uniqueState);
         }
@@ -521,6 +534,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     async initialize(useEmptyPassphrase: boolean, useCardanoDerivation: boolean) {
         let payload: PROTO.Initialize | undefined;
+
         if (this.features) {
             const legacy = this.useLegacyPassphrase();
             const internalState = this.getInternalState();
@@ -528,11 +542,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // If the user has BIP-39 seed, and Initialize(derive_cardano=True) is not sent,
             // all Cardano calls will fail because the root secret will not be available.
             payload.derive_cardano = useCardanoDerivation;
+
             if (!legacy && internalState) {
                 payload.session_id = internalState;
             }
+
             if (legacy && !this.isT1()) {
                 payload.session_id = internalState;
+
                 if (useEmptyPassphrase) {
                     payload._skip_passphrase = useEmptyPassphrase;
                     payload.session_id = undefined;
@@ -627,10 +644,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
     _updateFeatures(feat: Features) {
         const capabilities = parseCapabilities(feat);
         feat.capabilities = capabilities;
+
         // GetFeatures doesn't return 'session_id'
         if (this.features && this.features.session_id && !feat.session_id) {
             feat.session_id = this.features.session_id;
         }
+
         feat.unlocked = feat.unlocked ?? true;
         // fix inconsistency of revision attribute between T1B1 and old T2T1 fw
         const revision = parseRevision(feat);
@@ -641,6 +660,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (!feat.model && feat.major_version === 1) {
             feat.model = '1';
         }
+
         // 2. - old fw does not include internal_model. T1B1 does not report it yet, T2T1 starts in 2.6.0, T2B1 reports it from beginning
         if (!feat.internal_model) {
             feat.internal_model = ensureInternalModelFeature(feat.model);
@@ -737,6 +757,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     atLeast(versions: string[] | string) {
         if (!this.features) return false;
+
         const modelVersion =
             typeof versions === 'string' ? versions : versions[this.features.major_version - 1];
 
@@ -782,9 +803,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
             if (this.isBootloader() && !allow.includes(UI.BOOTLOADER)) {
                 return UI.BOOTLOADER;
             }
+
             if (!this.isInitialized() && !allow.includes(UI.INITIALIZE)) {
                 return UI.INITIALIZE;
             }
+
             if (this.isSeedless() && !allow.includes(UI.SEEDLESS)) {
                 return UI.SEEDLESS;
             }
@@ -800,6 +823,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     async dispose() {
         this.removeAllListeners();
+
         if (this.isUsedHere() && this.activitySessionID) {
             try {
                 if (this.commands) {
@@ -819,7 +843,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     getMode() {
         if (this.features.bootloader_mode) return 'bootloader';
+
         if (!this.features.initialized) return 'initialize';
+
         if (this.features.no_backup) return 'seedless';
 
         return 'normal';
@@ -836,6 +862,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 name: this.name,
             };
         }
+
         if (this.isUnacquired()) {
             return {
                 type: 'unacquired',
@@ -844,10 +871,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 name: this.name,
             };
         }
+
         const defaultLabel = 'My Trezor';
         const label =
             this.features.label === '' || !this.features.label ? defaultLabel : this.features.label;
         let status: DeviceStatus = this.isUsedElsewhere() ? 'occupied' : 'available';
+
         if (this.featuresNeedsReload) status = 'used';
 
         return {

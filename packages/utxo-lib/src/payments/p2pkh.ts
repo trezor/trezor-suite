@@ -49,7 +49,9 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'hash', () => {
         if (a.output) return a.output.subarray(3, 23);
+
         if (a.address) return _address().hash;
+
         if (a.pubkey || o.pubkey) return bcrypto.hash160(a.pubkey! || o.pubkey!);
     });
     lazy.prop(o, 'output', () => {
@@ -75,6 +77,7 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'input', () => {
         if (!a.pubkey) return;
+
         if (!a.signature) return;
 
         return bscript.compile([a.signature, a.pubkey]);
@@ -88,11 +91,15 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
     // extended validation
     if (opts.validate) {
         let hash = Buffer.from([]);
+
         if (a.address) {
             const { version, hash: aHash } = _address();
+
             if (version !== network.pubKeyHash)
                 throw new TypeError('Invalid version or Network mismatch');
+
             if (aHash.length !== 20) throw new TypeError('Invalid address');
+
             hash = aHash;
         }
 
@@ -113,29 +120,36 @@ export function p2pkh(a: Payment, opts?: PaymentOpts): Payment {
                 throw new TypeError('Output is invalid');
 
             const hash2 = a.output.subarray(3, 23);
+
             if (hash.length > 0 && !hash.equals(hash2)) throw new TypeError('Hash mismatch');
             else hash = hash2;
         }
 
         if (a.pubkey) {
             const pkh = bcrypto.hash160(a.pubkey);
+
             if (hash.length > 0 && !hash.equals(pkh)) throw new TypeError('Hash mismatch');
             else hash = pkh;
         }
 
         if (a.input) {
             const chunks = _chunks();
+
             if (chunks.length !== 2) throw new TypeError('Input is invalid');
+
             if (!bscript.isCanonicalScriptSignature(chunks[0] as Buffer))
                 throw new TypeError('Input has invalid signature');
+
             if (!ecc.isPoint(chunks[1])) throw new TypeError('Input has invalid pubkey');
 
             if (a.signature && !a.signature.equals(chunks[0] as Buffer))
                 throw new TypeError('Signature mismatch');
+
             if (a.pubkey && !a.pubkey.equals(chunks[1] as Buffer))
                 throw new TypeError('Pubkey mismatch');
 
             const pkh = bcrypto.hash160(chunks[1] as Buffer);
+
             if (hash.length > 0 && !hash.equals(pkh)) throw new TypeError('Hash mismatch');
         }
     }

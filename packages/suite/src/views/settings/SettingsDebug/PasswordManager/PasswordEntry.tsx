@@ -62,6 +62,7 @@ export const PasswordEntry = ({
 
     const decrypt = () => {
         if (inProgress) return;
+
         setInProgress(true);
         TrezorConnect.cipherKeyValue({
             device: { path: devicePath },

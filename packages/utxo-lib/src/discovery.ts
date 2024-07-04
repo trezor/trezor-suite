@@ -36,7 +36,9 @@ export const discovery = <T>(
         prev: AddressResult<T>[],
     ): Promise<AddressResult<T>[]> => {
         const unused = countUnusedFromEnd(prev, a => a.empty, lookout);
+
         if (unused >= lookout) return prev;
+
         const moreCount = lookout - unused;
         const addresses = deriveAddresses(xpub, type, from, moreCount, network);
         const more = await Promise.all(addresses.map(discover));

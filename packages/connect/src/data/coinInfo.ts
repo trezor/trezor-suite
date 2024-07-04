@@ -17,6 +17,7 @@ const miscNetworks: MiscNetworkInfo[] = [];
 
 export const getBitcoinNetwork = (pathOrName: DerivationPath) => {
     const networks = cloneObject(bitcoinNetworks);
+
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
 
@@ -27,6 +28,7 @@ export const getBitcoinNetwork = (pathOrName: DerivationPath) => {
                 n.label.toLowerCase() === name,
         );
     }
+
     const slip44 = fromHardened(pathOrName[1]);
 
     return networks.find(n => n.slip44 === slip44);
@@ -34,6 +36,7 @@ export const getBitcoinNetwork = (pathOrName: DerivationPath) => {
 
 export const getEthereumNetwork = (pathOrName: DerivationPath) => {
     const networks = cloneObject(ethereumNetworks);
+
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
 
@@ -41,6 +44,7 @@ export const getEthereumNetwork = (pathOrName: DerivationPath) => {
             n => n.name.toLowerCase() === name || n.shortcut.toLowerCase() === name,
         );
     }
+
     const slip44 = fromHardened(pathOrName[1]);
 
     return networks.find(n => n.slip44 === slip44);
@@ -48,6 +52,7 @@ export const getEthereumNetwork = (pathOrName: DerivationPath) => {
 
 export const getMiscNetwork = (pathOrName: DerivationPath) => {
     const networks = cloneObject(miscNetworks);
+
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
 
@@ -55,6 +60,7 @@ export const getMiscNetwork = (pathOrName: DerivationPath) => {
             n => n.name.toLowerCase() === name || n.shortcut.toLowerCase() === name,
         );
     }
+
     const slip44 = fromHardened(pathOrName[1]);
 
     return networks.find(n => n.slip44 === slip44);
@@ -95,13 +101,16 @@ export const getBech32Network = (coin: BitcoinNetworkInfo) => {
 // fix coinInfo network values from path (segwit/legacy)
 export const fixCoinInfoNetwork = (ci: BitcoinNetworkInfo, path: number[]) => {
     const coinInfo = cloneObject(ci);
+
     if (path[0] === toHardened(84)) {
         const bech32Network = getBech32Network(coinInfo);
+
         if (bech32Network) {
             coinInfo.network = bech32Network;
         }
     } else if (path[0] === toHardened(49)) {
         const segwitNetwork = getSegwitNetwork(coinInfo);
+
         if (segwitNetwork) {
             coinInfo.network = segwitNetwork;
         }
@@ -117,12 +126,15 @@ const detectBtcVersion = (data: { subversion?: string }) => {
     if (data.subversion == null) {
         return 'btc';
     }
+
     if (data.subversion.startsWith('/Bitcoin ABC')) {
         return 'bch';
     }
+
     if (data.subversion.startsWith('/Bitcoin Cash')) {
         return 'bch';
     }
+
     if (data.subversion.startsWith('/Bitcoin Gold')) {
         return 'btg';
     }
@@ -136,6 +148,7 @@ export const getCoinInfoByHash = (hash: string, networkInfo: any) => {
     const result = networks.find(
         info => hash.toLowerCase() === info.hashGenesisBlock.toLowerCase(),
     );
+
     if (!result) {
         throw ERRORS.TypedError(
             'Method_UnknownCoin',
@@ -146,14 +159,17 @@ export const getCoinInfoByHash = (hash: string, networkInfo: any) => {
     if (result.isBitcoin) {
         const btcVersion = detectBtcVersion(networkInfo);
         let fork: BitcoinNetworkInfo | undefined;
+
         if (btcVersion === 'bch') {
             fork = networks.find(info => info.name === 'Bcash');
         } else if (btcVersion === 'btg') {
             fork = networks.find(info => info.name === 'Bgold');
         }
+
         if (fork) {
             return fork;
         }
+
         throw ERRORS.TypedError(
             'Method_UnknownCoin',
             `Coin info not found for hash: ${hash} ${networkInfo.hashGenesisBlock} BTC version:${btcVersion}`,

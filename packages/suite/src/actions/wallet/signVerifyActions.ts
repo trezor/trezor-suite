@@ -53,6 +53,7 @@ const showAddressByNetwork =
             useEmptyPassphrase,
             chunkify,
         };
+
         switch (account.networkType) {
             case 'bitcoin':
                 return TrezorConnect.getAddress(params);
@@ -98,6 +99,7 @@ const verifyByNetwork =
             useEmptyPassphrase,
             hex,
         };
+
         switch (account.networkType) {
             case 'bitcoin':
                 return TrezorConnect.verifyMessage(params);

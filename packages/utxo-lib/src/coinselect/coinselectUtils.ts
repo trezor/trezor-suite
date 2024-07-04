@@ -43,7 +43,9 @@ type VinVout = { script: { length: number }; weight?: number };
 
 export function getVarIntSize(length: number) {
     if (length < 253) return 1;
+
     if (length < 65536) return 3;
+
     if (length < 4294967296) return 5;
 
     return 9;
@@ -51,7 +53,9 @@ export function getVarIntSize(length: number) {
 
 export function inputWeight(input: Vin) {
     if (input.weight) return input.weight; // weight may be pre-calculated. see ../compose/utils convertInput
+
     let weight = INPUT_SIZE;
+
     if (!SEGWIT_INPUT_SCRIPT_TYPES.includes(input.type)) {
         weight += 4 * input.script.length;
     } else {
@@ -61,6 +65,7 @@ export function inputWeight(input: Vin) {
         } else {
             weight += 4; // empty script_sig (1 byte)
         }
+
         weight += 1 + input.script.length; // discounted witness
     }
 
@@ -134,7 +139,9 @@ export function bignumberOrNaN<F extends boolean>(
 ): F extends true ? BN : BN | undefined;
 export function bignumberOrNaN(v?: BN | string, forgiving = false) {
     if (BN.isBN(v)) return v;
+
     const defaultValue = forgiving ? ZERO : undefined;
+
     if (!v || typeof v !== 'string' || !/^\d+$/.test(v)) return defaultValue;
 
     try {
@@ -152,7 +159,9 @@ export function sumOrNaN<F extends boolean>(
 export function sumOrNaN(range: { value?: BN }[], forgiving = false) {
     return range.reduce((a: BN | undefined, x) => {
         if (!a) return a;
+
         const value = bignumberOrNaN(x.value);
+
         if (!value) return forgiving ? ZERO.add(a) : undefined;
 
         return value.add(a);
@@ -161,6 +170,7 @@ export function sumOrNaN(range: { value?: BN }[], forgiving = false) {
 
 export function getFeePolicy(network?: Network) {
     if (isNetworkType('doge', network)) return 'doge';
+
     if (isNetworkType('zcash', network)) return 'zcash';
 
     return 'bitcoin';
@@ -256,6 +266,7 @@ export function finalize(
     const feeAfterExtraOutput = getFee(inputs, [...outputs, changeOutput], feeRate, options);
     const sumInputs = sumOrNaN(inputs);
     const sumOutputs = sumOrNaN(outputs);
+
     // if sum inputs/outputs is NaN
     // or `fee` is greater than sum of inputs reduced by sum of outputs (use case: baseFee)
     // no further calculation required (not enough funds)
@@ -291,6 +302,7 @@ export function anyOf(algorithms: CoinSelectAlgorithm[]): CoinSelectAlgorithm {
         for (let i = 0; i < algorithms.length; i++) {
             const algorithm = algorithms[i];
             result = algorithm(utxos, outputs, feeRate, options);
+
             if (result.inputs) {
                 return result;
             }
@@ -307,6 +319,7 @@ export function utxoScore(x: CoinSelectInput, feeRate: number) {
 export function sortByScore(feeRate: number) {
     return (a: CoinSelectInput, b: CoinSelectInput) => {
         const difference = utxoScore(a, feeRate).sub(utxoScore(b, feeRate));
+
         if (difference.eq(ZERO)) {
             return a.i - b.i;
         }

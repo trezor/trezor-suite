@@ -38,9 +38,11 @@ const redactUserPath = (event: SentryEvent) => {
 const beforeSend: Options['beforeSend'] = event => {
     // sentry events are skipped until user confirm analytics reporting
     const allowReport = event.tags?.[allowReportTag];
+
     if (allowReport === false) {
         return null;
     }
+
     // allow report error without breadcrumbs before confirm status is loaded (@storage/loaded)
     if (typeof allowReport === 'undefined') {
         delete event.breadcrumbs;

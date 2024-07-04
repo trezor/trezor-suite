@@ -67,6 +67,7 @@ describe(`TrezorConnect methods`, () => {
 
                         // find legacy result
                         const { legacyResults } = t;
+
                         if (legacyResults) {
                             legacyResults.forEach(r => {
                                 if (skipTest(r.rules)) {

@@ -64,10 +64,13 @@ export const verifyAddress =
     ) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
+
         if (!device || !account) return;
+
         const accountAddress = getUnusedAddressFromAccount(account);
         address = address ?? accountAddress.address;
         path = path ?? accountAddress.path;
+
         if (!path || !address) return;
 
         const addressDisplayType = selectAddressDisplayType(getState());
@@ -134,9 +137,11 @@ export const submitRequestForm =
     }) =>
     (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
+
         if (device && !device.remember && !isDesktop()) {
             dispatch(toggleRememberDevice({ device, forceRemember: true }));
         }
+
         if (form) {
             envSubmitRequestForm(
                 form.formMethod,
@@ -184,6 +189,7 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
             if (draft.cryptoInput) {
                 draft.cryptoInput = conversion(draft.cryptoInput, decimals);
             }
+
             if (draft.outputs) {
                 draft.outputs.forEach(output => {
                     if (output.amount) {

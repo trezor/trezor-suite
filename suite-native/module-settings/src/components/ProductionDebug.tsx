@@ -25,6 +25,7 @@ export const ProductionDebug = ({ children }: ProductionDebugProps) => {
         if (tapsCount < 7) {
             tapsCount++;
         }
+
         if (tapsCount === 7) {
             setIsDevButtonVisible(true);
             showToast({

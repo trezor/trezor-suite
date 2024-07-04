@@ -127,6 +127,7 @@ export const transformCoinjoinStatus = ({
 // convert suite account type to @trezor/coinjoin RegisterAccountParams scriptType
 const getCoinjoinAccountScriptType = (path: string) => {
     const bip43 = getBip43Type(path);
+
     switch (bip43) {
         case 'bip86':
         case 'slip25':
@@ -249,6 +250,7 @@ export const prepareCoinjoinTransaction = (
     const tx = {
         inputs: transaction.inputs.map((input, index) => {
             const flags = affiliateRequest.coinjoin_flags_array?.[index];
+
             if (isInternalInput(input)) {
                 return {
                     script_type: inputScriptType,
@@ -303,7 +305,9 @@ export const prepareCoinjoinTransaction = (
 
 export const getIsCoinjoinOutOfSync = (selectedAccount: SelectedAccountStatus) => {
     if (selectedAccount.status !== 'loaded') return true;
+
     const { account } = selectedAccount;
+
     if (account.backendType === 'coinjoin') {
         return account.status === 'out-of-sync';
     }

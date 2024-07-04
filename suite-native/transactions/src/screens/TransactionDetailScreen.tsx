@@ -57,6 +57,7 @@ export const TransactionDetailScreen = ({
 
     const handleOpenBlockchain = () => {
         if (!blockchainExplorer) return;
+
         analytics.report({ type: EventType.TransactionDetailExploreInBlockchain });
         Linking.openURL(`${blockchainExplorer.tx}${transaction.txid}`);
     };

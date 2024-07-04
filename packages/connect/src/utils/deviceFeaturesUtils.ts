@@ -31,6 +31,7 @@ const DEFAULT_CAPABILITIES_TT: PROTO.Capability[] = [
 
 export const parseCapabilities = (features?: Features): PROTO.Capability[] => {
     if (!features || features.firmware_present === false) return []; // no features or no firmware - no capabilities
+
     // fallback for older firmware that does not report capabilities
     if (!features.capabilities || !features.capabilities.length) {
         return features.major_version === 1 ? DEFAULT_CAPABILITIES_T1 : DEFAULT_CAPABILITIES_TT;
@@ -42,7 +43,9 @@ export const parseCapabilities = (features?: Features): PROTO.Capability[] => {
 export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]) => {
     const { capabilities } = features;
     const list: UnavailableCapabilities = {};
+
     if (!capabilities) return list;
+
     const fw = [features.major_version, features.minor_version, features.patch_version].join('.');
     const key = features.internal_model;
 
@@ -70,18 +73,24 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
 
             return !capabilities.includes('Capability_Bitcoin_like');
         }
+
         if (info.type === 'ethereum') {
             return !capabilities.includes('Capability_Ethereum');
         }
+
         if (info.type === 'nem') {
             return !capabilities.includes('Capability_NEM');
         }
+
         // misc
         if (info.shortcut === 'BNB') return !capabilities.includes('Capability_Binance');
+
         if (info.shortcut === 'ADA' || info.shortcut === 'tADA')
             return !capabilities.includes('Capability_Cardano');
+
         if (info.shortcut === 'XRP' || info.shortcut === 'tXRP')
             return !capabilities.includes('Capability_Ripple');
+
         if (info.shortcut === 'SOL' || info.shortcut === 'DSOL')
             return !capabilities.includes('Capability_Solana');
 
@@ -98,6 +107,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         .filter(info => !unavailable.includes(info))
         .forEach(info => {
             const supportVersion = info.support[key];
+
             if (typeof supportVersion === 'string' && versionUtils.isNewer(supportVersion, fw)) {
                 list[info.shortcut.toLowerCase()] = 'update-required';
                 unavailable.push(info);
@@ -107,14 +117,17 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     // 4. check if firmware version is in range of capabilities in "config.supportedFirmware"
     config.supportedFirmware.forEach(s => {
         if (!s.capabilities) return;
+
         const min = s.min ? s.min[key] : null;
         const max = s.max ? s.max[key] : null;
+
         if (min && (min === '0' || versionUtils.isNewer(min, fw))) {
             const value = min === '0' ? 'no-support' : 'update-required';
             s.capabilities.forEach(m => {
                 list[m] = value;
             });
         }
+
         if (max && !versionUtils.isNewerOrEqual(max, fw)) {
             s.capabilities.forEach(m => {
                 list[m] = 'trezor-connect-outdated';

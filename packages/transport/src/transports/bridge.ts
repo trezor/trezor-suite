@@ -117,6 +117,7 @@ export class BridgeTransport extends AbstractTransport {
         if (this.stopped) {
             return;
         }
+
         const listenTimestamp = new Date().getTime();
 
         const response = await this.post('/listen', {
@@ -126,11 +127,13 @@ export class BridgeTransport extends AbstractTransport {
 
         if (!response.success) {
             const time = new Date().getTime() - listenTimestamp;
+
             if (time > 1100) {
                 await createTimeoutPromise(1000);
 
                 return this.listen2();
             }
+
             this.emit('transport-error', response.error);
 
             return;
@@ -247,9 +250,11 @@ export class BridgeTransport extends AbstractTransport {
                     body: bytes.toString('hex'),
                     signal,
                 });
+
                 if (!response.success) {
                     return response;
                 }
+
                 const message = await receiveAndParse(
                     this.messages,
                     () => Promise.resolve(Buffer.from(response.payload, 'hex')),
@@ -276,6 +281,7 @@ export class BridgeTransport extends AbstractTransport {
                 body: bytes.toString('hex'),
                 signal,
             });
+
             if (!response.success) {
                 return response;
             }
@@ -297,6 +303,7 @@ export class BridgeTransport extends AbstractTransport {
             if (!response.success) {
                 return response;
             }
+
             const protocol = customProtocol || bridgeProtocol;
             const message = await receiveAndParse(
                 this.messages,
@@ -391,6 +398,7 @@ export class BridgeTransport extends AbstractTransport {
             if (response.error === ERRORS.UNEXPECTED_ERROR) {
                 return response;
             }
+
             if (response.error === ERRORS.HTTP_ERROR) {
                 return this.error({ error: response.error });
             }

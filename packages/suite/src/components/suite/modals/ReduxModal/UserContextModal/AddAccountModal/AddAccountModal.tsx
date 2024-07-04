@@ -135,8 +135,10 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
     };
     const enableNetwork = () => {
         onCancel();
+
         if (selectedNetwork) {
             dispatch(changeCoinVisibility(selectedNetwork.symbol, true));
+
             if (app === 'wallet' && !noRedirect) {
                 // redirect to account only if added from "wallet" app
                 dispatch(
@@ -154,6 +156,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
     const addAccount = (account: Account) => {
         onCancel();
         dispatch(accountsActions.changeAccountVisibility(account));
+
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
             dispatch(

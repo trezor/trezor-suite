@@ -37,6 +37,7 @@ const getOutputAmounts = async (params: GetOutputAmountsParams) => {
             input =>
                 input.accountKey === accountKey && compareOutpoint(input.outpoint, i.Coin.Outpoint),
         );
+
         if (internal) {
             InternalAmounts.push(internal.confirmedAmountCredentials![0].Value);
         } else {
@@ -215,6 +216,7 @@ const findCredentialsForTarget = (
 
     // find one Credential big enough to cover requested target
     const bigCredential = sorted.find(cre => cre.Value >= target);
+
     if (bigCredential) {
         // try find a pair to produce change Credential used in next iteration
         // always try to pair with greatest Credential or at least 0 value Credential
@@ -222,9 +224,11 @@ const findCredentialsForTarget = (
         const pair = sorted.find(
             cre => cre !== bigCredential && cre.Value + changeValue <= maxValue,
         );
+
         if (pair) {
             return [bigCredential, pair];
         }
+
         // this should never happen but just in case
         throw new Error('Missing pair for credential');
     }

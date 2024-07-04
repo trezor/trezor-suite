@@ -217,6 +217,7 @@ export const useUnstakeEthForm = ({
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
+
         if (composedTx && composedTx.type === 'final') {
             const result = await dispatch(
                 signTransaction(values, composedTx as PrecomposedTransactionFinal),
@@ -253,6 +254,7 @@ export const useUnstakeEthForm = ({
 
 export const useUnstakeEthFormContext = () => {
     const ctx = useContext(UnstakeEthFormContext);
+
     if (ctx === null) throw Error('useUnstakeEthFormContext used without Context');
 
     return ctx;

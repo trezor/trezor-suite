@@ -53,6 +53,7 @@ let renderConnectUIPromise: Promise<void> | undefined;
 // browser built-in functionality to quickly and safely escape the string
 const escapeHtml = (payload: any) => {
     if (!payload) return;
+
     try {
         const div = document.createElement('div');
         div.appendChild(document.createTextNode(JSON.stringify(payload)));
@@ -177,6 +178,7 @@ const handleResponseEvent = (data: MethodResponseMessage) => {
             'code' in data.payload && typeof data.payload.code === 'string'
                 ? data.payload.code
                 : undefined;
+
         switch (code) {
             case 'Device_CallInProgress':
                 // Ignoring when device call is in progress.
@@ -209,6 +211,7 @@ const handleResponseEvent = (data: MethodResponseMessage) => {
  */
 const handleInitMessage = (event: MessageEvent<PopupEvent | IFrameLogRequest>) => {
     const { data } = event;
+
     if (!data) return;
 
     // case of webextension which uses cross origin communication via content script
@@ -235,6 +238,7 @@ const handleMessageInIframeMode = (
     if (disposed) return;
 
     log.debug('handleMessage', data);
+
     if (data.type === RESPONSE_EVENT) {
         handleResponseEvent(data);
     }
@@ -253,6 +257,7 @@ const handleMessageInIframeMode = (
     const isMessagePort =
         event.target instanceof MessagePort ||
         (typeof BroadcastChannel !== 'undefined' && event.target instanceof BroadcastChannel);
+
     if (!isMessagePort) return;
 
     // catch first message from iframe
@@ -344,6 +349,7 @@ const handleParentClosed = () => {
 
 const handleLogMessage = (event: MessageEvent<IFrameLogRequest>) => {
     const { data } = event;
+
     if (!data) return;
 
     if (data.type === IFRAME.LOG) {
@@ -383,6 +389,7 @@ const init = async (payload: PopupInit['payload']) => {
 
         const isBrowserSupported = await view.initBrowserView(payload.systemInfo);
         log.debug('browser supported: ', isBrowserSupported);
+
         if (!isBrowserSupported) {
             return;
         }
@@ -393,6 +400,7 @@ const init = async (payload: PopupInit['payload']) => {
         log.debug('connect-ui rendered');
 
         let logWriterFactory;
+
         if (payload.settings.sharedLogger !== false) {
             logWriterFactory = initLogWriterWithSrcPath('./workers/shared-logger-worker.js');
             setLogWriter(logWriterFactory);
@@ -401,6 +409,7 @@ const init = async (payload: PopupInit['payload']) => {
         if (payload.useCore) {
             addWindowEventListener('message', handleMessageInCoreMode, false);
             addWindowEventListener('beforeunload', handleWindowBeforeUnload, false);
+
             if (window.opener) {
                 // Most reliable way to detect parent close seems to be to check it periodically
                 setInterval(() => {
@@ -409,6 +418,7 @@ const init = async (payload: PopupInit['payload']) => {
                     }
                 }, INTERVAL_CHECK_PARENT_ALIVE_MS);
             }
+
             await initCoreInPopup(payload, logWriterFactory);
         } else {
             addWindowEventListener('message', handleMessageInIframeMode, false);
@@ -438,9 +448,11 @@ const initCoreInPopup = async (
     });
 
     if (!initCoreState) return;
+
     if (disposed) return;
 
     const state = getState();
+
     if (!payload.settings.origin) {
         // Assign origin for core in popup modes
         if (state.settings?.origin) {
@@ -456,6 +468,7 @@ const initCoreInPopup = async (
     const onCoreEvent = (event: any) => {
         const message = parseMessage<CoreEventMessage>(event);
         handleUIAffectingMessage(message);
+
         if (message.type === RESPONSE_EVENT) {
             handleResponseEvent(message);
         }
@@ -466,6 +479,7 @@ const initCoreInPopup = async (
         onCoreEvent,
         logWriterFactory,
     );
+
     if (disposed) return;
 
     setState({ core });
@@ -476,8 +490,10 @@ const initCoreInPopup = async (
         log.debug('initiating transport with settings: ', payload.settings);
         reactEventBus.dispatch({ type: 'loading', message: 'initiating transport' });
         await initTransport(payload.settings);
+
         if (disposed) return;
     }
+
     log.debug('initiated transport');
 
     // done, in popup, we are ready to handle incoming messages
@@ -506,11 +522,13 @@ const handshake = (handshake: PopupHandshake, origin: string) => {
     clearTimeout(handshakeTimeout);
 
     let thirdPartyOrigin = origin;
+
     // `origin` is empty string when using `BroadcastChannel` in iframe popup mode,
     // so when that happens we use origin from settings and validate it with `parseConnectSettings`.
     if (origin === '' && payload.settings.origin) {
         thirdPartyOrigin = payload.settings.origin;
     }
+
     // when this message comes from iframe, settings is already validated.
     // when there is no iframe, we must validate it here
     const trustedSettings = parseConnectSettings(payload.settings, thirdPartyOrigin);
@@ -524,6 +542,7 @@ const handshake = (handshake: PopupHandshake, origin: string) => {
         const core = ensureCore();
         core.handleMessage(handshakeRest);
     }
+
     reactEventBus.dispatch({ type: 'state-update', payload: handshake.payload });
 
     log.debug('handshake done');
@@ -531,6 +550,7 @@ const handshake = (handshake: PopupHandshake, origin: string) => {
 
 const ensureCore = () => {
     const { core } = getState();
+
     if (!core) {
         fail({
             type: 'error',
@@ -580,9 +600,11 @@ const fail = (error: ErrorViewProps) => {
 };
 
 addWindowEventListener('load', onLoad, false);
+
 if (document.readyState === 'complete') {
     onLoad();
 }
+
 addWindowEventListener('message', handleInitMessage, false);
 addWindowEventListener('message', handleLogMessage, false);
 

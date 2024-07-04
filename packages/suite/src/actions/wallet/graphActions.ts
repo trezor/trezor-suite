@@ -153,12 +153,14 @@ export const updateGraphData =
         // TODO: default behaviour should be fetch only new data (since last timestamp)
         // exclude accounts with unsupported backend type
         let filteredAccounts = accounts.filter(a => isTrezorConnectBackendType(a.backendType));
+
         if (options?.newAccountsOnly) {
             // add only accounts for which we don't have any data for given interval
             filteredAccounts = filteredAccounts.filter(
                 account => !graph.data.find(d => accountGraphDataFilterFn(d, account)),
             );
         }
+
         if (filteredAccounts.length === 0) {
             return;
         }

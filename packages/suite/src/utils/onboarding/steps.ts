@@ -59,6 +59,7 @@ export const isStepUsed = (step: Step, getState: GetState): boolean => {
 
 export const findNextStep = (currentStepId: AnyStepId, steps: Step[]) => {
     const currentIndex = steps.findIndex((step: Step) => step.id === currentStepId);
+
     if (!steps[currentIndex + 1]) {
         throw new Error('no next step exists');
     }
@@ -68,6 +69,7 @@ export const findNextStep = (currentStepId: AnyStepId, steps: Step[]) => {
 
 export const findPrevStep = (currentStepId: AnyStepId, steps: Step[]) => {
     const currentIndex = steps.findIndex((step: Step) => step.id === currentStepId);
+
     if (!steps[currentIndex - 1]) {
         throw new Error('no prev step exists');
     }

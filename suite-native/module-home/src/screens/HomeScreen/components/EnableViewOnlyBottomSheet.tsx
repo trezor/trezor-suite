@@ -118,6 +118,7 @@ export const EnableViewOnlyBottomSheet = () => {
 
     const handleEnable = () => {
         setIsVisible(false);
+
         if (device) {
             showToast({
                 variant: 'default',

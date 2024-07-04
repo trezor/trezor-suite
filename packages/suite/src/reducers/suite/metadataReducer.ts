@@ -90,9 +90,11 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                         p.type === action.payload.provider.type &&
                         p.clientId === action.payload.provider.clientId,
                 );
+
                 if (!targetProvider) {
                     break;
                 }
+
                 if (!action.payload.data) {
                     targetProvider.data = {};
                 } else {
@@ -104,10 +106,12 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
             case METADATA.SET_ERROR_FOR_DEVICE:
                 if (action.payload.failed) {
                     if (!draft.error) draft.error = {};
+
                     draft.error[action.payload.deviceState] = action.payload.failed;
                 } else {
                     delete draft.error?.[action.payload.deviceState];
                 }
+
                 break;
             case deviceActions.forgetDevice.type:
                 if (action.payload.device.state) {
@@ -140,6 +144,7 @@ export const selectLabelingDataForSelectedAccount = (state: {
     const { selectedAccount } = state.wallet;
 
     const metadataKeys = selectedAccount?.account?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
+
     if (!metadataKeys || !metadataKeys.fileName || !provider?.data[metadataKeys.fileName]) {
         return DEFAULT_ACCOUNT_METADATA;
     }
@@ -177,6 +182,7 @@ export const selectAccountLabels = (state: {
     return state.wallet.accounts.reduce(
         (dict, account) => {
             const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
+
             if (
                 !metadataKeys ||
                 !metadataKeys?.fileName ||
@@ -184,7 +190,9 @@ export const selectAccountLabels = (state: {
             ) {
                 return dict;
             }
+
             const data = provider.data[metadataKeys.fileName];
+
             if ('accountLabel' in data) {
                 dict[account.key] = data.accountLabel;
             }
@@ -205,9 +213,11 @@ export const selectLabelingDataForWallet = (
     const provider = selectSelectedProviderForLabels(state);
     const devices = selectDevices(state);
     const device = devices.find(d => d.state === deviceState);
+
     if (!device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION]) {
         return DEFAULT_WALLET_METADATA;
     }
+
     const metadataKeys = device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
 
     if (metadataKeys && metadataKeys.fileName && provider?.data[metadataKeys.fileName]) {
@@ -249,6 +259,7 @@ const selectLabelableEntityByKey = (
         if ('key' in e) {
             return e.key === entityKey;
         }
+
         if ('state' in e) {
             return e.state === entityKey;
         }
@@ -294,7 +305,9 @@ export const selectIsLabelingAvailableForEntity = (
     deviceState?: string,
 ) => {
     const device = deviceState ? selectDeviceByState(state, deviceState) : selectDevice(state);
+
     if (!device?.state) return false;
+
     const entity = selectLabelableEntityByKey(state, device.state, entityKey);
 
     return (

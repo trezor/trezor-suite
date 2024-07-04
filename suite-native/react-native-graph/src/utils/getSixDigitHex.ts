@@ -1,6 +1,7 @@
 export function getSixDigitHex(color: string): `#${string}` {
     if (!color.startsWith('#'))
         throw new Error(`react-native-graph: "${color}" is not a valid hex color!`);
+
     const hexColor = color.substring(1); // removes '#'
 
     switch (hexColor.length) {

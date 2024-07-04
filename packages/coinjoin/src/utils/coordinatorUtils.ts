@@ -49,6 +49,7 @@ export const getScriptTypeFromScriptPubKey = (scriptPubKey: string): AllowedScri
     if (scriptPubKey.startsWith('0 ')) {
         return 'P2WPKH';
     }
+
     if (scriptPubKey.startsWith('1 ')) {
         return 'Taproot';
     }
@@ -77,14 +78,18 @@ export const getAddressFromScriptPubKey = (scriptPubKey: string, network: Networ
 // return WabiSabi coordinator config constants
 export const getInputSize = (type: AllowedScriptTypes) => {
     if (type === 'Taproot') return 58;
+
     if (type === 'P2WPKH') return 68;
+
     throw new Error('Unsupported scriptType');
 };
 
 // return WabiSabi coordinator config constants
 export const getOutputSize = (type: AllowedScriptTypes) => {
     if (type === 'Taproot') return 43;
+
     if (type === 'P2WPKH') return 31;
+
     throw new Error('Unsupported scriptType');
 };
 
@@ -107,12 +112,15 @@ export const readOutpoint = (outpoint: string) => {
 // WalletWasabi/WalletWasabi/Helpers/ByteArrayComparer.cs
 const compareByteArray = (left: Buffer, right: Buffer) => {
     if (!left && !right) return 0;
+
     if (!left) return 1;
+
     if (!right) return -1;
 
     const min = Math.min(left.length, right.length);
     for (let i = 0; i < min; i++) {
         if (left[i] < right[i]) return -1;
+
         if (left[i] > right[i]) return 1;
     }
 
@@ -124,8 +132,10 @@ const compareByteArray = (left: Buffer, right: Buffer) => {
 export const mergePubkeys = (outputs: CoinjoinOutputAddedEvent[]) =>
     outputs.reduce((a, item) => {
         const duplicates = outputs.filter(o => o.Output.ScriptPubKey === item.Output.ScriptPubKey);
+
         if (duplicates.length > 1) {
             if (a.find(o => o.Output.ScriptPubKey === item.Output.ScriptPubKey)) return a;
+
             const Value = duplicates.reduce((v, b) => v + b.Output.Value, 0);
 
             return a.concat({ ...item, Output: { ...item.Output, Value } });

@@ -48,6 +48,7 @@ const getAllSignatures = async (
     let allSignatures: SignatureWithSlot[] = [];
 
     const limit = 100;
+
     while (keepFetching) {
         const signaturesInfos = await api.getSignaturesForAddress(new PublicKey(descriptor), {
             before: lastSignature?.signature,
@@ -74,9 +75,11 @@ const fetchTransactionPage = async (
     const perChunk = 50; // items per chunk
     const confirmedSignatureChunks = signatures.reduce((resultArray, item, index) => {
         const chunkIndex = Math.floor(index / perChunk);
+
         if (!resultArray[chunkIndex]) {
             resultArray[chunkIndex] = []; // start a new chunk
         }
+
         resultArray[chunkIndex].push(item);
 
         return resultArray;
@@ -182,6 +185,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
+
     if (tokenAccounts.value.length > 0) {
         const tokenMetadata = await request.getTokenMetadata();
 
@@ -222,6 +226,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // might have been created. We otherwise would not get proper updates for new
     // token accounts.
     const workerAccount = request.state.getAccount(payload.descriptor);
+
     if (workerAccount) {
         request.state.addAccounts([{ ...workerAccount, tokens }]);
     }
@@ -291,6 +296,7 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
 const BLOCK_SUBSCRIBE_INTERVAL_MS = 10000;
 const subscribeBlock = async ({ state, connect, post }: Context) => {
     if (state.getSubscription('block')) return { subscribed: true };
+
     const api = await connect();
 
     // the solana RPC api has subscribe method, see here: https://www.quicknode.com/docs/solana/rootSubscribe
@@ -299,6 +305,7 @@ const subscribeBlock = async ({ state, connect, post }: Context) => {
     const interval = setInterval(async () => {
         const { blockhash: blockHash, lastValidBlockHeight: blockHeight } =
             await api.getLatestBlockhash('finalized');
+
         if (blockHeight) {
             post({
                 id: -1,
@@ -321,6 +328,7 @@ const subscribeBlock = async ({ state, connect, post }: Context) => {
 
 const unsubscribeBlock = ({ state }: Context) => {
     if (!state.getSubscription('block')) return;
+
     const interval = state.getSubscription('block') as ReturnType<typeof setInterval>;
     clearInterval(interval);
     state.removeSubscription('block');
@@ -375,6 +383,7 @@ const subscribeAccounts = async (
                     limit: 1,
                 })
             )[0]?.signature;
+
             if (!lastSignature) return;
 
             // get the last transaction
@@ -436,6 +445,7 @@ const unsubscribeAccounts = async (
                 const tokenAccount = subscribedAccounts.find(
                     sa => sa.descriptor === ta.publicKey.toString(),
                 );
+
                 if (tokenAccount?.subscriptionId) {
                     api.removeAccountChangeListener(tokenAccount.subscriptionId);
                     state.removeAccounts([tokenAccount]);
@@ -447,6 +457,7 @@ const unsubscribeAccounts = async (
 
 const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
     let response: { subscribed: boolean };
+
     switch (request.payload.type) {
         case 'block':
             response = await subscribeBlock(request);

@@ -22,9 +22,11 @@ export const useCoinmarketExchangeDetail = ({
     const exchangeTrade = trades.find(
         trade => trade.tradeType === 'exchange' && trade.key === transactionId,
     ) as TradeExchange;
+
     if (invityServerEnvironment) {
         invityAPI.setInvityServersEnvironment(invityServerEnvironment);
     }
+
     const exchangeInfo = useSelector(state => state.wallet.coinmarket.exchange.exchangeInfo);
     useWatchExchangeTrade(account, exchangeTrade);
 
@@ -41,6 +43,7 @@ CoinmarketExchangeDetailContext.displayName = 'CoinmarketExchangeDetailContext';
 
 export const useCoinmarketExchangeDetailContext = () => {
     const context = useContext(CoinmarketExchangeDetailContext);
+
     if (context === null) throw Error('CoinmarketExchangeDetailContext used without Context');
 
     return context;

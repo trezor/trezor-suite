@@ -4,7 +4,9 @@ import { urlToOnion } from '@trezor/utils';
 
 export const getOrigin = (url: unknown) => {
     if (typeof url !== 'string') return 'unknown';
+
     if (url.indexOf('file://') === 0) return 'file://';
+
     const [origin] = url.match(/^https?:\/\/[^/]+/) ?? [];
 
     return origin ?? 'unknown';
@@ -12,7 +14,9 @@ export const getOrigin = (url: unknown) => {
 
 export const getHost = (url: unknown) => {
     if (typeof url !== 'string') return;
+
     const [, , uri] = url.match(/^(https?):\/\/([^:/]+)?/i) ?? [];
+
     if (uri) {
         const parts = uri.split('.');
 
@@ -30,6 +34,7 @@ interface GetOnionDomain {
 
 export const getOnionDomain: GetOnionDomain = (url, dict): any => {
     if (Array.isArray(url)) return url.map(u => urlToOnion(u, dict) ?? u);
+
     if (typeof url === 'string') return urlToOnion(url, dict) ?? url;
 
     return url;

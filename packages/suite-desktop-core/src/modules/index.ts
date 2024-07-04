@@ -94,9 +94,11 @@ export const initModules = (dependencies: Dependencies) => {
 
     const modules = MODULES.map(moduleToInit => {
         logger.debug('modules', `Initializing ${moduleToInit.SERVICE_NAME}`);
+
         try {
             const initModule: Module = moduleToInit.init;
             const loadModule = initModule(dependencies);
+
             if (loadModule) {
                 return [moduleToInit, loadModule] as const;
             }
@@ -120,6 +122,7 @@ export const initModules = (dependencies: Dependencies) => {
             modulesToLoad.map(async ([moduleToLoad, loadModule]) => {
                 const moduleName = moduleToLoad.SERVICE_NAME;
                 logger.debug('modules', `Loading ${moduleName}`);
+
                 try {
                     const payload = await loadModule(handshake);
                     logger.debug('modules', `Loaded ${moduleName}`);

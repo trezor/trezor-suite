@@ -12,6 +12,7 @@ TypeRegistry.Set('Uint', (schema: TUint, value: unknown) => {
     if (typeof value !== 'string' && typeof value !== 'number') {
         return false;
     }
+
     if (
         (typeof value === 'number' && !Number.isSafeInteger(value)) ||
         !/^(?:[1-9]\d*|\d)$/.test(value.toString().replace(/^-/, schema.allowNegative ? '' : '-'))

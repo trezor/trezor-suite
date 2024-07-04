@@ -85,6 +85,7 @@ export class CoinjoinBackendClient {
                     .getBlockFiltersBatch(bestKnownBlockHash, pageSize)
                     .then<BlockFilterResponse>(({ blockFiltersBatch, ...rest }) => {
                         if (!blockFiltersBatch.length) return { status: 'up-to-date' };
+
                         const filters = blockFiltersBatch.map(item => {
                             const [blockHeight, blockHash, filter] = item.split(':');
 
@@ -97,6 +98,7 @@ export class CoinjoinBackendClient {
                         if (identifyWsError(error) === 'ERROR_BLOCK_NOT_FOUND') {
                             return { status: 'not-found' };
                         }
+
                         throw error;
                     }),
             { ...options, timeout: FILTERS_REQUEST_TIMEOUT },
@@ -113,6 +115,7 @@ export class CoinjoinBackendClient {
                         if (identifyWsError(error) === 'ERROR_UNSUPPORTED_NOORDINALS') {
                             return { fallbackNeeded: true } as const;
                         }
+
                         throw error;
                     }),
             { ...options, timeout: FILTERS_REQUEST_TIMEOUT },
@@ -134,6 +137,7 @@ export class CoinjoinBackendClient {
         if (!this.persistentApi) return;
 
         let newApi: BlockbookAPI;
+
         try {
             newApi = await this.getBlockbookApi(api => api);
         } catch {
@@ -166,6 +170,7 @@ export class CoinjoinBackendClient {
         }
 
         this.persistentApi.on('mempool', listener);
+
         if (onDisconnect) this.emitter.once('mempoolDisconnected', onDisconnect);
     }
 
@@ -176,6 +181,7 @@ export class CoinjoinBackendClient {
         if (!this.persistentApi) return;
 
         this.persistentApi.off('mempool', listener);
+
         if (onDisconnect) this.emitter.off('mempoolDisconnected', onDisconnect);
 
         if (!this.persistentApi.listenerCount('mempool')) {
@@ -200,6 +206,7 @@ export class CoinjoinBackendClient {
                     .getOrCreate({ identity, ...options, url })
                     .catch(error => {
                         const errorType = identifyWsError(error);
+
                         if (errorType === 'ERROR_FORBIDDEN' && identity) {
                             // switch identity in case of 403 (possibly blocked by Cloudflare)
                             identity = resetIdentityCircuit(identity);
@@ -207,6 +214,7 @@ export class CoinjoinBackendClient {
                             // try clearnet url in case of timeout
                             preferOnion = false;
                         }
+
                         throw error;
                     });
 

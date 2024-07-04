@@ -11,9 +11,11 @@ export class LogsManager {
     initLog(prefix: string, enabled?: boolean, logWriter?: LogWriter) {
         const instanceWriter = logWriter || this.writer;
         const instance = new Log(prefix, !!enabled, instanceWriter);
+
         if (this.colors) {
             instance.setColors(this.colors);
         }
+
         this.logs[prefix] = instance;
 
         return instance;
@@ -22,6 +24,7 @@ export class LogsManager {
     setLogWriter(logWriterFactory: () => LogWriter | undefined) {
         Object.keys(this.logs).forEach(key => {
             this.writer = logWriterFactory();
+
             if (this.writer) {
                 this.logs[key].setWriter(this.writer);
                 const { messages } = this.logs[key];

@@ -26,11 +26,13 @@ const findFieldsNested = (
     currentDepth = 0,
 ): Field<any> | undefined => {
     const remainingPath = field.path?.slice(currentDepth);
+
     if (!remainingPath || remainingPath.length === 0) {
         return schema.find(f => f.name === field.name);
     }
 
     const nextField = schema.find(f => f.name === remainingPath[0]);
+
     if (nextField?.type === 'array' && typeof remainingPath[1] === 'number') {
         return findFieldsNested(nextField.items[remainingPath[1]], field, currentDepth + 2);
     } else if (nextField?.type === 'union') {
@@ -50,8 +52,11 @@ const onFieldChange = (state: MethodState, _field: Field<any>, value: any) => {
         ...state,
     };
     const field = findField(newState, _field);
+
     if (!field || !isFieldBasic(field)) return state;
+
     field.value = value;
+
     if (field.affect && !state.manualMode) {
         setAffectedValues(newState, field);
     }
@@ -63,7 +68,9 @@ const onFieldChange = (state: MethodState, _field: Field<any>, value: any) => {
 const onFieldDataChange = (state: MethodState, _field: Field<any>, data: any) => {
     const newState = state;
     const field = findField(newState, _field);
+
     if (!field || !isFieldBasic(field)) return state;
+
     field.data = data;
 
     return updateParams(newState);
@@ -73,7 +80,9 @@ const onFieldDataChange = (state: MethodState, _field: Field<any>, data: any) =>
 const onAddBatch = (state: MethodState, _field: Field<any>, item: any) => {
     const newState = JSON.parse(JSON.stringify(state));
     const field = findField(newState, _field);
+
     if (!field || field.type !== 'array') return state;
+
     field.items = [...field.items, item];
     prepareBundle(field);
 
@@ -83,11 +92,14 @@ const onAddBatch = (state: MethodState, _field: Field<any>, item: any) => {
 // Remove batch
 const onRemoveBatch = (state: MethodState, _field: Field<any>, _batch: any) => {
     const field = findField(state, _field);
+
     if (!field || field.type !== 'array') return state;
+
     const items = field?.items?.filter(batch => batch !== _batch);
 
     const newState = JSON.parse(JSON.stringify(state));
     const newField = findField(newState, field);
+
     if (!newField || newField.type !== 'array') return state;
 
     newField.items = items;
@@ -100,7 +112,9 @@ const onRemoveBatch = (state: MethodState, _field: Field<any>, _batch: any) => {
 const onSetUnion = (state: MethodState, _field: Field<any>, current: any) => {
     const newState = JSON.parse(JSON.stringify(state));
     const field = findField(newState, _field);
+
     if (!field || field.type !== 'union') return state;
+
     field.current = current;
     prepareBundle(field);
 
