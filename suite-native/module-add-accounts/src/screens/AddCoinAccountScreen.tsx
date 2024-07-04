@@ -12,7 +12,7 @@ import { useTranslate } from '@suite-native/intl';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 
 import { accountTypeTranslationKeys, useAddCoinAccount } from '../hooks/useAddCoinAccount';
-import { AccountTypeDecisionBootomSheet } from '../components/AccountTypeDecisionBootomSheet';
+import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';
 
 export const AddCoinAccountScreen = ({
     route,
@@ -46,7 +46,7 @@ export const AddCoinAccountScreen = ({
 
     const handleConfirmTap = () => {
         if (networkSymbolWithTypeToBeAdded) {
-            // Timeout is needed so AccountTypeDecisionBootomSheet has time to hide otherwise app crashes
+            // Timeout is needed so AccountTypeDecisionBottomSheet has time to hide otherwise app crashes
             setTimeout(() => {
                 addCoinAccount({
                     networkSymbol: networkSymbolWithTypeToBeAdded[0],
@@ -82,7 +82,7 @@ export const AddCoinAccountScreen = ({
                     ))}
                 </VStack>
             </Card>
-            <AccountTypeDecisionBootomSheet
+            <AccountTypeDecisionBottomSheet
                 coinName={
                     G.isNotNullable(networkSymbolWithTypeToBeAdded)
                         ? networkSymbolWithTypeToBeAdded[0]

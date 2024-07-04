@@ -10,7 +10,7 @@ const descStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.small,
 }));
 
-type AccountTypeDecisionBootomSheetProps = {
+type AccountTypeDecisionBottomSheetProps = {
     coinName: string;
     typeName: string;
     isVisible: boolean;
@@ -19,21 +19,21 @@ type AccountTypeDecisionBootomSheetProps = {
     onClose: () => void;
 };
 
-export const AccountTypeDecisionBootomSheet = ({
+export const AccountTypeDecisionBottomSheet = ({
     coinName,
     typeName,
     isVisible,
     onTypeSelectionTap,
     onConfirmTap,
     onClose,
-}: AccountTypeDecisionBootomSheetProps) => {
+}: AccountTypeDecisionBottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <BottomSheet
             title={
                 <Translation
-                    id="moduleAddAccounts.accountTypeDecisionBootomSheet.title"
+                    id="moduleAddAccounts.accountTypeDecisionBottomSheet.title"
                     values={{
                         coin: _ => coinName.toUpperCase(),
                     }}
@@ -46,7 +46,7 @@ export const AccountTypeDecisionBootomSheet = ({
             <VStack spacing="medium">
                 <Text color="textSubdued" style={applyStyle(descStyle)}>
                     <Translation
-                        id="moduleAddAccounts.accountTypeDecisionBootomSheet.description"
+                        id="moduleAddAccounts.accountTypeDecisionBottomSheet.description"
                         values={{
                             type: _ => (
                                 <Text color="textDefault" variant="highlight">
@@ -67,14 +67,14 @@ export const AccountTypeDecisionBootomSheet = ({
                 </Text>
                 <Button size="medium" onPress={onConfirmTap}>
                     <Translation
-                        id="moduleAddAccounts.accountTypeDecisionBootomSheet.buttons.confirm"
+                        id="moduleAddAccounts.accountTypeDecisionBottomSheet.buttons.confirm"
                         values={{
                             type: _ => typeName,
                         }}
                     />
                 </Button>
                 <Button size="medium" colorScheme="tertiaryElevation0" onPress={onTypeSelectionTap}>
-                    <Translation id="moduleAddAccounts.accountTypeDecisionBootomSheet.buttons.select" />
+                    <Translation id="moduleAddAccounts.accountTypeDecisionBottomSheet.buttons.select" />
                 </Button>
             </VStack>
         </BottomSheet>

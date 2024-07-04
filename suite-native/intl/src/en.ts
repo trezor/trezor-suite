@@ -155,7 +155,7 @@ export const en = {
                 actionPrimary: 'Close',
             },
         },
-        accountTypeDecisionBootomSheet: {
+        accountTypeDecisionBottomSheet: {
             title: 'Add <coin></coin> account',
             description:
                 '<type></type> is the default address type. <moreLink>Learn more</moreLink>',
