@@ -4,10 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Screen } from '@suite-native/navigation';
 import { CenteredTitleHeader, IconButton, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { resetError, selectPassphraseError } from '@suite-native/passphrase';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
-import { useAuthorizationGoBack } from '@suite-native/device-authorization';
+import {
+    resetError,
+    selectPassphraseError,
+    useAuthorizationGoBack,
+} from '@suite-native/device-authorization';
 
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
 

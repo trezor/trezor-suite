@@ -18,7 +18,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../passphrase" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },

@@ -18,7 +18,7 @@ import {
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
-import { setIsCreatingNewWalletInstance } from '@suite-native/passphrase';
+import { setIsCreatingNewWalletInstance } from '@suite-native/device-authorization';
 
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
 

@@ -1,13 +1,25 @@
-import { createSlice, isAnyOf } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
 
 import { UI } from '@trezor/connect';
-import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
+import {
+    AuthorizeDeviceError,
+    CreateDeviceInstanceError,
+    authorizeDeviceThunk,
+    createDeviceInstanceThunk,
+} from '@suite-common/wallet-core';
 
 import { isPinButtonRequestCode } from './utils';
+import {
+    cancelPassphraseAndSelectStandardDeviceThunk,
+    verifyPassphraseOnEmptyWalletThunk,
+} from './passphraseThunks';
 
 type DeviceAuthorizationState = {
     hasDeviceRequestedPin: boolean;
     hasDeviceRequestedPassphrase: boolean;
+    passphraseError: AuthorizeDeviceError | CreateDeviceInstanceError | null;
+    isVefifyingPassphraseOnEmptyWallet: boolean;
+    isCreatingNewWalletInstance: boolean;
 };
 
 type DeviceAuthorizationRootState = {
@@ -17,12 +29,22 @@ type DeviceAuthorizationRootState = {
 const deviceAuthorizationInitialState: DeviceAuthorizationState = {
     hasDeviceRequestedPin: false,
     hasDeviceRequestedPassphrase: false,
+    passphraseError: null,
+    isVefifyingPassphraseOnEmptyWallet: false,
+    isCreatingNewWalletInstance: false,
 };
 
 export const deviceAuthorizationSlice = createSlice({
     name: 'deviceAuthorization',
     initialState: deviceAuthorizationInitialState,
-    reducers: {},
+    reducers: {
+        resetError: state => {
+            state.passphraseError = null;
+        },
+        setIsCreatingNewWalletInstance: (state, { payload }: PayloadAction<boolean>) => {
+            state.isCreatingNewWalletInstance = payload;
+        },
+    },
     extraReducers: builder => {
         builder
             .addCase(UI.REQUEST_PIN, state => {
@@ -48,9 +70,39 @@ export const deviceAuthorizationSlice = createSlice({
                 state.hasDeviceRequestedPin = false;
                 state.hasDeviceRequestedPassphrase = false;
             })
-            .addMatcher(isAnyOf(cancelPassphraseAndSelectStandardDeviceThunk.pending), state => {
+            .addCase(verifyPassphraseOnEmptyWalletThunk.pending.type, state => {
+                state.isVefifyingPassphraseOnEmptyWallet = true;
+            })
+            .addCase(cancelPassphraseAndSelectStandardDeviceThunk.pending, state => {
+                state.isCreatingNewWalletInstance = false;
                 state.hasDeviceRequestedPassphrase = false;
-            });
+            })
+            .addMatcher(
+                isAnyOf(
+                    verifyPassphraseOnEmptyWalletThunk.fulfilled,
+                    verifyPassphraseOnEmptyWalletThunk.rejected,
+                ),
+                state => {
+                    state.isVefifyingPassphraseOnEmptyWallet = false;
+                    state.isCreatingNewWalletInstance = false;
+                },
+            )
+            .addMatcher(isAnyOf(createDeviceInstanceThunk.pending), state => {
+                state.passphraseError = null;
+                state.isCreatingNewWalletInstance = true;
+            })
+            .addMatcher(
+                isAnyOf(authorizeDeviceThunk.rejected, createDeviceInstanceThunk.rejected),
+                (state, { payload }) => {
+                    if (
+                        payload?.error === 'passphrase-duplicate' ||
+                        payload?.error === 'passphrase-enabling-cancelled'
+                    ) {
+                        state.passphraseError = payload;
+                        state.isCreatingNewWalletInstance = false;
+                    }
+                },
+            );
     },
 });
 
@@ -62,5 +114,22 @@ export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootSt
 
 export const selectDeviceRequestedAuthorization = (state: DeviceAuthorizationRootState) =>
     selectDeviceRequestedPassphrase(state) || selectDeviceRequestedPin(state);
+
+export const selectPassphraseError = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.passphraseError;
+
+export const selectPassphraseDuplicateError = (state: DeviceAuthorizationRootState) => {
+    return state.deviceAuthorization.passphraseError?.error === 'passphrase-duplicate'
+        ? state.deviceAuthorization.passphraseError
+        : null;
+};
+
+export const selectIsVerifyingPassphraseOnEmptyWallet = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.isVefifyingPassphraseOnEmptyWallet;
+
+export const selectIsCreatingNewPassphraseWallet = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.isCreatingNewWalletInstance;
+
+export const { setIsCreatingNewWalletInstance, resetError } = deviceAuthorizationSlice.actions;
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;

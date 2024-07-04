@@ -13,8 +13,8 @@ import {
 import { VStack, Card, Text, Image, Button, Box, TextDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
-import { retryPassphraseAuthenticationThunk } from '@suite-native/passphrase';
 import { deviceActions, selectDevice } from '@suite-common/wallet-core';
+import { retryPassphraseAuthenticationThunk } from '@suite-native/device-authorization';
 
 import { EmptyWalletInfoSheet } from '../../components/passphrase/EmptyWalletInfoSheet';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';

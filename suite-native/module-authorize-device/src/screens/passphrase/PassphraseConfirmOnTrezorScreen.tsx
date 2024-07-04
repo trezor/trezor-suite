@@ -17,10 +17,10 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
-import { useAuthorizationSuccess } from '@suite-native/device-authorization';
 
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
+import { useAuthorizationSuccess } from '../../usePassphraseAuthorizationSuccess';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,

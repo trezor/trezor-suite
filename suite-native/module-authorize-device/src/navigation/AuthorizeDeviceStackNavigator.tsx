@@ -7,9 +7,11 @@ import {
     AuthorizeDeviceStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
+import {
+    selectDeviceRequestedPin,
+    useHandleDuplicatePassphrase,
+} from '@suite-native/device-authorization';
 import { useDetectDeviceError, useReportDeviceConnectToAnalytics } from '@suite-native/device';
-import { useHandleDuplicatePassphrase } from '@suite-native/passphrase';
 
 import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';
 import { PinScreen } from '../screens/connect/PinScreen';

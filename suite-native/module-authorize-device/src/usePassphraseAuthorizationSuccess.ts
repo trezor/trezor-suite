@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectIsCreatingNewPassphraseWallet } from '@suite-native/passphrase';
-
-import { selectDeviceRequestedAuthorization } from '../deviceAuthorizationSlice';
-import { useAuthorizationGoBack } from './useAuthorizationGoBack';
+import {
+    selectIsCreatingNewPassphraseWallet,
+    selectDeviceRequestedAuthorization,
+} from '@suite-native/device-authorization';
+import { useAuthorizationGoBack } from '@suite-native/device-authorization';
 
 export const useAuthorizationSuccess = () => {
     const hasDeviceRequestedAuthorization = useSelector(selectDeviceRequestedAuthorization);

@@ -12,9 +12,11 @@ import {
     AuthorizeDeviceStackRoutes,
 } from '@suite-native/navigation';
 import { selectDeviceState } from '@suite-common/wallet-core';
-import { selectDeviceRequestedPassphrase } from '@suite-native/device-authorization';
 
-import { selectIsVerifyingPassphraseOnEmptyWallet } from './passphraseSlice';
+import {
+    selectDeviceRequestedPassphrase,
+    selectIsVerifyingPassphraseOnEmptyWallet,
+} from '../deviceAuthorizationSlice';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,

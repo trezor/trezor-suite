@@ -33,7 +33,6 @@
         { "path": "../feature-flags" },
         { "path": "../graph" },
         { "path": "../message-system" },
-        { "path": "../passphrase" },
         { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../../packages/connect" },

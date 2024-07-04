@@ -20,7 +20,7 @@ import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     retryPassphraseAuthenticationThunk,
     verifyPassphraseOnEmptyWalletThunk,
-} from '@suite-native/passphrase';
+} from '@suite-native/device-authorization';
 
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';

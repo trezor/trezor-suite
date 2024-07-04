@@ -23,12 +23,12 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
+import TrezorConnect from '@trezor/connect';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     selectIsCreatingNewPassphraseWallet,
-} from '@suite-native/passphrase';
-import TrezorConnect from '@trezor/connect';
-import { useAuthorizationGoBack } from '@suite-native/device-authorization';
+    useAuthorizationGoBack,
+} from '@suite-native/device-authorization';
 
 type NavigationProp = StackToTabCompositeProps<
     AuthorizeDeviceStackParamList,

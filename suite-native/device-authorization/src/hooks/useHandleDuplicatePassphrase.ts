@@ -17,7 +17,7 @@ import {
 import { TrezorDevice } from '@suite-common/suite-types';
 import { useTranslate } from '@suite-native/intl';
 
-import { selectPassphraseDuplicateError } from './passphraseSlice';
+import { selectPassphraseDuplicateError } from '../deviceAuthorizationSlice';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
