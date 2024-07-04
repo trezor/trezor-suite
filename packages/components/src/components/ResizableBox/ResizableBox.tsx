@@ -16,6 +16,8 @@ export type ResizableBoxProps = {
     height?: number;
     minHeight?: number;
     maxHeight?: number;
+    updateWidthOnWindowResize?: boolean;
+    updateHeightOnWindowResize?: boolean;
     zIndex?: ZIndexValues;
 };
 
@@ -177,6 +179,8 @@ export const ResizableBox = ({
     height,
     minHeight = 0,
     maxHeight,
+    updateWidthOnWindowResize = false,
+    updateHeightOnWindowResize = false,
     zIndex = zIndices.draggableComponent,
 }: ResizableBoxProps) => {
     const resizableBoxRef = useRef<HTMLDivElement>(null);
@@ -188,7 +192,6 @@ export const ResizableBox = ({
     const [isResizing, setIsResizing] = useState<boolean>(false);
     const [isHovering, setIsHovering] = useState<boolean>(false);
     const [direction, setDirection] = useState<Direction | null>(null);
-    const [isMaxHeight, setIsMaxHeight] = useState<boolean>(false);
 
     const resizeCooldown = createCooldown(150);
 
@@ -261,8 +264,6 @@ export const ResizableBox = ({
             if (newHeight === 0) {
                 setNewHeight(rect.height);
             }
-
-            setIsMaxHeight(Math.floor(rect.height) === window.innerHeight);
         }
 
         document.onmousemove = event => {
@@ -274,20 +275,28 @@ export const ResizableBox = ({
         document.onmouseup = () => setIsResizing(false);
 
         window.onresize = () => {
-            if (isMaxHeight && resizeCooldown() === true) {
-                setNewHeight(maxHeight || window.innerHeight);
+            if (resizeCooldown() === true) {
+                if (updateHeightOnWindowResize) {
+                    setNewHeight(getMaxResult(maxHeight, window.innerHeight));
+                }
+                if (updateWidthOnWindowResize) {
+                    setNewWidth(getMaxResult(maxWidth, window.innerWidth));
+                }
             }
         };
     }, [
         direction,
-        isMaxHeight,
+        directions,
         isResizing,
         maxHeight,
+        maxWidth,
         newHeight,
         newWidth,
         resizableBoxRef,
         resize,
         resizeCooldown,
+        updateHeightOnWindowResize,
+        updateWidthOnWindowResize,
     ]);
 
     const handleMouseOverDirection = (direction: Direction) => {
