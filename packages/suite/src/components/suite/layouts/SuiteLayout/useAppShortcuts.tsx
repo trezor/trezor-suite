@@ -5,21 +5,21 @@ import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useAppShortcuts = () => {
-    const device = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectDevice);
     const dispatch = useDispatch();
 
     useEvent('keydown', e => {
         const { altKey } = e;
 
         // press ALT + P to show PassphraseModal
-        if (device?.connected && altKey && e.code === 'KeyP' && device) {
-            dispatch(addWalletThunk({ walletType: 'passphrase' }));
+        if (selectedDevice?.connected && altKey && e.code === 'KeyP' && selectedDevice) {
+            dispatch(addWalletThunk({ walletType: 'passphrase', device: selectedDevice }));
             dispatch(closeModalApp());
             e.preventDefault();
         }
 
         // press ALT + D to show SwitchDevice
-        if (altKey && e.code === 'KeyD' && device) {
+        if (altKey && e.code === 'KeyD' && selectedDevice) {
             dispatch(
                 goto('suite-switch-device', {
                     params: {
