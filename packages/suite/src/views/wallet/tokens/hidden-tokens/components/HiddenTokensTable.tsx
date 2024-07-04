@@ -11,6 +11,7 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { H3, Icon } from '@trezor/components';
 import { Text, Row } from '@trezor/components';
+import { isTestnet } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -63,6 +64,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
             )}
             {hiddenTokensCount > 0 && (
                 <TokenList
+                    hideRates={isTestnet(account.symbol)}
                     account={account}
                     tokenStatusType={TokenManagementAction.SHOW}
                     tokens={filteredTokens.hidden}
