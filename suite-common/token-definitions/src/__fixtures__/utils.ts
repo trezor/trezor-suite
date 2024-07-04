@@ -2,7 +2,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { DefinitionType } from '../tokenDefinitionsTypes';
 
-export const caseContractAddressForNetworkFixtures = [
+export const getContractAddressForNetworkFixtures = [
     {
         testName: 'Converts to lowercase for non-sol networks',
         networkSymbol: 'eth' as NetworkSymbol,
@@ -32,6 +32,12 @@ export const caseContractAddressForNetworkFixtures = [
         networkSymbol: 'sol' as NetworkSymbol,
         contractAddress: '',
         expected: '',
+    },
+    {
+        testName: 'Returns policy id for cardano',
+        networkSymbol: 'ada' as NetworkSymbol,
+        contractAddress: 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc53541474958',
+        expected: 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc535',
     },
 ];
 
