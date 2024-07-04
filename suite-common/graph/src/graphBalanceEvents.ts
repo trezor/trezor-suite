@@ -1,15 +1,18 @@
+import { useDispatch } from 'react-redux';
+
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
-import {
-    AccountBalanceHistory,
-    TransactionCacheEngine,
-} from '@suite-common/transaction-cache-engine';
+import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 
 import { BalanceMovementEvent, GroupedBalanceMovementEvent, AccountItem } from './types';
+import {
+    AccountBalanceHistory,
+    getAccountBalanceHistoryFromTransactions,
+} from './balanceHistoryUtils';
 
 /**
  * Calculates received and sent values of each balance movement point.
@@ -107,18 +110,26 @@ export const getAccountMovementEvents = async ({
     account,
     startOfTimeFrameDate,
     endOfTimeFrameDate,
+    dispatch,
 }: {
     account: AccountItem;
     startOfTimeFrameDate: Date | null;
     endOfTimeFrameDate: Date;
+    dispatch: ReturnType<typeof useDispatch>;
 }) => {
     const { coin, identity, descriptor } = account;
 
     const getBalanceHistory = async () => {
         if (getNetworkType(coin) === 'ripple') {
-            return TransactionCacheEngine.getAccountBalanceHistory({
+            const allTransactions = await dispatch(
+                fetchAllTransactionsForAccountThunk({
+                    accountKey: account.accountKey,
+                }),
+            ).unwrap();
+
+            return getAccountBalanceHistoryFromTransactions({
+                transactions: allTransactions,
                 coin,
-                descriptor,
             });
         }
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({

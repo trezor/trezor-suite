@@ -1,4 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountKey } from '@suite-common/wallet-types';
 
 export type FiatGraphPoint = {
     date: Date;
@@ -13,6 +14,7 @@ export type AccountItem = {
     coin: NetworkSymbol;
     identity?: string;
     descriptor: string;
+    accountKey: AccountKey;
 };
 
 export type BalanceMovementEvent = {
