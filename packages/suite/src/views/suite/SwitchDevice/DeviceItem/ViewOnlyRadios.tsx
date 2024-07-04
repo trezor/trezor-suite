@@ -3,14 +3,15 @@ import styled, { useTheme } from 'styled-components';
 import { Text, Radio, Icon, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBorder, spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
-import { useDevice } from 'src/hooks/suite';
 import { ContentType } from '../types';
+import { AcquiredDevice } from '@suite-common/suite-types';
 
 type ViewOnlyRadiosProps = {
     isViewOnlyActive: boolean;
     toggleViewOnly: () => void;
     dataTest?: string;
     setContentType: (contentType: ContentType) => void;
+    device: AcquiredDevice;
 };
 type ViewOnlyRadioProps = {
     title: React.ReactNode;
@@ -77,13 +78,14 @@ export const ViewOnlyRadios = ({
     toggleViewOnly,
     dataTest,
     setContentType,
+    device,
 }: ViewOnlyRadiosProps) => {
-    const { device } = useDevice();
     const theme = useTheme();
-
     const isDeviceConnected = device?.connected && device?.available;
+
     const handleConfirm = (newValue: boolean) => {
         const isValueChanged = isViewOnlyActive !== newValue;
+
         if (isValueChanged) {
             if (newValue === false && !isDeviceConnected) {
                 setContentType('disabling-view-only-ejects-wallet');
