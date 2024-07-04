@@ -1,6 +1,7 @@
 import { networks } from '@suite-common/wallet-config';
 import { HistoricRates, TickerId } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 import { RateLimiter } from './limiter';
 import { fetchUrl } from './fetch';
@@ -38,17 +39,27 @@ const fetchCoinGecko = async (url: string) => {
  * @param {TickerId} ticker
  * @returns
  */
-const buildCoinUrl = (ticker: TickerId) => {
+const buildCoinUrls = (ticker: TickerId) => {
     const { coingeckoId } = networks[ticker.symbol];
     if (!coingeckoId) {
-        console.error('buildCoinUrl: cannot find coingecko asset platform id for ', ticker);
+        console.error('buildCoinUrls: cannot find coingecko asset platform id for ', ticker);
 
         return null;
     }
 
     const baseUrl = `${COINGECKO_API_BASE_URL}/coins/${coingeckoId}`;
 
-    return ticker.tokenAddress ? `${baseUrl}/contract/${ticker.tokenAddress}` : baseUrl;
+    if (!ticker.tokenAddress) {
+        return [baseUrl];
+    }
+
+    if (ticker.symbol === 'ada') {
+        const { policyId } = parseAsset(ticker.tokenAddress || '');
+
+        return [`${baseUrl}/contract/${policyId}`, `${baseUrl}/contract/${ticker.tokenAddress}`];
+    }
+
+    return [`${baseUrl}/contract/${ticker.tokenAddress}`];
 };
 
 /**
@@ -59,19 +70,25 @@ const buildCoinUrl = (ticker: TickerId) => {
  * @returns
  */
 export const fetchCurrentFiatRates = async (ticker: TickerId) => {
-    const coinUrl = buildCoinUrl(ticker);
-    if (!coinUrl) return null;
+    const coinUrls = buildCoinUrls(ticker);
+    if (!coinUrls || coinUrls.length === 0) return null;
+
     const urlParams =
         'tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&localization=false';
-    const url = `${coinUrl}?${urlParams}`;
 
-    const rates = await fetchCoinGecko(url);
-    if (!rates) return null;
+    for (const coinUrl of coinUrls) {
+        const url = `${coinUrl}?${urlParams}`;
+        const rates = await fetchCoinGecko(url);
 
-    return {
-        ts: new Date().getTime() / 1000,
-        rates: rates.market_data?.current_price,
-    };
+        if (rates) {
+            return {
+                ts: new Date().getTime() / 1000,
+                rates: rates.market_data?.current_price,
+            };
+        }
+    }
+
+    return null;
 };
 
 /**
@@ -111,9 +128,9 @@ export const getFiatRatesForTimestamps = async (
     timestamps: number[],
     fiatCurrencyCode: FiatCurrencyCode,
 ): Promise<HistoricalResponse | null> => {
-    const coinUrl = buildCoinUrl(ticker);
+    const coinUrls = buildCoinUrls(ticker); // Assuming this now returns an array of URLs
     const urlEndpoint = `market_chart/range`;
-    if (!coinUrl) return null;
+    if (!coinUrls || coinUrls.length === 0) return null;
 
     // sort timestamps chronologically to get the minimum and maximum values
     const sortedTimestamps = [...timestamps].sort((ts1, ts2) => ts1 - ts2);
@@ -123,24 +140,25 @@ export const getFiatRatesForTimestamps = async (
     const toTimestamp = sortedTimestamps[sortedTimestamps.length - 1] + ONE_DAY_IN_MS;
 
     const params = `?vs_currency=${fiatCurrencyCode}&from=${fromTimestamp}&to=${toTimestamp}`;
-    const url = `${coinUrl}/${urlEndpoint}${params}`;
 
-    // returns pairs of [timestamp, fiatRate]
-    const response = await fetchCoinGecko(url);
-    if (!response?.prices || response?.prices.length === 0) {
-        return null;
+    for (const coinUrl of coinUrls) {
+        const url = `${coinUrl}/${urlEndpoint}${params}`;
+        const response = await fetchCoinGecko(url);
+        if (response?.prices && response.prices.length > 0) {
+            const tickers = timestamps.map(ts => ({
+                ts,
+                rates: { [fiatCurrencyCode]: findClosestTimestampValue(ts, response.prices) },
+            }));
+
+            return {
+                symbol: ticker.symbol,
+                tickers,
+                ts: new Date().getTime(),
+            };
+        }
     }
 
-    const tickers = timestamps.map(ts => ({
-        ts,
-        rates: { [fiatCurrencyCode]: findClosestTimestampValue(ts, response.prices) },
-    }));
-
-    return {
-        symbol: ticker.symbol,
-        tickers,
-        ts: new Date().getTime(),
-    };
+    return null;
 };
 
 /**
@@ -158,21 +176,28 @@ export const fetchLastWeekRates = async (
 ): Promise<HistoricalResponse | null> => {
     const urlEndpoint = `market_chart`;
     const urlParams = `vs_currency=${fiatCurrencyCode}&days=7`;
-    const coinUrl = buildCoinUrl(ticker);
-    if (!coinUrl) return null;
+    const coinUrls = buildCoinUrls(ticker);
+    if (!coinUrls || coinUrls.length === 0) return null;
 
     const { symbol } = ticker;
-    const url = `${coinUrl}/${urlEndpoint}?${urlParams}`;
-    const data = await fetchCoinGecko(url);
-    const tickers = data?.prices?.map((d: any) => ({
-        ts: Math.floor(d[0] / 1000),
-        rates: { [fiatCurrencyCode]: d[1] },
-    }));
-    if (!tickers) return null;
 
-    return {
-        symbol,
-        tickers,
-        ts: new Date().getTime(),
-    };
+    for (const coinUrl of coinUrls) {
+        const url = `${coinUrl}/${urlEndpoint}?${urlParams}`;
+        const data = await fetchCoinGecko(url);
+        if (data) {
+            const tickers = data.prices?.map((d: any) => ({
+                ts: Math.floor(d[0] / 1000),
+                rates: { [fiatCurrencyCode]: d[1] },
+            }));
+            if (tickers) {
+                return {
+                    symbol,
+                    tickers,
+                    ts: new Date().getTime(),
+                };
+            }
+        }
+    }
+
+    return null;
 };
