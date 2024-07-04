@@ -328,11 +328,7 @@ export const TokenList = ({
                                         },
                                         {
                                             key: 'contract-address',
-                                            label: translationString(
-                                                network.networkType === 'cardano'
-                                                    ? 'TR_POLICY_ID_ADDRESS'
-                                                    : 'TR_CONTRACT_ADDRESS',
-                                            ),
+                                            label: translationString('TR_CONTRACT_ADDRESS'),
                                             options: [
                                                 {
                                                     label: (
@@ -345,11 +341,7 @@ export const TokenList = ({
                                                         dispatch(
                                                             openModal({
                                                                 type: 'copy-address',
-                                                                addressType:
-                                                                    network.networkType ===
-                                                                    'cardano'
-                                                                        ? 'policyId'
-                                                                        : 'contract',
+                                                                addressType: 'contract',
                                                                 address: token.contract,
                                                             }),
                                                         ),
@@ -374,6 +366,28 @@ export const TokenList = ({
                                                                 addressType: 'fingerprint',
                                                                 address:
                                                                     token.fingerprint as string,
+                                                            }),
+                                                        ),
+                                                },
+                                            ],
+                                        },
+                                        token.policyId && {
+                                            key: 'policyId',
+                                            label: translationString('TR_POLICY_ID_ADDRESS'),
+                                            options: [
+                                                {
+                                                    label: (
+                                                        <ContractAddress>
+                                                            {token.policyId}
+                                                            <StyledIcon icon="COPY" size={14} />
+                                                        </ContractAddress>
+                                                    ),
+                                                    onClick: () =>
+                                                        dispatch(
+                                                            openModal({
+                                                                type: 'copy-address',
+                                                                addressType: 'policyId',
+                                                                address: token.policyId as string,
                                                             }),
                                                         ),
                                                 },
