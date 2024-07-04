@@ -8,7 +8,7 @@ import { variables } from '@trezor/components';
 import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
-import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { SecurityCheckFail } from './SecurityCheckFail';
 
@@ -22,11 +22,14 @@ const StyledExplainer = styled(DeviceAuthenticationExplainer)`
     }
 `;
 
-export const DeviceAuthenticity = () => {
+type DeviceAuthenticityProps = {
+    goToNext: () => void;
+};
+
+export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
     const device = useSelector(selectDevice);
     const deviceAuthenticity = useSelector(selectDeviceAuthenticity);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const { goToNextStep, goToSuite, isActive: isOnboarding } = useOnboarding();
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -75,8 +78,14 @@ export const DeviceAuthenticity = () => {
             setIsLoading(false);
             setIsSubmitted(true);
         };
-        const goToNext = () => (isOnboarding ? goToNextStep() : goToSuite());
-        const handleClick = isCheckSuccessful ? goToNext : authenticateDevice;
+
+        const handleClick = () => {
+            if (isCheckSuccessful) {
+                goToNext();
+            } else {
+                authenticateDevice();
+            }
+        };
 
         const buttonText = isCheckSuccessful ? 'TR_CONTINUE' : 'TR_START_CHECK';
 

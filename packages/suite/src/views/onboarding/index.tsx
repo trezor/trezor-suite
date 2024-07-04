@@ -18,7 +18,7 @@ import * as STEP from 'src/constants/onboarding/steps';
 import { DeviceTutorial } from './steps/DeviceTutorial';
 
 export const Onboarding = () => {
-    const { activeStepId } = useOnboarding();
+    const { activeStepId, goToNextStep } = useOnboarding();
 
     const StepComponent = useMemo(() => {
         switch (activeStepId) {
@@ -27,7 +27,7 @@ export const Onboarding = () => {
                 return FirmwareStep;
             case STEP.ID_AUTHENTICATE_DEVICE_STEP:
                 // Device authenticity check
-                return DeviceAuthenticity;
+                return () => <DeviceAuthenticity goToNext={() => goToNextStep()} />;
             case STEP.ID_TUTORIAL_STEP:
                 // Device tutorial
                 return DeviceTutorial;
@@ -59,7 +59,7 @@ export const Onboarding = () => {
 
                 return () => null;
         }
-    }, [activeStepId]);
+    }, [activeStepId, goToNextStep]);
 
     const allowedModal = useFilteredModal(
         [MODAL.CONTEXT_USER],
