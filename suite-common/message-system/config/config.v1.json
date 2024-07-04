@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-06-03T00:00:00+00:00",
-    "sequence": 57,
+    "timestamp": "2024-07-05T00:00:00+00:00",
+    "sequence": 58,
     "actions": [
         {
             "conditions": [
@@ -213,77 +213,6 @@
         {
             "conditions": [
                 {
-                    "devices": [
-                        {
-                            "model": "T",
-                            "firmware": "<2.6.0",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "T2T1",
-                            "firmware": "<2.6.0",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "1",
-                            "firmware": "<1.12.1",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        },
-                        {
-                            "model": "T1B1",
-                            "firmware": "<1.12.1",
-                            "bootloader": "*",
-                            "variant": "*",
-                            "firmwareRevision": "*",
-                            "vendor": "*"
-                        }
-                    ],
-                    "environment": {
-                        "desktop": ">=23.1.0",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "6f793f82-5e13-492f-803c-2d5Fsdcc3cb6",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "warning",
-                "category": ["context", "feature"],
-                "content": {
-                    "en-GB": "Firmware update required to enable the coinjoin feature",
-                    "en": "Firmware update required to enable the coinjoin feature.",
-                    "es": "Se requiera una actualización del firmware para habilitar la función CoinJoin.",
-                    "cs": "Aktualizujte prosím firmware, abyste mohli používat funkci coinjoin.",
-                    "ru": "Пожалуйста, обновите прошивку, чтобы иметь возможность использовать функцию coinjoin",
-                    "ja": "コインジョイン機能を使用できるようにファームウェアをアップデートしてください。",
-                    "hu": "Firmware-frissítés szükséges a coinjoin funkció engedélyezéséhez",
-                    "it": "Aggiornamento del firmware necessario per abilitare la funzione coinjoin",
-                    "fr": "Mise à jour du micrologiciel nécessaire pour activer la fonctionnalité Coinjoin",
-                    "de": "Firmware-Update erforderlich, um CoinJoin zu aktivieren"
-                },
-                "context": { "domain": "accounts.coinjoin" },
-                "feature": [
-                    {
-                        "domain": "coinjoin",
-                        "flag": false
-                    }
-                ]
-            }
-        },
-        {
-            "conditions": [
-                {
                     "environment": {
                         "desktop": "<22.12.1",
                         "mobile": "!",
@@ -331,14 +260,14 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<23.9.3",
+                        "desktop": "<24.2.4",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "b6012725-0450-41ed-810c-b12515adcf36",
+                "id": "675e2546-13e4-47fa-bd07-42c1ec830534",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
@@ -658,58 +587,6 @@
                     "it": "ATTENZIONE: rilevato un firmware non ufficiale! Il vostro Trezor potrebbe essere contraffatto. Contattare immediatamente help@trezor.io.",
                     "fr": "ATTENTION : micrologiciel non officiel détecté ! Votre Trezor est peut-être une contrefaçon. Contactez immédiatement help@trezor.io.",
                     "de": "ACHTUNG: Inoffizielle Firmware erkannt! Dein Trezor könnte eine Fälschung sein. Wende dich sofort an help@trezor.io."
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "zec": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": "<22.6.2",
-                        "mobile": "!",
-                        "web": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "57934104-14e4-413f-8da1-7c7d42abe313",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "warning",
-                "category": "banner",
-                "content": {
-                    "en-GB": "Please update your application to be able to sign Zcash transactions",
-                    "en": "Please update your application to be able to sign Zcash transactions",
-                    "es": "Actualiza la aplicación para poder firmar las transacciones de Zcash.",
-                    "cs": "Aktualizujte prosím aplikaci, abyste mohli podepisovat Zcash transakce",
-                    "ru": "_Пожалуйста, обновите свое приложение, чтобы иметь возможность подписывать транзакции Zcash",
-                    "ja": "Zcashの取引に署名できるようにアプリケーションを更新してください",
-                    "hu": "Kérjük, frissítse az alkalmazást, hogy képes legyen aláírni a Zcash tranzakciókat.",
-                    "it": "Aggiornare l'applicazione per poter firmare le transazioni Zcash.",
-                    "fr": "Veuillez mettre à jour l’application pour pouvoir signer des transactions Zcash.",
-                    "de": "Aktualisiere deine Anwendung, um Zcash-Transaktionen signieren zu können"
-                },
-                "cta": {
-                    "action": "internal-link",
-                    "link": "settings-index",
-                    "anchor": "@general-settings/version-with-update",
-                    "label": {
-                        "en-GB": "Update Suite",
-                        "en": "Update Suite",
-                        "es": "Actualizar Suite",
-                        "cs": "Aktualizovat Suite",
-                        "ru": "Обновить Suite",
-                        "ja": "Suiteのアップデート",
-                        "hu": "Frissítés Suite",
-                        "it": "Suite di aggiornamento",
-                        "fr": "Mettre à jour Suite",
-                        "de": "Suite aktualisieren"
-                    }
                 }
             }
         },
