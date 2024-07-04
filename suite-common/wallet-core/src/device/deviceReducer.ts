@@ -525,6 +525,7 @@ export const setDeviceAuthenticity = (
 ) => {
     if (!device.id) return;
     draft.deviceAuthenticity = {
+        ...draft.deviceAuthenticity,
         [device.id]: result,
     };
 };
