@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       createTestRelease:
-        description: "Create a test release."
+        description: "Create a test auto-update release"
         required: false
         type: boolean
         default: false
@@ -198,7 +198,7 @@ jobs:
           ./scripts/s3sync.sh staging-suite
 
   create-test-releases:
-    if: github.repository == 'trezor/trezor-suite-release' && github.event.inputs.createTestRelease == true
+    if: github.repository == 'trezor/trezor-suite-release' && github.event.inputs.createTestRelease == 'true'
     name: Create test versions for autoupdate sudite-desktop
     environment: suite-production
     needs:
@@ -281,7 +281,7 @@ jobs:
           retention-days: 1
 
   suite-desktop-autoupdate-test-upload:
-    if: github.repository == 'trezor/trezor-suite-release' && github.event.inputs.createTestRelease == true
+    if: github.repository == 'trezor/trezor-suite-release' && github.event.inputs.createTestRelease == 'true'
     name: Upload suite-desktop autoupdate test versions
     environment: suite-production
     runs-on: ubuntu-latest
