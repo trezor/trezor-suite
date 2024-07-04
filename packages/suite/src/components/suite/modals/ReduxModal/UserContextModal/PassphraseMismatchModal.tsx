@@ -12,25 +12,25 @@ import {
 import { WalletType } from '@suite-common/wallet-types';
 
 export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) => {
-    const { isLocked, device } = useDevice();
+    const { isLocked, device: selectDevice } = useDevice();
     const dispatch = useDispatch();
 
     const isDeviceLocked = isLocked();
 
-    if (device === undefined) {
+    if (selectDevice === undefined) {
         return null;
     }
 
     const onStartOver = () => {
-        dispatch(passwordMismatchResetThunk({ device }));
-        dispatch(addWalletThunk({ walletType: WalletType.PASSPHRASE }));
+        dispatch(passwordMismatchResetThunk({ device: selectDevice }));
+        dispatch(addWalletThunk({ walletType: WalletType.PASSPHRASE, device: selectDevice }));
         dispatch(redirectAfterWalletSelectedThunk());
         onCancel();
     };
 
     return (
         <SwitchDeviceRenderer isCancelable={false} data-test="@passphrase-mismatch">
-            <CardWithDevice device={device} isCloseButtonVisible={false}>
+            <CardWithDevice device={selectDevice} isCloseButtonVisible={false}>
                 <Column gap={8} margin={{ bottom: 32 }} alignItems="center">
                     <H3 margin={{ top: 12 }}>
                         <Translation id="TR_PASSPHRASE_MISMATCH" />

@@ -43,7 +43,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
         locks.includes(SUITE.LOCK_TYPE.UI);
 
     const onAddWallet = ({ walletType }: { walletType: WalletType }) => {
-        dispatch(addWalletThunk({ walletType }));
+        dispatch(addWalletThunk({ walletType, device }));
         onCancel(false);
     };
 

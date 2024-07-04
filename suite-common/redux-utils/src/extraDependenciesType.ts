@@ -15,7 +15,7 @@ import {
     WalletType,
 } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
+import { AcquiredDevice, Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
 import { BlockchainBlock, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
@@ -57,7 +57,7 @@ export type ExtraDependencies = {
             >;
         }>;
         openSwitchDeviceDialog: SuiteCompatibleThunk<void>;
-        addWalletThunk: SuiteCompatibleThunk<{ walletType: WalletType }>;
+        addWalletThunk: SuiteCompatibleThunk<{ walletType: WalletType; device: AcquiredDevice }>;
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;

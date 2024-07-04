@@ -6,7 +6,6 @@ import {
     createDeviceInstanceThunk,
     deviceActions,
     selectDeviceThunk,
-    selectDevice,
     selectDevices,
 } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
@@ -33,46 +32,41 @@ export const redirectAfterWalletSelectedThunk = createThunk<void, void, void>(
     },
 );
 
-export const addWalletThunk = createThunk<void, { walletType: WalletType }, void>(
-    `${DEVICE_MODULE_PREFIX}/addWalletThunk`,
-    ({ walletType }, { dispatch, getState }) => {
-        const addDeviceInstance = async ({ device }: { device: TrezorDevice }) => {
-            await dispatch(
-                createDeviceInstanceThunk({
-                    device,
-                    useEmptyPassphrase: walletType === WalletType.STANDARD,
-                }),
-            );
-        };
+export const addWalletThunk = createThunk<
+    void,
+    { walletType: WalletType; device: TrezorDevice },
+    void
+>(`${DEVICE_MODULE_PREFIX}/addWalletThunk`, ({ walletType, device }, { dispatch, getState }) => {
+    const addDeviceInstance = async () => {
+        await dispatch(
+            createDeviceInstanceThunk({
+                device,
+                useEmptyPassphrase: walletType === WalletType.STANDARD,
+            }),
+        );
+    };
 
-        const selectDeviceInstance = ({ device }: { device: TrezorDevice }) => {
-            dispatch(
-                deviceActions.updatePassphraseMode({
-                    device,
-                    hidden: walletType === WalletType.PASSPHRASE,
-                }),
-            );
+    const selectDeviceInstance = ({ device }: { device: TrezorDevice }) => {
+        dispatch(
+            deviceActions.updatePassphraseMode({
+                device,
+                hidden: walletType === WalletType.PASSPHRASE,
+            }),
+        );
+        dispatch(selectDeviceThunk({ device }));
+    };
 
-            dispatch(selectDeviceThunk({ device }));
-        };
+    const devices = selectDevices(getState());
+    const instances = getDeviceInstances(device, devices);
+    const hasAtLeastOneWallet = instances.find(d => d.state) !== undefined;
 
-        const selectedDevice = selectDevice(getState());
-
-        if (selectedDevice) {
-            const devices = selectDevices(getState());
-            const instances = getDeviceInstances(selectedDevice, devices);
-
-            const hasAtLeastOneWallet = instances.find(d => d.state);
-
-            if (hasAtLeastOneWallet) {
-                addDeviceInstance({ device: selectedDevice });
-            } else {
-                selectDeviceInstance({ device: instances[0] });
-            }
-            dispatch(redirectAfterWalletSelectedThunk());
-        }
-    },
-);
+    if (hasAtLeastOneWallet) {
+        addDeviceInstance();
+    } else {
+        selectDeviceInstance({ device: instances[0] });
+    }
+    dispatch(redirectAfterWalletSelectedThunk());
+});
 
 export const openSwitchDeviceDialog = createThunk<void, void, void>(
     `${DEVICE_MODULE_PREFIX}/openSwitchDeviceDialog`,
