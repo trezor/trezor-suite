@@ -154,12 +154,13 @@ export default {
                 {
                     type: 'BLOCKFROST',
                     fingerprint: 'asset1hwnpal5vap799t6kkjmjf6myhse4zl2vu4ahzz',
-                    contract: 'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f',
+                    policyId: 'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f',
                     symbol: 'BerrySapphire',
                     name: 'Berry',
                     balance: '10',
                     decimals: 1,
-                    unit: 'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f42657272795361707068697265',
+                    contract:
+                        'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f42657272795361707068697265',
                 },
                 {
                     type: 'BLOCKFROST',
@@ -168,18 +169,18 @@ export default {
                     name: 'Snek',
                     balance: '4',
                     symbol: 'SNEK',
-                    contract: '279c909f348e533da5808898f87f9a14bb2c3dfbbacccd631d927a3f',
-                    unit: '279c909f348e533da5808898f87f9a14bb2c3dfbbacccd631d927a3f534e454b',
+                    policyId: '279c909f348e533da5808898f87f9a14bb2c3dfbbacccd631d927a3f',
+                    contract: '279c909f348e533da5808898f87f9a14bb2c3dfbbacccd631d927a3f534e454b',
                 },
                 {
                     type: 'BLOCKFROST',
                     fingerprint: 'asset1zvclg2cvj4e5jfz5vswf3sx0lasy79xn8cdap9',
-                    contract: '02477d7c23b4c2834b0be8ca8578dde47af0cc82a964688f6fc95a7a',
+                    policyId: '02477d7c23b4c2834b0be8ca8578dde47af0cc82a964688f6fc95a7a',
                     symbol: 'GRIC',
                     balance: '1',
                     decimals: 0,
                     name: 'GRIC',
-                    unit: '02477d7c23b4c2834b0be8ca8578dde47af0cc82a964688f6fc95a7a47524943',
+                    contract: '02477d7c23b4c2834b0be8ca8578dde47af0cc82a964688f6fc95a7a47524943',
                 },
             ],
         },
@@ -515,8 +516,9 @@ export default {
                     {
                         type: 'BLOCKFROST',
                         fingerprint: 'asset1eevmdlaz5424s3663ypw8w4vyxdlxkm3lefz06',
-                        unit: '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb14708776657465726e696b4e657a6a6564656e79',
-                        contract: '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb147087',
+                        contract:
+                            '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb14708776657465726e696b4e657a6a6564656e79',
+                        policyId: '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb147087',
                         symbol: 'veternikNezjedeny',
                         name: 'veternikNezjedeny',
                         balance: '1',
@@ -812,7 +814,9 @@ export default {
                     {
                         type: 'recv',
                         symbol: 'SNEK',
-                        contract: '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb147087',
+                        policyId: '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb147087',
+                        contract:
+                            '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb14708776657465726e696b4e657a6a6564656e79',
                         name: 'Snek',
                         decimals: 0,
                         amount: '1',
