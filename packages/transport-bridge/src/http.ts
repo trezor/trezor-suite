@@ -96,9 +96,11 @@ export class TrezordNode {
 
     private createAbortSignal(res: any) {
         const abortController = new AbortController();
-        res.addListener('close', () => {
+        const listener = () => {
             abortController.abort();
-        });
+            res.removeListener('close', listener);
+        };
+        res.addListener('close', listener);
 
         return abortController.signal;
     }
