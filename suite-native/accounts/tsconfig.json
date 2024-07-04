@@ -10,9 +10,6 @@
             "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/transaction-cache-engine"
-        },
-        {
             "path": "../../suite-common/validators"
         },
         {
