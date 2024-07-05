@@ -66,9 +66,7 @@ export const QrCode = ({ value, className, bgColor, fgColor, showMessage }: QrCo
                 <SpanToResetWhitespace>
                     <Translation id="TR_QR_RECEIVE_ADDRESS_CONFIRM" />
                 </SpanToResetWhitespace>
-                <StyledTooltip
-                    content={<Translation id="TR_QR_RECEIVE_ADDRESS_CONFIRM_EXPLANATION" />}
-                >
+                <StyledTooltip content={<Translation id="TR_QR_PUBLIC_KEY_CONFIRM_EXPLANATION" />}>
                     <StyledIcon icon="INFO" size={12} color={fgColor || colors.TYPE_DARK_GREY} />
                 </StyledTooltip>
             </Message>

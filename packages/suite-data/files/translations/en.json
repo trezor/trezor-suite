@@ -1484,6 +1484,7 @@
   "TR_QR_CODE": "QR code",
   "TR_QR_RECEIVE_ADDRESS_CONFIRM": "Confirm on Trezor before scanning",
   "TR_QR_RECEIVE_ADDRESS_CONFIRM_EXPLANATION": "Please confirm the receiving address on your Trezor device first, as its trusted display can't be hacked.",
+  "TR_QR_PUBLIC_KEY_CONFIRM_EXPLANATION": "Please confirm the public key (XPUB) on your Trezor device first, as its trusted display can't be hacked.",
   "TR_RANDOM_SEED_WORDS_DISCLAIMER": "You may be asked to type some words that aren't part of your wallet backup",
   "TR_RANGE": "range",
   "TR_RBF_STATUS": "Status",
