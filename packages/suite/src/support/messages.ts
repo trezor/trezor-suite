@@ -6282,8 +6282,7 @@ export default defineMessages({
     },
     TR_SEARCH_UTXOS: {
         id: 'TR_SEARCH_UTXOS',
-        defaultMessage: 'Address, transaction ID, or label',
-        description: 'Placeholder text in Coin control search input',
+        defaultMessage: 'Search for a specific address, transaction ID or label',
     },
     TR_CONNECTED_TO_PROVIDER: {
         defaultMessage: 'Connected to {provider} as {user}',
