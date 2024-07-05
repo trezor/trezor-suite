@@ -5479,6 +5479,14 @@ export default defineMessages({
         defaultMessage:
             'Allows you to select which experimental, cutting edge and/or unstable features you want to enable in Trezor Suite.',
     },
+    TR_EXPERIMENTAL_PASSWORD_MANAGER: {
+        id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
+        defaultMessage: 'Password manager',
+    },
+    TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
+        defaultMessage: 'Re-implementation of Trezor password manager webextension',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',
