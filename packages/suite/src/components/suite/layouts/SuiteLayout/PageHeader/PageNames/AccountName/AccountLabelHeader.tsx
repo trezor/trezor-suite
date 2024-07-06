@@ -9,18 +9,29 @@ interface AccountLabelProps {
     selectedAccount: Account;
 }
 
+const MAX_LABEL_LENGTH = 10;
+
+const truncateLabel = (label: string | undefined, maxLength: number): string => {
+    if (!label) return '';
+    if (label.length <= maxLength) return label;
+    return `${label.substring(0, maxLength - 3)}...`;
+};
+
 export const AccountLabelHeader = ({ selectedAccount }: AccountLabelProps) => {
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
 
     const { defaultAccountLabelString } = useAccountLabel();
     const { symbol, key, path, index, accountType } = selectedAccount;
 
+    const accountLabel = selectedAccountLabels.accountLabel || ''; // Default to an empty string if undefined
+    const truncatedAccountLabel = truncateLabel(accountLabel, MAX_LABEL_LENGTH);
+
     return (
         <HeaderHeading>
             <MetadataLabeling
                 defaultVisibleValue={
                     <AccountLabel
-                        accountLabel={selectedAccountLabels.accountLabel}
+                        accountLabel={truncatedAccountLabel}
                         accountType={accountType}
                         symbol={selectedAccount.symbol}
                         index={index}
@@ -30,7 +41,7 @@ export const AccountLabelHeader = ({ selectedAccount }: AccountLabelProps) => {
                     type: 'accountLabel',
                     entityKey: key,
                     defaultValue: path,
-                    value: selectedAccountLabels.accountLabel,
+                    value: truncatedAccountLabel,
                 }}
                 defaultEditableValue={defaultAccountLabelString({
                     accountType,

@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { Account } from 'src/types/wallet';
-import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { useCallback } from 'react';
 import { useTranslation } from '../../hooks/suite';
+
+const MAX_LABEL_LENGTH = 10;
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;
@@ -36,8 +37,8 @@ export const useAccountLabel = () => {
             }
 
             return translationString('LABELING_ACCOUNT', {
-                networkName: translationString(getTitleForNetwork(symbol)), // Bitcoin, Ethereum, ...
-                index: index + 1, // this is the number which shows after hash, e.g. Ethereum #3
+                networkName: translationString(getTitleForNetwork(symbol)),
+                index: index + 1,
             });
         },
         [translationString],
@@ -48,6 +49,12 @@ export const useAccountLabel = () => {
     };
 };
 
+const truncateLabel = (label: string | undefined, maxLength: number): string => {
+    if (!label) return '';
+    if (label.length <= maxLength) return label;
+    return `${label.substring(0, maxLength - 3)}...`;
+};
+
 export const AccountLabel = ({
     accountLabel,
     accountType,
@@ -56,17 +63,10 @@ export const AccountLabel = ({
 }: AccountLabelProps) => {
     const { defaultAccountLabelString } = useAccountLabel();
 
-    if (accountLabel) {
-        return (
-            <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                <TabularNums>{accountLabel}</TabularNums>
-            </TruncateWithTooltip>
-        );
-    }
+    const accountLabelSafe = accountLabel || ''; // Default to an empty string if undefined
+    const label = accountLabelSafe
+        ? truncateLabel(accountLabelSafe, MAX_LABEL_LENGTH)
+        : defaultAccountLabelString({ accountType, symbol, index });
 
-    return (
-        <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-            {defaultAccountLabelString({ accountType, symbol, index })}
-        </TruncateWithTooltip>
-    );
+    return <TabularNums>{label}</TabularNums>;
 };

@@ -13,6 +13,14 @@ interface AccountProps {
     account: WalletAccount | WalletAccount[];
 }
 
+const MAX_LABEL_LENGTH = 10;
+
+const truncateLabel = (label: string | undefined, maxLength: number): string => {
+    if (!label) return '';
+    if (label.length <= maxLength) return label;
+    return `${label.substring(0, maxLength - 3)}...`;
+};
+
 export const AccountLabeling = ({ account }: AccountProps) => {
     const device = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
@@ -24,9 +32,12 @@ export const AccountLabeling = ({ account }: AccountProps) => {
 
     if (accounts.length < 1) return null;
 
+    const accountLabelSafe = labels.accountLabel || ''; // Default to an empty string if undefined
+    const truncatedAccountLabel = truncateLabel(accountLabelSafe, MAX_LABEL_LENGTH);
+
     const accountLabel = (
         <AccountLabel
-            accountLabel={labels.accountLabel}
+            accountLabel={truncatedAccountLabel}
             accountType={accountType}
             symbol={symbol}
             index={index}
