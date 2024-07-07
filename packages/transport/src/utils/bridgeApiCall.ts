@@ -98,15 +98,7 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
             return error({ error: PROTOCOL_MALFORMED });
         }
 
-        return unknownError(new Error(errStr), [
-            ERRORS.DEVICE_NOT_FOUND,
-            ERRORS.HTTP_ERROR,
-            ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
-            ERRORS.OTHER_CALL_IN_PROGRESS,
-            ERRORS.SESSION_NOT_FOUND,
-            ERRORS.SESSION_WRONG_PREVIOUS,
-            // todo: list more errors from trezor-d. all can occur on this level!
-        ]);
+        return unknownError(new Error(errStr), Object.values(ERRORS));
     }
 
     return success(resParsed);
