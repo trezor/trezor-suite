@@ -1,7 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoAddressParameters.js
 
 import { validatePath } from '../../utils/pathUtils';
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { CardanoAddressParameters } from '../../types/api/cardano';
 import { Assert } from '@trezor/schema-utils';
 

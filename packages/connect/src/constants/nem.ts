@@ -22,14 +22,8 @@ export enum TxType {
     SUPPLY_CHANGE = 0x4002,
 }
 
-export type EnumTxType = Static<typeof EnumTxType>;
-export const EnumTxType = Type.Enum(TxType);
-
 export enum TxVersion {
     mainnet = Networks.mainnet << 24,
     testnet = Networks.testnet << 24,
     mijin = Networks.mijin << 24,
 }
-
-export type EnumTxVersion = Static<typeof EnumTxVersion>;
-export const EnumTxVersion = Type.Enum(TxVersion);

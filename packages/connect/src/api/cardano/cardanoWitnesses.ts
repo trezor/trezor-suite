@@ -2,7 +2,7 @@
 
 import type { CertificateWithPoolOwnersAndRelays } from './cardanoCertificate';
 import type { CollateralInputWithPath, InputWithPath, Path } from './cardanoInputs';
-import { PROTO } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 export const gatherWitnessPaths = (
     inputsWithPath: InputWithPath[],

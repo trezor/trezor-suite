@@ -1,5 +1,5 @@
 import { versionUtils } from '@trezor/utils';
-import { PROTO } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { config } from '../data/config';
 import { Features, CoinInfo, UnavailableCapabilities, DeviceModelInternal } from '../types';
 

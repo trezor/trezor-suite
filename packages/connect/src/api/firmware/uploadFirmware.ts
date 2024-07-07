@@ -1,7 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/uploadFirmware.js
 
 import { UI, DEVICE, createUiMessage, CoreEventMessage } from '../../events';
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Device } from '../../device/Device';
 import type { TypedCall } from '../../device/DeviceCommands';
 

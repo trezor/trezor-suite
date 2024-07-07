@@ -1,6 +1,6 @@
 import { AbstractMethod } from '../core/AbstractMethod';
 import { DEVICE, createDeviceMessage } from '../events';
-import { PROTO } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { getFirmwareRange } from './common/paramsValidator';
 import { Assert } from '@trezor/schema-utils';
 

@@ -1,5 +1,7 @@
 export * from './constants';
 export * from './events';
-export * from './types';
+// Type only export to avoid object schemas in the bundle
+export type * from './types';
+export * from './types/device';
 
 export { parseConnectSettings } from './data/connectSettings';

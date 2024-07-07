@@ -1,5 +1,5 @@
 import { Static, Type } from '@trezor/schema-utils';
-import { PROTO } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import {
     GetAddress as GetAddressShared,
     Address as AddressShared,

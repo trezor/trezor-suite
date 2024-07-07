@@ -1,4 +1,4 @@
-import { PROTO } from '../../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';

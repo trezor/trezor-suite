@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/BackupDevice.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { PROTO } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 export default class BackupDevice extends AbstractMethod<'backupDevice', PROTO.BackupDevice> {

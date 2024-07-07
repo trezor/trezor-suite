@@ -2,7 +2,8 @@
 
 import * as bs58 from 'bs58';
 
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
     EosSDKTransaction,
     EosTxAction as $EosTxAction,

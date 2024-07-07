@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import { bufferUtils } from '@trezor/utils';
 
-import { PROTO } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfig';
 import { AuthenticateDeviceResult } from '../../types/api/authenticateDevice';
 import { parseCertificate, fixSignature } from './x509certificate';

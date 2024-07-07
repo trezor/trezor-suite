@@ -4,7 +4,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { UI } from '../events';
 import { Assert } from '@trezor/schema-utils';
-import { PROTO } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 export default class RebootToBootloader extends AbstractMethod<
     'rebootToBootloader',

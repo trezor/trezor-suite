@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/signtx.js
 
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { BitcoinNetworkInfo } from '../../types';
 import type { TypedCall } from '../../device/DeviceCommands';
 import type {
