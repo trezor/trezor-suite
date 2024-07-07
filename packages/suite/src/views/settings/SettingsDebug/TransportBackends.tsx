@@ -110,7 +110,7 @@ export const TransportBackends = () => {
                 <SectionItem data-test="@settings/debug/processes/newBridgeRollout">
                     <TextColumn
                         title="New bridge rollout"
-                        description={`New bridge is being rolled out to only ${NEW_BRIDGE_ROLLOUT_THRESHOLD * 100}% of Trezor Suite instances. Your rollout score is ${((bridgeSettings.newBridgeRollout ?? 0) * 100).toFixed()}%`}
+                        description={`New bridge is being rolled out to only ${NEW_BRIDGE_ROLLOUT_THRESHOLD * 100}% of Trezor Suite instances that have applied for the Early access program. Your rollout score is ${((bridgeSettings.newBridgeRollout ?? 0) * 100).toFixed()}%`}
                     />
                 </SectionItem>
             )}
