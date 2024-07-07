@@ -68,7 +68,7 @@ export class BridgeTransport extends AbstractTransport {
      * means that /acquire call is in progress. this is used to postpone /listen call so that it can be
      * fired with updated descriptor
      */
-    protected acquirePromise?: Deferred<void>;
+    protected acquirePromise?: Deferred<boolean>;
 
     public name = 'BridgeTransport' as const;
 
@@ -136,8 +136,11 @@ export class BridgeTransport extends AbstractTransport {
             return;
         }
 
-        if (this.acquirePromise) {
-            await this.acquirePromise.promise;
+        const acquirePromiseResult = await (this.acquirePromise?.promise || Promise.resolve(true));
+        delete this.acquirePromise;
+
+        if (!acquirePromiseResult) {
+            return this.listen2();
         }
 
         this.handleDescriptorsChange(response.payload);
@@ -172,12 +175,16 @@ export class BridgeTransport extends AbstractTransport {
                     signal,
                 });
 
-                this.acquirePromise.resolve(undefined);
-
                 if (!response.success) {
+                    if (this.listenPromise[input.path]) {
+                        delete this.listenPromise[input.path];
+                    }
+                    this.acquirePromise.resolve(response.success);
+
                     return response;
                 }
 
+                this.acquirePromise.resolve(response.success);
                 this.acquiredUnconfirmed[input.path] = response.payload;
 
                 if (!this.listenPromise[input.path]) {
