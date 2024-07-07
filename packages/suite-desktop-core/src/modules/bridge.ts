@@ -52,6 +52,8 @@ const start = async (bridge: BridgeProcess | TrezordNode) => {
 
 const getBridgeInstance = (store: Dependencies['store']) => {
     const legacyRequestedBySettings = store.getBridgeSettings().legacy;
+    const { allowPrerelease } = store.getUpdateSettings();
+
     const legacyRequestedByArg = bridgeLegacy || bridgeLegacyDev || bridgeLegacyTest;
 
     // handle rollout
@@ -65,7 +67,12 @@ const getBridgeInstance = (store: Dependencies['store']) => {
     const legacyBridgeReasonRollout =
         !isDevEnv && !skipNewBridgeRollout && newBridgeRollout >= NEW_BRIDGE_ROLLOUT_THRESHOLD;
 
-    if (legacyRequestedBySettings || legacyRequestedByArg || legacyBridgeReasonRollout) {
+    if (
+        legacyRequestedBySettings ||
+        legacyRequestedByArg ||
+        legacyBridgeReasonRollout ||
+        !allowPrerelease
+    ) {
         return new BridgeProcess();
     }
 
