@@ -3,6 +3,7 @@ import { app, BrowserWindow } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
+import { listActiveTimersAndIntervals } from '@trezor/utils/src/debugTimers';
 
 import { ipcMain } from './typed-electron';
 import { APP_NAME } from './libs/constants';
@@ -17,6 +18,10 @@ import { init as initTorModule } from './modules/tor';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
 import { Logger } from './libs/logger';
+
+setInterval(() => {
+    console.log('active timers and intervals', listActiveTimersAndIntervals());
+}, 10000);
 
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv) app.setVersion(process.env.VERSION);
