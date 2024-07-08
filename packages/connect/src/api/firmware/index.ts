@@ -1,3 +1,4 @@
+export { getBinaryForFirmwareUpgrade } from './getBinaryForFirmwareUpgrade';
 export { getBinary } from './getBinary';
 export { getLanguage } from '../../data/getLanguage';
 export { shouldStripFwHeaders, stripFwHeaders } from './modifyFirmware';
