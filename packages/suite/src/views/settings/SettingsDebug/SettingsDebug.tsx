@@ -64,7 +64,6 @@ export const SettingsDebug = () => {
             <SettingsSection title="Backends">
                 <Backends />
             </SettingsSection>
-
             <SettingsSection title="View only">
                 <ViewOnlySettings />
             </SettingsSection>

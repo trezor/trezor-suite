@@ -40,7 +40,7 @@ export const PasswordManager = () => {
     const [formActive, setFormActive] = useState<null | number>(null);
 
     if (!device?.state) {
-        return <SectionItem>Connect and authorized device</SectionItem>;
+        return <SectionItem>Connect and authorize device</SectionItem>;
     }
     if (providerConnecting) {
         return <SectionItem>Connecting...</SectionItem>;
