@@ -68,6 +68,7 @@ export type SuiteAnalyticsEvent =
               model?: string;
               firmwareRevision?: string;
               bootloaderHash?: string;
+              optiga_sec?: number;
           };
       }
     | {
