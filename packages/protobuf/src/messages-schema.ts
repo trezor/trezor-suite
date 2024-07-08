@@ -343,8 +343,8 @@ export const CoinJoinRequest = Type.Object(
         fee_rate: Type.Number(),
         no_fee_threshold: Type.Number(),
         min_registrable_amount: Type.Number(),
-        mask_public_key: Type.String(),
-        signature: Type.String(),
+        mask_public_key: Type.Optional(Type.String()),
+        signature: Type.Optional(Type.String()),
     },
     { $id: 'CoinJoinRequest' },
 );
@@ -2346,6 +2346,7 @@ export const Features = Type.Object(
         unit_packaging: Type.Optional(Type.Number()),
         haptic_feedback: Type.Optional(Type.Boolean()),
         recovery_type: Type.Optional(RecoveryType),
+        optiga_sec: Type.Optional(Type.Number()),
     },
     { $id: 'Features' },
 );
