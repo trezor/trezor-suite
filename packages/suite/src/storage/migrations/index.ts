@@ -882,5 +882,11 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
             return tx;
         });
+
+        await updateAll(transaction, 'suiteSettings', suiteSettings => {
+            suiteSettings.flags.isViewOnlyModeVisible = true;
+
+            return suiteSettings;
+        });
     }
 };
