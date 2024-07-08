@@ -471,8 +471,6 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         };
 
         if (!isCardanoTx(selectedAccount, enhancedPrecomposedTransaction)) {
-            enhancedPrecomposedTransaction.rbf = formValues.options.includes('bitcoinRBF');
-
             if (formValues.rbfParams) {
                 enhancedPrecomposedTransaction.prevTxid = formValues.rbfParams.txid;
                 enhancedPrecomposedTransaction.feeDifference = new BigNumber(

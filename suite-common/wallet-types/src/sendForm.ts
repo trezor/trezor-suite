@@ -5,7 +5,6 @@ import { Output, RbfTransactionParams } from './transaction';
 export type FormOptions =
     | 'broadcast'
     | 'utxoSelection'
-    | 'bitcoinRBF'
     | 'bitcoinLockTime'
     | 'ethereumData'
     | 'ethereumNonce' // TODO

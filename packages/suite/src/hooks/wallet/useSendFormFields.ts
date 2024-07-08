@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { FormState, FormOptions } from '@suite-common/wallet-types';
-import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { Rate } from '@suite-common/wallet-types';
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
@@ -113,13 +112,6 @@ export const useSendFormFields = ({
     };
 
     const toggleOption = (option: FormOptions) => {
-        if (
-            option === 'bitcoinRBF' &&
-            (!isFeatureFlagEnabled('RBF') || !network.features?.includes('rbf'))
-        ) {
-            // do not use RBF if disabled
-            return;
-        }
         const enabledOptions = getValues('options') || [];
         const isEnabled = enabledOptions.includes(option);
         if (isEnabled) {

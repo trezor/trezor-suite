@@ -11,7 +11,6 @@ import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { fiatCurrencies } from '@suite-common/suite-config';
-import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Network, NetworkType } from '@suite-common/wallet-config';
 import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
 import {
@@ -404,12 +403,9 @@ export const restoreOrigOutputsOrder = (
         });
 };
 
-export const getDefaultValues = (currency: Output['currency'], network: Network): FormState => ({
+export const getDefaultValues = (currency: Output['currency']): FormState => ({
     ...DEFAULT_VALUES,
-    options:
-        isFeatureFlagEnabled('RBF') && network.features?.includes('rbf')
-            ? ['bitcoinRBF', 'broadcast']
-            : ['broadcast'],
+    options: ['broadcast'],
     outputs: [{ ...DEFAULT_PAYMENT, currency }],
     selectedUtxos: [],
 });

@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getFeeUnits, formatNetworkAmount, formatAmount, getFee } from '@suite-common/wallet-utils';
 import { Icon, CoinLogo, variables } from '@trezor/components';
-import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { formatDuration } from '@suite-common/suite-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation, FormattedCryptoAmount, AccountLabel } from 'src/components/suite';
@@ -164,7 +164,7 @@ const LeftDetailsBottom = styled.div`
     flex: 1;
 `;
 
-const ReviewRbfLeftDetailsLineLeft = styled.div`
+const ReviewLeftDetailsLineLeft = styled.div`
     display: flex;
     align-items: center;
     margin: 0 5% 0 0;
@@ -177,7 +177,7 @@ const ReviewRbfLeftDetailsLineLeft = styled.div`
     }
 `;
 
-const ReviewRbfLeftDetailsLineRight = styled.div<{ $color: string; $uppercase?: boolean }>`
+const ReviewLeftDetailsLineRight = styled.div<{ $color: string; $uppercase?: boolean }>`
     width: 45%;
     text-align: left;
     color: ${props => props.$color};
@@ -268,40 +268,40 @@ export const TransactionReviewSummary = ({
             <LeftDetails>
                 {estimateTime !== undefined && (
                     <LeftDetailsRow>
-                        <ReviewRbfLeftDetailsLineLeft>
+                        <ReviewLeftDetailsLineLeft>
                             <Icon size={12} color={theme.iconSubdued} icon="CALENDAR" />
                             <Translation id="TR_DELIVERY" />
-                        </ReviewRbfLeftDetailsLineLeft>
+                        </ReviewLeftDetailsLineLeft>
 
-                        <ReviewRbfLeftDetailsLineRight $color={theme.textSubdued}>
+                        <ReviewLeftDetailsLineRight $color={theme.textSubdued}>
                             {formatDuration(estimateTime)}
-                        </ReviewRbfLeftDetailsLineRight>
+                        </ReviewLeftDetailsLineRight>
                     </LeftDetailsRow>
                 )}
                 {!!tx.feeLimit && network.networkType !== 'solana' && (
                     <LeftDetailsRow>
-                        <ReviewRbfLeftDetailsLineLeft>
+                        <ReviewLeftDetailsLineLeft>
                             <Icon size={12} color={theme.iconSubdued} icon="GAS" />
                             <Translation id="TR_GAS_LIMIT" />
-                        </ReviewRbfLeftDetailsLineLeft>
+                        </ReviewLeftDetailsLineLeft>
 
-                        <ReviewRbfLeftDetailsLineRight $color={theme.textSubdued}>
+                        <ReviewLeftDetailsLineRight $color={theme.textSubdued}>
                             {tx.feeLimit}
-                        </ReviewRbfLeftDetailsLineRight>
+                        </ReviewLeftDetailsLineRight>
                     </LeftDetailsRow>
                 )}
                 <LeftDetailsRow>
-                    <ReviewRbfLeftDetailsLineLeft>
+                    <ReviewLeftDetailsLineLeft>
                         <Icon size={12} color={theme.iconSubdued} icon="GAS" />
                         {network.networkType === 'bitcoin' && <Translation id="TR_FEE_RATE" />}
                         {network.networkType === 'ethereum' && <Translation id="TR_GAS_PRICE" />}
                         {network.networkType === 'ripple' && <Translation id="TR_TX_FEE" />}
                         {network.networkType === 'solana' && <Translation id="TR_TX_FEE" />}
-                    </ReviewRbfLeftDetailsLineLeft>
+                    </ReviewLeftDetailsLineLeft>
 
-                    <ReviewRbfLeftDetailsLineRight $color={theme.textSubdued}>
+                    <ReviewLeftDetailsLineRight $color={theme.textSubdued}>
                         {fee} {getFeeUnits(network.networkType)}
-                    </ReviewRbfLeftDetailsLineRight>
+                    </ReviewLeftDetailsLineRight>
                 </LeftDetailsRow>
 
                 {isComposedFeeRateDifferent && network.networkType === 'bitcoin' && (
@@ -313,35 +313,18 @@ export const TransactionReviewSummary = ({
                 )}
 
                 <LeftDetailsRow>
-                    <ReviewRbfLeftDetailsLineLeft>
+                    <ReviewLeftDetailsLineLeft>
                         <Icon size={12} color={theme.iconSubdued} icon="BROADCAST" />
                         <Translation id="BROADCAST" />
-                    </ReviewRbfLeftDetailsLineLeft>
+                    </ReviewLeftDetailsLineLeft>
 
-                    <ReviewRbfLeftDetailsLineRight
+                    <ReviewLeftDetailsLineRight
                         $color={broadcast ? theme.textPrimaryDefault : theme.textAlertYellow}
                         $uppercase
                     >
                         <Translation id={broadcast ? 'TR_ON' : 'TR_OFF'} />
-                    </ReviewRbfLeftDetailsLineRight>
+                    </ReviewLeftDetailsLineRight>
                 </LeftDetailsRow>
-                {isFeatureFlagEnabled('RBF') &&
-                    network.features?.includes('rbf') &&
-                    network.networkType !== 'ethereum' && (
-                        <LeftDetailsRow>
-                            <ReviewRbfLeftDetailsLineLeft>
-                                <Icon size={12} color={theme.textSubdued} icon="RBF" />
-                                <Translation id="RBF" />
-                            </ReviewRbfLeftDetailsLineLeft>
-
-                            <ReviewRbfLeftDetailsLineRight
-                                $color={tx.rbf ? theme.textPrimaryDefault : theme.textAlertYellow}
-                                $uppercase
-                            >
-                                <Translation id={tx.rbf ? 'TR_ON' : 'TR_OFF'} />
-                            </ReviewRbfLeftDetailsLineRight>
-                        </LeftDetailsRow>
-                    )}
                 {tx.inputs.length !== 0 && (
                     <LeftDetailsBottom>
                         <Separator />

@@ -188,7 +188,6 @@ export type SuiteAnalyticsEvent =
               tokens: string;
               outputsCount: number;
               broadcast: boolean;
-              bitcoinRbf: boolean;
               bitcoinLockTime: boolean;
               ethereumData: boolean;
               ethereumNonce: boolean;
