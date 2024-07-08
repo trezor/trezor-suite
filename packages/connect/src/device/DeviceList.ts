@@ -46,20 +46,20 @@ interface DeviceListEvents {
 
 export class DeviceList extends TypedEmitter<DeviceListEvents> {
     // @ts-expect-error has no initializer
-    transport: Transport;
+    private transport: Transport;
 
     // array of transport that might be used in this environment
-    transports: Transport[] = [];
+    private transports: Transport[] = [];
 
-    devices: { [path: string]: Device } = {};
+    private devices: { [path: string]: Device } = {};
 
-    creatingDevicesDescriptors: { [k: string]: Descriptor } = {};
+    private creatingDevicesDescriptors: { [k: string]: Descriptor } = {};
 
-    transportStartPending = 0;
+    private transportStartPending = 0;
 
-    penalizedDevices: { [deviceID: string]: number } = {};
+    private penalizedDevices: { [deviceID: string]: number } = {};
 
-    transportFirstEventPromise: Promise<void> | undefined;
+    private transportFirstEventPromise: Promise<void> | undefined;
 
     private settings: ConnectSettings;
 
@@ -331,6 +331,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         if (this.transportStartPending === 0) {
             this.emit(TRANSPORT.START, this.getTransportInfo());
         }
+    }
+
+    getTransportFirstEventPromise() {
+        return this.transportFirstEventPromise;
     }
 
     async waitForTransportFirstEvent() {
