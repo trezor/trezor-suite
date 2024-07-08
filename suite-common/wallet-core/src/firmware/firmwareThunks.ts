@@ -9,7 +9,6 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import TrezorConnect, { Device, FirmwareType } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { selectFirmware } from './firmwareReducer';
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
@@ -40,45 +39,6 @@ const handleFwHashMismatch = createThunk(
         analytics.report({
             type: EventType.FirmwareValidateHashMismatch,
         });
-    },
-);
-
-export const checkFirmwareAuthenticity = createThunk(
-    `${FIRMWARE_MODULE_PREFIX}/checkFirmwareAuthenticity`,
-    async (_, { dispatch, getState, extra }) => {
-        const {
-            selectors: { selectDevice },
-        } = extra;
-        const device = selectDevice(getState());
-        if (!device) {
-            throw new Error('device is not connected');
-        }
-        const result = await TrezorConnect.checkFirmwareAuthenticity({
-            device: {
-                path: device.path,
-            },
-        });
-        if (result.success) {
-            if (result.payload.valid) {
-                dispatch(
-                    notificationsActions.addToast({ type: 'firmware-check-authenticity-success' }),
-                );
-            } else {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'error',
-                        error: 'Firmware is not authentic!!!',
-                    }),
-                );
-            }
-        } else {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: `Unable to validate firmware: ${result.payload.error}`,
-                }),
-            );
-        }
     },
 );
 
