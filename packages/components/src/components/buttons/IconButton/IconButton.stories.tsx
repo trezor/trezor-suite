@@ -1,5 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { IconButton as IconButtonComponent, IconButtonProps } from './IconButton';
+import { variables } from '../../../config';
 
 const meta: Meta = {
     title: 'Buttons/IconButton',
@@ -18,6 +19,12 @@ export const IconButton: StoryObj<IconButtonProps> = {
         },
         bottomLabel: {
             type: 'string',
+        },
+        icon: {
+            options: variables.ICONS,
+            control: {
+                type: 'select',
+            },
         },
     },
 };

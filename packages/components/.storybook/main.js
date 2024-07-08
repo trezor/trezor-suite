@@ -9,7 +9,7 @@ module.exports = {
         getAbsolutePath('@storybook/addon-viewport'),
         getAbsolutePath('@storybook/addon-actions'),
     ],
-    staticDirs: ['../public'],
+    staticDirs: ['../public', { from: '../../suite-data/files', to: '/static' }],
     framework: {
         name: getAbsolutePath('@storybook/react-webpack5'),
         options: {},
