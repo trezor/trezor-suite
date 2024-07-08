@@ -69,71 +69,71 @@ jobs:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
-      test-name: methods.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: ${{ github.event_name == 'schedule' }}
-      run-core-in-popup: true
-      build-overview: true
+      testName: methods.test
+      serverHostname: dev.suite.sldev.cz
+      runWebextension: ${{ github.event_name == 'schedule' }}
+      runCoreInPopup: true
+      buildOverview: true
 
   popup-close:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
-      test-name: popup-close.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: true
-      run-core-in-popup: true
+      testName: popup-close.test
+      serverHostname: dev.suite.sldev.cz
+      runWebextension: true
+      runCoreInPopup: true
 
   passphrase:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
-      test-name: passphrase.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: true
-      run-core-in-popup: true
+      testName: passphrase.test
+      serverHostname: dev.suite.sldev.cz
+      runWebextension: true
+      runCoreInPopup: true
 
   popup-pages:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
-      test-name: popup-pages.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      testName: popup-pages.test
+      serverHostname: dev.suite.sldev.cz
 
   browser-support:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
-      test-name: browser-support.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      testName: browser-support.test
+      serverHostname: dev.suite.sldev.cz
 
   permissions:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
-      test-name: permissions.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      testName: permissions.test
+      serverHostname: dev.suite.sldev.cz
 
   transport:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
-      test-name: transport.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      testName: transport.test
+      serverHostname: dev.suite.sldev.cz
 
   unchained:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
-      test-name: unchained.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-web: ${{ github.event_name == 'schedule' }}
+      testName: unchained.test
+      serverHostname: dev.suite.sldev.cz
+      runWeb: ${{ github.event_name == 'schedule' }}
 
   webextension-examples:
     needs: [build-deploy]
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
-      test-name: webextension-example.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: true
-      run-web: false
+      testName: webextension-example.test
+      serverHostname: dev.suite.sldev.cz
+      runWebextension: true
+      runWeb: false

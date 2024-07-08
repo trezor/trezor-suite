@@ -3,30 +3,30 @@ name: "[Template] connect-popup test params"
 on:
   workflow_call:
     inputs:
-      test-name:
+      testName:
         description: "Test name to be run (e.g. `analytics` or `popup-close`)"
         type: "string"
         required: true
-      DEV_SERVER_HOSTNAME:
+      serverHostname:
         description: "URL used by popup connect tests (e.g. dev.suite.sldev.cz)"
         type: "string"
         required: true
-      run-webextension:
+      runWebextension:
         description: "Flag to indicate whether to run the webextension job"
         type: "boolean"
         required: false
         default: false
-      run-web:
+      runWeb:
         description: "Flag to indicate whether to run the web job"
         type: "boolean"
         required: false
         default: true
-      run-core-in-popup:
+      runCoreInPopup:
         description: "Flag to indicate whether to run the core-in-popup job"
         type: "boolean"
         required: false
         default: false
-      build-overview:
+      buildOverview:
         description: "Flag to indicate whether to build connect-popup-overview.html"
         type: "boolean"
         required: false
@@ -36,7 +36,7 @@ jobs:
   web:
     name: web
     runs-on: ubuntu-latest
-    if: ${{ inputs.run-web }}
+    if: ${{ inputs.runWeb }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,16 +53,16 @@ jobs:
 
       - name: Run connect popup test
         env:
-          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          URL: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
           # skip settings page, this url is set at build time anyway
-          #TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          #TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
           CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          CI_JOB_NAME: ${{ inputs.test-name }}-${{ github.run_attempt }}
+          CI_JOB_NAME: ${{ inputs.testName }}-${{ github.run_attempt }}
         run: |
-          ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}
+          ./docker/docker-connect-popup-ci.sh ${{ inputs.testName }}
 
       - name: Prepare static overview
-        if: ${{ inputs.build-overview }}
+        if: ${{ inputs.buildOverview }}
         run: |
           echo "Preparing static overview"
           mkdir -p tmp_overview_directory
@@ -71,9 +71,9 @@ jobs:
 
       - name: Upload static overview artifact
         uses: actions/upload-artifact@v4
-        if: ${{ inputs.build-overview }}
+        if: ${{ inputs.buildOverview }}
         with:
-          name: core-in-popup-static-overview-${{ inputs.test-name }}-${{ github.run_attempt }}
+          name: core-in-popup-static-overview-${{ inputs.testName }}-${{ github.run_attempt }}
           path: |
             tmp_overview_directory/
 
@@ -81,7 +81,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: web-test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}-${{ github.run_id }}
+          name: web-test-artifacts-${{ inputs.testName }}-${{ github.run_attempt }}-${{ github.run_id }}
           path: |
             packages/connect-popup/test-results
 
@@ -96,7 +96,7 @@ jobs:
   webextension:
     name: webextension
     runs-on: ubuntu-latest
-    if: ${{ inputs.run-webextension }}
+    if: ${{ inputs.runWebextension }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -114,14 +114,14 @@ jobs:
       - name: Download artifact from build
         uses: actions/download-artifact@v4
         with:
-          name: connect-explorer-webextension
+          name: connect-explorer-webextension-${{ inputs.serverHostname }}
           path: |
             packages/connect-explorer/build-webextension
 
       - name: Build example webextension
-        if: ${{ inputs.test-name == 'webextension-example.test' }}
+        if: ${{ inputs.testName == 'webextension-example.test' }}
         env:
-          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          URL: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
         run: |
           yarn workspace @trezor/connect-web build:webextension
           yarn workspace @trezor/connect-web build:inline
@@ -129,18 +129,18 @@ jobs:
 
       - name: Run connect popup test
         env:
-          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
-          #TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          URL: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          #TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
           IS_WEBEXTENSION: true
         run: |
-          ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}
+          ./docker/docker-connect-popup-ci.sh ${{ inputs.testName }}
 
       - name: Upload artifacts
         # We upload test artifacts only if it fails and we use it to `Check Test Success` in next step.
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: webextension-test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}-${{ github.run_id }}
+          name: webextension-test-artifacts-${{ inputs.testName }}-${{ github.run_attempt }}-${{ github.run_id }}
           path: |
             packages/connect-popup/test-results
 
@@ -155,7 +155,7 @@ jobs:
   core_in_popup:
     name: core_in_popup
     runs-on: ubuntu-latest
-    if: ${{ inputs.run-core-in-popup }}
+    if: ${{ inputs.runCoreInPopup }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -172,17 +172,17 @@ jobs:
 
       - name: Run connect popup test
         env:
-          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/?core-in-popup=true
+          URL: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/?core-in-popup=true
           CORE_IN_POPUP: true
           # skip settings page, this url is set at build time anyway
-          #TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          #TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
           CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          CI_JOB_NAME: ${{ inputs.test-name }}-${{ github.run_attempt }}
+          CI_JOB_NAME: ${{ inputs.testName }}-${{ github.run_attempt }}
         run: |
-          ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}
+          ./docker/docker-connect-popup-ci.sh ${{ inputs.testName }}
 
       - name: Prepare static overview
-        if: ${{ inputs.build-overview }}
+        if: ${{ inputs.buildOverview }}
         run: |
           echo "Preparing static overview"
           mkdir -p tmp_overview_directory
@@ -191,9 +191,9 @@ jobs:
 
       - name: Upload static overview artifact
         uses: actions/upload-artifact@v4
-        if: ${{ inputs.build-overview }}
+        if: ${{ inputs.buildOverview }}
         with:
-          name: static-overview-${{ inputs.test-name }}-${{ github.run_attempt }}
+          name: static-overview-${{ inputs.testName }}-${{ github.run_attempt }}
           path: |
             tmp_overview_directory/
 
@@ -201,7 +201,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: core-in-popup-test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}-${{ github.run_id }}
+          name: core-in-popup-test-artifacts-${{ inputs.testName }}-${{ github.run_attempt }}-${{ github.run_id }}
           path: |
             packages/connect-popup/test-results
 
