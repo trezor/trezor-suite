@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Route } from '@suite-common/suite-types';
@@ -28,14 +29,17 @@ const Container = styled.div`
 // TODO: perhaps this could be a part of some router config / useLayoutHook / somthing else?
 interface PageHeaderProps {
     backRoute?: Route['name'];
+    children?: ReactNode;
 }
 
-export const PageHeader = ({ backRoute }: PageHeaderProps) => {
+export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
     // TODO subpages + tabs could be in some router config? this approach feels a bit fragile
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
 
-    return (
+    return children ? (
+        <Container>{children}</Container>
+    ) : (
         <Container>
             <PageName backRoute={backRoute} />
 
