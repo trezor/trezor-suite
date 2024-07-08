@@ -96,6 +96,7 @@ const analyticsMiddleware =
                             totalDevices: getPhysicalDeviceCount(selectDevices(state)),
                             language: features.language,
                             model: features.internal_model,
+                            optiga_sec: features.optiga_sec,
                         },
                     });
                 } else {
