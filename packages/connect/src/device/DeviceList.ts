@@ -49,7 +49,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
     private transport: Transport;
 
     // array of transport that might be used in this environment
-    private transports: Transport[] = [];
+    private transports: Transport[];
 
     private devices: { [path: string]: Device } = {};
 
@@ -61,40 +61,39 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     private transportFirstEventPromise: Promise<void> | undefined;
 
-    private settings: ConnectSettings;
+    private priority;
 
     private transportCommonArgs;
 
     constructor({
-        settings,
         messages,
+        priority,
+        debug,
     }: {
-        settings: ConnectSettings;
         messages: Record<string, any>;
+        priority: number;
+        debug?: boolean;
     }) {
         super();
-        this.settings = settings;
 
-        const transportLogger = initLog('@trezor/transport', this.settings.debug);
+        const transportLogger = initLog('@trezor/transport', debug);
 
         // todo: this should be passed from above
         const abortController = new AbortController();
 
+        this.priority = priority;
         this.transportCommonArgs = {
             messages,
             logger: transportLogger,
             signal: abortController.signal,
         };
 
-        // we fill in `transports` with a reasonable fallback in src/index.
-        // since web index is released into npm, we can not rely
-        // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
-        const transports = settings.transports?.length
-            ? settings.transports
-            : ['BridgeTransport' as const];
-
-        // mapping of provided transports[] to @trezor/transport classes
-        this.transports = transports.map(this.createTransport.bind(this));
+        this.transports = [
+            new BridgeTransport({
+                latestVersion: getBridgeInfo().version.join('.'),
+                ...this.transportCommonArgs,
+            }),
+        ];
     }
 
     private createTransport(transportType: NonNullable<ConnectSettings['transports']>[number]) {
@@ -135,10 +134,19 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         );
     }
 
+    setTransports(transports: ConnectSettings['transports']) {
+        // we fill in `transports` with a reasonable fallback in src/index.
+        // since web index is released into npm, we can not rely
+        // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
+        const transportTypes = transports?.length ? transports : ['BridgeTransport' as const];
+
+        this.transports = transportTypes.map(this.createTransport.bind(this));
+    }
+
     /**
      * Init @trezor/transport and do something with its results
      */
-    async init() {
+    async init(pendingTransportEvent?: boolean) {
         try {
             _log.debug('Initializing transports');
             let lastError:
@@ -191,11 +199,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     const path = descriptor.path.toString();
                     this.creatingDevicesDescriptors[path] = descriptor;
 
-                    const { priority } = this.settings;
                     const penalty = this.getAuthPenalty();
 
-                    if (priority || penalty) {
-                        await resolveAfter(501 + penalty + 100 * priority, null).promise;
+                    if (this.priority || penalty) {
+                        await resolveAfter(501 + penalty + 100 * this.priority, null).promise;
                     }
                     if (this.creatingDevicesDescriptors[path].session == null) {
                         await this._createAndSaveDevice(descriptor);
@@ -300,7 +307,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
             const descriptors = enumerateResult.payload;
 
-            if (descriptors.length > 0 && this.settings.pendingTransportEvent) {
+            if (descriptors.length > 0 && pendingTransportEvent) {
                 this.transportStartPending = descriptors.length;
                 // listen for self emitted events and resolve pending transport event if needed
                 this.on(DEVICE.CONNECT, this.resolveTransportEvent.bind(this));
