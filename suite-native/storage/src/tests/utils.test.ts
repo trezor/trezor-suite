@@ -1,11 +1,11 @@
-import { filterObjectKeys } from '../transforms/utils';
+import { filterKeysByPartialMatch } from '../transforms/utils';
 
 describe('filterObjectKeys', () => {
     it('should filter out keys that are specified in the filterKeys array', () => {
         const obj = { apple: 1, banana: 2, apricot: 3, berry: 4, ananas: 5 };
         const filterKeys = ['ap', 'ana'];
         const expectedResult = { berry: 4 };
-        const result = filterObjectKeys(obj, filterKeys);
+        const result = filterKeysByPartialMatch(obj, filterKeys);
         expect(result).toEqual(expectedResult);
     });
 
@@ -13,7 +13,7 @@ describe('filterObjectKeys', () => {
         const obj = { apple: 1, banana: 2 };
         const filterKeys = ['orange'];
         const expectedResult = { apple: 1, banana: 2 };
-        const result = filterObjectKeys(obj, filterKeys);
+        const result = filterKeysByPartialMatch(obj, filterKeys);
         expect(result).toEqual(expectedResult);
     });
 
@@ -21,7 +21,7 @@ describe('filterObjectKeys', () => {
         const obj = { apple: 1, apricot: 2 };
         const filterKeys = ['a'];
         const expectedResult = {};
-        const result = filterObjectKeys(obj, filterKeys);
+        const result = filterKeysByPartialMatch(obj, filterKeys);
         expect(result).toEqual(expectedResult);
     });
 
@@ -29,7 +29,7 @@ describe('filterObjectKeys', () => {
         const obj = {};
         const filterKeys = ['a'];
         const expectedResult = {};
-        const result = filterObjectKeys(obj, filterKeys);
+        const result = filterKeysByPartialMatch(obj, filterKeys);
         expect(result).toEqual(expectedResult);
     });
 
@@ -48,7 +48,7 @@ describe('filterObjectKeys', () => {
             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT-btc-mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@1632F3457D42E393B821ACC9:1':
                 [4, 5, 6],
         };
-        const result = filterObjectKeys(accountKeysMap, deviceStates);
+        const result = filterKeysByPartialMatch(accountKeysMap, deviceStates);
         expect(result).toEqual(expectedResult);
     });
 });

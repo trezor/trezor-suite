@@ -3,7 +3,7 @@ import { createTransform } from 'redux-persist';
 
 import { AccountsState, TransactionsState } from '@suite-common/wallet-core';
 
-import { selectDeviceStatesNotRemembered, filterObjectKeys } from './utils';
+import { selectDeviceStatesNotRemembered, filterKeysByPartialMatch } from './utils';
 
 export const walletPersistWhitelist = ['accounts', 'transactions'] satisfies Array<
     'accounts' | 'transactions'
@@ -35,13 +35,13 @@ export const walletPersistTransform = createTransform<InboundState, OutboundStat
             account => !devicesStatesNotRemembered.includes(account?.deviceState),
         );
 
-        const transactions = filterObjectKeys(
+        const transactions = filterKeysByPartialMatch(
             inboundState.transactions.transactions,
             devicesStatesNotRemembered,
         );
 
-        const transactionFetchStatusDetail = filterObjectKeys(
-            inboundState.transactions?.fetchStatusDetail,
+        const transactionFetchStatusDetail = filterKeysByPartialMatch(
+            inboundState.transactions.fetchStatusDetail ?? {},
             devicesStatesNotRemembered,
         );
 

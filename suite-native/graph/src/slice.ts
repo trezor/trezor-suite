@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { selectDeviceStatesNotRemembered, filterObjectKeys } from '@suite-native/storage';
+import { selectDeviceStatesNotRemembered, filterKeysByPartialMatch } from '@suite-native/storage';
 
 import { TimeframeHoursValue } from './types';
 
@@ -28,7 +28,7 @@ export const graphInitialState: GraphState = {
 export const graphPersistTransform = createTransform<GraphState, GraphState>(
     (inboundState, _, state) => ({
         ...inboundState,
-        accountToGraphTimeframeMap: filterObjectKeys(
+        accountToGraphTimeframeMap: filterKeysByPartialMatch(
             inboundState.accountToGraphTimeframeMap,
             selectDeviceStatesNotRemembered(state),
         ),
@@ -63,7 +63,7 @@ export const graphSlice = createSlice({
         builder.addCase(deviceActions.forgetDevice, (state, action) => {
             const deviceState = action.payload.device.state;
             if (deviceState) {
-                state.accountToGraphTimeframeMap = filterObjectKeys(
+                state.accountToGraphTimeframeMap = filterKeysByPartialMatch(
                     state.accountToGraphTimeframeMap,
                     [deviceState],
                 );
