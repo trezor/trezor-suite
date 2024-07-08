@@ -95,7 +95,7 @@ runs:
       run: |
         yarn workspace @trezor/connect-explorer build
 
-    # this step should upload build result to s3 bucket DEV_SERVER_HOSTNAME using awscli
+    # this step should upload build result to s3 bucket "serverHostname" using awscli
     - name: Upload connect to ${{ inputs.serverHostname }}
       shell: bash
       env:
@@ -132,7 +132,7 @@ runs:
       if: inputs.uploadArtifacts == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: connect-example-webextension-${{ inputs.serverHostname }}-${{ github.run_attempt }}-${{ github.run_id }}
+        name: connect-example-webextension-${{ inputs.serverHostname }}
         path: |
           packages/connect-examples/webextension-mv2/build
           packages/connect-examples/webextension-mv3/build
@@ -142,6 +142,6 @@ runs:
       if: inputs.uploadArtifacts == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: connect-explorer-webextension-${{ inputs.serverHostname }}-${{ github.run_attempt }}-${{ github.run_id }}
+        name: connect-explorer-webextension-${{ inputs.serverHostname }}
         path: |
           packages/connect-explorer/build-webextension
