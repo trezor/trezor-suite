@@ -138,12 +138,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             }
 
             return {
-                ...getDefaultValues(localCurrencyOption, state.network),
+                ...getDefaultValues(localCurrencyOption),
                 ...loadedState,
                 ...feeEnhancement,
             };
         },
-        [dispatch, localCurrencyOption, state.network],
+        [dispatch, localCurrencyOption],
     );
 
     // update custom values

@@ -80,7 +80,6 @@ export const replaceTransactionThunk = createThunk(
                     ...origTx.tx,
                     txid: newTxid,
                     fee: precomposedTransaction.fee,
-                    rbf: !!precomposedTransaction.rbf,
                     blockTime: Math.round(new Date().getTime() / 1000),
                     // TODO: details: {}, is it worth it?
                 };
@@ -89,7 +88,7 @@ export const replaceTransactionThunk = createThunk(
                 newTx.ethereumSpecific = replaceEthereumSpecific(newTx, precomposedTransaction);
 
                 // finalized and recv tx shouldn't have rbfParams
-                if (!precomposedTransaction.rbf || origTx.tx.type === 'recv') {
+                if (origTx.tx.type === 'recv') {
                     delete newTx.rbfParams;
                 } else {
                     // update tx rbfParams

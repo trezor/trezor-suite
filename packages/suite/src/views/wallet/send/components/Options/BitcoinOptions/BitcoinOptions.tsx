@@ -1,7 +1,6 @@
 import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 
-import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Button, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
@@ -55,7 +54,6 @@ const Inline = styled.span`
 
 export const BitcoinOptions = () => {
     const {
-        network,
         addOutput,
         control,
         utxoSelection: { isCoinControlEnabled },
@@ -74,7 +72,6 @@ export const BitcoinOptions = () => {
     });
 
     const locktimeEnabled = options.includes('bitcoinLockTime');
-    const rbfEnabled = options.includes('bitcoinRBF');
     const utxoSelectionEnabled = options.includes('utxoSelection');
     const broadcastEnabled = options.includes('broadcast');
 
@@ -115,33 +112,6 @@ export const BitcoinOptions = () => {
                             </StyledButton>
                         </Tooltip>
                     )}
-
-                    {isFeatureFlagEnabled('RBF') &&
-                        network.features?.includes('rbf') &&
-                        !locktimeEnabled && (
-                            <Tooltip
-                                addon={
-                                    <OpenGuideFromTooltip id="/3_send-and-receive/5_replace-by-fee-rbf.md" />
-                                }
-                                content={<Translation id="RBF_TOOLTIP" />}
-                                cursor="pointer"
-                            >
-                                <StyledButton
-                                    variant="tertiary"
-                                    size="small"
-                                    icon="RBF"
-                                    onClick={() => {
-                                        toggleOption('bitcoinRBF');
-                                        composeTransaction();
-                                    }}
-                                >
-                                    <Inline>
-                                        <Translation id="RBF" />
-                                        <OnOffSwitcher isOn={rbfEnabled} />
-                                    </Inline>
-                                </StyledButton>
-                            </Tooltip>
-                        )}
                     <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
                         <StyledButton
                             variant="tertiary"
@@ -203,7 +173,6 @@ export const BitcoinOptions = () => {
                     close={() => {
                         resetDefaultValue('bitcoinLockTime');
                         // close additional form
-                        if (!rbfEnabled) toggleOption('bitcoinRBF');
                         if (!broadcastEnabled) toggleOption('broadcast');
                         toggleOption('bitcoinLockTime');
                         composeTransaction();

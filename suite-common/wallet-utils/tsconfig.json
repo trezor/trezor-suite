@@ -7,7 +7,6 @@
         { "path": "../metadata-types" },
         { "path": "../suite-config" },
         { "path": "../suite-types" },
-        { "path": "../suite-utils" },
         { "path": "../test-utils" },
         { "path": "../token-definitions" },
         { "path": "../wallet-config" },

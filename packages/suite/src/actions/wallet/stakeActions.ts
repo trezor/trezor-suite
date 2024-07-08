@@ -151,7 +151,6 @@ export const signTransaction =
 
         const enhancedTxInfo: PrecomposedTransactionFinal = {
             ...transactionInfo,
-            rbf: false,
         };
 
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal

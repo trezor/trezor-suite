@@ -10,9 +10,11 @@ import {
     restoreOrigOutputsOrder,
     getUtxoOutpoint,
 } from '@suite-common/wallet-utils';
-import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@suite-common/wallet-constants';
+import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
 import {
+    Account,
     AddressDisplayOptions,
+    FormState,
     PrecomposedLevels,
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
@@ -22,6 +24,20 @@ import { selectTransactions } from '../transactions/transactionsReducer';
 import { selectDevice } from '../device/deviceReducer';
 import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
+
+type GetSequenceParams = { account: Account; formValues: FormState };
+
+const getSequence = ({ account, formValues }: GetSequenceParams) => {
+    if (hasNetworkFeatures(account, 'rbf')) {
+        return BTC_RBF_SEQUENCE;
+    }
+
+    if (formValues.bitcoinLockTime) {
+        return BTC_LOCKTIME_SEQUENCE;
+    }
+
+    return undefined; // Must be undefined for final (non-RBF) transaction with no locktime
+};
 
 export const composeBitcoinSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/composeBitcoinSendFormTransactionThunk`,
@@ -58,14 +74,7 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
             });
         }
 
-        let sequence; // Must be undefined for final transaction.
-        if (formValues.options.includes('bitcoinRBF')) {
-            // RBF is set, add sequence to inputs
-            sequence = BTC_RBF_SEQUENCE;
-        } else if (formValues.bitcoinLockTime) {
-            // locktime is set, add sequence to inputs
-            sequence = BTC_LOCKTIME_SEQUENCE;
-        }
+        const sequence = getSequence({ account, formValues });
 
         // exclude unspendable utxos if coin control is not enabled
         // unspendable utxos are defined in `useSendForm` hook
@@ -83,7 +92,7 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
             ? account.addresses.change.filter(a => !prison[a.address])
             : account.addresses.change;
 
-        const params = {
+        const params: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
             account: {
                 path: account.path,
                 addresses: {

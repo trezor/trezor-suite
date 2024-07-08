@@ -8917,7 +8917,6 @@ __metadata:
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

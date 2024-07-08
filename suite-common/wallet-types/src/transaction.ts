@@ -104,7 +104,6 @@ type TxFinal = PrecomposedTransactionConnectResponseFinal & {
     feeLimit?: string;
     estimatedFeeLimit?: string;
     token?: TokenInfo;
-    rbf?: boolean;
 };
 
 // base of PrecomposedTransactionFinal

@@ -141,7 +141,6 @@ export const TransactionReviewOutputList = ({
                     .join(','),
                 outputsCount: precomposedForm.outputs.length,
                 broadcast: broadcastEnabled,
-                bitcoinRbf: !!options.includes('bitcoinRBF'),
                 bitcoinLockTime: !!options.includes('bitcoinLockTime'),
                 ethereumData: !!options.includes('ethereumData'),
                 rippleDestinationTag: !!options.includes('rippleDestinationTag'),

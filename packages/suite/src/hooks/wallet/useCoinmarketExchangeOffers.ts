@@ -303,7 +303,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
                 undefined,
                 undefined,
                 undefined,
-                ['broadcast', 'bitcoinRBF'],
+                ['broadcast'],
             );
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {

@@ -166,7 +166,7 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
                 outputs,
                 selectedFee: undefined,
                 setMaxOutputId,
-                options: ['bitcoinRBF', 'broadcast'],
+                options: ['broadcast'],
                 ethereumDataHex: rbfParams.ethereumData,
                 rbfParams,
                 baseFee,
