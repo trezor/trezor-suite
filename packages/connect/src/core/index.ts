@@ -105,7 +105,7 @@ const initDevice = async (devicePath?: string) => {
     // see initTransport.
     // if transportReconnect: true, initTransport does not wait to be finished. if there are multiple requested transports
     // in TrezorConnect.init, this method may emit UI.SELECT_DEVICE with wrong parameters (for example it thinks that it does not use weubsb although it should)
-    await _deviceList.transportFirstEventPromise;
+    await _deviceList.getTransportFirstEventPromise();
 
     if (!_deviceList) {
         // Need to check again if _deviceList is still available
