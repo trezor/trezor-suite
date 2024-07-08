@@ -37,9 +37,6 @@ const createMainWindow = (winBounds: WinBounds) => {
             webSecurity: !isDevEnv,
             allowRunningInsecureContent: isDevEnv,
             preload: path.join(__dirname, 'preload.js'),
-            // https://www.electronjs.org/blog/electron-20-0#default-changed-renderers-without-nodeintegration-true-are-sandboxed-by-default
-            // Node.js required for sentry-ipc, suite-desktop-api
-            sandbox: false,
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
     });
