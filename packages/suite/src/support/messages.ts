@@ -792,7 +792,7 @@ export default defineMessages({
         id: 'TR_REQUIRED_FIELD',
     },
     TR_PREORDER_NOW: {
-        defaultMessage: 'Pre-order now',
+        defaultMessage: 'Order now',
         id: 'TR_PREORDER_NOW',
     },
     TREZOR_SAFE_PROMO_TEXT: {
