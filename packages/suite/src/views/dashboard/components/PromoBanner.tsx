@@ -8,6 +8,7 @@ import { isWeb } from '@trezor/env-utils';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
+import { spacingsPx } from '@trezor/theme';
 
 const Container = styled.div`
     position: absolute;
@@ -48,7 +49,9 @@ const DesktopPromoContainer = styled.div`
 
 const MobilePromoContainer = styled.div`
     ${promoContainerCss}
-    justify-content: flex-end;
+    justify-content: start;
+    margin: ${spacingsPx.sm} ${spacingsPx.xxxl} auto auto;
+    padding-bottom: ${spacingsPx.sm};
 
     ${variables.SCREEN_QUERY.MOBILE} {
         flex-direction: column;
