@@ -14,6 +14,14 @@ const Nav = styled.nav`
     margin: ${spacingsPx.xs};
 `;
 
+const PasswordManagerNavItem = (props: NavigationItemProps) => {
+    const passwordManagerExperimentalFeature = useSelector(
+        selectHasExperimentalFeature(ExperimentalFeature.PasswordManager),
+    );
+
+    return passwordManagerExperimentalFeature ? <NavigationItem {...props} /> : null;
+};
+
 const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> = [
     {
         nameId: 'TR_DASHBOARD',
@@ -39,28 +47,16 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
         goToRoute: 'password-manager-index',
         routes: ['password-manager-index'],
         dataTest: '@suite/menu/password-manager',
+        CustomComponent: PasswordManagerNavItem,
     },
 ];
 
-export const Navigation = () => {
-    const passwordManagerExperimentalFeature = useSelector(
-        selectHasExperimentalFeature(ExperimentalFeature.PasswordManager),
-    );
+export const Navigation = () => (
+    <Nav>
+        {navItems.map(item => {
+            const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
 
-    return (
-        <Nav>
-            {navItems
-                .filter(item => {
-                    if (item.goToRoute === 'password-manager-index') {
-                        return passwordManagerExperimentalFeature;
-                    }
-                    return true;
-                })
-                .map(item => {
-                    const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
-
-                    return <Component key={item.nameId} {...item} />;
-                })}
-        </Nav>
-    );
-};
+            return <Component key={item.nameId} {...item} />;
+        })}
+    </Nav>
+);
