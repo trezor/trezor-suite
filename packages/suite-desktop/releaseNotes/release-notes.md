@@ -5,6 +5,7 @@
 ### 🎨 Improvements
 
 -   We’re introducing the new scalable Single-share and Multi-share Backup solutions.
+-   Updated firmware version for Trezor Safe 5.
 
 ### 🔧 Bug fixes
 
