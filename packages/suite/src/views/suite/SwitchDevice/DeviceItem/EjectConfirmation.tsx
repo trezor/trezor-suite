@@ -6,7 +6,7 @@ import { deviceActions } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { MouseEventHandler, ReactNode } from 'react';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { selectSuiteSettings } from '../../../../reducers/suite/suiteReducer';
 
 const Container = styled.div`
@@ -65,6 +65,7 @@ const EjectConfirmationContainer = ({
                 <Button
                     size="small"
                     icon="EJECT"
+                    iconSize={spacings.lg}
                     onClick={handleEject}
                     variant="primary"
                     isFullWidth
