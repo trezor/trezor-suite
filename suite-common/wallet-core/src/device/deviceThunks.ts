@@ -37,9 +37,9 @@ import {
     selectDevices,
 } from './deviceReducer';
 import { deviceActions, DEVICE_MODULE_PREFIX, DeviceConnectActionPayload } from './deviceActions';
-import { checkFirmwareAuthenticity } from '../firmware/firmwareThunks';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 import { selectAccountByKey } from '../accounts/accountsReducer';
+import { manualFirmwareHashCheckThunk } from '../firmware/manualFirmwareHashCheckThunk';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
@@ -328,7 +328,7 @@ export const authorizeDeviceThunk = createThunk<
         if (!isDeviceReady) return rejectWithValue({ error: 'device-not-ready', device });
 
         if (selectedCheckFirmwareAuthenticity) {
-            await dispatch(checkFirmwareAuthenticity());
+            await dispatch(manualFirmwareHashCheckThunk());
         }
 
         const deviceParams: Parameters<typeof TrezorConnect.getDeviceState>[0] = {

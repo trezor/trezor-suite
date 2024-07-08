@@ -1,12 +1,7 @@
 import { useDispatch } from 'react-redux';
 
 import { FirmwareStatus } from '@suite-common/suite-types';
-import {
-    checkFirmwareAuthenticity,
-    firmwareUpdate,
-    selectFirmware,
-    firmwareActions,
-} from '@suite-common/wallet-core';
+import { firmwareUpdate, selectFirmware, firmwareActions } from '@suite-common/wallet-core';
 import { DEVICE, FirmwareType, UI } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
@@ -121,7 +116,6 @@ export const useFirmware = () => {
         originalDevice,
         firmwareUpdate: (...params: Parameters<typeof firmwareUpdate>) =>
             dispatch(firmwareUpdate(...params)),
-        checkFirmwareAuthenticity: () => dispatch(checkFirmwareAuthenticity()),
         setStatus: (status: FirmwareStatus | 'error') =>
             dispatch(firmwareActions.setStatus(status)),
         resetReducer: () => dispatch(firmwareActions.resetReducer()),
