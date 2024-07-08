@@ -63,6 +63,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     private settings: ConnectSettings;
 
+    private transportCommonArgs;
+
     constructor({
         settings,
         messages,
@@ -72,71 +74,65 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
     }) {
         super();
         this.settings = settings;
-        // we fill in `transports` with a reasonable fallback in src/index.
-        // since web index is released into npm, we can not rely
-        // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
-
-        const transports: ConnectSettings['transports'] = [...(settings.transports || [])];
-        if (!transports.length) {
-            transports.push('BridgeTransport');
-        }
 
         const transportLogger = initLog('@trezor/transport', this.settings.debug);
 
         // todo: this should be passed from above
         const abortController = new AbortController();
 
-        const transportCommonArgs = {
+        this.transportCommonArgs = {
             messages,
             logger: transportLogger,
             signal: abortController.signal,
         };
+
+        // we fill in `transports` with a reasonable fallback in src/index.
+        // since web index is released into npm, we can not rely
+        // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
+        const transports = settings.transports?.length
+            ? settings.transports
+            : ['BridgeTransport' as const];
+
         // mapping of provided transports[] to @trezor/transport classes
-        transports.forEach(transportType => {
-            if (typeof transportType === 'string') {
-                switch (transportType) {
-                    case 'WebUsbTransport':
-                        this.transports.push(new WebUsbTransport(transportCommonArgs));
-                        break;
-                    case 'NodeUsbTransport':
-                        this.transports.push(new NodeUsbTransport(transportCommonArgs));
-                        break;
-                    case 'BridgeTransport':
-                        this.transports.push(
-                            new BridgeTransport({
-                                latestVersion: getBridgeInfo().version.join('.'),
-                                ...transportCommonArgs,
-                            }),
-                        );
-                        break;
-                    case 'UdpTransport':
-                        this.transports.push(new UdpTransport(transportCommonArgs));
-                        break;
-                    default:
-                        throw ERRORS.TypedError(
-                            'Runtime',
-                            `DeviceList.init: transports[] of unexpected type: ${transportType}`,
-                        );
-                }
-            } else if (typeof transportType === 'function' && 'prototype' in transportType) {
-                const transportInstance = new transportType(transportCommonArgs);
-                if (isTransportInstance(transportInstance)) {
-                    this.transports.push(transportInstance);
-                }
-            } else if (isTransportInstance(transportType)) {
-                // custom Transport might be initialized without messages, update them if so
-                if (!transportType.getMessage()) {
-                    transportType.updateMessages(messages);
-                }
-                this.transports.push(transportType);
-            } else {
-                // runtime check
-                throw ERRORS.TypedError(
-                    'Runtime',
-                    'DeviceList.init: transports[] of unexpected type',
-                );
+        this.transports = transports.map(this.createTransport.bind(this));
+    }
+
+    private createTransport(transportType: NonNullable<ConnectSettings['transports']>[number]) {
+        const { transportCommonArgs } = this;
+
+        if (typeof transportType === 'string') {
+            switch (transportType) {
+                case 'WebUsbTransport':
+                    return new WebUsbTransport(transportCommonArgs);
+                case 'NodeUsbTransport':
+                    return new NodeUsbTransport(transportCommonArgs);
+                case 'BridgeTransport':
+                    return new BridgeTransport({
+                        latestVersion: getBridgeInfo().version.join('.'),
+                        ...transportCommonArgs,
+                    });
+                case 'UdpTransport':
+                    return new UdpTransport(transportCommonArgs);
             }
-        });
+        } else if (typeof transportType === 'function' && 'prototype' in transportType) {
+            const transportInstance = new transportType(transportCommonArgs);
+            if (isTransportInstance(transportInstance)) {
+                return transportInstance;
+            }
+        } else if (isTransportInstance(transportType)) {
+            // custom Transport might be initialized without messages, update them if so
+            if (!transportType.getMessage()) {
+                transportType.updateMessages(transportCommonArgs.messages);
+            }
+
+            return transportType;
+        }
+
+        // runtime check
+        throw ERRORS.TypedError(
+            'Runtime',
+            `DeviceList.init: transports[] of unexpected type: ${transportType}`,
+        );
     }
 
     /**
