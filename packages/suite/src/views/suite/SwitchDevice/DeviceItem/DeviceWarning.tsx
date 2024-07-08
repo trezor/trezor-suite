@@ -2,6 +2,7 @@ import * as deviceUtils from '@suite-common/suite-utils';
 
 import { NotificationCard, Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
+import { useDevice } from 'src/hooks/suite';
 
 interface DeviceWarningProps {
     needsAttention: boolean;
@@ -16,6 +17,7 @@ export const DeviceWarning = ({
 }: DeviceWarningProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
     const deviceStatusMessage = deviceUtils.getDeviceNeedsAttentionMessage(deviceStatus);
+    const isLocked = useDevice().isLocked();
 
     return (
         <>
@@ -26,6 +28,7 @@ export const DeviceWarning = ({
                         children: <Translation id="TR_SOLVE_ISSUE" />,
                         onClick: onSolveIssueClick,
                         'data-test': `@switch-device/${device.path}/solve-issue-button`,
+                        isDisabled: isLocked,
                     }}
                 >
                     {deviceStatusMessage && <Translation id={deviceStatusMessage} />}
