@@ -5,7 +5,7 @@ import { createTimeoutPromise } from '@trezor/utils';
 import { DeviceList } from '../device/DeviceList';
 import { UI, DEVICE, createUiMessage, createDeviceMessage, CoreEventMessage } from '../events';
 import {
-    getBinary,
+    getBinaryForFirmwareUpgrade,
     uploadFirmware,
     getLanguage,
     calculateFirmwareHash,
@@ -201,7 +201,7 @@ const getBinaryHelper = (
         }),
     );
 
-    return getBinary({
+    return getBinaryForFirmwareUpgrade({
         // features and releases are used for sanity checking
         features: device.features,
         releases: getReleases(device.features?.internal_model),

@@ -732,7 +732,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.features.major_version,
             this.features.minor_version,
             this.features.patch_version,
-        ] satisfies [number, number, number];
+        ] satisfies VersionArray;
     }
 
     atLeast(versions: string[] | string) {
