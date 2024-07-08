@@ -249,8 +249,8 @@ export type CoinJoinRequest = {
     fee_rate: number;
     no_fee_threshold: number;
     min_registrable_amount: number;
-    mask_public_key: string;
-    signature: string;
+    mask_public_key?: string;
+    signature?: string;
 };
 
 // SignTx
@@ -1675,6 +1675,7 @@ export type Features = {
     unit_packaging?: number;
     haptic_feedback?: boolean;
     recovery_type?: RecoveryType;
+    optiga_sec?: number;
 };
 
 // LockDevice
