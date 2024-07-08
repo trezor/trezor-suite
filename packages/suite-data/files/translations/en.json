@@ -1622,7 +1622,7 @@
   "TR_SEARCH_FAIL": "Search failed.",
   "TR_SEARCH_TOKENS": "Search tokens",
   "TR_SEARCH_TRANSACTIONS": "Search transactions",
-  "TR_SEARCH_UTXOS": "Address, transaction ID, or label",
+  "TR_SEARCH_UTXOS": "Search for a specific address, transaction ID, or label",
   "TR_SECURITY_CHECKPOINT_GOT_SEED": "Do you have your wallet backup?",
   "TR_SECURITY_CHECK_HOLOGRAM": "Please note that device packaging, including holograms and security seals, have been updated over time. You can verify packaging details <packaging>here</packaging>. Ensure that your device was purchased from either the official Trezor Shop or from one of <reseller>our trusted sellers</reseller>. Otherwise, there's a risk that your device might be a counterfeit. If you suspect that your device is not genuine, please  <support>contact Trezor support</support>.",
   "TR_SECURITY_FEATURES_COMPLETED_N": "Security ({n} of {m})",
