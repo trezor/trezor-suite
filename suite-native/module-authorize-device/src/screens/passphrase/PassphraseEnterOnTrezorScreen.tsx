@@ -4,12 +4,9 @@ import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    AppTabsRoutes,
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
@@ -23,7 +20,7 @@ import {
 } from '@suite-native/device-authorization';
 import TrezorConnect from '@trezor/connect';
 
-import { useAuthorizationSuccess } from '../../usePassphraseAuthorizationSuccess';
+import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
 
@@ -56,7 +53,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
 
     // If this screen was present during authorizing device with passphrase for some feature,
     // on success, this hook will close the stack and go back
-    useAuthorizationSuccess();
+    useRedirectOnPassphraseCompletion();
 
     useEffect(() => {
         if (isDiscoveryActive) {
@@ -67,12 +64,6 @@ export const PassphraseEnterOnTrezorScreen = () => {
     const handleCancel = () => {
         if (isCreatingNewWalletInstance) {
             dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
         } else {
             TrezorConnect.cancel();
             handleGoBack();

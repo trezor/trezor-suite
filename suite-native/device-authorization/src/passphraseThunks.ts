@@ -8,6 +8,8 @@ import {
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
+import { finishPassphraseFlow } from './deviceAuthorizationSlice';
+
 const PASSPHRASE_MODULE_PREFIX = '@suite-native/device';
 
 export const cancelPassphraseAndSelectStandardDeviceThunk = createThunk(
@@ -24,6 +26,11 @@ export const cancelPassphraseAndSelectStandardDeviceThunk = createThunk(
         );
 
         TrezorConnect.cancel();
+        // This will trigger useRedirectOnPassphraseCompletion hook which will redirect to previous stack
+        dispatch(finishPassphraseFlow());
+
+        if (device === devices[standardWalletDeviceIndex]) return;
+
         dispatch(selectDeviceThunk({ device: devices[standardWalletDeviceIndex] }));
 
         const settings = extra.selectors.selectSuiteSettings(getState());
@@ -33,12 +40,19 @@ export const cancelPassphraseAndSelectStandardDeviceThunk = createThunk(
     },
 );
 
-export const verifyPassphraseOnEmptyWalletThunk = createThunk(
+export type VerifyPassphraseOnEmptyWalletError = {
+    error: 'action-cancelled' | 'no-device' | 'passphrase-mismatch';
+};
+export const verifyPassphraseOnEmptyWalletThunk = createThunk<
+    boolean,
+    void,
+    { rejectValue: VerifyPassphraseOnEmptyWalletError }
+>(
     `${PASSPHRASE_MODULE_PREFIX}/verifyPassphraseOnEmptyWallet`,
-    async (_, { getState, rejectWithValue, fulfillWithValue }) => {
+    async (_, { getState, rejectWithValue, fulfillWithValue, dispatch }) => {
         const device = selectDevice(getState());
 
-        if (!device) return;
+        if (!device) return rejectWithValue({ error: 'no-device' });
 
         const response = await TrezorConnect.getDeviceState({
             device: {
@@ -53,8 +67,14 @@ export const verifyPassphraseOnEmptyWalletThunk = createThunk(
         });
 
         if (response.success && response.payload.state !== device.state) {
-            return rejectWithValue(false);
+            return rejectWithValue({ error: 'passphrase-mismatch' });
         }
+
+        if (!response.success) {
+            return rejectWithValue({ error: 'action-cancelled' });
+        }
+
+        dispatch(finishPassphraseFlow());
 
         return fulfillWithValue(true);
     },
