@@ -267,7 +267,7 @@ export const T3T1PromoBanner = () => {
                         onClick={onPreorderNow}
                     >
                         <ButtonShopNow variant="secondary">
-                            <Translation id="TR_PREORDER_NOW" />
+                            <Translation id="TR_ORDER_NOW" />
                         </ButtonShopNow>
                     </LinkButtonShopNow>
                     <ButtonClose icon="CROSS_LIGHT" variant="secondary" onClick={onCloseBanner} />
