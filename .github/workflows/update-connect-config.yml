@@ -1,4 +1,4 @@
-name: [Check] Update Config and Create PR
+name: "[Check] Update Config and Create PR"
 
 on:
   schedule:
