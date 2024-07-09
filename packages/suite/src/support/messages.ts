@@ -791,9 +791,9 @@ export default defineMessages({
         defaultMessage: 'Required',
         id: 'TR_REQUIRED_FIELD',
     },
-    TR_PREORDER_NOW: {
+    TR_ORDER_NOW: {
         defaultMessage: 'Order now',
-        id: 'TR_PREORDER_NOW',
+        id: 'TR_ORDER_NOW',
     },
     TREZOR_SAFE_PROMO_TEXT: {
         id: 'TREZOR_SAFE_PROMO_TEXT',
