@@ -97,8 +97,8 @@ const otherDevices = {
     tests: [
         {
             ...groups.api,
-            'web-environment': true,
-            'node-environment': true,
+            webEnvironment: true,
+            nodeEnvironment: true,
         },
         {
             ...groups.management,
@@ -107,8 +107,8 @@ const otherDevices = {
                 // getFeatures test is not abstract enough to serve all models
                 .filter(m => m !== 'getFeatures')
                 .join(','),
-            'web-environment': false,
-            'node-environment': true,
+            webEnvironment: false,
+            nodeEnvironment: true,
         },
         {
             ...groups.btcOthers,
@@ -117,38 +117,38 @@ const otherDevices = {
                 // getAddress (decred) does not work for model R
                 .filter(m => m !== 'getAddress')
                 .join(','),
-            'web-environment': false,
-            'node-environment': true,
+            webEnvironment: false,
+            nodeEnvironment: true,
         },
         {
             ...groups.stellar,
-            'web-environment': false,
-            'node-environment': true,
+            webEnvironment: false,
+            nodeEnvironment: true,
         },
         {
             ...groups.cardano,
-            'web-environment': false,
-            'node-environment': true,
+            webEnvironment: false,
+            nodeEnvironment: true,
         },
         {
             ...groups.ethereum,
-            'web-environment': false,
-            'node-environment': true,
+            webEnvironment: false,
+            nodeEnvironment: true,
         },
         {
             ...groups.ripple,
-            'web-environment': false,
-            'node-environment': true,
+            webEnvironment: false,
+            nodeEnvironment: true,
         },
         {
             ...groups.tezos,
-            'web-environment': false,
-            'node-environment': true,
+            webEnvironment: false,
+            nodeEnvironment: true,
         },
         {
             ...groups.binance,
-            'web-environment': false,
-            'node-environment': true,
+            webEnvironment: false,
+            nodeEnvironment: true,
         },
     ],
 };

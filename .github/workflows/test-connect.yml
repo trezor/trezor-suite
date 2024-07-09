@@ -91,10 +91,10 @@ jobs:
     name: daily-${{ matrix.name }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
-      test-pattern: ${{ matrix.pattern }}
+      testPattern: ${{ matrix.pattern }}
       methods: ${{ matrix.methods }}
-      tests-firmware: ${{ matrix.firmware }}
-      test-description: ${{ matrix.name }}
+      testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.name }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
@@ -105,10 +105,10 @@ jobs:
     name: legacy-canary-${{ matrix.name }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
-      test-pattern: ${{ matrix.pattern }}
+      testPattern: ${{ matrix.pattern }}
       methods: ${{ matrix.methods }}
-      tests-firmware: ${{ matrix.firmware }}
-      test-description: ${{ matrix.name }}-${{ matrix.firmware }}
+      testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.legacyCanaryFirmwareMatrix) }}
@@ -119,13 +119,13 @@ jobs:
     name: other-devices-${{ matrix.name }}-${{ matrix.model }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
-      test-pattern: ${{ matrix.pattern }}
+      testPattern: ${{ matrix.pattern }}
       methods: ${{ matrix.methods }}
-      tests-firmware: ${{ matrix.firmware }}
-      test-firmware-model: ${{ matrix.model }}
-      node-environment: ${{ matrix.node-environment }}
-      web-environment: ${{ matrix.web-environment }}
-      test-description: ${{ matrix.name }}-${{ matrix.firmware }}-${{ matrix.model }}
+      testsFirmware: ${{ matrix.firmware }}
+      testFirmwareModel: ${{ matrix.model }}
+      nodeEnvironment: ${{ matrix.nodeEnvironment }}
+      webEnvironment: ${{ matrix.webEnvironment }}
+      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}-${{ matrix.model }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}
