@@ -29,8 +29,26 @@ export const Select: StoryObj<SelectProps> = {
 
         return <SelectComponent {...args} value={option} onChange={setOption} options={options} />;
     },
+    args: {
+        label: 'Label',
+        isClean: false,
+        isDisabled: false,
+        isSearchable: false,
+        hasBottomPadding: true,
+        size: 'large',
+        minValueWidth: 'initial',
+        menuIsOpen: undefined,
+        useKeyPressScroll: undefined,
+    },
     argTypes: {
-        isSearchable: {
+        label: {
+            table: {
+                type: {
+                    summary: 'ReactNode',
+                },
+            },
+        },
+        isClean: {
             control: {
                 type: 'boolean',
             },
@@ -40,23 +58,46 @@ export const Select: StoryObj<SelectProps> = {
                 type: 'boolean',
             },
         },
+        isSearchable: {
+            control: {
+                type: 'boolean',
+            },
+        },
         bottomText: {
             control: { type: 'text' },
         },
-        size: {
+        hasBottomPadding: {
             control: {
-                options: { 'Large (default)': null, Small: 'small' },
-                type: 'radio',
+                type: 'boolean',
             },
         },
-        label: {
+        size: {
+            control: {
+                type: 'radio',
+            },
+            options: ['large', 'small'],
+        },
+        minValueWidth: {
             control: { type: 'text' },
+        },
+        menuIsOpen: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        useKeyPressScroll: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        inputState: {
+            control: {
+                type: 'radio',
+            },
+            options: [null, 'warning', 'error'],
         },
         placeholder: {
             control: { type: 'text' },
         },
-    },
-    args: {
-        label: 'Label',
     },
 };

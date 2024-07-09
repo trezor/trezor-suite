@@ -118,7 +118,8 @@ const Option = styled.div<{ $isSelected: boolean; $isDisabled: boolean }>`
         $isDisabled &&
         css`
             color: ${({ theme }) => theme.textDisabled};
-            pointer-events: none;
+            pointer-events: auto;
+            cursor: not-allowed;
         `}
 `;
 
@@ -145,7 +146,7 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
     options,
     selectedOption,
     onChange,
-    isDisabled,
+    isDisabled = false,
     isFullWidth,
     className,
     ...rest
@@ -160,7 +161,7 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
 
     const handleOptionClick = useCallback(
         (option: Option<ValueTypes>) => () => {
-            if (option.value === selectedOptionIn) {
+            if (isDisabled || option.value === selectedOptionIn) {
                 return;
             }
 
@@ -168,7 +169,7 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
 
             onChange?.(option?.value as any);
         },
-        [selectedOptionIn, onChange],
+        [isDisabled, selectedOptionIn, onChange],
     );
 
     const handleKeyboardNav = (e: KeyboardEvent) => {

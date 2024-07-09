@@ -12,9 +12,47 @@ const options = [
 
 const meta: Meta = {
     title: 'Form/SelectBar',
-    args: { selectedOption: 'low', label: 'fee' },
+    args: {
+        label: 'fee',
+        options,
+        selectedOption: 'low',
+        isDisabled: false,
+        isFullWidth: undefined,
+    },
+    argTypes: {
+        label: {
+            control: {
+                type: 'text',
+            },
+        },
+        options: {
+            control: {
+                type: 'array',
+            },
+            table: {
+                type: {
+                    summary: 'Array<{ label: string; value: number }>',
+                },
+            },
+        },
+        selectedOption: {
+            control: {
+                type: 'text',
+            },
+        },
+        isDisabled: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        isFullWidth: {
+            control: {
+                type: 'boolean',
+            },
+        },
+    },
     component: SelectBarComponent,
-} as Meta;
+} as unknown as Meta;
 export default meta;
 
 export const SelectBar: StoryObj<SelectBarProps<string>> = {
@@ -24,13 +62,5 @@ export const SelectBar: StoryObj<SelectBarProps<string>> = {
         const setOption = (selectedOption: string) => updateArgs({ selectedOption });
 
         return <SelectBarComponent {...args} onChange={setOption} options={options} />;
-    },
-    argTypes: {
-        label: {
-            type: 'string',
-        },
-        className: { control: { disable: true } },
-        options: { control: { disable: true } },
-        selectedOption: { control: { disable: true } },
     },
 };

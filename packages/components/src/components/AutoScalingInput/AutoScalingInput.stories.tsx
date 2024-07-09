@@ -1,49 +1,37 @@
-import styled from 'styled-components';
-import { AutoScalingInput as Input } from './AutoScalingInput';
-import { Meta } from '@storybook/react';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-`;
-
-const BorderAutoScalingInput = styled(Input)`
-    padding: 1px 5px;
-    border-radius: 3px;
-    border-style: solid;
-    border-width: 1px;
-`;
-
-const BorderlessAutoScalingInput = styled(Input)`
-    padding: 1px 5px;
-    border-style: solid;
-    border-width: 0;
-    background-color: #ccc;
-`;
+import { ForwardRefExoticComponent, RefAttributes } from 'react';
+import { AutoScalingInput as AutoScalingInputComponent, Props } from './AutoScalingInput';
+import { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta = {
     title: 'Form/AutoScalingInput',
+    component: AutoScalingInputComponent,
 };
 export default meta;
 
-export const AutoScalingInput = {
-    render: () => (
-        <>
-            <Wrapper>
-                <div>Border</div>
-                <BorderAutoScalingInput minWidth={130} />
-                <BorderAutoScalingInput
-                    minWidth={120}
-                    placeholder="Chancellor on the Brink of Second Bailout for Banks"
-                />
-                <div>Borderless</div>
-                <BorderlessAutoScalingInput minWidth={130} />
-                <BorderlessAutoScalingInput
-                    minWidth={120}
-                    placeholder="Chancellor on the Brink of Second Bailout for Banks"
-                />
-            </Wrapper>
-        </>
-    ),
+export const AutoScalingInput: StoryObj<
+    ForwardRefExoticComponent<Omit<Props, 'ref'> & RefAttributes<HTMLInputElement>>
+> = {
+    render: props => <AutoScalingInputComponent {...props} />,
+    args: {
+        value: undefined,
+        minWidth: 120,
+        placeholder: 'Chancellor on the Brink of Second Bailout for Banks',
+        disabled: false,
+    },
+    argTypes: {
+        value: {
+            control: { type: 'text' },
+        },
+        minWidth: {
+            control: { type: 'number' },
+        },
+        placeholder: {
+            control: { type: 'text' },
+        },
+        disabled: {
+            control: {
+                type: 'boolean',
+            },
+        },
+    },
 };

@@ -22,6 +22,13 @@ export const Button: StoryObj<ButtonProps> = {
         ...framePropsStory.args,
     },
     argTypes: {
+        children: {
+            table: {
+                type: {
+                    summary: 'ReactNode',
+                },
+            },
+        },
         variant: {
             control: {
                 type: 'radio',
@@ -34,20 +41,44 @@ export const Button: StoryObj<ButtonProps> = {
             },
             options: ['large', 'medium', 'small', 'tiny'],
         },
+        isDisabled: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        isLoading: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        isFullWidth: {
+            control: {
+                type: 'boolean',
+            },
+        },
         icon: {
-            options: variables.ICONS,
+            options: {
+                'No icon': null,
+                ...variables.ICONS.reduce((acc, icon) => ({ ...acc, [icon]: icon }), {}),
+            },
             control: {
                 type: 'select',
             },
         },
-        iconSize: { control: 'number' },
+        iconSize: {
+            control: {
+                type: 'number',
+            },
+        },
         iconAlignment: {
             control: {
                 type: 'radio',
             },
             options: ['left', 'right'],
         },
-        title: { control: 'text' },
+        title: {
+            control: { type: 'text' },
+        },
         ...framePropsStory.argTypes,
     },
 };

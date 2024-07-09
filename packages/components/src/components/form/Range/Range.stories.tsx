@@ -16,18 +16,49 @@ export const Range: StoryObj<RangeProps> = {
         return <RangeComponent {...args} onChange={e => updateArgs({ value: e.target.value })} />;
     },
     args: {
-        max: 100,
-        min: 0,
-        value: 21,
+        disabled: false,
         labels: [
             { component: '0', value: 0 },
             { component: '50', value: 50 },
             { component: '100', value: 100 },
         ],
+        max: 100,
+        min: 0,
+        value: 21,
     },
     argTypes: {
         disabled: {
-            control: 'boolean',
+            control: {
+                type: 'boolean',
+            },
+        },
+        labels: {
+            control: {
+                type: 'array',
+            },
+            table: {
+                type: {
+                    summary: 'Array<{ component: string; value: number }>',
+                },
+            },
+        },
+        max: {
+            control: {
+                type: 'number',
+            },
+        },
+        min: {
+            control: {
+                type: 'number',
+            },
+        },
+        value: {
+            control: {
+                type: 'number',
+            },
+        },
+        step: {
+            control: { type: 'text' },
         },
         className: {
             control: false,

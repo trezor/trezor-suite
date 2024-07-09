@@ -217,6 +217,13 @@ const Wrapper = styled.div<WrapperProps>`
         border: none;
         z-index: ${zIndices.base};
     }
+
+    ${({ $isDisabled }) =>
+        $isDisabled &&
+        css`
+            pointer-events: auto;
+            cursor: not-allowed;
+        `}
 `;
 
 const SelectLabel = styled(Label)`
@@ -272,7 +279,7 @@ export const Select = ({
     components,
     onChange,
     placeholder,
-    isDisabled,
+    isDisabled = false,
     'data-test': dataTest,
     ...props
 }: SelectProps) => {
