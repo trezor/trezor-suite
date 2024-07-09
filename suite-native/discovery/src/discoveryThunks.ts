@@ -164,9 +164,10 @@ const getCardanoSupportedAccountTypesThunk = createThunk(
         if (!device) {
             return undefined;
         }
-        const availableCardanoDerivationsResponse = await requestDeviceAccess(() =>
-            dispatch(getAvailableCardanoDerivationsThunk({ deviceState, device })).unwrap(),
-        );
+        const availableCardanoDerivationsResponse = await requestDeviceAccess({
+            deviceCallback: () =>
+                dispatch(getAvailableCardanoDerivationsThunk({ deviceState, device })).unwrap(),
+        });
 
         if (availableCardanoDerivationsResponse.success) {
             return availableCardanoDerivationsResponse.payload;
@@ -302,22 +303,23 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
         const accountPath = network.bip43Path.replace('i', index.toString());
 
         // Take exclusive access to the device and hold it until fetching of the descriptors is done.
-        const deviceAccessResponse = await requestDeviceAccess(() =>
-            dispatch(
-                fetchBundleDescriptorsThunk([
-                    {
-                        path: accountPath,
-                        coin: network.symbol,
-                        index,
-                        accountType,
-                        networkType: network.networkType,
-                        derivationType: getDerivationType(accountType),
-                        suppressBackupWarning: true,
-                        skipFinalReload: true,
-                    },
-                ]),
-            ).unwrap(),
-        );
+        const deviceAccessResponse = await requestDeviceAccess({
+            deviceCallback: async () =>
+                await dispatch(
+                    fetchBundleDescriptorsThunk([
+                        {
+                            path: accountPath,
+                            coin: network.symbol,
+                            index,
+                            accountType,
+                            networkType: network.networkType,
+                            derivationType: getDerivationType(accountType),
+                            suppressBackupWarning: true,
+                            skipFinalReload: true,
+                        },
+                    ]),
+                ).unwrap(),
+        });
 
         if (!deviceAccessResponse.success) {
             return undefined;
@@ -425,9 +427,9 @@ const discoverNetworkBatchThunk = createThunk(
         }
 
         // Take exclusive access to the device and hold it until is the fetching of the descriptors done.
-        const deviceAccessResponse = await requestDeviceAccess(() =>
-            dispatch(fetchBundleDescriptorsThunk(chunkBundle)).unwrap(),
-        );
+        const deviceAccessResponse = await requestDeviceAccess({
+            deviceCallback: () => dispatch(fetchBundleDescriptorsThunk(chunkBundle)).unwrap(),
+        });
 
         if (!deviceAccessResponse.success) {
             return;
