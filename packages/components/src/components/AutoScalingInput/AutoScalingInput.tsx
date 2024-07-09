@@ -43,10 +43,17 @@ const createHandleOnChangeAndApplyNewWidth =
         onChange?.(event);
     };
 
-interface Props
+export interface Props
     extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     minWidth: number;
 }
+
+const StyledInput = styled.input`
+    &:disabled {
+        pointer-events: auto;
+        cursor: not-allowed;
+    }
+`;
 
 /**
  * TODO: This is Labeling Input and this maybe consolidated with `withEditable`
@@ -104,7 +111,7 @@ export const AutoScalingInput = forwardRef<HTMLInputElement, Props>(
                     value={props.placeholder}
                     readOnly
                 />
-                <input
+                <StyledInput
                     {...props}
                     ref={innerRef}
                     type="text"

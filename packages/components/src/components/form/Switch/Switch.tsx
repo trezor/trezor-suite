@@ -40,7 +40,7 @@ const Container = styled.div<{
     transition:
         background 0.2s ease 0s,
         ${focusStyleTransition};
-    cursor: ${({ $isDisabled }) => !$isDisabled && 'pointer'};
+    cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
     box-sizing: border-box;
     border: 1px solid
         ${({ theme, $isAlert }) => `${$isAlert ? theme.borderAlertRed : 'transparent'}`};
@@ -123,7 +123,7 @@ export interface SwitchProps {
 
 export const Switch = ({
     onChange,
-    isDisabled,
+    isDisabled = false,
     isAlert,
     isSmall,
     label,

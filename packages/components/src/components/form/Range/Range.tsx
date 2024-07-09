@@ -83,6 +83,11 @@ const Input = styled.input<{ $trackStyle?: CSSObject; disabled?: boolean }>`
             ${focusStyle}
         }
     }
+
+    &:disabled {
+        pointer-events: auto;
+        cursor: not-allowed;
+    }
 `;
 
 const Label = styled.div<{ disabled?: boolean; $width?: number }>`
@@ -123,7 +128,7 @@ export interface RangeProps {
 
 export const Range = ({
     className,
-    disabled,
+    disabled = false,
     labels,
     onLabelClick,
     trackStyle,

@@ -27,14 +27,41 @@ export const Switch: StoryObj<SwitchProps> = {
         );
     },
     args: {
-        isSmall: false,
-        isDisabled: false,
+        isAlert: false,
         isChecked: false,
+        isDisabled: false,
+        isSmall: false,
         label: 'Headline',
         labelPosition: 'right',
-        isAlert: false,
     },
     argTypes: {
+        isAlert: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        isChecked: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        isDisabled: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        isSmall: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        label: {
+            table: {
+                type: {
+                    summary: 'ReactNode',
+                },
+            },
+        },
         labelPosition: {
             options: ['left', 'right'],
             control: {
