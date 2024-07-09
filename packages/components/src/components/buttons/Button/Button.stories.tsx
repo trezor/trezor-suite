@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Button as ButtonComponent, ButtonProps } from './Button';
 import { framePropsStory } from '../../common/frameProps';
+import { variables } from '../../../config';
 
 const meta: Meta = {
     title: 'Buttons/Button',
@@ -33,7 +34,12 @@ export const Button: StoryObj<ButtonProps> = {
             },
             options: ['large', 'medium', 'small', 'tiny'],
         },
-        icon: { control: 'text' },
+        icon: {
+            options: variables.ICONS,
+            control: {
+                type: 'select',
+            },
+        },
         iconSize: { control: 'number' },
         iconAlignment: {
             control: {
