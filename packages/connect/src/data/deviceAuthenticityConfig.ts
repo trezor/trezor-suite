@@ -7,7 +7,7 @@ import { DeviceAuthenticityConfig } from './deviceAuthenticityConfigTypes';
  */
 export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
     version: 1,
-    timestamp: '2024-05-31T12:00:00+00:00',
+    timestamp: '2024-07-09T12:00:00+00:00',
     T2B1: {
         rootPubKeys: [
             '04ca97480ac0d7b1e6efafe518cd433cec2bf8ab9822d76eafd34363b55d63e60380bff20acc75cde03cffcb50ab6f8ce70c878e37ebc58ff7cca0a83b16b15fa5',
@@ -37,6 +37,9 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             '0445f15e55a044b1516a7b2cc13dd4e9ea415336f622b9185e4ffc19e2b51627637491195c85f87ac2582ac4a8d89a33983f0700d042fd7e57d55d346f4fbc832c',
             '042b9cede77aa38f1d824ebd5e13129c8c1c163f3ea74b5251e420831ec17329be741b2af96cc6df0c253e4bffdac23f4bb373e53ae1821587ce0ecae476d2b95c',
             '040cea26562b3763dddd741f4428f37cdc931dbd2db9665888505c2be42868ee2d739aed1d0a54c116b889f5d1ff57dae8dcc1e595cf6d69e71853a8053449ab9f',
+            '040e656b714a6d5dd579dbb15948335fbe2d4acbbf2943209cf4dcd662fc0fec577c746fad12a0c5b0eae0c1de2f723c9ac3fa3bdfda93f8f6fd167a14c1805fbe',
+            '040c87f12d2006b44e9b86f66eb9d51edb18bc3c1884ea678b41a2e0b908ba882b648a1ffd70e31436a30aeab7fe569b6dbbb4d042973d7d06a6ee764f92a72843',
+            '044130f0531edb1db0d399206ed4359d9070f4e8ba38193098ddb3d2af00924847d843ee0961346af65647ae81949cc144b0f32c54be2e3a86effa98dd86ebadd0',
         ],
         debug: {
             rootPubKeys: [
@@ -55,6 +58,9 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             '045b785b703810363deeadc0faa5a7388d8385f5e4f9170a3c27d3d2506bf9090d5b09044fbad6b906446d8cdb754b65869e8992b26a344e01ecff75844fe5a3d6',
             '046442ece98b1cd13389b6eda3235e2848becc655db564897b2dc0862580f69b29be59dc30f92820f41a7a493b90623e66e1ee8529dbfd60d50aed97b46c4b8f64',
             '0416960078e1d2b44df717ff5445ec76f4247333375982c5ae59b3bc223371f3cf81e7c182fd1ca36c95977070e2ff46f998bff3f00ab0de266edfdd430aea56b8',
+            '041aec4007b431c7b5978c126f7e9015e7601f47e835fe13e2028883a45fc8c5d039641474b8cad1e53c4c169fe7d1905402307850ada15b788353ca7c7000939b',
+            '04debf2a916d0c5209220ca6d202aefa174913b345d1cfd21a85ddc160626c70a559ac0ec1172041f679d99e3e1d6a30b84b04ed25ba47f707e9c2450dd4d8d1da',
+            '045d6d5119d95f29eba79d230df9c5531e0b7c030ba9e7de0cf48a2eb82c57f0a927977f0e1f23bda144d1e90f63b62dc86c14d46bee7bf676619b3db23dc17935',
         ],
         debug: {
             rootPubKeys: [
