@@ -1,13 +1,11 @@
-### 🚀 New features
-
--   Trezor Suite welcomes our newest family member - Trezor Safe 5.
-
 ### 🎨 Improvements
 
--   We’re introducing the new scalable Single-share and Multi-share Backup solutions.
+-   The "Remember Wallet" feature has been enhanced and renamed to "View-Only Wallet" for better discoverability and clarity.
+-   The wallet switcher has been redesigned for a smoother experience.
+-   The passphrase is now integrated into the wallet switcher, eliminating prompts at every device connection.
+-   Token management has been revamped with manual hide/unhide options, enhanced search functionality, and more.
+-   Staked ETH balance is now included in the Dashboard Portfolio.
 
 ### 🔧 Bug fixes
 
--   Historical fiat rates for ERC20 tokens are no longer missing.
--   Suite no longer redundantly prompts for a passphrase when sending SOL transaction.
--   Multiple smaller fixes and improvements.
+-   Various small improvements and bug fixes.
