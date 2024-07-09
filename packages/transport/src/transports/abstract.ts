@@ -30,7 +30,7 @@ export type ReleaseInput = {
     onClose?: boolean;
 };
 
-type DeviceDescriptorDiff = {
+export type DeviceDescriptorDiff = {
     didUpdate: boolean;
     descriptors: Descriptor[];
     connected: Descriptor[];

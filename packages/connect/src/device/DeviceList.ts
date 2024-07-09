@@ -11,6 +11,7 @@ import {
     Descriptor,
     TRANSPORT_ERROR,
     isTransportInstance,
+    DeviceDescriptorDiff,
 } from '@trezor/transport';
 import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
@@ -143,6 +144,115 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         this.transports = transportTypes.map(this.createTransport.bind(this));
     }
 
+    private onTransportUpdate(diff: DeviceDescriptorDiff) {
+        diff.disconnected.forEach(descriptor => {
+            const path = descriptor.path.toString();
+            const device = this.devices[path];
+            if (device) {
+                device.disconnect();
+                delete this.devices[path];
+                this.emit(DEVICE.DISCONNECT, device.toMessageObject());
+            }
+        });
+
+        diff.connected.forEach(async descriptor => {
+            // creatingDevicesDescriptors is needed, so that if *during* creating of Device,
+            // other application acquires the device and changes the descriptor,
+            // the new unacquired device has correct descriptor
+            const path = descriptor.path.toString();
+            this.creatingDevicesDescriptors[path] = descriptor;
+
+            const penalty = this.getAuthPenalty();
+
+            if (this.priority || penalty) {
+                await resolveAfter(501 + penalty + 100 * this.priority, null).promise;
+            }
+            if (this.creatingDevicesDescriptors[path].session == null) {
+                await this._createAndSaveDevice(descriptor);
+            } else {
+                const device = this._createUnacquiredDevice(descriptor);
+                this.devices[path] = device;
+                this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
+            }
+        });
+
+        diff.acquiredElsewhere.forEach((descriptor: Descriptor) => {
+            const path = descriptor.path.toString();
+            const device = this.devices[path];
+
+            if (device) {
+                device.featuresNeedsReload = true;
+                device.interruptionFromOutside();
+            }
+        });
+
+        diff.released.forEach(descriptor => {
+            const path = descriptor.path.toString();
+            const device = this.devices[path];
+            const methodStillRunning = !device?.commands?.isDisposed();
+
+            if (device && methodStillRunning) {
+                device.keepSession = false;
+            }
+        });
+
+        diff.releasedElsewhere.forEach(async descriptor => {
+            const path = descriptor.path.toString();
+            const device = this.devices[path];
+            await resolveAfter(1000, null).promise;
+
+            if (device) {
+                // after device was released in another window wait for a while (the other window might
+                // have the intention of acquiring it again)
+                // and if the device is still reelased and has never been acquired before, acquire it here.
+                if (!device.isUsed() && device.isUnacquired() && !device.isInconsistent()) {
+                    _log.debug('Create device from unacquired', device.toMessageObject());
+                    await this._createAndSaveDevice(descriptor);
+                }
+            }
+        });
+
+        const events = [
+            {
+                d: diff.changedSessions,
+                e: DEVICE.CHANGED,
+            },
+            {
+                d: diff.acquired,
+                e: DEVICE.ACQUIRED,
+            },
+            {
+                d: diff.released,
+                e: DEVICE.RELEASED,
+            },
+        ];
+
+        events.forEach(({ d, e }) => {
+            d.forEach(descriptor => {
+                const path = descriptor.path.toString();
+                const device = this.devices[path];
+                if (device) {
+                    _log.debug('Event', e, device.toMessageObject());
+                    this.emit(e, device.toMessageObject());
+                }
+            });
+        });
+
+        // whenever descriptors change we need to update them so that we can use them
+        // in subsequent transport.acquire calls
+        diff.descriptors.forEach(d => {
+            this.creatingDevicesDescriptors[d.path] = d;
+            if (this.devices[d.path]) {
+                this.devices[d.path].originalDescriptor = {
+                    session: d.session,
+                    path: d.path,
+                    product: d.product,
+                    type: d.type,
+                };
+            }
+        });
+    }
+
     /**
      * Init @trezor/transport and do something with its results
      */
@@ -181,114 +291,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
              * releasing/acquiring device by this application is not solved here but directly
              * where transport.acquire, transport.release is called
              */
-            this.transport.on(TRANSPORT.UPDATE, diff => {
-                diff.disconnected.forEach(descriptor => {
-                    const path = descriptor.path.toString();
-                    const device = this.devices[path];
-                    if (device) {
-                        device.disconnect();
-                        delete this.devices[path];
-                        this.emit(DEVICE.DISCONNECT, device.toMessageObject());
-                    }
-                });
-
-                diff.connected.forEach(async descriptor => {
-                    // creatingDevicesDescriptors is needed, so that if *during* creating of Device,
-                    // other application acquires the device and changes the descriptor,
-                    // the new unacquired device has correct descriptor
-                    const path = descriptor.path.toString();
-                    this.creatingDevicesDescriptors[path] = descriptor;
-
-                    const penalty = this.getAuthPenalty();
-
-                    if (this.priority || penalty) {
-                        await resolveAfter(501 + penalty + 100 * this.priority, null).promise;
-                    }
-                    if (this.creatingDevicesDescriptors[path].session == null) {
-                        await this._createAndSaveDevice(descriptor);
-                    } else {
-                        const device = this._createUnacquiredDevice(descriptor);
-                        this.devices[path] = device;
-                        this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
-                    }
-                });
-
-                diff.acquiredElsewhere.forEach((descriptor: Descriptor) => {
-                    const path = descriptor.path.toString();
-                    const device = this.devices[path];
-
-                    if (device) {
-                        device.featuresNeedsReload = true;
-                        device.interruptionFromOutside();
-                    }
-                });
-
-                diff.released.forEach(descriptor => {
-                    const path = descriptor.path.toString();
-                    const device = this.devices[path];
-                    const methodStillRunning = !device?.commands?.disposed;
-
-                    if (device && methodStillRunning) {
-                        device.keepSession = false;
-                    }
-                });
-
-                diff.releasedElsewhere.forEach(async descriptor => {
-                    const path = descriptor.path.toString();
-                    const device = this.devices[path];
-                    await resolveAfter(1000, null).promise;
-
-                    if (device) {
-                        // after device was released in another window wait for a while (the other window might
-                        // have the intention of acquiring it again)
-                        // and if the device is still reelased and has never been acquired before, acquire it here.
-                        if (!device.isUsed() && device.isUnacquired() && !device.isInconsistent()) {
-                            _log.debug('Create device from unacquired', device.toMessageObject());
-                            await this._createAndSaveDevice(descriptor);
-                        }
-                    }
-                });
-
-                const events = [
-                    {
-                        d: diff.changedSessions,
-                        e: DEVICE.CHANGED,
-                    },
-                    {
-                        d: diff.acquired,
-                        e: DEVICE.ACQUIRED,
-                    },
-                    {
-                        d: diff.released,
-                        e: DEVICE.RELEASED,
-                    },
-                ];
-
-                events.forEach(({ d, e }) => {
-                    d.forEach(descriptor => {
-                        const path = descriptor.path.toString();
-                        const device = this.devices[path];
-                        if (device) {
-                            _log.debug('Event', e, device.toMessageObject());
-                            this.emit(e, device.toMessageObject());
-                        }
-                    });
-                });
-
-                // whenever descriptors change we need to update them so that we can use them
-                // in subsequent transport.acquire calls
-                diff.descriptors.forEach(d => {
-                    this.creatingDevicesDescriptors[d.path] = d;
-                    if (this.devices[d.path]) {
-                        this.devices[d.path].originalDescriptor = {
-                            session: d.session,
-                            path: d.path,
-                            product: d.product,
-                            type: d.type,
-                        };
-                    }
-                });
-            });
+            this.transport.on(TRANSPORT.UPDATE, this.onTransportUpdate.bind(this));
 
             // just like transport emits updates, it may also start producing errors, for example bridge process crashes.
             this.transport.on(TRANSPORT.ERROR, error => {
