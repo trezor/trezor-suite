@@ -76,15 +76,16 @@ export const onDeviceTransactionReviewThunk = createThunk<
 
         if (!precomposedTransaction)
             return rejectWithValue('Thunk prepareTransactionForSigningThunk failed.');
-        const signTransactionResponse = await requestPrioritizedDeviceAccess(() =>
-            dispatch(
-                signTransactionThunk({
-                    formValues: formState,
-                    precomposedTransaction,
-                    selectedAccount: account,
-                }),
-            ).unwrap(),
-        );
+        const signTransactionResponse = await requestPrioritizedDeviceAccess({
+            deviceCallback: () =>
+                dispatch(
+                    signTransactionThunk({
+                        formValues: formState,
+                        precomposedTransaction,
+                        selectedAccount: account,
+                    }),
+                ).unwrap(),
+        });
 
         if (
             !signTransactionResponse.success ||

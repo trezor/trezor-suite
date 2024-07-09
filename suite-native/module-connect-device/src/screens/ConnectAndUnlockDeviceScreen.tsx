@@ -44,7 +44,9 @@ export const ConnectAndUnlockDeviceScreen = () => {
     useEffect(() => {
         if (isFocused && device && !isDeviceAuthorized) {
             // When user cancelled the authorization, we need to authorize the device again.
-            requestPrioritizedDeviceAccess(() => dispatch(authorizeDeviceThunk()));
+            requestPrioritizedDeviceAccess({
+                deviceCallback: () => dispatch(authorizeDeviceThunk()),
+            });
         }
     }, [isDeviceAuthorized, device, dispatch, isFocused]);
 

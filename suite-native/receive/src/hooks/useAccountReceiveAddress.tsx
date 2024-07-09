@@ -56,16 +56,18 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
     const verifyAddressOnDevice = useCallback(async (): Promise<boolean> => {
         if (accountKey && freshAddress) {
-            const response = await requestPrioritizedDeviceAccess(() => {
-                const thunkResponse = dispatch(
-                    confirmAddressOnDeviceThunk({
-                        accountKey,
-                        addressPath: freshAddress.path,
-                        chunkify: true,
-                    }),
-                ).unwrap();
+            const response = await requestPrioritizedDeviceAccess({
+                deviceCallback: () => {
+                    const thunkResponse = dispatch(
+                        confirmAddressOnDeviceThunk({
+                            accountKey,
+                            addressPath: freshAddress.path,
+                            chunkify: true,
+                        }),
+                    ).unwrap();
 
-                return thunkResponse;
+                    return thunkResponse;
+                },
             });
 
             if (!response.success) {

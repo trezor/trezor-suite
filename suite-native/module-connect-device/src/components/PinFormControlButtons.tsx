@@ -92,7 +92,9 @@ export const PinFormControlButtons = () => {
             onPressPrimaryButton: () => {
                 if (hasDeviceAuthFailed) {
                     // Ask for new PIN entry after 3 wrong attempts.
-                    requestPrioritizedDeviceAccess(() => dispatch(authorizeDeviceThunk()));
+                    requestPrioritizedDeviceAccess({
+                        deviceCallback: () => dispatch(authorizeDeviceThunk()),
+                    });
                 }
             },
             secondaryButtonTitle: (
