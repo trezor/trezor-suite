@@ -1,6 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
-import { TypedEmitter } from '@trezor/utils';
+import { TypedEmitter, createDeferred } from '@trezor/utils';
 import {
     BridgeTransport,
     WebUsbTransport,
@@ -55,8 +55,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
     private devices: { [path: string]: Device } = {};
 
     private creatingDevicesDescriptors: { [k: string]: Descriptor } = {};
-
-    private transportStartPending = 0;
 
     private penalizedDevices: { [deviceID: string]: number } = {};
 
@@ -311,13 +309,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
             const descriptors = enumerateResult.payload;
 
             if (descriptors.length > 0 && pendingTransportEvent) {
-                this.transportStartPending = descriptors.length;
-                // listen for self emitted events and resolve pending transport event if needed
-                this.on(DEVICE.CONNECT, this.resolveTransportEvent.bind(this));
-                this.on(DEVICE.CONNECT_UNACQUIRED, this.resolveTransportEvent.bind(this));
-                autoResolveTransportEventTimeout = setTimeout(() => {
+                this.waitForDevices(descriptors.length, 10000).then(() => {
                     this.emit(TRANSPORT.START, this.getTransportInfo());
-                }, 10000);
+                });
             } else {
                 this.emit(TRANSPORT.START, this.getTransportInfo());
             }
@@ -329,14 +323,28 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         }
     }
 
-    private resolveTransportEvent() {
-        this.transportStartPending--;
-        if (autoResolveTransportEventTimeout) {
+    private waitForDevices(deviceCount: number, autoResolveMs: number) {
+        const { promise, resolve } = createDeferred();
+        let transportStartPending = deviceCount;
+
+        autoResolveTransportEventTimeout = setTimeout(resolve, autoResolveMs);
+
+        const onDeviceConnect = () => {
+            transportStartPending--;
             clearTimeout(autoResolveTransportEventTimeout);
-        }
-        if (this.transportStartPending === 0) {
-            this.emit(TRANSPORT.START, this.getTransportInfo());
-        }
+            if (transportStartPending === 0) {
+                resolve();
+            }
+        };
+
+        // listen for self emitted events and resolve pending transport event if needed
+        this.on(DEVICE.CONNECT, onDeviceConnect);
+        this.on(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
+
+        return promise.finally(() => {
+            this.off(DEVICE.CONNECT, onDeviceConnect);
+            this.off(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
+        });
     }
 
     getTransportFirstEventPromise() {
