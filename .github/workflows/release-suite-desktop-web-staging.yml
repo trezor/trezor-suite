@@ -251,7 +251,7 @@ jobs:
           mv version0.json packages/suite/package.json
           yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
-          mv packages/suite-desktop/build-electron/* .
+          cp -r packages/suite-desktop/build-electron/* .
 
       - name: Upload suite-desktop autoupdate version 0x.x.x artifacts
         uses: actions/upload-artifact@v4
@@ -269,7 +269,7 @@ jobs:
           mv version3.json packages/suite/package.json
           yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
-          mv packages/suite-desktop/build-electron/* .
+          cp -r packages/suite-desktop/build-electron/* .
 
       - name: Upload suite-desktop autoupdate version 3x.x.x artifacts
         uses: actions/upload-artifact@v4
