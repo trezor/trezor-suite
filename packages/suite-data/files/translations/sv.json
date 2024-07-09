@@ -104,6 +104,7 @@
   "TR_EXCHANGE_EXTRA_FIELD_QUESTION_TOOLTIP": "{extraFieldDescription}",
   "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
   "TR_EXCHANGE_VIEW_DETAILS": "Visa detaljer",
+  "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Lösenordshanterare",
   "TR_EXPORT_AS": "Exportera som {as}",
   "TR_FEEDBACK_ANALYTICS_ITEM_BROWSER": "Webbläsare",
   "TR_FEEDBACK_ANALYTICS_ITEM_OS": "Operativsystem",
