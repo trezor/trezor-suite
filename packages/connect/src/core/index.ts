@@ -963,75 +963,65 @@ const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
  * @memberof Core
  */
 const initDeviceList = async (transportReconnect?: boolean) => {
+    const { debug, transports, priority, pendingTransportEvent } = DataManager.getSettings();
+    const messages = DataManager.getProtobufMessages();
+
+    _deviceList = new DeviceList({ debug, messages, priority });
+
     try {
-        const { debug, transports, priority, pendingTransportEvent } = DataManager.getSettings();
-        const messages = DataManager.getProtobufMessages();
-
-        _deviceList = new DeviceList({ debug, messages, priority });
-
         _deviceList.setTransports(transports);
-
-        _deviceList.on(DEVICE.CONNECT, device => {
-            handleDeviceSelectionChanges();
-            postMessage(createDeviceMessage(DEVICE.CONNECT, device));
-        });
-
-        _deviceList.on(DEVICE.CONNECT_UNACQUIRED, device => {
-            handleDeviceSelectionChanges();
-            postMessage(createDeviceMessage(DEVICE.CONNECT_UNACQUIRED, device));
-        });
-
-        _deviceList.on(DEVICE.DISCONNECT, device => {
-            handleDeviceSelectionChanges(device);
-            postMessage(createDeviceMessage(DEVICE.DISCONNECT, device));
-        });
-
-        _deviceList.on(DEVICE.CHANGED, device => {
-            postMessage(createDeviceMessage(DEVICE.CHANGED, device));
-        });
-
-        _deviceList.on(TRANSPORT.ERROR, error => {
-            _log.warn('TRANSPORT.ERROR', error);
-
-            if (_deviceList) {
-                _deviceList.disconnectDevices();
-                _deviceList.dispose();
-            }
-
-            _deviceList = undefined;
-
-            postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
-            // if transport fails during app lifetime, try to reconnect
-            if (transportReconnect) {
-                const { promise, timeout } = resolveAfter(1000, null);
-                _deviceListInitTimeout = timeout;
-                promise.then(() => {
-                    initDeviceList(transportReconnect);
-                });
-            }
-        });
-
-        _deviceList.on(TRANSPORT.START, transportType =>
-            postMessage(createTransportMessage(TRANSPORT.START, transportType)),
-        );
-
-        _deviceList.init(pendingTransportEvent);
-        if (_deviceList) {
-            await _deviceList.waitForTransportFirstEvent();
-        }
     } catch (error) {
         _deviceList = undefined;
         postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
-        if (!transportReconnect) {
-            throw error;
-        } else {
-            const { promise, timeout } = resolveAfter(3000, null);
-            _deviceListInitTimeout = timeout;
-            await promise;
-            // try to reconnect
-            await initDeviceList(transportReconnect);
-        }
+        throw error;
     }
+
+    _deviceList.on(DEVICE.CONNECT, device => {
+        handleDeviceSelectionChanges();
+        postMessage(createDeviceMessage(DEVICE.CONNECT, device));
+    });
+
+    _deviceList.on(DEVICE.CONNECT_UNACQUIRED, device => {
+        handleDeviceSelectionChanges();
+        postMessage(createDeviceMessage(DEVICE.CONNECT_UNACQUIRED, device));
+    });
+
+    _deviceList.on(DEVICE.DISCONNECT, device => {
+        handleDeviceSelectionChanges(device);
+        postMessage(createDeviceMessage(DEVICE.DISCONNECT, device));
+    });
+
+    _deviceList.on(DEVICE.CHANGED, device => {
+        postMessage(createDeviceMessage(DEVICE.CHANGED, device));
+    });
+
+    _deviceList.on(TRANSPORT.ERROR, error => {
+        _log.warn('TRANSPORT.ERROR', error);
+
+        if (_deviceList) {
+            _deviceList.disconnectDevices();
+            _deviceList.dispose();
+        }
+
+        _deviceList = undefined;
+
+        postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
+        // if transport fails during app lifetime, try to reconnect
+        if (transportReconnect) {
+            const { promise, timeout } = resolveAfter(1000, null);
+            _deviceListInitTimeout = timeout;
+            promise.then(() => {
+                initDeviceList(transportReconnect);
+            });
+        }
+    });
+
+    _deviceList.on(TRANSPORT.START, transportType =>
+        postMessage(createTransportMessage(TRANSPORT.START, transportType)),
+    );
+
+    _deviceList.init(pendingTransportEvent);
+    await _deviceList.waitForTransportFirstEvent();
 };
 
 /**
