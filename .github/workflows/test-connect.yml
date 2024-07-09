@@ -28,6 +28,8 @@ on:
       - "docker/docker-compose.connect-test.yml"
   workflow_dispatch:
 
+# TODO: just adding a comment to trigger tests.
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
