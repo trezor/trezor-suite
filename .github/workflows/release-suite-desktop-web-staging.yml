@@ -297,7 +297,7 @@ jobs:
       - name: Download suite-desktop apps
         uses: actions/download-artifact@v4
         with:
-          pattern: AUTOUPDATE-TEST-suite-desktop-34-*
+          pattern: AUTOUPDATE-TEST-suite-desktop-34*
           merge-multiple: true
           path: ./trezor-suite-files
 
