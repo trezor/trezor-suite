@@ -266,6 +266,12 @@ export const en = {
                 },
             },
         },
+        noSeedWithFWModal: {
+            title: 'Firmware installed.\nContinue in your browser to finish device setup.',
+            description:
+                'Follow the instructions in your browser and come back once setup is complete.',
+            primaryButton: 'Finish setup',
+        },
         genericErrorModal: {
             title: 'Please reconnect your Trezor device.',
             description:
