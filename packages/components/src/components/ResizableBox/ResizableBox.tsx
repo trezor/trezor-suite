@@ -19,6 +19,8 @@ export type ResizableBoxProps = {
     updateWidthOnWindowResize?: boolean;
     updateHeightOnWindowResize?: boolean;
     zIndex?: ZIndexValues;
+    onWidthResizeEnd?: (width: number) => void;
+    onHeightResizeEnd?: (height: number) => void;
 };
 
 type ResizerHandlersProps = {
@@ -182,6 +184,8 @@ export const ResizableBox = ({
     updateWidthOnWindowResize = false,
     updateHeightOnWindowResize = false,
     zIndex = zIndices.draggableComponent,
+    onWidthResizeEnd,
+    onHeightResizeEnd,
 }: ResizableBoxProps) => {
     const resizableBoxRef = useRef<HTMLDivElement>(null);
 
@@ -272,7 +276,15 @@ export const ResizableBox = ({
             }
         };
 
-        document.onmouseup = () => setIsResizing(false);
+        document.onmouseup = () => {
+            setIsResizing(false);
+            if (onWidthResizeEnd) {
+                onWidthResizeEnd(newWidth);
+            }
+            if (onHeightResizeEnd) {
+                onHeightResizeEnd(newHeight);
+            }
+        };
 
         window.onresize = () => {
             if (resizeCooldown() === true) {
@@ -292,6 +304,8 @@ export const ResizableBox = ({
         maxWidth,
         newHeight,
         newWidth,
+        onHeightResizeEnd,
+        onWidthResizeEnd,
         resizableBoxRef,
         resize,
         resizeCooldown,

@@ -75,7 +75,8 @@ export type SuiteAction =
           payload: Partial<AutodetectSettings>;
       }
     | { type: typeof deviceActions.requestDeviceReconnect.type }
-    | { type: typeof SUITE.SET_EXPERIMENTAL_FEATURES; payload?: ExperimentalFeature[] };
+    | { type: typeof SUITE.SET_EXPERIMENTAL_FEATURES; payload?: ExperimentalFeature[] }
+    | { type: typeof SUITE.SET_SIDEBAR_WIDTH; payload: { width: number } };
 
 export const appChanged = createAction(
     SUITE.APP_CHANGED,
@@ -128,6 +129,11 @@ export const initialRunCompleted = () => (dispatch: Dispatch, getState: GetState
         dispatch(setFlag('initialRun', false));
     }
 };
+
+export const setSidebarWidth = (payload: { width: number }): SuiteAction => ({
+    type: SUITE.SET_SIDEBAR_WIDTH,
+    payload: { width: payload.width },
+});
 
 /**
  * Triggered by `@suite-support/OnlineStatus` or `@suite-native/support/OnlineStatus`

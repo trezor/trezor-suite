@@ -5,8 +5,9 @@ import { Navigation } from './Navigation';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { QuickActions } from './QuickActions';
 import { ElevationUp, ResizableBox, useElevation } from '@trezor/components';
-import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } from '@trezor/theme';
+import { useActions, useSelector } from 'src/hooks/suite';
+import * as suiteActions from 'src/actions/suite/suiteActions';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
     display: flex;
@@ -24,15 +25,21 @@ const Wrapper = styled.div`
 export const Sidebar = () => {
     const { elevation } = useElevation();
 
+    const sidebarWidth = useSelector(state => state.suite.settings.sidebarWidth);
+    const { setSidebarWidth } = useActions({
+        setSidebarWidth: (width: number) => suiteActions.setSidebarWidth({ width }),
+    });
+
     return (
         <Wrapper>
             <ResizableBox
                 directions={['right']}
-                width={SIDEBAR_WIDTH_NUMERIC}
+                width={sidebarWidth}
                 minWidth={230}
                 maxWidth={400}
                 zIndex={zIndices.draggableComponent}
                 updateHeightOnWindowResize
+                onWidthResizeEnd={setSidebarWidth}
             >
                 <Container $elevation={elevation}>
                     <ElevationUp>

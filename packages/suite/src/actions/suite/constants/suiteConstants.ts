@@ -31,3 +31,4 @@ export const LOCK_TYPE = {
 } as const;
 export const REQUEST_DEVICE_RECONNECT = '@suite/request-device-reconnect';
 export const SET_EXPERIMENTAL_FEATURES = '@suite/set-experimental-features';
+export const SET_SIDEBAR_WIDTH = '@suite/set-sidebar-width';

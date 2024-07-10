@@ -18,6 +18,7 @@ import { RouterRootState, selectRouter } from './routerReducer';
 import { Network } from '@suite-common/wallet-config';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
+import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -88,6 +89,7 @@ export interface SuiteSettings {
     addressDisplayType: AddressDisplayOptions;
     defaultWalletLoading: WalletType;
     experimental?: ExperimentalFeature[];
+    sidebarWidth: number;
 }
 
 export interface SuiteState {
@@ -154,6 +156,7 @@ const initialState: SuiteState = {
         },
         addressDisplayType: AddressDisplayOptions.CHUNKED,
         defaultWalletLoading: WalletType.STANDARD,
+        sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
     },
 };
 
@@ -257,6 +260,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                     ...draft.settings.autodetect,
                     ...action.payload,
                 };
+                break;
+
+            case SUITE.SET_SIDEBAR_WIDTH:
+                draft.settings.sidebarWidth = action.payload.width;
                 break;
 
             case TRANSPORT.START:
