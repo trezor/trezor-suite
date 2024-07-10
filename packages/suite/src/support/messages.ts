@@ -7047,14 +7047,6 @@ export default defineMessages({
         id: 'TR_RBF_STATUS',
         defaultMessage: 'Status',
     },
-    TR_RBF_STATUS_FINAL: {
-        id: 'TR_RBF_STATUS_FINAL',
-        defaultMessage: 'Final',
-    },
-    TR_RBF_STATUS_NOT_FINAL: {
-        id: 'TR_RBF_STATUS_NOT_FINAL',
-        defaultMessage: 'Not final',
-    },
     TR_TXID: {
         id: 'TR_TXID',
         defaultMessage: 'TX ID',
