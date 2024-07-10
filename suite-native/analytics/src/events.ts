@@ -170,7 +170,11 @@ export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.UnsupportedDevice;
           payload: {
-              deviceState: 'unsupportedFirmware' | 'noSeed' | 'bootloaderMode';
+              deviceState:
+                  | 'unsupportedFirmware'
+                  | 'noSeed'
+                  | 'bootloaderMode'
+                  | 'noSeedWithFirmware';
           };
       }
     | {

@@ -132,27 +132,50 @@ export const useDetectDeviceError = () => {
             !isUnacquiredDevice &&
             !deviceError
         ) {
-            showAlert({
-                title: <Translation id="moduleDevice.noSeedModal.title" />,
-                textAlign: 'left',
-                description: <Translation id="moduleDevice.noSeedModal.description" />,
-                primaryButtonTitle: <Translation id="moduleDevice.noSeedModal.primaryButton" />,
-                primaryButtonViewLeft: 'arrowLineUpRight',
-                appendix: <UninitializedDeviceModalAppendix />,
-                onPressPrimaryButton: () => {
-                    openLink(SUITE_WEB_URL);
+            if (hasDeviceFirmwareInstalled) {
+                showAlert({
+                    title: <Translation id="moduleDevice.noSeedWithFWModal.title" />,
+                    icon: 'checkCircle',
+                    pictogramVariant: 'green',
+                    description: <Translation id="moduleDevice.noSeedWithFWModal.description" />,
+                    primaryButtonTitle: (
+                        <Translation id="moduleDevice.noSeedWithFWModal.primaryButton" />
+                    ),
+                    primaryButtonViewLeft: 'arrowLineUpRight',
+                    onPressPrimaryButton: () => {
+                        openLink(SUITE_WEB_URL);
 
-                    analytics.report({
-                        type: EventType.UnsupportedDevice,
-                        payload: { deviceState: 'noSeed' },
-                    });
-                },
-                secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-                onPressSecondaryButton: handleDisconnect,
-                testID: '@device/errors/alert/no-seed',
-            });
+                        analytics.report({
+                            type: EventType.UnsupportedDevice,
+                            payload: { deviceState: 'noSeedWithFirmware' },
+                        });
+                    },
+                    testID: '@device/errors/alert/no-seed/firmware',
+                });
+            } else {
+                showAlert({
+                    title: <Translation id="moduleDevice.noSeedModal.title" />,
+                    textAlign: 'left',
+                    description: <Translation id="moduleDevice.noSeedModal.description" />,
+                    primaryButtonTitle: <Translation id="moduleDevice.noSeedModal.primaryButton" />,
+                    primaryButtonViewLeft: 'arrowLineUpRight',
+                    appendix: <UninitializedDeviceModalAppendix />,
+                    onPressPrimaryButton: () => {
+                        openLink(SUITE_WEB_URL);
+
+                        analytics.report({
+                            type: EventType.UnsupportedDevice,
+                            payload: { deviceState: 'noSeed' },
+                        });
+                    },
+                    secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                    onPressSecondaryButton: handleDisconnect,
+                    testID: '@device/errors/alert/no-seed',
+                });
+            }
         }
     }, [
+        hasDeviceFirmwareInstalled,
         isConnectedDeviceUninitialized,
         isUnacquiredDevice,
         wasDeviceEjectedByUser,
