@@ -2,13 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { Icon, variables, CoinLogo, H3, useElevation } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { WalletAccountTransaction, Network } from 'src/types/wallet';
-import {
-    isTxFinal,
-    getTxIcon,
-    isPending,
-    getFeeUnits,
-    getFeeRate,
-} from '@suite-common/wallet-utils';
+import { getTxIcon, isPending, getFeeUnits, getFeeRate } from '@suite-common/wallet-utils';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { fromWei } from 'web3-utils';
 import { IOAddress } from './IOAddress';
@@ -179,7 +173,6 @@ export const BasicTxDetails = ({
     const theme = useTheme();
     // all solana txs which are fetched are already confirmed
     const isConfirmed = confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
-    const isFinal = isTxFinal(tx, confirmations);
 
     const { elevation } = useElevation();
 
@@ -284,19 +277,6 @@ export const BasicTxDetails = ({
                             {`${tx?.feeRate ? tx.feeRate : getFeeRate(tx)} ${getFeeUnits(
                                 'bitcoin',
                             )}`}
-                        </Value>
-
-                        {/* RBF Status */}
-                        <Title>
-                            <Translation id="TR_RBF_STATUS" />
-                        </Title>
-
-                        <Value>
-                            <ConfirmationStatus $confirmed={isFinal} $tiny>
-                                <Translation
-                                    id={isFinal ? 'TR_RBF_STATUS_FINAL' : 'TR_RBF_STATUS_NOT_FINAL'}
-                                />
-                            </ConfirmationStatus>
                         </Value>
                     </>
                 )}
