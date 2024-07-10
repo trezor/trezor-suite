@@ -239,12 +239,12 @@ jobs:
       - name: Prepare versions for autoupdate
         id: prepare-versions
         run: |
-          sed -E 's/"suiteVersion": "2([0-9]+\.[0-9]+\.[0-9]+)"/"suiteVersion": "0\1"/' packages/suite/package.json > version0.json
-          sed -E 's/"suiteVersion": "2([0-9]+\.[0-9]+\.[0-9]+)"/"suiteVersion": "3\1"/' packages/suite/package.json > version3.json
+          sed -E 's/"suiteVersion": "([0-9]+)\.([0-9]+)\.([0-9]+)"/"suiteVersion": "0.\1.\2"/' packages/suite/package.json > version0.json
+          sed -E 's/"suiteVersion": "2([0-9]+)\.([0-9]+)\.([0-9]+)"/"suiteVersion": "3\1.\2.\3"/' packages/suite/package.json > version3.json
           echo "VERSION0=$(jq -r .suiteVersion version0.json)" >> $GITHUB_OUTPUT
           echo "VERSION3=$(jq -r .suiteVersion version3.json)" >> $GITHUB_OUTPUT
 
-      - name: Build ${{ matrix.platform }} suite-desktop autoupdate version 0x.x.x
+      - name: Build ${{ matrix.platform }} suite-desktop autoupdate version 0.xx.x
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
@@ -253,7 +253,7 @@ jobs:
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
           cp -r packages/suite-desktop/build-electron/* .
 
-      - name: Upload suite-desktop autoupdate version 0x.x.x artifacts
+      - name: Upload suite-desktop autoupdate version 0.xx.x artifacts
         uses: actions/upload-artifact@v4
         with:
           name: AUTOUPDATE-TEST-suite-desktop-${{steps.prepare-versions.outputs.VERSION0}}-${{ matrix.platform }}
