@@ -73,7 +73,7 @@ export const deviceAuthorizationSlice = createSlice({
             .addCase(verifyPassphraseOnEmptyWalletThunk.pending.type, state => {
                 state.isVefifyingPassphraseOnEmptyWallet = true;
             })
-            .addCase(cancelPassphraseAndSelectStandardDeviceThunk.pending, state => {
+            .addCase(cancelPassphraseAndSelectStandardDeviceThunk.pending.type, state => {
                 state.isCreatingNewWalletInstance = false;
                 state.hasDeviceRequestedPassphrase = false;
             })

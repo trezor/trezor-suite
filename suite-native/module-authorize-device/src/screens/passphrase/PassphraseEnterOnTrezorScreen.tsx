@@ -16,7 +16,12 @@ import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-nat
 import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/device-authorization';
+import {
+    cancelPassphraseAndSelectStandardDeviceThunk,
+    selectIsCreatingNewPassphraseWallet,
+    useAuthorizationGoBack,
+} from '@suite-native/device-authorization';
+import TrezorConnect from '@trezor/connect';
 
 import { useAuthorizationSuccess } from '../../usePassphraseAuthorizationSuccess';
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
@@ -43,7 +48,11 @@ export const PassphraseEnterOnTrezorScreen = () => {
 
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
+    const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
+
     const navigation = useNavigation<NavigationProp>();
+
+    const { handleGoBack } = useAuthorizationGoBack();
 
     // If this screen was present during authorizing device with passphrase for some feature,
     // on success, this hook will close the stack and go back
@@ -56,13 +65,18 @@ export const PassphraseEnterOnTrezorScreen = () => {
     }, [isDiscoveryActive, navigation]);
 
     const handleCancel = () => {
-        dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
-        });
+        if (isCreatingNewWalletInstance) {
+            dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
+            });
+        } else {
+            TrezorConnect.cancel();
+            handleGoBack();
+        }
     };
 
     return (
