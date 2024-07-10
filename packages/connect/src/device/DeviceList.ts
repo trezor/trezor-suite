@@ -58,7 +58,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     private penalizedDevices: { [deviceID: string]: number } = {};
 
-    private transportFirstEventPromise: Promise<void> | undefined;
+    private initPromise: Promise<void> | undefined;
 
     private priority;
 
@@ -254,73 +254,69 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
     /**
      * Init @trezor/transport and do something with its results
      */
-    async init(pendingTransportEvent?: boolean) {
-        try {
+    init(pendingTransportEvent?: boolean) {
+        if (!this.initPromise) {
             _log.debug('Initializing transports');
-            let lastError:
-                | Extract<
-                      Awaited<ReturnType<Transport['init']>['promise']>,
-                      { success: false }
-                  >['error']
-                | undefined;
 
-            for (const transport of this.transports) {
-                this.transport = transport;
-                const result = await this.transport.init().promise;
-                if (result.success) {
-                    lastError = undefined;
-                    break;
-                } else {
-                    lastError = result.error;
-                }
-            }
-
-            if (lastError) {
-                this.emit(TRANSPORT.ERROR, lastError);
-
-                return;
-            }
-
-            /**
-             * listen to change of descriptors reported by @trezor/transport
-             * we can say that this part lets connect know about
-             * "external activities with trezor devices" such as device was connected/disconnected
-             * or it was acquired or released by another application.
-             * releasing/acquiring device by this application is not solved here but directly
-             * where transport.acquire, transport.release is called
-             */
-            this.transport.on(TRANSPORT.UPDATE, this.onTransportUpdate.bind(this));
-
-            // just like transport emits updates, it may also start producing errors, for example bridge process crashes.
-            this.transport.on(TRANSPORT.ERROR, error => {
-                this.emit(TRANSPORT.ERROR, error);
-            });
-
-            // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
-            // event until we read descriptors for the first time
-            const enumerateResult = await this.transport.enumerate().promise;
-
-            if (!enumerateResult.success) {
-                this.emit(TRANSPORT.ERROR, enumerateResult.error);
-
-                return;
-            }
-
-            const descriptors = enumerateResult.payload;
-
-            if (descriptors.length > 0 && pendingTransportEvent) {
-                this.waitForDevices(descriptors.length, 10000).then(() => {
+            this.initPromise = this.selectTransport(this.transports)
+                .then(transport => this.initializeTransport(transport, pendingTransportEvent))
+                .then(transport => {
+                    this.transport = transport;
                     this.emit(TRANSPORT.START, this.getTransportInfo());
+                })
+                .catch(error => {
+                    this.emit(TRANSPORT.ERROR, error);
+                })
+                .finally(() => {
+                    this.initPromise = undefined;
                 });
-            } else {
-                this.emit(TRANSPORT.START, this.getTransportInfo());
-            }
-            this.transport.handleDescriptorsChange(descriptors);
-            this.transport.listen();
-        } catch (error) {
-            // transport should never. lets observe it but we could even remove try catch from here
-            console.error('DeviceList init error', error);
         }
+
+        return this.initPromise;
+    }
+
+    private async selectTransport([transport, ...rest]: Transport[]): Promise<Transport> {
+        const result = await transport.init().promise;
+        if (result.success) return transport;
+        else if (rest.length) return this.selectTransport(rest);
+        else throw new Error(result.error);
+    }
+
+    private async initializeTransport(transport: Transport, pendingTransportEvent?: boolean) {
+        /**
+         * listen to change of descriptors reported by @trezor/transport
+         * we can say that this part lets connect know about
+         * "external activities with trezor devices" such as device was connected/disconnected
+         * or it was acquired or released by another application.
+         * releasing/acquiring device by this application is not solved here but directly
+         * where transport.acquire, transport.release is called
+         */
+        transport.on(TRANSPORT.UPDATE, this.onTransportUpdate.bind(this));
+
+        // just like transport emits updates, it may also start producing errors, for example bridge process crashes.
+        transport.on(TRANSPORT.ERROR, error => {
+            this.emit(TRANSPORT.ERROR, error);
+        });
+
+        // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
+        // event until we read descriptors for the first time
+        const enumerateResult = await transport.enumerate().promise;
+
+        if (!enumerateResult.success) {
+            throw new Error(enumerateResult.error);
+        }
+
+        const descriptors = enumerateResult.payload;
+
+        // TODO handleDescriptorChange can emit TRANSPORT.UPDATE before TRANSPORT.START is emitted, check whether acceptable
+        transport.handleDescriptorsChange(descriptors);
+        transport.listen();
+
+        if (descriptors.length > 0 && pendingTransportEvent) {
+            await this.waitForDevices(descriptors.length, 10000);
+        }
+
+        return transport;
     }
 
     private waitForDevices(deviceCount: number, autoResolveMs: number) {
@@ -347,21 +343,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         });
     }
 
-    getTransportFirstEventPromise() {
-        return this.transportFirstEventPromise;
-    }
-
-    async waitForTransportFirstEvent() {
-        this.transportFirstEventPromise = new Promise<void>(resolve => {
-            const handler = () => {
-                this.removeListener(TRANSPORT.START, handler);
-                this.removeListener(TRANSPORT.ERROR, handler);
-                resolve();
-            };
-            this.on(TRANSPORT.START, handler);
-            this.on(TRANSPORT.ERROR, handler);
-        });
-        await this.transportFirstEventPromise;
+    getInitPromise() {
+        return this.initPromise;
     }
 
     private async _createAndSaveDevice(descriptor: Descriptor) {
