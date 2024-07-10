@@ -21,6 +21,7 @@ describe('Passphrase with cardano', () => {
     });
 
     it('verify cardano address behind passphrase.', () => {
+        const passphrase = 'secret passphrase A';
         // enable cardano in settings
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();
@@ -30,22 +31,7 @@ describe('Passphrase with cardano', () => {
         cy.getTestElement('@suite/menu/suite-index').click();
         cy.discoveryShouldFinish();
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
-
-        // enter 'secret passphrase A'
-        cy.getTestElement('@passphrase/input').type('secret passphrase A');
-        cy.getTestElement('@passphrase/hidden/submit-button').click();
-        cy.task('pressYes');
-        cy.task('pressYes');
-        // TODO: refactor using data-tests
-        cy.getTestElement('@passphrase-confirmation/step1-open-unused-wallet-button', {
-            timeout: 20_000,
-        }).click();
-        cy.getTestElement('@passphrase-confirmation/step2-button').click();
-        cy.getTestElement('@passphrase/input').type('secret passphrase A');
-        cy.getTestElement('@passphrase/hidden/submit-button').click();
-        cy.task('pressYes');
-        cy.task('pressYes');
+        cy.addHiddenWallet(passphrase);
 
         // turn on view-only on the hidden wallet
         cy.getTestElement('@menu/switch-device').click();
@@ -54,13 +40,10 @@ describe('Passphrase with cardano', () => {
             cy.wrap(wallet)
                 .find('[data-test="@collapsible-box/icon-collapsed"]')
                 .click({ scrollBehavior: 'bottom' });
-            cy.wrap(wallet)
-                .find('[data-test$="1/view-only-radio/enabled"]')
-                .should('be.visible')
-                .click();
+            cy.wrap(wallet).find('[data-test$="/enabled"]').should('be.visible').click();
         });
 
-        cy.get('svg[data-src*="4197b1525593c25ef1d8"]').first().click();
+        cy.getTestElement('@switch-device/cancel-button').first().click();
 
         // restart device
         cy.task('stopEmu');
@@ -74,7 +57,7 @@ describe('Passphrase with cardano', () => {
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
 
         // device after reset asks for passphrase again, enter correct passphrase associated with this account
-        cy.getTestElement('@passphrase/input').type('secret passphrase A');
+        cy.getTestElement('@passphrase/input').type(passphrase);
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.task('pressYes');
         cy.wait(501);

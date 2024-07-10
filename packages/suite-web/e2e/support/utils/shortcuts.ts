@@ -152,3 +152,23 @@ export const enterPinOnBlindMatrix = (pinEntryNumber: string) => {
         cy.getTestElement('@pin/submit-button').click();
     });
 };
+
+export const addHiddenWallet = (passphrase: string) => {
+    cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
+    cy.getTestElement('@passphrase/input').type(passphrase);
+    cy.getTestElement('@passphrase/hidden/submit-button').click();
+
+    cy.task('pressYes');
+    cy.task('pressYes');
+    cy.getTestElement('@passphrase-confirmation/step1-open-unused-wallet-button', {
+        timeout: 20_000,
+    }).click();
+    cy.getTestElement('@passphrase-confirmation/step2-button').click();
+
+    cy.getTestElement('@passphrase/input', { timeout: 10000 }).type(passphrase);
+    cy.getTestElement('@passphrase/hidden/submit-button').click();
+    cy.task('pressYes');
+    cy.task('pressYes');
+
+    cy.getTestElement('@dashboard/loading').should('not.exist');
+};

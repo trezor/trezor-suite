@@ -24,6 +24,7 @@ import {
     interceptDataTrezorIo,
     findAnalyticsEventByType,
     enterPinOnBlindMatrix,
+    addHiddenWallet,
 } from './utils/shortcuts';
 import { interceptInvityApi } from './utils/intercept-invity-api';
 import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
@@ -133,6 +134,7 @@ declare global {
             ) => Cypress.Chainable<NonNullable<EventPayload<T>>>;
             enterPinOnBlindMatrix: (entryPinNumber: string) => Cypress.Chainable<null>;
             safeReload: typeof safeReload;
+            addHiddenWallet: (passphrase: string) => Chainable<Subject>;
         }
     }
 }
@@ -182,3 +184,4 @@ Cypress.Commands.add('interceptDataTrezorIo', interceptDataTrezorIo);
 
 Cypress.Commands.add('findAnalyticsEventByType', findAnalyticsEventByType);
 Cypress.Commands.add('enterPinOnBlindMatrix', enterPinOnBlindMatrix);
+Cypress.Commands.add('addHiddenWallet', addHiddenWallet);
