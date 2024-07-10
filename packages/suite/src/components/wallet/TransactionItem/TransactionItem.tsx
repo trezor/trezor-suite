@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
@@ -31,6 +31,9 @@ import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { getInstantStakeType } from 'src/utils/suite/stake';
+import { isStakeTypeTx } from '@suite-common/suite-utils';
 
 const Wrapper = styled(Card)<{
     $isPending: boolean;
@@ -99,23 +102,43 @@ export const TransactionItem = memo(
         const [txItemIsHovered, setTxItemIsHovered] = useState(false);
         const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
 
+        const { descriptor: address, symbol } = useSelector(selectSelectedAccount) || {};
+
         const dispatch = useDispatch();
         const { anchorRef, shouldHighlight } = useAnchor(
             `${AccountTransactionBaseAnchor}/${transaction.txid}`,
         );
 
-        const { type, targets, tokens, internalTransfers } = transaction;
+        const { type, targets, tokens, internalTransfers, ethereumSpecific } = transaction;
+
+        const txSignature = ethereumSpecific?.parsedData?.methodId;
+
         const isUnknown = type === 'unknown';
+
+        // Filter out internal transfers that are instant staking transactions
+        const filteredInternalTransfers = useMemo(() => {
+            return internalTransfers.filter(t => {
+                const stakeType = getInstantStakeType(t, address, symbol);
+
+                return stakeType !== 'stake';
+            });
+        }, [internalTransfers, address, symbol]);
+
+        const isStakingTx: boolean = useMemo(() => isStakeTypeTx(txSignature), [txSignature]);
+
         const useFiatValues = !isTestnet(transaction.symbol);
         const useSingleRowLayout =
             !isUnknown &&
+            !isStakingTx &&
             (targets.length === 1 || transaction.type === 'self') &&
             !tokens.length &&
-            !internalTransfers.length &&
+            !filteredInternalTransfers.length &&
             transaction.cardanoSpecific?.subtype !== 'withdrawal' &&
             transaction.cardanoSpecific?.subtype !== 'stake_registration';
+
         const noInputsOutputs =
-            (!tokens.length && !internalTransfers.length && !targets.length) || type === 'failed';
+            (!tokens.length && !filteredInternalTransfers.length && !targets.length) ||
+            type === 'failed';
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
         const showFeeRow = isTxFeePaid(transaction);
@@ -123,11 +146,11 @@ export const TransactionItem = memo(
         // join together regular targets, internal and token transfers
         const allOutputs: (
             | { type: 'token'; payload: (typeof tokens)[number] }
-            | { type: 'internal'; payload: (typeof internalTransfers)[number] }
+            | { type: 'internal'; payload: (typeof filteredInternalTransfers)[number] }
             | { type: 'target'; payload: WalletAccountTransaction['targets'][number] }
         )[] = [
             ...targets.map(t => ({ type: 'target' as const, payload: t })),
-            ...internalTransfers.map(t => ({ type: 'internal' as const, payload: t })),
+            ...filteredInternalTransfers.map(t => ({ type: 'internal' as const, payload: t })),
             ...tokens.map(t => ({ type: 'token' as const, payload: t })),
         ];
 
@@ -140,7 +163,7 @@ export const TransactionItem = memo(
             dispatch(
                 openModal({
                     type: 'transaction-detail',
-                    tx: transaction,
+                    tx: { ...transaction, internalTransfers: filteredInternalTransfers },
                     rbfForm,
                 }),
             );

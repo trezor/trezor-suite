@@ -6,10 +6,10 @@ import {
 } from '@suite-common/wallet-types';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Ethereum } from '@everstake/wallet-sdk';
+import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
 import { fromWei, hexToNumberString, numberToHex, toWei } from 'web3-utils';
-import { getEthereumEstimateFeeParams, sanitizeHex } from '@suite-common/wallet-utils';
-import TrezorConnect, { EthereumTransaction, Success } from '@trezor/connect';
+import { getEthereumEstimateFeeParams, isPending, sanitizeHex } from '@suite-common/wallet-utils';
+import TrezorConnect, { EthereumTransaction, Success, InternalTransfer } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { STAKE_GAS_LIMIT_RESERVE, ValidatorsQueue } from '@suite-common/wallet-core';
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
@@ -63,7 +63,7 @@ export const stake = async ({
 
     try {
         const ethNetwork = getEthNetworkForWalletSdk(symbol);
-        const { contract_pool: contractPool } = Ethereum.selectNetwork(ethNetwork);
+        const { contract_pool: contractPool } = selectNetwork(ethNetwork);
         const contractPoolAddress = contractPool.options.address;
         const data = contractPool.methods.stake(WALLET_SDK_SOURCE).encodeABI();
 
@@ -137,7 +137,7 @@ export const unstake = async ({
 
         const amountWei = toWei(amount, 'ether');
         const ethNetwork = getEthNetworkForWalletSdk(symbol);
-        const { contract_pool: contractPool } = Ethereum.selectNetwork(ethNetwork);
+        const { contract_pool: contractPool } = selectNetwork(ethNetwork);
         const contractPoolAddress = contractPool.options.address;
         const data = contractPool.methods
             .unstake(amountWei, interchanges, WALLET_SDK_SOURCE)
@@ -199,7 +199,7 @@ export const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBa
         if (!readyForClaim.eq(requested)) throw new Error('Unstake request not filled yet');
 
         const ethNetwork = getEthNetworkForWalletSdk(symbol);
-        const { contract_accounting: contractAccounting } = Ethereum.selectNetwork(ethNetwork);
+        const { contract_accounting: contractAccounting } = selectNetwork(ethNetwork);
         const contractAccountingAddress = contractAccounting.options.address;
         const data = contractAccounting.methods.claimWithdrawRequest().encodeABI();
 
@@ -565,4 +565,54 @@ export const getUnstakingAmount = (ethereumData: string | undefined): string | n
     const dataBuffer = Buffer.from(data, 'hex');
 
     return hexToNumberString(`0x${dataBuffer.subarray(4, 36).toString('hex')}`);
+};
+
+export const getInstantStakeType = (
+    internalTransfer: InternalTransfer,
+    address?: string,
+    symbol?: NetworkSymbol,
+): StakeType | null => {
+    if (!address || !symbol) return null;
+    const { from, to } = internalTransfer;
+    const ethNetwork = getEthNetworkForWalletSdk(symbol);
+    const { address_pool: poolAddress, address_withdraw_treasury: withdrawTreasuryAddress } =
+        selectNetwork(ethNetwork);
+
+    if (from === poolAddress && to === withdrawTreasuryAddress) {
+        return 'stake';
+    }
+
+    if (from === poolAddress && to === address) {
+        return 'unstake';
+    }
+
+    if (from === withdrawTreasuryAddress && to === address) {
+        return 'claim';
+    }
+
+    return null;
+};
+
+export const getChangedInternalTx = (
+    prevTxs: WalletAccountTransaction[],
+    currentTxs: WalletAccountTransaction[],
+    selectedAccountAddress?: string,
+    symbol?: NetworkSymbol,
+): InternalTransfer | null => {
+    if (!selectedAccountAddress || !symbol) return null;
+
+    const prevPendingTxs = prevTxs.filter(tx => isPending(tx));
+    const currentSentTxs = currentTxs.filter(
+        tx => tx.type === 'sent' && tx.internalTransfers.length > 0,
+    );
+    const changedTx = currentSentTxs.find(currTx =>
+        prevPendingTxs.some(prevTx => currTx.txid === prevTx.txid),
+    );
+    if (!changedTx) return null;
+
+    const internalTransfer = changedTx.internalTransfers.find(internalTx =>
+        getInstantStakeType(internalTx, selectedAccountAddress, symbol),
+    );
+
+    return internalTransfer ?? null;
 };

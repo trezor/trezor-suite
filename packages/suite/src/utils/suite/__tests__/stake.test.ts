@@ -1,4 +1,9 @@
-import TrezorConnect, { AccountInfo, Success, Unsuccessful } from '@trezor/connect';
+import TrezorConnect, {
+    AccountInfo,
+    InternalTransfer,
+    Success,
+    Unsuccessful,
+} from '@trezor/connect';
 import {
     transformTxFixtures,
     stakeFixture,
@@ -15,6 +20,8 @@ import {
     getDaysToAddToPoolInitialFixture,
     getAdjustedGasLimitConsumptionFixture,
     getEthNetworkForWalletSdkFixture,
+    getInstantStakeTypeFixture,
+    getChangedInternalTxFixture,
     getUnstakingAmountFixtures,
 } from '../__fixtures__/stake';
 import {
@@ -34,6 +41,8 @@ import {
     getDaysToAddToPoolInitial,
     getAdjustedGasLimitConsumption,
     getEthNetworkForWalletSdk,
+    getInstantStakeType,
+    getChangedInternalTx,
 } from '../stake';
 import {
     BlockchainEstimatedFee,
@@ -210,7 +219,7 @@ describe('getDaysToAddToPoolInitial', () => {
 
 type GetAdjustedGasLimitConsumptionArgs = Success<BlockchainEstimatedFee>;
 
-describe('getDaysToAddToPoolInitial', () => {
+describe('getAdjustedGasLimitConsumption', () => {
     getAdjustedGasLimitConsumptionFixture.forEach(test => {
         it(test.description, async () => {
             const result = await getAdjustedGasLimitConsumption(
@@ -221,10 +230,37 @@ describe('getDaysToAddToPoolInitial', () => {
     });
 });
 
-describe('getDaysToAddToPoolInitial', () => {
+describe('getEthNetworkForWalletSdk', () => {
     getEthNetworkForWalletSdkFixture.forEach(test => {
         it(test.description, async () => {
             const result = await getEthNetworkForWalletSdk(test.args.symbol as NetworkSymbol);
+            expect(result).toEqual(test.result);
+        });
+    });
+});
+
+describe('getInstantStakeType', () => {
+    getInstantStakeTypeFixture.forEach(test => {
+        it(test.description, async () => {
+            const result = await getInstantStakeType(
+                test.args.internalTransfer as InternalTransfer,
+                test.args.address,
+                test.args.symbol as NetworkSymbol,
+            );
+            expect(result).toEqual(test.result);
+        });
+    });
+});
+
+describe('getChangedInternalTx', () => {
+    getChangedInternalTxFixture.forEach(test => {
+        it(test.description, async () => {
+            const result = await getChangedInternalTx(
+                test.args.prevTxs as WalletAccountTransaction[],
+                test.args.currentTxs as WalletAccountTransaction[],
+                test.args.selectedAccountAddress,
+                test.args.symbol as NetworkSymbol,
+            );
             expect(result).toEqual(test.result);
         });
     });

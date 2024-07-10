@@ -1,3 +1,5 @@
+import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
+
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type {
     Utxo,
@@ -87,6 +89,28 @@ export const filterTokenTransfers = (
         });
 };
 
+interface EthereumStakingAddresses {
+    poolInstance: string[];
+    withdrawTreasury: string[];
+}
+
+const ethereumStakingAddresses = (['mainnet', 'holesky'] as const).reduce<EthereumStakingAddresses>(
+    (acc, network) => {
+        const { address_pool, address_withdraw_treasury } = selectNetwork(network);
+        acc.poolInstance.push(address_pool);
+        acc.withdrawTreasury.push(address_withdraw_treasury);
+
+        return acc;
+    },
+    { poolInstance: [], withdrawTreasury: [] },
+);
+
+export const isEthereumStakingInternalTransfer = (from: string, to: string) => {
+    const { poolInstance, withdrawTreasury } = ethereumStakingAddresses;
+
+    return poolInstance.includes(from) && withdrawTreasury.includes(to);
+};
+
 export const filterEthereumInternalTransfers = (
     address: string | undefined,
     ethereumSpecific: BlockbookTransaction['ethereumSpecific'],
@@ -101,7 +125,11 @@ export const filterEthereumInternalTransfers = (
     return (
         internalTransfers
             // type 1 and 2 are filtered out (contract creating and destruction)
-            .filter(({ type, from, to }) => type === 0 && [from, to].includes(address))
+            .filter(
+                ({ type, from, to }) =>
+                    type === 0 &&
+                    ([from, to].includes(address) || isEthereumStakingInternalTransfer(from, to)),
+            )
             .map(({ from, to, value }) => {
                 const isIncoming = from === address;
                 const isOutgoing = to === address;
@@ -111,8 +139,11 @@ export const filterEthereumInternalTransfers = (
                     type = 'self';
                 } else if (isIncoming) {
                     type = 'sent';
-                } else {
+                } else if (isOutgoing) {
                     type = 'recv';
+                } else {
+                    // For transfers where both 'from' and 'to' addresses are not the account address (like instant staking)
+                    type = 'external';
                 }
 
                 return {

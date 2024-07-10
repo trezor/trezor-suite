@@ -21,6 +21,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
+        "@everstake/wallet-sdk": "^0.3.49",
         "@mobily/ts-belt": "^3.13.1",
         "@solana/web3.js": "^1.95.0",
         "@trezor/env-utils": "workspace:*",

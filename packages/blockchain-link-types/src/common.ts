@@ -46,7 +46,8 @@ export type TokenTransfer = Omit<BlockbookTokenTransfer, 'value'> & {
 };
 
 export interface InternalTransfer {
-    type: TransferType;
+    // we filter out addresses where from/to is not user's address except Everstake instant txs which are marked 'external'
+    type: TransferType | 'external';
     amount: string;
     from: string;
     to: string;
