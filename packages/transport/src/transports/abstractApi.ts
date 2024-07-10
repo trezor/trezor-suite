@@ -229,6 +229,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         this.enumerate();
                     }
 
+                    console.log('abstractapi.call, error', err, 'err.message', err.message);
                     return this.unknownError(err, [
                         ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
                         ERRORS.DEVICE_NOT_FOUND,

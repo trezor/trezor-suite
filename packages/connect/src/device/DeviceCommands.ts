@@ -29,6 +29,47 @@ type TypedCallResponseMap = {
 };
 type DefaultMessageResponse = TypedCallResponseMap[keyof MessageType];
 
+class TickingBomb {
+    abortController: AbortController;
+    timer?: ReturnType<typeof setTimeout>;
+    isTicking = false;
+
+    constructor() {
+        this.abortController = new AbortController();
+        this.abortController.signal.addEventListener('abort', () => {
+            console.log('---signal aborted');
+        });
+    }
+
+    stopTicking() {
+        this.isTicking = false;
+        clearTimeout(this.timer);
+    }
+
+    startTicking() {
+        this.isTicking = true;
+        console.log('--- start timer, clearing timeout id', this.timer);
+
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+            console.warn('-- ticking timer finished');
+            this.abortController.abort();
+            this.isTicking = false;
+        }, 5000);
+        console.log('--- started timer, id', this.timer);
+    }
+
+    onBoom(cb: () => void | null) {
+        this.abortController.signal.onabort = cb;
+    }
+
+    dispose() {
+        this.abortController.signal.onabort = null;
+        clearTimeout(this.timer);
+        this.isTicking = false;
+    }
+}
+
 export type PassphrasePromptResponse = {
     passphrase?: string;
     passphraseOnDevice?: boolean;
@@ -366,7 +407,11 @@ export class DeviceCommands {
         // Assert message type
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
         Assert(Messages.MessageType.properties[type], msg ?? {});
-        const response = await this._commonCall(type, msg);
+
+        const bomb = new TickingBomb();
+        bomb.startTicking();
+
+        const response = await this._commonCall(type, bomb, msg);
         try {
             assertType(response, resType);
         } catch (error) {
@@ -383,17 +428,54 @@ export class DeviceCommands {
         return response;
     }
 
-    async _commonCall(type: MessageKey, msg?: DefaultMessageResponse['message']) {
-        const resp = await this.call(type, msg);
-        if (this.disposed) {
-            throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
-        }
+    async _commonCall(
+        type: MessageKey,
+        bomb: TickingBomb,
+        msg?: DefaultMessageResponse['message'],
+    ) {
+        console.log('===== commonCall =====', type);
+        // if timeout is set the promise returned by _commonCall should reject after 5000ms
 
-        return this._filterCommonTypes(resp);
+        const executionPromise = new Promise<DefaultMessageResponse>(async (resolve, reject) => {
+            if (bomb.isTicking) {
+                bomb.onBoom(() => {
+                    console.warn('===kaboom, rejecting callpromise');
+                    this.callPromise?.abort();
+                });
+            } else {
+                bomb.onBoom = null;
+            }
+            try {
+                const resp = await this.call(type, msg);
+                if (this.disposed) {
+                    throw ERRORS.TypedError(
+                        'Runtime',
+                        'typedCall: DeviceCommands already disposed',
+                    );
+                }
+
+                return resolve(this._filterCommonTypes(resp, bomb));
+            } catch (err) {
+                if (bomb.abortController.signal.aborted && err.message === 'Aborted by signal') {
+                    console.warn(
+                        'aborted by signal on transport layer was caused by aborted by timeout here on connect layer',
+                    );
+                    reject(new Error('Aborted by timeout'));
+                } else {
+                    reject(err);
+                }
+            }
+        });
+
+        return executionPromise;
     }
 
-    _filterCommonTypes(res: DefaultMessageResponse): Promise<DefaultMessageResponse> {
+    _filterCommonTypes(
+        res: DefaultMessageResponse,
+        bomb: TickingBomb,
+    ): Promise<DefaultMessageResponse> {
         this._cancelableRequestBySend = false;
+        bomb.startTicking();
 
         if (res.type === 'Failure') {
             const { code } = res.message;
@@ -411,6 +493,8 @@ export class DeviceCommands {
                 message = 'Action cancelled by user';
             }
 
+            bomb.dispose();
+
             // pass code and message from firmware error
             return Promise.reject(
                 new ERRORS.TrezorError(
@@ -421,6 +505,7 @@ export class DeviceCommands {
         }
 
         if (res.type === 'Features') {
+            bomb.dispose();
             return Promise.resolve(res);
         }
 
@@ -438,12 +523,12 @@ export class DeviceCommands {
             } else {
                 this.device.emit(DEVICE.BUTTON, this.device, res.message);
             }
-
-            return this._commonCall('ButtonAck', {});
+            bomb.stopTicking();
+            return this._commonCall('ButtonAck', bomb, {});
         }
 
         if (res.type === 'EntropyRequest') {
-            return this._commonCall('EntropyAck', {
+            return this._commonCall('EntropyAck', bomb, {
                 entropy: generateEntropy(32).toString('hex'),
             });
         }
@@ -451,7 +536,7 @@ export class DeviceCommands {
         if (res.type === 'PinMatrixRequest') {
             return this._promptPin(res.message.type).then(
                 pin =>
-                    this._commonCall('PinMatrixAck', { pin }).then(response => {
+                    this._commonCall('PinMatrixAck', bomb, { pin }).then(response => {
                         if (!this.device.features.unlocked) {
                             // reload features to after successful PIN
                             return this.device.getFeatures().then(() => response);
@@ -459,7 +544,7 @@ export class DeviceCommands {
 
                         return response;
                     }),
-                () => this._commonCall('Cancel', {}),
+                () => this._commonCall('Cancel', bomb, {}),
             );
         }
 
@@ -468,16 +553,17 @@ export class DeviceCommands {
             const legacy = this.device.useLegacyPassphrase();
             const legacyT1 = legacy && this.device.isT1();
 
+            bomb.stopTicking();
             // T1B1 fw lower than 1.9.0, passphrase is cached in internal state
             if (legacyT1 && typeof state === 'string') {
-                return this._commonCall('PassphraseAck', { passphrase: state });
+                return this._commonCall('PassphraseAck', bomb, { passphrase: state });
             }
 
             // T2T1 fw lower than 2.3.0, entering passphrase on device
             if (legacy && res.message._on_device) {
                 this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
 
-                return this._commonCall('PassphraseAck', { _state: state });
+                return this._commonCall('PassphraseAck', bomb, { _state: state });
             }
 
             return this._promptPassphrase().then(
@@ -486,20 +572,23 @@ export class DeviceCommands {
                     if (legacyT1) {
                         this.device.setInternalState(cache ? passphrase : undefined);
 
-                        return this._commonCall('PassphraseAck', { passphrase });
+                        return this._commonCall('PassphraseAck', bomb, { passphrase });
                     }
                     if (legacy) {
-                        return this._commonCall('PassphraseAck', { passphrase, _state: state });
+                        return this._commonCall('PassphraseAck', bomb, {
+                            passphrase,
+                            _state: state,
+                        });
                     }
 
                     return !passphraseOnDevice
-                        ? this._commonCall('PassphraseAck', { passphrase })
-                        : this._commonCall('PassphraseAck', { on_device: true });
+                        ? this._commonCall('PassphraseAck', bomb, { passphrase })
+                        : this._commonCall('PassphraseAck', bomb, { on_device: true });
                 },
                 // todo: does it make sense? error might have resulted from device disconnected.
                 // with webusb, this leads to pretty common "Session not found"
                 err =>
-                    this._commonCall('Cancel', {}).catch((e: any) => {
+                    this._commonCall('Cancel', bomb, {}).catch((e: any) => {
                         throw err || e;
                     }),
             );
@@ -511,16 +600,17 @@ export class DeviceCommands {
             const { state } = res.message;
             this.device.setInternalState(state);
 
-            return this._commonCall('Deprecated_PassphraseStateAck', {});
+            return this._commonCall('Deprecated_PassphraseStateAck', bomb, {});
         }
 
         if (res.type === 'WordRequest') {
             return this._promptWord(res.message.type).then(
-                word => this._commonCall('WordAck', { word }),
-                () => this._commonCall('Cancel', {}),
+                word => this._commonCall('WordAck', bomb, { word }),
+                () => this._commonCall('Cancel', bomb, {}),
             );
         }
 
+        bomb.dispose();
         return Promise.resolve(res);
     }
 

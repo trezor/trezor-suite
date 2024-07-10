@@ -358,6 +358,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     ]);
                 }
             } catch (error) {
+                console.log('initialize cath error', error);
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
                     // handling corner-case T1B1 + bootloader < 1.4.0 (above)
                     // if GetFeatures fails try again
@@ -369,6 +370,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                 if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
                     this.unreadableError = 'Connection timeout';
+                    console.log('--- setting unreadable');
                 }
 
                 this.inconsistent = true;
@@ -541,6 +543,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         const { message } = await this.getCommands().typedCall('Initialize', 'Features', payload);
+        console.log('initialize result', message);
         this._updateFeatures(message);
     }
 
