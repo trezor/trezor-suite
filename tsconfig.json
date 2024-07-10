@@ -80,7 +80,7 @@
             "path": "suite-native/module-add-accounts"
         },
         {
-            "path": "suite-native/module-connect-device"
+            "path": "suite-native/module-authorize-device"
         },
         {
             "path": "suite-native/module-dev-utils"
@@ -89,9 +89,6 @@
         {
             "path": "suite-native/module-onboarding"
         },
-        {
-            "path": "suite-native/module-passphrase"
-        },
         { "path": "suite-native/module-receive" },
         { "path": "suite-native/module-send" },
         {
@@ -99,7 +96,6 @@
         },
         { "path": "suite-native/navigation" },
         { "path": "suite-native/notifications" },
-        { "path": "suite-native/passphrase" },
         { "path": "suite-native/qr-code" },
         {
             "path": "suite-native/react-native-graph"

@@ -737,6 +737,9 @@ export const en = {
             subtitle: 'Go to your device and confirm you’d like to enable passphase.',
             cancelledError: 'Passphrase enabling cancelled.',
         },
+        passphraseFeatureUnlock: {
+            title: 'Enter passphrase to continue',
+        },
     },
 };
 

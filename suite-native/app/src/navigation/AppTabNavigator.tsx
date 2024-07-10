@@ -5,7 +5,7 @@ import { HomeStackNavigator } from '@suite-native/module-home';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
-import { useHandleDeviceRequestsPassphrase } from '@suite-native/passphrase';
+import { useHandleDeviceRequestsPassphrase } from '@suite-native/device-authorization';
 
 import { rootTabsOptions } from './routes';
 

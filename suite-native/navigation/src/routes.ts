@@ -2,7 +2,7 @@ export enum RootStackRoutes {
     AppTabs = 'AppTabs',
     Onboarding = 'Onboarding',
     AccountsImport = 'AccountsImport',
-    ConnectDeviceStack = 'ConnectDeviceStack',
+    AuthorizeDeviceStack = 'AuthorizeDeviceStack',
     AccountDetail = 'AccountDetail',
     DevUtilsStack = 'DevUtilsStack',
     AccountSettings = 'AccountSettings',
@@ -37,13 +37,11 @@ export enum AccountsImportStackRoutes {
     AccountImportSummary = 'AccountImportSummary',
 }
 
-export enum ConnectDeviceStackRoutes {
+export enum AuthorizeDeviceStackRoutes {
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
     PinMatrix = 'PinMatrix',
     ConnectingDevice = 'ConnectingDevice',
-}
 
-export enum PassphraseStackRoutes {
     PassphraseForm = 'PassphraseForm',
     PassphraseConfirmOnTrezor = 'PassphraseConfirmOnTrezor',
     PassphraseLoading = 'PassphraseLoading',
@@ -51,6 +49,7 @@ export enum PassphraseStackRoutes {
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
     PassphraseEnableOnDevice = 'PassphraseEnableOnDevice',
+    PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
 }
 
 export enum DevUtilsStackRoutes {
