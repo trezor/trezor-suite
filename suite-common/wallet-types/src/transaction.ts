@@ -175,6 +175,7 @@ export interface RbfTransactionParams {
     changeAddress?: AccountAddress; // original change address
     feeRate: string; // original fee rate
     baseFee: number; // original fee
+    locktime?: number;
     ethereumNonce?: number;
     ethereumData?: string;
 }

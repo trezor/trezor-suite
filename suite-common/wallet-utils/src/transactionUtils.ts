@@ -656,7 +656,6 @@ const getBitcoinRbfParams = (
 
     if (!utxo.length || !outputs.length || outputs.length !== vout.length) return;
 
-    // TODO: get other params, like locktime etc.
     return {
         txid: tx.txid,
         utxo,
@@ -667,6 +666,7 @@ const getBitcoinRbfParams = (
         // of displaying fee rate is kept here
         feeRate: tx.feeRate || getFeeRate(tx),
         baseFee: parseInt(tx.fee, 10),
+        locktime: tx.lockTime,
     };
 };
 
