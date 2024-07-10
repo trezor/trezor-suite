@@ -251,7 +251,8 @@ jobs:
           mv version0.json packages/suite/package.json
           yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
-          cp -r packages/suite-desktop/build-electron/* .
+          mv packages/suite-desktop/build-electron/Trezor-Suite* .
+          mv packages/suite-desktop/build-electron/latest*.yml .
 
       - name: Upload suite-desktop autoupdate version 0.xx.x artifacts
         uses: actions/upload-artifact@v4
@@ -262,6 +263,11 @@ jobs:
             latest*.yml
           retention-days: 3
 
+      - name: Remove suite-desktop autoupdate version 0.xx.x before building version 3x.x.x
+        run: |
+          rm -rf Trezor-Suite*
+          rm -rf latest*.yml
+
       - name: Build ${{ matrix.platform }} suite-desktop autoupdate version 3x.x.x
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -269,7 +275,8 @@ jobs:
           mv version3.json packages/suite/package.json
           yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
-          cp -r packages/suite-desktop/build-electron/* .
+          mv packages/suite-desktop/build-electron/Trezor-Suite* .
+          mv packages/suite-desktop/build-electron/latest*.yml .
 
       - name: Upload suite-desktop autoupdate version 3x.x.x artifacts
         uses: actions/upload-artifact@v4
