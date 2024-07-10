@@ -38,9 +38,10 @@ describe('Passphrase with cardano', () => {
         cy.task('pressYes');
         cy.task('pressYes');
         // TODO: refactor using data-tests
-        // cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
-        cy.contains('button', 'Yes, open', { timeout: 20_000 }).click();
-        cy.contains('button', 'Got it, continue').click();
+        cy.getTestElement('@passphrase-confirmation/step1-open-unused-wallet-button', {
+            timeout: 20_000,
+        }).click();
+        cy.getTestElement('@passphrase-confirmation/step2-button').click();
         cy.getTestElement('@passphrase/input').type('secret passphrase A');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.task('pressYes');
@@ -51,9 +52,12 @@ describe('Passphrase with cardano', () => {
         // TODO: refactor using data-tests
         cy.getTestElement('@switch-device/wallet-on-index/1').then(wallet => {
             cy.wrap(wallet)
-                .find('svg[data-src*="1c39855cc6c5351f89ad"]')
+                .find('[data-test="@collapsible-box/icon-collapsed"]')
                 .click({ scrollBehavior: 'bottom' });
-            cy.wrap(wallet).find('[data-test="undefined/enabled"]').should('be.visible').click();
+            cy.wrap(wallet)
+                .find('[data-test$="1/view-only-radio/enabled"]')
+                .should('be.visible')
+                .click();
         });
 
         cy.get('svg[data-src*="4197b1525593c25ef1d8"]').first().click();
