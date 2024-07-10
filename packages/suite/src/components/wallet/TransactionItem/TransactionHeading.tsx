@@ -19,7 +19,8 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
 import { spacingsPx } from '@trezor/theme';
-import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
+import { InstantStakeBadge } from './InstantStakeBadge';
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
 
 const Wrapper = styled.span`
     display: flex;
@@ -165,7 +166,9 @@ export const TransactionHeading = ({
                     <BlurWrapper $isBlurred={isPhishingTransaction}>
                         <HeaderWrapper>
                             <TransactionHeader transaction={transaction} isPending={isPending} />
-                            <UnstakingTxAmount transaction={transaction} />
+                            {isSupportedEthStakingNetworkSymbol(transaction.symbol) && (
+                                <InstantStakeBadge transaction={transaction} symbol={symbol} />
+                            )}
                         </HeaderWrapper>
                     </BlurWrapper>
                 </HeadingWrapper>

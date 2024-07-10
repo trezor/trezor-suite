@@ -18,6 +18,8 @@ import {
     selectValidatorsQueue,
 } from '@suite-common/wallet-core';
 import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/stake';
+import { InstantStakeBanner } from './InstantStakeBanner';
+import { useMemo } from 'react';
 
 const FlexCol = styled.div`
     display: flex;
@@ -62,12 +64,20 @@ export const StakingDashboard = () => {
         selectAccountUnstakeTransactions(state, account?.key ?? ''),
     );
 
+    const txs = useMemo(() => [...stakeTxs, ...unstakeTxs], [stakeTxs, unstakeTxs]);
+
     const daysToAddToPool = getDaysToAddToPool(stakeTxs, data);
     const daysToUnstake = getDaysToUnstake(unstakeTxs, data);
 
     return (
         <>
             <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
+                <InstantStakeBanner
+                    txs={txs}
+                    daysToAddToPool={daysToAddToPool}
+                    daysToUnstake={daysToUnstake}
+                />
+
                 <ClaimCard />
 
                 <FlexCol>

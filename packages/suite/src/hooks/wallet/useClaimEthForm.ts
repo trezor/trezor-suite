@@ -12,7 +12,7 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
-import { Ethereum } from '@everstake/wallet-sdk';
+import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
 import { useFees } from './form/useFees';
 import { ClaimContextValues, ClaimFormState } from 'src/types/wallet/claimForm';
 
@@ -28,7 +28,7 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
     const symbolFees = useSelector(state => state.wallet.fees[account.symbol]);
 
     const defaultValues = useMemo(() => {
-        const { address_accounting: accountingAddress } = Ethereum.selectNetwork(
+        const { address_accounting: accountingAddress } = selectNetwork(
             getEthNetworkForWalletSdk(account.symbol),
         );
 
