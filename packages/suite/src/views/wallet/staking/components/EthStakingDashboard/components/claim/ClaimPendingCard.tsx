@@ -10,7 +10,7 @@ import { borders, spacingsPx } from '@trezor/theme';
 const StyledCard = styled.div`
     border-radius: ${borders.radii.md};
     padding: ${spacingsPx.sm} ${spacingsPx.xxl} ${spacingsPx.md};
-    margin-bottom: ${spacingsPx.xs};
+    margin-bottom: ${spacingsPx.sm};
     background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
     position: relative;
     overflow: hidden;

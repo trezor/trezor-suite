@@ -87,6 +87,23 @@ export const filterTokenTransfers = (
         });
 };
 
+const ethereumStakingAddresses = {
+    poolInstance: [
+        '0xD523794C879D9eC028960a231F866758e405bE34',
+        '0xAFA848357154a6a624686b348303EF9a13F63264',
+    ],
+    withdrawTreasury: [
+        '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
+        '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
+    ],
+};
+
+export const isEthereumStakingInternalTransfer = (from: string, to: string) => {
+    const { poolInstance, withdrawTreasury } = ethereumStakingAddresses;
+
+    return poolInstance.includes(from) && withdrawTreasury.includes(to);
+};
+
 export const filterEthereumInternalTransfers = (
     address: string | undefined,
     ethereumSpecific: BlockbookTransaction['ethereumSpecific'],
@@ -101,7 +118,11 @@ export const filterEthereumInternalTransfers = (
     return (
         internalTransfers
             // type 1 and 2 are filtered out (contract creating and destruction)
-            .filter(({ type, from, to }) => type === 0 && [from, to].includes(address))
+            .filter(
+                ({ type, from, to }) =>
+                    type === 0 &&
+                    ([from, to].includes(address) || isEthereumStakingInternalTransfer(from, to)),
+            )
             .map(({ from, to, value }) => {
                 const isIncoming = from === address;
                 const isOutgoing = to === address;
@@ -111,8 +132,11 @@ export const filterEthereumInternalTransfers = (
                     type = 'self';
                 } else if (isIncoming) {
                     type = 'sent';
-                } else {
+                } else if (isOutgoing) {
                     type = 'recv';
+                } else {
+                    // For transfers where both 'from' and 'to' addresses are not the account address (like instant staking)
+                    type = 'external';
                 }
 
                 return {

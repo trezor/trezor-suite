@@ -38,7 +38,7 @@ import {
     StakeContextValues,
     selectFiatRatesByFiatRateKey,
 } from '@suite-common/wallet-core';
-import { Ethereum } from '@everstake/wallet-sdk';
+import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
 import { useFees } from './form/useFees';
 
 export const StakeEthFormContext = createContext<StakeContextValues | null>(null);
@@ -64,7 +64,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     };
 
     const defaultValues = useMemo(() => {
-        const { address_pool: poolAddress } = Ethereum.selectNetwork(
+        const { address_pool: poolAddress } = selectNetwork(
             getEthNetworkForWalletSdk(account.symbol),
         );
 

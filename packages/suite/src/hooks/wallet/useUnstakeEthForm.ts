@@ -32,7 +32,7 @@ import {
     UnstakeContextValues as UnstakeContextValuesBase,
     UnstakeFormState,
 } from '@suite-common/wallet-core';
-import { Ethereum } from '@everstake/wallet-sdk';
+import { selectNetwork } from '@everstake/wallet-sdk/ethereum';
 import { useFees } from './form/useFees';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
@@ -64,7 +64,7 @@ export const useUnstakeEthForm = ({
     };
 
     const defaultValues = useMemo(() => {
-        const { address_pool: poolAddress } = Ethereum.selectNetwork(
+        const { address_pool: poolAddress } = selectNetwork(
             getEthNetworkForWalletSdk(account.symbol),
         );
 

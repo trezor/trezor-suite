@@ -14,7 +14,6 @@ import {
     spacingsPx,
     typography,
 } from '@trezor/theme';
-import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 
 const Wrapper = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};
@@ -197,7 +196,6 @@ export const BasicTxDetails = ({
                 <TxStatus>
                     <TxSentStatus>
                         <TransactionHeader transaction={tx} isPending={isPending(tx)} />
-                        <UnstakingTxAmount transaction={tx} />
                     </TxSentStatus>
                 </TxStatus>
 

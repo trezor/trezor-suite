@@ -715,3 +715,151 @@ export const getEthNetworkForWalletSdkFixture = [
         result: 'mainnet',
     },
 ];
+
+export const getInstantStakeTypeFixture = [
+    {
+        description: 'should return "stake" for valid instant stake transfer (mainnet)',
+        args: {
+            internalTransfer: {
+                from: '0xD523794C879D9eC028960a231F866758e405bE34',
+                to: '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
+            },
+            address: 'address',
+            symbol: 'eth',
+        },
+        result: 'stake',
+    },
+    {
+        description: 'should return "stake" for valid instant stake transfer (hokesky)',
+        args: {
+            internalTransfer: {
+                from: '0xAFA848357154a6a624686b348303EF9a13F63264',
+                to: '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
+            },
+            address: 'address',
+            symbol: 'thol',
+        },
+        result: 'stake',
+    },
+    {
+        description: 'should return "unstake" for valid instant unstake transfer (mainnet)',
+        args: {
+            internalTransfer: {
+                from: '0xD523794C879D9eC028960a231F866758e405bE34',
+                to: 'address',
+            },
+            address: 'address',
+            symbol: 'eth',
+        },
+        result: 'unstake',
+    },
+    {
+        description: 'should return "unstake" for valid instant unstake transfer (hokesky)',
+        args: {
+            internalTransfer: {
+                from: '0xAFA848357154a6a624686b348303EF9a13F63264',
+                to: 'address',
+            },
+            address: 'address',
+            symbol: 'thol',
+        },
+        result: 'unstake',
+    },
+    {
+        description: 'should return "claim" for valid claim transfer (mainnet)',
+        args: {
+            internalTransfer: {
+                from: '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
+                to: 'address',
+            },
+            address: 'address',
+            symbol: 'eth',
+        },
+        result: 'claim',
+    },
+    {
+        description: 'should return "claim" for valid claim transfer (hokesky)',
+        args: {
+            internalTransfer: {
+                from: '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1',
+                to: 'address',
+            },
+            address: 'address',
+            symbol: 'thol',
+        },
+        result: 'claim',
+    },
+    {
+        description: 'should return null for invalid transaction',
+        args: {
+            internalTransfer: {
+                from: 'unknown',
+                to: 'unknown',
+            },
+            address: 'address',
+            symbol: 'eth',
+        },
+        result: null,
+    },
+];
+
+export const getChangedInternalTxFixture = [
+    {
+        description: 'should return null for no selectedAccountAddress or symbol',
+        args: {
+            prevTxs: [],
+            currentTxs: [],
+            selectedAccountAddress: undefined,
+            symbol: undefined,
+        },
+        result: null,
+    },
+    {
+        description: 'should return null for no changed transaction',
+        args: {
+            prevTxs: [
+                { type: 'sent', txid: '1', internalTransfers: [] },
+                { type: 'sent', txid: '2', internalTransfers: [] },
+            ],
+            currentTxs: [
+                { type: 'sent', txid: '3', internalTransfers: [] },
+                { type: 'sent', txid: '4', internalTransfers: [] },
+            ],
+            selectedAccountAddress: 'address',
+            symbol: 'eth',
+        },
+        result: null,
+    },
+    {
+        description: 'should return the changed internal transaction',
+        args: {
+            prevTxs: [
+                { type: 'sent', txid: '1', internalTransfers: [] },
+                { type: 'sent', txid: '2', internalTransfers: [] },
+            ],
+            currentTxs: [
+                {
+                    type: 'sent',
+                    txid: '1',
+                    internalTransfers: [
+                        {
+                            from: '0xD523794C879D9eC028960a231F866758e405bE34',
+                            to: '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
+                            type: 'external',
+                            amount: '1',
+                        },
+                    ],
+                },
+                { type: 'sent', txid: '2', internalTransfers: [] },
+            ],
+            selectedAccountAddress: 'address',
+            symbol: 'eth',
+        },
+        result: {
+            from: '0xD523794C879D9eC028960a231F866758e405bE34',
+            to: '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
+            type: 'external',
+            amount: '1',
+        },
+    },
+];

@@ -7471,6 +7471,24 @@ export default defineMessages({
         id: 'TR_STAKING_IS_NOT_SUPPORTED',
         defaultMessage: 'Staking is not supported on this network.',
     },
+    TR_STAKING_INSTANT_STAKING: {
+        id: 'TR_INSTANT_STAKING',
+        defaultMessage: 'Staked instantly',
+    },
+    TR_STAKING_INSTANT_UNSTAKING: {
+        id: 'TR_INSTANT_UNSTAKING',
+        defaultMessage: 'Unstaked instantly',
+    },
+    TR_STAKING_INSTANTLY_STAKED: {
+        id: 'TR_STAKING_INSTANTLY_STAKED',
+        defaultMessage:
+            "You've instantly staked {amount} {symbol}. {days, plural, =0 {} one {The remaining {symbol} is staked within # day.} other { The remaining {symbol} is staked within # days}}",
+    },
+    TR_STAKING_INSTANTLY_UNSTAKED: {
+        id: 'TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS',
+        defaultMessage:
+            'You received {amount} {symbol} "Instantly". {days, plural, =0 {} one {The rest will be payed out within # day.} other { The rest will be payed out within # days}}',
+    },
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
         defaultMessage:

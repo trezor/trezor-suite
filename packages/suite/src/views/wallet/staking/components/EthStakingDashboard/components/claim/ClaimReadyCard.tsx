@@ -53,7 +53,7 @@ const InfoHeading = styled.div`
     gap: ${spacingsPx.xxs};
     color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.TINY};
-    margin-bottom: ${spacingsPx.xs};
+    margin-bottom: ${spacingsPx.sm};
 `;
 
 const StyledP = styled(Paragraph)`
