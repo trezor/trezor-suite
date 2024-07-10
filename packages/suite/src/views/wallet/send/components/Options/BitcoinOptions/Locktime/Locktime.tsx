@@ -4,8 +4,11 @@ import { NumberInput, Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Card, Icon, IconButton } from '@trezor/components';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
-import { useTranslation } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { spacingsPx } from '@trezor/theme';
+import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { useEffect } from 'react';
+import { canLocktimeTxBeBroadcast } from './canLocktimeTxBeBroadcast';
 
 const Label = styled.div`
     display: flex;
@@ -24,22 +27,36 @@ export const Locktime = ({ close }: LocktimeProps) => {
         toggleOption,
         formState: { errors },
         composeTransaction,
+        network,
+        watch,
     } = useSendFormContext();
+
+    const blockchain = useSelector(selectNetworkBlockchainInfo(network.symbol));
 
     const { translationString } = useTranslation();
 
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
     const inputName = 'bitcoinLockTime';
-    const inputValue = getDefaultValue(inputName) || '';
+    const defaultInputValue = getDefaultValue(inputName) || '';
     const error = errors[inputName];
 
-    const handleLocktimeChange = () => {
-        if (!error) {
-            if (broadcastEnabled) toggleOption('broadcast');
+    const locktime = watch('bitcoinLockTime');
+
+    useEffect(() => {
+        if (
+            error === undefined &&
+            !canLocktimeTxBeBroadcast({
+                locktime: locktime !== undefined ? Number(locktime) : undefined,
+                currentBlockHeight: blockchain.blockHeight,
+            }) &&
+            broadcastEnabled
+        ) {
+            toggleOption('broadcast');
         }
+
         composeTransaction(inputName);
-    };
+    }, [locktime, blockchain, toggleOption, broadcastEnabled, composeTransaction, error]);
 
     const rules = {
         required: translationString('LOCKTIME_IS_NOT_SET'),
@@ -65,8 +82,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
                 control={control}
                 name={inputName}
                 inputState={getInputState(error)}
-                defaultValue={inputValue}
-                onChange={handleLocktimeChange}
+                defaultValue={defaultInputValue}
                 rules={rules}
                 label={
                     <Label>

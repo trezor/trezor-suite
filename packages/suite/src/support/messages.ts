@@ -6184,6 +6184,11 @@ export default defineMessages({
         id: 'BROADCAST_TOOLTIP',
         defaultMessage: 'Broadcast the transaction to the network.',
     },
+    BROADCAST_TOOLTIP_DISABLED_LOCKTIME: {
+        id: 'BROADCAST_TOOLTIP_DISABLED_LOCKTIME',
+        defaultMessage:
+            'A transaction with locktime higher than the current block/timestamp would be rejected by the network.',
+    },
     IMPORT_CSV: {
         id: 'IMPORT_CSV',
         description: 'item in dropdown menu',
