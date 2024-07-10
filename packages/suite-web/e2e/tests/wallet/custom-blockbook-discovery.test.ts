@@ -11,7 +11,7 @@ describe('Custom-blockbook-discovery', () => {
         cy.task('startBridge');
 
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/coins');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
 
@@ -31,6 +31,9 @@ describe('Custom-blockbook-discovery', () => {
         // Test preparation
         //
         const customBTCblockbook = 'https://btc1.trezor.io';
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/wallet').click();
+        cy.discoveryShouldFinish(); 
 
         //
         // Test execution
@@ -50,7 +53,6 @@ describe('Custom-blockbook-discovery', () => {
         // Assert
         //
         // when graph becomes visible, discovery was finished
-        cy.discoveryShouldFinish();
         cy.getTestElement('@dashboard/graph', { timeout: 30000 }).should('exist');
     });
     /* Test case
@@ -65,7 +67,9 @@ describe('Custom-blockbook-discovery', () => {
         // Test preparation
         //
         const customBTCblockbook = 'https://ltc1.trezor.io';
-
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/wallet').click();
+        cy.discoveryShouldFinish();
         //
         // Test execution
         //
