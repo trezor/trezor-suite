@@ -35,14 +35,14 @@ interface DeviceItemProps {
     device: TrezorDevice;
     instances: AcquiredDevice[];
     onCancel: ForegroundAppProps['onCancel'];
-    isCloseButtonVisible?: boolean;
+    isFullHeaderVisible?: boolean;
 }
 
 export const DeviceItem = ({
     device,
     instances,
     onCancel,
-    isCloseButtonVisible,
+    isFullHeaderVisible,
 }: DeviceItemProps) => {
     const selectedDevice = useSelector(selectDevice);
     const dispatch = useDispatch();
@@ -76,7 +76,7 @@ export const DeviceItem = ({
             isFindTrezorVisible
             onCancel={onCancel}
             device={device}
-            isCloseButtonVisible={isCloseButtonVisible}
+            isFullHeaderVisible={isFullHeaderVisible}
         >
             <WalletsWrapper $enabled>
                 <InstancesWrapper>

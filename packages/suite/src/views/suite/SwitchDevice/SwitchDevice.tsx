@@ -39,7 +39,7 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
                         device={device}
                         instances={deviceUtils.getDeviceInstances(device, devices)}
                         onCancel={onCancel}
-                        isCloseButtonVisible={index === 0}
+                        isFullHeaderVisible={index === 0}
                     />
                 ))}
             </Flex>

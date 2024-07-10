@@ -41,7 +41,7 @@ interface CardWithDeviceProps {
     deviceWarning?: ReactNode;
     onCancel?: ForegroundAppProps['onCancel'];
     device: TrezorDevice;
-    isCloseButtonVisible?: boolean;
+    isFullHeaderVisible?: boolean;
     isFindTrezorVisible?: boolean;
     onBackButtonClick?: () => void;
     icon?: IconType;
@@ -52,7 +52,7 @@ export const CardWithDevice = ({
     onCancel,
     device,
     deviceWarning,
-    isCloseButtonVisible = false,
+    isFullHeaderVisible = false,
     onBackButtonClick,
     isFindTrezorVisible,
     icon,
@@ -70,7 +70,7 @@ export const CardWithDevice = ({
                     isFindTrezorVisible={isFindTrezorVisible}
                     onCancel={onCancel}
                     device={device}
-                    isCloseButtonVisible={isCloseButtonVisible}
+                    isFullHeaderVisible={isFullHeaderVisible}
                     onBackButtonClick={onBackButtonClick}
                     forceConnectionInfo
                     icon={icon}

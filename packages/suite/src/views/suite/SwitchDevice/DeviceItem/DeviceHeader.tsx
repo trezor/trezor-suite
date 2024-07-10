@@ -10,11 +10,11 @@ import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 import { selectDevice } from '@suite-common/wallet-core';
 import { WebUsbIconButton } from 'src/components/suite/WebUsbButton';
 
-const Container = styled.div<{ $isCloseButtonVisible: boolean }>`
+const Container = styled.div<{ $isFullHeaderVisible: boolean }>`
     display: flex;
     align-items: center;
     flex: 1;
-    ${({ $isCloseButtonVisible }) => ($isCloseButtonVisible ? `cursor: pointer;` : '')}
+    ${({ $isFullHeaderVisible }) => ($isFullHeaderVisible ? `cursor: pointer;` : '')}
 `;
 
 const DeviceActions = styled.div`
@@ -27,7 +27,7 @@ const DeviceActions = styled.div`
 interface DeviceHeaderProps {
     device: TrezorDevice;
     onCancel?: ForegroundAppProps['onCancel'];
-    isCloseButtonVisible: boolean;
+    isFullHeaderVisible: boolean;
     onBackButtonClick?: () => void;
     isFindTrezorVisible?: boolean;
     forceConnectionInfo: boolean;
@@ -37,7 +37,7 @@ interface DeviceHeaderProps {
 export const DeviceHeader = ({
     onCancel,
     device,
-    isCloseButtonVisible,
+    isFullHeaderVisible,
     onBackButtonClick,
     isFindTrezorVisible = false,
     forceConnectionInfo,
@@ -50,13 +50,13 @@ export const DeviceHeader = ({
     const deviceModelInternal = device.features?.internal_model;
 
     const onHeaderClick = () => {
-        if (isCloseButtonVisible && onCancel) {
+        if (isFullHeaderVisible && onCancel) {
             onCancel();
         }
     };
 
     return (
-        <Container onClick={onHeaderClick} $isCloseButtonVisible={isCloseButtonVisible}>
+        <Container onClick={onHeaderClick} $isFullHeaderVisible={isFullHeaderVisible}>
             <Row gap={spacings.xs} flex={1}>
                 {onBackButtonClick && (
                     <IconButton
@@ -64,7 +64,7 @@ export const DeviceHeader = ({
                         onClick={onBackButtonClick}
                         variant="tertiary"
                         size="small"
-                        data-test={'@switch-device/back-button'}
+                        data-test="@switch-device/back-button"
                     />
                 )}
 
@@ -78,14 +78,15 @@ export const DeviceHeader = ({
             </Row>
 
             <DeviceActions>
-                {isWebUsbTransport &&
+                {isFullHeaderVisible &&
+                    isWebUsbTransport &&
                     isFindTrezorVisible &&
                     (isDeviceConnected ? (
                         <WebUsbIconButton variant="tertiary" size="small" />
                     ) : (
                         <WebUsbButton variant="primary" size="tiny" />
                     ))}
-                {isCloseButtonVisible && (
+                {isFullHeaderVisible && (
                     <Tooltip delayShow={TOOLTIP_DELAY_LONG} content={<Translation id="TR_CLOSE" />}>
                         <motion.div
                             exit={{ rotate: 0 }}
@@ -100,7 +101,7 @@ export const DeviceHeader = ({
                                 size="small"
                                 variant="tertiary"
                                 onClick={() => onCancel?.()}
-                                data-test={'@switch-device/cancel-button'}
+                                data-test="@switch-device/cancel-button"
                             />
                         </motion.div>
                     </Tooltip>

@@ -75,7 +75,7 @@ export const PassphraseWalletConfirmation = ({
                 onCancel={onCancel}
                 device={device}
                 onBackButtonClick={handleBackButtonClick}
-                isCloseButtonVisible
+                isFullHeaderVisible
             >
                 <PassphraseWalletConfirmationContent
                     onSubmit={onSubmit}

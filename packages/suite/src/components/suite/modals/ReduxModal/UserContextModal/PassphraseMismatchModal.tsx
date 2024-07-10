@@ -30,7 +30,7 @@ export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) 
 
     return (
         <SwitchDeviceRenderer isCancelable={false} data-test="@passphrase-mismatch">
-            <CardWithDevice device={selectDevice} isCloseButtonVisible={false}>
+            <CardWithDevice device={selectDevice} isFullHeaderVisible={false}>
                 <Column gap={8} margin={{ bottom: 32 }} alignItems="center">
                     <H3 margin={{ top: 12 }}>
                         <Translation id="TR_PASSPHRASE_MISMATCH" />
