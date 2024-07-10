@@ -1,14 +1,16 @@
 import { fromUnixTime } from 'date-fns';
 
 import {
-    AccountHistoryBalancePoint,
-    AccountWithBalanceHistory,
     findOldestBalanceMovementTimestamp,
     getDataStepInMinutes,
     mapCryptoBalanceMovementToFixedTimeFrame,
     mergeMultipleFiatBalanceHistories,
 } from '../graphUtils';
-import { FiatGraphPointWithCryptoBalance } from '../types';
+import {
+    AccountHistoryBalancePoint,
+    AccountWithBalanceHistory,
+    FiatGraphPointWithCryptoBalance,
+} from '../types';
 
 describe('Graph utils', () => {
     it('getDataStepInMinutes for 1 hour', () => {
@@ -352,20 +354,6 @@ describe('Graph utils', () => {
                     {
                         time: 50,
                         cryptoBalance: '2',
-                    },
-                ],
-            },
-            {
-                coin: 'ltc',
-                descriptor: 'awdawd',
-                balanceHistory: [
-                    {
-                        time: 3,
-                        cryptoBalance: '3',
-                    },
-                    {
-                        time: 13,
-                        cryptoBalance: '4',
                     },
                 ],
             },

@@ -1,5 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
 
 export type FiatGraphPoint = {
     date: Date;
@@ -37,3 +38,34 @@ export type GroupedBalanceMovementEvent = {
     date: Date;
     payload: GroupedBalanceMovementEventPayload;
 };
+
+export type AccountHistoryBalancePoint = {
+    time: number;
+    cryptoBalance: string;
+};
+
+export type AccountBalanceHistoryWithTokens = {
+    main: AccountHistoryBalancePoint[];
+    tokens: Record<TokenAddress, AccountHistoryBalancePoint[]>;
+};
+
+export type AccountHistoryMovementItem = {
+    time: number;
+    txs: number;
+    received: BigNumber;
+    sent: BigNumber;
+    sentToSelf: BigNumber;
+};
+
+export type AccountHistoryMovement = {
+    main: AccountHistoryMovementItem[];
+    tokens: {
+        [contract: string]: AccountHistoryMovementItem[];
+    };
+};
+
+export type AccountWithBalanceHistory = {
+    coin: NetworkSymbol;
+    descriptor: string;
+    contractId?: TokenAddress;
+} & { balanceHistory: AccountHistoryBalancePoint[] };
