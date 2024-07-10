@@ -253,6 +253,9 @@ export const signBitcoinSendFormTransactionThunk = createThunk(
         if (formValues.bitcoinLockTime) {
             signEnhancement.locktime = new BigNumber(formValues.bitcoinLockTime).toNumber();
         }
+        if (formValues.rbfParams?.locktime) {
+            signEnhancement.locktime = formValues.rbfParams.locktime;
+        }
 
         let refTxs;
 
