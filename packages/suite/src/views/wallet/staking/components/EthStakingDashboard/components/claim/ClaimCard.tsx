@@ -21,6 +21,12 @@ export const ClaimCard = () => {
     // Show success message when claim tx confirmation is complete.
     const prevIsClaimPending = useRef(false);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        // Reset prevIsClaimPending when account changes
+        prevIsClaimPending.current = false;
+    }, [selectedAccount?.key]);
+
     useEffect(() => {
         if (prevIsClaimPending.current && !isClaimPending) {
             dispatch(
@@ -33,7 +39,7 @@ export const ClaimCard = () => {
         }
 
         prevIsClaimPending.current = isClaimPending;
-    }, [dispatch, isClaimPending, selectedAccount?.symbol]);
+    }, [dispatch, isClaimPending, selectedAccount?.symbol, selectedAccount?.key]);
 
     if (!canClaim) return null;
 
