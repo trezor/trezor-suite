@@ -43,6 +43,7 @@ type WebIconProps = Omit<IconProps, 'color'> & {
     color?: CSSColor | Color;
     onClick?: () => void;
     className?: string;
+    dataTest?: string;
 };
 
 export const Icon = ({
@@ -51,6 +52,7 @@ export const Icon = ({
     color = 'iconDefault',
     onClick,
     className,
+    dataTest,
 }: WebIconProps) => {
     const theme = useTheme();
 
@@ -91,6 +93,7 @@ export const Icon = ({
             src={icons[name]}
             beforeInjection={handleInjection}
             className={className}
+            data-test={dataTest}
         />
     );
 };

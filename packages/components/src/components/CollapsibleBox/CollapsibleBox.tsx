@@ -237,6 +237,7 @@ const CollapsibleBoxContent = ({
                         }}
                         name="caretCircleDown"
                         size="medium"
+                        dataTest={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
                     />
                 </IconWrapper>
             </Header>
