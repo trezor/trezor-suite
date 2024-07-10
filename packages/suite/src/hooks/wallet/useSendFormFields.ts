@@ -111,18 +111,21 @@ export const useSendFormFields = ({
         return getValues(fieldName);
     };
 
-    const toggleOption = (option: FormOptions) => {
-        const enabledOptions = getValues('options') || [];
-        const isEnabled = enabledOptions.includes(option);
-        if (isEnabled) {
-            setValue(
-                'options',
-                enabledOptions.filter(o => o !== option),
-            );
-        } else {
-            setValue('options', [...enabledOptions, option]);
-        }
-    };
+    const toggleOption = useCallback(
+        (option: FormOptions) => {
+            const enabledOptions = getValues('options') || [];
+            const isEnabled = enabledOptions.includes(option);
+            if (isEnabled) {
+                setValue(
+                    'options',
+                    enabledOptions.filter(o => o !== option),
+                );
+            } else {
+                setValue('options', [...enabledOptions, option]);
+            }
+        },
+        [getValues, setValue],
+    );
 
     return {
         calculateFiat,

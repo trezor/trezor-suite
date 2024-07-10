@@ -6,9 +6,12 @@ import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { Locktime } from './Locktime';
+import { Locktime } from './Locktime/Locktime';
 import { CoinControl } from './CoinControl/CoinControl';
 import { OnOffSwitcher } from '../OnOffSwitcher';
+import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { useSelector } from 'src/hooks/suite';
+import { canLocktimeTxBeBroadcast } from './Locktime/canLocktimeTxBeBroadcast';
 
 const Wrapper = styled.div`
     display: flex;
@@ -63,6 +66,8 @@ export const BitcoinOptions = () => {
         setDraftSaveRequest,
         resetDefaultValue,
         setValue,
+        watch,
+        network,
     } = useSendFormContext();
 
     const options = useWatch({
@@ -84,6 +89,15 @@ export const BitcoinOptions = () => {
         // Without this, this change may be lost which will result in UI glitch (closing the Coin Control UI)
         setDraftSaveRequest(true);
     };
+
+    const blockchain = useSelector(selectNetworkBlockchainInfo(network.symbol));
+
+    const locktime = watch('bitcoinLockTime');
+
+    const isBroadcastDisabled = !canLocktimeTxBeBroadcast({
+        locktime: locktime !== undefined ? Number(locktime) : undefined,
+        currentBlockHeight: blockchain.blockHeight,
+    });
 
     return (
         <Wrapper>
@@ -112,7 +126,17 @@ export const BitcoinOptions = () => {
                             </StyledButton>
                         </Tooltip>
                     )}
-                    <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
+                    <Tooltip
+                        content={
+                            <Translation
+                                id={
+                                    isBroadcastDisabled
+                                        ? 'BROADCAST_TOOLTIP_DISABLED_LOCKTIME'
+                                        : 'BROADCAST_TOOLTIP'
+                                }
+                            />
+                        }
+                    >
                         <StyledButton
                             variant="tertiary"
                             size="small"
@@ -122,6 +146,7 @@ export const BitcoinOptions = () => {
                                 composeTransaction();
                             }}
                             data-test="broadcast-button"
+                            isDisabled={isBroadcastDisabled}
                         >
                             <Inline>
                                 <Translation id="BROADCAST" />
