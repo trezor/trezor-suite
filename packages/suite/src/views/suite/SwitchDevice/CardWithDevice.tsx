@@ -74,6 +74,7 @@ export const CardWithDevice = ({
                     onBackButtonClick={onBackButtonClick}
                     forceConnectionInfo
                     icon={icon}
+                    data-test="@testhjea"
                 />
 
                 {deviceWarning}

@@ -14,35 +14,49 @@ describe('Passphrase with cardano', () => {
         cy.task('startBridge');
 
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/coins');
+        cy.prefixedVisit('/');
+        // cy.visit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
     });
 
     it('verify cardano address behind passphrase.', () => {
         // enable cardano in settings
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/wallet').click();
         cy.getTestElement('@settings/wallet/network/ada').click();
 
         // starting discovery triggers passphrase dialogue
+        cy.getTestElement('@suite/menu/suite-index').click();
+        cy.discoveryShouldFinish();
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/add-wallet-button').click();
+        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
 
         // enter 'secret passphrase A'
         cy.getTestElement('@passphrase/input').type('secret passphrase A');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.task('pressYes');
         cy.task('pressYes');
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
+        // TODO: refactor using data-tests
+        // cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
+        cy.contains('button', 'Yes, open', { timeout: 20_000 }).click();
+        cy.contains('button', 'Got it, continue').click();
         cy.getTestElement('@passphrase/input').type('secret passphrase A');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.task('pressYes');
         cy.task('pressYes');
 
-        // remember device
+        // turn on view-only on the hidden wallet
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch').click({
-            force: true,
+        // TODO: refactor using data-tests
+        cy.getTestElement('@switch-device/wallet-on-index/1').then(wallet => {
+            cy.wrap(wallet)
+                .find('svg[data-src*="1c39855cc6c5351f89ad"]')
+                .click({ scrollBehavior: 'bottom' });
+            cy.wrap(wallet).find('[data-test="undefined/enabled"]').should('be.visible').click();
         });
-        cy.getTestElement('@modal/close-button').click();
+
+        cy.get('svg[data-src*="4197b1525593c25ef1d8"]').first().click();
 
         // restart device
         cy.task('stopEmu');
