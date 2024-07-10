@@ -150,7 +150,6 @@ jobs:
     name: Build suite-web and deploy to staging-suite.trezor.io
     environment: suite-production
     runs-on: ubuntu-latest
-    needs: suite-desktop
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -183,13 +182,6 @@ jobs:
           yarn workspace @trezor/connect-iframe build:lib
           yarn workspace @trezor/connect-web build
           yarn workspace @trezor/suite-web build
-
-      - name: Download suite-desktop apps
-        uses: actions/download-artifact@v4
-        with:
-          pattern: suite-desktop-*
-          merge-multiple: true
-          path: packages/suite-web/build/static/desktop
 
       # this step should upload build result to s3 bucket staging-suite.trezor.io using awscli
       - name: Upload suite-web to staging-suite.trezor.io
