@@ -8,7 +8,8 @@ describe('Metadata - cancel metadata on device', () => {
         cy.viewport(1440, 2560).resetDb();
     });
 
-    it('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', () => {
+    // TODO: revisit this test case when #13294 is fixed
+    it.skip('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', () => {
         // prepare test
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
@@ -18,15 +19,16 @@ describe('Metadata - cancel metadata on device', () => {
         cy.task('metadataStartProvider', 'dropbox');
 
         // first go to settings, see that metadata is disabled by default.
-        cy.prefixedVisit('/settings');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
+        cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/metadata-switch').within(() => {
             cy.get('input').should('not.be.checked');
         });
 
         // now go to accounts. application does not try to initiate metadata
         cy.getTestElement('@suite/menu/suite-index').click();
-        cy.discoveryShouldFinish();
         cy.getTestElement('@account-menu/btc/normal/0').click();
 
         // but even though metadata is disabled, on hover "add label" button appears

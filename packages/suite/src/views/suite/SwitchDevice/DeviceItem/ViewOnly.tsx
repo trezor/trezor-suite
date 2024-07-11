@@ -51,6 +51,7 @@ export const ViewOnly = ({ setContentType, instance, dataTest }: ViewOnlyProps) 
 
     return (
         <ViewOnlyContainer
+            data-test={`@viewOnlyStatus/${isViewOnly ? 'enabled' : 'disabled'}`}
             onClick={e => {
                 e.stopPropagation();
             }}

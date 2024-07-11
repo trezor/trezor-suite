@@ -25,6 +25,7 @@ import {
     findAnalyticsEventByType,
     enterPinOnBlindMatrix,
     addHiddenWallet,
+    changeViewOnlyState,
 } from './utils/shortcuts';
 import { interceptInvityApi } from './utils/intercept-invity-api';
 import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
@@ -135,6 +136,10 @@ declare global {
             enterPinOnBlindMatrix: (entryPinNumber: string) => Cypress.Chainable<null>;
             safeReload: typeof safeReload;
             addHiddenWallet: (passphrase: string) => Chainable<Subject>;
+            changeViewOnlyState: (
+                walletIndex: number,
+                desiredState: 'enabled' | 'disabled',
+            ) => Chainable<Subject>;
         }
     }
 }
@@ -185,3 +190,4 @@ Cypress.Commands.add('interceptDataTrezorIo', interceptDataTrezorIo);
 Cypress.Commands.add('findAnalyticsEventByType', findAnalyticsEventByType);
 Cypress.Commands.add('enterPinOnBlindMatrix', enterPinOnBlindMatrix);
 Cypress.Commands.add('addHiddenWallet', addHiddenWallet);
+Cypress.Commands.add('changeViewOnlyState', changeViewOnlyState);
