@@ -96,7 +96,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                 <CardWithDevice
                     onCancel={onEnterPassphraseDialogCancel}
                     device={device}
-                    isCloseButtonVisible
+                    isFullHeaderVisible
                     icon="CROSS"
                 >
                     <MarginContainer>
@@ -134,7 +134,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                 onCancel={onEnterPassphraseDialogCancel}
                 device={device}
                 onBackButtonClick={onEnterPassphraseDialogBack}
-                isCloseButtonVisible
+                isFullHeaderVisible
             >
                 <MarginContainer>
                     <PassphraseHeading>
