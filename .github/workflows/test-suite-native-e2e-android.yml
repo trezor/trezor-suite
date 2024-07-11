@@ -1,5 +1,7 @@
 name: "[Test] suite-native Android E2E"
 on:
+  schedule:
+    - cron: "0 0 * * *"
   pull_request:
     paths:
       - "suite-native/**"
