@@ -2,7 +2,7 @@
 // @retry=2
 
 import { onAccountsPage } from '../../support/pageObjects/accountsObject';
-
+import { onSettingsCryptoPage } from '../../support/pageObjects/settingsCryptoObject';
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EventType } from '@trezor/suite-analytics';
@@ -38,6 +38,7 @@ describe('Account types suite', () => {
         cy.prefixedVisit('/');
 
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish(); 
 
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();

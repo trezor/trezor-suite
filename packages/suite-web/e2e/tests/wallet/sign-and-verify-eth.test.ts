@@ -21,9 +21,9 @@ describe('Sign and verify ETH', () => {
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();
-        cy.discoveryShouldFinish();
 
         //
         // Test preparation

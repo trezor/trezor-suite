@@ -13,6 +13,7 @@ describe('Custom-blockbook-discovery', () => {
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish(); 
     });
 
     afterEach(() => {
@@ -33,7 +34,6 @@ describe('Custom-blockbook-discovery', () => {
         const customBTCblockbook = 'https://btc1.trezor.io';
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();
-        cy.discoveryShouldFinish(); 
 
         //
         // Test execution
@@ -69,7 +69,6 @@ describe('Custom-blockbook-discovery', () => {
         const customBTCblockbook = 'https://ltc1.trezor.io';
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();
-        cy.discoveryShouldFinish();
         //
         // Test execution
         //

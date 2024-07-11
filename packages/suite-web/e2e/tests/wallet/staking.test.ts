@@ -15,9 +15,9 @@ describe('ETH staking', () => {
         cy.viewport(1536, 864).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();
-        cy.discoveryShouldFinish();
         
     });
 
