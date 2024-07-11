@@ -37,6 +37,7 @@ module.exports = {
         '**/public/*',
         'packages/suite-data/files/*',
         'packages/protobuf/scripts/protobuf-patches/*',
+        'packages/address-validator',
         'packages/connect-examples',
         'ci/',
     ],

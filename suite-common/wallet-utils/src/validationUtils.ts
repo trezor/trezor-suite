@@ -1,5 +1,4 @@
-import addressValidator from 'trezor-address-validator';
-
+import addressValidator from '@trezor/address-validator';
 import { getTestnetSymbols } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 

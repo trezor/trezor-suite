@@ -4430,7 +4430,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/environment@npm:^29.6.2, @jest/environment@npm:^29.7.0":
+"@jest/environment@npm:^29.7.0":
   version: 29.7.0
   resolution: "@jest/environment@npm:29.7.0"
   dependencies:
@@ -4461,7 +4461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/fake-timers@npm:^29.6.2, @jest/fake-timers@npm:^29.7.0":
+"@jest/fake-timers@npm:^29.7.0":
   version: 29.7.0
   resolution: "@jest/fake-timers@npm:29.7.0"
   dependencies:
@@ -4604,7 +4604,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/types@npm:^29.6.1, @jest/types@npm:^29.6.3":
+"@jest/types@npm:^29.6.3":
   version: 29.6.3
   resolution: "@jest/types@npm:29.6.3"
   dependencies:
@@ -8922,6 +8922,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@trezor/address-validator": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
@@ -8932,7 +8933,6 @@ __metadata:
     date-fns: "npm:^2.30.0"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.50.1"
-    trezor-address-validator: "npm:^0.4.4"
     web3-utils: "npm:^4.2.3"
   languageName: unknown
   linkType: soft
@@ -10355,6 +10355,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@trezor/address-validator@workspace:*, @trezor/address-validator@workspace:packages/address-validator":
+  version: 0.0.0-use.local
+  resolution: "@trezor/address-validator@workspace:packages/address-validator"
+  dependencies:
+    base-x: "npm:^3.0.7"
+    bech32: "npm:^2.0.0"
+    browserify-bignum: "npm:^1.3.0-2"
+    cbor-js: "npm:^0.1.0"
+    crc: "npm:^3.8.0"
+    groestl-hash-js: "npm:1.0.0"
+    jest-environment-jsdom: "npm:29.7.0"
+    jssha: "npm:2.3.1"
+    lodash: "npm:^4.17.15"
+    rimraf: "npm:^5.0.5"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/analytics@workspace:*, @trezor/analytics@workspace:packages/analytics":
   version: 0.0.0-use.local
   resolution: "@trezor/analytics@workspace:packages/analytics"
@@ -11283,6 +11300,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@testing-library/react": "npm:14.2.1"
     "@testing-library/user-event": "npm:14.5.2"
+    "@trezor/address-validator": "workspace:*"
     "@trezor/analytics": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
@@ -11364,7 +11382,6 @@ __metadata:
     styled-components: "npm:^6.1.8"
     stylelint: "npm:^16.2.1"
     stylelint-config-standard: "npm:^36.0.0"
-    trezor-address-validator: "npm:^0.4.4"
     typescript-styled-plugin: "npm:^0.18.3"
     uuid: "npm:^9.0.1"
     web3-utils: "npm:^4.2.3"
@@ -26013,24 +26030,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom@npm:^29.2.1":
-  version: 29.6.2
-  resolution: "jest-environment-jsdom@npm:29.6.2"
+"jest-environment-jsdom@npm:29.7.0, jest-environment-jsdom@npm:^29.2.1":
+  version: 29.7.0
+  resolution: "jest-environment-jsdom@npm:29.7.0"
   dependencies:
-    "@jest/environment": "npm:^29.6.2"
-    "@jest/fake-timers": "npm:^29.6.2"
-    "@jest/types": "npm:^29.6.1"
+    "@jest/environment": "npm:^29.7.0"
+    "@jest/fake-timers": "npm:^29.7.0"
+    "@jest/types": "npm:^29.6.3"
     "@types/jsdom": "npm:^20.0.0"
     "@types/node": "npm:*"
-    jest-mock: "npm:^29.6.2"
-    jest-util: "npm:^29.6.2"
+    jest-mock: "npm:^29.7.0"
+    jest-util: "npm:^29.7.0"
     jsdom: "npm:^20.0.0"
   peerDependencies:
     canvas: ^2.5.0
   peerDependenciesMeta:
     canvas:
       optional: true
-  checksum: 10/e6c7929919b0784cd2feb70714e2338bd900824d85a9eb6c333e2a94b468e0d19c147abde1ce1b99dcc1b969fbe679d6ea69f4385a30830f06ed98b16a7a621b
+  checksum: 10/23bbfc9bca914baef4b654f7983175a4d49b0f515a5094ebcb8f819f28ec186f53c0ba06af1855eac04bab1457f4ea79dae05f70052cf899863e8096daa6e0f5
   languageName: node
   linkType: hard
 
@@ -26158,7 +26175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock@npm:^29.6.2, jest-mock@npm:^29.7.0":
+"jest-mock@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest-mock@npm:29.7.0"
   dependencies:
@@ -26302,7 +26319,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-util@npm:^29.0.0, jest-util@npm:^29.6.2, jest-util@npm:^29.7.0":
+"jest-util@npm:^29.0.0, jest-util@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest-util@npm:29.7.0"
   dependencies:
@@ -39217,22 +39234,6 @@ __metadata:
   bin:
     tree-kill: cli.js
   checksum: 10/49117f5f410d19c84b0464d29afb9642c863bc5ba40fcb9a245d474c6d5cc64d1b177a6e6713129eb346b40aebb9d4631d967517f9fbe8251c35b21b13cd96c7
-  languageName: node
-  linkType: hard
-
-"trezor-address-validator@npm:^0.4.4":
-  version: 0.4.4
-  resolution: "trezor-address-validator@npm:0.4.4"
-  dependencies:
-    base-x: "npm:^3.0.7"
-    bech32: "npm:^2.0.0"
-    browserify-bignum: "npm:^1.3.0-2"
-    cbor-js: "npm:^0.1.0"
-    crc: "npm:^3.8.0"
-    groestl-hash-js: "npm:1.0.0"
-    jssha: "npm:2.3.1"
-    lodash: "npm:^4.17.15"
-  checksum: 10/8f30bf4e2136cae746988b4761f07684b80250e82caeadcefdeaabb9e4e7bef9d3baaba48424a294870cc95735519b8feb5169ded87dec0a38cae2641b6f5edd
   languageName: node
   linkType: hard
 

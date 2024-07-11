@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import addressValidator from 'trezor-address-validator';
+import addressValidator from '@trezor/address-validator';
 
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { Input, variables, Button } from '@trezor/components';
