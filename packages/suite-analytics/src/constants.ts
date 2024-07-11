@@ -57,6 +57,7 @@ export enum EventType {
     SwitchDeviceForget = 'switch-device/forget',
     SwitchDeviceRemember = 'switch-device/remember',
     SwitchDeviceEject = 'switch-device/eject',
+    ViewOnlyPromo = 'view-only-promo',
 
     SettingsDeviceCheckSeed = 'settings/device/check-seed',
     SettingsDeviceChangePinProtection = 'settings/device/change-pin-protection',
