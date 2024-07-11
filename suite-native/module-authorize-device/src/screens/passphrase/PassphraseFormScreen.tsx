@@ -18,13 +18,17 @@ const cardStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
     borderColor: utils.colors.backgroundAlertBlueSubtleOnElevationNegative,
     borderWidth: utils.borders.widths.small,
-    padding: 12,
+    padding: utils.spacings.medium,
     flex: 1,
     justifyContent: 'center',
 }));
 
 const cardTextStyle = prepareNativeStyle(_ => ({
     width: '90%',
+}));
+
+const warningIconWrapperStyle = prepareNativeStyle(_ => ({
+    paddingTop: 2,
 }));
 
 const animationWrapperStyle = prepareNativeStyle(() => ({
@@ -69,13 +73,15 @@ export const PassphraseFormScreen = () => {
                     <Animated.View style={animationStyle}>
                         <Box style={applyStyle(cardStyle)}>
                             <VStack spacing="medium">
-                                <VStack>
-                                    <HStack alignItems="flex-start">
-                                        <Icon
-                                            name="warningCircle"
-                                            color="textAlertBlue"
-                                            size="medium"
-                                        />
+                                <VStack spacing={12}>
+                                    <HStack>
+                                        <View style={applyStyle(warningIconWrapperStyle)}>
+                                            <Icon
+                                                name="warningCircle"
+                                                color="textAlertBlue"
+                                                size="medium"
+                                            />
+                                        </View>
                                         <Text
                                             color="textAlertBlue"
                                             variant="callout"
@@ -85,11 +91,13 @@ export const PassphraseFormScreen = () => {
                                         </Text>
                                     </HStack>
                                     <HStack>
-                                        <Icon
-                                            name="eyeSlashLight"
-                                            color="textDefault"
-                                            size="medium"
-                                        />
+                                        <View style={applyStyle(warningIconWrapperStyle)}>
+                                            <Icon
+                                                name="eyeSlashLight"
+                                                color="textDefault"
+                                                size="medium"
+                                            />
+                                        </View>
                                         <Text
                                             color="textDefault"
                                             variant="hint"
@@ -99,11 +107,13 @@ export const PassphraseFormScreen = () => {
                                         </Text>
                                     </HStack>
                                     <HStack>
-                                        <Icon
-                                            name="warningTriangle"
-                                            color="textDefault"
-                                            size="medium"
-                                        />
+                                        <View style={applyStyle(warningIconWrapperStyle)}>
+                                            <Icon
+                                                name="warningTriangle"
+                                                color="textDefault"
+                                                size="medium"
+                                            />
+                                        </View>
                                         <Text
                                             color="textDefault"
                                             variant="hint"
