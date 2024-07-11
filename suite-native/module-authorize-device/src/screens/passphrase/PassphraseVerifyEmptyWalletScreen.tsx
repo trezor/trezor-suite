@@ -102,11 +102,11 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                 <AlertBox
                     variant="warning"
                     title={
-                        <Text>
+                        <Text variant="hint">
                             <Translation
                                 id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle"
                                 values={{
-                                    bold: chunks => <Text variant="highlight">{chunks}</Text>,
+                                    bold: chunks => <Text variant="callout">{chunks}</Text>,
                                 }}
                             />
                         </Text>

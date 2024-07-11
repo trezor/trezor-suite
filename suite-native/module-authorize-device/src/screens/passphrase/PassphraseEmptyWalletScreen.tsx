@@ -10,7 +10,7 @@ import {
     RootStackParamList,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
-import { VStack, Card, Text, Image, Button, Box, TextDivider } from '@suite-native/atoms';
+import { VStack, Card, Text, Button, Box, TextDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import { deviceActions, selectDevice } from '@suite-common/wallet-core';
@@ -18,20 +18,17 @@ import { retryPassphraseAuthenticationThunk } from '@suite-native/device-authori
 
 import { EmptyWalletInfoSheet } from '../../components/passphrase/EmptyWalletInfoSheet';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
-
-const imageStyle = prepareNativeStyle(() => ({
-    width: 124.45,
-    height: 96,
-    alignSelf: 'center',
-}));
+import { QuestionMarks } from '../../assets/passphrase/QuestionMarks';
 
 const cardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderElevation0,
     borderWidth: utils.borders.widths.small,
+    gap: 12,
 }));
 
 const cardContentStyle = prepareNativeStyle(() => ({
-    padding: 54,
+    paddingVertical: 54,
+    width: '100%',
 }));
 
 const retryButtonWrapperStyle = prepareNativeStyle(() => ({
@@ -80,10 +77,7 @@ export const PassphraseEmptyWalletScreen = () => {
         >
             <Card style={applyStyle(cardStyle)}>
                 <VStack alignItems="center" spacing="medium" style={applyStyle(cardContentStyle)}>
-                    <Image
-                        source={require('../../assets/passphrase/questionMarks.png')}
-                        style={applyStyle(imageStyle)}
-                    />
+                    <QuestionMarks />
                     <Text variant="highlight" textAlign="center">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.confirmCard.description" />
                     </Text>

@@ -31,7 +31,7 @@ const alertWrapperStyle = prepareNativeStyle<AlertWrapperStyleType>(
         backgroundColor: utils.colors[backgroundColor],
         paddingVertical: utils.spacings.small,
         paddingHorizontal: utils.spacings.medium,
-        gap: utils.spacings.small,
+        gap: 12,
     }),
 );
 

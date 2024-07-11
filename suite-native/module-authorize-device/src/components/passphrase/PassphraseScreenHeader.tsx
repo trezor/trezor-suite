@@ -1,17 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { BackHandler } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    BottomSheet,
-    Text,
-    Button,
-    IconButton,
-    ScreenHeaderWrapper,
-    VStack,
-} from '@suite-native/atoms';
+import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import {
     AppTabsRoutes,
     AuthorizeDeviceStackParamList,
@@ -21,7 +14,6 @@ import {
     RootStackRoutes,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import TrezorConnect from '@trezor/connect';
 import {
@@ -29,6 +21,7 @@ import {
     selectIsCreatingNewPassphraseWallet,
     useAuthorizationGoBack,
 } from '@suite-native/device-authorization';
+import { useAlert } from '@suite-native/alerts';
 
 type NavigationProp = StackToTabCompositeProps<
     AuthorizeDeviceStackParamList,
@@ -36,32 +29,46 @@ type NavigationProp = StackToTabCompositeProps<
     RootStackParamList
 >;
 
-const buttonWrapperStyle = prepareNativeStyle(() => ({
-    width: '100%',
-    gap: 12,
-}));
-
 export const PassphraseScreenHeader = () => {
-    const { applyStyle } = useNativeStyles();
-
     const navigation = useNavigation<NavigationProp>();
 
     const dispatch = useDispatch();
 
-    const [shouldShowWarningBottomSheet, setShouldShowWarningBottomSheet] = useState(false);
+    const { showAlert } = useAlert();
 
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
 
     const { handleGoBack } = useAuthorizationGoBack();
 
+    const handleClose = useCallback(() => {
+        navigation.navigate(RootStackRoutes.AppTabs, {
+            screen: AppTabsRoutes.HomeStack,
+            params: {
+                screen: HomeStackRoutes.Home,
+            },
+        });
+        dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+    }, [dispatch, navigation]);
+
     const handleCancel = useCallback(() => {
         if (isCreatingNewWalletInstance) {
-            setShouldShowWarningBottomSheet(!shouldShowWarningBottomSheet);
+            showAlert({
+                title: <Translation id="modulePassphrase.confirmOnDevice.warningSheet.title" />,
+                description: undefined,
+                primaryButtonTitle: (
+                    <Translation id="modulePassphrase.confirmOnDevice.warningSheet.primaryButton" />
+                ),
+                primaryButtonVariant: 'redBold',
+                onPressPrimaryButton: handleClose,
+                secondaryButtonTitle: (
+                    <Translation id="modulePassphrase.confirmOnDevice.warningSheet.secondaryButton" />
+                ),
+            });
         } else {
             TrezorConnect.cancel();
             handleGoBack();
         }
-    }, [handleGoBack, isCreatingNewWalletInstance, shouldShowWarningBottomSheet]);
+    }, [handleClose, handleGoBack, isCreatingNewWalletInstance, showAlert]);
 
     useEffect(() => {
         const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -73,16 +80,6 @@ export const PassphraseScreenHeader = () => {
         return () => subscription.remove();
     }, [handleCancel]);
 
-    const handleClose = () => {
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
-        });
-        dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-    };
-
     return (
         <ScreenHeaderWrapper>
             <IconButton
@@ -93,25 +90,6 @@ export const PassphraseScreenHeader = () => {
                 accessibilityLabel="close"
                 onPress={handleCancel}
             />
-            <BottomSheet
-                isVisible={shouldShowWarningBottomSheet}
-                onClose={handleCancel}
-                isCloseDisplayed={false}
-            >
-                <VStack justifyContent="center" alignItems="center" padding="small" spacing="large">
-                    <Text variant="titleSmall" textAlign="center">
-                        <Translation id="modulePassphrase.confirmOnDevice.warningSheet.title" />
-                    </Text>
-                    <VStack style={applyStyle(buttonWrapperStyle)}>
-                        <Button colorScheme="redBold" onPress={handleClose}>
-                            <Translation id="modulePassphrase.confirmOnDevice.warningSheet.primaryButton" />
-                        </Button>
-                        <Button colorScheme="redElevation0" onPress={handleCancel}>
-                            <Translation id="modulePassphrase.confirmOnDevice.warningSheet.secondaryButton" />
-                        </Button>
-                    </VStack>
-                </VStack>
-            </BottomSheet>
         </ScreenHeaderWrapper>
     );
 };

@@ -16,6 +16,7 @@ export * from './DiscreetText/DiscreetTextTrigger';
 export * from './DiscreetText/DiscreetCanvas';
 export * from './DiscreetText/useDiscreetMode';
 export * from './ListItem/ListItem';
+export * from './ListItem/BottomSheetListItem';
 export * from './Sheet/BottomSheet';
 export * from './Sheet/useBottomSheetAnimation';
 export * from './Button/Button';
