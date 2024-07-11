@@ -13,6 +13,9 @@
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },
         {
+            "path": "../../packages/address-validator"
+        },
+        {
             "path": "../../packages/blockchain-link"
         },
         {

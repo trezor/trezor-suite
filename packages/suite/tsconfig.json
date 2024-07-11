@@ -83,6 +83,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../address-validator" },
         { "path": "../analytics" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },

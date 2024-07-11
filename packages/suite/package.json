@@ -55,6 +55,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/address-validator": "workspace:*",
         "@trezor/analytics": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
@@ -112,7 +113,6 @@
         "redux-thunk": "^2.4.2",
         "semver": "^7.6.0",
         "styled-components": "^6.1.8",
-        "trezor-address-validator": "^0.4.4",
         "uuid": "^9.0.1",
         "web3-utils": "^4.2.3",
         "zxcvbn": "^4.4.2"
