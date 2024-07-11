@@ -1,4 +1,4 @@
-const { addressType } = require('../src/crypto/utils');
+const { addressType } = require('./crypto/utils');
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -24,7 +24,7 @@ module.exports = {
         var computedChecksum = cryptoUtils.sha256Checksum(cryptoUtils.toHex(bytes.slice(0, -4)));
         var checksum = cryptoUtils.toHex(bytes.slice(-4));
 
-        return computedChecksum === checksum
+        return computedChecksum === checksum;
     },
 
     getAddressType: function (address, currency, networkType) {

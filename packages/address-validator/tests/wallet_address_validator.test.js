@@ -1,25 +1,20 @@
-var isNode = typeof module !== 'undefined' && typeof module.exports !== 'undefined'
+var WAValidator = require('../src');
 
-var chai = isNode ? require('chai') : window.chai,
-    expect = chai.expect
-
-var WAValidator = isNode ? require('../src/wallet_address_validator') : window.WAValidator;
-
-const addressType =  WAValidator.addressType;
+const addressType = WAValidator.addressType;
 
 function isValidAddressType(address, currency, networkType, addressType) {
     const type = WAValidator.getAddressType(address, currency, networkType);
-    expect({ address, addressType: type }).to.deep.equal({address, addressType});
+    expect({ address, addressType: type }).toEqual({ address, addressType });
 }
 
 function valid(address, currency, networkType) {
     var valid = WAValidator.validate(address, currency, networkType);
-    expect({ address, currency, valid }).to.deep.equal({ address, currency, valid: true });
+    expect({ address, currency, valid }).toEqual({ address, currency, valid: true });
 }
 
 function invalid(address, currency, networkType) {
     var valid = WAValidator.validate(address, currency, networkType);
-    expect({ address, currency, valid }).to.deep.equal({ address, currency, valid: false });
+    expect({ address, currency, valid }).toEqual({ address, currency, valid: false });
 }
 
 describe('WAValidator.validate()', function () {
@@ -55,47 +50,133 @@ describe('WAValidator.validate()', function () {
             valid('GSa5espVLNseXEfKt46zEdS6jrPkmFghBU', 'bitcoin', 'regtest');
 
             valid('bcrt1q8zx9dlztqz9apm7y5gtx8a0tlz57fhncycvun5', 'bitcoin', 'regtest');
-            valid('bcrt1pzndg2aenknysnqs0d8gwhg54nqnc6yut2c6as76h4tyqhr8spr6slpjy3x', 'bitcoin', 'regtest');
+            valid(
+                'bcrt1pzndg2aenknysnqs0d8gwhg54nqnc6yut2c6as76h4tyqhr8spr6slpjy3x',
+                'bitcoin',
+                'regtest',
+            );
 
             // segwit addresses
             valid('BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4', 'bitcoin');
-            invalid('bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7k7grplx', 'bitcoin'); // valid, but unspendable
+            invalid(
+                'bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7k7grplx',
+                'bitcoin',
+            ); // valid, but unspendable
             invalid('BC1SW50QA3JX3S', 'bitcoin'); // valid, but unspendable
             invalid('bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj', 'bitcoin'); // valid, but unspendable
             invalid('bc1sw50qgdz25j', 'bitcoin', 'prod'); // valid, but unspendable
-            valid('tb1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesrxh6hy', 'bitcoin', 'testnet');
+            valid(
+                'tb1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesrxh6hy',
+                'bitcoin',
+                'testnet',
+            );
 
-            valid('tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7', 'bitcoin', 'testnet'); // lowercase L
-            invalid("tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7", 'bitcoin', 'testnet'); // capital L
+            valid(
+                'tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7',
+                'bitcoin',
+                'testnet',
+            ); // lowercase L
+            invalid(
+                'tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7',
+                'bitcoin',
+                'testnet',
+            ); // capital L
 
-            invalid("tc1qw508d6qejxtdg4y5r3zarvary0c5xw7kg3g4ty", 'bitcoin');
-            invalid("bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5", 'bitcoin');
-            invalid("BC13W508D6QEJXTDG4Y5R3ZARVARY0C5XW7KN40WF2", 'bitcoin');
-            invalid("bc1rw5uspcuh", 'bitcoin');
-            invalid("bc10w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90", 'bitcoin');
-            invalid("BC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P", 'bitcoin');
-            invalid("bc1zw508d6qejxtdg4y5r3zarvaryvqyzf3du", 'bitcoin');
-            invalid("tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3pjxtptv", 'bitcoin', 'testnet');
-            invalid("bc1gmk9yu", 'bitcoin');
+            invalid('tc1qw508d6qejxtdg4y5r3zarvary0c5xw7kg3g4ty', 'bitcoin');
+            invalid('bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5', 'bitcoin');
+            invalid('BC13W508D6QEJXTDG4Y5R3ZARVARY0C5XW7KN40WF2', 'bitcoin');
+            invalid('bc1rw5uspcuh', 'bitcoin');
+            invalid(
+                'bc10w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90',
+                'bitcoin',
+            );
+            invalid('BC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P', 'bitcoin');
+            invalid('bc1zw508d6qejxtdg4y5r3zarvaryvqyzf3du', 'bitcoin');
+            invalid(
+                'tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3pjxtptv',
+                'bitcoin',
+                'testnet',
+            );
+            invalid('bc1gmk9yu', 'bitcoin');
         });
 
         it('should match the expected bitcoin address type', function () {
-            isValidAddressType('1NSAR5mUUL3qZP29BfFj5jBPR5yWiiZZWi', 'bitcoin', 'prod', addressType.P2PKH);
-            isValidAddressType('3CgkdgWwZ1RJGyHfcYnDe2qGTwaAtifeQw', 'bitcoin', 'prod', addressType.P2SH);
-            isValidAddressType('bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej', 'bitcoin', 'prod', addressType.P2WSH);
-            isValidAddressType('bc1qr0c0jscha3tzr7963zz4u2wsezsxvpzkwmrvhg', 'bitcoin', 'prod', addressType.P2WPKH);
-            isValidAddressType('bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr', 'bitcoin', 'prod', addressType.P2TR);
-            isValidAddressType('bc1pqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsyjer9e', 'bitcoin', 'prod', addressType.P2TR);
+            isValidAddressType(
+                '1NSAR5mUUL3qZP29BfFj5jBPR5yWiiZZWi',
+                'bitcoin',
+                'prod',
+                addressType.P2PKH,
+            );
+            isValidAddressType(
+                '3CgkdgWwZ1RJGyHfcYnDe2qGTwaAtifeQw',
+                'bitcoin',
+                'prod',
+                addressType.P2SH,
+            );
+            isValidAddressType(
+                'bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej',
+                'bitcoin',
+                'prod',
+                addressType.P2WSH,
+            );
+            isValidAddressType(
+                'bc1qr0c0jscha3tzr7963zz4u2wsezsxvpzkwmrvhg',
+                'bitcoin',
+                'prod',
+                addressType.P2WPKH,
+            );
+            isValidAddressType(
+                'bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr',
+                'bitcoin',
+                'prod',
+                addressType.P2TR,
+            );
+            isValidAddressType(
+                'bc1pqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsyjer9e',
+                'bitcoin',
+                'prod',
+                addressType.P2TR,
+            );
             isValidAddressType('BC1SW50QA3JX3S', 'bitcoin', 'prod', addressType.WITNESS_UNKNOWN); // bech32
             isValidAddressType('bc1sw50qgdz25j', 'bitcoin', 'prod', addressType.WITNESS_UNKNOWN); // bech32m ?
             isValidAddressType('bc1sw50qgdz25j', 'bitcoin', 'testnet', undefined);
             isValidAddressType('qwerty', 'bitcoin', 'prod', undefined);
-            isValidAddressType('mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q', 'bitcoin', 'regtest', addressType.P2PKH);
-            isValidAddressType('ms1B699PA2tAfHTFTwN12Tzxa933WpmuHX', 'bitcoin', 'regtest', addressType.P2PKH);
-            isValidAddressType('2N4Q5FhU2497BryFfUgbqkAJE87aKHUhXMp', 'bitcoin', 'regtest', addressType.P2SH);
-            isValidAddressType('GSa5espVLNseXEfKt46zEdS6jrPkmFghBU', 'bitcoin', 'regtest', addressType.P2SH);
-            isValidAddressType('bcrt1q8zx9dlztqz9apm7y5gtx8a0tlz57fhncycvun5', 'bitcoin', 'regtest', addressType.P2WPKH);
-            isValidAddressType('bcrt1pzndg2aenknysnqs0d8gwhg54nqnc6yut2c6as76h4tyqhr8spr6slpjy3x', 'bitcoin', 'regtest', addressType.P2TR);
+            isValidAddressType(
+                'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q',
+                'bitcoin',
+                'regtest',
+                addressType.P2PKH,
+            );
+            isValidAddressType(
+                'ms1B699PA2tAfHTFTwN12Tzxa933WpmuHX',
+                'bitcoin',
+                'regtest',
+                addressType.P2PKH,
+            );
+            isValidAddressType(
+                '2N4Q5FhU2497BryFfUgbqkAJE87aKHUhXMp',
+                'bitcoin',
+                'regtest',
+                addressType.P2SH,
+            );
+            isValidAddressType(
+                'GSa5espVLNseXEfKt46zEdS6jrPkmFghBU',
+                'bitcoin',
+                'regtest',
+                addressType.P2SH,
+            );
+            isValidAddressType(
+                'bcrt1q8zx9dlztqz9apm7y5gtx8a0tlz57fhncycvun5',
+                'bitcoin',
+                'regtest',
+                addressType.P2WPKH,
+            );
+            isValidAddressType(
+                'bcrt1pzndg2aenknysnqs0d8gwhg54nqnc6yut2c6as76h4tyqhr8spr6slpjy3x',
+                'bitcoin',
+                'regtest',
+                addressType.P2TR,
+            );
         });
 
         it('should return true for correct bitcoincash addresses', function () {
@@ -107,10 +188,30 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected BCH address type', function () {
-            isValidAddressType('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bch', 'prod', addressType.ADDRESS);
-            isValidAddressType('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'bch', 'prod', undefined);
-            isValidAddressType('qp3wjpa3tjlj042z2wv7hahsldgwhwy0rq9sywjpyy', 'bch', 'prod', addressType.ADDRESS);
-            isValidAddressType('bc1pqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsyjer9e', 'bch', 'prod', undefined); // BTC address
+            isValidAddressType(
+                'bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807',
+                'bch',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+                'bch',
+                'prod',
+                undefined,
+            );
+            isValidAddressType(
+                'qp3wjpa3tjlj042z2wv7hahsldgwhwy0rq9sywjpyy',
+                'bch',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                'bc1pqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsyjer9e',
+                'bch',
+                'prod',
+                undefined,
+            ); // BTC address
         });
 
         it('should return true for correct litecoin addresses', function () {
@@ -132,8 +233,18 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected litecoin address type', function () {
-            isValidAddressType('LVg2kJoFNg45Nbpy53h7Fe1wKyeXVRhMH9', 'litecoin', 'prod', addressType.P2PKH);
-            isValidAddressType('ltc1qajkrze8gc5qdx2ehldsmd596a2gprnn50a53mj3xxvy0zgtdq6gqumv03a', 'litecoin', 'prod', addressType.P2WSH);
+            isValidAddressType(
+                'LVg2kJoFNg45Nbpy53h7Fe1wKyeXVRhMH9',
+                'litecoin',
+                'prod',
+                addressType.P2PKH,
+            );
+            isValidAddressType(
+                'ltc1qajkrze8gc5qdx2ehldsmd596a2gprnn50a53mj3xxvy0zgtdq6gqumv03a',
+                'litecoin',
+                'prod',
+                addressType.P2WSH,
+            );
         });
 
         it('should return true for correct peercoin addresses', function () {
@@ -161,8 +272,18 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected dogecoin address type', function () {
-            isValidAddressType('DMqRVLrhbam3Kcfddpxd6EYvEBbpi3bEpP', 'dogecoin', 'prod', addressType.P2PKH)
-            isValidAddressType('A7JjzK9k9x5b2MkkQzqt91WZsuu7wTu6iS', 'dogecoin', 'prod', addressType.P2SH)
+            isValidAddressType(
+                'DMqRVLrhbam3Kcfddpxd6EYvEBbpi3bEpP',
+                'dogecoin',
+                'prod',
+                addressType.P2PKH,
+            );
+            isValidAddressType(
+                'A7JjzK9k9x5b2MkkQzqt91WZsuu7wTu6iS',
+                'dogecoin',
+                'prod',
+                addressType.P2SH,
+            );
             isValidAddressType('qwerty', 'dogecoin', 'prod', undefined);
         });
 
@@ -329,8 +450,18 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected eip55 address type', function () {
-            isValidAddressType('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'ethereum', 'prod', addressType.ADDRESS);
-            isValidAddressType('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'ethereumclassic', 'prod', addressType.ADDRESS);
+            isValidAddressType(
+                '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
+                'ethereum',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                '0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb',
+                'ethereumclassic',
+                'prod',
+                addressType.ADDRESS,
+            );
         });
 
         it('should return true for correct Ripple addresses', function () {
@@ -342,7 +473,12 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected Ripple address type', function () {
-            isValidAddressType('rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn', 'Ripple', 'prod', addressType.ADDRESS);
+            isValidAddressType(
+                'rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn',
+                'Ripple',
+                'prod',
+                addressType.ADDRESS,
+            );
             isValidAddressType('rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCN', 'Ripple', 'prod', undefined);
         });
 
@@ -441,42 +577,101 @@ describe('WAValidator.validate()', function () {
 
         it('should return true for correct Cardano addresses', function () {
             valid('Ae2tdPwUPEYxYNJw1He1esdZYvjmr4NtPzUsGTiqL9zd8ohjZYQcwu6kom7', 'cardano');
-            valid('DdzFFzCqrhsfdzUZxvuBkhV8Lpm9p43p9ubh79GCTkxJikAjKh51qhtCFMqUniC5tv5ZExyvSmAte2Du2tGimavSo6qSgXbjiy8qZRTg', 'ada');
-            valid('Ae2tdPwUPEZKmwoy3AU3cXb5Chnasj6mvVNxV1H11997q3VW5ihbSfQwGpm', 'ada');
-            valid('4swhHtxKapQbj3TZEipgtp7NQzcRWDYqCxXYoPQWjGyHmhxS1w1TjUEszCQT1sQucGwmPQMYdv1FYs3d51KgoubviPBf', 'cardano');
-            valid('addr1qxnv5u3vrx2t37h3u27qd5ukgcjmrl4f8mu9f5sza3h20cxsfjh80un9kvlggfcdw8fp5kqp9tztqnee9msd0qsafhdsyqclvk', 'cardano');
-            valid('ADDR1QXNV5U3VRX2T37H3U27QD5UKGCJMRL4F8MU9F5SZA3H20CXSFJH80UN9KVLGGFCDW8FP5KQP9TZTQNEE9MSD0QSAFHDSYQCLVK', 'cardano');
-            valid('addr1qxclz0u9guazk70l9vv3xf67wx3psx3dekasvy43xfvz56qcs6f7ssw2x0fcesudyj8h224rnzkae2lqlnw8f3353t3sjggfx0', 'cardano');
             valid(
-                "addr_test1qru5ktsj5zsmhvwv0ep9zuhfu39x3wyt9wxjnsn3cagsyy59ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6usqd9a9q", 'cardano', 'testnet'
+                'DdzFFzCqrhsfdzUZxvuBkhV8Lpm9p43p9ubh79GCTkxJikAjKh51qhtCFMqUniC5tv5ZExyvSmAte2Du2tGimavSo6qSgXbjiy8qZRTg',
+                'ada',
+            );
+            valid('Ae2tdPwUPEZKmwoy3AU3cXb5Chnasj6mvVNxV1H11997q3VW5ihbSfQwGpm', 'ada');
+            valid(
+                '4swhHtxKapQbj3TZEipgtp7NQzcRWDYqCxXYoPQWjGyHmhxS1w1TjUEszCQT1sQucGwmPQMYdv1FYs3d51KgoubviPBf',
+                'cardano',
+            );
+            valid(
+                'addr1qxnv5u3vrx2t37h3u27qd5ukgcjmrl4f8mu9f5sza3h20cxsfjh80un9kvlggfcdw8fp5kqp9tztqnee9msd0qsafhdsyqclvk',
+                'cardano',
+            );
+            valid(
+                'ADDR1QXNV5U3VRX2T37H3U27QD5UKGCJMRL4F8MU9F5SZA3H20CXSFJH80UN9KVLGGFCDW8FP5KQP9TZTQNEE9MSD0QSAFHDSYQCLVK',
+                'cardano',
+            );
+            valid(
+                'addr1qxclz0u9guazk70l9vv3xf67wx3psx3dekasvy43xfvz56qcs6f7ssw2x0fcesudyj8h224rnzkae2lqlnw8f3353t3sjggfx0',
+                'cardano',
+            );
+            valid(
+                'addr_test1qru5ktsj5zsmhvwv0ep9zuhfu39x3wyt9wxjnsn3cagsyy59ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6usqd9a9q',
+                'cardano',
+                'testnet',
             );
         });
 
         it('should match the expected Cardano address type - mainnet', function () {
-            isValidAddressType('Ae2tdPwUPEYxYNJw1He1esdZYvjmr4NtPzUsGTiqL9zd8ohjZYQcwu6kom7', 'cardano', 'prod', addressType.ADDRESS);
+            isValidAddressType(
+                'Ae2tdPwUPEYxYNJw1He1esdZYvjmr4NtPzUsGTiqL9zd8ohjZYQcwu6kom7',
+                'cardano',
+                'prod',
+                addressType.ADDRESS,
+            );
         });
 
         it('should match the expected Cardano address type - testnet', function () {
-            isValidAddressType('addr_test1qru5ktsj5zsmhvwv0ep9zuhfu39x3wyt9wxjnsn3cagsyy59ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6usqd9a9q', 'cardano', 'testnet', addressType.ADDRESS);
+            isValidAddressType(
+                'addr_test1qru5ktsj5zsmhvwv0ep9zuhfu39x3wyt9wxjnsn3cagsyy59ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6usqd9a9q',
+                'cardano',
+                'testnet',
+                addressType.ADDRESS,
+            );
         });
 
         it('should return true for correct monero addresses', function () {
-            valid('47zQ5LAivg6hNCgijXSEFVLX7mke1bgM6YGLFaANDoJbgXDymcAAZvvMNt2PmMpqEe5qRy2zyfMYXdwpmdyitiFh84xnPG2', 'monero');
-            valid('48bWuoDG75CXMDHbmPEvUF2hm1vLDic7ZJ7hqRkL65QR9p13AQAX4eEACXNk4YP115Q4KRVZnAvmMBHrcGfv9FvKPZnH6vH', 'XMR');
-            valid('A2be3UvzMtkJtxRYgcCbQt2y7Rp2eLVGqNTWfZeankrWimSMM4y7uMP6B9oAZaHsXTj8KFSerkSkkVRuEuEca9QM8VhxCNU', 'monero', 'testnet');
+            valid(
+                '47zQ5LAivg6hNCgijXSEFVLX7mke1bgM6YGLFaANDoJbgXDymcAAZvvMNt2PmMpqEe5qRy2zyfMYXdwpmdyitiFh84xnPG2',
+                'monero',
+            );
+            valid(
+                '48bWuoDG75CXMDHbmPEvUF2hm1vLDic7ZJ7hqRkL65QR9p13AQAX4eEACXNk4YP115Q4KRVZnAvmMBHrcGfv9FvKPZnH6vH',
+                'XMR',
+            );
+            valid(
+                'A2be3UvzMtkJtxRYgcCbQt2y7Rp2eLVGqNTWfZeankrWimSMM4y7uMP6B9oAZaHsXTj8KFSerkSkkVRuEuEca9QM8VhxCNU',
+                'monero',
+                'testnet',
+            );
 
             //integrated addresses
-            valid('4Gd4DLiXzBmbVX2FZZ3Cvu6fUaWACup1qDowprUCje1kSP4FmbftiJMSfV8kWZXNqmVwj4m52xqtgFNUudVmsmGkGvkLcCibWfVUfUFVB7', 'monero');
-            valid('4J5sF94AzXgFgx8LuWc9dcWkJkGkD3cL3L2AuhX6QA9jFvSxxj6QhHqHXqM2b2Go7G8RyDzEbHxYd9G26XUUbuJChipEyBz9fENMU2Ua9b', 'XMR');
+            valid(
+                '4Gd4DLiXzBmbVX2FZZ3Cvu6fUaWACup1qDowprUCje1kSP4FmbftiJMSfV8kWZXNqmVwj4m52xqtgFNUudVmsmGkGvkLcCibWfVUfUFVB7',
+                'monero',
+            );
+            valid(
+                '4J5sF94AzXgFgx8LuWc9dcWkJkGkD3cL3L2AuhX6QA9jFvSxxj6QhHqHXqM2b2Go7G8RyDzEbHxYd9G26XUUbuJChipEyBz9fENMU2Ua9b',
+                'XMR',
+            );
 
             // subaddress
-            valid('8A9XmWsATrhfedtNhTMNKELwfCwMVAk2iVTdUJdFRb2AC4tV4VeBjsCLYR9cSQTwnvLo4MAuQFMLP6Si4xp6t6BS788db3t', 'monero');
-            valid('87i7kA61fNvMboXiYWHVygPAggKJPETFqLXXcdH4mQTrECvrTxZMtt6e6owj1k8jUVjNR11eBuBMWHFBtxAwEVcm9dcSUxr', 'xmr');
+            valid(
+                '8A9XmWsATrhfedtNhTMNKELwfCwMVAk2iVTdUJdFRb2AC4tV4VeBjsCLYR9cSQTwnvLo4MAuQFMLP6Si4xp6t6BS788db3t',
+                'monero',
+            );
+            valid(
+                '87i7kA61fNvMboXiYWHVygPAggKJPETFqLXXcdH4mQTrECvrTxZMtt6e6owj1k8jUVjNR11eBuBMWHFBtxAwEVcm9dcSUxr',
+                'xmr',
+            );
         });
 
         it('should match the expected monero address type', function () {
-            isValidAddressType('47zQ5LAivg6hNCgijXSEFVLX7mke1bgM6YGLFaANDoJbgXDymcAAZvvMNt2PmMpqEe5qRy2zyfMYXdwpmdyitiFh84xnPG2', 'xmr', 'prod', addressType.ADDRESS);
-            isValidAddressType('44643dtxcxjgMWEQLo6mh1c4d9Zxx9GbgK9hEj9iGSiFEryCkbwHyJ3JqxZJRqeC3Hb7ZBLKq5NkaJwR1x95EYnR1bTgN6d', 'Monero', 'prod', undefined);
+            isValidAddressType(
+                '47zQ5LAivg6hNCgijXSEFVLX7mke1bgM6YGLFaANDoJbgXDymcAAZvvMNt2PmMpqEe5qRy2zyfMYXdwpmdyitiFh84xnPG2',
+                'xmr',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                '44643dtxcxjgMWEQLo6mh1c4d9Zxx9GbgK9hEj9iGSiFEryCkbwHyJ3JqxZJRqeC3Hb7ZBLKq5NkaJwR1x95EYnR1bTgN6d',
+                'Monero',
+                'prod',
+                undefined,
+            );
         });
 
         it('should return true for correct gamecredits addresses', function () {
@@ -536,20 +731,25 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should return true for correct Aeternity addresses', () => {
-            valid('ak_AT2bs7LkqwKbPUj5waoqq1E7QYgRzXUbaBanDHXDVsaCJ8gRA', 'ae')
-            valid('ak_8QxnP9qXP3NpA4fskYZE7P1GfHzKZAMmoNuok7jJC5NqVYi21', 'ae')
+            valid('ak_AT2bs7LkqwKbPUj5waoqq1E7QYgRzXUbaBanDHXDVsaCJ8gRA', 'ae');
+            valid('ak_8QxnP9qXP3NpA4fskYZE7P1GfHzKZAMmoNuok7jJC5NqVYi21', 'ae');
         });
 
         it('should match the expected Aeternity address type', function () {
-            isValidAddressType('ak_AT2bs7LkqwKbPUj5waoqq1E7QYgRzXUbaBanDHXDVsaCJ8gRA', 'ae', 'prod', addressType.ADDRESS);
+            isValidAddressType(
+                'ak_AT2bs7LkqwKbPUj5waoqq1E7QYgRzXUbaBanDHXDVsaCJ8gRA',
+                'ae',
+                'prod',
+                addressType.ADDRESS,
+            );
         });
 
-		it('should return true for correct Ardor addresses', () => {
-            valid('ARDOR-HFNE-E2VE-SMV3-DCRZ8', 'ardr')
+        it('should return true for correct Ardor addresses', () => {
+            valid('ARDOR-HFNE-E2VE-SMV3-DCRZ8', 'ardr');
         });
 
-		it('should return false for correct Ardor addresses', () => {
-            invalid('AR-HFNE-E2VE-SMV3-DCRZ8', 'ardr')
+        it('should return false for correct Ardor addresses', () => {
+            invalid('AR-HFNE-E2VE-SMV3-DCRZ8', 'ardr');
         });
 
         it('should match the expected Ardor address type', function () {
@@ -560,24 +760,29 @@ describe('WAValidator.validate()', function () {
         it('should return true for correct siacoin addresses', function () {
             valid(
                 'a9b01c85163638682b170d82de02b8bb99ba86092e9ab1b0d25111284fe618e93456915820f1',
-                'siacoin'
-            )
+                'siacoin',
+            );
             valid(
                 'a9b01c85163638682b170d82de02b8bb99ba86092e9ab1b0d25111284fe618e93456915820f1',
-                'siacoin'
-            )
+                'siacoin',
+            );
             valid(
                 'ab0c327982abfcc6055a6c9551589167d8a73501aca8769f106371fbc937ad100c955c3b7ba9',
-                'siacoin'
-            )
+                'siacoin',
+            );
             valid(
                 'ffe1308c044ade30392a0cdc1fd5a4dbe94f9616a95faf888ed36123d9e711557aa497530373',
-                'siacoin'
-            )
+                'siacoin',
+            );
         });
 
         it('should match the expected Siacoin address type', function () {
-            isValidAddressType('a9b01c85163638682b170d82de02b8bb99ba86092e9ab1b0d25111284fe618e93456915820f1', 'siacoin', 'prod', addressType.ADDRESS);
+            isValidAddressType(
+                'a9b01c85163638682b170d82de02b8bb99ba86092e9ab1b0d25111284fe618e93456915820f1',
+                'siacoin',
+                'prod',
+                addressType.ADDRESS,
+            );
             isValidAddressType('aaaaaaaaaaaaaaa000000000000000', 'siacoin', 'prod', undefined);
         });
 
@@ -587,28 +792,33 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should return true for correct Cosmos addresses', () => {
-            valid('cosmos1xxkueklal9vejv9unqu80w9vptyepfa95pd53u', 'atom')
+            valid('cosmos1xxkueklal9vejv9unqu80w9vptyepfa95pd53u', 'atom');
         });
 
         it('should return false for incorrect Cosmos addresses', () => {
-            invalid('cosmo15v50ymp6n5dn73erkqtmq0u8adpl8d3ujv2e74', 'atom')
-            invalid('cosmos25v50ymp6n5dn73erkqtmq0u8adpl8d3ujv2e74', 'atom')
-            invalid('cosmos15v50ymp6n5dn73erkQtmq0u8adpl8d3ujv2e74', 'atom')
+            invalid('cosmo15v50ymp6n5dn73erkqtmq0u8adpl8d3ujv2e74', 'atom');
+            invalid('cosmos25v50ymp6n5dn73erkqtmq0u8adpl8d3ujv2e74', 'atom');
+            invalid('cosmos15v50ymp6n5dn73erkQtmq0u8adpl8d3ujv2e74', 'atom');
         });
 
         it('should match the expected Cosmos address type', function () {
-            isValidAddressType('cosmos1xxkueklal9vejv9unqu80w9vptyepfa95pd53u', 'atom', 'prod', addressType.ADDRESS);
+            isValidAddressType(
+                'cosmos1xxkueklal9vejv9unqu80w9vptyepfa95pd53u',
+                'atom',
+                'prod',
+                addressType.ADDRESS,
+            );
             isValidAddressType('qwerty', 'atom', 'prod', undefined);
         });
 
         it('should return true for correct HashGraph addresses', () => {
-            valid('0.0.10819', 'hbar')
-            valid('0.0.13458', 'hbar')
-            valid('0.0.16952', 'hbar')
+            valid('0.0.10819', 'hbar');
+            valid('0.0.13458', 'hbar');
+            valid('0.0.16952', 'hbar');
         });
 
         it('should return true for incorrect HashGraph addresses', () => {
-            invalid('1.0.10819', 'hbar')
+            invalid('1.0.10819', 'hbar');
         });
 
         it('should match the expected HBAR address type', function () {
@@ -617,25 +827,35 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should return true for incorrect ICON addresses', () => {
-            valid('hxf5a52d659df00ef0517921647516daaf7502a728', 'icx')
+            valid('hxf5a52d659df00ef0517921647516daaf7502a728', 'icx');
         });
 
         it('should return false for incorrect ICON addresses', () => {
-            invalid('gxde8ba8fd110625a0c47ecf29de308b8f5bd20ed6', 'icx')
-            invalid('hxde8ba8fd110625a0c47ecf29de308b8f5bd20eD6', 'icx')
+            invalid('gxde8ba8fd110625a0c47ecf29de308b8f5bd20ed6', 'icx');
+            invalid('hxde8ba8fd110625a0c47ecf29de308b8f5bd20eD6', 'icx');
         });
 
         it('should match the expected ICON address type', function () {
-            isValidAddressType('hxf5a52d659df00ef0517921647516daaf7502a728', 'ICON', 'prod', addressType.ADDRESS);
-            isValidAddressType('hxde8ba8fd110625a0c47ecf29de308b8f5bd20eD6', 'ICON', 'prod', undefined);
+            isValidAddressType(
+                'hxf5a52d659df00ef0517921647516daaf7502a728',
+                'ICON',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                'hxde8ba8fd110625a0c47ecf29de308b8f5bd20eD6',
+                'ICON',
+                'prod',
+                undefined,
+            );
         });
 
         it('should return true for correct IOST addresses', () => {
-            valid('binanceiost', 'iost')
+            valid('binanceiost', 'iost');
         });
 
         it('should return true for correct IOST addresses', () => {
-            invalid('rekt', 'iost')
+            invalid('rekt', 'iost');
         });
 
         it('should match the expected IOST address type', function () {
@@ -676,34 +896,44 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should return true for correct Stratis addresses', () => {
-            valid('SY7YwpMGvU42dkFzmFEkGWFr1BEikUwhPT', 'strat')
+            valid('SY7YwpMGvU42dkFzmFEkGWFr1BEikUwhPT', 'strat');
         });
 
         it('should return true for correct Verge addresses', () => {
-            valid('D9HsosoCM6pxWU4UD3cgHFacmD18Fu34g5', 'xvg')
+            valid('D9HsosoCM6pxWU4UD3cgHFacmD18Fu34g5', 'xvg');
         });
 
         it('should return true for correct Zilliqa addresses', () => {
-            valid('zil1pk6fe395e9lfkglv0m70daezm5en0t62hty7f7', 'zil')
+            valid('zil1pk6fe395e9lfkglv0m70daezm5en0t62hty7f7', 'zil');
         });
 
         it('should return false for incorrect Zilliqa addresses', () => {
-            invalid('0xda816e2122a8a39b0926bfa84edd3d42477e9efE', 'zil')
+            invalid('0xda816e2122a8a39b0926bfa84edd3d42477e9efE', 'zil');
         });
 
         it('should match the expected Zilliqa address type', function () {
-            isValidAddressType('zil1pk6fe395e9lfkglv0m70daezm5en0t62hty7f7', 'zil', 'prod', addressType.ADDRESS);
-            isValidAddressType('0xda816e2122a8a39b0926bfa84edd3d42477e9efE', 'zil', 'prod', undefined);
+            isValidAddressType(
+                'zil1pk6fe395e9lfkglv0m70daezm5en0t62hty7f7',
+                'zil',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                '0xda816e2122a8a39b0926bfa84edd3d42477e9efE',
+                'zil',
+                'prod',
+                undefined,
+            );
         });
 
         it('should return true for incorrect NXT addresses', () => {
-            valid('NXT-799W-TN9C-GL3Q-D3PXU', 'nxt')
-            valid('NXT-TMVC-69YC-SJB4-8YCH7', 'nxt')
+            valid('NXT-799W-TN9C-GL3Q-D3PXU', 'nxt');
+            valid('NXT-TMVC-69YC-SJB4-8YCH7', 'nxt');
         });
 
         it('should return false for incorrect NXT addresses', () => {
-            invalid('NXT-799W-TN9C-GL3Q', 'nxt')
-            invalid('NEXT-799W-TN9C-GL3Q', 'nxt')
+            invalid('NXT-799W-TN9C-GL3Q', 'nxt');
+            invalid('NEXT-799W-TN9C-GL3Q', 'nxt');
         });
 
         it('should match the expected NXT address type', function () {
@@ -712,68 +942,83 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should return true for correct VeChain addresses', () => {
-            valid('0xA9E5617e2f90427F6db70A3B1d08Fc14706Eb907', 'ven')
-            valid('0xb089B15A00528eEB19fcA4565df80d9a111BFCf9', 'ven')
+            valid('0xA9E5617e2f90427F6db70A3B1d08Fc14706Eb907', 'ven');
+            valid('0xb089B15A00528eEB19fcA4565df80d9a111BFCf9', 'ven');
         });
 
         it('should return true for correct VeChain Mainnet addresses', () => {
-            valid('0x1374A7E9d5Ed5CFF9c56a0e57B3d8a836a378715', 'vet')
-            valid('0x1374A7E9d5Ed5CFF9c56a0e57B3d8a836a378715', 'vet')
+            valid('0x1374A7E9d5Ed5CFF9c56a0e57B3d8a836a378715', 'vet');
+            valid('0x1374A7E9d5Ed5CFF9c56a0e57B3d8a836a378715', 'vet');
         });
 
         it('should return true for correct Syscoin addresses', () => {
-            valid('SdzKyvhD2Y3xJvGVSfx96NXszq6x9BZX34', 'sys')
-            valid('SSSBZDMVxuZyEMW4s6ar79Cf9UKqy6ZCwf', 'sys')
-            valid('SUQ4gsnsTUeYJgTLsQ3siryr9HfHp95p12', 'sys')
-            valid('SdzKyvhD2Y3xJvGVSfx96NXszq6x9BZX34', 'sys')
-            valid('SbmNaK9hVn9BUoPoPtTmXogfGfZd5Mophm', 'sys')
-            valid('SQUDdLog219Hpcz6Zss4uXg6xU1pAcnbLF', 'sys')
-            valid('STxiBMedbmA28ip1QMooZaTBHxyiwVSCSr', 'sys')
-            valid('SV4yxaugDJB6WXT5hNJwN1Pz6M8TjrMmJ6', 'sys')
+            valid('SdzKyvhD2Y3xJvGVSfx96NXszq6x9BZX34', 'sys');
+            valid('SSSBZDMVxuZyEMW4s6ar79Cf9UKqy6ZCwf', 'sys');
+            valid('SUQ4gsnsTUeYJgTLsQ3siryr9HfHp95p12', 'sys');
+            valid('SdzKyvhD2Y3xJvGVSfx96NXszq6x9BZX34', 'sys');
+            valid('SbmNaK9hVn9BUoPoPtTmXogfGfZd5Mophm', 'sys');
+            valid('SQUDdLog219Hpcz6Zss4uXg6xU1pAcnbLF', 'sys');
+            valid('STxiBMedbmA28ip1QMooZaTBHxyiwVSCSr', 'sys');
+            valid('SV4yxaugDJB6WXT5hNJwN1Pz6M8TjrMmJ6', 'sys');
         });
 
         it('should match the expected Syscoin address type', function () {
-            isValidAddressType('sys1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'sys', 'prod', addressType.ADDRESS);
-            isValidAddressType('SdzKyvhD2Y3xJvGVSfx96NXszq6x9BZX34', 'sys', 'prod', addressType.ADDRESS);
-            isValidAddressType('sus1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'sys', 'prod', undefined);
+            isValidAddressType(
+                'sys1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+                'sys',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                'SdzKyvhD2Y3xJvGVSfx96NXszq6x9BZX34',
+                'sys',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                'sus1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+                'sys',
+                'prod',
+                undefined,
+            );
         });
 
         it('should return true for correct loki addresses', function () {
             // public
             valid(
                 'L63ymg8cb5aRz1PhXrEQ22PWw9KBhBS8rMsgqbABhTGFfh53U3Rc2iWCJpCPsHZT5hfyt7fPQa612a5Z1tBnGYEA9h6YHnn',
-                'loki'
-            )
+                'loki',
+            );
             valid(
                 'L5QKRGMNpQU3eCAdjMVTCR631bRKqnW1oEWWBEHAtFJLieA5VvuxyyubCd9FczEEatg8jfy39UJZ13npLJqZG6dtMtM99ha',
-                'loki'
-            )
+                'loki',
+            );
             //   integrated
             valid(
                 'LK8CGQ17G9R3ys3Xf33wCeViD2B95jgdpjAhcRsjuheJ784dumXn7g3RPAzedWpFq364jJKYL9dkQ8mY66sZG9BiD1xbPb6dpYo7toNRqk',
-                'loki'
-            )
+                'loki',
+            );
             valid(
                 'LK8CGQ17G9R3ys3Xf33wCeViD2B95jgdpjAhcRsjuheJ784dumXn7g3RPAzedWpFq364jJKYL9dkQ8mY66sZG9BiCtWq1AYo1oJTVqgUcQ',
-                'loki'
-            )
+                'loki',
+            );
             valid(
                 'LLhSDqBZdjLQWajr4pBcFkdjL8oGY7MDvfJkKfrQVaokfDMxU6bDVb6h8tsD1jpKpSXbbB1p8RxPbA7fmjvLGjicKLBdQvDMbHA7TWVCUQ',
-                'loki'
-            )
+                'loki',
+            );
             //   subaddress
             valid(
                 'LW1VMYcvWPZZJ2h1pKGEku2y9WeDiAU2VhgrgVgvjybaRuCdcEkg6FhXjVNSd37Bp7fhYH8tVa5T9VmRaYiWyxYdCpEGBg8',
-                'loki'
-            )
-        })
+                'loki',
+            );
+        });
 
         it('should return true for correct lbry addresses', function () {
-            valid('bDb6NmobyDVeNGpizWQQBZkYjKCRQBdKdG', 'LBC')
-            valid('bTFXPcV3a8iVDezogvHTHezWZ1mZGWpPDc', 'lbc')
-            valid('bK2uEVn6UuwjCTUZ1Dfj5HhWYi9BtqZDDm', 'lbc')
-            valid('bNEMVqeUZUqTrYUxud5ehnUhtTAiWDXQ5e', 'lbc')
-        })
+            valid('bDb6NmobyDVeNGpizWQQBZkYjKCRQBdKdG', 'LBC');
+            valid('bTFXPcV3a8iVDezogvHTHezWZ1mZGWpPDc', 'lbc');
+            valid('bK2uEVn6UuwjCTUZ1Dfj5HhWYi9BtqZDDm', 'lbc');
+            valid('bNEMVqeUZUqTrYUxud5ehnUhtTAiWDXQ5e', 'lbc');
+        });
 
         it('should return true for correct trx addresses', function () {
             valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx');
@@ -786,8 +1031,18 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected NEM address type', function () {
-            isValidAddressType('NBZMQO7ZPBYNBDUR7F75MAKA2S3DHDCIFG775N3D', 'NEM', 'prod', addressType.ADDRESS);
-            isValidAddressType('TDWTRGT6GVWCV7GRWFNI45S53PGOJBKNUF3GE6PB', 'NEM', 'testnet', addressType.ADDRESS);
+            isValidAddressType(
+                'NBZMQO7ZPBYNBDUR7F75MAKA2S3DHDCIFG775N3D',
+                'NEM',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                'TDWTRGT6GVWCV7GRWFNI45S53PGOJBKNUF3GE6PB',
+                'NEM',
+                'testnet',
+                addressType.ADDRESS,
+            );
             isValidAddressType('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'NEM', 'prod', undefined);
         });
 
@@ -818,7 +1073,12 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected bsv address type', function () {
-            isValidAddressType('qzwryn9fxnpqkf7zt878tp2g9cg8kpl65qh2ml0w0r', 'bsv', 'prod', addressType.ADDRESS);
+            isValidAddressType(
+                'qzwryn9fxnpqkf7zt878tp2g9cg8kpl65qh2ml0w0r',
+                'bsv',
+                'prod',
+                addressType.ADDRESS,
+            );
 
             // FIXME: this test fails (returns addressType.ADDRESS) - should it return undefined as it's a testnet address?
             // isValidAddressType('qzwryn9fxnpqkf7zt878tp2g9cg8kpl65qh2ml0w0r', 'bsv', 'testnet', undefined);
@@ -841,8 +1101,18 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected stellar address type', function () {
-            isValidAddressType('GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB', 'stellar', 'prod', addressType.ADDRESS);
-            isValidAddressType('SBGWKM3CD4IL47QN6X54N6Y33T3JDNVI6AIJ6CD5IM47HG3IG4O36XCU', 'stellar', 'prod', undefined);
+            isValidAddressType(
+                'GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB',
+                'stellar',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                'SBGWKM3CD4IL47QN6X54N6Y33T3JDNVI6AIJ6CD5IM47HG3IG4O36XCU',
+                'stellar',
+                'prod',
+                undefined,
+            );
         });
 
         it('should return true for correct binance address', function () {
@@ -877,7 +1147,12 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected xtz(tezor) address type', function () {
-            isValidAddressType('tz1Lhf4J9Qxoe3DZ2nfe8FGDnvVj7oKjnMY6', 'xtz', 'prod', addressType.ADDRESS);
+            isValidAddressType(
+                'tz1Lhf4J9Qxoe3DZ2nfe8FGDnvVj7oKjnMY6',
+                'xtz',
+                'prod',
+                addressType.ADDRESS,
+            );
             isValidAddressType('tz1RR6wy9BeXG3Fjk25YmkSMGHxTtKkhpX', 'xtz', 'prod', undefined);
         });
 
@@ -895,7 +1170,6 @@ describe('WAValidator.validate()', function () {
             isValidAddressType('bittrexacct1', 'EOS', 'prod', addressType.ADDRESS);
             isValidAddressType('shitcoin', 'EOS', 'prod', undefined);
         });
-
     });
 
     describe('invalid results', function () {
@@ -903,12 +1177,12 @@ describe('WAValidator.validate()', function () {
             invalid('', currency); //reject blank
             invalid('%%@', currency); //reject invalid base58 string
             invalid('1A1zP1ePQGefi2DMPTifTL5SLmv7DivfNa', currency); //reject invalid address
-            invalid('bd839e4f6fadb293ba580df5dea7814399989983', currency);  //reject transaction id's
+            invalid('bd839e4f6fadb293ba580df5dea7814399989983', currency); //reject transaction id's
             //testnet
             invalid('', currency, 'testnet'); //reject blank
             invalid('%%@', currency, 'testnet'); //reject invalid base58 string
             invalid('1A1zP1ePQGefi2DMPTifTL5SLmv7DivfNa', currency, 'testnet'); //reject invalid address
-            invalid('bd839e4f6fadb293ba580df5dea7814399989983', currency, 'testnet');  //reject transaction id's
+            invalid('bd839e4f6fadb293ba580df5dea7814399989983', currency, 'testnet'); //reject transaction id's
         }
 
         it('should return false for incorrect bitcoin addresses', function () {
@@ -917,7 +1191,6 @@ describe('WAValidator.validate()', function () {
             // testnet in prod and prod in testnet
             invalid('mzBc4XEFSdzCDcTxAgf6EZXgsZWpztRhef', 'btc');
             invalid('12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y', 'bitcoin', 'testnet');
-
         });
 
         it('should return false for incorrect bitcoincash addresses', function () {
@@ -1142,22 +1415,50 @@ describe('WAValidator.validate()', function () {
         it('should return false for incorrect cardano addresses', function () {
             commonTests('cardano');
             invalid('Ae2tdPwUPEYxYNJw1He1esdZYvjmr4NtPzUsGTiqL9zd8ohjZYQcwu6lom7', 'cardano');
-            invalid('DdzFFzCqrhsfdzUZxvuBkhV8Lpm9p43p9ubh79GCTkxJikAjKh51qhtCFMqUniC5tv5ZExyvSmAte2Du2tGimavSo6qSgXbjiy8qZRTg1', 'cardano');
-            invalid('DdzFFzCqrhsfdzUZxvuBkhV8Lpm9p43p9ubh79GCTkxJikAjKh51qhtCFMqUniC5tv5ZExyvSmAte2Du2tGimavSo6qSgXbjiy8qZRT', 'ada');
-            invalid('ADDR1qXNV5U3VRX2T37H3U27QD5UKGCJMRL4F8MU9F5SZA3H20CXSFJH80UN9KVLGGFCDW8FP5KQP9TZTQNEE9MSD0QSAFHDSYQCLVK', 'cardano');
-            invalid('addr1qxnv5u3vrx2t37h3u27qd5ukgcjmrl4f8mu9f5sza3h20cxsfjh80un9kvlggfcdw8fp5kqp9tztqnee9msd0qsafhdsyqclvl', 'cardano');
+            invalid(
+                'DdzFFzCqrhsfdzUZxvuBkhV8Lpm9p43p9ubh79GCTkxJikAjKh51qhtCFMqUniC5tv5ZExyvSmAte2Du2tGimavSo6qSgXbjiy8qZRTg1',
+                'cardano',
+            );
+            invalid(
+                'DdzFFzCqrhsfdzUZxvuBkhV8Lpm9p43p9ubh79GCTkxJikAjKh51qhtCFMqUniC5tv5ZExyvSmAte2Du2tGimavSo6qSgXbjiy8qZRT',
+                'ada',
+            );
+            invalid(
+                'ADDR1qXNV5U3VRX2T37H3U27QD5UKGCJMRL4F8MU9F5SZA3H20CXSFJH80UN9KVLGGFCDW8FP5KQP9TZTQNEE9MSD0QSAFHDSYQCLVK',
+                'cardano',
+            );
+            invalid(
+                'addr1qxnv5u3vrx2t37h3u27qd5ukgcjmrl4f8mu9f5sza3h20cxsfjh80un9kvlggfcdw8fp5kqp9tztqnee9msd0qsafhdsyqclvl',
+                'cardano',
+            );
             //invalid('t2YNzUUx8mWBCRYPRezvA363EYXyEpHokyi', 'komodo', 'testnet');
         });
 
         it('should return false for incorrect monero addresses', function () {
             commonTests('monero');
-            invalid('4AWygwA3hHNE4e4Yr9PtRWJiorXTjZkCi57g4ExYzfXDFFQ8DRFEFyui1dLqVknpqQjGUBdTMbgaFAZaDbrVHdk3GAKBZ3E', 'monero');
-            invalid('44643dtxcxjgMWEQLo6mh1c4d9Zxx9GbgK9hEj9iGSiFEryCkbwHyJ3JqxZJRqeC3Hb7ZBLKq5NkaJwR1x95EYnR1bTgN6d', 'xmr');
-            invalid('A17N9ztrxjQD3v3JJtHGvHVnq6BAbujDNEuensB6PFwBYFpkjAicih8hDtX76HBuEag5NeaCuMZmRMe6eE5NMRGxFTQn8nJ', 'monero', 'testnet');
+            invalid(
+                '4AWygwA3hHNE4e4Yr9PtRWJiorXTjZkCi57g4ExYzfXDFFQ8DRFEFyui1dLqVknpqQjGUBdTMbgaFAZaDbrVHdk3GAKBZ3E',
+                'monero',
+            );
+            invalid(
+                '44643dtxcxjgMWEQLo6mh1c4d9Zxx9GbgK9hEj9iGSiFEryCkbwHyJ3JqxZJRqeC3Hb7ZBLKq5NkaJwR1x95EYnR1bTgN6d',
+                'xmr',
+            );
+            invalid(
+                'A17N9ztrxjQD3v3JJtHGvHVnq6BAbujDNEuensB6PFwBYFpkjAicih8hDtX76HBuEag5NeaCuMZmRMe6eE5NMRGxFTQn8nJ',
+                'monero',
+                'testnet',
+            );
 
             //integrated
-            invalid('4LNSCKNSTPNbJYkyAEgL966eHJHLDHiq1PpwKoiFBybcSqNGYfLBJApC62uQEeGAFxfYEd29uXBBrJFo7DhKqFVNi3GhmN79EtD5dgycYz', 'monero');
-            invalid('4JpzTwf3i1GeCV76beVr19179oa8j1L8xNSC1bXMtAxxdf4aTTLqubL8EvXfQmUGKt9MMigFtKy91VtoTTSfg1LU7LocPruT6KcGC9RKJV', 'xmr');
+            invalid(
+                '4LNSCKNSTPNbJYkyAEgL966eHJHLDHiq1PpwKoiFBybcSqNGYfLBJApC62uQEeGAFxfYEd29uXBBrJFo7DhKqFVNi3GhmN79EtD5dgycYz',
+                'monero',
+            );
+            invalid(
+                '4JpzTwf3i1GeCV76beVr19179oa8j1L8xNSC1bXMtAxxdf4aTTLqubL8EvXfQmUGKt9MMigFtKy91VtoTTSfg1LU7LocPruT6KcGC9RKJV',
+                'xmr',
+            );
         });
 
         it('should return false for incorrect waves addresses', function () {
@@ -1172,7 +1473,6 @@ describe('WAValidator.validate()', function () {
 
         it('should return true for incorrect nano addresses', function () {
             valid('nano_1fnrrsrsifdpnkxrwwtfpjx5etcwt7a8hrz6fuqkh6w5i9jdsmo4yjg66iu7', 'nano');
-
         });
 
         it('should return false for incorrect nano addresses', function () {
@@ -1184,25 +1484,38 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected NANO address type', function () {
-            isValidAddressType('nano_1fnrrsrsifdpnkxrwwtfpjx5etcwt7a8hrz6fuqkh6w5i9jdsmo4yjg66iu7', 'NANO', 'prod', addressType.ADDRESS);
-            isValidAddressType('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'NANO', 'prod', undefined);
+            isValidAddressType(
+                'nano_1fnrrsrsifdpnkxrwwtfpjx5etcwt7a8hrz6fuqkh6w5i9jdsmo4yjg66iu7',
+                'NANO',
+                'prod',
+                addressType.ADDRESS,
+            );
+            isValidAddressType(
+                'xrb_1111111112111111111111111111111111111111111111111111hifc8npp',
+                'NANO',
+                'prod',
+                undefined,
+            );
         });
 
         it('should return false for incorrect siacoin addresses', function () {
-            commonTests('siacoin')
+            commonTests('siacoin');
             invalid(
                 'ffe1308c044ade30392a0cdc1fd5a4dbe94f9616a95faf888ed36123d9e711557aa497530372',
-                'siacoin'
-            )
-        })
+                'siacoin',
+            );
+        });
 
         it('should return false for incorrect lbry addresses', function () {
-            commonTests('lbc')
-            invalid('ffe1308c044ade30392a0cdc1fd5a4dbe94f9616a95faf888ed36123d9e711557aa497530372', 'lbc')
+            commonTests('lbc');
+            invalid(
+                'ffe1308c044ade30392a0cdc1fd5a4dbe94f9616a95faf888ed36123d9e711557aa497530372',
+                'lbc',
+            );
         });
 
         it('should return true for correct tron addresses', function () {
-            valid('TNXoiAJ3dct8Fjg4M9fkLFh9S2v9TXc32G', 'trx')
+            valid('TNXoiAJ3dct8Fjg4M9fkLFh9S2v9TXc32G', 'trx');
         });
 
         it('should return false for incorrect tron addresses', function () {
@@ -1212,7 +1525,12 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should match the expected tron address type', function () {
-            isValidAddressType('TNXoiAJ3dct8Fjg4M9fkLFh9S2v9TXc32G', 'tron', 'prod', addressType.ADDRESS);
+            isValidAddressType(
+                'TNXoiAJ3dct8Fjg4M9fkLFh9S2v9TXc32G',
+                'tron',
+                'prod',
+                addressType.ADDRESS,
+            );
             isValidAddressType('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'tron', 'prod', undefined);
         });
 
@@ -1279,7 +1597,6 @@ describe('WAValidator.validate()', function () {
             invalid('tz1h3rQ8wBxFd8L9B3d7JhaPQawu6Z568XU3xY', 'xtz');
             invalid('tz1Lhf4J9Qxoe4DZ2nfe8FGDnvVj7oKjnMY6', 'xtz');
             invalid('KT1E2LvxxFGB3Svh9p9HCP2jEEYyHjABMbK', 'xtz');
-
         });
 
         it('should return false for incorrect eos addresses', function () {
@@ -1314,22 +1631,8 @@ describe('WAValidator.validate()', function () {
             valid('grs1qnxt8adg4qk3ljl0qhvp4m0nt56w6ma77vwr2jq', 'grs');
             valid('tgrs1qw4z3xrtgx4f6w7akwpp2xa0gupmkv4yauemmm9', 'grs', 'testnet');
 
-            invalid("grs1q49qls5kklryt95g5xq4p6msycpgjp8ramfc9jq", 'grs'),
-            invalid("tgrs1qqjd3qhncsxdyh5gt7hz4k6zzvfguslwxwgv23j", 'grs')
-
-        });
-
-        it('should return true for correct solana addresses', function () {
-            valid('64duFXLEMcVaZpm4SRmtqEdSQ5LFht22hK1SLu2ayU9b', 'sol')
-            valid('DkMYphwx9Z9AdR5Y8M4md1H96TKxfyoAHxUYH56F4ij5', 'sol')
-            valid('CN2JT7qJ84aVUMtSGuNSte5ytP5eMeeHgTVzyBiHDxMr', 'sol')
-            valid('H22WwH3qSAbZ6fH1n9PzGso3vBwQUz7gmK827ijLTgJW', 'sol')
-        });
-
-        it('should return false for incorrect solana addresses', function () {
-            invalid('sol_123456', 'sol')
-            invalid('65udFxlkjm1xfyo', 'sol')
-            invalid('CN2JT7qJ84aVUMtSGuNSte5ytP5eMeeHgTVzyBiHDxMrH22WwH3qSAbZ6fH1n9PzGso3vBwQUz7gmK827ijLTgJW', 'sol')
+            invalid('grs1q49qls5kklryt95g5xq4p6msycpgjp8ramfc9jq', 'grs'),
+                invalid('tgrs1qqjd3qhncsxdyh5gt7hz4k6zzvfguslwxwgv23j', 'grs');
         });
     });
 });

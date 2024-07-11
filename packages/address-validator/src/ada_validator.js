@@ -1,4 +1,4 @@
-const { addressType } = require('../src/crypto/utils');
+const { addressType } = require('./crypto/utils');
 var cbor = require('cbor-js');
 var CRC = require('crc');
 var base58 = require('./crypto/base58');
@@ -25,7 +25,7 @@ function isValidLegacyAddress(address) {
 
     var tagged = decoded[0];
     var validCrc = decoded[1];
-    if (typeof (validCrc) != 'number') {
+    if (typeof validCrc != 'number') {
         return false;
     }
 
@@ -61,10 +61,11 @@ function isValidBech32Address(address, currency, networkType) {
 module.exports = {
     isValidAddress: function (address, currency, networkType) {
         networkType = networkType || DEFAULT_NETWORK_TYPE;
-        return isValidLegacyAddress(address)
-            || isValidBech32Address(address, currency, networkType);
+        return (
+            isValidLegacyAddress(address) || isValidBech32Address(address, currency, networkType)
+        );
     },
-    getAddressType: function(address, currency, networkType) {
+    getAddressType: function (address, currency, networkType) {
         if (this.isValidAddress(address, currency, networkType)) {
             return addressType.ADDRESS;
         }

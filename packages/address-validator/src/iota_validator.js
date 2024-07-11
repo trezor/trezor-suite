@@ -12,4 +12,3 @@
 //     return isValidIotaAddress(address, currency, networkType)
 //   }
 // }
-

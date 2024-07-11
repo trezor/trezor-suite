@@ -36,7 +36,7 @@ Parts of the project are originally copyright (c) 2014-2017, MyMonero.com
 var cnBase58 = (function () {
     var b58 = {};
 
-    var alphabet_str = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    var alphabet_str = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     var alphabet = [];
     for (var i = 0; i < alphabet_str.length; i++) {
         alphabet.push(alphabet_str.charCodeAt(i));
@@ -50,7 +50,7 @@ var cnBase58 = (function () {
     var UINT64_MAX = new JSBigInt(2).pow(64);
 
     function hextobin(hex) {
-        if (hex.length % 2 !== 0) throw "Hex string has invalid length!";
+        if (hex.length % 2 !== 0) throw 'Hex string has invalid length!';
         var res = new Uint8Array(hex.length / 2);
         for (var i = 0; i < hex.length / 2; ++i) {
             res[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
@@ -61,9 +61,9 @@ var cnBase58 = (function () {
     function bintohex(bin) {
         var out = [];
         for (var i = 0; i < bin.length; ++i) {
-            out.push(("0" + bin[i].toString(16)).slice(-2));
+            out.push(('0' + bin[i].toString(16)).slice(-2));
         }
-        return out.join("");
+        return out.join('');
     }
 
     function strtobin(str) {
@@ -79,36 +79,36 @@ var cnBase58 = (function () {
         for (var i = 0; i < bin.length; i++) {
             out.push(String.fromCharCode(bin[i]));
         }
-        return out.join("");
+        return out.join('');
     }
 
     function uint8_be_to_64(data) {
         if (data.length < 1 || data.length > 8) {
-            throw "Invalid input length";
+            throw 'Invalid input length';
         }
         var res = JSBigInt.ZERO;
         var twopow8 = new JSBigInt(2).pow(8);
         var i = 0;
         switch (9 - data.length) {
-        case 1:
-            res = res.add(data[i++]);
-        case 2:
-            res = res.multiply(twopow8).add(data[i++]);
-        case 3:
-            res = res.multiply(twopow8).add(data[i++]);
-        case 4:
-            res = res.multiply(twopow8).add(data[i++]);
-        case 5:
-            res = res.multiply(twopow8).add(data[i++]);
-        case 6:
-            res = res.multiply(twopow8).add(data[i++]);
-        case 7:
-            res = res.multiply(twopow8).add(data[i++]);
-        case 8:
-            res = res.multiply(twopow8).add(data[i++]);
-            break;
-        default:
-            throw "Impossible condition";
+            case 1:
+                res = res.add(data[i++]);
+            case 2:
+                res = res.multiply(twopow8).add(data[i++]);
+            case 3:
+                res = res.multiply(twopow8).add(data[i++]);
+            case 4:
+                res = res.multiply(twopow8).add(data[i++]);
+            case 5:
+                res = res.multiply(twopow8).add(data[i++]);
+            case 6:
+                res = res.multiply(twopow8).add(data[i++]);
+            case 7:
+                res = res.multiply(twopow8).add(data[i++]);
+            case 8:
+                res = res.multiply(twopow8).add(data[i++]);
+                break;
+            default:
+                throw 'Impossible condition';
         }
         return res;
     }
@@ -116,7 +116,7 @@ var cnBase58 = (function () {
     function uint64_to_8be(num, size) {
         var res = new Uint8Array(size);
         if (size < 1 || size > 8) {
-            throw "Invalid input length";
+            throw 'Invalid input length';
         }
         var twopow8 = new JSBigInt(2).pow(8);
         for (var i = size - 1; i >= 0; i--) {
@@ -128,7 +128,7 @@ var cnBase58 = (function () {
 
     b58.encode_block = function (data, buf, index) {
         if (data.length < 1 || data.length > full_encoded_block_size) {
-            throw "Invalid block length: " + data.length;
+            throw 'Invalid block length: ' + data.length;
         }
         var num = uint8_be_to_64(data);
         var i = encoded_block_sizes[data.length] - 1;
@@ -148,11 +148,12 @@ var cnBase58 = (function () {
     b58.encode = function (hex) {
         var data = hextobin(hex);
         if (data.length === 0) {
-            return "";
+            return '';
         }
         var full_block_count = Math.floor(data.length / full_block_size);
         var last_block_size = data.length % full_block_size;
-        var res_size = full_block_count * full_encoded_block_size + encoded_block_sizes[last_block_size];
+        var res_size =
+            full_block_count * full_encoded_block_size + encoded_block_sizes[last_block_size];
 
         var res = new Uint8Array(res_size);
         var i;
@@ -160,40 +161,51 @@ var cnBase58 = (function () {
             res[i] = alphabet[0];
         }
         for (i = 0; i < full_block_count; i++) {
-            res = b58.encode_block(data.subarray(i * full_block_size, i * full_block_size + full_block_size), res, i * full_encoded_block_size);
+            res = b58.encode_block(
+                data.subarray(i * full_block_size, i * full_block_size + full_block_size),
+                res,
+                i * full_encoded_block_size,
+            );
         }
         if (last_block_size > 0) {
-            res = b58.encode_block(data.subarray(full_block_count * full_block_size, full_block_count * full_block_size + last_block_size), res, full_block_count * full_encoded_block_size)
+            res = b58.encode_block(
+                data.subarray(
+                    full_block_count * full_block_size,
+                    full_block_count * full_block_size + last_block_size,
+                ),
+                res,
+                full_block_count * full_encoded_block_size,
+            );
         }
         return bintostr(res);
     };
 
     b58.decode_block = function (data, buf, index) {
         if (data.length < 1 || data.length > full_encoded_block_size) {
-            throw "Invalid block length: " + data.length;
+            throw 'Invalid block length: ' + data.length;
         }
 
         var res_size = encoded_block_sizes.indexOf(data.length);
         if (res_size <= 0) {
-            throw "Invalid block size";
+            throw 'Invalid block size';
         }
         var res_num = new JSBigInt(0);
         var order = new JSBigInt(1);
         for (var i = data.length - 1; i >= 0; i--) {
             var digit = alphabet.indexOf(data[i]);
             if (digit < 0) {
-                throw "Invalid symbol";
+                throw 'Invalid symbol';
             }
             var product = order.multiply(digit).add(res_num);
             // if product > UINT64_MAX
             if (product.compare(UINT64_MAX) === 1) {
-                throw "Overflow";
+                throw 'Overflow';
             }
             res_num = product;
             order = order.multiply(alphabet_size);
         }
-        if (res_size < full_block_size && (new JSBigInt(2).pow(8 * res_size).compare(res_num) <= 0)) {
-            throw "Overflow 2";
+        if (res_size < full_block_size && new JSBigInt(2).pow(8 * res_size).compare(res_num) <= 0) {
+            throw 'Overflow 2';
         }
         buf.set(uint64_to_8be(res_num, res_size), index);
         return buf;
@@ -202,21 +214,35 @@ var cnBase58 = (function () {
     b58.decode = function (enc) {
         enc = strtobin(enc);
         if (enc.length === 0) {
-            return "";
+            return '';
         }
         var full_block_count = Math.floor(enc.length / full_encoded_block_size);
         var last_block_size = enc.length % full_encoded_block_size;
         var last_block_decoded_size = encoded_block_sizes.indexOf(last_block_size);
         if (last_block_decoded_size < 0) {
-            throw "Invalid encoded length";
+            throw 'Invalid encoded length';
         }
         var data_size = full_block_count * full_block_size + last_block_decoded_size;
         var data = new Uint8Array(data_size);
         for (var i = 0; i < full_block_count; i++) {
-            data = b58.decode_block(enc.subarray(i * full_encoded_block_size, i * full_encoded_block_size + full_encoded_block_size), data, i * full_block_size);
+            data = b58.decode_block(
+                enc.subarray(
+                    i * full_encoded_block_size,
+                    i * full_encoded_block_size + full_encoded_block_size,
+                ),
+                data,
+                i * full_block_size,
+            );
         }
         if (last_block_size > 0) {
-            data = b58.decode_block(enc.subarray(full_block_count * full_encoded_block_size, full_block_count * full_encoded_block_size + last_block_size), data, full_block_count * full_block_size);
+            data = b58.decode_block(
+                enc.subarray(
+                    full_block_count * full_encoded_block_size,
+                    full_block_count * full_encoded_block_size + last_block_size,
+                ),
+                data,
+                full_block_count * full_block_size,
+            );
         }
         return bintohex(data);
     };
