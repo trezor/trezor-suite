@@ -36,6 +36,7 @@ export interface ConnectSettings {
     timestamp: number;
     proxy?: Proxy;
     sharedLogger?: boolean;
+    /** @deprecated should not be set directly, instead use coreMode */
     useCoreInPopup?: boolean;
     coreMode?: 'auto' | 'popup' | 'iframe';
     /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */

@@ -172,7 +172,7 @@ jobs:
 
       - name: Run connect popup test
         env:
-          URL: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/?core-in-popup=true
+          URL: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/?core-mode=popup
           CORE_IN_POPUP: true
           # skip settings page, this url is set at build time anyway
           #TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
