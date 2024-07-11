@@ -34,6 +34,34 @@ const _log = initLog('DeviceList');
  */
 let autoResolveTransportEventTimeout: ReturnType<typeof setTimeout> | undefined;
 
+const createAuthPenaltyManager = (priority: number) => {
+    const penalizedDevices: { [deviceID: string]: number } = {};
+
+    const get = () =>
+        100 * priority +
+        Object.keys(penalizedDevices).reduce(
+            (penalty, key) => Math.max(penalty, penalizedDevices[key]),
+            0,
+        );
+
+    const add = (device: Device) => {
+        if (!device.isInitialized() || device.isBootloader() || !device.features.device_id) return;
+        const deviceID = device.features.device_id;
+        const penalty = penalizedDevices[deviceID] ? penalizedDevices[deviceID] + 500 : 2000;
+        penalizedDevices[deviceID] = Math.min(penalty, 5000);
+    };
+
+    const remove = (device: Device) => {
+        if (!device.isInitialized() || device.isBootloader() || !device.features.device_id) return;
+        const deviceID = device.features.device_id;
+        delete penalizedDevices[deviceID];
+    };
+
+    const clear = () => Object.keys(penalizedDevices).forEach(key => delete penalizedDevices[key]);
+
+    return { get, add, remove, clear };
+};
+
 interface DeviceListEvents {
     [TRANSPORT.START]: TransportInfo;
     [TRANSPORT.ERROR]: string;
@@ -56,11 +84,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     private creatingDevicesDescriptors: { [k: string]: Descriptor } = {};
 
-    private penalizedDevices: { [deviceID: string]: number } = {};
+    private readonly authPenaltyManager;
 
     private initPromise: Promise<void> | undefined;
-
-    private priority;
 
     private transportCommonArgs;
 
@@ -80,7 +106,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         // todo: this should be passed from above
         const abortController = new AbortController();
 
-        this.priority = priority;
+        this.authPenaltyManager = createAuthPenaltyManager(priority);
         this.transportCommonArgs = {
             messages,
             logger: transportLogger,
@@ -160,10 +186,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
             const path = descriptor.path.toString();
             this.creatingDevicesDescriptors[path] = descriptor;
 
-            const penalty = this.getAuthPenalty();
+            const penalty = this.authPenaltyManager.get();
 
-            if (this.priority || penalty) {
-                await resolveAfter(501 + penalty + 100 * this.priority, null).promise;
+            if (penalty) {
+                await resolveAfter(501 + penalty, null).promise;
             }
             if (this.creatingDevicesDescriptors[path].session == null) {
                 await this._createAndSaveDevice(descriptor);
@@ -443,27 +469,11 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
     }
 
     addAuthPenalty(device: Device) {
-        if (!device.isInitialized() || device.isBootloader() || !device.features.device_id) return;
-        const deviceID = device.features.device_id;
-        const penalty = this.penalizedDevices[deviceID]
-            ? this.penalizedDevices[deviceID] + 500
-            : 2000;
-        this.penalizedDevices[deviceID] = Math.min(penalty, 5000);
-    }
-
-    private getAuthPenalty() {
-        const { penalizedDevices } = this;
-
-        return Object.keys(penalizedDevices).reduce(
-            (penalty, key) => Math.max(penalty, penalizedDevices[key]),
-            0,
-        );
+        return this.authPenaltyManager.add(device);
     }
 
     removeAuthPenalty(device: Device) {
-        if (!device.isInitialized() || device.isBootloader() || !device.features.device_id) return;
-        const deviceID = device.features.device_id;
-        delete this.penalizedDevices[deviceID];
+        return this.authPenaltyManager.remove(device);
     }
 
     // main logic
