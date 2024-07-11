@@ -514,6 +514,10 @@ const handshake = (handshake: PopupHandshake, origin: string) => {
     // when this message comes from iframe, settings is already validated.
     // when there is no iframe, we must validate it here
     const trustedSettings = parseConnectSettings(payload.settings, thirdPartyOrigin);
+    // useCoreInPopup is internal setting passed from connect-web
+    if (typeof payload.settings.useCoreInPopup === 'boolean') {
+        trustedSettings.useCoreInPopup = payload.settings.useCoreInPopup;
+    }
     setState({ settings: trustedSettings });
 
     if (isPhishingDomain(trustedSettings.origin || '')) {

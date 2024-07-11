@@ -12,6 +12,7 @@ interface CoinSelectProps {
 const CoinSelect = ({ field, onChange }: CoinSelectProps) => (
     <Row>
         <Select
+            data-test={`@select/${field.name}`}
             label={field.name}
             value={field.data!.find(d => d.value === field.value)}
             onChange={({ value }) => {

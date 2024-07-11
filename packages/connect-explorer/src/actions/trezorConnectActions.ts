@@ -134,15 +134,11 @@ export const init =
             console.log('using @trezor/connect hosted on: ', window.__TREZOR_CONNECT_SRC);
         }
 
-        // Get default useCoreInPopup from URL params (?core-in-popup=true)
-        const urlParams = new URLSearchParams(window.location.search);
-        const useCoreInPopup = urlParams.get('core-in-popup') === 'true';
-
         // Get default coreMode from URL params (?core-mode=auto)
+        const urlParams = new URLSearchParams(window.location.search);
         const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'iframe';
 
         const connectOptions = {
-            useCoreInPopup,
             coreMode,
             transportReconnect: true,
             popup: true,

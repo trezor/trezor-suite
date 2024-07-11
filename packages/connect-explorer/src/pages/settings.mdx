@@ -28,7 +28,6 @@ export const Settings = () => {
     const connectOptions = useSelector(state => ({
         trustedHost: state.connect?.options?.trustedHost,
         connectSrc: state.connect?.options?.connectSrc,
-        useCoreInPopup: state?.connect?.options?.useCoreInPopup,
         coreMode: state?.connect?.options?.coreMode,
     }));
 
@@ -47,12 +46,6 @@ export const Settings = () => {
             type: 'checkbox',
             key: 'trustedHost',
             value: connectOptions?.trustedHost || false,
-        },
-        {
-            name: 'useCoreInPopup',
-            type: 'checkbox',
-            key: 'useCoreInPopup',
-            value: connectOptions?.useCoreInPopup || false,
         },
         {
             name: 'coreMode',
