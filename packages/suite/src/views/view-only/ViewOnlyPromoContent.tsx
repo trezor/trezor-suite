@@ -22,6 +22,7 @@ import { IllustrativeExample } from './images/IllustrativeExample';
 import { IllustrativeExampleArrow } from './images/IllustrativeExampleArrow';
 import { goto } from 'src/actions/suite/routerActions';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -182,12 +183,24 @@ const Buttons = () => {
             dispatch(toggleRememberDevice({ device, forceRemember: true }));
             dispatch(setFlag('viewOnlyPromoClosed', true));
             dispatch(goto('suite-index'));
+            analytics.report({
+                type: EventType.ViewOnlyPromo,
+                payload: {
+                    wasAccepted: true,
+                },
+            });
         }
     };
 
     const onNo = () => {
         dispatch(setFlag('viewOnlyPromoClosed', true));
         dispatch(goto('suite-index'));
+        analytics.report({
+            type: EventType.ViewOnlyPromo,
+            payload: {
+                wasAccepted: false,
+            },
+        });
     };
 
     return (

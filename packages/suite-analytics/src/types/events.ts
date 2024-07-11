@@ -444,4 +444,10 @@ export type SuiteAnalyticsEvent =
           payload: {
               action: 'start' | 'done' | 'learn-more' | 'close-modal';
           };
+      }
+    | {
+          type: EventType.ViewOnlyPromo;
+          payload: {
+              wasAccepted: boolean;
+          };
       };
