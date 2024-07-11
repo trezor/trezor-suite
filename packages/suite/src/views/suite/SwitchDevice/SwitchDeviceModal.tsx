@@ -2,6 +2,8 @@ import { useEvent } from 'react-use';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { spacingsPx } from '@trezor/theme';
+import { isDesktop, isMacOs } from '@trezor/env-utils';
+
 type SwitchDeviceModalProps = {
     children?: React.ReactNode;
     isCancelable?: boolean;
@@ -11,9 +13,10 @@ type SwitchDeviceModalProps = {
     isAnimationEnabled?: boolean;
 };
 
-const Container = styled.div`
+const Container = styled.div<{ $hasTopPadding?: boolean }>`
     width: 378px;
     margin: 5px;
+    ${({ $hasTopPadding }) => $hasTopPadding && `margin-top: ${spacingsPx.xxxl};`}
 `;
 
 const DeviceItemsWrapper = styled.div`
@@ -41,10 +44,14 @@ export const SwitchDeviceModal = ({
         }
     });
 
+    const isMac = isMacOs();
+    const isDesktopApp = isDesktop();
+
     return (
         <Container
             onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
             data-test={dataTest}
+            $hasTopPadding={isMac && isDesktopApp}
         >
             <DeviceItemsWrapper>
                 <motion.div

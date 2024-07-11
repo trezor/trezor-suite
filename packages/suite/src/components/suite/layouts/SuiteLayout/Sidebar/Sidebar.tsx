@@ -8,14 +8,18 @@ import { ElevationUp, ResizableBox, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } from '@trezor/theme';
 import { useActions, useSelector } from 'src/hooks/suite';
 import * as suiteActions from 'src/actions/suite/suiteActions';
+import { isDesktop, isMacOs } from '@trezor/env-utils';
 
-const Container = styled.nav<{ $elevation: Elevation }>`
+const Container = styled.nav<{ $elevation: Elevation; $hasTopPadding?: boolean }>`
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
     height: 100%;
     background: ${mapElevationToBackground};
     border-right: 1px solid ${mapElevationToBorder};
+    ${
+        ({ $hasTopPadding }) => $hasTopPadding && 'padding-top: 35px;' // on Mac in desktop app we don't use window bar and close/maximize/minimize icons are positioned in the app
+    }
 `;
 
 const Wrapper = styled.div`
@@ -24,6 +28,8 @@ const Wrapper = styled.div`
 
 export const Sidebar = () => {
     const { elevation } = useElevation();
+    const isMac = isMacOs();
+    const isDesktopApp = isDesktop();
 
     const sidebarWidth = useSelector(state => state.suite.settings.sidebarWidth);
     const { setSidebarWidth } = useActions({
@@ -41,7 +47,7 @@ export const Sidebar = () => {
                 updateHeightOnWindowResize
                 onWidthResizeEnd={setSidebarWidth}
             >
-                <Container $elevation={elevation}>
+                <Container $elevation={elevation} $hasTopPadding={isMac && isDesktopApp}>
                     <ElevationUp>
                         <DeviceSelector />
                         <Navigation />
