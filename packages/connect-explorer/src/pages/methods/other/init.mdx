@@ -15,7 +15,16 @@ export const InitSchema = Type.Object({
     lazyLoad: Type.Optional(Type.Boolean()),
     popup: Type.Optional(Type.Boolean()),
     transports: Type.Optional(
-        Type.Array(Type.Literal('BridgeTransport', 'WebUsbTransport', 'NodeUsbTransport')),
+        Type.Array(
+            Type.Union([
+                Type.Literal('BridgeTransport'),
+                Type.Literal('WebUsbTransport'),
+                Type.Literal('NodeUsbTransport'),
+            ]),
+        ),
+    ),
+    coreMode: Type.Optional(
+        Type.Union([Type.Literal('auto'), Type.Literal('iframe'), Type.Literal('popup')]),
     ),
 });
 
@@ -32,15 +41,35 @@ export const paramDescriptions = {
         'default `false`. Postpone iframe creation until TrezorConnect is called for the first time.',
     popup: 'default `true`. Projects running on trusted domains (trezor.io) are not required to use popup. For other domains this option is ignored.',
     transports:
-        'Array of transports that should be use. If not provided, TrezorConnect will chose a reasonable default based on your environment.',
+        'Array of transports that should be use. If not provided, TrezorConnect will choose a reasonable default based on your environment.',
+    coreMode:
+        `default \`auto\`.
+
+If set to \`popup\`, webUSB transport would work cross-origin on the web. The disadvantage of this mode is that Connect popup does not retain a stateful connection to the device, which means for example that device events are not sent to the application when the popup is not open.
+
+If set to \`iframe\`, TrezorConnect will use iframe with persistent connection for the communication between popup and 3rd party wallet.
+
+In the default \`auto\` mode, TrezorConnect will automatically choose \`iframe\` if bridge transport is available and \`popup\` otherwise, to allow for webUSB use.`
 };
 
 ## Init
 
-Initiate TrezorConnect
+To initiate TrezorConnect, please provide the manifest object with your email and appURL. This is crucial for us to identify your use of TrezorConnect and to contact you if necessary.
+If the manifest object is not set, TrezorConnect methods will not be available.
+
+It is also possible to customize more advanced options for TrezorConnect.
 
 ```javascript
-const result = await TrezorConnect.init(params);
+const result = await TrezorConnect.init({
+    manifest: {
+        appUrl: 'https://your.application.com',
+        email: 'your@email.com',
+    },
+    // More advanced options
+    debug: true,
+    lazyLoad: true,
+    coreMode: 'auto',
+});
 ```
 
 ### Params
