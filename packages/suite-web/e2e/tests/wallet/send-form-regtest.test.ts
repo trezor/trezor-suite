@@ -46,7 +46,7 @@ describe('Send form for bitcoin', () => {
         // add locktime
         cy.getTestElement('add-locktime-button').click();
 
-        cy.getTestElement('locktime-input').type('100');
+        cy.getTestElement('locktime-input').type('500');
 
         // assert final state of form using screenshot
         cy.getTestElement('@wallet/send/outputs-and-options').matchImageSnapshot('bitcoin-send');
