@@ -424,6 +424,38 @@
                             "vendor": "*"
                         },
                         {
+                            "model": "1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "null",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "null",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "*",
+                            "bootloader": "null",
+                            "variant": "*",
+                            "firmwareRevision": "null",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "null",
+                            "variant": "*",
+                            "firmwareRevision": "null",
+                            "vendor": "*"
+                        },
+                        {
                             "model": "T",
                             "firmware": "*",
                             "bootloader": "*",
