@@ -1,14 +1,14 @@
-const { addressType } = require('../src/crypto/utils');
+const { addressType } = require('./crypto/utils');
 var cryptoUtils = require('./crypto/utils');
 
- /**
-* Check if an address is valid
-*
-* @param {string} _address - An address
-*
-* @return {boolean} - True if address is valid, false otherwise
-*/
-var isValidAddress = function(_address) {
+/**
+ * Check if an address is valid
+ *
+ * @param {string} _address - An address
+ *
+ * @return {boolean} - True if address is valid, false otherwise
+ */
+var isValidAddress = function (_address) {
     var address = _address.toString().toUpperCase().replace(/-/g, '');
     if (!address || address.length !== 40) {
         return false;
@@ -22,10 +22,10 @@ var isValidAddress = function(_address) {
 module.exports = {
     isValidAddress: isValidAddress,
 
-    getAddressType: function(address, currency, networkType) {
+    getAddressType: function (address, currency, networkType) {
         if (this.isValidAddress(address, currency, networkType)) {
             return addressType.ADDRESS;
         }
         return undefined;
     },
-}
+};

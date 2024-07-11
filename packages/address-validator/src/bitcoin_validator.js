@@ -39,7 +39,6 @@ function getAddressType(address, currency) {
     var expectedLength = currency.expectedLength || 25;
     var hashFunction = currency.hashFunction || 'sha256';
     var decoded = getDecoded(address);
-
     if (decoded) {
         var length = decoded.length;
 
@@ -47,8 +46,8 @@ function getAddressType(address, currency) {
             return null;
         }
 
-        if(currency.regex) {
-            if(!currency.regex.test(address)) {
+        if (currency.regex) {
+            if (!currency.regex.test(address)) {
                 return null;
             }
         }
@@ -57,7 +56,9 @@ function getAddressType(address, currency) {
             body = cryptoUtils.toHex(decoded.slice(0, length - 4)),
             goodChecksum = getChecksum(hashFunction, body);
 
-        return checksum === goodChecksum ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24)) : null;
+        return checksum === goodChecksum
+            ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24))
+            : null;
     }
 
     return null;
@@ -98,6 +99,7 @@ function isValidPayToWitnessPublicKeyHashAddress(address, currency, networkType)
     try {
         const hrp = currency.segwitHrp[networkType];
         const decoded = bech32.decode(hrp, address);
+
         return decoded && decoded.version === 0 && decoded.program.length === 20;
     } catch (err) {
         return null;
@@ -109,8 +111,9 @@ function isValidPayToTaprootAddress(address, currency, networkType) {
         const hrp = currency.segwitHrp[networkType];
         decoded = bech32.decode(hrp, address, true);
         return decoded && decoded.version === 1 && decoded.program.length === 32;
-    } catch (err) {}
-    return null;
+    } catch (err) {
+        return null;
+    }
 }
 
 function isValidSegwitAddress(address, currency, networkType) {
@@ -137,17 +140,18 @@ function isValidSegwitAddress(address, currency, networkType) {
             return address.toLowerCase() === bech32.encode(hrp, ret.version, ret.program, true);
         }
     }
+
     return false;
 }
 
 module.exports = {
-    isValidAddress: function (address, currency, networkType) {        
+    isValidAddress: function (address, currency, networkType) {
         networkType = networkType || DEFAULT_NETWORK_TYPE;
         const addrType = this.getAddressType(address, currency, networkType);
         // Though WITNESS_UNKNOWN is a valid address, it's not spendable - so we mark it as invalid
         return addrType !== undefined && addrType !== addressType.WITNESS_UNKNOWN;
     },
-    getAddressType: function(address, currency, networkType) {
+    getAddressType: function (address, currency, networkType) {
         networkType = networkType || DEFAULT_NETWORK_TYPE;
         if (isValidPayToPublicKeyHashAddress(address, currency, networkType)) {
             return addressType.P2PKH;

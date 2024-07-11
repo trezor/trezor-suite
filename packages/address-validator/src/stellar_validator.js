@@ -1,4 +1,4 @@
-const { addressType } = require('../src/crypto/utils');
+const { addressType } = require('./crypto/utils');
 const baseX = require('base-x');
 const crc = require('crc');
 const cryptoUtils = require('./crypto/utils');
@@ -7,11 +7,11 @@ const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
 const base32 = baseX(ALPHABET);
 const regexp = new RegExp('^[' + ALPHABET + ']{56}$');
-const ed25519PublicKeyVersionByte = (6 << 3);
+const ed25519PublicKeyVersionByte = 6 << 3;
 
 function swap16(number) {
-    const lower = number & 0xFF;
-    const upper = (number >> 8) & 0xFF;
+    const lower = number & 0xff;
+    const upper = (number >> 8) & 0xff;
     return (lower << 8) | upper;
 }
 
@@ -24,7 +24,7 @@ module.exports = {
         return false;
     },
 
-     verifyChecksum: function (address) {
+    verifyChecksum: function (address) {
         // based on https://github.com/stellar/js-stellar-base/blob/master/src/strkey.js
         const bytes = base32.decode(address);
         if (bytes[0] !== ed25519PublicKeyVersionByte) {

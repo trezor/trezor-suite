@@ -13,22 +13,24 @@ for (var i = 0; i < ALPHABET.length; ++i) {
 var BASE = ALPHABET.length;
 
 module.exports = {
-    decode: function(string) {
+    decode: function (string) {
         if (string.length === 0) return [];
 
-        var i, j, bytes = [0];
+        var i,
+            j,
+            bytes = [0];
         for (i = 0; i < string.length; ++i) {
             var c = string[i];
             if (!(c in ALPHABET_MAP)) throw new Error('Non-base58 character');
 
-            for (j = 0; j < bytes.length; ++j) bytes[j] *= BASE
+            for (j = 0; j < bytes.length; ++j) bytes[j] *= BASE;
             bytes[0] += ALPHABET_MAP[c];
 
             var carry = 0;
             for (j = 0; j < bytes.length; ++j) {
                 bytes[j] += carry;
                 carry = bytes[j] >> 8;
-                bytes[j] &= 0xff
+                bytes[j] &= 0xff;
             }
 
             while (carry) {
@@ -37,10 +39,10 @@ module.exports = {
             }
         }
         // deal with leading zeros
-        for (i = 0; string[i] === '1' && i < string.length - 1; ++i){
+        for (i = 0; string[i] === '1' && i < string.length - 1; ++i) {
             bytes.push(0);
         }
 
         return bytes.reverse();
-    }
+    },
 };

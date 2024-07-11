@@ -1,4 +1,4 @@
-const { addressType } = require('../src/crypto/utils');
+const { addressType } = require('./crypto/utils');
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -18,14 +18,16 @@ module.exports = {
     },
     verifyChecksum: function (address) {
         // Check each case
-        address = address.replace('0x','');
+        address = address.replace('0x', '');
 
         var addressHash = cryptoUtils.keccak256(address.toLowerCase());
 
-        for (var i = 0; i < 40; i++ ) {
+        for (var i = 0; i < 40; i++) {
             // The nth letter should be uppercase if the nth digit of casemap is 1
-            if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) ||
-                (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
+            if (
+                (parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) ||
+                (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])
+            ) {
                 return false;
             }
         }
@@ -33,7 +35,7 @@ module.exports = {
         return true;
     },
 
-    getAddressType: function(address, currency, networkType) {
+    getAddressType: function (address, currency, networkType) {
         if (this.isValidAddress(address, currency, networkType)) {
             return addressType.ADDRESS;
         }

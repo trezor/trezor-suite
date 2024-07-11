@@ -1,5 +1,5 @@
-const { addressType } = require('../src/crypto/utils');
-const nxtRegex = new RegExp("^NXT(-[A-Z0-9]{4}){3}-[A-Z0-9]{5}$");
+const { addressType } = require('./crypto/utils');
+const nxtRegex = new RegExp('^NXT(-[A-Z0-9]{4}){3}-[A-Z0-9]{5}$');
 
 module.exports = {
     isValidAddress: function (address, currency, networkType) {

@@ -19,13 +19,13 @@ const addressType = {
 };
 
 function numberToHex(number, sizeInBytes) {
-    return Math.round(number).toString(16).padStart(sizeInBytes * 2, '0');
+    return Math.round(number)
+        .toString(16)
+        .padStart(sizeInBytes * 2, '0');
 }
 
 function isHexChar(c) {
-    if ((c >= 'A' && c <= 'F') ||
-        (c >= 'a' && c <= 'f') ||
-        (c >= '0' && c <= '9')) {
+    if ((c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9')) {
         return 1;
     }
     return 0;
@@ -36,11 +36,9 @@ function hexChar2byte(c) {
     var d = 0;
     if (c >= 'A' && c <= 'F') {
         d = c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
-    }
-    else if (c >= 'a' && c <= 'f') {
+    } else if (c >= 'a' && c <= 'f') {
         d = c.charCodeAt(0) - 'a'.charCodeAt(0) + 10;
-    }
-    else if (c >= '0' && c <= '9') {
+    } else if (c >= '0' && c <= '9') {
         d = c.charCodeAt(0) - '0'.charCodeAt(0);
     }
     return d;
@@ -48,16 +46,16 @@ function hexChar2byte(c) {
 
 /* Convert a byte to string */
 function byte2hexStr(byte) {
-    var hexByteMap = "0123456789ABCDEF";
-    var str = "";
+    var hexByteMap = '0123456789ABCDEF';
+    var str = '';
     str += hexByteMap.charAt(byte >> 4);
     str += hexByteMap.charAt(byte & 0x0f);
     return str;
 }
 
 function byteArray2hexStr(byteArray) {
-    var str = "";
-    for (var i = 0; i < (byteArray.length - 1); i++) {
+    var str = '';
+    for (var i = 0; i < byteArray.length - 1; i++) {
         str += byte2hexStr(byteArray[i]);
     }
     str += byte2hexStr(byteArray[i]);
@@ -71,13 +69,13 @@ function hexStr2byteArray(str) {
     var j = 0;
     var k = 0;
 
-     for (i = 0; i < str.length; i++) {
+    for (i = 0; i < str.length; i++) {
         var c = str.charAt(i);
         if (isHexChar(c)) {
             d <<= 4;
             d += hexChar2byte(c);
             j++;
-            if (0 === (j % 2)) {
+            if (0 === j % 2) {
                 byteArray[k++] = d;
                 d = 0;
             }
@@ -131,9 +129,9 @@ module.exports = {
     base58: base58.decode,
     byteArray2hexStr: byteArray2hexStr,
     hexStr2byteArray: hexStr2byteArray,
-    bigNumberToBuffer: function(bignumber, size){
+    bigNumberToBuffer: function (bignumber, size) {
         return new BigNum(bignumber).toBuffer({ size, endian: 'big' });
     },
     base32,
     addressType,
-}
+};

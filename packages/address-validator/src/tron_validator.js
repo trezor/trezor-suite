@@ -1,8 +1,8 @@
-const { addressType } = require('../src/crypto/utils');
+const { addressType } = require('./crypto/utils');
 var cryptoUtils = require('./crypto/utils');
 
 function decodeBase58Address(base58Sting) {
-    if (typeof (base58Sting) !== 'string') {
+    if (typeof base58Sting !== 'string') {
         return false;
     }
     if (base58Sting.length <= 4) {
@@ -12,7 +12,7 @@ function decodeBase58Address(base58Sting) {
     try {
         var address = cryptoUtils.base58(base58Sting);
     } catch (e) {
-        return false
+        return false;
     }
 
     /*if (base58Sting.length <= 4) {
@@ -25,8 +25,11 @@ function decodeBase58Address(base58Sting) {
     var hash0 = cryptoUtils.sha256(cryptoUtils.byteArray2hexStr(address));
     var hash1 = cryptoUtils.hexStr2byteArray(cryptoUtils.sha256(hash0));
     var checkSum1 = hash1.slice(0, 4);
-    if (checkSum[0] === checkSum1[0] && checkSum[1] === checkSum1[1] && checkSum[2]
-        === checkSum1[2] && checkSum[3] === checkSum1[3]
+    if (
+        checkSum[0] === checkSum1[0] &&
+        checkSum[1] === checkSum1[1] &&
+        checkSum[2] === checkSum1[2] &&
+        checkSum[3] === checkSum1[3]
     ) {
         return address;
     }
@@ -39,7 +42,7 @@ function getEnv(currency, networkType) {
 
     if (evn !== 'prod' && evn !== 'testnet') evn = 'prod';
 
-    return currency.addressTypes[evn][0]
+    return currency.addressTypes[evn][0];
 }
 
 module.exports = {
