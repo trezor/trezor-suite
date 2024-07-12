@@ -1,8 +1,10 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useRef } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { ScrollViewProps } from 'react-native';
+import { ScrollView, ScrollViewProps } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { ScrollViewContext } from './ScrollViewContext';
 
 type ScreenContentProps = {
     children: ReactNode;
@@ -19,10 +21,15 @@ export const ScreenContentWrapper = ({
     extraKeyboardAvoidingViewHeight,
     refreshControl,
 }: ScreenContentProps) => {
+    const scrollViewRef = useRef<ScrollView | null>(null);
     const { applyStyle } = useNativeStyles();
 
     return isScrollable ? (
         <KeyboardAwareScrollView
+            innerRef={ref => {
+                // Assign the ref of inner ScrollView.
+                scrollViewRef.current = ref as unknown as ScrollView;
+            }}
             keyboardShouldPersistTaps="always"
             contentInsetAdjustmentBehavior="automatic"
             extraHeight={extraKeyboardAvoidingViewHeight}
@@ -30,7 +37,9 @@ export const ScreenContentWrapper = ({
             refreshControl={refreshControl}
             testID="@screen/mainScrollView"
         >
-            {children}
+            <ScrollViewContext.Provider value={scrollViewRef}>
+                {children}
+            </ScrollViewContext.Provider>
         </KeyboardAwareScrollView>
     ) : (
         <>{children}</>
