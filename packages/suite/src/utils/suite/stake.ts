@@ -36,19 +36,19 @@ export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol): EthNetwork => 
     return ethNetworks[symbol] || ethNetworks.eth!;
 };
 
-const getAdjustedGasLimitConsumption = (estimatedFee: Success<BlockchainEstimatedFee>) =>
+export const getAdjustedGasLimitConsumption = (estimatedFee: Success<BlockchainEstimatedFee>) =>
     new BigNumber(estimatedFee.payload.levels[0].feeLimit || '')
         .plus(STAKE_GAS_LIMIT_RESERVE)
         .integerValue(BigNumber.ROUND_DOWN)
         .toNumber();
 
-type StakeTxBaseArgs = {
+export type StakeTxBaseArgs = {
     from: string;
     symbol: NetworkSymbol;
     identity?: string;
 };
 
-const stake = async ({
+export const stake = async ({
     from,
     amount,
     symbol,
@@ -98,7 +98,7 @@ const stake = async ({
     }
 };
 
-const unstake = async ({
+export const unstake = async ({
     from,
     amount,
     identity,
@@ -173,7 +173,7 @@ const unstake = async ({
     }
 };
 
-const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBaseArgs) => {
+export const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBaseArgs) => {
     try {
         const accountInfo = await TrezorConnect.getAccountInfo({
             coin: symbol,
@@ -237,7 +237,7 @@ const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBaseArgs)
     }
 };
 
-interface GetStakeFormsDefaultValuesParams {
+export interface GetStakeFormsDefaultValuesParams {
     address: string;
     ethereumStakeType: StakeFormState['ethereumStakeType'];
     amount?: string;
@@ -412,7 +412,7 @@ export const prepareClaimEthTx = async ({
     }
 };
 
-interface GetStakeTxGasLimitParams {
+export interface GetStakeTxGasLimitParams {
     ethereumStakeType: StakeType | undefined;
     from: string;
     amount: string;
