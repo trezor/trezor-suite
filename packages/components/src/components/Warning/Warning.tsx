@@ -29,7 +29,7 @@ export interface WarningProps {
     icon?: IconType;
     filled?: boolean;
     margin?: FrameProps['margin'];
-    'data-test'?: string;
+    dataTest?: string;
 }
 
 type MapArgs = {
