@@ -54,20 +54,22 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         }
     }, [account, pendingAddresses, isAccountUtxoBased]);
 
+    const handleCancel = useCallback(() => {
+        TrezorConnect.cancel();
+        setIsUnverifiedAddressRevealed(false);
+    }, []);
+
     const verifyAddressOnDevice = useCallback(async (): Promise<boolean> => {
         if (accountKey && freshAddress) {
             const response = await requestPrioritizedDeviceAccess({
-                deviceCallback: () => {
-                    const thunkResponse = dispatch(
+                deviceCallback: () =>
+                    dispatch(
                         confirmAddressOnDeviceThunk({
                             accountKey,
                             addressPath: freshAddress.path,
                             chunkify: true,
                         }),
-                    ).unwrap();
-
-                    return thunkResponse;
-                },
+                    ).unwrap(),
             });
 
             if (!response.success) {
@@ -95,6 +97,21 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
             if (
                 !response.payload.success &&
+                response.payload.payload.error === 'Passphrase is incorrect'
+            ) {
+                showAlert({
+                    title: <Translation id="modulePassphrase.featureAuthorizationError" />,
+                    pictogramVariant: 'red',
+                    primaryButtonTitle: <Translation id="generic.buttons.close" />,
+                    onPressPrimaryButton: handleCancel,
+                    primaryButtonVariant: 'redBold',
+                });
+
+                return false;
+            }
+
+            if (
+                !response.payload.success &&
                 // Do not show alert for user cancelled actions
                 ![
                     'Method_Interrupted',
@@ -108,11 +125,10 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                     description: response.payload.payload.error,
                     icon: 'warningCircle',
                     pictogramVariant: 'red',
-                    primaryButtonTitle: 'Cancel',
+                    primaryButtonTitle: <Translation id="generic.buttons.cancel" />,
                     onPressPrimaryButton: () => {
-                        TrezorConnect.cancel();
+                        handleCancel();
                         navigation.goBack();
-                        setIsUnverifiedAddressRevealed(false);
                     },
                 });
 
@@ -123,7 +139,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         }
 
         return false;
-    }, [accountKey, freshAddress, dispatch, showToast, navigation, showAlert]);
+    }, [accountKey, dispatch, freshAddress, handleCancel, navigation, showAlert, showToast]);
 
     const handleShowAddress = useCallback(async () => {
         if (isPortfolioTrackerDevice) {

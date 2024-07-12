@@ -666,6 +666,7 @@ export const en = {
         title: 'Passphrase',
         subtitle:
             'Entering a <bold>passphrase opens a distinct wallet</bold> secured by that specific phrase.',
+        featureAuthorizationError: 'The passphrase you’ve entered is incorrect.',
         alertCard: {
             paragraphWarning1:
                 'It’s essential to understand how a passphrase works before using it.',

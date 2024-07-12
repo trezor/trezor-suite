@@ -317,7 +317,16 @@ export const useAddCoinAccount = () => {
                 screen = AppTabsRoutes.ReceiveStack;
             }
 
-            showGeneralErrorAlert();
+            if (newAccountResult.payload === 'Passphrase is incorrect') {
+                showAlert({
+                    title: translate('modulePassphrase.featureAuthorizationError'),
+                    pictogramVariant: 'red',
+                    primaryButtonTitle: translate('generic.buttons.close'),
+                    primaryButtonVariant: 'redBold',
+                });
+            } else {
+                showGeneralErrorAlert();
+            }
             navigation.dispatch(
                 CommonActions.reset({
                     index: 0,
