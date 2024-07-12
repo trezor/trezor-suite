@@ -8,7 +8,7 @@ import { ButtonAccessory, ButtonColorScheme, PictogramVariant } from '@suite-nat
 export type Alert = {
     title: ReactNode;
     textAlign?: 'left' | 'center';
-    description: ReactNode;
+    description?: ReactNode;
     icon?: IconName;
     pictogramVariant?: PictogramVariant;
     primaryButtonTitle: ReactNode;
