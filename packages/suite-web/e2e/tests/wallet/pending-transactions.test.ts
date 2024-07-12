@@ -1,8 +1,6 @@
 // @group_wallet
 // @retry=2
 
-
-
 describe('Use regtest to test pending transactions', () => {
     const ADDRESS_ACCOUNT_1_INDEX_1 = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
     const ADDRESS_ACCOUNT_2_INDEX_1 = 'bcrt1q7r9yvcdgcl6wmtta58yxf29a8kc96jkyyk8fsw';

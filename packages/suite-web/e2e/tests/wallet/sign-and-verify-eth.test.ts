@@ -1,8 +1,6 @@
 // @group_wallet
 // @retry=2
 
-
-
 const SEED_SIGN = 'all all all all all all all all all all all all';
 const MESSAGE_SIGN = 'hello world';
 const SIGNATURE_SIGN =
@@ -37,7 +35,6 @@ describe('Sign and verify ETH', () => {
         cy.discoveryShouldFinish();
         cy.getTestElement('@account-menu/eth/normal/0').click();
         cy.getTestElement('@suite/bundle-loader').should('not.be.exist');
-
     });
 
     afterEach(() => {

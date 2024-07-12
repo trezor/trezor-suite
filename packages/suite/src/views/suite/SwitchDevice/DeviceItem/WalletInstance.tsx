@@ -214,11 +214,7 @@ export const WalletInstance = ({
                 )}
 
                 {isViewOnlyRendered && (
-                    <ViewOnly
-                        dataTest={dataTestBase}
-                        setContentType={setContentType}
-                        instance={instance}
-                    />
+                    <ViewOnly setContentType={setContentType} instance={instance} />
                 )}
                 {isEjectConfirmationRendered && (
                     <EjectConfirmation

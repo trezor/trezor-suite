@@ -1,8 +1,6 @@
 // @group_wallet
 // @retry=2
 
-
-
 // discovery should end within this time frame
 const DISCOVERY_LIMIT = 1000 * 60 * 2;
 
@@ -29,7 +27,7 @@ describe('Discovery', () => {
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.discoveryShouldFinish(); 
+        cy.discoveryShouldFinish();
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();
     });

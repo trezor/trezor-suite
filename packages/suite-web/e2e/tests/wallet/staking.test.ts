@@ -1,8 +1,6 @@
 // @group_wallet
 // @retry=2
 
-
-
 describe('ETH staking', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -18,7 +16,6 @@ describe('ETH staking', () => {
         cy.discoveryShouldFinish();
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();
-        
     });
 
     afterEach(() => {
