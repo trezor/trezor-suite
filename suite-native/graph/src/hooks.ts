@@ -102,6 +102,9 @@ export const useGraphForSingleAccount = ({
                 descriptor: account.descriptor,
                 accountKey: account.key,
                 identity,
+
+                // hardcode empty array so it will show only main account, we should remove this once we support tokens everywhere in app
+                tokensFilter: [],
             },
         ];
         // We need to specify all dependicies here, because whole account will be updated very often will could result in endless rerendering.
@@ -149,6 +152,9 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
                 descriptor: account.descriptor,
                 identity: tryGetAccountIdentity(account),
                 accountKey: account.key,
+
+                // hardcode empty array so it will show only main account, we should remove this once we support tokens everywhere in app
+                tokensFilter: [],
             })),
         [accounts],
     );
