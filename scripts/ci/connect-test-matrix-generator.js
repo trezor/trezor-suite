@@ -85,7 +85,7 @@ const daily = {
 };
 
 const legacyCanaryFirmware = {
-    firmwares: ['2.2.0', '2-main'],
+    firmwares: ['2.3.0', '2-main'],
     tests: daily.tests
         // Cardano supports >=2.6.0
         .filter(test => test.name !== 'cardano'),
