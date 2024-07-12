@@ -167,6 +167,17 @@ const legacyResultsMap: Record<string, LegacyResult[]> = {
     ],
     // newly added message in 2.6.5
     StellarClaimClaimableBalanceOp: [{ rules: ['<2.6.5'], payload: false }],
+    op_source_account_not_equal_signing_key: [
+        {
+            rules: ['2.3.0'],
+            payload: {
+                publicKey: '2f22b9c62f08b774f3ebe6dd6e7db93c3ec2cbde0279561a3d9c5225b8c32292',
+                // signature is different in 2.3.0 from what we get from 2.4.2
+                signature:
+                    '1ab1ee577f4d26b14e20472568de76962bb18d489584bb70125df35e84cef5a3c9d800ec16b6090567932486ec5d4c39174953d6d6002a2d471c65ef0a89a600',
+            },
+        },
+    ],
 };
 
 export default {

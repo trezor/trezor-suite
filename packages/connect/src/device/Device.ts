@@ -338,9 +338,32 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 if (fn) {
                     await this.initialize(!!options.useCardanoDerivation);
                 } else {
-                    await this.getFeatures();
+                    // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
+                    await Promise.race([
+                        this.getFeatures(),
+                        // We do not support T1B1 <1.9.0 but we still need Features even from not supported devices to determine your version
+                        // and tell you that update is required.
+                        // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
+                        // transport response is pending endlessly, calling any other message will end up with "device call in progress"
+                        // set the timeout for this call so whenever it happens "unacquired device" will be created instead
+                        // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
+                        new Promise((_resolve, reject) =>
+                            setTimeout(
+                                () => reject(new Error('GetFeatures timeout')),
+                                GET_FEATURES_TIMEOUT,
+                            ),
+                        ),
+                    ]);
                 }
             } catch (error) {
+                if (!this.inconsistent && error.message === 'GetFeatures timeout') {
+                    // handling corner-case T1B1 + bootloader < 1.4.0 (above)
+                    // if GetFeatures fails try again
+                    // this time add empty "fn" param to force Initialize message
+                    this.inconsistent = true;
+
+                    return this._runInner(() => Promise.resolve({}), options);
+                }
                 if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
                     this.unreadableError = 'Connection timeout';
                 }
