@@ -33,7 +33,7 @@ const Circle = styled.div<{ $isHighlighted?: boolean }>`
         $isHighlighted ? theme.iconPrimaryDefault : theme.iconSubdued};
 `;
 
-export const ViewOnly = ({ setContentType, instance, dataTest }: ViewOnlyProps) => {
+export const ViewOnly = ({ setContentType, instance }: ViewOnlyProps) => {
     const [isViewOnlyExpanded, setIsViewOnlyExpanded] = useState(false);
     const dispatch = useDispatch();
 

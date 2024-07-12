@@ -38,7 +38,7 @@ describe('Account types suite', () => {
         cy.prefixedVisit('/');
 
         cy.passThroughInitialRun();
-        cy.discoveryShouldFinish(); 
+        cy.discoveryShouldFinish();
 
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();

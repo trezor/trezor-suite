@@ -1,9 +1,6 @@
 // @group_wallet
 // @retry=2
 
-
-
-
 describe('Look up a BTC account', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -16,7 +13,7 @@ describe('Look up a BTC account', () => {
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.discoveryShouldFinish(); 
+        cy.discoveryShouldFinish();
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();
     });

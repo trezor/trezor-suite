@@ -21,7 +21,6 @@ describe('Dashboard with regtest', () => {
     });
 
     it('Regtest is in dashboard and gets updated when tx is created', () => {
-   
         // when graph becomes visible, discovery was finished
         cy.getTestElement('@dashboard/graph', { timeout: 30000 }).should('exist');
 

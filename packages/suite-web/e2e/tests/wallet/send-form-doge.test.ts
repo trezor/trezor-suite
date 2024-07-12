@@ -1,8 +1,6 @@
 // @group_wallet
 // @retry=2
 
-
-
 describe('Doge send form with mocked blockbook', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
