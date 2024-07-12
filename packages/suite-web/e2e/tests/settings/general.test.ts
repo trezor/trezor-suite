@@ -99,10 +99,9 @@ describe('General settings', () => {
             expect(settingsAnalyticsEvent.value).to.equal('false');
         });
 
-        // TODO: enable this after https://github.com/trezor/trezor-suite/issues/13262 is fixed
-        // // and reset app button - wipes db, reloads app, shows onboarding again
-        // cy.getTestElement('@settings/reset-app-button').click({ force: true });
-        // cy.getTestElement('@onboarding/welcome', { timeout: 20000 }).should('be.visible');
+        // and reset app button - wipes db, reloads app, shows onboarding again
+        cy.getTestElement('@settings/reset-app-button').click({ force: true });
+        cy.getTestElement('@onboarding/welcome', { timeout: 20000 }).should('be.visible');
     });
 });
 
