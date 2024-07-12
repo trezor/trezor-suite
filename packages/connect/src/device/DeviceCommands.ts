@@ -426,12 +426,6 @@ export class DeviceCommands {
 
         if (res.type === 'ButtonRequest') {
             this._cancelableRequestBySend = true;
-            if (res.message.code === '_Deprecated_ButtonRequest_PassphraseType') {
-                // for backwards compatibility stick to old message type
-                // which was part of protobuf in versions < 2.3.0
-                // @ts-expect-error, code does not exist anymore
-                res.message.code = 'ButtonRequest_PassphraseType';
-            }
 
             if (res.message.code === 'ButtonRequest_PassphraseEntry') {
                 this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
@@ -464,33 +458,9 @@ export class DeviceCommands {
         }
 
         if (res.type === 'PassphraseRequest') {
-            const state = this.device.getInternalState();
-            const legacy = this.device.useLegacyPassphrase();
-            const legacyT1 = legacy && this.device.isT1();
-
-            // T1B1 fw lower than 1.9.0, passphrase is cached in internal state
-            if (legacyT1 && typeof state === 'string') {
-                return this._commonCall('PassphraseAck', { passphrase: state });
-            }
-
-            // T2T1 fw lower than 2.3.0, entering passphrase on device
-            if (legacy && res.message._on_device) {
-                this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
-
-                return this._commonCall('PassphraseAck', { _state: state });
-            }
-
             return this._promptPassphrase().then(
                 response => {
-                    const { passphrase, passphraseOnDevice, cache } = response;
-                    if (legacyT1) {
-                        this.device.setInternalState(cache ? passphrase : undefined);
-
-                        return this._commonCall('PassphraseAck', { passphrase });
-                    }
-                    if (legacy) {
-                        return this._commonCall('PassphraseAck', { passphrase, _state: state });
-                    }
+                    const { passphrase, passphraseOnDevice } = response;
 
                     return !passphraseOnDevice
                         ? this._commonCall('PassphraseAck', { passphrase })
@@ -503,15 +473,6 @@ export class DeviceCommands {
                         throw err || e;
                     }),
             );
-        }
-
-        // T2T1 fw lower than 2.3.0, device send his current state
-        // new passphrase design set this value from `features.session_id`
-        if (res.type === 'Deprecated_PassphraseStateRequest') {
-            const { state } = res.message;
-            this.device.setInternalState(state);
-
-            return this._commonCall('Deprecated_PassphraseStateAck', {});
         }
 
         if (res.type === 'WordRequest') {

@@ -411,10 +411,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
                     if (uiResp.payload) {
                         // reset internal device state and try again
                         device.setInternalState(undefined);
-                        await device.initialize(
-                            method.useEmptyPassphrase,
-                            method.useCardanoDerivation,
-                        );
+                        await device.initialize(method.useCardanoDerivation);
 
                         invalidDeviceState = await getInvalidDeviceState(
                             device,
@@ -677,7 +674,6 @@ const onCall = async (message: IFrameCallMessage) => {
 
         await device.run(innerAction, {
             keepSession: method.keepSession,
-            useEmptyPassphrase: method.useEmptyPassphrase,
             skipFinalReload: method.skipFinalReload,
             useCardanoDerivation: method.useCardanoDerivation,
         });
