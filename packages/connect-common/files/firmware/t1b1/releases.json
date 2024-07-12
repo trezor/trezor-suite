@@ -156,7 +156,7 @@
         "changelog": "* Refactor Bitcoin signing"
     },
     {
-        "required": false,
+        "required": true,
         "version": [1, 9, 0],
         "bootloader_version": [1, 8, 0],
         "min_firmware_version": [1, 6, 2],
