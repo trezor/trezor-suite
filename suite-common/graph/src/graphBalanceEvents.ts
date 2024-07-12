@@ -8,17 +8,19 @@ import TrezorConnect from '@trezor/connect';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 
-import { BalanceMovementEvent, GroupedBalanceMovementEvent, AccountItem } from './types';
 import {
-    AccountBalanceHistory,
-    getAccountBalanceHistoryFromTransactions,
-} from './balanceHistoryUtils';
+    BalanceMovementEvent,
+    GroupedBalanceMovementEvent,
+    AccountItem,
+    AccountHistoryMovementItem,
+} from './types';
+import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 
 /**
  * Calculates received and sent values of each balance movement point.
  */
 export const formatBalanceMovementEventsAmounts = (
-    balanceMovements: Array<AccountMovementHistory | AccountBalanceHistory>,
+    balanceMovements: Array<AccountMovementHistory | AccountHistoryMovementItem>,
 ): readonly BalanceMovementEvent[] =>
     A.map(balanceMovements, balanceMovement => {
         const sentTotal = Number(balanceMovement.sent);
@@ -127,10 +129,10 @@ export const getAccountMovementEvents = async ({
                 }),
             ).unwrap();
 
-            return getAccountBalanceHistoryFromTransactions({
+            return getAccountHistoryMovementFromTransactions({
                 transactions: allTransactions,
                 coin,
-            });
+            }).main;
         }
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,

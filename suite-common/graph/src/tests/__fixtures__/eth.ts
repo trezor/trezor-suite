@@ -2009,7 +2009,7 @@ export const ethAccountBalanceHistoryResult: AccountHistoryMovementItem[] = [
     sentToSelf: new BigNumber(item.sentToSelf),
 }));
 
-export const ethTokenBalanceHistoryResult: Record<string, AccountBalanceMovementItem[]> = {
+export const ethTokenBalanceHistoryResult: Record<string, AccountHistoryMovementItem[]> = {
     '0x3fC29836E84E471a053D2D9E80494A867D670EAD': [
         {
             time: 1720304171,
