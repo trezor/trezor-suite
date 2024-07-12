@@ -266,6 +266,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this._runInner(fn, options).catch(err => {
             runPromise.reject(err);
+            // get rid of call promise, otherwise it stays hanging on
+            // https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/device/Device.ts#L227
+            delete this.commands?.callPromise;
         });
 
         return runPromise.promise;
@@ -336,7 +339,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // update features
             try {
                 if (fn) {
-                    await this.initialize(!!options.useCardanoDerivation);
+                    await Promise.race([
+                        this.initialize(!!options.useCardanoDerivation),
+                        new Promise((_resolve, reject) =>
+                            setTimeout(
+                                () => reject(new Error(TRANSPORT_ERROR.ABORTED_BY_TIMEOUT)),
+                                GET_FEATURES_TIMEOUT,
+                            ),
+                        ),
+                    ]);
                 } else {
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
                     await Promise.race([
