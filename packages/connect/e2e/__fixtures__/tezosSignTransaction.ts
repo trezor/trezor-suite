@@ -1,7 +1,7 @@
 const legacyResults = [
     {
-        // Tezos not supported below this version
-        rules: ['<2.0.8', '1'],
+        // Not supported in T1B1.
+        rules: ['1'],
         success: false,
     },
 ];

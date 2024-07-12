@@ -2,8 +2,8 @@
 
 const legacyResults = [
     {
-        // EOS not supported below this version
-        rules: ['<2.1.1', '1'],
+        // Not supported in T1B1.
+        rules: ['1'],
         success: false,
     },
 ];

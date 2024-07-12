@@ -35,7 +35,7 @@ const legacyResults: Record<string, LegacyResult[]> = {
 ].forEach(fixture => {
     legacyResults[fixture] = [
         {
-            rules: ['2.2.0'], // I am not sure about exact fw ranges here, so just lets use 2.2.0 which is the fw version we run legacy tests with
+            rules: ['2.3.0'], // I am not sure about exact fw ranges here, so just lets use 2.3.0 which is the fw version we run legacy tests with
         },
     ];
 });

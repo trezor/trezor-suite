@@ -47,9 +47,9 @@ export default {
             },
             legacyResults: legacyResults[name] || legacyResultsCommon,
 
-            // weird behavior on 2.2.0, always the first test times out with some emulator
+            // weird behavior on 2.3.0, always the first test times out with some emulator
             // error. the other tests that follow do pass.
-            skip: ['2.2.0'],
+            skip: ['2.3.0'],
         };
 
         if (parameters.data) {
