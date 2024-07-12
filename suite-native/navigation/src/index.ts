@@ -8,3 +8,4 @@ export * from './components/ScreenHeader';
 export * from './components/ScreenSubHeader';
 export * from './components/NavigationContainerWithAnalytics';
 export * from './components/GoBackIcon';
+export * from './components/ScrollViewContext';
