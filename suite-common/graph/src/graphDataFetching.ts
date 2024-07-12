@@ -11,7 +11,7 @@ import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockch
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 import { NUMBER_OF_POINTS } from './constants';
 import {
@@ -111,24 +111,19 @@ const getBalanceFromAccountInfo = ({
 const accountBalanceHistoryCache: Record<string, AccountBalanceHistoryWithTokens> = {};
 
 const getAccountBalanceHistory = async ({
-    coin,
-    identity,
-    descriptor,
+    accountItem,
     endOfTimeFrameDate,
     forceRefetch,
     dispatch,
-    accountKey,
 }: {
-    coin: NetworkSymbol;
-    identity?: string;
-    descriptor: string;
+    accountItem: AccountItem;
     endOfTimeFrameDate: Date;
     forceRefetch?: boolean;
     dispatch: ReturnType<typeof useDispatch>;
-    accountKey: AccountKey;
 }): Promise<AccountBalanceHistoryWithTokens> => {
+    const { coin, identity, descriptor, accountKey } = accountItem;
     const endTimeFrameTimestamp = getUnixTime(endOfTimeFrameDate);
-    const cacheKey = `${coin}-${descriptor}-${endTimeFrameTimestamp}-${identity}`;
+    const cacheKey = `${JSON.stringify(accountItem)}-${endTimeFrameTimestamp}`;
 
     if (accountBalanceHistoryCache[cacheKey] && !forceRefetch) {
         return accountBalanceHistoryCache[cacheKey];
@@ -296,19 +291,17 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     dispatch: ReturnType<typeof useDispatch>;
 }): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
     const accountsWithBalanceHistory = await Promise.all(
-        accounts.map(({ coin, descriptor, identity, accountKey }) =>
-            getAccountBalanceHistory({
-                coin,
-                descriptor,
-                identity,
+        accounts.map(accountItem => {
+            const { coin } = accountItem;
+
+            return getAccountBalanceHistory({
                 endOfTimeFrameDate,
                 forceRefetch,
                 dispatch,
-                accountKey,
+                accountItem,
             })
                 .then(balanceHistory => ({
-                    coin,
-                    descriptor,
+                    accountItem,
                     balanceHistory,
                 }))
                 .catch(error => {
@@ -318,24 +311,40 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                     );
                     error.message = `${coin.toUpperCase()}: ${error.message}`;
                     throw error;
-                }),
-        ),
+                });
+        }),
     );
 
     const accountsWithBalanceHistoryFlattened: AccountWithBalanceHistory[] = pipe(
         accountsWithBalanceHistory,
-        A.map(({ coin, descriptor, balanceHistory }) => {
-            const main = [{ coin, descriptor, balanceHistory: balanceHistory.main }];
-            const tokens = pipe(
-                balanceHistory.tokens,
-                D.mapWithKey((contractId, tokenBalanceHistory) => {
-                    return { coin, descriptor, contractId, balanceHistory: tokenBalanceHistory };
-                }),
-                D.values,
-            );
+        A.map(
+            ({
+                accountItem: { coin, descriptor, tokensFilter, hideMainAccount },
+                balanceHistory,
+            }) => {
+                const main = hideMainAccount
+                    ? []
+                    : [{ coin, descriptor, balanceHistory: balanceHistory.main }];
 
-            return [...main, ...tokens];
-        }),
+                const tokens = pipe(
+                    balanceHistory.tokens,
+                    D.filterWithKey(
+                        (contractId, _) => !tokensFilter || tokensFilter.includes(contractId),
+                    ),
+                    D.mapWithKey((contractId, tokenBalanceHistory) => {
+                        return {
+                            coin,
+                            descriptor,
+                            contractId,
+                            balanceHistory: tokenBalanceHistory!,
+                        };
+                    }),
+                    D.values,
+                );
+
+                return [...main, ...tokens];
+            },
+        ),
         A.flat,
         F.toMutable,
     );

@@ -11,11 +11,22 @@ export type FiatGraphPointWithCryptoBalance = {
     cryptoBalance: string;
 } & FiatGraphPoint;
 
+/**
+ * Represents an account item in graph
+ * @coin - network symbol
+ * @identity - optional identity string for ETH accounts
+ * @descriptor - account descriptor
+ * @accountKey - account key
+ * @tokensFilter - optional array of token addresses, pass empty array to show only main account or undefined to show all tokens
+ * @hideMainAccount - optional flag to hide main account - if you want graph to show only token(s)
+ */
 export type AccountItem = {
     coin: NetworkSymbol;
     identity?: string;
     descriptor: string;
     accountKey: AccountKey;
+    tokensFilter?: TokenAddress[];
+    hideMainAccount?: boolean;
 };
 
 export type BalanceMovementEvent = {
