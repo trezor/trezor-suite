@@ -26,17 +26,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production_icons
-          aws-region: ${{ env.AWS_REGION }}
-
       - name: Download crypto icons
         run: |
           yarn install
           cd suite-common/icons
           yarn download-crypto-icons
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production_icons
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Upload crypto icons
         run: |
