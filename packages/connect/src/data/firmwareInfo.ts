@@ -186,7 +186,7 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
 /**
  * Get info about available firmware update.
  * For T1B1, it always returns the latest firmware plus intermediaryVersion
- * needed to get to the latest if it's not availabe for direct install.
+ * needed to get to the latest if it's not available for direct install.
  * @param features
  * @param releases
  */

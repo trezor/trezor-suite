@@ -421,7 +421,7 @@ export const onCallFirmwareUpdate = async ({
     const intermediary = !params.binary && device.firmwareRelease.intermediaryVersion;
 
     // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
-    await reconnectedDevice.initialize(false, false);
+    await reconnectedDevice.initialize(false);
 
     // Might not be installed, but needed for calculateFirmwareHash anyway
     let stripped = stripFwHeaders(binary);
@@ -445,7 +445,7 @@ export const onCallFirmwareUpdate = async ({
             await getBinaryHelper(reconnectedDevice, params, log, postMessage, btcOnly),
         );
         // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
-        await reconnectedDevice.initialize(false, false);
+        await reconnectedDevice.initialize(false);
 
         await uploadFirmware(
             reconnectedDevice.getCommands().typedCall.bind(reconnectedDevice.getCommands()),
