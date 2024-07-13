@@ -236,22 +236,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
             }
         });
 
-        const events = [
-            {
-                d: diff.changedSessions,
-                e: DEVICE.CHANGED,
-            },
-            {
-                d: diff.acquired,
-                e: DEVICE.ACQUIRED,
-            },
-            {
-                d: diff.released,
-                e: DEVICE.RELEASED,
-            },
-        ];
-
-        events.forEach(({ d, e }) => {
+        const forEachDescriptor = (d: Descriptor[], e: keyof DeviceListEvents) => {
             d.forEach(descriptor => {
                 const path = descriptor.path.toString();
                 const device = this.devices[path];
@@ -260,7 +245,11 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     this.emit(e, device.toMessageObject());
                 }
             });
-        });
+        };
+
+        forEachDescriptor(diff.changedSessions, DEVICE.CHANGED);
+        forEachDescriptor(diff.acquired, DEVICE.ACQUIRED);
+        forEachDescriptor(diff.released, DEVICE.RELEASED);
 
         // whenever descriptors change we need to update them so that we can use them
         // in subsequent transport.acquire calls
