@@ -1,6 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Spinner as SpinnerComponent, SpinnerProps } from './Spinner';
-import { framePropsStory } from '../../common/frameProps';
 
 const meta: Meta = {
     title: 'Loaders/Spinner',
@@ -8,15 +7,39 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const Spinner: StoryObj<SpinnerProps> = {
+export const Default: StoryObj<SpinnerProps> = {
     args: {
-        ...framePropsStory.args,
         size: 50,
     },
     argTypes: {
         className: {
             control: false,
         },
-        ...framePropsStory.argTypes,
+    },
+};
+
+export const Success: StoryObj<SpinnerProps> = {
+    args: {
+        size: 50,
+        hasFinished: true,
+        hasStartAnimation: true,
+    },
+    argTypes: {
+        className: {
+            control: false,
+        },
+    },
+};
+
+export const Error: StoryObj<SpinnerProps> = {
+    args: {
+        size: 50,
+        hasError: true,
+        hasStartAnimation: true,
+    },
+    argTypes: {
+        className: {
+            control: false,
+        },
     },
 };
