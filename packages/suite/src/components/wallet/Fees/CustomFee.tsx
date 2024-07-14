@@ -131,7 +131,7 @@ export const CustomFee = <TFieldValues extends FormState>({
             }),
             // GWEI: 9 decimal places
             ethereumDecimalsLimit: validateDecimals(translationString, {
-                decimals: 2,
+                decimals: 9,
                 except: networkType !== 'ethereum',
             }),
             range: (value: string) => {
