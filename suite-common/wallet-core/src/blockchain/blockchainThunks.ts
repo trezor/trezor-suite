@@ -364,9 +364,8 @@ export const onBlockMinedThunk = createThunk(
 
         // Don't sync fast networks because a new block is emitted every few seconds.
         // Accounts are updated via account subscription or also by the timer in syncAccountsWithBlockchainThunk.
-        // Solana - new block every 10 seconds
-        // Polygon (matic) - new block every 2 seconds
-        if (network?.networkType === 'solana' || symbol === 'matic') {
+        // Solana - new block every 800ms
+        if (network?.networkType === 'solana') {
             return;
         }
 
