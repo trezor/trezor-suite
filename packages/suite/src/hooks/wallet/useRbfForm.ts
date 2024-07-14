@@ -40,9 +40,7 @@ const getBitcoinFeeInfo = (info: FeeInfo, feeRate: string) => {
 
 const getEthereumFeeInfo = (info: FeeInfo, gasPrice: string) => {
     const current = new BigNumber(gasPrice);
-    const minFeeFromNetwork = new BigNumber(
-        fromWei(info.levels[0].feePerUnit, 'gwei'),
-    ).integerValue(BigNumber.ROUND_FLOOR);
+    const minFeeFromNetwork = new BigNumber(fromWei(info.levels[0].feePerUnit, 'gwei'));
 
     const getFee = () => {
         if (minFeeFromNetwork.lte(current)) {
