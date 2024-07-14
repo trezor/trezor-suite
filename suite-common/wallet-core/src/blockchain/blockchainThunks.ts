@@ -30,7 +30,16 @@ import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
 
-const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
+const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000;
+
+// using fast and cheap blockchains, it looks suspicious when tx is not almost instantly confirmed
+const CUSTOM_ACCOUNT_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
+    matic: 20 * 1000,
+    bsc: 20 * 1000,
+};
+
+const getAccountSyncInterval = (symbol: NetworkSymbol) =>
+    CUSTOM_ACCOUNT_SYNC_INTERVALS[symbol] || DEFAULT_ACCOUNT_SYNC_INTERVAL;
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
@@ -329,7 +338,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
         tryClearTimeout(blockchainInfo.syncTimeout);
         const timeout = setTimeout(
             () => dispatch(syncAccountsWithBlockchainThunk(symbol)),
-            ACCOUNTS_SYNC_INTERVAL,
+            getAccountSyncInterval(symbol),
         );
 
         dispatch(blockchainActions.synced({ symbol, timeout }));
