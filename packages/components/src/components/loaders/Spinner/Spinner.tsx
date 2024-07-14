@@ -23,7 +23,7 @@ const StyledLottie = styled(Lottie)<
 export interface SpinnerProps {
     size?: number;
     isGrey?: boolean;
-    isWithSpeadup?: boolean;
+    hasStartAnimation?: boolean;
     hasFinished?: boolean;
     hasError?: boolean;
     className?: string;
@@ -34,7 +34,7 @@ export interface SpinnerProps {
 export const Spinner = ({
     size = 100,
     isGrey = true,
-    isWithSpeadup,
+    hasStartAnimation,
     hasFinished,
     hasError,
     className,
@@ -45,10 +45,6 @@ export const Spinner = ({
     const [hasFinishedRotation, setHasFinishedRotation] = useState(false);
 
     const onLoopComplete = () => {
-        if (!hasFinished || !hasError) {
-            return;
-        }
-
         setHasFinishedRotation(true);
     };
 
@@ -67,7 +63,7 @@ export const Spinner = ({
             };
         }
 
-        if (hasStarted || !isWithSpeadup) {
+        if (hasStarted || !hasStartAnimation) {
             return {
                 animationData: animationMiddle,
                 onLoopComplete,
