@@ -33,6 +33,7 @@ import {
     HELP_CENTER_COINJOIN_URL,
     HELP_CENTER_TAPROOT_URL,
 } from '@trezor/urls';
+import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
 
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
@@ -451,14 +452,16 @@ export const countUniqueCoins = (accounts: Account[]) => {
 export const enhanceTokens = (tokens: Account['tokens']) => {
     if (!tokens) return [];
 
-    return tokens
-        .filter(t => t.symbol && t.balance)
-        .map(t => ({
+    return tokens.map(t => {
+        const symbol = formatTokenSymbol(t.symbol || t.contract);
+
+        return {
             ...t,
-            name: t.name || t.symbol,
-            symbol: t.symbol!.toLowerCase(),
-            balance: formatAmount(t.balance!, t.decimals),
-        }));
+            name: t.name || symbol,
+            symbol: symbol.toLowerCase(),
+            balance: formatAmount(t.balance || 0, t.decimals),
+        };
+    });
 };
 
 const countAddressTransfers = (transactions: AccountTransaction[]) =>
