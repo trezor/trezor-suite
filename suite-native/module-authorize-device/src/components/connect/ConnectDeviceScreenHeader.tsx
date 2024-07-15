@@ -1,6 +1,6 @@
 import { BackHandler } from 'react-native';
 import { useCallback, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -15,6 +15,10 @@ import { Box, IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import {
+    cancelPassphraseAndSelectStandardDeviceThunk,
+    selectIsCreatingNewPassphraseWallet,
+} from '@suite-native/device-authorization';
 
 import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
 
@@ -31,12 +35,17 @@ type NavigationProp = StackToTabCompositeProps<
 export const ConnectDeviceScreenHeader = ({
     shouldDisplayCancelButton = true,
 }: ConnectDeviceScreenHeaderProps) => {
+    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
     const { showAlert, hideAlert } = useAlert();
 
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
 
     const handleCancel = useCallback(() => {
+        // Remove unauthorized passphrase device if it was created before prompting the PIN.
+        if (isCreatingNewWalletInstance) dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+
         if (isDiscoveryActive) {
             // Do not allow to cancel PIN entry while discovery is in progress
             showAlert({
@@ -57,7 +66,14 @@ export const ConnectDeviceScreenHeader = ({
                 navigation.goBack();
             }
         }
-    }, [hideAlert, isDiscoveryActive, navigation, showAlert]);
+    }, [
+        dispatch,
+        hideAlert,
+        isDiscoveryActive,
+        navigation,
+        showAlert,
+        isCreatingNewWalletInstance,
+    ]);
 
     // Handle hardware back button press same as cancel button
     useEffect(() => {

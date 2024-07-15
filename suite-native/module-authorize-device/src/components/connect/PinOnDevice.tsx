@@ -54,7 +54,13 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
         if (navigation.canGoBack() && !hasDeviceRequestedPassphrase) {
             navigation.goBack();
         }
-    }, [hasDeviceRequestedPassphrase, navigation]);
+    }, [
+        hasDeviceRequestedPassphrase,
+        hasPassphraseError,
+        isCreatingNewWalletInstance,
+        dispatch,
+        navigation,
+    ]);
 
     useEffect(() => {
         // hasDeviceRequestedPin is false when the user unlocks the device again
