@@ -98,14 +98,6 @@ const updateIcon = async (coin: CoinListData) => {
 
     // process missing icons and icons updated the longest time ago first
     coins.sort((a, b) => {
-        if (!updatedIcons[a.id] && !updatedIcons[b.id]) {
-            return 0;
-        }
-
-        if (!updatedIcons[a.id] || !updatedIcons[b.id]) {
-            return Number.MIN_SAFE_INTEGER;
-        }
-
         return (updatedIcons[a.id]?.updatedAt ?? 0) - (updatedIcons[b.id]?.updatedAt ?? 0);
     });
 
