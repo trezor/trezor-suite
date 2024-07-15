@@ -156,16 +156,22 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         return acquireIntentResult;
     };
 
-    const release = async ({ session, path }: ReleaseInput) => {
+    const release = async ({ session }: Omit<ReleaseInput, 'path'>) => {
         await sessionsClient.releaseIntent({ session });
+
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
+
         if (!sessionsResult.success) {
             return sessionsResult;
         }
 
-        await api.closeDevice(path);
+        const closeRes = await api.closeDevice(sessionsResult.payload.path);
+
+        if (!closeRes.success) {
+            logger?.error(`core: release: api.closeDevice error: ${closeRes.error}`);
+        }
 
         return sessionsClient.releaseDone({ path: sessionsResult.payload.path });
     };
