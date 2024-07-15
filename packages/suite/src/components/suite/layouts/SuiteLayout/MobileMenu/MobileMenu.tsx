@@ -6,6 +6,11 @@ import { Icon, variables } from '@trezor/components';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { MobileNavigation } from './MobileNavigation';
 import { MobileMenuActions } from './MobileMenuActions';
+import { TrafficLightOffset } from '../../../TrafficLightOffset';
+
+const BackgroundContainer = styled.div`
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+`;
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,7 +20,7 @@ const Wrapper = styled.div`
     z-index: ${zIndices.navigationBar};
     padding: 6px 8px;
     align-items: center;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
 
     ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
@@ -56,17 +61,21 @@ export const MobileMenu = () => {
 
     return (
         <>
-            <Wrapper>
-                <DeviceSelector />
-                <HamburgerWrapper>
-                    <Icon
-                        onClick={() => setOpened(!opened)}
-                        icon={opened ? 'CROSS' : 'MENU'}
-                        size={24}
-                        color={theme.TYPE_DARK_GREY}
-                    />
-                </HamburgerWrapper>
-            </Wrapper>
+            <BackgroundContainer>
+                <TrafficLightOffset>
+                    <Wrapper>
+                        <DeviceSelector />
+                        <HamburgerWrapper>
+                            <Icon
+                                onClick={() => setOpened(!opened)}
+                                icon={opened ? 'CROSS' : 'MENU'}
+                                size={24}
+                                color={theme.TYPE_DARK_GREY}
+                            />
+                        </HamburgerWrapper>
+                    </Wrapper>
+                </TrafficLightOffset>
+            </BackgroundContainer>
 
             {opened && (
                 <MobileNavigationWrapper>
