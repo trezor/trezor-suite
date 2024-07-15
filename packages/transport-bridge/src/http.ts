@@ -222,8 +222,6 @@ export class TrezordNode {
                     this.api
                         .release({
                             session: req.params.session as Session,
-                            // @ts-expect-error
-                            path: req.body,
                         })
                         .then(result => {
                             if (!result.success) {
