@@ -9476,4 +9476,26 @@ export default defineMessages({
         id: 'TR_SELECT_TREZOR_TO_CONTINUE',
         defaultMessage: 'Select your Trezor to continue.',
     },
+    TR_RUN_TREZOR_SUITE_IN_BACKGROUND: {
+        id: 'TR_RUN_TREZOR_SUITE_IN_BACKGROUND',
+        defaultMessage: 'Run Trezor Suite in the background',
+    },
+    TR_KEEP_RUNNING_IN_BACKGROUND: {
+        id: 'TR_KEEP_RUNNING_IN_BACKGROUND',
+        defaultMessage: 'Keep running in background',
+    },
+    TR_BRIDGE: {
+        id: 'TR_BRIDGE',
+        defaultMessage: 'Bridge',
+    },
+    TR_BRIDGE_REQUESTED_DESCRIPTION: {
+        id: 'TR_BRIDGE_REQUESTED_DESCRIPTION',
+        defaultMessage:
+            'Trezor Suite application was requested by another application in order to make the connection with your Trezor device possible. Keep this in background and all will be good.',
+    },
+    TR_BRIDGE_GO_TO_WALLET_DESCRIPTION: {
+        id: 'TR_BRIDGE_GO_TO_WALLET_DESCRIPTION',
+        defaultMessage:
+            'Are you sure? The device might only be used by a single application at time. If you are currently using another application with your Trezor device, make sure to finish it first.',
+    },
 });

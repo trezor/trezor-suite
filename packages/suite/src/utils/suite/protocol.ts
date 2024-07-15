@@ -8,7 +8,7 @@ export type CoinProtocolInfo = {
     amount?: number;
 };
 
-export const isProtocolScheme = (scheme: string): scheme is PROTOCOL_SCHEME =>
+export const isPaymentRequestProtocolScheme = (scheme: string): scheme is PROTOCOL_SCHEME =>
     Object.values(PROTOCOL_SCHEME).includes(scheme as PROTOCOL_SCHEME);
 
 export const getProtocolInfo = (uri: string): CoinProtocolInfo | null => {
@@ -27,7 +27,7 @@ export const getProtocolInfo = (uri: string): CoinProtocolInfo | null => {
             },
         });
 
-        if (isProtocolScheme(scheme)) {
+        if (isPaymentRequestProtocolScheme(scheme)) {
             if (!pathname && !host) return null; // address may be in pathname (regular bitcoin:addr) or host (bitcoin://addr)
 
             const floatAmount = Number.parseFloat(params.amount ?? '');

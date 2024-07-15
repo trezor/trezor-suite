@@ -4,5 +4,6 @@ import type * as GithubUrls from './github';
 export * from './urls';
 export * from './github';
 export * from './tor';
+export * from './deeplinks';
 
 export type Url = (typeof Urls)[keyof typeof Urls] | (typeof GithubUrls)[keyof typeof GithubUrls];

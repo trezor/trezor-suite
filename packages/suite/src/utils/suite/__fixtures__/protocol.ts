@@ -77,7 +77,7 @@ export const getProtocolInfo = [
     },
 ];
 
-export const isProtocolScheme = [
+export const isPaymentRequestProtocolScheme = [
     {
         description: 'should validate bitcoin protocol as valid',
         scheme: 'bitcoin',

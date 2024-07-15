@@ -30,6 +30,13 @@ export const routes = [
         params: modalAppParams,
     },
     {
+        name: 'suite-bridge-requested',
+        pattern: '/bridge-requested',
+        app: 'bridge-requested',
+        isForegroundApp: true,
+        params: modalAppParams,
+    },
+    {
         name: 'suite-bridge',
         pattern: '/bridge',
         app: 'bridge',
