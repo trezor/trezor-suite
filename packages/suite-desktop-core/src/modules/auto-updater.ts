@@ -171,13 +171,17 @@ export const init: Module = ({ mainWindow, store }) => {
         );
     });
 
-    ipcMain.on('update/check', (_, isManual) => {
+    ipcMain.on('update/check', async (_, isManual) => {
         if (isManual) {
             isManualCheck = true;
         }
 
         logger.info(SERVICE_NAME, `Update checking request (manual: ${b2t(isManualCheck)})`);
-        autoUpdater.checkForUpdates();
+        const result = await autoUpdater.checkForUpdates();
+        logger.info(
+            SERVICE_NAME,
+            `Update checking result (manual: ${b2t(isManualCheck)}), ${JSON.stringify(result)}`,
+        );
     });
 
     ipcMain.on('update/download', async () => {
