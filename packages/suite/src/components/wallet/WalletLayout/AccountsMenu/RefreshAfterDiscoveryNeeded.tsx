@@ -4,9 +4,9 @@ import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 
 import { Button, motionEasing } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
-import { startDiscoveryThunk } from '@suite-common/wallet-core';
+import { selectDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
 
-import { useRediscoveryNeeded, useDispatch } from 'src/hooks/suite';
+import { useRediscoveryNeeded, useDispatch, useSelector } from 'src/hooks/suite';
 
 import { Translation } from 'src/components/suite';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
@@ -40,6 +40,11 @@ const animationConfig: MotionProps = {
 export const RefreshAfterDiscoveryNeeded = () => {
     const dispatch = useDispatch();
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
+    const selectedDevice = useSelector(selectDevice);
+
+    if (!selectedDevice?.connected) {
+        return null;
+    }
 
     const startDiscovery = () => {
         dispatch(startDiscoveryThunk());
