@@ -2,8 +2,8 @@
 // @retry=2
 
 // TODO: currently runs only on these. When there are some releases done via github, refactor this to run this from release "release - 1" branch to "release" branch
-const from = '/release/22.5/web';
-const to = '/develop/web';
+const from = 'release/22.5/web';
+const to = 'develop/web';
 
 describe('Database migration', () => {
     /**
@@ -29,7 +29,7 @@ describe('Database migration', () => {
             btcAddress: 'bc1qkmdl2z9u503r6r5s6kyrczje60e2ye7ne7q53e',
         };
         // this test can be run only in sldev so we ignore baseUrl env variable
-        // const baseUrl = 'https://dev.suite.sldev.cz/suite-web';
+        const baseUrl = 'https://dev.suite.sldev.cz/suite-web';
         const btcAddressInputSelector = 'outputs[0].address';
         const workaroundBtcAddressInputSelector = 'outputs.0.address';
         const hiddenWalletSelector = '[data-test^="@switch-device/wallet-on-index"]';
@@ -48,7 +48,7 @@ describe('Database migration', () => {
 
         // FROM
 
-        cy.visit(`/${from}`);
+        cy.visit(`${baseUrl}/${from}`);
         cy.getTestElement('@onboarding/continue-button', { timeout: 40000 })
             .click()
             .getTestElement('@onboarding/exit-app-button')
@@ -107,8 +107,11 @@ describe('Database migration', () => {
         cy.task('stopEmu');
 
         // TO:
-        cy.visit(`/${to}`);
+        cy.visit(`${baseUrl}/${to}`);
         cy.getTestElement('@dashboard/graph', { timeout: 40000 }).should('be.visible');
+        cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 10_000 })
+            .should('be.visible')
+            .click();
         cy.getTestElement('@account-menu/btc/normal/0').click();
 
         cy.getTestElement('@menu/switch-device').click();
@@ -116,7 +119,8 @@ describe('Database migration', () => {
         cy.contains(hiddenWalletSelector, 'Passphrase wallet #1')
             .find('input')
             .should('be.checked');
-        cy.getTestElement('@modal/close-button').click();
+
+        cy.getTestElement('@switch-device/cancel-button').click();
 
         cy.get('[data-test^="@metadata/outputLabel"]').first().should('be.visible');
 
