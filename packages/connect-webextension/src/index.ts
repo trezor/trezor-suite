@@ -1,5 +1,10 @@
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import { POPUP, ConnectSettings, Manifest } from '@trezor/connect/src/exports';
+import {
+    POPUP,
+    ConnectSettings,
+    Manifest,
+    ConnectSettingsPublic,
+} from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
 import { initLog } from '@trezor/connect/src/utils/debug';
 // Import as src not lib due to webpack issues with inlining content script later
@@ -36,7 +41,7 @@ class CoreInPopupWebextension extends CoreInPopup {
         this.popupManagerLogger = initLog('@trezor/connect-webextension/popupManager');
     }
 
-    public init(settings: Partial<ConnectSettings> = {}): Promise<void> {
+    public init(settings: Partial<ConnectSettingsPublic> = {}): Promise<void> {
         if (settings._extendWebextensionLifetime) {
             extendLifetime();
         }

@@ -3,8 +3,8 @@
  * `manifest` is required
  */
 
-import type { ConnectSettings, Manifest } from '../settings';
+import type { ConnectSettingsPublic, Manifest } from '../settings';
 
 export declare function init(
-    settings: { manifest: Manifest } & Partial<ConnectSettings>,
+    settings: { manifest: Manifest } & Partial<ConnectSettingsPublic>,
 ): Promise<void>;

@@ -10,7 +10,12 @@ import {
     CallMethodPayload,
 } from '@trezor/connect/src/events';
 import * as ERRORS from '@trezor/connect/src/constants/errors';
-import type { ConnectSettings, Manifest, Response } from '@trezor/connect/src/types';
+import type {
+    ConnectSettings,
+    ConnectSettingsPublic,
+    Manifest,
+    Response,
+} from '@trezor/connect/src/types';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { initLog, setLogWriter, LogMessage, LogWriter, Log } from '@trezor/connect/src/utils/debug';
 import * as popup from '../popup';
@@ -74,7 +79,7 @@ export class CoreInPopup implements ConnectFactoryDependencies {
         }
     }
 
-    public init(settings: Partial<ConnectSettings> = {}): Promise<void> {
+    public init(settings: Partial<ConnectSettingsPublic> = {}): Promise<void> {
         const oldSettings = parseConnectSettings({
             ...this._settings,
         });

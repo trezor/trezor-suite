@@ -9,7 +9,7 @@ export interface Manifest {
 
 export type Proxy = BlockchainSettings['proxy'];
 
-export interface ConnectSettings {
+export interface ConnectSettingsPublic {
     manifest?: Manifest;
     connectSrc?: string;
     debug?: boolean;
@@ -22,7 +22,14 @@ export interface ConnectSettings {
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;
     interactionTimeout?: number;
-    // internal part, not to be accepted from .init()
+    trustedHost: boolean;
+    coreMode?: 'auto' | 'popup' | 'iframe';
+    /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
+    _extendWebextensionLifetime?: boolean;
+}
+
+// internal part, not to be accepted from .init()
+export interface ConnectSettingsInternal {
     origin?: string;
     configSrc: string;
     iframeSrc: string;
@@ -30,15 +37,12 @@ export interface ConnectSettings {
     webusbSrc: string;
     version: string;
     priority: number;
-    trustedHost: boolean;
     extension?: string;
     env: 'node' | 'web' | 'webextension' | 'electron' | 'react-native';
     timestamp: number;
     proxy?: Proxy;
     sharedLogger?: boolean;
-    /** @deprecated should not be set directly, instead use coreMode */
     useCoreInPopup?: boolean;
-    coreMode?: 'auto' | 'popup' | 'iframe';
-    /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
-    _extendWebextensionLifetime?: boolean;
 }
+
+export type ConnectSettings = ConnectSettingsPublic & ConnectSettingsInternal;
