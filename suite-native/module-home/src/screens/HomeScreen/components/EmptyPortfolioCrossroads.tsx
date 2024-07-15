@@ -1,3 +1,5 @@
+import { View } from 'react-native';
+
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -19,8 +21,13 @@ import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
     justifyContent: 'center',
-    paddingTop: 40,
-    paddingBottom: utils.spacings.extraLarge,
+    paddingTop: utils.spacings.extraLarge,
+    paddingBottom: utils.spacings.large,
+    paddingHorizontal: utils.spacings.large,
+}));
+
+const buttonWrapperStyle = prepareNativeStyle(() => ({
+    width: '100%',
 }));
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -67,9 +74,11 @@ export const EmptyPortfolioCrossroads = () => {
                             </Text>
                         </VStack>
                     </VStack>
-                    <Button onPress={handleConnectDevice} size="large">
-                        <Translation id="moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.connectButton" />
-                    </Button>
+                    <View style={applyStyle(buttonWrapperStyle)}>
+                        <Button onPress={handleConnectDevice} size="large">
+                            <Translation id="moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.connectButton" />
+                        </Button>
+                    </View>
                 </VStack>
             </Card>
             <Card style={applyStyle(cardStyle, { flex: 1 })}>
@@ -82,14 +91,16 @@ export const EmptyPortfolioCrossroads = () => {
                             <Translation id="moduleHome.emptyState.connectOrImportCrossroads.syncCoins.description" />
                         </Text>
                     </VStack>
-                    <Button
-                        onPress={handleSyncMyCoins}
-                        colorScheme="tertiaryElevation1"
-                        size="large"
-                        testID="@home/portfolio/sync-coins-button"
-                    >
-                        <Translation id="moduleHome.emptyState.connectOrImportCrossroads.syncCoins.syncButton" />
-                    </Button>
+                    <View style={applyStyle(buttonWrapperStyle)}>
+                        <Button
+                            onPress={handleSyncMyCoins}
+                            colorScheme="tertiaryElevation1"
+                            size="large"
+                            testID="@home/portfolio/sync-coins-button"
+                        >
+                            <Translation id="moduleHome.emptyState.connectOrImportCrossroads.syncCoins.syncButton" />
+                        </Button>
+                    </View>
                 </VStack>
             </Card>
         </VStack>
