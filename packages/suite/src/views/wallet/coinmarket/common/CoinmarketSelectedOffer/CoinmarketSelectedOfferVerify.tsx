@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import addressValidator from 'trezor-address-validator';
+import addressValidator from '@trezor/address-validator';
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { Input, variables, Button } from '@trezor/components';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common';
