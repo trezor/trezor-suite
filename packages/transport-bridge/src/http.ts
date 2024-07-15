@@ -251,7 +251,7 @@ export class TrezordNode {
 
                                 return res.end(str({ error: result.error }));
                             }
-                            res.end(str(result.payload));
+                            res.end(result.payload);
                         });
                 },
             ]);
@@ -268,7 +268,8 @@ export class TrezordNode {
 
                                 return res.end(str({ error: result.error }));
                             }
-                            res.end(str(result.payload));
+
+                            res.end(result.payload);
                         });
                 },
             ]);
