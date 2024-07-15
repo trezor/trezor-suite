@@ -125,7 +125,7 @@ export const SettingsDevice = () => {
                     ) : (
                         <>
                             <BackupRecoverySeed isDeviceLocked={isDeviceLocked} />
-                            <MultiShareBackup />
+                            <MultiShareBackup isDeviceLocked={isDeviceLocked} />
                             <CheckRecoverySeed isDeviceLocked={isDeviceLocked} />
                         </>
                     )}
