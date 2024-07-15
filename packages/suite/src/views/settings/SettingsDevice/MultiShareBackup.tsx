@@ -31,7 +31,7 @@ const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {
     );
 };
 
-export const MultiShareBackup = () => {
+export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }) => {
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
@@ -63,6 +63,7 @@ export const MultiShareBackup = () => {
                     variant="secondary"
                     data-test="@settings/device/create-multi-share-backup-button"
                     onClick={handleClick}
+                    isDisabled={isDeviceLocked}
                 >
                     <Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />
                 </ActionButton>
