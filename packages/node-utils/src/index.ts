@@ -7,4 +7,6 @@ export {
     parseBodyJSON,
     parseBodyText,
     type Handler,
+    type RequestWithParams,
+    type Response,
 } from './http';

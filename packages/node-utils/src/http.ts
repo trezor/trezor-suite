@@ -11,11 +11,11 @@ import { getFreePort } from './getFreePort';
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 type EventMap = { [event: string]: any };
 
-type RequestWithParams = Request & {
+export type RequestWithParams = Request & {
     params: Record<string, string>;
 };
 
-type Response = http.ServerResponse;
+export type Response = http.ServerResponse;
 
 type Next<R extends Request = RequestWithParams> = (
     request: R,
