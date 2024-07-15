@@ -84,4 +84,9 @@ export const init: Module = ({ mainWindow }) => {
         logger.debug(SERVICE_NAME, 'Focus requested');
         app.focus({ steal: true });
     });
+
+    ipcMain.on('app/hide', () => {
+        logger.debug(SERVICE_NAME, 'Hide requested');
+        app.hide();
+    });
 };

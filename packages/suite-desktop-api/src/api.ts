@@ -22,6 +22,7 @@ import {
 export interface MainChannels {
     'app/restart': void;
     'app/focus': void;
+    'app/hide': void;
     'store/clear': void;
     'theme/change': SuiteThemeVariant;
     'tor/get-status': void;
@@ -101,6 +102,7 @@ export interface DesktopApi {
     // App
     appRestart: DesktopApiSend<'app/restart'>;
     appFocus: DesktopApiSend<'app/focus'>;
+    appHide: DesktopApiSend<'app/hide'>;
     // Auto-updater
     checkForUpdates: DesktopApiSend<'update/check'>;
     downloadUpdate: DesktopApiSend<'update/download'>;
