@@ -70,6 +70,15 @@ describe('DesktopApi', () => {
             api.appFocus(true);
         });
 
+        it('DesktopApi.appHide', () => {
+            const spy = jest.spyOn(ipcRenderer, 'send');
+            api.appHide();
+            expect(spy).toHaveBeenCalledWith('app/hide');
+
+            // @ts-expect-error no expected params
+            api.appHide(true);
+        });
+
         it('DesktopApi.checkForUpdates', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.checkForUpdates();
