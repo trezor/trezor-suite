@@ -212,7 +212,7 @@ export const en = {
             wrongPinAlert: {
                 title: 'Incorrect PIN',
                 description:
-                    'You have 16 PIN entry attemps.\nFailing all of them will result in your device being erased.',
+                    'You have 16 PIN entry attempts.\nFailing all of them will result in your device being erased.',
                 button: { tryAgain: 'Try again', help: 'Enter PIN help' },
             },
         },
@@ -741,7 +741,7 @@ export const en = {
         },
         enablePassphrase: {
             title: 'Enable passphrase on your Trezor.',
-            subtitle: 'Go to your device and confirm you’d like to enable passphase.',
+            subtitle: 'Go to your device and confirm you’d like to enable passphrase.',
             cancelledError: 'Passphrase enabling cancelled.',
         },
         passphraseFeatureUnlock: {
