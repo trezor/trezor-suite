@@ -2,21 +2,21 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    selectIsCreatingNewPassphraseWallet,
     selectDeviceRequestedAuthorization,
+    selectPassphraseError,
 } from '@suite-native/device-authorization';
 import { useAuthorizationGoBack } from '@suite-native/device-authorization';
 
-export const useAuthorizationSuccess = () => {
+export const useRedirectOnPassphraseCompletion = () => {
     const hasDeviceRequestedAuthorization = useSelector(selectDeviceRequestedAuthorization);
-    const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
+    const hasPassphraseError = useSelector(selectPassphraseError);
 
     const { handleGoBack } = useAuthorizationGoBack();
 
-    // Success state of authorizing device to be used by feature (e.g. receive address, send, etc.)
     useEffect(() => {
-        if (!hasDeviceRequestedAuthorization && !isCreatingNewWalletInstance) {
+        // If there is passphrase error, we don't want to go back, but handle errors through alerts within the flow
+        if (!hasDeviceRequestedAuthorization && !hasPassphraseError) {
             handleGoBack();
         }
-    }, [handleGoBack, hasDeviceRequestedAuthorization, isCreatingNewWalletInstance]);
+    }, [handleGoBack, hasDeviceRequestedAuthorization, hasPassphraseError]);
 };

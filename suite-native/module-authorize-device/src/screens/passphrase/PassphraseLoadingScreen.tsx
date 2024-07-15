@@ -5,10 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { VStack, Text, Spinner, SpinnerLoadingState } from '@suite-native/atoms';
 import {
-    AppTabsRoutes,
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
@@ -18,7 +16,7 @@ import {
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
-import { setIsCreatingNewWalletInstance } from '@suite-native/device-authorization';
+import { finishPassphraseFlow } from '@suite-native/device-authorization';
 
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
 
@@ -47,13 +45,7 @@ export const PassphraseLoadingScreen = () => {
     const handleSuccess = () => {
         if (!isDeviceAccountless) {
             setLoadingResult('success');
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
-            dispatch(setIsCreatingNewWalletInstance(false));
+            dispatch(finishPassphraseFlow());
         } else if (isDeviceAccountless && !isDiscoveryActive) {
             setLoadingResult('success');
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {

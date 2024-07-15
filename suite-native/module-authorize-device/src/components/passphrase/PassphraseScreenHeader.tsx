@@ -5,15 +5,6 @@ import { BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
-import {
-    AppTabsRoutes,
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    StackToTabCompositeProps,
-} from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
 import TrezorConnect from '@trezor/connect';
 import {
@@ -21,6 +12,15 @@ import {
     selectIsCreatingNewPassphraseWallet,
     useAuthorizationGoBack,
 } from '@suite-native/device-authorization';
+import {
+    RootStackRoutes,
+    AppTabsRoutes,
+    HomeStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
+    RootStackParamList,
+    StackToTabCompositeProps,
+} from '@suite-native/navigation';
 import { useAlert } from '@suite-native/alerts';
 
 type NavigationProp = StackToTabCompositeProps<
