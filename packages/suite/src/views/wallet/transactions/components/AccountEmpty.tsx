@@ -6,6 +6,7 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -21,7 +22,7 @@ const StyledCard = styled(Card)`
 const Title = styled(H2)`
     text-align: center;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: ${spacingsPx.md};
 `;
 
 const Description = styled.span`
@@ -42,15 +43,13 @@ const Actions = styled.div`
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: ${spacingsPx.lg};
+    flex-flow: row wrap;
+    gap: ${spacingsPx.md};
 `;
 
 const ActionButton = styled(Button)`
     min-width: 160px;
-
-    & + & {
-        margin-left: 20px;
-    }
 `;
 
 const Divider = styled.div`
