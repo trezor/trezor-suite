@@ -66,6 +66,7 @@ const SetupActions = styled.div`
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     width: fit-content;
     gap: ${spacingsPx.md};
+    flex-flow: row wrap;
 `;
 
 const EnterSuiteButton = styled(Button)`
@@ -95,15 +96,6 @@ const Wrapper = styled.div<{ $shouldWrap?: boolean }>`
 
             ${Heading} {
                 text-align: center;
-            }
-
-            ${SetupActions} {
-                justify-content: center;
-                width: auto;
-            }
-
-            ${EnterSuiteButton} {
-                width: 100%;
             }
         `}
 `;
@@ -212,7 +204,7 @@ export const FinalStep = () => {
                     )}
 
                     <EnterSuiteButton
-                        variant="secondary"
+                        variant="primary"
                         data-test="@onboarding/exit-app-button"
                         onClick={() => {
                             goToSuite(true);
