@@ -7,9 +7,6 @@
         },
         { "path": "../../suite-common/icons" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/validators"
         },
         {

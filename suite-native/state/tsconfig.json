@@ -24,7 +24,6 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        { "path": "../accounts" },
         { "path": "../blockchain" },
         { "path": "../config" },
         { "path": "../device" },
