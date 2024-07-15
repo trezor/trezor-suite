@@ -296,35 +296,22 @@ export const sortByTimestamp = (devices: TrezorDevice[]): TrezorDevice[] =>
     });
 
 export const sortByPriority = (a: TrezorDevice, b: TrezorDevice) => {
-    // sort by priority:
     // 1. unacquired
-    // 2. force remembered
-    // 3. unexpected mode
-    // 4. outdated firmware
-    // 5. timestamp
-
-    // 1
     if (!b.features && !a.features) return 0;
     if (!b.features && a.features) return 1;
     if (!b.features || !a.features) return -1;
 
-    // 2
-    if (a.forceRemember !== b.forceRemember) {
-        if (!a.forceRemember && b.forceRemember) return 1;
-        if (a.forceRemember && !b.forceRemember) return -1;
-    }
-
-    // 3
+    // 2. unexpected mode
     if (a.mode !== 'normal' && b.mode !== 'normal') return 0;
     if (b.mode !== 'normal') return 1;
     if (a.mode !== 'normal') return -1;
 
-    // 4
+    // 3. outdated firmware
     if (a.firmware !== 'valid' && b.firmware !== 'valid') return 0;
     if (b.firmware !== 'valid') return 1;
     if (a.firmware !== 'valid') return -1;
 
-    // 5
+    // 4. timestamp
     if (!b.ts && !a.ts) return 0;
     if (!b.ts && a.ts) return -1;
     if (!b.ts || !a.ts) return 1;

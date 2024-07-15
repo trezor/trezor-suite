@@ -132,11 +132,11 @@ const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: st
     return db.removeItemByPK('formDrafts', getFormDraftKey(prefix, accountKey));
 };
 
-export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => {
+export const saveDevice = async (device: TrezorDevice) => {
     if (!(await db.isAccessible())) return;
     if (!device || !device.features || !device.state) return;
 
-    return db.addItem('devices', serializeDevice(device, forceRemember), device.state, true);
+    return db.addItem('devices', serializeDevice(device), device.state, true);
 };
 
 const removeAccount = async (account: Account) => {
@@ -283,7 +283,7 @@ export const rememberDevice =
 
         try {
             await Promise.all([
-                saveDevice(device, forcedRemember),
+                saveDevice(device),
                 saveAccounts(accounts),
                 saveGraph(graphData),
                 saveDiscovery(discovery),

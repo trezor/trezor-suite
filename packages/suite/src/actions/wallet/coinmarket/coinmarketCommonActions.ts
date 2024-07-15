@@ -135,7 +135,7 @@ export const submitRequestForm =
     (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
         if (device && !device.remember && !isDesktop()) {
-            dispatch(toggleRememberDevice({ device, forceRemember: true }));
+            dispatch(toggleRememberDevice({ device }));
         }
         if (form) {
             envSubmitRequestForm(

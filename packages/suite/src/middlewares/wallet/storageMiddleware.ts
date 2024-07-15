@@ -164,11 +164,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (deviceActions.rememberDevice.match(action)) {
                 api.dispatch(
-                    storageActions.rememberDevice(
-                        action.payload.device,
-                        action.payload.remember,
-                        action.payload.forceRemember,
-                    ),
+                    storageActions.rememberDevice(action.payload.device, action.payload.remember),
                 );
             }
 

@@ -80,25 +80,17 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
 /**
  * Toggles remembering the given device. I.e. if given device is not remembered it will become remembered
  * and if it is remembered it will be forgotten.
- * @param forceRemember can be set to `true` to remember given device regardless of its current state.
  *
  * Use `forgetDevice` to forget a device regardless if its current state.
  */
 export const toggleRememberDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/toggleRememberDevice`,
-    ({ device, forceRemember }: { device: TrezorDevice; forceRemember?: true }, { dispatch }) => {
+    ({ device }: { device: TrezorDevice }, { dispatch }) => {
         analytics.report({
             type: device.remember ? EventType.SwitchDeviceForget : EventType.SwitchDeviceRemember,
         });
 
-        return dispatch(
-            deviceActions.rememberDevice({
-                device,
-                remember: !device.remember || !!forceRemember,
-                // if device is already remembered, do not force it, it would remove the remember on return to suite
-                forceRemember: device.remember ? undefined : forceRemember,
-            }),
-        );
+        return dispatch(deviceActions.rememberDevice({ device, remember: !device.remember }));
     },
 );
 
@@ -542,17 +534,7 @@ export const initDevices = createThunk(
         const device = selectDeviceSelector(getState());
 
         if (!device && devices && devices[0]) {
-            // if there are force remember devices, forget them and pick the first one of them as selected device
-            const forcedDevices = devices.filter(d => d.forceRemember && d.remember);
-            forcedDevices.forEach(d => {
-                dispatch(toggleRememberDevice({ device: d }));
-            });
-
-            dispatch(
-                selectDeviceThunk({
-                    device: forcedDevices.length ? forcedDevices[0] : sortDevices(devices)[0],
-                }),
-            );
+            dispatch(selectDeviceThunk({ device: sortDevices(devices)[0] }));
         }
     },
 );

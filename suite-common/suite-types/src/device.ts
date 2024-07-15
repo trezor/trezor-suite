@@ -29,7 +29,6 @@ export interface ExtendedDevice {
     useEmptyPassphrase: boolean;
     passphraseOnDevice?: boolean;
     remember?: boolean; // device should be remembered
-    forceRemember?: true; // device was forced to be remembered
     connected: boolean; // device is connected
     available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
 

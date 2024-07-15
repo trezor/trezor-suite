@@ -1208,7 +1208,6 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
                 payload: {
                     device: getSuiteDevice({ type: 'unacquired' }),
                     remember: false,
-                    forceRemember: undefined,
                 },
             },
         ],
@@ -1223,26 +1222,10 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
                 payload: {
                     device: SUITE_DEVICE,
                     remember: true,
-                    forceRemember: undefined,
                 },
             },
         ],
         result: [{ ...SUITE_DEVICE, remember: true }],
-    },
-    {
-        description: `Force remember device`,
-        initialState: { devices: [SUITE_DEVICE] },
-        actions: [
-            {
-                type: deviceActions.rememberDevice.type,
-                payload: {
-                    device: SUITE_DEVICE,
-                    remember: true,
-                    forceRemember: true,
-                },
-            },
-        ],
-        result: [getSuiteDevice({ remember: true, forceRemember: true })],
     },
     {
         description: `Remember device success`,
@@ -1261,7 +1244,6 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
                         state: 'abc',
                     }),
                     remember: true,
-                    forceRemember: undefined,
                 },
             },
         ],
@@ -1309,7 +1291,6 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
                         state: 'abc',
                     }),
                     remember: true,
-                    forceRemember: undefined,
                 },
             },
             {
@@ -1320,7 +1301,6 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
                         instance: 3,
                     }),
                     remember: true,
-                    forceRemember: undefined,
                 },
             },
         ],

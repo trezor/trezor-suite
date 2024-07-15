@@ -15,7 +15,7 @@ export const serializeDiscovery = (discovery: Discovery) => ({ ...discovery, run
  * Strip fields from Device
  * @param {AcquiredDevice} device
  */
-export const serializeDevice = (device: AcquiredDevice, forceRemember?: true) => {
+export const serializeDevice = (device: AcquiredDevice) => {
     const sd = {
         ...device,
         path: '',
@@ -23,7 +23,6 @@ export const serializeDevice = (device: AcquiredDevice, forceRemember?: true) =>
         connected: false,
         buttonRequests: [],
     };
-    if (forceRemember) sd.forceRemember = true;
 
     return sd;
 };
