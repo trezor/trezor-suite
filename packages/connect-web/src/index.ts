@@ -2,9 +2,10 @@ import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory
 import { CoreInIframe } from './impl/core-in-iframe';
 import { CoreInPopup } from './impl/core-in-popup';
 import ProxyEventEmitter from './utils/proxy-event-emitter';
-import type { ConnectSettings, Manifest } from '@trezor/connect/src/types';
+import type { ConnectSettings, ConnectSettingsPublic, Manifest } from '@trezor/connect/src/types';
 import EventEmitter from 'events';
 import { CallMethodPayload } from '@trezor/connect/src/events';
+import { getEnv } from './connectSettings';
 
 type TrezorConnectType = 'core-in-popup' | 'iframe';
 
@@ -54,10 +55,15 @@ export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
         this.getTarget().manifest(manifest);
     }
 
-    public async init(settings: Partial<ConnectSettings> = {}) {
-        if (settings.useCoreInPopup || settings.coreMode === 'popup') {
+    public async init(settings: Partial<ConnectSettingsPublic> = {}) {
+        const env = getEnv();
+        if (settings.coreMode === 'iframe' || settings.popup === false || env === 'webextension') {
+            this.currentTarget = 'iframe';
+        } else if (settings.coreMode === 'popup') {
             this.currentTarget = 'core-in-popup';
         } else {
+            // Default to auto mode with iframe as the first choice
+            settings.coreMode = 'auto';
             this.currentTarget = 'iframe';
         }
 
