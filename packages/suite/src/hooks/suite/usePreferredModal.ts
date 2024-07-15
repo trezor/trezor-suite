@@ -15,6 +15,7 @@ const hasPriority = (route: ForegroundAppRoute) => {
         'firmware-type': true,
         'firmware-custom': true,
         bridge: true,
+        'bridge-requested': true,
         udev: true,
         version: true,
         'create-multi-share-backup': true,
