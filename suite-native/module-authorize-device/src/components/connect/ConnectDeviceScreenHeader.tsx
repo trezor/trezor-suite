@@ -43,9 +43,6 @@ export const ConnectDeviceScreenHeader = ({
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
 
     const handleCancel = useCallback(() => {
-        // Remove unauthorized passphrase device if it was created before prompting the PIN.
-        if (isCreatingNewWalletInstance) dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-
         if (isDiscoveryActive) {
             // Do not allow to cancel PIN entry while discovery is in progress
             showAlert({
@@ -61,6 +58,10 @@ export const ConnectDeviceScreenHeader = ({
                 onPressPrimaryButton: hideAlert,
             });
         } else {
+            // Remove unauthorized passphrase device if it was created before prompting the PIN.
+            if (isCreatingNewWalletInstance)
+                dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+
             TrezorConnect.cancel('pin-cancelled');
             if (navigation.canGoBack()) {
                 navigation.goBack();

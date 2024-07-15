@@ -6,7 +6,7 @@ import { prepareNativeStyle, useNativeStyles, NativeStyleObject } from '@trezor/
 
 import { ConnectDeviceScreenHeader } from './ConnectDeviceScreenHeader';
 
-type ConnectDeviceSreenViewProps = {
+type ConnectDeviceScreenViewProps = {
     children: ReactNode;
     style?: NativeStyleObject;
     shouldDisplayCancelButton?: boolean;
@@ -16,11 +16,11 @@ const contentStyle = prepareNativeStyle(_ => ({
     flex: 1,
 }));
 
-export const ConnectDeviceSreenView = ({
+export const ConnectDeviceScreenView = ({
     children,
     style,
     shouldDisplayCancelButton,
-}: ConnectDeviceSreenViewProps) => {
+}: ConnectDeviceScreenViewProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (

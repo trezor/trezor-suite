@@ -6,7 +6,7 @@ import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { useDelayedNavigation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 
-import { ConnectDeviceSreenView } from '../../components/connect/ConnectDeviceSreenView';
+import { ConnectDeviceScreenView } from '../../components/connect/ConnectDeviceScreenView';
 
 const screenStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
@@ -19,7 +19,7 @@ export const ConnectingDeviceScreen = () => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <ConnectDeviceSreenView style={applyStyle(screenStyle)} shouldDisplayCancelButton={false}>
+        <ConnectDeviceScreenView style={applyStyle(screenStyle)} shouldDisplayCancelButton={false}>
             <VStack spacing="medium" alignItems="center">
                 <ActivityIndicator size="large" />
                 <Box flexDirection="row" alignItems="center">
@@ -34,6 +34,6 @@ export const ConnectingDeviceScreen = () => {
                     <Translation id="moduleConnectDevice.connectingDeviceScreen.hodlOn" />
                 </Text>
             </VStack>
-        </ConnectDeviceSreenView>
+        </ConnectDeviceScreenView>
     );
 };
