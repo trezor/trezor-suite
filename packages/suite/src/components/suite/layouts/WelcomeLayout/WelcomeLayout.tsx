@@ -26,7 +26,7 @@ import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useGuide } from 'src/hooks/guide';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { NavSettings } from './NavSettings';
-import { Elevation, mapElevationToBackground } from '@trezor/theme';
+import { Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -47,6 +47,7 @@ const Expander = styled.div`
     justify-content: center;
     align-items: center;
     flex: 1;
+    margin-top: 96px;
 `;
 
 const WelcomeWrapper = styled.div<{ $elevation: Elevation }>`
@@ -69,10 +70,12 @@ const MotionWelcome = styled(motion.div)`
 `;
 
 const LinksContainer = styled.div`
-    position: absolute;
     bottom: 0;
     display: flex;
-    margin: 24px 0;
+    margin: ${spacingsPx.xl};
+    align-items: center;
+    flex-flow: row wrap;
+    gap: ${spacingsPx.md};
 `;
 
 const Content = styled.div<{ $elevation: Elevation }>`
@@ -80,7 +83,7 @@ const Content = styled.div<{ $elevation: Elevation }>`
     position: relative;
     flex-direction: column;
     flex: 3;
-    padding: 20px;
+    padding: ${spacingsPx.lg};
     background-color: ${mapElevationToBackground};
     background-image: url(${resolveStaticPath(`images/svg/${SVG_IMAGES.ONBOARDING_WELCOME_BG}`)});
     background-repeat: no-repeat;
@@ -91,12 +94,8 @@ const Content = styled.div<{ $elevation: Elevation }>`
     overflow-y: auto;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 12px;
+        padding: ${spacingsPx.sm};
     }
-`;
-
-const StyledTrezorLink = styled(TrezorLink)`
-    margin-right: 14px;
 `;
 
 const SettingsWrapper = styled.div`
@@ -152,7 +151,7 @@ const Left = () => {
 
                         <LinksContainer>
                             {isWeb() && (
-                                <StyledTrezorLink type="hint" variant="nostyle" href={SUITE_URL}>
+                                <TrezorLink type="hint" variant="nostyle" href={SUITE_URL}>
                                     <Button
                                         variant="tertiary"
                                         icon="EXTERNAL_LINK"
@@ -160,7 +159,7 @@ const Left = () => {
                                     >
                                         <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
                                     </Button>
-                                </StyledTrezorLink>
+                                </TrezorLink>
                             )}
                             <TrezorLink type="hint" variant="nostyle" href={TREZOR_URL}>
                                 <Button
