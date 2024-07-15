@@ -13,7 +13,7 @@ import { spacingsPx } from '@trezor/theme';
 const Wrapper = styled.div<{ $hideBorder: boolean }>`
     display: flex;
     flex-flow: row wrap;
-    padding: 20px;
+    padding: ${spacingsPx.lg};
     ${({ $hideBorder }) =>
         !$hideBorder &&
         css`
@@ -36,10 +36,11 @@ const Right = styled.div`
 const Buttons = styled.div`
     display: flex;
     gap: ${spacingsPx.md};
+    flex-flow: row wrap;
+`;
 
-    > * {
-        min-width: 120px;
-    }
+const WalletEmptyButton = styled(Button)`
+    min-width: 120px;
 `;
 
 export interface HeaderProps {
@@ -84,16 +85,19 @@ export const Header = ({
             actions = (
                 <>
                     <Buttons>
-                        <Button onClick={receiveClickHandler} data-test="@dashboard/receive-button">
+                        <WalletEmptyButton
+                            onClick={receiveClickHandler}
+                            data-test="@dashboard/receive-button"
+                        >
                             <Translation id="TR_RECEIVE" />
-                        </Button>
-                        <Button
+                        </WalletEmptyButton>
+                        <WalletEmptyButton
                             onClick={buyClickHandler}
                             data-test="@dashboard/buy-button"
                             variant="tertiary"
                         >
                             <Translation id="TR_BUY" />
-                        </Button>
+                        </WalletEmptyButton>
                     </Buttons>
                 </>
             );
