@@ -7,8 +7,8 @@ type Props = {
     offset?: number;
 };
 
-// this element fixes not being able to drag window: https://github.com/electron/electron/issues/5678
-const WindowAppHandler = styled.div`
+// See: https://github.com/electron/electron/issues/5678
+const FixForNotBeingAbleToDragWindow = styled.div`
     -webkit-app-region: drag;
     height: 12px;
     position: fixed;
@@ -30,7 +30,7 @@ export const TrafficLightOffset = ({ children, offset = 35 }: Props) => {
 
     return (
         <>
-            <WindowAppHandler />
+            <FixForNotBeingAbleToDragWindow />
             <Container $hasTopPadding={isMac && isDesktopApp} $offset={offset}>
                 {children}
             </Container>
