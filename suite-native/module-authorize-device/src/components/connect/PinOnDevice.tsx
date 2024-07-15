@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Dimensions } from 'react-native';
 import { useCallback, useEffect } from 'react';
 
@@ -9,6 +9,9 @@ import { DeviceModelInternal } from '@trezor/connect';
 import {
     selectDeviceRequestedPin,
     selectDeviceRequestedPassphrase,
+    cancelPassphraseAndSelectStandardDeviceThunk,
+    selectIsCreatingNewPassphraseWallet,
+    selectPassphraseError,
 } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -41,17 +44,25 @@ type PinOnDeviceProps = {
 };
 
 export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
+    const dispatch = useDispatch();
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const hasDeviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
+    const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
+    const hasPassphraseError = !!useSelector(selectPassphraseError);
 
     const { applyStyle } = useNativeStyles();
 
     const navigation = useNavigation();
 
-    const handleSuccess = useCallback(() => {
-        // If pin was shown during call to device and after unlocking, device asks for passphrase,
-        // we ignore this and let passphrase handle the success / failure.
-        if (navigation.canGoBack() && !hasDeviceRequestedPassphrase) {
+    const handlePinFlowFinish = useCallback(() => {
+        const isNotPassphraseFlowActive = !hasDeviceRequestedPassphrase && !hasPassphraseError;
+
+        // If the device asks for a passphrase after unlocking the PIN, we ignore this and let the passphrase flow handle the success / failure.
+        if (navigation.canGoBack() && isNotPassphraseFlowActive) {
+            // Remove unauthorized passphrase device if it was created before prompting the PIN in case of PIN flow exit.
+            if (isCreatingNewWalletInstance)
+                dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+
             navigation.goBack();
         }
     }, [
@@ -67,9 +78,9 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
         // after it was already unlocked and then became locked.
         // (e.g., when attempting to verify the receive address with locked device).
         if (!hasDeviceRequestedPin) {
-            handleSuccess();
+            handlePinFlowFinish();
         }
-    }, [hasDeviceRequestedPin, handleSuccess]);
+    }, [hasDeviceRequestedPin, handlePinFlowFinish]);
 
     return (
         <Box style={applyStyle(wrapperStyle)}>
