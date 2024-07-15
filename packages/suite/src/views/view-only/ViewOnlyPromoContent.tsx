@@ -179,7 +179,7 @@ const Buttons = () => {
 
     const onYes = () => {
         if (device !== undefined) {
-            dispatch(toggleRememberDevice({ device, forceRemember: true }));
+            dispatch(toggleRememberDevice({ device }));
             dispatch(setFlag('viewOnlyPromoClosed', true));
             dispatch(goto('suite-index'));
         }

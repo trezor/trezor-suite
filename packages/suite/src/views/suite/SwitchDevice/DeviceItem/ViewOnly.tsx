@@ -41,12 +41,7 @@ export const ViewOnly = ({ setContentType, instance, dataTest }: ViewOnlyProps) 
 
     const handleRememberChange = () => {
         setContentType('default');
-
-        dispatch(
-            toggleRememberDevice({
-                device: instance,
-            }),
-        );
+        dispatch(toggleRememberDevice({ device: instance }));
     };
 
     return (
