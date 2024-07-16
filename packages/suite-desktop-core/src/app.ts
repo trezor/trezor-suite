@@ -4,6 +4,7 @@ import { app, BrowserWindow } from 'electron';
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { isMacOs } from '@trezor/env-utils';
 
 import { ipcMain } from './typed-electron';
 import { APP_NAME } from './libs/constants';
@@ -33,6 +34,12 @@ const createMainWindow = (winBounds: WinBounds) => {
         height: winBounds.height,
         minWidth: MIN_WIDTH,
         minHeight: MIN_HEIGHT,
+        ...(isMacOs()
+            ? {
+                  titleBarStyle: 'hidden',
+                  trafficLightPosition: { x: 14, y: 14 },
+              }
+            : {}),
         webPreferences: {
             webSecurity: !isDevEnv,
             allowRunningInsecureContent: isDevEnv,

@@ -51,7 +51,7 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
     }
 
     ${animations}
-    
+
     /* https://floating-ui.com/docs/misc#handling-large-content */
     .floating {
         max-width: calc(100vw - 10px);

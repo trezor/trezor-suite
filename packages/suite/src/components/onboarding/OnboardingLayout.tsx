@@ -13,6 +13,7 @@ import { selectBannerMessage } from '@suite-common/message-system';
 import { MessageSystemBanner } from 'src/components/suite/banners';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { spacingsPx, zIndices } from '@trezor/theme';
+import { TrafficLightOffset } from '../suite/TrafficLightOffset';
 
 const Wrapper = styled.div`
     display: flex;
@@ -139,49 +140,51 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     const activeStep = useMemo(() => steps.find(step => step.id === activeStepId)!, [activeStepId]);
 
     return (
-        <Wrapper>
-            {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
+        <TrafficLightOffset>
+            <Wrapper>
+                {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
 
-            <Body data-test="@onboarding-layout/body">
-                <ScrollingWrapper>
-                    <ModalContextProvider>
-                        <ContentWrapper id="layout-scroll">
-                            <Header>
-                                <LogoHeaderRow>
-                                    <TrezorLogo type="suite" width="128px" />
+                <Body data-test="@onboarding-layout/body">
+                    <ScrollingWrapper>
+                        <ModalContextProvider>
+                            <ContentWrapper id="layout-scroll">
+                                <Header>
+                                    <LogoHeaderRow>
+                                        <TrezorLogo type="suite" width="128px" />
 
-                                    <TrezorLink
-                                        type="hint"
-                                        variant="nostyle"
-                                        href={TREZOR_SUPPORT_URL}
-                                    >
-                                        <Button
-                                            variant="tertiary"
-                                            icon="EXTERNAL_LINK"
-                                            iconAlignment="right"
-                                            size="small"
+                                        <TrezorLink
+                                            type="hint"
+                                            variant="nostyle"
+                                            href={TREZOR_SUPPORT_URL}
                                         >
-                                            <Translation id="TR_HELP" />
-                                        </Button>
-                                    </TrezorLink>
-                                </LogoHeaderRow>
+                                            <Button
+                                                variant="tertiary"
+                                                icon="EXTERNAL_LINK"
+                                                iconAlignment="right"
+                                                size="small"
+                                            >
+                                                <Translation id="TR_HELP" />
+                                            </Button>
+                                        </TrezorLink>
+                                    </LogoHeaderRow>
 
-                                <ProgressBarRow>
-                                    <OnboardingProgressBar
-                                        steps={progressBarSteps}
-                                        activeStep={activeStep.stepGroup}
-                                    />
-                                </ProgressBarRow>
-                            </Header>
+                                    <ProgressBarRow>
+                                        <OnboardingProgressBar
+                                            steps={progressBarSteps}
+                                            activeStep={activeStep.stepGroup}
+                                        />
+                                    </ProgressBarRow>
+                                </Header>
 
-                            <Content>{children}</Content>
-                        </ContentWrapper>
-                    </ModalContextProvider>
-                </ScrollingWrapper>
+                                <Content>{children}</Content>
+                            </ContentWrapper>
+                        </ModalContextProvider>
+                    </ScrollingWrapper>
 
-                <GuideButton />
-                <GuideRouter />
-            </Body>
-        </Wrapper>
+                    <GuideButton />
+                    <GuideRouter />
+                </Body>
+            </Wrapper>
+        </TrafficLightOffset>
     );
 };

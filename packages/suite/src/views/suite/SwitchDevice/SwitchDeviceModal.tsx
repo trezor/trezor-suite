@@ -2,6 +2,8 @@ import { useEvent } from 'react-use';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { spacingsPx } from '@trezor/theme';
+import { TrafficLightOffset } from '../../../components/suite/TrafficLightOffset';
+
 type SwitchDeviceModalProps = {
     children?: React.ReactNode;
     isCancelable?: boolean;
@@ -42,23 +44,25 @@ export const SwitchDeviceModal = ({
     });
 
     return (
-        <Container
-            onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
-            data-test={dataTest}
-        >
-            <DeviceItemsWrapper>
-                <motion.div
-                    initial={isAnimationEnabled ? initial : false}
-                    exit={initial}
-                    animate={{
-                        width: 369,
-                        height: 'auto',
-                    }}
-                    style={{ originX: 0, originY: 0, overflow: 'hidden' }}
-                >
-                    {children}
-                </motion.div>
-            </DeviceItemsWrapper>
-        </Container>
+        <TrafficLightOffset>
+            <Container
+                onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
+                data-test={dataTest}
+            >
+                <DeviceItemsWrapper>
+                    <motion.div
+                        initial={isAnimationEnabled ? initial : false}
+                        exit={initial}
+                        animate={{
+                            width: 369,
+                            height: 'auto',
+                        }}
+                        style={{ originX: 0, originY: 0, overflow: 'hidden' }}
+                    >
+                        {children}
+                    </motion.div>
+                </DeviceItemsWrapper>
+            </Container>
+        </TrafficLightOffset>
     );
 };
