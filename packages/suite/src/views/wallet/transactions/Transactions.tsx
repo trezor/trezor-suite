@@ -105,6 +105,7 @@ export const Transactions = () => {
         return (
             <Layout selectedAccount={selectedAccount} showEmptyHeaderPlaceholder>
                 <AccountEmpty account={selectedAccount.account} />
+                <TradeBox account={account} />
             </Layout>
         );
     }
