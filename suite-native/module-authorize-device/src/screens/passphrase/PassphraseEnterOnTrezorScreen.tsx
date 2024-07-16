@@ -19,6 +19,7 @@ import {
     useAuthorizationGoBack,
 } from '@suite-native/device-authorization';
 import TrezorConnect from '@trezor/connect';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
@@ -65,6 +66,10 @@ export const PassphraseEnterOnTrezorScreen = () => {
         if (isCreatingNewWalletInstance) {
             dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
         } else {
+            analytics.report({
+                type: EventType.PassphraseExit,
+                payload: { screen: AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor },
+            });
             TrezorConnect.cancel();
             handleGoBack();
         }

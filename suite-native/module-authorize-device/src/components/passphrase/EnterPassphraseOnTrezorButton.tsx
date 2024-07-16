@@ -4,6 +4,7 @@ import { Button } from '@suite-native/atoms';
 import { onPassphraseSubmit, selectDeviceInternalModel } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { DeviceModelIcon } from '@suite-common/icons';
+import { EventType, analytics } from '@suite-native/analytics';
 
 export const EnterPassphraseOnTrezorButton = () => {
     const dispatch = useDispatch();
@@ -11,6 +12,7 @@ export const EnterPassphraseOnTrezorButton = () => {
     const deviceModel = useSelector(selectDeviceInternalModel);
 
     const handleSubmitOnDevice = () => {
+        analytics.report({ type: EventType.PassphraseEnterOnTrezor });
         dispatch(onPassphraseSubmit({ value: '', passphraseOnDevice: true }));
     };
 

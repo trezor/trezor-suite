@@ -16,6 +16,7 @@ import {
 } from '@suite-native/navigation';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { useTranslate } from '@suite-native/intl';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { selectPassphraseDuplicateError } from '../deviceAuthorizationSlice';
 
@@ -55,6 +56,7 @@ export const useHandleDuplicatePassphrase = () => {
 
     useEffect(() => {
         if (passphraseDuplicateError) {
+            analytics.report({ type: EventType.PassphraseDuplicate });
             showAlert({
                 title: translate('modulePassphrase.passphraseMismatch.title'),
                 description: translate('modulePassphrase.passphraseMismatch.subtitle'),

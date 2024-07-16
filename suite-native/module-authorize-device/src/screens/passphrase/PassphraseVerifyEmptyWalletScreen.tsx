@@ -9,6 +9,7 @@ import {
     finishPassphraseFlow,
     verifyPassphraseOnEmptyWalletThunk,
 } from '@suite-native/device-authorization';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
@@ -22,6 +23,10 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
         const verifyEmptyWallet = async () => {
             const result = await dispatch(verifyPassphraseOnEmptyWalletThunk());
             if (isFulfilled(result)) {
+                analytics.report({
+                    type: EventType.PassphraseFlowFinished,
+                    payload: { isEmptyWallet: true },
+                });
                 dispatch(finishPassphraseFlow());
             }
         };

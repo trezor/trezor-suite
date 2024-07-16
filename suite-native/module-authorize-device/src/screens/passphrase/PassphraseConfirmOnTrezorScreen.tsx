@@ -25,6 +25,7 @@ import {
     selectHasPassphraseMismatchError,
 } from '@suite-native/device-authorization';
 import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
@@ -69,6 +70,10 @@ export const PassphraseConfirmOnTrezorScreen = () => {
     useEffect(() => {
         // User has canceled the authorization process on device (authorizeDeviceThunk rejects with auth-failed error)
         if (hasAuthorizationFailed || hasVerificationCancelledError) {
+            analytics.report({
+                type: EventType.PassphraseExit,
+                payload: { screen: AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor },
+            });
             dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
         }
     }, [dispatch, hasAuthorizationFailed, hasVerificationCancelledError]);
@@ -76,6 +81,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
     useEffect(() => {
         // Wrong passphrase was entered during verifying empty wallet
         if (hasPassphraseMismatchError) {
+            analytics.report({ type: EventType.PassphraseMismatch });
             showAlert({
                 title: (
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.title" />
@@ -96,6 +102,10 @@ export const PassphraseConfirmOnTrezorScreen = () => {
                 ),
                 onPressSecondaryButton: () => {
                     dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+                    analytics.report({
+                        type: EventType.PassphraseExit,
+                        payload: { screen: AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor },
+                    });
                 },
                 secondaryButtonVariant: 'redElevation0',
                 icon: 'warningTriangleLight',

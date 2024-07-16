@@ -17,6 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { finishPassphraseFlow } from '@suite-native/device-authorization';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
 
@@ -45,6 +46,10 @@ export const PassphraseLoadingScreen = () => {
     const handleSuccess = () => {
         if (!isDeviceAccountless) {
             setLoadingResult('success');
+            analytics.report({
+                type: EventType.PassphraseFlowFinished,
+                payload: { isEmptyWallet: false },
+            });
             dispatch(finishPassphraseFlow());
         } else if (isDeviceAccountless && !isDiscoveryActive) {
             setLoadingResult('success');

@@ -18,6 +18,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
 import { DeviceAction } from './DeviceAction';
@@ -48,10 +49,13 @@ export const AddHiddenWalletButton = () => {
         if (!device) return;
         setIsDeviceManagerVisible(false);
 
+        analytics.report({ type: EventType.PassphraseAddHiddenWallet });
+
         dispatch(createDeviceInstanceThunk({ device, useEmptyPassphrase: false }));
 
         // Create device instance thunk already handles passphrase enabling, so we just redirect to this screen and wait for success / error
         if (!isPassphraseEnabledOnDevice) {
+            analytics.report({ type: EventType.PassphraseNotEnabled });
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice,
             });

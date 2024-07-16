@@ -209,4 +209,36 @@ export type SuiteNativeAnalyticsEvent =
     | {
           type: EventType.ViewOnlySkipped;
           payload: { action: 'button' | 'close' };
+      }
+    | {
+          type: EventType.PassphraseMismatch;
+      }
+    | {
+          type: EventType.PassphraseDuplicate;
+      }
+    | {
+          type: EventType.PassphraseNotEnabled;
+      }
+    | {
+          type: EventType.PassphraseArticleOpened;
+      }
+    | {
+          type: EventType.PassphraseEnterOnTrezor;
+      }
+    | {
+          type: EventType.PassphraseEnterInApp;
+      }
+    | {
+          type: EventType.PassphraseFlowFinished;
+          payload: { isEmptyWallet: boolean };
+      }
+    | {
+          type: EventType.PassphraseTryAgain;
+      }
+    | {
+          type: EventType.PassphraseExit;
+          payload: { screen: string };
+      }
+    | {
+          type: EventType.PassphraseAddHiddenWallet;
       };
