@@ -73,7 +73,19 @@ interface DeviceListEvents {
     [DEVICE.ACQUIRED]: DeviceTyped;
 }
 
-export class DeviceList extends TypedEmitter<DeviceListEvents> {
+export interface IDeviceList {
+    isConnected(): this is DeviceList;
+    assertConnected(): asserts this is DeviceList;
+    pendingConnection(): Promise<void> | undefined;
+    setTransports: DeviceList['setTransports'];
+    addAuthPenalty: DeviceList['addAuthPenalty'];
+    removeAuthPenalty: DeviceList['removeAuthPenalty'];
+    on: DeviceList['on'];
+    init: DeviceList['init'];
+    dispose: DeviceList['dispose'];
+}
+
+export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDeviceList {
     // @ts-expect-error has no initializer
     private transport: Transport;
 
@@ -89,6 +101,18 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
     private initPromise: Promise<void> | undefined;
 
     private transportCommonArgs;
+
+    isConnected(): this is DeviceList {
+        return !!this.transport;
+    }
+
+    assertConnected(): asserts this is DeviceList {
+        if (!this.transport) throw ERRORS.TypedError('Transport_Missing');
+    }
+
+    pendingConnection() {
+        return this.initPromise;
+    }
 
     constructor({
         messages,
@@ -358,10 +382,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         });
     }
 
-    getInitPromise() {
-        return this.initPromise;
-    }
-
     private async _createAndSaveDevice(descriptor: Descriptor, transport: Transport) {
         _log.debug('Creating Device', descriptor);
         await this.handle(descriptor, transport);
@@ -426,11 +446,14 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         if (autoResolveTransportEventTimeout) {
             clearTimeout(autoResolveTransportEventTimeout);
         }
+
         // release all devices
-        Promise.all(this.allDevices().map(device => device.dispose())).then(() => {
+        return Promise.all(this.allDevices().map(device => device.dispose())).then(() => {
             // now we can be relatively sure that release calls have been dispatched
             // and we can safely kill all async subscriptions in transport layer
-            this.transport.stop();
+            this.transport?.stop();
+            // @ts-expect-error will be fixed later
+            this.transport = undefined;
         });
     }
 
