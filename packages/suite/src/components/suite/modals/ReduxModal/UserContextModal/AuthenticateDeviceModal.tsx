@@ -5,7 +5,7 @@ import { Button } from '@trezor/components';
 
 import { onCancel, openModal } from 'src/actions/suite/modalActions';
 import { DeviceAuthenticationExplainer, Modal, Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
 
@@ -14,6 +14,7 @@ export const AuthenticateDeviceModal = () => {
     const dispatch = useDispatch();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const selectedDeviceAuthenticity = useSelector(selectSelectedDeviceAuthenticity);
+    const isLocked = useDevice().isLocked();
 
     const handleClick = async () => {
         setIsLoading(true);
@@ -35,7 +36,11 @@ export const AuthenticateDeviceModal = () => {
             onCancel={handleClose}
             heading={<Translation id="TR_LETS_CHECK_YOUR_DEVICE" />}
             bottomBarComponents={
-                <Button onClick={handleClick} isDisabled={isLoading} isLoading={isLoading}>
+                <Button
+                    onClick={handleClick}
+                    isDisabled={isLoading || isLocked}
+                    isLoading={isLoading}
+                >
                     <Translation id="TR_START_CHECK" />
                 </Button>
             }
