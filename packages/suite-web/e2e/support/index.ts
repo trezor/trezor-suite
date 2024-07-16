@@ -6,7 +6,8 @@ import 'cypress-real-events';
 const app: any = window.top;
 if (!app.document.head.querySelector('[data-hide-command-log-request]')) {
     const style = app.document.createElement('style');
-    style.innerHTML = '.command-name-request, .command-name-xhr { display: none }';
+    style.innerHTML =
+        '.command-name-request, .command-name-xhr, [class*="command-name-stub-"] { display: none }';
     style.setAttribute('data-hide-command-log-request', '');
     app.document.head.appendChild(style);
 }
