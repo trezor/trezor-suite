@@ -6,28 +6,12 @@ import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 export const ViewOnlySettings = () => {
-    const {
-        viewOnlyPromoClosed,
-        viewOnlyTooltipClosed,
-        isViewOnlyModeVisible,
-        isDashboardPassphraseBannerVisible,
-    } = useSelector(selectSuiteFlags);
+    const { viewOnlyPromoClosed, viewOnlyTooltipClosed, isDashboardPassphraseBannerVisible } =
+        useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
 
     return (
         <>
-            <SectionItem>
-                <TextColumn title="Enable redesigned view-only" />
-                <ActionColumn>
-                    <Checkbox
-                        isChecked={isViewOnlyModeVisible}
-                        onClick={() => {
-                            dispatch(setFlag('isViewOnlyModeVisible', !isViewOnlyModeVisible));
-                        }}
-                    />
-                </ActionColumn>
-            </SectionItem>
-
             <SectionItem>
                 <TextColumn title="Set viewOnlyPromoClosed" />
                 <ActionColumn>

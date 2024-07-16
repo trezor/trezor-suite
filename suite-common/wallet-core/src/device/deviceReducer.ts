@@ -86,12 +86,6 @@ const getShouldUseEmptyPassphrase = (
         return true;
     }
 
-    const isLegacy = !settings.isViewOnlyModeVisible;
-
-    if (isLegacy) {
-        return isUnlocked(device.features) && !device.features.passphrase_protection;
-    }
-
     const isPassphraseDisabledInSettings = !device.features.passphrase_protection;
 
     return isPassphraseDisabledInSettings || settings.defaultWalletLoading === 'standard';

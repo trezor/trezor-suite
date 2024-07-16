@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { PassphraseTypeCard, Text } from '@trezor/components';
 import {
@@ -16,7 +16,6 @@ import { PassphraseDescription } from './PassphraseDescription';
 import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 import { PassphraseHeading } from './PassphraseHeading';
 import TrezorConnect from '@trezor/connect';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { spacingsPx } from '@trezor/theme';
 import styled from 'styled-components';
 
@@ -29,9 +28,6 @@ interface PassphraseModalProps {
 }
 
 export const PassphraseModal = ({ device }: PassphraseModalProps) => {
-    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
-    const [submitted, setSubmitted] = useState(false);
-
     const authConfirmation =
         useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
 
@@ -64,17 +60,10 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
-            if (!isViewOnlyModeVisible) {
-                setSubmitted(true);
-            }
             dispatch(onPassphraseSubmit({ value, passphraseOnDevice: !!passphraseOnDevice }));
         },
-        [dispatch, setSubmitted, isViewOnlyModeVisible],
+        [dispatch],
     );
-
-    if (!isViewOnlyModeVisible && submitted) {
-        return null;
-    }
 
     // passphrase needs to be confirmed because wallet is empty
     if (authConfirmation) {

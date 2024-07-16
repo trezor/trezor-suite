@@ -27,7 +27,6 @@ import { SafetyChecks } from './SafetyChecks';
 import { WipeCode } from './WipeCode';
 import { WipeDevice } from './WipeDevice';
 import { ChangeLanguage } from './ChangeLanguage';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { isRecoveryInProgress } from '../../../utils/device/isRecoveryInProgress';
 import { HapticFeedback } from './HapticFeedback';
 import { Brightness } from './Brightness';
@@ -47,7 +46,6 @@ const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<Tr
 export const SettingsDevice = () => {
     const { device, isLocked } = useDevice();
     const transport = useSelector(state => state.suite.transport);
-    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const deviceUnavailable = !device?.features;
     const isDeviceLocked = isLocked();
     const bootloaderMode = device?.mode === 'bootloader';
@@ -132,14 +130,12 @@ export const SettingsDevice = () => {
                 </SettingsSection>
             )}
 
-            {isViewOnlyModeVisible && (
-                <SettingsSection
-                    title={<Translation id="TR_DEVICE_SETTINGS_WALLET_LOADING" />}
-                    icon="APP"
-                >
-                    <DefaultWalletLoading />
-                </SettingsSection>
-            )}
+            <SettingsSection
+                title={<Translation id="TR_DEVICE_SETTINGS_WALLET_LOADING" />}
+                icon="APP"
+            >
+                <DefaultWalletLoading />
+            </SettingsSection>
 
             <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="FIRMWARE">
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />

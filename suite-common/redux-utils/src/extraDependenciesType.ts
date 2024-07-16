@@ -82,7 +82,6 @@ export type ExtraDependencies = {
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
         selectSuiteSettings: SuiteCompatibleSelector<{
             defaultWalletLoading: WalletType;
-            isViewOnlyModeVisible: boolean;
         }>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!

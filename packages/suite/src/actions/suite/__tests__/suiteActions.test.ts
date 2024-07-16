@@ -120,7 +120,6 @@ const initStore = (state: State) => {
 
 const SUITE_SETTINGS: ConnectDeviceSettings = {
     defaultWalletLoading: 'standard',
-    isViewOnlyModeVisible: false,
 };
 
 describe('Suite Actions', () => {

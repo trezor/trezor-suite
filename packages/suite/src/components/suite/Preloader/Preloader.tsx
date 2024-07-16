@@ -45,8 +45,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
     const selectedDevice = useSelector(selectDevice);
-    const { initialRun, viewOnlyPromoClosed, isViewOnlyModeVisible } =
-        useSelector(selectSuiteFlags);
+    const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
 
     const dispatch = useDispatch();
 
@@ -71,7 +70,6 @@ export const Preloader = ({ children }: PreloaderProps) => {
     }
 
     if (
-        isViewOnlyModeVisible &&
         router.route?.app !== 'settings' &&
         !initialRun &&
         !viewOnlyPromoClosed &&

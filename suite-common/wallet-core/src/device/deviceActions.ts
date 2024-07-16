@@ -8,7 +8,6 @@ export const DEVICE_MODULE_PREFIX = '@suite/device';
 
 export type ConnectDeviceSettings = {
     defaultWalletLoading: WalletType;
-    isViewOnlyModeVisible: boolean;
 };
 
 export type DeviceConnectActionPayload = { device: Device; settings: ConnectDeviceSettings };
