@@ -1,4 +1,4 @@
-import { isWeb } from '@trezor/env-utils';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { SettingsSection, SettingsLayout } from 'src/components/settings';
 
@@ -21,6 +21,7 @@ import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite';
 import { PreField } from './PreField';
 import { AutoStart } from './AutoStart';
+import { Tor } from './Tor';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);
@@ -67,6 +68,11 @@ export const SettingsDebug = () => {
             <SettingsSection title="Transport clients">
                 <Transport />
             </SettingsSection>
+            {isDesktop() && (
+                <SettingsSection title="Tor">
+                    <Tor />
+                </SettingsSection>
+            )}
             <SettingsSection title="Backends">
                 <Backends />
             </SettingsSection>
