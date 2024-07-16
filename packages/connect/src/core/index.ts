@@ -947,12 +947,40 @@ const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
     }
 };
 
-/**
- * Start DeviceList with listeners.
- * @param {boolean} transportReconnect
- * @returns {Promise<void>}
- * @memberof Core
- */
+const createDeviceList = (params: ConstructorParameters<typeof DeviceList>[0]) => {
+    const deviceList = new DeviceList(params);
+
+    deviceList.on(DEVICE.CONNECT, device => {
+        handleDeviceSelectionChanges();
+        postMessage(createDeviceMessage(DEVICE.CONNECT, device));
+    });
+
+    deviceList.on(DEVICE.CONNECT_UNACQUIRED, device => {
+        handleDeviceSelectionChanges();
+        postMessage(createDeviceMessage(DEVICE.CONNECT_UNACQUIRED, device));
+    });
+
+    deviceList.on(DEVICE.DISCONNECT, device => {
+        handleDeviceSelectionChanges(device);
+        postMessage(createDeviceMessage(DEVICE.DISCONNECT, device));
+    });
+
+    deviceList.on(DEVICE.CHANGED, device => {
+        postMessage(createDeviceMessage(DEVICE.CHANGED, device));
+    });
+
+    deviceList.on(TRANSPORT.START, transportType =>
+        postMessage(createTransportMessage(TRANSPORT.START, transportType)),
+    );
+
+    deviceList.on(TRANSPORT.ERROR, error => {
+        _log.warn('TRANSPORT.ERROR', error);
+        postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
+    });
+
+    return deviceList;
+};
+
 const initDeviceList = async (transportReconnect?: boolean) => {
     const { transports, pendingTransportEvent } = DataManager.getSettings();
 
@@ -963,47 +991,16 @@ const initDeviceList = async (transportReconnect?: boolean) => {
         throw error;
     }
 
-    _deviceList.on(DEVICE.CONNECT, device => {
-        handleDeviceSelectionChanges();
-        postMessage(createDeviceMessage(DEVICE.CONNECT, device));
-    });
-
-    _deviceList.on(DEVICE.CONNECT_UNACQUIRED, device => {
-        handleDeviceSelectionChanges();
-        postMessage(createDeviceMessage(DEVICE.CONNECT_UNACQUIRED, device));
-    });
-
-    _deviceList.on(DEVICE.DISCONNECT, device => {
-        handleDeviceSelectionChanges(device);
-        postMessage(createDeviceMessage(DEVICE.DISCONNECT, device));
-    });
-
-    _deviceList.on(DEVICE.CHANGED, device => {
-        postMessage(createDeviceMessage(DEVICE.CHANGED, device));
-    });
-
-    _deviceList.on(TRANSPORT.START, transportType =>
-        postMessage(createTransportMessage(TRANSPORT.START, transportType)),
-    );
-
-    _deviceList.on(TRANSPORT.ERROR, error => {
-        _log.warn('TRANSPORT.ERROR', error);
-
-        if (_deviceList.isConnected()) {
-            _deviceList.disconnectDevices();
-            _deviceList.dispose();
-        }
-
-        postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
-        // if transport fails during app lifetime, try to reconnect
-        if (transportReconnect) {
+    // if transport fails during app lifetime, try to reconnect
+    if (transportReconnect) {
+        _deviceList.once(TRANSPORT.ERROR, () => {
             const { promise, timeout } = resolveAfter(1000, null);
             _deviceListInitTimeout = timeout;
             promise.then(() => {
                 initDeviceList(transportReconnect);
             });
-        }
-    });
+        });
+    }
 
     _deviceList.init(pendingTransportEvent);
     await _deviceList.pendingConnection();
@@ -1102,9 +1099,7 @@ export class Core extends EventEmitter {
         }
         this.removeAllListeners();
         this.abortController.abort();
-        if (_deviceList.isConnected()) {
-            _deviceList.dispose();
-        }
+        _deviceList.dispose();
     }
 
     async getCurrentMethod() {
@@ -1143,7 +1138,7 @@ export class Core extends EventEmitter {
             // TODO NOTE: i'm leaving reference to avoid complex changes, top-level reference is used by methods above Core context
             // eslint-disable-next-line @typescript-eslint/no-this-alias
             _core = this;
-            _deviceList = new DeviceList({ debug, messages, priority });
+            _deviceList = createDeviceList({ debug, messages, priority });
 
             // If we're not in popup mode, set the interaction timeout to 0 (= disabled)
             _interactionTimeout = new InteractionTimeout(
@@ -1195,9 +1190,9 @@ const disableWebUSBTransport = async () => {
     }
 
     try {
-        // disconnect previous device list
-        _deviceList.dispose();
-        // and init with new settings, without webusb
+        // clean previous device list
+        _deviceList.cleanup();
+        //and init with new settings, without webusb
         await initDeviceList(settings.transportReconnect);
     } catch (error) {
         // do nothing
