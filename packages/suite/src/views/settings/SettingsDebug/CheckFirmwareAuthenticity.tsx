@@ -1,25 +1,21 @@
-import { useState } from 'react';
-
 import { Button, Switch } from '@trezor/components';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { manualFirmwareHashCheckThunk } from '@suite-common/wallet-core';
 
 export const CheckFirmwareAuthenticity = () => {
-    const [inProgress, setInProgress] = useState(false);
-
     const debug = useSelector(state => state.suite.settings.debug);
+    const isLocked = useDevice().isLocked();
+
     const dispatch = useDispatch();
 
     const onChangeRegularCheck = (state?: boolean) =>
         dispatch(setDebugMode({ checkFirmwareAuthenticity: state }));
 
     const onCheckFirmwareAuthenticity = async () => {
-        setInProgress(true);
         await dispatch(manualFirmwareHashCheckThunk());
-        setInProgress(false);
     };
 
     return (
@@ -32,8 +28,8 @@ export const CheckFirmwareAuthenticity = () => {
                 <ActionColumn>
                     <Button
                         onClick={onCheckFirmwareAuthenticity}
-                        isLoading={inProgress}
-                        isDisabled={inProgress}
+                        isLoading={isLocked}
+                        isDisabled={isLocked}
                     >
                         Check
                     </Button>
