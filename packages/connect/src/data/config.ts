@@ -51,6 +51,16 @@ export const config = {
             label: 'Rabby',
             icon: '',
         },
+        {
+            origin: 'ehnpnhnhcickeknioaiodjmielfaoajd',
+            label: 'Ambire DEV',
+            icon: '',
+        },
+        {
+            origin: 'ehgjhhccekdedpbkifaojjaefeohnoea',
+            label: 'Ambire',
+            icon: '',
+        },
         { origin: 'file://', label: ' ', icon: '' },
     ],
     onionDomains: {
