@@ -75,21 +75,18 @@ const derToAsn1 = (byteArray: Uint8Array): Asn1 => {
     const structured = (byteArray[0] & 0x20) === 0x20;
     const tag = getTag();
 
+    if (byteArray[position] === 0x80) {
+        // DER forbids indefinite length encoding. You must use the definite length encoding (that is, with the length specified at the beginning).
+        // https://letsencrypt.org/docs/a-warm-welcome-to-asn1-and-der/
+        throw new Error('Unsupported length encoding');
+    }
+
     let length = getLength(); // As encoded, which may be special value 0
     let byteLength;
     let contents;
 
-    if (length === 0x80) {
-        length = 0;
-        while (byteArray[position + length] !== 0 || byteArray[position + length + 1] !== 0) {
-            length += 1;
-        }
-        byteLength = position + length + 2;
-        contents = byteArray.subarray(position, position + length);
-    } else {
-        byteLength = position + length;
-        contents = byteArray.subarray(position, byteLength);
-    }
+    byteLength = position + length;
+    contents = byteArray.subarray(position, byteLength);
 
     const raw = byteArray.subarray(0, byteLength); // May not be the whole input array
 
