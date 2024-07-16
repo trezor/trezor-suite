@@ -17,7 +17,7 @@ const WrapperWrapper = styled.div`
 `;
 
 const ConfirmWrapper = styled.div`
-    margin-bottom: 20px;
+    margin-bottom: ${spacingsPx.lg};
     height: 62px;
 `;
 
@@ -25,13 +25,12 @@ const InnerActions = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: ${spacingsPx.xxl};
-    margin-bottom: ${spacingsPx.xxl};
+    margin: ${spacingsPx.xxl} auto;
 `;
 
 const OuterActions = styled.div<{ $smallMargin?: boolean }>`
     display: flex;
-    margin-top: ${({ $smallMargin }) => ($smallMargin ? '0px' : '20px')};
+    margin-top: ${({ $smallMargin }) => ($smallMargin ? '0px' : spacingsPx.lg)};
     width: 100%;
     justify-content: center;
     z-index: ${zIndices.onboardingForeground};
