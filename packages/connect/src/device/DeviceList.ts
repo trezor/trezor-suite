@@ -25,15 +25,6 @@ import { resolveAfter } from '../utils/promiseUtils';
 // custom log
 const _log = initLog('DeviceList');
 
-/**
- * when TRANSPORT.START_PENDING is emitted, we already know that transport is available
- * but we wait with emitting TRANSPORT.START event to the implementator until we read from devices
- * in case something wrong happens and we never finish reading from devices for whatever reason
- * implementator could get stuck waiting from TRANSPORT.START event forever. To avoid this,
- * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
- */
-let autoResolveTransportEventTimeout: ReturnType<typeof setTimeout> | undefined;
-
 const createAuthPenaltyManager = (priority: number) => {
     const penalizedDevices: { [deviceID: string]: number } = {};
 
@@ -81,6 +72,7 @@ export interface IDeviceList {
     addAuthPenalty: DeviceList['addAuthPenalty'];
     removeAuthPenalty: DeviceList['removeAuthPenalty'];
     on: DeviceList['on'];
+    once: DeviceList['once'];
     init: DeviceList['init'];
     dispose: DeviceList['dispose'];
 }
@@ -99,6 +91,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private readonly authPenaltyManager;
 
     private initPromise: Promise<void> | undefined;
+
+    private rejectWaitForDevices?: (e: Error) => void;
 
     private transportCommonArgs;
 
@@ -304,6 +298,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                     this.emit(TRANSPORT.START, this.getTransportInfo());
                 })
                 .catch(error => {
+                    this.cleanup();
                     this.emit(TRANSPORT.ERROR, error);
                 })
                 .finally(() => {
@@ -334,6 +329,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         // just like transport emits updates, it may also start producing errors, for example bridge process crashes.
         transport.on(TRANSPORT.ERROR, error => {
+            this.cleanup();
             this.emit(TRANSPORT.ERROR, error);
         });
 
@@ -359,10 +355,18 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private waitForDevices(deviceCount: number, autoResolveMs: number) {
-        const { promise, resolve } = createDeferred();
+        const { promise, resolve, reject } = createDeferred();
         let transportStartPending = deviceCount;
 
-        autoResolveTransportEventTimeout = setTimeout(resolve, autoResolveMs);
+        /**
+         * when TRANSPORT.START_PENDING is emitted, we already know that transport is available
+         * but we wait with emitting TRANSPORT.START event to the implementator until we read from devices
+         * in case something wrong happens and we never finish reading from devices for whatever reason
+         * implementator could get stuck waiting from TRANSPORT.START event forever. To avoid this,
+         * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
+         */
+        const autoResolveTransportEventTimeout = setTimeout(resolve, autoResolveMs);
+        this.rejectWaitForDevices = reject;
 
         const onDeviceConnect = () => {
             transportStartPending--;
@@ -377,6 +381,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         this.on(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
 
         return promise.finally(() => {
+            this.rejectWaitForDevices = undefined;
+            clearTimeout(autoResolveTransportEventTimeout);
             this.off(DEVICE.CONNECT, onDeviceConnect);
             this.off(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
         });
@@ -443,25 +449,32 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     dispose() {
         this.removeAllListeners();
 
-        if (autoResolveTransportEventTimeout) {
-            clearTimeout(autoResolveTransportEventTimeout);
-        }
-
-        // release all devices
-        return Promise.all(this.allDevices().map(device => device.dispose())).then(() => {
-            // now we can be relatively sure that release calls have been dispatched
-            // and we can safely kill all async subscriptions in transport layer
-            this.transport?.stop();
-            // @ts-expect-error will be fixed later
-            this.transport = undefined;
-        });
+        return this.cleanup();
     }
 
-    disconnectDevices() {
-        this.allDevices().forEach(device => {
+    async cleanup() {
+        const { transport } = this;
+        const devices = this.allDevices();
+
+        // @ts-expect-error will be fixed later
+        this.transport = undefined;
+        this.authPenaltyManager.clear();
+        Object.keys(this.devices).forEach(key => delete this.devices[key]);
+
+        this.rejectWaitForDevices?.(new Error('Disposed'));
+
+        // disconnect devices
+        devices.forEach(device => {
             // device.disconnect();
             this.emit(DEVICE.DISCONNECT, device.toMessageObject());
         });
+
+        // release all devices
+        await Promise.all(devices.map(device => device.dispose()));
+
+        // now we can be relatively sure that release calls have been dispatched
+        // and we can safely kill all async subscriptions in transport layer
+        transport?.stop();
     }
 
     // TODO this is fugly
