@@ -25,12 +25,12 @@ import {
     ExternalOutput,
 } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 
 import { selectDevice } from '../device/deviceReducer';
 import { selectTransactions } from '../transactions/transactionsReducer';
 import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
-import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 import { STAKE_GAS_LIMIT_RESERVE } from '../stake/stakeTypes';
 
 const calculate = (
