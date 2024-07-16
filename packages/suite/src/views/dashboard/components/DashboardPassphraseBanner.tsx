@@ -19,14 +19,12 @@ const Container = styled(motion.div)`
 export const DashboardPassphraseBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
     const dispatch = useDispatch();
-    const { isDashboardPassphraseBannerVisible, isViewOnlyModeVisible } =
-        useSelector(selectSuiteFlags);
+    const { isDashboardPassphraseBannerVisible } = useSelector(selectSuiteFlags);
     const selectedAddressDisplay = useSelector(state => state.suite.settings.defaultWalletLoading);
     const device = useSelector(selectDevice);
     const { isDiscoveryRunning } = useDiscovery();
 
     if (
-        !isViewOnlyModeVisible ||
         isDashboardPassphraseBannerVisible === false ||
         device?.useEmptyPassphrase === true ||
         isDiscoveryRunning === true ||

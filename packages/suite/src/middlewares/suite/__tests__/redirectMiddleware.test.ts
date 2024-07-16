@@ -89,7 +89,7 @@ describe('redirectMiddleware', () => {
                 type: DEVICE.CONNECT,
                 payload: {
                     device: getSuiteDevice({ mode: 'initialize' }),
-                    settings: { isViewOnlyModeVisible: true, defaultWalletLoading: 'standard' },
+                    settings: { defaultWalletLoading: 'standard' },
                 },
             };
 
@@ -104,7 +104,7 @@ describe('redirectMiddleware', () => {
                 type: DEVICE.CONNECT,
                 payload: {
                     device: getSuiteDevice({ mode: 'normal', firmware: 'required' }),
-                    settings: { isViewOnlyModeVisible: true, defaultWalletLoading: 'standard' },
+                    settings: { defaultWalletLoading: 'standard' },
                 },
             };
 

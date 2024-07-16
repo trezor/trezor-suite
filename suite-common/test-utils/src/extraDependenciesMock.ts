@@ -80,7 +80,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectDebugSettings: mockSelector('selectDebugSettings', {
             checkFirmwareAuthenticity: false,
             showDebugMenu: false,
-            isViewOnlyModeVisible: false,
             transports: [],
         }),
         selectDesktopBinDir: mockSelector('selectDesktopBinDir', '/bin'),
@@ -100,7 +99,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectSelectedAccountStatus: mockSelector('selectSelectedAccountStatus', 'loaded'),
         selectSuiteSettings: mockSelector('selectSuiteSettings', {
             defaultWalletLoading: 'standard',
-            isViewOnlyModeVisible: false,
         }),
     },
     actions: {

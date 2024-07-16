@@ -23,7 +23,6 @@ type Fixture<TAction> = {
 
 const SUITE_SETTINGS: ConnectDeviceSettings = {
     defaultWalletLoading: 'standard',
-    isViewOnlyModeVisible: false,
 };
 
 const connect: Fixture<
@@ -42,7 +41,6 @@ const connect: Fixture<
                     }),
                     settings: {
                         defaultWalletLoading: 'standard',
-                        isViewOnlyModeVisible: false,
                     },
                 },
             },
@@ -72,7 +70,6 @@ const connect: Fixture<
                     }),
                     settings: {
                         defaultWalletLoading: 'standard',
-                        isViewOnlyModeVisible: false,
                     },
                 },
             },
@@ -108,7 +105,6 @@ const connect: Fixture<
                     }),
                     settings: {
                         defaultWalletLoading: 'standard',
-                        isViewOnlyModeVisible: false,
                     },
                 },
             },
@@ -139,7 +135,6 @@ const connect: Fixture<
                     }),
                     settings: {
                         defaultWalletLoading: 'standard',
-                        isViewOnlyModeVisible: false,
                     },
                 },
             },
@@ -176,7 +171,6 @@ const connect: Fixture<
                     }),
                     settings: {
                         defaultWalletLoading: 'standard',
-                        isViewOnlyModeVisible: false,
                     },
                 },
             },
@@ -216,7 +210,6 @@ const connect: Fixture<
                     }),
                     settings: {
                         defaultWalletLoading: 'standard',
-                        isViewOnlyModeVisible: false,
                     },
                 },
             },
@@ -254,7 +247,6 @@ const connect: Fixture<
                     }),
                     settings: {
                         defaultWalletLoading: 'standard',
-                        isViewOnlyModeVisible: false,
                     },
                 },
             },
@@ -295,7 +287,6 @@ const connect: Fixture<
                     }),
                     settings: {
                         defaultWalletLoading: 'standard',
-                        isViewOnlyModeVisible: false,
                     },
                 },
             },
@@ -327,7 +318,6 @@ const connect: Fixture<
                     }),
                     settings: {
                         defaultWalletLoading: 'standard',
-                        isViewOnlyModeVisible: false,
                     },
                 },
             },

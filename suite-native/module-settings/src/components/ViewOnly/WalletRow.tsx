@@ -71,7 +71,6 @@ export const WalletRow = ({ device }: WalletRowProps) => {
         if (!device.connected && device.remember) {
             const settings: ConnectDeviceSettings = {
                 defaultWalletLoading: 'standard',
-                isViewOnlyModeVisible: false,
             };
 
             // disconnected device, view-only is being disabled so it can be forgotten

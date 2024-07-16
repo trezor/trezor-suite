@@ -385,12 +385,10 @@ export const authorizeDeviceThunk = createThunk<
             const settings = extra.selectors.selectSuiteSettings(getState());
             dispatch(deviceActions.forgetDevice({ device, settings }));
 
-            if (settings.isViewOnlyModeVisible) {
-                const newDevice = selectDeviceSelector(getState());
-                dispatch(deviceActions.selectDevice(newDevice));
-                if (response.payload.error === 'enter-passphrase-back') {
-                    dispatch(extra.thunks.openSwitchDeviceDialog());
-                }
+            const newDevice = selectDeviceSelector(getState());
+            dispatch(deviceActions.selectDevice(newDevice));
+            if (response.payload.error === 'enter-passphrase-back') {
+                dispatch(extra.thunks.openSwitchDeviceDialog());
             }
 
             return rejectWithValue({
@@ -439,21 +437,10 @@ export const authConfirm = createThunk(
             ) {
                 const settings = extra.selectors.selectSuiteSettings(getState());
 
-                // needs await to propagate all actions
-                if (!settings.isViewOnlyModeVisible) {
-                    await dispatch(
-                        createDeviceInstanceThunk({ device, useEmptyPassphrase: false }),
-                    );
-                }
-
                 // forget previous empty wallet
                 dispatch(deviceActions.forgetDevice({ device, settings }));
 
-                if (
-                    response.payload.error === 'auth-confirm-retry' &&
-                    settings.isViewOnlyModeVisible &&
-                    device.type === 'acquired'
-                ) {
+                if (response.payload.error === 'auth-confirm-retry' && device.type === 'acquired') {
                     dispatch(
                         extra.thunks.addWalletThunk({ walletType: WalletType.PASSPHRASE, device }),
                     );
@@ -474,17 +461,8 @@ export const authConfirm = createThunk(
         }
 
         if (response.payload.state !== device.state) {
-            const settings = extra.selectors.selectSuiteSettings(getState());
-
-            if (!settings.isViewOnlyModeVisible) {
-                dispatch(notificationsActions.addToast({ type: 'auth-confirm-error' }));
-            }
-
             dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
-
-            if (settings.isViewOnlyModeVisible) {
-                dispatch(extra.actions.openModal({ type: 'passphrase-mismatch-warning' }));
-            }
+            dispatch(extra.actions.openModal({ type: 'passphrase-mismatch-warning' }));
 
             return;
         }

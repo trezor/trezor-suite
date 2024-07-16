@@ -6,7 +6,6 @@ import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import {
     selectIsDebugModeActive,
     selectIsSettingsDesktopAppPromoBannerShown,
-    selectSuiteFlags,
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
@@ -38,7 +37,6 @@ export const SettingsGeneral = () => {
     );
 
     const isDebug = useSelector(selectIsDebugModeActive);
-    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const { isTorEnabled } = useSelector(selectTorState);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
@@ -91,11 +89,9 @@ export const SettingsGeneral = () => {
                 <VersionWithUpdate />
             </SettingsSection>
 
-            {isViewOnlyModeVisible && (
-                <SettingsSection title={<Translation id="TR_VIEW_ONLY" />} icon="LINK">
-                    <EnableViewOnly />
-                </SettingsSection>
-            )}
+            <SettingsSection title={<Translation id="TR_VIEW_ONLY" />} icon="LINK">
+                <EnableViewOnly />
+            </SettingsSection>
 
             {(desktopUpdate.enabled || isDebug) && (
                 <SettingsSection

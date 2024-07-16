@@ -64,7 +64,6 @@ export interface Flags {
     showSettingsDesktopAppPromoBanner: boolean;
     stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
     showDashboardStakingPromoBanner: boolean;
-    isViewOnlyModeVisible: boolean;
     isDashboardPassphraseBannerVisible: boolean;
     viewOnlyPromoClosed: boolean;
     viewOnlyTooltipClosed: boolean;
@@ -125,7 +124,6 @@ const initialState: SuiteState = {
         showSettingsDesktopAppPromoBanner: true,
         stakeEthBannerClosed: false,
         showDashboardStakingPromoBanner: true,
-        isViewOnlyModeVisible: true,
         viewOnlyPromoClosed: false,
         viewOnlyTooltipClosed: false,
         isDashboardPassphraseBannerVisible: true,
@@ -388,7 +386,6 @@ export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
 
 export const selectSuiteSettings = (state: SuiteRootState) => ({
     defaultWalletLoading: state.suite.settings.defaultWalletLoading,
-    isViewOnlyModeVisible: state.suite.flags.isViewOnlyModeVisible,
 });
 
 export const selectHasExperimentalFeature =
