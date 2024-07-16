@@ -44,7 +44,7 @@ let _core: Core; // Class with event emitter
 let _deviceList: IDeviceList; // Instance of DeviceList
 const _callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
 let _interactionTimeout: InteractionTimeout;
-let _deviceListInitTimeout: ReturnType<typeof setTimeout> | undefined;
+let _deviceListInitReject: ((e: Error) => void) | undefined;
 let _overridePromise: Promise<void> | undefined;
 
 const methodSynchronize = getSynchronize();
@@ -994,8 +994,8 @@ const initDeviceList = async (transportReconnect?: boolean) => {
     // if transport fails during app lifetime, try to reconnect
     if (transportReconnect) {
         _deviceList.once(TRANSPORT.ERROR, () => {
-            const { promise, timeout } = resolveAfter(1000, null);
-            _deviceListInitTimeout = timeout;
+            const { promise, reject } = resolveAfter(1000, null);
+            _deviceListInitReject = reject;
             promise.then(() => {
                 initDeviceList(transportReconnect);
             });
@@ -1094,9 +1094,7 @@ export class Core extends EventEmitter {
 
     dispose() {
         disposeBackend();
-        if (_deviceListInitTimeout) {
-            clearTimeout(_deviceListInitTimeout);
-        }
+        _deviceListInitReject?.(new Error('Disposed during initialization'));
         this.removeAllListeners();
         this.abortController.abort();
         _deviceList.dispose();
