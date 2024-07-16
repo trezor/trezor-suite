@@ -41,7 +41,10 @@ export const ViewOnlySettings = () => {
             </SectionItem>
 
             <SectionItem>
-                <TextColumn title="Set viewOnlyTooltipClosed" />
+                <TextColumn
+                    title="Set viewOnlyTooltipClosed"
+                    description="To show tooltip in the app you also need to set viewOnlyPromoClosed = true"
+                />
                 <ActionColumn>
                     <Checkbox
                         isChecked={viewOnlyTooltipClosed}
