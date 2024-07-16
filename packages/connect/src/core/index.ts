@@ -7,7 +7,7 @@ import { getSynchronize } from '@trezor/utils';
 import { storage } from '@trezor/connect-common';
 
 import { DataManager } from '../data/DataManager';
-import { DeviceList } from '../device/DeviceList';
+import { DeviceList, IDeviceList } from '../device/DeviceList';
 import { enhanceMessageWithAnalytics } from '../data/analyticsInfo';
 import { ERRORS } from '../constants';
 import {
@@ -41,7 +41,7 @@ import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 
 // Public variables
 let _core: Core; // Class with event emitter
-let _deviceList: DeviceList | undefined; // Instance of DeviceList
+let _deviceList: IDeviceList; // Instance of DeviceList
 const _callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
 let _interactionTimeout: InteractionTimeout;
 let _deviceListInitTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -98,19 +98,11 @@ const uiPromises = createUiPromiseManager(interactionTimeout);
  * @memberof Core
  */
 const initDevice = async (devicePath?: string) => {
-    if (!_deviceList) {
-        throw ERRORS.TypedError('Transport_Missing');
-    }
-
     // see initTransport.
     // if transportReconnect: true, initTransport does not wait to be finished. if there are multiple requested transports
     // in TrezorConnect.init, this method may emit UI.SELECT_DEVICE with wrong parameters (for example it thinks that it does not use weubsb although it should)
-    await _deviceList.getInitPromise();
-
-    if (!_deviceList) {
-        // Need to check again if _deviceList is still available
-        throw ERRORS.TypedError('Transport_Missing');
-    }
+    await _deviceList.pendingConnection();
+    _deviceList.assertConnected();
 
     const isWebUsb = _deviceList.transportType() === 'WebUsbTransport';
     let device: Device | typeof undefined;
@@ -161,10 +153,8 @@ const initDevice = async (devicePath?: string) => {
         // wait for popup handshake
         await waitForPopup();
 
-        // there is await above, _deviceList might have been set to undefined.
-        if (!_deviceList) {
-            throw ERRORS.TypedError('Transport_Missing');
-        }
+        // there is await above, _deviceList might have been disconnected.
+        _deviceList.assertConnected();
 
         // check again for available devices
         // there is a possible race condition before popup open
@@ -533,7 +523,7 @@ const onCall = async (message: IFrameCallMessage) => {
         return Promise.resolve();
     }
 
-    if (!_deviceList && !DataManager.getSettings('transportReconnect')) {
+    if (!_deviceList.isConnected() && !_deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
         await initDeviceList(false);
     }
@@ -681,7 +671,7 @@ const onCall = async (message: IFrameCallMessage) => {
         // corner case: Device was disconnected during authorization
         // this device_id needs to be stored and penalized with delay on future connection
         // this solves issue with U2F login (leaves space for requests from services which aren't using trezord)
-        if (_deviceList && error.code === 'Device_Disconnected') {
+        if (error.code === 'Device_Disconnected') {
             _deviceList.addAuthPenalty(device);
         }
 
@@ -690,7 +680,10 @@ const onCall = async (message: IFrameCallMessage) => {
             // thrown while acquiring device
             // it's a race condition between two tabs
             // workaround is to enumerate transport again and report changes to get a valid session number
-            if (_deviceList && error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS) {
+            if (
+                _deviceList.isConnected() &&
+                error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS
+            ) {
                 await _deviceList.enumerate();
             }
             messageResponse = createResponseMessage(method.responseID, false, { error });
@@ -734,10 +727,8 @@ const onCall = async (message: IFrameCallMessage) => {
                 method.dispose();
             }
 
-            if (_deviceList) {
-                if (response.success) {
-                    _deviceList.removeAuthPenalty(device);
-                }
+            if (response.success) {
+                _deviceList.removeAuthPenalty(device);
             }
 
             if (!useCoreInPopup) {
@@ -887,7 +878,7 @@ const onPopupClosed = (customErrorMessage?: string) => {
         ? ERRORS.TypedError('Method_Cancel', customErrorMessage)
         : ERRORS.TypedError('Method_Interrupted');
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
-    if (_deviceList && _deviceList.asArray().length > 0) {
+    if (_deviceList.isConnected() && _deviceList.asArray().length > 0) {
         _deviceList.allDevices().forEach(d => {
             d.keepSession = false; // clear session on release
             if (d.isUsedHere()) {
@@ -922,7 +913,7 @@ const onPopupClosed = (customErrorMessage?: string) => {
 const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
     // update list of devices in popup
     const promiseExists = uiPromises.exists(UI.RECEIVE_DEVICE);
-    if (promiseExists && _deviceList) {
+    if (promiseExists && _deviceList.isConnected()) {
         const list = _deviceList.asArray();
         const isWebUsb = _deviceList.transportType() === 'WebUsbTransport';
 
@@ -963,15 +954,11 @@ const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
  * @memberof Core
  */
 const initDeviceList = async (transportReconnect?: boolean) => {
-    const { debug, transports, priority, pendingTransportEvent } = DataManager.getSettings();
-    const messages = DataManager.getProtobufMessages();
-
-    _deviceList = new DeviceList({ debug, messages, priority });
+    const { transports, pendingTransportEvent } = DataManager.getSettings();
 
     try {
         _deviceList.setTransports(transports);
     } catch (error) {
-        _deviceList = undefined;
         postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
         throw error;
     }
@@ -1002,12 +989,10 @@ const initDeviceList = async (transportReconnect?: boolean) => {
     _deviceList.on(TRANSPORT.ERROR, error => {
         _log.warn('TRANSPORT.ERROR', error);
 
-        if (_deviceList) {
+        if (_deviceList.isConnected()) {
             _deviceList.disconnectDevices();
             _deviceList.dispose();
         }
-
-        _deviceList = undefined;
 
         postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
         // if transport fails during app lifetime, try to reconnect
@@ -1021,7 +1006,7 @@ const initDeviceList = async (transportReconnect?: boolean) => {
     });
 
     _deviceList.init(pendingTransportEvent);
-    await _deviceList.getInitPromise();
+    await _deviceList.pendingConnection();
 };
 
 /**
@@ -1054,7 +1039,9 @@ export class Core extends EventEmitter {
                  * requestWebUSBDevice in connect-web/src/index, this is used to trigger transport
                  * enumeration
                  */
-                _deviceList?.enumerate();
+                if (_deviceList.isConnected()) {
+                    _deviceList.enumerate();
+                }
                 break;
 
             case TRANSPORT.GET_INFO:
@@ -1082,10 +1069,11 @@ export class Core extends EventEmitter {
                 // like regular methods using onCall function. In onCall, disconnecting device
                 // means that call immediately returns error.
                 if (message.payload.method === 'firmwareUpdate') {
+                    _deviceList.assertConnected();
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
-                            deviceList: _deviceList!,
+                            deviceList: _deviceList,
                             postMessage,
                             initDevice,
                             log: _log,
@@ -1114,7 +1102,7 @@ export class Core extends EventEmitter {
         }
         this.removeAllListeners();
         this.abortController.abort();
-        if (_deviceList) {
+        if (_deviceList.isConnected()) {
             _deviceList.dispose();
         }
     }
@@ -1126,18 +1114,15 @@ export class Core extends EventEmitter {
     }
 
     getTransportInfo(): TransportInfo | undefined {
-        if (!_deviceList) {
-            return undefined;
+        if (_deviceList.isConnected()) {
+            return _deviceList.getTransportInfo();
         }
-
-        return _deviceList.getTransportInfo();
     }
 
     enumerate() {
-        if (!_deviceList) {
-            return;
+        if (_deviceList.isConnected()) {
+            _deviceList.enumerate();
         }
-        _deviceList.enumerate();
     }
 
     async init(
@@ -1150,11 +1135,15 @@ export class Core extends EventEmitter {
         }
         try {
             await DataManager.load(settings);
-            enableLog(DataManager.getSettings('debug'));
+            const { debug, priority } = DataManager.getSettings();
+            const messages = DataManager.getProtobufMessages();
+
+            enableLog(debug);
 
             // TODO NOTE: i'm leaving reference to avoid complex changes, top-level reference is used by methods above Core context
             // eslint-disable-next-line @typescript-eslint/no-this-alias
             _core = this;
+            _deviceList = new DeviceList({ debug, messages, priority });
 
             // If we're not in popup mode, set the interaction timeout to 0 (= disabled)
             _interactionTimeout = new InteractionTimeout(
@@ -1188,7 +1177,7 @@ export class Core extends EventEmitter {
 }
 
 const disableWebUSBTransport = async () => {
-    if (!_deviceList) return;
+    if (!_deviceList.isConnected()) return;
     if (_deviceList.transportType() !== 'WebUsbTransport') return;
     // override settings
     const settings = DataManager.getSettings();
