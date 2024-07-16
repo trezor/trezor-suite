@@ -1,19 +1,13 @@
-import styled from 'styled-components';
-
 import { Button, ButtonProps, Tooltip } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 
-const StyledButton = styled(Button)`
-    min-width: 180px;
-`;
-
 const InstallButtonCommon = (
     props: Omit<ButtonProps, 'children'> & { children?: React.ReactNode },
 ) => (
-    <StyledButton {...props} data-test="@firmware/install-button">
+    <Button {...props} data-test="@firmware/install-button">
         {props.children || <Translation id="TR_INSTALL" />}
-    </StyledButton>
+    </Button>
 );
 
 interface FirmwareInstallButtonProps extends Omit<ButtonProps, 'children'> {

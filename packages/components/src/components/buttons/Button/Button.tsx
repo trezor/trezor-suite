@@ -71,7 +71,7 @@ const getTypography = (size: ButtonSize) => {
 };
 
 const Content = styled.div<ContentProps>`
-    white-space: nowrap;
+    white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
 

@@ -6,7 +6,8 @@ import { breakpointMediaQueries } from '@trezor/styles';
 
 const Row = styled.div`
     display: flex;
-    gap: 20px;
+    gap: ${spacingsPx.lg};
+    flex-flow: row wrap;
 
     ${breakpointMediaQueries.lg} {
         padding-bottom: ${spacingsPx.xxxl};
