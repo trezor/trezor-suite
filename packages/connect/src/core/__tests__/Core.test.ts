@@ -1,9 +1,13 @@
 import { parseConnectSettings } from '../../data/connectSettings';
 import { DataManager } from '../../data/DataManager';
+import { ConnectSettings } from '../../exports';
 import { initCoreState } from '../index';
 
 // import { createTestTransport } from '../../device/__tests__/DeviceList.test';
 const { createTestTransport } = global.JestMocks;
+
+const getSettings = (partial: Partial<ConnectSettings> = {}) =>
+    parseConnectSettings({ transports: [createTestTransport()], ...partial });
 
 describe('Core', () => {
     beforeAll(async () => {});
@@ -14,27 +18,23 @@ describe('Core', () => {
         });
 
         const coreManager = initCoreState();
-        await expect(() =>
-            coreManager.getOrInit(parseConnectSettings(), jest.fn()),
-        ).rejects.toThrow('DataManager init error');
+        await expect(() => coreManager.getOrInit(getSettings(), jest.fn())).rejects.toThrow(
+            'DataManager init error',
+        );
 
         jest.restoreAllMocks();
     });
 
-    // TODO: this test breaks other tests. DeviceList loading is not disposed while disposing core.
-    it.skip('getOrInit throws error when disposed before initialization', done => {
+    it('getOrInit throws error when disposed before initialization', async () => {
         const coreManager = initCoreState();
-        coreManager.getOrInit(parseConnectSettings(), jest.fn()).catch(error => {
-            expect(error.message).toMatch('Core disposed');
-            done();
-        });
+        const promise = coreManager.getOrInit(getSettings(), jest.fn());
         coreManager.dispose();
+        await expect(promise).rejects.toThrow('Disposed during initialization');
     });
 
     it('calling getOrInit multiple times synchronously', async () => {
         const coreManager = initCoreState();
-        const transport = createTestTransport();
-        const settings = parseConnectSettings({ transports: [transport], lazyLoad: true });
+        const settings = getSettings({ lazyLoad: true });
         const [c1, c2] = await Promise.all([
             coreManager.getOrInit(settings, jest.fn()),
             coreManager.getOrInit(settings, jest.fn()),
@@ -47,12 +47,8 @@ describe('Core', () => {
 
     it('successful getOrInit', async () => {
         const coreManager = initCoreState();
-        const transport = createTestTransport();
         const eventsSpy = jest.fn();
-        const core = await coreManager.getOrInit(
-            parseConnectSettings({ transports: [transport] }),
-            eventsSpy,
-        );
+        const core = await coreManager.getOrInit(getSettings(), eventsSpy);
         // no events emitted before initialization
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await new Promise(resolve => setTimeout(resolve, 1));
