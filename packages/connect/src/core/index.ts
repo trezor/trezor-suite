@@ -991,18 +991,7 @@ const initDeviceList = async (transportReconnect?: boolean) => {
         throw error;
     }
 
-    // if transport fails during app lifetime, try to reconnect
-    if (transportReconnect) {
-        _deviceList.once(TRANSPORT.ERROR, () => {
-            const { promise, reject } = resolveAfter(1000, null);
-            _deviceListInitReject = reject;
-            promise.then(() => {
-                initDeviceList(transportReconnect);
-            });
-        });
-    }
-
-    _deviceList.init(pendingTransportEvent);
+    _deviceList.init({ pendingTransportEvent, transportReconnect });
     await _deviceList.pendingConnection();
 };
 
@@ -1191,6 +1180,7 @@ const disableWebUSBTransport = async () => {
         // clean previous device list
         _deviceList.cleanup();
         //and init with new settings, without webusb
+        // TODO possible issue with new init not replacing the old one???
         await initDeviceList(settings.transportReconnect);
     } catch (error) {
         // do nothing

@@ -77,6 +77,11 @@ export interface IDeviceList {
     dispose: DeviceList['dispose'];
 }
 
+type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug'> & {
+    messages: Record<string, any>;
+};
+type InitParams = Pick<ConnectSettings, 'pendingTransportEvent' | 'transportReconnect'>;
+
 export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDeviceList {
     // @ts-expect-error has no initializer
     private transport: Transport;
@@ -90,9 +95,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private readonly authPenaltyManager;
 
-    private initPromise: Promise<void> | undefined;
+    private initPromise?: Promise<void>;
 
-    private rejectWaitForDevices?: (e: Error) => void;
+    private rejectPending?: (e: Error) => void;
 
     private transportCommonArgs;
 
@@ -108,15 +113,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.initPromise;
     }
 
-    constructor({
-        messages,
-        priority,
-        debug,
-    }: {
-        messages: Record<string, any>;
-        priority: number;
-        debug?: boolean;
-    }) {
+    constructor({ messages, priority, debug }: ConstructorParams) {
         super();
 
         const transportLogger = initLog('@trezor/transport', debug);
@@ -287,26 +284,38 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     /**
      * Init @trezor/transport and do something with its results
      */
-    init(pendingTransportEvent?: boolean) {
+    init(initParams: InitParams = {}) {
+        // TODO is it ok to return first init promise in case of second call?
         if (!this.initPromise) {
             _log.debug('Initializing transports');
-
-            this.initPromise = this.selectTransport(this.transports)
-                .then(transport => this.initializeTransport(transport, pendingTransportEvent))
-                .then(transport => {
-                    this.transport = transport;
-                    this.emit(TRANSPORT.START, this.getTransportInfo());
-                })
-                .catch(error => {
-                    this.cleanup();
-                    this.emit(TRANSPORT.ERROR, error);
-                })
-                .finally(() => {
-                    this.initPromise = undefined;
-                });
+            this.initPromise = this.createInitPromise(initParams);
         }
 
         return this.initPromise;
+    }
+
+    private createInitPromise(initParams: InitParams) {
+        return this.selectTransport(this.transports)
+            .then(transport => this.initializeTransport(transport, initParams))
+            .then(transport => {
+                this.transport = transport;
+                this.emit(TRANSPORT.START, this.getTransportInfo());
+                this.initPromise = undefined;
+            })
+            .catch(error => {
+                this.cleanup();
+                this.emit(TRANSPORT.ERROR, error);
+                this.initPromise = initParams.transportReconnect
+                    ? this.createReconnectPromise(initParams)
+                    : undefined;
+            });
+    }
+
+    private createReconnectPromise(initParams: InitParams) {
+        const { promise, reject } = resolveAfter(1000, initParams);
+        this.rejectPending = reject;
+
+        return promise.then(this.createInitPromise.bind(this));
     }
 
     private async selectTransport([transport, ...rest]: Transport[]): Promise<Transport> {
@@ -316,7 +325,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         else throw new Error(result.error);
     }
 
-    private async initializeTransport(transport: Transport, pendingTransportEvent?: boolean) {
+    private async initializeTransport(transport: Transport, initParams: InitParams) {
         /**
          * listen to change of descriptors reported by @trezor/transport
          * we can say that this part lets connect know about
@@ -331,6 +340,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         transport.on(TRANSPORT.ERROR, error => {
             this.cleanup();
             this.emit(TRANSPORT.ERROR, error);
+            if (initParams.transportReconnect) {
+                this.initPromise = this.createReconnectPromise(initParams);
+            }
         });
 
         // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
@@ -347,7 +359,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         transport.handleDescriptorsChange(descriptors);
         transport.listen();
 
-        if (descriptors.length > 0 && pendingTransportEvent) {
+        if (descriptors.length > 0 && initParams.pendingTransportEvent) {
             await this.waitForDevices(descriptors.length, 10000);
         }
 
@@ -366,7 +378,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
          * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
          */
         const autoResolveTransportEventTimeout = setTimeout(resolve, autoResolveMs);
-        this.rejectWaitForDevices = reject;
+        this.rejectPending = reject;
 
         const onDeviceConnect = () => {
             transportStartPending--;
@@ -381,7 +393,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         this.on(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
 
         return promise.finally(() => {
-            this.rejectWaitForDevices = undefined;
+            this.rejectPending = undefined;
             clearTimeout(autoResolveTransportEventTimeout);
             this.off(DEVICE.CONNECT, onDeviceConnect);
             this.off(DEVICE.CONNECT_UNACQUIRED, onDeviceConnect);
@@ -461,7 +473,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         this.authPenaltyManager.clear();
         Object.keys(this.devices).forEach(key => delete this.devices[key]);
 
-        this.rejectWaitForDevices?.(new Error('Disposed'));
+        this.rejectPending?.(new Error('Disposed'));
 
         // disconnect devices
         devices.forEach(device => {
