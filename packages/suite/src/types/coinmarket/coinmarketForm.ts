@@ -13,15 +13,17 @@ import { Timer } from '@trezor/react-utils';
 import { AppState } from 'src/reducers/store';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { AmountLimits, DefaultCountryOption, Option } from 'src/types/wallet/coinmarketCommonTypes';
+import { PropsWithChildren } from 'react';
 
-export type CoinmarketBuyFormProps = {
+export interface CoinmarketBuyFormProps {
     fiatInput?: string;
     cryptoInput?: string;
     currencySelect: Option;
     cryptoSelect: CoinmarketCryptoListProps;
     countrySelect: Option;
     paymentMethod?: CoinmarketPaymentMethodListProps;
-};
+    wantCrypto: boolean;
+}
 
 export type CoinmarketBuyFormDefaultValuesProps = {
     defaultValues: CoinmarketBuyFormProps;
@@ -62,6 +64,8 @@ export type CoinmarketBuyFormContextProps = UseFormReturn<CoinmarketBuyFormProps
                 isFormLoading: boolean;
                 isFormInvalid: boolean;
                 isLoadingOrInvalid: boolean;
+
+                toggleWantCrypto: () => void;
             };
         };
         goToPayment: (address: string) => void;
@@ -90,10 +94,18 @@ export type CoinmarketPaymentMethodHookProps<T extends CoinmarketTradeType> = {
     ) => CoinmarketTradeDetailMapProps[T][] | undefined;
 };
 
-export interface CoinmarketFormInputLabelProps {
+export interface CoinmarketFormInputLabelProps extends PropsWithChildren {
     label?: ExtendedMessageDescriptor['id'];
 }
 
-export interface CoinmarketFormInputProps extends CoinmarketFormInputLabelProps {
+export interface CoinmarketFormInputCommonProps {
     className?: string;
+}
+
+export interface CoinmarketFormInputProps
+    extends CoinmarketFormInputLabelProps,
+        CoinmarketFormInputCommonProps {}
+
+export interface CoinmarketFormInputFiatCryptoProps extends CoinmarketFormInputCommonProps {
+    showLabel?: boolean;
 }

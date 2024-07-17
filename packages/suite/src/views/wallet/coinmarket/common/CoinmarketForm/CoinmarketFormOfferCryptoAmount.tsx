@@ -1,4 +1,4 @@
-import { nativeTypography, spacingsPx } from '@trezor/theme';
+import { spacingsPx } from '@trezor/theme';
 import { useSelector } from 'react-redux';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
@@ -6,29 +6,12 @@ import styled from 'styled-components';
 import { NETWORKS } from 'src/config/wallet';
 import { localizeNumber, networkAmountToSatoshi } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from 'src/types/wallet';
-import { H2 } from '@trezor/components';
-import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import CoinmarketCoinImage from '../CoinmarketCoinImage';
-
-const Wrapper = styled(H2)`
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-top: ${spacingsPx.md};
-
-    ${SCREEN_QUERY.BELOW_DESKTOP} {
-        font-size: 28px;
-    }
-
-    ${SCREEN_QUERY.BELOW_LAPTOP} {
-        font-size: ${nativeTypography.titleMedium.fontSize}px;
-    }
-
-    ${SCREEN_QUERY.MOBILE} {
-        font-size: ${nativeTypography.titleSmall.fontSize}px;
-        margin-top: ${spacingsPx.xs};
-    }
-`;
+import {
+    CoinmarketAmountContainer,
+    CoinmarketAmountWrapper,
+    CoinmarketAmountWrapperText,
+} from 'src/views/wallet/coinmarket';
 
 const TokenWrapper = styled.div`
     display: flex;
@@ -38,13 +21,6 @@ const TokenWrapper = styled.div`
 const TokenLogoBig = styled(CoinmarketCoinImage)`
     height: 32px;
     margin: 0 ${spacingsPx.xxs} 0 0;
-`;
-
-const FormattedCryptoAmountWrapper = styled.div`
-    padding-right: ${spacingsPx.xs};
-    font-variant-numeric: tabular-nums;
-    overflow: hidden;
-    text-overflow: ellipsis;
 `;
 
 export interface CoinmarketCryptoAmountProps {
@@ -74,15 +50,17 @@ const CoinmarketFormOfferCryptoAmount = ({ amount, symbol }: CoinmarketCryptoAmo
     formattedValue = formattedValue ? localizeNumber(formattedValue, locale) : '';
 
     return (
-        <Wrapper>
-            <FormattedCryptoAmountWrapper title={formattedValue}>
-                {formattedValue}
-            </FormattedCryptoAmountWrapper>
-            <TokenWrapper>
-                <TokenLogoBig symbol={symbol} />
-                {formattedSymbol}
-            </TokenWrapper>
-        </Wrapper>
+        <CoinmarketAmountContainer>
+            <CoinmarketAmountWrapper>
+                <CoinmarketAmountWrapperText title={formattedValue}>
+                    {formattedValue}
+                </CoinmarketAmountWrapperText>
+                <TokenWrapper>
+                    <TokenLogoBig symbol={symbol} />
+                    {formattedSymbol}
+                </TokenWrapper>
+            </CoinmarketAmountWrapper>
+        </CoinmarketAmountContainer>
     );
 };
 

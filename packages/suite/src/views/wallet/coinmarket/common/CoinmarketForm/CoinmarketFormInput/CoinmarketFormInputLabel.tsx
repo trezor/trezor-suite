@@ -1,13 +1,19 @@
 import { Translation } from 'src/components/suite';
 import { CoinmarketFormInputLabelProps } from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketFormInputLabelWrapper } from 'src/views/wallet/coinmarket';
+import {
+    CoinmarketFormInputLabelText,
+    CoinmarketFormInputLabelWrapper,
+} from 'src/views/wallet/coinmarket';
 
-const CoinmarketFormInputLabel = ({ label }: CoinmarketFormInputLabelProps) => {
+const CoinmarketFormInputLabel = ({ label, children }: CoinmarketFormInputLabelProps) => {
     if (!label) return null;
 
     return (
         <CoinmarketFormInputLabelWrapper>
-            <Translation id={label} />
+            <CoinmarketFormInputLabelText>
+                <Translation id={label} />
+            </CoinmarketFormInputLabelText>
+            {children}
         </CoinmarketFormInputLabelWrapper>
     );
 };

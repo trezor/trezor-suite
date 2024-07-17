@@ -56,7 +56,7 @@ export type CoinmarketExchangeOffersContextProps = CoinmarketOffersContextProps 
     quotes: AppState['wallet']['coinmarket']['exchange']['quotes'];
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
     selectedQuote?: ExchangeTrade;
-    setSelectedQuote: (quote?: ExchangeTrade) => void;
+    setSelectedQuote: (quote: ExchangeTrade | undefined) => void;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
     addressVerified: AppState['wallet']['coinmarket']['exchange']['addressVerified'];
     exchangeInfo?: ExchangeInfo;

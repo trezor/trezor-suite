@@ -9,10 +9,14 @@ import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { Translation } from 'src/components/suite';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import CoinmarketFormOfferItem from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferItem';
-import { CoinmarketFormInputLabelWrapper } from 'src/views/wallet/coinmarket';
+import {
+    CoinmarketFormInputLabelText,
+    CoinmarketFormInputLabelWrapper,
+} from 'src/views/wallet/coinmarket';
 import CoinmarketFormOfferCryptoAmount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferCryptoAmount';
 import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { BuyTrade, CryptoSymbol } from 'invity-api';
+import CoinmarketFormOfferFiatAmount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
 
 const CoinmarketFormOfferHeader = styled.div`
     display: flex;
@@ -69,27 +73,42 @@ const CoinmarketFormOffer = () => {
 
     const selectedCrypto = getValues('cryptoSelect');
     // FIXME: for exchange and sell
-    const receiveCurrency = (bestRatedQuote as BuyTrade)?.receiveCurrency
-        ? cryptoToCoinSymbol((bestRatedQuote as BuyTrade).receiveCurrency as CryptoSymbol)
+    const receiveCurrency = (bestScoredQuote as BuyTrade)?.receiveCurrency
+        ? cryptoToCoinSymbol((bestScoredQuote as BuyTrade).receiveCurrency as CryptoSymbol)
         : null;
+    const { wantCrypto } = getValues();
 
     return (
         <>
             <CoinmarketFormInputLabelWrapper>
-                <Translation id="TR_COINMARKET_YOU_GET" />
+                <CoinmarketFormInputLabelText>
+                    <Translation
+                        id={wantCrypto ? 'TR_COINMARKET_YOU_PAY' : 'TR_COINMARKET_YOU_GET'}
+                    />
+                </CoinmarketFormInputLabelText>
             </CoinmarketFormInputLabelWrapper>
-            <CoinmarketFormOfferCryptoAmount
-                amount={
-                    !state.isLoadingOrInvalid && bestScoredQuote?.receiveStringAmount
-                        ? bestScoredQuote?.receiveStringAmount
-                        : '0'
-                }
-                symbol={
-                    !state.isLoadingOrInvalid && receiveCurrency
-                        ? receiveCurrency
-                        : selectedCrypto?.label ?? ''
-                }
-            />
+            {wantCrypto ? (
+                <CoinmarketFormOfferFiatAmount
+                    amount={
+                        !state.isLoadingOrInvalid && bestScoredQuote?.fiatStringAmount
+                            ? bestScoredQuote.fiatStringAmount
+                            : '0'
+                    }
+                />
+            ) : (
+                <CoinmarketFormOfferCryptoAmount
+                    amount={
+                        !state.isLoadingOrInvalid && bestScoredQuote?.receiveStringAmount
+                            ? bestScoredQuote.receiveStringAmount
+                            : '0'
+                    }
+                    symbol={
+                        !state.isLoadingOrInvalid && receiveCurrency
+                            ? receiveCurrency
+                            : selectedCrypto?.label ?? ''
+                    }
+                />
+            )}
             <CoinmarketFormOfferHeader>
                 <CoinmarketFormOfferHeaderText>
                     <Translation id="TR_COINMARKET_YOUR_BEST_OFFER" />

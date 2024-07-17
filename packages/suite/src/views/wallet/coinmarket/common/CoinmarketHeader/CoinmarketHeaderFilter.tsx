@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import CoinmarketFormInputPaymentMethod from '../CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
 import CoinmarketFormInputCountry from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
-import CoinmarketFormInputFiat from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiat';
+import CoinmarketFormInputFiatCrypto from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiatCrypto';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,7 +15,7 @@ const SelectWrapper = `
     padding: ${spacingsPx.xxs} ${spacingsPx.md} ${spacingsPx.xxs} 0;
 `;
 
-const CoinmarketFormInputFiatWrapper = styled(CoinmarketFormInputFiat)`
+const CoinmarketFormInputFiatWrapper = styled(CoinmarketFormInputFiatCrypto)`
     ${SelectWrapper}
 `;
 
@@ -30,7 +30,7 @@ const CoinmarketFormInputCountryWrapper = styled(CoinmarketFormInputCountry)`
 const CoinmarketHeaderFilter = () => {
     return (
         <Wrapper data-test="@coinmarket/filter">
-            <CoinmarketFormInputFiatWrapper />
+            <CoinmarketFormInputFiatWrapper showLabel={false} />
             <CoinmarketFormInputPaymentMethodWrapper />
             <CoinmarketFormInputCountryWrapper />
         </Wrapper>

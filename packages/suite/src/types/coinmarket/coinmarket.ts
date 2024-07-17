@@ -37,12 +37,23 @@ import {
     CryptoCategoryE,
 } from 'src/constants/wallet/coinmarket/cryptoCategories';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
+import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
+import { Timer } from '@trezor/react-utils';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
     type: CoinmarketTradeType;
 };
+export interface UseCoinmarketCommonReturnProps<T extends CoinmarketTradeType> {
+    callInProgress: boolean;
+    account: Account;
+    selectedQuote: CoinmarketTradeDetailMapProps[T] | undefined;
+    timer: Timer;
+    device: TrezorDevice | undefined;
+    setCallInProgress: (state: boolean) => void;
+    setSelectedQuote: (quote: CoinmarketTradeDetailMapProps[T] | undefined) => void;
+    checkQuotesTimer: (callback: () => Promise<void>) => void;
+}
 export type UseCoinmarketFormProps = UseCoinmarketProps & {
     offFirstRequest?: boolean;
 };
