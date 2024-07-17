@@ -5,7 +5,7 @@ import { isDesktop, isLinux } from '@trezor/env-utils';
 import { Translation, TroubleshootingTips, UdevDownload } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
-    TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
+    TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
@@ -109,7 +109,7 @@ export const DeviceUnreadable = ({ device, isWebUsbTransport }: DeviceUnreadable
         return (
             <TroubleshootingTips
                 label={<Translation id="TR_TROUBLESHOOTING_UNREADABLE_WEBUSB" />}
-                items={[TROUBLESHOOTING_TIP_BRIDGE_STATUS, TROUBLESHOOTING_TIP_BRIDGE_INSTALL]}
+                items={[TROUBLESHOOTING_TIP_BRIDGE_STATUS, TROUBLESHOOTING_TIP_SUITE_DESKTOP]}
                 offerWebUsb
                 data-test="@connect-device-prompt/unreadable-hid"
             />

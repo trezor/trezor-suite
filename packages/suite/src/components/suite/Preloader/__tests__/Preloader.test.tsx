@@ -150,7 +150,7 @@ describe('Preloader component', () => {
         const store = initStore(getInitialState());
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        expect(findByTestId('TR_TREZOR_BRIDGE_IS_NOT_RUNNING')).not.toBeNull();
+        expect(findByTestId('TR_NO_TRANSPORT')).not.toBeNull();
 
         unmount();
     });

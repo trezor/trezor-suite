@@ -6,6 +6,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { typography } from '@trezor/theme';
 import styled from 'styled-components';
+import { isWebUsb } from 'src/utils/suite/transport';
 
 const Wrapper = styled.div`
     a {
@@ -63,7 +64,7 @@ const BridgeInstall = () => {
     return (
         <Wrapper>
             <Translation
-                id="TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_DESCRIPTION"
+                id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION"
                 values={{
                     a: chunks => (
                         <TrezorLink variant="underline" onClick={handleClick}>
@@ -104,9 +105,16 @@ export const TROUBLESHOOTING_TIP_BRIDGE_STATUS = {
     hide: !isWeb(),
 };
 
-export const TROUBLESHOOTING_TIP_BRIDGE_INSTALL = {
-    key: 'bridge-install',
-    heading: <Translation id="TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE" />,
+export const TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT = {
+    key: 'webusb-environment',
+    heading: <Translation id="TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_TITLE" />,
+    description: <Translation id="TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_DESCRIPTION" />,
+    hide: isWebUsb(),
+};
+
+export const TROUBLESHOOTING_TIP_SUITE_DESKTOP = {
+    key: 'suite-desktop',
+    heading: <Translation id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TITLE" />,
     description: <BridgeInstall />,
     hide: !isWeb(),
 };
