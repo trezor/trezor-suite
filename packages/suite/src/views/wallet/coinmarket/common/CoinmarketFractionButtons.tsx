@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { Translation } from 'src/components/suite';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -12,7 +13,7 @@ const SmallButton = styled(Button).attrs(props => ({
     type: 'button',
     size: 'small',
 }))`
-    margin-right: 10px;
+    margin-right: ${spacingsPx.sm};
 `;
 
 interface CoinmarketFractionButtonsProps {
@@ -28,7 +29,7 @@ export const CoinmarketFractionButtons = ({
     onAllClick,
     className,
 }: CoinmarketFractionButtonsProps) => (
-    <Wrapper className={className}>
+    <Wrapper className={className} data-test="@coinmarket/form/fraction-buttons">
         <SmallButton isDisabled={disabled} onClick={() => onFractionClick(4)}>
             1/4
         </SmallButton>

@@ -4,10 +4,22 @@ import { validateDecimals, validateMin } from 'src/utils/suite/validation';
 import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useDidUpdate } from '@trezor/react-utils';
 import CoinmarketFormInputCurrency from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
 import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
+import { FORM_CRYPTO_INPUT, FORM_FIAT_INPUT } from 'src/constants/wallet/coinmarket/form';
+import styled from 'styled-components';
+
+const CoinmarketFormInputCurrencyWrapper = styled(CoinmarketFormInputCurrency)`
+    width: 64px;
+
+    /* stylelint-disable selector-class-pattern */
+    .react-select__indicators {
+        position: absolute;
+        top: 7px;
+        right: 4px;
+    }
+`;
 
 const CoinmarketFormInputFiat = ({ className }: CoinmarketFormInputProps) => {
     const { translationString } = useTranslation();
@@ -18,9 +30,7 @@ const CoinmarketFormInputFiat = ({ className }: CoinmarketFormInputProps) => {
         amountLimits,
         trigger,
         clearErrors,
-    } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
-    const fiatInput = 'fiatInput';
-    const cryptoInput = 'cryptoInput';
+    } = useCoinmarketFormContext();
 
     const fiatInputRules = {
         validate: {
@@ -46,23 +56,23 @@ const CoinmarketFormInputFiat = ({ className }: CoinmarketFormInputProps) => {
     };
 
     useDidUpdate(() => {
-        trigger('fiatInput');
+        trigger(FORM_FIAT_INPUT);
     }, [amountLimits?.maxFiat, amountLimits?.minFiat, trigger]);
 
     if (!account) return null;
 
     return (
         <NumberInput
-            name={fiatInput}
+            name={FORM_FIAT_INPUT}
             onChange={() => {
-                clearErrors(cryptoInput);
+                clearErrors(FORM_CRYPTO_INPUT);
             }}
-            inputState={getInputState(errors.fiatInput)}
+            inputState={getInputState(errors[FORM_FIAT_INPUT])}
             control={control}
             rules={fiatInputRules}
             maxLength={formInputsMaxLength.amount}
-            bottomText={errors[fiatInput]?.message || null}
-            innerAddon={<CoinmarketFormInputCurrency />}
+            bottomText={errors[FORM_FIAT_INPUT]?.message || null}
+            innerAddon={<CoinmarketFormInputCurrencyWrapper />}
             hasBottomPadding={false}
             className={className}
             data-test="@coinmarket/form/fiat-input"

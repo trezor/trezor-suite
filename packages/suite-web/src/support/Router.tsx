@@ -58,16 +58,21 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
     'wallet-coinmarket-buy-offers': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/buy/offers'),
     ),
-    'wallet-coinmarket-sell': lazy(
-        () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell'),
+    'wallet-coinmarket-sell': lazy(() =>
+        import(
+            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell_new/CoinmarketSellForm'
+        ).then(({ CoinmarketSellForm }) => ({ default: CoinmarketSellForm })),
     ),
     'wallet-coinmarket-sell-detail': lazy(
         () =>
-            import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell/detail'),
+            import(
+                /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell_new/detail'
+            ),
     ),
-    'wallet-coinmarket-sell-offers': lazy(
-        () =>
-            import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell/offers'),
+    'wallet-coinmarket-sell-offers': lazy(() =>
+        import(
+            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell_new/CoinmarketSellOffers'
+        ).then(({ CoinmarketSellOffers }) => ({ default: CoinmarketSellOffers })),
     ),
     'wallet-coinmarket-exchange': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/exchange'),

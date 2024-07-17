@@ -72,6 +72,7 @@ interface Sell extends CoinmarketTradeCommonProps {
     quotes: SellFiatTrade[] | undefined;
     transactionId?: string;
     isFromRedirect: boolean;
+    coinmarketAccount?: Account;
 }
 
 export interface State {
@@ -118,6 +119,7 @@ export const initialState: State = {
         quotes: [],
         transactionId: undefined,
         isFromRedirect: false,
+        coinmarketAccount: undefined,
     },
     composedTransactionInfo: {},
     trades: [],
@@ -219,6 +221,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SELL.SAVE_TRANSACTION_ID:
                 draft.sell.transactionId = action.transactionId;
+                break;
+            case COINMARKET_SELL.SET_COINMARKET_ACCOUNT:
+                draft.sell.coinmarketAccount = action.account;
                 break;
             case COINMARKET_COMMON.SET_LOADING:
                 draft.isLoading = action.isLoading;

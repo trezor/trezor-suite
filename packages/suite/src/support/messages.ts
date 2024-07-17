@@ -1594,9 +1594,17 @@ export default defineMessages({
         defaultMessage: 'Payment method',
         id: 'TR_COINMARKET_PAYMENT_METHOD',
     },
+    TR_COINMARKET_RECEIVE_METHOD: {
+        defaultMessage: 'Receive method',
+        id: 'TR_COINMARKET_RECEIVE_METHOD',
+    },
     TR_COINMARKET_YOU_BUY: {
         defaultMessage: 'You buy',
         id: 'TR_COINMARKET_YOU_BUY',
+    },
+    TR_COINMARKET_YOU_SELL: {
+        defaultMessage: 'You sell',
+        id: 'TR_COINMARKET_YOU_SELL',
     },
     TR_COINMARKET_YOU_PAY: {
         defaultMessage: 'You pay',
@@ -1690,6 +1698,10 @@ export default defineMessages({
     TR_COINMARKET_FIAT: {
         defaultMessage: 'fiat',
         id: 'TR_COINMARKET_FIAT',
+    },
+    TR_COINMARKET_SELL: {
+        id: 'TR_COINMARKET_SELL',
+        defaultMessage: 'Sell',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',

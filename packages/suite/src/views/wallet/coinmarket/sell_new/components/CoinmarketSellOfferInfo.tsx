@@ -1,23 +1,17 @@
 import styled from 'styled-components';
-import { BuyTrade, BuyProviderInfo, SellFiatTrade } from 'invity-api';
-import { variables } from '@trezor/components';
+import { SellFiatTrade, SellProviderInfo } from 'invity-api';
+
+import { variables, CoinLogo } from '@trezor/components';
 import {
     CoinmarketPaymentType,
     CoinmarketProviderInfo,
     CoinmarketTransactionId,
 } from 'src/views/wallet/coinmarket/common';
-import { Translation } from 'src/components/suite';
+import { Account } from 'src/types/wallet';
+import { Translation, AccountLabeling } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
-import {
-    cryptoToCoinSymbol,
-    cryptoToNetworkSymbol,
-    isCryptoSymbolToken,
-} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
-import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -36,10 +30,6 @@ const Header = styled.div`
     margin-bottom: 5px;
     padding: 15px 24px;
     max-width: 340px;
-`;
-
-const HeaderLogo = styled(CoinmarketCoinImage)`
-    width: 24px;
 `;
 
 const AccountText = styled.div`
@@ -87,7 +77,6 @@ const Row = styled.div`
 
 const Dark = styled.div`
     display: flex;
-    align-items: center;
     justify-content: flex-end;
     flex: 1;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -100,70 +89,61 @@ const RowWithBorder = styled(Row)`
     padding-bottom: 10px;
 `;
 
-const Amount = styled.span`
-    padding-left: 5px;
-`;
-
-const InvityCoinLogo = styled(CoinmarketCoinImage)`
-    height: 16px;
-`;
-
 const TransactionIdWrapper = styled.div`
     padding-left: 40px;
     max-width: 350px;
 `;
 
-interface CoinmarketSelectedOfferInfoProps {
-    selectedQuote: BuyTrade | SellFiatTrade;
+interface CoinmarketSellOfferInfoProps {
+    selectedQuote: SellFiatTrade;
     transactionId?: string;
     providers?: {
-        [name: string]: BuyProviderInfo;
+        [name: string]: SellProviderInfo;
     };
+    account: Account;
 }
 
-// TODO: refactor with exchange redesign
-export const CoinmarketSelectedOfferInfo = ({
+export const CoinmarketSellOfferInfo = ({
     selectedQuote,
     transactionId,
     providers,
-}: CoinmarketSelectedOfferInfoProps) => {
-    const context = useCoinmarketFormContext();
-    const { type } = context;
-    const cryptoAmountProps = getCryptoQuoteAmountProps(selectedQuote, context);
-    const { exchange, paymentMethod, paymentMethodName, fiatCurrency, fiatStringAmount } =
-        selectedQuote;
-
-    const currency = cryptoAmountProps?.receiveCurrency
-        ? cryptoToCoinSymbol(cryptoAmountProps.receiveCurrency)
-        : undefined;
-    const network =
-        cryptoAmountProps?.receiveCurrency && isCryptoSymbolToken(cryptoAmountProps.receiveCurrency)
-            ? cryptoToNetworkSymbol(cryptoAmountProps.receiveCurrency)?.toUpperCase()
-            : null;
-    const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto: true });
+    account,
+}: CoinmarketSellOfferInfoProps) => {
+    const {
+        cryptoStringAmount,
+        cryptoCurrency,
+        exchange,
+        paymentMethod,
+        paymentMethodName,
+        fiatCurrency,
+        fiatStringAmount,
+    } = selectedQuote;
 
     return (
-        <Wrapper data-test="@coinmarket/offer/info">
+        <Wrapper>
             <Info>
                 <Header>
-                    <HeaderLogo symbol={currency} />
+                    <CoinLogo symbol={account.symbol} size={16} />
                     <AccountText>
-                        {network ? (
-                            <Translation
-                                id="TR_COINMARKET_TOKEN_NETWORK"
-                                values={{
-                                    tokenName: currency,
-                                    networkName: network,
-                                }}
-                            />
-                        ) : (
-                            currency
-                        )}
+                        <AccountLabeling account={account} />
                     </AccountText>
                 </Header>
                 <Row>
                     <LeftColumn>
-                        <Translation id={amountLabels.label2} />
+                        <Translation id="TR_SELL_SPEND" />
+                    </LeftColumn>
+                    <RightColumn>
+                        <Dark>
+                            <CoinmarketCryptoAmount
+                                amount={cryptoStringAmount}
+                                symbol={cryptoToCoinSymbol(cryptoCurrency!)}
+                            />
+                        </Dark>
+                    </RightColumn>
+                </Row>
+                <RowWithBorder>
+                    <LeftColumn>
+                        <Translation id="TR_SELL_RECEIVE" />
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
@@ -173,26 +153,10 @@ export const CoinmarketSelectedOfferInfo = ({
                             />
                         </Dark>
                     </RightColumn>
-                </Row>
-                <RowWithBorder>
-                    <LeftColumn>
-                        <Translation id={amountLabels.label1} />
-                    </LeftColumn>
-                    <RightColumn>
-                        <Dark>
-                            <InvityCoinLogo symbol={currency} />
-                            <Amount>
-                                <CoinmarketCryptoAmount
-                                    amount={cryptoAmountProps?.receiveAmount}
-                                    symbol={currency}
-                                />
-                            </Amount>
-                        </Dark>
-                    </RightColumn>
                 </RowWithBorder>
                 <Row>
                     <LeftColumn>
-                        <Translation id="TR_BUY_PROVIDER" />
+                        <Translation id="TR_SELL_PROVIDER" />
                     </LeftColumn>
                     <RightColumn>
                         <CoinmarketProviderInfo exchange={exchange} providers={providers} />
@@ -200,7 +164,7 @@ export const CoinmarketSelectedOfferInfo = ({
                 </Row>
                 <Row>
                     <LeftColumn>
-                        <Translation id="TR_BUY_PAID_BY" />
+                        <Translation id="TR_SELL_PAID_BY" />
                     </LeftColumn>
                     <RightColumn>
                         <CoinmarketPaymentType
