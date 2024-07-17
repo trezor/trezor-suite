@@ -53,7 +53,6 @@ export * from './components/modals/Modal/Backdrop';
 export * from './components/modals/Modal/Modal';
 export * from './components/Note/Note';
 export * from './components/Passphrase/PassphraseTypeCard';
-export * from './components/Passphrase/PassphraseTypeCardLegacy';
 export * from './components/ResizableBox/ResizableBox';
 export * from './components/skeletons/SkeletonCircle';
 export * from './components/skeletons/SkeletonRectangle';
