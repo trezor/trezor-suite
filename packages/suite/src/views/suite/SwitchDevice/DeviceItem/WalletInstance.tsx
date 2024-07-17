@@ -143,10 +143,9 @@ export const WalletInstance = ({
         contentType === 'disabling-view-only-ejects-wallet';
 
     return (
-        <RelativeContainer>
+        <RelativeContainer data-test={dataTestBase}>
             <EjectButton setContentType={setContentType} dataTest={dataTestBase} />
             <Card
-                data-test={dataTestBase}
                 key={`${instance.label}${instance.instance}${instance.state}`}
                 paddingType="small"
                 onClick={handleClick}
