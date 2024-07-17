@@ -59,15 +59,19 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
         () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/buy/offers'),
     ),
     'wallet-coinmarket-sell': lazy(
-        () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell'),
+        () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell_new'),
     ),
     'wallet-coinmarket-sell-detail': lazy(
         () =>
-            import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell/detail'),
+            import(
+                /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell_new/detail'
+            ),
     ),
     'wallet-coinmarket-sell-offers': lazy(
         () =>
-            import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell/offers'),
+            import(
+                /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell_new/offers'
+            ),
     ),
     'wallet-coinmarket-exchange': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/exchange'),
