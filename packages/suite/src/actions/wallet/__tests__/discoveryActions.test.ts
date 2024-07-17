@@ -185,6 +185,9 @@ export const getInitialState = (device = SUITE_DEVICE) => ({
             payload: ['btc', 'test'],
         }),
     },
+    suite: {
+        settings: {},
+    },
 });
 
 type State = ReturnType<typeof getInitialState>;

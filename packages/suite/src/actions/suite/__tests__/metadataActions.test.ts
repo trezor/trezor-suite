@@ -303,4 +303,17 @@ describe('Metadata Actions', () => {
             }
         });
     });
+
+    fixtures.getLabelableEntitiesDescriptors.forEach(f => {
+        it(`getLabelableEntitiesDescriptors - ${f.description}`, async () => {
+            // @ts-expect-error
+            const store = initStore(getInitialState(f.initialState));
+            const result = await store.dispatch(
+                metadataLabelingActions.getLabelableEntitiesDescriptors(),
+            );
+            if (f.result) {
+                expect(result).toEqual(f.result);
+            }
+        });
+    });
 });

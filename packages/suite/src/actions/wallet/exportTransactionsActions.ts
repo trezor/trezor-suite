@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Account, ExportFileType } from '@suite-common/wallet-types';
 import { advancedSearchTransactions, getAccountTransactions } from '@suite-common/wallet-utils';
+import { selectEncryptionVersion } from 'src/reducers/suite/metadataReducer';
 import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
 
 export const exportTransactionsThunk = createThunk(
@@ -44,7 +45,9 @@ export const exportTransactionsThunk = createThunk(
             // eslint-disable-next-line no-restricted-syntax
             p => p.clientId === getState().metadata.selectedProvider.labels,
         );
-        const metadataKeys = account?.metadata[1];
+
+        const encryptionVersion = selectEncryptionVersion(getState());
+        const metadataKeys = account?.metadata[encryptionVersion];
         let labels = {};
         if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
             labels = { outputLabels: {} };
