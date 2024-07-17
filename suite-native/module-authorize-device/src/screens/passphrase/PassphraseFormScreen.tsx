@@ -1,5 +1,5 @@
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { View } from 'react-native';
+import { LayoutChangeEvent, View } from 'react-native';
 
 import { useOpenLink } from '@suite-native/link';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -11,7 +11,6 @@ import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
 
 const ANIMATION_DURATION = 300;
-const ALERT_CARD_HEIGHT = 204;
 
 const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundAlertBlueSubtleOnElevation1,
@@ -42,9 +41,13 @@ export const PassphraseFormScreen = () => {
 
     const openLink = useOpenLink();
 
-    const cardHeight = useSharedValue(ALERT_CARD_HEIGHT);
+    const cardHeight = useSharedValue<number | undefined>(undefined);
 
     const animationStyle = useAnimatedStyle(() => {
+        if (cardHeight.value === undefined) {
+            return {};
+        }
+
         return {
             height: withTiming(cardHeight.value, { duration: ANIMATION_DURATION }),
         };
@@ -54,6 +57,14 @@ export const PassphraseFormScreen = () => {
 
     const handleOpenLink = () => {
         openLink('https://trezor.io/learn/a/passphrases-and-hidden-wallets');
+    };
+
+    const setWarningHeight = (height: number) => {
+        'worklet';
+
+        if (cardHeight.value === undefined) {
+            cardHeight.value = height;
+        }
     };
 
     return (
@@ -69,7 +80,12 @@ export const PassphraseFormScreen = () => {
             }
         >
             <VStack spacing="medium">
-                <View style={applyStyle(animationWrapperStyle)}>
+                <View
+                    style={applyStyle(animationWrapperStyle)}
+                    onLayout={(event: LayoutChangeEvent) =>
+                        setWarningHeight(event.nativeEvent.layout.height)
+                    }
+                >
                     <Animated.View style={animationStyle}>
                         <Box style={applyStyle(cardStyle)}>
                             <VStack spacing="medium">
