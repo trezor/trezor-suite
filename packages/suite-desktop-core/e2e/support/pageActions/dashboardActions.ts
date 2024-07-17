@@ -1,4 +1,4 @@
-import { Page, Locator, expect as playwrightExpect } from '@playwright/test';
+import { Page, expect as playwrightExpect } from '@playwright/test';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
@@ -9,6 +9,9 @@ class DashboardActions {
         await waitForDataTestSelector(window, '@welcome/title');
         await window.getByTestId('@analytics/continue-button').click();
         await window.getByTestId('@onboarding/exit-app-button').click();
+
+        await window.getByTestId('@onbarding/viewOnly/skip').click();
+        await window.getByTestId('@viewOnlyTooltip/gotIt').click();
     }
 
     async discoveryShouldFinish(window: Page) {
@@ -32,16 +35,12 @@ class DashboardActions {
         return deviceSwitcherModal;
     }
 
-    async ejectWallet(deviceSwitcher: Locator, walletName: string) {
-        const wallet = await deviceSwitcher.locator(
-            '[data-test^="@switch-device/wallet-on-index"]',
-            {
-                hasText: walletName,
-            },
-        );
-        if (await wallet.isVisible()) {
-            await wallet.locator('[data-test$="eject-button"]').click();
-        }
+    async ejectWallet(window: Page, walletName: string) {
+        const wallet = await window.locator('[data-test="@switch-device/wallet-on-index/0"]', {
+            hasText: walletName,
+        });
+        await window.locator('[data-test="@switch-device/wallet-on-index/0/eject-button"]').click();
+        await window.locator('[data-test="@switch-device/eject"]').click();
         await wallet.waitFor({ state: 'detached' });
     }
 
