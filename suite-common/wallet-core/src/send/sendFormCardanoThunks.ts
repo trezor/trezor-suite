@@ -1,5 +1,3 @@
-import { G } from '@mobily/ts-belt';
-
 import TrezorConnect, { PROTO, PrecomposedTransactionFinalCardano } from '@trezor/connect';
 import {
     isTestnet,
@@ -13,22 +11,33 @@ import {
 } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    Account,
     PrecomposedLevelsCardano,
     PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import { createThunk } from '@suite-common/redux-utils';
 
-import { selectDevice } from '../device/deviceReducer';
-import { ComposeTransactionThunkArguments } from './sendFormTypes';
+import {
+    ComposeTransactionThunkArguments,
+    ComposeFeeLevelsError,
+    SignTransactionError,
+    SignTransactionThunkArguments,
+} from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
-export const composeCardanoSendFormTransactionThunk = createThunk(
-    `${SEND_MODULE_PREFIX}/composeCardanoSendFormTransactionThunk`,
-    async ({ formValues, formState }: ComposeTransactionThunkArguments, { dispatch }) => {
+export const composeCardanoTransactionFeeLevelsThunk = createThunk<
+    PrecomposedLevelsCardano,
+    ComposeTransactionThunkArguments,
+    { rejectValue: ComposeFeeLevelsError }
+>(
+    `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
+    async ({ formValues, formState }, { dispatch, rejectWithValue }) => {
         const { account, feeInfo } = formState;
         const changeAddress = getUnusedChangeAddress(account);
-        if (!changeAddress || !account.utxo || !account.addresses) return;
+        if (!changeAddress || !account.utxo || !account.addresses)
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'Change address, utxos or addresses are missing.',
+            });
 
         const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
         if (formValues.selectedFee === 'custom') {
@@ -69,10 +78,13 @@ export const composeCardanoSendFormTransactionThunk = createThunk(
                 }),
             );
 
-            return;
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: response.payload.error,
+            });
         }
 
-        const wrappedResponse: PrecomposedLevelsCardano = {};
+        const resultLevels: PrecomposedLevelsCardano = {};
         response.payload.forEach((t, index) => {
             const tx: PrecomposedTransactionCardano = t;
             switch (tx.type) {
@@ -114,44 +126,34 @@ export const composeCardanoSendFormTransactionThunk = createThunk(
             }
 
             const feeLabel = predefinedLevels[index].label;
-            wrappedResponse[feeLabel] = tx;
+            resultLevels[feeLabel] = tx;
         });
 
-        return wrappedResponse;
+        return resultLevels;
     },
 );
 
-export const signCardanoSendFormTransactionThunk = createThunk(
+type SignCardanoTransactionThunkArguments = Omit<
+    SignTransactionThunkArguments,
+    'formValues' | 'precomposedTransaction' | 'accountStatus'
+> & {
+    precomposedTransaction: PrecomposedTransactionFinalCardano;
+};
+
+export const signCardanoSendFormTransactionThunk = createThunk<
+    { serializedTx: string },
+    SignCardanoTransactionThunkArguments,
+    { rejectValue: SignTransactionError }
+>(
     `${SEND_MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
-    async (
-        {
-            precomposedTransaction,
-            selectedAccount,
-        }: {
-            precomposedTransaction: PrecomposedTransactionFinalCardano;
-            selectedAccount?: Account;
-        },
-        { dispatch, getState, extra },
-    ) => {
-        const {
-            selectors: { selectSelectedAccountStatus },
-        } = extra;
-
-        const selectedAccountStatus = selectSelectedAccountStatus(getState());
-        const device = selectDevice(getState());
-
-        if (
-            G.isNullable(selectedAccount) ||
-            selectedAccountStatus !== 'loaded' ||
-            !device ||
-            !precomposedTransaction ||
-            precomposedTransaction.type !== 'final'
-        )
-            return;
-
+    async ({ precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
         const { symbol, accountType } = selectedAccount;
 
-        if (selectedAccount.networkType !== 'cardano') return;
+        if (selectedAccount.networkType !== 'cardano')
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Account network type is not Cardano.',
+            });
 
         // todo: add chunkify once we allow it for Cardano
         const res = await TrezorConnect.cardanoSignTransaction({
@@ -174,18 +176,12 @@ export const signCardanoSendFormTransactionThunk = createThunk(
         });
 
         if (!res.success) {
-            // catch manual error from TransactionReviewModal
-            if (res.payload.error === 'tx-cancelled') return;
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: res.payload.error,
-                }),
-            );
-
-            return;
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: res.payload.error,
+            });
         }
 
-        return res.payload.serializedTx;
+        return { serializedTx: res.payload.serializedTx };
     },
 );

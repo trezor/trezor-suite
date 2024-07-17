@@ -20,7 +20,6 @@ import {
 } from '@suite-common/wallet-core';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { Unsuccessful } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
 
 import {
@@ -216,15 +215,15 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         // this action is blocked by modalActions.preserve()
         dispatch(modalActions.preserve());
 
-        const { serializedTx } = await dispatch(
+        const signResponse = await dispatch(
             signTransactionThunk({
                 formValues,
                 precomposedTransaction: enhancedPrecomposedTransaction,
                 selectedAccount,
             }),
-        ).unwrap();
+        );
 
-        if (!serializedTx) {
+        if (isRejected(signResponse)) {
             // close modal manually since UI.CLOSE_UI.WINDOW was blocked
             dispatch(modalActions.onCancel());
 
@@ -255,7 +254,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         );
 
         if (isRejected(pushResponse)) {
-            return pushResponse.payload as Unsuccessful;
+            return pushResponse.payload?.metadata;
         }
 
         const result = pushResponse.payload;
