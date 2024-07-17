@@ -12,7 +12,6 @@ export const DOCS_ANALYTICS_URL = 'https://docs.trezor.io/trezor-suite/analytics
 
 export const SUITE_URL = 'https://trezor.io/trezor-suite';
 export const SUITE_BACKUP_URL = 'https://suite.trezor.io/web/backup/';
-export const SUITE_BRIDGE_URL = 'https://suite.trezor.io/web/bridge/';
 export const SUITE_FIRMWARE_URL = 'https://suite.trezor.io/web/firmware/';
 export const SUITE_UDEV_URL = 'https://suite.trezor.io/web/udev/';
 

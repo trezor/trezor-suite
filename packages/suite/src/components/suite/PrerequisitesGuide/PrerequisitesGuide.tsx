@@ -92,7 +92,10 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
         <Wrapper>
             <ConnectDevicePrompt
                 connected={!!device}
-                showWarning={!!(device && deviceNeedsAttention(getStatus(device)))}
+                showWarning={
+                    !!(device && deviceNeedsAttention(getStatus(device))) ||
+                    prerequisite === 'transport-bridge'
+                }
                 allowSwitchDevice={allowSwitchDevice && devices > 1}
                 prerequisite={prerequisite}
             />
