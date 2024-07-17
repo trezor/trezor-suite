@@ -47,7 +47,7 @@ export const useCoinmarketBuyFormDefaultValues = (
             cryptoSelect: defaultCrypto,
             countrySelect: defaultCountry,
             paymentMethod: defaultPaymentMethod,
-            wantCrypto: false,
+            amountInCrypto: false,
         }),
         [
             buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies,

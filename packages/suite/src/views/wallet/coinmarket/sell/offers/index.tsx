@@ -8,7 +8,7 @@ const OffersIndex = (props: UseCoinmarketProps) => {
     const coinmarketSellOffers = useCoinmarketSellOffers(props);
 
     return (
-        <CoinmarketOffersContext.Provider value={coinmarketSellOffers}>
+        <CoinmarketOffersContext.Provider value={coinmarketSellOffers as any}>
             <Offers />
         </CoinmarketOffersContext.Provider>
     );

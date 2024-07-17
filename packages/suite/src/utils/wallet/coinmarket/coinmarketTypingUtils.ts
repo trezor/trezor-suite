@@ -3,7 +3,11 @@ import {
     isCoinmarketBuyOffers,
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { CoinmarketTradeDetailType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketTradeBuySellType,
+    CoinmarketTradeDetailType,
+    CoinmarketTradeType,
+} from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketOffersContextValues } from 'src/types/coinmarket/coinmarketOffers';
 
@@ -14,13 +18,13 @@ export const getCryptoQuoteAmountProps = (
     if (!quoteInput) return null;
 
     if (isCoinmarketBuyOffers(context)) {
-        const wantCrypto = context.quotesRequest?.wantCrypto;
+        const amountInCrypto = context.quotesRequest?.wantCrypto;
         const quote = quoteInput as BuyTrade;
 
         if (!quote || !context.quotesRequest) return null;
 
         return {
-            wantCrypto,
+            amountInCrypto,
             sendAmount: quote?.fiatStringAmount ?? '',
             sendCurrency: quote?.fiatCurrency,
             receiveAmount: quote?.receiveStringAmount ?? '',
@@ -35,7 +39,7 @@ export const getCryptoQuoteAmountProps = (
         if (!quote || !context.quotesRequest) return null;
 
         return {
-            wantCrypto: amountInCrypto,
+            amountInCrypto,
             sendAmount: quote?.fiatStringAmount ?? '',
             sendCurrency: quote?.fiatCurrency,
             receiveAmount: quote?.cryptoStringAmount ?? '',
@@ -46,7 +50,7 @@ export const getCryptoQuoteAmountProps = (
     const quote = quoteInput as ExchangeTrade;
 
     return {
-        wantCrypto: false,
+        amountInCrypto: false,
         sendAmount: quote?.sendStringAmount ?? '',
         sendCurrency: quote?.send,
         receiveAmount: quote?.receiveStringAmount ?? '',
@@ -71,5 +75,20 @@ export const getProvidersInfoProps = (
 
     return {
         providers: context.exchangeInfo?.providerInfos,
+    };
+};
+
+export const getFiatCurrenciesProps = (
+    context: CoinmarketFormContextValues<CoinmarketTradeBuySellType>,
+) => {
+    if (isCoinmarketSellOffers(context)) {
+        return {
+            supportedFiatCurrencies: context.sellInfo?.supportedFiatCurrencies,
+        };
+    }
+
+    return {
+        supportedFiatCurrencies: context.buyInfo?.supportedFiatCurrencies,
+        defaultAmountsOfFiatCurrencies: context.buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies,
     };
 };

@@ -1,11 +1,18 @@
-import { fiatCurrencies } from '@suite-common/suite-config';
 import { Select } from '@trezor/components';
 import { Controller } from 'react-hook-form';
+import { FORM_FIAT_CURRENCY_SELECT, FORM_FIAT_INPUT } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { FiatCurrencyOption } from 'src/types/wallet/coinmarketCommonTypes';
+import { getFiatCurrenciesProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormOption, CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
+import styled from 'styled-components';
+
+const SelectWrapper = styled(Select)`
+    .react-select__value-container {
+        padding: 0;
+    }
+`;
 
 interface CoinmarketFormInputCurrencyProps {
     className?: string;
@@ -20,31 +27,30 @@ const CoinmarketFormInputCurrency = ({
     size = 'large',
     isDarkLabel = false,
 }: CoinmarketFormInputCurrencyProps) => {
-    const fiatInput = 'fiatInput';
-    const currencySelect = 'currencySelect';
+    const context = useCoinmarketFormContext();
+    const { defaultCurrency, control, setAmountLimits, setValue } = context;
 
-    const { defaultCurrency, control, buyInfo, setAmountLimits, setValue } =
-        useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    const fiatCurrencies = getFiatCurrenciesProps(context);
+    const currencies = fiatCurrencies?.supportedFiatCurrencies ?? [];
 
     return (
         <Controller
-            name={currencySelect}
+            name={FORM_FIAT_CURRENCY_SELECT}
             defaultValue={defaultCurrency}
             control={control}
             render={({ field: { onChange, value } }) => (
-                <Select
+                <SelectWrapper
                     value={value}
                     onChange={(selected: FiatCurrencyOption) => {
                         onChange(selected);
                         setAmountLimits(undefined);
                         setValue(
-                            fiatInput,
-                            buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies.get(selected.value),
+                            FORM_FIAT_INPUT,
+                            fiatCurrencies?.defaultAmountsOfFiatCurrencies?.get(selected.value) ??
+                                '',
                         );
                     }}
-                    options={Object.keys(fiatCurrencies)
-                        .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
-                        .map((currency: string) => buildFiatOption(currency))}
+                    options={[...currencies].map(currency => buildFiatOption(currency)) ?? []}
                     formatOptionLabel={option => {
                         return (
                             <CoinmarketFormOption>
