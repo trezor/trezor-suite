@@ -136,6 +136,11 @@ export type ExtraDependencies = {
     };
 };
 
+export type ExtraDependenciesForReducer = Pick<
+    ExtraDependencies,
+    'actionTypes' | 'actions' | 'reducers'
+>;
+
 export type ExtraDependenciesPartial = {
     [K in keyof ExtraDependencies]?: Partial<ExtraDependencies[K]>;
 };

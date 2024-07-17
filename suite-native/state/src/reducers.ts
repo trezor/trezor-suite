@@ -8,10 +8,10 @@ import {
     prepareDeviceReducer,
     prepareDiscoveryReducer,
     prepareFiatRatesReducer,
-    prepareSendFormReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/settings';
+import { sendFormSlice } from '@suite-native/module-send';
 import { logsSlice } from '@suite-common/logger';
 import {
     migrateAccountLabel,
@@ -44,7 +44,7 @@ const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
-const sendFormReducer = prepareSendFormReducer(extraDependencies);
+const sendFormReducer = sendFormSlice.prepareReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
