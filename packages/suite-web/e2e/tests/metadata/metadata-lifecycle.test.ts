@@ -1,5 +1,5 @@
 // @group_metadata
-// @retry=2
+// @retry=0
 
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 
