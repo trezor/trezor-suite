@@ -1578,6 +1578,10 @@ export default defineMessages({
         defaultMessage: 'You will get',
         id: 'TR_COINMARKET_YOU_WILL_GET',
     },
+    TR_COINMARKET_YOU_WILL_PAY: {
+        defaultMessage: 'You will pay',
+        id: 'TR_COINMARKET_YOU_WILL_PAY',
+    },
     TR_COINMARKET_SHOW_OFFERS: {
         defaultMessage: 'Compare offers',
         id: 'TR_COINMARKET_SHOW_OFFERS',
@@ -1678,6 +1682,14 @@ export default defineMessages({
     TR_COINMARKET_TOKEN_NETWORK: {
         defaultMessage: '{tokenName} on {networkName} network',
         id: 'TR_COINMARKET_TOKEN_NETWORK',
+    },
+    TR_COINMARKET_ENTER_AMOUNT_IN: {
+        defaultMessage: 'Enter amount in {currency}',
+        id: 'TR_COINMARKET_ENTER_AMOUNT_IN',
+    },
+    TR_COINMARKET_FIAT: {
+        defaultMessage: 'fiat',
+        id: 'TR_COINMARKET_FIAT',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',

@@ -9,6 +9,7 @@ import {
     CoinmarketTradeSellType,
     CoinmarketTradeType,
     UseCoinmarketCommonProps,
+    UseCoinmarketCommonReturnProps,
 } from 'src/types/coinmarket/coinmarket';
 import {
     CoinmarketOffersContextValues,
@@ -40,7 +41,7 @@ export const getFilteredSuccessQuotes = <T extends CoinmarketTradeType>(
 export const useCoinmarketCommonOffers = <T extends CoinmarketTradeType>({
     type,
     selectedAccount,
-}: UseCoinmarketCommonProps) => {
+}: UseCoinmarketCommonProps): UseCoinmarketCommonReturnProps<T> => {
     const dispatch = useDispatch();
     const timer = useTimer();
     const { account } = selectedAccount;
@@ -48,7 +49,9 @@ export const useCoinmarketCommonOffers = <T extends CoinmarketTradeType>({
     const [callInProgress, setCallInProgress] = useState<boolean>(
         type !== 'buy' ? isLocked() : false,
     );
-    const [selectedQuote, setSelectedQuote] = useState<CoinmarketTradeDetailMapProps[T]>();
+    const [selectedQuote, setSelectedQuote] = useState<
+        CoinmarketTradeDetailMapProps[T] | undefined
+    >();
 
     const checkQuotesTimer = (callback: () => Promise<void>) => {
         if (!timer.isLoading && !timer.isStopped) {

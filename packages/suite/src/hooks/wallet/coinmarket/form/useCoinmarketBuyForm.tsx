@@ -139,6 +139,10 @@ const useCoinmarketBuyForm = ({
         isLoading || formState.isSubmitting || isSubmittingHelper || isFirstRequest;
     const isFormInvalid = !(formIsValid && hasValues);
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
+    const quotesByPaymentMethod = getQuotesByPaymentMethod(
+        innerQuotes,
+        values?.paymentMethod?.value ?? '',
+    );
 
     const getQuotesRequest = useCallback(
         async (request: BuyTradeQuoteRequest) => {
@@ -174,16 +178,15 @@ const useCoinmarketBuyForm = ({
     );
 
     const getQuoteRequestData = useCallback((): BuyTradeQuoteRequest => {
-        const { fiatInput, cryptoInput, currencySelect, cryptoSelect, countrySelect } =
+        const { fiatInput, cryptoInput, currencySelect, cryptoSelect, countrySelect, wantCrypto } =
             methods.getValues();
         const cryptoStringAmount =
             cryptoInput && shouldSendInSats
                 ? formatAmount(cryptoInput, network.decimals)
                 : cryptoInput;
-        const wantCrypto = !fiatInput;
 
         const request = {
-            wantCrypto: fiatInput ? wantCrypto : !!quotesRequest?.wantCrypto,
+            wantCrypto,
             fiatCurrency: currencySelect
                 ? currencySelect?.value.toUpperCase()
                 : quotesRequest?.fiatCurrency ?? '',
@@ -340,6 +343,20 @@ const useCoinmarketBuyForm = ({
         setCallInProgress(false);
     };
 
+    const toggleWantCrypto = () => {
+        const { wantCrypto } = getValues();
+        const bestScoredQuote = quotesByPaymentMethod?.[0];
+
+        if (!wantCrypto) {
+            setValue('cryptoInput', bestScoredQuote?.receiveStringAmount ?? '');
+        } else {
+            setValue('fiatInput', bestScoredQuote?.fiatStringAmount ?? '');
+        }
+
+        setValue('wantCrypto', !wantCrypto);
+        setIsSubmittingHelper(true); // remove delay of sending request
+    };
+
     // hooks
     useEffect(() => {
         dispatch(loadInvityData());
@@ -463,6 +480,8 @@ const useCoinmarketBuyForm = ({
                 isFormLoading,
                 isFormInvalid,
                 isLoadingOrInvalid,
+
+                toggleWantCrypto,
             },
         },
         ...methods,
@@ -482,7 +501,7 @@ const useCoinmarketBuyForm = ({
         callInProgress,
         addressVerified,
         timer,
-        quotes: getQuotesByPaymentMethod(innerQuotes, values.paymentMethod?.value ?? ''),
+        quotes: quotesByPaymentMethod,
         quotesRequest,
         selectedQuote,
         selectQuote,

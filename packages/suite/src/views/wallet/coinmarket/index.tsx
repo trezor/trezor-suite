@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Icon, variables, SelectBar, Paragraph } from '@trezor/components';
+import { Icon, variables, SelectBar, Paragraph, TextButton, H2 } from '@trezor/components';
 import {
     Elevation,
     mapElevationToBackground,
@@ -8,6 +8,7 @@ import {
     spacingsPx,
     typography,
 } from '@trezor/theme';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 interface ResponsiveSize {
     $responsiveSize: keyof typeof variables.SCREEN_SIZE;
@@ -106,9 +107,13 @@ export const CoinmarketFormInputInner = styled.div`
     position: relative;
 `;
 
-export const CoinmarketFormInputLabelWrapper = styled.label`
-    display: block;
+export const CoinmarketFormInputLabelWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
     padding-bottom: ${spacingsPx.xs};
+`;
+
+export const CoinmarketFormInputLabelText = styled.label`
     ${typography.body}
 `;
 
@@ -117,8 +122,8 @@ export const CoinmarketFormOption = styled.div`
     align-items: center;
 `;
 
-export const CoinmarketFormOptionLabel = styled.div`
-    color: ${({ theme }) => theme.textSubdued};
+export const CoinmarketFormOptionLabel = styled.div<{ $isDark?: boolean }>`
+    color: ${({ theme, $isDark }) => ($isDark ? theme.textDefault : theme.textSubdued)};
 `;
 
 export const CoinmarketFormOptionLabelLong = styled.div`
@@ -135,4 +140,60 @@ export const CoinmarketFormOptionNetwork = styled.div<{ $elevation: Elevation }>
     background: ${({ theme, $elevation }) =>
         mapElevationToBackground({ theme, $elevation: nextElevation[$elevation] })};
     border-radius: 4px;
+`;
+
+export const CoinmarketTextButton = styled(TextButton)`
+    position: relative;
+    padding: 0;
+    color: ${({ theme }) => theme.textSubdued};
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: ${({ theme }) => theme.textSubdued};
+    }
+
+    &:hover::after {
+        background-color: ${({ theme }) => theme.textPrimaryPressed};
+    }
+`;
+
+export const CoinmarketAmountContainer = styled.div`
+    display: flex;
+    align-items: center;
+    margin-top: ${spacingsPx.md};
+
+    ${SCREEN_QUERY.MOBILE} {
+        margin-top: ${spacingsPx.xs};
+    }
+`;
+
+export const CoinmarketAmountWrapper = styled(H2)`
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        font-size: 28px;
+    }
+
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
+        font-size: ${nativeTypography.titleMedium.fontSize}px;
+    }
+
+    ${SCREEN_QUERY.MOBILE} {
+        font-size: ${nativeTypography.titleSmall.fontSize}px;
+        margin-top: ${spacingsPx.xs};
+    }
+`;
+
+export const CoinmarketAmountWrapperText = styled.div`
+    padding-right: ${spacingsPx.xs};
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
