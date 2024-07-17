@@ -12,6 +12,7 @@ export type ScheduleActionParams = {
         | number // How many attempts before failure (default = one, or infinite when deadline is set)
         | readonly AttemptParams[]; // Array of timeouts and gaps for every attempt (length = attempt count)
     signal?: AbortSignal;
+    attemptFailureHandler?: (error: Error) => Error | void; // break attemptLoop if `Error` is set
 } & AttemptParams; // Ignored when attempts is AttemptParams[]
 
 const isArray = (
@@ -76,7 +77,7 @@ const resolveAction = async <T>(action: ScheduledAction<T>, clear: AbortSignal) 
 const attemptLoop = async <T>(
     attempts: number,
     attempt: (attempt: number, signal: AbortSignal) => Promise<T>,
-    failure: (attempt: number) => Promise<void>,
+    failure: (attempt: number, error: Error) => Promise<Error | void>,
     clear: AbortSignal,
 ) => {
     // Tries only (attempts - 1) times, because the last attempt throws its error
@@ -87,10 +88,10 @@ const attemptLoop = async <T>(
         clear.addEventListener('abort', onClear);
         try {
             return await attempt(a, aborter.signal);
-        } catch {
+        } catch (error) {
             onClear();
 
-            await failure(a);
+            await failure(a, error);
         } finally {
             clear.removeEventListener('abort', onClear);
         }
@@ -103,7 +104,7 @@ export const scheduleAction = async <T>(
     action: ScheduledAction<T>,
     params: ScheduleActionParams,
 ) => {
-    const { signal, delay, attempts, timeout, deadline, gap } = params;
+    const { signal, delay, attempts, timeout, deadline, gap, attemptFailureHandler } = params;
     const deadlineMs = deadline && deadline - Date.now();
     const attemptCount = isArray(attempts)
         ? attempts.length
@@ -126,7 +127,13 @@ export const scheduleAction = async <T>(
                             rejectAfterMs(getParams(attempt).timeout, abortedByTimeout, clear),
                             resolveAction(action, abort),
                         ]),
-                    attempt => resolveAfterMs(getParams(attempt).gap ?? 0, clear),
+                    (attempt, error) => {
+                        const errorHandlerResult = attemptFailureHandler?.(error);
+
+                        return errorHandlerResult
+                            ? Promise.reject(errorHandlerResult)
+                            : resolveAfterMs(getParams(attempt).gap ?? 0, clear);
+                    },
                     clear,
                 ),
             ),

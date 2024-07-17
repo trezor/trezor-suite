@@ -113,6 +113,47 @@ describe('scheduleAction', () => {
         setTimeout(() => aborter.abort(), 300);
     });
 
+    it('attempt failure handler', async () => {
+        const spy = jest.fn(
+            (signal?: AbortSignal) =>
+                new Promise<any>((_, reject) => {
+                    signal?.addEventListener('abort', () => reject(new Error('Runtime error')));
+                }),
+        );
+        let i = 0;
+        await expect(() =>
+            scheduleAction(spy, {
+                timeout: 500,
+                attempts: 5,
+                attemptFailureHandler: () => {
+                    if (i > 1) {
+                        // throw on 3rd attempt
+                        throw new Error('Unexpected');
+                    }
+                    i++;
+                },
+            }),
+        ).rejects.toThrow('Unexpected');
+        expect(spy).toHaveBeenCalledTimes(3);
+
+        i = 0;
+        spy.mockClear();
+        await expect(() =>
+            scheduleAction(spy, {
+                timeout: 500,
+                attempts: 5,
+                attemptFailureHandler: () => {
+                    if (i > 1) {
+                        // return error on 3rd attempt
+                        return new Error('Unexpected');
+                    }
+                    i++;
+                },
+            }),
+        ).rejects.toThrow('Unexpected');
+        expect(spy).toHaveBeenCalledTimes(3);
+    });
+
     it('deadline with attempt timeout', async () => {
         const spy = jest.fn(
             (signal?: AbortSignal) =>
