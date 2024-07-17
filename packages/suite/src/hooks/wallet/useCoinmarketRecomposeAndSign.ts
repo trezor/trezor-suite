@@ -7,7 +7,7 @@ import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants'
 import { FormState } from '@suite-common/wallet-types';
 import { getFeeLevels } from '@suite-common/wallet-utils';
 import type { FormOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { composeSendFormTransactionThunk } from '@suite-common/wallet-core';
+import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import { UseSendFormState } from 'src/types/wallet/sendForm';
 
 export const useCoinmarketRecomposeAndSign = () => {
@@ -74,7 +74,7 @@ export const useCoinmarketRecomposeAndSign = () => {
             // but recompute the feeLimit based on a different transaction data (for example from ethereumDataHex)
             if (recalcCustomLimit && selectedFee === 'custom') {
                 const normalLevels = await dispatch(
-                    composeSendFormTransactionThunk({
+                    composeSendFormTransactionFeeLevelsThunk({
                         formValues: { ...formValues, selectedFee: 'normal' },
                         formState: formState as UseSendFormState,
                     }),
@@ -112,7 +112,7 @@ export const useCoinmarketRecomposeAndSign = () => {
 
             // compose transaction again to recalculate fees based on real account values
             const composedLevels = await dispatch(
-                composeSendFormTransactionThunk({ formValues, formState }),
+                composeSendFormTransactionFeeLevelsThunk({ formValues, formState }),
             ).unwrap();
             if (!selectedFee || !composedLevels) {
                 dispatch(

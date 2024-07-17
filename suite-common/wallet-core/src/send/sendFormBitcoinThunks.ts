@@ -1,7 +1,10 @@
-import { G } from '@mobily/ts-belt';
-
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import TrezorConnect, { FeeLevel, Params, SignTransaction } from '@trezor/connect';
+import TrezorConnect, {
+    FeeLevel,
+    Params,
+    SignTransaction,
+    SignedTransaction,
+} from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     formatNetworkAmount,
@@ -22,7 +25,12 @@ import { createThunk } from '@suite-common/redux-utils';
 
 import { selectTransactions } from '../transactions/transactionsReducer';
 import { selectDevice } from '../device/deviceReducer';
-import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
+import {
+    ComposeTransactionThunkArguments,
+    ComposeFeeLevelsError,
+    SignTransactionThunkArguments,
+    SignTransactionError,
+} from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 type GetSequenceParams = { account: Account; formValues: FormState };
@@ -39,12 +47,13 @@ const getSequence = ({ account, formValues }: GetSequenceParams) => {
     return undefined; // Must be undefined for final (non-RBF) transaction with no locktime
 };
 
-export const composeBitcoinSendFormTransactionThunk = createThunk(
-    `${SEND_MODULE_PREFIX}/composeBitcoinSendFormTransactionThunk`,
-    async (
-        { formValues, formState }: ComposeTransactionThunkArguments,
-        { dispatch, getState, extra },
-    ) => {
+export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
+    PrecomposedLevels,
+    ComposeTransactionThunkArguments,
+    { rejectValue: ComposeFeeLevelsError }
+>(
+    `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
+    async ({ formValues, formState }, { dispatch, getState, extra, rejectWithValue }) => {
         const {
             selectors: { selectAreSatsAmountUnit },
         } = extra;
@@ -59,10 +68,18 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
             !device?.unavailableCapabilities?.amountUnit &&
             hasNetworkFeatures(account, 'amount-unit');
 
-        if (!account.addresses || !account.utxo) return;
+        if (!account.addresses || !account.utxo)
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'Account is missing addresses or utxos.',
+            });
 
         const composeOutputs = getBitcoinComposeOutputs(formValues, account.symbol, isSatoshis);
-        if (composeOutputs.length < 1) return;
+        if (composeOutputs.length < 1)
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'Unable to compose output.',
+            });
 
         const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
@@ -122,19 +139,22 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
                 }),
             );
 
-            return;
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: response.payload.error,
+            });
         }
 
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
-        const wrappedResponse: PrecomposedLevels = {};
+        const resultLevels: PrecomposedLevels = {};
         response.payload.forEach((tx, index) => {
             const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
-            wrappedResponse[feeLabel] = tx as PrecomposedTransaction;
+            resultLevels[feeLabel] = tx as PrecomposedTransaction;
         });
 
         const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
         // there is no valid tx in predefinedLevels and there is no custom level
-        if (!hasAtLeastOneValid && !wrappedResponse.custom) {
+        if (!hasAtLeastOneValid && !resultLevels.custom) {
             const { minFee } = feeInfo;
             const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
             // define coefficient for maxFee
@@ -167,7 +187,7 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
             if (customLevelsResponse.success) {
                 const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
                 if (customValid >= 0) {
-                    wrappedResponse.custom = customLevelsResponse.payload[
+                    resultLevels.custom = customLevelsResponse.payload[
                         customValid
                     ] as PrecomposedTransaction;
                 }
@@ -176,8 +196,8 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
 
         // format max (@trezor/connect sends it as satoshi)
         // format errorMessage and catch unexpected error (other than AMOUNT_IS_NOT_ENOUGH)
-        Object.keys(wrappedResponse).forEach(key => {
-            const tx = wrappedResponse[key];
+        Object.keys(resultLevels).forEach(key => {
+            const tx = resultLevels[key];
 
             if (tx.type !== 'error') {
                 // round to
@@ -214,38 +234,27 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
             }
         });
 
-        return wrappedResponse;
+        return resultLevels;
     },
 );
 
-export const signBitcoinSendFormTransactionThunk = createThunk(
+export const signBitcoinSendFormTransactionThunk = createThunk<
+    SignedTransaction,
+    SignTransactionThunkArguments,
+    { rejectValue: SignTransactionError }
+>(
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (
-        { formValues, precomposedTransaction, selectedAccount }: SignTransactionThunkArguments,
-        { dispatch, getState, extra },
+        { formValues, precomposedTransaction, selectedAccount, device },
+        { getState, extra, rejectWithValue },
     ) => {
         const {
-            selectors: {
-                selectBitcoinAmountUnit,
-                selectAddressDisplayType,
-                selectSelectedAccountStatus,
-            },
+            selectors: { selectBitcoinAmountUnit, selectAddressDisplayType },
         } = extra;
 
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
-        const selectedAccountStatus = selectSelectedAccountStatus(getState());
-        const device = selectDevice(getState());
         const transactions = selectTransactions(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
-
-        if (
-            G.isNullable(selectedAccount) ||
-            selectedAccountStatus !== 'loaded' ||
-            !device ||
-            !precomposedTransaction ||
-            precomposedTransaction.type !== 'final'
-        )
-            return;
 
         // transactionInfo needs some additional changes:
         const signEnhancement: Partial<SignTransaction> = {};
@@ -325,16 +334,10 @@ export const signBitcoinSendFormTransactionThunk = createThunk(
 
         const response = await TrezorConnect.signTransaction(signPayload);
         if (!response.success) {
-            // catch manual error from TransactionReviewModal
-            if (response.payload.error === 'tx-cancelled') return;
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: response.payload.error,
-                }),
-            );
-
-            return;
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: response.payload.error,
+            });
         }
 
         return response.payload;

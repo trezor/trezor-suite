@@ -1,4 +1,6 @@
 import { G } from '@mobily/ts-belt';
+import { isRejected } from '@reduxjs/toolkit';
+import { ActionsFromAsyncThunk } from '@reduxjs/toolkit/dist/matchers';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createThunk } from '@suite-common/redux-utils';
@@ -7,6 +9,8 @@ import {
     AccountKey,
     FormState,
     GeneralPrecomposedTransactionFinal,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
@@ -24,7 +28,7 @@ import {
     getNetwork,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
+import TrezorConnect, { Success } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 
@@ -44,26 +48,31 @@ import {
 import { sendFormActions } from './sendFormActions';
 import {
     signBitcoinSendFormTransactionThunk,
-    composeBitcoinSendFormTransactionThunk,
+    composeBitcoinTransactionFeeLevelsThunk,
 } from './sendFormBitcoinThunks';
 import {
     signEthereumSendFormTransactionThunk,
-    composeEthereumSendFormTransactionThunk,
+    composeEthereumTransactionFeeLevelsThunk,
 } from './sendFormEthereumThunks';
 import {
     signCardanoSendFormTransactionThunk,
-    composeCardanoSendFormTransactionThunk,
+    composeCardanoTransactionFeeLevelsThunk,
 } from './sendFormCardanoThunks';
 import {
+    composeRippleTransactionFeeLevelsThunk,
     signRippleSendFormTransactionThunk,
-    composeRippleSendFormTransactionThunk,
 } from './sendFormRippleThunks';
 import {
     signSolanaSendFormTransactionThunk,
-    composeSolanaSendFormTransactionThunk,
+    composeSolanaTransactionFeeLevelsThunk,
 } from './sendFormSolanaThunks';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
-import { ComposeActionContext } from './sendFormTypes';
+import {
+    ComposeActionContext,
+    ComposeFeeLevelsError,
+    PushTransactionError,
+    SignTransactionError,
+} from './sendFormTypes';
 
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
@@ -120,39 +129,62 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     },
 );
 
-export const composeSendFormTransactionThunk = createThunk(
+type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
+    | typeof composeBitcoinTransactionFeeLevelsThunk
+    | typeof composeEthereumTransactionFeeLevelsThunk
+    | typeof composeCardanoTransactionFeeLevelsThunk
+    | typeof composeSolanaTransactionFeeLevelsThunk
+>;
+
+export const composeSendFormTransactionFeeLevelsThunk = createThunk<
+    PrecomposedLevels | PrecomposedLevelsCardano,
+    { formValues: FormState; formState: ComposeActionContext },
+    { rejectValue: ComposeFeeLevelsError }
+>(
     `${SEND_MODULE_PREFIX}/composeSendFormTransactionThunk`,
-    async (
-        { formValues, formState }: { formValues: FormState; formState: ComposeActionContext },
-        { dispatch },
-        // eslint-disable-next-line require-await
-    ) => {
+    async ({ formValues, formState }, { dispatch, rejectWithValue }) => {
         const { account } = formState;
-        if (account.networkType === 'bitcoin') {
-            return dispatch(
-                composeBitcoinSendFormTransactionThunk({ formValues, formState }),
-            ).unwrap();
+        let response: CoinSpecificComposeResponse | undefined;
+
+        const { networkType } = account;
+        if (networkType === 'bitcoin') {
+            response = await dispatch(
+                composeBitcoinTransactionFeeLevelsThunk({
+                    formValues,
+                    formState,
+                }),
+            );
+        } else if (networkType === 'ethereum') {
+            response = await dispatch(
+                composeEthereumTransactionFeeLevelsThunk({ formValues, formState }),
+            );
+        } else if (networkType === 'ripple') {
+            response = await dispatch(
+                composeRippleTransactionFeeLevelsThunk({ formValues, formState }),
+            );
+        } else if (networkType === 'cardano') {
+            response = await dispatch(
+                composeCardanoTransactionFeeLevelsThunk({ formValues, formState }),
+            );
+        } else if (networkType === 'solana') {
+            response = await dispatch(
+                composeSolanaTransactionFeeLevelsThunk({ formValues, formState }),
+            );
+        } else {
+            const _exhaustiveCheck: never = networkType;
+
+            return _exhaustiveCheck;
         }
-        if (account.networkType === 'ethereum') {
-            return dispatch(
-                composeEthereumSendFormTransactionThunk({ formValues, formState }),
-            ).unwrap();
+
+        if (isRejected(response) || !response?.payload) {
+            return rejectWithValue(
+                response?.payload ?? {
+                    error: 'fee-levels-compose-failed',
+                },
+            );
         }
-        if (account.networkType === 'ripple') {
-            return dispatch(
-                composeRippleSendFormTransactionThunk({ formValues, formState }),
-            ).unwrap();
-        }
-        if (account.networkType === 'cardano') {
-            return dispatch(
-                composeCardanoSendFormTransactionThunk({ formValues, formState }),
-            ).unwrap();
-        }
-        if (account.networkType === 'solana') {
-            return dispatch(
-                composeSolanaSendFormTransactionThunk({ formValues, formState }),
-            ).unwrap();
-        }
+
+        return response.payload;
     },
 );
 
@@ -227,7 +259,7 @@ const synchronizeSentTransactionThunk = createThunk(
 export const pushSendFormTransactionThunk = createThunk<
     Success<{ txid: string }>,
     { selectedAccount: Account },
-    { rejectValue: string | Unsuccessful }
+    { rejectValue: PushTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormTransactionThunk`,
     async (
@@ -244,7 +276,10 @@ export const pushSendFormTransactionThunk = createThunk<
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
 
         if (!serializedTx || !precomposedTransaction)
-            return rejectWithValue('Transaction not found.');
+            return rejectWithValue({
+                error: 'push-transaction-failed',
+                metadata: { success: false, payload: { error: 'Transaction not found.' } },
+            });
 
         const pushTxResponse = await TrezorConnect.pushTransaction({
             ...serializedTx,
@@ -305,11 +340,13 @@ export const pushSendFormTransactionThunk = createThunk<
 
         return pushTxResponse.success
             ? fulfillWithValue(pushTxResponse)
-            : rejectWithValue(pushTxResponse);
+            : rejectWithValue({
+                  error: 'push-transaction-failed',
+                  metadata: pushTxResponse,
+              });
     },
 );
 
-// TODO: typing of parameters
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
 export const pushSendFormRawTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
@@ -343,76 +380,105 @@ export const pushSendFormRawTransactionThunk = createThunk(
     },
 );
 
-export const signTransactionThunk = createThunk(
+type CoinSpecificSignResponse = ActionsFromAsyncThunk<
+    | typeof signBitcoinSendFormTransactionThunk
+    | typeof signCardanoSendFormTransactionThunk
+    | typeof signEthereumSendFormTransactionThunk
+    | typeof signRippleSendFormTransactionThunk
+    | typeof signSolanaSendFormTransactionThunk
+>;
+
+export const signTransactionThunk = createThunk<
+    { serializedTx: string; signedTx?: BlockbookTransaction },
+    {
+        formValues: FormState;
+        precomposedTransaction: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
+        selectedAccount: Account;
+    },
+    { rejectValue: SignTransactionError }
+>(
     `${SEND_MODULE_PREFIX}/signTransactionThunk`,
     async (
-        {
-            formValues,
-            precomposedTransaction,
-            selectedAccount,
-        }: {
-            formValues: FormState;
-            precomposedTransaction:
-                | PrecomposedTransactionFinal
-                | PrecomposedTransactionFinalCardano;
-            selectedAccount: Account;
-        },
-        { dispatch },
+        { formValues, precomposedTransaction, selectedAccount },
+        { dispatch, rejectWithValue, extra, getState },
     ) => {
-        // signTransaction by Trezor
-        let serializedTx: string | undefined;
-        let signedTx: BlockbookTransaction | undefined;
+        const {
+            selectors: { selectSelectedAccountStatus },
+        } = extra;
+        const accountStatus = selectSelectedAccountStatus(getState());
+        const device = selectDevice(getState());
+
+        if (
+            G.isNullable(selectedAccount) ||
+            accountStatus !== 'loaded' ||
+            !device ||
+            !precomposedTransaction ||
+            precomposedTransaction.type !== 'final'
+        )
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Invalid input data.',
+            });
+
+        let response: CoinSpecificSignResponse | undefined;
+
         // Type guard to differentiate between PrecomposedTransactionFinal and PrecomposedTransactionFinalCardano
         if (isCardanoTx(selectedAccount, precomposedTransaction)) {
-            serializedTx = await dispatch(
+            response = await dispatch(
                 signCardanoSendFormTransactionThunk({
                     precomposedTransaction,
+                    device,
                     selectedAccount,
                 }),
-            ).unwrap();
+            );
         } else {
             const { networkType } = selectedAccount;
+            const thunkArguments = {
+                formValues,
+                precomposedTransaction,
+                selectedAccount,
+                device,
+            };
             if (networkType === 'bitcoin') {
-                const response = await dispatch(
-                    signBitcoinSendFormTransactionThunk({
-                        formValues,
-                        precomposedTransaction,
-                        selectedAccount,
-                    }),
-                ).unwrap();
-                serializedTx = response?.serializedTx;
-                signedTx = response?.signedTransaction;
-            }
-            if (networkType === 'ethereum') {
-                serializedTx = await dispatch(
-                    signEthereumSendFormTransactionThunk({
-                        formValues,
-                        precomposedTransaction,
-                        selectedAccount,
-                    }),
-                ).unwrap();
-            }
-            if (networkType === 'ripple') {
-                serializedTx = await dispatch(
-                    signRippleSendFormTransactionThunk({
-                        formValues,
-                        precomposedTransaction,
-                        selectedAccount,
-                    }),
-                ).unwrap();
-            }
-            if (networkType === 'solana') {
-                serializedTx = await dispatch(
-                    signSolanaSendFormTransactionThunk({
-                        formValues,
-                        precomposedTransaction,
-                        selectedAccount,
-                    }),
-                ).unwrap();
+                response = await dispatch(signBitcoinSendFormTransactionThunk(thunkArguments));
+            } else if (networkType === 'ethereum') {
+                response = await dispatch(signEthereumSendFormTransactionThunk(thunkArguments));
+            } else if (networkType === 'ripple') {
+                response = await dispatch(signRippleSendFormTransactionThunk(thunkArguments));
+            } else if (networkType === 'solana') {
+                response = await dispatch(signSolanaSendFormTransactionThunk(thunkArguments));
             }
         }
 
-        if (serializedTx)
+        if (isRejected(response) || !response?.payload) {
+            // catch manual error from TransactionReviewModal
+            const message = response?.payload?.message ?? 'unknown-error';
+            if (message === 'tx-cancelled')
+                return rejectWithValue({
+                    error: 'sign-transaction-failed',
+                    message: 'User canceled the signing process.',
+                });
+
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'sign-tx-error',
+                    error: message,
+                }),
+            );
+
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message,
+            });
+        }
+
+        const { serializedTx } = response.payload;
+        const signedTx =
+            'signedTransaction' in response.payload
+                ? response.payload.signedTransaction
+                : undefined;
+
+        if (response?.payload?.serializedTx)
             // store serializedTx in reducer (TrezorConnect.pushTransaction params) to be used in TransactionReviewModal and pushTransaction method
             dispatch(
                 sendFormActions.storeSignedTransaction({

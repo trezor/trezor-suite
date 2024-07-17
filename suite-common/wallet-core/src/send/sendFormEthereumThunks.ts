@@ -27,9 +27,13 @@ import {
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 
-import { selectDevice } from '../device/deviceReducer';
 import { selectTransactions } from '../transactions/transactionsReducer';
-import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
+import {
+    ComposeTransactionThunkArguments,
+    ComposeFeeLevelsError,
+    SignTransactionThunkArguments,
+    SignTransactionError,
+} from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import { STAKE_GAS_LIMIT_RESERVE } from '../stake/stakeTypes';
 
@@ -110,14 +114,22 @@ const calculate = (
     return payloadData;
 };
 
-export const composeEthereumSendFormTransactionThunk = createThunk(
-    `${SEND_MODULE_PREFIX}/composeEthereumSendFormTransactionThunk`,
-    async ({ formValues, formState }: ComposeTransactionThunkArguments, { dispatch }) => {
+export const composeEthereumTransactionFeeLevelsThunk = createThunk<
+    PrecomposedLevels,
+    ComposeTransactionThunkArguments,
+    { rejectValue: ComposeFeeLevelsError }
+>(
+    `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
+    async ({ formValues, formState }, { dispatch, rejectWithValue }) => {
         const { account, network, feeInfo } = formState;
-        const composeOutputs = getExternalComposeOutput(formValues, account, network);
-        if (!composeOutputs) return; // no valid Output
+        const composedOutput = getExternalComposeOutput(formValues, account, network);
+        if (!composedOutput)
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'Unable to compose output.',
+            });
 
-        const { output, tokenInfo, decimals } = composeOutputs;
+        const { output, tokenInfo, decimals } = composedOutput;
         const { availableBalance } = account;
         const { address, amount } = formValues.outputs[0];
 
@@ -184,19 +196,19 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
         }
 
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
-        const wrappedResponse: PrecomposedLevels = {};
+        const resultLevels: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
             calculate(availableBalance, output, level, tokenInfo),
         );
         response.forEach((tx, index) => {
             const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
-            wrappedResponse[feeLabel] = tx;
+            resultLevels[feeLabel] = tx;
         });
 
         // format max
         // update errorMessage values (symbol)
-        Object.keys(wrappedResponse).forEach(key => {
-            const tx = wrappedResponse[key];
+        Object.keys(resultLevels).forEach(key => {
+            const tx = resultLevels[key];
             if (tx.type !== 'error') {
                 tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
                 tx.estimatedFeeLimit = !customFeeLimit.isNaN()
@@ -211,31 +223,24 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
             }
         });
 
-        return wrappedResponse;
+        return resultLevels;
     },
 );
 
-export const signEthereumSendFormTransactionThunk = createThunk(
+export const signEthereumSendFormTransactionThunk = createThunk<
+    { serializedTx: string },
+    SignTransactionThunkArguments,
+    { rejectValue: SignTransactionError }
+>(
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (
-        { formValues, precomposedTransaction, selectedAccount }: SignTransactionThunkArguments,
-        { dispatch, getState, extra },
+        { formValues, precomposedTransaction, selectedAccount, device },
+        { getState, extra, rejectWithValue },
     ) => {
         const {
-            selectors: { selectAddressDisplayType, selectSelectedAccountStatus },
+            selectors: { selectAddressDisplayType },
         } = extra;
-        const selectedAccountStatus = selectSelectedAccountStatus(getState());
         const transactions = selectTransactions(getState());
-        const device = selectDevice(getState());
-
-        if (
-            G.isNullable(selectedAccount) ||
-            selectedAccountStatus !== 'loaded' ||
-            !device ||
-            !precomposedTransaction ||
-            precomposedTransaction.type !== 'final'
-        )
-            return;
 
         const network = getNetwork(selectedAccount.symbol);
 
@@ -244,7 +249,10 @@ export const signEthereumSendFormTransactionThunk = createThunk(
             selectedAccount.networkType !== 'ethereum' ||
             !network?.chainId
         )
-            return;
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Ethereum network mismatch.',
+            });
 
         const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -283,7 +291,7 @@ export const signEthereumSendFormTransactionThunk = createThunk(
             nonce,
         });
 
-        const signedTx = await TrezorConnect.ethereumSignTransaction({
+        const response = await TrezorConnect.ethereumSignTransaction({
             device: {
                 path: device.path,
                 instance: device.instance,
@@ -295,19 +303,14 @@ export const signEthereumSendFormTransactionThunk = createThunk(
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
         });
 
-        if (!signedTx.success) {
+        if (!response.success) {
             // catch manual error from TransactionReviewModal
-            if (signedTx.payload.error === 'tx-cancelled') return;
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: signedTx.payload.error,
-                }),
-            );
-
-            return;
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: response.payload.error,
+            });
         }
 
-        return signedTx.payload.serializedTx;
+        return { serializedTx: response.payload.serializedTx };
     },
 );

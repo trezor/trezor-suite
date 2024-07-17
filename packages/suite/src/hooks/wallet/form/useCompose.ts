@@ -5,7 +5,10 @@ import { FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { ComposeActionContext, composeSendFormTransactionThunk } from '@suite-common/wallet-core';
+import {
+    ComposeActionContext,
+    composeSendFormTransactionFeeLevelsThunk,
+} from '@suite-common/wallet-core';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     FormState,
@@ -83,7 +86,10 @@ export const useCompose = <TFieldValues extends FormState>({
                 const values = getValues();
 
                 return dispatch(
-                    composeSendFormTransactionThunk({ formValues: values, formState: state }),
+                    composeSendFormTransactionFeeLevelsThunk({
+                        formValues: values,
+                        formState: state,
+                    }),
                 ).unwrap();
             });
 

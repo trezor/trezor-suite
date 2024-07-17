@@ -6,11 +6,13 @@ import {
     ExcludedUtxos,
     FormState,
 } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/connect';
+import { TokenInfo, Unsuccessful } from '@trezor/connect';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { TrezorDevice } from '@suite-common/suite-types';
 
 export type SerializedTx = { tx: string; coin: NetworkSymbol };
 
+// TODO: is this still needed?
 export interface ComposeActionContext {
     account: Account;
     network: Network;
@@ -40,5 +42,23 @@ export type ComposeTransactionThunkArguments = {
 export type SignTransactionThunkArguments = {
     formValues: FormState;
     precomposedTransaction: PrecomposedTransactionFinal;
-    selectedAccount?: Account;
+    selectedAccount: Account;
+    device: TrezorDevice;
 };
+
+export type ComposeFeeLevelsError = {
+    error: 'fee-levels-compose-failed';
+    message?: string;
+};
+
+export type SignTransactionError = {
+    error: 'sign-transaction-failed';
+    message?: string;
+};
+
+export type PushTransactionError = {
+    error: 'push-transaction-failed';
+    metadata: Unsuccessful;
+};
+
+export type SendFormError = ComposeFeeLevelsError | SignTransactionError | PushTransactionError;

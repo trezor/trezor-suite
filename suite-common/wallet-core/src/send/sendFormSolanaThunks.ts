@@ -1,5 +1,3 @@
-import { G } from '@mobily/ts-belt';
-
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import type { TokenInfo, TokenAccount } from '@trezor/blockchain-link-types';
@@ -9,7 +7,6 @@ import {
     PrecomposedTransaction,
     PrecomposedLevels,
 } from '@suite-common/wallet-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     amountToSatoshi,
@@ -27,8 +24,12 @@ import {
 } from '@suite-common/wallet-utils';
 
 import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
-import { selectDevice } from '../device/deviceReducer';
-import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
+import {
+    ComposeTransactionThunkArguments,
+    ComposeFeeLevelsError,
+    SignTransactionThunkArguments,
+    SignTransactionError,
+} from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 const calculate = (
@@ -122,14 +123,22 @@ const fetchAccountOwnerAndTokenInfoForAddress = async (
     return [accountOwner, tokenInfo] as const;
 };
 
-export const composeSolanaSendFormTransactionThunk = createThunk(
-    `${SEND_MODULE_PREFIX}/composeSolanaSendFormTransactionThunk`,
-    async ({ formValues, formState }: ComposeTransactionThunkArguments, { getState }) => {
+export const composeSolanaTransactionFeeLevelsThunk = createThunk<
+    PrecomposedLevels,
+    ComposeTransactionThunkArguments,
+    { rejectValue: ComposeFeeLevelsError }
+>(
+    `${SEND_MODULE_PREFIX}/composeSolanaTransactionFeeLevelsThunk`,
+    async ({ formValues, formState }, { getState, rejectWithValue }) => {
         const { account, network, feeInfo } = formState;
-        const composeOutputs = getExternalComposeOutput(formValues, account, network);
-        if (!composeOutputs) return; // no valid Output
+        const composedOutput = getExternalComposeOutput(formValues, account, network);
+        if (!composedOutput)
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'Unable to prepare compose output.',
+            });
 
-        const { output, decimals, tokenInfo } = composeOutputs;
+        const { output, decimals, tokenInfo } = composedOutput;
 
         const { blockhash, blockHeight: lastValidBlockHeight } = selectBlockchainBlockInfoBySymbol(
             getState(),
@@ -145,7 +154,11 @@ export const composeSolanaSendFormTransactionThunk = createThunk(
             : [undefined, undefined];
 
         // invalid token transfer -- should never happen
-        if (tokenInfo && !tokenInfo.accounts) return;
+        if (tokenInfo && !tokenInfo.accounts)
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'Token accounts not found.',
+            });
 
         const tokenTransferTxAndDestinationAddress =
             tokenInfo && tokenInfo.accounts
@@ -222,19 +235,19 @@ export const composeSolanaSendFormTransactionThunk = createThunk(
                 feeLimit: fetchedFeeLimit || l.feeLimit,
             }));
 
-        const wrappedResponse: PrecomposedLevels = {};
+        const resultLevels: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
             calculate(account.availableBalance, output, level, tokenInfo),
         );
         response.forEach((tx, index) => {
             const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
-            wrappedResponse[feeLabel] = tx;
+            resultLevels[feeLabel] = tx;
         });
 
         // format max (calculate sends it as lamports)
         // update errorMessage values (symbol)
-        Object.keys(wrappedResponse).forEach(key => {
-            const tx = wrappedResponse[key];
+        Object.keys(resultLevels).forEach(key => {
+            const tx = resultLevels[key];
             if (tx.type !== 'error') {
                 tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
             }
@@ -246,34 +259,31 @@ export const composeSolanaSendFormTransactionThunk = createThunk(
             }
         });
 
-        return wrappedResponse;
+        return resultLevels;
     },
 );
 
-export const signSolanaSendFormTransactionThunk = createThunk(
+export const signSolanaSendFormTransactionThunk = createThunk<
+    { serializedTx: string },
+    SignTransactionThunkArguments,
+    { rejectValue: SignTransactionError }
+>(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
     async (
-        { formValues, precomposedTransaction, selectedAccount }: SignTransactionThunkArguments,
-        { dispatch, getState, extra },
+        { formValues, precomposedTransaction, selectedAccount, device },
+        { getState, rejectWithValue },
     ) => {
-        const {
-            selectors: { selectSelectedAccountStatus },
-        } = extra;
+        if (precomposedTransaction.feeLimit == null)
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Fee limit missing.',
+            });
 
-        const selectedAccountStatus = selectSelectedAccountStatus(getState());
-        const device = selectDevice(getState());
-
-        if (
-            G.isNullable(selectedAccount) ||
-            selectedAccountStatus !== 'loaded' ||
-            !device ||
-            !precomposedTransaction ||
-            precomposedTransaction.type !== 'final' ||
-            precomposedTransaction.feeLimit == null
-        )
-            return;
-
-        if (selectedAccount.networkType !== 'solana') return;
+        if (selectedAccount.networkType !== 'solana')
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Invalid network type.',
+            });
         const { token } = precomposedTransaction;
 
         const { blockhash, blockHeight: lastValidBlockHeight } = selectBlockchainBlockInfoBySymbol(
@@ -289,7 +299,11 @@ export const signSolanaSendFormTransactionThunk = createThunk(
               )
             : [undefined, undefined];
 
-        if (token && !token.accounts) return;
+        if (token && !token.accounts)
+            rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Missing token accounts.',
+            });
 
         const tokenTransferTxAndDestinationAddress =
             token && token.accounts
@@ -311,7 +325,11 @@ export const signSolanaSendFormTransactionThunk = createThunk(
                   )
                 : undefined;
 
-        if (token && !tokenTransferTxAndDestinationAddress) return;
+        if (token && !tokenTransferTxAndDestinationAddress)
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Token transfer address missing.',
+            });
 
         const tx = tokenTransferTxAndDestinationAddress
             ? tokenTransferTxAndDestinationAddress.transaction
@@ -329,7 +347,7 @@ export const signSolanaSendFormTransactionThunk = createThunk(
 
         const serializedTx = tx.serializeMessage().toString('hex');
 
-        const signature = await TrezorConnect.solanaSignTransaction({
+        const response = await TrezorConnect.solanaSignTransaction({
             device: {
                 path: device.path,
                 instance: device.instance,
@@ -349,24 +367,19 @@ export const signSolanaSendFormTransactionThunk = createThunk(
                     : undefined,
         });
 
-        if (!signature.success) {
-            // catch manual error from ReviewTransaction modal
-            if (signature.payload.error === 'tx-cancelled') return;
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: signature.payload.error,
-                }),
-            );
-
-            return;
+        if (!response.success) {
+            // catch manual error from TransactionReviewModal
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: response.payload.error,
+            });
         }
 
         const signerPubKey = await getPubKeyFromAddress(selectedAccount.descriptor);
-        tx.addSignature(signerPubKey, Buffer.from(signature.payload.signature, 'hex'));
+        tx.addSignature(signerPubKey, Buffer.from(response.payload.signature, 'hex'));
 
-        const signedTx = tx.serialize().toString('hex');
+        const signedSerializedTx = tx.serialize().toString('hex');
 
-        return signedTx;
+        return { serializedTx: signedSerializedTx };
     },
 );
