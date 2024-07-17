@@ -170,7 +170,7 @@ const Wrapper = styled.div<WrapperProps>`
         flex-wrap: nowrap;
         min-width: ${({ $minValueWidth }) => $minValueWidth};
         justify-content: ${({ $isClean }) => ($isClean ? 'flex-end' : 'flex-start')};
-        padding: 0;
+        padding: 0 ${spacingsPx.xl} 0 0;
         border: none;
     }
 
@@ -179,16 +179,25 @@ const Wrapper = styled.div<WrapperProps>`
         display: flex;
         align-items: center;
         justify-content: ${({ $isClean }) => ($isClean ? 'flex-end' : 'flex-start')};
-        width: 100%;
         max-width: initial;
         color: ${({ $isDisabled, theme }) =>
             $isDisabled ? theme.textDisabled : theme.textDefault};
         border-style: none;
         transform: none;
-        margin-left: 0;
+        margin: 0;
 
         &:hover {
-            cursor: ${({ $isSearchable }) => $isSearchable && 'text'};
+            cursor: ${({ $isSearchable }) => ($isSearchable ? 'text' : 'pointer')};
+        }
+    }
+
+    .${reactSelectClassNamePrefix}__single-value + .${reactSelectClassNamePrefix}__input-container {
+        margin-left: 0;
+    }
+
+    .${reactSelectClassNamePrefix}__input-container {
+        &:hover {
+            cursor: ${({ $isSearchable }) => ($isSearchable ? 'text' : 'pointer')};
         }
     }
 

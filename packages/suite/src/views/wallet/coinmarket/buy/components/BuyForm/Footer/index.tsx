@@ -7,6 +7,7 @@ import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtil
 import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
 import { Translation } from 'src/components/suite';
 import { FooterWrapper, Left, Right } from 'src/views/wallet/coinmarket';
+import { spacingsPx } from '@trezor/theme';
 
 const OptionLabel = styled.div`
     display: flex;
@@ -36,6 +37,7 @@ const Label = styled.div`
     padding-top: 1px;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    margin-right: ${spacingsPx.xs};
 `;
 
 const StyledButton = styled(Button)`
@@ -76,8 +78,9 @@ const Footer = () => {
                         <StyledSelect
                             data-test="@coinmarket/buy/country-select"
                             options={regional.countriesOptions}
-                            isSearchable
+                            isSearchable={false}
                             value={value}
+                            size="small"
                             formatOptionLabel={(option: CountryOption) => {
                                 const labelParts = getCountryLabelParts(option.label);
                                 if (!labelParts) return null;
@@ -93,7 +96,6 @@ const Footer = () => {
                             }}
                             isClearable={false}
                             minValueWidth="160px"
-                            isClean
                             onChange={(selected: any) => {
                                 onChange(selected);
                                 setAmountLimits(undefined);
