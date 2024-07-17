@@ -1,24 +1,58 @@
-import { Button, Link, Image } from '@trezor/components';
-import type { UiEvent } from '@trezor/connect';
-import { SUITE_BRIDGE_URL } from '@trezor/urls';
+import { FormattedMessage } from 'react-intl';
+
+import { Button, Image } from '@trezor/components';
+import { type UiEvent } from '@trezor/connect';
+import { SUITE_URL, SUITE_BRIDGE_DEEPLINK } from '@trezor/urls';
+import { useWindowFocus } from '@trezor/react-utils';
 
 import { View } from '../components/View';
 import imageSrc from '../images/man_with_laptop.svg';
 
 export type TransportEventProps = Extract<UiEvent, { type: 'ui-no_transport' }>;
 
-export const Transport = () => (
-    <View
-        title="Install Bridge"
-        description="The Bridge is a communication tool, which facilitates the connection between
-        your Trezor device and your internet browser."
-        image={<Image imageSrc={imageSrc} />}
-        buttons={
-            <Link variant="nostyle" href={SUITE_BRIDGE_URL} onClick={() => window.closeWindow()}>
-                <Button variant="primary" icon="EXTERNAL_LINK" iconAlignment="right">
-                    Install Bridge
-                </Button>
-            </Link>
-        }
-    />
-);
+export const Transport = () => {
+    const windowFocused = useWindowFocus();
+    const handleOpenSuite = () => {
+        location.href = SUITE_BRIDGE_DEEPLINK;
+
+        // fallback in case deeplink does not work
+        window.setTimeout(() => {
+            if (!windowFocused.current) return;
+
+            window.open(SUITE_URL);
+        }, 500);
+    };
+
+    return (
+        <View
+            title={
+                <FormattedMessage
+                    id="TR_NO_TRANSPORT"
+                    defaultMessage="Browser can't communicate with device"
+                />
+            }
+            description={
+                <FormattedMessage
+                    id="TR_BRIDGE_NEEDED_DESCRIPTION"
+                    defaultMessage="We recommend downloading and running the Trezor Suite desktop app in the background for the best experience. Alternatively, use a supported browser that is compatible with WebUSB"
+                />
+            }
+            image={<Image imageSrc={imageSrc} />}
+            buttons={
+                <>
+                    <Button
+                        variant="primary"
+                        icon="EXTERNAL_LINK"
+                        iconAlignment="right"
+                        onClick={handleOpenSuite}
+                    >
+                        <FormattedMessage
+                            id="TR_OPEN_TREZOR_SUITE_DESKTOP"
+                            defaultMessage="Open Trezor Suite desktop app"
+                        />
+                    </Button>
+                </>
+            }
+        />
+    );
+};

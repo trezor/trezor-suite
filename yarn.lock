@@ -10760,6 +10760,7 @@ __metadata:
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/react-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@types/react": "npm:18.2.79"
     react-intl: "npm:^6.6.2"

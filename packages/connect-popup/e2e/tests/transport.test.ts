@@ -46,14 +46,20 @@ const fixtures = [
         browser: firefox,
         description: `bridge is the only available transport`,
         queryString: '',
-        expect: () => expect(popup.getByRole('heading', { name: 'Install Bridge' })).toBeVisible(),
+        expect: () =>
+            expect(
+                popup.getByRole('heading', { name: "Browser can't communicate with device" }),
+            ).toBeVisible(),
     },
     {
         browser: chromium,
         description: `iframe and host different origins: iframe mode -> bridge`,
         queryString: `?trezor-connect-src=${simulatedCrossOrigin}`,
         before: handleSimulatedCrossOrigin,
-        expect: () => expect(popup.getByRole('heading', { name: 'Install Bridge' })).toBeVisible(),
+        expect: () =>
+            expect(
+                popup.getByRole('heading', { name: "Browser can't communicate with device" }),
+            ).toBeVisible(),
     },
     {
         browser: chromium,

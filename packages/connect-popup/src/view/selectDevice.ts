@@ -11,7 +11,7 @@ import {
     WEBEXTENSION,
 } from '@trezor/connect';
 import { TREZOR_USB_DESCRIPTORS } from '@trezor/transport/src/constants';
-import { SUITE_BRIDGE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
+import { SUITE_URL, SUITE_UDEV_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { container, getState, showView, postMessage } from './common';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 
@@ -192,7 +192,7 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
                 }
                 // webusb error handling (top priority)
                 if (payload.webusb) {
-                    explanationContent = `Please install <a href="${SUITE_BRIDGE_URL}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Bridge</a> to use Trezor device.`;
+                    explanationContent = `An error with WebUSB occurred. Please install <a href="${SUITE_URL}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Trezor Suite</a> to use Trezor device.`;
                 }
                 deviceButton.disabled = true;
                 deviceName.textContent = 'Unrecognized device';
