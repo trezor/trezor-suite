@@ -17,6 +17,7 @@
         "@trezor/connect-analytics": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/react-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "react-intl": "^6.6.2"
     },

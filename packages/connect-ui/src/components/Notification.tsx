@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Icon, Button } from '@trezor/components';
-import { SUITE_FIRMWARE_URL, SUITE_BRIDGE_URL, SUITE_BACKUP_URL } from '@trezor/urls';
+import { SUITE_FIRMWARE_URL, SUITE_URL, SUITE_BACKUP_URL } from '@trezor/urls';
 
 const NotificationBox = styled.div`
     background-color: ${({ color }) => color};
@@ -134,9 +134,9 @@ export const BackupNotification = () => (
 export const BridgeUpdateNotification = () => (
     <Notification
         variant="warning"
-        header="New bridge is available"
-        body=""
-        cta={{ desc: 'Update bridge', url: SUITE_BRIDGE_URL }}
+        header="Current bridge is outdated"
+        body="Trezor Bridge is no longer supported. Switch to Trezor Suite desktop for the best experience."
+        cta={{ desc: 'Install Trezor Suite', url: SUITE_URL }}
     />
 );
 

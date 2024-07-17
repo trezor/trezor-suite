@@ -69,7 +69,7 @@ test('outdated-browser', async ({ browser }) => {
     log('clicking on analytics continue button');
     await waitAndClick(popup, ['@analytics/continue-button']);
     // In Firefox it should display Install Bridge page.
-    await popup.getByRole('heading', { name: 'Install Bridge' });
+    await popup.getByRole('heading', { name: "Browser can't communicate with device" });
     await popup.close({ runBeforeUnload: true });
     await page.close();
     await context.close();

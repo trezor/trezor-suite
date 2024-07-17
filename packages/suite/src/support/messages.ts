@@ -9498,4 +9498,13 @@ export default defineMessages({
         defaultMessage:
             'Are you sure? The device might only be used by a single application at time. If you are currently using another application with your Trezor device, make sure to finish it first.',
     },
+    TR_BRIDGE_NEEDED_DESCRIPTION: {
+        id: 'TR_BRIDGE_NEEDED_DESCRIPTION',
+        defaultMessage:
+            'We recommend downloading and running the Trezor Suite desktop app in the background for the best experience. Alternatively, use a supported browser that is compatible with WebUSB',
+    },
+    TR_OPEN_TREZOR_SUITE_DESKTOP: {
+        id: 'TR_OPEN_TREZOR_SUITE_DESKTOP',
+        defaultMessage: 'Open Trezor Suite desktop app',
+    },
 });
