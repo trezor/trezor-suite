@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-07-08T00:00:00+00:00",
-    "sequence": 58,
+    "timestamp": "2024-07-018T00:00:00+00:00",
+    "sequence": 59,
     "actions": [
         {
             "conditions": [
@@ -48,6 +48,37 @@
                     }
                 },
                 "context": { "domain": "accounts.coinjoin" }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=24.5.2",
+                        "mobile": "!",
+                        "web": ">=24.5.2"
+                    }
+                }
+            ],
+            "message": {
+                "id": "7e6bb8c5-a45d-47f1-b7eb-7e0f6b58883b",
+                "priority": 93,
+                "dismissible": false,
+                "variant": "info",
+                "category": ["context"],
+                "content": {
+                    "en-GB": "In case you have a long-pending transaction with low gas, please bump fee to start staking.",
+                    "en": "In case you have a long-pending transaction with low gas, please bump fee to start staking.",
+                    "es": "En caso de que tenga una transacción pendiente desde hace mucho tiempo con poco gas, por favor aumente la comisión para empezar a apostar.",
+                    "cs": "Stále se nestakuje? Navýšením poplatku urychlíte potvrzovací transakci pro zahájení stakingu.",
+                    "ru": "Если у вас есть долгосрочная сделка с низким газом, пожалуйста, поднимите плату, чтобы начать делать ставки.",
+                    "ja": "ガスが少なく、長期に渡る取引がある場合は、ステーキングを開始するために手数料を追加してください.",
+                    "hu": "Abban az esetben, ha van egy régóta függőben lévő tranzakciója alacsony gázzal, kérjük, emelje meg a díjat a tét megkezdéséhez.",
+                    "it": "Nel caso in cui abbiate una transazione in sospeso da molto tempo con gas basso, vi preghiamo di aumentare la quota per iniziare a puntare",
+                    "fr": "Si vous avez une transaction en attente depuis longtemps avec peu de gaz, veuillez augmenter les frais pour commencer à jalonner.",
+                    "de": "Falls Sie eine lange ausstehende Transaktion mit niedrigem Gas haben, erhöhen Sie bitte die Gebühr, um mit dem Staking zu beginnen."
+                },
+                "context": { "domain": "accounts.eth.staking" }
             }
         },
         {
