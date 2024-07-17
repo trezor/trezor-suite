@@ -15,7 +15,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@solana/buffer-layout": "^4.0.1",
-        "@solana/web3.js": "^1.91.6",
+        "@solana/web3.js": "^1.95.0",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
@@ -36,6 +36,6 @@
         "date-fns": "^2.30.0",
         "react": "18.2.0",
         "react-hook-form": "^7.50.1",
-        "web3-utils": "^4.2.3"
+        "web3-utils": "^4.3.1"
     }
 }
