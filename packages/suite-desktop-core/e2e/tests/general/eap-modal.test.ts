@@ -5,17 +5,15 @@ import {
     expect as expectPlaywright,
 } from '@playwright/test';
 
-import { launchSuite, rmDirRecursive } from '../../support/common';
+import { launchSuite } from '../../support/common';
 import { onTopBar } from '../../support/pageActions/topBarActions';
 import { onSettingsPage } from '../../support/pageActions/settingsActions';
 
 let electronApp: ElectronApplication;
 let window: Page;
-let localDataDir: string;
 
 testPlaywright.beforeAll(async () => {
-    ({ electronApp, window, localDataDir } = await launchSuite());
-    rmDirRecursive(localDataDir);
+    ({ electronApp, window } = await launchSuite());
 });
 
 testPlaywright.afterAll(() => {

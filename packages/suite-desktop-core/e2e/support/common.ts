@@ -6,7 +6,16 @@ import fs from 'fs';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-export const launchSuite = async () => {
+type LaunchSuiteParams = {
+    rmUserData?: boolean;
+};
+
+export const launchSuite = async (params: LaunchSuiteParams = {}) => {
+    const defaultParams = {
+        rmUserData: true,
+    };
+    const options = Object.assign(defaultParams, params);
+
     const appDir = path.join(__dirname, '../../../suite-desktop');
     const desiredLogLevel = process.env.LOGLEVEL ?? 'error';
     // TODO: Find out why currently pw fails to see node-bridge so we default to legacy bridge.
@@ -41,6 +50,10 @@ export const launchSuite = async () => {
     const window = await electronApp.firstWindow();
     const localDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
 
+    if (options.rmUserData) {
+        fs.rmSync(localDataDir, { recursive: true, force: true });
+    }
+
     return { electronApp, window, localDataDir };
 };
 
@@ -50,18 +63,4 @@ export const waitForDataTestSelector = (window: Page, selector: string, options 
 // TODO: usage of .click is discouraged by playwright devs. Refactor all usage to locator.click()
 export const clickDataTest = (window: Page, selector: string) => {
     window.click(`[data-test="${selector}"]`);
-};
-
-export const rmDirRecursive = (folder: string) => {
-    if (fs.existsSync(folder)) {
-        fs.readdirSync(folder).forEach(file => {
-            const curPath = `${folder}/${file}`;
-            if (fs.lstatSync(curPath).isDirectory()) {
-                rmDirRecursive(curPath);
-            } else {
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(folder);
-    }
 };

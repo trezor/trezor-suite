@@ -2,12 +2,11 @@ import { test as testPlaywright, ElectronApplication, Page } from '@playwright/t
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link/src';
 
-import { launchSuite, rmDirRecursive } from '../../support/common';
+import { launchSuite } from '../../support/common';
 import { onDashboardPage } from '../../support/pageActions/dashboardActions';
 
 let electronApp: ElectronApplication;
 let window: Page;
-let localDataDir: string;
 
 testPlaywright.beforeAll(async () => {
     await TrezorUserEnvLink.api.trezorUserEnvConnect();
@@ -16,8 +15,7 @@ testPlaywright.beforeAll(async () => {
         needs_backup: true,
         mnemonic: 'all all all all all all all all all all all all',
     });
-    ({ electronApp, window, localDataDir } = await launchSuite());
-    rmDirRecursive(localDataDir);
+    ({ electronApp, window } = await launchSuite());
 });
 
 testPlaywright.afterAll(() => {
