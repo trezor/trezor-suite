@@ -2,8 +2,10 @@ import { Button } from '@trezor/components';
 import styled from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
-import { getProvidersInfoProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import {
+    getCryptoQuoteAmountProps,
+    getProvidersInfoProps,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useState } from 'react';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { Translation } from 'src/components/suite';
@@ -14,8 +16,11 @@ import {
     CoinmarketFormInputLabelWrapper,
 } from 'src/views/wallet/coinmarket';
 import CoinmarketFormOfferCryptoAmount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferCryptoAmount';
-import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { BuyTrade, CryptoSymbol } from 'invity-api';
+import {
+    coinmarketGetAmountLabels,
+    coinmarketGetRoundedFiatAmount,
+    getBestRatedQuote,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import CoinmarketFormOfferFiatAmount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
 
 const CoinmarketFormOfferHeader = styled.div`
@@ -58,48 +63,47 @@ const CoinmarketFormOfferHeaderButton = styled(Button)`
 
 const CoinmarketFormOffer = () => {
     const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
-    const context = useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    const context = useCoinmarketFormContext();
     const {
+        type,
         quotes,
         goToOffers,
         getValues,
         selectQuote,
         form: { state },
-        type,
     } = context;
     const { providers } = getProvidersInfoProps(context);
     const bestScoredQuote = quotes?.[0];
     const bestRatedQuote = getBestRatedQuote(quotes, type);
+    const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(bestScoredQuote, context);
 
-    const selectedCrypto = getValues('cryptoSelect');
-    // FIXME: for exchange and sell
-    const receiveCurrency = (bestScoredQuote as BuyTrade)?.receiveCurrency
-        ? cryptoToCoinSymbol((bestScoredQuote as BuyTrade).receiveCurrency as CryptoSymbol)
+    const selectedCrypto = getValues().cryptoSelect;
+    const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency
+        ? cryptoToCoinSymbol(bestScoredQuoteAmounts.receiveCurrency)
         : null;
-    const { wantCrypto } = getValues();
+    const { amountInCrypto } = getValues();
+    const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto });
+    const sendAmount =
+        !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.sendAmount
+            ? bestScoredQuoteAmounts.sendAmount
+            : '0';
 
     return (
         <>
             <CoinmarketFormInputLabelWrapper>
                 <CoinmarketFormInputLabelText>
-                    <Translation
-                        id={wantCrypto ? 'TR_COINMARKET_YOU_PAY' : 'TR_COINMARKET_YOU_GET'}
-                    />
+                    <Translation id={amountLabels.label2} />
                 </CoinmarketFormInputLabelText>
             </CoinmarketFormInputLabelWrapper>
-            {wantCrypto ? (
+            {amountInCrypto ? (
                 <CoinmarketFormOfferFiatAmount
-                    amount={
-                        !state.isLoadingOrInvalid && bestScoredQuote?.fiatStringAmount
-                            ? bestScoredQuote.fiatStringAmount
-                            : '0'
-                    }
+                    amount={coinmarketGetRoundedFiatAmount(sendAmount)}
                 />
             ) : (
                 <CoinmarketFormOfferCryptoAmount
                     amount={
-                        !state.isLoadingOrInvalid && bestScoredQuote?.receiveStringAmount
-                            ? bestScoredQuote.receiveStringAmount
+                        !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.receiveAmount
+                            ? bestScoredQuoteAmounts.receiveAmount
                             : '0'
                     }
                     symbol={
@@ -145,7 +149,7 @@ const CoinmarketFormOffer = () => {
                 isFullWidth
                 isDisabled={state.isLoadingOrInvalid || !bestScoredQuote}
             >
-                <Translation id="TR_BUY" />
+                <Translation id={type === 'sell' ? 'TR_COINMARKET_SELL' : 'TR_BUY'} />
             </Button>
         </>
     );

@@ -39,6 +39,7 @@ import {
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import { Timer } from '@trezor/react-utils';
+import { AccountsState } from '@suite-common/wallet-core';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
@@ -176,4 +177,53 @@ export interface CoinmarketOptionsGroupProps {
     options: CoinmarketCryptoListProps[];
 }
 
+export interface CoinmarketGetSortedAccountsProps {
+    accounts: AccountsState;
+    deviceState: string | undefined;
+}
+
+export interface CoinmarketBuildAccountOptionsProps extends CoinmarketGetSortedAccountsProps {
+    symbolsInfo: CryptoSymbolInfo[] | undefined;
+    accountLabels: Record<string, string | undefined>;
+    defaultAccountLabelString: ({
+        accountType,
+        symbol,
+        index,
+    }: {
+        accountType: Account['accountType'];
+        symbol: Account['symbol'];
+        index?: number;
+    }) => string;
+}
+
+export interface CoinmarketAccountOptionsGroupOptionProps extends CoinmarketCryptoListProps {
+    balance: string;
+    descriptor: string;
+    contractAddress?: string;
+}
+
+export interface CoinmarketAccountsOptionsGroupProps {
+    label: string;
+    options: CoinmarketAccountOptionsGroupOptionProps[];
+}
+
 export type CoinmarketFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
+
+export interface CoinmarketGetAmountLabelsProps {
+    type: CoinmarketTradeType;
+    amountInCrypto: boolean;
+}
+
+type CoinmarketPayGetLabelType = Extract<
+    ExtendedMessageDescriptor['id'],
+    `TR_COINMARKET_YOU_${'PAY' | 'GET'}`
+>;
+
+export interface CoinmarketGetAmountLabelsReturnProps {
+    label1: CoinmarketPayGetLabelType;
+    label2: CoinmarketPayGetLabelType;
+    labelComparatorOffer: Extract<
+        ExtendedMessageDescriptor['id'],
+        `TR_COINMARKET_YOU_WILL_${'PAY' | 'GET'}`
+    >;
+}

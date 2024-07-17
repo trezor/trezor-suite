@@ -3,9 +3,14 @@ import { Card } from '@trezor/components';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import CoinmarketSelectedOfferVerify from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferVerify';
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
+import { getProvidersInfoProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import {
+    isCoinmarketBuyOffers,
+    isCoinmarketSellOffers,
+} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import CoinmarketSelectedOfferSell from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferSell/CoinmarketSelectedOfferSell';
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,19 +27,25 @@ const StyledCard = styled(Card)`
 `;
 
 export const CoinmarketSelectedOffer = () => {
-    const { selectedQuote, buyInfo } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    const context = useCoinmarketFormContext();
+    const { selectedQuote } = context;
+    const { providers } = getProvidersInfoProps(context);
 
     if (!selectedQuote) return null;
 
     return (
         <Wrapper>
-            <StyledCard>
-                <CoinmarketSelectedOfferVerify />
-            </StyledCard>
-            <CoinmarketSelectedOfferInfo
-                selectedQuote={selectedQuote}
-                providers={buyInfo?.providerInfos}
-            />
+            {isCoinmarketBuyOffers(context) && (
+                <StyledCard>
+                    <CoinmarketSelectedOfferVerify />
+                </StyledCard>
+            )}
+            {isCoinmarketSellOffers(context) && (
+                <StyledCard>
+                    <CoinmarketSelectedOfferSell />
+                </StyledCard>
+            )}
+            <CoinmarketSelectedOfferInfo selectedQuote={selectedQuote} providers={providers} />
         </Wrapper>
     );
 };

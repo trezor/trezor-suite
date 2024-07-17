@@ -378,12 +378,15 @@ class InvityAPI {
 
     getSellQuotes = async (
         params: SellFiatTradeQuoteRequest,
+        signal?: SignalType,
     ): Promise<SellFiatTrade[] | undefined> => {
         try {
             const response: SellFiatTradeQuoteResponse = await this.request(
                 this.SELL_FIAT_QUOTES,
                 params,
                 'POST',
+                undefined,
+                signal,
             );
 
             return response;

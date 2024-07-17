@@ -53,6 +53,7 @@ const AccountType = styled.span`
     padding-left: 5px;
 `;
 
+// TODO: refactor with exchange redesign
 const CoinmarketSelectedOfferVerifyOptions = ({
     receiveNetwork,
     selectAccountOptions,

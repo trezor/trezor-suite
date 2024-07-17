@@ -11,6 +11,7 @@ const CoinmarketFormInputCurrencyWrapper = styled(CoinmarketFormInputCurrency)`
     color: ${({ theme }) => theme.textDefault};
     width: 84px;
 
+    /* stylelint-disable selector-class-pattern */
     .react-select__control {
         padding: ${spacingsPx.xxxs} ${spacingsPx.xs} 0;
         font-size: ${nativeTypography.titleSmall.fontSize}px;

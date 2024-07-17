@@ -57,6 +57,7 @@ const Row = styled.div`
     margin: 12px 0;
 `;
 
+// TODO: refactor with exchange redesign
 const CoinmarketSelectedOfferVerify = () => {
     const { translationString } = useTranslation();
     const { callInProgress, device, verifyAddress, selectedQuote, addressVerified, goToPayment } =

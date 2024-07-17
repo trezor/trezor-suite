@@ -19,8 +19,14 @@ import {
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
 import {
+    CoinmarketAccountOptionsGroupOptionProps,
+    CoinmarketAccountsOptionsGroupProps,
+    CoinmarketBuildAccountOptionsProps,
     CoinmarketBuildOptionsProps,
     CoinmarketCryptoListProps,
+    CoinmarketGetAmountLabelsProps,
+    CoinmarketGetAmountLabelsReturnProps,
+    CoinmarketGetSortedAccountsProps,
     CoinmarketOptionsGroupProps,
     CoinmarketTradeBuySellDetailMapProps,
     CoinmarketTradeBuySellType,
@@ -38,6 +44,7 @@ import CryptoCategories, {
     CryptoCategoryD,
     CryptoCategoryE,
 } from 'src/constants/wallet/coinmarket/cryptoCategories';
+import { sortByCoin } from '@suite-common/wallet-utils';
 
 /** @deprecated */
 const suiteToInvitySymbols: {
@@ -384,3 +391,124 @@ export const coinmarketBuildCryptoOptions = ({
 
     return groups;
 };
+
+export const coinmarketGetSortedAccounts = ({
+    accounts,
+    deviceState,
+}: CoinmarketGetSortedAccountsProps) => {
+    if (!deviceState) return [];
+
+    return sortByCoin(accounts.filter(a => a.deviceState === deviceState));
+};
+
+export const coinmarketBuildAccountOptions = ({
+    symbolsInfo,
+    deviceState,
+    accounts,
+    accountLabels,
+    defaultAccountLabelString,
+}: CoinmarketBuildAccountOptionsProps): CoinmarketAccountsOptionsGroupProps[] => {
+    const accountsSorted = coinmarketGetSortedAccounts({
+        accounts,
+        deviceState,
+    });
+
+    const groups: CoinmarketAccountsOptionsGroupProps[] = accountsSorted.map(account => {
+        const {
+            descriptor,
+            tokens,
+            symbol: accountSymbol,
+            formattedBalance,
+            index,
+            accountType,
+        } = account;
+
+        const groupLabel =
+            accountLabels[account.key] ??
+            defaultAccountLabelString({
+                accountType,
+                symbol: accountSymbol,
+                index,
+            });
+        const foundSymbolInfo = symbolsInfo?.find(
+            item => item.symbol === networkToCryptoSymbol(accountSymbol),
+        );
+
+        const options: CoinmarketAccountOptionsGroupOptionProps[] = [
+            {
+                value: foundSymbolInfo?.symbol ?? (accountSymbol.toUpperCase() as CryptoSymbol),
+                label: accountSymbol.toUpperCase(),
+                cryptoName: foundSymbolInfo?.name ?? null,
+                descriptor,
+                balance: formattedBalance ?? '',
+            },
+        ];
+
+        // add crypto tokens to options
+        if (tokens && tokens.length > 0) {
+            tokens.forEach(token => {
+                const { symbol, balance, contract } = token;
+                if (!symbol || !balance || balance === '0') {
+                    return;
+                }
+
+                const tokenCryptoSymbol = tokenToCryptoSymbol(symbol, account.symbol);
+                if (!tokenCryptoSymbol) {
+                    return;
+                }
+
+                const tokenSymbolInfo = symbolsInfo?.find(
+                    item => item.symbol === tokenCryptoSymbol,
+                );
+
+                options.push({
+                    value: tokenSymbolInfo?.symbol ?? (symbol as CryptoSymbol),
+                    label: symbol.toUpperCase(),
+                    cryptoName: tokenSymbolInfo?.name ?? null,
+                    contractAddress: contract,
+                    descriptor,
+                    balance: balance ?? '',
+                });
+            });
+        }
+
+        return {
+            label: groupLabel,
+            options,
+        };
+    });
+
+    return groups;
+};
+
+export const coinmarketGetAmountLabels = ({
+    type,
+    amountInCrypto,
+}: CoinmarketGetAmountLabelsProps): CoinmarketGetAmountLabelsReturnProps => {
+    if (type === 'sell') {
+        return {
+            label1: amountInCrypto ? 'TR_COINMARKET_YOU_PAY' : 'TR_COINMARKET_YOU_GET',
+            label2: amountInCrypto ? 'TR_COINMARKET_YOU_GET' : 'TR_COINMARKET_YOU_PAY',
+            labelComparatorOffer: amountInCrypto
+                ? 'TR_COINMARKET_YOU_WILL_GET'
+                : 'TR_COINMARKET_YOU_WILL_PAY',
+        };
+    }
+
+    return {
+        label1: amountInCrypto ? 'TR_COINMARKET_YOU_GET' : 'TR_COINMARKET_YOU_PAY',
+        label2: amountInCrypto ? 'TR_COINMARKET_YOU_PAY' : 'TR_COINMARKET_YOU_GET',
+        labelComparatorOffer: amountInCrypto
+            ? 'TR_COINMARKET_YOU_WILL_PAY'
+            : 'TR_COINMARKET_YOU_WILL_GET',
+    };
+};
+
+/**
+ * Rounding up to two decimal places
+ */
+export const coinmarketGetRoundedFiatAmount = (amount: string): string =>
+    new BigNumber(amount).toFixed(2, BigNumber.ROUND_HALF_UP);
+
+export const coinmarketGetAccountLabel = (label: string, shouldSendInSats: boolean | undefined) =>
+    label === 'BTC' && shouldSendInSats ? 'sats' : label;
