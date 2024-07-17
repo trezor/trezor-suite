@@ -9,12 +9,8 @@ import { getFirmwareVersion, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/connect';
 import { selectDevices } from '@suite-common/wallet-core';
 
-import {
-    ConnectDevicePromptManager,
-    OnboardingStepBox,
-    OnboardingButtonSkip,
-} from 'src/components/onboarding';
-import { Translation } from '../suite';
+import { OnboardingStepBox, OnboardingButtonSkip } from 'src/components/onboarding';
+import { PrerequisitesGuide, Translation } from '../suite';
 import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/suite';
 import { FirmwareInstallButton, FirmwareOffer } from 'src/components/firmware';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
@@ -250,7 +246,7 @@ export const FirmwareInitial = ({
         // because we want to read current FW version from the device first and cache it.
         // But for standalone FW update we need to allow bootloader mode directly, because
         // the device could be stucked in bootloader (e.g. wrong intermediary FW installation).
-        return <ConnectDevicePromptManager device={device} />;
+        return <PrerequisitesGuide />;
     } else if (
         device.firmware === 'required' ||
         device.firmware === 'outdated' ||
