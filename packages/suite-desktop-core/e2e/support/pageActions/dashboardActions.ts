@@ -27,18 +27,16 @@ class DashboardActions {
         await waitForDataTestSelector(window, '@dashboard/graph', { timeout: 30000 });
     }
 
-    async openDeviceSwitcherAndReturnWindow(window: Page) {
+    async openDeviceSwitcher(window: Page) {
         await window.getByTestId('@menu/switch-device').click();
         const deviceSwitcherModal = window.getByTestId('@modal');
         await deviceSwitcherModal.waitFor({ state: 'visible' });
-
-        return deviceSwitcherModal;
     }
 
-    async ejectWallet(window: Page, walletName: string) {
-        const wallet = await window.locator('[data-test="@switch-device/wallet-on-index/0"]', {
-            hasText: walletName,
-        });
+    async ejectWallet(window: Page, walletIndex: number = 0) {
+        const wallet = window.locator(
+            `[data-test="@switch-device/wallet-on-index/${walletIndex}"]`,
+        );
         await window.locator('[data-test="@switch-device/wallet-on-index/0/eject-button"]').click();
         await window.locator('[data-test="@switch-device/eject"]').click();
         await wallet.waitFor({ state: 'detached' });

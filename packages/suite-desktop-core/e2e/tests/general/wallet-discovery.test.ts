@@ -31,8 +31,8 @@ testPlaywright('Discover a standard wallet', async () => {
     await onDashboardPage.passThroughInitialRun(window);
     await onDashboardPage.discoveryShouldFinish(window);
 
-    await onDashboardPage.openDeviceSwitcherAndReturnWindow(window);
-    await onDashboardPage.ejectWallet(window, 'Standard wallet');
+    await onDashboardPage.openDeviceSwitcher(window);
+    await onDashboardPage.ejectWallet(window);
     await onDashboardPage.addStandardWallet(window);
 
     await onDashboardPage.assertHasVisibleBalanceOnFirstAccount(window, 'btc');
