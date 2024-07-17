@@ -1,12 +1,8 @@
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 
-import {
-    ConnectDevicePromptManager,
-    OnboardingButtonBack,
-    OnboardingStepBox,
-} from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
+import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
+import { PrerequisitesGuide, Translation } from 'src/components/suite';
 import {
     FirmwareContinueButton,
     FirmwareRetryButton,
@@ -113,7 +109,7 @@ export const FirmwareStep = () => {
     if (['initial', 'done'].includes(status) && (!device?.connected || !device?.features)) {
         // Most users won't see this as they should come here with a connected device.
         // This is just for people who want to shoot themselves in the foot and disconnect the device before proceeding with fw update flow
-        return <ConnectDevicePromptManager device={device} />;
+        return <PrerequisitesGuide />;
     }
 
     switch (status) {
