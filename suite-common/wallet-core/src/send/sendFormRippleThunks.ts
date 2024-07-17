@@ -94,9 +94,9 @@ export const composeRippleTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
-    async ({ formValues, formState }, { rejectWithValue }) => {
-        const { account, network, feeInfo } = formState;
-        const composeOutputs = getExternalComposeOutput(formValues, account, network);
+    async ({ formState, composeContext }, { rejectWithValue }) => {
+        const { account, network, feeInfo } = composeContext;
+        const composeOutputs = getExternalComposeOutput(formState, account, network);
         if (!composeOutputs)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
@@ -105,14 +105,14 @@ export const composeRippleTransactionFeeLevelsThunk = createThunk<
 
         const { output } = composeOutputs;
         const { availableBalance } = account;
-        const { address } = formValues.outputs[0];
+        const { address } = formState.outputs[0];
 
         const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
-        if (formValues.selectedFee === 'custom') {
+        if (formState.selectedFee === 'custom') {
             predefinedLevels.push({
                 label: 'custom',
-                feePerUnit: formValues.feePerUnit,
+                feePerUnit: formState.feePerUnit,
                 blocks: -1,
             });
         }
@@ -196,7 +196,7 @@ export const signRippleSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signRippleSendFormTransactionThunk`,
     async (
-        { formValues, precomposedTransaction, selectedAccount, device },
+        { formState, precomposedTransaction, selectedAccount, device },
         { getState, extra, rejectWithValue },
     ) => {
         const {
@@ -212,12 +212,12 @@ export const signRippleSendFormTransactionThunk = createThunk<
             });
 
         const payment: RipplePayment = {
-            destination: formValues.outputs[0].address,
-            amount: networkAmountToSatoshi(formValues.outputs[0].amount, selectedAccount.symbol),
+            destination: formState.outputs[0].address,
+            amount: networkAmountToSatoshi(formState.outputs[0].amount, selectedAccount.symbol),
         };
 
-        if (formValues.rippleDestinationTag) {
-            payment.destinationTag = parseInt(formValues.rippleDestinationTag, 10);
+        if (formState.rippleDestinationTag) {
+            payment.destinationTag = parseInt(formState.rippleDestinationTag, 10);
         }
 
         const response = await TrezorConnect.rippleSignTransaction({

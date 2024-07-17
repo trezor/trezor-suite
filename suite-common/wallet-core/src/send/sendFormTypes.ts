@@ -35,12 +35,12 @@ export type EthTransactionData = {
 export type TransactionType = WalletAccountTransaction['type'];
 
 export type ComposeTransactionThunkArguments = {
-    formValues: FormState;
-    formState: ComposeActionContext;
+    formState: FormState;
+    composeContext: ComposeActionContext;
 };
 
 export type SignTransactionThunkArguments = {
-    formValues: FormState;
+    formState: FormState;
     precomposedTransaction: PrecomposedTransactionFinal;
     selectedAccount: Account;
     device: TrezorDevice;

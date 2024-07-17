@@ -30,8 +30,8 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
-    async ({ formValues, formState }, { dispatch, rejectWithValue }) => {
-        const { account, feeInfo } = formState;
+    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+        const { account, feeInfo } = composeContext;
         const changeAddress = getUnusedChangeAddress(account);
         if (!changeAddress || !account.utxo || !account.addresses)
             return rejectWithValue({
@@ -40,19 +40,19 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
             });
 
         const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
-        if (formValues.selectedFee === 'custom') {
+        if (formState.selectedFee === 'custom') {
             predefinedLevels.push({
                 label: 'custom',
-                feePerUnit: formValues.feePerUnit,
+                feePerUnit: formState.feePerUnit,
                 blocks: -1,
             });
         }
 
         const outputs = transformUserOutputs(
-            formValues.outputs,
+            formState.outputs,
             account.tokens,
             account.symbol,
-            formValues.setMaxOutputId,
+            formState.setMaxOutputId,
         );
 
         const addressParameters = getAddressParameters(account, changeAddress.path);
@@ -135,7 +135,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
 
 type SignCardanoTransactionThunkArguments = Omit<
     SignTransactionThunkArguments,
-    'formValues' | 'precomposedTransaction' | 'accountStatus'
+    'formState' | 'precomposedTransaction' | 'accountStatus'
 > & {
     precomposedTransaction: PrecomposedTransactionFinalCardano;
 };

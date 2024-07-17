@@ -138,37 +138,37 @@ type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
 
 export const composeSendFormTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels | PrecomposedLevelsCardano,
-    { formValues: FormState; formState: ComposeActionContext },
+    { formState: FormState; composeContext: ComposeActionContext },
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeSendFormTransactionThunk`,
-    async ({ formValues, formState }, { dispatch, rejectWithValue }) => {
-        const { account } = formState;
+    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+        const { account } = composeContext;
         let response: CoinSpecificComposeResponse | undefined;
 
         const { networkType } = account;
         if (networkType === 'bitcoin') {
             response = await dispatch(
                 composeBitcoinTransactionFeeLevelsThunk({
-                    formValues,
                     formState,
+                    composeContext,
                 }),
             );
         } else if (networkType === 'ethereum') {
             response = await dispatch(
-                composeEthereumTransactionFeeLevelsThunk({ formValues, formState }),
+                composeEthereumTransactionFeeLevelsThunk({ formState, composeContext }),
             );
         } else if (networkType === 'ripple') {
             response = await dispatch(
-                composeRippleTransactionFeeLevelsThunk({ formValues, formState }),
+                composeRippleTransactionFeeLevelsThunk({ formState, composeContext }),
             );
         } else if (networkType === 'cardano') {
             response = await dispatch(
-                composeCardanoTransactionFeeLevelsThunk({ formValues, formState }),
+                composeCardanoTransactionFeeLevelsThunk({ formState, composeContext }),
             );
         } else if (networkType === 'solana') {
             response = await dispatch(
-                composeSolanaTransactionFeeLevelsThunk({ formValues, formState }),
+                composeSolanaTransactionFeeLevelsThunk({ formState, composeContext }),
             );
         } else {
             const _exhaustiveCheck: never = networkType;
@@ -391,7 +391,7 @@ type CoinSpecificSignResponse = ActionsFromAsyncThunk<
 export const signTransactionThunk = createThunk<
     { serializedTx: string; signedTx?: BlockbookTransaction },
     {
-        formValues: FormState;
+        formState: FormState;
         precomposedTransaction: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
         selectedAccount: Account;
     },
@@ -399,7 +399,7 @@ export const signTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signTransactionThunk`,
     async (
-        { formValues, precomposedTransaction, selectedAccount },
+        { formState, precomposedTransaction, selectedAccount },
         { dispatch, rejectWithValue, extra, getState },
     ) => {
         const {
@@ -434,7 +434,7 @@ export const signTransactionThunk = createThunk<
         } else {
             const { networkType } = selectedAccount;
             const thunkArguments = {
-                formValues,
+                formState,
                 precomposedTransaction,
                 selectedAccount,
                 device,
