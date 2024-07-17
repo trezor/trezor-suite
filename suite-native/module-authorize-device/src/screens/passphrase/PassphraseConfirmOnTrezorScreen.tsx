@@ -19,8 +19,6 @@ import {
 } from '@suite-common/wallet-core';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
-    selectHasAuthFailed,
-    selectHasVerificationCancelledError,
     retryPassphraseAuthenticationThunk,
     selectHasPassphraseMismatchError,
 } from '@suite-native/device-authorization';
@@ -45,8 +43,6 @@ export const PassphraseConfirmOnTrezorScreen = () => {
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const device = useSelector(selectDevice);
-    const hasAuthorizationFailed = useSelector(selectHasAuthFailed);
-    const hasVerificationCancelledError = useSelector(selectHasVerificationCancelledError);
     const hasPassphraseMismatchError = useSelector(selectHasPassphraseMismatchError);
 
     const { showAlert } = useAlert();
@@ -66,17 +62,6 @@ export const PassphraseConfirmOnTrezorScreen = () => {
             );
         }
     }, [device, dispatch, isDeviceConnectedAndAuthorized, isDiscoveryActive, navigation]);
-
-    useEffect(() => {
-        // User has canceled the authorization process on device (authorizeDeviceThunk rejects with auth-failed error)
-        if (hasAuthorizationFailed || hasVerificationCancelledError) {
-            analytics.report({
-                type: EventType.PassphraseExit,
-                payload: { screen: AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor },
-            });
-            dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-        }
-    }, [dispatch, hasAuthorizationFailed, hasVerificationCancelledError]);
 
     useEffect(() => {
         // Wrong passphrase was entered during verifying empty wallet
