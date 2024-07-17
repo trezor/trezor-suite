@@ -155,8 +155,8 @@ export const FirmwareInitial = ({
         availableFwVersion === currentFwVersion
     );
 
-    const installFirmware = () => {
-        firmwareUpdate({ firmwareType: targetType });
+    const installFirmware = (firmwareType: FirmwareType) => {
+        firmwareUpdate({ firmwareType });
         updateAnalytics({ firmware: 'install' });
     };
 
@@ -183,8 +183,8 @@ export const FirmwareInitial = ({
             innerActions: (
                 <FirmwareButtonsRow>
                     <FirmwareInstallButton
-                        variant="secondary"
-                        onClick={installFirmware}
+                        variant="tertiary"
+                        onClick={() => installFirmware(FirmwareType.Regular)}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
                         <Translation
@@ -196,7 +196,7 @@ export const FirmwareInitial = ({
                     </FirmwareInstallButton>
 
                     <FirmwareInstallButton
-                        onClick={installFirmware}
+                        onClick={() => installFirmware(targetType)}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
                         <Translation
@@ -233,7 +233,7 @@ export const FirmwareInitial = ({
             body: <FirmwareOffer targetFirmwareType={targetType} />,
             innerActions: (
                 <FirmwareInstallButton
-                    onClick={installFirmware}
+                    onClick={() => installFirmware(targetType)}
                     multipleDevicesConnected={multipleDevicesConnected}
                 />
             ),
@@ -327,7 +327,7 @@ export const FirmwareInitial = ({
                 <FirmwareButtonsRow withCancelButton={willBeWiped} onClose={onClose}>
                     <FirmwareInstallButton
                         onClick={() =>
-                            shouldCheckSeed ? setStatus('check-seed') : installFirmware()
+                            shouldCheckSeed ? setStatus('check-seed') : installFirmware(targetType)
                         }
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
