@@ -5,6 +5,8 @@ import { Root } from 'protobufjs/light';
 import { encode as encodeProtobuf, createMessageFromName } from '@trezor/protobuf';
 import { TransportProtocolEncode } from '@trezor/protocol';
 
+import { AsyncResultWithTypedError } from '../types';
+
 export const createChunks = (data: Buffer, chunkHeader: Buffer, chunkSize: number) => {
     if (!chunkSize || data.byteLength <= chunkSize) {
         const buffer = Buffer.alloc(Math.max(chunkSize, data.byteLength));
@@ -42,4 +44,18 @@ export const buildMessage = ({ messages, name, data, encode }: BuildMessageProps
     return encode(buffer, {
         messageType,
     });
+};
+
+export const sendChunks = async <T, E>(
+    chunks: Buffer[],
+    apiWrite: (chunk: Buffer) => AsyncResultWithTypedError<T, E>,
+) => {
+    for (let i = 0; i < chunks.length; i++) {
+        const result = await apiWrite(chunks[i]);
+        if (!result.success) {
+            return result;
+        }
+    }
+
+    return { success: true as const };
 };

@@ -2,7 +2,7 @@ import { WebUSB } from 'usb';
 
 import { v1 as protocolV1, bridge as protocolBridge } from '@trezor/protocol';
 import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
-import { createChunks } from '@trezor/transport/src/utils/send';
+import { createChunks, sendChunks } from '@trezor/transport/src/utils/send';
 import { SessionsBackground } from '@trezor/transport/src/sessions/background';
 import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { UsbApi } from '@trezor/transport/src/api/usb';
@@ -66,22 +66,15 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         );
 
         const encodedMessage = protocolV1.encode(payload, { messageType });
-        const buffers = createChunks(
+        const chunks = createChunks(
             encodedMessage,
             protocolV1.getChunkHeader(encodedMessage),
             api.chunkSize,
         );
+        const apiWrite = (chunk: Buffer) => api.write(path, chunk, signal);
+        const sendResult = await sendChunks(chunks, apiWrite);
 
-        for (let i = 0; i < buffers.length; i++) {
-            const bufferSegment = buffers[i];
-
-            const result = await api.write(path, bufferSegment, signal);
-            if (!result.success) {
-                return result;
-            }
-        }
-
-        return { success: true as const };
+        return sendResult;
     };
 
     const readUtil = async ({ path, signal }: { path: string; signal: AbortSignal }) => {

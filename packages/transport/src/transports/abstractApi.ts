@@ -7,7 +7,7 @@ import {
     AbstractTransportMethodParams,
 } from './abstract';
 import { AbstractApi } from '../api/abstract';
-import { buildMessage, createChunks } from '../utils/send';
+import { buildMessage, createChunks, sendChunks } from '../utils/send';
 import { receiveAndParse } from '../utils/receive';
 import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
@@ -195,19 +195,15 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         data,
                         encode: protocol.encode,
                     });
-                    const buffers = createChunks(
+                    const chunks = createChunks(
                         bytes,
                         protocol.getChunkHeader(bytes),
                         this.api.chunkSize,
                     );
-                    for (let i = 0; i < buffers.length; i++) {
-                        const chunk = buffers[i];
-
-                        await this.api.write(path, chunk, signal).then(result => {
-                            if (!result.success) {
-                                throw new Error(result.error);
-                            }
-                        });
+                    const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
+                    const sendResult = await sendChunks(chunks, apiWrite);
+                    if (!sendResult.success) {
+                        throw new Error(sendResult.error);
                     }
 
                     const message = await receiveAndParse(
@@ -260,15 +256,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         data,
                         encode,
                     });
-                    const buffers = createChunks(bytes, getChunkHeader(bytes), this.api.chunkSize);
-                    for (let i = 0; i < buffers.length; i++) {
-                        const chunk = buffers[i];
-
-                        await this.api.write(path, chunk, signal).then(result => {
-                            if (!result.success) {
-                                throw new Error(result.error);
-                            }
-                        });
+                    const chunks = createChunks(bytes, getChunkHeader(bytes), this.api.chunkSize);
+                    const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
+                    const sendResult = await sendChunks(chunks, apiWrite);
+                    if (!sendResult.success) {
+                        throw new Error(sendResult.error);
                     }
 
                     return this.success(undefined);
