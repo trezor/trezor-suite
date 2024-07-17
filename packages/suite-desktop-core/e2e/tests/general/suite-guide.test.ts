@@ -4,9 +4,9 @@ import {
     ElectronApplication,
     Page,
 } from '@playwright/test';
-import * as rimraf from 'rimraf';
+import { sync as rimrafSync } from 'rimraf';
 
-import { launchSuite, rmDirRecursive } from '../../support/common';
+import { launchSuite } from '../../support/common';
 import { onSuiteGuidePage } from '../../support/pageActions/suiteGuideActions';
 
 let electronApp: ElectronApplication;
@@ -15,8 +15,7 @@ let localDataDir: string;
 
 testPlaywright.beforeAll(async () => {
     ({ electronApp, window, localDataDir } = await launchSuite());
-    rimraf.sync(localDataDir);
-    // rmDirRecursive(localDataDir);
+    rimrafSync(localDataDir);
 });
 
 testPlaywright.afterEach(async () => {

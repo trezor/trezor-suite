@@ -1,8 +1,9 @@
 import { test as testPlaywright, ElectronApplication, Page } from '@playwright/test';
+import { sync as rimrafSync } from 'rimraf';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { launchSuite, rmDirRecursive } from '../../support/common';
+import { launchSuite } from '../../support/common';
 import { onTopBar } from '../../support/pageActions/topBarActions';
 import { onSettingsPage } from '../../support/pageActions/settingsActions';
 import { onDashboardPage } from '../../support/pageActions/dashboardActions';
@@ -21,7 +22,7 @@ testPlaywright.describe.serial('Suite works with Electrum server', () => {
             mnemonic: 'all all all all all all all all all all all all',
         });
         ({ electronApp, window, localDataDir } = await launchSuite());
-        rmDirRecursive(localDataDir);
+        rimrafSync(localDataDir);
     });
 
     testPlaywright.afterAll(() => {

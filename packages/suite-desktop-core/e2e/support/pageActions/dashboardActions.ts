@@ -9,6 +9,10 @@ class DashboardActions {
         await waitForDataTestSelector(window, '@welcome/title');
         await window.getByTestId('@analytics/continue-button').click();
         await window.getByTestId('@onboarding/exit-app-button').click();
+        await window.getByTestId('@onbarding/viewOnly/enable').click();
+        const viewOnlyTooltip = window.getByTestId('@viewOnlyTooltip/gotIt');
+        await viewOnlyTooltip.waitFor({ state: 'visible' });
+        await viewOnlyTooltip.click();
     }
 
     async discoveryShouldFinish(window: Page) {
@@ -33,14 +37,15 @@ class DashboardActions {
     }
 
     async ejectWallet(deviceSwitcher: Locator, walletName: string) {
-        const wallet = await deviceSwitcher.locator(
-            '[data-test^="@switch-device/wallet-on-index"]',
-            {
-                hasText: walletName,
-            },
-        );
+        const wallet = deviceSwitcher.locator('[data-test^="@switch-device/wallet-on-index"]', {
+            hasText: walletName,
+        });
         if (await wallet.isVisible()) {
             await wallet.locator('[data-test$="eject-button"]').click();
+            await deviceSwitcher
+                .getByTestId('@switch-device/wallet-on-index/0/eject-button')
+                .click();
+            await wallet.getByTestId('@switch-device/eject').click();
         }
         await wallet.waitFor({ state: 'detached' });
     }

@@ -1,8 +1,9 @@
 import { test as testPlaywright, ElectronApplication, Page } from '@playwright/test';
+import { sync as rimrafSync } from 'rimraf';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link/src';
 
-import { launchSuite, rmDirRecursive } from '../../support/common';
+import { launchSuite } from '../../support/common';
 import { onDashboardPage } from '../../support/pageActions/dashboardActions';
 
 let electronApp: ElectronApplication;
@@ -17,7 +18,7 @@ testPlaywright.beforeAll(async () => {
         mnemonic: 'all all all all all all all all all all all all',
     });
     ({ electronApp, window, localDataDir } = await launchSuite());
-    rmDirRecursive(localDataDir);
+    rimrafSync(localDataDir);
 });
 
 testPlaywright.afterAll(() => {
@@ -36,6 +37,8 @@ testPlaywright('Discover a standard wallet', async () => {
     const deviceSwitcher = await onDashboardPage.openDeviceSwitcherAndReturnWindow(window);
     await onDashboardPage.ejectWallet(deviceSwitcher, 'Standard wallet');
     await onDashboardPage.addStandardWallet(window);
+
+    await window.pause();
 
     await onDashboardPage.assertHasVisibleBalanceOnFirstAccount(window, 'btc');
 });
