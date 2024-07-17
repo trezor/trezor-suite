@@ -21,9 +21,18 @@ export const getIsFakeTokenPhishing = (
     !transaction.tokens.some(tokenTx => {
         const isNftTx = isNftTokenTransfer(tokenTx);
         const definitions = isNftTx ? tokenDefinitions?.nft?.data : tokenDefinitions?.coin?.data;
+        const hide = isNftTx ? tokenDefinitions?.nft?.hide : tokenDefinitions?.coin?.hide;
+        const show = isNftTx ? tokenDefinitions?.nft?.show : tokenDefinitions?.coin?.show;
 
-        return isTokenDefinitionKnown(definitions, transaction.symbol, tokenTx.contract);
-    }); // all tokens are unknown
+        const isHidden = hide?.includes(tokenTx.contract);
+        const isShown = show?.includes(tokenTx.contract);
+
+        return (
+            (isTokenDefinitionKnown(definitions, transaction.symbol, tokenTx.contract) ||
+                isShown) &&
+            !isHidden
+        );
+    }); // there is hidden or unknown token in tx
 
 export const getIsPhishingTransaction = (
     transaction: WalletAccountTransaction,
