@@ -6,7 +6,6 @@ import {
 } from '@suite-common/wallet-types';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-// @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 import { getEthereumEstimateFeeParams, sanitizeHex } from '@suite-common/wallet-utils';
@@ -26,15 +25,15 @@ export const UNSTAKING_ETH_PERIOD = 3;
 
 const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
-export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol) => {
-    const ethNetworks = {
+type EthNetwork = 'holesky' | 'mainnet';
+
+export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol): EthNetwork => {
+    const ethNetworks: { [key in NetworkSymbol]?: EthNetwork } = {
         thol: 'holesky',
         eth: 'mainnet',
     };
 
-    if (!(symbol in ethNetworks)) return ethNetworks.eth;
-
-    return ethNetworks[symbol as keyof typeof ethNetworks];
+    return ethNetworks[symbol] || ethNetworks.eth!;
 };
 
 const getAdjustedGasLimitConsumption = (estimatedFee: Success<BlockchainEstimatedFee>) =>
@@ -454,8 +453,6 @@ export const getStakeTxGasLimit = async ({
     }
 
     try {
-        Ethereum.selectNetwork(getEthNetworkForWalletSdk(symbol));
-
         let txData;
         if (ethereumStakeType === 'stake') {
             txData = await stake({ from, amount, symbol, identity });

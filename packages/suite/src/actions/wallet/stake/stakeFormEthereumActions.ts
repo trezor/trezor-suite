@@ -31,8 +31,6 @@ import {
     prepareStakeEthTx,
     prepareUnstakeEthTx,
 } from 'src/utils/suite/stake';
-// @ts-expect-error
-import { Ethereum } from '@everstake/wallet-sdk';
 import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ComposeActionContext } from '@suite-common/wallet-core';

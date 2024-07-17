@@ -32,7 +32,6 @@ import {
     UnstakeContextValues as UnstakeContextValuesBase,
     UnstakeFormState,
 } from '@suite-common/wallet-core';
-// @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
 import { useFees } from './form/useFees';
 
