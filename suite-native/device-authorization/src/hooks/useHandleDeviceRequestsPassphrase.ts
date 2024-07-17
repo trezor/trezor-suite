@@ -15,6 +15,7 @@ import { selectDeviceState } from '@suite-common/wallet-core';
 
 import {
     selectDeviceRequestedPassphrase,
+    selectIsCreatingNewPassphraseWallet,
     selectIsVerifyingPassphraseOnEmptyWallet,
 } from '../deviceAuthorizationSlice';
 
@@ -32,6 +33,7 @@ export const useHandleDeviceRequestsPassphrase = () => {
     const isVefifyingPassphraseOnEmptyWallet = useSelector(
         selectIsVerifyingPassphraseOnEmptyWallet,
     );
+    const isCreatingNewWallet = useSelector(selectIsCreatingNewPassphraseWallet);
 
     const handleRequestPassphrase = useCallback(() => {
         // If the passphrase request was while verifying empty passphrase wallet, we handle it separately in the screen
@@ -40,13 +42,14 @@ export const useHandleDeviceRequestsPassphrase = () => {
                 screen: AuthorizeDeviceStackRoutes.PassphraseForm,
             });
         }
+
         // Feature requests passphrase
-        if (!isVefifyingPassphraseOnEmptyWallet && deviceState) {
+        if (!isVefifyingPassphraseOnEmptyWallet && !isCreatingNewWallet && deviceState) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm,
             });
         }
-    }, [deviceState, isVefifyingPassphraseOnEmptyWallet, navigation]);
+    }, [deviceState, isCreatingNewWallet, isVefifyingPassphraseOnEmptyWallet, navigation]);
 
     useEffect(() => {
         if (deviceRequestedPassphrase) {
