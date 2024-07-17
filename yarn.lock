@@ -11145,6 +11145,7 @@ __metadata:
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:^8.1.0"
     electron-updater: "npm:6.1.8"
+    fs-extra: "npm:^11.2.0"
     glob: "npm:^10.3.10"
     openpgp: "npm:^5.11.0"
     systeminformation: "npm:^5.21.24"
