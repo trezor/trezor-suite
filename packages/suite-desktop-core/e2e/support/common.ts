@@ -2,7 +2,7 @@
 
 import { Page, _electron as electron } from '@playwright/test';
 import path from 'path';
-import fs from 'fs';
+import fse from 'fs-extra';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
@@ -51,7 +51,7 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
     const localDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
 
     if (options.rmUserData) {
-        fs.rmSync(localDataDir, { recursive: true, force: true });
+        fse.removeSync(localDataDir);
     }
 
     return { electronApp, window, localDataDir };
