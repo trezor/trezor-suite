@@ -19,7 +19,7 @@
         "test-unit:watch": "yarn g:jest -o --watch"
     },
     "dependencies": {
-        "@everstake/wallet-sdk": "^0.3.40",
+        "@everstake/wallet-sdk": "^0.3.47",
         "@floating-ui/react": "^0.26.9",
         "@formatjs/intl": "2.10.0",
         "@hookform/resolvers": "3.3.4",
@@ -27,7 +27,7 @@
         "@reduxjs/toolkit": "1.9.5",
         "@sentry/core": "^7.100.1",
         "@solana/buffer-layout": "^4.0.1",
-        "@solana/web3.js": "^1.91.6",
+        "@solana/web3.js": "^1.95.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/assets": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
@@ -114,7 +114,7 @@
         "semver": "^7.6.0",
         "styled-components": "^6.1.8",
         "uuid": "^9.0.1",
-        "web3-utils": "^4.2.3",
+        "web3-utils": "^4.3.1",
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
@@ -123,8 +123,8 @@
         "@testing-library/react": "14.2.1",
         "@testing-library/user-event": "14.5.2",
         "@types/file-saver": "^2.0.6",
-        "@types/invity-api": "^1.0.21",
-        "@types/jws": "^3.2.9",
+        "@types/invity-api": "1.0.21",
+        "@types/jws": "^3.2.10",
         "@types/pako": "^2.0.3",
         "@types/pdfmake": "^0.2.9",
         "@types/qrcode.react": "^1.0.5",
