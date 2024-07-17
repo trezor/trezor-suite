@@ -33,6 +33,7 @@
         { "path": "../feature-flags" },
         { "path": "../graph" },
         { "path": "../message-system" },
+        { "path": "../module-send" },
         { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../../packages/connect" },

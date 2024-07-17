@@ -30,6 +30,7 @@
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/graph": "workspace:*",
         "@suite-native/message-system": "workspace:*",
+        "@suite-native/module-send": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/connect": "workspace:*",
