@@ -7,12 +7,16 @@ import { EventPayload, Requests } from '../types';
  */
 export const toggleDeviceMenu = () => cy.getTestElement('@menu/switch-device').click();
 
-export const passThroughInitialRun = () => {
+export const passThroughInitialRun = ({ viewOnly = true } = {}) => {
     cy.getTestElement('@analytics/continue-button', { timeout: 30_000 })
         .click()
         .getTestElement('@onboarding/exit-app-button')
         .click();
-    cy.getTestElement('@onbarding/viewOnly/enable').click();
+    if (viewOnly) {
+        cy.getTestElement('@onbarding/viewOnly/enable').click();
+    } else {
+        cy.getTestElement('@onbarding/viewOnly/skip').click();
+    }
     cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 10_000 }).should('be.visible').click();
 };
 

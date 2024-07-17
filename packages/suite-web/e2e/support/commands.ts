@@ -115,7 +115,9 @@ declare global {
             enableDebugMode: () => Chainable<Subject>;
             toggleDebugModeInSettings: () => Chainable<Subject>;
             text: () => Chainable<Subject>;
-            passThroughInitialRun: () => Chainable<Subject>;
+            passThroughInitialRun: (
+                params?: Parameters<typeof passThroughInitialRun>[0],
+            ) => Chainable<Subject>;
             passThroughAuthenticityCheck: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
             passThroughBackupShamir: (shares: number, threshold: number) => Chainable<Subject>;
