@@ -12,6 +12,7 @@ export const isStepUsed = (step: Step, getState: GetState): boolean => {
 
     const { path } = state.onboarding;
     const deviceModelInternal = device?.features?.internal_model;
+    const firmwareVersion = getFirmwareVersion(device);
 
     // The order of IF conditions matters!
     if (
@@ -23,7 +24,8 @@ export const isStepUsed = (step: Step, getState: GetState): boolean => {
                 it =>
                     typeof it === 'object' &&
                     it.model === deviceModelInternal &&
-                    versionUtils.isNewerOrEqual(getFirmwareVersion(device), it.minFwVersion),
+                    firmwareVersion !== '' &&
+                    versionUtils.isNewerOrEqual(firmwareVersion, it.minFwVersion),
             )
         )
     ) {
