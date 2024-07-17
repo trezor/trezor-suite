@@ -524,8 +524,12 @@ const onCall = async (message: IFrameCallMessage) => {
     }
 
     if (!_deviceList.isConnected() && !_deviceList.pendingConnection()) {
+        const { transports, pendingTransportEvent } = DataManager.getSettings();
         // transport is missing try to initialize it once again
-        await initDeviceList(false);
+        // TODO bridge transport is probably not reusable, so I can't remove this setTransports yet.
+        _deviceList.setTransports(transports);
+        // TODO is pendingTransportEvent needed here?
+        await _deviceList.init({ pendingTransportEvent });
     }
 
     if (method.isManagementRestricted()) {
@@ -981,20 +985,6 @@ const createDeviceList = (params: ConstructorParameters<typeof DeviceList>[0]) =
     return deviceList;
 };
 
-const initDeviceList = async (transportReconnect?: boolean) => {
-    const { transports, pendingTransportEvent } = DataManager.getSettings();
-
-    try {
-        _deviceList.setTransports(transports);
-    } catch (error) {
-        postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
-        throw error;
-    }
-
-    _deviceList.init({ pendingTransportEvent, transportReconnect });
-    await _deviceList.pendingConnection();
-};
-
 /**
  * An event emitter for communication with parent
  * @extends EventEmitter
@@ -1139,21 +1129,22 @@ export class Core extends EventEmitter {
             throw error;
         }
 
+        const { transports, pendingTransportEvent, transportReconnect, coreMode } =
+            DataManager.getSettings();
+
         try {
-            if (
-                !DataManager.getSettings('transportReconnect') ||
-                // in auto core mode, we have to wait to check if transport is available
-                DataManager.getSettings('coreMode') === 'auto'
-            ) {
-                // try only once, if it fails kill and throw initialization error
-                await initDeviceList(false);
-            } else {
-                // don't wait for DeviceList result, further communication will be thru TRANSPORT events
-                initDeviceList(true);
-            }
+            _deviceList.setTransports(transports);
         } catch (error) {
-            _log.error('initTransport', error);
+            _log.error('setTransports', error);
+            postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
             throw error;
+        }
+
+        _deviceList.init({ pendingTransportEvent, transportReconnect });
+
+        // in auto core mode, we have to wait to check if transport is available
+        if (!transportReconnect || coreMode === 'auto') {
+            await _deviceList.pendingConnection();
         }
     }
 }
@@ -1162,28 +1153,28 @@ const disableWebUSBTransport = async () => {
     if (!_deviceList.isConnected()) return;
     if (_deviceList.transportType() !== 'WebUsbTransport') return;
     // override settings
-    const settings = DataManager.getSettings();
+    const { transports, pendingTransportEvent, transportReconnect } = DataManager.getSettings();
 
-    if (settings.transports) {
-        const transportStr = settings.transports?.filter(
-            transport => typeof transport !== 'object',
-        );
+    if (transports) {
+        const transportStr = transports?.filter(transport => typeof transport !== 'object');
         if (transportStr.includes('WebUsbTransport')) {
-            settings.transports.splice(settings.transports.indexOf('WebUsbTransport'), 1);
+            transports.splice(transports.indexOf('WebUsbTransport'), 1);
         }
         if (!transportStr.includes('BridgeTransport')) {
-            settings.transports!.unshift('BridgeTransport');
+            transports!.unshift('BridgeTransport');
         }
     }
 
     try {
         // clean previous device list
         _deviceList.cleanup();
-        //and init with new settings, without webusb
+        // and init with new settings, without webusb
+        _deviceList.setTransports(transports);
         // TODO possible issue with new init not replacing the old one???
-        await initDeviceList(settings.transportReconnect);
+        await _deviceList.init({ pendingTransportEvent, transportReconnect });
     } catch (error) {
         // do nothing
+        postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
     }
 };
 
