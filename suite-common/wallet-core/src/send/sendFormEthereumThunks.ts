@@ -120,9 +120,9 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
-    async ({ formValues, formState }, { dispatch, rejectWithValue }) => {
-        const { account, network, feeInfo } = formState;
-        const composedOutput = getExternalComposeOutput(formValues, account, network);
+    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+        const { account, network, feeInfo } = composeContext;
+        const composedOutput = getExternalComposeOutput(formState, account, network);
         if (!composedOutput)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
@@ -131,7 +131,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
 
         const { output, tokenInfo, decimals } = composedOutput;
         const { availableBalance } = account;
-        const { address, amount } = formValues.outputs[0];
+        const { address, amount } = formState.outputs[0];
 
         // gasLimit calculation based on address, amount and data size
         // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
@@ -147,7 +147,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                         // if amount is not set (set-max case) use max available balance
                         amount || (tokenInfo ? tokenInfo.balance! : account.formattedBalance),
                         tokenInfo,
-                        formValues.ethereumDataHex,
+                        formState.ethereumDataHex,
                     ),
                 },
             },
@@ -168,12 +168,12 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         }
 
         // increase gas limit, this flow is used only for Invity
-        if (formValues.ethereumAdjustGasLimit) {
-            customFeeLimit = customFeeLimit.multipliedBy(formValues.ethereumAdjustGasLimit);
+        if (formState.ethereumAdjustGasLimit) {
+            customFeeLimit = customFeeLimit.multipliedBy(formState.ethereumAdjustGasLimit);
         }
 
         // increase gas limit for staking, this flow is used only during bump fee
-        const isStakeEthTx = !!getTxStakeNameByDataHex(formValues.ethereumDataHex);
+        const isStakeEthTx = !!getTxStakeNameByDataHex(formState.ethereumDataHex);
         if (isStakeEthTx) {
             customFeeLimit = customFeeLimit.plus(STAKE_GAS_LIMIT_RESERVE);
         }
@@ -186,11 +186,11 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
             predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit.toFixed(0)));
         }
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
-        if (formValues.selectedFee === 'custom') {
+        if (formState.selectedFee === 'custom') {
             predefinedLevels.push({
                 label: 'custom',
-                feePerUnit: formValues.feePerUnit,
-                feeLimit: formValues.feeLimit,
+                feePerUnit: formState.feePerUnit,
+                feeLimit: formState.feeLimit,
                 blocks: -1,
             });
         }
@@ -234,7 +234,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (
-        { formValues, precomposedTransaction, selectedAccount, device },
+        { formState, precomposedTransaction, selectedAccount, device },
         { getState, extra, rejectWithValue },
     ) => {
         const {
@@ -275,17 +275,17 @@ export const signEthereumSendFormTransactionThunk = createThunk<
                 ? pendingNonceBig.toString()
                 : accountNonce;
 
-        if (formValues.rbfParams && typeof formValues.rbfParams.ethereumNonce === 'number') {
-            nonce = formValues.rbfParams.ethereumNonce.toString();
+        if (formState.rbfParams && typeof formState.rbfParams.ethereumNonce === 'number') {
+            nonce = formState.rbfParams.ethereumNonce.toString();
         }
 
         // transform to TrezorConnect.ethereumSignTransaction params
         const transaction = prepareEthereumTransaction({
             token: precomposedTransaction.token,
             chainId: network.chainId,
-            to: formValues.outputs[0].address,
-            amount: formValues.outputs[0].amount,
-            data: formValues.ethereumDataHex,
+            to: formState.outputs[0].address,
+            amount: formState.outputs[0].amount,
+            data: formState.ethereumDataHex,
             gasLimit: precomposedTransaction.feeLimit || '',
             gasPrice: precomposedTransaction.feePerByte,
             nonce,

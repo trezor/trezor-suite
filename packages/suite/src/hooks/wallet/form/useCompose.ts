@@ -83,12 +83,12 @@ export const useCompose = <TFieldValues extends FormState>({
                     return Promise.resolve(undefined);
                 }
 
-                const values = getValues();
+                const formState = getValues();
 
                 return dispatch(
                     composeSendFormTransactionFeeLevelsThunk({
-                        formValues: values,
-                        formState: state,
+                        formState,
+                        composeContext: state,
                     }),
                 ).unwrap();
             });
@@ -234,16 +234,16 @@ export const useCompose = <TFieldValues extends FormState>({
 
     // called from the UI, triggers signing process
     const sign = async () => {
-        const values = getValues();
+        const formState = getValues();
         const precomposedTransaction = composedLevels
-            ? composedLevels[values.selectedFee || 'normal']
+            ? composedLevels[formState.selectedFee || 'normal']
             : undefined;
         if (precomposedTransaction && precomposedTransaction.type === 'final') {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]TransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
             const result = await dispatch(
                 signAndPushSendFormTransactionThunk({
-                    formValues: values,
+                    formState,
                     precomposedTransaction,
                     selectedAccount,
                 }),

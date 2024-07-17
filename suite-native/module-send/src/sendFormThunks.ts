@@ -54,8 +54,8 @@ export const onDeviceTransactionReviewThunk = createThunk<
         //compose transaction with specific fee levels
         const precomposedFeeLevels = await dispatch(
             composeSendFormTransactionFeeLevelsThunk({
-                formValues: formState,
-                formState: composeContext,
+                formState,
+                composeContext,
             }),
         ).unwrap();
 
@@ -80,7 +80,7 @@ export const onDeviceTransactionReviewThunk = createThunk<
             deviceCallback: () =>
                 dispatch(
                     signTransactionThunk({
-                        formValues: formState,
+                        formState,
                         precomposedTransaction,
                         selectedAccount: account,
                     }),

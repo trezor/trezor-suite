@@ -129,9 +129,9 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeSolanaTransactionFeeLevelsThunk`,
-    async ({ formValues, formState }, { getState, rejectWithValue }) => {
-        const { account, network, feeInfo } = formState;
-        const composedOutput = getExternalComposeOutput(formValues, account, network);
+    async ({ formState, composeContext }, { getState, rejectWithValue }) => {
+        const { account, network, feeInfo } = composeContext;
+        const composedOutput = getExternalComposeOutput(formState, account, network);
         if (!composedOutput)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
@@ -147,7 +147,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
 
         const [recipientAccountOwner, recipientTokenAccount] = tokenInfo
             ? await fetchAccountOwnerAndTokenInfoForAddress(
-                  formValues.outputs[0].address,
+                  formState.outputs[0].address,
                   account.symbol,
                   tokenInfo.contract,
               )
@@ -164,10 +164,10 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             tokenInfo && tokenInfo.accounts
                 ? await buildTokenTransferTransaction(
                       account.descriptor,
-                      formValues.outputs[0].address || account.descriptor,
+                      formState.outputs[0].address || account.descriptor,
                       recipientAccountOwner || SYSTEM_PROGRAM_PUBLIC_KEY,
                       tokenInfo.contract,
-                      formValues.outputs[0].amount || '0',
+                      formState.outputs[0].amount || '0',
                       tokenInfo.decimals,
                       tokenInfo.accounts,
                       recipientTokenAccount,
@@ -186,8 +186,8 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 ? tokenTransferTxAndDestinationAddress.transaction
                 : await buildTransferTransaction(
                       account.descriptor,
-                      formValues.outputs[0].address || account.descriptor,
-                      formValues.outputs[0].amount || '0',
+                      formState.outputs[0].address || account.descriptor,
+                      formState.outputs[0].amount || '0',
                       blockhash,
                       lastValidBlockHeight,
                       dummyPriorityFeesForFeeEstimation,
@@ -270,7 +270,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
     async (
-        { formValues, precomposedTransaction, selectedAccount, device },
+        { formState, precomposedTransaction, selectedAccount, device },
         { getState, rejectWithValue },
     ) => {
         if (precomposedTransaction.feeLimit == null)
@@ -293,7 +293,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
 
         const [recipientAccountOwner, recipientTokenAccounts] = token
             ? await fetchAccountOwnerAndTokenInfoForAddress(
-                  formValues.outputs[0].address,
+                  formState.outputs[0].address,
                   selectedAccount.symbol,
                   token.contract,
               )
@@ -309,10 +309,10 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             token && token.accounts
                 ? await buildTokenTransferTransaction(
                       selectedAccount.descriptor,
-                      formValues.outputs[0].address || selectedAccount.descriptor,
+                      formState.outputs[0].address || selectedAccount.descriptor,
                       recipientAccountOwner || SYSTEM_PROGRAM_PUBLIC_KEY,
                       token.contract,
-                      formValues.outputs[0].amount || '0',
+                      formState.outputs[0].amount || '0',
                       token.decimals,
                       token.accounts,
                       recipientTokenAccounts,
@@ -335,8 +335,8 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             ? tokenTransferTxAndDestinationAddress.transaction
             : await buildTransferTransaction(
                   selectedAccount.descriptor,
-                  formValues.outputs[0].address,
-                  formValues.outputs[0].amount,
+                  formState.outputs[0].address,
+                  formState.outputs[0].amount,
                   blockhash,
                   lastValidBlockHeight,
                   {

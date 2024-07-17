@@ -53,12 +53,12 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${SEND_MODULE_PREFIX}/composeBitcoinTransactionFeeLevelsThunk`,
-    async ({ formValues, formState }, { dispatch, getState, extra, rejectWithValue }) => {
+    async ({ formState, composeContext }, { dispatch, getState, extra, rejectWithValue }) => {
         const {
             selectors: { selectAreSatsAmountUnit },
         } = extra;
 
-        const { account, excludedUtxos, feeInfo, prison } = formState;
+        const { account, excludedUtxos, feeInfo, prison } = composeContext;
 
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
         const device = selectDevice(getState());
@@ -74,7 +74,7 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
                 message: 'Account is missing addresses or utxos.',
             });
 
-        const composeOutputs = getBitcoinComposeOutputs(formValues, account.symbol, isSatoshis);
+        const composeOutputs = getBitcoinComposeOutputs(formState, account.symbol, isSatoshis);
         if (composeOutputs.length < 1)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
@@ -83,20 +83,20 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
 
         const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
-        if (formValues.selectedFee === 'custom') {
+        if (formState.selectedFee === 'custom') {
             predefinedLevels.push({
                 label: 'custom',
-                feePerUnit: formValues.feePerUnit,
+                feePerUnit: formState.feePerUnit,
                 blocks: -1,
             });
         }
 
-        const sequence = getSequence({ account, formValues });
+        const sequence = getSequence({ account, formValues: formState });
 
         // exclude unspendable utxos if coin control is not enabled
         // unspendable utxos are defined in `useSendForm` hook
-        const utxo = formValues.isCoinControlEnabled
-            ? formValues.selectedUtxos?.map(u => ({ ...u, required: true }))
+        const utxo = formState.isCoinControlEnabled
+            ? formState.selectedUtxos?.map(u => ({ ...u, required: true }))
             : account.utxo.filter(u => {
                   const outpoint = getUtxoOutpoint(u);
 
@@ -119,10 +119,10 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
                 utxo,
             },
             feeLevels: predefinedLevels,
-            baseFee: formValues.baseFee,
+            baseFee: formState.baseFee,
             sequence,
             outputs: composeOutputs,
-            skipPermutation: !!formValues.rbfParams,
+            skipPermutation: !!formState.rbfParams,
             coin: account.symbol,
         };
 
@@ -213,11 +213,11 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
                         !!Object.values(excludedUtxos).filter(reason => reason === 'low-anonymity')
                             .length;
 
-                    if (isLowAnonymity && !formValues.isCoinControlEnabled) {
+                    if (isLowAnonymity && !formState.isCoinControlEnabled) {
                         return 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING';
                     }
 
-                    return formValues.isCoinControlEnabled
+                    return formState.isCoinControlEnabled
                         ? 'TR_NOT_ENOUGH_SELECTED'
                         : 'AMOUNT_IS_NOT_ENOUGH';
                 };
@@ -245,7 +245,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (
-        { formValues, precomposedTransaction, selectedAccount, device },
+        { formState, precomposedTransaction, selectedAccount, device },
         { getState, extra, rejectWithValue },
     ) => {
         const {
@@ -259,17 +259,17 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         // transactionInfo needs some additional changes:
         const signEnhancement: Partial<SignTransaction> = {};
 
-        if (formValues.bitcoinLockTime) {
-            signEnhancement.locktime = new BigNumber(formValues.bitcoinLockTime).toNumber();
+        if (formState.bitcoinLockTime) {
+            signEnhancement.locktime = new BigNumber(formState.bitcoinLockTime).toNumber();
         }
-        if (formValues.rbfParams?.locktime) {
-            signEnhancement.locktime = formValues.rbfParams.locktime;
+        if (formState.rbfParams?.locktime) {
+            signEnhancement.locktime = formState.rbfParams.locktime;
         }
 
         let refTxs;
 
-        if (formValues.rbfParams && precomposedTransaction.useNativeRbf) {
-            const { txid, utxo, outputs } = formValues.rbfParams;
+        if (formState.rbfParams && precomposedTransaction.useNativeRbf) {
+            const { txid, utxo, outputs } = formState.rbfParams;
 
             // normally taproot/coinjoin account doesn't require referenced transactions while signing
             // but in RBF case they are needed to obtain data of original transaction

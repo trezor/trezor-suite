@@ -62,15 +62,15 @@ export const useSendFormCompose = ({
     const debounce = useDebounce();
 
     const composeDraft = useCallback(
-        async (formValues: FormState) => {
+        async (formState: FormState) => {
             // start composing without debounce
             setLoading(true);
             setComposedLevels(undefined);
 
             const result = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
-                    formValues,
-                    formState: {
+                    formState,
+                    composeContext: {
                         account,
                         network: state.network,
                         feeInfo: state.feeInfo,
@@ -114,14 +114,14 @@ export const useSendFormCompose = ({
                     return Promise.resolve(undefined);
                 }
 
-                const values = getValues();
+                const formState = getValues();
                 // save draft (it could be changed later, after composing)
                 setDraftSaveRequest(true);
 
                 return dispatch(
                     composeSendFormTransactionFeeLevelsThunk({
-                        formValues: values,
-                        formState: {
+                        formState,
+                        composeContext: {
                             account,
                             network: state.network,
                             feeInfo: state.feeInfo,

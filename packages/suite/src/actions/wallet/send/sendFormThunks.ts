@@ -189,11 +189,11 @@ export const signAndPushSendFormTransactionThunk = createThunk(
     `${MODULE_PREFIX}/signSendFormTransactionThunk`,
     async (
         {
-            formValues,
+            formState,
             precomposedTransaction,
             selectedAccount,
         }: {
-            formValues: FormState;
+            formState: FormState;
             precomposedTransaction: GeneralPrecomposedTransactionFinal;
             selectedAccount?: Account;
         },
@@ -204,7 +204,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
 
         const enhancedPrecomposedTransaction = await dispatch(
             enhancePrecomposedTransactionThunk({
-                transactionFormValues: formValues,
+                transactionFormValues: formState,
                 precomposedTransaction,
                 selectedAccount,
             }),
@@ -217,7 +217,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
 
         const signResponse = await dispatch(
             signTransactionThunk({
-                formValues,
+                formState,
                 precomposedTransaction: enhancedPrecomposedTransaction,
                 selectedAccount,
             }),
