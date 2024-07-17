@@ -5,16 +5,14 @@ import {
     Page,
 } from '@playwright/test';
 
-import { launchSuite, rmDirRecursive } from '../../support/common';
+import { launchSuite } from '../../support/common';
 import { onSuiteGuidePage } from '../../support/pageActions/suiteGuideActions';
 
 let electronApp: ElectronApplication;
 let window: Page;
-let localDataDir: string;
 
 testPlaywright.beforeAll(async () => {
-    ({ electronApp, window, localDataDir } = await launchSuite());
-    rmDirRecursive(localDataDir);
+    ({ electronApp, window } = await launchSuite());
 });
 
 testPlaywright.afterEach(async () => {
