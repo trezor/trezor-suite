@@ -47,7 +47,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
     ) => {
         const { THEME } = useTheme();
 
-        // T2B1, T3B1 animations are transparent
+        // T2B1, T3T1 animations are transparent
         const theme = [DeviceModelInternal.T2B1, DeviceModelInternal.T3T1].includes(
             deviceModelInternal,
         )
