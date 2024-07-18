@@ -15,14 +15,14 @@ export type FirmwareRelease = {
     required: boolean;
     url: string;
     fingerprint: string;
-    changelog: string;
+    changelog: string | string[];
+    changelog_bitcoinonly?: string | string[]; // Added later, may not be there for older releases
     version: VersionArray;
     min_firmware_version: VersionArray;
     min_bootloader_version: VersionArray;
     bootloader_version?: VersionArray;
     url_bitcoinonly?: string;
     fingerprint_bitcoinonly?: string;
-    notes?: string;
     channel?: string;
     translations?: string[];
 };
