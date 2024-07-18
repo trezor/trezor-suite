@@ -683,6 +683,12 @@ export const selectIsDeviceAuthorized = (state: DeviceRootState) => {
     return !!device?.state;
 };
 
+export const selectHasDeviceAuthConfirm = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return !!device?.authConfirm;
+};
+
 export const selectIsDeviceConnectedAndAuthorized = (state: DeviceRootState) => {
     const isDeviceAuthorized = selectIsDeviceAuthorized(state);
     const deviceFeatures = selectDeviceFeatures(state);
