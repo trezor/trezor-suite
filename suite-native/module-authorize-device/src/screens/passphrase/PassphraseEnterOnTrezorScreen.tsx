@@ -17,6 +17,7 @@ import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     selectIsCreatingNewPassphraseWallet,
     useAuthorizationGoBack,
+    useHandlePassphraseMismatch,
 } from '@suite-native/device-authorization';
 import TrezorConnect from '@trezor/connect';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -55,6 +56,8 @@ export const PassphraseEnterOnTrezorScreen = () => {
     // If this screen was present during authorizing device with passphrase for some feature,
     // on success, this hook will close the stack and go back
     useRedirectOnPassphraseCompletion();
+
+    useHandlePassphraseMismatch();
 
     useEffect(() => {
         if (isDiscoveryActive) {
