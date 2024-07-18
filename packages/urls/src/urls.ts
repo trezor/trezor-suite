@@ -71,7 +71,7 @@ export const HELP_CENTER_ZERO_VALUE_ATTACKS =
     'https://trezor.io/support/a/address-poisoning-attacks';
 export const HELP_CENTER_LABELING = 'https://trezor.io/learn/a/labels-in-trezor-suite-app';
 export const HELP_CENTER_DEVICE_AUTHENTICATION =
-    'https://trezor.io/learn/a/trezor-safe-3-authentication-check';
+    'https://trezor.io/learn/a/trezor-safe-device-authentication-check';
 export const HELP_CENTER_ETH_STAKING =
     'https://trezor.io/learn/a/stake-ethereum-eth-in-trezor-suite';
 export const HELP_CENTER_SEED_CARD_URL = 'https://trezor.io/learn/a/recovery-seed-card';
