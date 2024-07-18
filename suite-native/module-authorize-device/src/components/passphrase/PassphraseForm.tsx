@@ -73,6 +73,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
 
     const form = useForm<PassphraseFormValues>({
         validation: passphraseFormSchema,
+        reValidateMode: 'onSubmit',
         defaultValues: {
             passphrase: '',
         },

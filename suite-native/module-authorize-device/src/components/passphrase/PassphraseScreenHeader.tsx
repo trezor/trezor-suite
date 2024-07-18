@@ -70,6 +70,7 @@ export const PassphraseScreenHeader = () => {
                 secondaryButtonTitle: (
                     <Translation id="modulePassphrase.confirmOnDevice.warningSheet.secondaryButton" />
                 ),
+                secondaryButtonVariant: 'redElevation0',
             });
         } else {
             TrezorConnect.cancel();
