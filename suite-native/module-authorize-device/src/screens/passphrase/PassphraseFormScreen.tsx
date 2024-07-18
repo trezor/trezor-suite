@@ -6,6 +6,7 @@ import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
@@ -56,6 +57,7 @@ export const PassphraseFormScreen = () => {
     const handleAnimation = () => (cardHeight.value = 0);
 
     const handleOpenLink = () => {
+        analytics.report({ type: EventType.PassphraseArticleOpened });
         openLink('https://trezor.io/learn/a/passphrases-and-hidden-wallets');
     };
 

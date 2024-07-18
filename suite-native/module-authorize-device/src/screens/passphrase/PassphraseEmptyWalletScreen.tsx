@@ -15,6 +15,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 import { retryPassphraseAuthenticationThunk } from '@suite-native/device-authorization';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { EmptyWalletInfoSheet } from '../../components/passphrase/EmptyWalletInfoSheet';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
@@ -69,6 +70,7 @@ export const PassphraseEmptyWalletScreen = () => {
             }),
         );
         dispatch(retryPassphraseAuthenticationThunk());
+        analytics.report({ type: EventType.PassphraseTryAgain });
     };
 
     return (

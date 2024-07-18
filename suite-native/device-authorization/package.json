@@ -17,6 +17,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
