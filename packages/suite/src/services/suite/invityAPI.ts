@@ -26,25 +26,10 @@ import {
     SellFiatTradeRequest,
     SellFiatTradeResponse,
     WatchSellTradeResponse,
-    P2pListResponse,
-    P2pQuotesRequest,
-    P2pQuotesResponse,
-    P2pTradeRequest,
-    P2pTradeResponse,
-    InitSavingsTradeRequest,
-    SavingsListResponse,
-    SavingsKYCStatus,
-    SavingsTradeRequest,
-    SavingsTradeResponse,
-    SavingsTradeKYCStatusResponse,
-    WatchSavingTradeItemResponse,
-    FormResponse,
     CryptoSymbolsResponse,
 } from 'invity-api';
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
-
-export const SavingsTradeKYCFinalStatuses: SavingsKYCStatus[] = ['Failed', 'Verified'];
 
 type BodyType =
     | BuyTrade
@@ -55,9 +40,7 @@ type BodyType =
     | BuyTradeRequest
     | SellVoucherTradeQuoteRequest
     | SellVoucherTradeRequest
-    | SellFiatTradeRequest
-    | P2pTradeRequest
-    | SavingsTradeRequest;
+    | SellFiatTradeRequest;
 
 class InvityAPI {
     unknownCountry = 'unknown';
@@ -98,16 +81,6 @@ class InvityAPI {
     private SELL_FIAT_DO_TRADE = '/api/v2/sell/fiat/trade';
     private SELL_FIAT_CONFIRM = '/api/v2/sell/fiat/confirm';
     private SELL_FIAT_WATCH_TRADE = '/api/v2/sell/fiat/watch/{{counter}}';
-
-    private P2P_LIST = '/api/p2p/list';
-    private P2P_QUOTES = '/api/p2p/quotes';
-    private P2P_TRADE = '/api/p2p/trade';
-
-    private SAVINGS_LIST = '/api/savings/list';
-    private SAVINGS_INIT = '/api/savings/trezor/init';
-    private SAVINGS_TRADE = '/api/savings/trezor/trade';
-    private SAVINGS_WATCH_ITEM = '/api/savings/watch-item';
-    private SAVINGS_WATCH_KYC = '/api/savings/trezor/watch-kyc';
 
     private static accountDescriptor: string;
     private static apiKey: string;
@@ -483,115 +456,6 @@ class InvityAPI {
             console.log('[watchSellFiatTrade]', error);
 
             return { error: error.toString() };
-        }
-    };
-
-    getP2pList = async (): Promise<P2pListResponse | undefined> => {
-        try {
-            return await this.request(this.P2P_LIST, {}, 'GET');
-        } catch (error) {
-            console.log('[getP2pList]', error);
-        }
-    };
-
-    getP2pQuotes = async (request: P2pQuotesRequest): Promise<P2pQuotesResponse | undefined> => {
-        try {
-            return await this.request(this.P2P_QUOTES, request, 'POST');
-        } catch (error) {
-            console.log('[getP2pQuotes]', error);
-        }
-    };
-
-    doP2pTrade = async (request: P2pTradeRequest): Promise<P2pTradeResponse | undefined> => {
-        try {
-            return await this.request(this.P2P_TRADE, request, 'POST');
-        } catch (error) {
-            console.log('[doP2pTrade]', error);
-        }
-    };
-
-    watchSavingsTrade = async (
-        savingsTradeId: string,
-        tradeItemId: string,
-    ): Promise<WatchSavingTradeItemResponse> => {
-        try {
-            const response: WatchSavingTradeItemResponse = await this.request(
-                `${this.SAVINGS_WATCH_ITEM}/${savingsTradeId}/${tradeItemId}`,
-                {},
-                'GET',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[watchSavingsTrade]', error);
-
-            return { code: error.toString() };
-        }
-    };
-
-    getSavingsList = async (): Promise<SavingsListResponse | undefined> => {
-        try {
-            const response: SavingsListResponse = await this.request(this.SAVINGS_LIST, {}, 'GET');
-
-            return response;
-        } catch (error) {
-            console.log('[getSavingsList]', error);
-        }
-    };
-
-    initSavingsTrade = async (
-        savingsParameters: InitSavingsTradeRequest,
-    ): Promise<FormResponse | undefined> => {
-        try {
-            const response: FormResponse = await this.request(
-                this.SAVINGS_INIT,
-                savingsParameters,
-                'POST',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[initSavingsTrade]', error);
-        }
-    };
-
-    getSavingsTrade = async (): Promise<SavingsTradeResponse | undefined> => {
-        try {
-            const response: SavingsTradeResponse = await this.request(
-                this.SAVINGS_TRADE,
-                {},
-                'GET',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[getSavingsTrade]', error);
-        }
-    };
-
-    doSavingsTrade = async (
-        requestBody: SavingsTradeRequest,
-    ): Promise<SavingsTradeResponse | undefined> => {
-        try {
-            const response: SavingsTradeResponse = await this.request(
-                this.SAVINGS_TRADE,
-                requestBody,
-                'POST',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[doSavingsTrade]', error);
-        }
-    };
-
-    watchKYCStatus = async (
-        apiHeaderValue: string,
-    ): Promise<SavingsTradeKYCStatusResponse | undefined> => {
-        try {
-            return await this.request(this.SAVINGS_WATCH_KYC, {}, 'GET', apiHeaderValue);
-        } catch (error) {
-            console.log('[watchKYCStatus]', error);
         }
     };
 

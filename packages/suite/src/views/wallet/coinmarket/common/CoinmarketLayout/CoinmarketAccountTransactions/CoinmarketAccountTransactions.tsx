@@ -6,8 +6,6 @@ import styled from 'styled-components';
 import { BuyTransaction } from './BuyTransaction';
 import { SellTransaction } from './SellTransaction';
 import { ExchangeTransaction } from './ExchangeTransaction';
-import { SpendTransaction } from './SpendTransaction';
-import { SavingsTransaction } from './SavingsTransaction';
 
 const Wrapper = styled.div`
     margin-bottom: 48px;
@@ -49,9 +47,6 @@ export const CoinmarketAccountTransactions = () => {
     const sellProviders = useSelector(
         state => state.wallet.coinmarket.sell.sellInfo?.providerInfos,
     );
-    const savingsProviders = useSelector(
-        state => state.wallet.coinmarket.savings.savingsInfo?.providerInfos,
-    );
 
     if (selectedAccount.status !== 'loaded') {
         return null;
@@ -71,9 +66,7 @@ export const CoinmarketAccountTransactions = () => {
     const exchangeTransactions = sortedAccountTransactions.filter(
         tx => tx.tradeType === 'exchange',
     );
-    const spendTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'spend');
     const sellTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'sell');
-    const savingsTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'savings');
 
     return (
         <Wrapper>
@@ -93,9 +86,6 @@ export const CoinmarketAccountTransactions = () => {
                                 {buyTransactions.length} <Translation id="TR_TRADE_BUYS" /> •{' '}
                                 {sellTransactions.length} <Translation id="TR_TRADE_SELLS" /> •{' '}
                                 {exchangeTransactions.length}{' '}
-                                <Translation id="TR_TRADE_EXCHANGES" /> • {spendTransactions.length}{' '}
-                                <Translation id="TR_TRADE_SPENDS" /> • {savingsTransactions.length}{' '}
-                                <Translation id="TR_TRADE_SAVINGS" />
                             </TransactionCount>
                         </p>
                     </Header>
@@ -128,25 +118,6 @@ export const CoinmarketAccountTransactions = () => {
                                         key={`${trade.tradeType}-${trade.key}`}
                                         trade={trade}
                                         providers={exchangeProviders}
-                                    />
-                                );
-                            }
-                            if (trade.tradeType === 'spend') {
-                                return (
-                                    <SpendTransaction
-                                        key={`${trade.tradeType}-${trade.key}`}
-                                        trade={trade}
-                                        providers={sellProviders}
-                                    />
-                                );
-                            }
-                            if (trade.tradeType === 'savings') {
-                                return (
-                                    <SavingsTransaction
-                                        account={account}
-                                        key={`${trade.tradeType}-${trade.key}`}
-                                        trade={trade}
-                                        providers={savingsProviders}
                                     />
                                 );
                             }

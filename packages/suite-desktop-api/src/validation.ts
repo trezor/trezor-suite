@@ -34,7 +34,6 @@ const validChannels: Array<keyof RendererChannels> = [
     'update/downloading',
     'update/downloaded',
     'update/allow-prerelease',
-    'spend/message',
     'tor/status',
     'tor/bootstrap',
     'protocol/open',

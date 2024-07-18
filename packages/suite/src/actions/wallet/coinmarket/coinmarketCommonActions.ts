@@ -23,12 +23,7 @@ import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 
-import {
-    COINMARKET_BUY,
-    COINMARKET_EXCHANGE,
-    COINMARKET_SAVINGS,
-    COINMARKET_COMMON,
-} from '../constants';
+import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '../constants';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
@@ -59,8 +54,7 @@ export const verifyAddress =
         path: string | undefined,
         coinmarketAction:
             | typeof COINMARKET_EXCHANGE.VERIFY_ADDRESS
-            | typeof COINMARKET_BUY.VERIFY_ADDRESS
-            | typeof COINMARKET_SAVINGS.VERIFY_ADDRESS,
+            | typeof COINMARKET_BUY.VERIFY_ADDRESS,
     ) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());

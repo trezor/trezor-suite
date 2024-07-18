@@ -210,10 +210,6 @@ export const NotificationRenderer = ({
                     }}
                 />
             );
-        case 'savings-kyc-failed':
-            return error(render, notification, 'TR_SAVINGS_KYC_FAILED_NOTIFICATION');
-        case 'savings-kyc-success':
-            return success(render, notification, 'TR_SAVINGS_KYC_SUCCESS_NOTIFICATION');
         case 'coinjoin-interrupted':
             return error(render, notification, 'TR_COINJOIN_INTERRUPTED_ERROR');
         // Events:

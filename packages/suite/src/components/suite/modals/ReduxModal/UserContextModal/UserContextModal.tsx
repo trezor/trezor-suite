@@ -5,7 +5,6 @@ import {
     PinMismatchModal,
     PassphraseDuplicateModal,
     CoinmarketTermsModal,
-    CoinmarketLeaveSpendModal,
     ConfirmAddressModal,
     ConfirmXpubModal,
     TransactionReviewModal,
@@ -110,8 +109,6 @@ export const UserContextModal = ({
             );
         case 'review-transaction':
             return <TransactionReviewModal {...payload} />;
-        case 'coinmarket-leave-spend':
-            return <CoinmarketLeaveSpendModal {...payload} onCancel={onCancel} />;
         case 'coinmarket-buy-terms': {
             return (
                 <CoinmarketTermsModal
@@ -154,25 +151,6 @@ export const UserContextModal = ({
                     provider={payload.provider}
                     toCryptoCurrency={payload.toCryptoCurrency as CryptoSymbol}
                     fromCryptoCurrency={payload.fromCryptoCurrency as CryptoSymbol}
-                />
-            );
-        case 'coinmarket-savings-terms':
-            return (
-                <CoinmarketTermsModal
-                    onCancel={onCancel}
-                    type="SAVINGS"
-                    decision={payload.decision}
-                    provider={payload.provider}
-                />
-            );
-        case 'coinmarket-p2p-terms':
-            return (
-                <CoinmarketTermsModal
-                    onCancel={onCancel}
-                    type="P2P"
-                    decision={payload.decision}
-                    provider={payload.provider}
-                    cryptoCurrency={payload.cryptoCurrency as CryptoSymbol}
                 />
             );
         case 'import-transaction':

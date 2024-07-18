@@ -8,7 +8,6 @@ export { PassphraseDuplicateModal } from './ReduxModal/UserContextModal/Passphra
 export { ConfirmActionModal } from './ReduxModal/DeviceContextModal/ConfirmActionModal';
 export { ConfirmFingerprintModal } from './ReduxModal/DeviceContextModal/ConfirmFingerprintModal';
 export { CoinmarketTermsModal } from './ReduxModal/UserContextModal/CoinmarketTermsModal';
-export { CoinmarketLeaveSpendModal } from './ReduxModal/UserContextModal/CoinmarketLeaveSpendModal';
 export { WordModal } from './ReduxModal/DeviceContextModal/WordModal';
 export { WordAdvancedModal } from './ReduxModal/DeviceContextModal/WordAdvancedModal';
 export { ConfirmAddressModal } from './ReduxModal/ConfirmAddressModal';

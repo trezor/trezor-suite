@@ -49,8 +49,6 @@ export interface RendererChannels {
     'update/downloading': UpdateProgress;
     'update/downloaded': UpdateInfo;
     'update/allow-prerelease': boolean;
-    // invity
-    'spend/message': Partial<MessageEvent>;
 
     // tor
     'tor/status': TorStatusEvent;

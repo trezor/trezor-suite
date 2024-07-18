@@ -21,7 +21,6 @@ import coinmarketReducer from './coinmarketReducer';
 import accountSearchReducer from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
-import pollingReducer from './pollingReducer';
 import { coinjoinReducer } from './coinjoinReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
@@ -48,7 +47,6 @@ const WalletReducers = combineReducers({
     accountSearch: accountSearchReducer,
     formDrafts: formDraftReducer,
     cardanoStaking: cardanoStakingReducer,
-    pollings: pollingReducer,
     coinjoin: coinjoinReducer,
     stake: stakeReducer,
 });

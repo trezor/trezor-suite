@@ -18,7 +18,6 @@ import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { convertSendFormDraftsBtcAmountUnitsThunk } from '@suite-common/wallet-core';
-import * as modalActions from 'src/actions/suite/modalActions';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
@@ -81,18 +80,6 @@ const walletMiddleware =
         const prevRouter = prevState.router;
         const nextRouter = api.getState().router;
         let resetReducers = action.type === deviceActions.selectDevice.type;
-
-        // show modal when leaving the spend tab in active trade
-        if (action.type === ROUTER.LOCATION_CHANGE) {
-            if (prevState.wallet.coinmarket.sell.showLeaveModal) {
-                api.dispatch(
-                    modalActions.openModal({
-                        type: 'coinmarket-leave-spend',
-                        routeToContinue: nextRouter.route?.name,
-                    }),
-                );
-            }
-        }
 
         if (
             deviceActions.forgetDevice.match(action) &&
