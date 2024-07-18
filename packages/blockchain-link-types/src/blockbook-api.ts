@@ -52,6 +52,7 @@ export interface TokenTransfer {
     value?: string;
     multiTokenValues?: MultiTokenValue[];
     fingerprint?: string;
+    policyId?: string;
     unit?: string;
 }
 export interface Vout {
