@@ -47,7 +47,7 @@ export const SettingsName = () => {
         }
     };
 
-    const handleBackClick = () => dispatch(goto('suite-start'));
+    const handleBackClick = () => dispatch(goto('suite-index'));
 
     return (
         <Container>
