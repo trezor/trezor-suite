@@ -5,12 +5,11 @@ import {
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
-import { Icon, Tooltip, variables } from '@trezor/components';
+import { Icon, Markdown, Tooltip, variables } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/connect';
 
 import { Translation, TrezorLink } from 'src/components/suite';
-import { FirmwareChangelog } from 'src/components/firmware';
 import { useFirmware, useTranslation, useSelector } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 import { spacingsPx } from '@trezor/theme';
@@ -60,7 +59,7 @@ interface FirmwareOfferProps {
 
 export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOfferProps) => {
     const useDevkit = useSelector(state => state.firmware.useDevkit);
-    const { originalDevice, targetType } = useFirmware();
+    const { originalDevice } = useFirmware();
     const { translationString } = useTranslation();
 
     if (!originalDevice?.firmwareRelease) {
@@ -71,13 +70,16 @@ export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOf
     const nextVersion = customFirmware
         ? translationString('TR_CUSTOM_FIRMWARE_VERSION')
         : getFwUpdateVersion(originalDevice);
+
+    const isBtcOnly = targetFirmwareType === FirmwareType.BitcoinOnly;
+
     const parsedChangelog = customFirmware
         ? null
-        : parseFirmwareChangelog(originalDevice.firmwareRelease.release);
+        : parseFirmwareChangelog({ release: originalDevice.firmwareRelease.release, isBtcOnly });
     const changelogUrl = getChangelogUrl(originalDevice);
 
     const currentFirmwareType = getSuiteFirmwareTypeString(originalDevice.firmwareType);
-    const futureFirmwareType = getSuiteFirmwareTypeString(targetFirmwareType || targetType);
+    const futureFirmwareType = getSuiteFirmwareTypeString(targetFirmwareType);
 
     const nextVersionElement = (
         <Version $isNew data-test="@firmware/offer-version/new">
@@ -122,13 +124,13 @@ export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOf
                                     type="hint"
                                     variant="nostyle"
                                     icon="EXTERNAL_LINK"
-                                    href={parsedChangelog.notes || changelogUrl}
+                                    href={changelogUrl}
                                 >
                                     <Translation id="TR_VIEW_ALL" />
                                 </StyledLink>
                             </>
                         }
-                        content={<FirmwareChangelog changelog={parsedChangelog.changelog} />}
+                        content={<Markdown>{parsedChangelog.changelog}</Markdown>}
                     >
                         {nextVersionElement}
                     </Tooltip>

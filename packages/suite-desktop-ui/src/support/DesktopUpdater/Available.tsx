@@ -1,8 +1,6 @@
-import ReactMarkdown from 'react-markdown';
-
 import styled from 'styled-components';
 
-import { Button, H2, variables, Link } from '@trezor/components';
+import { Button, H2, Link, Markdown } from '@trezor/components';
 import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
 import { borders } from '@trezor/theme';
 
@@ -23,47 +21,6 @@ const ChangelogWrapper = styled.div`
     max-height: 400px;
     overflow-y: auto;
     padding: 16px 20px;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    text-align: left;
-
-    h3 {
-        margin-bottom: 4px;
-        font-size: ${variables.FONT_SIZE.NORMAL};
-        font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    }
-
-    ul,
-    ol {
-        margin-bottom: 10px;
-        margin-left: 36px; /* hacky way to add enough indentation so it is rendered right of an emoji in a section heading */
-    }
-
-    li {
-        line-height: 1.57;
-    }
-
-    li + li {
-        margin-top: 4px;
-    }
-
-    /*
-    Styling similar to  Link component.
-    It seems overriding via linkReference renderer doesn't work for some reason
-    */
-    a {
-        cursor: pointer;
-        text-decoration: underline;
-        color: inherit;
-
-        &:visited,
-        &:active,
-        &:hover {
-            text-decoration: underline;
-            color: inherit;
-        }
-    }
 `;
 
 const StyledLink = styled(Link)`
@@ -145,7 +102,7 @@ export const Available = ({ hideWindow, isCancelable, latest }: AvailableProps) 
 
             <ChangelogWrapper>
                 {latest?.changelog ? (
-                    <ReactMarkdown>{latest?.changelog}</ReactMarkdown>
+                    <Markdown>{latest?.changelog}</Markdown>
                 ) : (
                     <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
                 )}

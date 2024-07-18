@@ -1,7 +1,7 @@
 import { ReactNode, MouseEvent } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Icon, IconProps } from '../../assets/Icon/Icon';
-import { TypographyStyle, spacings, typography, typographyStylesBase } from '@trezor/theme';
+import { TypographyStyle, spacingsPx, typography, typographyStylesBase } from '@trezor/theme';
 
 type AProps = {
     $type?: TypographyStyle;
@@ -16,6 +16,8 @@ const A = styled.a<AProps>`
     font-weight: 500;
     display: inline-flex;
     align-items: center;
+
+    gap: ${spacingsPx.xxs};
 
     &:hover {
         text-decoration: underline;
@@ -40,10 +42,6 @@ const A = styled.a<AProps>`
                 color: inherit;
             }
         `}
-`;
-
-const IconWrapper = styled.div`
-    margin-left: ${spacings.xxs};
 `;
 
 interface LinkProps {
@@ -96,16 +94,14 @@ const Link = ({
         >
             {children}
             {icon && (
-                <IconWrapper>
-                    <Icon
-                        size={iconSize}
-                        icon={icon}
-                        {...(variant !== undefined
-                            ? { variant: iconVariant }
-                            : { color: iconColor ?? theme.iconSubdued })}
-                        {...restIconVariant}
-                    />
-                </IconWrapper>
+                <Icon
+                    size={iconSize}
+                    icon={icon}
+                    {...(variant !== undefined
+                        ? { variant: iconVariant }
+                        : { color: iconColor ?? theme.iconSubdued })}
+                    {...restIconVariant}
+                />
             )}
         </A>
     );
