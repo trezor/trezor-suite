@@ -1,4 +1,4 @@
-import { ElevationContext, useElevation } from '@trezor/components';
+import { ElevationContext, useElevation, variables } from '@trezor/components';
 import {
     Elevation,
     borders,
@@ -9,14 +9,22 @@ import {
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
+const MAC_WINDOW_HEIGHT = '184px';
+
 const Window = styled.div<{ $elevation: Elevation }>`
-    width: 258px;
-    height: 184px;
+    min-width: 258px;
+    height: ${MAC_WINDOW_HEIGHT};
     border: 1px solid ${mapElevationToBorder};
     background-color: ${mapElevationToBackground};
     border-bottom: 0;
-    border-top-left-radius: ${borders.radii.sm};
-    border-top-right-radius: ${borders.radii.sm};
+    border-radius: ${borders.radii.sm} ${borders.radii.sm} 0 0;
+    flex: 1 1 auto;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        height: calc(${MAC_WINDOW_HEIGHT} + ${spacingsPx.md});
+        border-radius: ${borders.radii.sm};
+        padding-bottom: ${spacingsPx.md};
+    }
 `;
 
 const WindowBar = styled.div<{ $elevation: Elevation }>`

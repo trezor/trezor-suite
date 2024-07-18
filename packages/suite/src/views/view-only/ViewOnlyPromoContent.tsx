@@ -6,6 +6,7 @@ import {
     Image,
     Text,
     useElevation,
+    variables,
 } from '@trezor/components';
 import { FormattedCryptoAmount, Translation } from '../../components/suite';
 import styled from 'styled-components';
@@ -29,7 +30,7 @@ const StyledCard = styled(Card)`
     flex-direction: column;
     gap: ${spacingsPx.md};
     padding: ${spacingsPx.xxs};
-    width: 476px;
+    max-width: 476px;
 `;
 
 const Callout = styled.div`
@@ -67,6 +68,20 @@ const LargeDeviceImage = styled(DeviceImage)`
     width: 93px;
 `;
 
+const LargeDeviceImageContainer = styled.div`
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    padding: ${spacingsPx.zero} ${spacingsPx.md};
+    width: 100%;
+    overflow: hidden;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: ${spacingsPx.zero} ${spacingsPx.lg} ${spacingsPx.sm};
+    }
+`;
+
 const DeviceItem = styled.div`
     display: flex;
     flex-direction: row;
@@ -95,7 +110,7 @@ const IllustrativeExamplePositioning = styled.div`
     top: -10px;
     right: 10px;
     display: flex;
-    gap: 8px;
+    gap: ${spacingsPx.xs};
 `;
 const IllustrativeExampleArrowPositioning = styled.div``;
 
@@ -103,17 +118,22 @@ const StyledTop = styled.div<{ $elevation: Elevation }>`
     display: flex;
     flex-direction: row;
     background-color: ${mapElevationToBackground};
-    height: 196px;
+    min-height: 196px;
     border-radius: ${borders.radii.sm};
     padding-top: ${spacingsPx.sm};
     padding-left: ${spacingsPx.lg};
-    gap: ${spacingsPx.xxxxl};
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-flow: row wrap;
+        gap: ${spacingsPx.sm};
+        padding-right: ${spacingsPx.lg};
+    }
 `;
 
 const Bottom = styled.div`
     display: flex;
     flex-direction: column;
-    padding: ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.lg} ${spacingsPx.lg};
+    padding: ${spacingsPx.lg};
     gap: ${spacingsPx.xxl};
 `;
 
@@ -126,6 +146,11 @@ const ChartText = styled.div`
 const ButtonsContainer = styled.div`
     display: flex;
     gap: ${spacingsPx.sm};
+    flex-direction: row;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-flow: row wrap;
+    }
 `;
 
 const Top = () => {
@@ -168,8 +193,13 @@ const Top = () => {
                         </IllustrativeExamplePositioning>
                     </WindowChart>
                 </MacWindow>
+                <LargeDeviceImageContainer>
+                    <LargeDeviceImage
+                        alt="Trezor"
+                        image={`TREZOR_${selectedDeviceModelInternal}`}
+                    />
+                </LargeDeviceImageContainer>
             </ElevationContext>
-            <LargeDeviceImage alt="Trezor" image={`TREZOR_${selectedDeviceModelInternal}`} />
         </StyledTop>
     );
 };
