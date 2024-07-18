@@ -114,6 +114,8 @@ const getAccountBalanceHistory = async ({
     accountItem,
     endOfTimeFrameDate,
     forceRefetch,
+    // We pass dispatch because we need to fetch all transactions using redux thunk. This is a workaround for now to keep things simple.
+    // In future we should convert this to proper thunk so we can use dispatch and selectors from thunkAPI.
     dispatch,
 }: {
     accountItem: AccountItem;

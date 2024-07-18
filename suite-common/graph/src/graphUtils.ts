@@ -36,7 +36,6 @@ export const getTimestampsInTimeFrame = (
         numberOfPoints,
     });
 
-    // sometimes endOfRangeDate could be too close to recent time and that cause problems with blockbook
     const intervalEndDate = fromUnixTime(getUnixTime(endOfTimeFrameDate));
 
     const datesInRange = eachMinuteOfInterval(

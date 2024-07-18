@@ -122,13 +122,15 @@ export const getAccountMovementEvents = async ({
     const { coin, identity, descriptor } = account;
 
     const getBalanceHistory = async () => {
-        if (getNetworkType(coin) === 'ripple') {
+        const networkType = getNetworkType(coin);
+        if (networkType === 'ethereum' || networkType === 'ripple') {
             const allTransactions = await dispatch(
                 fetchAllTransactionsForAccountThunk({
                     accountKey: account.accountKey,
                 }),
             ).unwrap();
 
+            // Return only main because we don't support tokens in that popups in graph yet
             return getAccountHistoryMovementFromTransactions({
                 transactions: allTransactions,
                 coin,

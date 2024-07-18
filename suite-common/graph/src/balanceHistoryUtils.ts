@@ -4,6 +4,11 @@ import { TokenAddress, WalletAccountTransaction } from '@suite-common/wallet-typ
 
 import { AccountHistoryMovement, AccountHistoryMovementItem } from './types';
 
+/*
+Logic for calculating account history movement (BTC + ETH) from transactions is nearly identical as we use on blockbook
+https://github.com/trezor/blockbook/blob/0afcb3a002e9f818907f2e1398f5c2af72c9f1ae/api/worker.go#L1470
+*/
+
 type BlockTime = number;
 
 const getAccountHistoryMovementItemBTC = ({
