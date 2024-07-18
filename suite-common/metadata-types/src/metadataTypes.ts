@@ -191,7 +191,16 @@ export interface WalletLabels {
     walletLabel?: string;
 }
 
-export type Labels = AccountLabels | WalletLabels;
+export type Labels = (AccountLabels | WalletLabels) & {
+    /**
+     * in case file was migrated from a different file. reference to previous file
+     */
+    migratedFrom?: string;
+    /**
+     * we might create some dummy data to make it hard to guess number of labels by file size
+     */
+    dummy?: string;
+};
 
 export type DeviceMetadata = DeviceEntityKeys;
 
@@ -233,13 +242,27 @@ export interface MetadataState {
     // information in reducer to make it easily accessible in UI.
     // field shall hold default value for which user may add metadata (address, txId, etc...);
     editing?: string;
+    /**
+     * Initiating is used in UI to display loader and disallow user to edit labels until init is finished
+     * which happens after discovery is finished.
+     * TODO: this could be improved, we don't need to wait for all accounts to be loaded. once a single account
+     * is loaded and we have device master key we are able to add labels without interaction with device => we don't need to wait for discovery to finish
+     */
     initiating?: boolean;
     /**
      * error, typical reasons:
      * - user clicked cancel button on device when "Enable labeling" was shown.
      * - device disconnected
+     *
+     * we need to disable editing labels in this state otherwise user might add a label which would cause next attempt to migrate data not to find
+     * previously saved labels for that labelable entity.
      */
     error?: { [deviceState: string]: boolean };
+    /**
+     * entitites represent state of labelable entities in suite known to metadata module.
+     * this is used to track changes in labelable entities and trigger metadata init (and metadata migration) when needed.
+     */
+    entities?: string[];
 }
 
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';

@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { selectDevices } from '@suite-common/wallet-core';
+import { MetadataState } from '@suite-common/metadata-types';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -13,7 +14,10 @@ import {
     AccountLabels,
 } from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';
-import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
+import {
+    selectEncryptionVersion,
+    selectSelectedProviderForLabels,
+} from 'src/reducers/suite/metadataReducer';
 import { Account } from '@suite-common/wallet-types';
 import type { AbstractMetadataProvider, PasswordManagerState } from 'src/types/suite/metadata';
 
@@ -22,6 +26,7 @@ export type MetadataAction =
     | { type: typeof METADATA.DISABLE }
     | { type: typeof METADATA.SET_EDITING; payload: string | undefined }
     | { type: typeof METADATA.SET_INITIATING; payload: boolean }
+    | { type: typeof METADATA.SET_ENTITIES_DESCRIPTORS; payload: MetadataState['entities'] }
     | {
           type: typeof METADATA.SET_DEVICE_METADATA;
           payload: { deviceState: string; metadata: DeviceMetadata };
@@ -87,10 +92,12 @@ export const disposeMetadata = () => (dispatch: Dispatch, getState: GetState) =>
 export const disposeMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
     const devices = selectDevices(getState());
 
+    const encryptionVersion = selectEncryptionVersion(getState());
+
     getState().wallet.accounts.forEach(account => {
         const updatedAccount = JSON.parse(JSON.stringify(account));
 
-        delete updatedAccount.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
+        delete updatedAccount.metadata[encryptionVersion];
         dispatch(setAccountAdd(updatedAccount));
     });
 

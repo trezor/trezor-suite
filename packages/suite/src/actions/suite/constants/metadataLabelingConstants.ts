@@ -5,7 +5,12 @@ import {
 } from '@suite-common/metadata-types';
 import { TrezorConnect } from '@trezor/connect';
 
-export const FORMAT_VERSION = '1.0.0';
+/**
+ * Changelog:
+ * 1.0.0 - initial version
+ * 1.0.1 - added "dummy" (optional - only empty dummy files created during migration), added "migratedFrom" (optional - only migrated files)
+ */
+export const FORMAT_VERSION = '1.0.1';
 
 // @trezor/connect params
 export const ENABLE_LABELING_PATH = "m/10015'/0'";
@@ -13,8 +18,6 @@ export const ENABLE_LABELING_KEY = 'Enable labeling?';
 export const ENABLE_LABELING_VALUE =
     'fedcba98765432100123456789abcdeffedcba98765432100123456789abcdef';
 export const FETCH_INTERVAL = 1000 * 60 * 3; // 3 minutes?
-
-export const ENCRYPTION_VERSION: MetadataEncryptionVersion = 1;
 
 export const ENCRYPTION_VERSION_CONFIGS: Record<
     MetadataEncryptionVersion,

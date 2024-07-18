@@ -5495,6 +5495,15 @@ export default defineMessages({
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         defaultMessage: 'Re-implementation of Trezor password manager webextension',
     },
+    TR_EXPERIMENTAL_CONFIRM_LESS_LABELING: {
+        id: 'TR_EXPERIMENTAL_CONFIRM_LESS_LABELING',
+        defaultMessage: 'Confirm-less labeling',
+    },
+    TR_EXPERIMENTAL_CONFIRM_LESS_LABELING_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_CONFIRM_LESS_LABELING_DESCRIPTION',
+        defaultMessage:
+            'This experimental feature spares you from the bothering "Enable labeling" dialogue on your device. This however requires re-encrypting your files using different keys (still based on your Trezor). Please be aware of the fact that this operation is one way only. You may lose some of your labels if you try to go back.',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',

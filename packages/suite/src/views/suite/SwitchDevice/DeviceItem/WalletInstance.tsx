@@ -17,9 +17,11 @@ import {
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
-import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import {
+    selectEncryptionVersion,
+    selectLabelingDataForWallet,
+} from 'src/reducers/suite/metadataReducer';
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
-import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatHeader } from 'src/views/dashboard/components/FiatHeader';
 import { useState } from 'react';
@@ -142,6 +144,8 @@ export const WalletInstance = ({
     const isDisablingViewOnlyEjectsWalletRendered =
         contentType === 'disabling-view-only-ejects-wallet';
 
+    const encryptionVersion = useSelector(selectEncryptionVersion);
+
     return (
         <RelativeContainer data-test={dataTestBase}>
             <EjectButton setContentType={setContentType} dataTest={dataTestBase} />
@@ -173,9 +177,7 @@ export const WalletInstance = ({
                                         type: 'walletLabel',
                                         entityKey: instance.state,
                                         defaultValue: instance.state,
-                                        value: instance?.metadata[
-                                            METADATA_LABELING.ENCRYPTION_VERSION
-                                        ]
+                                        value: instance?.metadata[encryptionVersion]
                                             ? walletLabel
                                             : '',
                                     }}

@@ -1,5 +1,5 @@
 // @group_metadata
-// @retry=2
+// @retry=0
 
 import * as METADATA_LABELING from '@trezor/suite/src/actions/suite/constants/metadataLabelingConstants';
 

@@ -1,7 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 
-import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants/';
+import { METADATA } from 'src/actions/suite/constants/';
 
 import * as metadataLabelingActions from '../metadataLabelingActions';
 
@@ -17,34 +17,28 @@ type Fixture<T extends (...a: any) => any> = {
 const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceMetadataKey']>[] = [
     {
         description: `Metadata not enabled`,
-        params: [getSuiteDevice({ state: 'a' }), METADATA_LABELING.ENCRYPTION_VERSION],
+        params: [getSuiteDevice({ state: 'a' }), 1],
         initialState: {
             metadata: { enabled: false, providers: [] },
         },
     },
     {
         description: `Device without state`,
-        params: [getSuiteDevice({ state: undefined }), METADATA_LABELING.ENCRYPTION_VERSION],
+        params: [getSuiteDevice({ state: undefined }), 1],
         initialState: {
             metadata: { enabled: true, providers: [] },
         },
     },
     {
         description: `Device not connected (remembered)`,
-        params: [
-            getSuiteDevice({ state: 'device-state', connected: false, metadata: {} }),
-            METADATA_LABELING.ENCRYPTION_VERSION,
-        ],
+        params: [getSuiteDevice({ state: 'device-state', connected: false, metadata: {} }), 1],
         initialState: {
             metadata: { enabled: true, providers: [] },
         },
     },
     {
         description: `Master key successfully generated`,
-        params: [
-            getSuiteDevice({ state: 'device-state', connected: true, metadata: {} }),
-            METADATA_LABELING.ENCRYPTION_VERSION,
-        ],
+        params: [getSuiteDevice({ state: 'device-state', connected: true, metadata: {} }), 1],
         initialState: {
             metadata: {
                 enabled: true,
@@ -104,6 +98,7 @@ const setAccountMetadataKey = [
                 },
                 deviceState: 'a',
             },
+            1,
         ],
         result: {
             metadata: {
@@ -195,7 +190,7 @@ const addAccountMetadata = [
             accounts: [
                 {
                     metadata: {
-                        [METADATA_LABELING.ENCRYPTION_VERSION]: {
+                        [1]: {
                             aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
                             fileName: 'a',
                         },
@@ -442,8 +437,14 @@ const init = [
                 selectedProvider: {},
                 providers: [],
             },
+            // suite: {
+            //     settings: {
+            //         experimentalFeatures: ['confirm-less-labeling'],
+            //     },
+            // },
         },
         result: [
+            { type: '@metadata/set-entities', payload: ['device-state'] },
             { type: '@metadata/set-initiating', payload: true },
             {
                 type: '@modal/open-user-context',
@@ -480,6 +481,7 @@ const init = [
             suite: { online: true },
         },
         result: [
+            { type: '@metadata/set-entities', payload: ['device-state'] },
             { type: '@metadata/set-initiating', payload: true },
             { type: '@metadata/enable' },
             {
@@ -536,6 +538,36 @@ const init = [
     },
 ];
 
+const getLabelableEntitiesDescriptors = [
+    {
+        description: 'device with state',
+        initialState: {
+            device: { state: 'device-state' },
+        },
+        result: ['device-state'],
+    },
+    {
+        description: 'device without state',
+        initialState: {
+            device: { state: undefined },
+        },
+        result: [],
+    },
+    {
+        description: 'accounts',
+        initialState: {
+            device: { state: 'meow' },
+            accounts: [
+                {
+                    deviceState: 'meow',
+                    key: 'account-key',
+                },
+            ],
+        },
+        result: ['account-key', 'meow'],
+    },
+];
+
 const disposeMetadata = [
     {
         description: '',
@@ -584,14 +616,14 @@ const disposeMetadataKeys = [
         initialState: {
             device: {
                 state: 'device-state',
-                metadata: { 1: { fileName: 'foo', aesKey: 'bar' } },
+                metadata: { 2: { fileName: 'foo', aesKey: 'bar' } },
             },
             accounts: [
                 {
                     deviceState: 'device-state',
                     key: 'account-key',
                     metadata: {
-                        1: {
+                        2: {
                             fileName: 'foo',
                             aesKey: 'bar',
                         },
@@ -617,6 +649,7 @@ export {
     connectProvider,
     addMetadata,
     init,
+    getLabelableEntitiesDescriptors,
     disposeMetadata,
     disposeMetadataKeys,
 };

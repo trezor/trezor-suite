@@ -20,9 +20,11 @@ import {
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
-import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import {
+    selectEncryptionVersion,
+    selectLabelingDataForWallet,
+} from 'src/reducers/suite/metadataReducer';
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
-import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectSuiteSettings } from '../../../../reducers/suite/suiteReducer';
 
@@ -92,6 +94,7 @@ export const WalletInstance = ({
     const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
     const settings = useSelector(selectSuiteSettings);
+    const encryptionVersion = useSelector(selectEncryptionVersion);
 
     const dispatch = useDispatch();
 
@@ -147,9 +150,7 @@ export const WalletInstance = ({
                                     type: 'walletLabel',
                                     entityKey: instance.state,
                                     defaultValue: instance.state,
-                                    value: instance?.metadata[METADATA_LABELING.ENCRYPTION_VERSION]
-                                        ? walletLabel
-                                        : '',
+                                    value: instance?.metadata[encryptionVersion] ? walletLabel : '',
                                 }}
                                 defaultEditableValue={defaultWalletLabel}
                             />

@@ -56,7 +56,11 @@ const FeatureLine = ({ feature, features }: FeatureLineProps) => {
                 description={descId && <Translation id={descId} />}
             />
             <ActionColumn>
-                <Checkbox isChecked={checked} onClick={onChangeFeature} />
+                <Checkbox
+                    isChecked={checked}
+                    onClick={onChangeFeature}
+                    data-test={`@experimental-feature/${feature}/checkbox`}
+                />
             </ActionColumn>
         </FeatureLineWrapper>
     );
@@ -104,7 +108,11 @@ export const Experimental = () => {
                     }
                 />
                 <ActionColumn>
-                    <Switch isChecked={!!features} onChange={onSwitchExperimental} />
+                    <Switch
+                        isChecked={!!features}
+                        onChange={onSwitchExperimental}
+                        dataTest="@settings/experimental-switch"
+                    />
                 </ActionColumn>
             </SectionItem>
             <AnimatePresence>
