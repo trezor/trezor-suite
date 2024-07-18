@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Icon, variables, SelectBar, Card } from '@trezor/components';
+import { Icon, variables, SelectBar } from '@trezor/components';
 
 interface ResponsiveSize {
     $responsiveSize: keyof typeof variables.SCREEN_SIZE;
@@ -78,13 +78,4 @@ export const StyledSelectBar = styled(SelectBar)`
     & div div {
         justify-content: center;
     }
-`;
-
-export const SavingsKYCCard = styled(Card)`
-    border-radius: 6px;
-    display: flex;
-    margin-bottom: 12px;
-    align-items: center;
-    height: 104px;
-    width: 100%;
 `;

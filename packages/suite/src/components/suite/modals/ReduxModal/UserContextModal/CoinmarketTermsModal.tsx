@@ -67,7 +67,7 @@ const FooterContent = styled.div`
 export type CoinmarketTermsModalProps = {
     decision: Deferred<boolean>;
     onCancel: () => void;
-    type: 'BUY' | 'SELL' | 'EXCHANGE' | 'EXCHANGE_DEX' | 'SAVINGS' | 'P2P';
+    type: 'BUY' | 'SELL' | 'EXCHANGE' | 'EXCHANGE_DEX';
     provider?: string;
     cryptoCurrency?: CryptoSymbol;
     toCryptoCurrency?: CryptoSymbol;
@@ -141,11 +141,9 @@ export const CoinmarketTermsModal = ({
                     <TermsText>
                         <Translation id={`TR_${type}_MODAL_TERMS_2`} />
                     </TermsText>
-                    {type !== 'P2P' ? (
-                        <TermsText>
-                            <Translation id={`TR_${type}_MODAL_TERMS_3`} />
-                        </TermsText>
-                    ) : null}
+                    <TermsText>
+                        <Translation id={`TR_${type}_MODAL_TERMS_3`} />
+                    </TermsText>
                 </ContentWrapper>
             </Flex>
             <Flex>

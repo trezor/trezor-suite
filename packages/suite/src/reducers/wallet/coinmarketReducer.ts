@@ -9,12 +9,6 @@ import type {
     ExchangeTrade,
     SellFiatTrade,
     SellFiatTradeQuoteRequest,
-    P2pQuotesRequest,
-    P2pQuote,
-    SavingsKYCStatus,
-    SavingsProviderInfo,
-    SavingsTrade,
-    SavingsTradePlannedPayment,
     CryptoSymbolInfo,
 } from 'invity-api';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
@@ -24,17 +18,13 @@ import {
     COINMARKET_EXCHANGE,
     COINMARKET_COMMON,
     COINMARKET_SELL,
-    COINMARKET_P2P,
-    COINMARKET_SAVINGS,
     COINMARKET_INFO,
 } from 'src/actions/wallet/constants';
 import { STORAGE } from 'src/actions/suite/constants';
 import type { Action as SuiteAction } from 'src/types/suite';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
-import type { SavingsInfo } from 'src/actions/wallet/coinmarketSavingsActions';
 import type { FeeLevel } from '@trezor/connect';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
-import { P2pInfo } from 'src/actions/wallet/coinmarketP2pActions';
 
 export interface ComposedTransactionInfo {
     composed?: Pick<
@@ -76,7 +66,6 @@ interface Exchange {
 
 interface Sell {
     sellInfo?: SellInfo;
-    showLeaveModal: boolean;
     quotesRequest?: SellFiatTradeQuoteRequest;
     quotes: SellFiatTrade[] | undefined;
     alternativeQuotes?: SellFiatTrade[];
@@ -84,29 +73,11 @@ interface Sell {
     isFromRedirect: boolean;
 }
 
-interface P2p {
-    p2pInfo?: P2pInfo;
-    quotesRequest?: P2pQuotesRequest;
-    quotes?: P2pQuote[];
-}
-
-interface Savings {
-    selectedProvider?: SavingsProviderInfo;
-    savingsInfo?: SavingsInfo;
-    savingsTrade?: SavingsTrade;
-    savingsTradePayments: SavingsTradePlannedPayment[];
-    isSavingsTradeLoading: boolean;
-    kycFinalStatus?: SavingsKYCStatus;
-    isWatchingKYCStatus: boolean;
-}
-
 export interface State {
     info: Info;
     buy: Buy;
     exchange: Exchange;
     sell: Sell;
-    p2p: P2p;
-    savings: Savings;
     composedTransactionInfo: ComposedTransactionInfo;
     trades: Trade[];
     isLoading: boolean;
@@ -142,27 +113,12 @@ export const initialState: State = {
         addressVerified: undefined,
     },
     sell: {
-        showLeaveModal: false,
         sellInfo: undefined,
         quotesRequest: undefined,
         quotes: [],
         alternativeQuotes: [],
         transactionId: undefined,
         isFromRedirect: false,
-    },
-    p2p: {
-        p2pInfo: undefined,
-        quotesRequest: undefined,
-        quotes: undefined,
-    },
-    savings: {
-        selectedProvider: undefined,
-        savingsInfo: undefined,
-        savingsTrade: undefined,
-        savingsTradePayments: [],
-        isSavingsTradeLoading: false,
-        kycFinalStatus: undefined,
-        isWatchingKYCStatus: false,
     },
     composedTransactionInfo: {},
     trades: [],
@@ -265,59 +221,15 @@ const coinmarketReducer = (
                 draft.sell.quotes = undefined;
                 draft.sell.alternativeQuotes = undefined;
                 break;
-            case COINMARKET_SELL.SHOW_LEAVE_MODAL:
-                draft.sell.showLeaveModal = action.showLeaveModal;
-                break;
             case COINMARKET_SELL.SET_IS_FROM_REDIRECT:
                 draft.sell.isFromRedirect = action.isFromRedirect;
                 break;
             case COINMARKET_SELL.SAVE_TRANSACTION_ID:
                 draft.sell.transactionId = action.transactionId;
                 break;
-            case COINMARKET_P2P.SAVE_P2P_INFO:
-                draft.p2p.p2pInfo = action.p2pInfo;
-                break;
-            case COINMARKET_P2P.SAVE_QUOTES_REQUEST:
-                draft.p2p.quotesRequest = action.request;
-                break;
-            case COINMARKET_P2P.SAVE_QUOTES:
-                draft.p2p.quotes = action.quotes;
-                break;
-            case COINMARKET_SAVINGS.SAVE_SAVINGS_INFO:
-                draft.savings.savingsInfo = action.savingsInfo;
-                break;
-            case COINMARKET_SAVINGS.LOAD_SAVINGS_TRADE_RESPONSE:
-                draft.savings.isSavingsTradeLoading = true;
-                break;
-            case COINMARKET_SAVINGS.SAVE_SAVINGS_TRADE_RESPONSE:
-                draft.savings.isSavingsTradeLoading = false;
-                draft.savings.savingsTrade = action.response.trade;
-                draft.savings.kycFinalStatus = action.response.trade?.kycStatus;
-                draft.savings.savingsTradePayments = (action.response.payments ?? []).sort(
-                    (a, b) =>
-                        new Date(b.plannedPaymentAt).valueOf() -
-                        new Date(a.plannedPaymentAt).valueOf(),
-                );
-                break;
-            case COINMARKET_SAVINGS.CLEAR_SAVINGS_TRADE:
-                draft.savings.savingsTrade = undefined;
-                break;
-            case COINMARKET_SAVINGS.SET_SELECTED_PROVIDER:
-                draft.savings.selectedProvider = action.provider;
-                break;
-            case COINMARKET_SAVINGS.SET_SAVINGS_TRADE_RESPONSE_LOADING:
-                draft.savings.isSavingsTradeLoading = action.isSavingsTradeLoading;
-                break;
             case COINMARKET_COMMON.SET_LOADING:
                 draft.isLoading = action.isLoading;
                 draft.lastLoadedTimestamp = action.lastLoadedTimestamp;
-                break;
-            case COINMARKET_SAVINGS.START_WATCHING_KYC_STATUS:
-                draft.savings.isWatchingKYCStatus = true;
-                break;
-            case COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS:
-                draft.savings.kycFinalStatus = action.kycFinalStatus;
-                draft.savings.isWatchingKYCStatus = false;
                 break;
             // no default
         }

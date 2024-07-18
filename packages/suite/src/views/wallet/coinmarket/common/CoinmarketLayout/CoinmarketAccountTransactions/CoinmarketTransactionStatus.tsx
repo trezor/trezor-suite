@@ -3,15 +3,9 @@ import { Translation } from 'src/components/suite';
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/coinmarket/buyUtils';
 import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/coinmarket/sellUtils';
-import { getStatusMessage as getSavingsStatusMessage } from 'src/utils/wallet/coinmarket/savingsUtils';
 import { variables, Icon, SuiteThemeColors } from '@trezor/components';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
-import {
-    BuyTradeStatus,
-    ExchangeTradeStatus,
-    SellTradeStatus,
-    SavingsTradeItemStatus,
-} from 'invity-api';
+import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 const Wrapper = styled.div<{ $color: string }>`
     display: flex;
@@ -117,44 +111,10 @@ const getExchangeTradeData = (status: ExchangeTradeStatus, theme: SuiteThemeColo
     }
 };
 
-const getSpendTradeData = (theme: SuiteThemeColors) =>
-    ({
-        icon: 'CHECK',
-        color: theme.TYPE_GREEN,
-        statusMessageId: 'TR_SPEND_STATUS_FINISHED',
-    }) as const;
-
-const getSavingsTradeData = (status: SavingsTradeItemStatus, theme: SuiteThemeColors) => {
-    const message = getSavingsStatusMessage(status);
-    switch (message) {
-        case 'TR_SAVINGS_STATUS_PENDING':
-            return {
-                icon: 'CLOCK_ACTIVE',
-                color: theme.TYPE_ORANGE,
-                statusMessageId: message,
-            } as const;
-        case 'TR_SAVINGS_STATUS_ERROR':
-            return {
-                icon: 'CROSS',
-                color: theme.TYPE_RED,
-                statusMessageId: message,
-            } as const;
-        case 'TR_SAVINGS_STATUS_SUCCESS':
-            return {
-                icon: 'CHECK',
-                color: theme.TYPE_GREEN,
-                statusMessageId: message,
-            } as const;
-        // no default
-    }
-};
-
 type StatusData =
     | ReturnType<typeof getBuyTradeData>
     | ReturnType<typeof getSellTradeData>
-    | ReturnType<typeof getExchangeTradeData>
-    | ReturnType<typeof getSpendTradeData>
-    | ReturnType<typeof getSavingsTradeData>;
+    | ReturnType<typeof getExchangeTradeData>;
 
 interface StatusProps {
     trade: Trade['data'];
@@ -174,12 +134,6 @@ export const CoinmarketTransactionStatus = ({ trade, className, tradeType }: Sta
             break;
         case 'exchange':
             data = getExchangeTradeData(trade.status as ExchangeTradeStatus, theme);
-            break;
-        case 'spend':
-            data = getSpendTradeData(theme);
-            break;
-        case 'savings':
-            data = getSavingsTradeData(trade.status as SavingsTradeItemStatus, theme);
             break;
         // no default
     }

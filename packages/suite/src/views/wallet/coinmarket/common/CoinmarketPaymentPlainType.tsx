@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { typography } from '@trezor/theme';
-import { BuyCryptoPaymentMethod, SavingsPaymentMethod, SellCryptoPaymentMethod } from 'invity-api';
+import { BuyCryptoPaymentMethod, SellCryptoPaymentMethod } from 'invity-api';
 import { Translation } from 'src/components/suite';
 
 const Text = styled.div`
@@ -13,7 +13,7 @@ const Text = styled.div`
 
 interface CoinmarketPaymentTypeProps {
     children?: ReactNode;
-    method?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod | SavingsPaymentMethod;
+    method?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
     methodName?: string;
 }
 type TranslatedPaymentMethod = 'bankTransfer' | 'creditCard';

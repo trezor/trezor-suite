@@ -84,45 +84,6 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
                 /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/exchange/offers'
             ),
     ),
-    'wallet-coinmarket-spend': lazy(
-        () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/spend'),
-    ),
-    'wallet-coinmarket-p2p': lazy(
-        () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/p2p/form'),
-    ),
-    'wallet-coinmarket-p2p-offers': lazy(
-        () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/p2p/offers'),
-    ),
-    'wallet-coinmarket-savings-setup': lazy(
-        () =>
-            import(
-                /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/savings/setup'
-            ),
-    ),
-    'wallet-coinmarket-savings-setup-continue': lazy(
-        () =>
-            import(
-                /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/savings/setup/continue'
-            ),
-    ),
-    'wallet-coinmarket-savings-setup-waiting': lazy(
-        () =>
-            import(
-                /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/savings/setup/waiting'
-            ),
-    ),
-    'wallet-coinmarket-savings-payment-info': lazy(
-        () =>
-            import(
-                /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/savings/payment-info'
-            ),
-    ),
-    'wallet-coinmarket-savings-overview': lazy(
-        () =>
-            import(
-                /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/savings/overview'
-            ),
-    ),
     'wallet-coinmarket-redirect': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/redirect'),
     ),

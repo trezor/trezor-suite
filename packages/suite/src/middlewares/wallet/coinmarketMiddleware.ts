@@ -8,8 +8,6 @@ import * as coinmarketInfoAction from 'src/actions/wallet/coinmarketInfoActions'
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
-import * as coinmarketP2pActions from 'src/actions/wallet/coinmarketP2pActions';
-import * as coinmarketSavingsActions from 'src/actions/wallet/coinmarketSavingsActions';
 
 const coinmarketMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -22,8 +20,6 @@ const coinmarketMiddleware =
             const { buyInfo } = api.getState().wallet.coinmarket.buy;
             const { exchangeInfo } = api.getState().wallet.coinmarket.exchange;
             const { sellInfo } = api.getState().wallet.coinmarket.sell;
-            const { p2pInfo } = api.getState().wallet.coinmarket.p2p;
-            const { savingsInfo } = api.getState().wallet.coinmarket.savings;
 
             const currentAccountDescriptor = invityAPI.getCurrentAccountDescriptor();
             const isDifferentAccount = currentAccountDescriptor !== account?.descriptor;
@@ -74,23 +70,6 @@ const coinmarketMiddleware =
                     loadPromises.push(
                         coinmarketSellActions.loadSellInfo().then(sellInfo => {
                             api.dispatch(coinmarketSellActions.saveSellInfo(sellInfo));
-                        }),
-                    );
-                }
-
-                if (isDifferentAccount || !p2pInfo) {
-                    loadPromises.push(
-                        coinmarketP2pActions.loadP2pInfo().then(p2pInfo => {
-                            api.dispatch(coinmarketP2pActions.saveP2pInfo(p2pInfo));
-                        }),
-                    );
-                }
-
-                if (isDifferentAccount || !savingsInfo) {
-                    loadPromises.push(
-                        coinmarketSavingsActions.loadSavingsInfo().then(savingsInfo => {
-                            api.dispatch(coinmarketSavingsActions.saveSavingsInfo(savingsInfo));
-                            api.dispatch(coinmarketSavingsActions.loadSavingsTrade());
                         }),
                     );
                 }

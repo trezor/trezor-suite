@@ -67,8 +67,6 @@ export type ToastPayload = (
               | 'auto-updater-no-new'
               | 'qr-incorrect-address'
               | 'copy-to-clipboard'
-              | 'savings-kyc-failed'
-              | 'savings-kyc-success'
               | 'tor-is-slow'
               | 'coinjoin-interrupted'
               | 'firmware-language-changed'

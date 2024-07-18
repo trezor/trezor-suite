@@ -60,9 +60,7 @@ type DeferredModals = Extract<
             | 'coinmarket-buy-terms'
             | 'coinmarket-sell-terms'
             | 'coinmarket-exchange-dex-terms'
-            | 'coinmarket-exchange-terms'
-            | 'coinmarket-p2p-terms'
-            | 'coinmarket-savings-terms';
+            | 'coinmarket-exchange-terms';
     }
 >;
 // extract single modal by `type` util

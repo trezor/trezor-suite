@@ -24,14 +24,6 @@ import WalletCoinmarketSellOffers from 'src/views/wallet/coinmarket/sell/offers'
 import WalletCoinmarketExchange from 'src/views/wallet/coinmarket/exchange';
 import WalletCoinmarketExchangeDetail from 'src/views/wallet/coinmarket/exchange/detail';
 import WalletCoinmarketExchangeOffers from 'src/views/wallet/coinmarket/exchange/offers';
-import WalletCoinmarketSpend from 'src/views/wallet/coinmarket/spend';
-import WalletCoinmarketP2p from 'src/views/wallet/coinmarket/p2p/form';
-import WalletCoinmarketP2pOffers from 'src/views/wallet/coinmarket/p2p/offers';
-import WalletCoinmarketSavingsSetup from 'src/views/wallet/coinmarket/savings/setup';
-import WalletCoinmarketSavingsSetupContinue from 'src/views/wallet/coinmarket/savings/setup/continue';
-import WalletCoinmarketSavingsSetupWaiting from 'src/views/wallet/coinmarket/savings/setup/waiting';
-import WalletCoinmarketSavingsPaymentInfo from 'src/views/wallet/coinmarket/savings/payment-info';
-import WalletCoinmarketSavingsOverview from 'src/views/wallet/coinmarket/savings/overview';
 import WalletCoinmarketRedirect from 'src/views/wallet/coinmarket/redirect';
 import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
@@ -62,14 +54,6 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-coinmarket-exchange': WalletCoinmarketExchange,
     'wallet-coinmarket-exchange-detail': WalletCoinmarketExchangeDetail,
     'wallet-coinmarket-exchange-offers': WalletCoinmarketExchangeOffers,
-    'wallet-coinmarket-spend': WalletCoinmarketSpend,
-    'wallet-coinmarket-p2p': WalletCoinmarketP2p,
-    'wallet-coinmarket-p2p-offers': WalletCoinmarketP2pOffers,
-    'wallet-coinmarket-savings-setup': WalletCoinmarketSavingsSetup,
-    'wallet-coinmarket-savings-setup-continue': WalletCoinmarketSavingsSetupContinue,
-    'wallet-coinmarket-savings-setup-waiting': WalletCoinmarketSavingsSetupWaiting,
-    'wallet-coinmarket-savings-payment-info': WalletCoinmarketSavingsPaymentInfo,
-    'wallet-coinmarket-savings-overview': WalletCoinmarketSavingsOverview,
     'wallet-coinmarket-redirect': WalletCoinmarketRedirect,
 
     'password-manager-index': PasswordManager,

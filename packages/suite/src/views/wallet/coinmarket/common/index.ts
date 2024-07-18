@@ -9,7 +9,4 @@ export { CoinmarketProviderInfo } from './CoinmarketProviderInfo';
 export { CoinmarketRefreshTime } from './CoinmarketRefreshTime';
 export { CoinmarketTag } from './CoinmarketTag';
 export { CoinmarketTransactionId } from './CoinmarketTransactionId';
-export { KycError } from './KycError';
-export { KycFailed } from './KycFailed';
-export { KycInProgress } from './KycInProgress';
 export { NoOffers } from './NoOffers';

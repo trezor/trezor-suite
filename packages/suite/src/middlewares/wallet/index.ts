@@ -9,8 +9,6 @@ import storageMiddleware from './storageMiddleware';
 import walletMiddleware from './walletMiddleware';
 import graphMiddleware from './graphMiddleware';
 import coinmarketMiddleware from './coinmarketMiddleware';
-import coinmarketSavingsMiddleware from './coinmarketSavingsMiddleware';
-import pollingMiddleware from './pollingMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
@@ -25,7 +23,5 @@ export default [
     storageMiddleware,
     graphMiddleware,
     coinmarketMiddleware,
-    coinmarketSavingsMiddleware,
-    pollingMiddleware,
     coinjoinMiddleware,
 ];

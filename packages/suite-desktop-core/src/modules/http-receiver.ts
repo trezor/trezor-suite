@@ -43,10 +43,6 @@ export const init: Module = ({ mainWindow }) => {
                 // as the user was redirected from the Suite to the partner's site and is now coming back.
                 app.focus({ steal: true });
             });
-
-            receiver.on('spend/message', event => {
-                mainWindow.webContents.send('spend/message', event);
-            });
         });
 
         app.on('before-quit', () => {

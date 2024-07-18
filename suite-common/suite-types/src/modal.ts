@@ -2,7 +2,6 @@ import { Deferred } from '@trezor/utils';
 import { Account, AddressType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 
-import { Route } from './route';
 import { TrezorDevice } from './device';
 
 export type UserContextPayload =
@@ -63,20 +62,10 @@ export type UserContextPayload =
           decision: Deferred<boolean>;
       }
     | {
-          type: 'coinmarket-savings-terms';
-          provider?: string;
-          cryptoCurrency?: string;
-          decision: Deferred<boolean>;
-      }
-    | {
           type: 'coinmarket-sell-terms';
           provider?: string;
           cryptoCurrency?: string;
           decision: Deferred<boolean>;
-      }
-    | {
-          type: 'coinmarket-leave-spend';
-          routeToContinue?: Route['name'];
       }
     | {
           type: 'coinmarket-exchange-terms';
@@ -90,12 +79,6 @@ export type UserContextPayload =
           provider?: string;
           fromCryptoCurrency?: string;
           toCryptoCurrency?: string;
-          decision: Deferred<boolean>;
-      }
-    | {
-          type: 'coinmarket-p2p-terms';
-          provider?: string;
-          cryptoCurrency?: string;
           decision: Deferred<boolean>;
       }
     | {

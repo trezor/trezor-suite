@@ -1,13 +1,6 @@
 import type { ReactElement } from 'react';
 import type { Account } from 'src/types/wallet';
-import type {
-    BuyTrade,
-    SellFiatTrade,
-    ExchangeTrade,
-    PaymentFrequency,
-    SellVoucherTrade as SpendTrade,
-    SavingsTradeItem,
-} from 'invity-api';
+import type { BuyTrade, SellFiatTrade, ExchangeTrade } from 'invity-api';
 import type { FlagProps } from '@trezor/components';
 
 type CommonTrade = {
@@ -20,13 +13,11 @@ type CommonTrade = {
         accountIndex: Account['index'];
     };
 };
-export type TradeType = 'buy' | 'sell' | 'exchange' | 'spend' | 'savings';
+export type TradeType = 'buy' | 'sell' | 'exchange';
 export type TradeBuy = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
 export type TradeSell = CommonTrade & { tradeType: 'sell'; data: SellFiatTrade };
 export type TradeExchange = CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade };
-export type TradeSpend = CommonTrade & { tradeType: 'spend'; data: SpendTrade };
-export type TradeSavings = CommonTrade & { tradeType: 'savings'; data: SavingsTradeItem };
-export type Trade = TradeBuy | TradeSell | TradeExchange | TradeSpend | TradeSavings;
+export type Trade = TradeBuy | TradeSell | TradeExchange;
 
 export type Option = { value: string; label: string };
 export type CountryOption = { value: FlagProps['country']; label: string };
@@ -34,12 +25,6 @@ export type DefaultCountryOption = { value: string; label: string };
 export type TranslationOption = { value: string; label?: ReactElement };
 
 export type PaymentFrequencyOption = Option & { label: JSX.Element };
-
-export type Savings = {
-    paymentFrequency: PaymentFrequency;
-    fiatAmount: string;
-    customFiatAmount: string;
-};
 
 export interface CryptoAmountLimits {
     currency: string;

@@ -12,15 +12,11 @@ import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 import { CoinmarketBuyAction } from 'src/actions/wallet/coinmarketBuyActions';
 import { CoinmarketExchangeAction } from 'src/actions/wallet/coinmarketExchangeActions';
 import { CoinmarketSellAction } from 'src/actions/wallet/coinmarketSellActions';
-import { CoinMarketSpendAction } from 'src/actions/wallet/coinmarketSpendActions';
-import { CoinmarketP2pAction } from 'src/actions/wallet/coinmarketP2pActions';
-import { CoinmarketSavingsAction } from 'src/actions/wallet/coinmarketSavingsActions';
 import { CoinmarketCommonAction } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { GraphAction } from 'src/actions/wallet/graphActions';
 import { AccountSearchAction } from 'src/actions/wallet/accountSearchActions';
 import { FormDraftAction } from 'src/actions/wallet/formDraftActions';
 import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
-import { PollingAction } from 'src/actions/wallet/pollingActions';
 import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
 import { NETWORKS } from 'src/config/wallet';
@@ -80,16 +76,12 @@ export type WalletAction =
     | CoinmarketInfoAction
     | CoinmarketExchangeAction
     | CoinmarketBuyAction
-    | CoinMarketSpendAction
     | CoinmarketSellAction
-    | CoinmarketP2pAction
-    | CoinmarketSavingsAction
     | CoinmarketCommonAction
     | SendFormAction
     | AccountSearchAction
     | FormDraftAction
     | CardanoStakingAction
-    | PollingAction
     | CoinjoinAccountAction
     | CoinjoinClientAction
     | AccountsAction

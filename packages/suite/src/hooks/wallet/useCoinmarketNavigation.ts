@@ -34,20 +34,5 @@ export const useCoinmarketNavigation = (account: Account) => {
 
         navigateToSellForm: useNavigateToRouteName('wallet-coinmarket-sell'),
         navigateToSellOffers: useNavigateToRouteName('wallet-coinmarket-sell-offers'),
-
-        navigateToP2pForm: useNavigateToRouteName('wallet-coinmarket-p2p'),
-        navigateToP2pOffers: useNavigateToRouteName('wallet-coinmarket-p2p-offers'),
-
-        navigateToSavingsSetup: useNavigateToRouteName('wallet-coinmarket-savings-setup'),
-        navigateToSavingsSetupContinue: useNavigateToRouteName(
-            'wallet-coinmarket-savings-setup-continue',
-        ),
-        navigateToSavingsSetupWaiting: useNavigateToRouteName(
-            'wallet-coinmarket-savings-setup-waiting',
-        ),
-        navigateToSavingsPaymentInfo: useNavigateToRouteName(
-            'wallet-coinmarket-savings-payment-info',
-        ),
-        navigateToSavingsOverview: useNavigateToRouteName('wallet-coinmarket-savings-overview'),
     };
 };

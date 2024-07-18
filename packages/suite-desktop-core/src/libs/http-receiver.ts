@@ -4,7 +4,6 @@ import { xssFilters } from '@trezor/utils';
 import { HttpServer, allowReferers } from '@trezor/node-utils';
 import { trezorLogo } from '@suite-common/suite-constants';
 
-import { HTTP_ORIGINS_DEFAULT } from './constants';
 import { convertILoggerToLog } from '../utils/IloggerToLog';
 
 type TemplateOptions = {
@@ -19,7 +18,6 @@ interface Events {
     'oauth/error': (message: string) => void;
     'buy/redirect': (url: string) => void;
     'sell/redirect': (url: string) => void;
-    'spend/message': (event: Partial<MessageEvent>) => void;
 }
 
 const applyTemplate = (content = 'You may now close this window.', options?: TemplateOptions) => {
@@ -152,85 +150,6 @@ export const createHttpReceiver = () => {
             if (query && query.p) {
                 httpReceiver.emit('sell/redirect', query.p.toString());
             }
-
-            const template = applyTemplate();
-            response.end(template);
-        },
-    ]);
-
-    httpReceiver.get('/spend-iframe', [
-        allowReferers(['']), // Opened in a new tab, no referer
-        (_request, response) => {
-            const regex = /^https:\/\/(.+\.|)bitrefill\.com$/;
-            const template = `<!DOCTYPE html>
-                    <head>
-                        <style>
-                            body, html {
-                                width: 100%;
-                                height: 100%;
-                                margin: 0;
-                                padding: 0;
-                                font-family: sans-serif;
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: center;
-                                align-items: center;
-                            }
-                            .title {
-                                font-size: 12pt;
-                                color: #888;
-                                margin: 20px;
-                            }
-                            iframe {
-                                border: 1px #888 solid;
-                                width: 95%;
-                                height: 100%;
-                                display: block;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="title">Content of this page is provided by our partner</div>
-                        <iframe
-                            id="iframe"
-                            title="."
-                            sandbox="allow-scripts allow-forms allow-same-origin"
-                            src=""
-                        ></iframe>
-                        <script>
-                            function eventHandler(event, handleMessageEndpoint) {
-                                var req = new XMLHttpRequest();
-                                req.open("GET", handleMessageEndpoint + '?data=' + encodeURIComponent(event.data) + '&origin=' + event.origin);
-                                req.send();
-                            }
-                            const urlParams = new URLSearchParams(window.location.search);
-                            const iframe = document.getElementById('iframe');
-                            const iframeSrc = urlParams.get('voucherSiteUrl');
-                            const iframeUrl = new URL(urlParams.get('voucherSiteUrl'));
-                            const origin = iframeUrl.origin;
-                            const regex = ${regex};
-                            if(regex.test(origin)) {
-                                const handleMessageEndpoint = urlParams.get('handleMessageEndpoint');
-                                iframe.src = decodeURIComponent(iframeSrc);
-                                window.addEventListener('message', function(event) {
-                                    eventHandler(event, handleMessageEndpoint);
-                                });
-                            }
-                        </script>
-                    </body>
-                </html>`;
-            response.end(template);
-        },
-    ]);
-
-    httpReceiver.get('/spend-handle-message', [
-        allowReferers(HTTP_ORIGINS_DEFAULT),
-        (request, response) => {
-            const { query } = url.parse(request.url, true);
-            httpReceiver.emit('spend/message', {
-                origin: Array.isArray(query.origin) ? query.origin.join(',') : query.origin,
-                data: Array.isArray(query.data) ? query.data.join(',') : query.data,
-            });
 
             const template = applyTemplate();
             response.end(template);

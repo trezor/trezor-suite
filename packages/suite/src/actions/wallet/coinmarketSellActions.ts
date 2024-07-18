@@ -20,7 +20,6 @@ export interface SellInfo {
 
 export type CoinmarketSellAction =
     | { type: typeof COINMARKET_SELL.SAVE_SELL_INFO; sellInfo: SellInfo }
-    | { type: typeof COINMARKET_SELL.SHOW_LEAVE_MODAL; showLeaveModal: boolean }
     | { type: typeof COINMARKET_SELL.SAVE_QUOTE_REQUEST; request: SellFiatTradeQuoteRequest }
     | { type: typeof COINMARKET_SELL.SAVE_TRANSACTION_ID; transactionId?: string }
     | { type: typeof COINMARKET_SELL.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
@@ -74,11 +73,6 @@ export const loadSellInfo = async (): Promise<SellInfo> => {
 export const saveSellInfo = (sellInfo: SellInfo): CoinmarketSellAction => ({
     type: COINMARKET_SELL.SAVE_SELL_INFO,
     sellInfo,
-});
-
-export const setShowLeaveModal = (showLeaveModal: boolean): CoinmarketSellAction => ({
-    type: COINMARKET_SELL.SHOW_LEAVE_MODAL,
-    showLeaveModal,
 });
 
 export const saveTrade = (
