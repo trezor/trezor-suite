@@ -3215,6 +3215,10 @@ export default defineMessages({
         defaultMessage: 'Including tokens',
         id: 'TR_INCLUDING_TOKENS',
     },
+    TR_INCLUDING_TOKENS_AND_STAKING: {
+        defaultMessage: 'Incl. tokens & staking',
+        id: 'TR_INCLUDING_TOKENS_AND_STAKING',
+    },
     TR_NETWORK_ETHEREUM_CLASSIC: {
         defaultMessage: 'Ethereum Classic',
         id: 'TR_NETWORK_ETHEREUM_CLASSIC',

@@ -3,9 +3,9 @@ import { transparentize } from 'polished';
 import styled, { css, useTheme } from 'styled-components';
 import { variables, CoinLogo, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import type { Network } from 'src/types/wallet';
 import { typography } from '@trezor/theme';
+import { TranslationKey } from '@suite-common/intl-types';
 
 const SettingsWrapper = styled.div<{
     $toggled: boolean;
@@ -154,7 +154,7 @@ const Check = styled.div<{ $visible: boolean }>`
 interface CoinProps {
     symbol: Network['symbol'];
     name: Network['name'];
-    label?: ExtendedMessageDescriptor['id'];
+    label?: TranslationKey;
     toggled: boolean;
     disabled?: boolean;
     forceHover?: boolean;

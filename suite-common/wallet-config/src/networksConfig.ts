@@ -81,7 +81,6 @@ export const networks = {
             'nft-definitions',
             'staking',
         ],
-        label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'ethereum',
@@ -101,7 +100,6 @@ export const networks = {
             queryString: '',
         },
         features: ['sign-verify', 'tokens', 'coin-definitions'],
-        label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'ethereum-classic',
@@ -295,7 +293,6 @@ export const networks = {
             [DeviceModelInternal.T2B1]: '2.6.1',
             [DeviceModelInternal.T3T1]: '2.7.1',
         },
-        label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockfrost'],
         accountTypes: {
             legacy: {
@@ -327,7 +324,6 @@ export const networks = {
             [DeviceModelInternal.T2B1]: '2.6.4',
             [DeviceModelInternal.T3T1]: '2.7.1',
         },
-        label: 'TR_INCLUDING_TOKENS',
         customBackends: ['solana'],
         accountTypes: {},
         coingeckoId: 'solana',
@@ -339,7 +335,6 @@ export const networks = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        label: 'TR_INCLUDING_TOKENS',
         explorer: {
             tx: 'https://matic2.trezor.io/tx/',
             account: 'https://matic2.trezor.io/address/',
@@ -367,7 +362,6 @@ export const networks = {
             queryString: '',
         },
         features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
-        label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'binance-smart-chain',
@@ -380,7 +374,6 @@ export const networks = {
         bip43Path: "m/84'/1'/i'",
         decimals: 8,
         testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
         explorer: {
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
@@ -414,7 +407,6 @@ export const networks = {
         bip43Path: "m/84'/1'/i'",
         decimals: 8,
         testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
         explorer: {
             tx: 'http://localhost:19121/tx/',
             account: 'http://localhost:19121/xpub/',
@@ -450,7 +442,6 @@ export const networks = {
         chainId: 11155111,
         decimals: 18,
         testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
         explorer: {
             tx: 'https://sepolia1.trezor.io/tx/',
             account: 'https://sepolia1.trezor.io/address/',
@@ -470,7 +461,6 @@ export const networks = {
         chainId: 17000,
         decimals: 18,
         testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
         explorer: {
             tx: 'https://holesky1.trezor.io/tx/',
             account: 'https://holesky1.trezor.io/address/',
@@ -489,7 +479,6 @@ export const networks = {
         bip43Path: "m/44'/144'/i'/0/0",
         decimals: 6,
         testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
         explorer: {
             tx: 'https://test.bithomp.com/explorer/',
             account: 'https://test.bithomp.com/explorer/',
@@ -506,7 +495,6 @@ export const networks = {
         name: 'Cardano Testnet',
         networkType: 'cardano',
         bip43Path: "m/1852'/1815'/i'",
-        label: 'TR_TESTNET_COINS_LABEL',
         decimals: 6,
         testnet: true,
         features: ['tokens', 'staking'],
@@ -539,7 +527,6 @@ export const networks = {
         name: 'Solana Devnet',
         networkType: 'solana',
         bip43Path: "m/44'/501'/i'/0'",
-        label: 'TR_TESTNET_COINS_LABEL',
         decimals: 9,
         testnet: true,
         features: ['tokens' /* , 'staking' */],
@@ -594,7 +581,6 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     isHidden?: boolean;
     chainId?: number;
     features?: NetworkFeature[];
-    label?: string[]; // Originally ExtendedMessageDescriptor['id'] but inferred type exceeds the maximum length for serialization
     support?: {
         [key in DeviceModelInternal]: string;
     };

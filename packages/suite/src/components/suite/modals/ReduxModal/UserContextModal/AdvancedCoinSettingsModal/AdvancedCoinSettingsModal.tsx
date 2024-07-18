@@ -4,7 +4,8 @@ import { Modal, Translation } from 'src/components/suite';
 import { NETWORKS } from 'src/config/wallet';
 import { NetworkSymbol } from 'src/types/wallet';
 import { CustomBackends } from './CustomBackends/CustomBackends';
-import { TranslationKey } from '@suite-common/intl-types';
+import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
+import { useSelector } from 'src/hooks/suite';
 
 const Section = styled.div`
     display: flex;
@@ -38,11 +39,16 @@ interface AdvancedCoinSettingsModalProps {
 }
 
 export const AdvancedCoinSettingsModal = ({ coin, onCancel }: AdvancedCoinSettingsModalProps) => {
+    const blockchain = useSelector(state => state.wallet.blockchain);
     const network = NETWORKS.find(network => network.symbol === coin);
 
     if (!network) {
         return null;
     }
+
+    const { symbol, name, features, testnet: isTestnet } = network;
+    const hasCustomBackend = !!blockchain[symbol].backends.selected;
+    const label = getCoinLabel(features, isTestnet, hasCustomBackend);
 
     return (
         <Modal
@@ -50,14 +56,14 @@ export const AdvancedCoinSettingsModal = ({ coin, onCancel }: AdvancedCoinSettin
             onCancel={onCancel}
             heading={
                 <Heading>
-                    <CoinLogo symbol={network.symbol} />
+                    <CoinLogo symbol={symbol} />
 
                     <Header>
-                        <span>{network.name}</span>
+                        <span>{name}</span>
 
-                        {network.label && (
+                        {label && (
                             <Subheader>
-                                <Translation id={network.label as TranslationKey} />
+                                <Translation id={label} />
                             </Subheader>
                         )}
                     </Header>
