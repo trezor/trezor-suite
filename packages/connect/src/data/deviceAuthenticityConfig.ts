@@ -40,6 +40,9 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             '040e656b714a6d5dd579dbb15948335fbe2d4acbbf2943209cf4dcd662fc0fec577c746fad12a0c5b0eae0c1de2f723c9ac3fa3bdfda93f8f6fd167a14c1805fbe',
             '040c87f12d2006b44e9b86f66eb9d51edb18bc3c1884ea678b41a2e0b908ba882b648a1ffd70e31436a30aeab7fe569b6dbbb4d042973d7d06a6ee764f92a72843',
             '044130f0531edb1db0d399206ed4359d9070f4e8ba38193098ddb3d2af00924847d843ee0961346af65647ae81949cc144b0f32c54be2e3a86effa98dd86ebadd0',
+            '046d3161213d66b5464ff6546d48f87a807849da6d58f3e58fbc4b21db89cd837955c37afae9a719a8f0899893398188d986b14971c390bc0a69bee8dfabdaa9ad',
+            '043e0d5b87f4db112911e1e83f3e5907c310caab70b5bc05980226ee20900d6c87c7b2d0004bf5bfe7af3a161174fe8b762bbc71886c7af1c4ad89166a8221b465',
+            '0435817aec4f46df42a3d3cbbe5def767c7eeee56be38b0e0977aa62c225fedd08b99c9496fb9cccbed3507044b4dd4db8191faa750f217cad9a581224106c2be7',
         ],
         debug: {
             rootPubKeys: [
@@ -69,6 +72,20 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             caPubKeys: [
                 '04829e8965018feb542e9236c9b2ce08f864a55ed9183d0259564f0e05345b04676a0bef36c59d21d3c24868b5601f0b1193a6bfcf6d814e1cfb79c2256a05e953',
             ],
+        },
+    },
+    T3B1: {
+        rootPubKeys: [
+            '045b5c3fdd01f3602092834209b86df0ca86a9faf25cac35c73bf6237d66eb21eafcec3706f1ccd5eb4cc7f2fa1751213eccb1c78389afba89a5788ff31ee46a5d',
+        ],
+        caPubKeys: [
+            '04860857f8ceb107cf03cc6ef56523b5e440e2ed51933cc49ac8a498063f06ab891bdafd0a1655aa287b9ded8a898d9532ec9d6550db3bb524e7af3e474b013d87',
+            '047962b89421e26daa51e0c368d6bbd7d49dcf972b0a6f148c115aedbba533e1574740dfa51c11992c276872ac2f11b3e0f54499c3347e83410142818ac4579b8e',
+            '04bc9f1e23ceed59b3e7b6b760a41f1f37ccc252adb1186e4035ec3f46266656400c7cd4c7153c9dec581b655c9ba1f74878c84128e60a66eed46e251e2eaf065f',
+        ],
+        debug: {
+            rootPubKeys: [],
+            caPubKeys: [],
         },
     },
 };
