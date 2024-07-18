@@ -6,3 +6,4 @@ export * from './resolveStaticPath';
 export * from './comparison';
 export * from './txsPerPage';
 export * from './stake';
+export * from './parseFirmwareChangelog';

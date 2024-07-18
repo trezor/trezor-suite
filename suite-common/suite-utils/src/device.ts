@@ -1,9 +1,4 @@
-import {
-    Device,
-    UnavailableCapability,
-    FirmwareRelease,
-    DeviceModelInternal,
-} from '@trezor/connect';
+import { Device, UnavailableCapability, DeviceModelInternal } from '@trezor/connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-common/suite-types';
 import * as URLS from '@trezor/urls';
 
@@ -423,23 +418,3 @@ export const getSortedDevicesWithoutInstances = (
 
             return 0;
         });
-
-export const parseFirmwareChangelog = (release?: FirmwareRelease) => {
-    if (!release?.changelog?.length || !release) {
-        return null;
-    }
-
-    // Default changelog format is a long string where individual changes are separated by "*" symbol.
-    const changelog = release.changelog
-        .trim()
-        .split('*')
-        .map(l => l.trim())
-        .filter(l => l.length);
-
-    return {
-        url: release.url,
-        notes: release.notes,
-        changelog,
-        versionString: release.version.join('.'),
-    };
-};

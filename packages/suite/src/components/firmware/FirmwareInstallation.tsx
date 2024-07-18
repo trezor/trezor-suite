@@ -39,7 +39,7 @@ export const FirmwareInstallation = ({
     onPromptClose,
     onSuccess,
 }: FirmwareInstallationProps) => {
-    const { status, isWebUSB, showReconnectPrompt, uiEvent } = useFirmware();
+    const { status, isWebUSB, showReconnectPrompt, uiEvent, targetType } = useFirmware();
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const getInnerActionComponent = () => {
@@ -84,7 +84,7 @@ export const FirmwareInstallation = ({
                 nested={!!standaloneFwUpdate}
                 disableConfirmWrapper={!!standaloneFwUpdate}
             >
-                <FirmwareOffer customFirmware={customFirmware} />
+                <FirmwareOffer customFirmware={customFirmware} targetFirmwareType={targetType} />
                 <FirmwareProgressBar />
             </OnboardingStepBox>
         </>
