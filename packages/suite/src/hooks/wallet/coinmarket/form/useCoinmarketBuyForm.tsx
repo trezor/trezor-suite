@@ -5,7 +5,6 @@ import type { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 import { isChanged } from '@suite-common/suite-utils';
 import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
-import { saveCachedAccountInfo, saveQuoteRequest } from 'src/actions/wallet/coinmarketBuyActions';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import invityAPI from 'src/services/suite/invityAPI';
@@ -74,6 +73,8 @@ const useCoinmarketBuyForm = ({
         submitRequestForm,
         goto,
         savePaymentMethods,
+        saveQuoteRequest,
+        saveCachedAccountInfo,
     } = useActions({
         saveTrade: coinmarketBuyActions.saveTrade,
         saveQuotes: coinmarketBuyActions.saveQuotes,
@@ -85,6 +86,8 @@ const useCoinmarketBuyForm = ({
         verifyAddress: coinmarketBuyActions.verifyAddress,
         goto: routerActions.goto,
         savePaymentMethods: coinmarketInfoActions.savePaymentMethods,
+        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
+        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
     });
     const { navigateToBuyForm, navigateToBuyOffers } = useCoinmarketNavigation(account);
 
@@ -178,15 +181,21 @@ const useCoinmarketBuyForm = ({
     );
 
     const getQuoteRequestData = useCallback((): BuyTradeQuoteRequest => {
-        const { fiatInput, cryptoInput, currencySelect, cryptoSelect, countrySelect, wantCrypto } =
-            methods.getValues();
+        const {
+            fiatInput,
+            cryptoInput,
+            currencySelect,
+            cryptoSelect,
+            countrySelect,
+            amountInCrypto,
+        } = methods.getValues();
         const cryptoStringAmount =
             cryptoInput && shouldSendInSats
                 ? formatAmount(cryptoInput, network.decimals)
                 : cryptoInput;
 
         const request = {
-            wantCrypto,
+            wantCrypto: amountInCrypto,
             fiatCurrency: currencySelect
                 ? currencySelect?.value.toUpperCase()
                 : quotesRequest?.fiatCurrency ?? '',
@@ -258,6 +267,7 @@ const useCoinmarketBuyForm = ({
             getPaymentMethods,
             dispatch,
             saveQuotes,
+            saveQuoteRequest,
             savePaymentMethods,
             setValue,
         ],
@@ -343,17 +353,17 @@ const useCoinmarketBuyForm = ({
         setCallInProgress(false);
     };
 
-    const toggleWantCrypto = () => {
-        const { wantCrypto } = getValues();
+    const toggleAmountInCrypto = () => {
+        const { amountInCrypto } = getValues();
         const bestScoredQuote = quotesByPaymentMethod?.[0];
 
-        if (!wantCrypto) {
+        if (!amountInCrypto) {
             setValue('cryptoInput', bestScoredQuote?.receiveStringAmount ?? '');
         } else {
             setValue('fiatInput', bestScoredQuote?.fiatStringAmount ?? '');
         }
 
-        setValue('wantCrypto', !wantCrypto);
+        setValue('amountInCrypto', !amountInCrypto);
         setIsSubmittingHelper(true); // remove delay of sending request
     };
 
@@ -481,7 +491,7 @@ const useCoinmarketBuyForm = ({
                 isFormInvalid,
                 isLoadingOrInvalid,
 
-                toggleWantCrypto,
+                toggleAmountInCrypto,
             },
         },
         ...methods,
@@ -496,7 +506,6 @@ const useCoinmarketBuyForm = ({
         network,
         cryptoInputValue: values.cryptoInput,
         formState,
-        isDraft,
         device,
         callInProgress,
         addressVerified,

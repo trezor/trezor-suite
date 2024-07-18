@@ -14,13 +14,13 @@ export const getCryptoQuoteAmountProps = (
     if (!quoteInput) return null;
 
     if (isCoinmarketBuyOffers(context)) {
-        const wantCrypto = context.quotesRequest?.wantCrypto;
+        const amountInCrypto = context.quotesRequest?.wantCrypto;
         const quote = quoteInput as BuyTrade;
 
         if (!quote || !context.quotesRequest) return null;
 
         return {
-            wantCrypto,
+            amountInCrypto,
             sendAmount: quote?.fiatStringAmount ?? '',
             sendCurrency: quote?.fiatCurrency,
             receiveAmount: quote?.receiveStringAmount ?? '',
@@ -35,7 +35,7 @@ export const getCryptoQuoteAmountProps = (
         if (!quote || !context.quotesRequest) return null;
 
         return {
-            wantCrypto: amountInCrypto,
+            amountInCrypto,
             sendAmount: quote?.fiatStringAmount ?? '',
             sendCurrency: quote?.fiatCurrency,
             receiveAmount: quote?.cryptoStringAmount ?? '',
@@ -46,7 +46,7 @@ export const getCryptoQuoteAmountProps = (
     const quote = quoteInput as ExchangeTrade;
 
     return {
-        wantCrypto: false,
+        amountInCrypto: false,
         sendAmount: quote?.sendStringAmount ?? '',
         sendCurrency: quote?.send,
         receiveAmount: quote?.receiveStringAmount ?? '',

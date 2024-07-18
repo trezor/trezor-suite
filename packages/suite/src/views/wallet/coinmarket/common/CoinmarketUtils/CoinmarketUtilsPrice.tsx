@@ -31,7 +31,7 @@ const PriceValue = styled.div`
 `;
 
 const CoinmarketUtilsPrice = ({
-    wantCrypto,
+    amountInCrypto,
     sendAmount,
     sendCurrency,
     receiveAmount,
@@ -41,12 +41,14 @@ const CoinmarketUtilsPrice = ({
         <PriceWrap>
             <PriceTitle>
                 <Translation
-                    id={wantCrypto ? 'TR_COINMARKET_YOU_WILL_PAY' : 'TR_COINMARKET_YOU_WILL_GET'}
+                    id={
+                        amountInCrypto ? 'TR_COINMARKET_YOU_WILL_PAY' : 'TR_COINMARKET_YOU_WILL_GET'
+                    }
                 />
             </PriceTitle>
             <PriceValueWrap>
                 <PriceValue>
-                    {wantCrypto ? (
+                    {amountInCrypto ? (
                         <CoinmarketFiatAmount amount={sendAmount} currency={sendCurrency} />
                     ) : (
                         <>

@@ -4,18 +4,18 @@ import { CoinmarketTextButton } from 'src/views/wallet/coinmarket';
 interface CoinmarketFormSwitcherCryptoFiatProps {
     symbol: string;
     isDisabled: boolean;
-    toggleWantCrypto: () => void;
+    toggleAmountInCrypto: () => void;
 }
 
 const CoinmarketFormSwitcherCryptoFiat = ({
     symbol,
     isDisabled,
-    toggleWantCrypto,
+    toggleAmountInCrypto,
 }: CoinmarketFormSwitcherCryptoFiatProps) => (
     <CoinmarketTextButton
         size="small"
         onClick={() => {
-            toggleWantCrypto();
+            toggleAmountInCrypto();
         }}
         type="button"
         isDisabled={isDisabled}

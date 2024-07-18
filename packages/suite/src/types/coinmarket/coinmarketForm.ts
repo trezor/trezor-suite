@@ -22,7 +22,7 @@ export interface CoinmarketBuyFormProps {
     cryptoSelect: CoinmarketCryptoListProps;
     countrySelect: Option;
     paymentMethod?: CoinmarketPaymentMethodListProps;
-    wantCrypto: boolean;
+    amountInCrypto: boolean;
 }
 
 export type CoinmarketBuyFormDefaultValuesProps = {

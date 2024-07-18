@@ -17,11 +17,11 @@ const CoinmarketFormInputFiatCrypto = ({
     const account = useSelector(state => state.wallet.selectedAccount.account);
     const {
         form: {
-            state: { isFormLoading, toggleWantCrypto },
+            state: { isFormLoading, toggleAmountInCrypto },
         },
         getValues,
     } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
-    const { wantCrypto } = getValues();
+    const { amountInCrypto } = getValues();
 
     if (!account) return null;
 
@@ -29,20 +29,20 @@ const CoinmarketFormInputFiatCrypto = ({
         <CoinmarketFormInput className={className}>
             {showLabel ? (
                 <CoinmarketFormInputLabel
-                    label={wantCrypto ? 'TR_COINMARKET_YOU_GET' : 'TR_COINMARKET_YOU_PAY'}
+                    label={amountInCrypto ? 'TR_COINMARKET_YOU_GET' : 'TR_COINMARKET_YOU_PAY'}
                 >
                     <CoinmarketFormSwitcherCryptoFiat
                         symbol={
-                            !wantCrypto
+                            !amountInCrypto
                                 ? cryptoToCoinSymbol(getValues().cryptoSelect.value)
                                 : translationString('TR_COINMARKET_FIAT')
                         }
                         isDisabled={isFormLoading}
-                        toggleWantCrypto={toggleWantCrypto}
+                        toggleAmountInCrypto={toggleAmountInCrypto}
                     />
                 </CoinmarketFormInputLabel>
             ) : null}
-            {wantCrypto ? <CoinmarketFormInputCrypto /> : <CoinmarketFormInputFiat />}
+            {amountInCrypto ? <CoinmarketFormInputCrypto /> : <CoinmarketFormInputFiat />}
         </CoinmarketFormInput>
     );
 };
