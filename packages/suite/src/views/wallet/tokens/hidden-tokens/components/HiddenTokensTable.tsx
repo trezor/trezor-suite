@@ -93,6 +93,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                         account={account}
                         hideRates
                         tokenStatusType={TokenManagementAction.SHOW}
+                        isUnverifiedTable
                         tokens={filteredTokens.unverified}
                         network={network}
                         searchQuery={searchQuery}

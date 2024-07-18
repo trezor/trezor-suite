@@ -2454,6 +2454,14 @@ export default defineMessages({
         defaultMessage: 'Copy',
         id: 'TR_COPY_TO_CLIPBOARD',
     },
+    TR_UNHIDE_TOKEN_TITLE: {
+        defaultMessage: 'Unhide this token?',
+        id: 'TR_UNHIDE_TOKEN_TITLE',
+    },
+    TR_UNHIDE_TOKEN_TEXT: {
+        defaultMessage: 'This token appears to be suspicious and may be a scam.',
+        id: 'TR_UNHIDE_TOKEN_TEXT',
+    },
     TR_NOT_YOUR_RECEIVE_ADDRRESS: {
         defaultMessage: "This isn't your receive address.",
         id: 'TR_NOT_YOUR_RECEIVE_ADDRRESS',
