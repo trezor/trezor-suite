@@ -187,5 +187,9 @@ export type UserContextPayload =
           address: string;
       }
     | {
+          type: 'unhide-token';
+          address: string;
+      }
+    | {
           type: 'passphrase-mismatch-warning';
       };

@@ -39,6 +39,7 @@ import {
     UnstakeModal,
     ClaimModal,
     CopyAddressModal,
+    UnhideTokenModal,
 } from 'src/components/suite/modals';
 import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -228,6 +229,8 @@ export const UserContextModal = ({
                     addressType={payload.addressType}
                 />
             );
+        case 'unhide-token':
+            return <UnhideTokenModal onCancel={onCancel} address={payload.address} />;
         case 'passphrase-mismatch-warning':
             return <PassphraseMismatchModal onCancel={onCancel} />;
         default:

@@ -140,6 +140,7 @@ interface TokenListProps {
     tokenStatusType: TokenManagementAction;
     hideRates?: boolean;
     searchQuery?: string;
+    isUnverifiedTable?: boolean;
 }
 
 export const TokenList = ({
@@ -149,6 +150,7 @@ export const TokenList = ({
     tokenStatusType,
     hideRates,
     searchQuery,
+    isUnverifiedTable,
 }: TokenListProps) => {
     const dispatch = useDispatch();
     const { isMobileLayout } = useLayoutSize();
@@ -289,23 +291,14 @@ export const TokenList = ({
                                                             : true,
                                                 },
                                                 {
-                                                    label: (
-                                                        <Translation
-                                                            id={
-                                                                tokenStatusType ===
-                                                                TokenManagementAction.SHOW
-                                                                    ? 'TR_UNHIDE_TOKEN'
-                                                                    : 'TR_HIDE_TOKEN'
-                                                            }
-                                                        />
-                                                    ),
+                                                    label: <Translation id="TR_UNHIDE_TOKEN" />,
                                                     icon: 'EYE_CLOSED',
                                                     onClick: () =>
                                                         dispatch(
                                                             tokenDefinitionsActions.setTokenStatus({
                                                                 networkSymbol: network.symbol,
                                                                 contractAddress: token.contract,
-                                                                status: tokenStatusType,
+                                                                status: TokenManagementAction.HIDE,
                                                                 type: DefinitionType.COIN,
                                                             }),
                                                         ),
@@ -401,14 +394,21 @@ export const TokenList = ({
                                     <Button
                                         icon="EYE_SLASH"
                                         onClick={() =>
-                                            dispatch(
-                                                tokenDefinitionsActions.setTokenStatus({
-                                                    networkSymbol: network.symbol,
-                                                    contractAddress: token.contract,
-                                                    status: TokenManagementAction.SHOW,
-                                                    type: DefinitionType.COIN,
-                                                }),
-                                            )
+                                            isUnverifiedTable
+                                                ? dispatch(
+                                                      openModal({
+                                                          type: 'unhide-token',
+                                                          address: token.contract,
+                                                      }),
+                                                  )
+                                                : dispatch(
+                                                      tokenDefinitionsActions.setTokenStatus({
+                                                          networkSymbol: network.symbol,
+                                                          contractAddress: token.contract,
+                                                          status: TokenManagementAction.SHOW,
+                                                          type: DefinitionType.COIN,
+                                                      }),
+                                                  )
                                         }
                                         variant="tertiary"
                                         size="small"
