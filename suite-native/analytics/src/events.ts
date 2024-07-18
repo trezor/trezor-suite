@@ -184,6 +184,7 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               discoveryId: string; // Used for grouping multiple events of a single discovery run together.
               loadDuration: number;
+              networkSymbols: NetworkSymbol[];
           };
       }
     | {

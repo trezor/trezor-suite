@@ -13,20 +13,32 @@ import {
     sortNetworks,
 } from '@suite-native/config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    FeatureFlag,
+    FeatureFlagsRootState,
+    selectIsFeatureFlagEnabled,
+} from '@suite-native/feature-flags';
+
+import { getNetworkSymbols } from './utils';
+
+type DiscoveryInfo = {
+    startTimestamp: number;
+    networkSymbols: NetworkSymbol[];
+};
 
 type DiscoveryConfigState = {
     areTestnetsEnabled: boolean;
-    discoveryStartTimeStamp: number | null;
+    discoveryInfo: DiscoveryInfo | null;
     enabledDiscoveryNetworkSymbols: NetworkSymbol[];
 };
 
-type DiscoveryConfigSliceRootState = {
+export type DiscoveryConfigSliceRootState = {
     discoveryConfig: DiscoveryConfigState;
 };
 
 const discoveryConfigInitialState: DiscoveryConfigState = {
     areTestnetsEnabled: false,
-    discoveryStartTimeStamp: null,
+    discoveryInfo: null,
     enabledDiscoveryNetworkSymbols: [],
 };
 
@@ -42,8 +54,8 @@ export const discoveryConfigSlice = createSlice({
         toggleAreTestnetsEnabled: state => {
             state.areTestnetsEnabled = !state.areTestnetsEnabled;
         },
-        setDiscoveryStartTimestamp: (state, { payload }: PayloadAction<number | null>) => {
-            state.discoveryStartTimeStamp = payload;
+        setDiscoveryInfo: (state, { payload }: PayloadAction<DiscoveryInfo | null>) => {
+            state.discoveryInfo = payload;
         },
         toggleEnabledDiscoveryNetworkSymbols: (
             state,
@@ -63,13 +75,6 @@ export const discoveryConfigSlice = createSlice({
     },
 });
 
-export const selectAreTestnetsEnabled = (state: DiscoveryConfigSliceRootState) =>
-    state.discoveryConfig.areTestnetsEnabled;
-export const selectDiscoveryStartTimeStamp = (state: DiscoveryConfigSliceRootState) =>
-    state.discoveryConfig.discoveryStartTimeStamp;
-export const selectEnabledDiscoveryNetworkSymbols = (state: DiscoveryConfigSliceRootState) =>
-    state.discoveryConfig.enabledDiscoveryNetworkSymbols;
-
 export const selectDiscoverySupportedNetworks = memoizeWithArgs(
     (state: DeviceRootState, areTestnetsEnabled: boolean) =>
         pipe(
@@ -83,9 +88,33 @@ export const selectDiscoverySupportedNetworks = memoizeWithArgs(
     { size: 2 },
 );
 
-export const {
-    toggleAreTestnetsEnabled,
-    setDiscoveryStartTimestamp,
-    toggleEnabledDiscoveryNetworkSymbols,
-} = discoveryConfigSlice.actions;
+export const selectAreTestnetsEnabled = (state: DiscoveryConfigSliceRootState) =>
+    state.discoveryConfig.areTestnetsEnabled;
+
+export const selectDiscoveryInfo = (state: DiscoveryConfigSliceRootState) =>
+    state.discoveryConfig.discoveryInfo;
+
+export const selectEnabledDiscoveryNetworkSymbols = memoizeWithArgs(
+    (
+        state: DiscoveryConfigSliceRootState & DeviceRootState & FeatureFlagsRootState,
+        areTestnetsEnabled: boolean,
+    ) => {
+        const supportedNetworks = selectDiscoverySupportedNetworks(state, areTestnetsEnabled);
+        const isCoinEnablingActive = selectIsFeatureFlagEnabled(
+            state,
+            FeatureFlag.IsCoinEnablingActive,
+        );
+
+        return getNetworkSymbols(
+            supportedNetworks.filter(n =>
+                isCoinEnablingActive
+                    ? state.discoveryConfig.enabledDiscoveryNetworkSymbols.includes(n.symbol)
+                    : true,
+            ),
+        );
+    },
+);
+
+export const { toggleAreTestnetsEnabled, setDiscoveryInfo, toggleEnabledDiscoveryNetworkSymbols } =
+    discoveryConfigSlice.actions;
 export const discoveryConfigReducer = discoveryConfigSlice.reducer;

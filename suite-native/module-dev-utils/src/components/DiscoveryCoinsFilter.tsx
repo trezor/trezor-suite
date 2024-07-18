@@ -6,16 +6,21 @@ import {
     selectEnabledDiscoveryNetworkSymbols,
     selectDiscoverySupportedNetworks,
     toggleEnabledDiscoveryNetworkSymbols,
+    DiscoveryConfigSliceRootState,
 } from '@suite-native/discovery';
 import { DeviceRootState } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 
 export const DiscoveryCoinsFilter = () => {
     const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
     const networks = useSelector((state: DeviceRootState) =>
         selectDiscoverySupportedNetworks(state, areTestnetsEnabled),
     );
-    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
+    const enabledNetworkSymbols = useSelector(
+        (state: DiscoveryConfigSliceRootState & DeviceRootState & FeatureFlagsRootState) =>
+            selectEnabledDiscoveryNetworkSymbols(state, areTestnetsEnabled),
+    );
 
     const dispatch = useDispatch();
 

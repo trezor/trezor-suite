@@ -1,15 +1,15 @@
 import {
     deviceActions,
-    selectDevice,
     discoveryActions,
     selectDeviceModel,
     selectDeviceFirmwareVersion,
     authorizeDeviceThunk,
+    accountsActions,
 } from '@suite-common/wallet-core';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isFirmwareVersionSupported } from '@suite-native/device';
 
-import { startDescriptorPreloadedDiscoveryThunk } from './discoveryThunks';
+import { startDescriptorPreloadedDiscoveryThunk, discoveryCheckThunk } from './discoveryThunks';
 import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from './discoveryConfigSlice';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
@@ -18,10 +18,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             dispatch(discoveryActions.removeDiscovery(action.payload.device.state));
         }
 
-        const device = selectDevice(getState());
         const deviceModel = selectDeviceModel(getState());
         const deviceFwVersion = selectDeviceFirmwareVersion(getState());
-
         const areTestnetsEnabled = selectAreTestnetsEnabled(getState());
 
         const isDeviceFirmwareVersionSupported = isFirmwareVersionSupported(
@@ -29,30 +27,40 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             deviceModel,
         );
 
-        // If user enables testnets discovery, run it.
-        if (toggleAreTestnetsEnabled.match(action) && !areTestnetsEnabled && device?.state) {
-            if (isDeviceFirmwareVersionSupported) {
-                dispatch(
-                    startDescriptorPreloadedDiscoveryThunk({
-                        deviceState: device.state,
-                        areTestnetsEnabled: true,
-                    }),
-                );
-            }
+        // If user enables testnets discovery, run discovery with testnets enabled.
+        if (
+            toggleAreTestnetsEnabled.match(action) &&
+            !areTestnetsEnabled &&
+            isDeviceFirmwareVersionSupported
+        ) {
+            dispatch(
+                startDescriptorPreloadedDiscoveryThunk({
+                    areTestnetsEnabled: true,
+                }),
+            );
         }
 
         // We need to wait until `authorizeDeviceThunk` action is fulfilled, because we need
         // to know the device state when starting discovery of newly authorized device.
         next(action);
 
-        // On successful authorization, create discovery instance and run it.
+        // On successful authorization, create discovery instance and run it with received device state.
         if (authorizeDeviceThunk.fulfilled.match(action) && isDeviceFirmwareVersionSupported) {
             dispatch(
                 startDescriptorPreloadedDiscoveryThunk({
-                    deviceState: action.payload.state,
                     areTestnetsEnabled,
+                    forcedDeviceState: action.payload.state,
                 }),
             );
+        }
+
+        // for further continual discovery check for various other reasons
+        if (
+            deviceActions.selectDevice.match(action) || // user switched device
+            deviceActions.receiveAuthConfirm.match(action) || // user confirmed device auth
+            accountsActions.changeAccountVisibility.match(action) // account visibility changed - e.g. when incoming txn to hidden account
+        ) {
+            dispatch(discoveryCheckThunk());
         }
 
         return action;
