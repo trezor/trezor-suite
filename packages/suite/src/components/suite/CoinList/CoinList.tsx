@@ -10,7 +10,7 @@ import { useDevice, useDiscovery, useSelector } from 'src/hooks/suite';
 import type { Network } from 'src/types/wallet';
 
 import { Coin } from './Coin';
-import { TranslationKey } from '@suite-common/intl-types';
+import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -50,7 +50,8 @@ export const CoinList = ({
     return (
         <Wrapper>
             {networks.map(network => {
-                const { symbol, label, name, support } = network;
+                const { symbol, name, support, features, testnet: isTestnet } = network;
+                const hasCustomBackend = !!blockchain[symbol].backends.selected;
 
                 const firmwareSupportRestriction =
                     deviceModelInternal && support?.[deviceModelInternal];
@@ -75,9 +76,7 @@ export const CoinList = ({
                     getCoinUnavailabilityMessage(unavailableReason);
                 const tooltipString = discoveryTooltip || lockedTooltip || unavailabilityTooltip;
 
-                const coinLabel = blockchain[symbol].backends.selected
-                    ? 'TR_CUSTOM_BACKEND'
-                    : (label as TranslationKey);
+                const label = getCoinLabel(features, isTestnet, hasCustomBackend);
 
                 return (
                     <Tooltip
@@ -97,7 +96,7 @@ export const CoinList = ({
                         <Coin
                             symbol={symbol}
                             name={name}
-                            label={coinLabel}
+                            label={label}
                             toggled={isEnabled}
                             disabled={disabled || (settingsMode && !isEnabled)}
                             forceHover={settingsMode}
