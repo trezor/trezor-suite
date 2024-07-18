@@ -29,14 +29,14 @@ type AccountBannersProps = {
 };
 
 export const AccountBanners = ({ account }: AccountBannersProps) => {
-    const { pathname } = useSelector(state => state.router);
+    const { route } = useSelector(state => state.router);
 
     return (
         <BannersWrapper>
             {account?.accountType === 'coinjoin' && <ContextMessage context={Context.coinjoin} />}
             {account?.symbol &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&
-                pathname === '/accounts/staking' && <ContextMessage context={Context.ethStaking} />}
+                route?.name === 'wallet-staking' && <ContextMessage context={Context.ethStaking} />}
             <AuthConfirmFailed />
             <BackendDisconnected />
             <DeviceUnavailable />

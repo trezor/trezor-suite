@@ -56,7 +56,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const { stakeEthBannerClosed } = useSelector(selectSuiteFlags);
-    const { pathname } = useSelector(state => state.router);
+    const { route } = useSelector(state => state.router);
     const ethApy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
 
     const closeBanner = () => {
@@ -68,7 +68,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
     };
 
     if (
-        pathname !== '/accounts' ||
+        route?.name !== 'wallet-index' ||
         stakeEthBannerClosed ||
         !account ||
         !isSupportedEthStakingNetworkSymbol(account.symbol)
