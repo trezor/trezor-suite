@@ -4,7 +4,7 @@ import { Recovery } from 'src/views/recovery';
 import { Backup } from 'src/views/backup';
 import { useDispatch } from 'src/hooks/suite';
 import { closeModalApp } from 'src/actions/suite/routerActions';
-import { InstallBridge } from 'src/views/suite/bridge';
+import { BridgeUnavailable } from 'src/views/suite/bridge';
 import { UdevRules } from 'src/views/suite/udev';
 import { Version } from 'src/views/suite/version';
 import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
@@ -22,7 +22,7 @@ const getForegroundApp = (app: ForegroundAppRoute['app']) => {
         'firmware-type': FirmwareType,
         'firmware-custom': FirmwareCustom,
         version: Version,
-        bridge: InstallBridge,
+        bridge: BridgeUnavailable,
         'bridge-requested': BridgeRequested,
         udev: UdevRules,
         'switch-device': SwitchDevice,
