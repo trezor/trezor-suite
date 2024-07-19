@@ -8,12 +8,20 @@ const CertPubKeys = Type.Object({
 });
 
 type ModelPubKeys = Static<typeof ModelPubKeys>;
+
+const ModelsWithKeys = Type.Exclude(
+    Type.KeyOfEnum(PROTO.DeviceModelInternal),
+    Type.Union([Type.Literal('T1B1'), Type.Literal('T2T1')]),
+);
+
+const ModelsWithoutKeys = Type.Extract(
+    Type.KeyOfEnum(PROTO.DeviceModelInternal),
+    Type.Union([Type.Literal('T1B1'), Type.Literal('T2T1')]),
+);
+
 const ModelPubKeys = Type.Intersect([
     Type.Record(
-        Type.Exclude(
-            Type.KeyOfEnum(PROTO.DeviceModelInternal),
-            Type.Union([Type.Literal('T1B1'), Type.Literal('T2T1')]),
-        ),
+        ModelsWithKeys,
         Type.Intersect([
             CertPubKeys,
             Type.Object({
@@ -21,15 +29,7 @@ const ModelPubKeys = Type.Intersect([
             }),
         ]),
     ),
-    Type.Partial(
-        Type.Record(
-            Type.Exclude(
-                Type.KeyOfEnum(PROTO.DeviceModelInternal),
-                Type.Union([Type.Literal('T2B1'), Type.Literal('T3T1')]),
-            ),
-            Type.Undefined(),
-        ),
-    ),
+    Type.Partial(Type.Record(ModelsWithoutKeys, Type.Undefined())),
 ]);
 
 export type DeviceAuthenticityConfig = Static<typeof DeviceAuthenticityConfig>;
