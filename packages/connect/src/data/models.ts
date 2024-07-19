@@ -26,4 +26,10 @@ export const models = {
             '4': 'Bitcoin Orange',
         },
     },
+    T3B1: {
+        name: 'Trezor NFT only',
+        colors: {
+            '1': 'Retarded pink',
+        },
+    },
 };
