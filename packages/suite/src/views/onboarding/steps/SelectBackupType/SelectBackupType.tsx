@@ -41,6 +41,7 @@ export const defaultBackupTypeMap: Record<DeviceModelInternal, BackupType> = {
     [DeviceModelInternal.T1B1]: '24-words',
     [DeviceModelInternal.T2T1]: '12-words',
     [DeviceModelInternal.T2B1]: 'shamir-single',
+    [DeviceModelInternal.T3B1]: 'shamir-single',
     [DeviceModelInternal.T3T1]: 'shamir-single',
 };
 

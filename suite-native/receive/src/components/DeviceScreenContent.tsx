@@ -33,6 +33,14 @@ type DeviceModelLayoutProps = {
     pagerOffset: number;
 };
 
+const t2b1 = {
+    fontSource: require('../../../../packages/theme/fonts/PixelOperatorMono8-Regular.ttf'),
+    fontSize: 14,
+    lineWidth: 265,
+    lineHeight: 25,
+    pagerOffset: 40,
+};
+
 const deviceToContentStyles: Record<DeviceModelInternal, DeviceModelLayoutProps> = {
     [DeviceModelInternal.T1B1]: {
         fontSource: require('../../../../packages/theme/fonts/PixelOperatorMono8-Regular.ttf'),
@@ -55,13 +63,8 @@ const deviceToContentStyles: Record<DeviceModelInternal, DeviceModelLayoutProps>
         lineHeight: 25,
         pagerOffset: 60,
     },
-    [DeviceModelInternal.T2B1]: {
-        fontSource: require('../../../../packages/theme/fonts/PixelOperatorMono8-Regular.ttf'),
-        fontSize: 14,
-        lineWidth: 265,
-        lineHeight: 25,
-        pagerOffset: 40,
-    },
+    [DeviceModelInternal.T2B1]: t2b1,
+    [DeviceModelInternal.T3B1]: t2b1,
 };
 
 type ContentCanvasStyleProps = {
