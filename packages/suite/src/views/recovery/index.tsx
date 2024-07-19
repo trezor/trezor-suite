@@ -155,7 +155,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                 number="1"
                                 title={
                                     <Translation
-                                        id={`TR_CHECK_RECOVERY_SEED_DESC_${deviceModelInternal}`}
+                                        id={`TR_CHECK_RECOVERY_SEED_DESC_${deviceModelInternal === DeviceModelInternal.T2B1 || deviceModelInternal === DeviceModelInternal.T3B1 ? 'T2B1' : deviceModelInternal}`}
                                     />
                                 }
                             >

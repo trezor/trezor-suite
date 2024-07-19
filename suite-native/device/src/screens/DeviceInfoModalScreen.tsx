@@ -42,6 +42,7 @@ const deviceImageMap: Record<DeviceModelInternal, string> = {
     [DeviceModelInternal.T1B1]: require('../assets/t1b1.png'),
     [DeviceModelInternal.T2T1]: require('../assets/t2t1.png'),
     [DeviceModelInternal.T2B1]: require('../assets/t2b1.png'),
+    [DeviceModelInternal.T3B1]: require('../assets/t2b1.png'),
     [DeviceModelInternal.T3T1]: require('../assets/t3t1.png'),
 };
 

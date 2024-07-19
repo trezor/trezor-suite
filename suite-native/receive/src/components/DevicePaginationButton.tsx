@@ -41,6 +41,12 @@ const modelToStyles = {
         borderRadius: nativeBorders.radii.large / 2,
         borderWidth: nativeBorders.widths.large,
     },
+    [DeviceModelInternal.T3B1]: {
+        backgroundColor: DEVICE_SCREEN_BACKGROUND_COLOR,
+        borderColor: DEVICE_TEXT_COLOR,
+        borderRadius: nativeBorders.radii.large / 2,
+        borderWidth: nativeBorders.widths.large,
+    },
 } as const satisfies Record<PaginationCompatibleDeviceModel, Readonly<NativeStyle>>;
 
 const deviceButtonStyle = prepareNativeStyle<DeviceButtonStyleProps>(

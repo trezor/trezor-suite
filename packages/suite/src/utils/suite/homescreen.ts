@@ -4,13 +4,19 @@ import { deflateRaw } from 'pako';
 
 // TODO: this is already part of features (since certain version) so I suggest forbidding screen changes
 // prior to that version and removing this definition from here
+const t2b1 = {
+    width: 128,
+    height: 64,
+    supports: ['png', 'jpeg'] satisfies ('png' | 'jpeg')[],
+};
 export const deviceModelInformation: Record<
     DeviceModelInternal,
     { width: number; height: number; supports: Array<'png' | 'jpeg'> }
 > = {
     [DeviceModelInternal.T1B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
     [DeviceModelInternal.T2T1]: { width: 240, height: 240, supports: ['jpeg'] },
-    [DeviceModelInternal.T2B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
+    [DeviceModelInternal.T2B1]: t2b1,
+    [DeviceModelInternal.T3B1]: t2b1,
     [DeviceModelInternal.T3T1]: { width: 240, height: 240, supports: ['jpeg'] },
 };
 
