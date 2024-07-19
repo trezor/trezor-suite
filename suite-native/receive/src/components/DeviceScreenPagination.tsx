@@ -25,6 +25,21 @@ type PaginationModelMetrics = {
     paginationSvgHeight: number;
 };
 
+const t2b1 = {
+    paginationPrefixSvg: require('../../assets/addressPaginationPrefixT2B1.svg'),
+    paginationSuffixSvg: require('../../assets/addressPaginationSuffixT2B1.svg'),
+    paginatorPrefixX: 40,
+    paginatorPrefixY: 7.5,
+    paginatorSuffixX: 210,
+    paginatorSuffixY: 82,
+    pagerSvg1: require('../../assets/pager1T2B1.svg'),
+    pagerSvg2: require('../../assets/pager2T2B1.svg'),
+    pagerX: 277.5,
+    pagerY: 0,
+    paginationSvgWidth: 12.5,
+    paginationSvgHeight: 12.5,
+};
+
 const deviceModelToSvg: Record<PaginationCompatibleDeviceModel, PaginationModelMetrics> = {
     [DeviceModelInternal.T2T1]: {
         paginationPrefixSvg: require('../../assets/addressPaginationPrefixT2T1.svg'),
@@ -56,20 +71,8 @@ const deviceModelToSvg: Record<PaginationCompatibleDeviceModel, PaginationModelM
         paginationSvgWidth: 40,
         paginationSvgHeight: 17.5,
     },
-    [DeviceModelInternal.T2B1]: {
-        paginationPrefixSvg: require('../../assets/addressPaginationPrefixT2B1.svg'),
-        paginationSuffixSvg: require('../../assets/addressPaginationSuffixT2B1.svg'),
-        paginatorPrefixX: 40,
-        paginatorPrefixY: 7.5,
-        paginatorSuffixX: 210,
-        paginatorSuffixY: 82,
-        pagerSvg1: require('../../assets/pager1T2B1.svg'),
-        pagerSvg2: require('../../assets/pager2T2B1.svg'),
-        pagerX: 277.5,
-        pagerY: 0,
-        paginationSvgWidth: 12.5,
-        paginationSvgHeight: 12.5,
-    },
+    [DeviceModelInternal.T2B1]: t2b1,
+    [DeviceModelInternal.T3B1]: t2b1,
 };
 
 export const DeviceScreenPagination = ({

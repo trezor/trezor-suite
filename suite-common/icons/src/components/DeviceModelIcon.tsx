@@ -13,6 +13,7 @@ const icons = {
     T1B1: 'trezorT1B1',
     T2T1: 'trezorT2T1',
     T2B1: 'trezorT2B1',
+    T3B1: 'trezorT2B1',
     T3T1: 'trezorT3T1',
 } as const satisfies Record<DeviceModelInternal, IconName>;
 

@@ -31,6 +31,8 @@ export const HELP_CENTER_DRY_RUN_T2T1_URL =
     'https://trezor.io/learn/a/test-recovery-seed-on-trezor-model-t';
 export const HELP_CENTER_DRY_RUN_T2B1_URL =
     'https://trezor.io/learn/a/check-backup-on-trezor-safe-3';
+export const HELP_CENTER_DRY_RUN_T3B1_URL =
+    'https://trezor.io/learn/a/check-backup-on-trezor-safe-3';
 export const HELP_CENTER_DRY_RUN_T3T1_URL =
     'https://trezor.io/learn/a/check-backup-on-trezor-safe-5';
 export const HELP_CENTER_PASSPHRASE_URL =
@@ -39,6 +41,8 @@ export const HELP_CENTER_RECOVERY_SEED_URL = 'https://trezor.io/learn/a/how-to-u
 export const HELP_CENTER_PACKAGING_T1B1_URL = 'https://trezor.io/learn/a/authenticate-model-one';
 export const HELP_CENTER_PACKAGING_T2T1_URL = 'https://trezor.io/learn/a/authenticate-model-t';
 export const HELP_CENTER_PACKAGING_T2B1_URL =
+    'https://trezor.io/learn/a/authenticate-trezor-safe-3';
+export const HELP_CENTER_PACKAGING_T3B1_URL =
     'https://trezor.io/learn/a/authenticate-trezor-safe-3';
 export const HELP_CENTER_PACKAGING_T3T1_URL =
     'https://trezor.io/learn/a/authenticate-trezor-safe-5';
@@ -55,6 +59,8 @@ export const HELP_CENTER_FW_DOWNGRADE_T1B1_URL =
 export const HELP_CENTER_FW_DOWNGRADE_T2T1_URL =
     'https://trezor.io/learn/a/downgrade-firmware-trezor-model-t';
 export const HELP_CENTER_FW_DOWNGRADE_T2B1_URL =
+    'https://trezor.io/learn/a/downgrade-firmware-trezor-safe-3';
+export const HELP_CENTER_FW_DOWNGRADE_T3B1_URL =
     'https://trezor.io/learn/a/downgrade-firmware-trezor-safe-3';
 export const HELP_CENTER_FW_DOWNGRADE_T3T1_URL =
     'https://trezor.io/learn/a/downgrade-firmware-trezor-safe-5';
