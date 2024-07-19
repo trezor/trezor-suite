@@ -146,10 +146,6 @@ export default defineMessages({
         defaultMessage: 'Add wallet',
         id: 'TR_ADD_WALLET',
     },
-    TR_ADDITIONAL_SECURITY_FEATURES: {
-        defaultMessage: 'In the meantime, make sure you have completed all security steps below.',
-        id: 'TR_ADDITIONAL_SECURITY_FEATURES',
-    },
     TR_CONTRACT: {
         defaultMessage: 'Contract',
         id: 'TR_CONTRACT',
