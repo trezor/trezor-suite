@@ -314,7 +314,10 @@ export const useAddCoinAccount = () => {
             }),
         );
 
-        if (isRejected(newAccountResult)) {
+        if (
+            !firstHiddenEmptyAccount && // Do not show error if we are just making the first hidden empty account visible
+            isRejected(newAccountResult)
+        ) {
             let screen = AppTabsRoutes.HomeStack;
             if (flowType === 'accounts') {
                 screen = AppTabsRoutes.AccountsStack;
