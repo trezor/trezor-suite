@@ -40,7 +40,7 @@ jobs:
     if: github.repository == 'trezor/trezor-suite-release'
     name: Build suite-desktop-${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
@@ -283,7 +283,7 @@ jobs:
     if: github.repository == 'trezor/trezor-suite-release' && github.event.inputs.createTestRelease == 'true'
     name: Upload suite-desktop autoupdate test versions
     environment: suite-production
-    runs-on: ubuntu-latest
+    runs-on: runner-deploy1
     needs: create-test-releases
     steps:
       - name: Checkout code
@@ -298,8 +298,4 @@ jobs:
         with:
           pattern: AUTOUPDATE-TEST-suite-desktop-34*
           merge-multiple: true
-          path: ./trezor-suite-files
-
-      - name: Upload suite-desktop auto-update test version
-        run: |
-          aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/autoupdate-test/desktop
+          path: /home/github-runner/files/trezor-suite-release/autoupdate-test/
