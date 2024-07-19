@@ -12,7 +12,7 @@ interface Process {
 }
 
 // note that this variable is duplicated with suite-desktop-core
-const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.1;
+const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.2;
 
 export const TransportBackends = () => {
     const [bridgeProcess, setBridgeProcess] = useState<Process>({ service: false, process: false });

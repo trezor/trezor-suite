@@ -61,7 +61,7 @@ const getBridgeInstance = (store: Dependencies['store']) => {
     }
     const newBridgeRollout = store.getBridgeSettings().newBridgeRollout || 0;
     // note that this variable is duplicated with UI
-    const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.1;
+    const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.2;
     const legacyBridgeReasonRollout =
         !isDevEnv && !skipNewBridgeRollout && newBridgeRollout >= NEW_BRIDGE_ROLLOUT_THRESHOLD;
 
