@@ -280,7 +280,12 @@ export const useAddCoinAccount = () => {
             account => account.symbol === networkSymbol && account.accountType === accountType,
         );
 
-        const firstHiddenEmptyAccount = accounts.find(account => account.empty && !account.visible);
+        const firstHiddenEmptyAccount = pipe(
+            accounts,
+            A.filter(account => account.empty && !account.visible),
+            A.sortBy(account => account.index),
+            A.head,
+        );
 
         const canAddAccount = checkCanAddAccount(accounts);
 
