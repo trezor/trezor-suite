@@ -3,7 +3,6 @@ import { FeatureFlag as FeatureFlagEnum, useFeatureFlag } from '@suite-native/fe
 
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
-    [FeatureFlagEnum.IsPassphraseEnabled]: 'Passphrase',
     [FeatureFlagEnum.IsSendEnabled]: 'Send',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
     [FeatureFlagEnum.IsCoinEnablingActive]: 'Coin Enabling',
