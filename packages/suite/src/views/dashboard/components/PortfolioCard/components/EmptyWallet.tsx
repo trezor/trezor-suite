@@ -35,15 +35,6 @@ const StyledImage = styled(Image)`
     margin-bottom: 24px;
 `;
 
-const SecurityItem = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-
-    & + & {
-        margin-top: 12px;
-    }
-`;
-
 type EmptyWalletProps = HTMLAttributes<HTMLDivElement>;
 
 export const EmptyWallet = (props: EmptyWalletProps) => (
@@ -53,9 +44,6 @@ export const EmptyWallet = (props: EmptyWalletProps) => (
             <Title>
                 <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
             </Title>
-            <SecurityItem>
-                <Translation id="TR_ADDITIONAL_SECURITY_FEATURES" />
-            </SecurityItem>
         </Content>
     </Wrapper>
 );
