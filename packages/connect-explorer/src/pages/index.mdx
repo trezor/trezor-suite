@@ -101,7 +101,8 @@ export const ExampleHeading = styled.h3`
 <SectionCard>
     ### Quick start
 
-    ####  Choose your environment
+    {/* this syntax is used to hide the headings from TOC */}
+    {<h4>Choose your environment</h4>}
 
     Depending on your environment you need to chose the right package and follow the particular guide:
 
@@ -171,7 +172,7 @@ export const ExampleHeading = styled.h3`
 
     <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
         <Steps>
-            ### Installation of the package
+            {<h3>Installation of the package</h3>}
 
             ```bash
             npm install @trezor/connect
@@ -179,13 +180,13 @@ export const ExampleHeading = styled.h3`
             yarn add @trezor/connect
             ```
 
-            ### Import from the package
+            {<h3>Import from the package</h3>}
 
             ```javascript
             import TrezorConnect from '@trezor/connect';
             ```
 
-            ### Initialization of the project
+            {<h3>Initialization of the project</h3>}
 
             ```javascript
                 TrezorConnect.init({
@@ -202,7 +203,7 @@ export const ExampleHeading = styled.h3`
 
             If you need more customization, refer to [init method documentation](./methods/other/init)
 
-            ### How to use?
+            {<h3>How to use?</h3>}
 
             Here is an example of how to get the device's public key:
 
@@ -265,7 +266,7 @@ export const ExampleHeading = styled.h3`
     </SdkContainer>
     <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
             <Steps>
-                ### Installation of the package
+                {<h3>Installation of the package</h3>}
 
                 ```bash
                 npm install @trezor/connect-web
@@ -279,7 +280,7 @@ export const ExampleHeading = styled.h3`
                 <script src="https://connect.trezor.io/9/trezor-connect.js"></script>
                 ```
 
-                ### Import from the package
+                {<h3>Import from the package</h3>}
 
                 ```javascript
                 import TrezorConnect from '@trezor/connect-web';
@@ -291,7 +292,7 @@ export const ExampleHeading = styled.h3`
                 var TrezorConnect = window.TrezorConnect;
                 ```
 
-                ### Initialization of the project
+                {<h3>Initialization of the project</h3>}
 
                 ```javascript
                 TrezorConnect.init({
@@ -308,7 +309,7 @@ export const ExampleHeading = styled.h3`
 
                 If you need more customization, refer to [init method documentation](./methods/other/init)
 
-                ### How to use?
+                {<h3>How to use?</h3>}
                 Here is an example of how to get the device's public key:
 
                 ```javascript
@@ -372,7 +373,7 @@ export const ExampleHeading = styled.h3`
 
         <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
             <Steps>
-                ### Installation of the package
+                {<h3>Installation of the package</h3>}
 
                 ```bash
                 npm install @trezor/connect-webextension
@@ -394,7 +395,7 @@ export const ExampleHeading = styled.h3`
 
                 For manual content script injection, you can [find more information in the README](/readme/connect-webextension).
 
-                ### Import in the service worker
+                {<h3>Import in the service worker</h3>}
 
                 In your `serviceWorker.js`, use importScripts to import the library. Ensure you replace `<path>` with the actual path to the library file:
 
@@ -411,7 +412,7 @@ export const ExampleHeading = styled.h3`
                 The library is only available in the service worker context, so to use it in your extension's UI, you need to communicate with the service worker. This mechanism is not provided by the library, this depends on your extension's architecture.
                 Also it should be noted that the service worker may be idle when the extension is not in use, so you should implement a mechanism to keep it alive or wake it up when needed.
 
-                ### Initialization of the extension
+                {<h3>Initialization of the extension</h3>}
 
                 ```javascript
                 TrezorConnect.init({
@@ -430,7 +431,7 @@ export const ExampleHeading = styled.h3`
 
                 If you need more customization, refer to [init method documentation](./methods/other/init)
 
-                ### How to use?
+                {<h3>How to use?</h3>}
 
                 Here is an example of how to get the device's public key:
 
