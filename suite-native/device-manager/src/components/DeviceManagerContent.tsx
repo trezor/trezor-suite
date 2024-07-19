@@ -11,7 +11,6 @@ import {
     selectIsDeviceDiscoveryActive,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { EventType, analytics } from '@suite-native/analytics';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -47,7 +46,6 @@ export const DeviceManagerContent = () => {
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
-    const [isPassphraseFeatureEnabled] = useFeatureFlag(FeatureFlag.IsPassphraseEnabled);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const device = useSelector(selectDevice);
     const { setIsDeviceManagerVisible } = useDeviceManager();
@@ -81,8 +79,7 @@ export const DeviceManagerContent = () => {
     const scrollViewTopOffset = insets.top + utils.spacings.large + HEADER_HEIGHT;
     const scrollViewMaxHeight = CONTENT_MAX_HEIGHT - scrollViewTopOffset;
 
-    const isAddHiddenWalletButtonVisible =
-        isPassphraseFeatureEnabled && !isDiscoveryActive && device?.connected;
+    const isAddHiddenWalletButtonVisible = !isDiscoveryActive && device?.connected;
 
     return (
         <DeviceManagerModal
