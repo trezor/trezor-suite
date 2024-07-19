@@ -30,6 +30,7 @@ export default [
                 label: 'use passphrase',
                 name: 'use_passphrase',
                 type: 'checkbox',
+                optional: true,
                 value: false,
             },
             {
@@ -37,6 +38,7 @@ export default [
                 name: 'auto_lock_delay_ms',
                 type: 'number',
                 value: '',
+                optional: true,
             },
             {
                 label: 'display rotation',
