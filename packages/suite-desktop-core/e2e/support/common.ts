@@ -36,7 +36,13 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
     const localDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
 
     if (options.rmUserData) {
-        fse.removeSync(localDataDir);
+        const filesToDelete = fse.readdirSync(localDataDir);
+        filesToDelete.forEach(file => {
+            // omitting Cache folder it sometimes prevents the deletion and is not necessary to delete for test idempotency
+            if (file !== 'Cache') {
+                fse.removeSync(`${localDataDir}/${file}`);
+            }
+        });
     }
 
     electronApp.process().stdout?.on('data', data => console.log(data.toString()));
@@ -55,7 +61,7 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
 
     const window = await electronApp.firstWindow();
 
-    return { electronApp, window, localDataDir };
+    return { electronApp, window };
 };
 
 export const waitForDataTestSelector = (window: Page, selector: string, options = {}) =>
