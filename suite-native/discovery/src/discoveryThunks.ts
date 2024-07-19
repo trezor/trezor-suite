@@ -217,13 +217,25 @@ const addAccountByDescriptorThunk = createThunk(
             ...getAccountInfoDetailsLevel(bundleItem.coin),
         });
 
+        const accounts = selectDeviceAccountsForNetworkSymbolAndAccountType(
+            getState(),
+            bundleItem.coin,
+            bundleItem.accountType,
+        );
+
+        const hasEmptyAccount = accounts.some(account => account.empty);
+
         if (success) {
             dispatch(
                 accountsActions.createIndexLabeledAccount({
                     discoveryItem: bundleItem,
                     deviceState,
                     accountInfo,
-                    visible: true,
+                    // In most cases, there should be already empty account, because this thunk is called after
+                    // changing visibility of first empty hidden account.
+                    // But if there is no empty account (discovery previously failed), we should show this one.
+                    // And because of async calls, we check for empty account here and not passing the value from the previous step.
+                    visible: !hasEmptyAccount,
                 }),
             );
 
