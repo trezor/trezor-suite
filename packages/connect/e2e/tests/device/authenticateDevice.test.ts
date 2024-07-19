@@ -1,3 +1,4 @@
+import { DeviceAuthenticityConfig } from '@trezor/connect/src/data/deviceAuthenticityConfigTypes';
 import TrezorConnect from '../../../src';
 
 const { getController, setup, initTrezorConnect } = global.Trezor;
@@ -37,7 +38,7 @@ describe('TrezorConnect.authenticateDevice', () => {
                 '04ba6084cb9fba7c86d5d5a86108a91d55a27056da4eabbedde88a95e1cae8bce3620889167aaf7f2db166998f950984aa195e868f96e22803c3cd991be31d39e7',
             ],
         },
-    };
+    } as DeviceAuthenticityConfig;
 
     it('validation successful', async () => {
         const result = await TrezorConnect.authenticateDevice({
