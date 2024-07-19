@@ -271,7 +271,13 @@ export const config = {
         },
         {
             methods: ['changeLanguage'],
-            min: { T1B1: '0', T2T1: '2.7.0', T2B1: '2.7.0', T3T1: '2.7.1' },
+            min: {
+                T1B1: '0',
+                T2T1: '2.7.0',
+                T2B1: '2.7.0',
+                T3B1: '2.7.0', // adding T3B1 to the list so that it gets inferred as type
+                T3T1: '2.7.1',
+            },
         },
     ],
 };
