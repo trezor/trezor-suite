@@ -1,5 +1,4 @@
 import { getFirmwareVersion } from '@trezor/device-utils';
-
 import {
     getCommitHash,
     getScreenHeight,
@@ -11,6 +10,9 @@ import {
 import type { TrezorDevice } from 'src/types/suite';
 import type { TransportInfo } from '@trezor/connect';
 import { GITHUB_REPO_URL } from '@trezor/urls';
+
+// Ensure the Navigator interface is extended
+/// <reference path="../../global.d.ts" />
 
 type DebugInfo = {
     device?: TrezorDevice;
@@ -40,8 +42,21 @@ const getTransportInfo = (transport?: Partial<TransportInfo>) => {
         : transport.type;
 };
 
-export const openGithubIssue = ({ device, transport }: DebugInfo) => {
+const getMacArchitecture = async (): Promise<string> => {
+    if (navigator.userAgentData) {
+        const data = await navigator.userAgentData.getHighEntropyValues(['architecture']);
+        return data.architecture === 'arm' ? 'arm' : 'x86';
+    } else {
+        // Fallback for non-Chromium browsers
+        return navigator.platform === 'MacIntel' ? 'x86' : 'Unknown';
+    }
+};
+
+export const openGithubIssue = async ({ device, transport }: DebugInfo) => {
     const url = new URL(`${GITHUB_REPO_URL}/issues/new`);
+
+    const architecture = await getMacArchitecture();
+    const osPlatform = 'Mac';
 
     const body = `
 **Describe the bug**
@@ -55,7 +70,8 @@ A clear and concise description of what the bug is.
 **Info:**
  - Suite version: ${getSuiteInfo()}
  - Browser: ${getUserAgent()}
- - OS: ${navigator.platform}
+ - OS: ${osPlatform}
+ - Architecture: ${architecture}
  - Screen: ${getScreenWidth()}x${getScreenHeight()}
  - Device: ${getDeviceInfo(device)}
  - Transport: ${getTransportInfo(transport)}
