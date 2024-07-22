@@ -107,7 +107,7 @@ export const PasswordEntry = ({
             {confirmRemove != null && (
                 <DialogModal
                     bodyHeading="Remove password entry"
-                    text={`Really remove ${note || title}?`}
+                    body={`Really remove ${note || title}?`}
                     bottomBarComponents={
                         <>
                             <Button

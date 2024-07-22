@@ -23,13 +23,13 @@ export default meta;
 export const DialogModal: StoryObj<DialogModalProps> = {
     args: {
         bodyHeading: 'Modal heading',
-        text: 'Modal text',
+        body: 'Modal text',
         icon: 'caretCircleDown',
         bottomBarComponents: <Buttons />,
         onCancel: () => console.log('close'),
     },
     argTypes: {
-        text: {
+        body: {
             control: 'text',
         },
         headerHeading: {

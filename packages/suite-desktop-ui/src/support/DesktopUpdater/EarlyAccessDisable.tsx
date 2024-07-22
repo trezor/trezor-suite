@@ -73,7 +73,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
         <DialogModal
             icon="check"
             bodyHeading={<Translation id="TR_EARLY_ACCESS_LEFT_TITLE" />}
-            text={<Translation id="TR_EARLY_ACCESS_LEFT_DESCRIPTION" />}
+            body={<Translation id="TR_EARLY_ACCESS_LEFT_DESCRIPTION" />}
             bottomBarComponents={
                 <>
                     <Link variant="nostyle" href={SUITE_URL}>

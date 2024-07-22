@@ -56,7 +56,7 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
             icon="warningTriangleLight"
             iconVariant="warning"
             bodyHeading={<Translation id="TR_NOT_YOUR_RECEIVE_ADDRRESS" />}
-            text={
+            body={
                 <>
                     <Translation id={getAddressTypeText(addressType)} />
                     <Checkbox

@@ -54,7 +54,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
             icon="warningTriangleLight"
             iconVariant="warning"
             bodyHeading={<Translation id="TR_UNHIDE_TOKEN_TITLE" />}
-            text={
+            body={
                 <>
                     <Translation id="TR_UNHIDE_TOKEN_TEXT" />
                     <Checkbox
