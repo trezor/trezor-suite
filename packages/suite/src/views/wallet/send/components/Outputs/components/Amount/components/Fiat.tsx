@@ -14,16 +14,17 @@ import {
     amountToSatoshi,
     formatAmount,
     buildCurrencyOptions,
+    getFiatRateKey,
 } from '@suite-common/wallet-utils';
 import { CurrencyOption, Output } from '@suite-common/wallet-types';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { NumberInput } from 'src/components/suite';
-import { useTranslation } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { selectFiatRatesByFiatRateKey, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { useDispatch } from 'react-redux';
 
 const Wrapper = styled.div`
@@ -44,7 +45,6 @@ export const Fiat = ({ output, outputId, labelHoverRight, labelRight }: FiatProp
     const {
         account,
         network,
-        fiatRate,
         formState: { errors },
         clearErrors,
         getDefaultValue,
@@ -73,6 +73,13 @@ export const Fiat = ({ output, outputId, labelHoverRight, labelRight }: FiatProp
     const token = findToken(account.tokens, tokenValue);
 
     const currencyValue = watch(currencyInputName);
+
+    const fiatRateKey = getFiatRateKey(
+        account.symbol,
+        currencyValue.value as FiatCurrencyCode,
+        tokenValue as TokenAddress,
+    );
+    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     const recalculateFiat = (rate: number) => {
         const formattedAmount = new BigNumber(

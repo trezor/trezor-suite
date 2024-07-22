@@ -30,7 +30,6 @@ export const useSendFormImport = ({
     network,
     tokens,
     localCurrencyOption,
-    fiatRate,
     currentRates,
 }: useSendFormImportProps) => {
     const dispatch = useDispatch();
@@ -100,6 +99,12 @@ export const useSendFormImport = ({
                     } else {
                         output.amount = cryptoAmount;
                     }
+
+                    const fiatRateKey = getFiatRateKey(
+                        network.symbol,
+                        itemCurrency as FiatCurrencyCode,
+                    );
+                    const fiatRate = currentRates?.[fiatRateKey];
 
                     // calculate Fiat from Amount
                     if (fiatRate?.rate) {

@@ -15,13 +15,12 @@ import {
 import { goto } from 'src/actions/suite/routerActions';
 import { fillSendForm } from 'src/actions/suite/protocolActions';
 import { AppState } from 'src/types/suite';
-import { FormState, TokenAddress } from '@suite-common/wallet-types';
+import { FormState } from '@suite-common/wallet-types';
 import {
     getFeeLevels,
     getDefaultValues,
     amountToSatoshi,
     formatAmount,
-    getFiatRateKey,
 } from '@suite-common/wallet-utils';
 import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
@@ -32,7 +31,7 @@ import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useExcludedUtxos } from './form/useExcludedUtxos';
-import { selectCurrentFiatRates, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 
@@ -103,16 +102,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     const { control, reset, register, getValues, formState, setValue, trigger } = useFormMethods;
 
-    const values = getValues();
-    const token = values?.outputs?.[0]?.token;
-    const fiatCurrency = values?.outputs?.[0]?.currency;
-
-    const fiatRateKey = getFiatRateKey(
-        props.selectedAccount.account.symbol,
-        fiatCurrency?.value as FiatCurrencyCode,
-        token as TokenAddress,
-    );
-    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
     const currentRates = useSelector(selectCurrentFiatRates);
 
     // register array fields (outputs array in react-hook-form)
@@ -166,7 +155,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // declare sendFormUtils, sub-hook of useSendForm
     const sendFormUtils = useSendFormFields({
         ...useFormMethods,
-        fiatRate,
         network: state.network,
     });
 
@@ -232,7 +220,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         network: state.network,
         tokens: state.account.tokens,
         localCurrencyOption,
-        fiatRate,
         currentRates,
     });
 
@@ -384,7 +371,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         ...state,
         ...useFormMethods,
         isLoading,
-        fiatRate,
         register,
         outputs: outputsFieldArray.fields,
         composedLevels,

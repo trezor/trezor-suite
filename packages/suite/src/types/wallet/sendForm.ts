@@ -14,7 +14,6 @@ import {
     Output,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
-    Rate,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
@@ -64,7 +63,6 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
     UseFormReturn<TFormValues> &
         UseSendFormState & {
             isLoading: boolean;
-            fiatRate?: Rate;
             // additional fields
             outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
             updateContext: (value: Partial<UseSendFormState>) => void;
