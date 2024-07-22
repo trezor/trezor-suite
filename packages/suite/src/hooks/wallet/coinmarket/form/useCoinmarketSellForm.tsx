@@ -215,6 +215,14 @@ export const useCoinmarketSellForm = ({
         ...methods,
         state,
     });
+    // sub-hook, FeeLevels handler
+    const { changeFeeLevel, selectedFee } = useFees({
+        defaultValue: 'normal',
+        feeInfo,
+        onChange: onFeeLevelChange,
+        composeRequest,
+        ...methods,
+    });
 
     // form states
     const formIsValid = Object.keys(formState.errors).length === 0;
@@ -232,22 +240,15 @@ export const useCoinmarketSellForm = ({
         values?.paymentMethod?.value ?? '',
     );
 
-    // sub-hook, FeeLevels handler
-    const { changeFeeLevel, selectedFee } = useFees({
-        defaultValue: 'normal',
-        feeInfo,
-        onChange: onFeeLevelChange,
-        composeRequest,
-        ...methods,
-    });
-
     // watch change in crypto amount and recalculate fees on change
     const onCryptoAmountChange = useCallback(
         (amount: string) => {
-            setValue(FORM_FIAT_INPUT, '', { shouldDirty: true });
-            setValue('setMaxOutputId', undefined, { shouldDirty: true });
             clearErrors(FORM_FIAT_INPUT);
+
+            // setValue(FORM_FIAT_INPUT, '', { shouldDirty: true });
+            setValue('setMaxOutputId', undefined, { shouldDirty: true });
             setValue(FORM_OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
+
             composeRequest(FORM_CRYPTO_INPUT);
         },
         [clearErrors, composeRequest, setValue],
@@ -256,11 +257,13 @@ export const useCoinmarketSellForm = ({
     // watch change in fiat amount and recalculate fees on change
     const onFiatAmountChange = useCallback(
         (amount: string) => {
-            setValue(FORM_CRYPTO_INPUT, '', { shouldDirty: true });
-            setValue('setMaxOutputId', undefined, { shouldDirty: true });
             clearErrors(FORM_CRYPTO_INPUT);
+
+            // setValue(FORM_CRYPTO_INPUT, '', { shouldDirty: true });
+            setValue('setMaxOutputId', undefined, { shouldDirty: true });
             const currency: typeof defaultCurrency | undefined =
                 getValues(FORM_FIAT_CURRENCY_SELECT);
+
             if (!fiatRate?.rate || !currency) return;
 
             const cryptoValue = fromFiatCurrency(amount, network.decimals, fiatRate.rate);
@@ -268,10 +271,12 @@ export const useCoinmarketSellForm = ({
                 cryptoValue && shouldSendInSats
                     ? amountToSatoshi(cryptoValue, network.decimals)
                     : cryptoValue;
+
             setValue(FORM_OUTPUT_AMOUNT, cryptoInputValue || '', {
                 shouldDirty: true,
                 shouldValidate: false,
             });
+
             composeRequest(FORM_FIAT_INPUT);
         },
         [
@@ -284,6 +289,38 @@ export const useCoinmarketSellForm = ({
             composeRequest,
         ],
     );
+
+    /*
+    const onCryptoCurrencyChange = useCallback(
+        (selected: CoinmarketCryptoListProps) => {
+            setValue('setMaxOutputId', undefined);
+            setAmountLimits(undefined);
+            setValue(FORM_CRYPTO_INPUT, '');
+            setValue(FORM_FIAT_INPUT, '');
+            const token = selected.value;
+            const invitySymbol = invityApiSymbolToSymbol(token).toLowerCase();
+            const tokenData = account.tokens?.find(
+                t => t.symbol === invitySymbol && t.contract === selected.token?.contract,
+            );
+            const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
+
+            if (ethereumTypeNetworkSymbols.includes(token)) {
+                setValue(FORM_CRYPTO_TOKEN, null);
+                setValue('outputs.0.address', account.descriptor);
+            } else if (symbol === 'sol') {
+                setValue(FORM_CRYPTO_TOKEN, tokenData?.contract ?? null);
+                setValue('outputs.0.address', account.descriptor);
+            } else {
+                // set the address of the token to the output
+                setValue(FORM_CRYPTO_TOKEN, tokenData?.contract ?? null);
+                // set token address for ERC20 transaction to estimate the fees more precisely
+                setValue('outputs.0.address', tokenData?.contract ?? '');
+            }
+            composeRequest();
+        },
+        [account.descriptor, account.tokens, composeRequest, setValue, symbol],
+    );
+    */
 
     const getQuotesRequest = useCallback(
         async (request: SellFiatTradeQuoteRequest) => {
@@ -405,10 +442,21 @@ export const useCoinmarketSellForm = ({
     // call change handler on every change of text inputs with debounce
     useDebounce(
         () => {
-            if (
-                isChanged(previousValues.current?.fiatInput, values.fiatInput) ||
-                isChanged(previousValues.current?.cryptoInput, values.cryptoInput)
-            ) {
+            const fiatChanged = isChanged(previousValues.current?.fiatInput, values.fiatInput);
+            const cryptoChanged = isChanged(
+                previousValues.current?.cryptoInput,
+                values.cryptoInput,
+            );
+
+            if (fiatChanged || cryptoChanged) {
+                if (cryptoChanged && values.cryptoInput) {
+                    onCryptoAmountChange(values.cryptoInput);
+                }
+
+                if (fiatChanged && values.fiatInput) {
+                    onFiatAmountChange(values.fiatInput);
+                }
+
                 handleSubmit(() => {
                     handleChange();
                 })();
@@ -746,6 +794,7 @@ export const useCoinmarketSellForm = ({
     useDebounce(
         () => {
             if (
+                formState.isDirty &&
                 !formState.isValidating &&
                 Object.keys(formState.errors).length === 0 &&
                 !isComposing

@@ -4,7 +4,6 @@ import { validateDecimals, validateMin } from 'src/utils/suite/validation';
 import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useDidUpdate } from '@trezor/react-utils';
 import CoinmarketFormInputCurrency from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
 import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
@@ -19,7 +18,7 @@ const CoinmarketFormInputFiat = ({ className }: CoinmarketFormInputProps) => {
         amountLimits,
         trigger,
         clearErrors,
-    } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    } = useCoinmarketFormContext();
 
     const fiatInputRules = {
         validate: {

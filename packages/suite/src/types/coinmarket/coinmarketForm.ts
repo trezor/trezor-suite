@@ -128,7 +128,7 @@ export interface CoinmarketSellFormContextProps
 export type CoinmarketFormMapProps = {
     buy: CoinmarketBuyFormContextProps;
     sell: CoinmarketSellFormContextProps;
-    exchange: any; // TODO:
+    exchange: any; // TODO: replacing any will bring a lot of problems, be ready
 };
 
 export type CoinmarketFormContextValues<T extends CoinmarketTradeType> = CoinmarketFormMapProps[T];

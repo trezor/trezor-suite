@@ -42,7 +42,7 @@ const CoinmarketFormInputCountry = ({ className, label }: CoinmarketFormInputPro
             <Controller
                 name={FORM_COUNTRY_SELECT}
                 defaultValue={defaultCountry}
-                control={control as any} // FIXME: any
+                control={control}
                 render={({ field: { onChange, value } }) => (
                     <Select
                         value={value}

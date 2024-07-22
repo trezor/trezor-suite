@@ -10,7 +10,6 @@ import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCo
 import {
     CoinmarketCryptoListProps,
     CoinmarketOptionsGroupProps,
-    CoinmarketTradeBuyType,
 } from 'src/types/coinmarket/coinmarket';
 import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
@@ -46,7 +45,7 @@ const CoinmarketFormInputAccount = ({ className, label }: CoinmarketFormInputPro
     const { shouldSendInSats } = useBitcoinAmountUnit(selectedAccount.account?.symbol);
     const { elevation } = useElevation();
 
-    const { control, buyInfo } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    const { control, buyInfo } = useCoinmarketFormContext();
     const { symbolsInfo } = useSelector(state => state.wallet.coinmarket.info);
 
     const options = useMemo(

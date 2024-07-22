@@ -59,7 +59,7 @@ const CoinmarketFormInputCrypto = ({ className }: CoinmarketFormInputProps) => {
                 clearErrors(FORM_FIAT_INPUT);
             }}
             inputState={getInputState(errors[FORM_CRYPTO_INPUT])}
-            control={control as any} // FIXME: any
+            control={control}
             rules={cryptoInputRules}
             maxLength={formInputsMaxLength.amount}
             bottomText={errors[FORM_CRYPTO_INPUT]?.message || null}
