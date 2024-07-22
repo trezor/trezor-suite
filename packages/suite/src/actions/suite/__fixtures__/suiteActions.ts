@@ -245,6 +245,8 @@ const initialRun = [
                 viewOnlyPromoClosed: true,
                 viewOnlyTooltipClosed: true,
                 isDashboardPassphraseBannerVisible: true,
+                showCopyAddressModal: true,
+                showUnhideTokenModal: true,
             },
         },
     },

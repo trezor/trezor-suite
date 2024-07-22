@@ -9336,6 +9336,10 @@ export default defineMessages({
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON',
         defaultMessage: 'Disable & eject',
     },
+    TR_DO_NOT_SHOW_AGAIN: {
+        id: 'TR_DO_NOT_SHOW_AGAIN',
+        defaultMessage: 'Do not show again',
+    },
     TR_VIEW_ONLY: {
         id: 'TR_VIEW_ONLY',
         defaultMessage: 'View-only',

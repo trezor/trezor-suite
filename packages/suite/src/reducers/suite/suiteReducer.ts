@@ -67,6 +67,8 @@ export interface Flags {
     isDashboardPassphraseBannerVisible: boolean;
     viewOnlyPromoClosed: boolean;
     viewOnlyTooltipClosed: boolean;
+    showUnhideTokenModal: boolean;
+    showCopyAddressModal: boolean;
 }
 
 export interface EvmSettings {
@@ -127,6 +129,8 @@ const initialState: SuiteState = {
         viewOnlyPromoClosed: false,
         viewOnlyTooltipClosed: false,
         isDashboardPassphraseBannerVisible: true,
+        showCopyAddressModal: true,
+        showUnhideTokenModal: true,
     },
     evmSettings: {
         confirmExplanationModalClosed: {},
@@ -378,6 +382,12 @@ export const selectIsDashboardT3T1PromoBannerShown = (state: SuiteRootState) =>
 
 export const selectIsSettingsDesktopAppPromoBannerShown = (state: SuiteRootState) =>
     state.suite.flags.showSettingsDesktopAppPromoBanner;
+
+export const selectIsUnhideTokenModalShown = (state: SuiteRootState) =>
+    state.suite.flags.showUnhideTokenModal;
+
+export const selectIsCopyAddressModalShown = (state: SuiteRootState) =>
+    state.suite.flags.showCopyAddressModal;
 
 export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
     state.suite.flags.initialRun || state.device?.selectedDevice?.mode !== 'normal';
