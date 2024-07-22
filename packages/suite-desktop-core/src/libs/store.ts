@@ -40,7 +40,10 @@ export class Store {
     }
 
     public getUpdateSettings() {
-        return this.store.get('updateSettings', { allowPrerelease: false });
+        return this.store.get('updateSettings', {
+            allowPrerelease: false,
+            isAutomaticUpdateEnabled: false,
+        });
     }
 
     public setUpdateSettings(updateSettings: UpdateSettings) {

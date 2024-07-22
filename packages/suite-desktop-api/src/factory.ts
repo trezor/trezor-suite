@@ -60,6 +60,11 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
             if (validation.isPrimitive('boolean', value))
                 ipcRenderer.send('update/allow-prerelease', value);
         },
+        setAutomaticUpdateEnabled: value => {
+            if (validation.isPrimitive('boolean', value)) {
+                ipcRenderer.send('update/set-automatic-update-enabled', value);
+            }
+        },
 
         // Theme
         themeChange: theme => {

@@ -157,6 +157,7 @@ const log =
                 );
                 break;
             case DESKTOP_UPDATE.ALLOW_PRERELEASE:
+            case DESKTOP_UPDATE.SET_AUTOMATIC_UPDATES:
             case SUITE.TOR_STATUS:
             case SUITE.ONLINE_STATUS:
                 api.dispatch(

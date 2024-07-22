@@ -9,6 +9,7 @@ import {
 
 import { bytesToHumanReadable } from '@trezor/utils';
 import { isFeatureFlagEnabled, isDevEnv } from '@suite-common/suite-utils';
+import { HandshakeElectron } from '@trezor/suite-desktop-api';
 
 import { app, ipcMain } from '../typed-electron';
 import { b2t } from '../libs/utils';
@@ -59,6 +60,7 @@ export const init: Module = ({ mainWindow, store }) => {
 
     const updateSettings = store.getUpdateSettings();
     let allowPrerelease = preReleaseFlag || updateSettings.allowPrerelease;
+    let { isAutomaticUpdateEnabled } = updateSettings;
     let feedURL = updaterURL || defaultFeedURL[allowPrerelease ? 'preRelease' : 'latest'];
 
     autoUpdater.logger = null;
@@ -94,6 +96,10 @@ export const init: Module = ({ mainWindow, store }) => {
 
         // Reset manual check flag
         isManualCheck = false;
+
+        if (isAutomaticUpdateEnabled) {
+            autoUpdater.downloadUpdate();
+        }
     });
 
     autoUpdater.on('update-not-available', ({ version, releaseDate }: UpdateInfo) => {
@@ -236,8 +242,27 @@ export const init: Module = ({ mainWindow, store }) => {
         logger.info(SERVICE_NAME, `New feed url: ${feedURL}`);
     });
 
+    ipcMain.on('update/set-automatic-update-enabled', (_, value = true) => {
+        logger.info(SERVICE_NAME, `set-automatic-update-enabled: ${value ? 'true' : 'false'}`);
+
+        mainWindow.webContents.send('update/set-automatic-update-enabled', value);
+        const settings = store.getUpdateSettings();
+        store.setUpdateSettings({ ...settings, isAutomaticUpdateEnabled: value });
+        isAutomaticUpdateEnabled = value;
+
+        if (!isAutomaticUpdateEnabled) {
+            // In case
+            //      1) the auto-update was enabled
+            //      2) update is probably already downloaded
+            //      3) user wants do disable auto-update and PREVENT the downloaded update from installing
+            //
+            // We have to disable auto update so it won't get installed.
+            autoUpdater.autoInstallOnAppQuit = false;
+        }
+    });
+
     // Enable feature on FE once it's ready
-    return () => {
+    return (): HandshakeElectron['desktopUpdate'] => {
         // if there is savedCurrentVersion in store (it doesn't have to be there as it was added in later versions)
         // and if it does not match current application version it means that application got updated and the new version
         // is run for the first time.
@@ -257,6 +282,7 @@ export const init: Module = ({ mainWindow, store }) => {
 
         return {
             allowPrerelease,
+            isAutomaticUpdateEnabled,
             firstRun:
                 savedCurrentVersion && savedCurrentVersion !== currentVersion
                     ? currentVersion

@@ -30,6 +30,7 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         error,
         setUpdateWindow,
         allowPrerelease,
+        setAutomaticUpdates,
     } = useActions({
         checking: desktopUpdateActions.checking,
         available: desktopUpdateActions.available,
@@ -39,6 +40,7 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         error: desktopUpdateActions.error,
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
         allowPrerelease: desktopUpdateActions.allowPrerelease,
+        setAutomaticUpdates: desktopUpdateActions.setAutomaticUpdates,
     });
     const { desktopUpdate } = useSelector(state => state);
     const routeName = useSelector(selectRouteName);
@@ -49,6 +51,9 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
 
     useEffect(() => {
         desktopApi.on('update/allow-prerelease', allowPrerelease);
+        desktopApi.on('update/set-automatic-update-enabled', isEnabled =>
+            setAutomaticUpdates({ isEnabled }),
+        );
 
         if (!desktopUpdate.enabled) {
             return;
@@ -80,6 +85,7 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         error,
         desktopUpdate.enabled,
         allowPrerelease,
+        setAutomaticUpdates,
     ]);
 
     const hideWindow = useCallback(() => {
@@ -97,6 +103,10 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
     }, [setUpdateWindow, desktopUpdate.latest, desktopUpdate.allowPrerelease]);
 
     const isVisible = useMemo(() => {
+        if (desktopUpdate.isAutomaticUpdateEnabled) {
+            return false;
+        }
+
         // Not displayed as a modal
         if (desktopUpdate.window !== 'maximized') {
             return false;
@@ -118,7 +128,12 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         }
 
         return true;
-    }, [desktopUpdate.window, desktopUpdate.state, desktopUpdate.latest]);
+    }, [
+        desktopUpdate.isAutomaticUpdateEnabled,
+        desktopUpdate.window,
+        desktopUpdate.state,
+        desktopUpdate.latest,
+    ]);
 
     const getUpdateModal = () => {
         switch (desktopUpdate.state) {

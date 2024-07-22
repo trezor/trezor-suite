@@ -34,6 +34,7 @@ const validChannels: Array<keyof RendererChannels> = [
     'update/downloading',
     'update/downloaded',
     'update/allow-prerelease',
+    'update/set-automatic-update-enabled',
     'tor/status',
     'tor/bootstrap',
     'tor/settings',

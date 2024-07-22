@@ -1604,6 +1604,15 @@ export default defineMessages({
             "All data is kept strictly anonymous. It's only used to improve the Trezor ecosystem.",
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
     },
+    TR_ALLOW_AUTOMATIC_SUITE_UPDATES: {
+        defaultMessage: 'Automatic Trezor Suite updates',
+        id: 'TR_ALLOW_AUTOMATIC_SUITE_UPDATES',
+    },
+    TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION: {
+        defaultMessage:
+            "Trezor Suite automatically downloads the latest version in the background and installs it when restarting the app. This ensures you're always up-to-date with the latest features and security patches. Updates occur without requiring your permission.",
+        id: 'TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION',
+    },
     TR_ADDRESS_DISPLAY: {
         defaultMessage: 'Address display',
         id: 'TR_ADDRESS_DISPLAY',
@@ -4922,13 +4931,14 @@ export default defineMessages({
         defaultMessage:
             'Tor Snowflake is a system that allows access to censored websites and apps.',
     },
-    TR_EXPERIMENTAL_SILENT_UPDATE: {
-        id: 'TR_EXPERIMENTAL_SILENT_UPDATE',
-        defaultMessage: 'Silent update',
+    TR_EXPERIMENTAL_AUTOMATIC_UPDATE: {
+        id: 'TR_EXPERIMENTAL_AUTOMATIC_UPDATE',
+        defaultMessage: ' Automatic Trezor Suite updates',
     },
-    TR_EXPERIMENTAL_SILENT_UPDATE_DESCRIPTION: {
-        id: 'TR_EXPERIMENTAL_SILENT_UPDATE_DESCRIPTION',
-        defaultMessage: 'Automatically downloads the new version on the background and install with next restart of the Suite.',
+    TR_EXPERIMENTAL_AUTOMATIC_UPDATE_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_AUTOMATIC_UPDATE_DESCRIPTION',
+        defaultMessage:
+            "Trezor Suite automatically downloads the latest version in the background and installs it when restarting the app. This ensures you're always up-to-date with the latest features and security patches. Updates occur without requiring your permission.",
     },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
