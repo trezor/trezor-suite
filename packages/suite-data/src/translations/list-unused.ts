@@ -1,11 +1,20 @@
 import { execSync } from 'child_process';
 import path from 'path';
+import fs from 'fs';
 
 // See comment in list-duplicates.ts
 // eslint-disable-next-line import/no-extraneous-dependencies
 import messages from '@trezor/suite/src/support/messages';
 
 console.log('unused messages: ');
+
+const rootDir = path.join(__dirname, '..', '..', '..', '..');
+function execLocal(cmd: string) {
+    return execSync(cmd, {
+        encoding: 'utf-8',
+        cwd: rootDir,
+    });
+}
 
 const unused: string[] = [];
 
@@ -50,10 +59,7 @@ for (const message in messages) {
         const cmd = `grep ${includeExtensions} ${excludeDir} --exclude=messages.ts -r "${message}" -w ./`;
 
         try {
-            execSync(cmd, {
-                encoding: 'utf-8',
-                cwd: path.join(__dirname, '..', '..', '..', '..'),
-            });
+            execLocal(cmd);
         } catch (err) {
             unused.push(message);
         }
@@ -63,5 +69,47 @@ for (const message in messages) {
 if (unused.length) {
     console.log('there are unused messages!');
     console.log(unused);
-    process.exit(1);
+
+    if (process.argv.includes('--cleanup')) {
+        console.log('cleaning up...');
+        const pathToMessages = path.join(
+            __dirname,
+            '..',
+            '..',
+            '..',
+            'suite',
+            'src',
+            'support',
+            'messages.ts',
+        );
+        let messagesContent = fs.readFileSync(pathToMessages, 'utf-8');
+
+        for (const message of unused) {
+            const regex = new RegExp(`\\s+${message}:\\s+\\{[^}]*\\},?\\n`, 'g');
+            messagesContent = messagesContent.replace(regex, '');
+        }
+        fs.writeFileSync(pathToMessages, messagesContent);
+        execLocal(`yarn prettier --write ${pathToMessages}`);
+
+        if (process.argv.includes('--pr')) {
+            // Create a PR
+            console.log('creating PR...');
+            const dateCode = new Date()
+                .toISOString()
+                .replace(/[^0-9]/g, '')
+                .slice(0, 12);
+            const branchName = 'chore/remove-unused-messages-' + dateCode;
+            const title = 'chore(suite-data): remove unused messages';
+            const body = 'This PR removes unused localization messages from Suite';
+            execLocal(`git checkout -b ${branchName}`);
+            execLocal(`git add ${pathToMessages}`);
+            execLocal(`git commit -m "${title}"`);
+            execLocal(`git push origin ${branchName}`);
+            execLocal(
+                `gh pr create --repo trezor/trezor-suite --title "${title}" --body "${body}" --base develop --head ${branchName}`,
+            );
+        }
+    } else {
+        process.exit(1);
+    }
 }

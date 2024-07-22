@@ -1,6 +1,13 @@
 name: "[Bot] Crowdin translations update"
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+    inputs:
+      remove_unused_translations:
+        description: "Confirm removal of unused translations. Check them first in misc tests pipeline."
+        required: true
+        default: false
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -32,6 +39,9 @@ jobs:
           git checkout -B ${{ env.BRANCH_NAME }}
           yarn workspace @trezor/suite translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
           yarn workspace @trezor/suite translations:backport-en
+          if [ "${{ github.event.inputs.remove_unused_translations }}" = "true" ]; then
+            yarn workspace @trezor/suite translations:list-unused --cleanup
+          fi
           yarn workspace @trezor/suite translations:format
           yarn workspace @trezor/suite translations:extract
           cat packages/suite-data/files/translations/master.json
