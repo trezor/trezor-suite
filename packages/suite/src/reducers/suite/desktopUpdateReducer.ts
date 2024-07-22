@@ -24,6 +24,7 @@ export interface State {
     latest?: UpdateInfo;
     window: UpdateWindow;
     allowPrerelease: boolean;
+    isAutomaticUpdateEnabled: boolean;
 }
 
 const initialState: State = {
@@ -31,6 +32,7 @@ const initialState: State = {
     state: UpdateState.NotAvailable,
     window: 'maximized',
     allowPrerelease: false,
+    isAutomaticUpdateEnabled: false,
 };
 
 const desktopUpdateReducer = (state: State = initialState, action: Action): State =>
@@ -40,6 +42,8 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
                 if (action.payload.desktopUpdate) {
                     draft.enabled = true;
                     draft.allowPrerelease = action.payload.desktopUpdate.allowPrerelease;
+                    draft.isAutomaticUpdateEnabled =
+                        action.payload.desktopUpdate.isAutomaticUpdateEnabled;
                 }
                 break;
             case DESKTOP_UPDATE.CHECKING:
@@ -76,6 +80,9 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
                 break;
             case DESKTOP_UPDATE.ALLOW_PRERELEASE:
                 draft.allowPrerelease = action.payload;
+                break;
+            case DESKTOP_UPDATE.SET_AUTOMATIC_UPDATES:
+                draft.isAutomaticUpdateEnabled = action.payload.isEnabled;
                 break;
             // no default
         }

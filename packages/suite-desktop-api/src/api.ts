@@ -29,6 +29,7 @@ export interface MainChannels {
     'theme/change': SuiteThemeVariant;
     'tor/get-status': void;
     'update/allow-prerelease': boolean;
+    'update/set-automatic-update-enabled': boolean;
     'update/cancel': void;
     'update/check': boolean | undefined;
     'update/download': void;
@@ -51,6 +52,7 @@ export interface RendererChannels {
     'update/downloading': UpdateProgress;
     'update/downloaded': UpdateInfo;
     'update/allow-prerelease': boolean;
+    'update/set-automatic-update-enabled': boolean;
 
     // tor
     'tor/status': TorStatusEvent;
@@ -113,6 +115,7 @@ export interface DesktopApi {
     installUpdate: DesktopApiSend<'update/install'>;
     cancelUpdate: DesktopApiSend<'update/cancel'>;
     allowPrerelease: DesktopApiSend<'update/allow-prerelease'>;
+    setAutomaticUpdateEnabled: DesktopApiSend<'update/set-automatic-update-enabled'>;
     // Theme
     themeChange: DesktopApiSend<'theme/change'>;
     // Handshake

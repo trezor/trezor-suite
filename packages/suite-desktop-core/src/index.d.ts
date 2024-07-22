@@ -94,6 +94,7 @@ declare type UpdateSettings = {
      */
     savedCurrentVersion?: string;
     allowPrerelease: boolean;
+    isAutomaticUpdateEnabled: boolean;
 };
 
 declare type TorSettings = {

@@ -61,6 +61,7 @@ export type HandshakeElectron = {
     protocol?: string;
     desktopUpdate?: {
         allowPrerelease: boolean;
+        isAutomaticUpdateEnabled: boolean;
         firstRun?: string;
     };
     paths: {

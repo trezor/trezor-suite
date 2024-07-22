@@ -18,7 +18,8 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.WINDOW; payload: UpdateWindow }
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_ENABLE }
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_DISABLE }
-    | { type: typeof DESKTOP_UPDATE.ALLOW_PRERELEASE; payload: boolean };
+    | { type: typeof DESKTOP_UPDATE.ALLOW_PRERELEASE; payload: boolean }
+    | { type: typeof DESKTOP_UPDATE.SET_AUTOMATIC_UPDATES; payload: { isEnabled: boolean } };
 
 export const checking = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.CHECKING });
 
@@ -138,4 +139,13 @@ export const openEarlyAccessSetup = (earlyAccessEnabled: boolean): DesktopUpdate
 export const allowPrerelease = (allowPrerelease: boolean): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.ALLOW_PRERELEASE,
     payload: allowPrerelease,
+});
+
+export const setAutomaticUpdates = ({
+    isEnabled,
+}: {
+    isEnabled: boolean;
+}): DesktopUpdateAction => ({
+    type: DESKTOP_UPDATE.SET_AUTOMATIC_UPDATES,
+    payload: { isEnabled },
 });

@@ -34,15 +34,20 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const descId = config.description;
     const url = config.knowledgeBaseUrl;
 
-    const onChangeFeature = () =>
+    const onChangeFeature = () => {
+        const newValue = !checked;
+
+        config?.onToggle?.({ dispatch, newValue });
+
         dispatch({
             type: SUITE.SET_EXPERIMENTAL_FEATURES,
             payload: {
-                enabledFeatures: !checked
+                enabledFeatures: newValue
                     ? [...enabledFeatures, feature]
                     : enabledFeatures.filter(enabledFeature => enabledFeature !== feature),
             },
         });
+    };
 
     return (
         <FeatureLineWrapper>
@@ -81,14 +86,24 @@ export const Experimental = () => {
 
     const dispatch = useDispatch();
 
-    const onSwitchExperimental = () =>
+    const onSwitchExperimental = () => {
+        Object.values(EXPERIMENTAL_FEATURES).forEach(config =>
+            config?.onToggle?.({ dispatch, newValue: false }),
+        );
+
         dispatch({
             type: SUITE.SET_EXPERIMENTAL_FEATURES,
             payload: { enabledFeatures: enabledFeatures === undefined ? [] : undefined },
         });
+    };
 
+<<<<<<< HEAD
     const experimentalFeatures = Object.keys(EXPERIMENTAL_FEATURES).filter(feature =>
         EXPERIMENTAL_FEATURES[feature as ExperimentalFeature].isEnabled({ isDebug }),
+=======
+    const experimentalFeatures = Object.keys(EXPERIMENTAL_FEATURES).filter(
+        feature => !EXPERIMENTAL_FEATURES[feature as ExperimentalFeature]?.isDisabled?.(),
+>>>>>>> 1fabd065b1 (feat(suite): implement automatic-update as a feature flag)
     );
 
     return (
