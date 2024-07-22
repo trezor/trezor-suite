@@ -9,13 +9,13 @@ import {
 import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useFormatters } from '@suite-common/formatters';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useEffect } from 'react';
 import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
+import { FORM_CRYPTO_INPUT, FORM_FIAT_INPUT } from 'src/constants/wallet/coinmarket/form';
 
 const CoinmarketFormInputCrypto = ({ className }: CoinmarketFormInputProps) => {
     const { translationString } = useTranslation();
@@ -29,11 +29,9 @@ const CoinmarketFormInputCrypto = ({ className }: CoinmarketFormInputProps) => {
         trigger,
         clearErrors,
         getValues,
-    } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    } = useCoinmarketFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-
-    const fiatInput = 'fiatInput';
-    const cryptoInput = 'cryptoInput';
+    const { cryptoSelect } = getValues();
 
     const cryptoInputRules = {
         validate: {
@@ -50,26 +48,26 @@ const CoinmarketFormInputCrypto = ({ className }: CoinmarketFormInputProps) => {
 
     useEffect(() => {
         if (amountLimits) {
-            trigger([cryptoInput]);
+            trigger([FORM_CRYPTO_INPUT]);
         }
     }, [amountLimits, trigger]);
 
     return (
         <NumberInput
-            name={cryptoInput}
+            name={FORM_CRYPTO_INPUT}
             onChange={() => {
-                clearErrors(fiatInput);
+                clearErrors(FORM_FIAT_INPUT);
             }}
-            inputState={getInputState(errors.cryptoInput)}
-            control={control}
+            inputState={getInputState(errors[FORM_CRYPTO_INPUT])}
+            control={control as any} // FIXME: any
             rules={cryptoInputRules}
             maxLength={formInputsMaxLength.amount}
-            bottomText={errors[cryptoInput]?.message || null}
+            bottomText={errors[FORM_CRYPTO_INPUT]?.message || null}
             className={className}
             hasBottomPadding={false}
             innerAddon={
                 <CoinmarketFormOptionLabel>
-                    {cryptoToCoinSymbol(getValues().cryptoSelect.value)}
+                    {cryptoToCoinSymbol(cryptoSelect?.value)}
                 </CoinmarketFormOptionLabel>
             }
             data-test="@coinmarket/form/crypto-input"

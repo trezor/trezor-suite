@@ -1,25 +1,18 @@
 import { withSelectedAccountLoaded } from 'src/components/wallet';
-import { useCoinmarketSellForm, SellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
-import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common';
-import SellForm from './components/SellForm';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import CoinmarketFormLayout from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormLayout';
+import CoinmarketLayout from 'src/views/wallet/coinmarket/common/CoinmarketLayoutNew/CoinmarketLayout';
+import { useCoinmarketSellForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellForm';
 
 const CoinmarketSell = (props: UseCoinmarketProps) => {
     const coinmarketSellContextValues = useCoinmarketSellForm(props);
-    const {
-        isDraft,
-        formState: { isDirty },
-        handleClearFormButtonClick,
-    } = coinmarketSellContextValues;
 
     return (
-        <CoinmarketLayout
-            selectedAccount={props.selectedAccount}
-            onClearFormButtonClick={isDirty || isDraft ? handleClearFormButtonClick : undefined}
-        >
-            <SellFormContext.Provider value={coinmarketSellContextValues}>
-                <SellForm />
-            </SellFormContext.Provider>
+        <CoinmarketLayout selectedAccount={props.selectedAccount}>
+            <CoinmarketFormContext.Provider value={coinmarketSellContextValues}>
+                <CoinmarketFormLayout />
+            </CoinmarketFormContext.Provider>
         </CoinmarketLayout>
     );
 };

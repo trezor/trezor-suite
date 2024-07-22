@@ -5,6 +5,8 @@ import { spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarketOffers';
+import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 
 const PriceWrap = styled.div``;
 
@@ -37,12 +39,17 @@ const CoinmarketUtilsPrice = ({
     receiveAmount,
     receiveCurrency,
 }: CoinmarketCryptoAmountProps) => {
+    const { type } = useCoinmarketOffersContext();
+
     return (
         <PriceWrap>
             <PriceTitle>
                 <Translation
                     id={
-                        amountInCrypto ? 'TR_COINMARKET_YOU_WILL_PAY' : 'TR_COINMARKET_YOU_WILL_GET'
+                        coinmarketGetAmountLabels({
+                            type,
+                            amountInCrypto: !!amountInCrypto,
+                        }).labelComparatorOffer
                     }
                 />
             </PriceTitle>

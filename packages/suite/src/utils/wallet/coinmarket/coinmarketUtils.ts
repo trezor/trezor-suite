@@ -21,6 +21,8 @@ import {
 import {
     CoinmarketBuildOptionsProps,
     CoinmarketCryptoListProps,
+    CoinmarketGetAmountLabelsProps,
+    CoinmarketGetAmountLabelsReturnProps,
     CoinmarketOptionsGroupProps,
     CoinmarketTradeBuySellDetailMapProps,
     CoinmarketTradeBuySellType,
@@ -383,4 +385,27 @@ export const coinmarketBuildCryptoOptions = ({
     });
 
     return groups;
+};
+
+export const coinmarketGetAmountLabels = ({
+    type,
+    amountInCrypto,
+}: CoinmarketGetAmountLabelsProps): CoinmarketGetAmountLabelsReturnProps => {
+    if (type === 'sell') {
+        return {
+            label1: amountInCrypto ? 'TR_COINMARKET_YOU_PAY' : 'TR_COINMARKET_YOU_GET',
+            label2: amountInCrypto ? 'TR_COINMARKET_YOU_GET' : 'TR_COINMARKET_YOU_PAY',
+            labelComparatorOffer: amountInCrypto
+                ? 'TR_COINMARKET_YOU_WILL_GET'
+                : 'TR_COINMARKET_YOU_WILL_PAY',
+        };
+    }
+
+    return {
+        label1: amountInCrypto ? 'TR_COINMARKET_YOU_GET' : 'TR_COINMARKET_YOU_PAY',
+        label2: amountInCrypto ? 'TR_COINMARKET_YOU_PAY' : 'TR_COINMARKET_YOU_GET',
+        labelComparatorOffer: amountInCrypto
+            ? 'TR_COINMARKET_YOU_WILL_PAY'
+            : 'TR_COINMARKET_YOU_WILL_GET',
+    };
 };

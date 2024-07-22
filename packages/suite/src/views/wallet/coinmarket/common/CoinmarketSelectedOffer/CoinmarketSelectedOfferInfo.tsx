@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BuyTrade, BuyProviderInfo } from 'invity-api';
+import { BuyTrade, BuyProviderInfo, SellFiatTrade } from 'invity-api';
 import { variables } from '@trezor/components';
 import {
     CoinmarketPaymentType,
@@ -15,6 +15,8 @@ import {
     isCryptoSymbolToken,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
+import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -111,7 +113,7 @@ const TransactionIdWrapper = styled.div`
 `;
 
 interface CoinmarketSelectedOfferInfoProps {
-    selectedQuote: BuyTrade;
+    selectedQuote: BuyTrade | SellFiatTrade;
     transactionId?: string;
     providers?: {
         [name: string]: BuyProviderInfo;
@@ -123,20 +125,17 @@ export const CoinmarketSelectedOfferInfo = ({
     transactionId,
     providers,
 }: CoinmarketSelectedOfferInfoProps) => {
-    const {
-        receiveStringAmount,
-        receiveCurrency,
-        exchange,
-        paymentMethod,
-        paymentMethodName,
-        fiatCurrency,
-        fiatStringAmount,
-    } = selectedQuote;
+    const context = useCoinmarketFormContext();
+    const cryptoAmountProps = getCryptoQuoteAmountProps(selectedQuote, context);
+    const { exchange, paymentMethod, paymentMethodName, fiatCurrency, fiatStringAmount } =
+        selectedQuote;
 
-    const currency = receiveCurrency ? cryptoToCoinSymbol(receiveCurrency) : receiveCurrency;
+    const currency = cryptoAmountProps?.receiveCurrency
+        ? cryptoToCoinSymbol(cryptoAmountProps.receiveCurrency)
+        : undefined;
     const network =
-        receiveCurrency && isCryptoSymbolToken(receiveCurrency)
-            ? cryptoToNetworkSymbol(receiveCurrency)?.toUpperCase()
+        cryptoAmountProps?.receiveCurrency && isCryptoSymbolToken(cryptoAmountProps.receiveCurrency)
+            ? cryptoToNetworkSymbol(cryptoAmountProps.receiveCurrency)?.toUpperCase()
             : null;
 
     return (
@@ -180,7 +179,7 @@ export const CoinmarketSelectedOfferInfo = ({
                             <InvityCoinLogo symbol={currency} />
                             <Amount>
                                 <CoinmarketCryptoAmount
-                                    amount={receiveStringAmount}
+                                    amount={cryptoAmountProps?.receiveAmount}
                                     symbol={currency}
                                 />
                             </Amount>

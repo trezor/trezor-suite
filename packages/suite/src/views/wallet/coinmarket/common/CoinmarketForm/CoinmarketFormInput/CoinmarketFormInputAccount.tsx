@@ -29,6 +29,7 @@ import {
 } from 'src/views/wallet/coinmarket';
 import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
 import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
+import { FORM_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
 
 const CoinmarketFormOptionTokenLogo = styled(CoinmarketCoinImage)`
     height: 18px;
@@ -61,7 +62,7 @@ const CoinmarketFormInputAccount = ({ className, label }: CoinmarketFormInputPro
         <CoinmarketFormInput className={className}>
             <CoinmarketFormInputLabel label={label} />
             <Controller
-                name="cryptoSelect"
+                name={FORM_CRYPTO_CURRENCY_SELECT}
                 control={control}
                 render={({ field: { onChange, value } }) => (
                     <Select

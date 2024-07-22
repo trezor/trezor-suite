@@ -4,7 +4,6 @@ import regional from 'src/constants/wallet/coinmarket/regional';
 import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
 import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import styled from 'styled-components';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { spacingsPx } from '@trezor/theme';
 import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
@@ -14,6 +13,7 @@ import {
     CoinmarketFormOption,
     CoinmarketFormOptionLabel,
 } from 'src/views/wallet/coinmarket';
+import { FORM_COUNTRY_SELECT } from 'src/constants/wallet/coinmarket/form';
 
 const FlagContainer = styled.div`
     position: relative;
@@ -34,22 +34,20 @@ const FlagWrapper = styled(Flag)`
 `;
 
 const CoinmarketFormInputCountry = ({ className, label }: CoinmarketFormInputProps) => {
-    const { control, setAmountLimits, defaultCountry } =
-        useCoinmarketFormContext<CoinmarketTradeBuyType>();
-    const countrySelect = 'countrySelect';
+    const { control, setAmountLimits, defaultCountry } = useCoinmarketFormContext();
 
     return (
         <CoinmarketFormInput className={className}>
             <CoinmarketFormInputLabel label={label} />
             <Controller
-                name={countrySelect}
+                name={FORM_COUNTRY_SELECT}
                 defaultValue={defaultCountry}
-                control={control}
+                control={control as any} // FIXME: any
                 render={({ field: { onChange, value } }) => (
                     <Select
                         value={value}
                         options={regional.countriesOptions}
-                        onChange={(selected: any) => {
+                        onChange={selected => {
                             onChange(selected);
                             setAmountLimits(undefined);
                         }}

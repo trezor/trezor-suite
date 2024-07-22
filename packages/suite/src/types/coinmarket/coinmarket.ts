@@ -177,3 +177,22 @@ export interface CoinmarketOptionsGroupProps {
 }
 
 export type CoinmarketFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
+
+export interface CoinmarketGetAmountLabelsProps {
+    type: CoinmarketTradeType;
+    amountInCrypto: boolean;
+}
+
+type CoinmarketPayGetLabelType = Extract<
+    ExtendedMessageDescriptor['id'],
+    `TR_COINMARKET_YOU_${'PAY' | 'GET'}`
+>;
+
+export interface CoinmarketGetAmountLabelsReturnProps {
+    label1: CoinmarketPayGetLabelType;
+    label2: CoinmarketPayGetLabelType;
+    labelComparatorOffer: Extract<
+        ExtendedMessageDescriptor['id'],
+        `TR_COINMARKET_YOU_WILL_${'PAY' | 'GET'}`
+    >;
+}

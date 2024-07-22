@@ -40,6 +40,7 @@ import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmark
 import useCoinmarketPaymentMethod from 'src/hooks/wallet/coinmarket/form/useCoinmarketPaymentMethod';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/coinmarket/form';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
@@ -247,7 +248,7 @@ const useCoinmarketBuyForm = ({
                 setAmountLimits(limits);
 
                 if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
-                    setValue('paymentMethod', {
+                    setValue(FORM_PAYMENT_METHOD_SELECT, {
                         value: bestQuotePaymentMethod ?? '',
                         label: bestQuotePaymentMethod ?? '',
                     });

@@ -1,7 +1,7 @@
 import { Badge, Spinner } from '@trezor/components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import styled from 'styled-components';
-import { BuyTrade } from 'invity-api';
+import { BuyTrade, SellFiatTrade } from 'invity-api';
 import { Translation } from 'src/components/suite';
 import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
@@ -33,10 +33,10 @@ const CoinmarketSpinnerWrapper = styled(Spinner)`
 `;
 
 interface CoinmarketFormOfferItemProps {
-    bestQuote: BuyTrade | undefined;
+    bestQuote: BuyTrade | SellFiatTrade | undefined;
     isFormLoading: boolean;
     isFormInvalid: boolean;
-    providers: CoinmarketUtilsProvidersProps;
+    providers: CoinmarketUtilsProvidersProps | undefined;
     isBestRate?: boolean;
 }
 
