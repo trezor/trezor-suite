@@ -1,6 +1,7 @@
 import fetch from 'cross-fetch';
 import fs from 'fs-extra';
 import path from 'path';
+import crypto from 'crypto';
 import { commit } from './helpers';
 
 const { exec } = require('./helpers');
@@ -79,22 +80,22 @@ const updateConfigFromJSON = async () => {
         const changes = await exec('git', ['diff', CONFIG_FILE_PATH]);
         if (changes.stdout !== '') {
             console.log('There were changes in keys.');
-            // There were changes in CONFIG_FILE_PATH
-            const hashChanges = await exec('git', [
-                'log',
-                '-1',
-                '--pretty=format:"%H"',
-                '--',
-                CONFIG_FILE_PATH,
-            ]);
-            // We use the hash of the changes to create branch name to avoid use a branch that already exists.
-            const branchName = `chore/update-device-authenticity-config-${hashChanges.stdout.replace(/"/g, '')}`;
+
+            // Use the content to generate the hash in the branch so it is the same with same content.
+            // If we would use the hash provided by Git it would be different because it contains date as well.
+            const fileContent = await fs.readFile(CONFIG_FILE_PATH, 'utf8');
+            const hash = crypto.createHash('sha256').update(fileContent).digest('hex');
+
+            // Use the hash to create branch name to avoid using a branch that already exists.
+            const branchName = `chore/update-device-authenticity-config-${hash}`;
             const commitMessage = 'chore(connect): update device authenticity config';
             await exec('git', ['checkout', '-b', branchName]);
             commit({
                 path: ROOT,
                 message: commitMessage,
             });
+            // If the branch was already created this will fail, and this is desired feature because we
+            // do not want to create 2 branches and PRs with same content.
             await exec('git', ['push', 'origin', branchName]);
 
             await exec('gh', [
