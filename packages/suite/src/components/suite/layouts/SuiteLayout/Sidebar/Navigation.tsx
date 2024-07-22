@@ -5,7 +5,6 @@ import { NavigationItem, NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
 import { useSelector } from 'src/hooks/suite';
 import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
-import { ExperimentalFeature } from 'src/constants/suite/experimental';
 
 const Nav = styled.nav`
     display: flex;
@@ -16,7 +15,7 @@ const Nav = styled.nav`
 
 const PasswordManagerNavItem = (props: NavigationItemProps) => {
     const passwordManagerExperimentalFeature = useSelector(
-        selectHasExperimentalFeature(ExperimentalFeature.PasswordManager),
+        selectHasExperimentalFeature('password-manager'),
     );
 
     return passwordManagerExperimentalFeature ? <NavigationItem {...props} /> : null;
