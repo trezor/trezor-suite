@@ -19,6 +19,10 @@ export const getIsFakeTokenPhishing = (
     new BigNumber(transaction.amount).isEqualTo(0) && // native currency is zero
     D.isNotEmpty(transaction.tokens) && // there are tokens in tx
     !transaction.tokens.some(tokenTx => {
+        if (new BigNumber(tokenTx.amount).isEqualTo(0)) {
+            return false;
+        }
+
         const isNftTx = isNftTokenTransfer(tokenTx);
         const definitions = isNftTx ? tokenDefinitions?.nft?.data : tokenDefinitions?.coin?.data;
         const hide = isNftTx ? tokenDefinitions?.nft?.hide : tokenDefinitions?.coin?.hide;
