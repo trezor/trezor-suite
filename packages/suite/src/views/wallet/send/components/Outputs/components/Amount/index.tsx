@@ -114,7 +114,6 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         getDefaultValue,
         formState: { errors },
         setValue,
-        getValues,
         setMax,
         calculateFiat,
         composeTransaction,
@@ -124,7 +123,8 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const theme = useTheme();
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
-    const inputName = `outputs.${outputId}.amount` as const;
+    const amountName = `outputs.${outputId}.amount` as const;
+    const currencyName = `outputs.${outputId}.currency.value` as const;
     const tokenInputName = `outputs.${outputId}.token`;
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
@@ -134,21 +134,19 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const isSetMaxVisible = isSetMaxActive && !error && !Object.keys(errors).length;
     const maxSwitchId = `outputs.${outputId}.setMax`;
 
-    const amountValue = getDefaultValue(inputName, output.amount || '');
+    const amountValue = getDefaultValue(amountName, output.amount || '');
+    const currencyValue = getDefaultValue(currencyName, output.currency?.value || '');
     const tokenValue = getDefaultValue(tokenInputName, output.token);
     const token = findToken(tokens, tokenValue);
-    const values = getValues();
-    const fiatCurrency = values?.outputs?.[0]?.currency;
 
     const currentRate = useSelector(state =>
         selectFiatRatesByFiatRateKey(
             state,
             getFiatRateKey(
                 symbol,
-                fiatCurrency?.value as FiatCurrencyCode,
+                currencyValue as FiatCurrencyCode,
                 (token?.contract || '') as TokenAddress,
             ),
-            'current',
         ),
     );
 
@@ -177,9 +175,9 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
             // calculate or reset Fiat value
             calculateFiat(outputId, value);
-            composeTransaction(inputName);
+            composeTransaction(amountName);
         },
-        [setValue, calculateFiat, composeTransaction, inputName, isSetMaxActive, outputId],
+        [setValue, calculateFiat, composeTransaction, amountName, isSetMaxActive, outputId],
     );
 
     const cryptoAmountRules = {
@@ -218,7 +216,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
     const onSwitchChange = () => {
         setMax(outputId, isSetMaxActive);
-        composeTransaction(inputName);
+        composeTransaction(amountName);
     };
 
     const isTokenSelected = !!token;
@@ -270,8 +268,8 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         }
                         bottomText={bottomText || null}
                         onChange={handleInputChange}
-                        name={inputName}
-                        data-test={inputName}
+                        name={amountName}
+                        data-test={amountName}
                         defaultValue={amountValue}
                         maxLength={formInputsMaxLength.amount}
                         rules={cryptoAmountRules}
