@@ -109,9 +109,6 @@ describe('Database migration', () => {
         // TO:
         cy.visit(`${baseUrl}/${to}`);
         cy.getTestElement('@dashboard/graph', { timeout: 40000 }).should('be.visible');
-        cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 10_000 })
-            .should('be.visible')
-            .click();
         cy.getTestElement('@account-menu/btc/normal/0').click();
 
         cy.getTestElement('@menu/switch-device').click();
