@@ -264,6 +264,7 @@ export const TokenList = ({
                                             options: [
                                                 {
                                                     label: <Translation id="TR_NAV_SEND" />,
+                                                    icon: 'SEND',
                                                     onClick: () => {
                                                         goToWithAnalytics('wallet-send', {
                                                             params: {
@@ -282,6 +283,7 @@ export const TokenList = ({
                                                 },
                                                 {
                                                     label: <Translation id="TR_NAV_RECEIVE" />,
+                                                    icon: 'RECEIVE',
                                                     onClick: onReceive,
                                                     isDisabled: isReceiveButtonDisabled,
                                                     isHidden:
