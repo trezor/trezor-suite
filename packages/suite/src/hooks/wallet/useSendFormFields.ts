@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
-import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
-import { FormState, FormOptions } from '@suite-common/wallet-types';
+import { formatNetworkAmount, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { FormState, FormOptions, TokenAddress } from '@suite-common/wallet-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { Rate } from '@suite-common/wallet-types';
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { useSelector } from '../suite';
 
 type Props = UseFormReturn<FormState> & {
     fiatRate?: Rate;
@@ -18,11 +21,11 @@ export const useSendFormFields = ({
     getValues,
     setValue,
     clearErrors,
-    fiatRate,
     network,
     formState: { errors },
 }: Props) => {
     const { shouldSendInSats } = useBitcoinAmountUnit(network.symbol);
+    const currentRates = useSelector(selectCurrentFiatRates);
 
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
@@ -36,7 +39,7 @@ export const useSendFormFields = ({
             const { outputs } = getValues();
             const output = outputs ? outputs[outputIndex] : undefined;
             if (!output || output.type !== 'payment') return;
-            const { fiat } = output;
+            const { fiat, token, currency } = output;
             if (typeof fiat !== 'string') return; // fiat input not registered (testnet or fiat not available)
             const inputName = `outputs.${outputIndex}.fiat` as const;
             if (!amount) {
@@ -47,6 +50,12 @@ export const useSendFormFields = ({
 
                 return;
             }
+            const fiatRateKey = getFiatRateKey(
+                network.symbol,
+                currency.value as FiatCurrencyCode,
+                token as TokenAddress,
+            );
+            const fiatRate = currentRates?.[fiatRateKey];
             // calculate Fiat value
             if (!fiatRate?.rate) return;
 
@@ -59,7 +68,7 @@ export const useSendFormFields = ({
                 setValue(inputName, fiatValue, { shouldValidate: true });
             }
         },
-        [getValues, setValue, fiatRate, shouldSendInSats, network.symbol, errors],
+        [getValues, setValue, currentRates, shouldSendInSats, network.symbol, errors],
     );
 
     const setAmount = useCallback(
