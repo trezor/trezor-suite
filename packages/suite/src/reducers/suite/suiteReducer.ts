@@ -11,7 +11,7 @@ import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
 import { ensureLocale } from 'src/utils/suite/l10n';
 import type { Locale } from 'src/config/suite/languages';
 import { SUITE, STORAGE } from 'src/actions/suite/constants';
-import { ExperimentalFeature } from 'src/constants/suite/experimental';
+import { ExperimentalFeature, ExperimentalFeatureConfig } from 'src/constants/suite/experimental';
 import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
@@ -95,7 +95,7 @@ export interface SuiteSettings {
     isFirmwareRevisionCheckDisabled: boolean;
     addressDisplayType: AddressDisplayOptions;
     defaultWalletLoading: WalletType;
-    experimental?: ExperimentalFeature[];
+    experimental?: ExperimentalFeatureConfig['id'][];
     sidebarWidth: number;
     autoStart?: boolean;
 }
@@ -228,7 +228,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
 
             case SUITE.SET_EXPERIMENTAL_FEATURES:
-                draft.settings.experimental = action.payload;
+                draft.settings.experimental = action.payload.enabledFeatures;
                 break;
 
             case SUITE.SET_FLAG:

@@ -4922,6 +4922,14 @@ export default defineMessages({
         defaultMessage:
             'Tor Snowflake is a system that allows access to censored websites and apps.',
     },
+    TR_EXPERIMENTAL_SILENT_UPDATE: {
+        id: 'TR_EXPERIMENTAL_SILENT_UPDATE',
+        defaultMessage: 'Silent update',
+    },
+    TR_EXPERIMENTAL_SILENT_UPDATE_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_SILENT_UPDATE_DESCRIPTION',
+        defaultMessage: 'Automatically downloads the new version on the background and install with next restart of the Suite.',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',
