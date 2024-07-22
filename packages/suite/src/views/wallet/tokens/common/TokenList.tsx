@@ -291,14 +291,23 @@ export const TokenList = ({
                                                             : true,
                                                 },
                                                 {
-                                                    label: <Translation id="TR_UNHIDE_TOKEN" />,
+                                                    label: (
+                                                        <Translation
+                                                            id={
+                                                                tokenStatusType ===
+                                                                TokenManagementAction.SHOW
+                                                                    ? 'TR_UNHIDE_TOKEN'
+                                                                    : 'TR_HIDE_TOKEN'
+                                                            }
+                                                        />
+                                                    ),
                                                     icon: 'EYE_CLOSED',
                                                     onClick: () =>
                                                         dispatch(
                                                             tokenDefinitionsActions.setTokenStatus({
                                                                 networkSymbol: network.symbol,
                                                                 contractAddress: token.contract,
-                                                                status: TokenManagementAction.HIDE,
+                                                                status: tokenStatusType,
                                                                 type: DefinitionType.COIN,
                                                             }),
                                                         ),
