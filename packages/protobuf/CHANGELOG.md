@@ -1,3 +1,8 @@
+# 1.1.1-beta.1
+
+-   chore(connect): add basic types support for T3B1 (131c4af73a)
+-   feat(protobuf): update protobuf messages for newest version (f8d8a23a85)
+
 # 1.0.14-beta.2
 
 -   chore(suite): unused package dependencies removed (f7907e1496)
