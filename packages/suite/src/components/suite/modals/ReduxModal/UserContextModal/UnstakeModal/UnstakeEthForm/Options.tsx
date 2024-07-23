@@ -55,8 +55,7 @@ const GreenTxt = styled.span`
 `;
 
 const InputsWrapper = styled.div<{ $isShown: boolean }>`
-    max-width: 442px;
-    margin-left: auto;
+    width: 100%;
     margin-bottom: ${spacingsPx.sm};
     display: ${({ $isShown }) => ($isShown ? 'block' : 'none')};
 `;
