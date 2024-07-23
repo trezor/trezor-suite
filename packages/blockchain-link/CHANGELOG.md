@@ -1,3 +1,7 @@
+# 2.2.1-beta.1
+
+-   chore: update trends libs (70b9c112bf)
+
 # 2.1.31-beta.2
 
 -   chore(deps): bump ws from 8.16.0 to 8.17.1 (bc5b787f3e)
