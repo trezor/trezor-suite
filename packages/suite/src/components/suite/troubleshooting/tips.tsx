@@ -77,27 +77,6 @@ const BridgeInstall = () => {
     );
 };
 
-const BridgeUse = () => {
-    const dispatch = useDispatch();
-
-    const handleClick = () => dispatch(goto('suite-bridge'));
-
-    return (
-        <Wrapper>
-            <Translation
-                id="TR_TROUBLESHOOTING_TIP_BRIDGE_USE_DESCRIPTION"
-                values={{
-                    a: chunks => (
-                        <TrezorLink variant="underline" onClick={handleClick}>
-                            {chunks}
-                        </TrezorLink>
-                    ),
-                }}
-            />
-        </Wrapper>
-    );
-};
-
 export const TROUBLESHOOTING_TIP_BRIDGE_STATUS = {
     key: 'bridge-status',
     heading: <Translation id="TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE" />,
@@ -117,13 +96,6 @@ export const TROUBLESHOOTING_TIP_SUITE_DESKTOP = {
     heading: <Translation id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TITLE" />,
     description: <BridgeInstall />,
     hide: !isWeb(),
-};
-
-export const TROUBLESHOOTING_TIP_BRIDGE_USE = {
-    key: 'bridge-use',
-    heading: <Translation id="TR_TROUBLESHOOTING_TIP_BRIDGE_USE_TITLE" />,
-    description: <BridgeUse />,
-    hide: !isWeb() || isAndroid(),
 };
 
 export const TROUBLESHOOTING_TIP_CABLE = {

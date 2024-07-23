@@ -7231,15 +7231,6 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_DESCRIPTION',
         defaultMessage: '<a>See intructions</a>',
     },
-    TR_TROUBLESHOOTING_TIP_BRIDGE_USE_TITLE: {
-        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_USE_TITLE',
-        defaultMessage:
-            'If the above tips didn’t work, you can try using Trezor Bridge instead of WebUSB',
-    },
-    TR_TROUBLESHOOTING_TIP_BRIDGE_USE_DESCRIPTION: {
-        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_USE_DESCRIPTION',
-        defaultMessage: '<a>Download Trezor Bridge</a> and click the button below.',
-    },
     TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION',
         defaultMessage:
