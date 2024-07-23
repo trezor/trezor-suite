@@ -1,3 +1,8 @@
+# 1.1.1-beta.1
+
+-   chore: update trends libs (70b9c112bf)
+-   chore(blockchain-link): cardano using unit as contract address again (0e58ab32b3)
+
 # 1.0.19-beta.1
 
 -   fix(blockchain-link): omit solana foreign tx effects (80836ddb90)
