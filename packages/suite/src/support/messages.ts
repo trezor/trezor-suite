@@ -6613,7 +6613,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_1: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_1',
         defaultMessage:
-            'Tip: You can search for transaction IDs, addresses, labels, amounts and dates.',
+            'Tip: You can search for transaction IDs, addresses, tokens, labels, amounts and dates.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_2: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_2',

@@ -24,7 +24,7 @@ import { arrayPartition } from '@trezor/utils';
 import { AccountLabels } from '@suite-common/metadata-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
-import { formatAmount, formatNetworkAmount } from './accountUtils';
+import { formatAmount, formatNetworkAmount, isTokenMatchesSearch } from './accountUtils';
 import { toFiatCurrency } from '../src/fiatConverterUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 
@@ -874,13 +874,13 @@ export const simpleSearchTransactions = (
 
     // Searching for an amount (without operator)
     if (!Number.isNaN(search)) {
-        const foundTxsForNumber = transactions.flatMap(t => {
-            const targetAmounts = getTargetAmounts(t);
+        const foundTxsForNumber = transactions.flatMap(transaction => {
+            const targetAmounts = getTargetAmounts(transaction);
             if (targetAmounts.filter(targetAmount => targetAmount.includes(search)).length === 0) {
                 return [];
             }
 
-            return t.txid;
+            return transaction.txid;
         });
         txsToSearch.push(...foundTxsForNumber);
     }
@@ -919,6 +919,20 @@ export const simpleSearchTransactions = (
         return [];
     });
     txsToSearch.push(...foundTxsForAddress);
+
+    // Find by token name, symbol or contract
+    const foundTxsForToken = transactions.flatMap(transaction => {
+        const hasMatchingToken = transaction.tokens.some(token => {
+            return isTokenMatchesSearch(token, search.toLowerCase());
+        });
+
+        if (hasMatchingToken) {
+            return transaction.txid;
+        }
+
+        return [];
+    });
+    txsToSearch.push(...foundTxsForToken);
 
     // Remove duplicate txIDs
     return transactions.filter(

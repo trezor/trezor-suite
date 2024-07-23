@@ -7,6 +7,7 @@ import {
     AccountUtxo,
     PrecomposedTransactionFinalCardano,
     TokenTransfer,
+    TokenInfo,
 } from '@trezor/connect';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
@@ -1052,4 +1053,14 @@ export const isAddressBasedNetwork = (networkType: NetworkType) => {
     const exhaustiveCheck: never = networkType;
 
     return !!exhaustiveCheck;
+};
+
+export const isTokenMatchesSearch = (token: TokenInfo, search: string) => {
+    return (
+        token.symbol?.toLowerCase().includes(search) ||
+        token.name?.toLowerCase().includes(search) ||
+        token.contract.toLowerCase().includes(search) ||
+        token.fingerprint?.toLowerCase().includes(search) ||
+        token.policyId?.toLowerCase().includes(search)
+    );
 };
