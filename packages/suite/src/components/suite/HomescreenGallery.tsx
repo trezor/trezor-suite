@@ -63,7 +63,8 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     };
 
     const isBitcoinOnlyFirmware =
-        deviceModelInternal === DeviceModelInternal.T3T1 && hasBitcoinOnlyFirmware(device);
+        deviceModelInternal === (DeviceModelInternal.T3T1 || DeviceModelInternal.T3B1) &&
+        hasBitcoinOnlyFirmware(device);
     const homescreens = getHomescreens(isBitcoinOnlyFirmware); // Get the homescreens based on the firmware type
 
     return (
@@ -83,7 +84,11 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                     ))}
                 </BackgroundGalleryWrapper>
             )}
-            {[DeviceModelInternal.T2T1, DeviceModelInternal.T3T1].includes(deviceModelInternal) && (
+            {[
+                DeviceModelInternal.T2T1,
+                DeviceModelInternal.T3T1,
+                DeviceModelInternal.T3B1,
+            ].includes(deviceModelInternal) && (
                 <BackgroundGalleryWrapper>
                     {homescreens[deviceModelInternal].map(image => (
                         <BackgroundImageColor240x240

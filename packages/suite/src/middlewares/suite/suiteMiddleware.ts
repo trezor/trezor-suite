@@ -71,6 +71,7 @@ const suite =
         }
 
         if (deviceActions.connectDevice.match(action)) {
+            // TODO: should this apply also for DeviceModelInternal.T3B1 ???
             const isT3T1 =
                 action.payload?.device?.features?.internal_model === DeviceModelInternal.T3T1;
             const isT3T1DashboardPromoBannerActive =

@@ -36,7 +36,11 @@ const steps: Step[] = [
     {
         id: STEP.ID_AUTHENTICATE_DEVICE_STEP,
         stepGroup: 0,
-        supportedModels: [DeviceModelInternal.T2B1, DeviceModelInternal.T3T1],
+        supportedModels: [
+            DeviceModelInternal.T2B1,
+            DeviceModelInternal.T3T1,
+            DeviceModelInternal.T3B1,
+        ],
         prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
     },
     {
@@ -45,6 +49,7 @@ const steps: Step[] = [
         supportedModels: [
             DeviceModelInternal.T2B1,
             { model: DeviceModelInternal.T3T1, minFwVersion: '2.8.0' },
+            DeviceModelInternal.T3B1,
         ],
         prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
     },

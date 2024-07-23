@@ -16,7 +16,11 @@ const DISPLAY_ROTATIONS = [
 ] as const;
 
 // features.display_rotation cannot be used to determine support because can be defined for devices not supporting rotation (e.g. T2B1).
-const DEVICES_SUPPORTING_ROTATION = [DeviceModelInternal.T2T1, DeviceModelInternal.T3T1];
+const DEVICES_SUPPORTING_ROTATION = [
+    DeviceModelInternal.T2T1,
+    DeviceModelInternal.T3T1,
+    DeviceModelInternal.T3B1,
+];
 
 interface DisplayRotationProps {
     isDeviceLocked: boolean;

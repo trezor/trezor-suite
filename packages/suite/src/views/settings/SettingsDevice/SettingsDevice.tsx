@@ -88,6 +88,7 @@ export const SettingsDevice = () => {
     const supportsDeviceAuthentication = [
         DeviceModelInternal.T2B1,
         DeviceModelInternal.T3T1,
+        DeviceModelInternal.T3B1,
     ].includes(deviceModelInternal);
 
     return (
