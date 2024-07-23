@@ -66,9 +66,6 @@ const getCoinmarketDetailData = <T extends CoinmarketTradeType>({
     coinmarket,
     tradeType,
 }: CoinmarketGetDetailDataProps): CoinmarketGetDetailDataOutputProps<T> => {
-    // will not be further used
-    if (tradeType === 'savings' || tradeType === 'spend') return {};
-
     const { trades } = coinmarket;
     const { transactionId } = coinmarket[tradeType];
     const trade = getTypedTrade<T>({

@@ -26,8 +26,6 @@ export const tradeFinalStatuses: Record<TradeType, CoinmarketTradeStatusType[]> 
     buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
     sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
     exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
-    savings: [],
-    spend: [],
 };
 
 const shouldRefreshTrade = (trade: Trade | undefined) =>
