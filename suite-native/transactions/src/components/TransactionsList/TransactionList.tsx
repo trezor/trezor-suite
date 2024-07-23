@@ -10,6 +10,7 @@ import {
     FiatRatesRootState,
     selectIsLoadingAccountTransactions,
     TransactionsRootState,
+    updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
@@ -20,7 +21,7 @@ import {
     WalletAccountTransaction,
 } from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { SettingsSliceRootState } from '@suite-native/settings';
+import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 
 import { TransactionsEmptyState } from '../TransactionsEmptyState';
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -139,9 +140,13 @@ export const TransactionList = ({
     );
     const isLoaderVisible = isLoadingTransactions && transactions.length === 0;
 
-    const fetchTransactions = useCallback(() => {
-        return dispatch(fetchAllTransactionsForAccountThunk({ accountKey }));
-    }, [accountKey, dispatch]);
+    const localCurrency = useSelector(selectFiatCurrencyCode);
+
+    const fetchTransactions = useCallback(async () => {
+        await dispatch(fetchAllTransactionsForAccountThunk({ accountKey }));
+        // We don't have fiat rates persisted in suite-native so we have to fetch those missing.
+        await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
+    }, [accountKey, dispatch, localCurrency]);
 
     useEffect(() => {
         fetchTransactions();
