@@ -26,11 +26,11 @@ const RadioWrapper = styled.div`
             flex: 1 0 auto;
         }
     }
+`;
 
-    &:nth-of-type(3) {
-        & > div > div:nth-of-type(2) {
-            border-bottom: none;
-        }
+const RadioWrapperLast = styled(RadioWrapper)`
+    & > div > div:nth-of-type(2) {
+        border-bottom: none;
     }
 `;
 
@@ -149,7 +149,7 @@ export const Options = ({ symbol }: OptionsProps) => {
                 </Radio>
             </RadioWrapper>
 
-            <RadioWrapper>
+            <RadioWrapperLast>
                 <Radio
                     isChecked={isOtherAmountSelected}
                     onClick={() => {
@@ -185,7 +185,7 @@ export const Options = ({ symbol }: OptionsProps) => {
                         </TxtRight>
                     </RadioButtonLabelContent>
                 </Radio>
-            </RadioWrapper>
+            </RadioWrapperLast>
 
             {/* CSS display property is used, as conditional rendering resets form state */}
             <InputsWrapper $isShown={isOtherAmountSelected}>
