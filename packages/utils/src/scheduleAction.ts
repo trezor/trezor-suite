@@ -75,13 +75,16 @@ const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) 
 
 const resolveAction = async <T>(action: ScheduledAction<T>, clear: AbortSignal) => {
     const aborter = new AbortController();
-    const onClear = () => aborter.abort();
-    if (clear.aborted) onClear();
+    if (clear.aborted) aborter.abort();
+    const onClear = () => {
+        clear.removeEventListener('abort', onClear);
+        aborter.abort();
+    };
     clear.addEventListener('abort', onClear);
     try {
         return await new Promise<T>(resolve => resolve(action(aborter.signal)));
     } finally {
-        clear.removeEventListener('abort', onClear);
+        if (!clear.aborted) clear.removeEventListener('abort', onClear);
     }
 };
 

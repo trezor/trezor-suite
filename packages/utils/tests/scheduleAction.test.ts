@@ -4,7 +4,32 @@ const ERR_SIGNAL = 'Aborted by signal';
 const ERR_DEADLINE = 'Aborted by deadline';
 const ERR_TIMEOUT = 'Aborted by timeout';
 
+const MAX_LISTENERS = 6; // scheduleAction should never use more than six abort listeners in parallel
+
 describe('scheduleAction', () => {
+    const spyAdd = jest.spyOn(AbortSignal.prototype, 'addEventListener');
+    const spyRemove = jest.spyOn(AbortSignal.prototype, 'removeEventListener');
+
+    const checkListeners = () => {
+        const addings = spyAdd.mock.invocationCallOrder;
+        const removals = spyRemove.mock.invocationCallOrder;
+
+        let [a, r] = [0, 0];
+        while (a < addings.length && r < removals.length) {
+            if (addings[a] < removals[r]) a++;
+            else r++;
+            if (a - r > MAX_LISTENERS) return `More than ${MAX_LISTENERS} simultaneous listeners`;
+            if (r > a) return `More listeners removed than added (shouldn't happen)`;
+        }
+
+        if (addings.length !== removals.length)
+            return `${addings.length - removals.length} listeners not cleaned`;
+    };
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('delay', done => {
         const spy = jest.fn(() => Promise.resolve());
         scheduleAction(spy, { delay: 1000 });
@@ -12,6 +37,7 @@ describe('scheduleAction', () => {
 
         setTimeout(() => {
             expect(spy).toHaveBeenCalledTimes(1);
+            expect(checkListeners()).toBeUndefined();
             done();
         }, 1005);
     });
@@ -22,6 +48,7 @@ describe('scheduleAction', () => {
         scheduleAction(spy, { delay: 1000, signal: aborter.signal }).catch(e => {
             expect(e.message).toMatch(ERR_SIGNAL);
             expect(spy).toHaveBeenCalledTimes(0);
+            expect(checkListeners()).toBeUndefined();
             done();
         });
 
@@ -40,6 +67,7 @@ describe('scheduleAction', () => {
 
         // more thant 100 attempts
         expect(spy.mock.calls.length).toBeGreaterThanOrEqual(100);
+        expect(checkListeners()).toBeUndefined();
     });
 
     it('deadline aborted after 3rd attempt', async () => {
@@ -60,6 +88,8 @@ describe('scheduleAction', () => {
         ).rejects.toThrow(ERR_SIGNAL);
 
         expect(spy).toHaveBeenCalledTimes(3);
+        await Promise.resolve(); // let the last event listener clear itself
+        expect(checkListeners()).toBeUndefined();
     });
 
     it('deadline resolved after 3rd attempt', async () => {
@@ -78,20 +108,26 @@ describe('scheduleAction', () => {
         expect(result).toEqual('Foo');
 
         expect(spy).toHaveBeenCalledTimes(3);
+        expect(checkListeners()).toBeUndefined();
     });
 
     it('attempt timeout', async () => {
         const spy = jest.fn(
             (signal?: AbortSignal) =>
                 new Promise((_, reject) => {
-                    signal?.addEventListener('abort', () => reject(new Error('Runtime error')));
+                    const onAbort = () => {
+                        signal?.removeEventListener('abort', onAbort);
+                        reject(new Error('Runtime error'));
+                    };
+                    signal?.addEventListener('abort', onAbort);
                 }),
         );
         await expect(() => scheduleAction(spy, { timeout: 500 })).rejects.toThrow(ERR_TIMEOUT);
         expect(spy).toHaveBeenCalledTimes(1);
+        expect(checkListeners()).toBeUndefined();
     });
 
-    it('attempt timeout aborted', done => {
+    it('attempt timeout aborted', async () => {
         const aborter = new AbortController();
         const spy = jest.fn(
             () =>
@@ -101,16 +137,15 @@ describe('scheduleAction', () => {
         );
 
         const start = Date.now();
-        scheduleAction(spy, { timeout: 300, signal: aborter.signal }).catch(e => {
-            expect(e.message).toMatch(ERR_SIGNAL);
-            expect(spy).toHaveBeenCalledTimes(1);
-            expect(Date.now() - start).toBeLessThanOrEqual(305);
-
-            done();
-        });
+        const promise = scheduleAction(spy, { timeout: 300, signal: aborter.signal });
 
         // abort before timeout
         setTimeout(() => aborter.abort(), 300);
+
+        await expect(promise).rejects.toThrow(ERR_SIGNAL);
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(Date.now() - start).toBeLessThanOrEqual(350);
+        expect(checkListeners()).toBeUndefined();
     });
 
     it('attempt failure handler', async () => {
@@ -158,13 +193,19 @@ describe('scheduleAction', () => {
         const spy = jest.fn(
             (signal?: AbortSignal) =>
                 new Promise<any>((_, reject) => {
-                    signal?.addEventListener('abort', () => reject(new Error('Runtime error')));
+                    const onAbort = () => {
+                        signal?.removeEventListener('abort', onAbort);
+                        reject(new Error('Runtime error'));
+                    };
+                    signal?.addEventListener('abort', onAbort);
                 }),
         );
         await expect(() =>
             scheduleAction(spy, { deadline: Date.now() + 2000, timeout: 500 }),
         ).rejects.toThrow(ERR_DEADLINE);
         expect(spy).toHaveBeenCalledTimes(4); // 4 attempts till deadline, each timeouted after 500 ms
+        await Promise.resolve(); // let the last event listener clear itself
+        expect(checkListeners()).toBeUndefined();
     });
 
     it('max attempts', async () => {
@@ -177,6 +218,7 @@ describe('scheduleAction', () => {
         );
 
         expect(spy).toHaveBeenCalledTimes(2);
+        expect(checkListeners()).toBeUndefined();
     });
 
     it("don't abort after success", async () => {
@@ -189,6 +231,7 @@ describe('scheduleAction', () => {
         const result = await scheduleAction(action, {});
         expect(result).toBe(true);
         expect(signal?.aborted).toBe(false);
+        expect(checkListeners()).toBeUndefined();
     });
 
     it('variable timeouts', async () => {
@@ -197,7 +240,11 @@ describe('scheduleAction', () => {
 
         const times: number[] = [Date.now()];
         const action = (signal?: AbortSignal) => {
-            signal?.addEventListener('abort', () => times.push(Date.now()));
+            const onAbort = () => {
+                times.push(Date.now());
+                signal?.removeEventListener('abort', onAbort);
+            };
+            signal?.addEventListener('abort', onAbort);
 
             return new Promise(() => {});
         };
@@ -214,5 +261,6 @@ describe('scheduleAction', () => {
             expect(diff).toBeGreaterThanOrEqual(TIMEOUTS[i] - MARGIN);
             expect(diff).toBeLessThanOrEqual(TIMEOUTS[i] + MARGIN);
         }
+        expect(checkListeners()).toBeUndefined();
     });
 });
