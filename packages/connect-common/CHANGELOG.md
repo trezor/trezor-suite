@@ -1,3 +1,11 @@
+# 0.1.1-beta.1
+
+-   chore(connect-common): fw version 1.9.0 and 2.3.0 required (ee623e4090)
+-   feat(suite): add support for Bitcoin Only changelog + add Markdown support for all changelogs (a707883081)
+-   chore(connect-common): added fw 2.8.0 changelog (8accbc4ab3)
+-   chore: add T3T1 fw binaries to lfs (abaff39c54)
+-   chore(connect-common): add new fw 2.8.0 (314052b56a)
+
 # 0.0.34-beta.1
 
 -   chore(connect-common): edit firmware changelogs (3637a56cf7)
