@@ -6,6 +6,7 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { ResultRow, parseTextToPagesAndLines } from './parseTextToPagesAndLines';
 import { DeviceDisplayText } from './DeviceDisplayText';
 import { DisplayPageSeparator } from './DisplayPageSeparator';
+import { handleOnCopy } from 'src/utils/suite/deviceDisplay';
 
 const StyledNextIcon = styled(Icon)<{ $isPixelType: boolean }>`
     display: inline-block;
@@ -87,7 +88,7 @@ export const DisplayPaginatedText = ({
     });
 
     return (
-        <Container>
+        <Container onCopy={handleOnCopy}>
             {pages.map((page, pageIndex) => {
                 const isFirstPage = pageIndex === 0;
                 const isLastPage = pageIndex === pages.length - 1;

@@ -1,7 +1,7 @@
-import { ClipboardEvent } from 'react';
 import styled from 'styled-components';
 import { DeviceDisplayText } from './DeviceDisplayText';
 import { splitStringEveryNCharacters } from '@trezor/utils';
+import { handleOnCopy } from 'src/utils/suite/deviceDisplay';
 
 const Row = styled.div<{ $isAlignedRight?: boolean }>`
     display: flex;
@@ -52,16 +52,6 @@ export const DisplayChunks = ({ isPixelType, address }: DisplayChunksProps) => {
 
     const chunks: string[] = splitStringEveryNCharacters(address, 4);
     const groupedChunks = groupByN(chunks, 4);
-
-    const handleOnCopy = (event: ClipboardEvent) => {
-        const selectedText = window.getSelection()?.toString();
-
-        if (selectedText) {
-            const processedText = selectedText.replace(/\s/g, '');
-            event?.nativeEvent?.clipboardData?.setData('text/plain', processedText);
-            event.preventDefault();
-        }
-    };
 
     return (
         <ChunksContainer onCopy={handleOnCopy} data-test="@device-display/chunked-text">
