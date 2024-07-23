@@ -7203,16 +7203,17 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE',
     },
     TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION: {
-        defaultMessage: 'Visit <a>Trezor Bridge status page</a>',
+        defaultMessage:
+            "Visit <a>Trezor Bridge status page</a>. If it's not loading, try restarting Trezor Suite.",
         id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_TITLE: {
-        defaultMessage: 'Try using a browser with WebUSB support',
+        defaultMessage: 'Use a Chromium-based browser',
         id: 'TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_TITLE',
     },
     TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_DESCRIPTION: {
         defaultMessage:
-            'Use a chromium based browser which allows direct communication with usb devices',
+            'Only Chromium-based browsers currently allow direct communication with USB devices',
         id: 'TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TITLE: {
@@ -9152,7 +9153,7 @@ export default defineMessages({
     TR_BRIDGE_REQUESTED_DESCRIPTION: {
         id: 'TR_BRIDGE_REQUESTED_DESCRIPTION',
         defaultMessage:
-            'Trezor Suite application was requested by another application in order to make the connection with your Trezor device possible. Keep this in background and all will be good.',
+            'Trezor Suite was requested by another application in order to make the connection with your Trezor device possible. Please keep Trezor Suite running in the background and retry the action in the other application.',
     },
     TR_BRIDGE_GO_TO_WALLET_DESCRIPTION: {
         id: 'TR_BRIDGE_GO_TO_WALLET_DESCRIPTION',
@@ -9162,7 +9163,7 @@ export default defineMessages({
     TR_BRIDGE_NEEDED_DESCRIPTION: {
         id: 'TR_BRIDGE_NEEDED_DESCRIPTION',
         defaultMessage:
-            'We recommend downloading and running the Trezor Suite desktop app in the background for the best experience. Alternatively, use a supported browser that is compatible with WebUSB',
+            'For the best experience, please download and run the Trezor Suite desktop app in the background or use a supported Chromium-based browser that is compatible with WebUSB.',
     },
     TR_OPEN_TREZOR_SUITE_DESKTOP: {
         id: 'TR_OPEN_TREZOR_SUITE_DESKTOP',
