@@ -4,7 +4,6 @@ import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import {
-    selectIsDebugModeActive,
     selectIsSettingsDesktopAppPromoBannerShown,
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
@@ -36,7 +35,6 @@ export const SettingsGeneral = () => {
         selectIsSettingsDesktopAppPromoBannerShown,
     );
 
-    const isDebug = useSelector(selectIsDebugModeActive);
     const { isTorEnabled } = useSelector(selectTorState);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
@@ -93,15 +91,13 @@ export const SettingsGeneral = () => {
                 <EnableViewOnly />
             </SettingsSection>
 
-            {(desktopUpdate.enabled || isDebug) && (
-                <SettingsSection
-                    title={<Translation id="TR_EXPERIMENTAL_FEATURES" />}
-                    icon="EXPERIMENTAL"
-                >
-                    {desktopUpdate.enabled && <EarlyAccess />}
-                    {isDebug && <Experimental />}
-                </SettingsSection>
-            )}
+            <SettingsSection
+                title={<Translation id="TR_EXPERIMENTAL_FEATURES" />}
+                icon="EXPERIMENTAL"
+            >
+                {desktopUpdate.enabled && <EarlyAccess />}
+                <Experimental />
+            </SettingsSection>
         </SettingsLayout>
     );
 };
