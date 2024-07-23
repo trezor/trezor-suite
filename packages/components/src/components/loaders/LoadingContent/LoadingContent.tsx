@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Icon } from '../../assets/Icon/Icon';
 import { Spinner } from '../Spinner/Spinner';
@@ -38,9 +38,13 @@ export const LoadingContent = ({
 }: LoadingContentProps) => {
     const theme = useTheme();
 
+    // $isLoading should always start as `false`
+    const [loading, setLoading] = useState(false);
+    useEffect(() => setLoading(isLoading), [isLoading]);
+
     return (
         <LoadingWrapper>
-            <LoaderCell $isLoading={isLoading} $size={size}>
+            <LoaderCell $isLoading={loading} $size={size}>
                 {isLoading ? (
                     <Spinner size={size} dataTest="@loading-content/loader" />
                 ) : (
