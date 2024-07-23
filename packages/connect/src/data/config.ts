@@ -275,7 +275,7 @@ export const config = {
                 T1B1: '0',
                 T2T1: '2.7.0',
                 T2B1: '2.7.0',
-                T3B1: '2.7.0', // adding T3B1 to the list so that it gets inferred as type
+                T3B1: '2.8.1', // adding T3B1 to the list so that it gets inferred as type
                 T3T1: '2.7.1',
             },
         },
