@@ -38,6 +38,8 @@ Or via Xcode (for native errors debug):
 1. Open `suite-native/app/ios/TrezorSuite.xcworkspace` in Xcode (from cli `xed suite-native/app/ios`)
 1. Hit ▶️ `Run` button
 
+It is also possible for development purposes to connect Trezor emulator to iOS simulator (not physical device) if you turn on the feature flag `Connect device` in DEV utils.
+
 ## Aliases
 
 You can use shorter versions of previous script commands OR navigate to suite-native/app folder and run scripts from there.
@@ -49,6 +51,12 @@ Aliases available in root folder:
 -   `yarn ports` = yarn native:reverse-ports
 -   `yarn a` = yarn native:android
 -   `yarn ios` = yarn native:ios
+
+## DEV utils
+
+You can show DEV utils on production build FOR DEVELOPMENT PURPOSES ONLY – do not use it for your personal wallets!
+
+To reveal dev menu, you have to click at least 7 times on commit hash at the bottom of About Trezor Suite Lite page.
 
 ## Troubleshooting
 
