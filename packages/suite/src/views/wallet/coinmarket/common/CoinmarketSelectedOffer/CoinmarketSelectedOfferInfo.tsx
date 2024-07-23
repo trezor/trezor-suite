@@ -17,6 +17,7 @@ import {
 import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -120,12 +121,14 @@ interface CoinmarketSelectedOfferInfoProps {
     };
 }
 
+// TODO: refactor with exchange redesign
 export const CoinmarketSelectedOfferInfo = ({
     selectedQuote,
     transactionId,
     providers,
 }: CoinmarketSelectedOfferInfoProps) => {
     const context = useCoinmarketFormContext();
+    const { type } = context;
     const cryptoAmountProps = getCryptoQuoteAmountProps(selectedQuote, context);
     const { exchange, paymentMethod, paymentMethodName, fiatCurrency, fiatStringAmount } =
         selectedQuote;
@@ -137,6 +140,7 @@ export const CoinmarketSelectedOfferInfo = ({
         cryptoAmountProps?.receiveCurrency && isCryptoSymbolToken(cryptoAmountProps.receiveCurrency)
             ? cryptoToNetworkSymbol(cryptoAmountProps.receiveCurrency)?.toUpperCase()
             : null;
+    const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto: true });
 
     return (
         <Wrapper data-test="@coinmarket/offer/info">
@@ -159,7 +163,7 @@ export const CoinmarketSelectedOfferInfo = ({
                 </Header>
                 <Row>
                     <LeftColumn>
-                        <Translation id="TR_BUY_SPEND" />
+                        <Translation id={amountLabels.label2} />
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
@@ -172,7 +176,7 @@ export const CoinmarketSelectedOfferInfo = ({
                 </Row>
                 <RowWithBorder>
                     <LeftColumn>
-                        <Translation id="TR_BUY_BUY" />
+                        <Translation id={amountLabels.label1} />
                     </LeftColumn>
                     <RightColumn>
                         <Dark>

@@ -6,7 +6,11 @@ import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import CoinmarketSelectedOfferVerify from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferVerify';
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
 import { getProvidersInfoProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { isCoinmarketBuyOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import {
+    isCoinmarketBuyOffers,
+    isCoinmarketSellOffers,
+} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import CoinmarketSelectedOfferSell from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferSell/CoinmarketSelectedOfferSell';
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,6 +38,11 @@ export const CoinmarketSelectedOffer = () => {
             {isCoinmarketBuyOffers(context) && (
                 <StyledCard>
                     <CoinmarketSelectedOfferVerify />
+                </StyledCard>
+            )}
+            {isCoinmarketSellOffers(context) && (
+                <StyledCard>
+                    <CoinmarketSelectedOfferSell />
                 </StyledCard>
             )}
             <CoinmarketSelectedOfferInfo selectedQuote={selectedQuote} providers={providers} />
