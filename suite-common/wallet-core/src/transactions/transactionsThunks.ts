@@ -247,7 +247,6 @@ export const fetchTransactionsPageThunk = createThunk(
         { accountKey, page, perPage, forceRefetch }: FetchTransactionsPageThunkParams,
         { dispatch, getState },
     ) => {
-        // console.log('fetchTransactionsPageThunk', accountKey, page, perPage, forceRefetch);
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
             throw new Error(`Account not found: ${accountKey}`);
