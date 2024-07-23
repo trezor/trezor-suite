@@ -88,6 +88,7 @@ const Footer = () => {
                             options={regional.countriesOptions}
                             isSearchable
                             value={value}
+                            size="small"
                             formatOptionLabel={(option: CountryOption) => {
                                 const labelParts = getCountryLabelParts(option.label);
                                 if (!labelParts) return null;
