@@ -13,6 +13,7 @@ import {
 import { blockchainActions } from '../blockchain/blockchainActions';
 import { accountsActions } from '../accounts/accountsActions';
 import { transactionsActions } from '../transactions/transactionsActions';
+import { fetchAllTransactionsForAccountThunk } from '../transactions/transactionsThunks';
 
 export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, extra, next, getState }) => {
@@ -47,6 +48,21 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                     txs: transactions,
                     localCurrency: selectLocalCurrency(getState()),
                 }),
+            );
+        }
+
+        if (
+            isAnyOf(
+                fetchAllTransactionsForAccountThunk.fulfilled,
+                fetchAllTransactionsForAccountThunk.rejected,
+            )(action)
+        ) {
+            // Fiat rates are fetched for transaction when the transaction is added (see above).
+            // This is a fallback mechanism for cases when only fiat rates are missing.
+            // It is happening in suite-native because it does not have fiat rates persisted.
+            // But it can happen on desktop as well if fiat rates fetch fails for whatever reason.
+            dispatch(
+                updateMissingTxFiatRatesThunk({ localCurrency: selectLocalCurrency(getState()) }),
             );
         }
 
