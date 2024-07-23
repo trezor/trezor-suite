@@ -78,7 +78,7 @@ const Footer = () => {
                         <StyledSelect
                             data-test="@coinmarket/buy/country-select"
                             options={regional.countriesOptions}
-                            isSearchable={false}
+                            isSearchable
                             value={value}
                             size="small"
                             formatOptionLabel={(option: CountryOption) => {
