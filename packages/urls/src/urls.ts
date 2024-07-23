@@ -102,9 +102,6 @@ export const CHROME_URL = 'https://www.google.com/chrome/';
 export const CHROME_UPDATE_URL = 'https://support.google.com/chrome/answer/95414';
 export const CHROME_ANDROID_URL =
     'https://play.google.com/store/apps/details?id=com.android.chrome';
-export const FIREFOX_URL = 'https://www.mozilla.org/firefox/new/';
-export const FIREFOX_UPDATE_URL =
-    'https://support.mozilla.org/en-US/kb/update-firefox-latest-release';
 export const TOR_PROJECT_URL = 'https://www.torproject.org/';
 export const ZKSNACKS_TERMS_URL =
     'https://github.com/zkSNACKs/WalletWasabi/blob/master/WalletWasabi/Legal/Assets/LegalDocumentsWw2.txt';

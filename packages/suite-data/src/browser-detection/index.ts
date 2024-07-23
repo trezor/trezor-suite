@@ -1,16 +1,8 @@
-import {
-    SUITE_URL,
-    CHROME_URL,
-    FIREFOX_URL,
-    CHROME_UPDATE_URL,
-    FIREFOX_UPDATE_URL,
-    CHROME_ANDROID_URL,
-} from '@trezor/urls';
+import { SUITE_URL, CHROME_URL, CHROME_UPDATE_URL, CHROME_ANDROID_URL } from '@trezor/urls';
 import { getDeviceType, getBrowserName, getBrowserVersion, getOsNameWeb } from '@trezor/env-utils';
 
 import style from './styles.css';
 import iconChrome from '../../files/images/browsers/chrome.svg';
-import iconFirefox from '../../files/images/browsers/firefox.svg';
 import iconDesktop from '../../files/images/browsers/desktop.svg';
 
 type SupportedBrowser = {
@@ -97,14 +89,6 @@ window.addEventListener('load', () => {
         isPreferred: false,
     };
 
-    const firefox = {
-        name: 'Firefox 102+',
-        urlDownload: FIREFOX_URL,
-        urlUpdate: FIREFOX_UPDATE_URL,
-        icon: iconFirefox,
-        isPreferred: false,
-    };
-
     const chromeMobile = {
         name: 'Chrome for Android',
         urlDownload: CHROME_ANDROID_URL,
@@ -125,7 +109,7 @@ window.addEventListener('load', () => {
     const unsupportedBrowser = getMainHtml({
         title: titleUnsupported,
         subtitle: `${primarySubtitle}<br>${secondarySubtitleDownload}`,
-        supportedBrowsers: [desktop, chrome, firefox],
+        supportedBrowsers: [desktop, chrome],
         continueToSuite: true,
     });
 
@@ -140,7 +124,7 @@ window.addEventListener('load', () => {
     const updateFirefox = getMainHtml({
         title: titleOutdated,
         subtitle: `${primarySubtitle}<br>${secondarySubtitleUpdate}`,
-        supportedBrowsers: [desktop, firefox],
+        supportedBrowsers: [desktop, chrome],
         continueToSuite: true,
         shouldUpdate: true,
     });
