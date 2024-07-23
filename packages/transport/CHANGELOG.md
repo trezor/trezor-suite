@@ -1,3 +1,20 @@
+# 1.2.1-beta.1
+
+-   chore(transport): use shared method for sending chunks to api (f8e4ec4565)
+-   chore(transport): remove duplicated code (91cf20d007)
+-   fix(transport): bridge: handle listen loop correctly when Unable to open device error (eab01684cb)
+-   feat(transport): propagate hid descriptors to higher layers (97d3d78e1d)
+-   fix(transport): remove listeners of AbortSignal to prevent memory leaks (b7b51d8944)
+-   feat(connect-web): automatic fallback to core in popup (e4e1fcc033)
+-   chore(transport): optimize imports for tree shaking (60177c7d2e)
+-   fix(transport): correctly reference class instance method (12fe5a0e74)
+-   chore(transport): remove duplicated types declaration (6cb4e8691c)
+-   chore(transport): remove unnecessary return type from Usb and Udp api (8a41a883f1)
+-   feat(transport): `AbstractApiTransport` with abort signal (5090458cc4)
+-   feat(transport): `UsbApi` with abort signal (756f953b5c)
+-   feat(transport): `UdpApi` with abort signal (1c93308e6a)
+-   fix(transport): do not timeout AbstractApiTransport `send` and `receive` methods (bae2e15933)
+
 # 1.1.30-beta.2
 
 -   chore(transport): remove enumeration intent signaling (ef5b83e6f1)
