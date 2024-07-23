@@ -10,3 +10,5 @@
 ### 🔧 Bug fixes
 
 -   Various small improvements and bug fixes.
+-   Fixed incorrect fiat rate in the send form when sending to multiple recipients in different currencies.
+-   Fixed address poisoning attempts by sending zero value token transfers.
