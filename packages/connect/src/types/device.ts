@@ -18,6 +18,12 @@ export type DeviceFirmwareStatus =
     | 'custom'
     | 'none';
 
+/**
+ * - no-capability - device firmware does not support this feature based on features.capabilities
+ * - no-support - device does not support this coin based on CoinInfo.support (https://github.com/trezor/trezor-common/blob/master/defs/support.json)
+ * - update-required - device needs to update firmware to support this feature
+ * - trezor-connect-outdated - TODO: is it still relevant? isn't it some remnant from times when there was dynamically fetched config.json?
+ */
 export type UnavailableCapability =
     | 'no-capability'
     | 'no-support'
