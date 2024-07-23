@@ -2,6 +2,7 @@ import { spacingsPx } from '@trezor/theme';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { isCoinmarketSellOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketFractionButtons } from 'src/views/wallet/coinmarket/common';
 import CoinmarketFormInputAccount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccount';
 import CoinmarketFormInputCountry from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
 import CoinmarketFormInputFiatCrypto from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiatCrypto';
@@ -10,6 +11,14 @@ import styled from 'styled-components';
 
 const CoinmarketFeesWrapper = styled.div`
     margin-bottom: ${spacingsPx.md};
+`;
+
+const CoinmarketFormInputFiatCryptoSellWrapper = styled(CoinmarketFormInputFiatCrypto)`
+    padding-bottom: ${spacingsPx.xs};
+`;
+
+const CoinmarketFractionButtonsWrapper = styled(CoinmarketFractionButtons)`
+    margin-bottom: ${spacingsPx.xl};
 `;
 
 const CoinmarketFormInputs = () => {
@@ -22,16 +31,25 @@ const CoinmarketFormInputs = () => {
             account,
             composedLevels,
             formState: { errors },
+            form: { helpers },
             register,
             setValue,
             getValues,
             changeFeeLevel,
         } = context;
+        const { amountInCrypto } = getValues();
 
         return (
             <>
                 <CoinmarketFormInputAccount label="TR_COINMARKET_YOU_SELL" />
-                <CoinmarketFormInputFiatCrypto />
+                <CoinmarketFormInputFiatCryptoSellWrapper />
+                {amountInCrypto && (
+                    <CoinmarketFractionButtonsWrapper
+                        disabled={helpers.isBalanceZero}
+                        onFractionClick={helpers.setRatioAmount}
+                        onAllClick={helpers.setAllAmount}
+                    />
+                )}
                 <CoinmarketFeesWrapper>
                     <Fees
                         control={control}
