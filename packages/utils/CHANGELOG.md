@@ -1,3 +1,7 @@
+# 9.1.1-beta.1
+
+-   feat(utils): scheduleAction with attempt failure handler (3e342aaa5b)
+
 # 9.0.25-beta.2
 
 -   chore(connect-web): refactor into classes (fc7a45b19d)
