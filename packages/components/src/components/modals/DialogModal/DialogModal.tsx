@@ -26,7 +26,7 @@ const StyledIcon = styled(Icon)<{ iconVariant: 'success' | 'warning' }>`
     border-radius: ${borders.radii.full};
 `;
 
-const Text = styled.p`
+const Body = styled.p`
     color: ${({ theme }) => theme.textSubdued};
     ${typography.hint}
 `;
@@ -47,7 +47,7 @@ export interface DialogModalProps extends PickedModalProps {
     bodyHeading?: ReactNode;
     icon?: IconName;
     iconVariant?: 'success' | 'warning';
-    text?: ReactNode;
+    body?: ReactNode;
 }
 
 export const DialogModal = ({
@@ -55,12 +55,12 @@ export const DialogModal = ({
     bodyHeading,
     icon,
     iconVariant = 'success',
-    text,
+    body,
     ...rest
 }: DialogModalProps) => (
     <Modal heading={headerHeading} {...rest}>
         {icon && <StyledIcon name={icon} size="extraLarge" iconVariant={iconVariant} />}
         {bodyHeading && <BodyHeading>{bodyHeading}</BodyHeading>}
-        <Text> {text}</Text>
+        <Body>{body}</Body>
     </Modal>
 );

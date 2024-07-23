@@ -28,7 +28,7 @@ export const NoBackupModal = () => {
             onCancel={close}
             icon="warningTriangleLight"
             bodyHeading={<Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />}
-            text={<Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />}
+            body={<Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />}
             bottomBarComponents={
                 <>
                     <Button

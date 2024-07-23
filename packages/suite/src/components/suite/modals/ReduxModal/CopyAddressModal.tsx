@@ -4,9 +4,12 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { Button } from '@trezor/components';
+import { Button, Checkbox } from '@trezor/components';
 import { DialogModal } from '../Modal/DialogRenderer';
 import { AddressType } from '@suite-common/wallet-types';
+import { spacings } from '@trezor/theme';
+import { useState } from 'react';
+import { setFlag } from 'src/actions/suite/suiteActions';
 
 const StyledModal = styled(DialogModal)`
     width: 600px;
@@ -30,9 +33,15 @@ interface CopyAddressModalProps {
 }
 
 export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddressModalProps) => {
+    const [checked, setChecked] = useState(false);
+
     const dispatch = useDispatch();
 
     const onCopyAddress = () => {
+        if (checked) {
+            dispatch(setFlag('showCopyAddressModal', false));
+        }
+
         const result = copyToClipboard(address);
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
@@ -47,7 +56,18 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
             icon="warningTriangleLight"
             iconVariant="warning"
             bodyHeading={<Translation id="TR_NOT_YOUR_RECEIVE_ADDRRESS" />}
-            text={<Translation id={getAddressTypeText(addressType)} />}
+            body={
+                <>
+                    <Translation id={getAddressTypeText(addressType)} />
+                    <Checkbox
+                        isChecked={checked}
+                        onClick={() => setChecked(!checked)}
+                        margin={{ top: spacings.md }}
+                    >
+                        <Translation id="TR_DO_NOT_SHOW_AGAIN" />
+                    </Checkbox>
+                </>
+            }
             bottomBarComponents={
                 <>
                     <Button variant="warning" onClick={onCopyAddress}>

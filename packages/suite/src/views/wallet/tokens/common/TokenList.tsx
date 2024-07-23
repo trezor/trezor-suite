@@ -15,7 +15,7 @@ import {
     useTranslation,
 } from 'src/hooks/suite';
 import { spacingsPx, typography } from '@trezor/theme';
-import { Account, TokenAddress } from '@suite-common/wallet-types';
+import { Account, AddressType, TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { goto } from 'src/actions/suite/routerActions';
 import { Network } from '@suite-common/wallet-config';
@@ -32,6 +32,12 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { selectDevice } from '@suite-common/wallet-core';
 import { GroupedMenuItems } from '@trezor/components/src/components/Dropdown/Menu';
 import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
+import {
+    selectIsCopyAddressModalShown,
+    selectIsUnhideTokenModalShown,
+} from 'src/reducers/suite/suiteReducer';
+import { copyToClipboard } from '@trezor/dom-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 const Table = styled(Card)`
     word-break: break-all;
@@ -158,6 +164,8 @@ export const TokenList = ({
     const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
     const device = useSelector(selectDevice);
     const { isLocked } = useDevice();
+    const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
+    const shouldShowUnhideTokenModal = useSelector(selectIsUnhideTokenModalShown);
 
     const isDeviceLocked = isLocked(true);
 
@@ -180,6 +188,23 @@ export const TokenList = ({
             });
         } else {
             dispatch(showAddress(path, unusedAddress));
+        }
+    };
+
+    const onCopyAddress = (address: string, addressType: AddressType) => {
+        if (shouldShowCopyAddressModal) {
+            dispatch(
+                openModal({
+                    type: 'copy-address',
+                    addressType,
+                    address,
+                }),
+            );
+        } else {
+            const result = copyToClipboard(address);
+            if (typeof result !== 'string') {
+                dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
+            }
         }
     };
 
@@ -331,13 +356,7 @@ export const TokenList = ({
                                                         </ContractAddress>
                                                     ),
                                                     onClick: () =>
-                                                        dispatch(
-                                                            openModal({
-                                                                type: 'copy-address',
-                                                                addressType: 'contract',
-                                                                address: token.contract,
-                                                            }),
-                                                        ),
+                                                        onCopyAddress(token.contract, 'contract'),
                                                 },
                                             ],
                                         },
@@ -353,13 +372,9 @@ export const TokenList = ({
                                                         </ContractAddress>
                                                     ),
                                                     onClick: () =>
-                                                        dispatch(
-                                                            openModal({
-                                                                type: 'copy-address',
-                                                                addressType: 'fingerprint',
-                                                                address:
-                                                                    token.fingerprint as string,
-                                                            }),
+                                                        onCopyAddress(
+                                                            token.fingerprint as string,
+                                                            'fingerprint',
                                                         ),
                                                 },
                                             ],
@@ -376,12 +391,9 @@ export const TokenList = ({
                                                         </ContractAddress>
                                                     ),
                                                     onClick: () =>
-                                                        dispatch(
-                                                            openModal({
-                                                                type: 'copy-address',
-                                                                addressType: 'policyId',
-                                                                address: token.policyId as string,
-                                                            }),
+                                                        onCopyAddress(
+                                                            token.policyId as string,
+                                                            'policyId',
                                                         ),
                                                 },
                                             ],
@@ -394,7 +406,7 @@ export const TokenList = ({
                                     <Button
                                         icon="EYE_SLASH"
                                         onClick={() =>
-                                            isUnverifiedTable
+                                            isUnverifiedTable && shouldShowUnhideTokenModal
                                                 ? dispatch(
                                                       openModal({
                                                           type: 'unhide-token',

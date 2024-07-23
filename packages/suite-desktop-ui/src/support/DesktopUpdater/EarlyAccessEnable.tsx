@@ -54,7 +54,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
         <DialogModal
             icon="check"
             bodyHeading={<Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />}
-            text={<Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />}
+            body={<Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />}
             bottomBarComponents={
                 <>
                     <Button onClick={checkForUpdates}>
