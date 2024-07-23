@@ -1920,7 +1920,7 @@
   "TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS": "Faites glisser votre doigt sur l’écran tactile tout en branchant le câble USB.",
   "TR_SWITCH_TO_REGULAR": "Passer à {regular}",
   "TR_SWITCH_TO_REGULAR_DESCRIPTION": "Le micrologiciel {regular} permet à votre dispositif d’accéder à tous vos coins et de les gérer. Le micrologiciel {bitcoinOnly} ne fonctionne qu’avec les transactions en bitcoin. Vous pouvez modifier le micrologiciel de votre dispositif à tout moment à l’aide de votre sauvegarde du portefeuille.",
-  "TR_TAKES_N_MINUTES": "Prend environ 20 minutes",
+  "TR_TAKES_N_MINUTES": "Prend environ 15 minutes",
   "TR_TAKE_ME_BACK_TO_WALLET": "Ramenez-moi à Suite",
   "TR_TAPROOT_ACCOUNTS": "Comptes Taproot",
   "TR_TAPROOT_BANNER_POINT_1": "Lettres minuscules uniquement : moins de risques d’erreurs de relecture",

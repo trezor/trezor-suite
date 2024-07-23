@@ -1700,7 +1700,7 @@
   "TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS": "Мазайте пальцем вверх и вниз по экрану и одновременно подключите кабель.",
   "TR_SWITCH_TO_REGULAR": "Переключиться на {regular}",
   "TR_SWITCH_TO_REGULAR_DESCRIPTION": "{regular} Прошивка позволяет Вашему устройству получить доступ ко всем Вашим валютам и управлять ими. {bitcoinOnly} прошивка работает только с транзакциями Bitcoin. Вы можете в любой момент изменить прошивку Вашего устройства, используя фразу восстановления.",
-  "TR_TAKES_N_MINUTES": "Займет ~20 мин.",
+  "TR_TAKES_N_MINUTES": "Займет ~15 мин.",
   "TR_TAKE_ME_BACK_TO_WALLET": "Верните меня в Suite",
   "TR_TAPROOT_ACCOUNTS": "Счета Taproot",
   "TR_TAPROOT_BANNER_POINT_1": "Только строчные буквы: меньше вероятность ошибок при проверке",

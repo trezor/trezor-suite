@@ -1920,7 +1920,7 @@
   "TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS": "Desliza el dedo por la pantalla táctil mientras conectas el cable USB.",
   "TR_SWITCH_TO_REGULAR": "Cambiar a {regular}",
   "TR_SWITCH_TO_REGULAR_DESCRIPTION": "El firmware {regular} permite que el dispositivo acceda a todas las monedas y las gestione. El firmware {bitcoinOnly} solo funciona con transacciones en bitcoins. Puedes cambiar el firmware del dispositivo en cualquier momento mediante la copia de seguridad del monedero.",
-  "TR_TAKES_N_MINUTES": "Tardará aproximadamente 20 minutos.",
+  "TR_TAKES_N_MINUTES": "Tardará aproximadamente 15 minutos.",
   "TR_TAKE_ME_BACK_TO_WALLET": "Volver a Suite",
   "TR_TAPROOT_ACCOUNTS": "Cuentas Taproot",
   "TR_TAPROOT_BANNER_POINT_1": "Si solo usas letras minúsculas se reduce la probabilidad de que ocurran errores de revisión.",
