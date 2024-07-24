@@ -91,12 +91,6 @@ export class UsbApi extends AbstractApi {
             deviceVersionMajor: device.deviceVersionMajor,
             deviceVersionMinor: device.deviceVersionMinor,
             opened: device.opened,
-            deviceProtocol: device.deviceProtocol,
-            deviceClass: device.deviceClass,
-            deviceSubclass: device.deviceSubclass,
-            usbVersionMajor: device.usbVersionMajor,
-            usbVersionMinor: device.usbVersionMinor,
-            usbVersionSubminor: device.usbVersionSubminor,
         });
     }
 
