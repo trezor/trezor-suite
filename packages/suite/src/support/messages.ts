@@ -7344,6 +7344,64 @@ export default defineMessages({
         defaultMessage:
             'Trezor Support will never ask you to turn off the device check. This feature has been designed to ensure your security.',
     },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE',
+        defaultMessage: 'Turn off firmware revision check',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE_DISABLED: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE_DISABLED',
+        defaultMessage: 'Turn on firmware revision check',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION',
+        defaultMessage:
+            'Firmware revision check is a vital security feature. We don’t recommend turning it off.',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED',
+        defaultMessage:
+            'Firmware revision is a vital security feature. We strongly recommend turning it on.',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON',
+        defaultMessage: 'Turn off',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON_DISABLED: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON_DISABLED',
+        defaultMessage: 'Turn on',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_HEADING: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_HEADING',
+        defaultMessage: 'Essential to understand',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON',
+        defaultMessage: 'Turn off',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_CHECKBOX_TITLE: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_CHECKBOX_TITLE',
+        defaultMessage: 'I’ve read and understood the above',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1',
+        defaultMessage:
+            "Only turn off the firmware revision check if you're fully aware of what you're doing and have clear reasons for doing so. If you're uncertain, contact Trezor Support for assistance.",
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_2: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_2',
+        defaultMessage:
+            'Don’t turn off this feature unless your device has successfully passed the check before. Using an unverified device may lead to the loss of your funds.',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3',
+        defaultMessage:
+            'Trezor Support will never ask you to turn off the firmware revision check. This feature has been designed to ensure your security.',
+    },
+    TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM: {
+        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',
+        defaultMessage:
+            'Firmware check cannot be performed. To verify your firmware revision go online.',
+    },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
         defaultMessage: 'Activate coins',

@@ -7,7 +7,7 @@ import { PROTO, ERRORS, NETWORK } from '../constants';
 import { DEVICE, DeviceButtonRequestPayload, UI } from '../events';
 import { getAllNetworks } from '../data/coinInfo';
 import { DataManager } from '../data/DataManager';
-import { getFirmwareStatus, getRelease } from '../data/firmwareInfo';
+import { getFirmwareStatus, getRelease, getReleases } from '../data/firmwareInfo';
 import {
     parseCapabilities,
     getUnavailableCapabilities,
@@ -25,9 +25,11 @@ import {
     UnavailableCapabilities,
     FirmwareType,
     VersionArray,
+    KnownDevice,
 } from '../types';
 import { models } from '../data/models';
 import { getLanguage } from '../data/getLanguage';
+import { checkFirmwareRevision } from './checkFirmwareRevision';
 
 // custom log
 const _log = initLog('Device');
@@ -144,6 +146,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
     color?: string;
 
     availableTranslations: string[] = [];
+
+    authenticityChecks: KnownDevice['authenticityChecks'] = {
+        firmwareRevision: null,
+    };
 
     constructor(transport: Transport, descriptor: Descriptor) {
         super();
@@ -536,6 +542,17 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this._updateFeatures(message);
 
         if (
+            // The check was not yet performed
+            this.authenticityChecks.firmwareRevision === null ||
+            // The check was performed, but outcome cannot be surely determined (Suite is offline)
+            // -> recheck on every getFeatures() until the result is known
+            (this.authenticityChecks.firmwareRevision.success === false &&
+                this.authenticityChecks.firmwareRevision.error === 'cannot-perform-check-offline')
+        ) {
+            await this.checkFirmwareRevision();
+        }
+
+        if (
             !this.features.language_version_matches &&
             this.features.language &&
             this.atLeast('2.7.0')
@@ -548,6 +565,34 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 _log.error('change language failed silently', err);
             }
         }
+    }
+
+    async checkFirmwareRevision() {
+        const firmwareVersion = this.getVersion();
+
+        if (firmwareVersion.length === 0 || !this.features) {
+            return; // This happens when device has no features (not yet connected)
+        }
+
+        if (this.features.bootloader_mode === true) {
+            return;
+        }
+
+        const releases = getReleases(this.features.internal_model);
+
+        const release = releases.find(
+            r =>
+                firmwareVersion &&
+                versionUtils.isVersionArray(firmwareVersion) &&
+                versionUtils.isEqual(r.version, firmwareVersion),
+        );
+
+        this.authenticityChecks.firmwareRevision = await checkFirmwareRevision({
+            internalModel: this.features.internal_model,
+            deviceRevision: this.features.revision,
+            firmwareVersion,
+            expectedRevision: release?.firmware_revision,
+        });
     }
 
     async changeLanguage({
@@ -716,14 +761,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.inconsistent;
     }
 
-    getVersion() {
+    getVersion(): VersionArray | [] {
         if (!this.features) return [];
 
         return [
             this.features.major_version,
             this.features.minor_version,
             this.features.patch_version,
-        ] satisfies VersionArray;
+        ];
     }
 
     atLeast(versions: string[] | string) {
@@ -857,6 +902,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             features: this.features,
             unavailableCapabilities: this.unavailableCapabilities,
             availableTranslations: this.availableTranslations,
+            authenticityChecks: this.authenticityChecks,
         };
     }
 

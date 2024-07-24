@@ -94,6 +94,9 @@ export type UserContextPayload =
           type: 'device-authenticity-opt-out';
       }
     | {
+          type: 'firmware-revision-opt-out';
+      }
+    | {
           type: 'disconnect-device';
       }
     | {

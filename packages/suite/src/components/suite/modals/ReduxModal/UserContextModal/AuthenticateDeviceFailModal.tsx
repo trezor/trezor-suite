@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Modal } from 'src/components/suite';
-import { SecurityCheckFail } from 'src/views/onboarding/steps/SecurityCheck/SecurityCheckFail';
+import { SecurityCheckFail } from '../../../SecurityCheck/SecurityCheckFail';
 
 const StyledModal = styled(Modal)`
     text-align: left;

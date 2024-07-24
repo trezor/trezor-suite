@@ -4,8 +4,8 @@ import { H2, variables } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
-import { SecurityChecklist } from './SecurityChecklist';
-import { SecurityCheckButton } from './SecurityCheckButton';
+import { SecurityChecklist } from '../../../views/onboarding/steps/SecurityCheck/SecurityChecklist';
+import { SecurityCheckButton } from '../../../views/onboarding/steps/SecurityCheck/SecurityCheckButton';
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 
 const TopSection = styled.div`

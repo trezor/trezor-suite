@@ -9,13 +9,37 @@ if (global && typeof global.fetch !== 'function') {
     global.fetch = fetch;
 }
 
-export function httpRequest(url: string, type: 'text'): Promise<string>;
-export function httpRequest(url: string, type: 'binary'): Promise<ArrayBuffer>;
-export function httpRequest(url: string, type: 'json'): Promise<Record<string, any>>;
-export function httpRequest(url: any, type: any) {
-    const asset = getAssetByUrl(url);
+export function httpRequest(
+    url: string,
+    type: 'text',
+    options?: RequestInit,
+    skipLocalForceDownload?: boolean,
+): Promise<string>;
+
+export function httpRequest(
+    url: string,
+    type: 'binary',
+    options?: RequestInit,
+    skipLocalForceDownload?: boolean,
+): Promise<ArrayBuffer>;
+
+export function httpRequest(
+    url: string,
+    type: 'json',
+    options?: RequestInit,
+    skipLocalForceDownload?: boolean,
+): Promise<Record<string, any>>;
+
+export function httpRequest(
+    url: any,
+    type: any,
+    options?: RequestInit,
+    skipLocalForceDownload?: boolean,
+) {
+    const asset = skipLocalForceDownload ? null : getAssetByUrl(url);
+
     if (!asset) {
-        return /^https?/.test(url) ? browserHttpRequest(url, type) : fs.readFile(url);
+        return /^https?/.test(url) ? browserHttpRequest(url, type, options) : fs.readFile(url);
     }
 
     return asset;

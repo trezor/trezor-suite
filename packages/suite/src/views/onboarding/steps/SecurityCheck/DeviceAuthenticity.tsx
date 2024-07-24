@@ -10,7 +10,7 @@ import { CollapsibleOnboardingCard } from 'src/components/onboarding/Collapsible
 import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { SecurityCheckFail } from './SecurityCheckFail';
+import { SecurityCheckFail } from '../../../../components/suite/SecurityCheck/SecurityCheckFail';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     padding: 16px;

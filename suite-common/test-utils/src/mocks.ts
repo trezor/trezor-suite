@@ -186,6 +186,9 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
         ...dev,
         error: undefined,
         type: 'acquired',
+        authenticityChecks: {
+            firmwareRevision: { success: true },
+        },
     };
 };
 

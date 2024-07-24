@@ -17,9 +17,9 @@ import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hook
 import { Translation, TrezorLink } from 'src/components/suite';
 import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
-import { SecurityCheckLayout } from './SecurityCheckLayout';
+import { SecurityCheckLayout } from '../../../../components/suite/SecurityCheck/SecurityCheckLayout';
 import { SecurityChecklist } from './SecurityChecklist';
-import { SecurityCheckFail } from './SecurityCheckFail';
+import { SecurityCheckFail } from '../../../../components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckButton } from './SecurityCheckButton';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';

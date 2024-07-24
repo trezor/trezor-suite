@@ -39,6 +39,7 @@ export type SuiteAction =
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | { type: typeof SUITE.DEVICE_AUTHENTICITY_OPT_OUT; payload: boolean }
+    | { type: typeof SUITE.DEVICE_FIRMWARE_REVISION_CHECK; payload: { isDisabled: boolean } }
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | ReturnType<typeof lockDevice>
@@ -277,7 +278,7 @@ export const hideCoinjoinReceiveWarning = () => (dispatch: Dispatch) =>
         payload: true,
     });
 
-export const deviceAutenticityOptOut = (payload: boolean) => (dispatch: Dispatch) => {
+export const deviceAuthenticityOptOut = (payload: boolean) => (dispatch: Dispatch) => {
     dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
 
     dispatch({
@@ -285,6 +286,17 @@ export const deviceAutenticityOptOut = (payload: boolean) => (dispatch: Dispatch
         payload,
     });
 };
+
+export const checkFirmwareRevision =
+    ({ isDisabled }: { isDisabled: boolean }) =>
+    (dispatch: Dispatch) => {
+        dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
+
+        dispatch({
+            type: SUITE.DEVICE_FIRMWARE_REVISION_CHECK,
+            payload: { isDisabled },
+        });
+    };
 
 /**
  * Called from `suiteMiddleware`
