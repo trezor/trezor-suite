@@ -2,7 +2,7 @@ import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analyt
 
 import { DESKTOP_UPDATE } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
-import { UpdateState, UpdateWindow } from 'src/reducers/suite/desktopUpdateReducer';
+import { UpdateState, UpdateModalVisibility } from 'src/reducers/suite/desktopUpdateReducer';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
 import { desktopApi, UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
@@ -15,7 +15,7 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.DOWNLOAD }
     | { type: typeof DESKTOP_UPDATE.DOWNLOADING; payload: UpdateProgress }
     | { type: typeof DESKTOP_UPDATE.READY; payload: UpdateInfo }
-    | { type: typeof DESKTOP_UPDATE.WINDOW; payload: UpdateWindow }
+    | { type: typeof DESKTOP_UPDATE.MODAL_VISIBILITY; payload: UpdateModalVisibility }
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_ENABLE }
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_DISABLE }
     | { type: typeof DESKTOP_UPDATE.ALLOW_PRERELEASE; payload: boolean }
@@ -82,7 +82,8 @@ export const ready = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetSta
 };
 
 export const installUpdate =
-    (shouldInstallOnQuit?: boolean) => (_: Dispatch, getState: GetState) => {
+    ({ shouldInstallOnQuit }: { shouldInstallOnQuit: boolean }) =>
+    (_: Dispatch, getState: GetState) => {
         const { desktopUpdate } = getState();
 
         const payload = getAppUpdatePayload(
@@ -125,9 +126,11 @@ export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) =>
     });
 };
 
-export const setUpdateWindow = (win: UpdateWindow): DesktopUpdateAction => ({
-    type: DESKTOP_UPDATE.WINDOW,
-    payload: win,
+export const setUpdateModalVisibility = (
+    modalVisibility: UpdateModalVisibility,
+): DesktopUpdateAction => ({
+    type: DESKTOP_UPDATE.MODAL_VISIBILITY,
+    payload: modalVisibility,
 });
 
 export const openEarlyAccessSetup = (earlyAccessEnabled: boolean): DesktopUpdateAction => ({
