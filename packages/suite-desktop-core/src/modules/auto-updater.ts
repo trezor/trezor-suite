@@ -250,6 +250,8 @@ export const init: Module = ({ mainWindow, store }) => {
         store.setUpdateSettings({ ...settings, isAutomaticUpdateEnabled: value });
         isAutomaticUpdateEnabled = value;
 
+        autoUpdater.checkForUpdates();
+
         if (!isAutomaticUpdateEnabled) {
             // In case
             //      1) the auto-update was enabled

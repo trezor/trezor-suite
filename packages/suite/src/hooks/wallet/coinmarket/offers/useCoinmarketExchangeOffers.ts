@@ -20,7 +20,6 @@ import {
     selectHasExperimentalFeature,
     selectIsDebugModeActive,
 } from 'src/reducers/suite/suiteReducer';
-import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { getSuccessQuotesOrdered } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import {
     CoinmarketExchangeOffersContextProps,
@@ -84,9 +83,7 @@ export const useCoinmarketExchangeOffers = ({
 
     const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
-    const bnbExperimentalFeature = useSelector(
-        selectHasExperimentalFeature(ExperimentalFeature.BnbSmartChain),
-    );
+    const bnbExperimentalFeature = useSelector(selectHasExperimentalFeature('bnb-smart-chain'));
 
     const getQuotes = useCallback(async () => {
         if (!selectedQuote && quotesRequest) {

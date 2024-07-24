@@ -7,7 +7,6 @@ import {
     selectHasExperimentalFeature,
     selectIsDebugModeActive,
 } from 'src/reducers/suite/suiteReducer';
-import { ExperimentalFeature } from 'src/constants/suite/experimental';
 
 type EnabledNetworks = {
     mainnets: Network[];
@@ -19,9 +18,7 @@ type EnabledNetworks = {
 export const useEnabledNetworks = (): EnabledNetworks => {
     const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
     const isDebug = useSelector(selectIsDebugModeActive);
-    const bnbExperimentalFeature = useSelector(
-        selectHasExperimentalFeature(ExperimentalFeature.BnbSmartChain),
-    );
+    const bnbExperimentalFeature = useSelector(selectHasExperimentalFeature('bnb-smart-chain'));
 
     const mainnets = getMainnets(isDebug, bnbExperimentalFeature);
 

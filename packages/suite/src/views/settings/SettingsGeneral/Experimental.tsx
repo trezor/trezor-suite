@@ -97,13 +97,9 @@ export const Experimental = () => {
         });
     };
 
-<<<<<<< HEAD
-    const experimentalFeatures = Object.keys(EXPERIMENTAL_FEATURES).filter(feature =>
-        EXPERIMENTAL_FEATURES[feature as ExperimentalFeature].isEnabled({ isDebug }),
-=======
     const experimentalFeatures = Object.keys(EXPERIMENTAL_FEATURES).filter(
-        feature => !EXPERIMENTAL_FEATURES[feature as ExperimentalFeature]?.isDisabled?.(),
->>>>>>> 1fabd065b1 (feat(suite): implement automatic-update as a feature flag)
+        feature =>
+            !EXPERIMENTAL_FEATURES[feature as ExperimentalFeature]?.isDisabled?.({ isDebug }),
     );
 
     return (
