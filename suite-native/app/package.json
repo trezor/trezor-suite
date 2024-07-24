@@ -20,6 +20,7 @@
         "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21325 tcp:21325 && adb reverse tcp:19121 tcp:19121"
     },
     "dependencies": {
+        "@react-native-community/netinfo": "11.3.2",
         "@react-native/metro-config": "0.74.83",
         "@react-navigation/bottom-tabs": "6.5.20",
         "@react-navigation/native": "6.1.17",
@@ -44,6 +45,7 @@
         "@suite-native/biometrics": "workspace:*",
         "@suite-native/coin-enabling": "workspace:*",
         "@suite-native/config": "workspace:*",
+        "@suite-native/connection-status": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/device-authorization": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",

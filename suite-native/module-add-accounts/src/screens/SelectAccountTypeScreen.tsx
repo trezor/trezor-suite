@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
@@ -24,6 +23,7 @@ import {
 } from '@suite-native/atoms';
 import { useTranslate, Translation, TxKeyPath } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 
 import { useAddCoinAccount, accountTypeTranslationKeys } from '../hooks/useAddCoinAccount';
 
@@ -89,7 +89,7 @@ export const SelectAccountTypeScreen = ({
     const { accountType: defaultType, networkSymbol, flowType } = route.params;
     const { translate } = useTranslate();
     const openLink = useOpenLink();
-    const insets = useSafeAreaInsets();
+    const insets = useOfflineBannerAwareSafeAreaInsets();
     const { applyStyle, utils } = useNativeStyles();
 
     const { getAvailableAccountTypesForNetworkSymbol, addCoinAccount } = useAddCoinAccount();

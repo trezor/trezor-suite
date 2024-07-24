@@ -14,6 +14,7 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../connection-status" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

@@ -4,8 +4,9 @@
     "references": [
         { "path": "../../suite-common/icons" },
         { "path": "../atoms" },
-        { "path": "../connection-status" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
-    ]
+        { "path": "../intl" },
+        { "path": "../settings" },
+        { "path": "../../packages/styles" }
+    ],
+    "include": [".", "**/*.json"]
 }
