@@ -12,7 +12,7 @@
         "changelog": "* Fee rate shown when replacing transaction.\n* Ledger Live legacy derivation path m/44'/coin_type'/0'/account is now supported.\n* SLIP-0019 proofs of ownership for native SegWit implemented.\n* SLIP-0025 coinjoin accounts implemented for testing purposes.\n* Bech32 addresses now not converting to uppercase in QR code to increase compatibility.\n* Decimals of fee rate extended to 2 digits.\n* Only \"sat\" displayed instead of \"sat BTC\".\n* Bootloader 1.12.1. included.\n* Stellar addresses now shown in full + as a QR code.\n* Ethereum fees now wrapped to the next line when needed."
     },
     {
-        "required": false,
+        "required": true,
         "version": [1, 11, 2],
         "bootloader_version": [1, 11, 0],
         "min_firmware_version": [1, 6, 2],
