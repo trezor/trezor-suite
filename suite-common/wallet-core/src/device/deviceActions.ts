@@ -39,7 +39,7 @@ const receiveAuthConfirm = createAction(
 
 const rememberDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/rememberDevice`,
-    (payload: { device: TrezorDevice; remember: boolean; forceRemember: undefined | true }) => ({
+    (payload: { device: TrezorDevice; remember: boolean; forceRemember?: true }) => ({
         payload,
     }),
 );

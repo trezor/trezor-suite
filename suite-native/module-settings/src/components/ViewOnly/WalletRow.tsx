@@ -8,7 +8,6 @@ import {
     DiscoveryRootState,
     deviceActions,
     selectIsDiscoveryActiveByDeviceState,
-    toggleRememberDevice,
 } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
 import { useAlert } from '@suite-native/alerts';
@@ -77,7 +76,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
             dispatch(deviceActions.forgetDevice({ device, settings }));
         } else {
             // device is connected or become remembered
-            dispatch(toggleRememberDevice({ device }));
+            dispatch(deviceActions.rememberDevice({ device, remember: !device.remember }));
         }
     };
 
