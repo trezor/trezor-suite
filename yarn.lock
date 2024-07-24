@@ -11507,6 +11507,7 @@ __metadata:
   resolution: "@trezor/utils@workspace:packages/utils"
   dependencies:
     bignumber.js: "npm:^9.1.2"
+    jest-environment-node: "npm:^29.7.0"
     tsx: "npm:^4.7.0"
   peerDependencies:
     tslib: ^2.6.2
