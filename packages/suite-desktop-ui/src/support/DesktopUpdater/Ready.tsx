@@ -28,9 +28,9 @@ interface ReadyProps {
 export const Ready = ({ hideWindow, isCancelable }: ReadyProps) => {
     const dispatch = useDispatch();
 
-    const install = () => dispatch(installUpdate());
+    const install = () => dispatch(installUpdate({ shouldInstallOnQuit: false }));
     const installOnQuit = () => {
-        dispatch(installUpdate(true));
+        dispatch(installUpdate({ shouldInstallOnQuit: true }));
         hideWindow();
     };
 

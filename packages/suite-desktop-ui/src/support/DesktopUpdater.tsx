@@ -38,7 +38,7 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         downloading: desktopUpdateActions.downloading,
         ready: desktopUpdateActions.ready,
         error: desktopUpdateActions.error,
-        setUpdateWindow: desktopUpdateActions.setUpdateWindow,
+        setUpdateWindow: desktopUpdateActions.setUpdateModalVisibility,
         allowPrerelease: desktopUpdateActions.allowPrerelease,
         setAutomaticUpdates: desktopUpdateActions.setAutomaticUpdates,
     });
@@ -103,12 +103,8 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
     }, [setUpdateWindow, desktopUpdate.latest, desktopUpdate.allowPrerelease]);
 
     const isVisible = useMemo(() => {
-        if (desktopUpdate.isAutomaticUpdateEnabled) {
-            return false;
-        }
-
         // Not displayed as a modal
-        if (desktopUpdate.window !== 'maximized') {
+        if (desktopUpdate.modalVisibility !== 'maximized') {
             return false;
         }
 
@@ -130,7 +126,7 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         return true;
     }, [
         desktopUpdate.isAutomaticUpdateEnabled,
-        desktopUpdate.window,
+        desktopUpdate.modalVisibility,
         desktopUpdate.state,
         desktopUpdate.latest,
     ]);

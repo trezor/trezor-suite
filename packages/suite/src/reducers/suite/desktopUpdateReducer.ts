@@ -6,7 +6,7 @@ import { DesktopAppUpdateState as UpdateState } from '@suite-common/suite-consta
 
 export { DesktopAppUpdateState as UpdateState } from '@suite-common/suite-constants';
 
-export type UpdateWindow = 'maximized' | 'minimized' | 'hidden';
+export type UpdateModalVisibility = 'maximized' | 'minimized' | 'hidden';
 
 /**
  * state: UpdateState ↑
@@ -17,25 +17,28 @@ export type UpdateWindow = 'maximized' | 'minimized' | 'hidden';
  * - minimized: Displayed as a notification
  * - hidden: Hidden
  */
-export interface State {
+export interface DesktopUpdateState {
     enabled: boolean;
     state: UpdateState;
     progress?: UpdateProgress;
     latest?: UpdateInfo;
-    window: UpdateWindow;
+    modalVisibility: UpdateModalVisibility;
     allowPrerelease: boolean;
     isAutomaticUpdateEnabled: boolean;
 }
 
-const initialState: State = {
+const initialState: DesktopUpdateState = {
     enabled: false,
     state: UpdateState.NotAvailable,
-    window: 'maximized',
+    modalVisibility: 'hidden',
     allowPrerelease: false,
     isAutomaticUpdateEnabled: false,
 };
 
-const desktopUpdateReducer = (state: State = initialState, action: Action): State =>
+const desktopUpdateReducer = (
+    state: DesktopUpdateState = initialState,
+    action: Action,
+): DesktopUpdateState =>
     produce(state, draft => {
         switch (action.type) {
             case SUITE.DESKTOP_HANDSHAKE:
@@ -52,6 +55,9 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
             case DESKTOP_UPDATE.AVAILABLE:
                 draft.state = UpdateState.Available;
                 draft.latest = action.payload;
+                draft.modalVisibility = draft.isAutomaticUpdateEnabled
+                    ? draft.modalVisibility
+                    : 'maximized';
                 break;
             case DESKTOP_UPDATE.NOT_AVAILABLE:
                 draft.state = UpdateState.NotAvailable;
@@ -67,16 +73,16 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
                 draft.state = UpdateState.Ready;
                 draft.latest = action.payload;
                 break;
-            case DESKTOP_UPDATE.WINDOW:
-                draft.window = action.payload;
+            case DESKTOP_UPDATE.MODAL_VISIBILITY:
+                draft.modalVisibility = action.payload;
                 break;
             case DESKTOP_UPDATE.OPEN_EARLY_ACCESS_ENABLE:
                 draft.state = UpdateState.EarlyAccessEnable;
-                draft.window = 'maximized';
+                draft.modalVisibility = 'maximized';
                 break;
             case DESKTOP_UPDATE.OPEN_EARLY_ACCESS_DISABLE:
                 draft.state = UpdateState.EarlyAccessDisable;
-                draft.window = 'maximized';
+                draft.modalVisibility = 'maximized';
                 break;
             case DESKTOP_UPDATE.ALLOW_PRERELEASE:
                 draft.allowPrerelease = action.payload;
