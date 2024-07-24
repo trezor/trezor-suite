@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     selectDevice,
     selectIsPortfolioTrackerDevice,
-    toggleRememberDevice,
+    deviceActions,
     selectIsDeviceRemembered,
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
@@ -124,7 +124,7 @@ export const EnableViewOnlyBottomSheet = () => {
                 message: <Translation id="moduleSettings.viewOnly.toast.enabled" />,
                 icon: 'check',
             });
-            dispatch(toggleRememberDevice({ device }));
+            dispatch(deviceActions.rememberDevice({ device, remember: !device.remember }));
 
             analytics.report({
                 type: EventType.ViewOnlyChange,
