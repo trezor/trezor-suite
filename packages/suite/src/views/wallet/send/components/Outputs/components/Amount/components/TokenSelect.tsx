@@ -127,6 +127,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
 
     const tokenInputName = `outputs.${outputId}.token` as const;
     const amountInputName = `outputs.${outputId}.amount` as const;
+    const currencyInputName = `outputs.${outputId}.currency` as const;
     const tokenValue = getDefaultValue(tokenInputName, output.token);
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const dataEnabled = getDefaultValue('options', []).includes('ethereumData');
@@ -137,15 +138,14 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     // if Amount is not valid 'react-hook-form' will set an error to it, and composeTransaction will be prevented
     // N0TE: do this conditionally only for ETH and when set-max is not enabled
     const tokenWatch = watch(tokenInputName, null);
+    const currencyValue = watch(currencyInputName);
+
     useEffect(() => {
         if (account.networkType === 'ethereum' && !isSetMaxActive) {
             const amountValue = getValues(`outputs.${outputId}.amount`) as string;
             if (amountValue) setAmount(outputId, amountValue);
         }
     }, [outputId, tokenWatch, setAmount, getValues, account.networkType, isSetMaxActive]);
-
-    const values = getValues();
-    const fiatCurrency = values?.outputs?.[0]?.currency;
 
     useEffect(() => {
         if (routerParams?.contractAddress) {
@@ -180,7 +180,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
                                     symbol: account.symbol as NetworkSymbol,
                                     tokenAddress: selected.value as TokenAddress,
                                 },
-                                localCurrency: fiatCurrency?.value as FiatCurrencyCode,
+                                localCurrency: currencyValue.value as FiatCurrencyCode,
                                 rateType: 'current',
                                 fetchAttemptTimestamp: Date.now() as Timestamp,
                             }),
