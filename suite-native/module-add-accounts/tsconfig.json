@@ -17,6 +17,7 @@
         { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../atoms" },
+        { "path": "../connection-status" },
         { "path": "../discovery" },
         { "path": "../intl" },
         { "path": "../link" },

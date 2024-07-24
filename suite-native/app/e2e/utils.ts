@@ -4,7 +4,7 @@ import { expect as detoxExpect } from 'detox';
 const APP_LAUNCH_ARGS = {
     // Do not synchronize communication with the trezor bridge and metro server running on localhost. Since the trezor
     // bridge is exchanging messages with the app all the time, the test runner would wait forever otherwise.
-    detoxURLBlacklistRegex: '\\("^.*127.0.0.1.*",".*localhost.*"\\)',
+    detoxURLBlacklistRegex: '\\("^.*127.0.0.1.*",".*localhost.*","^*clients3\\.google\\.com*"\\)',
 };
 
 const platform = device.getPlatform();

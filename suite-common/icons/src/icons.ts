@@ -116,6 +116,7 @@ export const icons = {
     warningOctagon: require('../assets/icons/warningOctagon.svg'),
     warningTriangle: require('../assets/icons/warningTriangle.svg'),
     warningTriangleLight: require('../assets/icons/warningTriangleLight.svg'),
+    wifiSlash: require('../assets/icons/wifiSlash.svg'),
 } as const;
 export type IconName = keyof typeof icons;
 

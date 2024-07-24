@@ -1,6 +1,6 @@
 import { useEffect, useContext, ReactNode } from 'react';
 import { Platform, ScrollViewProps, StatusBar, View } from 'react-native';
-import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
+import { EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import * as SystemUI from 'expo-system-ui';
@@ -8,6 +8,7 @@ import * as NavigationBar from 'expo-navigation-bar';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
 
+import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeSpacings } from '@trezor/theme';
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
@@ -114,7 +115,7 @@ export const Screen = ({
     } = useNativeStyles();
 
     const hasPaddingBottom = !useContext(BottomTabBarHeightContext) && hasBottomInset;
-    const insets = useSafeAreaInsets();
+    const insets = useOfflineBannerAwareSafeAreaInsets();
     const backgroundCSSColor = colors[backgroundColor];
     const barStyle = isDarkColor(backgroundCSSColor) ? 'light-content' : 'dark-content';
 

@@ -10,6 +10,7 @@ import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@su
 import { FormatterProvider } from '@suite-common/formatters';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { FeatureMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
+import { OfflineBanner } from '@suite-native/connection-status';
 import { IntlProvider } from '@suite-native/intl';
 import { isDebugEnv } from '@suite-native/config';
 
@@ -57,6 +58,7 @@ const AppComponent = () => {
 
     return (
         <FormatterProvider config={formattersConfig}>
+            <OfflineBanner />
             <MessageSystemBannerRenderer />
             <RootStackNavigator />
             <ModalsRenderer />

@@ -19,6 +19,7 @@ export const en = {
         unknownError: 'Something went wrong',
         default: 'Default',
         orSeparator: 'OR',
+        offline: "You're offline.",
     },
     messageSystem: {
         killswitch: {

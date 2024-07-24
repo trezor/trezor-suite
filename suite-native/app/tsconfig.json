@@ -33,6 +33,7 @@
         { "path": "../atoms" },
         { "path": "../biometrics" },
         { "path": "../config" },
+        { "path": "../connection-status" },
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../feature-flags" },

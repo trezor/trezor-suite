@@ -1,7 +1,6 @@
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import { useAtomValue } from 'jotai';
 
+import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 import { Box, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -20,7 +19,7 @@ const toastsContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
 
 export const ToastRenderer = () => {
     const { applyStyle } = useNativeStyles();
-    const { top: topSafeAreaInset } = useSafeAreaInsets();
+    const { top: topSafeAreaInset } = useOfflineBannerAwareSafeAreaInsets();
     const toasts = useAtomValue(toastsAtom);
 
     return (
