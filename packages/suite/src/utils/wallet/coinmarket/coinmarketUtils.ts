@@ -19,6 +19,9 @@ import {
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
 import {
+    CoinmarketAccountOptionsGroupOptionProps,
+    CoinmarketAccountsOptionsGroupProps,
+    CoinmarketBuildAccountOptionsProps,
     CoinmarketBuildOptionsProps,
     CoinmarketCryptoListProps,
     CoinmarketGetAmountLabelsProps,
@@ -40,6 +43,7 @@ import CryptoCategories, {
     CryptoCategoryD,
     CryptoCategoryE,
 } from 'src/constants/wallet/coinmarket/cryptoCategories';
+import { sortByCoin } from '@suite-common/wallet-utils';
 
 /** @deprecated */
 const suiteToInvitySymbols: {
@@ -382,6 +386,106 @@ export const coinmarketBuildCryptoOptions = ({
 
         // default
         pushOption(CryptoCategoryE);
+    });
+
+    return groups;
+};
+
+export const coinmarketGetSortedAccountsWithBalance = ({
+    accounts,
+    device,
+}: {
+    accounts: Account[];
+    device: TrezorDevice | undefined;
+}) => {
+    if (!device) return [];
+
+    const accountSorted = sortByCoin(accounts.filter(a => a.deviceState === device.state));
+    const accountsWithBalance = accountSorted.filter(account => {
+        const accountWithBalance = account.availableBalance !== '0';
+        const tokens = account.tokens?.filter(token => token.balance !== '0');
+
+        return accountWithBalance || (tokens && tokens?.length > 0);
+    });
+
+    return accountsWithBalance;
+};
+
+export const coinmarketBuildAccountOptions = ({
+    symbolsInfo,
+    device,
+    accounts,
+    accountLabels,
+    defaultAccountLabelString,
+}: CoinmarketBuildAccountOptionsProps): CoinmarketAccountsOptionsGroupProps[] => {
+    const accountsWithBalance = coinmarketGetSortedAccountsWithBalance({
+        accounts,
+        device,
+    });
+
+    const groups: CoinmarketAccountsOptionsGroupProps[] = accountsWithBalance.map(account => {
+        const {
+            descriptor,
+            tokens,
+            symbol: accountSymbol,
+            formattedBalance,
+            index,
+            accountType,
+        } = account;
+
+        const groupLabel =
+            accountLabels[account.key] ??
+            defaultAccountLabelString({
+                accountType,
+                symbol: accountSymbol,
+                index,
+            });
+        const foundSymbolInfo = symbolsInfo?.find(
+            item => item.symbol === networkToCryptoSymbol(accountSymbol),
+        );
+
+        const options: CoinmarketAccountOptionsGroupOptionProps[] = [
+            {
+                value: foundSymbolInfo?.symbol ?? (accountSymbol.toUpperCase() as CryptoSymbol),
+                label: accountSymbol.toUpperCase(),
+                cryptoName: foundSymbolInfo?.name ?? null,
+                descriptor,
+                balance: formattedBalance,
+            },
+        ];
+
+        // add crypto tokens to options
+        if (tokens && tokens.length > 0) {
+            tokens.forEach(token => {
+                const { symbol, balance, contract } = token;
+                if (!symbol || !balance || balance === '0') {
+                    return;
+                }
+
+                const tokenCryptoSymbol = tokenToCryptoSymbol(symbol, account.symbol);
+                if (!tokenCryptoSymbol) {
+                    return;
+                }
+
+                const tokenSymbolInfo = symbolsInfo?.find(
+                    item => item.symbol === tokenCryptoSymbol,
+                );
+
+                options.push({
+                    value: tokenSymbolInfo?.symbol ?? (symbol as CryptoSymbol),
+                    label: symbol.toUpperCase(),
+                    cryptoName: tokenSymbolInfo?.name ?? null,
+                    contractAddress: contract,
+                    descriptor,
+                    balance,
+                });
+            });
+        }
+
+        return {
+            label: groupLabel,
+            options,
+        };
     });
 
     return groups;

@@ -1,3 +1,4 @@
+import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { amountToSatoshi, getFiatRateKey, isZero } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -5,18 +6,22 @@ import { FiatCurrencyCode } from 'invity-api';
 import { useCallback } from 'react';
 import {
     FORM_CRYPTO_INPUT,
+    FORM_CRYPTO_TOKEN,
     FORM_FIAT_CURRENCY_SELECT,
     FORM_FIAT_INPUT,
+    FORM_OUTPUT_ADDRESS,
     FORM_OUTPUT_AMOUNT,
 } from 'src/constants/wallet/coinmarket/form';
 import { useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
 import {
     CoinmarketFormHelpersProps,
     CoinmarketUseSellFormHelpersProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { Option } from 'src/types/wallet/coinmarketCommonTypes';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 /**
  * @return functions and values to handle form inputs and update fee levels
@@ -25,6 +30,8 @@ const useCoinmarketSellFormHelpers = ({
     account,
     network,
     methods,
+    setAmountLimits,
+    composeRequest,
 }: CoinmarketUseSellFormHelpersProps): CoinmarketFormHelpersProps => {
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
@@ -66,37 +73,35 @@ const useCoinmarketSellFormHelpers = ({
         [setValue, shouldSendInSats, network.decimals],
     );
 
-    /*
     const onCryptoCurrencyChange = useCallback(
-        (selected: CoinmarketCryptoListProps) => {
-            setValue('setMaxOutputId', undefined);
-            setAmountLimits(undefined);
-            setValue(FORM_CRYPTO_INPUT, '');
-            setValue(FORM_FIAT_INPUT, '');
-            const token = selected.value;
-            const invitySymbol = invityApiSymbolToSymbol(token).toLowerCase();
-            const tokenData = account.tokens?.find(
-                t => t.symbol === invitySymbol && t.contract === selected.token?.contract,
-            );
+        (selected: CoinmarketAccountOptionsGroupOptionProps) => {
+            const token = cryptoToNetworkSymbol(selected.value);
             const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
+
+            if (!token) return;
 
             if (ethereumTypeNetworkSymbols.includes(token)) {
                 setValue(FORM_CRYPTO_TOKEN, null);
-                setValue('outputs.0.address', account.descriptor);
+                setValue(FORM_OUTPUT_ADDRESS, selected.descriptor);
             } else if (symbol === 'sol') {
-                setValue(FORM_CRYPTO_TOKEN, tokenData?.contract ?? null);
-                setValue('outputs.0.address', account.descriptor);
+                setValue(FORM_CRYPTO_TOKEN, selected?.contractAddress ?? null);
+                setValue(FORM_OUTPUT_ADDRESS, selected?.descriptor ?? '');
             } else {
                 // set the address of the token to the output
-                setValue(FORM_CRYPTO_TOKEN, tokenData?.contract ?? null);
+                setValue(FORM_CRYPTO_TOKEN, selected?.contractAddress ?? null);
                 // set token address for ERC20 transaction to estimate the fees more precisely
-                setValue('outputs.0.address', tokenData?.contract ?? '');
+                setValue(FORM_OUTPUT_ADDRESS, selected?.contractAddress ?? '');
             }
+
+            setValue('setMaxOutputId', undefined);
+            setValue(FORM_CRYPTO_INPUT, '');
+            setValue(FORM_FIAT_INPUT, '');
+            setAmountLimits(undefined);
+
             composeRequest();
         },
-        [account.descriptor, account.tokens, composeRequest, setValue, symbol],
+        [setValue, setAmountLimits, symbol, composeRequest],
     );
-    */
 
     const setRatioAmount = useCallback(
         (divisor: number) => {
@@ -138,6 +143,7 @@ const useCoinmarketSellFormHelpers = ({
 
         onCryptoAmountChange,
         onFiatAmountChange,
+        onCryptoCurrencyChange,
         setRatioAmount,
         setAllAmount,
     };

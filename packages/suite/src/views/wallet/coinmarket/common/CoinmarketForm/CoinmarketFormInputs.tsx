@@ -4,6 +4,7 @@ import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCo
 import { isCoinmarketSellOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketFractionButtons } from 'src/views/wallet/coinmarket/common';
 import CoinmarketFormInputAccount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccount';
+import CoinmarketFormInputAccountActive from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccountActive';
 import CoinmarketFormInputCountry from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
 import CoinmarketFormInputFiatCrypto from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiatCrypto';
 import CoinmarketFormInputPaymentMethod from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
@@ -41,7 +42,7 @@ const CoinmarketFormInputs = () => {
 
         return (
             <>
-                <CoinmarketFormInputAccount label="TR_COINMARKET_YOU_SELL" />
+                <CoinmarketFormInputAccountActive label="TR_COINMARKET_YOU_SELL" />
                 <CoinmarketFormInputFiatCryptoSellWrapper />
                 {amountInCrypto && (
                     <CoinmarketFractionButtonsWrapper

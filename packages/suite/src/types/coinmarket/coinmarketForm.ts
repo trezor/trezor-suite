@@ -1,4 +1,5 @@
 import {
+    CoinmarketAccountOptionsGroupOptionProps,
     CoinmarketCryptoListProps,
     CoinmarketPaymentMethodListProps,
     CoinmarketPaymentMethodProps,
@@ -47,7 +48,11 @@ export interface CoinmarketBuyFormDefaultValuesProps {
     suggestedFiatCurrency: FiatCurrencyCode;
 }
 
-export interface CoinmarketSellFormProps extends FormState, CoinmarketBuyFormProps {}
+export interface CoinmarketSellFormProps
+    extends FormState,
+        Omit<CoinmarketBuyFormProps, 'cryptoSelect'> {
+    cryptoSelect: CoinmarketAccountOptionsGroupOptionProps | undefined;
+}
 
 export interface CoinmarketSellFormDefaultValuesProps {
     defaultValues: CoinmarketSellFormProps;
@@ -171,6 +176,8 @@ export interface CoinmarketUseSellFormHelpersProps {
     account: Account;
     network: Network;
     methods: UseFormReturn<CoinmarketSellFormProps>;
+    setAmountLimits: (limits?: AmountLimits) => void;
+    composeRequest: SendContextValues<SellFormState>['composeTransaction'];
 }
 
 export interface CoinmarketFormHelpersProps {
@@ -179,6 +186,7 @@ export interface CoinmarketFormHelpersProps {
 
     onCryptoAmountChange: (amount: string) => void;
     onFiatAmountChange: (amount: string) => void;
+    onCryptoCurrencyChange: (selected: CoinmarketAccountOptionsGroupOptionProps) => void;
     setRatioAmount: (divisor: number) => void;
     setAllAmount: () => void;
 }

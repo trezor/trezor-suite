@@ -39,6 +39,7 @@ import {
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import { Timer } from '@trezor/react-utils';
+import { AccountsState } from '@suite-common/wallet-core';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
@@ -174,6 +175,33 @@ export interface CoinmarketBuildOptionsProps {
 export interface CoinmarketOptionsGroupProps {
     label: CryptoCategoryType;
     options: CoinmarketCryptoListProps[];
+}
+
+export interface CoinmarketBuildAccountOptionsProps {
+    symbolsInfo: CryptoSymbolInfo[] | undefined;
+    accounts: AccountsState;
+    device: TrezorDevice | undefined;
+    accountLabels: Record<string, string | undefined>;
+    defaultAccountLabelString: ({
+        accountType,
+        symbol,
+        index,
+    }: {
+        accountType: Account['accountType'];
+        symbol: Account['symbol'];
+        index?: number;
+    }) => string;
+}
+
+export interface CoinmarketAccountOptionsGroupOptionProps extends CoinmarketCryptoListProps {
+    balance: string;
+    descriptor: string;
+    contractAddress?: string;
+}
+
+export interface CoinmarketAccountsOptionsGroupProps {
+    label: string;
+    options: CoinmarketAccountOptionsGroupOptionProps[];
 }
 
 export type CoinmarketFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
