@@ -923,7 +923,11 @@ export const simpleSearchTransactions = (
     // Find by token name, symbol or contract
     const foundTxsForToken = transactions.flatMap(transaction => {
         const hasMatchingToken = transaction.tokens.some(token => {
-            return isTokenMatchesSearch(token, search.toLowerCase());
+            return (
+                isTokenMatchesSearch(token, search.toLowerCase()) ||
+                token.to?.toLowerCase().includes(search.toLowerCase()) ||
+                token.from?.toLowerCase().includes(search.toLowerCase())
+            );
         });
 
         if (hasMatchingToken) {
