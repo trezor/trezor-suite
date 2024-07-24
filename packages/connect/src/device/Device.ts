@@ -341,9 +341,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
                     await Promise.race([
                         this.getFeatures(),
+                        // note: tested on 24.7.2024 and whatever is written below this line is still valid
                         // We do not support T1B1 <1.9.0 but we still need Features even from not supported devices to determine your version
                         // and tell you that update is required.
-                        // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
+                        // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to its
                         // transport response is pending endlessly, calling any other message will end up with "device call in progress"
                         // set the timeout for this call so whenever it happens "unacquired device" will be created instead
                         // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
