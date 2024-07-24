@@ -7,6 +7,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { typography } from '@trezor/theme';
 import styled from 'styled-components';
 import { isWebUsb } from 'src/utils/suite/transport';
+import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 
 const Wrapper = styled.div`
     a {
@@ -57,9 +58,7 @@ const BridgeStatus = () => (
 );
 
 const BridgeInstall = () => {
-    const dispatch = useDispatch();
-
-    const handleClick = () => dispatch(goto('suite-bridge'));
+    const handleClick = useOpenSuiteDesktop();
 
     return (
         <Wrapper>
