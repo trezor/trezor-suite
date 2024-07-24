@@ -30,7 +30,7 @@ const LANGUAGES = {
     sr: { name: 'Српски', en: 'Serbian' },
     sv: { name: 'Svenska', en: 'Swedish' },
     tr: { name: 'Türkçe', en: 'Turkish', type: 'official' },
-    uk: { name: 'Українська', en: 'Ukrainian' },
+    uk: { name: 'Українська', en: 'Ukrainian', type: 'community' },
     vi: { name: 'Tiếng Việt', en: 'Vietnamese' },
     'zh-CN': { name: '中文(简体)', en: 'Chinese Simplified' },
     [TRANSLATION_PSEUDOLANGUAGE]: { name: 'TRANSLATION', en: 'TRANSLATION' },
