@@ -1,12 +1,10 @@
 import styled from 'styled-components';
-import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 import { Translation, Modal, Metadata } from 'src/components/suite';
 import { Button } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
-import TrezorConnect from '@trezor/connect';
-import { useWindowFocus } from '@trezor/react-utils';
+import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 
 const StyledButton = styled(Button)`
     path {
@@ -26,21 +24,7 @@ export const BridgeUnavailable = () => {
     const transport = useSelector(state => state.suite.transport);
     const dispatch = useDispatch();
 
-    const windowFocused = useWindowFocus();
-    const handleOpenSuite = () => {
-        if (isWebUsb(transport)) {
-            TrezorConnect.disableWebUSB();
-        }
-
-        location.href = SUITE_BRIDGE_DEEPLINK;
-
-        // fallback in case deeplink does not work
-        window.setTimeout(() => {
-            if (!windowFocused.current) return;
-
-            window.open(SUITE_URL);
-        }, 500);
-    };
+    const handleOpenSuite = useOpenSuiteDesktop();
 
     const goToWallet = () => dispatch(goto('wallet-index'));
 
