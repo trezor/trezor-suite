@@ -1,10 +1,5 @@
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import {
-    amountToSatoshi,
-    fromFiatCurrency,
-    getFiatRateKey,
-    isZero,
-} from '@suite-common/wallet-utils';
+import { amountToSatoshi, getFiatRateKey, isZero } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 import { FiatCurrencyCode } from 'invity-api';
 import { useCallback } from 'react';
@@ -20,6 +15,7 @@ import {
     CoinmarketFormHelpersProps,
     CoinmarketUseSellFormHelpersProps,
 } from 'src/types/coinmarket/coinmarketForm';
+import { Option } from 'src/types/wallet/coinmarketCommonTypes';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 /**
@@ -28,14 +24,12 @@ import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 const useCoinmarketSellFormHelpers = ({
     account,
     network,
-    composeRequest,
     methods,
-    defaultCurrency,
 }: CoinmarketUseSellFormHelpersProps): CoinmarketFormHelpersProps => {
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
-    const { getValues, setValue, clearErrors } = methods;
+    const { getValues, setValue } = methods;
     const { outputs } = getValues();
     const tokenAddress = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
@@ -44,59 +38,32 @@ const useCoinmarketSellFormHelpers = ({
         : isZero(account.formattedBalance);
     const symbolForFiat = mapTestnetSymbol(symbol);
 
-    const currency: { value: string; label: string } | undefined =
-        getValues(FORM_FIAT_CURRENCY_SELECT);
+    const currency: Option | undefined = getValues(FORM_FIAT_CURRENCY_SELECT);
     const fiatRateKey = getFiatRateKey(symbolForFiat, currency?.value as FiatCurrencyCode);
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     // watch change in crypto amount and recalculate fees on change
     const onCryptoAmountChange = useCallback(
         (amount: string) => {
-            clearErrors(FORM_FIAT_INPUT);
-
-            // setValue(FORM_FIAT_INPUT, '', { shouldDirty: true });
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
             setValue(FORM_OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
-
-            composeRequest(FORM_CRYPTO_INPUT);
         },
-        [clearErrors, composeRequest, setValue],
+        [setValue],
     );
 
     // watch change in fiat amount and recalculate fees on change
     const onFiatAmountChange = useCallback(
-        (amount: string) => {
-            clearErrors(FORM_CRYPTO_INPUT);
-
-            // setValue(FORM_CRYPTO_INPUT, '', { shouldDirty: true });
-            setValue('setMaxOutputId', undefined, { shouldDirty: true });
-            const currency: typeof defaultCurrency | undefined =
-                getValues(FORM_FIAT_CURRENCY_SELECT);
-
-            if (!fiatRate?.rate || !currency) return;
-
-            const cryptoValue = fromFiatCurrency(amount, network.decimals, fiatRate.rate);
+        (cryptoInput: string) => {
             const cryptoInputValue =
-                cryptoValue && shouldSendInSats
-                    ? amountToSatoshi(cryptoValue, network.decimals)
-                    : cryptoValue;
-
+                cryptoInput && shouldSendInSats
+                    ? amountToSatoshi(cryptoInput, network.decimals)
+                    : cryptoInput;
             setValue(FORM_OUTPUT_AMOUNT, cryptoInputValue || '', {
                 shouldDirty: true,
                 shouldValidate: false,
             });
-
-            composeRequest(FORM_FIAT_INPUT);
         },
-        [
-            setValue,
-            clearErrors,
-            getValues,
-            fiatRate,
-            shouldSendInSats,
-            network.decimals,
-            composeRequest,
-        ],
+        [setValue, shouldSendInSats, network.decimals],
     );
 
     /*
@@ -146,13 +113,12 @@ const useCoinmarketSellFormHelpers = ({
                 ? amountToSatoshi(amount, network.decimals)
                 : amount;
             setValue(FORM_CRYPTO_INPUT, cryptoInputValue, { shouldDirty: true });
-            clearErrors([FORM_CRYPTO_INPUT]);
+            // clearErrors(FORM_CRYPTO_INPUT);
             onCryptoAmountChange(cryptoInputValue);
         },
         [
             account.formattedBalance,
             shouldSendInSats,
-            clearErrors,
             network.decimals,
             onCryptoAmountChange,
             tokenData,
@@ -164,9 +130,7 @@ const useCoinmarketSellFormHelpers = ({
         setValue('setMaxOutputId', 0, { shouldDirty: true });
         setValue(FORM_FIAT_INPUT, '', { shouldDirty: true });
         setValue(FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });
-        clearErrors([FORM_FIAT_INPUT, FORM_CRYPTO_INPUT]);
-        composeRequest(FORM_CRYPTO_INPUT);
-    }, [clearErrors, composeRequest, setValue]);
+    }, [setValue]);
 
     return {
         isBalanceZero,

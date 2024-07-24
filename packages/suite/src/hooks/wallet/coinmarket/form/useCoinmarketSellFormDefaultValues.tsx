@@ -54,13 +54,13 @@ export const useCoinmarketSellFormDefaultValues = (
     const defaultValues = useMemo(
         () => ({
             ...defaultFormState,
-            fiatInput: '2500',
-            cryptoInput: undefined,
+            fiatInput: '',
+            cryptoInput: '',
             currencySelect: defaultCurrency,
             cryptoSelect: defaultCrypto,
             countrySelect: defaultCountry,
             paymentMethod: defaultPaymentMethod,
-            amountInCrypto: false,
+            amountInCrypto: true,
         }),
         [defaultCurrency, defaultCrypto, defaultCountry, defaultPaymentMethod, defaultFormState],
     );

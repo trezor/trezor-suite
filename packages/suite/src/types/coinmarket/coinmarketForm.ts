@@ -170,9 +170,7 @@ export interface CoinmarketFormInputFiatCryptoProps extends CoinmarketFormInputC
 export interface CoinmarketUseSellFormHelpersProps {
     account: Account;
     network: Network;
-    composeRequest: SendContextValues<CoinmarketSellFormProps>['composeTransaction'];
     methods: UseFormReturn<CoinmarketSellFormProps>;
-    defaultCurrency: Option;
 }
 
 export interface CoinmarketFormHelpersProps {

@@ -33,6 +33,7 @@ import { useCoinmarketSellFormDefaultValues } from 'src/hooks/wallet/coinmarket/
 import useCoinmarketPaymentMethod from 'src/hooks/wallet/coinmarket/form/useCoinmarketPaymentMethod';
 import {
     FORM_CRYPTO_INPUT,
+    FORM_FIAT_INPUT,
     FORM_PAYMENT_METHOD_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
 import {
@@ -144,7 +145,7 @@ export const useCoinmarketSellForm = ({
     const draftUpdated: CoinmarketSellFormProps | null = draft
         ? {
               ...draft,
-              fiatInput: draft.fiatInput && draft.fiatInput !== '' ? draft.fiatInput : '2500',
+              fiatInput: draft.fiatInput && draft.fiatInput !== '' ? draft.fiatInput : '',
           }
         : null;
     const isDraft = !!draft;
@@ -153,7 +154,6 @@ export const useCoinmarketSellForm = ({
         defaultValues: isDraft ? draft : defaultValues,
     });
     const {
-        reset,
         register,
         setValue,
         getValues,
@@ -192,9 +192,7 @@ export const useCoinmarketSellForm = ({
     const helpers = useCoinmarketSellFormHelpers({
         account,
         network,
-        composeRequest,
         methods,
-        defaultCurrency,
     });
 
     // form states
@@ -309,6 +307,17 @@ export const useCoinmarketSellForm = ({
                         label: bestQuotePaymentMethod ?? '',
                     });
                 }
+
+                if (!values.amountInCrypto) {
+                    // the best quote crypto amount is known after provided quotes
+                    if (bestQuote?.cryptoStringAmount) {
+                        helpers.onFiatAmountChange(bestQuote.cryptoStringAmount);
+                    }
+
+                    await composeRequest(FORM_FIAT_INPUT);
+                } else {
+                    await composeRequest(FORM_CRYPTO_INPUT);
+                }
             } else {
                 setInnerQuotes([]);
             }
@@ -318,15 +327,18 @@ export const useCoinmarketSellForm = ({
         },
         [
             timer,
+            helpers,
             values.paymentMethod?.value,
-            dispatch,
+            values.amountInCrypto,
             getPaymentMethods,
             getQuoteRequestData,
             getQuotesRequest,
-            savePaymentMethods,
-            saveQuoteRequest,
+            dispatch,
             saveQuotes,
+            saveQuoteRequest,
+            savePaymentMethods,
             setValue,
+            composeRequest,
         ],
     );
 
@@ -342,10 +354,6 @@ export const useCoinmarketSellForm = ({
             if (fiatChanged || cryptoChanged) {
                 if (cryptoChanged && values.cryptoInput) {
                     helpers.onCryptoAmountChange(values.cryptoInput);
-                }
-
-                if (fiatChanged && values.fiatInput) {
-                    helpers.onFiatAmountChange(values.fiatInput);
                 }
 
                 handleSubmit(() => {
@@ -602,13 +610,6 @@ export const useCoinmarketSellForm = ({
         register('setMaxOutputId');
     }, [register]);
 
-    // react-hook-form reset, set default values
-    useEffect(() => {
-        if (!isDraft && defaultValues) {
-            reset(defaultValues);
-        }
-    }, [reset, isDraft, defaultValues]);
-
     useDidUpdate(() => {
         const cryptoInputValue = getValues(FORM_CRYPTO_INPUT);
         if (!cryptoInputValue) {
@@ -657,6 +658,7 @@ export const useCoinmarketSellForm = ({
         const { setMaxOutputId } = values;
         const selectedFeeLevel = selectedFee || 'normal';
         const composed = composedLevels[selectedFeeLevel];
+
         if (!composed) return;
 
         if (composed.type === 'final') {
