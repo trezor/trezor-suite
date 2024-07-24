@@ -7224,14 +7224,6 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION',
         defaultMessage: 'Run <a>Trezor Suite</a> desktop application',
     },
-    TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_TITLE: {
-        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_TITLE',
-        defaultMessage: 'You may also run Trezor Suite in background',
-    },
-    TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_DESCRIPTION: {
-        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_DESCRIPTION',
-        defaultMessage: '<a>See intructions</a>',
-    },
     TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION',
         defaultMessage:
