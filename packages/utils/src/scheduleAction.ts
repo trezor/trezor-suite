@@ -27,26 +27,37 @@ const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
     new Promise<void>((resolve, reject) => {
         if (clear.aborted) return reject();
         if (ms === undefined) return resolve();
-        const timeout = setTimeout(resolve, ms);
+        let timeout: ReturnType<typeof setTimeout>;
         const onClear = () => {
             clearTimeout(timeout);
             clear.removeEventListener('abort', onClear);
             reject();
         };
+        timeout = setTimeout(() => {
+            clear.removeEventListener('abort', onClear);
+            resolve();
+        }, ms);
         clear.addEventListener('abort', onClear);
     });
 
-const rejectAfterMs = (ms: number | undefined, reason: () => Error, clear: AbortSignal) =>
+const rejectAfterMs = (ms: number, reason: () => Error, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
         if (clear.aborted) return reject();
-        const timeout = ms !== undefined ? setTimeout(() => reject(reason()), ms) : undefined;
+        let timeout: ReturnType<typeof setTimeout> | undefined;
         const onClear = () => {
             clearTimeout(timeout);
             clear.removeEventListener('abort', onClear);
             reject();
         };
+        timeout = setTimeout(() => {
+            clear.removeEventListener('abort', onClear);
+            reject(reason());
+        }, ms);
         clear.addEventListener('abort', onClear);
     });
+
+const maybeRejectAfterMs = (ms: number | undefined, reason: () => Error, clear: AbortSignal) =>
+    ms === undefined ? [] : [rejectAfterMs(ms, reason, clear)];
 
 const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
@@ -118,13 +129,17 @@ export const scheduleAction = async <T>(
     try {
         return await Promise.race([
             rejectWhenAborted(signal, clear),
-            rejectAfterMs(deadlineMs, abortedByDeadline, clear),
+            ...maybeRejectAfterMs(deadlineMs, abortedByDeadline, clear),
             resolveAfterMs(delay, clear).then(() =>
                 attemptLoop(
                     attemptCount,
                     (attempt, abort) =>
                         Promise.race([
-                            rejectAfterMs(getParams(attempt).timeout, abortedByTimeout, clear),
+                            ...maybeRejectAfterMs(
+                                getParams(attempt).timeout,
+                                abortedByTimeout,
+                                clear,
+                            ),
                             resolveAction(action, abort),
                         ]),
                     (attempt, error) => {
