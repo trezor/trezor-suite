@@ -1,80 +1,11 @@
 import { isWeb, isLinux, isAndroid } from '@trezor/env-utils';
 
-import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
-import { typography } from '@trezor/theme';
-import styled from 'styled-components';
 import { isWebUsb } from 'src/utils/suite/transport';
-import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 
-const Wrapper = styled.div`
-    a {
-        ${typography.hint};
-    }
-`;
-
-// TODO: move it to separated components?
-
-const UdevDescription = () => {
-    const dispatch = useDispatch();
-
-    const handleClick = () => dispatch(goto('suite-udev'));
-
-    return (
-        <Wrapper>
-            <Translation
-                id="TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION"
-                values={{
-                    a: chunks => (
-                        <TrezorLink
-                            variant="underline"
-                            onClick={handleClick}
-                            data-test="@goto/udev"
-                        >
-                            {chunks}
-                        </TrezorLink>
-                    ),
-                }}
-            />
-        </Wrapper>
-    );
-};
-
-const BridgeStatus = () => (
-    <Wrapper>
-        <Translation
-            id="TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION"
-            values={{
-                a: chunks => (
-                    <TrezorLink variant="underline" href="http://127.0.0.1:21325/status/">
-                        {chunks}
-                    </TrezorLink>
-                ),
-            }}
-        />
-    </Wrapper>
-);
-
-const BridgeInstall = () => {
-    const handleClick = useOpenSuiteDesktop();
-
-    return (
-        <Wrapper>
-            <Translation
-                id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION"
-                values={{
-                    a: chunks => (
-                        <TrezorLink variant="underline" onClick={handleClick}>
-                            {chunks}
-                        </TrezorLink>
-                    ),
-                }}
-            />
-        </Wrapper>
-    );
-};
+import { BridgeStatus } from './BridgeStatus';
+import { BridgeInstall } from './BridgeInstall';
+import { UdevDescription } from './UdevDescription';
 
 export const TROUBLESHOOTING_TIP_BRIDGE_STATUS = {
     key: 'bridge-status',
