@@ -33,7 +33,7 @@ export type Firmwares = Record<Model, string[]>;
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-class TrezorUserEnvLinkClass extends EventEmitter {
+export class TrezorUserEnvLinkClass extends EventEmitter {
     messageID: number;
     options: Options;
     messages: Deferred<any>[];
