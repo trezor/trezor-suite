@@ -5495,6 +5495,14 @@ export default defineMessages({
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         defaultMessage: 'Re-implementation of Trezor password manager webextension',
     },
+    TR_EXPERIMENTAL_NETWORK_BSC: {
+        id: 'TR_EXPERIMENTAL_NETWORK_BSC',
+        defaultMessage: 'Binance Smart Chain',
+    },
+    TR_EXPERIMENTAL_NETWORK_BSC_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_NETWORK_BSC_DESCRIPTION',
+        defaultMessage: 'Be aware of a few limitation - tady a tady to uprav!',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',

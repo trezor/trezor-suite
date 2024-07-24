@@ -365,7 +365,6 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'binance-smart-chain',
-        isDebugOnly: true,
     },
     // testnets
     test: {
