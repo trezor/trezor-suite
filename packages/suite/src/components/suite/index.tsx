@@ -12,7 +12,6 @@ import { FiatValue } from './FiatValue';
 import { WebUsbButton } from './WebUsbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
-import { DeviceInvalidModeLayout } from './DeviceInvalidModeLayout';
 import { TrendTicker } from './Ticker/TrendTicker';
 import { PriceTicker } from './Ticker/PriceTicker';
 import { Translation } from './Translation';
@@ -59,7 +58,6 @@ export {
     AccountLabel,
     DeviceConfirmImage,
     CheckItem,
-    DeviceInvalidModeLayout,
     PrerequisitesGuide,
     WelcomeLayout,
     NotificationCard,
