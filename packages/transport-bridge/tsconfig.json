@@ -7,6 +7,7 @@
         { "path": "../protocol" },
         { "path": "../theme" },
         { "path": "../transport" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../trezor-user-env-link" }
     ]
 }

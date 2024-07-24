@@ -10,6 +10,6 @@ services:
     image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
     network_mode: service:trezor-user-env-unix
     working_dir: /trezor-suite
-    command: bash -c "yarn workspace @trezor/transport test:e2e"
+    command: bash -c "yarn workspace @trezor/transport-bridge test:e2e:old-bridge:emu"
     volumes:
       - ../:/trezor-suite

@@ -1,4 +1,4 @@
-name: "[Test] transport e2e"
+name: "[Test] transport-bridge e2e"
 
 on:
   schedule:
@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  transport-e2e:
+  transport-bridge-e2e:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     env:
@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/transport
+          yarn workspaces focus @trezor/transport-bridge
 
       - name: Run E2E tests
-        run: ./docker/docker-transport-test.sh
+        run: ./docker/docker-transport-bridge-test.sh

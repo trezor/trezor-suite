@@ -7,6 +7,7 @@
     "sideEffects": false,
     "scripts": {
         "test:unit": "yarn g:jest",
+        "test:e2e": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/run.ts",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
@@ -20,10 +21,14 @@
         "build:lib": "yarn build:js"
     },
     "devDependencies": {
+        "@jest/types": "^29.6.3",
+        "@trezor/trezor-user-env-link": "workspace:^",
         "@types/json-stable-stringify": "^1",
         "esbuild": "^0.20.0",
         "html-webpack-plugin": "^5.6.0",
+        "jest": "^29.7.0",
         "pkg": "^5.8.1",
+        "ts-node": "^10.9.1",
         "webpack": "^5.91.0"
     },
     "dependencies": {

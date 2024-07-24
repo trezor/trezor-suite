@@ -1,7 +1,7 @@
 import * as messages from '@trezor/protobuf/messages.json';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { BridgeTransport } from '../../src';
+import { BridgeTransport } from '@trezor/transport';
 
 // todo: introduce global jest config for e2e
 jest.setTimeout(60000);
