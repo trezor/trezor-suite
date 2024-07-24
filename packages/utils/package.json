@@ -24,7 +24,7 @@
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest --verbose -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest --verbose -c ./jest.config.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
@@ -34,6 +34,7 @@
         "tslib": "^2.6.2"
     },
     "devDependencies": {
+        "jest-environment-node": "^29.7.0",
         "tsx": "^4.7.0"
     },
     "dependencies": {
