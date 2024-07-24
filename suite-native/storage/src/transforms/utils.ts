@@ -2,6 +2,10 @@ import { A, D, O } from '@mobily/ts-belt';
 
 import { DeviceRootState } from '@suite-common/wallet-core';
 
+/**
+ * Beware, if you want to persist some part of state outside device reducer,
+ * redux-persist will not automatically check for changes of device.remember property!
+ */
 export const selectDeviceStatesNotRemembered = (state: DeviceRootState) => {
     return A.filterMap(state.device.devices, device =>
         device.remember || !device.state ? O.None : O.Some(device.state),

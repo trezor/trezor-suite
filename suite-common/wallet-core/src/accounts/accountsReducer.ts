@@ -14,6 +14,7 @@ import {
     selectDevice,
     selectHasOnlyPortfolioDevice,
 } from '../device/deviceReducer';
+import { deviceActions } from '../device/deviceActions';
 import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
 
 export type AccountsState = Account[];
@@ -129,6 +130,10 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadAccounts)
+            // Persistence of accounts and transactions in suite-native depends on device.remember state,
+            // but redux-persist is not checking for changes in other reducers.
+            // This is a workaround to update redux-persist state.
+            .addCase(deviceActions.rememberDevice, state => [...state])
             .addMatcher(isAnyOf(extra.actions.setAccountAddMetadata), (state, action) => {
                 const { payload } = action;
                 setMetadata(state, payload);

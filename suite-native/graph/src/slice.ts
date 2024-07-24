@@ -60,15 +60,22 @@ export const graphSlice = createSlice({
         },
     },
     extraReducers: builder => {
-        builder.addCase(deviceActions.forgetDevice, (state, action) => {
-            const deviceState = action.payload.device.state;
-            if (deviceState) {
-                state.accountToGraphTimeframeMap = filterKeysByPartialMatch(
-                    state.accountToGraphTimeframeMap,
-                    [deviceState],
-                );
-            }
-        });
+        builder
+            .addCase(deviceActions.forgetDevice, (state, action) => {
+                const deviceState = action.payload.device.state;
+                if (deviceState) {
+                    state.accountToGraphTimeframeMap = filterKeysByPartialMatch(
+                        state.accountToGraphTimeframeMap,
+                        [deviceState],
+                    );
+                }
+            })
+            .addCase(deviceActions.rememberDevice, state => {
+                // Persistence of graph depends on device.remember state,
+                // but redux-persist is not checking for changes in other reducers.
+                // This is a workaround to update redux-persist state.
+                state.accountToGraphTimeframeMap = { ...state.accountToGraphTimeframeMap };
+            });
     },
 });
 
