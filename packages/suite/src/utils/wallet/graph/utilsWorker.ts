@@ -16,7 +16,7 @@ const calcFiatValueMap = (
 ): { [k: string]: string | undefined } => {
     const fiatValueMap: { [k: string]: string | undefined } = {};
     Object.keys(rates).forEach(fiatSymbol => {
-        fiatValueMap[fiatSymbol] = toFiatCurrency(amount, rates?.['usd']) ?? '0';
+        fiatValueMap[fiatSymbol] = toFiatCurrency(amount, rates?.[fiatSymbol]) ?? '0';
     });
 
     return fiatValueMap;
