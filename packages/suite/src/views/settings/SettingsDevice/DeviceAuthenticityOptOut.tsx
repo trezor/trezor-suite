@@ -9,7 +9,7 @@ import {
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { deviceAutenticityOptOut } from 'src/actions/suite/suiteActions';
+import { deviceAuthenticityOptOut } from 'src/actions/suite/suiteActions';
 
 export const DeviceAuthenticityOptOut = () => {
     const dispatch = useDispatch();
@@ -20,7 +20,7 @@ export const DeviceAuthenticityOptOut = () => {
     const handleClick = () =>
         dispatch(
             isDeviceAuthenticityCheckDisabled
-                ? deviceAutenticityOptOut(false)
+                ? deviceAuthenticityOptOut(false)
                 : openModal({ type: 'device-authenticity-opt-out' }),
         );
 

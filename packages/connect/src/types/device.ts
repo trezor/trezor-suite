@@ -34,6 +34,17 @@ export enum FirmwareType {
 // key = coin shortcut lowercase (ex: btc, eth, xrp) OR field declared in coins.json "supportedFirmware.capability"
 export type UnavailableCapabilities = { [key: string]: UnavailableCapability };
 
+export type FirmwareRevisionCheckResult =
+    | { success: true }
+    | {
+          success: false;
+          error:
+              | 'revision-mismatch'
+              | 'firmware-version-unknown'
+              | 'firmware-version-unknown'
+              | 'cannot-perform-check-offline'; // suite offline & release version not found locally => we cannot check with `data.trezor.io`
+      };
+
 export type KnownDevice = {
     type: 'acquired';
     id: string | null;
@@ -51,6 +62,11 @@ export type KnownDevice = {
     features: PROTO.Features;
     unavailableCapabilities: UnavailableCapabilities;
     availableTranslations: string[];
+    authenticityChecks: {
+        firmwareRevision: FirmwareRevisionCheckResult | null;
+        // Maybe add FirmwareHashCheck result here?
+        // Maybe add AuthenticityCheck result here?
+    };
 };
 
 export type UnknownDevice = {

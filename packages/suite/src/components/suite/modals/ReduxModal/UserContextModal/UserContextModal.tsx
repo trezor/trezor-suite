@@ -46,6 +46,7 @@ import type { ReduxModalProps } from '../ReduxModal';
 import { CryptoSymbol } from 'invity-api';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { PassphraseMismatchModal } from './PassphraseMismatchModal';
+import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({
@@ -93,6 +94,8 @@ export const UserContextModal = ({
             return <WipeDeviceModal onCancel={onCancel} />;
         case 'device-authenticity-opt-out':
             return <DeviceAuthenticityOptOutModal onCancel={onCancel} />;
+        case 'firmware-revision-opt-out':
+            return <FirmwareRevisionOptOutModal onCancel={onCancel} />;
         case 'qr-reader':
             return (
                 <QrScannerModal

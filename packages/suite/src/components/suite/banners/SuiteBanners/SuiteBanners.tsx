@@ -18,6 +18,7 @@ import { FailedBackup } from './FailedBackupBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
+import { UnableToPerformRevisionCheck } from './UnableToPerformRevisionCheck';
 
 const Container = styled.div<{ $isVisible?: boolean }>`
     width: 100%;
@@ -30,6 +31,7 @@ export const SuiteBanners = () => {
     const online = useSelector(state => state.suite.online);
     const firmwareHashInvalid = useSelector(state => state.firmware.firmwareHashInvalid);
     const bannerMessage = useSelector(selectBannerMessage);
+    const { isFirmwareRevisionCheckDisabled } = useSelector(state => state.suite.settings);
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
@@ -53,6 +55,15 @@ export const SuiteBanners = () => {
     let priority = 0;
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
         banner = <FirmwareHashMismatch />;
+        priority = 92;
+    } else if (
+        !isFirmwareRevisionCheckDisabled &&
+        device?.features &&
+        device?.authenticityChecks.firmwareRevision !== null && // check was performed
+        device?.authenticityChecks.firmwareRevision.success === false &&
+        device?.authenticityChecks.firmwareRevision.error === 'cannot-perform-check-offline' // but it was not possible to finish it (user is offline & revision not found locally)
+    ) {
+        banner = <UnableToPerformRevisionCheck />;
         priority = 91;
     } else if (device?.features?.unfinished_backup) {
         banner = <FailedBackup />;

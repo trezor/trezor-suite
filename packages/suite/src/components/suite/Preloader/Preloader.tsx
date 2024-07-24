@@ -20,6 +20,7 @@ import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
 import { selectDevice } from '@suite-common/wallet-core';
+import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 
 const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
@@ -46,6 +47,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const isLoggedOut = useSelector(selectIsLoggedOut);
     const selectedDevice = useSelector(selectDevice);
     const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
+    const { isFirmwareRevisionCheckDisabled } = useSelector(state => state.suite.settings);
 
     const dispatch = useDispatch();
 
@@ -67,6 +69,23 @@ export const Preloader = ({ children }: PreloaderProps) => {
     // display Loader as full page view
     if (lifecycle.status !== 'ready' || !router.loaded || !transport) {
         return <InitialLoading timeout={90} />;
+    }
+
+    if (
+        router.route?.app !== 'settings' &&
+        selectedDevice?.features &&
+        selectedDevice.connected === true &&
+        !isFirmwareRevisionCheckDisabled
+    ) {
+        const failedChecks = Object.values(selectedDevice.authenticityChecks).filter(
+            // If `check` is null, it means that it was not performed yet.
+            // If Suite is offline and we cannot perform check, the error banner shows to urge user to go online.
+            check => check?.success === false && check?.error !== 'cannot-perform-check-offline',
+        );
+
+        if (failedChecks.length > 0) {
+            return <DeviceCompromised />;
+        }
     }
 
     if (

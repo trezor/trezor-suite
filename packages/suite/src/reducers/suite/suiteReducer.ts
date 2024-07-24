@@ -87,6 +87,7 @@ export interface SuiteSettings {
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
     isDeviceAuthenticityCheckDisabled: boolean;
+    isFirmwareRevisionCheckDisabled: boolean;
     addressDisplayType: AddressDisplayOptions;
     defaultWalletLoading: WalletType;
     experimental?: ExperimentalFeature[];
@@ -146,6 +147,7 @@ const initialState: SuiteState = {
         isCoinjoinReceiveWarningHidden: false,
         isDesktopSuitePromoHidden: false,
         isDeviceAuthenticityCheckDisabled: false,
+        isFirmwareRevisionCheckDisabled: false,
         debug: {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
@@ -305,6 +307,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
             case SUITE.DEVICE_AUTHENTICITY_OPT_OUT:
                 draft.settings.isDeviceAuthenticityCheckDisabled = action.payload;
+                break;
+            case SUITE.DEVICE_FIRMWARE_REVISION_CHECK:
+                draft.settings.isFirmwareRevisionCheckDisabled = action.payload.isDisabled;
                 break;
             case SUITE.LOCK_UI:
                 changeLock(draft, SUITE.LOCK_TYPE.UI, action.payload);

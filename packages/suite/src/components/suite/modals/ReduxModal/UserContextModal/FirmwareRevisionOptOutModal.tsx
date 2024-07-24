@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { Button, Image, Paragraph } from '@trezor/components';
 import { Translation, CheckItem, Modal } from 'src/components/suite';
-import { deviceAuthenticityOptOut } from 'src/actions/suite/suiteActions';
+import { checkFirmwareRevision } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite';
 
 const StyledParagraph = styled(Paragraph)`
@@ -33,13 +33,13 @@ type DeviceAuthenticityOptOutModalProps = {
     onCancel: () => void;
 };
 
-export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOptOutModalProps) => {
+export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptOutModalProps) => {
     const [isConfirmed, setIsConfirmed] = useState(false);
 
     const dispatch = useDispatch();
 
-    const handleDeviceAuthenticityOptOut = () => {
-        dispatch(deviceAuthenticityOptOut(true));
+    const handleTurningOffRevisionCheck = () => {
+        dispatch(checkFirmwareRevision({ isDisabled: true }));
         onCancel();
     };
 
@@ -47,36 +47,38 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
         <StyledModal
             isCancelable
             onCancel={onCancel}
-            heading={<Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_HEADING" />}
+            heading={<Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_HEADING" />}
             bottomBarComponents={
                 <Button
                     variant="destructive"
-                    onClick={handleDeviceAuthenticityOptOut}
+                    onClick={handleTurningOffRevisionCheck}
                     isDisabled={!isConfirmed}
                     data-test="@device-authenticity/opt-out/button"
                 >
-                    <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON" />
+                    <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON" />
                 </Button>
             }
         >
             <WarningImage image="UNI_ERROR" />
 
             <StyledParagraph>
-                <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_1" />
+                <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1" />
             </StyledParagraph>
             <StyledParagraph>
-                <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_2" />
+                <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_2" />
             </StyledParagraph>
             <StyledParagraph>
-                <Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_DESCRIPTION_3" />
+                <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3" />
             </StyledParagraph>
 
             <CheckboxWrapper>
                 <CheckItem
-                    title={<Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE" />}
+                    title={
+                        <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_CHECKBOX_TITLE" />
+                    }
                     isChecked={isConfirmed}
                     onClick={() => setIsConfirmed(!isConfirmed)}
-                    data-test="@device-authenticity/checkbox"
+                    data-test="@device-authenticity/firmware-revision-checkbox"
                 />
             </CheckboxWrapper>
         </StyledModal>

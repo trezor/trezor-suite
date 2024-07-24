@@ -58,7 +58,6 @@ export default class CheckFirmwareAuthenticity extends AbstractMethod<
                 });
 
             const { message } = result;
-            // const message = { hash: 'yolo' };
             const { hash: actualFirmwareHash } = message;
 
             return {
