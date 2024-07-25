@@ -104,6 +104,30 @@ export const getIsFakeTokenPhishingFixtures = [
         result: true,
     },
     {
+        testName: 'only zero-value fake tokens tx',
+        transaction: {
+            symbol: 'matic',
+            amount: '0',
+            tokens: [
+                { standard: 'ERC20', contract: '0xC', amount: '0' },
+                { standard: 'ERC20', contract: '0xD', amount: '0' },
+            ],
+        } as WalletAccountTransaction,
+        tokenDefinitions: {
+            coin: {
+                error: false,
+                isLoading: false,
+                data: ['0xa', '0xb'],
+            },
+            nft: {
+                error: false,
+                isLoading: false,
+                data: ['0xn', '0xf'],
+            },
+        } as TokenDefinitions,
+        result: true,
+    },
+    {
         testName: 'one fake, one legit token tx',
         transaction: {
             symbol: 'matic',
@@ -118,6 +142,54 @@ export const getIsFakeTokenPhishingFixtures = [
                 error: false,
                 isLoading: false,
                 data: ['0xa'],
+            },
+            nft: {
+                error: false,
+                isLoading: false,
+                data: ['0xn', '0xf'],
+            },
+        } as TokenDefinitions,
+        result: false,
+    },
+    {
+        testName: 'one fake, one zero-value legit token tx',
+        transaction: {
+            symbol: 'matic',
+            amount: '0',
+            tokens: [
+                { standard: 'ERC20', contract: '0xA', amount: '1' },
+                { standard: 'ERC20', contract: '0xB', amount: '0' },
+            ],
+        } as WalletAccountTransaction,
+        tokenDefinitions: {
+            coin: {
+                error: false,
+                isLoading: false,
+                data: ['0xb'],
+            },
+            nft: {
+                error: false,
+                isLoading: false,
+                data: ['0xn', '0xf'],
+            },
+        } as TokenDefinitions,
+        result: true,
+    },
+    {
+        testName: 'one zero-value fake, one legit token tx',
+        transaction: {
+            symbol: 'matic',
+            amount: '0',
+            tokens: [
+                { standard: 'ERC20', contract: '0xA', amount: '0' },
+                { standard: 'ERC20', contract: '0xB', amount: '1' },
+            ],
+        } as WalletAccountTransaction,
+        tokenDefinitions: {
+            coin: {
+                error: false,
+                isLoading: false,
+                data: ['0xb'],
             },
             nft: {
                 error: false,
@@ -150,6 +222,30 @@ export const getIsFakeTokenPhishingFixtures = [
             },
         } as TokenDefinitions,
         result: false,
+    },
+    {
+        testName: 'only zero-value legit tokens tx',
+        transaction: {
+            symbol: 'matic',
+            amount: '0',
+            tokens: [
+                { standard: 'ERC20', contract: '0xA', amount: '0' },
+                { standard: 'ERC20', contract: '0xB', amount: '0' },
+            ],
+        } as WalletAccountTransaction,
+        tokenDefinitions: {
+            coin: {
+                error: false,
+                isLoading: false,
+                data: ['0xa', '0xb'],
+            },
+            nft: {
+                error: false,
+                isLoading: false,
+                data: ['0xn', '0xf'],
+            },
+        } as TokenDefinitions,
+        result: true,
     },
     {
         testName: 'no tokens tx',
@@ -219,6 +315,30 @@ export const getIsFakeTokenPhishingFixtures = [
             },
         } as TokenDefinitions,
         result: false,
+    },
+    {
+        testName: 'fake NFT token with zero-value legit token tx',
+        transaction: {
+            symbol: 'matic',
+            amount: '0',
+            tokens: [
+                { standard: 'ERC1155', contract: '0xT', amount: '1' },
+                { standard: 'ERC20', contract: '0xA', amount: '0' },
+            ],
+        } as WalletAccountTransaction,
+        tokenDefinitions: {
+            coin: {
+                error: false,
+                isLoading: false,
+                data: ['0xa', '0xb'],
+            },
+            nft: {
+                error: false,
+                isLoading: false,
+                data: ['0xn', '0xf'],
+            },
+        } as TokenDefinitions,
+        result: true,
     },
     {
         testName: 'just legit NFT token tx',
