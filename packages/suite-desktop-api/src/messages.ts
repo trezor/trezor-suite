@@ -53,6 +53,10 @@ export type HandshakeTorModule = {
     shouldRunTor: boolean;
 };
 
+export type TorSettings = {
+    snowflakeBinaryPath: string;
+};
+
 export type HandshakeElectron = {
     protocol?: string;
     desktopUpdate?: {
