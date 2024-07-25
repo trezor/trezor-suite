@@ -23,6 +23,7 @@ const DefaultWrapper = styled.div<DefaultWrapperProps>(
   `,
 );
 
-export const DefaultCoinLogo = ({ coinFirstCharacter, size = 32 }: DefaultCoinLogoProps) => (
-    <DefaultWrapper $size={size}>{coinFirstCharacter || DEFAULT_CHARACTER}</DefaultWrapper>
-);
+export const DefaultCoinLogo = ({
+    coinFirstCharacter = DEFAULT_CHARACTER,
+    size = 32,
+}: DefaultCoinLogoProps) => <DefaultWrapper $size={size}>{coinFirstCharacter}</DefaultWrapper>;
