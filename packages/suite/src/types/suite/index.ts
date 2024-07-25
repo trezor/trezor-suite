@@ -126,6 +126,11 @@ export interface TorBootstrap {
     isSlow?: boolean;
 }
 
+export type TorConfig = {
+    enableSnowflake: boolean;
+    snowflakeBinaryPath: string;
+};
+
 export enum DisplayMode {
     CHUNKS = 1,
     PAGINATED_TEXT,
