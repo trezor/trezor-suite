@@ -14,6 +14,7 @@ import {
     spacingsPx,
     typography,
 } from '@trezor/theme';
+import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 
 const Wrapper = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};
@@ -128,6 +129,8 @@ const TxSentStatus = styled(H3)`
     overflow: hidden;
     text-overflow: ellipsis;
     color: ${({ theme }) => theme.textDefault};
+    gap: ${spacingsPx.xxs};
+    display: flex;
 `;
 
 const ConfirmationStatus = styled.div<{ $confirmed: boolean; $tiny?: boolean }>`
@@ -194,6 +197,7 @@ export const BasicTxDetails = ({
                 <TxStatus>
                     <TxSentStatus>
                         <TransactionHeader transaction={tx} isPending={isPending(tx)} />
+                        <UnstakingTxAmount transaction={tx} />
                     </TxSentStatus>
                 </TxStatus>
 

@@ -15,8 +15,10 @@ import {
     getDaysToAddToPoolInitialFixture,
     getAdjustedGasLimitConsumptionFixture,
     getEthNetworkForWalletSdkFixture,
+    getUnstakingAmountFixtures,
 } from '../__fixtures__/stake';
 import {
+    getUnstakingAmount,
     transformTx,
     stake,
     unstake,
@@ -47,6 +49,15 @@ describe('transformTx', () => {
             const result = transformTx(test.tx, test.gasPrice, test.nonce, test.chainId);
             expect(result).toEqual(test.result);
             expect(result).not.toHaveProperty('from');
+        });
+    });
+});
+
+describe('getUnstakingAmount', () => {
+    getUnstakingAmountFixtures.forEach(test => {
+        it(test.description, () => {
+            const result = getUnstakingAmount(test.ethereumData);
+            expect(result).toBe(test.expectedAmountWei);
         });
     });
 });
