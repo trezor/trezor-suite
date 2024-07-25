@@ -178,6 +178,7 @@ export interface CoinmarketUseSellFormHelpersProps {
     setAccount: (account: Account) => void;
     setAmountLimits: (limits?: AmountLimits) => void;
     changeFeeLevel: (level: FeeLevel['label']) => void;
+    composeRequest: SendContextValues<SellFormState>['composeTransaction'];
 }
 
 export interface CoinmarketFormHelpersProps {
@@ -195,7 +196,7 @@ export interface CoinmarketUseSellFormStateProps {
     account: Account;
     network: Network;
     fees: FeesState;
-    defaultFormValues?: CoinmarketSellFormProps;
+    defaultValues?: CoinmarketSellFormProps;
 }
 
 export interface CoinmarketUseSellFormStateReturnProps {

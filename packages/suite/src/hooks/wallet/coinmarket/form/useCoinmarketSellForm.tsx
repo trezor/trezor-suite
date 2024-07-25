@@ -39,6 +39,7 @@ import useCoinmarketPaymentMethod from 'src/hooks/wallet/coinmarket/form/useCoin
 import {
     FORM_CRYPTO_INPUT,
     FORM_FIAT_INPUT,
+    FORM_OUTPUT_ADDRESS,
     FORM_PAYMENT_METHOD_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
 import {
@@ -76,8 +77,11 @@ export const useCoinmarketSellForm = ({
     } = useCoinmarketCommonOffers<CoinmarketTradeSellType>({ selectedAccount, type });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
         useCoinmarketPaymentMethod<CoinmarketTradeSellType>();
-    const { /* TODO: used in doSellTrade selectedFee */ composed, recomposeAndSign } =
-        useCoinmarketRecomposeAndSign();
+    const {
+        selectedFee: selectedFeeRecomposedAndSigned,
+        composed,
+        recomposeAndSign,
+    } = useCoinmarketRecomposeAndSign();
     const {
         goto,
         saveTrade,
@@ -139,7 +143,12 @@ export const useCoinmarketSellForm = ({
 
     // form initialization
     const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
-        useCoinmarketSellFormDefaultValues(account, sellInfo, paymentMethods);
+        useCoinmarketSellFormDefaultValues(
+            account,
+            sellInfo,
+            paymentMethods,
+            state?.formValues?.outputs[0].address,
+        );
     const { saveDraft, getDraft, removeDraft } =
         useFormDraft<CoinmarketSellFormProps>('coinmarket-sell');
     const draft = getDraft(account.key);
@@ -167,12 +176,11 @@ export const useCoinmarketSellForm = ({
     const values = useWatch<CoinmarketSellFormProps>({ control });
     const previousValues = useRef<typeof values | null>(offFirstRequest ? draftUpdated : null);
 
-    // throttle initial state calculation
     const initState = useCoinmarketSellFormState({
         account,
         network,
         fees,
-        defaultFormValues: defaultValues,
+        defaultValues,
     });
     const {
         isLoading: isComposing,
@@ -198,6 +206,7 @@ export const useCoinmarketSellForm = ({
         setAmountLimits,
         setAccount,
         changeFeeLevel,
+        composeRequest,
     });
 
     // form states
@@ -320,9 +329,7 @@ export const useCoinmarketSellForm = ({
                         helpers.onFiatAmountChange(bestQuote.cryptoStringAmount);
                     }
 
-                    await composeRequest(FORM_FIAT_INPUT);
-                } else {
-                    await composeRequest(FORM_CRYPTO_INPUT);
+                    composeRequest(FORM_FIAT_INPUT);
                 }
             } else {
                 setInnerQuotes([]);
@@ -400,7 +407,7 @@ export const useCoinmarketSellForm = ({
         const returnUrl = await createQuoteLink(
             quotesRequest,
             account,
-            { selectedFee, composed },
+            { selectedFee: selectedFeeRecomposedAndSigned, composed },
             orderId,
         );
         const response = await invityAPI.doSellTrade({
@@ -638,6 +645,7 @@ export const useCoinmarketSellForm = ({
             );
             if (initState.formValues && address) {
                 initState.formValues.outputs[0].address = address;
+                setValue(FORM_OUTPUT_ADDRESS, address);
             }
 
             setState(initState);
@@ -646,7 +654,7 @@ export const useCoinmarketSellForm = ({
         if (initState && initState?.account.descriptor !== state?.account.descriptor) {
             setStateAsync(initState);
         }
-    }, [state, initState, account, network, device, accounts, chunkify]);
+    }, [state, initState, account, network, device, accounts, chunkify, setValue]);
 
     useEffect(() => {
         if (!composedLevels) return;
@@ -738,7 +746,7 @@ export const useCoinmarketSellForm = ({
     // compose request on account change
     useEffect(() => {
         if (initState?.account.descriptor === state?.account.descriptor) {
-            composeRequest();
+            composeRequest(FORM_CRYPTO_INPUT);
         }
     }, [composeRequest, initState?.account.descriptor, state?.account.descriptor]);
 

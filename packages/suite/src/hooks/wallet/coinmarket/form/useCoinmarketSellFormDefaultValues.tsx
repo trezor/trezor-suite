@@ -45,6 +45,7 @@ export const useCoinmarketSellFormDefaultValues = (
     account: Account,
     sellInfo: SellInfo | undefined,
     paymentMethods: CoinmarketPaymentMethodListProps[],
+    defaultAddress?: string,
 ): CoinmarketSellFormDefaultValuesProps => {
     const country = sellInfo?.sellList?.country;
     const cryptoGroups = useCoinmarketBuildAccountGroups();
@@ -66,10 +67,10 @@ export const useCoinmarketSellFormDefaultValues = (
     const defaultPayment: Output = useMemo(
         () => ({
             ...DEFAULT_PAYMENT,
-            address: defaultCrypto?.descriptor ?? '',
+            address: defaultAddress ?? defaultCrypto?.descriptor ?? '',
             token: defaultCrypto?.contractAddress ?? '',
         }),
-        [defaultCrypto?.contractAddress, defaultCrypto?.descriptor],
+        [defaultCrypto?.contractAddress, defaultCrypto?.descriptor, defaultAddress],
     );
     const defaultFormState: FormState = useMemo(
         () => ({

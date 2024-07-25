@@ -44,6 +44,7 @@ const useCoinmarketSellFormHelpers = ({
     setAccount,
     setAmountLimits,
     changeFeeLevel,
+    composeRequest,
 }: CoinmarketUseSellFormHelpersProps): CoinmarketFormHelpersProps => {
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
@@ -51,7 +52,7 @@ const useCoinmarketSellFormHelpers = ({
     const device = useSelector(selectDevice);
     const accountsWithBalance = coinmarketGetSortedAccountsWithBalance({ accounts, device });
 
-    const { getValues, setValue } = methods;
+    const { getValues, setValue, clearErrors } = methods;
     const { outputs } = getValues();
     const tokenAddress = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
@@ -152,7 +153,9 @@ const useCoinmarketSellFormHelpers = ({
         setValue('setMaxOutputId', 0, { shouldDirty: true });
         setValue(FORM_FIAT_INPUT, '', { shouldDirty: true });
         setValue(FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });
-    }, [setValue]);
+        clearErrors([FORM_FIAT_INPUT, FORM_CRYPTO_INPUT]);
+        composeRequest(FORM_CRYPTO_INPUT);
+    }, [setValue, composeRequest, clearErrors]);
 
     return {
         isBalanceZero,
