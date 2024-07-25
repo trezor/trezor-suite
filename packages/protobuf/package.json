@@ -40,7 +40,7 @@
     },
     "devDependencies": {
         "protobufjs-cli": "^1.1.2",
-        "tsx": "^4.7.0"
+        "tsx": "^4.16.3"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

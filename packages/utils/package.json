@@ -35,7 +35,7 @@
     },
     "devDependencies": {
         "jest-environment-node": "^29.7.0",
-        "tsx": "^4.7.0"
+        "tsx": "^4.16.3"
     },
     "dependencies": {
         "bignumber.js": "^9.1.2"
