@@ -48,6 +48,7 @@ const Wrapper = styled.div<{ $isAnimationTriggered?: boolean }>`
 const InnerContainer = styled.div`
     position: relative;
     display: flex;
+    align-items: center;
     cursor: pointer;
     gap: ${spacingsPx.md};
 `;
