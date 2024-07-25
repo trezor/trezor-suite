@@ -4083,6 +4083,27 @@ export default defineMessages({
         id: 'TR_ONION_LINKS_TITLE',
         defaultMessage: 'Open trezor.io links as .onion links',
     },
+    TR_TOR_CONFIG_SNOWFLAKE_TITLE: {
+        id: 'TR_TOR_CONFIG_SNOWFLAKE_TITLE',
+        defaultMessage: 'Tor Snowflake Binary Path',
+    },
+    TR_TOR_CONFIG_SNOWFLAKE_DESCRIPTION: {
+        id: 'TR_TOR_CONFIG_SNOWFLAKE_DESCRIPTION',
+        defaultMessage:
+            'Input the path to Tor Snowflake binary in your system. Tor should be disable to change it.',
+    },
+    TR_TOR_CONFIG_SNOWFLAKE_ERROR_PATH: {
+        id: 'TR_TOR_CONFIG_SNOWFLAKE_ERROR_PATH',
+        defaultMessage: 'Must be a valid full path.',
+    },
+    TR_TOR_CONFIG_SNOWFLAKE_UPDATE_LABEL: {
+        id: 'TR_TOR_CONFIG_SNOWFLAKE_UPDATE_LABEL',
+        defaultMessage: 'Update path',
+    },
+    TR_TOR_CONFIG_SNOWFLAKE_DISABLE_LABEL: {
+        id: 'TR_TOR_CONFIG_SNOWFLAKE_DISABLE_LABEL',
+        defaultMessage: 'Disable snowflake',
+    },
     TR_TOR_ENABLE_TITLE: {
         id: 'TR_TOR_ENABLE_TITLE',
         defaultMessage: 'Enable Tor',
@@ -5166,6 +5187,15 @@ export default defineMessages({
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         defaultMessage:
             'Add Trezor Password Manager to Trezor Suite, allowing you to use your Trezor device as a master password.',
+    },
+    TR_EXPERIMENTAL_TOR_SNOWFLAKE: {
+        id: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE',
+        defaultMessage: 'Tor snowflake',
+    },
+    TR_EXPERIMENTAL_TOR_SNOWFLAKE_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE_DESCRIPTION',
+        defaultMessage:
+            'Tor Snowflake is a system that allows people from all over the world to access censored websites and applications.',
     },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
