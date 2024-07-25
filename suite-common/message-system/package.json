@@ -34,7 +34,7 @@
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@types/fs-extra": "^11.0.4",
-        "tsx": "^4.7.0"
+        "tsx": "^4.16.3"
     },
     "nx": {
         "targets": {
