@@ -531,12 +531,8 @@ const onCallDevice = async (
     const { origin, env, useCoreInPopup } = DataManager.getSettings();
 
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
-        const { transports, pendingTransportEvent } = DataManager.getSettings();
         // transport is missing try to initialize it once again
-        // TODO bridge transport is probably not reusable, so I can't remove this setTransports yet.
-        deviceList.setTransports(transports);
-        // TODO is pendingTransportEvent needed here?
-        deviceList.init({ pendingTransportEvent });
+        deviceList.init();
     }
     await deviceList.pendingConnection();
 
