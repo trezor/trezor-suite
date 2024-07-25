@@ -103,6 +103,7 @@ export const CHROME_UPDATE_URL = 'https://support.google.com/chrome/answer/95414
 export const CHROME_ANDROID_URL =
     'https://play.google.com/store/apps/details?id=com.android.chrome';
 export const TOR_PROJECT_URL = 'https://www.torproject.org/';
+export const TOR_SNOWFLAKE_PROJECT_URL = 'https://snowflake.torproject.org/';
 export const ZKSNACKS_TERMS_URL =
     'https://github.com/zkSNACKs/WalletWasabi/blob/master/WalletWasabi/Legal/Assets/LegalDocumentsWw2.txt';
 export const CROWDIN_URL = 'https://crowdin.com/project/trezor-suite';
