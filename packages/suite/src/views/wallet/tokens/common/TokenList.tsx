@@ -289,6 +289,7 @@ export const TokenList = ({
                                             options: [
                                                 {
                                                     label: <Translation id="TR_NAV_SEND" />,
+                                                    icon: 'SEND',
                                                     onClick: () => {
                                                         goToWithAnalytics('wallet-send', {
                                                             params: {
@@ -307,6 +308,7 @@ export const TokenList = ({
                                                 },
                                                 {
                                                     label: <Translation id="TR_NAV_RECEIVE" />,
+                                                    icon: 'RECEIVE',
                                                     onClick: onReceive,
                                                     isDisabled: isReceiveButtonDisabled,
                                                     isHidden:
@@ -316,14 +318,23 @@ export const TokenList = ({
                                                             : true,
                                                 },
                                                 {
-                                                    label: <Translation id="TR_UNHIDE_TOKEN" />,
+                                                    label: (
+                                                        <Translation
+                                                            id={
+                                                                tokenStatusType ===
+                                                                TokenManagementAction.SHOW
+                                                                    ? 'TR_UNHIDE_TOKEN'
+                                                                    : 'TR_HIDE_TOKEN'
+                                                            }
+                                                        />
+                                                    ),
                                                     icon: 'EYE_CLOSED',
                                                     onClick: () =>
                                                         dispatch(
                                                             tokenDefinitionsActions.setTokenStatus({
                                                                 networkSymbol: network.symbol,
                                                                 contractAddress: token.contract,
-                                                                status: TokenManagementAction.HIDE,
+                                                                status: tokenStatusType,
                                                                 type: DefinitionType.COIN,
                                                             }),
                                                         ),
