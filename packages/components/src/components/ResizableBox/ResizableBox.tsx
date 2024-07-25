@@ -277,12 +277,14 @@ export const ResizableBox = ({
         };
 
         document.onmouseup = () => {
-            setIsResizing(false);
-            if (onWidthResizeEnd) {
-                onWidthResizeEnd(newWidth);
-            }
-            if (onHeightResizeEnd) {
-                onHeightResizeEnd(newHeight);
+            if (isResizing) {
+                setIsResizing(false);
+                if (onWidthResizeEnd) {
+                    onWidthResizeEnd(newWidth);
+                }
+                if (onHeightResizeEnd) {
+                    onHeightResizeEnd(newHeight);
+                }
             }
         };
 
