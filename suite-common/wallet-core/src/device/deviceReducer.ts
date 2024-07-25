@@ -716,7 +716,7 @@ export const selectDeviceSupportedNetworks = (state: DeviceRootState) => {
     const firmwareVersion = getFirmwareVersion(device);
 
     return Object.entries(networks)
-        .map(([symbol, network]) => {
+        .filter(([symbol, network]) => {
             const support =
                 'support' in network ? (network.support as Network['support']) : undefined;
 
@@ -733,19 +733,19 @@ export const selectDeviceSupportedNetworks = (state: DeviceRootState) => {
 
             // if device does not have fw, do not show coins which are not supported by device in any case
             if (!firmwareVersion && unavailableReason === 'no-support') {
-                return null;
+                return false;
             }
             // if device has fw, do not show coins which are not supported by current fw
             if (
                 firmwareVersion &&
                 ['no-support', 'no-capability'].includes(unavailableReason || '')
             ) {
-                return null;
+                return false;
             }
 
-            return symbol;
+            return true;
         })
-        .filter(Boolean) as Network['symbol'][]; // Filter out null values
+        .map(([symbol]) => symbol as Network['symbol']);
 };
 
 export const selectDeviceById = (state: DeviceRootState, deviceId: TrezorDevice['id']) =>

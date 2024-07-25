@@ -37,6 +37,7 @@ export const enum SettingsAnchor {
 
     Crypto = '@coin-settings/crypto',
     TestnetCrypto = '@coin-settings/testnet-crypto',
+    UnsupportedCrypto = '@coin-settings/unsupported-crypto',
 
     TranslationMode = '@debug-settings/translation-mode',
     GithubIssue = '@debug-settings/github-issue',

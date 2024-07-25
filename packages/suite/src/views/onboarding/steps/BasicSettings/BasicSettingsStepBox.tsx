@@ -5,6 +5,10 @@ import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { CollapsibleBox } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { selectDeviceSupportedNetworks, selectDeviceModel } from '@suite-common/wallet-core';
+import { useSelector } from 'src/hooks/suite';
+import { DeviceModelInternal } from '@trezor/connect';
+import type { Network } from 'src/types/wallet';
 
 const Separator = styled.hr`
     height: 1px;
@@ -17,6 +21,17 @@ const Separator = styled.hr`
 
 export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const deviceModel = useSelector(selectDeviceModel);
+
+    const getNetworks = (networks: Network[], getUnsupported = false) =>
+        networks.filter(
+            ({ symbol }) => getUnsupported !== deviceSupportedNetworkSymbols.includes(symbol),
+        );
+
+    const supportedNetworks = getNetworks(mainnets);
+    const unsupportedNetworks = getNetworks(mainnets, true);
+    const supportedTestnetNetworks = getNetworks(testnets);
 
     // BTC should be enabled by default
     useEffect(() => {
@@ -27,9 +42,9 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
         <OnboardingStepBox image="COINS" {...props}>
             <Separator />
             <CoinGroup
-                networks={mainnets}
+                networks={supportedNetworks}
                 onToggle={setEnabled}
-                selectedNetworks={enabledNetworks}
+                enabledNetworks={enabledNetworks}
             />
             <CollapsibleBox
                 margin={{ top: spacings.xl }}
@@ -44,11 +59,31 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
                 paddingType="large"
             >
                 <CoinGroup
-                    networks={testnets}
+                    networks={supportedTestnetNetworks}
                     onToggle={setEnabled}
-                    selectedNetworks={enabledNetworks}
+                    enabledNetworks={enabledNetworks}
                 />
             </CollapsibleBox>
+            {deviceModel === DeviceModelInternal.T1B1 && (
+                <CollapsibleBox
+                    margin={{ top: spacings.xl }}
+                    heading={
+                        <>
+                            <Translation id="TR_UNSUPPORTED_COINS" />
+                            <TooltipSymbol
+                                content={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
+                            />
+                        </>
+                    }
+                    paddingType="large"
+                >
+                    <CoinGroup
+                        networks={unsupportedNetworks}
+                        onToggle={setEnabled}
+                        enabledNetworks={enabledNetworks}
+                    />
+                </CollapsibleBox>
+            )}
         </OnboardingStepBox>
     );
 };

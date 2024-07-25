@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-import { accountsActions, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    selectDeviceSupportedNetworks,
+    selectDeviceModel,
+} from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, CoinLogo, CollapsibleBox } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { Translation, Modal, CoinList } from 'src/components/suite';
+import { Translation, Modal, CoinList, TooltipSymbol } from 'src/components/suite';
 import { NETWORKS } from 'src/config/wallet';
 import { Account, Network } from 'src/types/wallet';
 import { TrezorDevice } from 'src/types/suite';
@@ -19,6 +23,7 @@ import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { AccountTypeSelect } from './AccountTypeSelect/AccountTypeSelect';
 import { SelectNetwork } from './SelectNetwork';
 import { AddAccountButton } from './AddAccountButton/AddAccountButton';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const StyledModal = styled(Modal)`
     width: 480px;
@@ -50,15 +55,19 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
     const app = useSelector(state => state.router.app);
     const debug = useSelector(state => state.suite.settings.debug);
     const isCoinjoinPublic = useSelector(selectIsPublic);
+    const deviceModel = useSelector(selectDeviceModel);
     const dispatch = useDispatch();
 
     const { mainnets, testnets, enabledNetworks: enabledNetworkSymbols } = useEnabledNetworks();
 
-    const getSupportedNetworks = (networks: Network[]) =>
-        networks.filter(network => supportedNetworkSymbols.includes(network.symbol));
+    const getNetworks = (networks: Network[], getUnsupported = false) =>
+        networks.filter(
+            ({ symbol }) => getUnsupported !== supportedNetworkSymbols.includes(symbol),
+        );
 
-    const supportedMainnets = getSupportedNetworks(mainnets);
-    const supportedTestnets = getSupportedNetworks(testnets);
+    const supportedMainnets = getNetworks(mainnets);
+    const supportedTestnets = getNetworks(testnets);
+    const unsupportedNetworks = getNetworks(mainnets, true);
     const supportedNetworks = [...supportedMainnets, ...supportedTestnets];
     const allTestnetNetworksDisabled = supportedTestnets.some(network =>
         enabledNetworkSymbols.includes(network.symbol),
@@ -220,14 +229,45 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                           </NetworksWrapper>
                           {!!disabledTestnetNetworks.length && (
                               <CollapsibleBox
-                                  heading={<Translation id="TR_TESTNET_COINS" />}
+                                  heading={
+                                      <>
+                                          <Translation id="TR_TESTNET_COINS" />
+                                          <TooltipSymbol
+                                              content={
+                                                  <Translation id="TR_TESTNET_COINS_DESCRIPTION" />
+                                              }
+                                          />
+                                      </>
+                                  }
                                   data-test="@modal/account/activate_more_coins"
                                   margin={{ top: spacings.md }}
                               >
                                   <CoinList
                                       onToggle={selectNetwork}
                                       networks={disabledTestnetNetworks}
-                                      selectedNetworks={selectedNetworks}
+                                      enabledNetworks={selectedNetworks}
+                                  />
+                              </CollapsibleBox>
+                          )}
+                          {deviceModel === DeviceModelInternal.T1B1 && (
+                              <CollapsibleBox
+                                  heading={
+                                      <>
+                                          <Translation id="TR_UNSUPPORTED_COINS" />
+                                          <TooltipSymbol
+                                              content={
+                                                  <Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />
+                                              }
+                                          />
+                                      </>
+                                  }
+                                  data-test="@modal/account/activate_more_coins"
+                                  margin={{ top: spacings.md }}
+                              >
+                                  <CoinList
+                                      onToggle={selectNetwork}
+                                      networks={unsupportedNetworks}
+                                      enabledNetworks={selectedNetworks}
                                   />
                               </CollapsibleBox>
                           )}
