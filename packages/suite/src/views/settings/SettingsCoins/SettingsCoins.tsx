@@ -1,8 +1,14 @@
 import styled from 'styled-components';
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
-import { selectDeviceSupportedNetworks, startDiscoveryThunk } from '@suite-common/wallet-core';
+import {
+    selectDeviceSupportedNetworks,
+    startDiscoveryThunk,
+    selectDeviceModel,
+} from '@suite-common/wallet-core';
 import { Button, motionEasing } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/connect';
+import type { Network } from 'src/types/wallet';
 
 import {
     DeviceBanner,
@@ -81,17 +87,26 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 
 export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(selectSuiteFlags);
-
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
-    const deviceSupportedNetworks = useSelector(selectDeviceSupportedNetworks);
-    const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
-        deviceSupportedNetworks.includes(enabledNetwork),
-    );
-
+    const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
+    const deviceModel = useSelector(selectDeviceModel);
     const { device } = useDevice();
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
+
+    const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
+        deviceSupportedNetworkSymbols.includes(enabledNetwork),
+    );
+
+    const getNetworks = (networks: Network[], getUnsupported = false) =>
+        networks.filter(
+            ({ symbol }) => getUnsupported !== deviceSupportedNetworkSymbols.includes(symbol),
+        );
+
+    const supportedNetworks = getNetworks(mainnets);
+    const unsupportedNetworks = getNetworks(mainnets, true);
+    const supportedTestnetNetworks = getNetworks(testnets);
 
     const bitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
     const bitcoinNetworks = ['btc', 'test', 'regtest'];
@@ -130,9 +145,9 @@ export const SettingsCoins = () => {
             <StyledSettingsSection title={<Translation id="TR_COINS" />} icon="COIN">
                 <StyledSectionItem anchorId={SettingsAnchor.Crypto}>
                     <CoinGroup
-                        networks={mainnets}
+                        networks={supportedNetworks}
                         onToggle={setEnabled}
-                        selectedNetworks={enabledNetworks}
+                        enabledNetworks={enabledNetworks}
                     />
                 </StyledSectionItem>
             </StyledSettingsSection>
@@ -140,33 +155,54 @@ export const SettingsCoins = () => {
             <SettingsSection
                 title={
                     <>
-                        <Translation id="TR_TESTNET_COINS" />{' '}
+                        <Translation id="TR_TESTNET_COINS" />
                         <TooltipSymbol
                             content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
                         />
                     </>
                 }
                 icon="COIN"
-                bottomActions={
-                    <AnimatePresence>
-                        {isDiscoveryButtonVisible && (
-                            <motion.div {...animation} key="discover-button">
-                                <StyledButton onClick={startDiscovery}>
-                                    <Translation id="TR_DISCOVERY_NEW_COINS" />
-                                </StyledButton>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                }
             >
                 <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
                     <CoinGroup
-                        networks={testnets}
+                        networks={supportedTestnetNetworks}
                         onToggle={setEnabled}
-                        selectedNetworks={enabledNetworks}
+                        enabledNetworks={enabledNetworks}
                     />
                 </SettingsSectionItem>
             </SettingsSection>
+
+            {deviceModel === DeviceModelInternal.T1B1 && (
+                <SettingsSection
+                    title={
+                        <>
+                            <Translation id="TR_UNSUPPORTED_COINS" />
+                            <TooltipSymbol
+                                content={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
+                            />
+                        </>
+                    }
+                    icon="COIN"
+                >
+                    <SettingsSectionItem anchorId={SettingsAnchor.UnsupportedCrypto}>
+                        <CoinGroup
+                            networks={unsupportedNetworks}
+                            onToggle={setEnabled}
+                            enabledNetworks={enabledNetworks}
+                        />
+                    </SettingsSectionItem>
+                </SettingsSection>
+            )}
+
+            <AnimatePresence>
+                {isDiscoveryButtonVisible && (
+                    <motion.div {...animation} key="discover-button">
+                        <StyledButton onClick={startDiscovery}>
+                            <Translation id="TR_DISCOVERY_NEW_COINS" />
+                        </StyledButton>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </SettingsLayout>
     );
 };

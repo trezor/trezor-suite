@@ -3404,6 +3404,15 @@ export default defineMessages({
         defaultMessage: 'TEST COIN',
         id: 'TR_TESTNET_COINS_LABEL',
     },
+    TR_UNSUPPORTED_COINS: {
+        defaultMessage: 'Supported on newer Trezors',
+        id: 'TR_UNSUPPORTED_COINS',
+    },
+    TR_UNSUPPORTED_COINS_DESCRIPTION: {
+        defaultMessage:
+            'These coins are supported on Trezor Safe family devices and the Trezor Model T.',
+        id: 'TR_UNSUPPORTED_COINS_DESCRIPTION',
+    },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
         defaultMessage: 'Check <b>{deviceLabel}</b> screen for the keypad layout.',
         id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',

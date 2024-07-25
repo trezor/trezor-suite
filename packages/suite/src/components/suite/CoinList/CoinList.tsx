@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 
 interface CoinListProps {
     networks: Network[];
-    selectedNetworks?: Network['symbol'][];
+    enabledNetworks?: Network['symbol'][];
     settingsMode?: boolean;
     onSettings?: (symbol: Network['symbol']) => void;
     onToggle: (symbol: Network['symbol'], toggled: boolean) => void;
@@ -29,7 +29,7 @@ interface CoinListProps {
 
 export const CoinList = ({
     networks,
-    selectedNetworks,
+    enabledNetworks,
     settingsMode = false,
     onSettings,
     onToggle,
@@ -64,7 +64,7 @@ export const CoinList = ({
                     ? device?.unavailableCapabilities?.[symbol]
                     : 'update-required';
 
-                const isEnabled = !!selectedNetworks?.includes(symbol);
+                const isEnabled = !!enabledNetworks?.includes(symbol);
 
                 const disabled =
                     (!settingsMode && !!unavailableReason && !isBootloaderMode) ||

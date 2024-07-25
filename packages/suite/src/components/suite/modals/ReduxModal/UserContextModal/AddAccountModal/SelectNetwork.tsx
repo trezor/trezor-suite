@@ -35,7 +35,7 @@ export const SelectNetwork = ({
             <CoinList
                 onToggle={handleNetworkSelection}
                 networks={networks}
-                selectedNetworks={selectedNetworks}
+                enabledNetworks={selectedNetworks}
             />
         </div>
     );
