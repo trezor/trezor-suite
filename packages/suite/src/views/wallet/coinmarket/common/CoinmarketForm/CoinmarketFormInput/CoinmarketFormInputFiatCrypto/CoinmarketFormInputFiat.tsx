@@ -8,6 +8,17 @@ import { useDidUpdate } from '@trezor/react-utils';
 import CoinmarketFormInputCurrency from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
 import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_CRYPTO_INPUT, FORM_FIAT_INPUT } from 'src/constants/wallet/coinmarket/form';
+import styled from 'styled-components';
+
+const CoinmarketFormInputCurrencyWrapper = styled(CoinmarketFormInputCurrency)`
+    width: 64px;
+
+    .react-select__indicators {
+        position: absolute;
+        top: 7px;
+        right: 4px;
+    }
+`;
 
 const CoinmarketFormInputFiat = ({ className }: CoinmarketFormInputProps) => {
     const { translationString } = useTranslation();
@@ -60,7 +71,7 @@ const CoinmarketFormInputFiat = ({ className }: CoinmarketFormInputProps) => {
             rules={fiatInputRules}
             maxLength={formInputsMaxLength.amount}
             bottomText={errors[FORM_FIAT_INPUT]?.message || null}
-            innerAddon={<CoinmarketFormInputCurrency />}
+            innerAddon={<CoinmarketFormInputCurrencyWrapper />}
             hasBottomPadding={false}
             className={className}
             data-test="@coinmarket/form/fiat-input"

@@ -6,6 +6,13 @@ import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { FiatCurrencyOption } from 'src/types/wallet/coinmarketCommonTypes';
 import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormOption, CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
+import styled from 'styled-components';
+
+const SelectWrapper = styled(Select)`
+    .react-select__value-container {
+        padding: 0;
+    }
+`;
 
 interface CoinmarketFormInputCurrencyProps {
     className?: string;
@@ -32,7 +39,7 @@ const CoinmarketFormInputCurrency = ({
             defaultValue={defaultCurrency}
             control={control}
             render={({ field: { onChange, value } }) => (
-                <Select
+                <SelectWrapper
                     value={value}
                     onChange={(selected: FiatCurrencyOption) => {
                         onChange(selected);
