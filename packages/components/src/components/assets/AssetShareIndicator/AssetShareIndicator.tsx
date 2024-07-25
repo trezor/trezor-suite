@@ -24,21 +24,26 @@ const rgbToHexColor = (rgbColor: string) => {
 
 const getDominantColor = (imageData: ImageData) => {
     const colorMap: { [key: string]: number } = {};
+    const numberOfPixelValues = 4;
     let dominantKey = '';
     let maxCount = 0;
 
-    for (let i = 0; i < imageData.data.length; i += 4) {
+    for (let i = 0; i < imageData.data.length; i += numberOfPixelValues) {
+        const red = imageData.data[i];
+        const green = imageData.data[i + 1];
+        const blue = imageData.data[i + 2];
         const alpha = imageData.data[i + 3];
+
         if (alpha !== 255) {
             continue; // ignore pixel with transparency
         }
 
-        const key = `${imageData.data[i]}-${imageData.data[i + 1]}-${imageData.data[i + 2]}`;
-        colorMap[key] = (colorMap[key] || 0) + 1;
+        const imagePixelKey = `${red}-${green}-${blue}`;
+        colorMap[imagePixelKey] = (colorMap[imagePixelKey] || 0) + 1;
 
-        if (colorMap[key] > maxCount) {
-            dominantKey = key;
-            maxCount = colorMap[key];
+        if (colorMap[imagePixelKey] > maxCount) {
+            dominantKey = imagePixelKey;
+            maxCount = colorMap[imagePixelKey];
         }
     }
 
@@ -71,7 +76,8 @@ const loadImageAndProcessColor = (
 
 export interface AssetShareIndicatorProps extends CoinLogoProps {
     percentageShare?: number;
-    hideProgressCircle?: boolean;
+    showProgressCircle?: boolean;
+    firstCharacter?: string;
 }
 
 interface ProgressCircleProps
@@ -186,15 +192,22 @@ export const AssetShareIndicator = ({
     size = 32,
     percentageShare,
     index,
-    hideProgressCircle = false,
+    showProgressCircle = false,
+    firstCharacter,
     ...rest
 }: AssetShareIndicatorProps) => {
     const progressCircleIconUrl = iconUrl && iconUrl.includes('ui-avatars') ? undefined : iconUrl;
 
     return (
         <Container className={className}>
-            <CoinLogo symbol={symbol} iconUrl={iconUrl} size={size} {...rest} />
-            {!hideProgressCircle && (
+            <CoinLogo
+                symbol={symbol}
+                iconUrl={iconUrl}
+                size={size}
+                coinFirstCharacter={firstCharacter}
+                {...rest}
+            />
+            {showProgressCircle && (
                 <ProgressCircle
                     symbol={symbol}
                     iconUrl={progressCircleIconUrl}
