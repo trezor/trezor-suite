@@ -39,22 +39,20 @@ const CoinmarketFormInputPaymentMethod = ({ className, label }: CoinmarketFormIn
                                 onChange(selected);
                             }}
                             options={paymentMethods}
-                            formatOptionLabel={(option: CoinmarketPaymentMethodListProps) => {
-                                return (
-                                    <CoinmarketFormOption>
-                                        <CoinmarketFormOptionLabel>
-                                            {option.value !== '' ? (
-                                                <CoinmarketPaymentPlainType
-                                                    method={option.value}
-                                                    methodName={option.label}
-                                                />
-                                            ) : (
-                                                <div>{option.label}</div>
-                                            )}
-                                        </CoinmarketFormOptionLabel>
-                                    </CoinmarketFormOption>
-                                );
-                            }}
+                            formatOptionLabel={(option: CoinmarketPaymentMethodListProps) => (
+                                <CoinmarketFormOption>
+                                    <CoinmarketFormOptionLabel>
+                                        {option.value !== '' ? (
+                                            <CoinmarketPaymentPlainType
+                                                method={option.value}
+                                                methodName={option.label}
+                                            />
+                                        ) : (
+                                            <div>{option.label}</div>
+                                        )}
+                                    </CoinmarketFormOptionLabel>
+                                </CoinmarketFormOption>
+                            )}
                             data-test="@coinmarket/form/payment-method-select"
                             isClearable={false}
                             isSearchable

@@ -105,7 +105,6 @@ export const useCoinmarketSellForm = ({
     });
     const accounts = useSelector(selectAccounts);
     const { navigateToSellForm, navigateToSellOffers } = useCoinmarketNavigation(account);
-
     // parameters
     const { sellInfo, quotesRequest, isFromRedirect, quotes, transactionId } = useSelector(
         state => state.wallet.coinmarket.sell,
@@ -295,6 +294,8 @@ export const useCoinmarketSellForm = ({
 
                 const bestQuote = quotesSuccess?.[0];
                 const bestQuotePaymentMethod = bestQuote?.paymentMethod;
+                const bestQuotePaymentMethodName =
+                    bestQuote?.paymentMethodName ?? bestQuotePaymentMethod;
                 const paymentMethodSelected = values.paymentMethod?.value;
                 const paymentMethodsFromQuotes = getPaymentMethods(quotesSuccess);
                 const isSelectedPaymentMethodAvailable =
@@ -310,10 +311,9 @@ export const useCoinmarketSellForm = ({
                 if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
                     setValue(FORM_PAYMENT_METHOD_SELECT, {
                         value: bestQuotePaymentMethod ?? '',
-                        label: bestQuotePaymentMethod ?? '',
+                        label: bestQuotePaymentMethodName ?? '',
                     });
                 }
-
                 if (!values.amountInCrypto) {
                     // the best quote crypto amount is known after provided quotes
                     if (bestQuote?.cryptoStringAmount) {

@@ -234,6 +234,8 @@ const useCoinmarketBuyForm = ({
 
                 const bestQuote = quotesSuccess?.[0];
                 const bestQuotePaymentMethod = bestQuote?.paymentMethod;
+                const bestQuotePaymentMethodName =
+                    bestQuote?.paymentMethodName ?? bestQuotePaymentMethod;
                 const paymentMethodSelected = values.paymentMethod?.value;
                 const paymentMethodsFromQuotes = getPaymentMethods(quotesSuccess);
                 const isSelectedPaymentMethodAvailable =
@@ -250,7 +252,7 @@ const useCoinmarketBuyForm = ({
                 if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
                     setValue(FORM_PAYMENT_METHOD_SELECT, {
                         value: bestQuotePaymentMethod ?? '',
-                        label: bestQuotePaymentMethod ?? '',
+                        label: bestQuotePaymentMethodName ?? '',
                     });
                 }
             } else {
