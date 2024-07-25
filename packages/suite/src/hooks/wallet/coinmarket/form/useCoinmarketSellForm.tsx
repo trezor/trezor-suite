@@ -17,14 +17,13 @@ import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
     getUnusedAddressFromAccount,
-    coinmarketGetSortedAccountsWithBalance,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { createQuoteLink, getAmountLimits } from 'src/utils/wallet/coinmarket/sellUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { AmountLimits, TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { CoinmarketTradeSellType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
@@ -64,10 +63,9 @@ export const useCoinmarketSellForm = ({
 }: UseCoinmarketFormProps): CoinmarketSellFormContextProps => {
     const type = 'sell';
     const dispatch = useDispatch();
-
+    const [account, setAccount] = useState<Account>(selectedAccount.account);
     const { translationString } = useTranslation();
     const {
-        account,
         callInProgress,
         selectedQuote,
         timer,
@@ -106,7 +104,6 @@ export const useCoinmarketSellForm = ({
         savePaymentMethods: coinmarketInfoActions.savePaymentMethods,
     });
     const accounts = useSelector(selectAccounts);
-    const accountsWithBalance = coinmarketGetSortedAccountsWithBalance({ accounts, device });
     const { navigateToSellForm, navigateToSellOffers } = useCoinmarketNavigation(account);
 
     // parameters
@@ -173,9 +170,9 @@ export const useCoinmarketSellForm = ({
 
     // throttle initial state calculation
     const initState = useCoinmarketSellFormState({
-        selectedAccount,
+        account,
+        network,
         fees,
-        currentState: !!state,
         defaultFormValues: defaultValues,
     });
     const {
@@ -200,7 +197,8 @@ export const useCoinmarketSellForm = ({
         network,
         methods,
         setAmountLimits,
-        composeRequest,
+        setAccount,
+        changeFeeLevel,
     });
 
     // form states
@@ -379,8 +377,7 @@ export const useCoinmarketSellForm = ({
     useEffect(() => {
         if (
             isChanged(previousValues.current?.countrySelect, values.countrySelect) ||
-            isChanged(previousValues.current?.currencySelect, values.currencySelect) ||
-            isChanged(previousValues.current?.cryptoSelect, values.cryptoSelect)
+            isChanged(previousValues.current?.currencySelect, values.currencySelect)
         ) {
             handleSubmit(() => {
                 handleChange();
@@ -388,7 +385,7 @@ export const useCoinmarketSellForm = ({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, handleChange, handleSubmit, offFirstRequest, accountsWithBalance]);
+    }, [previousValues, values, handleChange, handleSubmit, offFirstRequest]);
 
     const doSellTrade = async (quote: SellFiatTrade) => {
         const provider =
@@ -641,24 +638,15 @@ export const useCoinmarketSellForm = ({
             );
             if (initState.formValues && address) {
                 initState.formValues.outputs[0].address = address;
-
-                setState(initState);
             }
+
+            setState(initState);
         };
 
-        if (!state && initState) {
+        if (initState && initState?.account.descriptor !== state?.account.descriptor) {
             setStateAsync(initState);
         }
-    }, [
-        state,
-        initState,
-        account,
-        network,
-        device,
-        accounts,
-        chunkify,
-        sellInfo?.supportedCryptoCurrencies,
-    ]);
+    }, [state, initState, account, network, device, accounts, chunkify]);
 
     useEffect(() => {
         if (!composedLevels) return;
@@ -746,6 +734,13 @@ export const useCoinmarketSellForm = ({
         setIsFromRedirect,
         handleChange,
     ]);
+
+    // compose request on account change
+    useEffect(() => {
+        if (initState?.account.descriptor === state?.account.descriptor) {
+            composeRequest();
+        }
+    }, [composeRequest, initState?.account.descriptor, state?.account.descriptor]);
 
     useEffect(() => {
         return () => {

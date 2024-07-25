@@ -1,6 +1,14 @@
-import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
-import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { amountToSatoshi, getFiatRateKey, isZero } from '@suite-common/wallet-utils';
+import {
+    selectAccounts,
+    selectDevice,
+    selectFiatRatesByFiatRateKey,
+} from '@suite-common/wallet-core';
+import {
+    amountToSatoshi,
+    getFiatRateKey,
+    isEthereumAccountSymbol,
+    isZero,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 import { FiatCurrencyCode } from 'invity-api';
 import { useCallback } from 'react';
@@ -20,7 +28,10 @@ import {
     CoinmarketUseSellFormHelpersProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { Option } from 'src/types/wallet/coinmarketCommonTypes';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    coinmarketGetSortedAccountsWithBalance,
+    mapTestnetSymbol,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 /**
@@ -30,11 +41,15 @@ const useCoinmarketSellFormHelpers = ({
     account,
     network,
     methods,
+    setAccount,
     setAmountLimits,
-    composeRequest,
+    changeFeeLevel,
 }: CoinmarketUseSellFormHelpersProps): CoinmarketFormHelpersProps => {
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
+    const accounts = useSelector(selectAccounts);
+    const device = useSelector(selectDevice);
+    const accountsWithBalance = coinmarketGetSortedAccountsWithBalance({ accounts, device });
 
     const { getValues, setValue } = methods;
     const { outputs } = getValues();
@@ -75,22 +90,21 @@ const useCoinmarketSellFormHelpers = ({
 
     const onCryptoCurrencyChange = useCallback(
         (selected: CoinmarketAccountOptionsGroupOptionProps) => {
-            const token = cryptoToNetworkSymbol(selected.value);
-            const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
+            const networkSymbol = cryptoToNetworkSymbol(selected.value);
+            const account = accountsWithBalance.find(
+                item => item.descriptor === selected.descriptor,
+            );
 
-            if (!token) return;
+            setValue(FORM_OUTPUT_ADDRESS, '');
+            setValue(FORM_CRYPTO_TOKEN, selected?.contractAddress ?? null);
 
-            if (ethereumTypeNetworkSymbols.includes(token)) {
-                setValue(FORM_CRYPTO_TOKEN, null);
-                setValue(FORM_OUTPUT_ADDRESS, selected.descriptor);
-            } else if (symbol === 'sol') {
-                setValue(FORM_CRYPTO_TOKEN, selected?.contractAddress ?? null);
-                setValue(FORM_OUTPUT_ADDRESS, selected?.descriptor ?? '');
-            } else {
-                // set the address of the token to the output
-                setValue(FORM_CRYPTO_TOKEN, selected?.contractAddress ?? null);
+            if (networkSymbol && isEthereumAccountSymbol(networkSymbol)) {
                 // set token address for ERC20 transaction to estimate the fees more precisely
                 setValue(FORM_OUTPUT_ADDRESS, selected?.contractAddress ?? '');
+            }
+
+            if (networkSymbol === 'sol') {
+                setValue(FORM_OUTPUT_ADDRESS, selected?.descriptor ?? '');
             }
 
             setValue('setMaxOutputId', undefined);
@@ -98,9 +112,12 @@ const useCoinmarketSellFormHelpers = ({
             setValue(FORM_FIAT_INPUT, '');
             setAmountLimits(undefined);
 
-            composeRequest();
+            if (account) {
+                setAccount(account);
+                changeFeeLevel('normal'); // reset fee level
+            }
         },
-        [setValue, setAmountLimits, symbol, composeRequest],
+        [accountsWithBalance, setValue, setAmountLimits, setAccount, changeFeeLevel],
     );
 
     const setRatioAmount = useCallback(

@@ -21,7 +21,6 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
     Rate,
-    SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
 import { FeeLevel } from '@trezor/connect';
 import { SendContextValues } from 'src/types/wallet/sendForm';
@@ -176,8 +175,9 @@ export interface CoinmarketUseSellFormHelpersProps {
     account: Account;
     network: Network;
     methods: UseFormReturn<CoinmarketSellFormProps>;
+    setAccount: (account: Account) => void;
     setAmountLimits: (limits?: AmountLimits) => void;
-    composeRequest: SendContextValues<SellFormState>['composeTransaction'];
+    changeFeeLevel: (level: FeeLevel['label']) => void;
 }
 
 export interface CoinmarketFormHelpersProps {
@@ -192,9 +192,9 @@ export interface CoinmarketFormHelpersProps {
 }
 
 export interface CoinmarketUseSellFormStateProps {
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
+    network: Network;
     fees: FeesState;
-    currentState: boolean;
     defaultFormValues?: CoinmarketSellFormProps;
 }
 

@@ -5,15 +5,11 @@ import {
 } from 'src/types/coinmarket/coinmarketForm';
 
 const useCoinmarketSellFormState = ({
-    selectedAccount,
+    account,
+    network,
     fees,
-    currentState,
     defaultFormValues,
 }: CoinmarketUseSellFormStateProps): CoinmarketUseSellFormStateReturnProps | undefined => {
-    // do not calculate if currentState is already set (prevent re-renders)
-    if (selectedAccount.status !== 'loaded' || currentState) return;
-
-    const { account, network } = selectedAccount;
     const coinFees = fees[account.symbol];
     const levels = getFeeLevels(account.networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
