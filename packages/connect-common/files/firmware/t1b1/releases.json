@@ -9,6 +9,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.12.1-bitcoinonly.bin",
         "fingerprint": "3c694191f5b66a65cb5bb209adbf113cb40209e644b77162ba996bb7ee8f382b",
         "fingerprint_bitcoinonly": "985fb6a8c87f7547fb810f6c4a8331ebf19c677445810358778eb21eca78a181",
+        "firmware_revision": "1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f",
         "changelog": "* Fee rate shown when replacing transaction.\n* Ledger Live legacy derivation path m/44'/coin_type'/0'/account is now supported.\n* SLIP-0019 proofs of ownership for native SegWit implemented.\n* SLIP-0025 coinjoin accounts implemented for testing purposes.\n* Bech32 addresses now not converting to uppercase in QR code to increase compatibility.\n* Decimals of fee rate extended to 2 digits.\n* Only \"sat\" displayed instead of \"sat BTC\".\n* Bootloader 1.12.1. included.\n* Stellar addresses now shown in full + as a QR code.\n* Ethereum fees now wrapped to the next line when needed."
     },
     {
@@ -21,6 +22,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.11.2-bitcoinonly.bin",
         "fingerprint": "d8b55b68dfe8a8449ce7391e841073ef5d29349638d85b750508bbef5d2de5ec",
         "fingerprint_bitcoinonly": "7e51546f4411ecf44688c681ada72a18495fd08e91f3a0429ab91bc4415b362a",
+        "firmware_revision": "0d87b55ba4fed7eecc72bf2a94ee473830b095e9",
         "changelog": "* Show the fee rate on the signing confirmation screen. \n* Show thousands separator when displaying large amounts \n* Fix potential security issues in recovery workflow. \n* Fix key extraction vulnerability in Cothority Collective Signing (CoSi). \n* Fix nonce bias in CoSi signing."
     },
     {
@@ -33,6 +35,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.11.1-bitcoinonly.bin",
         "fingerprint": "f7c60d0b8c2853afd576867c6562aba5ea52bdc2ce34d0dbb8751f52867c3665",
         "fingerprint_bitcoinonly": "8e17b95b5d302f203de3a8fe27959efd25e3d5140ac9b5e60412f1b3f624995d",
+        "firmware_revision": "85a26d2c9593bcdf858c2d718d79951ca927a0c3",
         "changelog": "* Support Electrum signatures in VerifyMessage.\n* Trezor will refuse to sign UTXOs that do not match the provided derivation path (e.g., transactions belonging to a different wallet, or synthetic transaction inputs).\n* Zcash v5 transaction format."
     },
     {
@@ -45,6 +48,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.10.5-bitcoinonly.bin",
         "fingerprint": "7619fcc73c43ca8a3e6aad3dc3eb6551fed05bb218340efe01a02bb96e9f346b",
         "fingerprint_bitcoinonly": "1d319f643fe2ba5c247b178c7f73b989ab4e43d914a60468566ee7cc5bb9dde0",
+        "firmware_revision": "3f12742669bd782cac374a1750d517f4fd88c43b",
         "changelog": "* Support for blindly signing EIP-712 data."
     },
     {
@@ -57,6 +61,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.10.4-bitcoinonly.bin",
         "fingerprint": "74dfdfb9addb9d90fedb2c88794b7236af521d21ef0096f9080c25b597c8af86",
         "fingerprint_bitcoinonly": "30d858b022e218f27854f071d568e5a696c937f1316d83b93aadcd178f3b0a38",
+        "firmware_revision": "595b14254c1abb2be3f69e42c7932f1eca8cf1b1",
         "changelog": "* Support Taproot.\n* Show address confirmation in SignMessage.\n* Support for Ethereum EIP-1559 transactions."
     },
     {
@@ -69,6 +74,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.10.3-bitcoinonly.bin",
         "fingerprint": "bf0cc936a9afbf0a4ae7b727a2817fb69fba432d7230a0ff7b79b4a73b845197",
         "fingerprint_bitcoinonly": "d1143d2cba9c7dba4d57703d2b7da87859d8668472ffc651177ead6b94e89117",
+        "firmware_revision": "9276b1702361f70e094286e2f89e919d8a230d5c",
         "changelog": "* Remove Lisk.\n* Re-enabled Firo support.\n* Stricter protobuf field handling in Stellar."
     },
     {
@@ -81,6 +87,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.10.2-bitcoinonly.bin",
         "fingerprint": "99707b90a504f7e402f26c3d59cbbdacbc52754cebcce79cc47be528fc889338",
         "fingerprint_bitcoinonly": "e597b6aef5a2e817f532d27b8501f99f189e432a887877bdd3498cd3a0afc431",
+        "firmware_revision": "24bb4016388fca4b998285b95dcd408f4ed0bff6",
         "changelog": "* Security improvements."
     },
     {
@@ -93,6 +100,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.10.1-bitcoinonly.bin",
         "fingerprint": "36400becf1cdddec22b8150d56ff59eef76d37fef60dc465a6f82b4858903886",
         "fingerprint_bitcoinonly": "74227362016a8763c4d5f5b06eeb7eabe5fbd7ed05798b586cc7f4bfef50d7fe",
+        "firmware_revision": "3204fd682429eed23a82b748c05ae569c7f4481f",
         "changelog": "* Safety checks setting in T1B1."
     },
     {
@@ -105,6 +113,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.10.0-bitcoinonly.bin",
         "fingerprint": "595ba3e8e887cba185e03098f9538e18164f72f9fc82445e691abcd03e5cf0a4",
         "fingerprint_bitcoinonly": "20a4068c34ff6dd7d8c510350409376cf7ea744ba668fdcf16da8f1d81fed289",
+        "firmware_revision": "f4424ece1ccb7fc0d6cad00ff840fac287a34f07",
         "changelog": "* Bootloader 1.10.0.\n* Allow decreasing the output value in RBF transactions.\n* Support long PIN of up to 50 digits.\n* Display nLockTime in human-readable form."
     },
     {
@@ -117,6 +126,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.9.4-bitcoinonly.bin",
         "fingerprint": "867017bd784cc4e9ce6f0875c61ea86f89b19380d54045c34608b85472998000",
         "fingerprint_bitcoinonly": "3f73dfbcfc48f66c8814f6562524d81888230e0acd1c19b52b6e8772c6c67e7f",
+        "firmware_revision": "ffa96205fb5e22b43e7b08a3dbc3cdeee0931de3",
         "changelog": "* Replacement transaction signing for replace-by-fee.\n* Support for Output Descriptors export.\n* Show Ypub/Zpub correctly for multisig GetAddress.\n* Show amounts in mBTC, uBTC and sat denominations."
     },
     {
@@ -129,6 +139,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.9.3-bitcoinonly.bin",
         "fingerprint": "2589f456559f813d1149be1022e62f2d48fbe28f4d02de933bd888d91035cace",
         "fingerprint_bitcoinonly": "76f899d60ffd9685713cb420d017565c05c43aadaf0e62b645a50a8db69afef6",
+        "firmware_revision": "0d5f00668fb3d1c093ff3c879311a91d3a7175c8",
         "changelog": "* Improves the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.\n* Adds support for Verge (XVG).\n* Drops support for Metaverse (ETP), GINcoin (GIN), Pesetacoin (PTC), and Zel (ZEL).\n* Re-enables spending coins from Bitcoin paths (fixing some compatibility issues with Bitcoin Cash wallets).\n* Fixes smaller issues in the user interface."
     },
     {
@@ -141,6 +152,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.9.2-bitcoinonly.bin",
         "fingerprint": "45b83acd1330ddfd5567edbae5ff8028df1c48a493f01d47cc5499ee0be9b991",
         "fingerprint_bitcoinonly": "2762c0ff78c96e23d1d348330e0a3cdf45d83c8fc8c2d48853b7cb602ddc19bb",
+        "firmware_revision": "cde8f31ec2ddcb7d35e36edbcf8a71dda983a9ea",
         "changelog": "* Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.\n* Adds support for multiple change outputs in outgoing transactions.\n* Adds a security check to prevent potential issues with paths used in altcoin transactions."
     },
     {
@@ -153,6 +165,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.9.1-bitcoinonly.bin",
         "fingerprint": "30cde253c46d4fc705f98634a35d06a494cf2a36824622a9c6a573e07f14292d",
         "fingerprint_bitcoinonly": "ee743e3bd1e424ceb45a1d877a5422e7af449706f636c459cdd8bb0d4796cba5",
+        "firmware_revision": "c6b2580cd245ee924507f45e9675f857a3d78768",
         "changelog": "* Refactor Bitcoin signing"
     },
     {
@@ -165,6 +178,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.9.0-bitcoinonly.bin",
         "fingerprint": "1f40d1e68f9d182888b5b60da5209eff047ec68fcc96a5c9b61b0e55dd07d458",
         "fingerprint_bitcoinonly": "93a670dd20d044bf76cfce6eecd2a85918acdebe616229dbb31250fd03a33870",
+        "firmware_revision": "0b7a8449f8dd003fc415262b05102d113247d3de",
         "changelog": "* Introduce Wipe Code\n* Introduce passphrase cache"
     },
     {
@@ -177,6 +191,7 @@
         "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.8.3-bitcoinonly.bin",
         "fingerprint": "496aecfab867504b2283a9f057a0b2fd9d17970a22c81f6ad74232e7b914ce68",
         "fingerprint_bitcoinonly": "13d6089cb935f453eaddbfe193e0ab37924a7aa66f684355a4fe5c660c18247a",
+        "firmware_revision": "df0963ec48f01f3d07ffca556e21ff0070cab099",
         "changelog": "* Small code improvements"
     },
     {
@@ -187,6 +202,7 @@
         "min_bootloader_version": [1, 5, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.8.2.bin",
         "fingerprint": "909742eddcffdc72ca854557962ecad90e97585770f514170abe7a691b0c6eb1",
+        "firmware_revision": "3c19e3167d69902305a27f10e43abb5fc7a0254d",
         "changelog": "* Security improvements\n* Fix display of non-divisible OMNI amounts"
     },
     {
@@ -197,6 +213,7 @@
         "min_bootloader_version": [1, 5, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.8.1.bin",
         "fingerprint": "019e849c1eb285a03a92bbad6d18a328af3b4dc6999722ebb47677b403a4cd16",
+        "firmware_revision": "0a6a5f85729e663fbeae5ce9e5745918ff6f9d5d",
         "changelog": "* Fix fault when using the device with no PIN* Fix OMNI transactions parsing"
     },
     {
@@ -208,6 +225,7 @@
         "url": "firmware/t1b1/trezor-t1b1-1.8.0.bin",
         "tags": ["security"],
         "fingerprint": "d65f0c07a6a9c53d8b5287798eb53154b33f9e87cd38a3701970e3d0a750a659",
+        "firmware_revision": "964a622bb512aa85cfcc3e451fc70729cc15bb4f",
         "changelog": "* Security improvements\n* Upgraded to new storage format\n* Stellar and NEM fixes\n* New coins: ATS, KMD, XPM, XSN, ZCL\n* New ETH tokens"
     },
     {
@@ -218,6 +236,7 @@
         "min_bootloader_version": [1, 5, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.7.3.bin",
         "fingerprint": "10acc6aa4f24aff36627473b98c23dc4f6d0220d33bc1e09cb572f02410ffdaf",
+        "firmware_revision": "f641e798f91a15c3b09e8dc6a163195dd56f86d2",
         "changelog": "* Fix USB issue on some Windows 10 installations"
     },
     {
@@ -228,6 +247,7 @@
         "min_bootloader_version": [1, 5, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.7.2.bin",
         "fingerprint": "4d5c7ac191dba315b2433af27c187925fb713d06984cc6f566231d809dd8d370",
+        "firmware_revision": "0b26c529ec49daf584f322f3ef959c79694c8cf5",
         "changelog": "* Add support for OMNI layer: OMNI/MAID/USDT\n* U2F fixes\n* Don't ask for PIN if it has been just set"
     },
     {
@@ -238,6 +258,7 @@
         "min_bootloader_version": [1, 5, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.7.1.bin",
         "fingerprint": "1c303c50bb45d3f35da9e962d8405d0b8e89cc45e122496a48fce3995fa71d48",
+        "firmware_revision": "83f1906cad648c560cd560577317046606398630",
         "changelog": "* Switch from HID to WebUSB\n* Add support for Stellar\n* Add support for Lisk\n* Add support for Zcash Sapling hardfork\n* Implement seedless setup"
     },
     {
@@ -248,6 +269,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.6.3.bin",
         "fingerprint": "e8dbb4b7fe8384afd4c99790277c2f2f366a1a0f3957aa3545c75371a99a8fcc",
+        "firmware_revision": "ef86786ff750351ec454c7bae33b4966cfa862d7",
         "changelog": "* Implement RSKIP-60 Ethereum checksum encoding\n* Add support for new Ethereum networks (ESN, AKA, ETHO, MUSI, PIRL, ATH, GO)\n* Add support for new 80 Ethereum tokens\n* Improve MPU configuration"
     },
     {
@@ -258,6 +280,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.6.2.bin",
         "fingerprint": "d31304f793854e343df6ccf1804f7e2abf48ddcd82a379ca2d3711d54127e138",
+        "firmware_revision": "c9113fd3f5fcd78e9e560dbac75ed5aae359eb2d",
         "changelog": "* Add possibility to set custom auto-lock delay\n* Bitcoin Cash cashaddr support\n* Zcash Overwinter hardfork support\n* Support for new coins:\n  - Decred, Bitcoin Private, Fujicoin, Groestlcoin, Vertcoin, Viacoin, Zcoin\n* Support for new Ethereum networks:\n  - EOS Classic, Ethereum Social, Ellaism, Callisto, EtherGem, Wanchain\n* Support for 500+ new Ethereum tokens"
     },
     {
@@ -268,6 +291,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.6.1.bin",
         "fingerprint": "83c3190a94e524ac83a1704eb584a2ab53f8a65a893b1ab52e7135812857c807",
+        "firmware_revision": "9588e8f2736b60916f51e470deb18f55112a6ebc",
         "changelog": "* Use fixed-width font for addresses\n* Lots of under-the-hood improvements\n* Fixed issue with write-protection settings"
     },
     {
@@ -277,6 +301,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.6.0.bin",
         "fingerprint": "e40f6ce12724c2d24234a7752953b88fd9ec28b3ec72c0dbfa280095a67a06ca",
+        "firmware_revision": "723cf295a72ce07b96047901bb8c2e461a2488f8",
         "changelog": "* Native SegWit (Bech32) address support\n* Show recognized BIP44/BIP49 paths in GetAddress dialog\n* NEM support\n* Expanse and UBIQ chains support\n* Bitcoin Gold, DigiByte, Monacoin support\n* Ed25519 collective signatures (CoSi) support"
     },
     {
@@ -286,6 +311,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.5.2.bin",
         "fingerprint": "99f71379dec893fbe109832a1150f338660be686fe6b4903ff10ff751ba4e448",
+        "firmware_revision": "e4cc08775fc9c204f295442f930326eb7877f2d4",
         "changelog": "* clean memory on start\n* fix storage import from older versions"
     },
     {
@@ -295,6 +321,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.5.1.bin",
         "fingerprint": "1c1fa9802cbd6a947a4f3e78f209d3efe49eb4abbacb101bbc3a0a709c742707",
+        "firmware_revision": "f0d2e7a37142a6d4c7f7e45a6e4427e53123d614",
         "changelog": "* Wipe storage after 16 wrong PIN attempts\n* Enable Segwit for Bitcoin\n* Bcash aka Bitcoin Cash support\n* Message signing/verification for Ethereum and Segwit\n* Make address dialog nicer (switch text/QR via button)\n* Use checksum for Ethereum addresses\n* Add more ERC-20 tokens, handle unrecognized ERC-20 tokens\n* Allow \"dry run\" recovery procedure\n* Allow separated backup procedure"
     },
     {
@@ -304,6 +331,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.5.0.bin",
         "fingerprint": "c4eddafd29b580d8482cda68e61bdcf1740d77520ef3a603758646bbffe957ea",
+        "firmware_revision": "6b74139b4530a4687b4a317b8b08f4329704efc4",
         "changelog": "* Enable Segwit for Testnet and Litecoin\n* Enable ERC-20 tokens for Ethereum chains"
     },
     {
@@ -313,6 +341,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.4.2.bin",
         "fingerprint": "a4b39f01bd134d01d7534821445bf779dbe6c25f0fcf7c7cb285a79b17f25e0a",
+        "firmware_revision": "14399f100e862608c24a7e214e9ce971c4d32457",
         "changelog": "* New Matrix-based recovery method\n* Minor Ethereum fixes (including EIP-155 replay protection)\n* Minor USB, U2F and GPG fixes"
     },
     {
@@ -322,6 +351,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.4.1.bin",
         "fingerprint": "92636493f76f352213e681bbc26eb3a8844f7b8a3044214b65c3c2c10a0f788c",
+        "firmware_revision": "ae37ea8a9a2ab96e60714451a7a9502e0ef1ffc9",
         "changelog": "* Support for Zcash JoinSplit transactions\n* Enable device lock after 10 minutes of inactivity\n* Enable device lock by pressing left button for 2 seconds\n* Confirm dialog for U2F counter change"
     },
     {
@@ -331,6 +361,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.4.0.bin",
         "fingerprint": "5764715dbcf8ed88bc0ae1c2f715277f22b67f26c15e1f7543b2b44913b5c255",
+        "firmware_revision": "e0e190b3dc29bcb0f6ab9699c439fe7bfbcde370",
         "changelog": "* U2F support\n* Ethereum support\n* GPG decryption support\n* Zcash support"
     },
     {
@@ -340,6 +371,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.3.6.bin",
         "fingerprint": "03b559a758961b2bfd4443e6c36c10025268cf033ecd376fdd7a79ff658bf511",
+        "firmware_revision": "36b9d80120348700264bba518a533d4f82d79cbd",
         "changelog": "* Enable advanced transactions such as ones with REPLACE-BY-FEE and CHECKLOCKTIMEVERIFY\n* Fix message signing for altcoins\n* Message verification now shows address\n* Enable GPG signing support\n* Enable Ed25519 curve (for SSH and GPG)\n* Use separate deterministic hierarchy for NIST256P1 and Ed25519 curves\n* Users using SSH already need to regenerate their keys using the new firmware!!!"
     },
     {
@@ -349,6 +381,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.3.5.bin",
         "fingerprint": "7d5d2c7defb93081a7fb7a2d1e57677fbac2a3e3e50f22fa3ff83ec4ddaafd9d",
+        "firmware_revision": "7675a0aa5ff6e82f300c50df13a71ff0b81f9b44",
         "changelog": "* Double size font for recovery words during the device setup\n* Optimizations for simultaneous access when more applications try communicate with the device"
     },
     {
@@ -358,6 +391,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.3.4.bin",
         "fingerprint": "49e044eec84a9c210a09319d27a3ab8ba889ddeaa4d68f99d163f65267fce134",
+        "firmware_revision": "db93a50f76204418a2cf7d2c7e0391f486729bf3",
         "changelog": "* Screensaver active on ClearSession message\n* Support for NIST P-256 curve\n* Updated SignIdentity to v2 format\n* Show seconds counter during PIN lockdown\n* Updated maxfee per kb for coins"
     },
     {
@@ -367,6 +401,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.3.3.bin",
         "fingerprint": "7fcee4c0459c22109f3fcfe0040148e9be6d30947f7fffb76c66cc500681257c",
+        "firmware_revision": "0cc270e6df3eca352eb8c72b602b7d5a0633b086",
         "changelog": "* Ask for PIN on GetAddress and GetPublicKey\n* Signing speed improved"
     },
     {
@@ -376,6 +411,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.3.2.bin",
         "fingerprint": "180656fbf94e43e0092eaf22c30ab3451a547b4213119bd62763dc97b94ad0d0",
+        "firmware_revision": "9761dd23e0cd28d7a98ce331e1676f7466336b7d",
         "changelog": "* Fix check during transaction streaming\n* Login feature via SignIdentity message\n* GetAddress for multisig shows M of N description\n* PIN checking in constant time"
     },
     {
@@ -385,6 +421,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.3.1.bin",
         "fingerprint": "8030e257fc4c75a8f4a0325f8ea37428dd8fc68a5f9ec5f8e2d1a0de328860cc",
+        "firmware_revision": "f2f50aa1886429aaeab5aa88e8c6e106ac5224b1",
         "changelog": "* Optimized signing speed\n* Enabled OP_RETURN\n* Added option to change home screen\n* Moved fee calculation before any signing\n* Made PIN delay increase immune against hardware hacking"
     },
     {
@@ -394,6 +431,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.3.0.bin",
         "fingerprint": "1d417e1e99a4880f7e03b991cf318eebe7b6cb453d2f55b8112adc5fd1a8293c",
+        "firmware_revision": "b5eecb30be7712855cfa76fe671ef0b2e98e4aa9",
         "changelog": "* Added multisig support\n* Added visual validation of receiving address\n* Added ECIES encryption capabilities"
     },
     {
@@ -403,6 +441,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.2.1.bin",
         "fingerprint": "0f8685ee46632162b549eb22b99a1e4e013d6796ae536ea6acb877a491f564f6",
+        "firmware_revision": "524f2a957afb66e6a869384aceaca1cb7f9cba60",
         "changelog": "* Added stack overflow protection\n* Added compatibility with Trezor Bridge"
     },
     {
@@ -412,6 +451,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.2.0.bin",
         "fingerprint": "0eec6fd320730acfa40963f0f470a47109378663907cc78b9c5797c19938c873",
+        "firmware_revision": "df524b9f35fd5cdba14eaa2bf2d948e3dc75254a",
         "changelog": "* Fix false positives for fee warning\n* Better UI for signing/verifying messages\n* Smaller firmware size"
     },
     {
@@ -421,6 +461,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.1.0.bin",
         "fingerprint": "a1709ead62659851933830f494cf9aa40047d1f098955aa93bd483b92df88c8e",
+        "firmware_revision": "272e10152ffc85c4f4114ed0762aeae45e97cd8e",
         "changelog": "* Minor UI fixes\n* Better handling of unexpected messages\n* Added AES support"
     },
     {
@@ -430,6 +471,7 @@
         "min_bootloader_version": [1, 0, 0],
         "url": "firmware/t1b1/trezor-t1b1-1.0.0.bin",
         "fingerprint": "79371ee2ed2db8489aa4a5bce6907c24afc6de47e9658fef4cc12e2d902d9c51",
+        "firmware_revision": "0d0a1ab5f2987a926c7a717b93a2a3e59bf3344b",
         "changelog": "* Added support for streaming of transactions into the device\n* Removed all current limits on size of signed transaction"
     }
 ]

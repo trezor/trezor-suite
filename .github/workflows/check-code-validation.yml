@@ -132,3 +132,27 @@ jobs:
         run: yarn workspace @suite-common/message-system validate-config
       - name: Translation Duplicates
         run: yarn workspace @trezor/suite translations:list-duplicates
+
+  releases-revision-checks:
+    name: Releases revision Checks
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      
+      - name: Check releases.json files changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            releases-json:
+              - 'packages/connect-common/files/firmware/t1b1/releases.json'
+              - 'packages/connect-common/files/firmware/t2t1/releases.json'
+        if: steps.changes.outputs.releases-json == 'true'
+      - name: Check releases.json revisions
+        run: yarn workspace @trezor/connect-common validate-releases.json
