@@ -13,7 +13,7 @@ export const LoadingContent: StoryObj<LoadingContentProps> = {
         </LoadingContentComponent>
     ),
     args: {
-        size: 20,
+        size: 25,
         isLoading: true,
     },
 };

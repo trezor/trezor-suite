@@ -1,6 +1,5 @@
-import { ReactNode } from 'react';
-import styled, { css, useTheme } from 'styled-components';
-import { Icon } from '../../assets/Icon/Icon';
+import { ReactNode, useState, useEffect } from 'react';
+import styled, { css } from 'styled-components';
 import { Spinner } from '../Spinner/Spinner';
 
 const LoadingWrapper = styled.div`
@@ -10,17 +9,36 @@ const LoadingWrapper = styled.div`
 
 const LoaderCell = styled.div<{ $size: number; $isLoading: boolean }>`
     width: ${({ $size }) => 1.5 * $size}px;
-    transition: all 0.25s ease-out 0.5s;
+    transition: opacity 0.25s ease-out;
 
     ${({ $isLoading }) =>
-        !$isLoading &&
-        css`
-            width: 0;
-            opacity: 0;
-        `}
+        $isLoading
+            ? css`
+                  transition-delay: 0;
+              `
+            : css`
+                  transition-delay: 2.5s;
+                  opacity: 0;
+              `}
+
     svg {
         fill: ${({ theme }) => theme.iconPrimaryDefault};
     }
+`;
+
+const ContentCell = styled.div<{ $size: number; $isLoading: boolean }>`
+    transition: transform 0.25s ease-out;
+    transform: translateX(-${({ $size }) => 1.5 * $size}px);
+
+    ${({ $isLoading }) =>
+        $isLoading
+            ? css`
+                  transition-delay: 0;
+                  transform: none;
+              `
+            : css`
+                  transition-delay: 2.5s;
+              `}
 `;
 
 export type LoadingContentProps = {
@@ -33,26 +51,34 @@ export type LoadingContentProps = {
 export const LoadingContent = ({
     children,
     isLoading = false,
-    size = 20,
+    size = 25,
     isSuccessful = true,
 }: LoadingContentProps) => {
-    const theme = useTheme();
+    const [isSpinnerVisible, setIsSpinnerVisible] = useState(false);
+
+    // To make sure the start animaton is visible at the beginning
+    useEffect(() => {
+        if (isLoading) {
+            setIsSpinnerVisible(true);
+        }
+    }, [isLoading]);
 
     return (
         <LoadingWrapper>
             <LoaderCell $isLoading={isLoading} $size={size}>
-                {isLoading ? (
-                    <Spinner size={size} dataTest="@loading-content/loader" />
-                ) : (
-                    <Icon
-                        icon={isSuccessful ? 'CHECK' : 'CROSS'}
+                {isSpinnerVisible && (
+                    <Spinner
                         size={size}
-                        color={isSuccessful ? theme.iconPrimaryDefault : theme.iconAlertRed}
+                        dataTest="@loading-content/loader"
+                        hasStartAnimation
+                        hasFinished={!isLoading && isSuccessful}
+                        hasError={!isLoading && !isSuccessful}
                     />
                 )}
             </LoaderCell>
-
-            {children}
+            <ContentCell $isLoading={isLoading} $size={size}>
+                {children}
+            </ContentCell>
         </LoadingWrapper>
     );
 };
