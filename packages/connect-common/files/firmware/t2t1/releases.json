@@ -10,6 +10,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.7.2-bitcoinonly.bin",
         "fingerprint": "d64fcf47a8ead6edf0329583e312136d1548d30990c29cfaa2ce7c67197babcc",
         "fingerprint_bitcoinonly": "cba515383705ec6420c54dd1ffdb33ea7ce4bb04bc6d992c2923880daa53d3e1",
+        "firmware_revision": "da75d8f4b67410b40a9cfd2954d183d81dd6e8e8",
         "changelog": "* Introducing repeated backups. \n* Multi-share backups can now have any number of shares. \n* Added support for Cardano Conway certificates [Universal fw only]."
     },
     {
@@ -23,6 +24,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.7.0-bitcoinonly.bin",
         "fingerprint": "53a645218792e413ad06c27320b7d1adc944b690ce831301bbf11c30352d3278",
         "fingerprint_bitcoinonly": "c94f07150a6f0bb2862d4c31c6059862aab14f0073dea581118eef51a983bc30",
+        "firmware_revision": "45e8a842a31e62a6d43d7f6ccac62a45e1198ef0",
         "changelog": "* Add translations capability. \n* Allow for going back to previous word in recovery process. \n* Clear sign ETH staking transactions on Everstake pool. [Universal fw only] \n* Display descriptors for BTC Taproot public keys. \n* Fixed blank display delay on startup when display orientation is set to other than north. \n* Multiple Solana instructions improved. [Universal fw only]"
     },
     {
@@ -35,6 +37,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.6.4-bitcoinonly.bin",
         "fingerprint": "441faa92156e8ae0b8247f9434c3ec8cf6ffd872f16fc593b22c4460dfd93913",
         "fingerprint_bitcoinonly": "e78da8a00354dd1223da081600f881b71bd297dd565e7a2c0a9880e52575d127",
+        "firmware_revision": "42e9ed0e09033d474dee1a560fe5870646fa440e",
         "changelog": "* Trezor Model T now supports Solana, expanding the range of cryptocurrencies it can securely manage. [Universal fw only] \n* Ethereum fees are now uniformly presented in Gwei, enhancing clarity and consistency for users. [Universal fw only] \n* The display of spaced addresses has been refined, offering a more user-friendly and visually optimized experience. \n* Boot-up logo display has been optimized, contributing to a smoother and more visually appealing device startup."
     },
     {
@@ -47,6 +50,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.6.3-bitcoinonly.bin",
         "fingerprint": "9ff0874f2ce3579a7502747578cef65c824097d906e7150b0142f6b9aa395a43",
         "fingerprint_bitcoinonly": "1765518ca4025d4d46362d07128bb38413831511a2aff0dee1b05e6e58ff5317",
+        "firmware_revision": "2c7cc6e0255dee2339b445b5551eaffb88dbd1b4",
         "changelog": "* QR Code for Extended Public Keys (XPUBs). \n* Adjusted buttons for multipage content scrolling, providing a more intuitive and user-friendly experience. \n* The new bootloader version 2.1.4 is now included for enhanced system performance and security."
     },
     {
@@ -59,6 +63,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.6.0-bitcoinonly.bin",
         "fingerprint": "050526db604b9acceef2a5a8561bc99ecbe337909283ebb927b556d8e9b13872",
         "fingerprint_bitcoinonly": "54f084dab4be1e64dc2cb970a6de87969407e4d6c48d79acdcf5d374ec0f29d6",
+        "firmware_revision": "88e1f8c7a5c7615723664c64b0a25adc0c409dee",
         "changelog": "* Show source account path in BTC signing. \n* Address confirmation screen added to EIP712 signing flow. \n* Ability to reboot the device into bootloader mode directly, without needing to unplug the device. \n* Support for Ledger Live legacy derivation path \"m/44'/coin_type'/0'/account\". \n* Redesigned UI. \n* Homescreen now supports full-screen images. \n* Force basic attestation in FIDO2 for google.com."
     },
     {
@@ -70,6 +75,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.5.3-bitcoinonly.bin",
         "fingerprint": "4f57dca1abc1a60d82c4fef7c96e86d784fc7a1e5e3da724dd2ae4d14c6350bf",
         "fingerprint_bitcoinonly": "c094c84ba958129885fa725ee6ddb781b580fd2c7851e83aef9054ba4a10526c",
+        "firmware_revision": "2f03ace311584988d5aeab58fd1acf24ef54711a",
         "changelog": "* Add SLIP-0025 coinjoin accounts. \n* Show red error header when Trezor doesn't see USB data connection. \n* Add support for Zcash unified addresses. \n* Show fee rate when replacing transaction. \n* Optimize the signing of BTC transactions. \n* Support for Cardano CIP-36 governance registration format. \n* Extend decimals of fee rate to 2 digits. \n* Display only “sat” instead of “sat BTC”. \n* Fix sending XMR transaction to an integrated address. \n* Fix XMR primary address display."
     },
     {
@@ -81,6 +87,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.5.2-bitcoinonly.bin",
         "fingerprint": "659b1b698546fa63f24200e148b6f9a7044df31d11a0a5ec7c044f2dd83f4a27",
         "fingerprint_bitcoinonly": "76aa25f9602cfb03cd3e07a82ac09226344eb355355aec216295e43b675eedf7",
+        "firmware_revision": "0d87b55ba4fed7eecc72bf2a94ee473830b095e9",
         "changelog": "* Add support for Monero HF15 features. \n* Show the fee rate on the signing confirmation screen. \n* Support for Cardano Babbage era transaction items \n* Add \"Show All\"/\"Show Simple\" choice to Cardano transaction signing \n* Show thousands separator when displaying large amounts. \n* Fix Decred transaction weight calculation."
     },
     {
@@ -92,6 +99,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.5.1-bitcoinonly.bin",
         "fingerprint": "782d4934897018cac779eebb0d7c66e21da7789b9cd35e1f99f097bdfd9b7d33",
         "fingerprint_bitcoinonly": "db5d7b211532f717a32fe0b1bd3e3df6ad5464079a896a7f7492ab6e9e030bb5",
+        "firmware_revision": "85a26d2c9593bcdf858c2d718d79951ca927a0c3",
         "changelog": "* Support Electrum signatures in VerifyMessage.\n* Support Cardano Alonzo-era transactions (Plutus).\n* Bitcoin bech32 addresses QR codes have bigger pixels which are easier to scan.\n* EIP-1559 transaction correctly show final Hold to Confirm screen.\n* Trezor will refuse to sign UTXOs that do not match the provided derivation path (e.g., transactions belonging to a different wallet, or synthetic transaction inputs).\n* Zcash v5 transaction format."
     },
     {
@@ -103,6 +111,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.4.3-bitcoinonly.bin",
         "fingerprint": "a07f69d8d2065006a79c6b5636bd046496dbcb3820b41f1d604d8a4605ca4056",
         "fingerprint_bitcoinonly": "1744efccabd479526392b281b7e0fc7aa2b4ecb454007dff7ca8c1f8171fad90",
+        "firmware_revision": "595b14254c1abb2be3f69e42c7932f1eca8cf1b1",
         "changelog": "* Support Taproot.\n* Show address confirmation in SignMessage.\n* Support for advanced Cardano transactions and different derivations for compatibility.\n* Ethereum support for EIP712 (signing typed data)."
     },
     {
@@ -114,6 +123,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.4.2-bitcoinonly.bin",
         "fingerprint": "54ccf155510b5292bd17ed748409d0d135112e24e62eb74184639460beecb213",
         "fingerprint_bitcoinonly": "60fee3c9775d8ccf71099f6f7d277463efd128414cfb9be45656b1a26eeb7301",
+        "firmware_revision": "9276b1702361f70e094286e2f89e919d8a230d5c",
         "changelog": "* Support for Ethereum EIP1559 transactions.\n* Re-enabled Firo support.\n* Memory optimization of BTC signing and CBOR decoding.\n* Support for large Cardano transactions.\n* Remove Lisk."
     },
     {
@@ -125,6 +135,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.4.1-bitcoinonly.bin",
         "fingerprint": "84bc47bb197b3ae7bfb096f03d4a528ccf6c9ef4dfee0aac4022971e4ec91d68",
         "fingerprint_bitcoinonly": "fce4503fcadb68dc72144a562ec0a59e7c8d083e403e01bfc4c584161d79f596",
+        "firmware_revision": "24bb4016388fca4b998285b95dcd408f4ed0bff6",
         "changelog": "* Security and major perfomance improvements.\n* Cardano fixes.\n* Fix red screen on shutdown."
     },
     {
@@ -136,6 +147,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.4.0-bitcoinonly.bin",
         "fingerprint": "d90265ee6d7d499c7d938b5322f71f27042da8a6fdaed54c224d31b65e868def",
         "fingerprint_bitcoinonly": "89c91287ab7a9cd3ec246b6822a0d04b7d40401abef706cccafbb7b98bd6a3d7",
+        "firmware_revision": "ea3596ad89a7993ad7b9d62798de94325ad1717a",
         "changelog": "* Locking the device by holding finger on the homescreen.\n* Support PIN of unlimited length.\n* Allow decreasing the output value in RBF transactions.\n* Reduce memory fragmentation.\n* Update FIDO icons.\n* Improve wording when showing multisig XPUBs."
     },
     {
@@ -147,6 +159,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.3.6-bitcoinonly.bin",
         "fingerprint": "0efa3ba6135caea7693d145d60441eeb46283fe0b8b1fd59a04af33a638ad237",
         "fingerprint_bitcoinonly": "e2cab40bb4c6ae65417b80ad564b905796038a0f5e6d0f50cead257fdd3a9c2d",
+        "firmware_revision": "b19cbf67c6c7c38513947b703df6d4409c59bc98",
         "changelog": "* Add compatibility paths for Unchained Capital"
     },
     {
@@ -158,6 +171,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.3.5-bitcoinonly.bin",
         "fingerprint": "c0a6cacfed5c7a691314919c22307c29fbe9522071a9a28669769c014762d386",
         "fingerprint_bitcoinonly": "53e7ee5bfc75cfa6412d8de5461b1ea8d9b7e10970ce7cadae9cbb1e17bbb77d",
+        "firmware_revision": "ffa96205fb5e22b43e7b08a3dbc3cdeee0931de3",
         "changelog": "* Replacement transaction signing for replace-by-fee and PayJoin.\n* Support for Output Descriptors export.\n* Paginated display for signing/verifying long messages.\n* Show Ypub/Zpub correctly for multisig GetAddress.\n* Show amounts in mBTC, uBTC and sat denominations."
     },
     {
@@ -169,6 +183,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.3.4-bitcoinonly.bin",
         "fingerprint": "58b51a6587993965979a744f8fcd5c4761f11ce4bec6b059a5d56bd0987d6658",
         "fingerprint_bitcoinonly": "085acbba98163284ef86dea637f9442b924e80fea245f5ebb60d5aab3be2b7b6",
+        "firmware_revision": "50854b9210f7674262c1541272a8c7fd1767b7a9",
         "changelog": "* This firmware only contains the changes needed after the latest Monero update (HF13) by introducing support for the CLSAG transactions."
     },
     {
@@ -180,6 +195,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.3.3-bitcoinonly.bin",
         "fingerprint": "46326222f8afcb82e1cd07867bc3bf8836f4e9d0f367e23b58d1e9bc32cd032e",
         "fingerprint_bitcoinonly": "dda77cd7893a5f413f8fc4b2f44d1d43ed4b26e8ced5e6e578cc6b302c1a2310",
+        "firmware_revision": "0d5f00668fb3d1c093ff3c879311a91d3a7175c8",
         "changelog": "* Advances the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.\n* Adds support for Verge (XVG).\n* Drops support for Metaverse (ETP), GINcoin (GIN), Pesetacoin (PTC), and Zel (ZEL).\n* Introduces a hard limit on transaction fees to prevent accidentally paying extra hefty fees (the limit can be manually disabled).\n* Resolves the problems with generating the Crown addresses.\n* Re-enables spending altcoins from Bitcoin paths (fixing some compatibility issues with Bitcoin Cash wallets).\n* Fixes smaller issues with the user interface, customization, and more."
     },
     {
@@ -191,6 +207,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.3.2-bitcoinonly.bin",
         "fingerprint": "f5ccdca0cbe163ecb93df726da72b69abb93f70d24d295db00b3ca2738216160",
         "fingerprint_bitcoinonly": "389cb54fb6fc75489b788ad669ce51f41d47a67af54b8745a0dfe48da38a777f",
+        "firmware_revision": "63ebb8ccb56fc17a72eef91db36a37ff3176519d",
         "changelog": "* Introduces 'Autolock' feature, which automatically locks the device to enforce the PIN entry after a certain period.\n* Updates the Cardano support to enable staking and other Shelley updates.\n* Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.\n* Fixes compatibility issues with Casa and GreenAddress.\n* Adds support for multiple change outputs in outgoing transactions.\n* Improves some interface elements."
     },
     {
@@ -202,6 +219,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.3.1-bitcoinonly.bin",
         "fingerprint": "37178a5ec24e34f8a0599aebcadaf206af3ebadef2fc596665d617dd3e05a5db",
         "fingerprint_bitcoinonly": "41795ec196f74c5d6acecc09047a5eacf1dfca47b0aeaa8442a69568efe20ddb",
+        "firmware_revision": "c6b2580cd245ee924507f45e9675f857a3d78768",
         "changelog": "* Refactor Bitcoin signing"
     },
     {
@@ -213,6 +231,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.3.0-bitcoinonly.bin",
         "fingerprint": "212929f63fe1393e2ff57e06537a38cff281e3cfb3a4e17235079e2f08871e6c",
         "fingerprint_bitcoinonly": "bddc0fd3b52fd32d94b776048f62b3d03dcb6ab90140e482a042a2863093115f",
+        "firmware_revision": "0b7a8449f8dd003fc415262b05102d113247d3de",
         "changelog": "* Introduce Wipe code\n* Introduce SD card protection\n* Introduce passphrase cache\n* U2F UX improvements\n* Security fixes"
     },
     {
@@ -224,6 +243,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.1.8-bitcoinonly.bin",
         "fingerprint": "8a5fa12132651b6e33344fd025d0d90885f5cc1c342427ebcea4f0ae98b50d8c",
         "fingerprint_bitcoinonly": "ec752e9fa99a29979497e093b32bdb2b592783e2b48c87d8f6f0c18c73cd3022",
+        "firmware_revision": "8eb6ce08995514c67d175b7197feeadeccc48ff0",
         "changelog": "* Support Tezos 005-BABYLON hardfork\n* Show XPUBs in GetAddress for multisig\n* Security improvements"
     },
     {
@@ -235,6 +255,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.1.7-bitcoinonly.bin",
         "fingerprint": "acf1b4c6fec3624a8fc53f9130ff53d690c3fa1c134bd4ca3e58ee7b5a0441d8",
         "fingerprint_bitcoinonly": "fd92ac173a2cf93cc07ced3287e07800ed10466dc38c0c7240d9b20c689dd1d1",
+        "firmware_revision": "2cabc8b40ce237ee8a7e1926b6269040519d447a",
         "changelog": "* Super Shamir (with Groups)\n* FIDO2 support with credential management\n* Fix low memory issue"
     },
     {
@@ -246,6 +267,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.1.6-bitcoinonly.bin",
         "fingerprint": "e2032ad84108a85d4014d477b955b9181a1a56e6f222ef21bb7d47b503a02f0b",
         "fingerprint_bitcoinonly": "4e7f0f95d71631159b9e873f36a812c93a10eca1fad5f38c78ae7fbe4c1f6ed4",
+        "firmware_revision": "629fa58d396e732f230866ebe733d268370d7879",
         "changelog": "* Super Shamir (with Groups)\n* FIDO2 support with credential management"
     },
     {
@@ -257,6 +279,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.1.5-bitcoinonly.bin",
         "fingerprint": "40e4bfaf3c5ec77872c1aaaac085aafcc443f60279ca2bb38d29c669233fdf62",
         "fingerprint_bitcoinonly": "9de90d9f8ca12506f3b9a4cbe7616294144d965d67daa3a03bfe6c0b74a44843",
+        "firmware_revision": "df0963ec48f01f3d07ffca556e21ff0070cab099",
         "changelog": "* Fix for sluggish U2F authentication when using Shamir\n* Fix UI for Shamir with 33 words\n* Fix Wanchain signing"
     },
     {
@@ -266,6 +289,7 @@
         "min_bootloader_version": [2, 0, 0],
         "url": "firmware/t2t1/trezor-t2t1-2.1.4.bin",
         "fingerprint": "820611a92605b1ccc612b9bf8550617aec6962bd2484fcb6ae4792bc498654e4",
+        "firmware_revision": "6a1a02ca3c595067ed02a78f2d6c36eb58eaa9ed",
         "changelog": "* Shamir Backup with Recovery persistence\n* Touchscreen freeze fix\n* Fix display of non-divisible OMNI amounts"
     },
     {
@@ -275,6 +299,7 @@
         "min_bootloader_version": [2, 0, 0],
         "url": "firmware/t2t1/trezor-t2t1-2.1.1.bin",
         "fingerprint": "1b3166a878658fcd2ff82c7ac9a2587da544fd105f678cc7b4d41cba5a8d4c01",
+        "firmware_revision": "7af1d5859458e87efd6957885566aed890a9f781",
         "changelog": "* Hotfix for touchscreen freeze\n* Don't rotate the screen via swipe gesture\n* Set screen rotation via user setting\n* More strict path validations\n* Display non-zero locktime values\n* EOS support\n* Monero UI fixes\n* Speed and memory optimizations"
     },
     {
@@ -285,6 +310,7 @@
         "url": "firmware/t2t1/trezor-t2t1-2.1.0.bin",
         "tags": ["security"],
         "fingerprint": "bb5b0308807b45d41d1e2ab66a468152997ad69a01099789d8a35e464cde999f",
+        "firmware_revision": "3f0e3a334e03f49ff819d14cbbec00194c586c27",
         "changelog": "* Security improvements\n* Upgraded to new storage format\n* Ripple, Stellar, Cardano and NEM fixes\n* New coins: ATS, AXE, FLO, GIN, KMD, NIX,\n  PIVX, REOSC, XPM, XSN, ZCL\n* New ETH tokens"
     },
     {
@@ -294,6 +320,7 @@
         "min_bootloader_version": [2, 0, 0],
         "url": "firmware/t2t1/trezor-t2t1-2.0.10.bin",
         "fingerprint": "fcaa6ee206c2c121eb2d45d065d66f0879f14be45c244d4acf908be1de22275e",
+        "firmware_revision": "5c3a5d4577b568d90bfa3528d0243d74848d994f",
         "changelog": "* Fix Monero payment ID computation\n* Fix issue with touch screen and flickering\n* Add support for OMNI layer: OMNI/MAID/USDT\n* Add support for new coins: BTX, CPC, GAME, RVN\n* Add support for new Ethereum tokens"
     },
     {
@@ -304,6 +331,7 @@
         "min_bootloader_version": [2, 0, 0],
         "url": "firmware/t2t1/trezor-t2t1-2.0.9.bin",
         "fingerprint": "87be93d6966e7a9eff78dc7b434d1a138ec8d1ee0300882d16f90b606f3a806b",
+        "firmware_revision": "7c2e9ed5a51dc00dec9d195878c5ad57016b4889",
         "changelog": "* Small Monero and Segwit bugfixes"
     },
     {
@@ -314,6 +342,7 @@
         "min_bootloader_version": [2, 0, 0],
         "url": "firmware/t2t1/trezor-t2t1-2.0.8.bin",
         "fingerprint": "642b6215bda981f8eacafee34dbee5cdeee7d47d49f605bbe2828a8d9b79813d",
+        "firmware_revision": "939a93221941df8d454569a674f6fb082bf1d423",
         "changelog": "* Monero support\n* Cardano support\n* Stellar support\n* Ripple support\n* Tezos support\n* Decred support\n* Groestlcoin support\n* Zencash support\n* Zcash sapling hardfork support\n* Implemented seedless setup"
     },
     {
@@ -324,6 +353,7 @@
         "min_bootloader_version": [2, 0, 0],
         "url": "firmware/t2t1/trezor-t2t1-2.0.7.bin",
         "fingerprint": "f3a42e640e526fba6574fafa520fc7d97ef9f557d24da24d9a2ea4176a4c4164",
+        "firmware_revision": "5c621800110a791c84865b6b381908e8c2f15283",
         "changelog": "* Bitcoin Cash cashaddr support\n* Zcash Overwinter hardfork support\n* NEM support\n* Lisk support\n* Show warning on home screen if PIN is not set\n* Support for new coins:\n  - Bitcoin Private, Fujicoin, Vertcoin, Viacoin, Zcoin\n* Support for new Ethereum networks:\n  - EOS Classic, Ethereum Social, Ellaism, Callisto, EtherGem, Wanchain\n* Support for 500+ new Ethereum tokens"
     },
     {
@@ -334,6 +364,7 @@
         "min_bootloader_version": [2, 0, 0],
         "url": "firmware/t2t1/trezor-t2t1-2.0.6.bin",
         "fingerprint": "4eccabf2fd7e121ed0da657c064a65c5694402497e60ea2ac2dcf1e118db9cc6",
+        "firmware_revision": "886888b7750402d9a9e12bd990e75c0a8dc6cc86",
         "changelog": "* Fix layout for Ethereum transactions\n* Fix public key generation for SSH and GPG\n* Add special characters to passphrase keyboard"
     },
     {
@@ -344,6 +375,7 @@
         "min_bootloader_version": [2, 0, 0],
         "url": "firmware/t2t1/trezor-t2t1-2.0.5.bin",
         "fingerprint": "851172eab96c07bf9efb43771cb0fd14dc0320a68de047132c7bd787a1ad64e9",
+        "firmware_revision": "8852fb54820032f4f287414aa250df981d25445f",
         "changelog": "* First public release"
     }
 ]
