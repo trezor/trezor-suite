@@ -22,14 +22,18 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
     const port = await getFreePort();
     const controlPort = await getFreePort();
     const torDataDir = path.join(app.getPath('userData'), 'tor');
+    const initialSettings = store.getTorSettings();
 
-    const persistSettings = (shouldEnableTor: boolean) => {
-        store.setTorSettings({ running: shouldEnableTor, host, port });
-    };
+    store.setTorSettings({ ...initialSettings, host, port });
 
-    persistSettings(store.getTorSettings().running);
-
-    const tor = new TorProcess({ host, port, controlPort, torDataDir });
+    const tor = new TorProcess({
+        host,
+        port,
+        controlPort,
+        torDataDir,
+        shouldUseSnowflake: initialSettings.shouldUseSnowflake,
+        snowflakeBinaryPath: initialSettings.snowflakeBinaryPath,
+    });
 
     const setProxy = (rule: string) => {
         logger.info('tor', `Setting proxy rules to "${rule}"`);
@@ -89,6 +93,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
 
     const setupTor = async (shouldEnableTor: boolean) => {
         const isTorRunning = (await tor.status()).process;
+        const { snowflakeBinaryPath, shouldUseSnowflake } = store.getTorSettings();
 
         if (shouldEnableTor === isTorRunning) {
             return;
@@ -98,6 +103,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
             setProxy(`socks5://${host}:${port}`);
             tor.torController.on('bootstrap/event', handleBootstrapEvent);
             try {
+                tor.setTorConfig({ snowflakeBinaryPath, shouldUseSnowflake });
                 await tor.start();
             } catch (error) {
                 mainWindow.webContents.send('tor/bootstrap', {
@@ -120,8 +126,47 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
             await tor.stop();
         }
 
-        persistSettings(shouldEnableTor);
+        store.setTorSettings({ ...store.getTorSettings(), running: shouldEnableTor });
     };
+
+    ipcMain.handle(
+        'tor/change-settings',
+        (
+            ipcEvent,
+            {
+                snowflakeBinaryPath,
+                shouldUseSnowflake,
+            }: { snowflakeBinaryPath: string; shouldUseSnowflake: boolean },
+        ) => {
+            validateIpcMessage(ipcEvent);
+
+            try {
+                store.setTorSettings({
+                    running: store.getTorSettings().running,
+                    host,
+                    port,
+                    snowflakeBinaryPath,
+                    shouldUseSnowflake,
+                });
+
+                return { success: true };
+            } catch (error) {
+                return { success: false, error };
+            } finally {
+                mainWindow.webContents.send('tor/settings', store.getTorSettings());
+            }
+        },
+    );
+
+    ipcMain.handle('tor/get-settings', ipcEvent => {
+        validateIpcMessage(ipcEvent);
+
+        try {
+            return { success: true, payload: store.getTorSettings() };
+        } catch (error) {
+            return { success: false, error };
+        }
+    });
 
     ipcMain.handle('tor/toggle', async (ipcEvent, shouldEnableTor: boolean) => {
         validateIpcMessage(ipcEvent);
@@ -198,7 +243,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
 
     if (app.commandLine.hasSwitch('tor')) {
         logger.info('tor', 'Tor enabled by command line option.');
-        persistSettings(true);
+        store.setTorSettings({ ...store.getTorSettings(), running: true });
     }
 };
 
