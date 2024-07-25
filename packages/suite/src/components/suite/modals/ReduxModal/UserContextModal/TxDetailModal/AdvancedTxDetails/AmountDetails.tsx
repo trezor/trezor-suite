@@ -23,6 +23,7 @@ import {
     selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { isStakeTypeTx } from '@suite-common/suite-utils';
 
 const MainContainer = styled.div`
     display: flex;
@@ -71,6 +72,9 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const cardanoDeposit = formatCardanoDeposit(tx);
     const { selectedAccount } = useSelector(state => state.wallet);
 
+    const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
+    const isStakeTypeTxNoAmount = isStakeTypeTx(txSignature) && amount.eq(0);
+
     return (
         <MainContainer>
             <AmountWrapper>
@@ -106,7 +110,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                     />
                 )}
                 {/* AMOUNT */}
-                {(tx.targets.length || tx.type === 'joint') && (
+                {!isStakeTypeTxNoAmount && (tx.targets.length || tx.type === 'joint') && (
                     <AmountRow
                         firstColumn={<Translation id="AMOUNT" />}
                         secondColumn={
@@ -178,7 +182,9 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                     <AmountRow
                         key={i}
                         firstColumn={
-                            !tx.targets.length && i === 0 ? <Translation id="AMOUNT" /> : undefined
+                            i === 0 && (!tx.targets.length || isStakeTypeTxNoAmount) ? (
+                                <Translation id="AMOUNT" />
+                            ) : undefined
                         }
                         secondColumn={
                             <FormattedCryptoAmount

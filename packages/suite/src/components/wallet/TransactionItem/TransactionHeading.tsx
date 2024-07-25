@@ -18,6 +18,8 @@ import { TransactionHeader } from './TransactionHeader';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
+import { spacingsPx } from '@trezor/theme';
+import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 
 const Wrapper = styled.span`
     display: flex;
@@ -65,6 +67,11 @@ const HelpLink = styled(TrezorLink)`
     path {
         fill: ${({ theme }) => theme.TYPE_ORANGE};
     }
+`;
+
+const HeaderWrapper = styled.div`
+    display: flex;
+    gap: ${spacingsPx.xxs};
 `;
 
 interface TransactionHeadingProps {
@@ -156,7 +163,10 @@ export const TransactionHeading = ({
                         />
                     )}
                     <BlurWrapper $isBlurred={isPhishingTransaction}>
-                        <TransactionHeader transaction={transaction} isPending={isPending} />
+                        <HeaderWrapper>
+                            <TransactionHeader transaction={transaction} isPending={isPending} />
+                            <UnstakingTxAmount transaction={transaction} />
+                        </HeaderWrapper>
                     </BlurWrapper>
                 </HeadingWrapper>
 

@@ -47,6 +47,19 @@ export const transformTxFixtures = [
     },
 ];
 
+export const getUnstakingAmountFixtures = [
+    {
+        description: 'should correctly extract and convert the unstaking amount from ethereum data',
+        ethereumData: '76ec871c0000000000000000000000000000000000000000000000000000000000000001', // without 0x
+        expectedAmountWei: '1', // 0.000000000000000001 eth
+    },
+    {
+        description: 'should correctly remove 0x prefix from ethereum data',
+        ethereumData: '0x76ec871c0000000000000000000000000000000000000000000000000000000000000001', // with 0x
+        expectedAmountWei: '1', // 0.000000000000000001 eth
+    },
+];
+
 export const stakeFixture = [
     {
         description: 'should stake 0.1 eth, expect correct transaction object with correct values',
