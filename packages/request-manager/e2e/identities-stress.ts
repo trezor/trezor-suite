@@ -36,6 +36,8 @@ const intervalBetweenRequests = 1000 * 20;
         port,
         controlPort,
         torDataDir,
+        snowflakeBinaryPath: '',
+        shouldUseSnowflake: false,
     });
     const torParams = torController.getTorConfiguration(processId);
     // Starting Tor process from binary.

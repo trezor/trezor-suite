@@ -3,6 +3,8 @@ export interface TorConnectionOptions {
     port: number;
     controlPort: number;
     torDataDir: string;
+    snowflakeBinaryPath: string;
+    shouldUseSnowflake: boolean;
 }
 
 export type TorCommandResponse =
