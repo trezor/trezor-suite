@@ -14,6 +14,7 @@ import {
     TorStatusEvent,
     Status,
     BridgeSettings,
+    TorSettings,
 } from './messages';
 
 // Event messages from renderer to main process
@@ -54,6 +55,7 @@ export interface RendererChannels {
     // tor
     'tor/status': TorStatusEvent;
     'tor/bootstrap': BootstrapTorEvent;
+    'tor/settings': TorSettings;
 
     // custom protocol
     'protocol/open': string;
@@ -78,6 +80,8 @@ export interface InvokeChannels {
     'metadata/rename-file': (options: { file: string; to: string }) => InvokeResult;
     'server/request-address': (route: string) => string | undefined;
     'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
+    'tor/change-settings': (payload: TorSettings) => InvokeResult;
+    'tor/get-settings': () => InvokeResult<TorSettings>;
     'bridge/toggle': () => InvokeResult;
     'bridge/get-status': () => InvokeResult<Status>;
     'bridge/change-settings': (payload: BridgeSettings) => InvokeResult;
@@ -126,6 +130,8 @@ export interface DesktopApi {
     // Tor
     getTorStatus: DesktopApiSend<'tor/get-status'>;
     toggleTor: DesktopApiInvoke<'tor/toggle'>;
+    changeTorSettings: DesktopApiInvoke<'tor/change-settings'>;
+    getTorSettings: DesktopApiInvoke<'tor/get-settings'>;
     // Store
     clearStore: DesktopApiSend<'store/clear'>;
     clearUserData: DesktopApiInvoke<'user-data/clear'>;

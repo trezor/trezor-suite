@@ -36,6 +36,7 @@ const validChannels: Array<keyof RendererChannels> = [
     'update/allow-prerelease',
     'tor/status',
     'tor/bootstrap',
+    'tor/settings',
     'protocol/open',
     'handshake/event',
     'bridge/status',

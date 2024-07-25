@@ -112,6 +112,15 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
 
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
+        getTorSettings: () => ipcRenderer.invoke('tor/get-settings'),
+
+        changeTorSettings: payload => {
+            if (validation.isObject({ snowflakeBinaryPath: 'string' }, payload)) {
+                return ipcRenderer.invoke('tor/change-settings', payload);
+            }
+
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
 
         // Store
         clearStore: () => ipcRenderer.send('store/clear'),
