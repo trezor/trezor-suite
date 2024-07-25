@@ -74,6 +74,25 @@ const sectionListContainerStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.small,
 }));
 
+const sortKeysPendingFirst = (a: string, b: string) => {
+    if (a === 'pending' && b === 'pending') return 0;
+    if (a === 'pending') return -1;
+    if (b === 'pending') return 1;
+
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+
+    return dateA.getTime() - dateB.getTime();
+};
+
+const sortPendingTransactions = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
+    if (a.blockTime === undefined && b.blockTime === undefined) return 0;
+    if (a.blockTime === undefined) return -1;
+    if (b.blockTime === undefined) return 1;
+
+    return a.blockTime - b.blockTime;
+};
+
 const renderTransactionItem = ({
     item,
     isFirst,
@@ -163,20 +182,22 @@ export const TransactionList = ({
     }, [dispatch, accountKey, fetchTransactions]);
 
     const data = useMemo((): TransactionListItem[] => {
-        // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set
-        // this is a temporary solution to emulate the original behavior here in suite-native
-        // TODO: display pending transactions in the correct order
+        // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set.
+        // This is here to keep the original behavior of having pending transactions in one group
+        // at the beginning of the list.
         const [pendingTxs, confirmedTxs] = arrayPartition(transactions, isPending);
         const accountTransactionsByMonth = groupTransactionsByDate(confirmedTxs, 'month');
         if (pendingTxs.length || accountTransactionsByMonth['no-blocktime']) {
             accountTransactionsByMonth['pending'] = [
                 ...(accountTransactionsByMonth['no-blocktime'] ?? []),
-                ...pendingTxs,
+                ...pendingTxs.sort(sortPendingTransactions),
             ];
             delete accountTransactionsByMonth['no-blocktime'];
         }
 
-        const transactionMonthKeys = Object.keys(accountTransactionsByMonth) as MonthKey[];
+        const transactionMonthKeys = Object.keys(accountTransactionsByMonth).sort(
+            sortKeysPendingFirst,
+        ) as MonthKey[];
 
         if (tokenContract) {
             return transactionMonthKeys.flatMap(monthKey => [
