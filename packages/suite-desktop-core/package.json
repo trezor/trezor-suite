@@ -54,7 +54,7 @@
         "fs-extra": "^11.2.0",
         "glob": "^10.3.10",
         "terser-webpack-plugin": "^5.3.9",
-        "webpack": "^5.90.1",
+        "webpack": "^5.93.0",
         "xvfb-maybe": "^0.2.1"
     }
 }
