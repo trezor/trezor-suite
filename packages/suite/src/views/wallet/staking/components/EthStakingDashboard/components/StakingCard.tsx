@@ -27,7 +27,8 @@ const AmountsWrapper = styled.div<{ $isStakeOrUnstakePending: boolean }>`
         $isStakeOrUnstakePending ? 'space-between' : 'flex-start'};
 
     & > div {
-        flex: ${({ $isStakeOrUnstakePending }) => ($isStakeOrUnstakePending ? '' : '1 0 300px')};
+        margin-right: ${({ $isStakeOrUnstakePending }) =>
+            $isStakeOrUnstakePending ? '0' : 'auto'};
     }
 `;
 
