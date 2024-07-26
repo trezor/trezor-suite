@@ -1,19 +1,21 @@
 import { Dispatch, SetStateAction, SVGProps, useEffect, useState } from 'react';
 import { motion, AnimationProps, SVGMotionProps } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
-import { coinsColors, spacingsPx } from '@trezor/theme';
+import { coinsColors } from '@trezor/theme';
 import { motionEasing } from '../../../config/motion';
-import { CoinLogo, CoinLogoProps } from '../CoinLogo/CoinLogo';
+import { CoinLogo, CoinLogoProps, QUALITY_SIZE, useAssetUrl } from '../CoinLogo/CoinLogo';
 
-const Container = styled.div`
-    position: relative;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    width: ${spacingsPx.xxxxl};
-    height: ${spacingsPx.xxxxl};
-    border-radius: 50%;
-`;
+const Container = styled.div<{ $size: number }>(
+    ({ $size }) => `
+        position: relative;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        width: ${$size}px;
+        height: ${$size}px;
+        border-radius: 50%;
+  `,
+);
 
 const rgbToHexColor = (rgbColor: string) => {
     const [r, g, b] = rgbColor.split('-').map(Number);
@@ -81,7 +83,8 @@ export interface AssetShareIndicatorProps extends CoinLogoProps {
 }
 
 interface ProgressCircleProps
-    extends Pick<AssetShareIndicatorProps, 'symbol' | 'iconUrl' | 'percentageShare' | 'index'> {
+    extends Pick<AssetShareIndicatorProps, 'symbol' | 'percentageShare' | 'index'> {
+    iconUrl?: string;
     size: number;
 }
 
@@ -96,7 +99,7 @@ const ProgressCircle = ({
     const [dominantColor, setDominantColor] = useState<string | undefined>();
 
     useEffect(() => {
-        if (iconUrl) {
+        if (!symbol && iconUrl) {
             const image = new Image();
 
             if (image) {
@@ -114,7 +117,7 @@ const ProgressCircle = ({
                 };
             }
         }
-    }, [iconUrl, size]);
+    }, [iconUrl, size, symbol]);
 
     const dimensions = size * 2;
     const strokeColor =
@@ -187,35 +190,35 @@ const ProgressCircle = ({
 
 export const AssetShareIndicator = ({
     symbol,
-    iconUrl,
     className,
     size = 32,
     percentageShare,
     index,
-    showProgressCircle = false,
-    firstCharacter,
+    coingeckoId = '',
+    contractAddress,
+    quality = 'medium',
     ...rest
 }: AssetShareIndicatorProps) => {
-    const progressCircleIconUrl = iconUrl && iconUrl.includes('ui-avatars') ? undefined : iconUrl;
+    const iconUrl = useAssetUrl(coingeckoId, contractAddress);
+    const coinLogoSize = !symbol ? QUALITY_SIZE[quality] : size;
 
     return (
-        <Container className={className}>
+        <Container className={className} $size={coinLogoSize * 2}>
             <CoinLogo
                 symbol={symbol}
-                iconUrl={iconUrl}
-                size={size}
-                coinFirstCharacter={firstCharacter}
+                size={coinLogoSize}
+                coingeckoId={coingeckoId}
+                contractAddress={contractAddress}
+                quality={quality}
                 {...rest}
             />
-            {showProgressCircle && (
-                <ProgressCircle
-                    symbol={symbol}
-                    iconUrl={progressCircleIconUrl}
-                    size={size}
-                    percentageShare={percentageShare}
-                    index={index}
-                />
-            )}
+            <ProgressCircle
+                symbol={symbol}
+                iconUrl={iconUrl}
+                size={coinLogoSize}
+                percentageShare={percentageShare}
+                index={index}
+            />
         </Container>
     );
 };

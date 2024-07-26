@@ -7,19 +7,18 @@ type DefaultCoinLogoProps = {
     size?: number;
 };
 
-type DefaultWrapperProps = {
-    $size?: number;
-};
-
-const DefaultWrapper = styled.div<DefaultWrapperProps>(
+const DefaultWrapper = styled.div<{ $size?: number }>(
     ({ $size, theme }) => `
       width: ${$size}px;
       height: ${$size}px;
       border-radius: 50%;
-      font-color: ${theme.iconSubdued};
+      color: ${theme.iconSubdued};
       background-color: ${theme.backgroundSurfaceElevation0};
       font-weight: bold;
       font-size: ${$size && $size * 0.75}px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
   `,
 );
 
