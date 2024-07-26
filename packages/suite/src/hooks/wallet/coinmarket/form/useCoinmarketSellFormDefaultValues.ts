@@ -30,7 +30,7 @@ export const useCoinmarketBuildAccountGroups = (): CoinmarketAccountsOptionsGrou
         () =>
             coinmarketBuildAccountOptions({
                 accounts,
-                device,
+                deviceState: device?.state,
                 symbolsInfo,
                 accountLabels,
                 defaultAccountLabelString,

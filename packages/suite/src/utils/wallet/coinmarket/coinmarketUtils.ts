@@ -26,6 +26,7 @@ import {
     CoinmarketCryptoListProps,
     CoinmarketGetAmountLabelsProps,
     CoinmarketGetAmountLabelsReturnProps,
+    CoinmarketGetSortedAccountsWithBalanceProps,
     CoinmarketOptionsGroupProps,
     CoinmarketTradeBuySellDetailMapProps,
     CoinmarketTradeBuySellType,
@@ -393,14 +394,11 @@ export const coinmarketBuildCryptoOptions = ({
 
 export const coinmarketGetSortedAccountsWithBalance = ({
     accounts,
-    device,
-}: {
-    accounts: Account[];
-    device: TrezorDevice | undefined;
-}) => {
-    if (!device) return [];
+    deviceState,
+}: CoinmarketGetSortedAccountsWithBalanceProps) => {
+    if (!deviceState) return [];
 
-    const accountSorted = sortByCoin(accounts.filter(a => a.deviceState === device.state));
+    const accountSorted = sortByCoin(accounts.filter(a => a.deviceState === deviceState));
     const accountsWithBalance = accountSorted.filter(account => {
         const accountWithBalance = account.availableBalance !== '0';
         const tokens = account.tokens?.filter(token => token.balance !== '0');
@@ -413,14 +411,14 @@ export const coinmarketGetSortedAccountsWithBalance = ({
 
 export const coinmarketBuildAccountOptions = ({
     symbolsInfo,
-    device,
+    deviceState,
     accounts,
     accountLabels,
     defaultAccountLabelString,
 }: CoinmarketBuildAccountOptionsProps): CoinmarketAccountsOptionsGroupProps[] => {
     const accountsWithBalance = coinmarketGetSortedAccountsWithBalance({
         accounts,
-        device,
+        deviceState,
     });
 
     const groups: CoinmarketAccountsOptionsGroupProps[] = accountsWithBalance.map(account => {

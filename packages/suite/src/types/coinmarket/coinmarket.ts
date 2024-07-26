@@ -177,10 +177,14 @@ export interface CoinmarketOptionsGroupProps {
     options: CoinmarketCryptoListProps[];
 }
 
-export interface CoinmarketBuildAccountOptionsProps {
-    symbolsInfo: CryptoSymbolInfo[] | undefined;
+export interface CoinmarketGetSortedAccountsWithBalanceProps {
     accounts: AccountsState;
-    device: TrezorDevice | undefined;
+    deviceState: string | undefined;
+}
+
+export interface CoinmarketBuildAccountOptionsProps
+    extends CoinmarketGetSortedAccountsWithBalanceProps {
+    symbolsInfo: CryptoSymbolInfo[] | undefined;
     accountLabels: Record<string, string | undefined>;
     defaultAccountLabelString: ({
         accountType,

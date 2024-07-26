@@ -50,7 +50,10 @@ export const useCoinmarketSellFormHelpers = ({
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectDevice);
-    const accountsWithBalance = coinmarketGetSortedAccountsWithBalance({ accounts, device });
+    const accountsWithBalance = coinmarketGetSortedAccountsWithBalance({
+        accounts,
+        deviceState: device?.state,
+    });
 
     const dispatch = useDispatch();
     const { getValues, setValue, clearErrors } = methods;
