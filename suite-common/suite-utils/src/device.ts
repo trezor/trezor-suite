@@ -421,3 +421,5 @@ export const getSortedDevicesWithoutInstances = (
 
             return 0;
         });
+
+export const isDeviceWithButtons = (deviceModel: DeviceModelInternal) => deviceModel.at(2) === 'B';
