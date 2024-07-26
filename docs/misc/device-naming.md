@@ -12,5 +12,7 @@ Development/Internal name consists of 4 keys
 | :------------: | :--------------: |
 | Trezor Model 1 |       T1B1       |
 | Trezor Model T |       T2T1       |
-| Trezor Safe 3  |       T2B1       |
+| Trezor Safe 3  |    T2B1, T3B1    |
 | Trezor Safe 5  |       T3T1       |
+
+-   Trezor Safe 3 exists in two variants, depending on its chip. It was upgraded post-release.
