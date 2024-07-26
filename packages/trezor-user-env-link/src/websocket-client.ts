@@ -204,7 +204,8 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
             // initialize connection
             const ws = new WebSocket(url);
 
-            ws.once('error', _error => {
+            ws.once('error', error => {
+                console.error('websocket error', error);
                 this.dispose();
             });
 
