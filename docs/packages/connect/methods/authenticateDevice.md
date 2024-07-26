@@ -1,6 +1,6 @@
 ## authenticateDevice
 
-> :note: **Supported only by T2B1 devices**
+> :note: **Not supported on T1B1 and T2T1**
 
 Request a signature and validate certificate issued by the Trezor company.
 Returns [DeviceAuthenticityResult type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/authenticateDevice.ts)
