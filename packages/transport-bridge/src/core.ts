@@ -256,7 +256,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
     const dispose = () => {
         api.dispose();
-        sessionsClient.removeAllListeners('descriptors');
+        sessionsClient.dispose();
     };
 
     return {
