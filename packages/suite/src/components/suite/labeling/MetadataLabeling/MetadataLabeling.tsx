@@ -58,9 +58,6 @@ const ActionButton = styled(Button)<{ $isValueVisible?: boolean; $isVisible?: bo
     margin-left: ${({ $isValueVisible, $isVisible, isLoading }) =>
         $isValueVisible || !$isVisible || isLoading ? '12px' : '4px'};
     visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
-
-    /* hack to keep button in place to prevent vertical jumping (if used display: none) */
-    width: ${({ $isVisible }) => ($isVisible ? 'auto' : '0')};
 `;
 
 // @TODO this shouldn't be Button
