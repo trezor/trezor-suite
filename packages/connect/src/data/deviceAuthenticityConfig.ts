@@ -53,6 +53,20 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             ],
         },
     },
+    T3B1: {
+        rootPubKeys: [
+            '045b5c3fdd01f3602092834209b86df0ca86a9faf25cac35c73bf6237d66eb21eafcec3706f1ccd5eb4cc7f2fa1751213eccb1c78389afba89a5788ff31ee46a5d',
+        ],
+        caPubKeys: [
+            '04860857f8ceb107cf03cc6ef56523b5e440e2ed51933cc49ac8a498063f06ab891bdafd0a1655aa287b9ded8a898d9532ec9d6550db3bb524e7af3e474b013d87',
+            '047962b89421e26daa51e0c368d6bbd7d49dcf972b0a6f148c115aedbba533e1574740dfa51c11992c276872ac2f11b3e0f54499c3347e83410142818ac4579b8e',
+            '04bc9f1e23ceed59b3e7b6b760a41f1f37ccc252adb1186e4035ec3f46266656400c7cd4c7153c9dec581b655c9ba1f74878c84128e60a66eed46e251e2eaf065f',
+        ],
+        debug: {
+            rootPubKeys: [],
+            caPubKeys: [],
+        },
+    },
     T3T1: {
         rootPubKeys: [
             '041854b27fb1d9f65abb66828e78c9dc0ca301e66081ab0c6a4d104f9df1cd0ad5a7c75f77a8c092f55cf825d2abaf734f934c9394d5e75f75a5a06a5ee9be93ae',
@@ -72,20 +86,6 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             caPubKeys: [
                 '04829e8965018feb542e9236c9b2ce08f864a55ed9183d0259564f0e05345b04676a0bef36c59d21d3c24868b5601f0b1193a6bfcf6d814e1cfb79c2256a05e953',
             ],
-        },
-    },
-    T3B1: {
-        rootPubKeys: [
-            '045b5c3fdd01f3602092834209b86df0ca86a9faf25cac35c73bf6237d66eb21eafcec3706f1ccd5eb4cc7f2fa1751213eccb1c78389afba89a5788ff31ee46a5d',
-        ],
-        caPubKeys: [
-            '04860857f8ceb107cf03cc6ef56523b5e440e2ed51933cc49ac8a498063f06ab891bdafd0a1655aa287b9ded8a898d9532ec9d6550db3bb524e7af3e474b013d87',
-            '047962b89421e26daa51e0c368d6bbd7d49dcf972b0a6f148c115aedbba533e1574740dfa51c11992c276872ac2f11b3e0f54499c3347e83410142818ac4579b8e',
-            '04bc9f1e23ceed59b3e7b6b760a41f1f37ccc252adb1186e4035ec3f46266656400c7cd4c7153c9dec581b655c9ba1f74878c84128e60a66eed46e251e2eaf065f',
-        ],
-        debug: {
-            rootPubKeys: [],
-            caPubKeys: [],
         },
     },
 };

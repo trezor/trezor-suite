@@ -167,7 +167,7 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
     if (major_version === 2 && bootloader_mode) {
         const fwVersion = [fw_major, fw_minor, fw_patch];
         if (versionUtils.isVersionArray(fwVersion)) {
-            // in bootloader, T2T1, T2B1 knows its firmware, so we still may filter "by firmware".
+            // in bootloader, T2T1 or newer devices know their firmware, so we still may filter "by firmware".
             return filterSafeListByFirmware(releases, fwVersion);
         }
 

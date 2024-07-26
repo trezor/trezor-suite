@@ -678,7 +678,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (!feat.model && feat.major_version === 1) {
             feat.model = '1';
         }
-        // 2. - old fw does not include internal_model. T1B1 does not report it yet, T2T1 starts in 2.6.0, T2B1 reports it from beginning
+        // 2. - old fw does not include internal_model. T1B1 does not report it yet, T2T1 starts in 2.6.0
         if (!feat.internal_model) {
             feat.internal_model = ensureInternalModelFeature(feat.model);
         }
