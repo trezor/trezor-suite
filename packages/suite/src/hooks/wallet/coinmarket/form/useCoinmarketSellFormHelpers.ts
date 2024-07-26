@@ -12,6 +12,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 import { FiatCurrencyCode } from 'invity-api';
 import { useCallback } from 'react';
+import { setCoinmarketSellAccount } from 'src/actions/wallet/coinmarketSellActions';
 import {
     FORM_CRYPTO_INPUT,
     FORM_CRYPTO_TOKEN,
@@ -20,7 +21,7 @@ import {
     FORM_OUTPUT_ADDRESS,
     FORM_OUTPUT_AMOUNT,
 } from 'src/constants/wallet/coinmarket/form';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
 import {
@@ -37,11 +38,10 @@ import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolU
 /**
  * @return functions and values to handle form inputs and update fee levels
  */
-const useCoinmarketSellFormHelpers = ({
+export const useCoinmarketSellFormHelpers = ({
     account,
     network,
     methods,
-    setAccount,
     setAmountLimits,
     changeFeeLevel,
     composeRequest,
@@ -52,6 +52,7 @@ const useCoinmarketSellFormHelpers = ({
     const device = useSelector(selectDevice);
     const accountsWithBalance = coinmarketGetSortedAccountsWithBalance({ accounts, device });
 
+    const dispatch = useDispatch();
     const { getValues, setValue, clearErrors } = methods;
     const { outputs } = getValues();
     const tokenAddress = outputs?.[0]?.token;
@@ -114,11 +115,11 @@ const useCoinmarketSellFormHelpers = ({
             setAmountLimits(undefined);
 
             if (account) {
-                setAccount(account);
+                dispatch(setCoinmarketSellAccount(account));
                 changeFeeLevel('normal'); // reset fee level
             }
         },
-        [accountsWithBalance, setValue, setAmountLimits, setAccount, changeFeeLevel],
+        [accountsWithBalance, setValue, setAmountLimits, changeFeeLevel, dispatch],
     );
 
     const setRatioAmount = useCallback(

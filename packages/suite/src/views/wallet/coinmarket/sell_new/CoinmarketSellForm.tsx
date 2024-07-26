@@ -5,7 +5,7 @@ import CoinmarketFormLayout from 'src/views/wallet/coinmarket/common/CoinmarketF
 import CoinmarketLayout from 'src/views/wallet/coinmarket/common/CoinmarketLayoutNew/CoinmarketLayout';
 import { useCoinmarketSellForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellForm';
 
-const CoinmarketSell = (props: UseCoinmarketProps) => {
+const CoinmarketSellFormComponent = (props: UseCoinmarketProps) => {
     const coinmarketSellContextValues = useCoinmarketSellForm(props);
 
     return (
@@ -17,6 +17,6 @@ const CoinmarketSell = (props: UseCoinmarketProps) => {
     );
 };
 
-export default withSelectedAccountLoaded(CoinmarketSell, {
+export const CoinmarketSellForm = withSelectedAccountLoaded(CoinmarketSellFormComponent, {
     title: 'TR_NAV_SELL',
 });

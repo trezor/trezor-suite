@@ -24,7 +24,7 @@ import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { AmountLimits, TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { CoinmarketTradeSellType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
@@ -54,8 +54,8 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketInfoActions from 'src/actions/wallet/coinmarketInfoActions';
 import { CoinmarketSellStepType } from 'src/types/coinmarket/coinmarketOffers';
-import useCoinmarketSellFormState from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormState';
-import useCoinmarketSellFormHelpers from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormHelpers';
+import { useCoinmarketSellFormState } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormState';
+import { useCoinmarketSellFormHelpers } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormHelpers';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Network } from '@suite-common/wallet-config';
 
@@ -65,7 +65,9 @@ export const useCoinmarketSellForm = ({
 }: UseCoinmarketFormProps): CoinmarketSellFormContextProps => {
     const type = 'sell';
     const dispatch = useDispatch();
-    const [account, setAccount] = useState<Account>(selectedAccount.account);
+    const { sellInfo, quotesRequest, isFromRedirect, quotes, transactionId, coinmarketAccount } =
+        useSelector(state => state.wallet.coinmarket.sell);
+    const account = coinmarketAccount ?? selectedAccount.account;
     const { translationString } = useTranslation();
     const {
         callInProgress,
@@ -110,10 +112,7 @@ export const useCoinmarketSellForm = ({
     });
     const accounts = useSelector(selectAccounts);
     const { navigateToSellForm, navigateToSellOffers } = useCoinmarketNavigation(account);
-    // parameters
-    const { sellInfo, quotesRequest, isFromRedirect, quotes, transactionId } = useSelector(
-        state => state.wallet.coinmarket.sell,
-    );
+
     const { symbol, networkType } = account;
     const localCurrency = useSelector(selectLocalCurrency);
     const fees = useSelector(state => state.wallet.fees);
@@ -130,7 +129,6 @@ export const useCoinmarketSellForm = ({
         trade => trade.tradeType === 'sell' && trade.key === transactionId,
     ) as TradeSell;
 
-    // states
     const [state, setState] = useState<CoinmarketUseSellFormStateReturnProps | undefined>(
         undefined,
     );
@@ -142,7 +140,6 @@ export const useCoinmarketSellForm = ({
     const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
 
-    // form initialization
     const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
         useCoinmarketSellFormDefaultValues(
             account,
@@ -192,6 +189,7 @@ export const useCoinmarketSellForm = ({
         ...methods,
         state,
     });
+
     // sub-hook, FeeLevels handler
     const { changeFeeLevel, selectedFee } = useFees({
         defaultValue: 'normal',
@@ -200,20 +198,18 @@ export const useCoinmarketSellForm = ({
         composeRequest,
         ...methods,
     });
+
     const helpers = useCoinmarketSellFormHelpers({
         account,
         network,
         methods,
         setAmountLimits,
-        setAccount,
         changeFeeLevel,
         composeRequest,
     });
 
-    // form states
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues = (values.fiatInput || values.cryptoInput) && !!values.currencySelect?.value;
-
     const isFirstRequest = innerQuotes === undefined;
     const noProviders = sellInfo?.sellList?.providers.length === 0;
     const isLoading = !sellInfo?.sellList || !state?.formValues?.outputs[0].address;

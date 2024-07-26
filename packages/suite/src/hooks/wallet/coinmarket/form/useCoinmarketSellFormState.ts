@@ -4,7 +4,7 @@ import {
     CoinmarketUseSellFormStateReturnProps,
 } from 'src/types/coinmarket/coinmarketForm';
 
-const useCoinmarketSellFormState = ({
+export const useCoinmarketSellFormState = ({
     account,
     network,
     fees,
@@ -21,5 +21,3 @@ const useCoinmarketSellFormState = ({
         formValues: defaultValues,
     };
 };
-
-export default useCoinmarketSellFormState;
