@@ -23,6 +23,7 @@ export interface MainChannels {
     'app/restart': void;
     'app/focus': void;
     'app/hide': void;
+    'app/auto-start': boolean;
     'store/clear': void;
     'theme/change': SuiteThemeVariant;
     'tor/get-status': void;
@@ -101,6 +102,7 @@ export interface DesktopApi {
     appRestart: DesktopApiSend<'app/restart'>;
     appFocus: DesktopApiSend<'app/focus'>;
     appHide: DesktopApiSend<'app/hide'>;
+    appAutoStart: DesktopApiSend<'app/auto-start'>;
     // Auto-updater
     checkForUpdates: DesktopApiSend<'update/check'>;
     downloadUpdate: DesktopApiSend<'update/download'>;

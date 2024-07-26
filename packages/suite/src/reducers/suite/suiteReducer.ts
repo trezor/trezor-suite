@@ -91,6 +91,7 @@ export interface SuiteSettings {
     defaultWalletLoading: WalletType;
     experimental?: ExperimentalFeature[];
     sidebarWidth: number;
+    autoStart?: boolean;
 }
 
 export interface SuiteState {
@@ -266,6 +267,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_SIDEBAR_WIDTH:
                 draft.settings.sidebarWidth = action.payload.width;
+                break;
+
+            case SUITE.SET_AUTO_START:
+                draft.settings.autoStart = action.enabled;
                 break;
 
             case TRANSPORT.START:
