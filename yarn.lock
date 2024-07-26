@@ -1755,7 +1755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.16.7, @babel/preset-typescript@npm:^7.23.0, @babel/preset-typescript@npm:^7.23.3":
+"@babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.16.7, @babel/preset-typescript@npm:^7.23.0, @babel/preset-typescript@npm:^7.24.7":
   version: 7.24.7
   resolution: "@babel/preset-typescript@npm:7.24.7"
   dependencies:
@@ -10669,7 +10669,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.23.3"
+    "@babel/preset-typescript": "npm:^7.24.7"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
@@ -10717,7 +10717,7 @@ __metadata:
   dependencies:
     "@babel/plugin-proposal-class-properties": "npm:^7.18.6"
     "@babel/preset-react": "npm:^7.24.7"
-    "@babel/preset-typescript": "npm:^7.23.3"
+    "@babel/preset-typescript": "npm:^7.24.7"
     "@playwright/browser-chromium": "npm:^1.41.2"
     "@playwright/browser-firefox": "npm:^1.41.2"
     "@playwright/browser-webkit": "npm:^1.41.2"
@@ -10788,7 +10788,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.23.3"
+    "@babel/preset-typescript": "npm:^7.24.7"
     "@playwright/browser-chromium": "npm:^1.41.2"
     "@playwright/browser-firefox": "npm:^1.41.2"
     "@playwright/browser-webkit": "npm:^1.41.2"
@@ -10819,7 +10819,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-webextension@workspace:packages/connect-webextension"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.23.3"
+    "@babel/preset-typescript": "npm:^7.24.7"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-web": "workspace:*"
@@ -10847,7 +10847,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.23.3"
+    "@babel/preset-typescript": "npm:^7.24.7"
     "@ethereumjs/common": "npm:^4.3.0"
     "@ethereumjs/tx": "npm:^5.3.0"
     "@fivebinaries/coin-selection": "npm:2.2.1"
@@ -11470,7 +11470,7 @@ __metadata:
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
     "@babel/preset-env": "npm:^7.23.9"
-    "@babel/preset-typescript": "npm:^7.23.3"
+    "@babel/preset-typescript": "npm:^7.24.7"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
@@ -39370,7 +39370,7 @@ __metadata:
     "@babel/plugin-transform-runtime": "npm:^7.23.9"
     "@babel/preset-env": "npm:^7.23.9"
     "@babel/preset-react": "npm:^7.24.7"
-    "@babel/preset-typescript": "npm:^7.23.3"
+    "@babel/preset-typescript": "npm:^7.24.7"
     "@babel/runtime": "npm:^7.23.9"
     "@suite-common/wallet-types": "workspace:*"
     "@types/jest": "npm:29.5.12"

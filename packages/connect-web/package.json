@@ -48,7 +48,7 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.23.3",
+        "@babel/preset-typescript": "^7.24.7",
         "@playwright/browser-chromium": "^1.41.2",
         "@playwright/browser-firefox": "^1.41.2",
         "@playwright/browser-webkit": "^1.41.2",
