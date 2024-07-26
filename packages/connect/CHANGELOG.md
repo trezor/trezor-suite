@@ -10,6 +10,61 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.3.1-beta.1
+
+We introduce a new init option `coreMode`, which allows websites to interact either using the existing `iframe` mode or the new `popup` mode. The `popup` mode is allows to use WebUSB even on third-party websites, which is not possible with the `iframe` mode. By default, the `coreMode` is set to `auto`, which means that the library will automatically choose the best mode based on the environment. More information can be found in [init method documentation](https://connect.trezor.io/9.3.1-beta.1/methods/other/init/).
+
+Remove support for legacy passphrase, users with Firmware version smaller than 1.0.9 and 2.3.0 will be requested to update in order to use @trezor/connect (7bb57cf)
+
+AuthenticateDevice verify CA cert extensions (4ba4445)
+
+Add support for T3B1 (f7f1705)
+
+    - chore(connect): Add Ambire Browser Extension to knownHosts (cbe81ab)
+    - chore(connect): remove ethereum-cryptography (18851d1)
+    - chore(connect): split public and internal settings type (3aab4ea)
+    - chore(connect): remove useCoreInPopup from explorer and tests (fee60c1)
+    - chore(connect): add new CA pubkeys and update timestamp (48ec951)
+    - chore(connect): refactoring of the CheckFirmwareAuthenticity to support local binary (and wont download it from web, when its available in the suite) (82ab513)
+    - docs(connect): describe coreMode (a5238d6)
+    - fix(connect): disallow interaction-less fw update when switching fw type (4936939)
+    - fix(connect): validate x509 asn1 component (bc13fe2)
+    - fix(connect): handle missing language binary (954dbb9)
+    - fix(connect): proceed with fw install even when language data fails to download (b40d1b7)
+    - test(connect): x509 extensions parser (163c82c)
+    - test(connect): update to min version fw 1.0.9 and 2.3.0 (544c311)
+
+## connect-ui
+
+    - remove bridge references, deeplink to suite desktop (98e98a4)
+
+## connect-plugin-stellar
+
+    - update stellar sdk (89cf20e)
+    - update trends libs (70b9c11)
+
+## connect-web
+
+    - default coreMode to auto (e45d47e)
+    - automatic fallback to core in popup (e4e1fcc)
+
+## connect-webextension
+
+    - link changelog to the one in connect (a02ec72)
+
+## connect-explorer
+
+    - applySettings optional values (0bcd83a)
+    - hide extra headings from toc in homepage (14f89c4)
+    - show success message in settings (0ca7c0c)
+    - remove MTT for firmwareUpdate (ebbe96c)
+    - bad styled-components prop (e2b7fc7)
+
+## connect-common
+
+    - add new fw 2.8.0 (314052b)
+    - fw version 1.9.0 and 2.3.0 required (ee623e4)
+
 # 9.3.0
 
 Improved reliability of popup handshake mechanism.
