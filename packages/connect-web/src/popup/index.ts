@@ -224,7 +224,7 @@ export class PopupManager extends EventEmitter {
                 // Request coming from extension popup,
                 // create new window above instead of opening new tab
                 if (currentWindow.type !== 'normal') {
-                    chrome.windows.create({ url }, newWindow => {
+                    chrome.windows.create({ url, type: 'popup' }, newWindow => {
                         chrome.tabs.query(
                             {
                                 windowId: newWindow?.id,
