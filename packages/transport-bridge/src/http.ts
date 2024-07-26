@@ -414,7 +414,6 @@ export class TrezordNode {
         // send empty descriptors (imitate that all devices have disconnected)
         this.resolveListenSubscriptions([]);
         this.throttler.dispose();
-        this.core.sessionsClient.removeAllListeners('descriptors');
         this.core.dispose();
 
         return this.server?.stop();
