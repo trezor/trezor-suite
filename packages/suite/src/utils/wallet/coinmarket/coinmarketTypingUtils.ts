@@ -3,7 +3,11 @@ import {
     isCoinmarketBuyOffers,
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { CoinmarketTradeDetailType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketTradeBuySellType,
+    CoinmarketTradeDetailType,
+    CoinmarketTradeType,
+} from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketOffersContextValues } from 'src/types/coinmarket/coinmarketOffers';
 
@@ -71,5 +75,20 @@ export const getProvidersInfoProps = (
 
     return {
         providers: context.exchangeInfo?.providerInfos,
+    };
+};
+
+export const getFiatCurrenciesProps = (
+    context: CoinmarketFormContextValues<CoinmarketTradeBuySellType>,
+) => {
+    if (isCoinmarketSellOffers(context)) {
+        return {
+            supportedFiatCurrencies: context.sellInfo?.supportedFiatCurrencies,
+        };
+    }
+
+    return {
+        supportedFiatCurrencies: context.buyInfo?.supportedFiatCurrencies,
+        defaultAmountsOfFiatCurrencies: context.buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies,
     };
 };
