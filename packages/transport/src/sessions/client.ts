@@ -78,6 +78,7 @@ export class SessionsClient extends TypedEmitter<{
     }
     dispose() {
         this.removeAllListeners('descriptors');
+
         return this.request({ type: 'dispose' });
     }
 }

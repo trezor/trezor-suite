@@ -1,20 +1,11 @@
 import * as messages from '@trezor/protobuf/messages.json';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
 import { BridgeTransport, Descriptor } from '@trezor/transport';
+
+import { controller as TrezorUserEnvLink } from '../controller';
+import { descriptor as fixtureDescriptor } from '../expect';
 
 // todo: introduce global jest config for e2e
 jest.setTimeout(60000);
-
-const mnemonicAll = 'all all all all all all all all all all all all';
-
-const emulatorSetupOpts = {
-    mnemonic: mnemonicAll,
-    pin: '',
-    passphrase_protection: false,
-    label: 'TrezorT',
-    needs_backup: true,
-};
 
 const wait = () =>
     new Promise(resolve => {
@@ -24,12 +15,8 @@ const wait = () =>
     });
 
 const getDescriptor = (descriptor: any): Descriptor => ({
-    debug: true,
-    debugSession: null,
-    path: '1',
-    product: 0,
+    ...fixtureDescriptor,
     session: '1',
-    vendor: 0,
     ...descriptor,
 });
 
@@ -46,17 +33,15 @@ describe('bridge', () => {
     });
 
     afterAll(async () => {
-        await TrezorUserEnvLink.send({ type: 'emulator-stop' });
-        await TrezorUserEnvLink.send({ type: 'bridge-stop' });
+        await TrezorUserEnvLink.stopEmu();
+        await TrezorUserEnvLink.stopBridge();
         TrezorUserEnvLink.disconnect();
     });
 
     beforeEach(async () => {
-        await TrezorUserEnvLink.send({ type: 'emulator-stop' });
-        await TrezorUserEnvLink.send({ type: 'bridge-stop' });
-        await TrezorUserEnvLink.send({ type: 'emulator-start', ...emulatorStartOpts });
-        await TrezorUserEnvLink.send({ type: 'emulator-setup', ...emulatorSetupOpts });
-        await TrezorUserEnvLink.send({ type: 'bridge-start' });
+        await TrezorUserEnvLink.stopBridge();
+        await TrezorUserEnvLink.startEmu(emulatorStartOpts);
+        await TrezorUserEnvLink.startBridge();
 
         const abortController = new AbortController();
         bridge1 = new BridgeTransport({ messages, signal: abortController.signal });
@@ -73,15 +58,9 @@ describe('bridge', () => {
         }
 
         expect(descriptors).toEqual([
-            {
-                path: '1',
+            getDescriptor({
                 session: null,
-                product: 0,
-                vendor: 0,
-                // we don't use it but bridge returns
-                debug: true,
-                debugSession: null,
-            },
+            }),
         ]);
 
         bridge1.handleDescriptorsChange(descriptors);
@@ -95,7 +74,9 @@ describe('bridge', () => {
         const bride1spy = jest.spyOn(bridge1, 'emit');
         const bride2spy = jest.spyOn(bridge2, 'emit');
 
-        const session1 = await bridge1.acquire({ input: { previous: null, path: '1' } }).promise;
+        const session1 = await bridge1.acquire({
+            input: { previous: null, path: descriptors[0].path },
+        }).promise;
         expect(session1).toEqual({
             success: true,
             payload: '1',
@@ -105,7 +86,7 @@ describe('bridge', () => {
         await wait();
 
         const expectedDescriptor1 = getDescriptor({
-            path: '1',
+            path: descriptors[0].path,
             session: '1',
         });
 
@@ -141,12 +122,12 @@ describe('bridge', () => {
             return;
         }
 
-        await bridge1.release({ path: '1', session: session1.payload }).promise;
+        await bridge1.release({ path: descriptors[0].path, session: session1.payload }).promise;
 
         await wait();
 
         const expectedDescriptor2 = getDescriptor({
-            path: '1',
+            path: descriptors[0].path,
             session: null,
         });
 
@@ -178,7 +159,9 @@ describe('bridge', () => {
             releasedElsewhere: [expectedDescriptor2], // difference here
         });
 
-        const session2 = await bridge2.acquire({ input: { previous: null, path: '1' } }).promise;
+        const session2 = await bridge2.acquire({
+            input: { previous: null, path: descriptors[0].path },
+        }).promise;
         expect(session2).toEqual({ success: true, payload: '2' });
     });
 
@@ -186,7 +169,9 @@ describe('bridge', () => {
         const bride1spy = jest.spyOn(bridge1, 'emit');
         const bride2spy = jest.spyOn(bridge2, 'emit');
 
-        const session1 = await bridge1.acquire({ input: { previous: null, path: '1' } }).promise;
+        const session1 = await bridge1.acquire({
+            input: { previous: null, path: descriptors[0].path },
+        }).promise;
 
         expect(session1).toEqual({ success: true, payload: '1' });
         if (!session1.success) {
@@ -197,13 +182,13 @@ describe('bridge', () => {
 
         // bridge 2 steals session
         const session2 = await bridge2.acquire({
-            input: { previous: session1.payload, path: '1' },
+            input: { previous: session1.payload, path: descriptors[0].path },
         }).promise;
 
         expect(session2).toEqual({ success: true, payload: '2' });
 
         const expectedDescriptor = getDescriptor({
-            path: '1',
+            path: descriptors[0].path,
             session: '2',
         });
 

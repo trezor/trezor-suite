@@ -8,6 +8,10 @@
     "scripts": {
         "test:unit": "yarn g:jest",
         "test:e2e": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/run.ts",
+        "test:e2e:old-bridge:hw": "USE_HW=true USE_NODE_BRIDGE=false yarn test:e2e",
+        "test:e2e:old-bridge:emu": "USE_HW=false USE_NODE_BRIDGE=false yarn test:e2e",
+        "test:e2e:new-bridge:hw": "USE_HW=true USE_NODE_BRIDGE=true yarn test:e2e",
+        "test:e2e:new-bridge:emu": "USE_HW=false USE_NODE_BRIDGE=true yarn test:e2e",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",

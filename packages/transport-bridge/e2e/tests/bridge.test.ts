@@ -1,20 +1,13 @@
 import * as messages from '@trezor/protobuf/messages.json';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
 import { BridgeTransport } from '@trezor/transport';
+
+import { controller as TrezorUserEnvLink, env } from '../controller';
+import { pathLength, descriptor as expectedDescriptor } from '../expect';
 
 // todo: introduce global jest config for e2e
 jest.setTimeout(60000);
 
-const mnemonicAll = 'all all all all all all all all all all all all';
-
-const emulatorSetupOpts = {
-    mnemonic: mnemonicAll,
-    pin: '',
-    passphrase_protection: false,
-    label: 'TrezorT',
-    needs_backup: true,
-};
+const { USE_HW } = env;
 
 const emulatorStartOpts = { version: '2-main', wipe: true };
 
@@ -24,8 +17,8 @@ describe('bridge', () => {
     });
 
     afterAll(async () => {
-        await TrezorUserEnvLink.send({ type: 'emulator-stop' });
-        await TrezorUserEnvLink.send({ type: 'bridge-stop' });
+        await TrezorUserEnvLink.stopEmu();
+        await TrezorUserEnvLink.stopBridge();
         TrezorUserEnvLink.disconnect();
     });
 
@@ -33,31 +26,29 @@ describe('bridge', () => {
     let devices: any[];
     let session: any;
     beforeEach(async () => {
-        // todo: swapping emulator-stop and bridge-stop line can simulate "emulator process died" error
-        await TrezorUserEnvLink.send({ type: 'emulator-stop' });
-        await TrezorUserEnvLink.send({ type: 'bridge-stop' });
-        await TrezorUserEnvLink.send({ type: 'emulator-start', ...emulatorStartOpts });
-        await TrezorUserEnvLink.send({ type: 'emulator-setup', ...emulatorSetupOpts });
-        await TrezorUserEnvLink.send({ type: 'bridge-start' });
+        // await TrezorUserEnvLink.stopEmu();
+        await TrezorUserEnvLink.stopBridge();
+        await TrezorUserEnvLink.startEmu(emulatorStartOpts);
+        await TrezorUserEnvLink.startBridge();
         const abortController = new AbortController();
         bridge = new BridgeTransport({ messages, signal: abortController.signal });
         await bridge.init().promise;
 
         const enumerateResult = await bridge.enumerate().promise;
-        expect(enumerateResult).toEqual({
+        expect(enumerateResult).toMatchObject({
             success: true,
             payload: [
                 {
-                    path: '1',
+                    path: expect.any(String),
                     session: null,
-                    product: 0,
-                    vendor: 0,
-                    // we don't use it but bridge returns
-                    debug: true,
-                    debugSession: null,
+                    product: expectedDescriptor.product,
                 },
             ],
         });
+
+        const { path } = enumerateResult.payload[0];
+        expect(path.length).toEqual(pathLength);
+
         devices = enumerateResult.payload;
 
         const acquireResult = await bridge.acquire({ input: { path: devices[0].path } }).promise;
@@ -70,13 +61,13 @@ describe('bridge', () => {
 
     test(`call(GetFeatures)`, async () => {
         const message = await bridge.call({ session, name: 'GetFeatures', data: {} }).promise;
+
         expect(message).toMatchObject({
             success: true,
             payload: {
                 type: 'Features',
                 message: {
                     vendor: 'trezor.io',
-                    label: 'TrezorT',
                 },
             },
         });
@@ -93,15 +84,15 @@ describe('bridge', () => {
                 type: 'Features',
                 message: {
                     vendor: 'trezor.io',
-                    label: 'TrezorT',
                 },
             },
         });
     });
 
-    test(`call(ChangePin) - send(Cancel) - receive`, async () => {
-        // initiate change pin procedure on device
-        const callResponse = await bridge.call({ session, name: 'ChangePin', data: {} }).promise;
+    test(`call(RebootToBootloader) - send(Cancel) - receive`, async () => {
+        // initiate RebootToBootloader procedure on device (it works regardless device is wiped or not)
+        const callResponse = await bridge.call({ session, name: 'RebootToBootloader', data: {} })
+            .promise;
         expect(callResponse).toMatchObject({
             success: true,
             payload: {
@@ -109,19 +100,20 @@ describe('bridge', () => {
             },
         });
 
-        // cancel change pin procedure
+        // cancel RebootToBootloader procedure
         const sendResponse = await bridge.send({ session, name: 'Cancel', data: {} }).promise;
         expect(sendResponse).toEqual({ success: true, payload: undefined });
 
         // receive response
         const receiveResponse = await bridge.receive({ session }).promise;
+
         expect(receiveResponse).toMatchObject({
             success: true,
             payload: {
                 type: 'Failure',
                 message: {
                     code: 'Failure_ActionCancelled',
-                    message: 'Cancelled',
+                    message: USE_HW ? 'Action cancelled by user' : 'Cancelled',
                 },
             },
         });
@@ -138,48 +130,6 @@ describe('bridge', () => {
                 type: 'Features',
                 message: {
                     vendor: 'trezor.io',
-                    label: 'TrezorT',
-                },
-            },
-        });
-    });
-
-    test(`call(Backup) - send(Cancel) - receive`, async () => {
-        // initiate backup procedure on device
-        const callResponse = await bridge.call({ session, name: 'BackupDevice', data: {} }).promise;
-        expect(callResponse).toMatchObject({
-            success: true,
-            payload: {
-                type: 'ButtonRequest',
-            },
-        });
-
-        // cancel backup procedure
-        const sendResponse = await bridge.send({ session, name: 'Cancel', data: {} }).promise;
-        expect(sendResponse).toEqual({ success: true });
-
-        // receive response
-        const receiveResponse = await bridge.receive({ session }).promise;
-        expect(receiveResponse).toMatchObject({
-            success: true,
-            payload: {
-                type: 'Failure',
-                message: {
-                    code: 'Failure_ActionCancelled',
-                    message: 'Cancelled',
-                },
-            },
-        });
-
-        // validate that we can continue with communication
-        const message = await bridge.call({ session, name: 'GetFeatures', data: {} }).promise;
-        expect(message).toMatchObject({
-            success: true,
-            payload: {
-                type: 'Features',
-                message: {
-                    vendor: 'trezor.io',
-                    label: 'TrezorT',
                 },
             },
         });
