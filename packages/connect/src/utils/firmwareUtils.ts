@@ -9,9 +9,7 @@ export const isStrictFeatures = (extFeatures: Features): extFeatures is StrictFe
 
 /**
  * Accepts external releases as published here:
- * https://github.com/trezor/webwallet-data/blob/master/firmware/t2t1/releases.json
- * https://github.com/trezor/webwallet-data/blob/master/firmware/t1b1/releases.json
- * https://github.com/trezor/webwallet-data/blob/master/firmware/t2b1/releases.json
+ * https://github.com/trezor/webwallet-data/blob/master/firmware/<model>/releases.json
  * and narrows them down into (somewhat more) strongly typed releases.
  *
  * TODO this check should be either more precise or replaced with direct json validation

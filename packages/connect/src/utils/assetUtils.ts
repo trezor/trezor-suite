@@ -8,7 +8,7 @@ const firmwareAssets: Record<DeviceModelInternal, NodeRequire> = {
     [DeviceModelInternal.T1B1]: require('@trezor/connect-common/files/firmware/t1b1/releases.json'),
     [DeviceModelInternal.T2T1]: require('@trezor/connect-common/files/firmware/t2t1/releases.json'),
     [DeviceModelInternal.T2B1]: require('@trezor/connect-common/files/firmware/t2b1/releases.json'),
-    [DeviceModelInternal.T3B1]: require('@trezor/connect-common/files/firmware/t2b1/releases.json'), // todo: file doesn't exist yet
+    [DeviceModelInternal.T3B1]: require('@trezor/connect-common/files/firmware/t3b1/releases.json'),
     [DeviceModelInternal.T3T1]: require('@trezor/connect-common/files/firmware/t3t1/releases.json'),
 };
 

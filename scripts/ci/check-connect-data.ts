@@ -12,13 +12,13 @@ const authenticityPaths = {
         authenticity: 'firmware/t2b1/authenticity.json',
         authenticityDev: 'firmware/t2b1/authenticity-dev.json',
     },
-    T3T1: {
-        authenticity: 'firmware/t3t1/authenticity.json',
-        authenticityDev: 'firmware/t3t1/authenticity-dev.json',
-    },
     T3B1: {
         authenticity: 'firmware/t3b1/authenticity.json',
         authenticityDev: 'firmware/t3b1/authenticity-dev.json',
+    },
+    T3T1: {
+        authenticity: 'firmware/t3t1/authenticity.json',
+        authenticityDev: 'firmware/t3t1/authenticity-dev.json',
     },
 };
 

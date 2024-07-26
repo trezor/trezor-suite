@@ -1,4 +1,4 @@
-const t2b1 = {
+const safe3Model = {
     name: 'Trezor Safe 3',
     colors: {
         '1': 'Cosmic Black',
@@ -18,8 +18,8 @@ export const models = {
         name: 'Trezor Model T',
         colors: {},
     },
-    T2B1: t2b1,
-    T3B1: t2b1,
+    T2B1: safe3Model,
+    T3B1: safe3Model,
     T3T1: {
         name: 'Trezor Safe 5',
         colors: {
