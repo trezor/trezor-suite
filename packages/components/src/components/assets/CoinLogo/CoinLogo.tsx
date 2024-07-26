@@ -3,6 +3,7 @@ import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { COINS } from './coins';
 import { DefaultCoinLogo } from '../DefaultCoinLogo/DefaultCoinLogo';
+import { spacingsPx } from '@trezor/theme';
 
 export type CoinType = keyof typeof COINS;
 
@@ -60,6 +61,7 @@ const Wrapper = styled.div<{ $size: number }>`
     display: inline-block;
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
+    margin: ${spacingsPx.xxs};
 
     div {
         width: ${({ $size }) => $size}px;

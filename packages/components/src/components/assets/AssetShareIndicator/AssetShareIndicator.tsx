@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, SVGProps, useEffect, useState } from 'react';
 import { motion, AnimationProps, SVGMotionProps } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
-import { coinsColors } from '@trezor/theme';
+import { coinsColors, spacingsPx } from '@trezor/theme';
 import { motionEasing } from '../../../config/motion';
 import { CoinLogo, CoinLogoProps, QUALITY_SIZE, useAssetUrl } from '../CoinLogo/CoinLogo';
 
@@ -14,6 +14,7 @@ const Container = styled.div<{ $size: number }>(
         width: ${$size}px;
         height: ${$size}px;
         border-radius: 50%;
+        margin: ${spacingsPx.xxs};
   `,
 );
 
@@ -104,7 +105,7 @@ const ProgressCircle = ({
 
             if (image) {
                 image.crossOrigin = 'anonymous';
-                image.onload = () => loadImageAndProcessColor(image, size, setDominantColor);
+                image.onload = () => loadImageAndProcessColor(image, size * 2, setDominantColor); // process color from bigger image to get more accurate result for dominant color
 
                 image.onerror = error => {
                     console.error('Error loading image:', error);
