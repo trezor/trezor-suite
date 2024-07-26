@@ -18,6 +18,7 @@ import {
 import CoinmarketFormOfferCryptoAmount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferCryptoAmount';
 import {
     coinmarketGetAmountLabels,
+    coinmarketGetRoundedFiatAmount,
     getBestRatedQuote,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import CoinmarketFormOfferFiatAmount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
@@ -82,6 +83,10 @@ const CoinmarketFormOffer = () => {
         : null;
     const { amountInCrypto } = getValues();
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto });
+    const sendAmount =
+        !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.sendAmount
+            ? bestScoredQuoteAmounts.sendAmount
+            : '0';
 
     return (
         <>
@@ -92,11 +97,7 @@ const CoinmarketFormOffer = () => {
             </CoinmarketFormInputLabelWrapper>
             {amountInCrypto ? (
                 <CoinmarketFormOfferFiatAmount
-                    amount={
-                        !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.sendAmount
-                            ? bestScoredQuoteAmounts.sendAmount
-                            : '0'
-                    }
+                    amount={coinmarketGetRoundedFiatAmount(sendAmount)}
                 />
             ) : (
                 <CoinmarketFormOfferCryptoAmount

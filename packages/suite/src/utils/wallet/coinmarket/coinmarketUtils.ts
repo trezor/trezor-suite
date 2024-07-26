@@ -513,3 +513,9 @@ export const coinmarketGetAmountLabels = ({
             : 'TR_COINMARKET_YOU_WILL_GET',
     };
 };
+
+/**
+ * Rounding up to two decimal places
+ */
+export const coinmarketGetRoundedFiatAmount = (amount: string): string =>
+    new BigNumber(amount).toFixed(2, BigNumber.ROUND_HALF_UP);

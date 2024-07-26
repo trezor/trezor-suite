@@ -17,6 +17,7 @@ import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
     getUnusedAddressFromAccount,
+    coinmarketGetRoundedFiatAmount,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { createQuoteLink, getAmountLimits } from 'src/utils/wallet/coinmarket/sellUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
@@ -591,7 +592,12 @@ export const useCoinmarketSellForm = ({
         if (!amountInCrypto) {
             setValue('cryptoInput', bestScoredQuote?.cryptoStringAmount ?? '');
         } else {
-            setValue('fiatInput', bestScoredQuote?.fiatStringAmount ?? '');
+            setValue(
+                'fiatInput',
+                bestScoredQuote?.fiatStringAmount
+                    ? coinmarketGetRoundedFiatAmount(bestScoredQuote?.fiatStringAmount)
+                    : '',
+            );
         }
 
         setValue('amountInCrypto', !amountInCrypto);
