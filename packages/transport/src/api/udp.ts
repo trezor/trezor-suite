@@ -1,5 +1,5 @@
 import UDP from 'dgram';
-import { isNotUndefined, arrayPartition } from '@trezor/utils';
+import { createTimeoutPromise, isNotUndefined, arrayPartition } from '@trezor/utils';
 
 import {
     AbstractApi,
@@ -17,7 +17,6 @@ export class UdpApi extends AbstractApi {
     protected interface = UDP.createSocket('udp4');
     protected communicating = false;
 
-    private enumerationTimeout: ReturnType<typeof setTimeout> | undefined;
     private enumerateAbortController = new AbortController();
     private debugLink?: boolean;
 
@@ -29,16 +28,15 @@ export class UdpApi extends AbstractApi {
     listen() {
         if (this.listening) return;
         this.listening = true;
+        this.listenLoop();
+    }
 
-        const enumerateRecursive = () => {
-            if (!this.listening) return;
-
-            this.enumerationTimeout = setTimeout(() => {
-                this.enumerate(this.enumerateAbortController.signal).finally(enumerateRecursive);
-            }, 500);
-        };
-
-        enumerateRecursive();
+    private async listenLoop() {
+        while (this.listening) {
+            await createTimeoutPromise(500);
+            if (!this.listening) break;
+            await this.enumerate(this.enumerateAbortController.signal);
+        }
     }
 
     public write(path: string, buffer: Buffer, signal?: AbortSignal) {
@@ -209,7 +207,6 @@ export class UdpApi extends AbstractApi {
         this.interface.removeAllListeners();
         this.interface.close();
         this.listening = false;
-        clearTimeout(this.enumerationTimeout);
         this.enumerateAbortController.abort();
     }
 }

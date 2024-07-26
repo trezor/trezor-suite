@@ -122,44 +122,36 @@ export class BridgeTransport extends AbstractTransport {
         }
 
         this.listening = true;
-        this.listen2();
+        this.listenLoop();
 
         return this.success(undefined);
     }
 
-    private async listen2(): Promise<void> {
-        if (this.stopped) {
-            return;
-        }
-        const listenTimestamp = new Date().getTime();
+    private async listenLoop() {
+        while (!this.stopped) {
+            const listenTimestamp = Date.now();
 
-        const response = await this.post('/listen', {
-            body: this.descriptors,
-            signal: this.abortController.signal,
-        });
+            const response = await this.post('/listen', {
+                body: this.descriptors,
+                signal: this.abortController.signal,
+            });
 
-        if (!response.success) {
-            const time = new Date().getTime() - listenTimestamp;
-            if (time > 1100) {
+            if (!response.success) {
+                const time = Date.now() - listenTimestamp;
+                if (time <= 1100) {
+                    this.emit('transport-error', response.error);
+                    break;
+                }
                 await createTimeoutPromise(1000);
+            } else {
+                const acquirePromiseResult = (await this.acquirePromise?.promise) ?? true;
+                delete this.acquirePromise;
 
-                return this.listen2();
+                if (acquirePromiseResult) {
+                    this.handleDescriptorsChange(response.payload);
+                }
             }
-            this.emit('transport-error', response.error);
-
-            return;
         }
-
-        const acquirePromiseResult = await (this.acquirePromise?.promise || Promise.resolve(true));
-        delete this.acquirePromise;
-
-        if (!acquirePromiseResult) {
-            return this.listen2();
-        }
-
-        this.handleDescriptorsChange(response.payload);
-
-        return this.listen2();
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L235
