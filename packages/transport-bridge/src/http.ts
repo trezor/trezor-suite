@@ -16,7 +16,7 @@ import { Descriptor, Session } from '@trezor/transport/src/types';
 import { Log, arrayPartition, Throttler } from '@trezor/utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 
-import { createApi } from './core';
+import { createCore } from './core';
 
 const defaults = {
     port: 21325,
@@ -38,7 +38,7 @@ export class TrezordNode {
     }[];
     port: number;
     server?: HttpServer<never>;
-    api: ReturnType<typeof createApi>;
+    core: ReturnType<typeof createCore>;
     logger: Log;
     assetPrefix: string;
     throttler = new Throttler(500);
@@ -60,7 +60,7 @@ export class TrezordNode {
 
         this.listenSubscriptions = [];
 
-        this.api = createApi(api, this.logger);
+        this.core = createCore(api, this.logger);
 
         this.assetPrefix = assetPrefix;
     }
@@ -118,7 +118,7 @@ export class TrezordNode {
 
     public start() {
         // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
-        this.api.sessionsClient.on('descriptors', descriptors => {
+        this.core.sessionsClient.on('descriptors', descriptors => {
             this.logger?.debug(
                 `http: sessionsClient reported descriptors: ${JSON.stringify(descriptors)}`,
             );
@@ -170,7 +170,7 @@ export class TrezordNode {
                 (_req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
                     const signal = this.createAbortSignal(res);
-                    this.api.enumerate({ signal }).then(result => {
+                    this.core.enumerate({ signal }).then(result => {
                         if (!result.success) {
                             res.statusCode = 400;
 
@@ -199,7 +199,7 @@ export class TrezordNode {
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
                     const signal = this.createAbortSignal(res);
-                    this.api
+                    this.core
                         .acquire({
                             path: req.params.path,
                             previous: req.params.previous as Session | 'null',
@@ -219,7 +219,7 @@ export class TrezordNode {
             app.post('/release/:session', [
                 parseBodyText,
                 (req, res) => {
-                    this.api
+                    this.core
                         .release({
                             session: req.params.session as Session,
                         })
@@ -238,7 +238,7 @@ export class TrezordNode {
                 parseBodyText,
                 (req, res) => {
                     const signal = this.createAbortSignal(res);
-                    this.api
+                    this.core
                         .call({
                             session: req.params.session as Session,
                             // @ts-expect-error
@@ -260,7 +260,7 @@ export class TrezordNode {
                 parseBodyJSON,
                 (req, res) => {
                     const signal = this.createAbortSignal(res);
-                    this.api
+                    this.core
                         .receive({ session: req.params.session as Session, signal })
                         .then(result => {
                             if (!result.success) {
@@ -278,7 +278,7 @@ export class TrezordNode {
                 parseBodyText,
                 (req, res) => {
                     const signal = this.createAbortSignal(res);
-                    this.api
+                    this.core
                         .send({
                             session: req.params.session as Session,
                             // @ts-expect-error
@@ -414,8 +414,8 @@ export class TrezordNode {
         // send empty descriptors (imitate that all devices have disconnected)
         this.resolveListenSubscriptions([]);
         this.throttler.dispose();
-        this.api.sessionsClient.removeAllListeners('descriptors');
-        this.api.dispose();
+        this.core.sessionsClient.removeAllListeners('descriptors');
+        this.core.dispose();
 
         return this.server?.stop();
     }

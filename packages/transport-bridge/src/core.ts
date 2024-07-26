@@ -12,7 +12,7 @@ import { Session } from '@trezor/transport/src/types';
 import { Log } from '@trezor/utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 
-export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
+export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
     let api: AbstractApi;
 
     const abortController = new AbortController();
