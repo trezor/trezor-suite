@@ -6,7 +6,7 @@ Start the on device tutorial.
 const result = await TrezorConnect.showDeviceTutorial(params);
 ```
 
-> :note: **Supported only by T2B1 with Firmware 2.6.1 or higher!**
+> :note: **Not supported on T1B1 and T2T1**
 
 ### Params
 
