@@ -79,6 +79,12 @@ describe('DesktopApi', () => {
             api.appHide(true);
         });
 
+        it('DesktopApi.appAutoStart', () => {
+            const spy = jest.spyOn(ipcRenderer, 'send');
+            api.appAutoStart(true);
+            expect(spy).toHaveBeenCalledWith('app/auto-start', true);
+        });
+
         it('DesktopApi.checkForUpdates', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.checkForUpdates();

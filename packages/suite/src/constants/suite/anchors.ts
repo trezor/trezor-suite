@@ -14,6 +14,7 @@ export const enum SettingsAnchor {
     ClearStorage = '@general-settings/clear-storage',
     VersionWithUpdate = '@general-settings/version-with-update',
     EarlyAccess = '@general-settings/early-access',
+    AutoStart = '@general-settings/auto-start',
 
     BackupFailed = '@device-settings/backup-failed',
     BackupRecoverySeed = '@device-settings/backup-recovery-seed',

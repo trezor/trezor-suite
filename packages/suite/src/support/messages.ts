@@ -9161,4 +9161,12 @@ export default defineMessages({
         id: 'TR_OPEN_TREZOR_SUITE_DESKTOP',
         defaultMessage: 'Open Trezor Suite desktop app',
     },
+    TR_AUTO_START: {
+        id: 'TR_AUTO_START',
+        defaultMessage: 'Run Trezor Suite automatically',
+    },
+    TR_AUTO_START_DESCRIPTION: {
+        id: 'TR_AUTO_START_DESCRIPTION',
+        defaultMessage: 'Start Trezor Suite in the background when you log in to your computer.',
+    },
 });

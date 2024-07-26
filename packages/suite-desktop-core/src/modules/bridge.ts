@@ -24,17 +24,14 @@ const skipNewBridgeRollout = app.commandLine.hasSwitch('skip-new-bridge-rollout'
 
 export const SERVICE_NAME = 'bridge';
 
-const handleBridgeStatus = async (
-    bridge: BridgeProcess | TrezordNode,
-    mainWindow: Dependencies['mainWindow'],
-) => {
+const handleBridgeStatus = async (bridge: BridgeProcess | TrezordNode) => {
     const { logger } = global;
 
     logger.info('bridge', `Getting status`);
     const status = await bridge.status();
     logger.info('bridge', `Toggling bridge. Status: ${JSON.stringify(status)}`);
 
-    mainWindow.webContents.send('bridge/status', status);
+    ipcMain.emit('bridge/status', status);
 
     return status;
 };
@@ -100,7 +97,7 @@ const getBridgeInstance = (store: Dependencies['store']) => {
     });
 };
 
-const load = async ({ store, mainWindow }: Dependencies) => {
+const load = async ({ store }: Dependencies) => {
     const { logger } = global;
     const bridge = getBridgeInstance(store);
 
@@ -112,7 +109,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
     ipcMain.handle('bridge/toggle', async ipcEvent => {
         validateIpcMessage(ipcEvent);
 
-        const status = await handleBridgeStatus(bridge, mainWindow);
+        const status = await handleBridgeStatus(bridge);
         try {
             if (status.service) {
                 await bridge.stop();
@@ -124,7 +121,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
         } catch (error) {
             return { success: false, error };
         } finally {
-            handleBridgeStatus(bridge, mainWindow);
+            handleBridgeStatus(bridge);
         }
     });
 
@@ -152,7 +149,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
             } catch (error) {
                 return { success: false, error };
             } finally {
-                mainWindow.webContents.send('bridge/settings', store.getBridgeSettings());
+                ipcMain.emit('bridge/settings', store.getBridgeSettings());
             }
         },
     );
@@ -177,7 +174,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
             `Starting (Legacy dev: ${b2t(bridgeLegacyDev)}, Legacy test: ${b2t(bridgeLegacyTest)}, Legacy: ${b2t(bridgeLegacy)}, Test: ${b2t(bridgeTest)})`,
         );
         await start(bridge);
-        handleBridgeStatus(bridge, mainWindow);
+        handleBridgeStatus(bridge);
     } catch (err) {
         logger.error(SERVICE_NAME, `Start failed: ${err.message}`);
     }

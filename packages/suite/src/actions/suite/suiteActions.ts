@@ -76,7 +76,8 @@ export type SuiteAction =
       }
     | { type: typeof deviceActions.requestDeviceReconnect.type }
     | { type: typeof SUITE.SET_EXPERIMENTAL_FEATURES; payload?: ExperimentalFeature[] }
-    | { type: typeof SUITE.SET_SIDEBAR_WIDTH; payload: { width: number } };
+    | { type: typeof SUITE.SET_SIDEBAR_WIDTH; payload: { width: number } }
+    | { type: typeof SUITE.SET_AUTO_START; enabled?: boolean };
 
 export const appChanged = createAction(
     SUITE.APP_CHANGED,
@@ -335,3 +336,14 @@ export const lockRouter = (payload: boolean): SuiteAction => ({
     type: SUITE.LOCK_ROUTER,
     payload,
 });
+
+/**
+ * Set auto start for Suite
+ * @param enabled {boolean} - true if Suite should start automatically
+ * @returns {SuiteAction}
+ */
+export const setAutoStart = (enabled: boolean) => (dispatch: Dispatch) => {
+    desktopApi.appAutoStart(enabled);
+
+    dispatch({ type: SUITE.SET_AUTO_START, enabled });
+};

@@ -46,6 +46,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         appRestart: () => ipcRenderer.send('app/restart'),
         appFocus: () => ipcRenderer.send('app/focus'),
         appHide: () => ipcRenderer.send('app/hide'),
+        appAutoStart: (enabled: boolean) => ipcRenderer.send('app/auto-start', enabled),
 
         // Auto-updater
         checkForUpdates: isManual => {

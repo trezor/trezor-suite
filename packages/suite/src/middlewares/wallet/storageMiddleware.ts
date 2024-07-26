@@ -231,6 +231,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_DEFAULT_WALLET_LOADING:
                 case SUITE.SET_AUTODETECT:
                 case SUITE.SET_SIDEBAR_WIDTH:
+                case SUITE.SET_AUTO_START:
                 case SUITE.DEVICE_AUTHENTICITY_OPT_OUT:
                 case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:

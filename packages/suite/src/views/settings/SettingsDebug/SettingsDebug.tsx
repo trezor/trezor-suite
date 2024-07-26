@@ -20,6 +20,7 @@ import { Backends } from './Backends';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite';
 import { PreField } from './PreField';
+import { AutoStart } from './AutoStart';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);
@@ -53,6 +54,11 @@ export const SettingsDebug = () => {
             <SettingsSection title="Testing">
                 <ThrowTestingError />
             </SettingsSection>
+            {!isWeb() && (
+                <SettingsSection title="Application">
+                    <AutoStart />
+                </SettingsSection>
+            )}
             {!isWeb() && (
                 <SettingsSection title="Transport backends">
                     <TransportBackends />
