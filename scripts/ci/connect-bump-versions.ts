@@ -124,17 +124,19 @@ const bumpConnect = async () => {
 
                 const commitsArr = packageGitLog.stdout.split('\n');
 
-                const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
-
                 const newCommits: string[] = [];
                 for (const commit of commitsArr) {
+                    // Here we check commits utils last stable release
                     if (commit.includes(`npm-release: @trezor/${packageName}`)) {
                         break;
                     }
                     newCommits.push(commit.replaceAll('"', ''));
                 }
 
-                if (newCommits.length) {
+                // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
+                // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
+                if (newCommits.length && semver !== 'prerelease') {
+                    const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
                     if (!(await existsDirectory(CHANGELOG_PATH))) {
                         await writeFile(CHANGELOG_PATH, '');
                     }
@@ -149,7 +151,8 @@ const bumpConnect = async () => {
 
                 commit({
                     path: PACKAGE_PATH,
-                    message: `npm-release: @trezor/${packageName} ${version}`,
+                    // We only use `npm-release` when doing stable release, so the part of the script above can check commits to include in CHANGELOG.
+                    message: `npm-${semver === 'prerelease' ? 'prerelease' : 'release'}: @trezor/${packageName} ${version}`,
                 });
             }
         }
