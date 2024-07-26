@@ -1,12 +1,12 @@
-|             Package              | Stable | Canary |
-| :------------------------------: | :----: | :----: |
-|       npm @trezor/connect        | 9.3.0  |   -    |
-|     npm @trezor/connect-web      | 9.3.0  |   -    |
-| npm @trezor/connect-webextension | 9.3.0  |   -    |
+|             Package              | Stable |    Canary    |
+| :------------------------------: | :----: | :----------: |
+|       npm @trezor/connect        | 9.3.0  | 9.3.1-beta.1 |
+|     npm @trezor/connect-web      | 9.3.0  | 9.3.1-beta.1 |
+| npm @trezor/connect-webextension | 9.3.0  | 9.3.1-beta.1 |
 
-|     Deployment     | Stable | Canary |
-| :----------------: | :----: | :----: |
-| connect.trezor.io/ | 9.3.0  |   -    |
+|     Deployment     | Stable |    Canary    |
+| :----------------: | :----: | :----------: |
+| connect.trezor.io/ | 9.3.0  | 9.3.1-beta.1 |
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
