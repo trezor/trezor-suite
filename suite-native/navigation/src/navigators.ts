@@ -54,6 +54,7 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsViewOnly]: undefined;
     [SettingsStackRoutes.SettingsAbout]: undefined;
     [SettingsStackRoutes.SettingsFAQ]: undefined;
+    [SettingsStackRoutes.SettingsCoinEnabling]: undefined;
 };
 
 export type ReceiveStackParamList = {

@@ -32,6 +32,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../biometrics" },
+        { "path": "../coin-enabling" },
         { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-authorization" },

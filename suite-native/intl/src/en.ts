@@ -375,6 +375,35 @@ export const en = {
         },
     },
     moduleSettings: {
+        items: {
+            application: {
+                title: 'Application',
+                devUtils: {
+                    title: 'DEV utils',
+                    subtitle: 'Only for devs and internal testers.',
+                },
+                localization: {
+                    title: 'Localization',
+                    subtitle: 'Currency, Bitcoin units',
+                },
+                customization: {
+                    title: 'Customization',
+                    subtitle: 'Color scheme',
+                },
+                privacyAndSecurity: {
+                    title: 'Privacy & Security',
+                    subtitle: 'Analytics, Discreet mode, Biometrics',
+                },
+                viewOnly: {
+                    title: 'View-only',
+                    subtitle: 'Check balances without your Trezor',
+                },
+                coinEnabling: {
+                    title: 'Enabled coins',
+                    subtitle: 'Manage coins that you use',
+                },
+            },
+        },
         faq: {
             title: 'Get help',
             supportCard: {
@@ -465,6 +494,13 @@ export const en = {
         },
         privacyAndSecurity: {
             title: 'Privacy & Security',
+        },
+        coinEnabling: {
+            settings: {
+                title: 'Enabled coins',
+                subtitle:
+                    'Only choosing coins that you use will shorten loading times when connecting your Trezor.',
+            },
         },
         viewOnly: {
             title: 'View-only',
