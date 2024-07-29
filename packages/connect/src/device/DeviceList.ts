@@ -359,8 +359,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         transport.handleDescriptorsChange(descriptors);
         transport.listen();
 
-        if (descriptors.length > 0 && initParams.pendingTransportEvent) {
-            await this.waitForDevices(descriptors.length, 10000);
+        const awaitedDevices = descriptors.length - Object.keys(this.devices).length;
+        if (awaitedDevices > 0 && initParams.pendingTransportEvent) {
+            await this.waitForDevices(awaitedDevices, 10000);
         }
 
         return transport;
@@ -382,7 +383,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const onDeviceConnect = () => {
             transportStartPending--;
-            clearTimeout(autoResolveTransportEventTimeout);
             if (transportStartPending === 0) {
                 resolve();
             }
