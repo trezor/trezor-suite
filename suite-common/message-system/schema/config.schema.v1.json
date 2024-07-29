@@ -201,6 +201,11 @@
                                                 "description": "Eligible authorized vendors.",
                                                 "type": "string",
                                                 "enum": ["*", "trezor.io"]
+                                            },
+                                            "bootloaderCondition": {
+                                            "title": "Bootloader Condition",
+                                            "type": "string",
+                                            "description": "Condition to match the device bootloader version"
                                             }
                                         },
                                         "additionalProperties": false
