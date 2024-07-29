@@ -5,6 +5,7 @@ import { createDeferred, Deferred, scheduleAction } from '@trezor/utils';
 import { POPUP, IFRAME, UI, CoreEventMessage, IFrameLoaded } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
+import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect/src/data/version';
 import { showPopupRequest } from './showPopupRequest';
 import { Log } from '@trezor/connect/src/utils/debug';
 
@@ -180,7 +181,8 @@ export class PopupManager extends EventEmitter {
     open() {
         const src = this.settings.popupSrc;
         this.popupPromise = createDeferred(POPUP.LOADED);
-        this.openWrapper(src);
+        const url = this.buildPopupUrl(src);
+        this.openWrapper(url);
 
         if (this.settings.useCoreInPopup) {
             // Timeout not used in Core mode, we can't run showPopupRequest with no DOM
@@ -215,6 +217,19 @@ export class PopupManager extends EventEmitter {
                 this.emitClosed();
             });
         }, POPUP_OPEN_TIMEOUT);
+    }
+
+    buildPopupUrl(src: string) {
+        const params = new URLSearchParams();
+        params.set('version', VERSION);
+        params.set('env', this.settings.env);
+        // Pass extension ID to popup via query string
+        if (this.settings.env === 'webextension' && chrome?.runtime?.id) {
+            params.set('extension-id', chrome.runtime.id);
+            params.set('cs-ver', CONTENT_SCRIPT_VERSION.toString());
+        }
+
+        return src + '?' + params.toString();
     }
 
     openWrapper(url: string) {
@@ -320,6 +335,13 @@ export class PopupManager extends EventEmitter {
             this.handshakePromise?.resolve();
         } else if (message.type === POPUP.CLOSED) {
             this.emitClosed();
+        } else if (message.type === POPUP.CONTENT_SCRIPT_LOADED) {
+            const { contentScriptVersion } = message.payload;
+            if (contentScriptVersion !== CONTENT_SCRIPT_VERSION) {
+                console.warn(
+                    `Content script version mismatch. Expected ${CONTENT_SCRIPT_VERSION}, got ${contentScriptVersion}`,
+                );
+            }
         }
     }
 
