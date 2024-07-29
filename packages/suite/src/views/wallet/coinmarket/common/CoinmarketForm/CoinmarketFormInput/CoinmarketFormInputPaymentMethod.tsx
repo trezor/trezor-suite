@@ -1,11 +1,16 @@
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import { Select } from '@trezor/components';
-import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketPaymentMethodListProps,
+    CoinmarketTradeBuySellType,
+} from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
+import {
+    CoinmarketBuySellFormProps,
+    CoinmarketFormInputDefaultProps,
+} from 'src/types/coinmarket/coinmarketForm';
 import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
 import {
-    CoinmarketFormInput,
     CoinmarketFormInputInner,
     CoinmarketFormOption,
     CoinmarketFormOptionLabel,
@@ -14,7 +19,7 @@ import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/C
 import CoinmarketFormInputLoader from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLoader';
 import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/coinmarket/form';
 
-const CoinmarketFormInputPaymentMethod = ({ className, label }: CoinmarketFormInputProps) => {
+const CoinmarketFormInputPaymentMethod = ({ label }: CoinmarketFormInputDefaultProps) => {
     const {
         control,
         paymentMethods,
@@ -22,22 +27,20 @@ const CoinmarketFormInputPaymentMethod = ({ className, label }: CoinmarketFormIn
         form: {
             state: { isFormLoading, isFormInvalid },
         },
-    } = useCoinmarketFormContext();
+    } = useCoinmarketFormContext<CoinmarketTradeBuySellType>();
 
     return (
-        <CoinmarketFormInput className={className}>
+        <>
             <CoinmarketFormInputLabel label={label} />
             <CoinmarketFormInputInner>
                 <Controller
                     name={FORM_PAYMENT_METHOD_SELECT}
                     defaultValue={defaultPaymentMethod}
-                    control={control as any} // FIXME: any
+                    control={control as Control<CoinmarketBuySellFormProps>}
                     render={({ field: { onChange, value } }) => (
                         <Select
                             value={value}
-                            onChange={(selected: CoinmarketPaymentMethodListProps) => {
-                                onChange(selected);
-                            }}
+                            onChange={onChange}
                             options={paymentMethods}
                             formatOptionLabel={(option: CoinmarketPaymentMethodListProps) => (
                                 <CoinmarketFormOption>
@@ -48,7 +51,7 @@ const CoinmarketFormInputPaymentMethod = ({ className, label }: CoinmarketFormIn
                                                 methodName={option.label}
                                             />
                                         ) : (
-                                            <div>{option.label}</div>
+                                            option.label
                                         )}
                                     </CoinmarketFormOptionLabel>
                                 </CoinmarketFormOption>
@@ -62,7 +65,7 @@ const CoinmarketFormInputPaymentMethod = ({ className, label }: CoinmarketFormIn
                 />
                 {isFormLoading && <CoinmarketFormInputLoader />}
             </CoinmarketFormInputInner>
-        </CoinmarketFormInput>
+        </>
     );
 };
 

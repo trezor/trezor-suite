@@ -86,6 +86,7 @@ export const CoinmarketAccountTransactions = () => {
                                 {buyTransactions.length} <Translation id="TR_TRADE_BUYS" /> •{' '}
                                 {sellTransactions.length} <Translation id="TR_TRADE_SELLS" /> •{' '}
                                 {exchangeTransactions.length}{' '}
+                                <Translation id="TR_TRADE_EXCHANGES" />
                             </TransactionCount>
                         </p>
                     </Header>

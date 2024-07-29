@@ -122,13 +122,17 @@ export const CoinmarketFormOption = styled.div`
     align-items: center;
 `;
 
+export const CoinmarketFormOptionGroupLabel = styled.div`
+    color: ${({ theme }) => theme.textSubdued};
+`;
+
 export const CoinmarketFormOptionLabel = styled.div<{ $isDark?: boolean }>`
     color: ${({ theme, $isDark }) => ($isDark ? theme.textDefault : theme.textSubdued)};
 `;
 
 export const CoinmarketFormOptionLabelLong = styled.div`
     padding-left: ${spacingsPx.sm};
-    padding-top: ${spacingsPx.xxs};
+    padding-top: ${spacingsPx.xxxs};
     ${typography.label}
     color: ${({ theme }) => theme.textSubdued};
 `;
@@ -136,7 +140,7 @@ export const CoinmarketFormOptionLabelLong = styled.div`
 export const CoinmarketFormOptionNetwork = styled.div<{ $elevation: Elevation }>`
     padding: 2px 6px;
     margin-left: 10px;
-    font-size: ${nativeTypography.label.fontSize};
+    font-size: ${nativeTypography.label.fontSize}px;
     background: ${({ theme, $elevation }) =>
         mapElevationToBackground({ theme, $elevation: nextElevation[$elevation] })};
     border-radius: 4px;
@@ -145,21 +149,6 @@ export const CoinmarketFormOptionNetwork = styled.div<{ $elevation: Elevation }>
 export const CoinmarketTextButton = styled(TextButton)`
     position: relative;
     padding: 0;
-    color: ${({ theme }) => theme.textSubdued};
-
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background-color: ${({ theme }) => theme.textSubdued};
-    }
-
-    &:hover::after {
-        background-color: ${({ theme }) => theme.textPrimaryPressed};
-    }
 `;
 
 export const CoinmarketAmountContainer = styled.div`

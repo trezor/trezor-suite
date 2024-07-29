@@ -7,7 +7,7 @@ import {
 import CoinmarketFormInputCurrency from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
 import styled from 'styled-components';
 
-const CoinmarketFormInputCurrencyWrapper = styled(CoinmarketFormInputCurrency)`
+const CoinmarketFormInputCurrencyWrapper = styled.div`
     color: ${({ theme }) => theme.textDefault};
     width: 84px;
 
@@ -37,7 +37,9 @@ const CoinmarketFormOfferFiatAmount = ({ amount }: CoinmarketFormOfferFiatAmount
                     {formattedAmount}
                 </CoinmarketAmountWrapperText>
             </CoinmarketAmountWrapper>
-            <CoinmarketFormInputCurrencyWrapper isClean={false} size="small" isDarkLabel={true} />
+            <CoinmarketFormInputCurrencyWrapper>
+                <CoinmarketFormInputCurrency isClean={false} size="small" isDarkLabel={true} />
+            </CoinmarketFormInputCurrencyWrapper>
         </CoinmarketAmountContainer>
     );
 };

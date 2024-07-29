@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BuyTrade, BuyProviderInfo, SellFiatTrade } from 'invity-api';
+import { BuyTrade, SellFiatTrade } from 'invity-api';
 import { variables } from '@trezor/components';
 import {
     CoinmarketPaymentType,
@@ -14,10 +14,13 @@ import {
     cryptoToNetworkSymbol,
     isCryptoSymbolToken,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
-import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    CoinmarketGetCryptoQuoteAmountProps,
+    CoinmarketGetProvidersInfoProps,
+    CoinmarketTradeType,
+} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketCoinImage } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 
 const Wrapper = styled.div`
     display: flex;
@@ -36,10 +39,6 @@ const Header = styled.div`
     margin-bottom: 5px;
     padding: 15px 24px;
     max-width: 340px;
-`;
-
-const HeaderLogo = styled(CoinmarketCoinImage)`
-    width: 24px;
 `;
 
 const AccountText = styled.div`
@@ -104,41 +103,35 @@ const Amount = styled.span`
     padding-left: 5px;
 `;
 
-const InvityCoinLogo = styled(CoinmarketCoinImage)`
-    height: 16px;
-`;
-
 const TransactionIdWrapper = styled.div`
     padding-left: 40px;
     max-width: 350px;
 `;
 
 interface CoinmarketSelectedOfferInfoProps {
-    selectedQuote: BuyTrade | SellFiatTrade;
+    selectedQuote: BuyTrade | SellFiatTrade; // TODO: exchange
     transactionId?: string;
-    providers?: {
-        [name: string]: BuyProviderInfo;
-    };
+    providers: CoinmarketGetProvidersInfoProps;
+    quoteAmounts: CoinmarketGetCryptoQuoteAmountProps | null;
+    type: CoinmarketTradeType;
 }
 
-// TODO: refactor with exchange redesign
 export const CoinmarketSelectedOfferInfo = ({
     selectedQuote,
     transactionId,
     providers,
+    quoteAmounts,
+    type,
 }: CoinmarketSelectedOfferInfoProps) => {
-    const context = useCoinmarketFormContext();
-    const { type } = context;
-    const cryptoAmountProps = getCryptoQuoteAmountProps(selectedQuote, context);
     const { exchange, paymentMethod, paymentMethodName, fiatCurrency, fiatStringAmount } =
         selectedQuote;
 
-    const currency = cryptoAmountProps?.receiveCurrency
-        ? cryptoToCoinSymbol(cryptoAmountProps.receiveCurrency)
+    const currency = quoteAmounts?.receiveCurrency
+        ? cryptoToCoinSymbol(quoteAmounts.receiveCurrency)
         : undefined;
     const network =
-        cryptoAmountProps?.receiveCurrency && isCryptoSymbolToken(cryptoAmountProps.receiveCurrency)
-            ? cryptoToNetworkSymbol(cryptoAmountProps.receiveCurrency)?.toUpperCase()
+        quoteAmounts?.receiveCurrency && isCryptoSymbolToken(quoteAmounts.receiveCurrency)
+            ? cryptoToNetworkSymbol(quoteAmounts.receiveCurrency)?.toUpperCase()
             : null;
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto: true });
 
@@ -146,7 +139,7 @@ export const CoinmarketSelectedOfferInfo = ({
         <Wrapper data-test="@coinmarket/offer/info">
             <Info>
                 <Header>
-                    <HeaderLogo symbol={currency} />
+                    <CoinmarketCoinImage symbol={currency} size="large" />
                     <AccountText>
                         {network ? (
                             <Translation
@@ -180,10 +173,10 @@ export const CoinmarketSelectedOfferInfo = ({
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <InvityCoinLogo symbol={currency} />
+                            <CoinmarketCoinImage symbol={currency} />
                             <Amount>
                                 <CoinmarketCryptoAmount
-                                    amount={cryptoAmountProps?.receiveAmount}
+                                    amount={quoteAmounts?.receiveAmount}
                                     symbol={currency}
                                 />
                             </Amount>

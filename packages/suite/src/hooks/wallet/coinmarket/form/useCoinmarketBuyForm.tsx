@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
 import type { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 import { isChanged } from '@suite-common/suite-utils';
-import { formatAmount } from '@suite-common/wallet-utils';
+import { formatAmount, getNetwork } from '@suite-common/wallet-utils';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import invityAPI from 'src/services/suite/invityAPI';
@@ -40,12 +40,15 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketSatsSwitcher } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSatsSwitcher';
+import { Network } from '@suite-common/wallet-config';
+import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
-    offFirstRequest, // if true, use draft as initial values
+    pageType = 'form',
 }: UseCoinmarketFormProps): CoinmarketBuyFormContextProps => {
     const type = 'buy';
+    const isPageOffers = pageType === 'offers';
     const dispatch = useDispatch();
     const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest } = useSelector(
         state => state.wallet.coinmarket.buy,
@@ -94,13 +97,12 @@ const useCoinmarketBuyForm = ({
     // states
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
-        offFirstRequest ? quotes : undefined,
+        isPageOffers ? quotes : undefined,
     );
     const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
 
     // parameters
-    const { network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const isLoading = !buyInfo || !buyInfo?.buyInfo;
     const noProviders = !isLoading && buyInfo?.buyInfo?.providers.length === 0;
@@ -113,9 +115,10 @@ const useCoinmarketBuyForm = ({
         defaultPaymentMethod,
         suggestedFiatCurrency,
     } = useCoinmarketBuyFormDefaultValues(account.symbol, buyInfo, paymentMethods);
+    const buyDraftKey = account.key;
     const { saveDraft, getDraft, removeDraft } =
         useFormDraft<CoinmarketBuyFormProps>('coinmarket-buy');
-    const draft = getDraft(account.key);
+    const draft = getDraft(buyDraftKey);
     const draftUpdated: CoinmarketBuyFormProps | null = draft
         ? {
               ...draft,
@@ -123,16 +126,19 @@ const useCoinmarketBuyForm = ({
                   draft.fiatInput && draft.fiatInput !== ''
                       ? draft.fiatInput
                       : buyInfo?.buyInfo?.defaultAmountsOfFiatCurrencies.get(suggestedFiatCurrency),
+              // remember only for offers page
+              cryptoSelect: pageType === 'form' ? defaultValues.cryptoSelect : draft.cryptoSelect,
           }
         : null;
-    const isDraft = !!draftUpdated || !!offFirstRequest;
+
+    const isDraft = !!draftUpdated || !!isPageOffers;
     const methods = useForm<CoinmarketBuyFormProps>({
         mode: 'onChange',
         defaultValues: isDraft && draftUpdated ? draftUpdated : defaultValues,
     });
     const { register, control, formState, reset, setValue, handleSubmit } = methods;
     const values = useWatch<CoinmarketBuyFormProps>({ control });
-    const previousValues = useRef<typeof values | null>(offFirstRequest ? draftUpdated : null);
+    const previousValues = useRef<typeof values | null>(isPageOffers ? draftUpdated : null);
 
     // form states
     const formIsValid = Object.keys(formState.errors).length === 0;
@@ -146,11 +152,15 @@ const useCoinmarketBuyForm = ({
         innerQuotes,
         values?.paymentMethod?.value ?? '',
     );
+    // based on selected cryptoSymbol, because of using for validation cryptoInput
+    const network = getNetwork(
+        cryptoToNetworkSymbol(values.cryptoSelect?.value ?? 'BTC') ?? 'btc',
+    ) as Network;
     const { toggleAmountInCrypto } = useCoinmarketSatsSwitcher({
         account,
         methods,
-        cryptoInputAmount: quotesByPaymentMethod?.[0]?.receiveStringAmount,
-        fiatInputAmount: quotesByPaymentMethod?.[0]?.fiatStringAmount,
+        quoteCryptoAmount: quotesByPaymentMethod?.[0]?.receiveStringAmount,
+        quoteFiatAmount: quotesByPaymentMethod?.[0]?.fiatStringAmount,
         network,
         setIsSubmittingHelper,
     });
@@ -399,26 +409,26 @@ const useCoinmarketBuyForm = ({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, handleChange, handleSubmit, offFirstRequest]);
+    }, [previousValues, values, handleChange, handleSubmit, isPageOffers]);
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
-        if (!isDraft && defaultValues) {
+        if (!isDraft && buyInfo) {
             reset(defaultValues);
         }
-    }, [reset, defaultValues, isDraft]);
+    }, [reset, buyInfo, defaultValues, isDraft]);
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
-            removeDraft(account.key);
+            removeDraft(buyDraftKey);
 
             return;
         }
 
         if (values.cryptoSelect && !values.cryptoSelect?.value) {
-            removeDraft(account.key);
+            removeDraft(buyDraftKey);
         }
-    }, [defaultValues, values, removeDraft, account.key]);
+    }, [defaultValues, values, removeDraft, buyDraftKey]);
 
     useEffect(() => {
         if (!quotesRequest) {
@@ -436,8 +446,9 @@ const useCoinmarketBuyForm = ({
 
     useDebounce(
         () => {
-            if (!formState.isValidating && Object.keys(formState.errors).length === 0) {
-                saveDraft(account.key, {
+            // saving draft after validation & buyInfo is available
+            if (!formState.isValidating && Object.keys(formState.errors).length === 0 && buyInfo) {
+                saveDraft(buyDraftKey, {
                     ...values,
                     fiatInput:
                         values.fiatInput !== ''
@@ -453,9 +464,10 @@ const useCoinmarketBuyForm = ({
             formState.errors,
             formState.isValidating,
             saveDraft,
-            account.key,
+            buyDraftKey,
             values,
             shouldSendInSats,
+            buyInfo,
         ],
     );
 

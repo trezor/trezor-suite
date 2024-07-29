@@ -5,8 +5,8 @@ import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sen
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FormState } from '@suite-common/wallet-types';
-import { getFeeLevels } from '@suite-common/wallet-utils';
-import type { FormOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { getFeeLevels, getNetwork } from '@suite-common/wallet-utils';
+import type { Account, FormOptions } from '@suite-common/wallet-types';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 
 export const useCoinmarketRecomposeAndSign = () => {
@@ -19,7 +19,7 @@ export const useCoinmarketRecomposeAndSign = () => {
 
     const recomposeAndSign = useCallback(
         async (
-            selectedAccount: SelectedAccountLoaded,
+            account: Account,
             address: string,
             amount: string,
             destinationTag?: string,
@@ -28,7 +28,9 @@ export const useCoinmarketRecomposeAndSign = () => {
             ethereumAdjustGasLimit?: string,
             options: FormOptions[] = ['broadcast'],
         ) => {
-            const { account, network } = selectedAccount;
+            const network = getNetwork(account.symbol);
+
+            if (!network) return;
 
             if (!composed) {
                 dispatch(

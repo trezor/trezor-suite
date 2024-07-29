@@ -13,6 +13,7 @@ import { CoinmarketTradeDetailMapProps } from 'src/types/coinmarket/coinmarket';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
+    getSelectQuoteTyped,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { SellFiatTrade } from 'invity-api';
@@ -113,16 +114,14 @@ export interface CoinmarketOffersItemProps {
 
 const CoinmarketOffersItem = ({ quote, isBestRate }: CoinmarketOffersItemProps) => {
     const context = useCoinmarketOffersContext();
-    const { callInProgress, type } = context;
-    const { providers } = getProvidersInfoProps(context);
+    const { callInProgress } = context;
+    const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
     const { exchange } = quote;
     const { tag, infoNote } = getTagAndInfoNote(quote);
     const tagsExist = tag !== '' || isBestRate;
 
-    const selectQuote = context.selectQuote as (
-        quote: CoinmarketTradeDetailMapProps[typeof type],
-    ) => void;
+    const selectQuote = getSelectQuoteTyped(context);
 
     if (!cryptoAmountProps) return null;
 

@@ -4,7 +4,10 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketGetCryptoQuoteAmountProps,
+    CoinmarketTradeBuyType,
+} from 'src/types/coinmarket/coinmarket';
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
 import PaymentSuccessful from 'src/views/wallet/coinmarket/buy/detail/components/PaymentSuccessful';
 import WaitingForUser from 'src/views/wallet/coinmarket/buy/detail/components/WaitingForUser';
@@ -58,6 +61,14 @@ const CoinmarketDetail = () => {
     const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
     const supportUrl = supportUrlTemplate?.replace('{{paymentId}}', trade?.data?.paymentId || '');
 
+    const quoteAmounts: CoinmarketGetCryptoQuoteAmountProps = {
+        amountInCrypto: trade?.data?.wantCrypto,
+        sendAmount: trade?.data?.fiatStringAmount ?? '',
+        sendCurrency: trade?.data?.fiatCurrency,
+        receiveAmount: trade?.data?.receiveAmount?.toString() ?? '',
+        receiveCurrency: trade?.data?.receiveCurrency,
+    };
+
     return (
         <Wrapper>
             <StyledCard>
@@ -76,6 +87,8 @@ const CoinmarketDetail = () => {
                 selectedQuote={trade.data}
                 transactionId={trade.key}
                 providers={info?.providerInfos}
+                quoteAmounts={quoteAmounts}
+                type="buy"
             />
         </Wrapper>
     );

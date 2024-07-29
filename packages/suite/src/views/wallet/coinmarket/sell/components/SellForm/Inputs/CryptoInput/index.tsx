@@ -28,7 +28,7 @@ import {
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
+import { CoinmarketCoinImage } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 
 const Option = styled.div`
     display: flex;
@@ -42,7 +42,6 @@ const Label = styled.div`
 const TokenLogo = styled(CoinmarketCoinImage)`
     display: flex;
     align-items: center;
-    height: 18px;
 `;
 
 const CryptoInput = () => {

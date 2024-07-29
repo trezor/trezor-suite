@@ -262,7 +262,7 @@ export const useCoinmarketSellOffers = ({
             const destinationPaymentExtraId =
                 selectedQuote.destinationPaymentExtraId || trade?.data?.destinationPaymentExtraId;
             const result = await recomposeAndSign(
-                selectedAccount,
+                selectedAccount.account,
                 destinationAddress,
                 cryptoStringAmount,
                 destinationPaymentExtraId,

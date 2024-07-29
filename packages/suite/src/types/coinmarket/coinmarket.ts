@@ -11,15 +11,18 @@ import type {
 } from 'src/types/wallet/coinmarketCommonTypes';
 import {
     BuyCryptoPaymentMethod,
+    BuyProviderInfo,
     BuyTrade,
     BuyTradeStatus,
     CryptoSymbol,
     CryptoSymbolInfo,
+    ExchangeProviderInfo,
     ExchangeTrade,
     ExchangeTradeStatus,
     FiatCurrencyCode,
     SavingsTradeItemStatus,
     SellFiatTrade,
+    SellProviderInfo,
     SellTradeStatus,
     WatchBuyTradeResponse,
     WatchExchangeTradeResponse,
@@ -56,7 +59,13 @@ export interface UseCoinmarketCommonReturnProps<T extends CoinmarketTradeType> {
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
 export type UseCoinmarketFormProps = UseCoinmarketProps & {
-    offFirstRequest?: boolean;
+    /**
+     * Difference between form and offers is that on the offers page are used all data filled in the form
+     * but on the form page we prefill form with only some data from draft
+     *
+     * default value is 'form'
+     */
+    pageType?: 'form' | 'offers';
 };
 
 export type CoinmarketTradeBuyType = 'buy';
@@ -67,6 +76,7 @@ export type CoinmarketTradeType =
     | CoinmarketTradeSellType
     | CoinmarketTradeExchangeType;
 export type CoinmarketTradeBuySellType = Exclude<CoinmarketTradeType, CoinmarketTradeExchangeType>;
+export type CoinmarketTradeSellExchangeType = Exclude<CoinmarketTradeType, CoinmarketTradeBuyType>;
 
 export type CoinmarketTradeMapProps = {
     buy: TradeBuy;
@@ -226,4 +236,23 @@ export interface CoinmarketGetAmountLabelsReturnProps {
         ExtendedMessageDescriptor['id'],
         `TR_COINMARKET_YOU_WILL_${'PAY' | 'GET'}`
     >;
+}
+
+export type CoinmarketGetProvidersInfoProps =
+    | {
+          [name: string]: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
+      }
+    | undefined;
+
+export interface CoinmarketGetFiatCurrenciesProps {
+    supportedFiatCurrencies: Set<string> | undefined;
+    defaultAmountsOfFiatCurrencies?: Map<FiatCurrencyCode, string>;
+}
+
+export interface CoinmarketGetCryptoQuoteAmountProps {
+    amountInCrypto: boolean | undefined;
+    sendAmount: string;
+    sendCurrency: string | undefined;
+    receiveAmount: string;
+    receiveCurrency: CryptoSymbol | undefined;
 }

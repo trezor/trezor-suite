@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
 import {
-    CoinmarketFormHelpersProps,
+    CoinmarketSellFormHelpersProps,
     CoinmarketUseSellFormHelpersProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { Option } from 'src/types/wallet/coinmarketCommonTypes';
@@ -45,7 +45,8 @@ export const useCoinmarketSellFormHelpers = ({
     setAmountLimits,
     changeFeeLevel,
     composeRequest,
-}: CoinmarketUseSellFormHelpersProps): CoinmarketFormHelpersProps => {
+    setAccount,
+}: CoinmarketUseSellFormHelpersProps): CoinmarketSellFormHelpersProps => {
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const accounts = useSelector(selectAccounts);
@@ -98,7 +99,10 @@ export const useCoinmarketSellFormHelpers = ({
             const networkSymbol = cryptoToNetworkSymbol(selected.value);
             const account = accountsSorted.find(item => item.descriptor === selected.descriptor);
 
+            if (!account) return;
+
             setValue(FORM_OUTPUT_ADDRESS, '');
+            setValue(FORM_OUTPUT_AMOUNT, '');
             setValue(FORM_CRYPTO_TOKEN, selected?.contractAddress ?? null);
 
             if (networkSymbol && isEthereumAccountSymbol(networkSymbol)) {
@@ -115,12 +119,11 @@ export const useCoinmarketSellFormHelpers = ({
             setValue(FORM_FIAT_INPUT, '');
             setAmountLimits(undefined);
 
-            if (account) {
-                dispatch(setCoinmarketSellAccount(account));
-                changeFeeLevel('normal'); // reset fee level
-            }
+            dispatch(setCoinmarketSellAccount(account));
+            setAccount(account);
+            changeFeeLevel('normal'); // reset fee level
         },
-        [accountsSorted, setValue, setAmountLimits, changeFeeLevel, dispatch],
+        [accountsSorted, setValue, setAmountLimits, changeFeeLevel, dispatch, setAccount],
     );
 
     const setRatioAmount = useCallback(

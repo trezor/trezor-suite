@@ -511,4 +511,4 @@ export const coinmarketGetRoundedFiatAmount = (amount: string): string =>
     new BigNumber(amount).toFixed(2, BigNumber.ROUND_HALF_UP);
 
 export const coinmarketGetAccountLabel = (label: string, shouldSendInSats: boolean | undefined) =>
-    label === 'BTC' && shouldSendInSats ? 'sats' : label;
+    label === 'BTC' && shouldSendInSats ? 'sat' : label;

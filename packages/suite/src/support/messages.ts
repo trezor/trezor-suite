@@ -1695,13 +1695,65 @@ export default defineMessages({
         defaultMessage: 'Enter amount in {currency}',
         id: 'TR_COINMARKET_ENTER_AMOUNT_IN',
     },
-    TR_COINMARKET_FIAT: {
-        defaultMessage: 'fiat',
-        id: 'TR_COINMARKET_FIAT',
-    },
     TR_COINMARKET_SELL: {
         id: 'TR_COINMARKET_SELL',
         defaultMessage: 'Sell',
+    },
+    TR_COINMARKET_RATE: {
+        id: 'TR_COINMARKET_RATE',
+        defaultMessage: 'Rate',
+    },
+    TR_COINMARKET_FIX_RATE: {
+        id: 'TR_COINMARKET_FIX_RATE',
+        defaultMessage: 'Fixed rate',
+    },
+    TR_COINMARKET_FLOATING_RATE: {
+        id: 'TR_COINMARKET_FLOATING_RATE',
+        defaultMessage: 'Floating rate',
+    },
+    TR_COINMARKET_FIX_RATE_DESCRIPTION: {
+        id: 'TR_COINMARKET_FIX_RATE_DESCRIPTION',
+        defaultMessage: 'Guarantee your rate for 15 minutes with a higher fee.',
+    },
+    TR_COINMARKET_FLOATING_RATE_DESCRIPTION: {
+        id: 'TR_COINMARKET_FLOATING_RATE_DESCRIPTION',
+        defaultMessage: 'Get an approximate rate subject to real-time market change.',
+    },
+    TR_COINMARKET_CEX_TOOLTIP: {
+        id: 'TR_COINMARKET_CEX_TOOLTIP',
+        defaultMessage: 'Centralized exchange',
+    },
+    TR_COINMARKET_DEX_TOOLTIP: {
+        id: 'TR_COINMARKET_DEX_TOOLTIP',
+        defaultMessage: 'Decentralized exchange',
+    },
+    TR_COINMARKET_NO_CEX_PROVIDER_FOUND: {
+        id: 'TR_COINMARKET_NO_CEX_PROVIDER_FOUND',
+        defaultMessage: 'No CEX provider found',
+    },
+    TR_COINMARKET_NO_DEX_PROVIDER_FOUND: {
+        id: 'TR_COINMARKET_NO_DEX_PROVIDER_FOUND',
+        defaultMessage: 'No DEX provider found',
+    },
+    TR_COINMARKET_FEATURED_OFFERS_HEADING: {
+        defaultMessage: 'Featured offers',
+        id: 'TR_COINMARKET_FEATURED_OFFERS_HEADING',
+    },
+    TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL: {
+        defaultMessage: 'Payment:',
+        id: 'TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL',
+    },
+    TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL: {
+        defaultMessage: 'Receive method:',
+        id: 'TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL',
+    },
+    TR_COINMARKET_FEATURED_OFFER_BUY: {
+        defaultMessage: 'Buy',
+        id: 'TR_COINMARKET_FEATURED_OFFER_BUY',
+    },
+    TR_COINMARKET_FEATURED_OFFER_SELL: {
+        defaultMessage: 'Sell',
+        id: 'TR_COINMARKET_FEATURED_OFFER_SELL',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',

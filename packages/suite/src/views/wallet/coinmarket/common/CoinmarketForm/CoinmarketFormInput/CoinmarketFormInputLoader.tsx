@@ -10,7 +10,7 @@ const CoinmarketFormInputLoaderWrapper = styled.div<{ $elevation: Elevation }>`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: ${({ theme, $elevation }) => mapElevationToBackground({ theme, $elevation })};
+    background-color: ${mapElevationToBackground};
     border-radius: ${borders.radii.sm};
     z-index: ${zIndices.base};
     padding: 0 ${spacingsPx.md};

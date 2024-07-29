@@ -8,7 +8,7 @@ import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinm
 const OffersIndex = (props: UseCoinmarketProps) => {
     const coinmarketBuyFormContextValues = useCoinmarketBuyForm({
         ...props,
-        offFirstRequest: true,
+        pageType: 'offers',
     });
 
     // CoinmarketOffersContext.Provider is temporary FIX

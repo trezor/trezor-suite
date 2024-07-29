@@ -32,6 +32,7 @@ export type CoinmarketExchangeAction =
           quotes: ExchangeTrade[];
       }
     | { type: typeof COINMARKET_EXCHANGE.CLEAR_QUOTES }
+    | { type: typeof COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT; account: Account }
     | {
           type: typeof COINMARKET_COMMON.SAVE_TRADE;
           date: string;

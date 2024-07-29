@@ -64,6 +64,7 @@ interface Exchange extends CoinmarketTradeCommonProps {
     quotesRequest?: ExchangeTradeQuoteRequest;
     quotes: ExchangeTrade[] | undefined;
     addressVerified?: string;
+    coinmarketAccount?: Account;
 }
 
 interface Sell extends CoinmarketTradeCommonProps {
@@ -112,6 +113,7 @@ export const initialState: State = {
         quotesRequest: undefined,
         quotes: [],
         addressVerified: undefined,
+        coinmarketAccount: undefined,
     },
     sell: {
         sellInfo: undefined,
@@ -200,6 +202,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID:
                 draft.exchange.transactionId = action.transactionId;
+                break;
+            case COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT:
+                draft.exchange.coinmarketAccount = action.account;
                 break;
             case COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO:
                 draft.composedTransactionInfo = action.info;

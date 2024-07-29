@@ -225,12 +225,15 @@ class InvityAPI {
 
     getExchangeQuotes = async (
         params: ExchangeTradeQuoteRequest,
+        signal?: SignalType,
     ): Promise<ExchangeTrade[] | undefined> => {
         try {
             const response: ExchangeTradeQuoteResponse = await this.request(
                 this.EXCHANGE_QUOTES,
                 params,
                 'POST',
+                undefined,
+                signal,
             );
 
             return response;

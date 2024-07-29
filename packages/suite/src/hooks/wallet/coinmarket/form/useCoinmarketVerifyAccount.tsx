@@ -155,6 +155,10 @@ const useCoinmarketVerifyAccount = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        methods.trigger();
+    }, [methods]);
+
     return {
         form: {
             ...methods,
