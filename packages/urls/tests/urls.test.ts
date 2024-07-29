@@ -8,11 +8,8 @@ const excluded = [
     URLS.DATA_TOS_URL,
     // 503 from CI
     URLS.LTC_ADDRESS_INFO_URL,
-    // T2B1 urls, they don't exist yet
-    URLS.HELP_CENTER_DRY_RUN_T2B1_URL,
-    URLS.HELP_CENTER_FW_DOWNGRADE_T2B1_URL,
-    URLS.HELP_CENTER_PACKAGING_T2B1_URL,
-    URLS.TREZOR_FORUM_URL, // captcha, returning 403 in ci
+    // captcha, returning 403 in ci
+    URLS.TREZOR_FORUM_URL,
 ];
 
 describe('Test that all external links are alive', () => {
