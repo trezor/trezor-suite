@@ -375,7 +375,7 @@ export class DeviceCommands {
             await this.transport.receive({
                 session: this.sessionId,
                 protocol: this.device.protocol,
-            });
+            }).promise;
             // throw error anyway, next call should be resolved properly
             throw error;
         }
