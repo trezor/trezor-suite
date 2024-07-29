@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-07-018T00:00:00+00:00",
-    "sequence": 59,
+    "timestamp": "2024-07-029T00:00:00+00:00",
+    "sequence": 60,
     "actions": [
         {
             "conditions": [
@@ -54,29 +54,29 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=24.5.2",
+                        "desktop": "<=24.7.1",
                         "mobile": "!",
-                        "web": ">=24.5.2"
+                        "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "7e6bb8c5-a45d-47f1-b7eb-7e0f6b58883b",
+                "id": "b821e8f6-ea24-4bc9-9c28-e603a98cbec3",
                 "priority": 93,
                 "dismissible": false,
                 "variant": "info",
                 "category": ["context"],
                 "content": {
-                    "en-GB": "In case you have a long-pending transaction with low gas, please bump fee to start staking.",
-                    "en": "In case you have a long-pending transaction with low gas, please bump fee to start staking.",
-                    "es": "En caso de que tenga una transacción pendiente desde hace mucho tiempo con poco gas, por favor aumente la comisión para empezar a apostar.",
-                    "cs": "Stále se nestakuje? Navýšením poplatku urychlíte potvrzovací transakci pro zahájení stakingu.",
-                    "ru": "Если у вас есть долгосрочная сделка с низким газом, пожалуйста, поднимите плату, чтобы начать делать ставки.",
-                    "ja": "ガスが少なく、長期に渡る取引がある場合は、ステーキングを開始するために手数料を追加してください.",
-                    "hu": "Abban az esetben, ha van egy régóta függőben lévő tranzakciója alacsony gázzal, kérjük, emelje meg a díjat a tét megkezdéséhez.",
-                    "it": "Nel caso in cui abbiate una transazione in sospeso da molto tempo con gas basso, vi preghiamo di aumentare la quota per iniziare a puntare",
-                    "fr": "Si vous avez une transaction en attente depuis longtemps avec peu de gaz, veuillez augmenter les frais pour commencer à jalonner.",
-                    "de": "Falls Sie eine lange ausstehende Transaktion mit niedrigem Gas haben, erhöhen Sie bitte die Gebühr, um mit dem Staking zu beginnen."
+                    "en-GB": "For the best staking experience, please update to the latest version of Trezor Suite.",
+                    "en": "For the best staking experience, please update to the latest version of Trezor Suite.",
+                    "es": "Para la mejor experiencia de staking, por favor actualiza a la última versión de Trezor Suite.",
+                    "cs": "Pro nejlepší zážitek ze stakingu prosím aktualizujte na nejnovější verzi Trezor Suite.",
+                    "ru": "Для лучшего опыта стейкинга, пожалуйста, обновите до последней версии Trezor Suite.",
+                    "ja": "最良のステーキング体験のために、最新バージョンのTrezor Suiteに更新してください。",
+                    "hu": "A legjobb staking élmény érdekében javasoljuk, hogy frissítsd az alkalmazást a legújabb verzióra. Ne aggódj, ugyanúgy működik, csak jobb.",
+                    "it": "Per la migliore esperienza di staking, aggiorna all’ultima versione di Trezor Suite.",
+                    "fr": "Pour la meilleure expérience de staking, veuillez mettre à jour vers la dernière version de Trezor Suite",
+                    "de": "Für die beste Staking-Erfahrung, bitte auf die neueste Version von Trezor Suite aktualisieren."
                 },
                 "context": { "domain": "accounts.eth.staking" }
             }
@@ -291,14 +291,14 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<24.2.4",
+                        "desktop": "<=24.5.4",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "675e2546-13e4-47fa-bd07-42c1ec830534",
+                "id": "81eae8d0-0338-4513-8e6c-6acdb728dcaf",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
