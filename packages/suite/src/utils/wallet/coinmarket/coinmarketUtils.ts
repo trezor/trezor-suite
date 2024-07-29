@@ -400,7 +400,7 @@ export const coinmarketGetSortedAccountsWithBalance = ({
 
     const accountSorted = sortByCoin(accounts.filter(a => a.deviceState === deviceState));
     const accountsWithBalance = accountSorted.filter(account => {
-        const accountWithBalance = account.availableBalance !== '0';
+        const accountWithBalance = account.formattedBalance !== '0';
         const tokens = account.tokens?.filter(token => token.balance !== '0');
 
         return accountWithBalance || (tokens && tokens?.length > 0);
@@ -448,7 +448,7 @@ export const coinmarketBuildAccountOptions = ({
                 label: accountSymbol.toUpperCase(),
                 cryptoName: foundSymbolInfo?.name ?? null,
                 descriptor,
-                balance: formattedBalance,
+                balance: formattedBalance ?? '',
             },
         ];
 
@@ -475,7 +475,7 @@ export const coinmarketBuildAccountOptions = ({
                     cryptoName: tokenSymbolInfo?.name ?? null,
                     contractAddress: contract,
                     descriptor,
-                    balance,
+                    balance: balance ?? '',
                 });
             });
         }
