@@ -1,15 +1,10 @@
 import { spacingsPx } from '@trezor/theme';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import styled from 'styled-components';
-import CoinmarketCoinImage from './CoinmarketCoinImage';
-
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-`;
+import { Row } from '@trezor/components';
+import { CoinmarketCoinImage } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 
 const TokenLogo = styled(CoinmarketCoinImage)`
-    height: 21px;
     margin-right: ${spacingsPx.sm};
 `;
 
@@ -28,17 +23,17 @@ export const CoinmarketCryptoAmount = ({
 
     if (!amount || amount === '') {
         return (
-            <Wrapper>
+            <Row alignItems="center">
                 {displayLogo && <TokenLogo symbol={symbol} />}
                 {symbolUpper}
-            </Wrapper>
+            </Row>
         );
     }
 
     return (
-        <Wrapper>
+        <Row alignItems="center">
             {displayLogo && <TokenLogo symbol={symbol} />}
             <FormattedCryptoAmount value={amount} symbol={symbol} disableHiddenPlaceholder />
-        </Wrapper>
+        </Row>
     );
 };

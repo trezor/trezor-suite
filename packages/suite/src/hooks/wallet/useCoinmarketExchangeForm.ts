@@ -1,7 +1,7 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { ExchangeTradeQuoteRequest } from 'invity-api';
+import type { CryptoSymbol, ExchangeTradeQuoteRequest } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import {
@@ -364,8 +364,8 @@ export const useCoinmarketExchangeForm = ({
                 : unformattedOutputAmount;
         if (formValues.receiveCryptoSelect) {
             const request: ExchangeTradeQuoteRequest = {
-                receive: formValues.receiveCryptoSelect.cryptoSymbol!,
-                send: formValues.sendCryptoSelect.cryptoSymbol!,
+                receive: formValues.receiveCryptoSelect.value as CryptoSymbol,
+                send: formValues.sendCryptoSelect.value as CryptoSymbol,
                 sendStringAmount,
                 dex: 'enable',
             };

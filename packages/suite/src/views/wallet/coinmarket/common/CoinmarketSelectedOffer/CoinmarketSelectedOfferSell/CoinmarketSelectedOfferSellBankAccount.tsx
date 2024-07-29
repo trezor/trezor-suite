@@ -37,6 +37,15 @@ const CustomLabel = styled(Label)`
 
 const LabelText = styled.div``;
 
+const SelectWrapper = styled.div`
+    width: 100%;
+
+    /* stylelint-disable selector-class-pattern */
+    .react-select__single-value {
+        width: 100%;
+    }
+`;
+
 const Option = styled.div`
     display: flex;
     flex-direction: row;
@@ -86,7 +95,6 @@ const Row = styled.div`
     margin: ${spacingsPx.xxs} 0;
     display: flex;
 
-    /* stylelint-disable selector-class-pattern */
     .react-select__value-container {
         padding-right: ${spacingsPx.lg};
     }
@@ -152,38 +160,42 @@ const CoinmarketSelectedOfferSellBankAccount = () => {
                     </Right>
                 </Row>
                 <Row>
-                    <Select
-                        onChange={(selected: BankAccount) => {
-                            setBankAccount(selected);
-                        }}
-                        value={bankAccount}
-                        isClearable={false}
-                        options={bankAccounts}
-                        minValueWidth="70px"
-                        formatOptionLabel={(option: BankAccount) => (
-                            <Option>
-                                <AccountInfo>
-                                    <AccountName>{option.holder}</AccountName>
-                                    <AccountNumber>{formatIban(option.bankAccount)}</AccountNumber>
-                                </AccountInfo>
-                                {option.verified ? (
-                                    <AccountVerified>
-                                        <StyledIcon
-                                            color={theme.TYPE_GREEN}
-                                            size={15}
-                                            icon="CHECK"
-                                        />
-                                        <Translation id="TR_SELL_BANK_ACCOUNT_VERIFIED" />
-                                    </AccountVerified>
-                                ) : (
-                                    <AccountNotVerified>
-                                        <Translation id="TR_SELL_BANK_ACCOUNT_NOT_VERIFIED" />
-                                    </AccountNotVerified>
-                                )}
-                            </Option>
-                        )}
-                        isDisabled={bankAccounts.length < 2}
-                    />
+                    <SelectWrapper>
+                        <Select
+                            onChange={(selected: BankAccount) => {
+                                setBankAccount(selected);
+                            }}
+                            value={bankAccount}
+                            isClearable={false}
+                            options={bankAccounts}
+                            minValueWidth="70px"
+                            formatOptionLabel={(option: BankAccount) => (
+                                <Option>
+                                    <AccountInfo>
+                                        <AccountName>{option.holder}</AccountName>
+                                        <AccountNumber>
+                                            {formatIban(option.bankAccount)}
+                                        </AccountNumber>
+                                    </AccountInfo>
+                                    {option.verified ? (
+                                        <AccountVerified>
+                                            <StyledIcon
+                                                color={theme.TYPE_GREEN}
+                                                size={15}
+                                                icon="CHECK"
+                                            />
+                                            <Translation id="TR_SELL_BANK_ACCOUNT_VERIFIED" />
+                                        </AccountVerified>
+                                    ) : (
+                                        <AccountNotVerified>
+                                            <Translation id="TR_SELL_BANK_ACCOUNT_NOT_VERIFIED" />
+                                        </AccountNotVerified>
+                                    )}
+                                </Option>
+                            )}
+                            isDisabled={bankAccounts.length < 2}
+                        />
+                    </SelectWrapper>
                 </Row>
             </CardContent>
             <ButtonWrapper>

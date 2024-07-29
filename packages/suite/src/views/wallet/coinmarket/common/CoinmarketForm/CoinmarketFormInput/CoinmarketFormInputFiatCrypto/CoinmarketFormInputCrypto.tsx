@@ -12,26 +12,30 @@ import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCo
 import { useFormatters } from '@suite-common/formatters';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useEffect } from 'react';
-import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
+import { CoinmarketFormInputFiatCryptoProps } from 'src/types/coinmarket/coinmarketForm';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
-import { FORM_CRYPTO_INPUT, FORM_FIAT_INPUT } from 'src/constants/wallet/coinmarket/form';
+import { FieldError, FieldValues } from 'react-hook-form';
+import { coinmarketGetAccountLabel } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
-const CoinmarketFormInputCrypto = ({ className }: CoinmarketFormInputProps) => {
+const CoinmarketFormInputCrypto = <TFieldValues extends FieldValues>({
+    cryptoInputName,
+    fiatInputName,
+    methods,
+}: CoinmarketFormInputFiatCryptoProps<TFieldValues>) => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
+    const { amountLimits, account, network } = useCoinmarketFormContext();
+    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const {
-        formState: { errors },
         control,
-        amountLimits,
-        account,
-        network,
+        formState: { errors },
+        getValues,
         trigger,
         clearErrors,
-        getValues,
-    } = useCoinmarketFormContext();
-    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    } = methods;
     const { cryptoSelect } = getValues();
+    const cryptoInputError = errors[cryptoInputName] as FieldError;
 
     const cryptoInputRules = {
         validate: {
@@ -48,26 +52,28 @@ const CoinmarketFormInputCrypto = ({ className }: CoinmarketFormInputProps) => {
 
     useEffect(() => {
         if (amountLimits) {
-            trigger([FORM_CRYPTO_INPUT]);
+            trigger([cryptoInputName]);
         }
-    }, [amountLimits, trigger]);
+    }, [amountLimits, cryptoInputName, trigger]);
 
     return (
         <NumberInput
-            name={FORM_CRYPTO_INPUT}
+            name={cryptoInputName}
             onChange={() => {
-                clearErrors(FORM_FIAT_INPUT);
+                clearErrors(fiatInputName);
             }}
-            inputState={getInputState(errors[FORM_CRYPTO_INPUT])}
+            inputState={getInputState(cryptoInputError)}
             control={control}
             rules={cryptoInputRules}
             maxLength={formInputsMaxLength.amount}
-            bottomText={errors[FORM_CRYPTO_INPUT]?.message || null}
-            className={className}
+            bottomText={cryptoInputError?.message || null}
             hasBottomPadding={false}
             innerAddon={
                 <CoinmarketFormOptionLabel>
-                    {cryptoToCoinSymbol(cryptoSelect?.value)}
+                    {coinmarketGetAccountLabel(
+                        cryptoSelect?.value ? cryptoToCoinSymbol(cryptoSelect.value) : '',
+                        shouldSendInSats,
+                    )}
                 </CoinmarketFormOptionLabel>
             }
             data-test="@coinmarket/form/crypto-input"

@@ -4,3 +4,4 @@ export const SAVE_QUOTES = '@coinmarket-exchange/save_exchange_quotes';
 export const CLEAR_QUOTES = '@coinmarket-exchange/clear_exchange_quotes';
 export const VERIFY_ADDRESS = '@coinmarket-exchange/verify_address';
 export const SAVE_TRANSACTION_ID = '@coinmarket-exchange/save_transaction_id';
+export const SET_COINMARKET_ACCOUNT = '@coinmarket-exchange/set_coinmarket_account';

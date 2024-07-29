@@ -14,7 +14,11 @@ import { Timer } from '@trezor/react-utils';
 import { TradeSell } from '../wallet/coinmarketCommonTypes';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import { CoinmarketTradeType } from './coinmarket';
-import { CoinmarketBuyFormContextProps, CoinmarketSellFormContextProps } from './coinmarketForm';
+import {
+    CoinmarketBuyFormContextProps,
+    CoinmarketExchangeFormContextProps,
+    CoinmarketSellFormContextProps,
+} from './coinmarketForm';
 
 type CoinmarketOffersContextProps = {
     type: CoinmarketTradeType;
@@ -91,10 +95,11 @@ export type CoinmarketP2pOffersContextProps = Omit<
     goToReceivingAddress: () => void;
 };
 
+// TODO: delete
 export type CoinmarketOffersMapProps = {
     buy: CoinmarketBuyFormContextProps; // temporary
     sell: CoinmarketSellFormContextProps; // temporary
-    exchange: CoinmarketExchangeOffersContextProps;
+    exchange: CoinmarketExchangeFormContextProps; // temporary
 };
 
 export type CoinmarketOffersContextValues<T extends CoinmarketTradeType> =

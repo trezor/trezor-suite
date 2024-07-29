@@ -1,4 +1,4 @@
-import { H2, Icon, variables } from '@trezor/components';
+import { H2, Icon, Row, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { CoinmarketCryptoAmount, CoinmarketFiatAmount } from '..';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
@@ -17,11 +17,6 @@ const SummaryWrap = styled.div`
         padding-left: 0;
         margin-top: 0;
     }
-`;
-
-const SummaryRow = styled.div`
-    display: flex;
-    align-items: center;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -46,7 +41,7 @@ const CoinmarketHeaderSummary = ({
 
     return (
         <SummaryWrap className={className}>
-            <SummaryRow>
+            <Row alignItems="center">
                 {isCoinmarketSellOffers(context) && (
                     <>
                         {receiveCurrency && (
@@ -88,7 +83,7 @@ const CoinmarketHeaderSummary = ({
                         )}
                     </>
                 )}
-            </SummaryRow>
+            </Row>
         </SummaryWrap>
     );
 };

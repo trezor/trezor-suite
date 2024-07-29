@@ -74,10 +74,10 @@ const CoinmarketLayoutNavigationItem = ({
         return (
             <ButtonWrapper
                 size="small"
-                data-test={transactionsRoute}
                 variant="tertiary"
                 title={title}
                 onClick={handleTransactionRoute}
+                data-test={`@coinmarket/menu/${transactionsRoute}`}
             >
                 <Translation id={title} />
             </ButtonWrapper>

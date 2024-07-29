@@ -15,6 +15,7 @@ import type { UseFormReturn } from 'react-hook-form';
 import type { Account } from 'src/types/wallet';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketExchangeOffersContextProps } from 'src/types/coinmarket/coinmarketOffers';
 
 const LogoWrapper = styled.div`
     display: flex;
@@ -76,7 +77,7 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const { device, suiteReceiveAccounts, receiveSymbol, setReceiveAccount } =
-        useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
+        useCoinmarketOffersContext<CoinmarketTradeExchangeType>() as unknown as CoinmarketExchangeOffersContextProps; // FIXME: exchange
     const [menuIsOpen, setMenuIsOpen] = useState<boolean | undefined>(undefined);
 
     const { selectedAccountOption, setSelectedAccountOption, setValue } = props;

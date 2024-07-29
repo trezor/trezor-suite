@@ -3,18 +3,35 @@ import {
     CoinmarketCryptoListProps,
     CoinmarketPaymentMethodListProps,
     CoinmarketPaymentMethodProps,
+    CoinmarketTradeBuyType,
     CoinmarketTradeDetailMapProps,
+    CoinmarketTradeExchangeType,
+    CoinmarketTradeSellType,
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 import type { Account, Network } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
-import type { UseFormReturn } from 'react-hook-form';
-import type { BankAccount, BuyTrade, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
+import type { FieldValues, UseFormReturn, FieldPath } from 'react-hook-form';
+import type {
+    BankAccount,
+    BuyTrade,
+    CryptoSymbol,
+    CryptoSymbolInfo,
+    ExchangeTrade,
+    ExchangeTradeQuoteRequest,
+    FiatCurrencyCode,
+    SellFiatTrade,
+} from 'invity-api';
 import { Timer } from '@trezor/react-utils';
 import { AppState } from 'src/reducers/store';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { PropsWithChildren } from 'react';
-import { AmountLimits, Option, TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
+import {
+    AmountLimits,
+    CryptoAmountLimits,
+    Option,
+    TradeSell,
+} from 'src/types/wallet/coinmarketCommonTypes';
 import {
     FeeInfo,
     FormState,
@@ -26,8 +43,12 @@ import { FeeLevel } from '@trezor/connect';
 import { SendContextValues } from 'src/types/wallet/sendForm';
 import { SellFormState } from 'src/types/wallet/coinmarketSellForm';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
-import { CoinmarketSellStepType } from 'src/types/coinmarket/coinmarketOffers';
-import { FeesState } from '@suite-common/wallet-core';
+import {
+    CoinmarketExchangeStepType,
+    CoinmarketSellStepType,
+} from 'src/types/coinmarket/coinmarketOffers';
+import { AccountsState, FeesState } from '@suite-common/wallet-core';
+import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 
 export interface CoinmarketBuyFormProps {
     fiatInput?: string;
@@ -53,11 +74,29 @@ export interface CoinmarketSellFormProps
     cryptoSelect: CoinmarketAccountOptionsGroupOptionProps | undefined;
 }
 
+export interface CoinmarketExchangeFormProps extends FormState {
+    cryptoSelect: CoinmarketAccountOptionsGroupOptionProps | undefined;
+    sendCryptoSelect?: Option & { cryptoSymbol?: CryptoSymbol };
+    amountInCrypto: boolean;
+}
+
+export type CoinmarketBuySellFormProps = CoinmarketBuyFormProps | CoinmarketSellFormProps;
+export type CoinmarketSellExchangeFormProps = CoinmarketSellFormProps | CoinmarketExchangeFormProps;
+export type CoinmarketAllFormProps =
+    | CoinmarketBuyFormProps
+    | CoinmarketSellFormProps
+    | CoinmarketExchangeFormProps;
+
 export interface CoinmarketSellFormDefaultValuesProps {
     defaultValues: CoinmarketSellFormProps;
     defaultCountry: Option;
     defaultCurrency: Option;
     defaultPaymentMethod: CoinmarketPaymentMethodListProps;
+}
+
+export interface CoinmarketExchangeFormDefaultValuesProps {
+    defaultValues: CoinmarketExchangeFormProps;
+    defaultCurrency: Option;
 }
 
 interface CoinmarketFormStateProps {
@@ -73,19 +112,24 @@ export interface CoinmarketCommonFormProps {
     callInProgress: boolean;
     timer: Timer;
     account: Account;
-    type: CoinmarketTradeType;
+    network: Network;
+
+    goToOffers: () => Promise<void>;
+}
+
+export interface CoinmarketCommonFormBuySellProps {
     defaultCountry: Option;
     defaultCurrency: Option;
     defaultPaymentMethod: CoinmarketPaymentMethodListProps;
     paymentMethods: CoinmarketPaymentMethodListProps[];
     amountLimits?: AmountLimits;
-    network: Network;
-    goToOffers: () => Promise<void>;
 }
 
 export interface CoinmarketBuyFormContextProps
     extends UseFormReturn<CoinmarketBuyFormProps>,
-        CoinmarketCommonFormProps {
+        CoinmarketCommonFormProps,
+        CoinmarketCommonFormBuySellProps {
+    type: CoinmarketTradeBuyType;
     buyInfo?: BuyInfo;
     cryptoInputValue?: string;
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
@@ -106,7 +150,9 @@ export interface CoinmarketBuyFormContextProps
 
 export interface CoinmarketSellFormContextProps
     extends UseFormReturn<CoinmarketSellFormProps>,
-        CoinmarketCommonFormProps {
+        CoinmarketCommonFormProps,
+        CoinmarketCommonFormBuySellProps {
+    type: CoinmarketTradeSellType;
     isComposing: boolean;
     sellInfo?: SellInfo;
     localCurrencyOption: { label: string; value: string };
@@ -121,7 +167,7 @@ export interface CoinmarketSellFormContextProps
     // form - additional helpers for form
     form: {
         state: CoinmarketFormStateProps;
-        helpers: CoinmarketFormHelpersProps;
+        helpers: CoinmarketSellFormHelpersProps;
     };
 
     changeFeeLevel: (level: FeeLevel['label']) => void;
@@ -136,10 +182,49 @@ export interface CoinmarketSellFormContextProps
     selectQuote: (quote: SellFiatTrade) => void;
 }
 
+export interface CoinmarketExchangeFormContextProps
+    extends UseFormReturn<CoinmarketExchangeFormProps>,
+        CoinmarketCommonFormProps {
+    type: CoinmarketTradeExchangeType;
+    // form - additional helpers for form
+    form: {
+        state: CoinmarketFormStateProps;
+        helpers: CoinmarketExchangeFormHelpersProps;
+    };
+
+    selectedQuote?: ExchangeTrade;
+    trade?: TradeSell;
+    suiteReceiveAccounts?: AccountsState;
+    exchangeStep: CoinmarketExchangeStepType;
+    feeInfo: FeeInfo;
+
+    exchangeInfo?: ExchangeInfo;
+    symbolsInfo?: CryptoSymbolInfo[];
+    defaultCurrency: Option;
+    amountLimits?: CryptoAmountLimits;
+    composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
+    fiatRate?: Rate; // TODO: ??
+    quotes: ExchangeTrade[] | undefined;
+    quotesRequest: ExchangeTradeQuoteRequest | undefined;
+    receiveAccount?: Account;
+    setReceiveAccount: (account?: Account) => void;
+    setAmountLimits: (limits?: CryptoAmountLimits) => void;
+    composeRequest: SendContextValues['composeTransaction'];
+    changeFeeLevel: (level: FeeLevel['label']) => void;
+    removeDraft: (key: string) => void;
+
+    getQuotes: () => Promise<void>;
+    setExchangeStep: (step: CoinmarketExchangeStepType) => void;
+    confirmTrade: (address: string, extraField?: string) => Promise<boolean>;
+    sendTransaction: () => void;
+    selectQuote: (quote: ExchangeTrade) => void;
+    verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
+}
+
 export type CoinmarketFormMapProps = {
     buy: CoinmarketBuyFormContextProps;
     sell: CoinmarketSellFormContextProps;
-    exchange: any; // TODO: replacing any will bring a lot of problems, be ready
+    exchange: CoinmarketExchangeFormContextProps;
 };
 
 export type CoinmarketFormContextValues<T extends CoinmarketTradeType> = CoinmarketFormMapProps[T];
@@ -159,28 +244,63 @@ export interface CoinmarketFormInputLabelProps extends PropsWithChildren {
     label?: ExtendedMessageDescriptor['id'];
 }
 
-export interface CoinmarketFormInputCommonProps {
-    className?: string;
-}
+export interface CoinmarketFormInputCommonProps {}
 
-export interface CoinmarketFormInputProps
+export interface CoinmarketFormInputDefaultProps
     extends CoinmarketFormInputLabelProps,
         CoinmarketFormInputCommonProps {}
 
-export interface CoinmarketFormInputFiatCryptoProps extends CoinmarketFormInputCommonProps {
-    showLabel?: boolean;
+export type CoinmarketFormStateMapProps = {
+    buy: CoinmarketBuyFormProps;
+    sell: CoinmarketSellFormProps;
+    exchange: CoinmarketExchangeFormProps;
+};
+
+export interface CoinmarketFormInputAccountProps<TFieldValues extends FieldValues>
+    extends CoinmarketFormInputDefaultProps {
+    cryptoSelectName: FieldPath<TFieldValues>;
+    supportedCryptoCurrencies: Set<CryptoSymbol> | undefined;
+    methods: UseFormReturn<TFieldValues>;
 }
 
-export interface CoinmarketUseSellFormHelpersProps {
+export interface CoinmarketFormInputFiatCryptoProps<TFieldValues extends FieldValues> {
+    methods: UseFormReturn<TFieldValues>;
+    cryptoInputName: FieldPath<TFieldValues>;
+    fiatInputName: FieldPath<TFieldValues>;
+}
+
+export interface CoinmarketFormInputFiatCryptoWrapProps<TFieldValues extends FieldValues> {
+    showLabel?: boolean;
+    methods: UseFormReturn<TFieldValues>;
+    cryptoInputName: FieldPath<TFieldValues>;
+    fiatInputName: FieldPath<TFieldValues>;
+    currencySelectLabel?: string;
+}
+
+export interface CoinmarketFormInputCurrencyProps extends CoinmarketFormInputCommonProps {
+    isClean?: boolean;
+    size?: 'small' | 'large';
+    isDarkLabel?: boolean;
+}
+
+export interface CoinmarketUseFormHelpersProps {
     account: Account;
     network: Network;
-    methods: UseFormReturn<CoinmarketSellFormProps>;
     setAmountLimits: (limits?: AmountLimits) => void;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     composeRequest: SendContextValues<SellFormState>['composeTransaction'];
 }
 
-export interface CoinmarketFormHelpersProps {
+export interface CoinmarketUseSellFormHelpersProps extends CoinmarketUseFormHelpersProps {
+    methods: UseFormReturn<CoinmarketSellFormProps>;
+    setAccount: (account: Account) => void;
+}
+
+export interface CoinmarketUseExchangeFormHelpersProps extends CoinmarketUseFormHelpersProps {
+    methods: UseFormReturn<CoinmarketExchangeFormProps>;
+}
+
+export interface CoinmarketSellFormHelpersProps {
     isBalanceZero: boolean;
     fiatRate: Rate | undefined;
 
@@ -191,24 +311,32 @@ export interface CoinmarketFormHelpersProps {
     setAllAmount: () => void;
 }
 
-export interface CoinmarketUseSellFormStateProps {
+export interface CoinmarketExchangeFormHelpersProps {
+    isBalanceZero: boolean;
+    fiatRate: Rate | undefined;
+
+    onCryptoAmountChange: (amount: string) => void;
+    onFiatAmountChange: (amount: string, decimals: number) => void;
+    onSendCryptoValueChange: (amount: string, decimals: number) => void;
+    onCryptoCurrencyChange: (selected: CoinmarketAccountOptionsGroupOptionProps) => void;
+    setRatioAmount: (divisor: number) => void;
+    setAllAmount: () => void;
+}
+
+export interface CoinmarketUseCommonFormStateProps<
+    T extends CoinmarketSellFormProps | CoinmarketExchangeFormProps,
+> {
     account: Account;
     network: Network;
     fees: FeesState;
-    defaultValues?: CoinmarketSellFormProps;
+    defaultValues?: T;
 }
 
-export interface CoinmarketUseSellFormStateReturnProps {
+export interface CoinmarketUseCommonFormStateReturnProps<
+    T extends CoinmarketSellFormProps | CoinmarketExchangeFormProps,
+> {
     account: Account;
     network: Network;
-    feeInfo: FeeInfo & {
-        levels: {
-            feeLimit?: string | undefined;
-            feePerTx?: string | undefined;
-            label: 'high' | 'normal' | 'economy' | 'low' | 'custom';
-            feePerUnit: string;
-            blocks: number;
-        }[];
-    };
-    formValues?: CoinmarketSellFormProps;
+    feeInfo: FeeInfo;
+    formValues?: T;
 }

@@ -13,6 +13,7 @@ import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedO
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketExchangeOffersContextProps } from 'src/types/coinmarket/coinmarketOffers';
 
 const Wrapper = styled.div`
     display: flex;
@@ -88,7 +89,8 @@ const VerifyAddressComponent = () => {
         selectedQuote,
         addressVerified,
         receiveSymbol,
-    } = useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
+    } =
+        useCoinmarketOffersContext<CoinmarketTradeExchangeType>() as unknown as CoinmarketExchangeOffersContextProps; // FIXME: exchange
     const [selectedAccountOption, setSelectedAccountOption] = useState<AccountSelectOption>();
 
     const {

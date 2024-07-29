@@ -3,9 +3,12 @@ import { useCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/
 import Offers from './Offers';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketExchangeFormContextProps } from 'src/types/coinmarket/coinmarketForm';
 
 const OffersIndex = (props: UseCoinmarketProps) => {
-    const coinmarketExchangeOffers = useCoinmarketExchangeOffers(props);
+    const coinmarketExchangeOffers = useCoinmarketExchangeOffers(
+        props,
+    ) as unknown as CoinmarketExchangeFormContextProps; // FIXME: exchange;
 
     return (
         <CoinmarketOffersContext.Provider value={coinmarketExchangeOffers}>

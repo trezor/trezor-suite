@@ -6,6 +6,7 @@ import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketSelectedOffer } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOffer';
 import CoinmarketFormInputs from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInputs';
 import CoinmarketFormOffer from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffer';
+import CoinmarketFeaturedOffers from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffers';
 
 const CoinmarketFormLayoutWrapper = styled.form`
     display: flex;
@@ -19,7 +20,7 @@ const CoinmarketFormLayoutWrapper = styled.form`
 
 const CoinmarketFormInputsWrapper = styled(Card)`
     padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.lg};
-    width: 62.05%;
+    width: 60%;
 
     ${SCREEN_QUERY.BELOW_DESKTOP} {
         padding: ${spacingsPx.md};
@@ -33,7 +34,7 @@ const CoinmarketFormInputsWrapper = styled(Card)`
 `;
 const CoinmarketFormOfferWrapper = styled(Card)`
     padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxxl};
-    width: 36.88%;
+    width: 37%;
 
     ${SCREEN_QUERY.BELOW_DESKTOP} {
         padding: ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.xxl};
@@ -54,14 +55,17 @@ const CoinmarketFormLayout = () => {
     }
 
     return (
-        <CoinmarketFormLayoutWrapper>
-            <CoinmarketFormInputsWrapper>
-                <CoinmarketFormInputs />
-            </CoinmarketFormInputsWrapper>
-            <CoinmarketFormOfferWrapper>
-                <CoinmarketFormOffer />
-            </CoinmarketFormOfferWrapper>
-        </CoinmarketFormLayoutWrapper>
+        <>
+            <CoinmarketFormLayoutWrapper>
+                <CoinmarketFormInputsWrapper>
+                    <CoinmarketFormInputs />
+                </CoinmarketFormInputsWrapper>
+                <CoinmarketFormOfferWrapper>
+                    <CoinmarketFormOffer />
+                </CoinmarketFormOfferWrapper>
+            </CoinmarketFormLayoutWrapper>
+            <CoinmarketFeaturedOffers />
+        </>
     );
 };
 

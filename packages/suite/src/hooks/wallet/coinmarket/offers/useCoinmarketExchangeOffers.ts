@@ -257,7 +257,7 @@ export const useCoinmarketExchangeOffers = ({
             // swap can use different swap paths when mining tx than when estimating tx
             // the geth gas estimate may be too low
             const result = await recomposeAndSign(
-                selectedAccount,
+                selectedAccount.account,
                 selectedQuote.dexTx.to,
                 selectedQuote.dexTx.value,
                 selectedQuote.partnerPaymentExtraId,
@@ -305,7 +305,7 @@ export const useCoinmarketExchangeOffers = ({
                 ? amountToSatoshi(selectedQuote.sendStringAmount, network.decimals)
                 : selectedQuote.sendStringAmount;
             const result = await recomposeAndSign(
-                selectedAccount,
+                selectedAccount.account,
                 selectedQuote.sendAddress,
                 sendStringAmount,
                 selectedQuote.partnerPaymentExtraId,

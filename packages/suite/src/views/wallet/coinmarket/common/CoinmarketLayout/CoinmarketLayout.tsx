@@ -3,17 +3,26 @@ import styled from 'styled-components';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { Card, Button, variables } from '@trezor/components';
-import { CoinmarketLayoutNavigation } from './CoinmarketLayoutNavigation';
-import { CoinmarketAccountTransactions } from './CoinmarketAccountTransactions/CoinmarketAccountTransactions';
 import { Translation } from 'src/components/suite';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
+import CoinmarketLayoutNavigation from 'src/views/wallet/coinmarket/common/CoinmarketLayoutNew/CoinmarketLayoutNavigation/CoinmarketLayoutNavigation';
+import { spacingsPx } from '@trezor/theme';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 const Content = styled.div`
     padding: 29px 41px;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 29px 20px;
+    }
+`;
+
+const CoinmarketWrapper = styled.div`
+    padding: 0 ${spacingsPx.lg};
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        padding: 0;
     }
 `;
 
@@ -26,12 +35,13 @@ const BottomContent = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
+    padding-top: ${spacingsPx.xxxl};
 `;
 
 const Layout = styled.div`
     display: flex;
     flex-direction: row;
-    gap: 60px;
+    margin-top: ${spacingsPx.xl};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         flex-direction: column;
@@ -50,30 +60,31 @@ export const CoinmarketLayout = ({
     onClearFormButtonClick,
 }: CoinmarketLayoutProps) => (
     <WalletLayout title="TR_NAV_TRADE" isSubpage account={selectedAccount}>
-        <WalletSubpageHeading title="TR_NAV_TRADE">
-            {onClearFormButtonClick && (
-                <Button
-                    size="small"
-                    type="button"
-                    variant="tertiary"
-                    onClick={onClearFormButtonClick}
-                >
-                    <Translation id="TR_CLEAR_ALL" />
-                </Button>
-            )}
-        </WalletSubpageHeading>
+        <CoinmarketWrapper>
+            <WalletSubpageHeading title="TR_NAV_TRADE">
+                {onClearFormButtonClick && (
+                    <Button
+                        size="small"
+                        type="button"
+                        variant="tertiary"
+                        onClick={onClearFormButtonClick}
+                    >
+                        <Translation id="TR_CLEAR_ALL" />
+                    </Button>
+                )}
+            </WalletSubpageHeading>
 
-        <Layout>
             <CoinmarketLayoutNavigation />
 
-            <StyledCard paddingType="none">
-                <Content>{children}</Content>
-            </StyledCard>
-        </Layout>
+            <Layout>
+                <StyledCard paddingType="none">
+                    <Content>{children}</Content>
+                </StyledCard>
+            </Layout>
 
-        <BottomContent>
-            <CoinmarketAccountTransactions />
-            <CoinmarketFooter />
-        </BottomContent>
+            <BottomContent>
+                <CoinmarketFooter />
+            </BottomContent>
+        </CoinmarketWrapper>
     </WalletLayout>
 );

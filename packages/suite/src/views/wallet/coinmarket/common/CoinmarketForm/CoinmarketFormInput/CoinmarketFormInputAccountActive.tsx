@@ -1,61 +1,47 @@
-import { useSelector } from 'src/hooks/suite';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
     cryptoToNetworkSymbol,
     isCryptoSymbolToken,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import { Select, useElevation } from '@trezor/components';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
-    CoinmarketTradeSellType,
+    CoinmarketTradeSellExchangeType,
 } from 'src/types/coinmarket/coinmarket';
-import styled from 'styled-components';
-import { spacingsPx } from '@trezor/theme';
 import { networks } from '@suite-common/wallet-config';
-import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 import {
-    CoinmarketFormInput,
     CoinmarketFormOption,
+    CoinmarketFormOptionGroupLabel,
     CoinmarketFormOptionLabel,
     CoinmarketFormOptionLabelLong,
     CoinmarketFormOptionNetwork,
 } from 'src/views/wallet/coinmarket';
 import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
-import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
+import {
+    CoinmarketFormInputDefaultProps,
+    CoinmarketSellExchangeFormProps,
+} from 'src/types/coinmarket/coinmarketForm';
 import { FORM_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormDefaultValues';
-import { coinmarketGetAccountLabel } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { CoinmarketFormOptionIcon } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 
-const CoinmarketFormOptionTokenLogo = styled(CoinmarketCoinImage)`
-    height: 18px;
-`;
-
-const CoinmarketFormOptionIcon = styled(CoinmarketFormOptionTokenLogo)`
-    display: flex;
-    align-items: center;
-    margin-right: ${spacingsPx.xs};
-`;
-
-const CoinmarketFormInputAccountActive = ({ className, label }: CoinmarketFormInputProps) => {
+const CoinmarketFormInputAccountActive = ({ label }: CoinmarketFormInputDefaultProps) => {
     const {
         form: {
             helpers: { onCryptoCurrencyChange },
         },
-    } = useCoinmarketFormContext<CoinmarketTradeSellType>();
-    const { selectedAccount } = useSelector(state => state.wallet);
-    const { shouldSendInSats } = useBitcoinAmountUnit(selectedAccount.account?.symbol);
+    } = useCoinmarketFormContext<CoinmarketTradeSellExchangeType>();
     const { elevation } = useElevation();
     const { control } = useCoinmarketFormContext();
     const optionGroups = useCoinmarketBuildAccountGroups();
 
     return (
-        <CoinmarketFormInput className={className}>
+        <>
             <CoinmarketFormInputLabel label={label} />
             <Controller
                 name={FORM_CRYPTO_CURRENCY_SELECT}
-                control={control}
+                control={control as Control<CoinmarketSellExchangeFormProps>}
                 render={({ field: { onChange, value } }) => (
                     <Select
                         value={value}
@@ -64,6 +50,11 @@ const CoinmarketFormInputAccountActive = ({ className, label }: CoinmarketFormIn
                             onChange(selected);
                             onCryptoCurrencyChange(selected);
                         }}
+                        formatGroupLabel={group => (
+                            <CoinmarketFormOptionGroupLabel>
+                                {group.label}
+                            </CoinmarketFormOptionGroupLabel>
+                        )}
                         formatOptionLabel={(option: CoinmarketAccountOptionsGroupOptionProps) => {
                             const networkSymbol = cryptoToNetworkSymbol(option.value);
 
@@ -71,7 +62,7 @@ const CoinmarketFormInputAccountActive = ({ className, label }: CoinmarketFormIn
                                 <CoinmarketFormOption>
                                     <CoinmarketFormOptionIcon symbol={option.label} />
                                     <CoinmarketFormOptionLabel>
-                                        {coinmarketGetAccountLabel(option.label, shouldSendInSats)}
+                                        {option.label}
                                     </CoinmarketFormOptionLabel>
                                     <CoinmarketFormOptionLabelLong>
                                         {option.cryptoName}
@@ -89,13 +80,13 @@ const CoinmarketFormInputAccountActive = ({ className, label }: CoinmarketFormIn
                                 </CoinmarketFormOption>
                             );
                         }}
-                        data-test="@coinmarket/form/account-select"
+                        data-test="@coinmarket/form/account-select-active"
                         isClearable={false}
                         isSearchable
                     />
                 )}
             />
-        </CoinmarketFormInput>
+        </>
     );
 };
 

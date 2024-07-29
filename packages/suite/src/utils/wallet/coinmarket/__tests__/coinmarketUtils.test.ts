@@ -470,7 +470,7 @@ describe('coinmarket utils', () => {
     });
 
     it('coinmarketGetAccountLabel', () => {
-        expect(coinmarketGetAccountLabel('BTC', true)).toBe('sats');
+        expect(coinmarketGetAccountLabel('BTC', true)).toBe('sat');
         expect(coinmarketGetAccountLabel('BTC', false)).toBe('BTC');
         expect(coinmarketGetAccountLabel('USDT', true)).toBe('USDT');
         expect(coinmarketGetAccountLabel('USDT', false)).toBe('USDT');

@@ -1,15 +1,19 @@
 import { getFeeLevels } from '@suite-common/wallet-utils';
 import {
-    CoinmarketUseSellFormStateProps,
-    CoinmarketUseSellFormStateReturnProps,
+    CoinmarketExchangeFormProps,
+    CoinmarketSellFormProps,
+    CoinmarketUseCommonFormStateProps,
+    CoinmarketUseCommonFormStateReturnProps,
 } from 'src/types/coinmarket/coinmarketForm';
 
-export const useCoinmarketSellFormState = ({
+export const useCoinmarketCommonFormState = <
+    T extends CoinmarketSellFormProps | CoinmarketExchangeFormProps,
+>({
     account,
     network,
     fees,
     defaultValues,
-}: CoinmarketUseSellFormStateProps): CoinmarketUseSellFormStateReturnProps | undefined => {
+}: CoinmarketUseCommonFormStateProps<T>): CoinmarketUseCommonFormStateReturnProps<T> => {
     const coinFees = fees[account.symbol];
     const levels = getFeeLevels(account.networkType, coinFees);
     const feeInfo = { ...coinFees, levels };

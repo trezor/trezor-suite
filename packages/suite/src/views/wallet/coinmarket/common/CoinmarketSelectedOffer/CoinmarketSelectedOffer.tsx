@@ -5,12 +5,16 @@ import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import CoinmarketSelectedOfferVerify from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferVerify';
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
-import { getProvidersInfoProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import {
+    getCryptoQuoteAmountProps,
+    getProvidersInfoProps,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import {
     isCoinmarketBuyOffers,
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import CoinmarketSelectedOfferSell from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferSell/CoinmarketSelectedOfferSell';
+import { BuyTrade, SellFiatTrade } from 'invity-api';
 
 const Wrapper = styled.div`
     display: flex;
@@ -29,9 +33,11 @@ const StyledCard = styled(Card)`
 export const CoinmarketSelectedOffer = () => {
     const context = useCoinmarketFormContext();
     const { selectedQuote } = context;
-    const { providers } = getProvidersInfoProps(context);
+    const providers = getProvidersInfoProps(context);
 
     if (!selectedQuote) return null;
+
+    const quoteAmounts = getCryptoQuoteAmountProps(selectedQuote, context);
 
     return (
         <Wrapper>
@@ -45,7 +51,12 @@ export const CoinmarketSelectedOffer = () => {
                     <CoinmarketSelectedOfferSell />
                 </StyledCard>
             )}
-            <CoinmarketSelectedOfferInfo selectedQuote={selectedQuote} providers={providers} />
+            <CoinmarketSelectedOfferInfo
+                selectedQuote={selectedQuote as BuyTrade | SellFiatTrade} // TODO: exchange
+                providers={providers}
+                quoteAmounts={quoteAmounts}
+                type={context.type}
+            />
         </Wrapper>
     );
 };

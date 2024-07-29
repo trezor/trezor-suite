@@ -12,7 +12,7 @@ import { CoinmarketSelectedOffer } from 'src/views/wallet/coinmarket/common/Coin
 const CoinmarketSellOffersComponent = (props: UseCoinmarketProps) => {
     const coinmarketSellFormContextValues = useCoinmarketSellForm({
         ...props,
-        offFirstRequest: true,
+        pageType: 'offers',
     });
     const { selectedQuote } = coinmarketSellFormContextValues;
 
