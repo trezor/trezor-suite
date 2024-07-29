@@ -26,14 +26,14 @@ type PaginationModelMetrics = {
 };
 
 const t2b1 = {
-    paginationPrefixSvg: require('../../assets/addressPaginationPrefixT2B1.svg'),
-    paginationSuffixSvg: require('../../assets/addressPaginationSuffixT2B1.svg'),
+    paginationPrefixSvg: require('../../assets/addressPaginationPrefixT3B1.svg'),
+    paginationSuffixSvg: require('../../assets/addressPaginationSuffixT3B1.svg'),
     paginatorPrefixX: 40,
     paginatorPrefixY: 7.5,
     paginatorSuffixX: 210,
     paginatorSuffixY: 82,
-    pagerSvg1: require('../../assets/pager1T2B1.svg'),
-    pagerSvg2: require('../../assets/pager2T2B1.svg'),
+    pagerSvg1: require('../../assets/pager1T3B1.svg'),
+    pagerSvg2: require('../../assets/pager2T3B1.svg'),
     pagerX: 277.5,
     pagerY: 0,
     paginationSvgWidth: 12.5,
