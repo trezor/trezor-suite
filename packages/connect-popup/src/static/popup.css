@@ -2370,11 +2370,9 @@ section > div .divider span:after {
 .select-device .wrapper .select-device-list button .trezor_icon.trezor_icon_t2t1 {
     background-image: url(./images/trezor-t2t1.png);
 }
-.select-device .wrapper .select-device-list button .trezor_icon.trezor_icon_t2b1 {
-    background-image: url(./images/trezor-t2b1.png);
-}
+.select-device .wrapper .select-device-list button .trezor_icon.trezor_icon_t2b1,
 .select-device .wrapper .select-device-list button .trezor_icon.trezor_icon_t3b1 {
-    background-image: url(./images/trezor-t2b1.png);
+    background-image: url(./images/trezor-t3b1.png);
 }
 .select-device .wrapper .select-device-list button .trezor_icon.trezor_icon_t3t1 {
     background-image: url(./images/trezor-t3t1.png);

@@ -215,7 +215,7 @@ export const DemoScreen = () => {
                                 <TextButton
                                     variant={variant}
                                     key={variant + buttonSize}
-                                    viewLeft="trezorT2B1"
+                                    viewLeft="trezorT3B1"
                                     size={buttonSize}
                                 >
                                     {buttonSize}
