@@ -33,15 +33,18 @@ const StyledWarning = styled(Banner)`
 
 export const Hologram = () => {
     const device = useSelector(selectDevice);
+    const hologramRef = useRef<HTMLVideoElement>(null);
 
     const packagingUrl = getPackagingUrl(device);
-    const hologramRef = useRef<HTMLVideoElement>(null);
+    const isOldT2B1Packaging =
+        device?.features?.internal_model === DeviceModelInternal.T2B1 &&
+        (device.features.unit_packaging === undefined || device.features.unit_packaging === 0);
 
     return (
         <>
             <HologramSubHeading>
                 <Translation id="TR_HOLOGRAM_STEP_SUBHEADING" />
-                {device?.features?.internal_model === DeviceModelInternal.T2B1 && (
+                {isOldT2B1Packaging && (
                     <>
                         <br />
                         <Translation id="TR_HOLOGRAM_T2B1_NEW_SEAL" />
@@ -62,6 +65,7 @@ export const Hologram = () => {
                         hologramRef.current?.play();
                     }}
                     ref={hologramRef}
+                    isOldT2B1Packaging={isOldT2B1Packaging}
                 />
             </AnimationWrapper>
 
