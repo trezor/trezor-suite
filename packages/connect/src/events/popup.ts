@@ -79,7 +79,7 @@ export interface PopupMethodInfo {
 
 export interface PopupContentScriptLoaded {
     type: typeof POPUP.CONTENT_SCRIPT_LOADED;
-    payload: { id: string };
+    payload: { id: string; contentScriptVersion: number };
 }
 
 export interface PopupExtensionUsbPermissions {

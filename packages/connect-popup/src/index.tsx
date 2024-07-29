@@ -360,6 +360,13 @@ const handleLogMessage = (event: MessageEvent<IFrameLogRequest>) => {
 
 const handleContentScriptLoaded = (data: PopupContentScriptLoaded) => {
     log.debug('content-script loaded', data.payload);
+    // Check if extension ID matches the popup URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetExtensionId = urlParams.get('extension-id');
+    if (targetExtensionId && targetExtensionId !== data.payload.id) {
+        // Wrong extension ID, ignore it
+        return;
+    }
     setState({
         settings: {
             ...getState().settings!,
