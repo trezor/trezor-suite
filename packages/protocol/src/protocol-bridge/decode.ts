@@ -14,12 +14,11 @@ const readHeader = (buffer: Buffer) => {
 };
 
 export const decode: TransportProtocolDecode = bytes => {
-    const buffer = Buffer.from(bytes);
-    const { messageType, length } = readHeader(buffer);
+    const { messageType, length } = readHeader(bytes);
 
     return {
         messageType,
         length,
-        payload: buffer.subarray(HEADER_SIZE),
+        payload: bytes.subarray(HEADER_SIZE),
     };
 };

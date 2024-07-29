@@ -1,4 +1,4 @@
-export type TransportProtocolDecode = (bytes: ArrayBuffer) => {
+export type TransportProtocolDecode = (bytes: Buffer) => {
     length: number;
     messageType: number | string;
     payload: Buffer;

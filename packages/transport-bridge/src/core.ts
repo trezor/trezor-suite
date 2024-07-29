@@ -61,9 +61,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         data: string;
         signal: AbortSignal;
     }) => {
-        const { messageType, payload } = protocolBridge.decode(
-            new Uint8Array(Buffer.from(data, 'hex')),
-        );
+        const { messageType, payload } = protocolBridge.decode(Buffer.from(data, 'hex'));
 
         const encodedMessage = protocolV1.encode(payload, { messageType });
         const chunks = createChunks(
