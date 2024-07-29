@@ -181,7 +181,7 @@ export class UsbApi extends AbstractApi {
                 return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER });
             }
 
-            return this.success(res.data.buffer);
+            return this.success(Buffer.from(res.data.buffer));
         } catch (err) {
             this.logger?.error(`usb: device.transferIn error ${err}`);
             if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
