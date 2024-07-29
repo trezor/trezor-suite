@@ -14,8 +14,9 @@ import { getBuildInfo, getComputerInfo } from './libs/info';
 import { restartApp, processStatePatch } from './libs/app-utils';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initSentry } from './libs/sentry';
-import { initModules, mainThreadEmitter } from './modules';
+import { Dependencies, initModules, mainThreadEmitter } from './modules';
 import { init as initTorModule } from './modules/tor';
+import { init as initBridgeModule } from './modules/bridge';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
 import { Logger } from './libs/logger';
@@ -123,6 +124,20 @@ const init = async () => {
         logger.info('main', 'App restart requested');
         restartApp();
     });
+
+    // No UI mode with bridge only
+    const { wasOpenedAtLogin } = app.getLoginItemSettings();
+    if (app.commandLine.hasSwitch('bridge-daemon') || wasOpenedAtLogin) {
+        logger.info('main', 'App is hidden, starting bridge only');
+        app.dock?.hide(); // hide dock icon on macOS
+        app.releaseSingleInstanceLock(); // allow user to open new instance with UI
+        const loadBridgeModule = initBridgeModule({ store } as Dependencies); // bridge module only needs store
+        if (loadBridgeModule) {
+            loadBridgeModule(null);
+        }
+
+        return;
+    }
 
     await app.whenReady();
 
