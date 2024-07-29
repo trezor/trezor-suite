@@ -66,7 +66,7 @@ export abstract class AbstractApi extends TypedEmitter<{
         path: string,
         signal?: AbortSignal,
     ): AsyncResultWithTypedError<
-        ArrayBuffer,
+        Buffer,
         | typeof ERRORS.DEVICE_NOT_FOUND
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
         | typeof ERRORS.INTERFACE_DATA_TRANSFER

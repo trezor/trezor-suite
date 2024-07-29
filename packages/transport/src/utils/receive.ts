@@ -5,7 +5,7 @@ import { TransportProtocol } from '@trezor/protocol';
 
 async function receiveRest(
     result: Buffer,
-    receiver: () => Promise<ArrayBuffer>,
+    receiver: () => Promise<Buffer>,
     offset: number,
     expectedLength: number,
     chunkHeader: Buffer,
@@ -24,7 +24,7 @@ async function receiveRest(
     return receiveRest(result, receiver, length, expectedLength, chunkHeader);
 }
 
-export async function receive(receiver: () => Promise<ArrayBuffer>, protocol: TransportProtocol) {
+export async function receive(receiver: () => Promise<Buffer>, protocol: TransportProtocol) {
     const data = await receiver();
     const { length, messageType, payload } = protocol.decode(data);
     const result = Buffer.alloc(length);
@@ -41,7 +41,7 @@ export async function receive(receiver: () => Promise<ArrayBuffer>, protocol: Tr
 
 export async function receiveAndParse(
     messages: Root,
-    receiver: () => Promise<ArrayBuffer>,
+    receiver: () => Promise<Buffer>,
     protocol: TransportProtocol,
 ) {
     const { messageType, payload } = await receive(receiver, protocol);
