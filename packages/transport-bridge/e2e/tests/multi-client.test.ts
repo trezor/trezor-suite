@@ -7,11 +7,11 @@ import { descriptor as fixtureDescriptor } from '../expect';
 // todo: introduce global jest config for e2e
 jest.setTimeout(60000);
 
-const wait = () =>
+const wait = (ms = 1000) =>
     new Promise(resolve => {
         setTimeout(() => {
             resolve(undefined);
-        }, 1000);
+        }, ms);
     });
 
 const getDescriptor = (descriptor: any): Descriptor => ({
@@ -28,6 +28,29 @@ describe('bridge', () => {
 
     let descriptors: any[];
 
+    /**
+     * set bridge1 and bridge2 descriptors and start listening
+     */
+    const enumerateAndListen = async () => {
+        const result = await bridge1.enumerate().promise;
+        expect(result.success).toBe(true);
+
+        if (result.success) {
+            descriptors = result.payload;
+        }
+
+        expect(descriptors).toEqual([
+            getDescriptor({
+                session: null,
+            }),
+        ]);
+
+        bridge1.handleDescriptorsChange(descriptors);
+        bridge2.handleDescriptorsChange(descriptors);
+
+        bridge1.listen();
+        bridge2.listen();
+    };
     beforeAll(async () => {
         await TrezorUserEnvLink.connect();
     });
@@ -49,28 +72,11 @@ describe('bridge', () => {
 
         await bridge1.init().promise;
         await bridge2.init().promise;
-
-        const result = await bridge1.enumerate().promise;
-        expect(result.success).toBe(true);
-
-        if (result.success) {
-            descriptors = result.payload;
-        }
-
-        expect(descriptors).toEqual([
-            getDescriptor({
-                session: null,
-            }),
-        ]);
-
-        bridge1.handleDescriptorsChange(descriptors);
-        bridge2.handleDescriptorsChange(descriptors);
-
-        bridge1.listen();
-        bridge2.listen();
     });
 
     test('2 clients. one acquires and releases, the other one is watching', async () => {
+        await enumerateAndListen();
+
         const bride1spy = jest.spyOn(bridge1, 'emit');
         const bride2spy = jest.spyOn(bridge2, 'emit');
 
@@ -166,6 +172,8 @@ describe('bridge', () => {
     });
 
     test('session can be "stolen" by another client', async () => {
+        await enumerateAndListen();
+
         const bride1spy = jest.spyOn(bridge1, 'emit');
         const bride2spy = jest.spyOn(bridge2, 'emit');
 
@@ -221,5 +229,28 @@ describe('bridge', () => {
             releasedByMyself: [],
             releasedElsewhere: [],
         });
+    });
+
+    test('2 clients enumerate at the same time', async () => {
+        const promise1 = bridge1.enumerate().promise;
+        // TODO: see comment below. This is enough delay to make it work correctly
+        // await wait(8);
+        const promise2 = bridge2.enumerate().promise;
+
+        const results = await Promise.all([promise1, promise2]);
+
+        expect(results).toEqual([
+            {
+                success: true,
+                // TODO: this is wrong. it should be
+                // payload: [getDescriptor({ session: null })],
+                // it looks like simultaneous enumeration of usb cancels the first one (returns empty)
+                payload: [],
+            },
+            {
+                success: true,
+                payload: [getDescriptor({ session: null })],
+            },
+        ]);
     });
 });
