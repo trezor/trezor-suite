@@ -5,7 +5,7 @@ import { Box, Text, VStack, Card } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-common/icons';
 
 type SettingsSectionProps = {
-    title: string;
+    title: ReactNode;
     children: ReactNode;
     rightIconName?: IconName;
     onRightIconPress?: () => void;

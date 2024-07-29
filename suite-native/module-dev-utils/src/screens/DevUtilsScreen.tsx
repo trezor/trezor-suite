@@ -13,19 +13,15 @@ import {
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { RenderingUtils } from '../components/RenderingUtils';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { TestnetsToggle } from '../components/TestnetsToggle';
-import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
 
 export const DevUtilsScreen = ({
     navigation,
 }: StackProps<DevUtilsStackParamList, DevUtilsStackRoutes.DevUtils>) => {
-    const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
-
     return (
         <Screen screenHeader={<ScreenSubHeader content="DEV utils" />}>
             <VStack>
@@ -49,7 +45,7 @@ export const DevUtilsScreen = ({
                                 <DevicePassphraseSwitch />
                             </>
                         )}
-                        {isCoinEnablingActive && <DiscoveryCoinsFilter />}
+
                         <Button
                             onPress={() => {
                                 const errorMessage = `Sentry test error - ${Date.now()}`;

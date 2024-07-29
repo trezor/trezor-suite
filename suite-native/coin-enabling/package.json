@@ -1,0 +1,24 @@
+{
+    "name": "@suite-native/coin-enabling",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "1.9.5",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/discovery": "workspace:*",
+        "@suite-native/feature-flags": "workspace:*",
+        "react": "18.2.0",
+        "react-native": "0.74.1",
+        "react-redux": "8.0.7"
+    }
+}

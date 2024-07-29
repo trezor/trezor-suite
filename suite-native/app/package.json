@@ -42,6 +42,7 @@
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/biometrics": "workspace:*",
+        "@suite-native/coin-enabling": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/device-authorization": "workspace:*",

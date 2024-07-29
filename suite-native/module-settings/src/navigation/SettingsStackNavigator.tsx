@@ -13,6 +13,7 @@ import { SettingsPrivacyAndSecurity } from '../screens/SettingsPrivacyAndSecurit
 import { SettingsViewOnly } from '../screens/SettingsViewOnly';
 import { SettingsAboutUsScreen } from '../screens/SettingsAboutUsScreen';
 import { SettingsFAQScreen } from '../screens/SettingsFAQScreen';
+import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
 
 export const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 
@@ -55,6 +56,11 @@ export const SettingsStackNavigator = () => (
             options={{ title: SettingsStackRoutes.SettingsAbout }}
             name={SettingsStackRoutes.SettingsAbout}
             component={SettingsAboutUsScreen}
+        />
+        <SettingsStack.Screen
+            options={{ title: SettingsStackRoutes.SettingsCoinEnabling }}
+            name={SettingsStackRoutes.SettingsCoinEnabling}
+            component={SettingsCoinEnablingScreen}
         />
     </SettingsStack.Navigator>
 );

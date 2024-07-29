@@ -57,10 +57,7 @@ export const discoveryConfigSlice = createSlice({
         setDiscoveryInfo: (state, { payload }: PayloadAction<DiscoveryInfo | null>) => {
             state.discoveryInfo = payload;
         },
-        toggleEnabledDiscoveryNetworkSymbols: (
-            state,
-            { payload }: PayloadAction<NetworkSymbol>,
-        ) => {
+        toggleEnabledDiscoveryNetworkSymbol: (state, { payload }: PayloadAction<NetworkSymbol>) => {
             const networkSymbol = payload;
             const index = state.enabledDiscoveryNetworkSymbols.indexOf(networkSymbol);
 
@@ -115,6 +112,6 @@ export const selectEnabledDiscoveryNetworkSymbols = memoizeWithArgs(
     },
 );
 
-export const { toggleAreTestnetsEnabled, setDiscoveryInfo, toggleEnabledDiscoveryNetworkSymbols } =
+export const { toggleAreTestnetsEnabled, setDiscoveryInfo, toggleEnabledDiscoveryNetworkSymbol } =
     discoveryConfigSlice.actions;
 export const discoveryConfigReducer = discoveryConfigSlice.reducer;

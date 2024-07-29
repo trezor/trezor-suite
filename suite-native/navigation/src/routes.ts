@@ -88,4 +88,5 @@ export enum SettingsStackRoutes {
     SettingsViewOnly = 'SettingsViewOnly',
     SettingsAbout = 'SettingsAbout',
     SettingsFAQ = 'SettingsFAQ',
+    SettingsCoinEnabling = 'SettingsCoinEnabling',
 }
