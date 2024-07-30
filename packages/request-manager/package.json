@@ -12,6 +12,7 @@
         "test:stress": "ts-node  -O '{\"module\": \"commonjs\"}' ./e2e/identities-stress.ts"
     },
     "dependencies": {
+        "@trezor/node-utils": "workspace:^",
         "@trezor/utils": "workspace:*",
         "socks-proxy-agent": "6.1.1"
     },

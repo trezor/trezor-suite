@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import path from 'path';
 
 import { createTimeoutPromise } from '@trezor/utils';
+import { checkFileExists } from '@trezor/node-utils';
 
 import { TorControlPort } from './torControlPort';
 import {
@@ -66,14 +67,13 @@ export class TorController extends EventEmitter {
         }, this.bootstrapSlowThreshold);
     }
 
-    public getTorConfiguration(
+    public async getTorConfiguration(
         processId: number,
-        useSnowflake?: boolean,
         snowflakeBinaryPath?: string,
-    ): string[] {
+    ): Promise<string[]> {
         const { torDataDir } = this.options;
         const controlAuthCookiePath = path.join(torDataDir, 'control_auth_cookie');
-        const snowflakeLogPath = path.join(this.options.torDataDir, 'snowflake.log');
+        const snowflakeLogPath = path.join(torDataDir, 'snowflake.log');
 
         // https://github.com/torproject/tor/blob/bf30943cb75911d70367106af644d4273baaa85d/doc/man/tor.1.txt
         const config: string[] = [
@@ -136,7 +136,13 @@ export class TorController extends EventEmitter {
             this.options.torDataDir,
         ];
 
-        if (useSnowflake && snowflakeBinaryPath && snowflakeBinaryPath.trim() !== '') {
+        let existsSnowflakeBinary = false;
+        if (snowflakeBinaryPath && snowflakeBinaryPath.trim() !== '') {
+            // If provided snowflake file does not exists, do not use it.
+            existsSnowflakeBinary = await checkFileExists(snowflakeBinaryPath);
+        }
+
+        if (existsSnowflakeBinary) {
             // Snowflake is a WebRTC pluggable transport for Tor (client)
             // More info:
             // https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/-/tree/main/client
