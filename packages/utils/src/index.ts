@@ -43,3 +43,4 @@ export * from './logs';
 export * from './logsManager';
 export * from './bigNumber';
 export * from './throttler';
+export * from './extractUrlsFromText';
