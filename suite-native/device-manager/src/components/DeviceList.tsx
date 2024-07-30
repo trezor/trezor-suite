@@ -163,7 +163,7 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
             opacity: withTiming(opacity.value, { duration: ANIMATION_DURATION }),
             height: withTiming(height.value, { duration: ANIMATION_DURATION }),
         };
-    }, [isVisible]);
+    }, [isVisible, isConnectButtonVisible]);
 
     return (
         <Animated.View style={listAnimatedStyle}>
