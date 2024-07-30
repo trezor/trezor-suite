@@ -142,7 +142,7 @@ export const init =
 
         // Get default coreMode from URL params (?core-mode=auto)
         const urlParams = new URLSearchParams(window.location.search);
-        const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'iframe';
+        const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'auto';
 
         const connectOptions = {
             coreMode,
