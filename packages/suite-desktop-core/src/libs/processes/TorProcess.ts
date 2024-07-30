@@ -1,5 +1,4 @@
 import { TorController, TOR_CONTROLLER_STATUS } from '@trezor/request-manager';
-
 import { TorConnectionOptions } from '@trezor/request-manager/src/types';
 
 import { BaseProcess, Status } from './BaseProcess';
@@ -13,7 +12,6 @@ export class TorProcess extends BaseProcess {
     torHost: string;
     torDataDir: string;
     snowflakeBinaryPath: string;
-    shouldUseSnowflake: boolean;
 
     constructor(options: TorConnectionOptions) {
         super('tor', 'tor');
@@ -23,7 +21,6 @@ export class TorProcess extends BaseProcess {
         this.torHost = options.host;
         this.torDataDir = options.torDataDir;
         this.snowflakeBinaryPath = '';
-        this.shouldUseSnowflake = false;
 
         this.torController = new TorController({
             host: this.torHost,
@@ -31,14 +28,10 @@ export class TorProcess extends BaseProcess {
             controlPort: this.controlPort,
             torDataDir: this.torDataDir,
             snowflakeBinaryPath: this.snowflakeBinaryPath,
-            shouldUseSnowflake: this.shouldUseSnowflake,
         });
     }
 
-    setTorConfig(
-        torConfig: Pick<TorConnectionOptions, 'snowflakeBinaryPath' | 'shouldUseSnowflake'>,
-    ) {
-        this.shouldUseSnowflake = torConfig.shouldUseSnowflake;
+    setTorConfig(torConfig: Pick<TorConnectionOptions, 'snowflakeBinaryPath'>) {
         this.snowflakeBinaryPath = torConfig.snowflakeBinaryPath;
     }
 
@@ -54,9 +47,8 @@ export class TorProcess extends BaseProcess {
 
     async start(): Promise<void> {
         const electronProcessId = process.pid;
-        const torConfiguration = this.torController.getTorConfiguration(
+        const torConfiguration = await this.torController.getTorConfiguration(
             electronProcessId,
-            this.shouldUseSnowflake,
             this.snowflakeBinaryPath,
         );
 

@@ -101,7 +101,6 @@ declare type TorSettings = {
     host: string; // Hostname of the tor process through which traffic is routed
     port: number; // Port of the tor process through which traffic is routed
     snowflakeBinaryPath: string; // Path in user system to the snowflake binary
-    shouldUseSnowflake: boolean; // Tor should use snowflake pluggable transport
 };
 
 declare type BridgeSettings = {
