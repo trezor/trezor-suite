@@ -375,7 +375,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 return Promise.reject(
                     ERRORS.TypedError(
                         'Device_InitializeFailed',
-                        `Initialize failed: ${error.message} ${
+                        `Initialize failed: ${error.message}${
                             error.code ? `, code: ${error.code}` : ''
                         }`,
                     ),
