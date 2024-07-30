@@ -117,7 +117,7 @@ runs:
       run: |
         echo "FULL_URL is set to ${FULL_URL}"
         node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}"
-        node ./packages/connect-examples/update-webextensions-sw.js
+        node ./packages/connect-examples/update-webextensions-sw.js --trezor-connect-src "${FULL_URL}"
 
     - name: Build connect-explorer-webextension
       if: inputs.buildArtifacts == 'true'
