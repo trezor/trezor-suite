@@ -31,7 +31,6 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
         port,
         controlPort,
         torDataDir,
-        shouldUseSnowflake: initialSettings.shouldUseSnowflake,
         snowflakeBinaryPath: initialSettings.snowflakeBinaryPath,
     });
 
@@ -93,7 +92,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
 
     const setupTor = async (shouldEnableTor: boolean) => {
         const isTorRunning = (await tor.status()).process;
-        const { snowflakeBinaryPath, shouldUseSnowflake } = store.getTorSettings();
+        const { snowflakeBinaryPath } = store.getTorSettings();
 
         if (shouldEnableTor === isTorRunning) {
             return;
@@ -103,7 +102,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
             setProxy(`socks5://${host}:${port}`);
             tor.torController.on('bootstrap/event', handleBootstrapEvent);
             try {
-                tor.setTorConfig({ snowflakeBinaryPath, shouldUseSnowflake });
+                tor.setTorConfig({ snowflakeBinaryPath });
                 await tor.start();
             } catch (error) {
                 mainWindow.webContents.send('tor/bootstrap', {
@@ -131,13 +130,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
 
     ipcMain.handle(
         'tor/change-settings',
-        (
-            ipcEvent,
-            {
-                snowflakeBinaryPath,
-                shouldUseSnowflake,
-            }: { snowflakeBinaryPath: string; shouldUseSnowflake: boolean },
-        ) => {
+        (ipcEvent, { snowflakeBinaryPath }: { snowflakeBinaryPath: string }) => {
             validateIpcMessage(ipcEvent);
 
             try {
@@ -146,7 +139,6 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
                     host,
                     port,
                     snowflakeBinaryPath,
-                    shouldUseSnowflake,
                 });
 
                 return { success: true };

@@ -61,7 +61,6 @@ export class Store {
             port: 9050,
             host: '127.0.0.1',
             snowflakeBinaryPath: '',
-            shouldUseSnowflake: false,
         });
     }
 
