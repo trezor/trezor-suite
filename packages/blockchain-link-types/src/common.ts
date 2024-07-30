@@ -206,6 +206,7 @@ export interface AccountInfo {
         };
         // SOL
         owner?: string; // The Solana program owning the account
+        rent?: number; // The rent required for the account to opened
     };
     page?: {
         // blockbook and blockfrost

@@ -5595,6 +5595,11 @@ export default defineMessages({
         defaultMessage: 'Not enough {symbol} to cover transaction fee',
         id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
     },
+    REMAINING_BALANCE_LESS_THAN_RENT: {
+        defaultMessage:
+            'Sending this amount would leave your account with {remainingSolBalance} SOL, balance of a non-empty account has to be more then {rent} SOL',
+        id: 'REMAINING_BALANCE_LESS_THAN_RENT',
+    },
     OP_RETURN: {
         id: 'OP_RETURN',
         defaultMessage: 'OP RETURN',

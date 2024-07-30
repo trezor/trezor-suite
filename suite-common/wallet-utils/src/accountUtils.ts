@@ -745,7 +745,7 @@ export const getAccountSpecific = (
     if (networkType === 'solana') {
         return {
             networkType,
-            misc: undefined,
+            misc: { rent: misc?.rent },
             marker: undefined,
             page: accountInfo.page,
         };
