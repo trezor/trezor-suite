@@ -10,3 +10,4 @@ export {
     type RequestWithParams,
     type Response,
 } from './http';
+export { checkFileExists } from './checkFileExists';
