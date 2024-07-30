@@ -123,7 +123,9 @@ export const SOL_ACCOUNT = {
         key: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF-sol-deviceState',
         balance: '10000000000', // 10 SOL
         availableBalance: '10000000000', // 10 SOL
-        misc: {},
+        misc: {
+            rent: 10,
+        },
         history: {},
         tokens: [],
     },
