@@ -13,6 +13,7 @@
         "*://connect.trezor.io/9/*",
         "*://suite.corp.sldev.cz/*",
         "*://localhost/*",
-        "*://staging-connect.trezor.io/*"
+        "*://staging-connect.trezor.io/*",
+        "*://dev.suite.sldev.cz/*"
     ]
 }
