@@ -1,22 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 
-// karma doesn't have support of filter by filename pattern.
-// create custom filter from the arguments to have the same behavior in jest and karma.
-// assuming that tests are triggered by `yarn test:karma:production filename1 filename2 ...` command
-const getTestPattern = () => {
-    const root = path.resolve(__dirname, './tests');
-    const basename = __filename.split('/').reverse()[0];
-    const pos = process.argv.indexOf(`e2e/${basename}`);
-    if (process.argv[pos + 1]) {
-        // if yes add full path
-        return process.argv.slice(pos + 1).map(f => `${root}/**/${f}.test.ts`);
-    }
-
-    // else return all glob patter for all tests
-    return [`${root}/**/*.test.ts`];
-};
-
 module.exports = config => {
     config.set({
         basePath: path.resolve(__dirname, '../..'), // NOTE: "[monorepo-root]/packages", to have access to other packages
@@ -84,7 +68,10 @@ module.exports = config => {
                 served: true,
                 nocache: false,
             },
-        ].concat(getTestPattern()),
+            ...(process.env.TESTS_PATTERN || '*')
+                .split(' ')
+                .map(pattern => path.resolve(__dirname, `./tests/**/${pattern.trim()}.test.ts`)),
+        ],
 
         webpackMiddleware: {
             stats: 'errors-only',

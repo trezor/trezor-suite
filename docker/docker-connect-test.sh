@@ -138,7 +138,7 @@ run() {
   if [ $DOCKER = true ]; then
     runDocker
   else
-    $SCRIPT "$PATTERN"
+    $SCRIPT
   fi
 
 }
