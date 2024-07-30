@@ -6,6 +6,7 @@ import { DeviceCommands, PassphrasePromptResponse } from './DeviceCommands';
 import { PROTO, ERRORS, NETWORK } from '../constants';
 import { DEVICE, DeviceButtonRequestPayload, UI } from '../events';
 import { getAllNetworks } from '../data/coinInfo';
+import { DataManager } from '../data/DataManager';
 import { getFirmwareStatus, getRelease } from '../data/firmwareInfo';
 import {
     parseCapabilities,
@@ -50,7 +51,9 @@ export type RunOptions = {
     useCardanoDerivation?: boolean;
 };
 
-export const GET_FEATURES_TIMEOUT = 3000;
+export const GET_FEATURES_TIMEOUT = 3_000;
+// Due to performance issues in suite-native during app start, original timeout is not sufficient.
+export const GET_FEATURES_TIMEOUT_REACT_NATIVE = 20_000;
 
 const parseRunOptions = (options?: RunOptions): RunOptions => {
     if (!options) options = {};
@@ -338,6 +341,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 if (fn) {
                     await this.initialize(!!options.useCardanoDerivation);
                 } else {
+                    const getFeaturesTimeout =
+                        DataManager.getSettings('env') === 'react-native'
+                            ? GET_FEATURES_TIMEOUT_REACT_NATIVE
+                            : GET_FEATURES_TIMEOUT;
+
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
                     await Promise.race([
                         this.getFeatures(),
@@ -351,7 +359,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         new Promise((_resolve, reject) =>
                             setTimeout(
                                 () => reject(new Error('GetFeatures timeout')),
-                                GET_FEATURES_TIMEOUT,
+                                getFeaturesTimeout,
                             ),
                         ),
                     ]);
