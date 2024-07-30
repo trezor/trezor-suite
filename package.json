@@ -121,7 +121,6 @@
         "@babel/preset-react": "^7.24.7",
         "@babel/preset-typescript": "^7.24.7",
         "@babel/runtime": "^7.23.9",
-        "@suite-common/wallet-types": "workspace:*",
         "@types/jest": "29.5.12",
         "@types/node": "20.12.7",
         "@types/prettier": "^3.0.0",
@@ -153,6 +152,7 @@
         "tsconfig-paths": "^4.2.0",
         "tslib": "^2.6.2",
         "tsx": "^4.16.3",
+        "type-fest": "2.12.2",
         "typescript": "5.3.3",
         "version-bump-prompt": "^6.1.0"
     },
