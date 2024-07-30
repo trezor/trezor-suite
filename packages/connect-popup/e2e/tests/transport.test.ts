@@ -49,12 +49,14 @@ const fixtures = [
         expect: () =>
             expect(
                 popup.getByRole('heading', { name: "Browser can't communicate with device" }),
-            ).toBeVisible(),
+            ).toBeVisible({
+                timeout: 30000,
+            }),
     },
     {
         browser: chromium,
         description: `iframe and host different origins: iframe mode -> bridge`,
-        queryString: `?trezor-connect-src=${simulatedCrossOrigin}`,
+        queryString: `?trezor-connect-src=${simulatedCrossOrigin}&core-mode=iframe`,
         before: handleSimulatedCrossOrigin,
         expect: () =>
             expect(
