@@ -170,4 +170,27 @@ describe('api/usb', () => {
             'usb: createDevices error: Aborted by signal',
         );
     });
+
+    it('read/write +10 chunks', async () => {
+        const api = new UsbApi({
+            usbInterface: createUsbMock({
+                getDevices: () =>
+                    Promise.resolve([
+                        createMockedDevice({
+                            transferIn: () =>
+                                Promise.resolve({ data: Buffer.alloc(api.chunkSize) }),
+                            transferOut: () => new Promise(resolve => resolve({ status: 'ok' })),
+                        }),
+                    ]),
+            }),
+        });
+
+        const abortController = new AbortController();
+        await api.enumerate(abortController.signal);
+        for (let i = 0; i < 11; i++) {
+            await api.write('123', Buffer.alloc(0), abortController.signal);
+            await api.read('123', abortController.signal);
+        }
+        // this test doesn't expect any particular result. only checks EventTarget memory leak
+    });
 });

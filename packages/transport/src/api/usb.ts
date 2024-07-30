@@ -1,3 +1,5 @@
+import { createDeferred, createTimeoutPromise } from '@trezor/utils';
+
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
 import { DescriptorApiLevel } from '../types';
 import {
@@ -8,7 +10,6 @@ import {
     TREZOR_USB_DESCRIPTORS,
     WEBUSB_BOOTLOADER_PRODUCT,
 } from '../constants';
-import { createTimeoutPromise } from '@trezor/utils';
 
 import * as ERRORS from '../errors';
 
@@ -127,15 +128,21 @@ export class UsbApi extends AbstractApi {
             return Promise.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         }
 
-        return Promise.race([
-            // todo: maybe we need to pass signal down the chain?
-            method(),
-            new Promise<R>((_, reject) => {
-                signal?.addEventListener('abort', () => {
-                    reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
-                });
-            }),
-        ]);
+        const dfd = createDeferred<R>();
+        const abortListener = () => {
+            dfd.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
+        };
+        signal?.addEventListener('abort', abortListener);
+
+        return Promise.race([method(), dfd.promise])
+            .then(r => {
+                dfd.resolve(r);
+
+                return r;
+            })
+            .finally(() => {
+                signal?.removeEventListener('abort', abortListener);
+            });
     }
 
     public async enumerate(signal?: AbortSignal) {
