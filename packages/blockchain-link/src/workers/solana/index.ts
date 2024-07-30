@@ -190,6 +190,9 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const balance = await api.getBalance(publicKey);
 
+    // https://solana.stackexchange.com/a/13102
+    const rent = await api.getMinimumBalanceForRentExemption(accountInfo?.data.byteLength || 0);
+
     const account: AccountInfo = {
         descriptor: payload.descriptor,
         balance: balance.toString(),
@@ -213,6 +216,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
             ? {
                   misc: {
                       owner: accountInfo.owner.toString(),
+                      rent,
                   },
               }
             : {}),

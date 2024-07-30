@@ -50,6 +50,7 @@
 -   AMOUNT_IS_LESS_THAN_RESERVE (XRP only: trying to send less XRP than required reserve to the empty account)
 -   AMOUNT_IS_NOT_IN_RANGE_DECIMALS (amount with invalid decimal places)
 -   AMOUNT_IS_NOT_INTEGER (ERC20 only: token doesn't accept decimal places)
+-   REMAINING_BALANCE_LESS_THAN_RENT (solana only: account has to keep a minimal balance equal to rent)
 
 ---
 

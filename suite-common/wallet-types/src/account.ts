@@ -59,7 +59,9 @@ type AccountNetworkSpecific =
       }
     | {
           networkType: 'solana';
-          misc: undefined;
+          misc: {
+              rent?: number;
+          };
           marker: undefined;
           page: AccountInfo['page'];
       };

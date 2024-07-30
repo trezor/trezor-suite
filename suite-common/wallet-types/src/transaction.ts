@@ -29,7 +29,8 @@ type PrecomposedTransactionErrorExtended =
               | 'AMOUNT_IS_NOT_ENOUGH'
               | 'AMOUNT_IS_TOO_LOW'
               | 'AMOUNT_IS_LESS_THAN_RESERVE'
-              | 'TR_STAKE_NOT_ENOUGH_FUNDS';
+              | 'TR_STAKE_NOT_ENOUGH_FUNDS'
+              | 'REMAINING_BALANCE_LESS_THAN_RENT';
       };
 
 export type PrecomposedTransactionCardanoNonFinal =
