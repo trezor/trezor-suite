@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { HStack, Box } from '@suite-native/atoms';
+import { HStack, Box, ACCESSIBILITY_FONTSIZE_MULTIPLIER } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     selectDeviceByState,
@@ -31,7 +31,7 @@ export type DeviceItemContentProps = {
 
 const contentWrapperStyle = prepareNativeStyle<{ height: number }>((utils, { height }) => ({
     flexShrink: 1,
-    height,
+    height: height * ACCESSIBILITY_FONTSIZE_MULTIPLIER,
     alignItems: 'center',
     spacing: utils.spacings.medium,
 }));

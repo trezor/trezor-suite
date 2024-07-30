@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
-import { HStack } from '@suite-native/atoms';
+import { HStack, ACCESSIBILITY_FONTSIZE_MULTIPLIER } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type DeviceActionProps = {
@@ -16,7 +16,7 @@ const contentStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.medium,
     paddingVertical: 12,
     alignItems: 'center',
-    height: 44,
+    height: 44 * ACCESSIBILITY_FONTSIZE_MULTIPLIER,
     gap: utils.spacings.small,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderWidth: utils.borders.widths.small,
