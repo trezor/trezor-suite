@@ -54,9 +54,9 @@ const calculate = (
     }
 
     // total SOL spent (amount + fee), in case of SPL token only the fee
-    const totalSpent = new BigNumber(calculateTotal(token ? '0' : amount, feeInLamports));
+    const totalSolSpent = new BigNumber(calculateTotal(token ? '0' : amount, feeInLamports));
 
-    if (totalSpent.isGreaterThan(availableBalance)) {
+    if (totalSolSpent.isGreaterThan(availableBalance)) {
         const error = token ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' : 'AMOUNT_IS_NOT_ENOUGH';
 
         // errorMessage declared later
@@ -65,7 +65,7 @@ const calculate = (
 
     const payloadData: PrecomposedTransaction = {
         type: 'nonfinal',
-        totalSpent: token ? amount : totalSpent.toString(),
+        totalSpent: token ? amount : totalSolSpent.toString(),
         max,
         fee: feeInLamports,
         feePerByte: feeLevel.feePerUnit,
