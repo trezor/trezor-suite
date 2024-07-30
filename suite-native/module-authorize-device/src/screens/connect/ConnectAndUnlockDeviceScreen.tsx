@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -10,8 +10,8 @@ import { ConnectDeviceAnimation } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen } from '@suite-native/navigation';
 import {
-    selectDevice,
     selectIsDeviceAuthorized,
+    selectIsDeviceConnected,
     authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -37,18 +37,30 @@ export const ConnectAndUnlockDeviceScreen = () => {
     const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
 
-    const device = useSelector(selectDevice);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isFocused = useIsFocused();
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const navigation = useNavigation();
+
+    const navigateBack = useCallback(() => {
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    }, [navigation]);
 
     useEffect(() => {
-        if (isFocused && device && !isDeviceAuthorized) {
-            // When user cancelled the authorization, we need to authorize the device again.
+        if (!isFocused || !isDeviceConnected) return;
+
+        if (isDeviceAuthorized) {
+            // When selected device become connected, we need to navigate out of this screen.
+            navigateBack();
+        } else {
+            // If user cancelled the authorization, we need to authorize the device again.
             requestPrioritizedDeviceAccess({
                 deviceCallback: () => dispatch(authorizeDeviceThunk()),
             });
         }
-    }, [isDeviceAuthorized, device, dispatch, isFocused]);
+    }, [isDeviceAuthorized, isDeviceConnected, dispatch, isFocused, navigateBack]);
 
     return (
         <Screen
