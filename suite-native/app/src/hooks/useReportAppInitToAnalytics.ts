@@ -48,6 +48,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
                     osVersion: Platform.Version,
                     screenHeight: Dimensions.get('screen').height,
                     screenWidth: Dimensions.get('screen').width,
+                    pixelDensity: PixelRatio.get(),
                     fontScale: PixelRatio.getFontScale(),
                     bitcoinUnit: UNIT_ABBREVIATIONS[bitcoinUnit],
                     localCurrency: currencyCode,
