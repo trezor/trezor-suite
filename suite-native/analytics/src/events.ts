@@ -16,6 +16,7 @@ export type SuiteNativeAnalyticsEvent =
               bitcoinUnit: UNIT_ABBREVIATION;
               screenWidth: number;
               screenHeight: number;
+              fontScale: number;
               osName: string;
               osVersion: string | number;
               discreetMode: boolean;
