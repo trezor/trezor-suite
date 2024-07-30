@@ -18,6 +18,7 @@ import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     selectIsCreatingNewPassphraseWallet,
+    selectDeviceRequestedPin,
 } from '@suite-native/device-authorization';
 
 import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
@@ -41,6 +42,7 @@ export const ConnectDeviceScreenHeader = ({
 
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
+    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     const handleCancel = useCallback(() => {
         if (isDiscoveryActive) {
@@ -59,10 +61,13 @@ export const ConnectDeviceScreenHeader = ({
             });
         } else {
             // Remove unauthorized passphrase device if it was created before prompting the PIN.
-            if (isCreatingNewWalletInstance)
+            if (isCreatingNewWalletInstance) {
                 dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+            }
 
-            TrezorConnect.cancel('pin-cancelled');
+            if (hasDeviceRequestedPin) {
+                TrezorConnect.cancel('pin-cancelled');
+            }
             if (navigation.canGoBack()) {
                 navigation.goBack();
             }
@@ -74,6 +79,7 @@ export const ConnectDeviceScreenHeader = ({
         navigation,
         showAlert,
         isCreatingNewWalletInstance,
+        hasDeviceRequestedPin,
     ]);
 
     // Handle hardware back button press same as cancel button
