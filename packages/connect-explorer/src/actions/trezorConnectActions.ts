@@ -46,6 +46,12 @@ const isRelativePath = (path: string) => {
 
 const testLoadingScript = (src: string) => {
     return new Promise((resolve, reject) => {
+        if (process.env.BUILD_TARGET === 'webextension') {
+            // Webextension does not support loading scripts in this way, we skip this check
+            resolve(null);
+
+            return;
+        }
         const script = document.createElement('script');
         script.src = src;
         script.type = 'module';
