@@ -226,8 +226,14 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                     const memberTypeDefinition = types[memberTypeName][index];
                     memberTypeName = memberTypeDefinition.type;
                     memberData = memberData[memberTypeDefinition.name as keyof typeof memberData];
-                } else {
-                    // TODO: what to do when the value is missing (for example in recursive types)?
+                }
+                if (memberData === null || memberData === undefined) {
+                    // Cancel the request so the device isn't left hanging
+                    cmd.typedCall('Cancel', 'Success');
+                    throw ERRORS.TypedError(
+                        'Runtime',
+                        `Value from member path ${member_path} is missing in the data object`,
+                    );
                 }
             }
 
