@@ -390,6 +390,7 @@ export class PopupManager extends EventEmitter {
             if (this.popupPromise) {
                 this.close();
             }
+            this.unlock();
         } else if (data.type === UI.CLOSE_UI_WINDOW) {
             this.clear(false);
         }
