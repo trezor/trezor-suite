@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Dimensions, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { HStack, VStack } from '@suite-native/atoms';
+import { VStack, Stack, ACCESSIBILITY_FONTSIZE_MULTIPLIER } from '@suite-native/atoms';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDevice,
@@ -106,10 +106,15 @@ export const DeviceManagerContent = () => {
                 {!isPortfolioTrackerDevice && (
                     <VStack spacing={12} paddingTop="large">
                         <WalletList onSelectDevice={handleSelectDevice} />
-                        <HStack style={applyStyle(deviceButtonsStyle)}>
+                        <Stack
+                            orientation={
+                                ACCESSIBILITY_FONTSIZE_MULTIPLIER > 1 ? 'vertical' : 'horizontal'
+                            }
+                            style={applyStyle(deviceButtonsStyle)}
+                        >
                             <DeviceInfoButton showAsFullWidth={!isAddHiddenWalletButtonVisible} />
                             {isAddHiddenWalletButtonVisible && <AddHiddenWalletButton />}
-                        </HStack>
+                        </Stack>
                     </VStack>
                 )}
             </ScrollView>

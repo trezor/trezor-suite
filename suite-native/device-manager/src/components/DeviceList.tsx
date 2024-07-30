@@ -16,7 +16,13 @@ import {
     selectInstacelessUnselectedDevices,
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
-import { Button, Box, TextDivider, VStack } from '@suite-native/atoms';
+import {
+    Button,
+    Box,
+    TextDivider,
+    VStack,
+    ACCESSIBILITY_FONTSIZE_MULTIPLIER,
+} from '@suite-native/atoms';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -44,8 +50,8 @@ type ConnectButtonProps = {
 const ANIMATION_DURATION = 300;
 
 const DEVICE_LIST_TOP_MARGIN = 300; // This is so the bg is consistent even if the device list is dragged down while scrolling
-const ITEM_HEIGHT = 66;
-const BUTTON_HEIGHT = 48;
+const ITEM_HEIGHT = 66 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const BUTTON_HEIGHT = 48 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const BUTTON_PADDING_TOP = 8;
 const PADDING_TOP = 12;
 const PADDING_BOTTOM = 16;
