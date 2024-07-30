@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { Platform, Dimensions } from 'react-native';
+import { Platform, Dimensions, PixelRatio } from 'react-native';
 import { useEffect, useState } from 'react';
 
 import { useDiscreetMode } from '@suite-native/atoms';
@@ -48,6 +48,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
                     osVersion: Platform.Version,
                     screenHeight: Dimensions.get('screen').height,
                     screenWidth: Dimensions.get('screen').width,
+                    fontScale: PixelRatio.getFontScale(),
                     bitcoinUnit: UNIT_ABBREVIATIONS[bitcoinUnit],
                     localCurrency: currencyCode,
                     theme: userColorScheme,
