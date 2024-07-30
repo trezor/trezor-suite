@@ -7,7 +7,7 @@ export const minimalSupportedFirmwareVersion = {
     T1B1: [1, 12, 1] as VersionArray,
     T2T1: [2, 6, 3] as VersionArray,
     T2B1: [2, 6, 3] as VersionArray,
-    T3B1: [2, 6, 3] as VersionArray,
+    T3B1: [2, 8, 1] as VersionArray,
     T3T1: [2, 7, 1] as VersionArray,
 } as const satisfies Record<DeviceModelInternal, VersionArray>;
 

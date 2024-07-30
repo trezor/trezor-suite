@@ -26,6 +26,13 @@ type DeviceButtonStyleProps = {
     isAddressRevealed: boolean;
 };
 
+const safe3Styles = {
+    backgroundColor: DEVICE_SCREEN_BACKGROUND_COLOR,
+    borderColor: DEVICE_TEXT_COLOR,
+    borderRadius: nativeBorders.radii.large / 2,
+    borderWidth: nativeBorders.widths.large,
+} as const;
+
 const modelToStyles = {
     [DeviceModelInternal.T2T1]: {
         backgroundColor: T2B1_BUTTON_COLOR,
@@ -35,18 +42,8 @@ const modelToStyles = {
         backgroundColor: T2B1_BUTTON_COLOR,
         borderRadius: nativeBorders.radii.small,
     },
-    [DeviceModelInternal.T2B1]: {
-        backgroundColor: DEVICE_SCREEN_BACKGROUND_COLOR,
-        borderColor: DEVICE_TEXT_COLOR,
-        borderRadius: nativeBorders.radii.large / 2,
-        borderWidth: nativeBorders.widths.large,
-    },
-    [DeviceModelInternal.T3B1]: {
-        backgroundColor: DEVICE_SCREEN_BACKGROUND_COLOR,
-        borderColor: DEVICE_TEXT_COLOR,
-        borderRadius: nativeBorders.radii.large / 2,
-        borderWidth: nativeBorders.widths.large,
-    },
+    [DeviceModelInternal.T2B1]: safe3Styles,
+    [DeviceModelInternal.T3B1]: safe3Styles,
 } as const satisfies Record<PaginationCompatibleDeviceModel, Readonly<NativeStyle>>;
 
 const deviceButtonStyle = prepareNativeStyle<DeviceButtonStyleProps>(
