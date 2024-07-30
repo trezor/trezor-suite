@@ -357,7 +357,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     ]);
                 }
             } catch (error) {
-                if (!this.inconsistent && error.message === 'GetFeatures timeout') {
+                if (
+                    !this.inconsistent &&
+                    (error.message === 'GetFeatures timeout' || error.message === 'Unknown message')
+                ) {
                     // handling corner-case T1B1 + bootloader < 1.4.0 (above)
                     // if GetFeatures fails try again
                     // this time add empty "fn" param to force Initialize message
