@@ -12,6 +12,7 @@ const excluded = [
     URLS.HELP_CENTER_DRY_RUN_T2B1_URL,
     URLS.HELP_CENTER_FW_DOWNGRADE_T2B1_URL,
     URLS.HELP_CENTER_PACKAGING_T2B1_URL,
+    URLS.TREZOR_FORUM_URL, // captcha, returning 403 in ci
 ];
 
 describe('Test that all external links are alive', () => {
