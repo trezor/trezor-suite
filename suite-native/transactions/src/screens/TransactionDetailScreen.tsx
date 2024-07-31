@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Linking } from 'react-native';
 
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import {
@@ -20,6 +19,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { useOpenLink } from '@suite-native/link';
 
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
@@ -34,6 +34,7 @@ export const TransactionDetailScreen = ({
 }: StackProps<RootStackParamList, RootStackRoutes.TransactionDetail>) => {
     const { applyStyle, utils } = useNativeStyles();
     const { txid, accountKey, tokenTransfer } = route.params;
+    const openLink = useOpenLink();
     const transaction = useSelector((state: TransactionsRootState) =>
         selectTransactionByTxidAndAccountKey(state, txid, accountKey),
     ) as WalletAccountTransaction;
@@ -58,7 +59,7 @@ export const TransactionDetailScreen = ({
     const handleOpenBlockchain = () => {
         if (!blockchainExplorer) return;
         analytics.report({ type: EventType.TransactionDetailExploreInBlockchain });
-        Linking.openURL(`${blockchainExplorer.tx}${transaction.txid}`);
+        openLink(`${blockchainExplorer.tx}${transaction.txid}`);
     };
 
     const isTokenTransaction = !!tokenTransfer;
