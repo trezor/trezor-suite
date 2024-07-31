@@ -14,7 +14,8 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "storybook": "storybook dev -p 9003 -c .storybook",
-        "storybook-build": "storybook build -c .storybook -o .build-storybook"
+        "storybook-build": "storybook build -c .storybook -o .build-storybook",
+        "test": "yarn g:jest"
     },
     "dependencies": {
         "@floating-ui/react": "^0.26.9",
