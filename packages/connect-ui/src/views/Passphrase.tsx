@@ -4,9 +4,10 @@ import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/connect-analytics';
 import { UI, UiEvent, CoreRequestMessage } from '@trezor/connect';
-import { PassphraseTypeCard, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 
 import { View } from '../components/View';
+import { PassphraseTypeCard } from '../components/Passphrase/PassphraseTypeCard';
 
 const Wrapper = styled.div`
     display: flex;

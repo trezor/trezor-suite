@@ -12,13 +12,18 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/validators": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-analytics": "workspace:*",
         "@trezor/connect-common": "workspace:*",
+        "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "@trezor/urls": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "framer-motion": "^11.0.3",
         "react-intl": "^6.6.2"
     },
     "devDependencies": {

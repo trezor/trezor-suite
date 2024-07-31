@@ -10756,14 +10756,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-ui@workspace:packages/connect-ui"
   dependencies:
+    "@suite-common/validators": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/dom-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
+    "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.79"
+    framer-motion: "npm:^11.0.3"
     react-intl: "npm:^6.6.2"
   peerDependencies:
     react: 18.2.0
