@@ -1,4 +1,3 @@
-import { Linking } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { A, G } from '@mobily/ts-belt';
@@ -9,6 +8,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Variant } from '@suite-common/suite-types';
 import { messageSystemActions, selectActiveFeatureMessages } from '@suite-common/message-system';
 import { Translation } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
 
 const screenStyle = prepareNativeStyle(utils => ({
     flexGrow: 1,
@@ -48,6 +48,7 @@ const iconVariantMap = {
 
 export const FeatureMessageScreen = () => {
     const dispatch = useDispatch();
+    const openLink = useOpenLink();
 
     const activeFeatureMessages = useSelector(selectActiveFeatureMessages);
     const firstFeatureMessage = A.head(activeFeatureMessages);
@@ -81,7 +82,7 @@ export const FeatureMessageScreen = () => {
 
     const handleCtaPress = () => {
         if (isExternalCta && ctaLink) {
-            Linking.openURL(ctaLink);
+            openLink(ctaLink);
         } else {
             // TODO: handle internal link once we introduce them
         }
