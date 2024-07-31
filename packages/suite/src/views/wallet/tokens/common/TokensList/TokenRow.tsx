@@ -292,6 +292,20 @@ export const TokenRow = ({
                                             !isMobileLayout,
                                     },
                                     {
+                                        label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
+                                        icon: 'NEWSPAPER',
+                                        onClick: () => {
+                                            goToWithAnalytics('wallet-index', {
+                                                params: {
+                                                    symbol: account.symbol,
+                                                    accountIndex: account.index,
+                                                    accountType: account.accountType,
+                                                    contractAddress: token.contract,
+                                                },
+                                            });
+                                        },
+                                    },
+                                    {
                                         label: <Translation id="TR_VIEW_IN_EXPLORER" />,
                                         icon: 'EXTERNAL_LINK',
                                         onClick: () => {

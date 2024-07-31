@@ -2,11 +2,11 @@ import styled from 'styled-components';
 
 import { SearchAction } from 'src/components/wallet/SearchAction';
 import { ExportAction } from './ExportAction';
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
-import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { Account, WalletParams } from '@suite-common/wallet-types';
 import { AccountLabels } from '@suite-common/metadata-types';
 
 const Wrapper = styled.div`
@@ -34,13 +34,14 @@ export const TransactionListActions = ({
     const [isExpanded, setExpanded] = useState(false);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
+    const routerParams = useSelector(state => state.router.params) as WalletParams;
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
     const onSearch = useCallback(
-        async ({ target }: ChangeEvent<HTMLInputElement>) => {
+        async (query: string) => {
             setSelectedPage(1);
-            setSearch(target.value);
+            setSearch(query);
 
             if (!hasFetchedAll) {
                 setHasFetchedAll(true);
@@ -70,6 +71,13 @@ export const TransactionListActions = ({
         setExpanded(false);
         setSearch('');
     }, [account.symbol, account.index, account.accountType, setSearch]);
+
+    useEffect(() => {
+        if (routerParams?.contractAddress) {
+            onSearch(routerParams?.contractAddress);
+            setSearch(routerParams?.contractAddress);
+        }
+    }, [routerParams?.contractAddress, setSearch, onSearch, account]);
 
     return (
         <Wrapper>
