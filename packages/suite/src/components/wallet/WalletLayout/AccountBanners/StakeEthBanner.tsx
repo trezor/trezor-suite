@@ -9,6 +9,7 @@ import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 import { Account } from '@suite-common/wallet-types';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
+import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};
@@ -94,6 +95,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
                                 values={{
                                     apyPercent: ethApy,
                                     symbol: account?.symbol.toUpperCase(),
+                                    amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
                                 }}
                             />
                         </Paragraph>
