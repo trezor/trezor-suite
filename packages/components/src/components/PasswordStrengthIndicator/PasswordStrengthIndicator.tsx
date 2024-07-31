@@ -54,7 +54,7 @@ const getPasswordScore = async (password: string) => {
     return zxcvbn.default(password).score;
 };
 
-interface PasswordStrengthIndicatorProps {
+export interface PasswordStrengthIndicatorProps {
     password: string;
 }
 

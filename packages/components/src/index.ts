@@ -53,6 +53,7 @@ export * from './components/modals/DialogModal/DialogModal';
 export * from './components/modals/Modal/Backdrop';
 export * from './components/modals/Modal/Modal';
 export * from './components/Note/Note';
+export * from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export * from './components/Passphrase/PassphraseTypeCard';
 export * from './components/ResizableBox/ResizableBox';
 export * from './components/skeletons/SkeletonCircle';
