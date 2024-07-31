@@ -1,9 +1,8 @@
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { SettingsSectionItem } from 'src/components/settings';
+import { SectionItem } from 'src/components/suite';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useSelector } from '../../../hooks/suite';
+import { useDevice } from '../../../hooks/suite';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;
@@ -12,11 +11,9 @@ interface DeviceLabelProps {
 export const Brightness = ({ isDeviceLocked }: DeviceLabelProps) => {
     const { device } = useDevice();
 
-    const showDebugMenu = useSelector(state => state.suite.settings.debug.showDebugMenu);
-
     const isSupportedDevice = device?.features?.capabilities?.includes('Capability_Brightness');
 
-    if (!showDebugMenu || !isSupportedDevice) {
+    if (!isSupportedDevice) {
         return null;
     }
 
@@ -31,7 +28,7 @@ export const Brightness = ({ isDeviceLocked }: DeviceLabelProps) => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.PinProtection}>
+        <SectionItem>
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_BRIGHTNESS_DESC" />}
@@ -46,6 +43,6 @@ export const Brightness = ({ isDeviceLocked }: DeviceLabelProps) => {
                     <Translation id="TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON" />
                 </ActionButton>
             </ActionColumn>
-        </SettingsSectionItem>
+        </SectionItem>
     );
 };
