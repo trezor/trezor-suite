@@ -44,7 +44,7 @@ type R = Extract<
 type IncompleteRequestOptions = {
     params?: string;
     body?: any;
-    timeout?: boolean;
+    timeout?: number;
     signal?: AbortController['signal'];
 };
 
@@ -171,7 +171,6 @@ export class BridgeTransport extends AbstractTransport {
 
                 const response = await this.post('/acquire', {
                     params: `${input.path}/${previous}`,
-                    timeout: true,
                     signal,
                 });
 
@@ -385,10 +384,8 @@ export class BridgeTransport extends AbstractTransport {
         endpoint: BridgeEndpoint,
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<R, AnyError> {
-        const { timeout, signal, ...restOptions } = options;
-
         const response = await bridgeApiCall({
-            ...restOptions,
+            ...options,
             method: 'POST',
             url: `${this.url + endpoint}${options?.params ? `/${options.params}` : ''}`,
             skipContentTypeHeader: true,
