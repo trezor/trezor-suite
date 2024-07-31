@@ -1795,7 +1795,7 @@
   "TR_SPEND_TRANS_ID": "Trans. ID:",
   "TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD": "I acknowledge the above entry period",
   "TR_STAKE_ADDING_TO_POOL": "Adding to staking pool",
-  "TR_STAKE_ANY_AMOUNT_ETH": "Stake any amount and watch that sweet {symbol} roll in. With our current APY rate of {apyPercent}%, your rewards earn too!",
+  "TR_STAKE_ANY_AMOUNT_ETH": "Stake a minimum amount of {amount} {symbol} and start earning rewards. With our current APY rate of {apyPercent}%, your rewards earn too!",
   "TR_STAKE_APY": "Annual Percentage Yield",
   "TR_STAKE_APY_DESC": "*Annual Percentage Yield",
   "TR_STAKE_AVAILABLE": "Available",
