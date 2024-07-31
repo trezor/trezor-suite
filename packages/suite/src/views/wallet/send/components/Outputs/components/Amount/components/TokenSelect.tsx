@@ -46,30 +46,30 @@ export const buildTokenOptions = (
     ];
 
     if (accountTokens) {
-        const tokens = getTokens(accountTokens, symbol, false, coinDefinitions);
+        const tokens = getTokens(accountTokens, symbol, coinDefinitions);
 
-        tokens.shown.forEach(token => {
+        tokens.shownWithBalance.forEach(token => {
             result[0].options.push({
                 value: token.contract,
                 label: formatTokenSymbol(token.symbol || token.contract),
             });
         });
 
-        if (tokens.hidden.length) {
+        if (tokens.hiddenWithBalance.length) {
             result.push({
                 label: (
                     <UnrecognizedTokensHeading>
                         <Translation id="TR_HIDDEN_TOKENS" />
                     </UnrecognizedTokensHeading>
                 ),
-                options: tokens.hidden.map(token => ({
+                options: tokens.hiddenWithBalance.map(token => ({
                     value: token.contract,
                     label: formatTokenSymbol(token.symbol || token.contract),
                 })),
             });
         }
 
-        if (tokens.unverified.length) {
+        if (tokens.unverifiedWithBalance.length) {
             result.push({
                 label: (
                     <UnrecognizedTokensHeading>
@@ -79,7 +79,7 @@ export const buildTokenOptions = (
                         />
                     </UnrecognizedTokensHeading>
                 ),
-                options: tokens.unverified.map(token => ({
+                options: tokens.unverifiedWithBalance.map(token => ({
                     value: token.contract,
                     label: formatTokenSymbol(token.symbol || token.contract),
                 })),

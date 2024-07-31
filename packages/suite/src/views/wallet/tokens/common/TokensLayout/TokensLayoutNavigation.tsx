@@ -90,7 +90,6 @@ export const TokensLayoutNavigation = ({
     const tokens = getTokens(
         selectedAccount.account.tokens || [],
         selectedAccount.account.symbol,
-        isDebug,
         coinDefinitions,
     );
     const showAddToken = ['ethereum'].includes(account.networkType) && isDebug;
@@ -139,14 +138,14 @@ export const TokensLayoutNavigation = ({
                     route="wallet-tokens-coins"
                     title="TR_COINS"
                     icon="tokens"
-                    count={tokens.shown.length}
+                    count={tokens.shownWithBalance.length}
                 />
                 <Divider />
                 <Item
                     route="wallet-tokens-hidden"
                     title="TR_HIDDEN"
                     icon="eyeClosed"
-                    count={tokens.unverified.length + tokens.hidden.length}
+                    count={tokens.unverifiedWithBalance.length + tokens.hiddenWithBalance.length}
                 />
             </List>
             <Actions>
