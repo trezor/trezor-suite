@@ -8758,6 +8758,10 @@ export default defineMessages({
         id: 'TR_TX_CONFIRMING',
         defaultMessage: 'Confirming transaction',
     },
+    ZERO_BALANCE_TOKENS: {
+        id: 'ZERO_BALANCE_TOKENS',
+        defaultMessage: 'Zero balance tokens ({count})',
+    },
     TR_STAKE_ADDING_TO_POOL: {
         id: 'TR_STAKE_ADDING_TO_POOL',
         defaultMessage: 'Adding to staking pool',

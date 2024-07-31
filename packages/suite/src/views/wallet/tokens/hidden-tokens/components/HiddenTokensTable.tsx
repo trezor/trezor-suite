@@ -4,11 +4,10 @@ import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/toke
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 import { useSelector } from 'src/hooks/suite';
 import { NoTokens } from '../../common/NoTokens';
-import { TokenList } from '../../common/TokenList';
+import { TokenList } from '../../common/TokensList/TokenList';
 import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { H3, Icon } from '@trezor/components';
 import { Text, Row } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
@@ -37,7 +36,6 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
     const { account, network } = selectedAccount;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
-    const isDebug = useSelector(selectIsDebugModeActive);
 
     const sortedTokens = account.tokens
         ? [...account.tokens].sort(
@@ -45,17 +43,12 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
           )
         : [];
 
-    const filteredTokens = getTokens(
-        sortedTokens,
-        account.symbol,
-        isDebug,
-        coinDefinitions,
-        searchQuery,
-    );
-    const tokens = getTokens(sortedTokens, account.symbol, isDebug, coinDefinitions);
+    const filteredTokens = getTokens(sortedTokens, account.symbol, coinDefinitions, searchQuery);
+    const tokens = getTokens(sortedTokens, account.symbol, coinDefinitions);
 
-    const hiddenTokensCount = tokens.hidden.length;
-    const unverifiedTokensCount = tokens.unverified.length;
+    const hiddenTokensCount = tokens.hiddenWithBalance.length + tokens.hiddenWithoutBalance.length;
+    const unverifiedTokensCount =
+        tokens.unverifiedWithBalance.length + tokens.unverifiedWithoutBalance.length;
 
     return (
         <Wrapper>
@@ -67,7 +60,8 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                     hideRates={isTestnet(account.symbol)}
                     account={account}
                     tokenStatusType={TokenManagementAction.SHOW}
-                    tokens={filteredTokens.hidden}
+                    tokensWithBalance={filteredTokens.hiddenWithBalance}
+                    tokensWithoutBalance={filteredTokens.hiddenWithoutBalance}
                     network={network}
                     searchQuery={searchQuery}
                 />
@@ -94,7 +88,8 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                         hideRates
                         tokenStatusType={TokenManagementAction.SHOW}
                         isUnverifiedTable
-                        tokens={filteredTokens.unverified}
+                        tokensWithBalance={filteredTokens.unverifiedWithBalance}
+                        tokensWithoutBalance={filteredTokens.unverifiedWithoutBalance}
                         network={network}
                         searchQuery={searchQuery}
                     />

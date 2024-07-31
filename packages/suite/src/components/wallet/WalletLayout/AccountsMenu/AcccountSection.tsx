@@ -8,7 +8,6 @@ import {
     selectAccountHasStaked,
 } from '@suite-common/wallet-core';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 interface AccountSectionProps {
     account: Account;
@@ -35,24 +34,23 @@ export const AccountSection = ({
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
     const hasStaked = useSelector(state => selectAccountHasStaked(state, account));
-    const isDebug = useSelector(selectIsDebugModeActive);
 
     const isStakeShown = isSupportedEthStakingNetworkSymbol(symbol) && hasStaked;
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
 
-    const tokens = getTokens(accountTokens, account.symbol, isDebug, coinDefinitions);
+    const tokens = getTokens(accountTokens, account.symbol, coinDefinitions);
 
     const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
 
-    return showGroup && (isStakeShown || tokens.shown.length) ? (
+    return showGroup && (isStakeShown || tokens.shownWithBalance.length) ? (
         <AccountItemsGroup
             key={`${descriptor}-${symbol}`}
             account={account}
             accountLabel={accountLabel}
             selected={selected}
             showStaking={isStakeShown}
-            tokens={tokens.shown}
+            tokens={tokens.shownWithBalance}
             dataTestKey={dataTestKey}
         />
     ) : (
@@ -64,7 +62,7 @@ export const AccountSection = ({
             onClick={onItemClick}
             accountLabel={accountLabel}
             formattedBalance={formattedBalance}
-            tokens={tokens.shown}
+            tokens={tokens.shownWithBalance}
             dataTestKey={dataTestKey}
         />
     );

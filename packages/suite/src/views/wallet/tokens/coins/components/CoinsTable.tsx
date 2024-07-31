@@ -11,9 +11,8 @@ import {
 } from 'src/utils/wallet/tokenUtils';
 import { useSelector } from 'src/hooks/suite';
 import { NoTokens } from '../../common/NoTokens';
-import { TokenList } from '../../common/TokenList';
+import { TokenList } from '../../common/TokensList/TokenList';
 import { Translation } from 'src/components/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 interface CoinsTableProps {
     selectedAccount: SelectedAccountLoaded;
@@ -27,7 +26,6 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
     const { account, network } = selectedAccount;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
-    const isDebug = useSelector(selectIsDebugModeActive);
 
     const tokensWithRates = enhanceTokensWithRates(
         account.tokens,
@@ -37,14 +35,22 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
     );
     const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
 
-    const tokens = getTokens(sortedTokens, account.symbol, isDebug, coinDefinitions, searchQuery);
+    const tokens = getTokens(sortedTokens, account.symbol, coinDefinitions, searchQuery);
+    const hiddenTokensCount =
+        tokens.unverifiedWithBalance.length +
+        tokens.hiddenWithBalance.length +
+        tokens.unverifiedWithoutBalance.length +
+        tokens.hiddenWithoutBalance.length;
 
-    return tokens.shown.length > 0 || searchQuery ? (
+    return tokens.shownWithBalance.length > 0 ||
+        tokens.shownWithoutBalance.length > 0 ||
+        searchQuery ? (
         <TokenList
             account={account}
             hideRates={isTestnet(account.symbol)}
             tokenStatusType={TokenManagementAction.HIDE}
-            tokens={tokens.shown}
+            tokensWithBalance={tokens.shownWithBalance}
+            tokensWithoutBalance={tokens.shownWithoutBalance}
             network={network}
             searchQuery={searchQuery}
         />
@@ -52,11 +58,7 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
         <NoTokens
             title={
                 <Translation
-                    id={
-                        tokens.unverified.length + tokens.hidden.length > 0
-                            ? 'TR_TOKENS_EMPTY_CHECK_HIDDEN'
-                            : 'TR_TOKENS_EMPTY'
-                    }
+                    id={hiddenTokensCount > 0 ? 'TR_TOKENS_EMPTY_CHECK_HIDDEN' : 'TR_TOKENS_EMPTY'}
                 />
             }
         />

@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { Icon } from '@trezor/components';
 import { Account } from 'src/types/wallet';
-import { AnimationWrapper } from './AnimationWrapper';
+import { AnimationWrapper } from '../../AnimationWrapper';
 import { spacingsPx, typography } from '@trezor/theme';
 
 const Container = styled.div`

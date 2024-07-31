@@ -69,19 +69,19 @@ export const formatTokenSymbol = (symbol: string) => {
 export const getTokens = (
     tokens: EnhancedTokenInfo[] | TokenInfo[],
     symbol: NetworkSymbol,
-    isDebug: boolean,
     coinDefinitions?: TokenDefinition,
     searchQuery?: string,
 ) => {
     const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
 
-    const shown: EnhancedTokenInfo[] = [];
-    const hidden: EnhancedTokenInfo[] = [];
-    const unverified: EnhancedTokenInfo[] = [];
+    const shownWithBalance: EnhancedTokenInfo[] = [];
+    const shownWithoutBalance: EnhancedTokenInfo[] = [];
+    const hiddenWithBalance: EnhancedTokenInfo[] = [];
+    const hiddenWithoutBalance: EnhancedTokenInfo[] = [];
+    const unverifiedWithBalance: EnhancedTokenInfo[] = [];
+    const unverifiedWithoutBalance: EnhancedTokenInfo[] = [];
 
     tokens.forEach(token => {
-        if (token.balance === '0' && !isDebug) return false;
-
         const isKnown = isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract);
         const isHidden = coinDefinitions?.hide.includes(token.contract);
         const isShown = coinDefinitions?.show.includes(token.contract);
@@ -90,16 +90,36 @@ export const getTokens = (
 
         if (searchQuery && !isTokenMatchesSearch(token, query)) return;
 
+        const hasBalance = new BigNumber(token?.balance || '0').gt(0);
+
+        const pushToArray = (
+            arrayWithBalance: EnhancedTokenInfo[],
+            arrayWithoutBalance: EnhancedTokenInfo[],
+        ) => {
+            if (hasBalance) {
+                arrayWithBalance.push(token);
+            } else {
+                arrayWithoutBalance.push(token);
+            }
+        };
+
         if (isShown) {
-            shown.push(token);
+            pushToArray(shownWithBalance, shownWithoutBalance);
         } else if (hasCoinDefinitions && !isKnown) {
-            unverified.push(token);
+            pushToArray(unverifiedWithBalance, unverifiedWithoutBalance);
         } else if (isHidden) {
-            hidden.push(token);
+            pushToArray(hiddenWithBalance, hiddenWithoutBalance);
         } else {
-            shown.push(token);
+            pushToArray(shownWithBalance, shownWithoutBalance);
         }
     });
 
-    return { shown, hidden, unverified };
+    return {
+        shownWithBalance,
+        shownWithoutBalance,
+        hiddenWithBalance,
+        hiddenWithoutBalance,
+        unverifiedWithBalance,
+        unverifiedWithoutBalance,
+    };
 };
