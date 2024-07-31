@@ -32,11 +32,13 @@ describe('api/usb', () => {
     afterAll(async () => {});
 
     it('read aborted', async () => {
+        const reset = jest.fn(() => Promise.resolve());
         const api = new UsbApi({
             usbInterface: createUsbMock({
                 getDevices: () =>
                     Promise.resolve([
                         createMockedDevice({
+                            reset,
                             transferIn: () =>
                                 new Promise(resolve =>
                                     setTimeout(
@@ -57,14 +59,17 @@ describe('api/usb', () => {
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
         expect(result.error).toContain('Aborted by signal');
+        expect(reset).toHaveBeenCalledTimes(1);
     });
 
     it('write aborted', async () => {
+        const reset = jest.fn(() => Promise.resolve());
         const api = new UsbApi({
             usbInterface: createUsbMock({
                 getDevices: () =>
                     Promise.resolve([
                         createMockedDevice({
+                            reset,
                             transferOut: () =>
                                 new Promise(resolve =>
                                     setTimeout(() => resolve({ status: 'ok' }), 100),
@@ -82,6 +87,7 @@ describe('api/usb', () => {
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
         expect(result.message).toContain('Aborted by signal');
+        expect(reset).toHaveBeenCalledTimes(1);
     });
 
     it('enumerate aborted', async () => {
@@ -172,11 +178,13 @@ describe('api/usb', () => {
     });
 
     it('read/write +10 chunks', async () => {
+        const reset = jest.fn(() => Promise.resolve());
         const api = new UsbApi({
             usbInterface: createUsbMock({
                 getDevices: () =>
                     Promise.resolve([
                         createMockedDevice({
+                            reset,
                             transferIn: () =>
                                 Promise.resolve({ data: Buffer.alloc(api.chunkSize) }),
                             transferOut: () => new Promise(resolve => resolve({ status: 'ok' })),
@@ -191,6 +199,11 @@ describe('api/usb', () => {
             await api.write('123', Buffer.alloc(0), abortController.signal);
             await api.read('123', abortController.signal);
         }
-        // this test doesn't expect any particular result. only checks EventTarget memory leak
+
+        // this should not trigger onAbort (device.reset)
+        abortController.abort();
+        await api.write('123', Buffer.alloc(0), abortController.signal);
+
+        expect(reset).toHaveBeenCalledTimes(0);
     });
 });
