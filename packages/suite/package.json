@@ -97,7 +97,7 @@
         "react-focus-lock": "^2.9.7",
         "react-helmet-async": "^2.0.4",
         "react-hook-form": "^7.50.1",
-        "react-intl": "^6.6.2",
+        "react-intl": "^6.6.8",
         "react-qr-reader": "^2.2.1",
         "react-redux": "8.0.7",
         "react-router-dom": "^5.2.0",

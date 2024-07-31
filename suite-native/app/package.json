@@ -92,7 +92,7 @@
         "lottie-react-native": "6.7.2",
         "node-libs-browser": "^2.2.1",
         "react": "18.2.0",
-        "react-intl": "^6.6.2",
+        "react-intl": "^6.6.8",
         "react-native": "0.74.1",
         "react-native-gesture-handler": "2.16.2",
         "react-native-keyboard-aware-scroll-view": "0.9.5",
