@@ -13,6 +13,7 @@ export interface Props {
     // override default behavior of metadata labeling element visible only on hover
     visible?: boolean;
     placeholder?: string;
+    updateFlag?: any;
 }
 
 export interface ExtendedProps extends Props {

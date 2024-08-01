@@ -11,17 +11,15 @@ const HiddenInputToMeasurePlaceholderScrollableWidth = styled.input`
 
 type ApplyWidthParams = {
     ref: React.MutableRefObject<HTMLInputElement | null>;
-    width: number;
     minWidth: number;
 };
 
-const applyWidth = ({ width, minWidth, ref }: ApplyWidthParams) => {
+const applyWidth = ({ minWidth, ref }: ApplyWidthParams) => {
     if (ref?.current?.style) {
         const borderSize = ref.current.offsetWidth - ref.current.clientWidth;
-
         // First it needs to be set to minimum, this ensures that with of the input will be shrinking as text gets smaller
         ref.current.style.width = `${minWidth + borderSize}px`; // See: https://stackoverflow.com/a/75227086
-        ref.current.style.width = `${width + borderSize}px`;
+        ref.current.style.width = `${ref.current.scrollWidth + borderSize}px`;
     }
 };
 
@@ -35,7 +33,6 @@ const createHandleOnChangeAndApplyNewWidth =
     (event: ChangeEvent<HTMLInputElement>) => {
         const { target } = event;
         const borderSize = target.offsetWidth - target.clientWidth;
-
         // See: `applyWidth` function for explanation.
         // It cannot be used here as we work with `target` from event and not react Ref.
         target.style.width = `${calculatedMin + borderSize}px`; // See: https://stackoverflow.com/a/75227086
@@ -46,6 +43,7 @@ const createHandleOnChangeAndApplyNewWidth =
 export interface Props
     extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     minWidth: number;
+    updateFlag?: any;
 }
 
 const StyledInput = styled.input`
@@ -59,7 +57,7 @@ const StyledInput = styled.input`
  * TODO: This is Labeling Input and this maybe consolidated with `withEditable`
  */
 export const AutoScalingInput = forwardRef<HTMLInputElement, Props>(
-    ({ value, minWidth, ...props }, ref) => {
+    ({ value, minWidth, updateFlag, ...props }, ref) => {
         const [placeholderWidth, setPlaceholderWidth] = useState(0);
         const inputRef = useRef<HTMLInputElement | null>(null);
         const placeholderMeasureRef = useRef<HTMLInputElement | null>(null);
@@ -71,21 +69,14 @@ export const AutoScalingInput = forwardRef<HTMLInputElement, Props>(
             if (placeholderMeasureRef?.current?.style) {
                 setPlaceholderWidth(placeholderMeasureRef.current.scrollWidth ?? 0);
             }
-        }, [setPlaceholderWidth]);
+        }, [setPlaceholderWidth, value, updateFlag]);
 
         useEffect(() => {
-            const isValueEmpty = value === '' || value === null || value === undefined;
-
-            const width = isValueEmpty
-                ? calculatedMin
-                : Math.max(calculatedMin, inputRef?.current?.scrollWidth ?? calculatedMin);
-
             applyWidth({
-                width,
                 minWidth: calculatedMin,
                 ref: inputRef,
             });
-        }, [value, inputRef, calculatedMin]);
+        }, [inputRef, calculatedMin]);
 
         const innerRef = useCallback(
             (e: HTMLInputElement) => {
@@ -108,7 +99,7 @@ export const AutoScalingInput = forwardRef<HTMLInputElement, Props>(
                     style={props.style} // It is important to keep styles so the width is properly calculated
                     type="text"
                     ref={placeholderMeasureRef}
-                    value={props.placeholder}
+                    value={value ?? props.placeholder}
                     readOnly
                 />
                 <StyledInput
@@ -117,8 +108,8 @@ export const AutoScalingInput = forwardRef<HTMLInputElement, Props>(
                     type="text"
                     value={value}
                     onChange={createHandleOnChangeAndApplyNewWidth({
-                        calculatedMin,
                         onChange: props.onChange,
+                        calculatedMin,
                     })}
                 />
             </>
