@@ -1,4 +1,11 @@
-import { HttpServer, parseBodyJSON, parseBodyText, allowReferers } from '../http';
+import {
+    HttpServer,
+    parseBodyJSON,
+    parseBodyText,
+    allowReferers,
+    RequestHandler,
+    ParamsValidatorHandler,
+} from '../http';
 
 type Events = {
     foo: (arg: string) => void;
@@ -155,15 +162,20 @@ describe('HttpServer', () => {
     test('handler order', async () => {
         const calledHandlers: string[] = [];
         const handler =
-            (name: string, end?: boolean) =>
-            (req: any, res: any, next: (req: any, res: any) => void) => {
+            (name: string, end?: boolean): RequestHandler<any, any> =>
+            (req, res, next) => {
                 calledHandlers.push(name);
                 if (end) res.end('ok');
                 else next(req, res);
             };
 
         server.use([handler('use1'), handler('use2')]);
-        server.post('/foo', [handler('post1', true)]);
+        server.post('/foo', [
+            (_req, res) => {
+                calledHandlers.push('post1');
+                res.end('ok');
+            },
+        ]);
         server.get('/foo', [handler('get1', true)]);
 
         await server.start();
@@ -172,6 +184,127 @@ describe('HttpServer', () => {
         await fetch(`http://${address}:${port}/foo`);
 
         expect(calledHandlers).toStrictEqual(['use1', 'use2', 'get1']);
+    });
+
+    test('handlers with params and body validation', async () => {
+        type Session = `${number}`;
+        type Body = { foo: 'bar' }[];
+
+        const paramsValidator: ParamsValidatorHandler<{
+            session: Session;
+        }> = (request, response, next) => {
+            if (
+                typeof request.params.session === 'string' &&
+                /^\d+$/.test(request.params.session)
+            ) {
+                next(request as Parameters<typeof next>[0], response);
+            } else {
+                response.statusCode = 400;
+                response.end(JSON.stringify({ error: 'Invalid params' }));
+            }
+        };
+        const bodyValidator: RequestHandler<JSON, Body> = (request, response, next) => {
+            if (Array.isArray(request.body)) {
+                next({ ...request, body: request.body }, response);
+            } else {
+                response.statusCode = 400;
+                response.end(JSON.stringify({ error: 'Invalid body' }));
+            }
+        };
+
+        const isSession = jest.fn((_val: Session) => {});
+        const isValidJSON = jest.fn((_val: Body) => {});
+
+        // case with params validator and body parser
+        server.post('/foo-1/:session', [
+            paramsValidator,
+            parseBodyJSON,
+            bodyValidator,
+            ({ body, params }, res) => {
+                isSession(params.session);
+                isValidJSON(body);
+                res.end('ok');
+            },
+        ]);
+
+        // case with params validator without body parser
+        server.post('/foo-2/:session', [
+            paramsValidator,
+            ({ body, params }, res) => {
+                isSession(params.session);
+                // @ts-expect-error body = unknown
+                isValidJSON(body);
+                res.end('ok');
+            },
+        ]);
+
+        // case without params validator with body parser
+        server.post('/foo-3/:session', [
+            parseBodyJSON,
+            bodyValidator,
+            ({ body, params }, res) => {
+                // @ts-expect-error params = unknown
+                isSession(params.session);
+                isValidJSON(body);
+                res.end('ok');
+            },
+        ]);
+
+        // case without params validator and without body parser
+        server.post('/foo-4/:session', [
+            ({ body, params }, res) => {
+                // @ts-expect-error params = unknown
+                isSession(params.session);
+                // @ts-expect-error body = unknown
+                isValidJSON(body);
+                res.end('ok');
+            },
+        ]);
+
+        await server.start();
+        const { address, port } = server.getServerAddress();
+
+        const post = (url: string, body: any) => {
+            return fetch(`http://${address}:${port}/${url}`, {
+                method: 'POST',
+                body: body ? JSON.stringify(body) : undefined,
+            });
+        };
+
+        let res;
+        res = await post('foo-1/321', { foo: 'bar' }); // body != array, fails in bodyValidator
+        expect(res.status).toEqual(400);
+        expect(await res.json()).toEqual({ error: 'Invalid body' });
+
+        res = await post('foo-1/321', undefined); // body != array, fails in parseBodyJSON
+        expect(res.status).toEqual(400);
+        const { error } = await res.json();
+        expect(error).toMatch('Invalid json body:');
+
+        res = await post('foo-1/not-a-number', { foo: 'bar' });
+        expect(res.status).toEqual(400);
+        expect(await res.json()).toEqual({ error: 'Invalid params' });
+
+        res = await post('foo-1/321', [{ foo: 'bar' }]);
+        expect(res.status).toEqual(200);
+
+        expect(isSession).toHaveBeenLastCalledWith('321');
+        expect(isValidJSON).toHaveBeenLastCalledWith([{ foo: 'bar' }]);
+
+        res = await post('foo-2/321', {});
+        expect(res.status).toEqual(200);
+        expect(isSession).toHaveBeenLastCalledWith('321');
+        expect(isValidJSON).toHaveBeenLastCalledWith(undefined);
+
+        res = await post('foo-3/not-a-number', []);
+        expect(res.status).toEqual(200);
+        expect(isSession).toHaveBeenLastCalledWith('not-a-number');
+        expect(isValidJSON).toHaveBeenLastCalledWith([]);
+
+        res = await post('foo-4/not-a-number', {});
+        expect(res.status).toEqual(200);
+        expect(isSession).toHaveBeenLastCalledWith('not-a-number');
+        expect(isValidJSON).toHaveBeenLastCalledWith(undefined);
     });
 
     test('endpoint with params returns params in response', async () => {

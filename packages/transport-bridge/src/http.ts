@@ -7,7 +7,8 @@ import {
     allowOrigins,
     parseBodyJSON,
     parseBodyText,
-    Handler,
+    RequestHandler,
+    ParamsValidatorHandler,
     RequestWithParams,
     Response,
 } from '@trezor/node-utils';
@@ -23,6 +24,42 @@ const defaults = {
 
 const str = (value: Record<string, any> | string) => JSON.stringify(value);
 
+const validateDescriptorsJSON: RequestHandler<JSON, Descriptor[]> = (request, response, next) => {
+    if (Array.isArray(request.body)) {
+        next({ ...request, body: request.body }, response);
+    } else {
+        response.statusCode = 400;
+        response.end(JSON.stringify({ error: 'Invalid body' }));
+    }
+};
+
+const validateAcquireParams: ParamsValidatorHandler<{
+    path: string;
+    previous: Session | 'null';
+}> = (request, response, next) => {
+    if (
+        typeof request.params.path === 'string' &&
+        typeof request.params.previous === 'string' &&
+        /^\d+$|^null$/.test(request.params.previous)
+    ) {
+        next(request as Parameters<typeof next>[0], response);
+    } else {
+        response.statusCode = 400;
+        response.end(JSON.stringify({ error: 'Invalid params' }));
+    }
+};
+
+const validateSessionParams: ParamsValidatorHandler<{
+    session: Session;
+}> = (request, response, next) => {
+    if (typeof request.params.session === 'string' && /^\d+$/.test(request.params.session)) {
+        next(request as Parameters<typeof next>[0], response);
+    } else {
+        response.statusCode = 400;
+        response.end(JSON.stringify({ error: 'Invalid params' }));
+    }
+};
+
 export class TrezordNode {
     /** versioning, baked in by webpack */
     version = '3.0.0';
@@ -32,8 +69,8 @@ export class TrezordNode {
     /** pending /listen subscriptions that are supposed to be resolved whenever descriptors change is detected */
     listenSubscriptions: {
         descriptors: Descriptor[];
-        req: Parameters<Handler>[0];
-        res: Parameters<Handler>[1];
+        req: Parameters<RequestHandler<unknown, unknown>>[0];
+        res: Response;
     }[];
     port: number;
     server?: HttpServer<never>;
@@ -182,11 +219,10 @@ export class TrezordNode {
 
             app.post('/listen', [
                 parseBodyJSON,
+                validateDescriptorsJSON,
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
                     this.listenSubscriptions.push({
-                        // todo: type in that if parseBodyText was called as previous handler, req.body is string. is that even possible
-                        // @ts-expect-error
                         descriptors: req.body,
                         req,
                         res,
@@ -195,13 +231,14 @@ export class TrezordNode {
             ]);
 
             app.post('/acquire/:path/:previous', [
+                validateAcquireParams,
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
                     const signal = this.createAbortSignal(res);
                     this.core
                         .acquire({
                             path: req.params.path,
-                            previous: req.params.previous as Session | 'null',
+                            previous: req.params.previous,
                             signal,
                         })
                         .then(result => {
@@ -216,11 +253,12 @@ export class TrezordNode {
             ]);
 
             app.post('/release/:session', [
+                validateSessionParams,
                 parseBodyText,
                 (req, res) => {
                     this.core
                         .release({
-                            session: req.params.session as Session,
+                            session: req.params.session,
                         })
                         .then(result => {
                             if (!result.success) {
@@ -234,13 +272,13 @@ export class TrezordNode {
             ]);
 
             app.post('/call/:session', [
+                validateSessionParams,
                 parseBodyText,
                 (req, res) => {
                     const signal = this.createAbortSignal(res);
                     this.core
                         .call({
-                            session: req.params.session as Session,
-                            // @ts-expect-error
+                            session: req.params.session,
                             data: req.body,
                             signal,
                         })
@@ -256,31 +294,30 @@ export class TrezordNode {
             ]);
 
             app.post('/read/:session', [
+                validateSessionParams,
                 parseBodyJSON,
                 (req, res) => {
                     const signal = this.createAbortSignal(res);
-                    this.core
-                        .receive({ session: req.params.session as Session, signal })
-                        .then(result => {
-                            if (!result.success) {
-                                res.statusCode = 400;
+                    this.core.receive({ session: req.params.session, signal }).then(result => {
+                        if (!result.success) {
+                            res.statusCode = 400;
 
-                                return res.end(str({ error: result.error }));
-                            }
+                            return res.end(str({ error: result.error }));
+                        }
 
-                            res.end(result.payload);
-                        });
+                        res.end(result.payload);
+                    });
                 },
             ]);
 
             app.post('/post/:session', [
+                validateSessionParams,
                 parseBodyText,
                 (req, res) => {
                     const signal = this.createAbortSignal(res);
                     this.core
                         .send({
-                            session: req.params.session as Session,
-                            // @ts-expect-error
+                            session: req.params.session,
                             data: req.body,
                             signal,
                         })

@@ -11,29 +11,67 @@ import { getFreePort } from './getFreePort';
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 type EventMap = { [event: string]: any };
 
-export type RequestWithParams = Request & {
-    params: Record<string, string>;
+export type RequestWithParams<B = unknown, P = unknown> = Request & {
+    params: P;
+    body: B;
 };
 
 export type Response = http.ServerResponse;
 
-type Next<R extends Request = RequestWithParams> = (
-    request: R,
+type NextHandler<Body = unknown, Params = unknown> = (
+    request: RequestWithParams<Body, Params>,
     response: http.ServerResponse,
 ) => void;
 
-export type Handler<R extends Request = RequestWithParams> = (
-    request: R,
+export type RequestHandler<CurrentBody, NextBody, CurrentParams = unknown, NextParams = unknown> = (
+    request: RequestWithParams<CurrentBody, CurrentParams>,
     response: Response,
-    next: Next<R>,
+    next: NextHandler<NextBody, NextParams>,
     { logger }: { logger: Log },
 ) => void;
+
+type AnyRequestHandler = RequestHandler<any, any, any, any>;
+
+type FirstHandler<T extends unknown[]> = T extends readonly [infer First, ...unknown[]]
+    ? First
+    : RequestHandler<unknown, unknown, unknown, unknown>;
+
+type LastHandler<T extends unknown[]> = T extends readonly [...unknown[], infer Last]
+    ? Last
+    : RequestHandler<unknown, unknown, unknown, unknown>;
+
+export type ParamsValidatorHandler<Valid extends Record<string, any>> = RequestHandler<
+    unknown,
+    unknown,
+    Record<string, unknown>,
+    Valid
+>;
+
+type UnwrapHandler<Handler, Field extends keyof RequestWithParams<any, any>> = Handler extends (
+    ...args: any[]
+) => any
+    ? Parameters<Handler>[0] extends RequestWithParams<any, any>
+        ? Parameters<Handler>[0][Field]
+        : never
+    : never;
+
+type ResolveHandler<First, Last> = Last extends (...args: any[]) => any
+    ? First extends ParamsValidatorHandler<Record<string, any>>
+        ? (
+              req: Parameters<Last>[2] & {
+                  params: UnwrapHandler<Parameters<First>[2], 'params'>;
+                  body: UnwrapHandler<Parameters<Last>[2], 'body'>;
+              },
+              res: Parameters<Last>[1],
+          ) => void
+        : Parameters<Last>[2]
+    : [unknown, unknown];
 
 type Route = {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | '*';
     pathname: string;
     params: string[];
-    handler: Handler[];
+    handler: AnyRequestHandler[];
 };
 /**
  * Events that may be emitted or listened to by HttpServer
@@ -99,7 +137,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     public async start() {
         const port = this.port || (this.port = await getFreePort());
 
-        return new Promise((resolve, reject) => {
+        return new Promise<net.AddressInfo>((resolve, reject) => {
             let nextSocketId = 0;
             this.server.on('connection', socket => {
                 // Add a newly connected socket
@@ -172,7 +210,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         return [baseSegments, paramsSegments];
     }
 
-    private registerRoute(pathname: string, method: 'POST' | 'GET', handler: Handler[]) {
+    private registerRoute(pathname: string, method: 'POST' | 'GET', handler: AnyRequestHandler[]) {
         const [baseSegments, paramsSegments] = this.splitSegments(pathname);
         const basePathname = baseSegments.join('/');
         this.routes.push({
@@ -183,11 +221,14 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         });
     }
 
-    public post(pathname: string, handler: Handler[]) {
+    public post<R extends AnyRequestHandler[]>(
+        pathname: string,
+        handler: [...R, ResolveHandler<FirstHandler<R>, LastHandler<R>>],
+    ) {
         this.registerRoute(pathname, 'POST', handler);
     }
 
-    public get(pathname: string, handler: Handler[]) {
+    public get(pathname: string, handler: AnyRequestHandler[]) {
         this.registerRoute(pathname, 'GET', handler);
     }
 
@@ -196,7 +237,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     /**
      * Register common handlers that are run for all requests before route handlers
      */
-    public use(handler: Handler[]) {
+    public use(handler: AnyRequestHandler[]) {
         this.routes.push({
             method: '*',
             pathname: '*',
@@ -295,7 +336,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         ];
 
         const run =
-            ([handler, ...rest]: Handler<RequestWithParams>[]) =>
+            ([handler, ...rest]: AnyRequestHandler[]) =>
             (req: RequestWithParams, res: http.ServerResponse) =>
                 handler?.(req, res, run(rest), { logger: this.logger });
         run(handlers)(requestWithParams, response);
@@ -308,7 +349,7 @@ const checkOrigin = ({
     pathname,
     logger,
 }: {
-    request: Parameters<Handler>[0];
+    request: Request;
     allowedOrigin: string[];
     pathname: string;
     logger: Log;
@@ -344,7 +385,7 @@ const checkReferer = ({
     pathname,
     logger,
 }: {
-    request: Parameters<Handler>[0];
+    request: Request;
     allowedReferer: string[];
     pathname: string;
     logger: Log;
@@ -398,7 +439,7 @@ const checkReferer = ({
  * Built-middleware "allow origin"
  */
 export const allowOrigins =
-    (allowedOrigin: string[]): Handler =>
+    (allowedOrigin: string[]): AnyRequestHandler =>
     (request, _response, next, { logger }) => {
         if (
             checkOrigin({
@@ -416,7 +457,7 @@ export const allowOrigins =
  * Built-middleware "allow referers"
  */
 export const allowReferers =
-    (allowedReferer: string[]): Handler =>
+    (allowedReferer: string[]): AnyRequestHandler =>
     (request, _response, next, { logger }) => {
         if (
             checkReferer({
@@ -432,7 +473,7 @@ export const allowReferers =
 
 export const parseBodyTextHelper = (request: Request) =>
     new Promise<string>(resolve => {
-        const tmp: any[] = [];
+        const tmp: Buffer[] = [];
         request
             .on('data', chunk => {
                 tmp.push(chunk);
@@ -447,27 +488,22 @@ export const parseBodyTextHelper = (request: Request) =>
 /**
  * set request.body as parsed JSON
  */
-export const parseBodyJSON = <R extends RequestWithParams>(
-    request: R,
-    response: Response,
-    next: Next<R & { body: Record<string, any> }>,
-) => {
+export const parseBodyJSON: RequestHandler<unknown, JSON> = (request, response, next) => {
     parseBodyTextHelper(request)
         .then(body => JSON.parse(body))
-        .catch(() => ({}))
         .then(body => {
             next({ ...request, body }, response);
+        })
+        .catch(error => {
+            response.statusCode = 400;
+            response.end(JSON.stringify({ error: `Invalid json body: ${error.message}` }));
         });
 };
 
 /**
  * set request.body as string
  */
-export const parseBodyText = <R extends RequestWithParams>(
-    request: R,
-    response: Response,
-    next: Next<R & { body: string }>,
-) => {
+export const parseBodyText: RequestHandler<unknown, string> = (request, response, next) => {
     parseBodyTextHelper(request).then(body => {
         next({ ...request, body }, response);
     });
