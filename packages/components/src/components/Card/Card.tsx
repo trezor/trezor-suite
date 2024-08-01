@@ -7,7 +7,7 @@ import {
     TransientFrameProps,
     withFrameProps,
 } from '../../components/common/frameProps';
-import { makePropsTransient } from '../../utils/transientProps';
+import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { AccessabilityProps, withAccessabilityProps } from '../common/accessabilityProps';
 
 type PaddingType = 'small' | 'none' | 'normal';
@@ -15,6 +15,9 @@ type PaddingType = 'small' | 'none' | 'normal';
 type MapArgs = {
     $paddingType: PaddingType;
 };
+
+export const allowedFrameProps: (keyof FrameProps)[] = ['margin', 'maxWidth'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
 
 const mapPaddingTypeToLabelPadding = ({ $paddingType }: MapArgs): number | string => {
     const paddingMap: Record<PaddingType, number | string> = {
@@ -35,7 +38,7 @@ const mapPaddingTypeToPadding = ({ $paddingType }: MapArgs): number | string => 
     return paddingMap[$paddingType];
 };
 
-const Container = styled.div<TransientFrameProps>`
+const Container = styled.div<TransientProps<AllowedFrameProps>>`
     border-radius: ${borders.radii.md};
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
     padding: ${spacingsPx.xxxs};
@@ -90,7 +93,7 @@ const CardContainer = styled.div<
     ${withFrameProps}
 `;
 
-export type CardProps = FrameProps &
+export type CardProps = AllowedFrameProps &
     AccessabilityProps & {
         paddingType?: PaddingType;
         onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];

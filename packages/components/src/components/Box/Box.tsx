@@ -32,14 +32,17 @@ const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
     return theme[colorMap[variant]];
 };
 
-export type BoxProps = FrameProps & {
+export const allowedFrameProps: (keyof FrameProps)[] = ['margin', 'maxWidth'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+
+export type BoxProps = AllowedFrameProps & {
     variant?: BoxVariant;
     children: ReactNode;
     forceElevation?: Elevation;
 };
 
 const Wrapper = styled.div<
-    { $variant?: BoxVariant; $elevation: Elevation } & TransientProps<FrameProps>
+    { $variant?: BoxVariant; $elevation: Elevation } & TransientProps<AllowedFrameProps>
 >`
     display: flex;
     align-items: center;

@@ -13,24 +13,26 @@ import {
     typography,
 } from '@trezor/theme';
 import { UIVariant } from '../../config/types';
-import { useElevation } from '../..';
-import { FrameProps, TransientFrameProps, withFrameProps } from '../common/frameProps';
+import { TransientProps, useElevation } from '../..';
+import { FrameProps, withFrameProps } from '../common/frameProps';
+
+export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
 
 export type WarningVariant = Extract<
     UIVariant,
     'primary' | 'secondary' | 'info' | 'warning' | 'destructive' | 'tertiary'
 >;
 
-export interface WarningProps {
+export type WarningProps = AllowedFrameProps & {
     children: ReactNode;
     className?: string;
     variant?: WarningVariant;
     withIcon?: boolean;
     icon?: IconType;
     filled?: boolean;
-    margin?: FrameProps['margin'];
     dataTest?: string;
-}
+};
 
 type MapArgs = {
     $variant: WarningVariant;
@@ -89,7 +91,7 @@ const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconType => 
     return iconMap[$variant];
 };
 
-type WrapperParams = TransientFrameProps & {
+type WrapperParams = TransientProps<AllowedFrameProps> & {
     $variant: WarningVariant;
     $withIcon?: boolean;
     $elevation: Elevation;

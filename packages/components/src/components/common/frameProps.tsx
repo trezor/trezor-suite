@@ -11,12 +11,24 @@ type Margin = {
 
 export type FrameProps = {
     margin?: Margin;
-    maxWidth?: string;
+    width?: string | number;
+    maxWidth?: string | number;
+    height?: string | number;
+    maxHeight?: string | number;
 };
 
 export type TransientFrameProps = TransientProps<FrameProps>;
 
-export const withFrameProps = ({ $margin, $maxWidth }: TransientFrameProps) => {
+const getValueWithUnit = (value: string | number) =>
+    typeof value === 'string' ? value : `${value}px`;
+
+export const withFrameProps = ({
+    $margin,
+    $maxWidth,
+    $height,
+    $width,
+    $maxHeight,
+}: TransientFrameProps) => {
     return css`
         ${$margin &&
         css`
@@ -28,20 +40,53 @@ export const withFrameProps = ({ $margin, $maxWidth }: TransientFrameProps) => {
 
         ${$maxWidth &&
         css`
-            max-width: ${$maxWidth};
+            max-width: ${getValueWithUnit($maxWidth)};
+        `};
+        ${$maxHeight &&
+        css`
+            max-height: ${getValueWithUnit($maxHeight)};
+        `};
+        ${$width &&
+        css`
+            width: ${getValueWithUnit($width)};
+        `};
+        ${$height &&
+        css`
+            height: ${getValueWithUnit($height)};
         `};
     `;
 };
 
-export const framePropsStory = {
-    args: {
-        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
-    },
-    argTypes: {
-        margin: {
-            table: {
-                category: 'Frame props',
+export const getFramePropsStory = (allowedFrameProps: Array<keyof FrameProps>) => {
+    const argTypes = allowedFrameProps.reduce(
+        (acc, key) => ({
+            ...acc,
+            [key]: {
+                table: {
+                    category: 'Frame props',
+                },
             },
+        }),
+        {},
+    );
+
+    return {
+        args: {
+            ...(allowedFrameProps.includes('margin')
+                ? {
+                      margin: {
+                          top: undefined,
+                          right: undefined,
+                          bottom: undefined,
+                          left: undefined,
+                      },
+                  }
+                : {}),
+            ...(allowedFrameProps.includes('width') ? { width: undefined } : {}),
+            ...(allowedFrameProps.includes('height') ? { height: undefined } : {}),
+            ...(allowedFrameProps.includes('maxWidth') ? { maxWidth: undefined } : {}),
+            ...(allowedFrameProps.includes('maxHeight') ? { maxHeight: undefined } : {}),
         },
-    },
+        argTypes,
+    };
 };

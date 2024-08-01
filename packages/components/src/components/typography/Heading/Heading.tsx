@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 
 import { Color, TypographyStyle, typography } from '@trezor/theme';
-import { FrameProps, TransientFrameProps, withFrameProps } from '../../common/frameProps';
-import { makePropsTransient } from '../../../utils/transientProps';
+import { FrameProps, withFrameProps } from '../../common/frameProps';
+import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
+
+export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
 
 type Align = 'left' | 'center' | 'right';
 
@@ -13,7 +16,7 @@ type BasicProps = {
     onClick?: () => void;
 };
 
-type HeadingProps = TransientFrameProps &
+type HeadingProps = TransientProps<AllowedFrameProps> &
     BasicProps & {
         $typographyStyle: TypographyStyle;
         $color?: Color;
@@ -26,7 +29,7 @@ const Heading = styled.h1<HeadingProps>`
     ${withFrameProps}
 `;
 
-type HProps = FrameProps & BasicProps & { color?: Color };
+type HProps = AllowedFrameProps & BasicProps & { color?: Color };
 
 export const H1 = ({ margin, color, ...props }: HProps) => (
     <Heading

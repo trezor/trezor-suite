@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Button as ButtonComponent, ButtonProps } from './Button';
-import { framePropsStory } from '../../common/frameProps';
+import { allowedFrameProps, Button as ButtonComponent, ButtonProps } from './Button';
+import { getFramePropsStory } from '../../common/frameProps';
 import { variables } from '../../../config';
 
 const meta: Meta = {
@@ -19,7 +19,7 @@ export const Button: StoryObj<ButtonProps> = {
         isFullWidth: false,
         iconAlignment: 'left',
         title: 'Button title',
-        ...framePropsStory.args,
+        ...getFramePropsStory(allowedFrameProps).args,
     },
     argTypes: {
         children: {
@@ -79,6 +79,6 @@ export const Button: StoryObj<ButtonProps> = {
         title: {
             control: { type: 'text' },
         },
-        ...framePropsStory.argTypes,
+        ...getFramePropsStory(allowedFrameProps).argTypes,
     },
 };

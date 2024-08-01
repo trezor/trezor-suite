@@ -5,12 +5,16 @@ import { Icon } from '@suite-common/icons/src/webComponents';
 import { borders, Color, CSSColor, spacings, spacingsPx, typography } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
 import type { UISize, UIVariant } from '../../config/types';
-import { FrameProps, TransientFrameProps, withFrameProps } from '../common/frameProps';
+import { FrameProps, withFrameProps } from '../common/frameProps';
+import { TransientProps } from '../../utils/transientProps';
+
+export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
 
 type BadgeSize = Extract<UISize, 'tiny' | 'small' | 'medium'>;
 type BadgeVariant = Extract<UIVariant, 'primary' | 'tertiary' | 'destructive'>;
 
-export type BadgeProps = FrameProps & {
+export type BadgeProps = AllowedFrameProps & {
     size?: BadgeSize;
     variant?: BadgeVariant;
     isDisabled?: boolean;
@@ -31,7 +35,7 @@ type BadgeContainerProps = {
     $variant: BadgeVariant;
     $hasAlert: boolean;
     $inline: boolean;
-} & TransientFrameProps;
+} & TransientProps<AllowedFrameProps>;
 
 const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<BadgeVariant, Color> = {

@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Divider as DividerComponent } from '../../index';
+import { Divider as DividerComponent, allowedFrameProps } from './Divider';
 import styled from 'styled-components';
-import { framePropsStory } from '../common/frameProps';
+import { getFramePropsStory } from '../common/frameProps';
 
 const Container = styled.div`
     width: 200px;
@@ -22,7 +22,7 @@ export const Divider: StoryObj = {
     ),
     args: {
         orientation: 'horizontal',
-        ...framePropsStory.args,
+        ...getFramePropsStory(allowedFrameProps).args,
     },
     argTypes: {
         orientation: {
@@ -37,6 +37,6 @@ export const Divider: StoryObj = {
         color: {
             type: 'string',
         },
-        ...framePropsStory.argTypes,
+        ...getFramePropsStory(allowedFrameProps).argTypes,
     },
 };

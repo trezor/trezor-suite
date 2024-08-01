@@ -12,7 +12,11 @@ import {
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { motionEasing } from '../../config/motion';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
-import { FrameProps, TransientFrameProps, withFrameProps } from '../common/frameProps';
+import { FrameProps, withFrameProps } from '../common/frameProps';
+import { TransientProps } from '../../utils/transientProps';
+
+export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
 
 const ANIMATION_DURATION = 0.4;
 
@@ -53,7 +57,7 @@ type ContentProps = {
 
 export type CollapsibleBoxProps = CollapsibleBoxManagedProps | CollapsibleBoxUnmanagedProps;
 
-type CollapsibleBoxCommon = {
+type CollapsibleBoxCommon = AllowedFrameProps & {
     heading?: ReactNode;
     subHeading?: ReactNode;
     paddingType?: 'none' | 'normal' | 'large';
@@ -62,7 +66,6 @@ type CollapsibleBoxCommon = {
     children?: ReactNode;
     isIconFlipped?: boolean; // Open upwards, affects the icon rotation
     hasDivider?: boolean;
-    margin?: FrameProps['margin'];
     onAnimationComplete?: (isOpen: boolean) => void;
     'data-test'?: string;
     /** @deprecated */
@@ -86,7 +89,7 @@ type CollapsibleBoxUnmanagedProps = CollapsibleBoxCommon & {
 
 type CollapsibleBoxContentProps = CollapsibleBoxManagedProps;
 
-const Container = styled.div<TransientFrameProps>`
+const Container = styled.div<TransientProps<AllowedFrameProps>>`
     flex: 1;
     width: 100%;
 

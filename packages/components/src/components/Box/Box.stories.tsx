@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { Box as BoxComponent } from './Box';
+import { allowedFrameProps, Box as BoxComponent } from './Box';
 import { FONT_WEIGHT } from '../../config/variables';
-import { framePropsStory } from '../common/frameProps';
+import { getFramePropsStory } from '../common/frameProps';
 
 const Text = styled.div`
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
@@ -42,6 +42,6 @@ export const Box: StoryObj = {
             </Wrapper>
         </>
     ),
-    args: framePropsStory.args,
-    argTypes: framePropsStory.argTypes,
+    args: getFramePropsStory(allowedFrameProps).args,
+    argTypes: getFramePropsStory(allowedFrameProps).argTypes,
 };
