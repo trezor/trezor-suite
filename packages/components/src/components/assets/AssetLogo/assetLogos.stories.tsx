@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { CoinLogo, CoinType, variables } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
+import { AssetLogo, CoinType } from './AssetLogo';
+import { variables } from '../../../config';
 
 const CoinName = styled.div`
     margin-bottom: 0.5rem;
@@ -24,7 +25,7 @@ const Icon = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Assets/CoinLogos',
+    title: 'Assets/AssetLogos',
 } as Meta;
 export default meta;
 
@@ -35,7 +36,7 @@ export const All: StoryObj = {
                 {variables.COINS.map((coin: CoinType) => (
                     <Icon key={coin}>
                         <CoinName>{coin}</CoinName>
-                        <CoinLogo symbol={coin} data-test={`coin-${coin}`} size={64} />
+                        <AssetLogo symbol={coin} data-test={`coin-${coin}`} size={64} />
                     </Icon>
                 ))}
             </WrapperIcons>

@@ -28,14 +28,14 @@ interface StoryColumnProps {
     minWidth?: number;
 }
 
-const Col = styled.div<StoryColumnProps>`
+const Col = styled.div<{ $minWidth: number; $maxWidth: number }>`
     padding: 10px;
     flex: 1;
     border-radius: 10px;
     border: 1px dashed #f2ae7b;
     margin: 5px;
-    min-width: ${props => props.minWidth}px;
-    max-width: ${props => props.maxWidth}px;
+    min-width: ${({ $minWidth }) => $minWidth}px;
+    max-width: ${({ $maxWidth }) => $maxWidth}px;
 
     > * {
         margin-bottom: 20px;
@@ -43,7 +43,7 @@ const Col = styled.div<StoryColumnProps>`
 `;
 
 const StoryColumn = ({ minWidth, maxWidth, children }: StoryColumnProps) => (
-    <Col minWidth={minWidth || 250} maxWidth={maxWidth || 500}>
+    <Col $minWidth={minWidth || 250} $maxWidth={maxWidth || 500}>
         {children}
     </Col>
 );

@@ -1,6 +1,6 @@
-import { COINS as CoinsObject } from '../components/assets/CoinLogo/coins';
+import { COINS as CoinsObject } from '../components/assets/AssetLogo/coins';
 import { ICONS as IconsObject } from '../components/assets/Icon/icons';
-import { CoinType } from '../components/assets/CoinLogo/CoinLogo';
+import { CoinType } from '../components/assets/AssetLogo/AssetLogo';
 import { IconType } from '../components/assets/Icon/Icon';
 
 export const SCREEN_SIZE = {

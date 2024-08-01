@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { CoinLogo as CoinLogoComponent, CoinLogoProps, variables } from '../../../index';
+import { AssetLogo as AssetLogoComponent, AssetLogoProps } from './AssetLogo';
+import { variables } from '../../../config';
 
 const Center = styled.div`
     display: flex;
@@ -10,15 +11,15 @@ const Center = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Assets/CoinLogos',
-    component: CoinLogoComponent,
+    title: 'Assets/AssetLogos',
+    component: AssetLogoComponent,
 } as Meta;
 export default meta;
 
-export const CoinLogo: StoryObj<CoinLogoProps> = {
+export const AssetLogo: StoryObj<AssetLogoProps> = {
     render: ({ symbol, size }) => (
         <Center>
-            <CoinLogoComponent symbol={symbol} size={size} />
+            <AssetLogoComponent symbol={symbol} size={size} />
         </Center>
     ),
     args: {

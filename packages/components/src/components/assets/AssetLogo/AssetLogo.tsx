@@ -2,8 +2,9 @@ import { ImgHTMLAttributes, useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { COINS } from './coins';
-import { DefaultCoinLogo } from '../DefaultCoinLogo/DefaultCoinLogo';
+import { DefaultAssetLogo } from '../DefaultAssetLogo/DefaultAssetLogo';
 import { spacingsPx } from '@trezor/theme';
+import { SkeletonCircle } from '../../skeletons/SkeletonCircle';
 
 export type CoinType = keyof typeof COINS;
 
@@ -47,7 +48,7 @@ export const useAssetUrl = (coingeckoId: string, contractAddress?: string) => {
     return iconUrl;
 };
 
-export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
+export interface AssetLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
     symbol?: CoinType;
     className?: string;
     size?: number;
@@ -92,7 +93,7 @@ const SVGCoinLogo = ({ $symbol, $size = 32 }: SVGCoinLogoProps) => (
     />
 );
 
-export const CoinLogo = ({
+export const AssetLogo = ({
     symbol,
     className,
     size = 32,
@@ -100,31 +101,33 @@ export const CoinLogo = ({
     contractAddress,
     quality = 'medium',
     ...rest
-}: CoinLogoProps) => {
+}: AssetLogoProps) => {
     const [isLoading, setIsLoading] = useState(true);
 
     const iconUrl = useAssetUrl(coingeckoId, contractAddress);
-    const firstCharacter = coingeckoId && coingeckoId[0].toUpperCase();
-    const coinLogoSize = !symbol ? QUALITY_SIZE[quality] : size;
+    const assetLogoSize = symbol ? size : QUALITY_SIZE[quality];
+    const firstCharacter = coingeckoId?.[0]?.toUpperCase();
+
+    const hideLoading = () => setIsLoading(false);
 
     const logo = iconUrl ? (
         <>
-            {isLoading && <span className="loading">Loading...</span>}
+            {isLoading && <SkeletonCircle size={assetLogoSize} />}
             <StyledIconImage
                 src={iconUrl}
-                $size={coinLogoSize}
-                onLoad={() => setIsLoading(false)}
-                onError={() => setIsLoading(false)}
+                $size={assetLogoSize}
+                onLoad={hideLoading}
+                onError={hideLoading}
                 {...rest}
             />
         </>
     ) : (
-        <DefaultCoinLogo size={coinLogoSize} coinFirstCharacter={firstCharacter} />
+        <DefaultAssetLogo size={assetLogoSize} coinFirstCharacter={firstCharacter} />
     );
 
     return (
-        <Wrapper className={className} $size={coinLogoSize} {...rest}>
-            {symbol ? <SVGCoinLogo $symbol={COINS[symbol]} $size={coinLogoSize} /> : logo}
+        <Wrapper className={className} $size={assetLogoSize} {...rest}>
+            {symbol ? <SVGCoinLogo $symbol={COINS[symbol]} $size={assetLogoSize} /> : logo}
         </Wrapper>
     );
 };

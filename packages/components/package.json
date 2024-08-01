@@ -6,6 +6,7 @@
     "author": "SatoshiLabs s.r.o.",
     "license": "SEE LICENSE IN LICENSE.md",
     "sideEffects": false,
+    "type": "module",
     "scripts": {
         "lint": "yarn lint:js && yarn lint:styles",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
@@ -14,7 +15,8 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "storybook": "storybook dev -p 9003 -c .storybook",
-        "storybook-build": "storybook build -c .storybook -o .build-storybook"
+        "storybook-build": "storybook build -c .storybook -o .build-storybook",
+        "test": "jest"
     },
     "dependencies": {
         "@floating-ui/react": "^0.26.9",
@@ -52,12 +54,16 @@
         "@storybook/client-api": "^7.6.13",
         "@storybook/react": "^7.6.13",
         "@storybook/react-webpack5": "^7.6.13",
+        "@types/jest": "^29.5.12",
         "@types/react": "18.2.79",
         "@types/react-date-range": "^1.4.9",
+        "canvas": "^2.11.2",
+        "jest": "^29.7.0",
         "postcss-styled-syntax": "^0.6.4",
         "storybook": "^7.6.13",
         "stylelint": "^16.2.1",
         "stylelint-config-standard": "^36.0.0",
+        "ts-jest": "^29.2.4",
         "typescript-styled-plugin": "^0.18.3"
     }
 }
