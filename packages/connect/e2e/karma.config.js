@@ -22,10 +22,10 @@ module.exports = config => {
         basePath: path.resolve(__dirname, '../..'), // NOTE: "[monorepo-root]/packages", to have access to other packages
         hostname: 'localhost',
         port: 8099,
-        autoWatch: false,
+        autoWatch: true,
         // to debug locally set single run to false and go to http://localhost:8099/debug.html
         // for local changes to take effect build connect-iframe and connect-web
-        singleRun: true,
+        singleRun: false,
 
         client: {
             captureConsole: true,
@@ -36,16 +36,16 @@ module.exports = config => {
                 bail: true,
             },
             // uncomment to disable random ordering of tests
-            // jasmine: {
-            //     random: false,
-            // },
+            jasmine: {
+                random: false,
+            },
         },
         browserConsoleLogOptions: {
             terminal: true,
             level: '',
         },
         browsers: [
-            // 'Chrome',
+            //'Chrome',
             'ChromeHeadlessNoSandbox',
         ],
         customLaunchers: {

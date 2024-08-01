@@ -82,6 +82,7 @@ const setup = async (TrezorUserEnvLink, options) => {
 };
 
 const initTrezorConnect = async (TrezorUserEnvLink, options) => {
+    console.log('initTrezorConnect');
     TrezorConnect.removeAllListeners();
 
     TrezorConnect.on('device-connect', device => {
@@ -105,6 +106,7 @@ const initTrezorConnect = async (TrezorUserEnvLink, options) => {
     });
 
     TrezorConnect.on(UI.REQUEST_BUTTON, () => {
+        console.log('UI.REQUEST_BUTTON');
         setTimeout(() => TrezorUserEnvLink.send({ type: 'emulator-press-yes' }), 1);
     });
 
@@ -114,7 +116,7 @@ const initTrezorConnect = async (TrezorUserEnvLink, options) => {
             email: 'tests@connect.trezor.io',
         },
         transports: ['BridgeTransport'],
-        debug: false,
+        debug: true,
         popup: false,
         pendingTransportEvent: true,
         connectSrc: process.env.TREZOR_CONNECT_SRC, // custom source for karma tests

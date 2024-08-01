@@ -130,6 +130,7 @@ const initDevice = async (devicePath?: string) => {
     } else {
         const devices = _deviceList.asArray();
         if (devices.length === 1 && (!isWebUsb || !isUsingPopup)) {
+            console.log('one device');
             // there is only one device available. use it
             device = _deviceList.getDevice(devices[0].path);
             // Show device selection if device is unreadable or unacquired
@@ -146,13 +147,7 @@ const initDevice = async (devicePath?: string) => {
     // - using webusb and method.devicePath is not set
     // - device is in unreadable state
     if (showDeviceSelection) {
-        // initialize uiPromise instance which will catch changes in _deviceList (see: handleDeviceSelectionChanges function)
-        // but do not wait for resolve yet
-        uiPromises.create(UI.RECEIVE_DEVICE);
-
-        // wait for popup handshake
-        await waitForPopup();
-
+        console.log('show device selection');
         // there is await above, _deviceList might have been disconnected.
         _deviceList.assertConnected();
 
@@ -166,9 +161,20 @@ const initDevice = async (devicePath?: string) => {
             !isWebUsb &&
             !useCoreInPopup
         ) {
+            console.log('one device available');
             // there is one device available. use it
             device = _deviceList.getDevice(devices[0].path);
         } else {
+            console.log('multiple devices available');
+            // initialize uiPromise instance which will catch changes in _deviceList (see: handleDeviceSelectionChanges function)
+            // but do not wait for resolve yet
+            uiPromises.create(UI.RECEIVE_DEVICE);
+
+            // wait for popup handshake
+            await waitForPopup();
+
+            console.log('request select device view');
+
             // request select device view
             postMessage(
                 createUiMessage(UI.SELECT_DEVICE, {
@@ -180,6 +186,7 @@ const initDevice = async (devicePath?: string) => {
             // wait for device selection
             if (uiPromises.exists(UI.RECEIVE_DEVICE)) {
                 const { payload } = await uiPromises.get(UI.RECEIVE_DEVICE);
+                console.log('device selected', payload);
                 if (payload.remember) {
                     const { label, path, state } = payload.device;
                     storage.save(store => {
@@ -199,6 +206,8 @@ const initDevice = async (devicePath?: string) => {
     if (!device) {
         throw ERRORS.TypedError('Device_NotFound');
     }
+
+    console.log('device obtained', device);
 
     return device;
 };
@@ -481,7 +490,9 @@ const onCall = async (message: IFrameCallMessage) => {
     let method: AbstractMethod<any>;
     let messageResponse: CoreEventMessage;
     try {
+        console.log('before method synchronize');
         method = await methodSynchronize(async () => {
+            console.log('in method synchronize');
             _log.debug('loading method...');
             const method = await getMethod(message);
             _log.debug('method selected', method.name);
@@ -494,6 +505,7 @@ const onCall = async (message: IFrameCallMessage) => {
 
             return method;
         });
+        console.log('after method synchronize');
         waitForFirstMethod.resolve();
         _callMethods.push(method);
     } catch (error) {
@@ -569,6 +581,7 @@ const onCall = async (message: IFrameCallMessage) => {
         call => call && call !== method && call.devicePath === method.devicePath,
     );
     if (previousCall.length > 0 && method.overridePreviousCall) {
+        console.log('previous call found');
         // set flag for each pending method
         previousCall.forEach(call => {
             call.overridden = true;
@@ -659,8 +672,10 @@ const onCall = async (message: IFrameCallMessage) => {
     try {
         // run inner function
         if (_overridePromise) {
+            console.log('awaiting override promise');
             await _overridePromise;
         }
+        console.log('before device run');
         const innerAction = () =>
             inner(method, device).then(response => {
                 messageResponse = response;

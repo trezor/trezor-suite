@@ -1,4 +1,5 @@
 import TrezorConnect from '../../../src';
+import { UI, UI_EVENT } from '../../../src/events';
 
 const { getController, setup, initTrezorConnect } = global.Trezor;
 
@@ -24,21 +25,25 @@ describe('TrezorConnect override param', () => {
 
             await TrezorConnect.getFeatures({ device: { path: '1' } });
 
+            console.log('calling first getAddress');
             TrezorConnect.getAddress({
                 path: "m/44'/1'/0'/0/0",
                 showOnTrezor: true,
             }).then(response => {
+                console.log('response1', response);
                 expect(response.success).toBe(false);
                 expect(response.payload).toMatchObject({ code: 'Method_Override' });
             });
 
             await new Promise(resolve => setTimeout(resolve, delay));
+            console.log('calling second getAddress');
 
             const address = await TrezorConnect.getAddress({
                 path: "m/44'/1'/0'/0/0",
                 override: true,
                 showOnTrezor: false,
             });
+            console.log('response2', address);
             expect(address.success).toBe(true);
             await new Promise(resolve => setTimeout(resolve, 1000));
         });
