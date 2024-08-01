@@ -165,6 +165,7 @@ const TextLikeLabel = ({
     'data-test': dataTest,
     onSubmit,
     onBlur,
+    updateFlag,
 }: ExtendedProps) => {
     const EditableLabel = useMemo(() => withEditable(RelativeLabel), []);
 
@@ -175,6 +176,7 @@ const TextLikeLabel = ({
                 originalValue={payload.value ?? defaultEditableValue}
                 onSubmit={onSubmit}
                 onBlur={onBlur}
+                updateFlag={updateFlag}
             />
         );
     }
@@ -244,6 +246,7 @@ export const MetadataLabeling = ({
     isDisabled,
     onSubmit,
     visible,
+    updateFlag,
 }: Props) => {
     const metadata = useSelector(state => state.metadata);
     const dispatch = useDispatch();
@@ -420,6 +423,7 @@ export const MetadataLabeling = ({
                         payload={payload}
                         defaultEditableValue={defaultEditableValue}
                         defaultVisibleValue={defaultVisibleValue}
+                        updateFlag={updateFlag}
                     />
                     {showActionButton && (
                         <ActionButton

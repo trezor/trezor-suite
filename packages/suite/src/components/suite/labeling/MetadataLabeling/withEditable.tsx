@@ -41,6 +41,7 @@ interface WithEditableProps {
     originalValue?: string;
     onSubmit: (value: string | undefined) => void;
     onBlur: () => void;
+    updateFlag?: any;
 }
 
 /**
@@ -49,7 +50,7 @@ interface WithEditableProps {
  */
 export const withEditable =
     (WrappedComponent: FunctionComponent<PropsWithChildren>) =>
-    ({ onSubmit, onBlur, originalValue, ...props }: WithEditableProps) => {
+    ({ onSubmit, onBlur, originalValue, updateFlag, ...props }: WithEditableProps) => {
         const [touched, setTouched] = useState(false);
         const [value, setValue] = useState('');
 
@@ -107,6 +108,7 @@ export const withEditable =
                                 onBlur();
                             }
                         }}
+                        updateFlag={updateFlag}
                     />
                 </WrappedComponent>
 
