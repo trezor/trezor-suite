@@ -1,4 +1,4 @@
-import { Select, CoinLogo } from '@trezor/components';
+import { Select, AssetLogo } from '@trezor/components';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { NetworkSymbol, getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
@@ -97,7 +97,7 @@ const SendCryptoSelect = () => {
                     formatOptionLabel={(option: any) => (
                         <Option>
                             {account.symbol === option.value.toLowerCase() ? (
-                                <CoinLogo size={18} symbol={account.symbol} />
+                                <AssetLogo size={18} symbol={account.symbol} />
                             ) : (
                                 <TokenLogo symbol={option.value} />
                             )}

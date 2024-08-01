@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const DEFAULT_CHARACTER = '?';
 
-type DefaultAssetLogoProps = {
+export type DefaultAssetLogoProps = {
     coinFirstCharacter?: string;
     size?: number;
 };
@@ -24,4 +24,10 @@ const DefaultWrapper = styled.div<{ $size: number }>`
 export const DefaultAssetLogo = ({
     coinFirstCharacter = DEFAULT_CHARACTER,
     size = 32,
-}: DefaultAssetLogoProps) => <DefaultWrapper $size={size}>{coinFirstCharacter}</DefaultWrapper>;
+}: DefaultAssetLogoProps) => (
+    <DefaultWrapper $size={size}>
+        {coinFirstCharacter.length > 1
+            ? coinFirstCharacter[0]
+            : coinFirstCharacter || DEFAULT_CHARACTER}
+    </DefaultWrapper>
+);

@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Icon, variables, CoinLogo, H3, useElevation } from '@trezor/components';
+import { Icon, variables, AssetLogo, H3, useElevation } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { WalletAccountTransaction, Network } from 'src/types/wallet';
 import { getTxIcon, isPending, getFeeUnits, getFeeRate } from '@suite-common/wallet-utils';
@@ -182,7 +182,7 @@ export const BasicTxDetails = ({
         <Wrapper $elevation={elevation}>
             <HeaderFirstRow $elevation={elevation}>
                 <MainIconWrapper $elevation={elevation}>
-                    <CoinLogo symbol={tx.symbol} size={48} />
+                    <AssetLogo symbol={tx.symbol} size={48} />
 
                     <NestedIconWrapper $elevation={elevation}>
                         <Icon

@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { AssetLogo as AssetLogoComponent, AssetLogoProps } from './AssetLogo';
+import {
+    AssetShareIndicator as AssetShareIndicatorComponent,
+    AssetShareIndicatorProps,
+} from './AssetShareIndicator';
 import { variables } from '../../../config';
 
 const Center = styled.div`
@@ -11,20 +14,22 @@ const Center = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Assets/AssetLogos',
-    component: AssetLogoComponent,
+    title: 'Assets/AssetShareIndicator',
+    component: AssetShareIndicatorComponent,
 } as Meta;
 export default meta;
 
-export const AssetLogo: StoryObj<AssetLogoProps> = {
+export const AssetShareIndicator: StoryObj<AssetShareIndicatorProps> = {
     render: props => (
         <Center>
-            <AssetLogoComponent {...props} />
+            <AssetShareIndicatorComponent {...props} />
         </Center>
     ),
     args: {
         symbol: 'ada',
         size: 32,
+        percentageShare: 25,
+        quality: 'medium',
     },
     argTypes: {
         symbol: {
@@ -37,6 +42,9 @@ export const AssetLogo: StoryObj<AssetLogoProps> = {
             },
         },
         size: {
+            type: 'number',
+        },
+        percentageShare: {
             type: 'number',
         },
         index: {

@@ -1,7 +1,7 @@
 import { useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { CoinLogo } from '@trezor/components';
+import { AssetLogo } from '@trezor/components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
@@ -16,7 +16,7 @@ const Row = styled.span`
     display: flex;
 `;
 
-const getIcon = (symbol?: Network['symbol']) => symbol && <CoinLogo symbol={symbol} size={24} />;
+const getIcon = (symbol?: Network['symbol']) => symbol && <AssetLogo symbol={symbol} size={24} />;
 
 const useActionAllowed = (path: string, network?: Network['symbol']) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);

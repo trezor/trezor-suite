@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import { Dropdown, DropdownRef, CoinLogo } from '@trezor/components';
+import { Dropdown, DropdownRef, AssetLogo } from '@trezor/components';
 import { Translation, StatusLight } from 'src/components/suite';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -57,7 +57,7 @@ const BackendRow = ({
 
     return (
         <RowWrapper>
-            <CoinLogo symbol={coin} />
+            <AssetLogo symbol={coin} />
             <div>
                 {chain?.url ? (
                     <span>{chain.url}</span>

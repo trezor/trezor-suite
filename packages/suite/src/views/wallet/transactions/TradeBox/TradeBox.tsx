@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
-import { Card, CoinLogo, Row, variables } from '@trezor/components';
+import { Card, AssetLogo, Row, variables } from '@trezor/components';
 import { TradeBoxMenu } from './TradeBoxMenu';
 import { TradeBoxPrices } from './TradeBoxPrices';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
@@ -67,7 +67,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => (
         <StyledCard>
             <Left>
                 <Row gap={spacings.xs} alignItems="center">
-                    <CoinLogo size={24} symbol={account.symbol} />
+                    <AssetLogo size={24} symbol={account.symbol} />
                     <Coin>
                         <CoinName>
                             <Translation id={getTitleForNetwork(account.symbol)} />

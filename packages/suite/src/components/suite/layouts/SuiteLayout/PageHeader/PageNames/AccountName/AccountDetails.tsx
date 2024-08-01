@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Account } from '@suite-common/wallet-types';
 import { spacingsPx } from '@trezor/theme';
-import { CoinLogo } from '@trezor/components';
+import { AssetLogo } from '@trezor/components';
 import {
     MetadataLabeling,
     AccountLabel,
@@ -65,7 +65,7 @@ export const AccountDetails = ({ selectedAccount }: AccountDetailsProps) => {
 
             <AccountBalance>
                 <CryptoBalance>
-                    <CoinLogo size={16} symbol={symbol} />
+                    <AssetLogo size={16} symbol={symbol} />
                     <AmountUnitSwitchWrapper symbol={symbol}>
                         <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
                     </AmountUnitSwitchWrapper>

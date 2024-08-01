@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { typography } from '@trezor/theme';
-import { Button, CoinLogo } from '@trezor/components';
+import { Button, AssetLogo } from '@trezor/components';
 import { networks } from '@suite-common/wallet-config';
 import { ConnectionStatus } from '@suite-common/wallet-types';
 
@@ -130,7 +130,7 @@ const CoinItem = ({ symbol }: { symbol: NetworkSymbol }) => {
             <CoinSection>
                 <div>
                     <CoinCell>
-                        <CoinLogo symbol={symbol} />
+                        <AssetLogo symbol={symbol} />
                         <Title>{networks[symbol].name}</Title>
                     </CoinCell>
                     <Button size="tiny" variant="tertiary" onClick={onSettings}>

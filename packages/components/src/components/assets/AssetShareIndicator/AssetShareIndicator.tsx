@@ -43,8 +43,6 @@ const loadImageAndProcessColor = (
 
 export interface AssetShareIndicatorProps extends AssetLogoProps {
     percentageShare?: number;
-    showProgressCircle?: boolean;
-    firstCharacter?: string;
 }
 
 interface ProgressCircleProps

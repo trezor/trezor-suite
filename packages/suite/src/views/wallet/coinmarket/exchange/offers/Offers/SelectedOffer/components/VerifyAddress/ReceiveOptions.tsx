@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
-import { variables, CoinLogo, Select, Icon } from '@trezor/components';
+import { variables, AssetLogo, Select, Icon } from '@trezor/components';
 import {
     FiatValue,
     Translation,
@@ -145,7 +145,7 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
                         return (
                             <Option>
                                 <LogoWrapper>
-                                    <CoinLogo size={25} symbol={symbol} />
+                                    <AssetLogo size={25} symbol={symbol} />
                                 </LogoWrapper>
                                 <AccountWrapper>
                                     <AccountName>

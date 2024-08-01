@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { CoinLogo, CoinType, Paragraph } from '@trezor/components';
+import { AssetLogo, CoinType, Paragraph } from '@trezor/components';
 
 const Flex = styled.div`
     display: flex;
@@ -15,7 +15,7 @@ interface NetworkBadgeProps {
 
 export const NetworkBadge = ({ logo, name }: NetworkBadgeProps) => (
     <Flex>
-        <CoinLogo symbol={logo} size={16} />
+        <AssetLogo symbol={logo} size={16} />
         <Paragraph>{name}</Paragraph>
     </Flex>
 );

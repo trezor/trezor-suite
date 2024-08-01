@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { SellFiatTrade, SellProviderInfo } from 'invity-api';
 
-import { variables, CoinLogo } from '@trezor/components';
+import { variables, AssetLogo } from '@trezor/components';
 import {
     CoinmarketPaymentType,
     CoinmarketProviderInfo,
@@ -123,7 +123,7 @@ export const CoinmarketSellOfferInfo = ({
         <Wrapper>
             <Info>
                 <Header>
-                    <CoinLogo symbol={account.symbol} size={16} />
+                    <AssetLogo symbol={account.symbol} size={16} />
                     <AccountText>
                         <AccountLabeling account={account} />
                     </AccountText>

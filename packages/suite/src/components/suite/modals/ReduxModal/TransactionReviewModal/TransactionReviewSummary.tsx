@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getFeeUnits, formatNetworkAmount, formatAmount, getFee } from '@suite-common/wallet-utils';
-import { Icon, CoinLogo, variables } from '@trezor/components';
+import { Icon, AssetLogo, variables } from '@trezor/components';
 import { formatDuration } from '@suite-common/suite-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
@@ -235,7 +235,7 @@ export const TransactionReviewSummary = ({
         <Wrapper>
             <SummaryHead>
                 <IconWrapper>
-                    <CoinLogo size={48} symbol={symbol} />
+                    <AssetLogo size={48} symbol={symbol} />
                     <NestedIconWrapper>
                         <Icon size={12} color={theme.iconSubdued} icon="SEND" />
                     </NestedIconWrapper>

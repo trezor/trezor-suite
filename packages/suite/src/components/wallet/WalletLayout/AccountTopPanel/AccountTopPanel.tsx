@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 
 import { spacingsPx } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { CoinLogo, SkeletonCircle, SkeletonRectangle } from '@trezor/components';
+import { AssetLogo, SkeletonCircle, SkeletonRectangle } from '@trezor/components';
 
 import { FormattedCryptoAmount, AmountUnitSwitchWrapper } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -45,7 +45,7 @@ interface AccountTopPanelSkeletonProps {
 const AccountTopPanelSkeleton = ({ animate, symbol }: AccountTopPanelSkeletonProps) => (
     <Container>
         <AccountCryptoBalance>
-            {symbol ? <CoinLogo size={16} symbol={symbol} /> : <SkeletonCircle size="20px" />}
+            {symbol ? <AssetLogo size={16} symbol={symbol} /> : <SkeletonCircle size="20px" />}
             <SkeletonRectangle height={20} animate={animate} />
         </AccountCryptoBalance>
 
@@ -80,7 +80,7 @@ export const AccountTopPanel = forwardRef<HTMLDivElement>((_, ref) => {
                 <div>
                     <AmountUnitSwitchWrapper symbol={symbol}>
                         <AccountCryptoBalance>
-                            <CoinLogo size={16} symbol={symbol} />
+                            <AssetLogo size={16} symbol={symbol} />
 
                             <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
                         </AccountCryptoBalance>

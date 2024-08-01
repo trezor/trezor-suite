@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Button, CoinLogo, CollapsibleBox } from '@trezor/components';
+import { Button, AssetLogo, CollapsibleBox } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation, Modal, CoinList, TooltipSymbol } from 'src/components/suite';
@@ -36,7 +36,7 @@ const NetworksWrapper = styled.div`
     gap: ${spacingsPx.md};
 `;
 
-const CoinLogoWrapper = styled.span`
+const AssetLogoWrapper = styled.span`
     display: inline;
     margin-right: ${spacingsPx.xxs};
     vertical-align: text-top;
@@ -189,9 +189,9 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                           values={{
                               network: (
                                   <>
-                                      <CoinLogoWrapper>
-                                          <CoinLogo size={24} symbol={selectedNetwork.symbol} />
-                                      </CoinLogoWrapper>
+                                      <AssetLogoWrapper>
+                                          <AssetLogo size={24} symbol={selectedNetwork.symbol} />
+                                      </AssetLogoWrapper>
                                       {selectedNetwork.name}
                                   </>
                               ),

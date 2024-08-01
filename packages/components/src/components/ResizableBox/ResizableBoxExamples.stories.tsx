@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
 import { ResizableBox } from './ResizableBox';
-import { AssetLogo } from '../assets/AssetLogo/AssetLogo';
-import { AssetShareIndicator } from '../assets/AssetShareIndicator/AssetShareIndicator';
 
 const Container = styled.div`
     position: relative;
@@ -52,14 +50,6 @@ export const ResizableBoxExamples: StoryObj = {
                     <Content $color="salmon">Resize me from top and/or left</Content>
                 </ResizableBox>
             </Wrapper>
-            <Content $color="white">
-                <AssetShareIndicator
-                    percentageShare={50}
-                    //coingeckoId="arbitrum-nova"
-                    //contractAddress="0x6dcb98f460457fe4952e12779ba852f82ecc62c1"
-                    symbol="bch"
-                />
-            </Content>
         </Container>
     ),
 };

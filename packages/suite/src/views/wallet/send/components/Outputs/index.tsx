@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { spacingsPx } from '@trezor/theme';
-import { Card, CoinLogo, motionEasing } from '@trezor/components';
+import { Card, AssetLogo, motionEasing } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Address } from './components/Address';
 import { Amount } from './components/Amount';
@@ -82,7 +82,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                             label={
                                 isMatic && (
                                     <StyledEvmExplanation>
-                                        <CoinLogo symbol={account.symbol} size={16} />
+                                        <AssetLogo symbol={account.symbol} size={16} />
                                         <Translation
                                             id="TR_EVM_EXPLANATION_SEND_DESCRIPTION"
                                             values={{

@@ -1,5 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Card, CardProps, CoinLogo, useElevation, variables } from '@trezor/components';
+import { Card, CardProps, AssetLogo, useElevation, variables } from '@trezor/components';
 import { Elevation, mapElevationToBackground } from '@trezor/theme';
 import { HTMLAttributes, ReactNode, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
@@ -61,7 +61,7 @@ export const EvmExplanationBox = forwardRef<HTMLDivElement, EvmExplanationBoxPro
 
         return (
             <EvmExplanationBoxWrapper ref={ref} $caret={caret} $elevation={elevation} {...rest}>
-                <CoinLogo symbol={symbol} size={38} />
+                <AssetLogo symbol={symbol} size={38} />
                 <div>
                     <EvmExplanationTitle>{title}</EvmExplanationTitle>
                     <EvmExplanationDescription>{children}</EvmExplanationDescription>
