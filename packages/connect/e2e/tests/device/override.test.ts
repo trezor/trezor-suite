@@ -22,6 +22,8 @@ describe('TrezorConnect override param', () => {
         it(`override previous call after ${delay}ms`, async () => {
             TrezorConnect.removeAllListeners();
 
+            await TrezorConnect.getFeatures({ device: { path: '1' } });
+
             TrezorConnect.getAddress({
                 path: "m/44'/1'/0'/0/0",
                 showOnTrezor: true,
