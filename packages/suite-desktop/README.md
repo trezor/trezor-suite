@@ -42,13 +42,15 @@ _Note: On Debian, CentOS and similar distributions you might need to add a `--no
 yarn workspace @trezor/suite-desktop build:mac
 ```
 
-Go to `./packages/suite-desktop/build-electron/mac` and open the app
+Go to `./packages/suite-desktop/build-electron/mac-arm64` and open the app
 
 or start the app from terminal:
 
 ```
-./packages/suite-desktop/build-electron/mac/Trezor\ Suite.app/Contents/MacOS/Trezor\ Suite
+./packages/suite-desktop/build-electron/mac-arm64/Trezor\ Suite.app/Contents/MacOS/Trezor\ Suite
 ```
+
+Drop the `-arm64` suffix if you are using an Intel Mac.
 
 ### Windows
 
