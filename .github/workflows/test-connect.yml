@@ -101,7 +101,7 @@ jobs:
 
   connect-legacy-canary-firmware:
     needs: [build, set-matrix]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+    if: github.repository == 'trezor/trezor-suite'
     name: legacy-canary-${{ matrix.name }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
