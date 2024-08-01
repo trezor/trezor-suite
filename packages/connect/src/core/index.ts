@@ -194,6 +194,10 @@ const initDevice = async (devicePath?: string) => {
                 device = _deviceList.getDevice(payload.device.path);
             }
         }
+    } else if (uiPromises.exists(UI.RECEIVE_DEVICE)) {
+        // In case of second method call quickly after the first one, wait for device selection
+        // (if created during the first call) even if showDeviceSelection is false now
+        await uiPromises.get(UI.RECEIVE_DEVICE);
     }
 
     if (!device) {
