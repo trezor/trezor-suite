@@ -6,7 +6,8 @@ export {
     allowReferers,
     parseBodyJSON,
     parseBodyText,
-    type Handler,
+    type RequestHandler,
+    type ParamsValidatorHandler,
     type RequestWithParams,
     type Response,
 } from './http';
