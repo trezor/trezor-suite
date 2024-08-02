@@ -10,7 +10,7 @@ class DashboardActions {
         await window.getByTestId('@analytics/continue-button').click();
         await window.getByTestId('@onboarding/exit-app-button').click();
 
-        await window.getByTestId('@onbarding/viewOnly/skip').click();
+        await window.getByTestId('@onboarding/viewOnly/skip').click();
         await window.getByTestId('@viewOnlyTooltip/gotIt').click();
     }
 

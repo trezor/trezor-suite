@@ -13,9 +13,9 @@ export const passThroughInitialRun = ({ viewOnly = true } = {}) => {
         .getTestElement('@onboarding/exit-app-button')
         .click();
     if (viewOnly) {
-        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@onboarding/viewOnly/enable').click();
     } else {
-        cy.getTestElement('@onbarding/viewOnly/skip').click();
+        cy.getTestElement('@onboarding/viewOnly/skip').click();
     }
     cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 10_000 }).should('be.visible').click();
 };

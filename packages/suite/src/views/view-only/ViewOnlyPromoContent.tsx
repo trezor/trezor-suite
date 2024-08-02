@@ -239,7 +239,7 @@ const Buttons = () => {
                 variant="primary"
                 isFullWidth
                 onClick={onYes}
-                data-test="@onbarding/viewOnly/enable"
+                data-test="@onboarding/viewOnly/enable"
             >
                 <Translation id="TR_VIEW_ONLY_PROMO_YES" />
             </Button>
@@ -247,7 +247,7 @@ const Buttons = () => {
                 variant="tertiary"
                 isFullWidth
                 onClick={onNo}
-                data-test="@onbarding/viewOnly/skip"
+                data-test="@onboarding/viewOnly/skip"
             >
                 <Translation id="TR_VIEW_ONLY_PROMO_NOT_NOW" />
             </Button>
