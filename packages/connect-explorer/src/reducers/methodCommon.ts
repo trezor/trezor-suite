@@ -14,6 +14,7 @@ export interface MethodState {
     addressValidation?: boolean;
     schema?: TSchema;
     manualMode?: boolean;
+    processing: boolean;
 }
 
 export const initialState: MethodState = {
@@ -25,6 +26,7 @@ export const initialState: MethodState = {
     response: undefined,
     addressValidation: false,
     manualMode: false,
+    processing: false,
 };
 
 // Converts the fields into a params object

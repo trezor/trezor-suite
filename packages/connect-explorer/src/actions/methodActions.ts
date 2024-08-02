@@ -15,6 +15,7 @@ export const REMOVE_BATCH = 'method_remove_batch';
 export const SET_UNION = 'method_set_union';
 export const RESPONSE = 'method_response';
 export const SET_MANUAL_MODE = 'method_set_manual_mode';
+export const SET_METHOD_PROCESSING = 'method_set_processing';
 
 export type MethodAction =
     | { type: typeof SET_METHOD; methodConfig: any }
@@ -25,8 +26,8 @@ export type MethodAction =
     | { type: typeof REMOVE_BATCH; field: Field<any>; batch: any[] }
     | { type: typeof SET_UNION; field: Field<any>; current: any }
     | { type: typeof RESPONSE; response: any }
-    | { type: typeof SET_MANUAL_MODE; manualMode: boolean };
-
+    | { type: typeof SET_MANUAL_MODE; manualMode: boolean }
+    | { type: typeof SET_METHOD_PROCESSING; payload: boolean };
 export const onSetMethod = (methodConfig: any) => ({
     type: SET_METHOD,
     methodConfig,
@@ -81,7 +82,7 @@ export const onSetManualMode = (manualMode: boolean) => ({
 export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => {
     const { method } = getState();
     if (!method?.name) throw new Error('method name not specified');
-
+    dispatch({ type: SET_METHOD_PROCESSING, payload: true });
     const connectMethod = TrezorConnect[method.name];
     if (typeof connectMethod !== 'function') {
         dispatch(
@@ -97,7 +98,7 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
     const response = await connectMethod({
         ...method.params,
     });
-
+    dispatch({ type: SET_METHOD_PROCESSING, payload: false });
     dispatch(onResponse(response));
 };
 
