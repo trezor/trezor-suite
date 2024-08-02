@@ -46,7 +46,7 @@ describe('T2B1 - Device settings', () => {
             .getTestElement('@onboarding/exit-app-button')
             .click();
         cy.passThroughAuthenticityCheck();
-        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@onboarding/viewOnly/enable').click();
         cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })
             .should('be.visible')
             .click();
@@ -102,7 +102,7 @@ describe('T2B1 - Device settings', () => {
             .getTestElement('@onboarding/exit-app-button')
             .click();
         cy.passThroughAuthenticityCheck();
-        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@onboarding/viewOnly/enable').click();
         cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })
             .should('be.visible')
             .click();
@@ -128,7 +128,7 @@ describe('T2B1 - Device settings', () => {
             .getTestElement('@onboarding/exit-app-button')
             .click();
         cy.passThroughAuthenticityCheck();
-        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@onboarding/viewOnly/enable').click();
         cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })
             .should('be.visible')
             .click();

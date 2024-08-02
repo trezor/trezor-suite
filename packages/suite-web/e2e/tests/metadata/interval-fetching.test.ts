@@ -57,7 +57,7 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
                 .click()
                 .getTestElement('@onboarding/exit-app-button')
                 .click();
-            cy.getTestElement('@onbarding/viewOnly/enable').click();
+            cy.getTestElement('@onboarding/viewOnly/enable').click();
             cy.log(
                 'Wait for discovery to finish. There is "add label" button, but no actual metadata appeared',
             );

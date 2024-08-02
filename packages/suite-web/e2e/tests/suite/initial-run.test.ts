@@ -25,7 +25,7 @@ describe('Suite initial run', () => {
         cy.prefixedVisit('/');
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@onboarding/exit-app-button').click();
-        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@onboarding/viewOnly/enable').click();
         cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })
             .should('be.visible')
             .click();

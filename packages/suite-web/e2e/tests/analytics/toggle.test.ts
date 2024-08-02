@@ -45,7 +45,7 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
 
         // finish onboarding
         cy.getTestElement('@onboarding/exit-app-button').click();
-        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@onboarding/viewOnly/enable').click();
         cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 10_000 })
             .should('be.visible')
             .click();

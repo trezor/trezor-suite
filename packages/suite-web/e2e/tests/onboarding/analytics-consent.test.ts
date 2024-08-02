@@ -22,7 +22,7 @@ describe('Onboarding - analytics consent', () => {
 
         acceptAnalyticsConsentOnInitializedDevice();
 
-        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@onboarding/viewOnly/enable').click();
         cy.getTestElement('@suite-layout/body').should('be.visible');
         cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.getTestElement('@wallet/menu/wallet-send');
