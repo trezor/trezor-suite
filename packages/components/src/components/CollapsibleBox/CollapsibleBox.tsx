@@ -12,7 +12,7 @@ import {
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { motionEasing } from '../../config/motion';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
 export const allowedCollapsibleBoxFrameProps: FramePropsKeys[] = ['margin'];

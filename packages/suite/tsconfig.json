@@ -96,6 +96,7 @@
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../ipc-proxy" },
+        { "path": "../product-components" },
         { "path": "../react-utils" },
         { "path": "../styles" },
         { "path": "../suite-analytics" },

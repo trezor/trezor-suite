@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { ConfirmOnDevice } from '@trezor/components';
 import { Translation, Modal, ModalProps } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { Fingerprint } from 'src/components/firmware';
+import { ConfirmOnDevice } from '@trezor/product-components';
 
 const StyledModal = styled(Modal)`
     width: 360px;

@@ -1,10 +1,10 @@
 import { Meta, StoryFn } from '@storybook/react';
 import { DeviceModelInternal } from '@trezor/connect';
 import { ConfirmOnDevice as ConfirmOnDeviceComponent } from './ConfirmOnDevice';
-import { StoryColumn } from '../../support/Story';
+import { StoryColumn } from '@trezor/components';
 
 const meta: Meta = {
-    title: 'Misc/ConfirmOnDevice',
+    title: 'ConfirmOnDevice',
     parameters: {
         options: {
             showPanel: false,

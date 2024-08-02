@@ -6,7 +6,7 @@ import {
     allowedCollapsibleBoxFrameProps,
 } from './CollapsibleBox';
 import { action } from '@storybook/addon-actions';
-import { getFramePropsStory } from '../common/frameProps';
+import { getFramePropsStory } from '../../utils/frameProps';
 
 const Content = styled.div`
     width: 200px;

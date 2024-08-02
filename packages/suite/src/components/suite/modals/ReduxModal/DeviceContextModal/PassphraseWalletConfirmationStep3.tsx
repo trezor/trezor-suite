@@ -1,9 +1,10 @@
-import { Warning, PassphraseTypeCard, Text } from '@trezor/components';
+import { Warning, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { PassphraseHeading } from './PassphraseHeading';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
+import { PassphraseTypeCard } from '../../../../../../../product-components/src/components/PassphraseTypeCard/PassphraseTypeCard';
 
 type PassphraseWalletConfirmationStep3Props = {
     onDeviceOffer: boolean;

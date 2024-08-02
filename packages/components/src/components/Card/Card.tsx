@@ -2,9 +2,9 @@ import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../components/common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
-import { AccessabilityProps, withAccessabilityProps } from '../common/accessabilityProps';
+import { AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
 
 type PaddingType = 'small' | 'none' | 'normal';
 
@@ -90,7 +90,7 @@ const CardContainer = styled.div<
 `;
 
 export type CardProps = AllowedFrameProps &
-    AccessabilityProps & {
+    AccessibilityProps & {
         paddingType?: PaddingType;
         onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
         onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
@@ -112,7 +112,7 @@ const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: Padd
                 $paddingType={paddingType}
                 $isClickable={Boolean(onClick)}
                 onClick={onClick}
-                {...withAccessabilityProps({ tabIndex })}
+                {...withAccessibilityProps({ tabIndex })}
                 {...rest}
             >
                 <ElevationContext baseElevation={elevation}>{children}</ElevationContext>

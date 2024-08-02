@@ -11,7 +11,7 @@ import {
 } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import { UIVariant } from '../../config/types';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 
 type BoxVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive' | 'info'>;

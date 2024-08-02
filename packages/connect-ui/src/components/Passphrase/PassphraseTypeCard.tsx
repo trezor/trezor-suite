@@ -21,7 +21,7 @@ import {
     motionAnimation,
 } from '@trezor/components';
 
-type WalletType = 'standard' | 'hidden';
+import { WalletType } from './types';
 
 type WrapperProps = {
     $type: WalletType;

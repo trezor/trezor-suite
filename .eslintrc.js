@@ -295,6 +295,7 @@ module.exports = {
                 'packages/analytics/**/*',
                 'packages/blockchain-link/**/*',
                 'packages/components/**/*',
+                'packages/product-components/**/*',
                 'packages/connect/**/*',
                 'packages/connect-common/**/*',
                 'packages/connect-explorer/**/*',

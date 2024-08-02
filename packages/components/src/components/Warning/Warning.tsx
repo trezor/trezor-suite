@@ -5,7 +5,7 @@ import { Icon, IconType } from '../assets/Icon/Icon';
 import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
 import { Row, TransientProps, useElevation } from '../..';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { WarningContext } from './WarningContext';
 import { WarningButton } from './WarningButton';
 import { WarningVariant } from './types';

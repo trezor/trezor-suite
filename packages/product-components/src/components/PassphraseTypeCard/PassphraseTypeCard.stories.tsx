@@ -6,7 +6,7 @@ import {
 import { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta = {
-    title: 'Loaders/PassphraseTypeCard',
+    title: 'PassphraseTypeCard',
     decorators: [
         (Story: React.FC) => (
             <IntlProvider locale="en">

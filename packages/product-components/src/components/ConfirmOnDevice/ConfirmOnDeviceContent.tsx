@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { Icon } from '../assets/Icon/Icon';
+import { Icon } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import {
     Elevation,
@@ -9,8 +9,8 @@ import {
     spacingsPx,
     typography,
 } from '@trezor/theme';
-import { useElevation } from '../ElevationContext/ElevationContext';
-import { RotateDeviceImage } from './RotateDeviceImage';
+import { useElevation } from '@trezor/components';
+import { RotateDeviceImage } from '@trezor/components';
 
 const Column = styled.div`
     display: flex;

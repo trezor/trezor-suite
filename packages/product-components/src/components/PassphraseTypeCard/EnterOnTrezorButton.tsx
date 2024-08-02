@@ -1,11 +1,8 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
-
 import styled, { useTheme } from 'styled-components';
-
-import { spacings } from '@trezor/theme';
+import { Image, Card, Icon, Text, Row } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
-import { Card, Icon, Row, Text, Image } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 const Flex = styled.div`
     flex: 1;

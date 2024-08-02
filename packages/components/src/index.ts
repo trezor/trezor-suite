@@ -24,8 +24,7 @@ export * from './components/buttons/TextButton/TextButton';
 export * from './components/buttons/TooltipButton/TooltipButton';
 export * from './components/Card/Card';
 export * from './components/CollapsibleBox/CollapsibleBox';
-export * from './components/ConfirmOnDevice/ConfirmOnDevice';
-export * from './components/ConfirmOnDevice/RotateDeviceImage';
+export * from './components/RotateDeviceImage/RotateDeviceImage';
 export * from './components/DataAnalytics';
 export * from './components/Divider/Divider';
 export * from './components/Dropdown/Dropdown';
@@ -54,7 +53,6 @@ export * from './components/modals/Modal/Backdrop';
 export * from './components/modals/Modal/Modal';
 export * from './components/Note/Note';
 export * from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
-export * from './components/Passphrase/PassphraseTypeCard';
 export * from './components/ResizableBox/ResizableBox';
 export * from './components/skeletons/SkeletonCircle';
 export * from './components/skeletons/SkeletonRectangle';
@@ -70,6 +68,7 @@ export * from './components/typography/Paragraph/Paragraph';
 export * from './components/typography/Text/Text';
 export * from './components/typography/TruncateWithTooltip/TruncateWithTooltip';
 export * from './components/Warning/Warning';
+export { StoryColumn, StoryWrapper } from './support/Story';
 
 export * from './constants/keyboardEvents';
 

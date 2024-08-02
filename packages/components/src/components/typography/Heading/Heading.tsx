@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Color, TypographyStyle, typography } from '@trezor/theme';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 
 export const allowedHeadingFrameProps: FramePropsKeys[] = ['margin'];

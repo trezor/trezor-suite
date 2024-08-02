@@ -4,13 +4,13 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { Image } from '../Image/Image';
 import styled from 'styled-components';
 
-interface DeviceImageProps {
+export type RotateDeviceImageProps = {
     deviceModel?: DeviceModelInternal;
     deviceColor?: number;
     className?: string;
     animationHeight?: string;
     animationWidth?: string;
-}
+};
 
 const StyledImage = styled(Image)`
     /* do not apply the darkening filter in dark mode on device images */
@@ -23,7 +23,7 @@ export const RotateDeviceImage = ({
     className,
     animationHeight,
     animationWidth,
-}: DeviceImageProps) => {
+}: RotateDeviceImageProps) => {
     if (!deviceModel) {
         return null;
     }
