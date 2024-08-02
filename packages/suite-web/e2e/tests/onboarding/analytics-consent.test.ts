@@ -1,4 +1,4 @@
-// @group_device-management
+// @group_suite
 // @retry=2
 
 const acceptAnalyticsConsentOnInitializedDevice = () => {
