@@ -13,7 +13,7 @@ describe('Onboarding - analytics consent', () => {
         cy.viewport(1440, 2560).resetDb();
     });
 
-    it('shows analytics consent and then goes to /accounts device', () => {
+    it('analytics consent appears on any route that is visited initially. this time /accounts', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: false,
