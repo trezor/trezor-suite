@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 import { Color, TypographyStyle, typography } from '@trezor/theme';
-import { FrameProps, withFrameProps } from '../../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../common/frameProps';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 
-export const allowedHeadingFrameProps: (keyof FrameProps)[] = ['margin'];
+export const allowedHeadingFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedHeadingFrameProps)[number]>;
 
 type Align = 'left' | 'center' | 'right';

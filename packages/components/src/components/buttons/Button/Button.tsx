@@ -15,9 +15,9 @@ import {
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
-import { FrameProps, withFrameProps } from '../../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../common/frameProps';
 
-export const allowedButtonFrameProps: (keyof FrameProps)[] = ['margin'];
+export const allowedButtonFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
 type ButtonContainerProps = TransientProps<AllowedFrameProps> & {

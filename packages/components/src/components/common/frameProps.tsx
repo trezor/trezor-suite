@@ -16,6 +16,7 @@ export type FrameProps = {
     height?: string | number;
     maxHeight?: string | number;
 };
+export type FramePropsKeys = keyof FrameProps;
 
 type TransientFrameProps = TransientProps<FrameProps>;
 
@@ -57,7 +58,7 @@ export const withFrameProps = ({
     `;
 };
 
-export const getFramePropsStory = (allowedFrameProps: Array<keyof FrameProps>) => {
+export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => {
     const argTypes = allowedFrameProps.reduce(
         (acc, key) => ({
             ...acc,

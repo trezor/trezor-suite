@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { Color, Elevation, mapElevationToBorder, spacings } from '@trezor/theme';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import { FrameProps, withFrameProps } from '../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
-export const allowedDividerFrameProps: (keyof FrameProps)[] = ['margin'];
+export const allowedDividerFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedDividerFrameProps)[number]>;
 type DividerOrientation = 'horizontal' | 'vertical';
 

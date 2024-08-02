@@ -12,10 +12,10 @@ import {
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { motionEasing } from '../../config/motion';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
-import { FrameProps, withFrameProps } from '../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
-export const allowedCollapsibleBoxFrameProps: (keyof FrameProps)[] = ['margin'];
+export const allowedCollapsibleBoxFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCollapsibleBoxFrameProps)[number]>;
 
 const ANIMATION_DURATION = 0.4;

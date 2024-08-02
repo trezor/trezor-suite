@@ -6,10 +6,10 @@ import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { Icon } from '../../assets/Icon/Icon';
 import { getFocusShadowStyle } from '../../../utils/utils';
 import { UIHorizontalAlignment, UIVariant } from '../../../config/types';
-import { FrameProps, withFrameProps } from '../../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../common/frameProps';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 
-export const allowedCheckboxFrameProps: (keyof FrameProps)[] = ['margin'];
+export const allowedCheckboxFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCheckboxFrameProps)[number]>;
 
 interface VariantStyles {

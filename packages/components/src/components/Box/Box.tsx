@@ -11,7 +11,7 @@ import {
 } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import { UIVariant } from '../../config/types';
-import { FrameProps, withFrameProps } from '../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
 import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 
 type BoxVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive' | 'info'>;
@@ -32,7 +32,7 @@ const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
     return theme[colorMap[variant]];
 };
 
-export const allowedBoxFrameProps: (keyof FrameProps)[] = ['margin', 'maxWidth'];
+export const allowedBoxFrameProps: FramePropsKeys[] = ['margin', 'maxWidth'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>;
 
 export type BoxProps = AllowedFrameProps & {

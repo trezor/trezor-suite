@@ -2,7 +2,7 @@ import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
-import { FrameProps, withFrameProps } from '../../components/common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../components/common/frameProps';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { AccessabilityProps, withAccessabilityProps } from '../common/accessabilityProps';
 
@@ -12,7 +12,7 @@ type MapArgs = {
     $paddingType: PaddingType;
 };
 
-export const allowedCardFrameProps: (keyof FrameProps)[] = ['margin', 'maxWidth'];
+export const allowedCardFrameProps: FramePropsKeys[] = ['margin', 'maxWidth'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]>;
 
 const mapPaddingTypeToLabelPadding = ({ $paddingType }: MapArgs): number | string => {
