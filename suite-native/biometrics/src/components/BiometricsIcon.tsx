@@ -18,7 +18,7 @@ const iconWrapperStyle = prepareNativeStyle(
 
         extend: {
             condition: showShadow,
-            style: utils.boxShadows.small,
+            style: { ...utils.boxShadows.small },
         },
     }),
 );
