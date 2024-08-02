@@ -66,10 +66,7 @@ const startInteractionTimeout = (context: CoreContext) =>
  */
 const initDevice = async (context: CoreContext, devicePath?: string) => {
     const { uiPromises, deviceList, sendCoreMessage } = context;
-    // see initTransport.
-    // if transportReconnect: true, initTransport does not wait to be finished. if there are multiple requested transports
-    // in TrezorConnect.init, this method may emit UI.SELECT_DEVICE with wrong parameters (for example it thinks that it does not use weubsb although it should)
-    await deviceList.pendingConnection();
+
     assertDeviceListConnected(deviceList);
 
     const isWebUsb = deviceList.transportType() === 'WebUsbTransport';
@@ -452,18 +449,13 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
 
     const {
         uiPromises,
-        deviceList,
         callMethods,
         methodSynchronize,
         resolveWaitForFirstMethod,
-        getOverridePromise,
-        setOverridePromise,
         sendCoreMessage,
     } = context;
     const responseID = message.id;
     const origin = DataManager.getSettings('origin')!;
-    const env = DataManager.getSettings('env')!;
-    const useCoreInPopup = DataManager.getSettings('useCoreInPopup');
 
     const { preferredDevice } = storage.loadForOrigin(origin) || {};
     if (preferredDevice && !message.payload.device) {
@@ -472,7 +464,6 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
 
     // find method and parse incoming params
     let method: AbstractMethod<any>;
-    let messageResponse: CoreEventMessage;
     try {
         method = await methodSynchronize(async () => {
             _log.debug('loading method...');
@@ -507,22 +498,12 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
                 sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
             }
             const response = await method.run();
-            messageResponse = createResponseMessage(method.responseID, true, response);
+            sendCoreMessage(createResponseMessage(method.responseID, true, response));
         } catch (error) {
-            messageResponse = createResponseMessage(method.responseID, false, { error });
+            sendCoreMessage(createResponseMessage(method.responseID, false, { error }));
         }
-        sendCoreMessage(messageResponse);
 
         return Promise.resolve();
-    }
-
-    if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
-        const { transports, pendingTransportEvent } = DataManager.getSettings();
-        // transport is missing try to initialize it once again
-        // TODO bridge transport is probably not reusable, so I can't remove this setTransports yet.
-        deviceList.setTransports(transports);
-        // TODO is pendingTransportEvent needed here?
-        await deviceList.init({ pendingTransportEvent });
     }
 
     if (method.isManagementRestricted()) {
@@ -536,6 +517,30 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         return Promise.resolve();
     }
 
+    return await onCallDevice(context, message, method);
+};
+
+const onCallDevice = async (
+    context: CoreContext,
+    message: IFrameCallMessage,
+    method: AbstractMethod<any>,
+): Promise<void> => {
+    const { deviceList, callMethods, getOverridePromise, setOverridePromise, sendCoreMessage } =
+        context;
+    const responseID = message.id;
+    const { origin, env, useCoreInPopup } = DataManager.getSettings();
+
+    if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
+        const { transports, pendingTransportEvent } = DataManager.getSettings();
+        // transport is missing try to initialize it once again
+        // TODO bridge transport is probably not reusable, so I can't remove this setTransports yet.
+        deviceList.setTransports(transports);
+        // TODO is pendingTransportEvent needed here?
+        deviceList.init({ pendingTransportEvent });
+    }
+    await deviceList.pendingConnection();
+
+    const shouldRetry = ['web', 'webextension'].includes(env);
     // find device
     let device: Device;
     try {
@@ -546,6 +551,17 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
             await waitForPopup(context);
             // show message about transport
             sendCoreMessage(createUiMessage(UI.TRANSPORT));
+
+            // Retry initDevice again
+            // NOTE: this should change after multi-transports refactor, where transport will be always alive
+            if (deviceList.pendingConnection() && shouldRetry) {
+                while (deviceList.pendingConnection()) {
+                    await deviceList.pendingConnection();
+                }
+
+                // call onCallDevice again recursively
+                return await onCallDevice(context, message, method);
+            }
         } else {
             // cancel popup request
             sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
@@ -621,7 +637,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
     device.on(DEVICE.SAVE_STATE, (state: string) => {
         // Persist sessionId only in case of core in popup
         // Currently also only for webextension until we asses security implications
-        if (useCoreInPopup && env === 'webextension') {
+        if (useCoreInPopup && env === 'webextension' && origin) {
             storage.saveForOrigin(store => {
                 return {
                     ...store,
@@ -637,7 +653,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         }
     });
 
-    if (!device.getState()?.sessionId && useCoreInPopup && env === 'webextension') {
+    if (!device.getState()?.sessionId && useCoreInPopup && env === 'webextension' && origin) {
         // Restore sessionId if available
         const { preferredDevice } = storage.loadForOrigin(origin) || {};
         if (
@@ -648,6 +664,8 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
             device.setState({ sessionId: preferredDevice.internalState });
         }
     }
+
+    let messageResponse: CoreEventMessage;
 
     try {
         // run inner function

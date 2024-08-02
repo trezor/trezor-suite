@@ -13,7 +13,11 @@ export type TransportEventProps = Extract<UiEvent, { type: 'ui-no_transport' }>;
 export const Transport = () => {
     const windowFocused = useWindowFocus();
     const handleOpenSuite = () => {
-        location.href = SUITE_BRIDGE_DEEPLINK;
+        // trigger deep link using iframe (to avoid beforeUnload and avoid opening new blank tab)
+        const iframeDeeplink = document.createElement('iframe');
+        iframeDeeplink.src = SUITE_BRIDGE_DEEPLINK;
+        iframeDeeplink.style.display = 'none';
+        document.body.appendChild(iframeDeeplink);
 
         // fallback in case deeplink does not work
         window.setTimeout(() => {
