@@ -10,6 +10,64 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.3.1-beta.2
+
+-   refactor(connect): removed initDeviceList, move transportReconnect inside DeviceList, make DeviceList reusable, device list constructor not throwing, singleton-like DeviceList, separate onTransportUpdate, pendingTransportEvent improved, improve DeviceList init flow (f4b3694, 02215de, b53259b, e8c6c25, e395dc8, 6509e5c, 3e30d64, d173966, 50cbbea, 1a81d89, 4780c51, 75bfe75, 83c0cb3, 73261c8, f2167bf, bb7dfee)
+-   fix(connect): correctly wait for device selection in case of overriding (0c7a3bd)
+-   fix(connect): Fork old PassphraseTypeCard to connect (155afda)
+-   fix(connect): longer timeout for getFeatures due to suite-native performance issue (0910ab7)
+-   fix(connect): handle malformed EIP-712 data (d111006)
+-   fix(connect): remove superfluous space from error message (81be584)
+-   fix(connect): correctly await transport.receive (31c8519)
+-   fix(connect): proper pendingTransportEvent waiting (baa4144)
+-   chore(connect): add a comment to legacy code (a23a365)
+
+## connect-web
+
+-   don't fallback to core in popup with no webusb (7120e83)
+-   clean up in popupmanager when useUi=false (9bc2ea9)
+
+## connect-popup
+
+-   add missing device icons (9fdd1d7)
+
+## connect-webextension
+
+-   Allow multiple content script extension conflicts (348b32a)
+
+## connect-explorer
+
+-   wrong default coreMode in settings (3a81f14)
+-   don't validate connectSrc in webextension (8737d47)
+-   add link to new webextension example (86a13b1)
+
+## Dependencies update
+
+-   bump react-intl from 6.6.2 to 6.6.8
+-   bump @types/chrome from 0.0.260 to 0.0.269
+-   bump playwright from 1.41.2 to 1.45.3
+-   bump webpack-merge from 5.10.0 to 6.0.1
+-   bump webpack-dev-server from 4.15.1 to 5.0.4
+-   bump @babel/preset-typescript from 7.23.3 to 7.24.7
+-   bump @babel/preset-react from 7.23.3 to 7.24.7
+-   bump webpack from 5.90.1 to 5.93.0
+-   bump rimraf from 5.0.5 to 6.0.1
+-   bump txs from 4.7.0 to 4.16.2
+
+-   npm-prerelease: @trezor/blockchain-link 2.2.1-beta.2
+-   npm-prerelease: @trezor/blockchain-link-utils 1.1.1-beta.2
+-   npm-prerelease: @trezor/blockchain-link-types 1.1.1-beta.2
+-   npm-prerelease: @trezor/analytics 1.1.1-beta.1
+-   npm-prerelease: @trezor/connect-common 0.1.1-beta.2
+-   npm-prerelease: @trezor/env-utils 1.1.1-beta.1
+-   npm-prerelease: @trezor/transport 1.2.1-beta.2
+-   npm-prerelease: @trezor/protobuf 1.1.1-beta.2
+-   npm-prerelease: @trezor/schema-utils 1.1.1-beta.1
+-   npm-prerelease: @trezor/protocol 1.1.1-beta.1
+-   npm-prerelease: @trezor/utxo-lib 2.1.1-beta.1
+-   npm-prerelease: @trezor/utils 9.1.1-beta.2
+-   npm-release: @trezor/connect 9.3.1-beta.2
+
 # 9.3.1-beta.1
 
 We introduce a new init option `coreMode`, which allows websites to interact either using the existing `iframe` mode or the new `popup` mode. The `popup` mode is allows to use WebUSB even on third-party websites, which is not possible with the `iframe` mode. By default, the `coreMode` is set to `auto`, which means that the library will automatically choose the best mode based on the environment. More information can be found in [init method documentation](https://connect.trezor.io/9.3.1-beta.1/methods/other/init/).
