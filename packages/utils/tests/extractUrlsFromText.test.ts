@@ -29,6 +29,14 @@ describe('extractUrlsFromText', () => {
         expect(urls).toEqual([]);
     });
 
+    it('should not match invalid URLs with version in token name', () => {
+        const text = 'PEPE2.0';
+        const { textParts, urls } = extractUrlsFromText(text);
+
+        expect(textParts).toEqual([text]);
+        expect(urls).toEqual([]);
+    });
+
     it('should handle text with multiple URLs related to Ethereum tokens correctly', () => {
         const text =
             'Visit https://etherscan.io, http://mycrypto.com, and www.ethereum.org to claim your tokens.';
