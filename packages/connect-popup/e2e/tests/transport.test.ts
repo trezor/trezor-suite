@@ -129,6 +129,7 @@ fixtures.forEach(f => {
         [popup] = await Promise.all([
             context.waitForEvent('page'),
             page.locator("button[data-test='@submit-button']").click({ timeout: 30000 }),
+            page.waitForSelector("[data-test='@submit-button/spinner']"),
         ]);
         log('waiting for analytics');
         await waitAndClick(popup, ['@analytics/continue-button']);
