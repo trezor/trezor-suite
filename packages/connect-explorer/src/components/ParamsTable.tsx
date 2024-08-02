@@ -110,17 +110,17 @@ export const ParamsTable = ({ schema, topLevelSchema, descriptions }: ParamsTabl
     const common = { topLevelSchema: topLevelSchemaCurrent, descriptions };
     if (schema[Kind] === 'Union') {
         return schema.anyOf?.map((param: TSchema, i: number) => (
-            <>
+            <div key={i}>
                 {i > 0 && <h3>or</h3>}
                 <ParamsTable key={i} schema={param} {...common} />
-            </>
+            </div>
         ));
     } else if (schema[Kind] === 'Intersect') {
         return schema.allOf?.map((param: TSchema, i: number) => (
-            <>
+            <div key={i}>
                 {i > 0 && <h3>and</h3>}
-                <ParamsTable key={i} schema={param} {...common} />
-            </>
+                <ParamsTable schema={param} {...common} />
+            </div>
         ));
     } else if (schema[Kind] === 'Object') {
         return Object.entries(schema.properties)?.map(([name, value]: [string, any]) => (
