@@ -11,6 +11,7 @@ import {
     ElevationUp,
     ElevationDown,
     ElevationContext,
+    Column,
 } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { Translation } from 'src/components/suite';
@@ -27,6 +28,7 @@ import { useGuide } from 'src/hooks/guide';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { NavSettings } from './NavSettings';
 import { Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import { TrafficLightOffset } from '../../TrafficLightOffset';
 
 const Wrapper = styled.div`
     display: flex;
@@ -59,10 +61,6 @@ const WelcomeWrapper = styled.div<{ $elevation: Elevation }>`
 `;
 
 const MotionWelcome = styled(motion.div)`
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    display: flex;
     height: 100%;
     overflow: hidden;
     min-width: 380px;
@@ -145,32 +143,36 @@ const Left = () => {
                             transition: { duration: 0.3, bounce: 0 },
                         }}
                     >
-                        <Expander data-test="@welcome/title">
-                            <TrezorLogo type="symbol" width="57px" />
-                        </Expander>
+                        <TrafficLightOffset>
+                            <Column justifyContent="center" alignItems="center" height="100%">
+                                <Expander data-test="@welcome/title">
+                                    <TrezorLogo type="symbol" width="57px" />
+                                </Expander>
 
-                        <LinksContainer>
-                            {isWeb() && (
-                                <TrezorLink type="hint" variant="nostyle" href={SUITE_URL}>
-                                    <Button
-                                        variant="tertiary"
-                                        icon="EXTERNAL_LINK"
-                                        iconAlignment="right"
-                                    >
-                                        <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
-                                    </Button>
-                                </TrezorLink>
-                            )}
-                            <TrezorLink type="hint" variant="nostyle" href={TREZOR_URL}>
-                                <Button
-                                    variant="tertiary"
-                                    icon="EXTERNAL_LINK"
-                                    iconAlignment="right"
-                                >
-                                    trezor.io
-                                </Button>
-                            </TrezorLink>
-                        </LinksContainer>
+                                <LinksContainer>
+                                    {isWeb() && (
+                                        <TrezorLink type="hint" variant="nostyle" href={SUITE_URL}>
+                                            <Button
+                                                variant="tertiary"
+                                                icon="EXTERNAL_LINK"
+                                                iconAlignment="right"
+                                            >
+                                                <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
+                                            </Button>
+                                        </TrezorLink>
+                                    )}
+                                    <TrezorLink type="hint" variant="nostyle" href={TREZOR_URL}>
+                                        <Button
+                                            variant="tertiary"
+                                            icon="EXTERNAL_LINK"
+                                            iconAlignment="right"
+                                        >
+                                            trezor.io
+                                        </Button>
+                                    </TrezorLink>
+                                </LinksContainer>
+                            </Column>
+                        </TrafficLightOffset>
                     </MotionWelcome>
                 )}
             </AnimatePresence>

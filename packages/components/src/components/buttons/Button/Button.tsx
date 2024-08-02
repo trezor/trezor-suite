@@ -14,10 +14,13 @@ import {
 } from '../buttonStyleUtils';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { useElevation } from '../../ElevationContext/ElevationContext';
-import { makePropsTransient } from '../../../utils/transientProps';
-import { FrameProps, TransientFrameProps, withFrameProps } from '../../common/frameProps';
+import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../common/frameProps';
 
-type ButtonContainerProps = TransientFrameProps & {
+export const allowedButtonFrameProps: FramePropsKeys[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
+
+type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
     $variant: ButtonVariant;
     $size: ButtonSize;
     $iconAlignment?: IconAlignment;
@@ -84,7 +87,7 @@ type SelectedHTMLButtonProps = Pick<
 >;
 
 export type ButtonProps = SelectedHTMLButtonProps &
-    FrameProps & {
+    AllowedFrameProps & {
         variant?: ButtonVariant;
         size?: ButtonSize;
         isDisabled?: boolean;

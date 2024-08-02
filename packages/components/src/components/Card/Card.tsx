@@ -2,12 +2,8 @@ import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
-import {
-    FrameProps,
-    TransientFrameProps,
-    withFrameProps,
-} from '../../components/common/frameProps';
-import { makePropsTransient } from '../../utils/transientProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../components/common/frameProps';
+import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { AccessabilityProps, withAccessabilityProps } from '../common/accessabilityProps';
 
 type PaddingType = 'small' | 'none' | 'normal';
@@ -15,6 +11,9 @@ type PaddingType = 'small' | 'none' | 'normal';
 type MapArgs = {
     $paddingType: PaddingType;
 };
+
+export const allowedCardFrameProps: FramePropsKeys[] = ['margin', 'maxWidth'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]>;
 
 const mapPaddingTypeToLabelPadding = ({ $paddingType }: MapArgs): number | string => {
     const paddingMap: Record<PaddingType, number | string> = {
@@ -35,7 +34,7 @@ const mapPaddingTypeToPadding = ({ $paddingType }: MapArgs): number | string => 
     return paddingMap[$paddingType];
 };
 
-const Container = styled.div<TransientFrameProps>`
+const Container = styled.div<TransientProps<AllowedFrameProps>>`
     border-radius: ${borders.radii.md};
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
     padding: ${spacingsPx.xxxs};
@@ -53,7 +52,7 @@ const CardContainer = styled.div<
         $elevation: Elevation;
         $paddingType: PaddingType;
         $isClickable: boolean;
-    } & TransientFrameProps
+    } & TransientProps<AllowedFrameProps>
 >`
     display: flex;
     width: 100%;
@@ -90,7 +89,7 @@ const CardContainer = styled.div<
     ${withFrameProps}
 `;
 
-export type CardProps = FrameProps &
+export type CardProps = AllowedFrameProps &
     AccessabilityProps & {
         paddingType?: PaddingType;
         onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];

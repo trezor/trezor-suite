@@ -6,8 +6,11 @@ import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { Icon } from '../../assets/Icon/Icon';
 import { getFocusShadowStyle } from '../../../utils/utils';
 import { UIHorizontalAlignment, UIVariant } from '../../../config/types';
-import { FrameProps, TransientFrameProps, withFrameProps } from '../../common/frameProps';
-import { makePropsTransient } from '../../../utils/transientProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../common/frameProps';
+import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
+
+export const allowedCheckboxFrameProps: FramePropsKeys[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedCheckboxFrameProps)[number]>;
 
 interface VariantStyles {
     background: Color;
@@ -61,7 +64,7 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
     },
 };
 
-type ContainerProps = TransientFrameProps & {
+type ContainerProps = TransientProps<AllowedFrameProps> & {
     $isDisabled?: boolean;
     $labelAlignment?: LabelAlignment;
 };
@@ -151,7 +154,7 @@ export const HiddenInput = styled.input`
 export type CheckboxVariant = Extract<UIVariant, 'primary' | 'destructive' | 'warning'>;
 export type LabelAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
-export type CheckboxProps = {
+export type CheckboxProps = AllowedFrameProps & {
     variant?: CheckboxVariant;
     isChecked?: boolean;
     isDisabled?: boolean;
@@ -160,7 +163,7 @@ export type CheckboxProps = {
     'data-test'?: string;
     className?: string;
     children?: ReactNode;
-} & Pick<FrameProps, 'margin'>;
+};
 
 export const Checkbox = ({
     variant = 'primary',

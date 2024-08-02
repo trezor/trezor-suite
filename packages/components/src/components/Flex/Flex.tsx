@@ -1,7 +1,10 @@
 import { SpacingValues } from '@trezor/theme';
 import styled from 'styled-components';
-import { FrameProps, TransientFrameProps, withFrameProps } from '../common/frameProps';
-import { makePropsTransient } from '../../utils/transientProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
+import { makePropsTransient, TransientProps } from '../../utils/transientProps';
+
+export const allowedFlexFrameProps: FramePropsKeys[] = ['margin', 'width', 'height'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedFlexFrameProps)[number]>;
 
 export const flexDirection = ['column', 'row'] as const;
 export const flexWrap = ['nowrap', 'wrap', 'wrap-reverse'] as const;
@@ -41,7 +44,7 @@ export type Flex = string | number;
 export type FlexWrap = (typeof flexWrap)[number];
 
 const Container = styled.div<
-    TransientFrameProps & {
+    TransientProps<AllowedFrameProps> & {
         $gap: SpacingValues;
         $justifyContent: FlexJustifyContent;
         $alignItems: FlexAlignItems;
@@ -62,7 +65,7 @@ const Container = styled.div<
     ${withFrameProps}
 `;
 
-export type FlexProps = FrameProps & {
+export type FlexProps = AllowedFrameProps & {
     gap?: SpacingValues;
     justifyContent?: FlexJustifyContent;
     alignItems?: FlexAlignItems;
@@ -85,9 +88,13 @@ const Flex = ({
     flexWrap = 'nowrap',
     isReversed = false,
     className,
+    width,
+    height,
 }: FlexProps) => {
     const frameProps = {
         margin,
+        width,
+        height,
     };
 
     return (

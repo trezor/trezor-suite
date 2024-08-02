@@ -5,13 +5,17 @@ import animationStart from './animationData/refresh-spinner-start.json';
 import animationMiddle from './animationData/refresh-spinner-middle.json';
 import animationEnd from './animationData/refresh-spinner-end-success.json';
 import animationWarn from './animationData/refresh-spinner-end-warning.json';
-import { TransientFrameProps, withFrameProps, FrameProps } from '../../common/frameProps';
+import { withFrameProps, FrameProps, FramePropsKeys } from '../../common/frameProps';
+import { TransientProps } from '../../../utils/transientProps';
+
+export const allowedSpinnerFrameProps: FramePropsKeys[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedSpinnerFrameProps)[number]>;
 
 const StyledLottie = styled(Lottie)<
     {
         size: SpinnerProps['size'];
         $isGrey: SpinnerProps['isGrey'];
-    } & TransientFrameProps
+    } & TransientProps<AllowedFrameProps>
 >`
     width: ${({ size }) => `${size}px`};
     height: ${({ size }) => `${size}px`};
@@ -20,7 +24,7 @@ const StyledLottie = styled(Lottie)<
     ${withFrameProps}
 `;
 
-export interface SpinnerProps {
+export type SpinnerProps = AllowedFrameProps & {
     size?: number;
     isGrey?: boolean;
     hasStartAnimation?: boolean;
@@ -28,8 +32,7 @@ export interface SpinnerProps {
     hasError?: boolean;
     className?: string;
     dataTest?: string;
-    margin?: FrameProps['margin'];
-}
+};
 
 export const Spinner = ({
     size = 100,

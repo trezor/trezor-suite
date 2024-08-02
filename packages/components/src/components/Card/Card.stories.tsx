@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Card as CardComponent } from './Card';
-import { framePropsStory } from '../common/frameProps';
+import { Card as CardComponent, allowedCardFrameProps } from './Card';
+import { getFramePropsStory } from '../common/frameProps';
 
 const meta: Meta = {
     title: 'Misc/Card',
@@ -13,7 +13,7 @@ export const Card: StoryObj = {
         children: 'Some content',
         label: '',
         paddingType: 'normal',
-        ...framePropsStory.args,
+        ...getFramePropsStory(allowedCardFrameProps).args,
     },
     argTypes: {
         paddingType: {
@@ -22,6 +22,6 @@ export const Card: StoryObj = {
                 type: 'radio',
             },
         },
-        ...framePropsStory.argTypes,
+        ...getFramePropsStory(allowedCardFrameProps).argTypes,
     },
 };

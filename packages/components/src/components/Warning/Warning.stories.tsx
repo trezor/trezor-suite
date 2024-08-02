@@ -1,7 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Warning as WarningComponent, WarningProps, variables } from '../../index';
+import { allowedWarningFrameProps } from './Warning';
 import styled from 'styled-components';
-import { framePropsStory } from '../common/frameProps';
+import { getFramePropsStory } from '../common/frameProps';
 
 const Wrapper = styled.div`
     display: flex;
@@ -38,7 +39,7 @@ export const Warning: StoryObj<WarningProps> = {
         withIcon: true,
         variant: 'warning',
         icon: undefined,
-        ...framePropsStory.args,
+        ...getFramePropsStory(allowedWarningFrameProps).args,
     },
     argTypes: {
         className: {
@@ -50,6 +51,6 @@ export const Warning: StoryObj<WarningProps> = {
                 type: 'select',
             },
         },
-        ...framePropsStory.argTypes,
+        ...getFramePropsStory(allowedWarningFrameProps).argTypes,
     },
 };

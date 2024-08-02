@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
 
-import { CollapsibleBox as CollapsibleBoxComponent } from './CollapsibleBox';
+import {
+    CollapsibleBox as CollapsibleBoxComponent,
+    allowedCollapsibleBoxFrameProps,
+} from './CollapsibleBox';
 import { action } from '@storybook/addon-actions';
-import { framePropsStory } from '../common/frameProps';
+import { getFramePropsStory } from '../common/frameProps';
 
 const Content = styled.div`
     width: 200px;
@@ -21,7 +24,7 @@ export const CollapsibleBox: StoryObj = {
         children: <Content>Some content</Content>,
         isOpen: undefined,
         onToggle: action('onToggle'),
-        ...framePropsStory.args,
+        ...getFramePropsStory(allowedCollapsibleBoxFrameProps).args,
     },
     argTypes: {
         heading: {
@@ -51,6 +54,6 @@ export const CollapsibleBox: StoryObj = {
         },
         children: { control: { disable: true } },
         onCollapse: { control: { disable: true } },
-        ...framePropsStory.argTypes,
+        ...getFramePropsStory(allowedCollapsibleBoxFrameProps).argTypes,
     },
 };

@@ -1,8 +1,12 @@
 import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Checkbox as CheckboxComponent, CheckboxProps } from './Checkbox';
-import { framePropsStory } from '../../common/frameProps';
+import {
+    Checkbox as CheckboxComponent,
+    CheckboxProps,
+    allowedCheckboxFrameProps,
+} from './Checkbox';
+import { getFramePropsStory } from '../../common/frameProps';
 
 const meta: Meta = {
     title: 'Form/Checkbox',
@@ -33,7 +37,7 @@ export const Checkbox: StoryObj<CheckboxProps> = {
         isChecked: false,
         isDisabled: false,
         labelAlignment: 'right',
-        ...framePropsStory.args,
+        ...getFramePropsStory(allowedCheckboxFrameProps).args,
     },
 
     argTypes: {
@@ -49,6 +53,6 @@ export const Checkbox: StoryObj<CheckboxProps> = {
             },
             options: ['left', 'right'],
         },
-        ...framePropsStory.argTypes,
+        ...getFramePropsStory(allowedCheckboxFrameProps).argTypes,
     },
 };
