@@ -54,7 +54,6 @@
         "copy-webpack-plugin": "^12.0.2",
         "eslint-plugin-mdx": "^3.1.5",
         "html-webpack-plugin": "^5.6.0",
-        "rimraf": "^6.0.1",
         "tsx": "^4.16.3",
         "webpack": "^5.94.0",
         "webpack-cli": "^5.1.4"
