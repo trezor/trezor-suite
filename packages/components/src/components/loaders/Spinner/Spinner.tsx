@@ -87,7 +87,7 @@ export const Spinner = ({
             className={className}
             $margin={margin}
             {...getProps()}
-            data-test={dataTest}
+            data-test={dataTest ? dataTest : `@spinner`}
         />
     );
 };
