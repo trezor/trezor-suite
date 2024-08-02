@@ -1,6 +1,6 @@
 {
     "name": "@trezor/blockchain-link-utils",
-    "version": "1.1.1-beta.1",
+    "version": "1.1.1-beta.2",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index.ts",
