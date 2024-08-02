@@ -8,6 +8,7 @@ import {
     SET_SCHEMA,
     SET_UNION,
     SET_MANUAL_MODE,
+    SET_METHOD_PROCESSING,
 } from '../actions/methodActions';
 import { isFieldBasic, type Action, type Field } from '../types';
 import {
@@ -141,6 +142,12 @@ export default function method(state: MethodState = initialState, action: Action
             return {
                 ...state,
                 manualMode: action.manualMode,
+            };
+
+        case SET_METHOD_PROCESSING:
+            return {
+                ...state,
+                processing: action.payload,
             };
 
         default:

@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { CopyToClipboard } from 'nextra/components';
 
-import { Button as TrezorButton, H3, Card } from '@trezor/components';
+import { Button as TrezorButton, ButtonProps, H3, Card } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import type { Field, FieldWithBundle, FieldWithUnion } from '../types';
@@ -225,6 +225,26 @@ export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
     return <Button onClick={() => onClick(verifyUrls[index])}>Verify response</Button>;
 };
 
+type SubmitButtonProps = {
+    onClick: ButtonProps['onClick'];
+    isFullWidth?: ButtonProps['isFullWidth'];
+    isLoading: ButtonProps['isLoading'];
+    text?: string;
+};
+
+const SubmitButton = ({ onClick, text, isFullWidth, isLoading }: SubmitButtonProps) => {
+    return (
+        <Button
+            onClick={onClick}
+            data-test="@submit-button"
+            isFullWidth={isFullWidth}
+            isLoading={isLoading}
+        >
+            {text || 'Submit'}
+        </Button>
+    );
+};
+
 export const Method = () => {
     const theme = useTheme();
     const { method } = useSelector(state => ({
@@ -243,9 +263,11 @@ export const Method = () => {
 
     const { onSubmit } = actions;
 
-    const { name, submitButton, fields, javascriptCode, response, schema, manualMode } = method;
+    const { name, submitButton, fields, javascriptCode, response, schema, manualMode, processing } =
+        method;
 
     const [code, setCode] = useState('');
+
     const codeChange = useCallback(
         (val: string) => {
             setCode(val);
@@ -274,6 +296,12 @@ export const Method = () => {
         />
     ) : null;
 
+    const buttonProps: SubmitButtonProps = {
+        onClick: onSubmit,
+        text: submitButton,
+        isLoading: processing,
+    };
+
     return (
         <MethodContent $manualMode={manualMode}>
             <div>
@@ -284,9 +312,8 @@ export const Method = () => {
                         <CopyWrapper>
                             <CopyToClipboard getValue={() => javascriptCode ?? ''} />
                         </CopyWrapper>
-                        <Button onClick={onSubmit} data-test="@submit-button">
-                            {submitButton}
-                        </Button>
+
+                        <SubmitButton {...buttonProps} />
                     </Container>
                 ) : (
                     getFields(fields, { actions })
@@ -301,9 +328,7 @@ export const Method = () => {
                                 <CopyToClipboard getValue={() => javascriptCode ?? ''} />
                             </CopyWrapper>
                             <pre>{javascriptCode}</pre>
-                            <Button onClick={onSubmit} data-test="@submit-button" isFullWidth>
-                                {submitButton}
-                            </Button>
+                            <SubmitButton {...buttonProps} isFullWidth />
                         </Container>
                     )}
                     <Container data-test="@response">
