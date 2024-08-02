@@ -1,6 +1,5 @@
 import fs from 'fs/promises';
 import path from 'path';
-import url from 'url';
 import stringify from 'json-stable-stringify';
 
 import {
@@ -342,7 +341,7 @@ export class TrezordNode {
                 (req, res) => {
                     const parsedUrl = new URL(req.url, `http://${req.headers.host}/`);
 
-                    let pathname = path.join(__dirname, this.assetPrefix, parsedUrl.pathname!);
+                    let pathname = path.join(__dirname, this.assetPrefix, parsedUrl.pathname);
 
                     const map: Record<string, string> = {
                         '.ico': 'image/x-icon',
