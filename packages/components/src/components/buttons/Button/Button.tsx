@@ -131,7 +131,7 @@ export const Button = ({
         />
     ) : null;
 
-    const Loader = <Spinner size={getIconSize(size)} />;
+    const Loader = <Spinner size={getIconSize(size)} dataTest={`${rest['data-test']}/spinner`} />;
 
     return (
         <ButtonContainer
