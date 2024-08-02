@@ -20,7 +20,6 @@ import { Modal, Translation } from 'src/components/suite';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
 import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
-import { spacings } from '@trezor/theme';
 import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 
 const StyledModal = styled(Modal)`
@@ -169,10 +168,7 @@ export const TransactionReviewModalContent = ({
                 setIsSending={() => setIsSending(true)}
                 ethereumStakeType={ethereumStakeType || undefined}
             />
-            <TransactionReviewEvmExplanation
-                account={selectedAccount.account}
-                margin={{ top: spacings.sm }}
-            />
+            <TransactionReviewEvmExplanation account={selectedAccount.account} />
         </StyledModal>
     );
 };

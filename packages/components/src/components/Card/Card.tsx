@@ -2,11 +2,7 @@ import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
-import {
-    FrameProps,
-    TransientFrameProps,
-    withFrameProps,
-} from '../../components/common/frameProps';
+import { FrameProps, withFrameProps } from '../../components/common/frameProps';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { AccessabilityProps, withAccessabilityProps } from '../common/accessabilityProps';
 
@@ -56,7 +52,7 @@ const CardContainer = styled.div<
         $elevation: Elevation;
         $paddingType: PaddingType;
         $isClickable: boolean;
-    } & TransientFrameProps
+    } & TransientProps<AllowedFrameProps>
 >`
     display: flex;
     width: 100%;

@@ -17,7 +17,7 @@ export type FrameProps = {
     maxHeight?: string | number;
 };
 
-export type TransientFrameProps = TransientProps<FrameProps>;
+type TransientFrameProps = TransientProps<FrameProps>;
 
 const getValueWithUnit = (value: string | number) =>
     typeof value === 'string' ? value : `${value}px`;
