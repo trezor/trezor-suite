@@ -11,8 +11,7 @@ distribute_develop_apk() {
         --project pc-api-4710771878548015996-769 \
         --app 1:191883890128:android:625bcdab76b3b3a644bdd5 \
         --groups "develop-testers" \
-        --release-notes "$release_notes" \
-        --token "$FIREBASE_TOKEN"
+        --release-notes "$release_notes"
 }
 
 create_release_draft() {
