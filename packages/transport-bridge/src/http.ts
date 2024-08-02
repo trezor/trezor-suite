@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import url from 'url';
 import stringify from 'json-stable-stringify';
@@ -306,9 +306,9 @@ export class TrezordNode {
             ]);
 
             app.get('/status', [
-                (_req, res) => {
+                async (_req, res) => {
                     try {
-                        const ui = fs.readFileSync(
+                        const ui = await fs.readFile(
                             path.join(__dirname, this.assetPrefix, 'ui/index.html'),
                             'utf-8',
                         );
@@ -340,7 +340,7 @@ export class TrezordNode {
 
             app.get('/ui', [
                 (req, res) => {
-                    const parsedUrl = url.parse(req.url);
+                    const parsedUrl = new URL(req.url, `http://${req.headers.host}/`);
 
                     let pathname = path.join(__dirname, this.assetPrefix, parsedUrl.pathname!);
 
@@ -356,31 +356,17 @@ export class TrezordNode {
                     };
 
                     const { ext } = path.parse(pathname);
-
-                    fs.exists(pathname, exist => {
-                        if (!exist) {
-                            // if the file is not found, return 404
+                    fs.stat(pathname)
+                        .then(() => fs.readFile(pathname))
+                        .then(data => {
+                            res.setHeader('Content-type', map[ext] || 'text/plain');
+                            res.end(data);
+                        })
+                        .catch(err => {
+                            this.logger.error('Failed to fetch UI', err);
                             res.statusCode = 404;
                             res.end(`File ${pathname} not found!`);
-
-                            return;
-                        }
-
-                        // if is a directory search for index file matching the extension
-                        if (fs.statSync(pathname).isDirectory()) pathname += '/index' + ext;
-
-                        // read file from file system
-                        fs.readFile(pathname, (err, data) => {
-                            if (err) {
-                                res.statusCode = 500;
-                                res.end(`Error getting the file: ${err}.`);
-                            } else {
-                                // if the file is found, set Content-type and send data
-                                res.setHeader('Content-type', map[ext] || 'text/plain');
-                                res.end(data);
-                            }
                         });
-                    });
                 },
             ]);
 
