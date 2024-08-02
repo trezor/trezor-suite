@@ -4,8 +4,8 @@ import { Color, TypographyStyle, typography } from '@trezor/theme';
 import { FrameProps, withFrameProps } from '../../common/frameProps';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 
-export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+export const allowedHeadingFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedHeadingFrameProps)[number]>;
 
 type Align = 'left' | 'center' | 'right';
 

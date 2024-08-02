@@ -15,8 +15,8 @@ import { ElevationUp, useElevation } from './../ElevationContext/ElevationContex
 import { FrameProps, withFrameProps } from '../common/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
-export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+export const allowedCollapsibleBoxFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedCollapsibleBoxFrameProps)[number]>;
 
 const ANIMATION_DURATION = 0.4;
 

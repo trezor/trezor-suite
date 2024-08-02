@@ -16,8 +16,8 @@ import { UIVariant } from '../../config/types';
 import { TransientProps, useElevation } from '../..';
 import { FrameProps, withFrameProps } from '../common/frameProps';
 
-export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+export const allowedWarningFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedWarningFrameProps)[number]>;
 
 export type WarningVariant = Extract<
     UIVariant,

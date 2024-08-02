@@ -32,8 +32,8 @@ const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
     return theme[colorMap[variant]];
 };
 
-export const allowedFrameProps: (keyof FrameProps)[] = ['margin', 'maxWidth'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+export const allowedBoxFrameProps: (keyof FrameProps)[] = ['margin', 'maxWidth'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>;
 
 export type BoxProps = AllowedFrameProps & {
     variant?: BoxVariant;

@@ -4,8 +4,8 @@ import { useElevation } from '../ElevationContext/ElevationContext';
 import { FrameProps, withFrameProps } from '../common/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
-export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+export const allowedDividerFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedDividerFrameProps)[number]>;
 type DividerOrientation = 'horizontal' | 'vertical';
 
 type DividerProps = AllowedFrameProps & {

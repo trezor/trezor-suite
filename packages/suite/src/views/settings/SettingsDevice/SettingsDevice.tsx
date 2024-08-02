@@ -54,7 +54,6 @@ export const SettingsDevice = () => {
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
-    console.log('______', device, transport);
     if (deviceSettingsUnavailable(device, transport)) {
         return (
             <SettingsLayout>

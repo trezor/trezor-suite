@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Badge as BadgeComponent, BadgeProps, allowedFrameProps } from './Badge';
+import { Badge as BadgeComponent, BadgeProps, allowedBadgeFrameProps } from './Badge';
 import { getFramePropsStory } from '../common/frameProps';
 
 const meta: Meta = {
@@ -11,7 +11,7 @@ export default meta;
 export const Badge: StoryObj<BadgeProps> = {
     args: {
         children: 'Badge label',
-        ...getFramePropsStory(allowedFrameProps).args,
+        ...getFramePropsStory(allowedBadgeFrameProps).args,
     },
-    argTypes: getFramePropsStory(allowedFrameProps).argTypes,
+    argTypes: getFramePropsStory(allowedBadgeFrameProps).argTypes,
 };

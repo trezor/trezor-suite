@@ -9,8 +9,8 @@ import { UIHorizontalAlignment, UIVariant } from '../../../config/types';
 import { FrameProps, withFrameProps } from '../../common/frameProps';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 
-export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+export const allowedCheckboxFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedCheckboxFrameProps)[number]>;
 
 interface VariantStyles {
     background: Color;

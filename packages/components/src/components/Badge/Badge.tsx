@@ -8,8 +8,8 @@ import type { UISize, UIVariant } from '../../config/types';
 import { FrameProps, withFrameProps } from '../common/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
-export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+export const allowedBadgeFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedBadgeFrameProps)[number]>;
 
 type BadgeSize = Extract<UISize, 'tiny' | 'small' | 'medium'>;
 type BadgeVariant = Extract<UIVariant, 'primary' | 'tertiary' | 'destructive'>;

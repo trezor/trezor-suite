@@ -65,6 +65,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<keyof FrameProps>) =
                 table: {
                     category: 'Frame props',
                 },
+                type: key === 'margin' ? 'object' : 'number',
             },
         }),
         {},

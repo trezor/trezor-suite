@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { FrameProps, withFrameProps } from '../common/frameProps';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 
-export const allowedFrameProps: (keyof FrameProps)[] = ['margin', 'width', 'height'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+export const allowedFlexFrameProps: (keyof FrameProps)[] = ['margin', 'width', 'height'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedFlexFrameProps)[number]>;
 
 export const flexDirection = ['column', 'row'] as const;
 export const flexWrap = ['nowrap', 'wrap', 'wrap-reverse'] as const;

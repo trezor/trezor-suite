@@ -16,8 +16,8 @@ type MapArgs = {
     $paddingType: PaddingType;
 };
 
-export const allowedFrameProps: (keyof FrameProps)[] = ['margin', 'maxWidth'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+export const allowedCardFrameProps: (keyof FrameProps)[] = ['margin', 'maxWidth'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]>;
 
 const mapPaddingTypeToLabelPadding = ({ $paddingType }: MapArgs): number | string => {
     const paddingMap: Record<PaddingType, number | string> = {

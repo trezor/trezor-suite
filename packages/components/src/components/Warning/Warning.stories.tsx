@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Warning as WarningComponent, WarningProps, variables } from '../../index';
-import { allowedFrameProps } from './Warning';
+import { allowedWarningFrameProps } from './Warning';
 import styled from 'styled-components';
 import { getFramePropsStory } from '../common/frameProps';
 
@@ -39,7 +39,7 @@ export const Warning: StoryObj<WarningProps> = {
         withIcon: true,
         variant: 'warning',
         icon: undefined,
-        ...getFramePropsStory(allowedFrameProps).args,
+        ...getFramePropsStory(allowedWarningFrameProps).args,
     },
     argTypes: {
         className: {
@@ -51,6 +51,6 @@ export const Warning: StoryObj<WarningProps> = {
                 type: 'select',
             },
         },
-        ...getFramePropsStory(allowedFrameProps).argTypes,
+        ...getFramePropsStory(allowedWarningFrameProps).argTypes,
     },
 };

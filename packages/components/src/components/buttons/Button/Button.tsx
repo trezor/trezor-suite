@@ -17,8 +17,8 @@ import { useElevation } from '../../ElevationContext/ElevationContext';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 import { FrameProps, withFrameProps } from '../../common/frameProps';
 
-export const allowedFrameProps: (keyof FrameProps)[] = ['margin'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedFrameProps)[number]>;
+export const allowedButtonFrameProps: (keyof FrameProps)[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
 type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
     $variant: ButtonVariant;
