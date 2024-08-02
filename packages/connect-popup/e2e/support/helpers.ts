@@ -118,6 +118,7 @@ export const openPopup = (
     }
     triggerPopup.push(explorerPage.click("div[data-test='@api-playground/collapsible-box']"));
     triggerPopup.push(explorerPage.click("button[data-test='@submit-button']"));
+    triggerPopup.push(explorerPage.waitForSelector("[data-test='@submit-button/spinner']"));
 
     return Promise.all(triggerPopup) as Promise<Page[]>;
 };
