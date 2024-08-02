@@ -75,9 +75,7 @@ export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
             return await this.getTarget().init(settings);
         } catch (error) {
             // Handle iframe errors by switching to core-in-popup
-            if (settings.coreMode === 'auto' && IFRAME_ERRORS.includes(error.code)) {
-                await this.switchTarget('core-in-popup');
-
+            if (await this.handleErrorFallback(error.code)) {
                 return await this.getTarget().init(settings);
             }
 
@@ -88,18 +86,36 @@ export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
     public async call(params: CallMethodPayload) {
         const response = await this.getTarget().call(params);
         if (!response.success) {
-            // Handle iframe errors by switching to core-in-popup
-            if (
-                this.lastSettings?.coreMode === 'auto' &&
-                IFRAME_ERRORS.includes(response.payload.code)
-            ) {
-                await this.switchTarget('core-in-popup');
-
+            if (await this.handleErrorFallback(response.payload.code)) {
                 return await this.getTarget().call(params);
             }
         }
 
         return response;
+    }
+
+    private async handleErrorFallback(errorCode: string) {
+        // Handle iframe errors by switching to core-in-popup
+        if (this.lastSettings?.coreMode === 'auto' && IFRAME_ERRORS.includes(errorCode)) {
+            // Check if WebUSB is available and enabled
+            const webUsbUnavailableInBrowser = !navigator.usb;
+            const webUsbDisabledInSettings =
+                this.lastSettings.transports?.includes('WebUsbTransport') === false ||
+                this.lastSettings.webusb === false;
+            if (
+                errorCode === 'Transport_Missing' &&
+                (webUsbUnavailableInBrowser || webUsbDisabledInSettings)
+            ) {
+                // WebUSB not available, no benefit in switching to core-in-popup
+                return false;
+            }
+
+            await this.switchTarget('core-in-popup');
+
+            return true;
+        }
+
+        return false;
     }
 
     public requestLogin(params: any) {
