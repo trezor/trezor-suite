@@ -180,7 +180,11 @@ export class CoreInIframe implements ConnectFactoryDependencies {
             iframe.postMessage({ id: promiseId, type: TRANSPORT.GET_INFO });
             const response = await promise;
             this._log.debug('Bridge availability response', response);
-            if (response.payload === undefined) {
+            if (
+                response.payload === undefined &&
+                navigator.usb &&
+                this._settings.transports?.includes('WebUsbTransport')
+            ) {
                 throw ERRORS.TypedError('Transport_Missing');
             }
         }
