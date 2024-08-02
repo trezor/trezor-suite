@@ -1,4 +1,4 @@
-const VERSION = '9.3.1-beta.1';
+const VERSION = '9.3.1-beta.2';
 const versionN = VERSION.split('.').map(s => parseInt(s, 10));
 
 const isBeta = VERSION.includes('beta');
