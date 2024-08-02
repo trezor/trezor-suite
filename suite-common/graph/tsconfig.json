@@ -4,10 +4,9 @@
     "references": [
         { "path": "../fiat-services" },
         { "path": "../suite-config" },
-        { "path": "../suite-utils" },
-        { "path": "../transaction-cache-engine" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
+        { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
             "path": "../../packages/blockchain-link"

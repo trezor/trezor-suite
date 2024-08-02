@@ -8715,12 +8715,12 @@ __metadata:
   resolution: "@suite-common/graph@workspace:suite-common/graph"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
-    "@suite-common/transaction-cache-engine": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -8933,17 +8933,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/transaction-cache-engine@workspace:*, @suite-common/transaction-cache-engine@workspace:suite-common/transaction-cache-engine":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/transaction-cache-engine@workspace:suite-common/transaction-cache-engine"
-  dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
-    "@suite-common/wallet-config": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    "@trezor/utils": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/validators@workspace:*, @suite-common/validators@workspace:suite-common/validators":
   version: 0.0.0-use.local
   resolution: "@suite-common/validators@workspace:suite-common/validators"
@@ -9061,8 +9050,6 @@ __metadata:
     "@react-navigation/native": "npm:6.1.17"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/transaction-cache-engine": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -9142,7 +9129,6 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
-    "@suite-common/transaction-cache-engine": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/alerts": "workspace:*"
@@ -10057,7 +10043,6 @@ __metadata:
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-native/accounts": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"

@@ -3,10 +3,13 @@ import { differenceInMinutes, eachMinuteOfInterval, fromUnixTime, getUnixTime } 
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { getBlockbookSafeTime } from '@suite-common/suite-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { FiatGraphPoint, FiatGraphPointWithCryptoBalance } from './types';
+import {
+    AccountHistoryBalancePoint,
+    AccountWithBalanceHistory,
+    FiatGraphPoint,
+    FiatGraphPointWithCryptoBalance,
+} from './types';
 
 export const getDataStepInMinutes = ({
     startOfTimeFrameDate,
@@ -33,8 +36,7 @@ export const getTimestampsInTimeFrame = (
         numberOfPoints,
     });
 
-    // sometimes endOfRangeDate could be too close to recent time and that cause problems with blockbook
-    const intervalEndDate = fromUnixTime(getBlockbookSafeTime(getUnixTime(endOfTimeFrameDate)));
+    const intervalEndDate = fromUnixTime(getUnixTime(endOfTimeFrameDate));
 
     const datesInRange = eachMinuteOfInterval(
         {
@@ -48,11 +50,6 @@ export const getTimestampsInTimeFrame = (
     const datesInRangeUnixTime = A.map(datesInRange, date => getUnixTime(date));
 
     return datesInRangeUnixTime as number[];
-};
-
-export type AccountHistoryBalancePoint = {
-    time: number;
-    cryptoBalance: string;
 };
 
 export const mapCryptoBalanceMovementToFixedTimeFrame = ({
@@ -114,21 +111,17 @@ export const mergeMultipleFiatBalanceHistories = (
         D.values,
     );
 
-export type AccountWithBalanceHistory = {
-    coin: NetworkSymbol;
-    descriptor: string;
-} & { balanceHistory: AccountHistoryBalancePoint[] };
-
 export const findOldestBalanceMovementTimestamp = (
     accountsWithBalanceHistory: AccountWithBalanceHistory[],
 ): number => {
-    const allTimestamps = accountsWithBalanceHistory
-        .map(account => {
-            const oldestBalanceMovement = account.balanceHistory;
+    const allOldestTimestamps: number[] = [];
 
-            return oldestBalanceMovement ? oldestBalanceMovement.map(({ time }) => time) : 0;
-        })
-        .flatMap(timestamp => timestamp);
+    accountsWithBalanceHistory.forEach(account => {
+        const oldestTimestamp = account.balanceHistory[0]?.time;
+        if (oldestTimestamp) {
+            allOldestTimestamps.push(oldestTimestamp);
+        }
+    });
 
-    return Math.min(...allTimestamps);
+    return Math.min(...allOldestTimestamps);
 };

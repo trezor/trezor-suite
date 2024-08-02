@@ -1,21 +1,26 @@
+import { useDispatch } from 'react-redux';
+
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
-import {
-    AccountBalanceHistory,
-    TransactionCacheEngine,
-} from '@suite-common/transaction-cache-engine';
+import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 
-import { BalanceMovementEvent, GroupedBalanceMovementEvent, AccountItem } from './types';
+import {
+    BalanceMovementEvent,
+    GroupedBalanceMovementEvent,
+    AccountItem,
+    AccountHistoryMovementItem,
+} from './types';
+import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 
 /**
  * Calculates received and sent values of each balance movement point.
  */
 export const formatBalanceMovementEventsAmounts = (
-    balanceMovements: Array<AccountMovementHistory | AccountBalanceHistory>,
+    balanceMovements: Array<AccountMovementHistory | AccountHistoryMovementItem>,
 ): readonly BalanceMovementEvent[] =>
     A.map(balanceMovements, balanceMovement => {
         const sentTotal = Number(balanceMovement.sent);
@@ -107,19 +112,29 @@ export const getAccountMovementEvents = async ({
     account,
     startOfTimeFrameDate,
     endOfTimeFrameDate,
+    dispatch,
 }: {
     account: AccountItem;
     startOfTimeFrameDate: Date | null;
     endOfTimeFrameDate: Date;
+    dispatch: ReturnType<typeof useDispatch>;
 }) => {
     const { coin, identity, descriptor } = account;
 
     const getBalanceHistory = async () => {
-        if (getNetworkType(coin) === 'ripple') {
-            return TransactionCacheEngine.getAccountBalanceHistory({
+        const networkType = getNetworkType(coin);
+        if (networkType === 'ethereum' || networkType === 'ripple') {
+            const allTransactions = await dispatch(
+                fetchAllTransactionsForAccountThunk({
+                    accountKey: account.accountKey,
+                }),
+            ).unwrap();
+
+            // Return only main because we don't support tokens in that popups in graph yet
+            return getAccountHistoryMovementFromTransactions({
+                transactions: allTransactions,
                 coin,
-                descriptor,
-            });
+            }).main;
         }
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,

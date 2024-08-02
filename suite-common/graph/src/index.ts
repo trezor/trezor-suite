@@ -1,2 +1,9 @@
 export * from './hooks';
-export * from './types';
+export type {
+    FiatGraphPoint,
+    FiatGraphPointWithCryptoBalance,
+    AccountItem,
+    BalanceMovementEvent,
+    GroupedBalanceMovementEvent,
+    GroupedBalanceMovementEventPayload,
+} from './types';

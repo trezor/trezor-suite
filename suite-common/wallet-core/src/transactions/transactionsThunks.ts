@@ -26,6 +26,7 @@ import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer'
 import { selectSendSignedTx } from '../send/sendFormReducer';
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {
+    selectAccountTransactions,
     selectAccountTransactionsWithNulls,
     selectAreAllAccountTransactionsLoaded,
     selectTransactions,
@@ -387,5 +388,7 @@ export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk(
             marker = result.marker;
             page += 1;
         }
+
+        return selectAccountTransactions(getState(), accountKey);
     },
 );

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { roundToNearestMinutes, subHours } from 'date-fns';
 import { A } from '@mobily/ts-belt';
@@ -93,6 +93,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
     const [error, setError] = useState<string | null>(null);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
+    const dispatch = useDispatch();
 
     const lastFetchTimestamp = useRef<number | null>(null);
 
@@ -118,6 +119,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                         endOfTimeFrameDate,
                         forceRefetch,
                         isElectrumBackend,
+                        dispatch,
                     });
 
                     let events;
@@ -128,6 +130,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                             account: accounts[0],
                             startOfTimeFrameDate,
                             endOfTimeFrameDate,
+                            dispatch,
                         });
 
                         normalizeExtremeGraphEvents(
@@ -159,6 +162,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
             isPortfolioGraph,
             isDiscoveryActive,
             isElectrumBackend,
+            dispatch,
         ],
     );
 

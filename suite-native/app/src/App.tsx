@@ -11,7 +11,6 @@ import { FormatterProvider } from '@suite-common/formatters';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { FeatureMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
 import { IntlProvider } from '@suite-native/intl';
-import { useTransactionCache } from '@suite-native/accounts';
 import { isDebugEnv } from '@suite-native/config';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
@@ -41,7 +40,6 @@ const AppComponent = () => {
     const isConnectInitialized = useSelector(selectIsConnectInitialized);
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
-    useTransactionCache();
 
     useEffect(() => {
         if (!isConnectInitialized) {
