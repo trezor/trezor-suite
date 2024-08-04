@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { getMainnets } from '@suite-common/wallet-config';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
 import { Card, CoinLogo, Row, variables } from '@trezor/components';
 import { TradeBoxMenu } from './TradeBoxMenu';
 import { TradeBoxPrices } from './TradeBoxPrices';
+import { getTitleForNetwork } from '@suite-common/wallet-utils';
 
 const StyledCard = styled(Card)`
     flex-flow: row wrap;
@@ -59,31 +59,27 @@ interface TradeBoxProps {
     account: Account;
 }
 
-export const TradeBox = ({ account }: TradeBoxProps) => {
-    const network = getMainnets().find(n => n.symbol === account.symbol);
-
-    if (!network) return null;
-
-    return (
-        <div>
-            <Title>
-                <Translation id="TR_NAV_TRADE" />
-            </Title>
-            <StyledCard>
-                <Left>
-                    <Row gap={spacings.xs} alignItems="center">
-                        <CoinLogo size={24} symbol={network.symbol} />
-                        <Coin>
-                            <CoinName>{network.name}</CoinName>
-                            <CoinSymbol>{network.symbol.toUpperCase()}</CoinSymbol>
-                        </Coin>
-                    </Row>
-                    <TradeBoxPrices account={account} />
-                </Left>
-                <Right>
-                    <TradeBoxMenu account={account} />
-                </Right>
-            </StyledCard>
-        </div>
-    );
-};
+export const TradeBox = ({ account }: TradeBoxProps) => (
+    <div>
+        <Title>
+            <Translation id="TR_NAV_TRADE" />
+        </Title>
+        <StyledCard>
+            <Left>
+                <Row gap={spacings.xs} alignItems="center">
+                    <CoinLogo size={24} symbol={account.symbol} />
+                    <Coin>
+                        <CoinName>
+                            <Translation id={getTitleForNetwork(account.symbol)} />
+                        </CoinName>
+                        <CoinSymbol>{account.symbol.toUpperCase()}</CoinSymbol>
+                    </Coin>
+                </Row>
+                <TradeBoxPrices account={account} />
+            </Left>
+            <Right>
+                <TradeBoxMenu account={account} />
+            </Right>
+        </StyledCard>
+    </div>
+);

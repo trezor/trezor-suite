@@ -33,8 +33,14 @@ interface TickerProps {
     symbol: NetworkSymbol;
     contractAddress?: TokenAddress;
     noEmptyStateTooltip?: boolean;
+    showLoadingSkeleton?: boolean;
 }
-export const TrendTicker = ({ symbol, contractAddress, noEmptyStateTooltip }: TickerProps) => {
+export const TrendTicker = ({
+    symbol,
+    contractAddress,
+    noEmptyStateTooltip,
+    showLoadingSkeleton = true,
+}: TickerProps) => {
     const locale = useSelector(selectLanguage);
     const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(symbol, localCurrency, contractAddress);
@@ -57,7 +63,7 @@ export const TrendTicker = ({ symbol, contractAddress, noEmptyStateTooltip }: Ti
     const emptyStateComponent = noEmptyStateTooltip ? <Empty>—</Empty> : <NoRatesTooltip />;
 
     return (
-        <FiatValue amount="1" symbol={symbol} showLoadingSkeleton>
+        <FiatValue amount="1" symbol={symbol} showLoadingSkeleton={showLoadingSkeleton}>
             {({ rate, timestamp }) =>
                 rate && timestamp && percentageChange ? (
                     <PercentageWrapper $isRateGoingUp={isRateGoingUp}>
