@@ -22,9 +22,15 @@ interface PriceTickerProps {
     symbol: string;
     contractAddress?: TokenAddress;
     noEmptyStateTooltip?: boolean;
+    showLoadingSkeleton?: boolean;
 }
 
-export const PriceTicker = ({ symbol, contractAddress, noEmptyStateTooltip }: PriceTickerProps) => {
+export const PriceTicker = ({
+    symbol,
+    contractAddress,
+    noEmptyStateTooltip,
+    showLoadingSkeleton = true,
+}: PriceTickerProps) => {
     const emptyStateComponent = noEmptyStateTooltip ? <Empty>—</Empty> : <NoRatesTooltip />;
 
     return (
@@ -32,7 +38,7 @@ export const PriceTicker = ({ symbol, contractAddress, noEmptyStateTooltip }: Pr
             amount="1"
             symbol={symbol}
             tokenAddress={contractAddress}
-            showLoadingSkeleton
+            showLoadingSkeleton={showLoadingSkeleton}
             fiatRateFormatterOptions={{
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 4,
