@@ -26,12 +26,12 @@
                 "type": "blockbook",
                 "url": ["https://bsc1.trezor.io"]
             },
-            "chain": "bsc",
+            "chain": "bnb",
             "chain_id": 56,
             "coingecko_id": "binance-smart-chain",
             "is_testnet": false,
             "name": "BNB Smart Chain",
-            "shortcut": "BSC",
+            "shortcut": "BNB",
             "slip44": 714,
             "support": {
                 "T1B1": "1.9.4",
