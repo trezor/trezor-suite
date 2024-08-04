@@ -15,15 +15,15 @@ describe('Go through onboarding and connect Trezor.', () => {
     beforeAll(async () => {
         if (platform === 'android') {
             // Prepare Trezor device for test scenario and turn it off.
-            await TrezorUserEnvLink.api.trezorUserEnvDisconnect();
-            await TrezorUserEnvLink.api.trezorUserEnvConnect();
-            await TrezorUserEnvLink.api.startEmu({ wipe: true });
-            await TrezorUserEnvLink.api.setupEmu({
+            await TrezorUserEnvLink.disconnect();
+            await TrezorUserEnvLink.connect();
+            await TrezorUserEnvLink.startEmu({ wipe: true });
+            await TrezorUserEnvLink.setupEmu({
                 label: TREZOR_DEVICE_LABEL,
                 mnemonic: SIMPLE_SEED,
             });
-            await TrezorUserEnvLink.api.startBridge();
-            await TrezorUserEnvLink.api.stopEmu();
+            await TrezorUserEnvLink.startBridge();
+            await TrezorUserEnvLink.stopEmu();
         }
 
         await openApp({ newInstance: true });
@@ -31,7 +31,7 @@ describe('Go through onboarding and connect Trezor.', () => {
 
     afterAll(async () => {
         if (platform === 'android') {
-            await TrezorUserEnvLink.api.stopEmu();
+            await TrezorUserEnvLink.stopEmu();
         }
         await device.terminateApp();
     });
@@ -40,7 +40,7 @@ describe('Go through onboarding and connect Trezor.', () => {
         await onOnboarding.finishOnboarding();
 
         if (platform === 'android') {
-            await TrezorUserEnvLink.api.startEmu();
+            await TrezorUserEnvLink.startEmu();
 
             await waitFor(element(by.text(TREZOR_DEVICE_LABEL)))
                 .toBeVisible()

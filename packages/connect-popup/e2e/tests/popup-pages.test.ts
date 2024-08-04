@@ -41,19 +41,19 @@ test.afterEach(async () => {
 test('popup should display error page when device disconnected and debug mode', async ({
     page,
 }) => {
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.startEmu({
+    await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.stopEmu();
+    await TrezorUserEnvLink.startEmu({
         wipe: true,
     });
-    await TrezorUserEnvLink.api.setupEmu({
+    await TrezorUserEnvLink.setupEmu({
         mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: false,
         label: 'My Trevor',
         needs_backup: false,
     });
-    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
+    await TrezorUserEnvLink.startBridge(bridgeVersion);
 
     log('generating contexts');
     const { explorerPage, explorerUrl, browserContext } = await getContexts(
@@ -93,7 +93,7 @@ test('popup should display error page when device disconnected and debug mode', 
     await popup.waitForSelector("div[data-test='@permissions']");
 
     log('stopEmu');
-    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.stopEmu();
     log('waiting for popup error page');
     await popup.waitForSelector("div[data-test='@connect-ui/error']");
 });
@@ -105,19 +105,19 @@ test('log page should contain logs from shared worker', async ({ page, context }
             errorLogs.push(message.text());
         }
     });
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.startEmu({
+    await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.stopEmu();
+    await TrezorUserEnvLink.startEmu({
         wipe: true,
     });
-    await TrezorUserEnvLink.api.setupEmu({
+    await TrezorUserEnvLink.setupEmu({
         mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: false,
         label: 'My Trevor',
         needs_backup: false,
     });
-    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
+    await TrezorUserEnvLink.startBridge(bridgeVersion);
 
     log('generating contexts');
     const { explorerPage, explorerUrl, browserContext } = await getContexts(

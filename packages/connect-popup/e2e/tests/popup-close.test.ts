@@ -39,15 +39,15 @@ test.beforeAll(async () => {
 
 const setup = async ({ page, context }: { page: Page; context?: BrowserContext }) => {
     log('beforeEach', 'stopBridge');
-    await TrezorUserEnvLink.api.stopBridge();
+    await TrezorUserEnvLink.stopBridge();
     log('beforeEach', 'stopEmu');
-    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.stopEmu();
     log('beforeEach', 'startEmu');
-    await TrezorUserEnvLink.api.startEmu({
+    await TrezorUserEnvLink.startEmu({
         wipe: true,
     });
     log('beforeEach', 'setupEmu');
-    await TrezorUserEnvLink.api.setupEmu({
+    await TrezorUserEnvLink.setupEmu({
         mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: false,
@@ -55,7 +55,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
         needs_backup: false,
     });
     log('beforeEach', 'startBridge');
-    await TrezorUserEnvLink.api.startBridge();
+    await TrezorUserEnvLink.startBridge();
 
     const contexts = await getContexts(page, url, isWebExtension);
 
@@ -181,7 +181,7 @@ test(`device disconnected during device interaction`, async ({ page, context }) 
     await setup({ page, context });
 
     log('user canceled interaction on device');
-    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.stopEmu();
     await explorerPage.waitForTimeout(WAIT_AFTER_TEST);
 
     try {
@@ -205,9 +205,9 @@ test('when user cancels permissions in popup it closes automatically', async ({
     log(`test: ${test.info().title}`);
     await setup({ page, context });
 
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
@@ -249,9 +249,9 @@ test('device dialogue cancelled IN POPUP by user', async ({ page, context }) => 
     log(`test: ${test.info().title}`);
     await setup({ page, context });
 
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
@@ -293,8 +293,8 @@ test('popup should close and open new one when popup is in error state and user 
     await setup({ page, context });
 
     log('rejecting request in device by pressing no');
-    await TrezorUserEnvLink.api.pressNo();
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressNo();
+    await TrezorUserEnvLink.pressYes();
 
     log('waiting for error page is displayed');
     await findElementByDataTest(popup, '@connect-ui/error');
@@ -324,9 +324,9 @@ test('popup should be focused when a call is in progress and user triggers new c
     log(`test: ${test.info().title}`);
     await setup({ page, context });
 
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
@@ -358,7 +358,7 @@ test('popup should be focused when a call is in progress and user triggers new c
     await waitAndClick(popup, ['@export-address/confirm-button']);
 
     // Confirm right address is displayed.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Popup should be closed now.
     await popupClosedPromise;
@@ -374,9 +374,9 @@ test('popup should close when third party is closed', async ({ page, context }) 
 
     // We need to skip the after flow because this test closes 3rd party window and there is not window to continue with.
     test.info().annotations.push({ type: 'skip-after-flow' });
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
@@ -411,9 +411,9 @@ test('popup should behave properly with subsequent calls', async ({ page, contex
     log(`test: ${test.info().title}`);
     await setup({ page, context });
 
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));

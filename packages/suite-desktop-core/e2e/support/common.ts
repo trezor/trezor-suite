@@ -19,7 +19,7 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
     const appDir = path.join(__dirname, '../../../suite-desktop');
     const desiredLogLevel = process.env.LOGLEVEL ?? 'error';
     // TODO: Find out why currently pw fails to see node-bridge so we default to legacy bridge.
-    await TrezorUserEnvLink.api.startBridge();
+    await TrezorUserEnvLink.startBridge();
     const electronApp = await electron.launch({
         cwd: appDir,
         args: [

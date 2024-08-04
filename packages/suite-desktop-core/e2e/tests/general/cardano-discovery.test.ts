@@ -17,9 +17,9 @@ let electronApp: ElectronApplication;
 let window: Page;
 
 testPlaywright.beforeAll(async () => {
-    await TrezorUserEnvLink.api.trezorUserEnvConnect();
-    await TrezorUserEnvLink.api.startEmu({ wipe: true });
-    await TrezorUserEnvLink.api.setupEmu({
+    await TrezorUserEnvLink.connect();
+    await TrezorUserEnvLink.startEmu({ wipe: true });
+    await TrezorUserEnvLink.setupEmu({
         needs_backup: true,
         mnemonic:
             'cloth trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
@@ -29,7 +29,7 @@ testPlaywright.beforeAll(async () => {
 
 testPlaywright.afterAll(() => {
     electronApp.close();
-    TrezorUserEnvLink.api.stopEmu();
+    TrezorUserEnvLink.stopEmu();
 });
 
 /**

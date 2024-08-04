@@ -43,19 +43,19 @@ test.beforeEach(async ({ page }) => {
     requests = [];
     responses = [];
     releasePromise = createDeferred();
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.startEmu({
+    await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.stopEmu();
+    await TrezorUserEnvLink.startEmu({
         wipe: true,
     });
-    await TrezorUserEnvLink.api.setupEmu({
+    await TrezorUserEnvLink.setupEmu({
         mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: false,
         label: 'My Trevor',
         needs_backup: false,
     });
-    await TrezorUserEnvLink.api.startBridge(BRIDGE_VERSION);
+    await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
     log('beforeEach', 'go to: ', `${url}#/method/verifyMessage`);
     await page.goto(`${url}#/method/verifyMessage`);
     log('beforeEach', 'waitForSelector: ', "button[data-test='@submit-button']");
@@ -190,7 +190,7 @@ test(`device disconnected during device interaction with bridge version ${BRIDGE
 
     log('user canceled interaction on device');
     // user canceled interaction on device
-    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.stopEmu();
     await page.waitForTimeout(WAIT_AFTER_TEST);
 
     responses.forEach(response => {
@@ -209,7 +209,7 @@ test(`device disconnected during device interaction with bridge version ${BRIDGE
 
     await page.waitForSelector('text=device disconnected during action');
 
-    await TrezorUserEnvLink.api.startEmu();
+    await TrezorUserEnvLink.startEmu();
 });
 
 test.skip(`popup is reloaded by user. bridge version ${BRIDGE_VERSION}`, async () => {
@@ -226,9 +226,9 @@ test.skip(`popup is reloaded by user. bridge version ${BRIDGE_VERSION}`, async (
 test.skip('when user cancels permissions in popup it closes automatically', async ({ page }) => {
     log('start', test.info().title);
 
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
@@ -262,9 +262,9 @@ test.skip('when user cancels Export Bitcoin address dialog in popup it closes au
 }) => {
     log('start', test.info().title);
 
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));

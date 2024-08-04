@@ -117,12 +117,12 @@ const signTransaction = async (page: Page, iteration: number) => {
 };
 
 test.beforeEach(async () => {
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.startEmu({
+    await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.stopEmu();
+    await TrezorUserEnvLink.startEmu({
         wipe: true,
     });
-    await TrezorUserEnvLink.api.setupEmu({
+    await TrezorUserEnvLink.setupEmu({
         mnemonic:
             'merge alley lucky axis penalty manage latin gasp virus captain wheel deal chase fragile chapter boss zero dirt stadium tooth physical valve kid plunge',
         pin: '',
@@ -130,7 +130,7 @@ test.beforeEach(async () => {
         label: 'My Trevor',
         needs_backup: false,
     });
-    await TrezorUserEnvLink.api.startBridge();
+    await TrezorUserEnvLink.startBridge();
 });
 
 /**

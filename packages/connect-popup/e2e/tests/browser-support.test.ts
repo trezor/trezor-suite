@@ -28,8 +28,8 @@ const openPopup = async (page: Page) =>
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.stopEmu();
 });
 
 test('unsupported browser', async ({ browser }) => {

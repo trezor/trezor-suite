@@ -32,15 +32,15 @@ test.beforeAll(async () => {
 
 test.beforeEach(async ({ page }) => {
     log('beforeEach', 'stopBridge');
-    await TrezorUserEnvLink.api.stopBridge();
+    await TrezorUserEnvLink.stopBridge();
     log('beforeEach', 'stopEmu');
-    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.stopEmu();
     log('beforeEach', 'startEmu');
-    await TrezorUserEnvLink.api.startEmu({
+    await TrezorUserEnvLink.startEmu({
         wipe: true,
     });
     log('beforeEach', 'setupEmu');
-    await TrezorUserEnvLink.api.setupEmu({
+    await TrezorUserEnvLink.setupEmu({
         mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: true,
@@ -48,7 +48,7 @@ test.beforeEach(async ({ page }) => {
         needs_backup: false,
     });
     log('beforeEach', 'startBridge');
-    await TrezorUserEnvLink.api.startBridge(bridgeVersion);
+    await TrezorUserEnvLink.startBridge(bridgeVersion);
 
     log('beforeEach', 'getting contexts');
     const contexts = await getContexts(page, url, isWebExtension);
@@ -124,15 +124,15 @@ test('input passphrase in popup and device accepts it', async () => {
 
     log('accepting to see passphrase');
     // Accept to see Passphrase.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     log('confirming passphrase is correct');
     // Confirm Passphrase is correct.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     log('confirming right address is displayed');
     // Confirm right address is displayed.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 });
 
 test('introduce passphrase in popup and device rejects it', async () => {
@@ -167,10 +167,10 @@ test('introduce passphrase in popup and device rejects it', async () => {
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 
     // Accept to see Passphrase.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Cancel Passphrase is incorrect.
-    await TrezorUserEnvLink.api.pressNo();
+    await TrezorUserEnvLink.pressNo();
 
     await waitAndClick(popup, ['@connect-ui/error-close-button']);
 
@@ -200,13 +200,13 @@ test('introduce passphrase successfully next time should not ask for it', async 
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 
     // Accept to see Passphrase.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Confirm Passphrase is correct.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Confirm right address is displayed.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Wait for submit button
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
@@ -248,13 +248,13 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 
     // Accept to see Passphrase.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Confirm Passphrase is correct.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Confirm right address is displayed.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Wait for success message before reloading page.
     await explorerPage.waitForSelector('text=success: true');
@@ -316,9 +316,9 @@ test('passphrase mismatch', async ({ page }) => {
     log('submitting passphrase');
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
     // Accept to see Passphrase.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
     // Confirm Passphrase is correct.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     log('waiting and click for invalid passphrase try again button');
     await waitAndClick(popup, ['@invalid-passphrase/try-again']);
@@ -331,13 +331,13 @@ test('passphrase mismatch', async ({ page }) => {
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 
     // Accept to see Passphrase.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Confirm Passphrase is correct.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Confirm right address is displayed.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // Wait for element in connect-explorer before reloading it.
     await waitAndClick(page, ['@api-playground/collapsible-box']);
@@ -386,13 +386,13 @@ test('passphrase mismatch', async ({ page }) => {
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 
     // Accept to see Passphrase.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
     // Confirm Passphrase is correct.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 
     // It display mismatch error, and we accept to use this passphrase.
     await waitAndClick(popup, ['@invalid-passphrase/use-this-passphrase']);
 
     // Confirm right address is displayed.
-    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.pressYes();
 });
