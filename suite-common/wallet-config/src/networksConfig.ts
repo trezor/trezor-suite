@@ -347,7 +347,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'polygon-pos',
     },
-    bsc: {
+    bnb: {
         name: 'BNB Smart Chain',
         networkType: 'ethereum',
         chainId: 56,

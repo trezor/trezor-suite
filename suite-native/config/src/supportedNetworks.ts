@@ -12,7 +12,7 @@ export const orderedAccountTypes: AccountType[] = [
     'ledger',
 ];
 
-const discoveryBlacklist: NetworkSymbol[] = ['sol', 'dsol', 'matic', 'bsc'];
+const discoveryBlacklist: NetworkSymbol[] = ['sol', 'dsol', 'matic', 'bnb'];
 
 // All supported coins for device discovery
 export const networkSymbolsWhitelistMap = {
