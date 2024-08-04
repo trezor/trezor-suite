@@ -12,10 +12,10 @@ let window: Page;
 
 testPlaywright.describe.serial('Suite works with Electrum server', () => {
     testPlaywright.beforeAll(async () => {
-        await TrezorUserEnvLink.api.stopBridge();
-        await TrezorUserEnvLink.api.trezorUserEnvConnect();
-        await TrezorUserEnvLink.api.startEmu({ wipe: true });
-        await TrezorUserEnvLink.api.setupEmu({
+        await TrezorUserEnvLink.stopBridge();
+        await TrezorUserEnvLink.connect();
+        await TrezorUserEnvLink.startEmu({ wipe: true });
+        await TrezorUserEnvLink.setupEmu({
             needs_backup: true,
             mnemonic: 'all all all all all all all all all all all all',
         });

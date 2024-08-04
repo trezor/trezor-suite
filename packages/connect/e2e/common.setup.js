@@ -15,9 +15,6 @@ const emulatorStartOpts = process.env.emulatorStartOpts || global.emulatorStartO
 const firmware = emulatorStartOpts.version;
 
 const getController = name => {
-    TrezorUserEnvLink.on('error', error => {
-        console.error('TrezorUserEnvLink WS error', error);
-    });
     TrezorUserEnvLink.on('disconnect', () => {
         console.error('TrezorUserEnvLink WS disconnected');
     });
@@ -43,21 +40,21 @@ const setup = async (TrezorUserEnvLink, options) => {
 
     if (!options.mnemonic) return true; // skip setup if test is not using the device (composeTransaction)
 
-    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.stopEmu();
 
     // after bridge is stopped, trezor-user-env automatically resolves to use udp transport.
     // this is actually good as we avoid possible race conditions when setting up emulator for
     // the test using the same transport
-    await TrezorUserEnvLink.api.stopBridge();
+    await TrezorUserEnvLink.stopBridge();
 
-    await TrezorUserEnvLink.api.startEmu(emulatorStartOpts);
+    await TrezorUserEnvLink.startEmu(emulatorStartOpts);
 
     const mnemonic =
         typeof options.mnemonic === 'string' && options.mnemonic.indexOf(' ') > 0
             ? options.mnemonic
             : MNEMONICS[options.mnemonic];
 
-    await TrezorUserEnvLink.api.setupEmu({
+    await TrezorUserEnvLink.setupEmu({
         mnemonic,
         pin: options.pin || '',
         passphrase_protection: !!options.passphrase_protection,
@@ -78,7 +75,7 @@ const setup = async (TrezorUserEnvLink, options) => {
     TrezorUserEnvLink.state = options;
 
     // after all is done, start bridge again
-    await TrezorUserEnvLink.api.startBridge();
+    await TrezorUserEnvLink.startBridge();
 };
 
 const initTrezorConnect = async (TrezorUserEnvLink, options) => {

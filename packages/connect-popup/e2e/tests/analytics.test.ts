@@ -10,14 +10,14 @@ test.beforeAll(async () => {
 });
 
 test('reporting', async ({ page }) => {
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.startEmu({
+    await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.stopEmu();
+    await TrezorUserEnvLink.startEmu({
         wipe: true,
         save_screenshots: true,
     });
 
-    await TrezorUserEnvLink.api.setupEmu({
+    await TrezorUserEnvLink.setupEmu({
         mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: true,
@@ -26,7 +26,7 @@ test('reporting', async ({ page }) => {
     });
     await TrezorUserEnvLink.send({ type: 'emulator-allow-unsafe-paths' });
 
-    await TrezorUserEnvLink.api.startBridge();
+    await TrezorUserEnvLink.startBridge();
 
     await page.goto(`${url}#/method/getAddress`);
 

@@ -58,6 +58,9 @@ describe(`TrezorConnect methods`, () => {
                         // single test may require a different setup
                         await setup(controller, t.setup || testCase.setup);
 
+                        if (!controller.options) {
+                            controller.options = {};
+                        }
                         controller.options.name = t.description;
                         // @ts-expect-error, string + params union
                         const result = await TrezorConnect[testCase.method](t.params);

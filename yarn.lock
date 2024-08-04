@@ -11587,8 +11587,10 @@ __metadata:
   resolution: "@trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link"
   dependencies:
     "@trezor/utils": "workspace:*"
+    "@types/semver": "npm:^7.5.6"
     "@types/ws": "npm:^8.5.5"
     cross-fetch: "npm:^4.0.0"
+    semver: "npm:^7.6.0"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft

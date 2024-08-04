@@ -1,3 +1,10 @@
+import semverValid from 'semver/functions/valid';
+import semverRSort from 'semver/functions/rsort';
+
+import { TypedEmitter } from '@trezor/utils';
+
+import { Model, Firmwares } from './types';
+import { WebsocketClient, WebsocketClientEvents } from './websocket-client';
 interface SetupEmu {
     mnemonic?: string;
     pin?: string;
@@ -45,11 +52,34 @@ interface ReadAndConfirmShamirMnemonicEmu {
     threshold: number;
 }
 
-/** device model as expected by trezor-user-env */
-export type Model = 'T3T1' | '1' | '2' | 'R';
+class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> {
+    private client: WebsocketClient;
+    public firmwares?: Firmwares;
+    private defaultFirmware?: string;
 
-export const api = (controller: any) => ({
-    setupEmu: async (options: SetupEmu) => {
+    // todo: remove later, used in some of the tests
+    public send: WebsocketClient['send'];
+
+    constructor() {
+        super();
+        this.client = new WebsocketClient();
+
+        this.client.on('firmwares', (firmwares: Firmwares) => {
+            this.firmwares = firmwares;
+            // select the highest version from the list of available firmwares.
+            // this is the version that is likely to be the newest production.
+            this.defaultFirmware = semverRSort(
+                this.firmwares['2'].filter(fw => semverValid(fw)),
+            )[0];
+        });
+
+        this.client.on('disconnected', () => this.emit('disconnected'));
+
+        // todo: legacy api, should be removed
+        this.send = this.client.send.bind(this.client);
+    }
+
+    public async setupEmu(options: SetupEmu) {
         const defaults = {
             // some random empty seed. most of the test don't need any account history so it is better not to slow them down with all all seed
             mnemonic:
@@ -63,150 +93,159 @@ export const api = (controller: any) => ({
         // before setup, stop bridge and start it again after it. it has no performance hit
         // and avoids 'wrong previous session' errors from bridge. actual setup is done
         // through udp transport if bridge transport is not available
-        await controller.send({ type: 'bridge-stop' });
-        await controller.send({
+        await this.client.send({ type: 'bridge-stop' });
+        await this.client.send({
             type: 'emulator-setup',
             ...defaults,
             ...options,
         });
 
         return null;
-    },
-    sendToAddressAndMineBlock: async (options: SendToAddressAndMineBlock) => {
-        await controller.send({
+    }
+    async sendToAddressAndMineBlock(options: SendToAddressAndMineBlock) {
+        await this.client.send({
             type: 'regtest-send-to-address',
             ...options,
         });
 
         return null;
-    },
-    mineBlocks: async (options: MineBlocks) => {
-        await controller.send({
+    }
+    async mineBlocks(options: MineBlocks) {
+        await this.client.send({
             type: 'regtest-mine-blocks',
             ...options,
         });
 
         return null;
-    },
-    generateBlock: async (options: GenerateBlock) => {
-        await controller.send({
+    }
+    async generateBlock(options: GenerateBlock) {
+        await this.client.send({
             type: 'regtest-generateblock',
             ...options,
         });
 
         return null;
-    },
-    startBridge: async (version?: string) => {
-        await controller.send({ type: 'bridge-start', version });
+    }
+    async startBridge(version?: string) {
+        await this.client.send({ type: 'bridge-start', version });
 
         return null;
-    },
-    stopBridge: async () => {
-        await controller.send({ type: 'bridge-stop' });
+    }
+    async stopBridge() {
+        await this.client.send({ type: 'bridge-stop' });
 
         return null;
-    },
-    startEmu: (arg?: StartEmu) => {
+    }
+    startEmu(arg?: StartEmu) {
         const params = {
             type: 'emulator-start',
-            version: '2-latest',
+            version: this.defaultFirmware || '2-main',
             ...arg,
         };
 
-        return controller.send(params);
-    },
-    startEmuFromUrl: ({ url, model, wipe }: StartEmuFromUrl) =>
-        controller.send({
+        return this.client.send(params);
+    }
+    startEmuFromUrl({ url, model, wipe }: StartEmuFromUrl) {
+        return this.client.send({
             type: 'emulator-start-from-url',
             url,
             model,
             wipe,
-        }),
-    stopEmu: async () => {
-        await controller.send({ type: 'emulator-stop' });
+        });
+    }
+
+    async stopEmu() {
+        await this.client.send({ type: 'emulator-stop' });
 
         return null;
-    },
-    wipeEmu: async () => {
-        await controller.send({ type: 'emulator-wipe' });
+    }
+    async wipeEmu() {
+        await this.client.send({ type: 'emulator-wipe' });
 
         return null;
-    },
-    pressYes: async () => {
-        await controller.send({ type: 'emulator-press-yes' });
+    }
+    async pressYes() {
+        await this.client.send({ type: 'emulator-press-yes' });
 
         return null;
-    },
-    pressNo: async () => {
-        await controller.send({ type: 'emulator-press-no' });
+    }
+    async pressNo() {
+        await this.client.send({ type: 'emulator-press-no' });
 
         return null;
-    },
-    swipeEmu: async (direction: 'up' | 'down' | 'left' | 'right') => {
-        await controller.send({ type: 'emulator-swipe', direction });
+    }
+    async swipeEmu(direction: 'up' | 'down' | 'left' | 'right') {
+        await this.client.send({ type: 'emulator-swipe', direction });
 
         return null;
-    },
-    inputEmu: async (value: string) => {
-        await controller.send({ type: 'emulator-input', value });
+    }
+    async inputEmu(value: string) {
+        await this.client.send({ type: 'emulator-input', value });
 
         return null;
-    },
-    clickEmu: async (options: ClickEmu) => {
-        await controller.send({ type: 'emulator-click', ...options });
+    }
+    async clickEmu(options: ClickEmu) {
+        await this.client.send({ type: 'emulator-click', ...options });
 
         return null;
-    },
-    resetDevice: async (options: any) => {
-        await controller.send({ type: 'emulator-reset-device', ...options });
+    }
+    async resetDevice(options: any) {
+        await this.client.send({ type: 'emulator-reset-device', ...options });
 
         return null;
-    },
-    readAndConfirmMnemonicEmu: async () => {
-        await controller.send({ type: 'emulator-read-and-confirm-mnemonic' });
+    }
+    async readAndConfirmMnemonicEmu() {
+        await this.client.send({ type: 'emulator-read-and-confirm-mnemonic' });
 
         return null;
-    },
-    readAndConfirmShamirMnemonicEmu: async (options: ReadAndConfirmShamirMnemonicEmu) => {
-        await controller.send({
+    }
+    async readAndConfirmShamirMnemonicEmu(options: ReadAndConfirmShamirMnemonicEmu) {
+        await this.client.send({
             type: 'emulator-read-and-confirm-shamir-mnemonic',
             ...options,
         });
 
         return null;
-    },
-    applySettings: async (options: ApplySettings) => {
-        await controller.send({
+    }
+    async applySettings(options: ApplySettings) {
+        await this.client.send({
             type: 'emulator-apply-settings',
             ...options,
         });
 
         return null;
-    },
-    selectNumOfWordsEmu: async (num: number) => {
-        await controller.send({ type: 'emulator-select-num-of-words', num });
+    }
+    async selectNumOfWordsEmu(num: number) {
+        await this.client.send({ type: 'emulator-select-num-of-words', num });
 
         return null;
-    },
-    getDebugState: async () => {
-        const { response } = await controller.send({ type: 'emulator-get-debug-state' });
+    }
+    async getDebugState() {
+        const { response } = await this.client.send({ type: 'emulator-get-debug-state' });
 
         return response;
-    },
+    }
 
-    logTestDetails: async (text: string) => {
-        await controller.send({ type: 'log', text });
-
-        return null;
-    },
-    trezorUserEnvConnect: async () => {
-        await controller.connect();
+    async logTestDetails(text: string) {
+        await this.client.send({ type: 'log', text });
 
         return null;
-    },
-    trezorUserEnvDisconnect: async () => {
-        await controller.disconnect();
+    }
+    async connect() {
+        await this.client.connect();
 
         return null;
-    },
-});
+    }
+    async disconnect() {
+        await this.client.disconnect();
+
+        return null;
+    }
+
+    // legacy api, should be removed probably
+    dispose() {
+        this.disconnect();
+    }
+}
+
+export const TrezorUserEnvLink = new TrezorUserEnvLinkClass();

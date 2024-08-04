@@ -1,1 +1,2 @@
-export * from './websocket-client';
+export * from './api';
+export * from './types';

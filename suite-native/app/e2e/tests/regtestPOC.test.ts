@@ -26,7 +26,7 @@ describe('Regtest integration proof of concept.', () => {
         const amountToSend = 42;
 
         // send transaction of 42 BTC and mine it
-        await TrezorUserEnvLink.api.sendToAddressAndMineBlock({
+        await TrezorUserEnvLink.sendToAddressAndMineBlock({
             address: 'bcrt1qjf6qnquchwl6drvrf2ar73l6p9m3gzwlev9qd4',
             btc_amount: amountToSend,
         });

@@ -8,11 +8,11 @@ let popup: Page;
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
-    await TrezorUserEnvLink.api.stopEmu();
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.startEmu({ wipe: true });
-    await TrezorUserEnvLink.api.setupEmu({ passphrase_protection: false });
-    await TrezorUserEnvLink.api.startBridge();
+    await TrezorUserEnvLink.stopEmu();
+    await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.startEmu({ wipe: true });
+    await TrezorUserEnvLink.setupEmu({ passphrase_protection: false });
+    await TrezorUserEnvLink.startBridge();
 });
 
 const fixtures = [

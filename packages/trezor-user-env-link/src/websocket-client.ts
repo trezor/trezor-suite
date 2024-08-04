@@ -1,12 +1,11 @@
 /* eslint-disable no-console */
 
 import WebSocket from 'ws';
-import { EventEmitter } from 'events';
 import fetch from 'cross-fetch';
 
-import { createDeferred, Deferred } from '@trezor/utils';
+import { createDeferred, Deferred, TypedEmitter } from '@trezor/utils';
 
-import { api, Model } from './api';
+import { Firmwares } from './types';
 
 const NOT_INITIALIZED = new Error('websocket_not_initialized');
 
@@ -29,21 +28,21 @@ interface Options {
     timeout?: number;
 }
 
-export type Firmwares = Record<Model, string[]>;
-
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export class TrezorUserEnvLinkClass extends EventEmitter {
-    messageID: number;
-    options: Options;
-    messages: Deferred<any>[];
+export type WebsocketClientEvents = {
+    firmwares: (firmwares: Firmwares) => void;
+    disconnected: () => void;
+};
 
-    ws?: WebSocket;
-    connectionTimeout?: NodeJS.Timeout;
-    pingTimeout?: NodeJS.Timeout;
+export class WebsocketClient extends TypedEmitter<WebsocketClientEvents> {
+    private messageID: number;
+    private options: Options;
+    private messages: Deferred<any>[];
 
-    firmwares?: Firmwares;
-    api: ReturnType<typeof api>;
+    private ws?: WebSocket;
+    private connectionTimeout?: NodeJS.Timeout;
+    private pingTimeout?: NodeJS.Timeout;
 
     constructor(options: Options = {}) {
         super();
@@ -54,11 +53,9 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
             ...options,
             url: options.url || USER_ENV_URL.WEBSOCKET,
         };
-
-        this.api = api(this);
     }
 
-    setConnectionTimeout() {
+    private setConnectionTimeout() {
         this.clearConnectionTimeout();
         this.connectionTimeout = setTimeout(
             this.onTimeout.bind(this),
@@ -66,14 +63,14 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
         );
     }
 
-    clearConnectionTimeout() {
+    private clearConnectionTimeout() {
         if (this.connectionTimeout) {
             clearTimeout(this.connectionTimeout);
             this.connectionTimeout = undefined;
         }
     }
 
-    setPingTimeout() {
+    private setPingTimeout() {
         if (this.pingTimeout) {
             clearTimeout(this.pingTimeout);
         }
@@ -83,7 +80,7 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
         );
     }
 
-    onTimeout() {
+    private onTimeout() {
         const { ws } = this;
         if (!ws) return;
         if (ws.listenerCount('open') > 0) {
@@ -99,7 +96,7 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
         }
     }
 
-    onPing() {
+    private onPing() {
         // make sure that connection is alive if there are subscriptions
         if (this.ws && this.isConnected()) {
             try {
@@ -110,7 +107,7 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
         }
     }
 
-    onError() {
+    private onError() {
         this.dispose();
     }
 
@@ -142,7 +139,7 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
     }
 
     // todo: typesafe messages
-    onmessage(message: any) {
+    private onmessage(message: any) {
         try {
             const resp = JSON.parse(message);
             const { id, success } = resp;
@@ -150,7 +147,7 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
 
             if (resp.type === 'client') {
                 const { firmwares } = resp;
-                this.firmwares = firmwares;
+
                 this.emit('firmwares', firmwares);
             }
 
@@ -174,7 +171,7 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
         this.setPingTimeout();
     }
 
-    async connect() {
+    public async connect() {
         if (this.isConnected()) return Promise.resolve();
 
         // workaround for karma... proper fix: set allow origin headers in trezor-user-env server. but we are going
@@ -209,8 +206,7 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
                 this.dispose();
             });
 
-            this.on('firmwares', firmwares => {
-                this.firmwares = firmwares;
+            this.on('firmwares', () => {
                 resolve(this);
             });
 
@@ -222,7 +218,7 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
         });
     }
 
-    init() {
+    private init() {
         const { ws } = this;
         if (!ws || !this.isConnected()) {
             throw Error('Websocket init cannot be called');
@@ -240,20 +236,20 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
         });
     }
 
-    disconnect() {
+    public disconnect() {
         if (this.ws) {
             this.ws.close();
         }
-        // this.dispose();
+        this.dispose();
     }
 
-    isConnected() {
+    private isConnected() {
         const { ws } = this;
 
         return ws && ws.readyState === WebSocket.OPEN;
     }
 
-    dispose() {
+    private dispose() {
         if (this.pingTimeout) {
             clearTimeout(this.pingTimeout);
         }
@@ -310,5 +306,3 @@ export class TrezorUserEnvLinkClass extends EventEmitter {
         });
     }
 }
-
-export const TrezorUserEnvLink = new TrezorUserEnvLinkClass();

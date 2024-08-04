@@ -64,21 +64,21 @@ filteredFixtures.forEach(f => {
         // FIXME: always reset for now, due to flaky tests with bridge bug
         if (true || JSON.stringify(device) !== JSON.stringify(f.device) || retry) {
             device = f.device;
-            await TrezorUserEnvLink.api.stopBridge();
-            await TrezorUserEnvLink.api.stopEmu();
-            await TrezorUserEnvLink.api.startEmu({
+            await TrezorUserEnvLink.stopBridge();
+            await TrezorUserEnvLink.stopEmu();
+            await TrezorUserEnvLink.startEmu({
                 wipe: true,
                 save_screenshots: true,
             });
             // @ts-expect-error
             if (!f.device.wiped) {
                 // @ts-expect-error
-                await TrezorUserEnvLink.api.setupEmu({
+                await TrezorUserEnvLink.setupEmu({
                     ...f.device,
                 });
                 await TrezorUserEnvLink.send({ type: 'emulator-allow-unsafe-paths' });
             }
-            await TrezorUserEnvLink.api.startBridge();
+            await TrezorUserEnvLink.startBridge();
         }
 
         const screenshotsPath = await ensureDirectoryExists(`./e2e/screenshots/${f.url}`);

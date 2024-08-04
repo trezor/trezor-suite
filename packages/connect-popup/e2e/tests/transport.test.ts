@@ -37,8 +37,8 @@ let popup: Page;
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
-    await TrezorUserEnvLink.api.stopBridge();
-    await TrezorUserEnvLink.api.stopEmu();
+    await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.stopEmu();
 });
 
 const fixtures = [
