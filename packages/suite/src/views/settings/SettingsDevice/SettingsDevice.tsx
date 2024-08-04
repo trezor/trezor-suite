@@ -53,6 +53,7 @@ export const SettingsDevice = () => {
     const isNormalMode = !bootloaderMode && !initializeMode;
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
+    const isPassphraseProtectionOn = Boolean(device?.features?.passphrase_protection);
 
     if (deviceSettingsUnavailable(device, transport)) {
         return (
@@ -130,12 +131,14 @@ export const SettingsDevice = () => {
                 </SettingsSection>
             )}
 
-            <SettingsSection
-                title={<Translation id="TR_DEVICE_SETTINGS_WALLET_LOADING" />}
-                icon="APP"
-            >
-                <DefaultWalletLoading />
-            </SettingsSection>
+            {isPassphraseProtectionOn && (
+                <SettingsSection
+                    title={<Translation id="TR_DEVICE_SETTINGS_WALLET_LOADING" />}
+                    icon="APP"
+                >
+                    <DefaultWalletLoading />
+                </SettingsSection>
+            )}
 
             <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="FIRMWARE">
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />
