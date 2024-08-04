@@ -352,7 +352,12 @@ test('popup should be focused when a call is in progress and user triggers new c
     await waitAndClick(popup, ['@permissions/confirm-button']);
 
     // Click in 3rd party to trigger new call. But instead of new call it should focus on open popup.
-    await waitAndClick(explorerPage, ['@submit-button']);
+    await explorerPage.waitForSelector(`[data-test='@submit-button']`, { state: 'visible' });
+    await explorerPage.click(`[data-test='@submit-button']`, {
+        // submit button is disabled in connect-explorer if there is a call in progress. we want to simulate what happens if 3rd party
+        // does not respect this and tries to call connect-api again.
+        force: true,
+    });
 
     // Popup should keep its reference and state so we should be able to find confirm button for export-address.
     await waitAndClick(popup, ['@export-address/confirm-button']);
