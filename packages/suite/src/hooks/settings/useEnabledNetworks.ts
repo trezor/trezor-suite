@@ -3,7 +3,11 @@ import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions
 import type { Network } from 'src/types/wallet';
 
 import { getMainnets, getTestnets } from '@suite-common/wallet-config';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import {
+    selectHasExperimentalFeature,
+    selectIsDebugModeActive,
+} from 'src/reducers/suite/suiteReducer';
+import { ExperimentalFeature } from 'src/constants/suite/experimental';
 
 type EnabledNetworks = {
     mainnets: Network[];
@@ -15,8 +19,11 @@ type EnabledNetworks = {
 export const useEnabledNetworks = (): EnabledNetworks => {
     const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
     const isDebug = useSelector(selectIsDebugModeActive);
+    const bnbExperimentalFeature = useSelector(
+        selectHasExperimentalFeature(ExperimentalFeature.BnbSmartChain),
+    );
 
-    const mainnets = getMainnets(isDebug);
+    const mainnets = getMainnets(isDebug, bnbExperimentalFeature);
 
     const testnets = getTestnets(isDebug);
 

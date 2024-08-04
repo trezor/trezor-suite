@@ -25,7 +25,11 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign';
 import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import {
+    selectHasExperimentalFeature,
+    selectIsDebugModeActive,
+} from 'src/reducers/suite/suiteReducer';
+import { ExperimentalFeature } from 'src/constants/suite/experimental';
 
 export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) => {
     const timer = useTimer();
@@ -75,6 +79,10 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
     );
     const [innerDexQuotes, setInnerDexQuotes] = useState<ExchangeTrade[] | undefined>(dexQuotes);
     const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
+
+    const bnbExperimentalFeature = useSelector(
+        selectHasExperimentalFeature(ExperimentalFeature.BnbSmartChain),
+    );
 
     if (invityServerEnvironment) {
         invityAPI.setInvityServersEnvironment(invityServerEnvironment);
@@ -154,7 +162,8 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
                 n =>
                     n.symbol === receiveNetwork &&
                     !unavailableCapabilities[n.symbol] &&
-                    ((n.isDebugOnly && isDebug) || !n.isDebugOnly),
+                    ((n.isDebugOnly && isDebug) || !n.isDebugOnly) &&
+                    (bnbExperimentalFeature || n.symbol !== 'bnb'),
             );
             if (receiveNetworks.length > 0) {
                 // get accounts of the current symbol belonging to the current device
@@ -173,7 +182,15 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             }
         }
         setSuiteReceiveAccounts(undefined);
-    }, [accounts, device, exchangeStep, receiveNetwork, selectedQuote, isDebug]);
+    }, [
+        accounts,
+        device,
+        exchangeStep,
+        receiveNetwork,
+        selectedQuote,
+        isDebug,
+        bnbExperimentalFeature,
+    ]);
 
     const confirmTrade = async (address: string, extraField?: string, trade?: ExchangeTrade) => {
         let ok = false;

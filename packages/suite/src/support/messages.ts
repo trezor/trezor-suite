@@ -5179,6 +5179,15 @@ export default defineMessages({
         defaultMessage:
             'For experienced users only. Use at your own risk.\nSelect which experimental features to enable in Trezor Suite to experience the latest advancements and innovations.',
     },
+    TR_EXPERIMENTAL_BNB_SMART_CHAIN: {
+        id: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN',
+        defaultMessage: 'BNB Smart Chain',
+    },
+    TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON: {
+        id: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON',
+        defaultMessage:
+            'Allows to enable network BNB Smart Chain. Missing historical internal transactions.',
+    },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
         defaultMessage: 'Trezor Password Manager',

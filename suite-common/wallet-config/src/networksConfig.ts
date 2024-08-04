@@ -365,7 +365,6 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'binance-smart-chain',
-        isDebugOnly: true,
     },
     // testnets
     test: {
@@ -603,8 +602,14 @@ export const networksCompatibility: Network[] = Object.entries(networks).flatMap
     ],
 );
 
-export const getMainnets = (debug = false) =>
-    networksCompatibility.filter(n => !n.accountType && !n.testnet && (!n.isDebugOnly || debug));
+export const getMainnets = (debug = false, bnb = false) =>
+    networksCompatibility.filter(
+        n =>
+            !n.accountType &&
+            !n.testnet &&
+            (!n.isDebugOnly || debug) &&
+            (bnb || n.symbol !== 'bnb'),
+    );
 
 export const getTestnets = (debug = false) =>
     networksCompatibility.filter(
