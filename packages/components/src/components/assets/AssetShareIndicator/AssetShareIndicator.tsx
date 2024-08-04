@@ -4,7 +4,8 @@ import styled, { useTheme } from 'styled-components';
 import { borders, coinsColors, spacingsPx } from '@trezor/theme';
 import { motionEasing } from '../../../config/motion';
 import { getDominantColor } from '../../../utils/getDominantColor';
-import { AssetLogo, AssetLogoProps, QUALITY_SIZE, useAssetUrl } from '../AssetLogo/AssetLogo';
+import { AssetLogo, AssetLogoProps, useAssetUrl } from '../AssetLogo/AssetLogo';
+import { getRightLogoSizeUsedWithUrl } from '../utils';
 
 const Container = styled.div<{ $size: number }>`
     position: relative;
@@ -169,11 +170,10 @@ export const AssetShareIndicator = ({
     index,
     coingeckoId = '',
     contractAddress,
-    quality = 'medium',
     ...rest
 }: AssetShareIndicatorProps) => {
     const iconUrl = useAssetUrl(coingeckoId, contractAddress);
-    const assetLogoSize = symbol ? size : QUALITY_SIZE[quality];
+    const assetLogoSize = symbol ? size : getRightLogoSizeUsedWithUrl(size); // we need to use smaller sizes if not used with symbol
     const containerSize = assetLogoSize * 2;
 
     return (
@@ -183,7 +183,6 @@ export const AssetShareIndicator = ({
                 size={assetLogoSize}
                 coingeckoId={coingeckoId}
                 contractAddress={contractAddress}
-                quality={quality}
                 {...rest}
             />
             <ProgressCircle

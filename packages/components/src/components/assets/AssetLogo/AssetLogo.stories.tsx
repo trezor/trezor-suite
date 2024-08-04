@@ -37,7 +37,10 @@ export const AssetLogo: StoryObj<AssetLogoProps> = {
             },
         },
         size: {
-            type: 'number',
+            options: [16, 24, 32, 48],
+            control: {
+                type: 'select',
+            },
         },
         index: {
             type: 'number',
@@ -47,12 +50,6 @@ export const AssetLogo: StoryObj<AssetLogoProps> = {
         },
         contractAddress: {
             type: 'string',
-        },
-        quality: {
-            options: ['small', 'medium'],
-            control: {
-                type: 'select',
-            },
         },
     },
 };

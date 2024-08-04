@@ -36,7 +36,7 @@ export const All: StoryObj = {
                 {variables.COINS.map((coin: CoinType) => (
                     <Icon key={coin}>
                         <CoinName>{coin}</CoinName>
-                        <AssetLogo symbol={coin} data-test={`coin-${coin}`} size={64} />
+                        <AssetLogo symbol={coin} data-test={`coin-${coin}`} size={48} />
                     </Icon>
                 ))}
             </WrapperIcons>

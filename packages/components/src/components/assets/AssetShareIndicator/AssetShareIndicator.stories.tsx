@@ -29,7 +29,6 @@ export const AssetShareIndicator: StoryObj<AssetShareIndicatorProps> = {
         symbol: 'ada',
         size: 32,
         percentageShare: 25,
-        quality: 'medium',
     },
     argTypes: {
         symbol: {
@@ -42,7 +41,10 @@ export const AssetShareIndicator: StoryObj<AssetShareIndicatorProps> = {
             },
         },
         size: {
-            type: 'number',
+            options: [16, 24, 32, 48],
+            control: {
+                type: 'select',
+            },
         },
         percentageShare: {
             type: 'number',
@@ -55,12 +57,6 @@ export const AssetShareIndicator: StoryObj<AssetShareIndicatorProps> = {
         },
         contractAddress: {
             type: 'string',
-        },
-        quality: {
-            options: ['small', 'medium'],
-            control: {
-                type: 'select',
-            },
         },
     },
 };

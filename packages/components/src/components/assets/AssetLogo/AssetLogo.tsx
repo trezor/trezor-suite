@@ -5,17 +5,13 @@ import { COINS } from './coins';
 import { DefaultAssetLogo } from '../DefaultAssetLogo/DefaultAssetLogo';
 import { spacingsPx } from '@trezor/theme';
 import { SkeletonCircle } from '../../skeletons/SkeletonCircle';
+import { getRightLogoSizeUsedWithUrl } from '../utils';
 
 export type CoinType = keyof typeof COINS;
 
 const UPDATED_ICONS_LIST_URL_BASE = 'https://data.trezor.io/suite/icons/coins/';
 
-export const QUALITY_SIZE = {
-    small: 16,
-    medium: 24,
-};
-
-type Quality = keyof typeof QUALITY_SIZE;
+export type AssetLogoSize = 16 | 24 | 32 | 48;
 
 const useCheckUrlAccessibility = (url: string) => {
     const [isAccessible, setIsAccessible] = useState(false);
@@ -51,11 +47,10 @@ export const useAssetUrl = (coingeckoId: string, contractAddress?: string) => {
 export interface AssetLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
     symbol?: CoinType;
     className?: string;
-    size?: number;
+    size?: AssetLogoSize;
     index?: number;
     coingeckoId?: string;
     contractAddress?: string;
-    quality?: Quality;
 }
 
 const Wrapper = styled.div<{ $size: number }>`
@@ -99,13 +94,12 @@ export const AssetLogo = ({
     size = 32,
     coingeckoId = '',
     contractAddress,
-    quality = 'medium',
     ...rest
 }: AssetLogoProps) => {
     const [isLoading, setIsLoading] = useState(true);
 
     const iconUrl = useAssetUrl(coingeckoId, contractAddress);
-    const assetLogoSize = symbol ? size : QUALITY_SIZE[quality];
+    const assetLogoSize = symbol ? size : getRightLogoSizeUsedWithUrl(size); // we need to use smaller sizes if not used with symbol
     const firstCharacter = coingeckoId?.[0]?.toUpperCase();
 
     const hideLoading = () => setIsLoading(false);
