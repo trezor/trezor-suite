@@ -2900,9 +2900,9 @@ export default defineMessages({
         defaultMessage: 'Ethereum Holesky',
         id: 'TR_NETWORK_ETHEREUM_HOLESKY',
     },
-    TR_NETWORK_BSC: {
+    TR_NETWORK_BNB: {
         defaultMessage: 'BNB Smart Chain',
-        id: 'TR_NETWORK_BSC',
+        id: 'TR_NETWORK_BNB',
     },
     TR_NETWORK_LITECOIN: {
         defaultMessage: 'Litecoin',
