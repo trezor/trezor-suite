@@ -40,13 +40,6 @@ const getNormalizedShortcut = (shortcut: string) => {
         return 'XRP';
     }
 
-    // Right now Blockbook reports shortcut as main currency of specific network
-    // However, in this case, BSC is network, BNB is native currency
-    // TODO: wait for new Blockbook param
-    if (shortcut.toLowerCase() === 'bsc') {
-        return 'bnb';
-    }
-
     return shortcut;
 };
 

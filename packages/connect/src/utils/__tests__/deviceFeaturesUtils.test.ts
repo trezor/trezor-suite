@@ -130,8 +130,7 @@ describe('utils/deviceFeaturesUtils', () => {
             expect(getUnavailableCapabilities(featT1B1, coins)).toEqual({
                 ada: 'no-support',
                 tada: 'no-support',
-                bnb: 'no-support',
-                bsc: 'update-required',
+                bnb: 'update-required',
                 eos: 'no-support',
                 ppc: 'update-required',
                 sol: 'no-support',
@@ -165,7 +164,7 @@ describe('utils/deviceFeaturesUtils', () => {
             expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
                 replaceTransaction: 'update-required',
                 amountUnit: 'update-required',
-                bsc: 'update-required',
+                bnb: 'update-required',
                 decreaseOutput: 'update-required',
                 eip1559: 'update-required',
                 'eip712-domain-only': 'update-required',
