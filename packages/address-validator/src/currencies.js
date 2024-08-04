@@ -11,7 +11,6 @@ var NEMValidator = require('./nem_validator');
 var LSKValidator = require('./lisk_validator');
 var BCHValidator = require('./bch_validator');
 var XLMValidator = require('./stellar_validator');
-var BinanceValidator = require('./binance_validator');
 var EOSValidator = require('./eos_validator');
 var XTZValidator = require('./tezos_validator');
 var AEValidator = require('./ae_validator');
@@ -1442,14 +1441,9 @@ var CURRENCIES = [
         validator: ETHValidator,
     },
     {
-        name: 'Binance Smart Chain',
-        symbol: 'bsc',
-        validator: ETHValidator,
-    },
-    {
-        name: 'Binance',
+        name: 'BNB Smart Chain',
         symbol: 'bnb',
-        validator: BinanceValidator,
+        validator: ETHValidator,
     },
     {
         name: 'EOS',
