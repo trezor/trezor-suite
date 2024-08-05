@@ -248,25 +248,12 @@ export const DEFAULT_THEME: DocsThemeConfig = {
     },
     head: (
         <>
-            <meta name="msapplication-TileColor" content="#fff" />
             <meta httpEquiv="Content-Language" content="en" />
-            <meta name="description" content="Nextra: the next docs builder" />
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:site" content="@shuding_" />
-            <meta property="og:title" content="Nextra: the next docs builder" />
-            <meta property="og:description" content="Nextra: the next docs builder" />
-            <meta name="apple-mobile-web-app-title" content="Nextra" />
+            {/* other meta tags get set by next-seo */}
         </>
     ),
     i18n: [],
-    logo: (
-        <>
-            <span className="nx-font-extrabold">Nextra</span>
-            <span className="nx-ml-2 nx-hidden nx-font-normal nx-text-gray-600 md:nx-inline">
-                The Next Docs Builder
-            </span>
-        </>
-    ),
+    logo: <></>,
     logoLink: true,
     navbar: {
         component: Navbar,
