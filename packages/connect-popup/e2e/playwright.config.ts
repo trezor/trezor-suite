@@ -9,7 +9,7 @@ const config: PlaywrightTestConfig = {
         headless: process.env.HEADLESS === 'true',
         ignoreHTTPSErrors: true,
         trace: 'retain-on-failure',
-        ...devices['Desktop Chrome'],
+        ...devices[process.env.MOBILE ? 'Pixel 7' : 'Desktop Chrome'],
     },
 };
 export default config;
