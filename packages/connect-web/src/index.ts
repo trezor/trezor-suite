@@ -114,7 +114,7 @@ export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
 
             return true;
         }
-
+        console.log('test');
         return false;
     }
 
