@@ -3248,7 +3248,7 @@ export default defineMessages({
         id: 'TR_WRONG_PIN_ENTERED',
     },
     TR_PASSWORD_MANAGER: {
-        defaultMessage: 'Trezor Password Manager',
+        defaultMessage: 'Migrate Dropbox password',
         id: 'TR_PASSWORD_MANAGER',
     },
     TR_SETTINGS: {
@@ -4101,7 +4101,7 @@ export default defineMessages({
     },
     TR_TOR_CONFIG_SNOWFLAKE_DISABLE_LABEL: {
         id: 'TR_TOR_CONFIG_SNOWFLAKE_DISABLE_LABEL',
-        defaultMessage: 'Disable snowflake',
+        defaultMessage: 'Disable Snowflake',
     },
     TR_TOR_ENABLE_TITLE: {
         id: 'TR_TOR_ENABLE_TITLE',
@@ -5180,16 +5180,16 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
-        defaultMessage: 'Trezor Password Manager',
+        defaultMessage: 'Migrate Dropbox password',
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         defaultMessage:
-            'Add Trezor Password Manager to Trezor Suite, allowing you to use your Trezor device as a master password.',
+            'A utility for retrieving passwords stored on Dropbox and secured by Trezor, designed for former Chrome extension users of Password Manager.',
     },
     TR_EXPERIMENTAL_TOR_SNOWFLAKE: {
         id: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE',
-        defaultMessage: 'Tor snowflake',
+        defaultMessage: 'Tor Snowflake',
     },
     TR_EXPERIMENTAL_TOR_SNOWFLAKE_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE_DESCRIPTION',
