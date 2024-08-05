@@ -34,7 +34,7 @@ export const PageWrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
     overflow-x: hidden;
 `;
 
