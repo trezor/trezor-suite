@@ -311,6 +311,8 @@
   "TR_AUTH_CONFIRM_FAILED_RETRY": "Retry",
   "TR_AUTH_CONFIRM_FAILED_TITLE": "Wrong passphrase",
   "TR_AUTOSTOP_COINJOIN_ENABLED": "Coinjoin will be stopped after this round",
+  "TR_AUTO_START": "Start Trezor Suite automatically",
+  "TR_AUTO_START_DESCRIPTION": "Start Trezor Suite in the background when you log into your computer.",
   "TR_AUTO_STOP_TOOLTIP": "Coinjoin is in the signing phase. Click to stop it after this round.",
   "TR_AVAILABLE_NOW_FOR": "Available now for",
   "TR_AVOID_USING_DEVICE": "Avoid using this device or sending any funds to it.",
@@ -2008,6 +2010,8 @@
   "TR_UNREADABLE_EXPLAINED": "We can't see details about your Trezor device. It may be running old firmware, or another USB device may be interfering. To make communication possible, you need to install Trezor Bridge.",
   "TR_UNSTAKE_FROM_EVERSTAKE": "Unstake {symbol} from Everstake?",
   "TR_UNSUPPORTED_ADDRESS_FORMAT": "Unsupported address format.",
+  "TR_UNSUPPORTED_COINS": "Supported on newer Trezors",
+  "TR_UNSUPPORTED_COINS_DESCRIPTION": "These coins are supported on Trezor Safe devices and Trezor Model T.",
   "TR_UPDATE_AVAILABLE": "Update available",
   "TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP": "Firmware update required. You can change your homescreen in the settings page later",
   "TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP": "Update your firmware to change your homescreen",
@@ -2116,5 +2120,6 @@
   "TR_YOU_SHOULD_ANONYMIZE": "You should make them private",
   "TR_YOU_WERE_DISCONNECTED_DOT": "You were disconnected.",
   "TR_ZERO_PHISHING_BANNER": "Proceed with caution. This may be a fraudulent transaction. <a>Read more here.</a>",
-  "TR_ZERO_PHISHING_TOOLTIP": "Address poisoning alert! This transaction looks suspicious. <a>Learn more.</a>"
+  "TR_ZERO_PHISHING_TOOLTIP": "Address poisoning alert! This transaction looks suspicious. <a>Learn more.</a>",
+  "ZERO_BALANCE_TOKENS": "Zero-balance tokens"
 }
