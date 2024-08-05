@@ -23,6 +23,7 @@ services:
       - TEST_FILE=$TEST_FILE
       - IS_WEBEXTENSION=$IS_WEBEXTENSION
       - CORE_IN_POPUP=$CORE_IN_POPUP
+      - MOBILE=$MOBILE
       - TREZOR_CONNECT_SRC=$TREZOR_CONNECT_SRC
     working_dir: /e2e
     command: bash -c "npx playwright install && yarn workspace @trezor/connect-popup test:e2e $TEST_FILE"
