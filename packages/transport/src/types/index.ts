@@ -10,10 +10,16 @@ export type DescriptorApiLevel = {
     type: DEVICE_TYPE;
     /** only important for T1 over old bridge (trezord-go), defacto part of 'path'. More explanation in https://github.com/trezor/trezor-suite/compare/transport-descriptor-product */
     product?: number;
+    /** only reported by old bridge */
+    vendor?: number;
 };
 
 export type Descriptor = DescriptorApiLevel & {
     session: null | Session;
+    /** only reported by old bridge */
+    debugSession?: null | Session;
+    /** only reported by old bridge */
+    debug?: boolean;
 };
 
 export interface Logger {

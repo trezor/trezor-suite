@@ -410,11 +410,15 @@ export abstract class AbstractTransport extends TypedEmitter<{
         const diff = this.getDiff(nextDescriptors);
         this.logger?.debug('nextDescriptors', nextDescriptors, 'diff', diff);
 
+        // even when there is no change from our point of view (see diff.didUpdate) it makes sense to update local descriptors because the
+        // last descriptors we handled might in fact be different to what we have saved locally from the previous update. the reason is that
+        // legacy bridge backends might be working with a different set of fields (eg. debug, debugSession). and we need to save this since
+        // we need to pass this data to the next /listen call
+        this.descriptors = nextDescriptors;
+
         if (!diff.didUpdate) {
             return;
         }
-
-        this.descriptors = nextDescriptors;
 
         Object.keys(this.listenPromise).forEach(path => {
             const descriptor = diff.descriptors.find(device => device.path === path);
