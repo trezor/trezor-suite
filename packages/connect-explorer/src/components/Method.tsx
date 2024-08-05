@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { CopyToClipboard } from 'nextra/components';
 
-import { Button as TrezorButton, ButtonProps, H3, Card } from '@trezor/components';
+import { Button as TrezorButton, ButtonProps, H3, Card, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import type { Field, FieldWithBundle, FieldWithUnion } from '../types';
@@ -145,6 +145,10 @@ export const MethodContent = styled.div<{ $manualMode?: boolean }>(
     display: grid;
     grid-template-columns: ${$manualMode ? '3fr 2fr' : '2fr 3fr'};
     gap: 20px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        grid-template-columns: 1fr;
+    }
 
     & > div {
         /* CSS grid obscurities */
