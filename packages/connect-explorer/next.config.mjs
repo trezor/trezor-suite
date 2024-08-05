@@ -42,6 +42,9 @@ export default withNextra({
                 'process.env.COMMIT_HASH': JSON.stringify(commitHash),
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
                 'process.env.BUILD_TARGET': JSON.stringify(process.env.BUILD_TARGET),
+                'process.env.CONNECT_EXPLORER_FULL_URL': JSON.stringify(
+                    process.env.CONNECT_EXPLORER_FULL_URL,
+                ),
             }),
         );
 

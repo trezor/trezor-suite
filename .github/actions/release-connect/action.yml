@@ -92,6 +92,7 @@ runs:
         __TREZOR_CONNECT_SRC: /${{ inputs.serverPath }}/
         CONNECT_EXPLORER_ASSET_PREFIX: /${{ inputs.serverPath }}
         CONNECT_EXPLORER_BASE_PATH: /${{ inputs.serverPath }}
+        CONNECT_EXPLORER_FULL_URL: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
       run: |
         yarn workspace @trezor/connect-explorer build
 
