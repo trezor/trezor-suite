@@ -85,8 +85,8 @@ section {
     display: none;
 }
 p {
-    font-size: 12px;
-    font-weight: 300;
+    font-size: 15px;
+    font-weight: 400;
     color: #757575;
 }
 h2 {
@@ -96,7 +96,7 @@ h2 {
     text-rendering: optimizeLegibility;
 }
 h3 {
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 600;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -111,18 +111,6 @@ textarea:focus {
 #__lpform_input_idx_0_numspan,
 #__lpform_input_idx_0 {
     display: none;
-}
-@media screen and (min-width: 768px) {
-    p {
-        font-size: 15px;
-        font-weight: 400px;
-    }
-    h2 {
-        font-size: 22px;
-    }
-    h3 {
-        font-size: 19px;
-    }
 }
 a:not(.button),
 a:visited {
@@ -165,7 +153,7 @@ a.button,
 button {
     padding: 12px 24px;
     border-radius: 3px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 300;
     cursor: pointer;
     background: #01b757;
@@ -222,7 +210,6 @@ a.button.confirm,
 button.confirm {
     width: 100%;
     padding: 12px;
-    font-size: 14px;
     color: #ffffff;
     background-color: #01b757;
 }
@@ -230,7 +217,6 @@ a.button.cancel,
 button.cancel {
     width: 100%;
     padding: 12px;
-    font-size: 14px;
     color: #757575;
     background-color: transparent;
     border: 1px solid #757575;
@@ -272,7 +258,7 @@ button.check-devices .plus::after {
 }
 a.button.check-devices .text,
 button.check-devices .text {
-    font-size: 14px;
+    font-size: 16px;
     color: #00ab51;
 }
 a.button.check-devices:hover,
@@ -336,20 +322,6 @@ a.button.notification-button:hover,
 button.notification-button:hover {
     color: white;
     background-color: #eb8a00;
-}
-@media screen and (min-width: 768px) {
-    a.button,
-    button {
-        font-size: 16px;
-    }
-    a.button.confirm,
-    button.confirm {
-        font-size: 16px;
-    }
-    a.button.cancel,
-    button.cancel {
-        font-size: 16px;
-    }
 }
 header {
     position: fixed;
@@ -428,7 +400,7 @@ input[type='password']:focus {
     line-height: 1;
     cursor: pointer;
     font-weight: 300;
-    font-size: 12px;
+    font-size: 14px;
     color: #757575;
 }
 .custom-checkbox input {
@@ -499,11 +471,6 @@ input[type='password']:focus {
 }
 .custom-checkbox.align-left .indicator:after {
     top: 0px;
-}
-@media screen and (min-width: 768px) {
-    .custom-checkbox {
-        font-size: 14px;
-    }
 }
 .loader {
     position: relative;
@@ -971,6 +938,10 @@ footer a:visited:hover {
     main {
         flex-direction: column;
         min-height: none;
+    }
+    #react {
+        /* override element style set in JS */
+        flex: none !important;
     }
     section,
     aside {
@@ -2117,7 +2088,7 @@ section > div .divider span:after {
     align-items: center;
     color: #1e7ff0;
     font-weight: 300;
-    font-size: 12px;
+    font-size: 14px;
 }
 .permissions .info-icon {
     width: 28px;
@@ -2157,9 +2128,6 @@ section > div .divider span:after {
 @media screen and (min-width: 768px) {
     .permissions {
         height: 500px;
-    }
-    .permissions .permission-item .content {
-        font-size: 14px;
     }
 }
 @media screen and (max-width: 639px) {

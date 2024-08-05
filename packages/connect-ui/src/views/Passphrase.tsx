@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/connect-analytics';
 import { UI, UiEvent, CoreRequestMessage } from '@trezor/connect';
 import { variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 import { View } from '../components/View';
 import { PassphraseTypeCard } from '../components/Passphrase/PassphraseTypeCard';
@@ -16,7 +17,7 @@ const Wrapper = styled.div`
     width: 600px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        width: 100%;
+        width: calc(100vw - ${spacingsPx.xxxl});
     }
 `;
 
