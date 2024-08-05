@@ -30,7 +30,11 @@ export const FirmwareUpdate = ({ shouldSwitchFirmwareType = false }: FirmwareUpd
     const heading = shouldSwitchFirmwareType ? 'TR_SWITCH_FIRMWARE' : 'TR_INSTALL_FIRMWARE';
 
     return (
-        <FirmwareModal heading={heading} install={installTargetFirmware}>
+        <FirmwareModal
+            deviceWillBeWiped={deviceWillBeWiped}
+            heading={heading}
+            install={installTargetFirmware}
+        >
             <FirmwareInitial
                 standaloneFwUpdate
                 shouldSwitchFirmwareType={shouldSwitchFirmwareType}
