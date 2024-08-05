@@ -54,9 +54,7 @@ export class SessionsClient extends TypedEmitter<{
     handshake() {
         return this.request({ type: 'handshake' });
     }
-    enumerateIntent() {
-        return this.request({ type: 'enumerateIntent' });
-    }
+
     enumerateDone(payload: EnumerateDoneRequest) {
         return this.request({ type: 'enumerateDone', payload });
     }
