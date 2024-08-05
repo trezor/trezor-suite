@@ -3409,8 +3409,7 @@ export default defineMessages({
         id: 'TR_UNSUPPORTED_COINS',
     },
     TR_UNSUPPORTED_COINS_DESCRIPTION: {
-        defaultMessage:
-            'These coins are supported on Trezor Safe family devices and the Trezor Model T.',
+        defaultMessage: 'These coins are supported on Trezor Safe devices and Trezor Model T.',
         id: 'TR_UNSUPPORTED_COINS_DESCRIPTION',
     },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
@@ -8818,7 +8817,7 @@ export default defineMessages({
     },
     ZERO_BALANCE_TOKENS: {
         id: 'ZERO_BALANCE_TOKENS',
-        defaultMessage: 'Zero balance tokens ({count})',
+        defaultMessage: 'Zero-balance tokens',
     },
     TR_STAKE_ADDING_TO_POOL: {
         id: 'TR_STAKE_ADDING_TO_POOL',
@@ -9225,10 +9224,10 @@ export default defineMessages({
     },
     TR_AUTO_START: {
         id: 'TR_AUTO_START',
-        defaultMessage: 'Run Trezor Suite automatically',
+        defaultMessage: 'Start Trezor Suite automatically',
     },
     TR_AUTO_START_DESCRIPTION: {
         id: 'TR_AUTO_START_DESCRIPTION',
-        defaultMessage: 'Start Trezor Suite in the background when you log in to your computer.',
+        defaultMessage: 'Start Trezor Suite in the background when you log into your computer.',
     },
 });
