@@ -8818,7 +8818,7 @@ export default defineMessages({
     },
     ZERO_BALANCE_TOKENS: {
         id: 'ZERO_BALANCE_TOKENS',
-        defaultMessage: 'Zero balance tokens ({count})',
+        defaultMessage: 'Zero-balance tokens',
     },
     TR_STAKE_ADDING_TO_POOL: {
         id: 'TR_STAKE_ADDING_TO_POOL',

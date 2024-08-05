@@ -133,12 +133,7 @@ export const TokenList = ({
                         icon="ARROW_DOWN"
                     />
                 </ChevronContainer>
-                <Translation
-                    id="ZERO_BALANCE_TOKENS"
-                    values={{
-                        count: tokensWithoutBalance.length,
-                    }}
-                />
+                <Translation id="ZERO_BALANCE_TOKENS" />
             </Header>
             <AnimationWrapper opened={isZeroBalanceOpen}>
                 {tokensWithoutBalance.map(token => (
