@@ -34,7 +34,7 @@ export const Transport = () => {
             description={
                 <FormattedMessage
                     id="TR_BRIDGE_NEEDED_DESCRIPTION"
-                    defaultMessage="For the best experience, please download and run the Trezor Suite desktop app in the background or use a supported Chromium-based browser that is compatible with WebUSB."
+                    defaultMessage="Your browser is not supported. For the best experience, download and run the Trezor Suite desktop app in the background, or use a supported Chromium-based browser that is compatible with WebUSB."
                 />
             }
             image={<Image imageSrc={imageSrc} />}
