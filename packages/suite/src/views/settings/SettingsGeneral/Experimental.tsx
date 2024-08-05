@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Checkbox, Switch, Icon, variables } from '@trezor/components';
+import { Checkbox, Switch, Icon, variables, Row } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
+import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
@@ -9,6 +10,7 @@ import {
     ExperimentalFeature,
     ExperimentalFeatureTitle,
     ExperimentalFeatureDescription,
+    ExperimentalFeatureKnowledgeBaseUrl,
 } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -42,6 +44,7 @@ const FeatureLine = ({ feature, features }: FeatureLineProps) => {
     const checked = features.includes(feature);
     const titleId = ExperimentalFeatureTitle[feature];
     const descId = ExperimentalFeatureDescription[feature];
+    const url = ExperimentalFeatureKnowledgeBaseUrl[feature];
 
     const onChangeFeature = () =>
         dispatch({
@@ -54,6 +57,8 @@ const FeatureLine = ({ feature, features }: FeatureLineProps) => {
             <TextColumn
                 title={titleId ? <Translation id={titleId} /> : feature}
                 description={descId && <Translation id={descId} />}
+                buttonLink={url}
+                buttonTitle={<Translation id="TR_LEARN_MORE" />}
             />
             <ActionColumn>
                 <Checkbox isChecked={checked} onClick={onChangeFeature} />
@@ -96,12 +101,15 @@ export const Experimental = () => {
                     description={
                         <>
                             <Warning>
-                                <Icon icon="WARNING" size={14} variant="tertiary" />
-                                <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
+                                <Row gap={12}>
+                                    <Icon icon="WARNING" size={14} variant="tertiary" />
+                                    <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
+                                </Row>
                             </Warning>
                             <Translation id="TR_EXPERIMENTAL_FEATURES_DESCRIPTION" />
                         </>
                     }
+                    buttonLink={EXPERIMENTAL_FEATURES_KB_URL}
                 />
                 <ActionColumn>
                     <Switch isChecked={!!features} onChange={onSwitchExperimental} />
