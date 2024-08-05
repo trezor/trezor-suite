@@ -5,9 +5,9 @@ import { storage } from '@trezor/connect-common';
 import { container, showView } from './common';
 
 export const initBrowserView = (systemInfo: SystemInfo): Promise<boolean> => {
-    if (systemInfo?.os.mobile) {
-        // popup is not supported on mobile devices
-        // webusb is now available only on trezor.io domains and bridge can't be installed on mobile
+    if (systemInfo?.os.mobile && !systemInfo?.browser.supported) {
+        // popup can now support smartphones that have WebUSB support (e.g. Android with Chrome)
+        // browsers that are not supported will get rejected
         showView('smartphones-not-supported');
 
         return Promise.resolve(false);

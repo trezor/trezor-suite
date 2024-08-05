@@ -48,7 +48,7 @@ test('unsupported browser', async ({ browser }) => {
     await context.close();
 });
 
-test('outdated-browser', async ({ browser }) => {
+test('outdated browser', async ({ browser }) => {
     const context = await browser.newContext({
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/50.0',
@@ -76,27 +76,35 @@ test('outdated-browser', async ({ browser }) => {
 });
 
 // test mobile browsers
-test.describe(() => {
-    const fixtures = [
-        { desc: 'iPhone', device: iPhone },
-        { desc: 'android', device: android },
-    ];
-    for (const f of fixtures) {
-        test(`env: web, device: mobile/${f.desc} => not allowed `, async ({ browser }) => {
-            const context = await browser.newContext({
-                ...f.device,
-            });
-            const page = await context.newPage();
-            await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
+test(`env: web, device: mobile/iPhone => not allowed `, async ({ browser }) => {
+    const context = await browser.newContext({
+        ...iPhone,
+    });
+    const page = await context.newPage();
+    await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
 
-            popup = await openPopup(page);
-            // unfortunately webusb now does not work for connect-popup, so mobile chrome won't run even if it technically could
-            await popup.waitForSelector('text=Smartphones not supported yet');
-            await popup.screenshot({ path: `${dir}/mobile-${f.desc}-not-supported.png` });
+    popup = await openPopup(page);
+    // unfortunately webusb now does not work for connect-popup, so mobile chrome won't run even if it technically could
+    await popup.waitForSelector('text=Smartphones not supported yet');
+    await popup.screenshot({ path: `${dir}/mobile-iphone-not-supported.png` });
 
-            await popup.click('text=Close');
-            await page.close();
-            await context.close();
-        });
-    }
+    await popup.click('text=Close');
+    await page.close();
+    await context.close();
+});
+
+test(`env: web, device: mobile/Android => allowed `, async ({ browser }) => {
+    const context = await browser.newContext({
+        ...android,
+    });
+    const page = await context.newPage();
+    await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
+
+    popup = await openPopup(page);
+
+    await popup.waitForSelector('text=Connect Trezor to continue');
+    await popup.screenshot({ path: `${dir}/mobile-android-supported.png` });
+
+    await page.close();
+    await context.close();
 });
