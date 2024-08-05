@@ -1,7 +1,7 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { Icon, Tooltip } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -13,6 +13,8 @@ import { ActionButton } from './ActionButton';
 import { NavBackends } from './NavBackends';
 import { HelperIcons } from './HelperIcons';
 import { useEnabledBackends } from '../utils';
+import { TorContainerWithCheckIcon } from './TorContainerWithCheckIcon';
+import { CheckIcon } from './CheckIcon';
 
 const Container = styled.div`
     display: flex;
@@ -45,41 +47,16 @@ const Label = styled.span`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const StyledCheckIcon = styled(Icon)`
-    position: absolute;
-    bottom: 50%;
-    left: 50%;
-    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
-    border-radius: ${borders.radii.full};
-`;
-
-const TorToggleContainer = styled.div`
-    position: relative;
-    width: 100%;
-
-    &:hover,
-    &:focus-within {
-        ${StyledCheckIcon} {
-            background-color: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
-        }
-    }
-`;
-
 export const QuickActions = () => {
     const isDiscreetModeActive = useSelector(selectIsDiscreteModeActive);
-    const { isTorEnabled, isTorLoading } = useSelector(selectTorState);
+    const { isTorLoading } = useSelector(selectTorState);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const theme = useTheme();
     const handleDiscreetModeClick = () => dispatch(setDiscreetMode(!isDiscreetModeActive));
     const enabledBackends = useEnabledBackends();
     const translationLabel = isDiscreetModeActive ? 'TR_SHOW_BALANCES' : 'TR_HIDE_BALANCES';
     const isCustomBackendIconVisible = enabledBackends.length > 0;
     const isTorIconVisible = isDesktop();
-
-    const CheckIcon = () => (
-        <StyledCheckIcon icon="CHECK_ACTIVE" size={12} color={theme.iconPrimaryDefault} />
-    );
 
     return (
         <Container>
@@ -106,24 +83,19 @@ export const QuickActions = () => {
                                 </>
                             </Tooltip>
                         )}
-                        {isTorIconVisible && (
-                            <TorToggleContainer>
-                                <ActionButton
-                                    icon="TOR"
-                                    title={translationString('TR_TOR')}
-                                    isLoading={isTorLoading}
-                                    onClick={() =>
-                                        dispatch(
-                                            goto('settings-index', { anchor: SettingsAnchor.Tor }),
-                                        )
-                                    }
-                                    size="small"
-                                    variant="tertiary"
-                                />
 
-                                {isTorEnabled && <CheckIcon />}
-                            </TorToggleContainer>
-                        )}
+                        <TorContainerWithCheckIcon>
+                            <ActionButton
+                                icon="TOR"
+                                title={translationString('TR_TOR')}
+                                isLoading={isTorLoading}
+                                onClick={() =>
+                                    dispatch(goto('settings-index', { anchor: SettingsAnchor.Tor }))
+                                }
+                                size="small"
+                                variant="tertiary"
+                            />
+                        </TorContainerWithCheckIcon>
 
                         <ActionButton
                             title={translationString(translationLabel)}

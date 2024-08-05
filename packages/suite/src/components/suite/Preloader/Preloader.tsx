@@ -23,6 +23,8 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
+import { WelcomeSidebar } from '../layouts/WelcomeLayout/WelcomeSidebar';
+import styled from 'styled-components';
 
 const ROUTES_TO_SKIP_REVISION_CHECK: RouterAppWithParams['app'][] = [
     'settings',
@@ -30,6 +32,11 @@ const ROUTES_TO_SKIP_REVISION_CHECK: RouterAppWithParams['app'][] = [
     'firmware-type',
     'firmware-custom',
 ];
+
+const LeftWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
 
 const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
@@ -147,7 +154,14 @@ export const Preloader = ({ children }: PreloaderProps) => {
 
     // if a device is not connected or initialized
     if (isLoggedOut) {
-        return <LoggedOutLayout>{children}</LoggedOutLayout>;
+        if (router.route?.app === 'settings') {
+            return (
+                <LeftWrapper>
+                    <WelcomeSidebar />
+                    <LoggedOutLayout>{children}</LoggedOutLayout>
+                </LeftWrapper>
+            );
+        } else return <LoggedOutLayout>{children}</LoggedOutLayout>;
     }
 
     // everything is set.

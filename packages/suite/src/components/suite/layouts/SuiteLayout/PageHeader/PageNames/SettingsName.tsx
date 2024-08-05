@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { IconButton } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive, selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
-import { goto } from 'src/actions/suite/routerActions';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { HeaderHeading } from './BasicName';
 
 const Container = styled.div`
@@ -18,7 +16,6 @@ const Container = styled.div`
 
 export const SettingsName = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const isLoggedOut = useSelector(selectIsLoggedOut);
 
     // show debug menu item after 5 clicks on "Settings" heading
     const [clickCounter, setClickCounter] = useState<number>(0);
@@ -47,20 +44,8 @@ export const SettingsName = () => {
         }
     };
 
-    const handleBackClick = () => dispatch(goto('suite-start'));
-
     return (
         <Container>
-            {isLoggedOut && (
-                <IconButton
-                    icon="ARROW_LEFT"
-                    variant="tertiary"
-                    size="medium"
-                    onClick={handleBackClick}
-                    data-testid="@settings/menu/close"
-                />
-            )}
-
             <HeaderHeading onClick={handleTitleClick} data-testid="@settings/menu/title">
                 <Translation id="TR_SETTINGS" />
             </HeaderHeading>

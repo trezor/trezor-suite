@@ -7,10 +7,9 @@ import { hexToRgba } from '@suite-common/suite-utils';
 const SUBTLE_ALPHA = 0.12;
 const SUBTLE_ALPHA_HOVER = 0.2;
 
-export type ButtonVariant = Extract<
-    UIVariant,
-    'primary' | 'secondary' | 'tertiary' | 'info' | 'warning' | 'destructive'
->;
+export type ButtonVariant =
+    | Extract<UIVariant, 'primary' | 'secondary' | 'tertiary' | 'info' | 'warning' | 'destructive'>
+    | 'welcome';
 export type ButtonSize = Extract<UISize, 'large' | 'medium' | 'small' | 'tiny'>;
 export type IconAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
@@ -122,6 +121,13 @@ export const useVariantStyle = (
             text: theme.textOnRed,
             textSubtle: theme.textAlertRed,
         },
+        welcome: {
+            background: theme.backgroundSurfaceElevation1,
+            backgroundSubtle: theme.backgroundSurfaceElevationNegative,
+            backgroundHover: theme.backgroundSurfaceElevation1,
+            fill: 'black',
+            fillSubtle: theme.iconSubdued,
+        },
     };
 
     const colors = variantsColors[variant];
@@ -131,12 +137,16 @@ export const useVariantStyle = (
             ? colors.backgroundSubtle
             : colors.background};
         color: ${isSubtle && colors.textSubtle ? colors.textSubtle : colors.text};
+        ${colors.fill &&
+        colors.fillSubtle &&
+        `path { fill: ${isSubtle ? colors.fillSubtle : colors.fill}}`};
 
         &:hover,
         &:active {
             background: ${isSubtle && colors.backgroundSubtleHover
                 ? colors.backgroundSubtleHover
                 : colors.backgroundHover};
+            ${colors.fill && `path { fill: ${colors.fill}}`};
         }
     `;
 };

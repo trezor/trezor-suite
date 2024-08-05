@@ -16,7 +16,7 @@ type SettingsLayoutProps = {
     ['data-testid']?: string;
 };
 
-const SettingsHeader = () => {
+export const SettingsHeader = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     const dispatch = useDispatch();

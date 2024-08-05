@@ -10,6 +10,9 @@ import { Tooltip } from '../../Tooltip/Tooltip';
 const IconButtonContainer = styled(ButtonContainer)`
     position: relative;
     padding: ${({ $size }) => getPadding($size, false)};
+    ${({ $borderRadius }) => $borderRadius && `border-radius: ${$borderRadius};`};
+    ${({ $width }) => $width && `width: ${$width};`};
+    ${({ $height }) => $height && `height: ${$height};`};
 `;
 
 const Label = styled.span<{ $isDisabled: boolean }>`
@@ -75,10 +78,13 @@ export const IconButton = ({
                 disabled={isDisabled || isLoading}
                 onClick={handleClick}
                 $isSubtle={isSubtle}
+                $borderRadius={rest.borderRadius}
+                $width={rest.width}
+                $height={rest.height}
                 {...rest}
             >
-                {!isLoading && icon && IconComponent}
                 {isLoading && Loader}
+                {!isLoading && icon && IconComponent}
 
                 {bottomLabel && <Label $isDisabled={isDisabled}>{bottomLabel}</Label>}
             </IconButtonContainer>

@@ -26,6 +26,7 @@ type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
     $hasIcon?: boolean;
     $isFullWidth?: boolean;
     $isSubtle: boolean;
+    $borderRadius?: string;
 };
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
@@ -36,7 +37,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     gap: ${({ $hasIcon }) => $hasIcon && spacingsPx.xs};
     padding: ${({ $size }) => getPadding($size, true)};
     width: ${({ $isFullWidth }) => $isFullWidth && '100%'};
-    border-radius: ${borders.radii.full};
+    border-radius: ${({ $borderRadius }) => $borderRadius};
     transition:
         ${focusStyleTransition},
         background 0.1s ease-out;
@@ -98,6 +99,7 @@ export type ButtonProps = SelectedHTMLButtonProps &
         iconAlignment?: IconAlignment;
         children: React.ReactNode;
         title?: string;
+        borderRadius?: string;
         className?: string;
         'data-testid'?: string;
     };
@@ -113,6 +115,7 @@ export const Button = ({
     iconSize,
     iconAlignment = 'left',
     type = 'button',
+    borderRadius = borders.radii.full,
     children,
     margin,
     ...rest
@@ -145,6 +148,7 @@ export const Button = ({
             $isSubtle={isSubtle}
             type={type}
             $hasIcon={!!icon || isLoading}
+            $borderRadius={borderRadius}
             {...rest}
             onClick={isDisabled ? undefined : rest?.onClick}
             {...makePropsTransient(frameProps)}
