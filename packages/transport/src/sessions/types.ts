@@ -90,7 +90,6 @@ export interface HandleMessageApi {
     releaseDone: (payload: ReleaseDoneRequest) => ReleaseDoneResponse;
     getSessions: () => GetSessionsResponse;
     getPathBySession: (payload: GetPathBySessionRequest) => GetPathBySessionResponse;
-    dispose: () => BackgroundResponse<void>;
 }
 
 type UnwrapParams<T, Fn> = Fn extends () => any

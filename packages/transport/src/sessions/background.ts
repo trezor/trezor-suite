@@ -90,9 +90,6 @@ export class SessionsBackground extends TypedEmitter<{
                 case 'getPathBySession':
                     result = this.getPathBySession(message.payload);
                     break;
-                case 'dispose':
-                    this.dispose();
-                    break;
                 default:
                     throw new Error(ERRORS.UNEXPECTED_ERROR);
             }
@@ -302,12 +299,5 @@ export class SessionsBackground extends TypedEmitter<{
             success: false as const,
             error,
         };
-    }
-
-    dispose() {
-        this.locksQueue.forEach(lock => clearTimeout(lock.id));
-        this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
-        this.descriptors = {};
-        this.lastSessionId = 0;
     }
 }
