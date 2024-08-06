@@ -11,6 +11,7 @@ import {
     ExperimentalFeatureDescription,
 } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 const FeatureLineWrapper = styled.div`
     display: flex;
@@ -80,6 +81,8 @@ const motionDivProps = {
 
 export const Experimental = () => {
     const features = useSelector(state => state.suite.settings.experimental);
+    const isDebug = useSelector(selectIsDebugModeActive);
+
     const dispatch = useDispatch();
 
     const onSwitchExperimental = () =>
@@ -110,9 +113,15 @@ export const Experimental = () => {
             <AnimatePresence>
                 {features && Object.keys(ExperimentalFeature).length && (
                     <motion.div {...motionDivProps}>
-                        {Object.values(ExperimentalFeature).map(feature => (
-                            <FeatureLine key={feature} feature={feature} features={features} />
-                        ))}
+                        {Object.values(ExperimentalFeature).map(feature => {
+                            // not very systematic way how to exclude some features but freeze is happening
+                            if (feature === ExperimentalFeature.PasswordManager && !isDebug)
+                                return null;
+
+                            return (
+                                <FeatureLine key={feature} feature={feature} features={features} />
+                            );
+                        })}
                     </motion.div>
                 )}
             </AnimatePresence>
