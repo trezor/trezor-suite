@@ -45,7 +45,6 @@
         "events": "^3.3.0"
     },
     "devDependencies": {
-        "@babel/preset-typescript": "^7.24.7",
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/chrome": "^0.0.269",

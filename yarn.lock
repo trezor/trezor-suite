@@ -10755,7 +10755,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
@@ -10801,7 +10800,6 @@ __metadata:
   resolution: "@trezor/connect-popup@workspace:packages/connect-popup"
   dependencies:
     "@babel/plugin-proposal-class-properties": "npm:^7.18.6"
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@playwright/browser-chromium": "npm:^1.45.3"
     "@playwright/browser-firefox": "npm:^1.45.3"
     "@playwright/browser-webkit": "npm:^1.45.3"
@@ -10871,7 +10869,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@playwright/browser-chromium": "npm:^1.45.3"
     "@playwright/browser-firefox": "npm:^1.45.3"
     "@playwright/browser-webkit": "npm:^1.45.3"
@@ -10901,7 +10898,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-webextension@workspace:packages/connect-webextension"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-web": "workspace:*"
@@ -10928,7 +10924,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@ethereumjs/common": "npm:^4.3.0"
     "@ethereumjs/tx": "npm:^5.3.0"
     "@fivebinaries/coin-selection": "npm:2.2.1"
@@ -11548,7 +11543,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
