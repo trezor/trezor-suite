@@ -21,21 +21,25 @@ import { getFiatRateKeyFromTicker, isEthereumAccountSymbol } from '@suite-common
 
 import { EthereumTokenTransfer, WalletAccountTransaction } from './types';
 
-export const selectEthereumAccountTokenInfo = (
-    state: AccountsRootState,
-    accountKey?: AccountKey,
-    tokenAddress?: TokenAddress,
-): TokenInfoBranded | null => {
-    const account = selectAccountByKey(state, accountKey);
-    if (!account || !account.tokens) return null;
+export const selectEthereumAccountTokenInfo = memoizeWithArgs(
+    (
+        state: AccountsRootState,
+        accountKey?: AccountKey,
+        tokenAddress?: TokenAddress,
+    ): TokenInfoBranded | null => {
+        const account = selectAccountByKey(state, accountKey);
+        if (!account || !account.tokens) return null;
 
-    return (
-        (A.find(
-            account.tokens,
-            (token: TokenInfo) => token.contract === tokenAddress,
-        ) as TokenInfoBranded) ?? null
-    );
-};
+        return (
+            (A.find(
+                account.tokens,
+                (token: TokenInfo) => token.contract === tokenAddress,
+            ) as TokenInfoBranded) ?? null
+        );
+    },
+    // 100 is a reasonable size for the cache
+    { size: 100 },
+);
 
 export const selectEthereumAccountTokenSymbol = (
     state: AccountsRootState,

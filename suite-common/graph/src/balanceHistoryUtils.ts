@@ -11,11 +11,17 @@ https://github.com/trezor/blockbook/blob/0afcb3a002e9f818907f2e1398f5c2af72c9f1a
 
 type BlockTime = number;
 
+type GetAccountHistoryMovementItemParams = {
+    transactions: WalletAccountTransaction[];
+    from?: number;
+    to?: number;
+};
+
 const getAccountHistoryMovementItemBTC = ({
     transactions,
-}: {
-    transactions: WalletAccountTransaction[];
-}): AccountHistoryMovement => {
+    from,
+    to,
+}: GetAccountHistoryMovementItemParams): AccountHistoryMovement => {
     const summaryMap = new Map<BlockTime, AccountHistoryMovementItem>();
 
     transactions.forEach(tx => {
@@ -27,6 +33,10 @@ const getAccountHistoryMovementItemBTC = ({
         const { blockTime } = tx;
 
         if (!blockTime) {
+            return;
+        }
+
+        if ((from && blockTime < from) || (to && blockTime > to)) {
             return;
         }
 
@@ -79,9 +89,9 @@ const getAccountHistoryMovementItemBTC = ({
 
 const getAccountHistoryMovementItemRipple = ({
     transactions,
-}: {
-    transactions: WalletAccountTransaction[];
-}): AccountHistoryMovement => {
+    from,
+    to,
+}: GetAccountHistoryMovementItemParams): AccountHistoryMovement => {
     const summaryMap = new Map<BlockTime, AccountHistoryMovementItem>();
 
     transactions.forEach(tx => {
@@ -90,6 +100,10 @@ const getAccountHistoryMovementItemRipple = ({
         let receivedDrops = new BigNumber(0);
 
         if (!blockTime) {
+            return;
+        }
+
+        if ((from && blockTime < from) || (to && blockTime > to)) {
             return;
         }
 
@@ -122,9 +136,9 @@ const getAccountHistoryMovementItemRipple = ({
 
 export const getAccountHistoryMovementItemETH = ({
     transactions,
-}: {
-    transactions: WalletAccountTransaction[];
-}): AccountHistoryMovement => {
+    from,
+    to,
+}: GetAccountHistoryMovementItemParams): AccountHistoryMovement => {
     const summaryMap = new Map<BlockTime, AccountHistoryMovementItem>();
     const allTokensSummaryMap = new Map<TokenAddress, typeof summaryMap>();
 
@@ -132,6 +146,10 @@ export const getAccountHistoryMovementItemETH = ({
         const { blockTime } = tx;
 
         if (!blockTime || tx.ethereumSpecific === undefined) {
+            return;
+        }
+
+        if ((from && blockTime < from) || (to && blockTime > to)) {
             return;
         }
 
@@ -285,18 +303,22 @@ export const getAccountHistoryMovementItemETH = ({
 export const getAccountHistoryMovementFromTransactions = ({
     transactions,
     coin,
+    from,
+    to,
 }: {
     transactions: WalletAccountTransaction[];
     coin: NetworkSymbol;
+    from?: number;
+    to?: number;
 }): AccountHistoryMovement => {
     const networkType = getNetworkType(coin);
     switch (networkType) {
         case 'bitcoin':
-            return getAccountHistoryMovementItemBTC({ transactions });
+            return getAccountHistoryMovementItemBTC({ transactions, from, to });
         case 'ripple':
-            return getAccountHistoryMovementItemRipple({ transactions });
+            return getAccountHistoryMovementItemRipple({ transactions, from, to });
         case 'ethereum':
-            return getAccountHistoryMovementItemETH({ transactions });
+            return getAccountHistoryMovementItemETH({ transactions, from, to });
         default:
             throw new Error(`getAccountHistoryMovementItem: Unsupported network ${coin}`);
     }

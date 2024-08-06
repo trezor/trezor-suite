@@ -22,7 +22,6 @@ import { Translation } from '@suite-native/intl';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
-import { AccountDetailTokenHeader } from './AccountDetailTokenHeader';
 import { IncludeTokensToggle } from './IncludeTokensToggle';
 import { CoinPriceCard } from './CoinPriceCard';
 
@@ -70,7 +69,7 @@ const TransactionListHeaderContent = ({
         return <AccountDetailGraph accountKey={accountKey} />;
     }
     if (isTokenAccount) {
-        return <AccountDetailTokenHeader accountKey={accountKey} tokenContract={tokenContract} />;
+        return <AccountDetailGraph accountKey={accountKey} tokenContract={tokenContract} />;
     }
 
     if (isTestnetAccount) {

@@ -24,6 +24,7 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../intl" },
         { "path": "../react-native-graph" },
