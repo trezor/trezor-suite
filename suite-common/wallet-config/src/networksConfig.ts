@@ -371,6 +371,26 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'binance-smart-chain',
     },
+    op: {
+        name: 'Optimism',
+        networkType: 'ethereum',
+        chainId: 10,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        explorer: {
+            tx: 'https://blockbook-dev.corp.sldev.cz:9302/tx/',
+            account: 'https://blockbook-dev.corp.sldev.cz:9302/address/',
+            nft: 'https://blockbook-dev.corp.sldev.cz:9302/nft/',
+            address: 'https://blockbook-dev.corp.sldev.cz:9302/address/',
+            queryString: '',
+        },
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
+        customBackends: ['blockbook'],
+        accountTypes: {},
+        coingeckoId: 'optimistic-ethereum',
+        isDebugOnly: true,
+    },
     // testnets
     test: {
         name: 'Bitcoin Testnet',

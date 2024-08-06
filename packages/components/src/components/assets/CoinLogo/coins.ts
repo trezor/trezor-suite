@@ -2,6 +2,7 @@ export const COINS = {
     ada: require('../../../images/coins/ada.svg'),
     bch: require('../../../images/coins/bch.svg'),
     bnb: require('../../../images/coins/bnb.svg'),
+    op: require('../../../images/coins/op.svg'),
     btc: require('../../../images/coins/btc.svg'),
     test: require('../../../images/coins/btctestnet.svg'),
     regtest: require('../../../images/coins/btctestnet.svg'),

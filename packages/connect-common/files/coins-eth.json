@@ -87,6 +87,27 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
+                "url": ["https://blockbook-dev.corp.sldev.cz:9302"]
+            },
+            "chain": "op",
+            "chain_id": 10,
+            "coingecko_id": "optimistic-ethereum",
+            "is_testnet": false,
+            "name": "Optimism",
+            "shortcut": "ETH",
+            "slip44": 1,
+            "support": {
+                "T1B1": "1.9.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.4.0",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
+        },
+        {
+            "blockchain_link": {
+                "type": "blockbook",
                 "url": ["https://holesky1.trezor.io", "https://holesky2.trezor.io"]
             },
             "chain": "hol",
