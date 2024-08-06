@@ -1,5 +1,5 @@
 import { useEffect, ReactNode } from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Button, ConfirmOnDevice, ModalProps, Tooltip, variables } from '@trezor/components';
@@ -15,7 +15,7 @@ import { DeviceDisconnected } from './DeviceDisconnected';
 import { TransactionReviewStepIndicator } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewStepIndicator';
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
 import { Account } from '@suite-common/wallet-types';
-import { borders } from '@trezor/theme';
+import { borders, palette } from '@trezor/theme';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 
 const Wrapper = styled.div`
@@ -47,7 +47,6 @@ const Right = styled.div`
 
 const StyledQrCode = styled(QrCode)`
     border-radius: ${borders.radii.sm};
-    background: ${({ theme }) => theme.BG_GREY};
     padding: 32px;
     max-height: 100%;
     width: 300px;
@@ -96,7 +95,6 @@ export const ConfirmValueModal = ({
     const modalContext = useSelector(state => state.modal.context);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
-    const theme = useTheme();
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
     const addressConfirmed = isConfirmed || !canConfirmOnDevice;
@@ -135,6 +133,9 @@ export const ConfirmValueModal = ({
         }
     }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);
 
+    // QR code needs constant colors, not light/dark theme colors
+    const qrCodeFgColor = addressConfirmed ? palette.lightGray1000 : palette.lightGray700;
+
     return (
         <StyledModal
             isCancelable={isCancelable}
@@ -158,7 +159,7 @@ export const ConfirmValueModal = ({
                     <StyledQrCode
                         value={value}
                         bgColor="transparent"
-                        fgColor={addressConfirmed ? theme.iconDefault : theme.iconSubdued}
+                        fgColor={qrCodeFgColor}
                         showMessage={!addressConfirmed}
                     />
                     <Right>
