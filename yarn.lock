@@ -11549,7 +11549,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
-    "@babel/preset-env": "npm:^7.23.9"
     "@babel/preset-typescript": "npm:^7.24.7"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
