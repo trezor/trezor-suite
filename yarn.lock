@@ -8798,7 +8798,6 @@ __metadata:
     json-schema-to-typescript: "npm:^13.1.2"
     jws: "npm:^4.0.0"
     proxy-memoize: "npm:2.0.2"
-    semver: "npm:^7.6.0"
     tsx: "npm:^4.16.3"
   languageName: unknown
   linkType: soft
@@ -9390,7 +9389,6 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
     react-redux: "npm:8.0.7"
-    semver: "npm:^7.6.0"
   languageName: unknown
   linkType: soft
 
@@ -11456,7 +11454,6 @@ __metadata:
     "@types/react-window": "npm:^1.8.8"
     "@types/redux-logger": "npm:^3.0.11"
     "@types/redux-mock-store": "npm:^1.0.6"
-    "@types/semver": "npm:^7.5.4"
     "@types/ua-parser-js": "npm:^0.7.39"
     "@types/uuid": "npm:^9.0.6"
     "@types/zxcvbn": "npm:^4.4.4"
@@ -11497,7 +11494,6 @@ __metadata:
     redux-logger: "npm:^3.0.6"
     redux-mock-store: "npm:^1.5.4"
     redux-thunk: "npm:^2.4.2"
-    semver: "npm:^7.6.0"
     styled-components: "npm:^6.1.8"
     stylelint: "npm:^16.2.1"
     stylelint-config-standard: "npm:^36.0.0"
@@ -11579,10 +11575,8 @@ __metadata:
   resolution: "@trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link"
   dependencies:
     "@trezor/utils": "workspace:*"
-    "@types/semver": "npm:^7.5.6"
     "@types/ws": "npm:^8.5.5"
     cross-fetch: "npm:^4.0.0"
-    semver: "npm:^7.6.0"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
@@ -12977,7 +12971,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.12, @types/semver@npm:^7.3.4, @types/semver@npm:^7.5.0, @types/semver@npm:^7.5.4, @types/semver@npm:^7.5.6":
+"@types/semver@npm:^7.3.12, @types/semver@npm:^7.3.4, @types/semver@npm:^7.5.0, @types/semver@npm:^7.5.6":
   version: 7.5.6
   resolution: "@types/semver@npm:7.5.6"
   checksum: 10/e77282b17f74354e17e771c0035cccb54b94cc53d0433fa7e9ba9d23fd5d7edcd14b6c8b7327d58bbd89e83b1c5eda71dfe408e06b929007e2b89586e9b63459

@@ -40,7 +40,6 @@
         "proxy-memoize": "2.0.2",
         "react": "18.2.0",
         "react-native": "0.74.1",
-        "react-redux": "8.0.7",
-        "semver": "^7.6.0"
+        "react-redux": "8.0.7"
     }
 }
