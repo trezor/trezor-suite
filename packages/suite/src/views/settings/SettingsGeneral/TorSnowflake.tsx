@@ -107,14 +107,12 @@ export const TorSnowflake = () => {
                         placeholder=""
                         inputState={error ? 'error' : undefined}
                         onChange={handleChange}
-                        data-test="@settings/general/tor/snowflake-binary-path"
                         hasBottomPadding={false}
                         size="small"
                     />
                     <Button
                         onClick={handleClick}
                         isDisabled={isUpdateDisabled}
-                        data-test="@settings/device/label-submit"
                         size="small"
                         isFullWidth
                     >
