@@ -247,7 +247,7 @@ export const getCheckBackupUrl = (device?: TrezorDevice) => {
     const deviceModelInternal = device?.features?.internal_model;
 
     if (!deviceModelInternal) {
-        return '';
+        return undefined;
     }
 
     return URLS[`HELP_CENTER_DRY_RUN_${deviceModelInternal}_URL`];
@@ -267,7 +267,7 @@ export const getFirmwareDowngradeUrl = (device?: TrezorDevice) => {
     const deviceModelInternal = device?.features?.internal_model;
 
     if (!deviceModelInternal) {
-        return '';
+        return undefined;
     }
 
     return URLS[`HELP_CENTER_FW_DOWNGRADE_${deviceModelInternal}_URL`];
