@@ -21,7 +21,7 @@ export const ExperimentalFeatureDescription: FeatureIntlMap = {
     [ExperimentalFeature.TorSnowflake]: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE_DESCRIPTION',
 };
 
-export const ExperimentalFeatureKnowledgeBaseUrl = {
+export const ExperimentalFeatureKnowledgeBaseUrl: Partial<Record<ExperimentalFeature, string>> = {
     [ExperimentalFeature.PasswordManager]: EXPERIMENTAL_PASSWORD_MANAGER_KB_URL,
     [ExperimentalFeature.TorSnowflake]: TOR_SNOWFLAKE_KB_URL,
 };
