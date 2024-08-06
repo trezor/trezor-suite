@@ -10801,7 +10801,6 @@ __metadata:
   resolution: "@trezor/connect-popup@workspace:packages/connect-popup"
   dependencies:
     "@babel/plugin-proposal-class-properties": "npm:^7.18.6"
-    "@babel/preset-react": "npm:^7.24.7"
     "@babel/preset-typescript": "npm:^7.24.7"
     "@playwright/browser-chromium": "npm:^1.45.3"
     "@playwright/browser-firefox": "npm:^1.45.3"
