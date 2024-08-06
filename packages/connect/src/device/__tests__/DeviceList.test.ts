@@ -1,5 +1,6 @@
 import { parseConnectSettings } from '../../data/connectSettings';
 import { DataManager } from '../../data/DataManager';
+import * as downloadReleasesMetadata from '../../data/downloadReleasesMetadata';
 import { DeviceList } from '../DeviceList';
 
 const { createTestTransport } = global.JestMocks;
@@ -26,6 +27,12 @@ describe('DeviceList', () => {
         await DataManager.load({
             ...parseConnectSettings({}),
         });
+
+        // Todo: This is a hack, it should not be here at all. Transport shall return valid device (with valid features)
+        //       so this `downloadReleasesMetadata` is actually never called.
+        jest.spyOn(downloadReleasesMetadata, 'downloadReleasesMetadata').mockImplementation(() =>
+            Promise.resolve([]),
+        );
     });
 
     let list: DeviceList;
