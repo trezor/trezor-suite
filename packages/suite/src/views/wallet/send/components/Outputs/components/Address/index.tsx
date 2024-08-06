@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import styled from 'styled-components';
-import { capitalizeFirstLetter } from '@trezor/utils';
+
 import { Input, Button, IconButton } from '@trezor/components';
-import { AddressLabeling, Translation, MetadataLabeling } from 'src/components/suite';
-import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { getProtocolInfo } from 'src/utils/suite/protocol';
+import { capitalizeFirstLetter } from '@trezor/utils';
+import * as URLS from '@trezor/urls';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { formInputsMaxLength } from '@suite-common/validators';
+import type { Output } from '@suite-common/wallet-types';
 import {
     isAddressValid,
     isAddressDeprecated,
@@ -15,11 +15,13 @@ import {
     isBech32AddressUppercase,
     getInputState,
 } from '@suite-common/wallet-utils';
-import { formInputsMaxLength } from '@suite-common/validators';
-import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
-import { notificationsActions } from '@suite-common/toast-notifications';
 
-import type { Output } from '@suite-common/wallet-types';
+import { AddressLabeling, Translation, MetadataLabeling } from 'src/components/suite';
+import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { getProtocolInfo } from 'src/utils/suite/protocol';
+import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { InputError } from 'src/components/wallet';
 
 const Container = styled.div`
@@ -38,9 +40,6 @@ const Text = styled.span`
 const MetadataLabelingWrapper = styled.div`
     max-width: 200px;
 `;
-
-type AddressDeprecatedUrl = 'LTC_ADDRESS_INFO_URL' | 'HELP_CENTER_CASHADDR_URL';
-
 interface AddressProps {
     outputId: number;
     outputsCount: number;
@@ -48,9 +47,8 @@ interface AddressProps {
 }
 
 export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
-    const [addressDeprecatedUrl, setAddressDeprecatedUrl] = useState<
-        AddressDeprecatedUrl | undefined
-    >(undefined);
+    const [addressDeprecatedUrl, setAddressDeprecatedUrl] =
+        useState<ReturnType<typeof isAddressDeprecated>>(undefined);
     const dispatch = useDispatch();
     const { device } = useDevice();
     const {
@@ -129,17 +127,19 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     }, [amountInputName, composeTransaction, dispatch, inputName, setValue, symbol]);
 
     const getValidationButtonProps = ():
-        | { url: AddressDeprecatedUrl }
+        | { url: (typeof URLS)[NonNullable<ReturnType<typeof isAddressDeprecated>>] }
         | { onClick: () => void; text: string }
         | undefined => {
         switch (addressError?.type) {
             case 'deprecated':
                 if (addressDeprecatedUrl) {
                     return {
-                        url: addressDeprecatedUrl,
+                        url: URLS[addressDeprecatedUrl],
                     };
                 }
-                break;
+
+                return undefined;
+
             case 'checksum':
                 return {
                     onClick: () =>
@@ -171,9 +171,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 if (url) {
                     setAddressDeprecatedUrl(url);
 
-                    return translationString('TR_UNSUPPORTED_ADDRESS_FORMAT', {
-                        url,
-                    });
+                    return translationString('TR_UNSUPPORTED_ADDRESS_FORMAT');
                 }
             },
             valid: (value: string) => {
