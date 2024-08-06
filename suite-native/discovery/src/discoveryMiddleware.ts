@@ -35,7 +35,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         ) {
             dispatch(
                 startDescriptorPreloadedDiscoveryThunk({
-                    areTestnetsEnabled: true,
+                    forcedAreTestnetsEnabled: areTestnetsEnabled,
                 }),
             );
         }
@@ -48,7 +48,6 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         if (authorizeDeviceThunk.fulfilled.match(action) && isDeviceFirmwareVersionSupported) {
             dispatch(
                 startDescriptorPreloadedDiscoveryThunk({
-                    areTestnetsEnabled,
                     forcedDeviceState: action.payload.state,
                 }),
             );

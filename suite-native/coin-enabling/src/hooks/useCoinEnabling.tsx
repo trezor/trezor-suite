@@ -1,28 +1,27 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCallback } from 'react';
 
-import { FeatureFlag, FeatureFlagsRootState, useFeatureFlag } from '@suite-native/feature-flags';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
-    selectAreTestnetsEnabled,
     selectEnabledDiscoveryNetworkSymbols,
     selectDiscoverySupportedNetworks,
-    DiscoveryConfigSliceRootState,
+    discoveryCheckThunk,
 } from '@suite-native/discovery';
-import { DeviceRootState } from '@suite-common/wallet-core';
+import { disableAccountsThunk } from '@suite-common/wallet-core';
 
 export const useCoinEnabling = () => {
     const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
-    const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
-    const availableNetworks = useSelector((state: DeviceRootState) =>
-        selectDiscoverySupportedNetworks(state, areTestnetsEnabled),
-    );
-    const enabledNetworkSymbols = useSelector(
-        (state: DiscoveryConfigSliceRootState & DeviceRootState & FeatureFlagsRootState) =>
-            selectEnabledDiscoveryNetworkSymbols(state, areTestnetsEnabled),
-    );
+    const dispatch = useDispatch();
 
-    const applyDiscoveryChanges = () => {
-        // TODO: remove disabled network accounts and run discovery check
-    };
+    const availableNetworks = useSelector(selectDiscoverySupportedNetworks);
+    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
+
+    const applyDiscoveryChanges = useCallback(() => {
+        // remove disabled networks accounts
+        dispatch(disableAccountsThunk());
+        // check whether to start discovery and start if needed
+        dispatch(discoveryCheckThunk());
+    }, [dispatch]);
 
     return {
         isCoinEnablingActive,

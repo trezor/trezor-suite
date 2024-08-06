@@ -4,12 +4,12 @@ import * as Device from 'expo-device';
 
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import { discoverySupportedNetworks } from '@suite-native/config';
 import { selectDevices } from '@suite-common/wallet-core';
 import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/settings';
 import { PROTO } from '@trezor/connect';
 import { mergeDeepObject } from '@trezor/utils';
 import { NativeUsbTransport } from '@trezor/transport-native';
+import { selectEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
@@ -25,7 +25,7 @@ const transports = transportsPerDeviceType[deviceType];
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
-        selectEnabledNetworks: () => discoverySupportedNetworks,
+        selectEnabledNetworks: selectEnabledDiscoveryNetworkSymbols,
         selectBitcoinAmountUnit: () => PROTO.AmountUnit.BITCOIN,
         selectLocalCurrency: selectFiatCurrencyCode,
         selectDevices,
