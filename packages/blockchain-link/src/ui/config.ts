@@ -91,7 +91,7 @@ export default [
         blockchain: {
             name: 'BNB Smart Chain',
             worker: 'js/blockbook-worker.js',
-            server: ['https://bsc1.trezor.io'],
+            server: ['https://bsc1.trezor.io', 'https://bsc2.trezor.io'],
             debug: true,
         },
         data: {

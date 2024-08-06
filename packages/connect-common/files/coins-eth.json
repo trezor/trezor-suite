@@ -24,7 +24,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://bsc1.trezor.io"]
+                "url": ["https://bsc1.trezor.io, https://bsc2.trezor.io"]
             },
             "chain": "bnb",
             "chain_id": 56,
