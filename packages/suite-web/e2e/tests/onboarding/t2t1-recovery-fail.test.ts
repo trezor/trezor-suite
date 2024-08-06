@@ -16,8 +16,8 @@ describe('Onboarding - recover wallet T2T1', () => {
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/device').click();
         cy.getTestElement('@settings/device/open-firmware-revision-check-modal-button').click();
-        cy.getTestElement('@device-authenticity/firmware-revision-checkbox').click();
-        cy.getTestElement('@device-authenticity/opt-out/button').click();
+        cy.getTestElement('@device-firmware-revision/checkbox').click();
+        cy.getTestElement('@device-firmware-revision/opt-out-button').click();
         cy.getTestElement('@settings/menu/close').click();
 
         // Continue with test
