@@ -19,13 +19,17 @@ class SuiteGuide {
     }
 
     async selectLocationInApp(window: Page, desiredLocation: string) {
-        const suggestionDropdown = await window.getByTestId('@guide/feedback/suggestion-dropdown');
+        const suggestionDropdown = window.getByTestId('@guide/feedback/suggestion-dropdown');
         await suggestionDropdown.waitFor({ state: 'visible' });
         await suggestionDropdown.click();
-        await clickDataTest(
+        clickDataTest(
             window,
             `@guide/feedback/suggestion-dropdown/select/option/${desiredLocation.toLowerCase()}`,
         );
+        // assert that select value was changed correctly.
+        expectPlaywright(
+            window.locator('[data-test="@guide/feedback/suggestion-dropdown/select/input"]'),
+        ).toHaveText(desiredLocation);
     }
 
     async fillInSuggestionForm(window: Page, reportText: string) {
