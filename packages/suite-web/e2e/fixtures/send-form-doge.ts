@@ -131,6 +131,7 @@ export const fixtures = [
                 bestHeight: 4484566,
                 bestHash: '38fbb073e7eb4bfac9ed485dd0b3212247fb2a3d8b509dc9738c01a86ede33b3',
                 block0Hash: '1a91e3dace36e2be3bf030a65679fe821aa1d6ef92e7c9902eb318182c355691',
+                network: 'DOGE',
                 testnet: false,
                 backend: { version: '1140600', subversion: '/Shibetoshi:1.14.6/' },
             },

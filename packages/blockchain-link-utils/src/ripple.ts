@@ -4,6 +4,7 @@ import type { Transaction } from '@trezor/blockchain-link-types';
 export const transformServerInfo = (payload: any) => ({
     name: 'Ripple',
     shortcut: 'xrp',
+    network: 'xrp',
     testnet: false,
     version: payload.buildVersion,
     decimals: 6,

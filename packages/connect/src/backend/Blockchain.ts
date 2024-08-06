@@ -130,7 +130,12 @@ export class Blockchain {
 
         const shortcut = getNormalizedShortcut(this.coinInfo.shortcut);
 
-        if (info.shortcut.toLowerCase() !== shortcut.toLowerCase()) {
+        if (
+            (this.coinInfo.type === 'ethereum' &&
+                info.network.toLowerCase() !== this.coinInfo.chain?.toLowerCase()) ||
+            (this.coinInfo.type !== 'ethereum' &&
+                info.network.toLowerCase() !== shortcut.toLowerCase())
+        ) {
             throw ERRORS.TypedError('Backend_Invalid');
         }
 

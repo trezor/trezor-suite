@@ -32,6 +32,7 @@ export interface ServerInfo {
     blockHeight: number;
     blockHash: string;
     consensusBranchId?: number; // zcash current branch id
+    network: string;
 }
 
 export type TokenStandard = 'ERC20' | 'ERC1155' | 'ERC721' | 'SPL';

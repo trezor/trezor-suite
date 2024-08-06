@@ -10,6 +10,7 @@ const blockbookFixtures = {
             bestHeight: 7000000, // high block to make sure that utxos have enough confirmations (composeTransaction test)
             bestHash: '',
             block0Hash: '',
+            network: params.shortcut,
             testnet: true,
             version: '0.0.0-mocked',
         },

@@ -244,6 +244,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
         blockHeight,
         blockHash,
         shortcut: isTestnet ? 'dsol' : 'sol',
+        network: isTestnet ? 'dsol' : 'sol',
         url: api.rpcEndpoint,
         name: 'Solana',
         version: (await api.getVersion())['solana-core'],
