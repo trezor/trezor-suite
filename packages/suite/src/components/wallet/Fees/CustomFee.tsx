@@ -9,7 +9,7 @@ import {
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
-import { Note, motionEasing, variables } from '@trezor/components';
+import { Note, Row, Warning, motionEasing, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { NumberInput } from 'src/components/suite/NumberInput';
 import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
@@ -21,11 +21,14 @@ import { InputError } from '../InputError';
 import { validateDecimals } from 'src/utils/suite/validation';
 import { motion } from 'framer-motion';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
+import { spacings, spacingsPx } from '@trezor/theme';
+import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    gap: 10px;
+    gap: ${spacingsPx.xs};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         flex-direction: column;
@@ -157,7 +160,7 @@ export const CustomFee = <TFieldValues extends FormState>({
     return (
         <motion.div
             initial={{ opacity: 0, height: 0, marginTop: 0 }}
-            animate={{ opacity: 1, height: 'auto', marginTop: 20 }}
+            animate={{ opacity: 1, height: 'auto', marginTop: spacingsPx.sm }}
             exit={{ opacity: 0, height: 0, marginTop: 0 }}
             transition={{
                 opacity: { duration: 0.15, ease: motionEasing.transition },
@@ -165,6 +168,12 @@ export const CustomFee = <TFieldValues extends FormState>({
                 marginTop: { duration: 0.25, ease: motionEasing.transition },
             }}
         >
+            <Warning withIcon variant="warning" margin={{ bottom: spacings.xs }}>
+                <Row width="100%" gap={spacings.xs} justifyContent="space-between">
+                    <Translation id="TR_CUSTOM_FEE_WARNING" />
+                    <LearnMoreButton url={HELP_CENTER_TRANSACTION_FEES_URL} variant="warning" />
+                </Row>
+            </Warning>
             <Wrapper>
                 {useFeeLimit ? (
                     <NumberInput

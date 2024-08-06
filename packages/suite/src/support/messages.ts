@@ -9400,4 +9400,9 @@ export default defineMessages({
         id: 'TR_AUTO_START_DESCRIPTION',
         defaultMessage: 'Start Trezor Suite in the background when you log into your computer.',
     },
+    TR_CUSTOM_FEE_WARNING: {
+        id: 'TR_CUSTOM_FEE_WARNING',
+        defaultMessage:
+            'Setting a low fee may result in transaction failure or significant delays.',
+    },
 });
