@@ -37,9 +37,8 @@ export const getEthereumNetwork = (pathOrName: DerivationPath) => {
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
 
-        return networks.find(
-            n => n.name.toLowerCase() === name || n.shortcut.toLowerCase() === name,
-        );
+        // name is network symbol (bnb, op, btc)
+        return networks.find(n => n.name.toLowerCase() === name || n.chain.toLowerCase() === name);
     }
     const slip44 = fromHardened(pathOrName[1]);
 
@@ -262,6 +261,7 @@ const parseEthereumNetworksJson = (json: any) => {
             shortcut: network.shortcut,
             slip44: network.slip44,
             support: network.support,
+            chain: network.chain,
         });
     });
 };
