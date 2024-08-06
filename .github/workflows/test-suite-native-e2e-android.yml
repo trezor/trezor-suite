@@ -24,6 +24,17 @@ jobs:
         with:
           submodules: "true"
 
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          # The free GH runner has limited disk space, so we need to uninstall some preinstalled tools.
+          dotnet: true
+          haskell: true
+          tool-cache: false
+          android: false
+          swap-storage: false
+          large-packages: false
+
       - name: Install node and yarn
         uses: actions/setup-node@v4
         with:
