@@ -530,7 +530,7 @@ const getCheckBackupUrl = [
     {
         description: 'Missing device',
         device: undefined,
-        result: '',
+        result: undefined,
     },
     {
         description: 'Device set',
@@ -566,7 +566,7 @@ const getFirmwareDowngradeUrl = [
     {
         description: 'Missing device',
         device: undefined,
-        result: '',
+        result: undefined,
     },
     {
         description: 'Device set',
