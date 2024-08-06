@@ -68,7 +68,6 @@
         "update-models": "./scripts/update-models.sh",
         "update-protobuf": "./scripts/update-protobuf.sh",
         "update-coinjoin-middleware": "yarn workspace @trezor/suite-data update-coinjoin-middleware",
-        "prepare-release": "./scripts/prepare-release.sh",
         "native:android": "yarn workspace @suite-native/app android",
         "native:ios": "yarn workspace @suite-native/app ios",
         "native:prebuild": "yarn workspace @suite-native/app prebuild",
