@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 import { VStack, Text, HStack, Switch, Card } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -9,7 +10,12 @@ import { useCoinEnabling } from '../hooks/useCoinEnabling';
 export const DiscoveryCoinsFilter = () => {
     const dispatch = useDispatch();
 
-    const { enabledNetworkSymbols, availableNetworks } = useCoinEnabling();
+    const { enabledNetworkSymbols, availableNetworks, applyDiscoveryChanges } = useCoinEnabling();
+
+    useEffect(() => {
+        // This will run when the component is unmounted (leaving the screen) and trigger the applyDiscoveryChanges function
+        return () => applyDiscoveryChanges();
+    }, [applyDiscoveryChanges]);
 
     const uniqueNetworkSymbols = [...new Set(availableNetworks.map(n => n.symbol))];
 

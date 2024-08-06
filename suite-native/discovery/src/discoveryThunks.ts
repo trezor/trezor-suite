@@ -26,11 +26,7 @@ import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
 
-import {
-    selectAreTestnetsEnabled,
-    selectDiscoveryInfo,
-    setDiscoveryInfo,
-} from './discoveryConfigSlice';
+import { selectDiscoveryInfo, setDiscoveryInfo } from './discoveryConfigSlice';
 import {
     selectCanRunDiscoveryForDevice,
     selectDiscoveryAccountsAnalytics,
@@ -575,9 +571,9 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/startDescriptorPreloadedDiscoveryThunk`,
     async (
         {
-            areTestnetsEnabled,
+            forcedAreTestnetsEnabled,
             forcedDeviceState, // device state can be pushed from outside (e.g. in middleware when fetched from action)
-        }: { areTestnetsEnabled: boolean; forcedDeviceState?: string },
+        }: { forcedAreTestnetsEnabled?: boolean; forcedDeviceState?: string },
         { dispatch, getState },
     ) => {
         const deviceState = forcedDeviceState ?? selectDeviceState(getState());
@@ -609,7 +605,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
 
         const networksWithUnfinishedDiscovery = selectNetworksWithUnfinishedDiscovery(
             getState(),
-            areTestnetsEnabled,
+            forcedAreTestnetsEnabled,
         );
 
         // Start tracking duration and networks for analytics purposes
@@ -649,8 +645,6 @@ export const discoveryCheckThunk = createThunk(
         { dispatch, getState },
         // eslint-disable-next-line require-await
     ) => {
-        const areTestnetsEnabled = selectAreTestnetsEnabled(getState());
-
         // check whether we consider some network not to be fully discovered
         const shouldRunDiscoveryForDevice = selectShouldRunDiscoveryForDevice(getState());
 
@@ -658,11 +652,7 @@ export const discoveryCheckThunk = createThunk(
         const canRunDiscoveryForDevice = selectCanRunDiscoveryForDevice(getState());
 
         if (canRunDiscoveryForDevice && shouldRunDiscoveryForDevice) {
-            dispatch(
-                startDescriptorPreloadedDiscoveryThunk({
-                    areTestnetsEnabled,
-                }),
-            );
+            dispatch(startDescriptorPreloadedDiscoveryThunk({}));
         }
     },
 );

@@ -72,44 +72,64 @@ export const discoveryConfigSlice = createSlice({
     },
 });
 
-export const selectDiscoverySupportedNetworks = memoizeWithArgs(
-    (state: DeviceRootState, areTestnetsEnabled: boolean) =>
-        pipe(
-            selectDeviceSupportedNetworks(state),
-            networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
-            filterUnavailableNetworks,
-            filterBlacklistedNetworks,
-            sortNetworks,
-        ),
-    // for all areTestnetsEnabled states
-    { size: 2 },
-);
-
 export const selectAreTestnetsEnabled = (state: DiscoveryConfigSliceRootState) =>
     state.discoveryConfig.areTestnetsEnabled;
 
 export const selectDiscoveryInfo = (state: DiscoveryConfigSliceRootState) =>
     state.discoveryConfig.discoveryInfo;
 
+export const selectDiscoverySupportedNetworks = memoizeWithArgs(
+    (
+        state: DeviceRootState & DiscoveryConfigSliceRootState,
+        forcedAreTestnetsEnabled?: boolean,
+    ) => {
+        const areTestnetsEnabled = forcedAreTestnetsEnabled ?? selectAreTestnetsEnabled(state);
+
+        return pipe(
+            selectDeviceSupportedNetworks(state),
+            networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
+            filterUnavailableNetworks,
+            filterBlacklistedNetworks,
+            sortNetworks,
+        );
+    },
+    // for all areTestnetsEnabled states
+    { size: 2 },
+);
+
+export const selectDiscoveryNetworkSymbols = memoizeWithArgs(
+    (
+        state: DeviceRootState & DiscoveryConfigSliceRootState,
+        forcedAreTestnetsEnabled?: boolean,
+    ) => {
+        const supportedNetworks = selectDiscoverySupportedNetworks(state, forcedAreTestnetsEnabled);
+
+        return getNetworkSymbols(supportedNetworks);
+    },
+    { size: 2 },
+);
+
 export const selectEnabledDiscoveryNetworkSymbols = memoizeWithArgs(
     (
         state: DiscoveryConfigSliceRootState & DeviceRootState & FeatureFlagsRootState,
-        areTestnetsEnabled: boolean,
+        forcedAreTestnetsEnabled?: boolean,
     ) => {
-        const supportedNetworks = selectDiscoverySupportedNetworks(state, areTestnetsEnabled);
+        const supportedNetworkSymbols = selectDiscoveryNetworkSymbols(
+            state,
+            forcedAreTestnetsEnabled,
+        );
         const isCoinEnablingActive = selectIsFeatureFlagEnabled(
             state,
             FeatureFlag.IsCoinEnablingActive,
         );
 
-        return getNetworkSymbols(
-            supportedNetworks.filter(n =>
-                isCoinEnablingActive
-                    ? state.discoveryConfig.enabledDiscoveryNetworkSymbols.includes(n.symbol)
-                    : true,
-            ),
+        return supportedNetworkSymbols.filter(s =>
+            isCoinEnablingActive
+                ? state.discoveryConfig.enabledDiscoveryNetworkSymbols.includes(s)
+                : true,
         );
     },
+    { size: 2 },
 );
 
 export const { toggleAreTestnetsEnabled, setDiscoveryInfo, toggleEnabledDiscoveryNetworkSymbol } =

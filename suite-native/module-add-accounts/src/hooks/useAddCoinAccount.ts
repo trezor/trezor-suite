@@ -19,7 +19,6 @@ import {
 import { useAlert } from '@suite-native/alerts';
 import {
     addAndDiscoverNetworkAccountThunk,
-    selectAreTestnetsEnabled,
     selectDiscoverySupportedNetworks,
     NORMAL_ACCOUNT_TYPE,
 } from '@suite-native/discovery';
@@ -72,10 +71,8 @@ export const useAddCoinAccount = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const openLink = useOpenLink();
-    const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
-    const supportedNetworks = useSelector((state: DeviceRootState) =>
-        selectDiscoverySupportedNetworks(state, areTestnetsEnabled),
-    );
+
+    const supportedNetworks = useSelector(selectDiscoverySupportedNetworks);
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccounts(state),
     );
