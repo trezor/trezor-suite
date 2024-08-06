@@ -7,6 +7,7 @@ export default {
                 decimals: 9,
                 name: 'TestMock',
                 shortcut: 'test',
+                network: 'test',
             },
         },
         {
@@ -18,6 +19,7 @@ export default {
                         data: {
                             name: 'Zcash',
                             shortcut: 'zec',
+                            network: 'zec',
                             decimals: 8,
                             bestHeight: 1,
                             backend: {
@@ -34,7 +36,35 @@ export default {
                 decimals: 8,
                 name: 'Zcash',
                 shortcut: 'zec',
+                network: 'zec',
                 consensusBranchId: 3268858036,
+            },
+        },
+        {
+            description: 'BASE L2 network',
+            serverFixtures: [
+                {
+                    method: 'getInfo',
+                    response: {
+                        data: {
+                            name: 'Base Archive',
+                            shortcut: 'ETH',
+                            network: 'BASE',
+                            decimals: 18,
+                            bestHeight: 23603976,
+                            backend: {
+                                version: 'Geth/v1.101411.2-stable-3dd9b027/linux-amd64/go1.23.3',
+                            },
+                        },
+                    },
+                },
+            ],
+            response: {
+                name: 'Base Archive',
+                shortcut: 'ETH',
+                network: 'BASE',
+                decimals: 18,
+                blockHeight: 23603976,
             },
         },
         {
@@ -59,6 +89,7 @@ export default {
                 decimals: 6,
                 name: 'Ripple',
                 shortcut: 'xrp',
+                network: 'xrp',
                 testnet: false,
                 version: '1.4.0',
             },
@@ -87,6 +118,7 @@ export default {
                 decimals: 6,
                 name: 'BlockfrostMock',
                 shortcut: 'ada',
+                network: 'ada',
                 testnet: false,
                 version: '1.4.0',
             },

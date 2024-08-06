@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 
 import TrezorConnect from '@trezor/connect';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
+import { ServerInfo } from '@trezor/blockchain-link-types';
 
 import {
     renderWithProviders,
@@ -61,16 +62,17 @@ jest.mock('@trezor/blockchain-link', () => ({
         removeAllListeners() {}
 
         dispose() {}
-
-        getInfo() {
+        getInfo(): ServerInfo {
             return {
-                url: this,
+                url: this.name,
                 name: this.name,
                 shortcut: this.name,
+                network: this.name,
                 version: '0.0.0',
                 decimals: 0,
                 blockHeight: 10000000,
                 blockHash: 'abcd',
+                testnet: false,
             };
         }
 

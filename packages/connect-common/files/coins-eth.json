@@ -11,6 +11,7 @@
             "is_testnet": false,
             "name": "Ethereum",
             "shortcut": "ETH",
+            "label": "ETH",
             "slip44": 60,
             "support": {
                 "T1B1": "1.6.2",
@@ -30,7 +31,8 @@
             "coingecko_id": "binance-smart-chain",
             "is_testnet": false,
             "name": "BNB Smart Chain",
-            "shortcut": "BNB",
+            "shortcut": "BSC",
+            "label": "BNB",
             "slip44": 714,
             "support": {
                 "T1B1": "1.9.4",
@@ -51,6 +53,7 @@
             "is_testnet": false,
             "name": "Ethereum Classic",
             "shortcut": "ETC",
+            "label": "ETC",
             "slip44": 61,
             "support": {
                 "T1B1": "1.6.2",
@@ -71,6 +74,7 @@
             "is_testnet": false,
             "name": "Polygon",
             "shortcut": "POL",
+            "label": "POL",
             "slip44": 966,
             "support": {
                 "T1B1": "1.9.4",
@@ -111,7 +115,8 @@
             "is_testnet": false,
             "name": "Base",
             "shortcut": "BASE",
-            "slip44": 1,
+            "label": "ETH",
+            "slip44": 8453,
             "support": {
                 "T1B1": "1.9.4",
                 "T2B1": "2.6.1",
@@ -131,7 +136,8 @@
             "is_testnet": false,
             "name": "Optimism",
             "shortcut": "OP",
-            "slip44": 1,
+            "label": "ETH",
+            "slip44": 614,
             "support": {
                 "T1B1": "1.9.4",
                 "T2B1": "2.6.1",
@@ -150,6 +156,7 @@
             "is_testnet": true,
             "name": "Holesky",
             "shortcut": "tHOL",
+            "label": "tHOL",
             "slip44": 1,
             "support": {
                 "T1B1": "1.11.3",
@@ -169,6 +176,7 @@
             "is_testnet": true,
             "name": "Sepolia",
             "shortcut": "tSEP",
+            "label": "tSEP",
             "slip44": 1,
             "support": {
                 "T1B1": "1.11.3",

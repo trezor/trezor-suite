@@ -411,6 +411,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         blockHeight: Number(blockHeight),
         blockHash,
         shortcut: isTestnet ? 'dsol' : 'sol',
+        network: isTestnet ? 'dsol' : 'sol',
         url: api.clusterUrl,
         name: 'Solana',
         version: (await api.rpc.getVersion().send())['solana-core'],

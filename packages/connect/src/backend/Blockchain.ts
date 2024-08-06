@@ -40,10 +40,6 @@ const getNormalizedTrezorShortcut = (shortcut: string) => {
         return 'XRP';
     }
 
-    if (['OP', 'BASE', 'ARB'].includes(shortcut)) {
-        return 'ETH';
-    }
-
     return shortcut;
 };
 
@@ -132,10 +128,10 @@ export class Blockchain {
 
         this.serverInfo = info;
 
-        const trezorShortcut = getNormalizedTrezorShortcut(this.coinInfo.shortcut);
-        const backendShortcut = this.serverInfo.shortcut;
+        const trezorNetworkShortcut = getNormalizedTrezorShortcut(this.coinInfo.shortcut);
+        const backendNetworkShortcut = this.serverInfo.network;
 
-        if (trezorShortcut.toLowerCase() !== backendShortcut.toLowerCase()) {
+        if (backendNetworkShortcut.toLowerCase() !== trezorNetworkShortcut.toLowerCase()) {
             throw ERRORS.TypedError('Backend_Invalid');
         }
 

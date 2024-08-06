@@ -3,6 +3,7 @@ export const blockfrost = {
         data: {
             name: 'BlockfrostMock',
             shortcut: 'ada',
+            network: 'ada',
             decimals: 6,
             testnet: false,
             version: '1.4.0',

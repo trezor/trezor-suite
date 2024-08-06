@@ -37,6 +37,7 @@ class BlockchainLink {
             url: this.name,
             name: this.name,
             shortcut: this.name,
+            network: this.name,
             consensusBranchId: 1001,
         });
     }

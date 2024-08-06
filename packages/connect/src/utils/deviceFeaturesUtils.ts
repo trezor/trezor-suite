@@ -47,7 +47,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     const fw = [features.major_version, features.minor_version, features.patch_version].join('.');
     const key = features.internal_model;
 
-    const duplicatedShortcuts = ['bnb']; // relevant duplicated shortcuts from duplicity_overrides.json from fw repo
+    const duplicatedShortcuts = ['bsc']; // relevant duplicated shortcuts from duplicity_overrides.json from fw repo
 
     // 1. check if firmware version is supported by CoinInfo.support
     const supported = coins.filter(info => {

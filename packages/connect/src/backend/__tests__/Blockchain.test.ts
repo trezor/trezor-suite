@@ -42,7 +42,34 @@ describe('backend/Blockchain', () => {
     });
 
     it('cache estimated fees (ethereum-like)', async () => {
-        const coinInfo = getEthereumNetwork('Ethereum');
+        const coinInfo = getEthereumNetwork('ETH');
+        if (!coinInfo) throw new Error('coinInfo is missing');
+
+        const spy = jest.spyOn(BlockchainLink.prototype, 'estimateFee');
+
+        const backend = await initBlockchain(coinInfo, () => {});
+
+        // blocks: 1 was not requested before
+        await backend.estimateFee({ blocks: [1] });
+        expect(spy.mock.calls.length).toEqual(1);
+
+        // blocks: 1 is requested again, returned from cache
+        await backend.estimateFee({ blocks: [1] });
+        expect(spy.mock.calls.length).toEqual(1);
+
+        // blocks: 2 was not requested before
+        await backend.estimateFee({ blocks: [1, 2] });
+        expect(spy.mock.calls.length).toEqual(2);
+
+        // request with "specific" field
+        await backend.estimateFee({ blocks: [1, 2], specific: { value: '0x0' } });
+        expect(spy.mock.calls.length).toEqual(3);
+
+        spy.mockClear();
+    });
+
+    it('cache estimated fees (ethereum-like) - L2 network', async () => {
+        const coinInfo = getEthereumNetwork('BASE');
         if (!coinInfo) throw new Error('coinInfo is missing');
 
         const spy = jest.spyOn(BlockchainLink.prototype, 'estimateFee');

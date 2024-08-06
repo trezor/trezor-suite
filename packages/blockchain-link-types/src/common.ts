@@ -43,6 +43,17 @@ export interface BlockchainSettings {
     throttleBlockEvent?: number;
 }
 
+/**
+ * Discrepancy between `ServerInfo` and `CoinInfo`
+ *
+ * `ServerInfo` type
+ *   - `shortcut` is a label for a network (e.g. for BASE `shortcut` has value ETH)
+ *   - `network` is unique symbol for a network (e.g. for BASE `network` has value BASE)
+ *
+ * `CoinInfo` type
+ *   - `shortcut` is a unique network symbol
+ *   - `network` are data about network
+ */
 export interface ServerInfo {
     url: string;
     name: string;
@@ -53,6 +64,7 @@ export interface ServerInfo {
     blockHeight: number;
     blockHash: string;
     consensusBranchId?: number; // zcash current branch id
+    network: string;
 }
 
 export type TokenStandard = 'ERC20' | 'ERC1155' | 'ERC721' | 'SPL' | 'SPL-2022' | 'BEP20';

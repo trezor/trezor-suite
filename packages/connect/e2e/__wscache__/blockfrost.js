@@ -6,6 +6,7 @@ const blockfrostFixtures = {
         data: {
             name: 'Blockfrost',
             shortcut: params.shortcut,
+            network: params.network,
             decimals: 6,
             testnet: false,
             version: '1.4.0',

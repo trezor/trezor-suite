@@ -24,6 +24,7 @@ import { Addresses, filterTargets, enhanceVinVout, sumVinVout, transformTarget }
 export const transformServerInfo = (payload: ServerInfo) => ({
     name: payload.name,
     shortcut: payload.shortcut,
+    network: payload.network ?? payload.shortcut, // some instances don't send network (e.g. regtest)
     testnet: payload.testnet,
     version: payload.version,
     decimals: payload.decimals,
