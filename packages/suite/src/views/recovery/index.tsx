@@ -187,7 +187,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}
                             description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
                             isChecked={understood}
-                            link={<LearnMoreButton url={learnMoreUrl} />}
+                            link={learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
                             onClick={() => setUnderstood(!understood)}
                         />
                     </>

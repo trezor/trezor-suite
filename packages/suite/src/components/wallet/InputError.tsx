@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
 import { LearnMoreButton } from '../suite/LearnMoreButton';
+import { Url } from '@trezor/urls';
 
 const Wrapper = styled.div`
     display: flex;
@@ -11,7 +12,7 @@ const Wrapper = styled.div`
 `;
 
 interface InputErrorProps {
-    button?: { onClick: MouseEventHandler<HTMLButtonElement>; text: string } | { url: string };
+    button?: { onClick: MouseEventHandler<HTMLButtonElement>; text: string } | { url: Url };
     message?: string;
 }
 
