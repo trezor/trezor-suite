@@ -8,7 +8,7 @@ import {
     Translation,
 } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
@@ -20,6 +20,7 @@ import { EmptyWallet } from './components/EmptyWallet';
 import { DashboardGraph } from './components/DashboardGraph';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 const Body = styled.div`
     align-items: center;
@@ -52,6 +53,7 @@ const PortfolioCard = memo(() => {
     const accounts = useFastAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
     const dispatch = useDispatch();
+    const { device } = useDevice();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const fiatAmount = getTotalFiatBalance(accounts, localCurrency, currentFiatRates).toString();
@@ -88,6 +90,7 @@ const PortfolioCard = memo(() => {
 
     const showMissingDataTooltip =
         showGraphControls &&
+        !hasBitcoinOnlyFirmware(device) &&
         !!accounts.some(
             account =>
                 account.history &&
