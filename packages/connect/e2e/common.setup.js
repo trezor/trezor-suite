@@ -38,14 +38,13 @@ const setup = async (TrezorUserEnvLink, options) => {
         return true;
     }
 
-    if (!options.mnemonic) return true; // skip setup if test is not using the device (composeTransaction)
-
     await TrezorUserEnvLink.stopEmu();
-
     // after bridge is stopped, trezor-user-env automatically resolves to use udp transport.
     // this is actually good as we avoid possible race conditions when setting up emulator for
     // the test using the same transport
     await TrezorUserEnvLink.stopBridge();
+
+    if (!options.mnemonic) return true; // skip setup if test is not using the device (composeTransaction)
 
     await TrezorUserEnvLink.startEmu(emulatorStartOpts);
 
