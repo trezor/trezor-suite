@@ -3,24 +3,13 @@ import path from 'path';
 import { spawn } from 'child_process';
 
 import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { checkFileExists } from '@trezor/node-utils';
 
 import { app, ipcMain } from '../typed-electron';
 
 import type { Module } from './index';
 
 const FILE_NAME = '51-trezor.rules';
-
-const fileExists = async (filePath: string) => {
-    try {
-        await fs.promises.stat(filePath);
-
-        return true;
-    } catch (error) {
-        // file is not present
-    }
-
-    return false;
-};
 
 export const SERVICE_NAME = 'udev';
 
@@ -35,7 +24,7 @@ export const init: Module = () => {
 
         logger.info(SERVICE_NAME, `Installing ${resourceRules} > ${userRules} > ${distRules}`);
 
-        if (await fileExists(distRules)) {
+        if (await checkFileExists(distRules)) {
             logger.error(SERVICE_NAME, `/etc/udev rules already installed: ${distRules}`);
 
             // /etc/udev already exists, break here.
@@ -43,7 +32,7 @@ export const init: Module = () => {
             return { success: false, error: `File ${distRules} already exists` };
         }
 
-        if (!(await fileExists(userRules))) {
+        if (!(await checkFileExists(userRules))) {
             try {
                 logger.info(SERVICE_NAME, `Create user data rules: ${userRules}`);
                 // copy rules from app resources (/tmp/...) to user data files (~/.cache/...)
