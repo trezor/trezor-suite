@@ -160,6 +160,22 @@ window.addEventListener('load', () => {
             version: 102,
             mobile: false, // no webusb support
         },
+        // Other Chromium based browsers
+        {
+            name: 'brave',
+            version: 59,
+            mobile: true,
+        },
+        {
+            name: 'edge',
+            version: 92, // Edge 92 is based on Chromium 92
+            mobile: true,
+        },
+        {
+            name: 'opera',
+            version: 95,
+            mobile: true,
+        },
     ] as const;
 
     const browserName = getBrowserName();
