@@ -25,16 +25,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - TEST_FILE: "spawn-bridge"
+          - TEST_FILE: "spawn-bridge suite-guide wallet-discovery"
             CONTAINERS: "trezor-user-env-unix"
-          - TEST_FILE: "suite-guide"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_FILE: "wallet-discovery"
-            CONTAINERS: "trezor-user-env-unix"
-          # - TEST_FILE: "cardano-discovery"
-          #   CONTAINERS: "trezor-user-env-unix"
-          # - TEST_FILE: "eap-modal"
-          #   CONTAINERS: "trezor-user-env-unix"
           - TEST_FILE: "electrum"
             CONTAINERS: "trezor-user-env-unix electrum-regtest"
 
