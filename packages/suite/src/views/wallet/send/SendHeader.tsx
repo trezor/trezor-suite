@@ -12,7 +12,7 @@ const ClearButton = styled(Button)`
     animation: ${FADE_IN} 0.16s;
 `;
 
-export const Header = () => {
+export const SendHeader = () => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const {

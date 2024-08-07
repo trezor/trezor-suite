@@ -35,13 +35,13 @@ const SendButton = styled(Button)`
     min-width: 120px;
 `;
 
-interface RawProps {
-    account: Account;
-}
-
 const INPUT_NAME = 'rawTx';
 
-export const Raw = ({ account }: RawProps) => {
+type SendRawProps = {
+    account: Account;
+};
+
+export const SendRaw = ({ account }: SendRawProps) => {
     const {
         register,
         setValue,

@@ -28,11 +28,11 @@ const Space = styled.div`
     min-width: 65px;
 `;
 
-interface DataProps {
+type EthereumDataProps = {
     close: () => void;
-}
+};
 
-export const Data = ({ close }: DataProps) => {
+export const EthereumData = ({ close }: EthereumDataProps) => {
     const {
         register,
         formState: { errors },
