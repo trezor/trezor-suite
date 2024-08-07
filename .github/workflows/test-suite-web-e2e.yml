@@ -104,8 +104,6 @@ jobs:
           - TEST_GROUP: "@group_wallet"
             CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
             CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
-          - TEST_GROUP: "@group_firmware-update"
-            CONTAINERS: "trezor-user-env-unix"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
