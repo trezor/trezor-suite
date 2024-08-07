@@ -10,8 +10,7 @@ type AccountDetailBalanceProps = {
     value: string;
     networkSymbol: NetworkSymbol;
     isBalance?: boolean;
-    decimals?: number;
-    tokenSymbol?: TokenSymbol;
+    tokenSymbol?: TokenSymbol | null;
     tokenAddress?: TokenAddress;
 };
 
@@ -22,10 +21,10 @@ export const AccountDetailCryptoValue = memo(
         tokenSymbol,
         tokenAddress,
         isBalance = true,
-        decimals,
     }: AccountDetailBalanceProps) => (
         <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="center">
             <CryptoIcon symbol={tokenAddress || networkSymbol} size="extraSmall" />
+
             {tokenSymbol ? (
                 <EthereumTokenAmountFormatter
                     value={value}
@@ -38,7 +37,6 @@ export const AccountDetailCryptoValue = memo(
                     network={networkSymbol}
                     isBalance={isBalance}
                     adjustsFontSizeToFit
-                    decimals={decimals}
                 />
             )}
         </HStack>
