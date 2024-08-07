@@ -18,9 +18,9 @@ import WalletAnonymize from 'src/views/wallet/anonymize';
 import WalletCoinmarketBuy from 'src/views/wallet/coinmarket/buy';
 import WalletCoinmarketBuyDetail from 'src/views/wallet/coinmarket/buy/detail';
 import WalletCoinmarketBuyOffers from 'src/views/wallet/coinmarket/buy/offers';
-import WalletCoinmarketSell from 'src/views/wallet/coinmarket/sell';
-import WalletCoinmarketSellDetail from 'src/views/wallet/coinmarket/sell/detail';
-import WalletCoinmarketSellOffers from 'src/views/wallet/coinmarket/sell/offers';
+import { CoinmarketSellForm } from 'src/views/wallet/coinmarket/sell_new/CoinmarketSellForm';
+import WalletCoinmarketSellDetail from 'src/views/wallet/coinmarket/sell_new/detail';
+import { CoinmarketSellOffers } from 'src/views/wallet/coinmarket/sell_new/CoinmarketSellOffers';
 import WalletCoinmarketExchange from 'src/views/wallet/coinmarket/exchange';
 import WalletCoinmarketExchangeDetail from 'src/views/wallet/coinmarket/exchange/detail';
 import WalletCoinmarketExchangeOffers from 'src/views/wallet/coinmarket/exchange/offers';
@@ -49,9 +49,9 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-coinmarket-buy': WalletCoinmarketBuy,
     'wallet-coinmarket-buy-detail': WalletCoinmarketBuyDetail,
     'wallet-coinmarket-buy-offers': WalletCoinmarketBuyOffers,
-    'wallet-coinmarket-sell': WalletCoinmarketSell,
+    'wallet-coinmarket-sell': CoinmarketSellForm,
     'wallet-coinmarket-sell-detail': WalletCoinmarketSellDetail,
-    'wallet-coinmarket-sell-offers': WalletCoinmarketSellOffers,
+    'wallet-coinmarket-sell-offers': CoinmarketSellOffers,
     'wallet-coinmarket-exchange': WalletCoinmarketExchange,
     'wallet-coinmarket-exchange-detail': WalletCoinmarketExchangeDetail,
     'wallet-coinmarket-exchange-offers': WalletCoinmarketExchangeOffers,
