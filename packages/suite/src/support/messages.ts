@@ -3409,7 +3409,7 @@ export default defineMessages({
         id: 'TR_WRONG_PIN_ENTERED',
     },
     TR_PASSWORD_MANAGER: {
-        defaultMessage: 'Migrate Dropbox password',
+        defaultMessage: 'Migrate Dropbox passwords',
         id: 'TR_PASSWORD_MANAGER',
     },
     TR_SETTINGS: {
@@ -5350,12 +5350,12 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
-        defaultMessage: 'Migrate Dropbox password',
+        defaultMessage: 'Migrate Dropbox passwords',
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         defaultMessage:
-            'A utility for retrieving passwords stored on Dropbox and secured by Trezor, designed for former Chrome extension users of Password Manager.',
+            'A utility for retrieving passwords stored on Dropbox and secured by Trezor, designed for former Chrome extension users of Trezor Password Manager.',
     },
     TR_EXPERIMENTAL_TOR_SNOWFLAKE: {
         id: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE',
