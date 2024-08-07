@@ -55,14 +55,12 @@ const FeatureLine = ({ feature, features }: FeatureLineProps) => {
 
     return (
         <FeatureLineWrapper>
-            {url && (
-                <TextColumn
-                    title={titleId ? <Translation id={titleId} /> : feature}
-                    description={descId && <Translation id={descId} />}
-                    buttonLink={url}
-                    buttonTitle={<Translation id="TR_LEARN_MORE" />}
-                />
-            )}
+            <TextColumn
+                title={titleId ? <Translation id={titleId} /> : feature}
+                description={descId && <Translation id={descId} />}
+                buttonLink={url}
+                buttonTitle={<Translation id="TR_LEARN_MORE" />}
+            />
             <ActionColumn>
                 <Checkbox isChecked={checked} onClick={onChangeFeature} />
             </ActionColumn>
