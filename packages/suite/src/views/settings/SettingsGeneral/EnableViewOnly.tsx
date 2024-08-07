@@ -6,10 +6,12 @@ import {
     TextColumn,
     Translation,
 } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const EnableViewOnly = () => {
     const dispatch = useDispatch();
+    const { device } = useDevice();
+
     const handleSwitchDeviceClick = () =>
         dispatch(
             goto('suite-switch-device', {
@@ -19,6 +21,8 @@ export const EnableViewOnly = () => {
             }),
         );
 
+    const isDeviceConnected = device?.connected && device?.available;
+
     return (
         <SectionItem data-test="@settings/device/enable-view-only">
             <TextColumn
@@ -26,7 +30,11 @@ export const EnableViewOnly = () => {
                 description={<Translation id="TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_DESC" />}
             />
             <ActionColumn>
-                <ActionButton onClick={handleSwitchDeviceClick} variant="secondary">
+                <ActionButton
+                    onClick={handleSwitchDeviceClick}
+                    variant="secondary"
+                    isDisabled={!isDeviceConnected}
+                >
                     <Translation id="TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON" />
                 </ActionButton>
             </ActionColumn>
