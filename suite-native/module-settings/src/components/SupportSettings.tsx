@@ -7,6 +7,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { TrezorSuiteLiteHeader } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
@@ -25,14 +26,15 @@ export const SupportSettings = () => {
         <SettingsSection title="Support">
             <SettingsSectionItem
                 iconName="questionLight"
-                title="Get help"
-                subtitle="FAQ, Customer support"
+                title={<Translation id="moduleSettings.items.support.help.title" />}
+                subtitle={<Translation id="moduleSettings.items.support.help.subtitle" />}
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsFAQ)}
             />
             <SettingsSectionItem
                 title={
                     <>
-                        About <TrezorSuiteLiteHeader textVariant="body" />
+                        <Translation id="moduleSettings.items.support.about.title" />
+                        <TrezorSuiteLiteHeader textVariant="body" />
                     </>
                 }
                 iconName="trezorT3T1"
