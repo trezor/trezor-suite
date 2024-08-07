@@ -24,7 +24,7 @@ export const SettingsSection = ({
             flexDirection="row"
             justifyContent="space-between"
             alignItems="center"
-            marginBottom="extraLarge"
+            marginBottom="medium"
             marginLeft="medium"
         >
             <Box>

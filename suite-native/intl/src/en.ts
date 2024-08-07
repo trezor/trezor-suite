@@ -377,12 +377,9 @@ export const en = {
     },
     moduleSettings: {
         items: {
-            application: {
-                title: 'Application',
-                devUtils: {
-                    title: 'DEV utils',
-                    subtitle: 'Only for devs and internal testers.',
-                },
+            preferences: {
+                title: 'Preferences',
+
                 localization: {
                     title: 'Localization',
                     subtitle: 'Currency, Bitcoin units',
@@ -390,6 +387,13 @@ export const en = {
                 customization: {
                     title: 'Customization',
                     subtitle: 'Color scheme',
+                },
+            },
+            features: {
+                title: 'Features',
+                devUtils: {
+                    title: 'DEV utils',
+                    subtitle: 'Only for devs and internal testers.',
                 },
                 privacyAndSecurity: {
                     title: 'Privacy & Security',
@@ -402,6 +406,16 @@ export const en = {
                 coinEnabling: {
                     title: 'Enabled coins',
                     subtitle: 'Manage coins that you use',
+                },
+            },
+            support: {
+                title: 'Support',
+                help: {
+                    title: 'Get help',
+                    subtitle: 'FAQ, Customer support',
+                },
+                about: {
+                    title: 'About ',
                 },
             },
         },
