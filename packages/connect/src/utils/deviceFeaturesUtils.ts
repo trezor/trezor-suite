@@ -46,6 +46,8 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     const fw = [features.major_version, features.minor_version, features.patch_version].join('.');
     const key = features.internal_model;
 
+    const duplicatedShortcuts = ['bnb']; // relevant duplicated shortcuts from duplicity_overrides.json from fw repo
+
     // 1. check if firmware version is supported by CoinInfo.support
     const supported = coins.filter(info => {
         // info.support[key] possible types:
@@ -53,9 +55,23 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         // - boolean for unsupported models (false)
         // - string for supported models (version)
         if (!info.support || info.support[key] === false) {
-            list[info.shortcut.toLowerCase()] = 'no-support';
+            const shortcut = info.shortcut.toLowerCase();
+            if (!duplicatedShortcuts.includes(shortcut)) {
+                list[shortcut] = 'no-support';
 
-            return false;
+                return false;
+            } else {
+                const occurrences = coins.filter(coin => shortcut == coin.shortcut.toLowerCase());
+                const allUnsupported = occurrences.every(
+                    info => !info.support || info.support[key] === false,
+                );
+
+                if (allUnsupported) {
+                    list[shortcut] = 'no-support';
+                }
+
+                return false;
+            }
         }
 
         return true;
@@ -77,13 +93,18 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
             return !capabilities.includes('Capability_NEM');
         }
         // misc
-        if (info.shortcut === 'BNB') return !capabilities.includes('Capability_Binance');
-        if (info.shortcut === 'ADA' || info.shortcut === 'tADA')
+        if (info.shortcut === 'BNB' && info.type === 'misc') {
+            return !capabilities.includes('Capability_Binance');
+        }
+        if (info.shortcut === 'ADA' || info.shortcut === 'tADA') {
             return !capabilities.includes('Capability_Cardano');
-        if (info.shortcut === 'XRP' || info.shortcut === 'tXRP')
+        }
+        if (info.shortcut === 'XRP' || info.shortcut === 'tXRP') {
             return !capabilities.includes('Capability_Ripple');
-        if (info.shortcut === 'SOL' || info.shortcut === 'DSOL')
+        }
+        if (info.shortcut === 'SOL' || info.shortcut === 'DSOL') {
             return !capabilities.includes('Capability_Solana');
+        }
 
         return !capabilities.includes(`Capability_${info.name}` as PROTO.Capability);
     });

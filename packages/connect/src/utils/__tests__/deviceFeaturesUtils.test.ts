@@ -8,7 +8,7 @@ import {
     parseCapabilities,
     parseRevision,
 } from '../deviceFeaturesUtils';
-import { Features, DeviceModelInternal } from '../../types';
+import { Features, DeviceModelInternal, CoinInfo } from '../../types';
 
 describe('utils/deviceFeaturesUtils', () => {
     beforeEach(() => {
@@ -246,6 +246,98 @@ describe('utils/deviceFeaturesUtils', () => {
                     newCapabilityOrFeature: 'no-support',
                 });
                 done();
+            });
+        });
+
+        it('handles duplicated shortcuts correctly, ', () => {
+            const customCoins = [
+                { shortcut: 'BNB', type: 'ethereum', support: { T2T1: '2.4.4' } },
+                { shortcut: 'BNB', type: 'misc', support: { T2T1: '2.3.3' } },
+                { shortcut: 'ETH', type: 'ethereum', support: { T2T1: false } },
+            ];
+            const customFeatures = {
+                major_version: 2,
+                minor_version: 3,
+                patch_version: 3,
+                capabilities: ['Capability_Bitcoin', 'Capability_Ethereum', 'Capability_Binance'],
+                internal_model: DeviceModelInternal.T2T1,
+            } as unknown as Features;
+
+            const result = getUnavailableCapabilities(customFeatures, customCoins as CoinInfo[]);
+
+            expect(result).toEqual({
+                eth: 'no-support',
+                bnb: 'update-required',
+                amountUnit: 'update-required',
+                chunkify: 'update-required',
+                coinjoin: 'update-required',
+                decreaseOutput: 'update-required',
+                eip1559: 'update-required',
+                'eip712-domain-only': 'update-required',
+                replaceTransaction: 'update-required',
+                signMessageNoScriptType: 'update-required',
+                taproot: 'update-required',
+            });
+        });
+
+        it('handles duplicated shortcuts correctly, does not include bnb: no-support', () => {
+            const customCoins = [
+                { shortcut: 'BNB', type: 'ethereum', support: { T1B1: '1.1.3' } },
+                { shortcut: 'BNB', type: 'misc', support: { T1B1: false } },
+                { shortcut: 'ETH', type: 'ethereum', support: { T1B1: false } },
+            ];
+            const customFeatures = {
+                major_version: 1,
+                minor_version: 1,
+                patch_version: 3,
+                capabilities: ['Capability_Bitcoin', 'Capability_Ethereum'],
+                internal_model: DeviceModelInternal.T1B1,
+            } as unknown as Features;
+
+            const result = getUnavailableCapabilities(customFeatures, customCoins as CoinInfo[]);
+
+            expect(result).toEqual({
+                eth: 'no-support',
+                amountUnit: 'update-required',
+                chunkify: 'no-support',
+                coinjoin: 'update-required',
+                decreaseOutput: 'update-required',
+                eip1559: 'update-required',
+                'eip712-domain-only': 'update-required',
+                replaceTransaction: 'update-required',
+                signMessageNoScriptType: 'update-required',
+                taproot: 'update-required',
+            });
+        });
+
+        it('handles duplicated shortcuts correctly, includes no-support because none is supported', () => {
+            const customCoins = [
+                { shortcut: 'BNB', type: 'ethereum', support: { T1B1: false } },
+                { shortcut: 'BNB', type: 'misc', support: { T1B1: false } },
+                { shortcut: 'ETH', type: 'ethereum', support: { T1B1: false } },
+            ];
+            const customFeatures = {
+                major_version: 1,
+                minor_version: 1,
+                patch_version: 3,
+                capabilities: ['Capability_Bitcoin', 'Capability_Ethereum'],
+                internal_model: DeviceModelInternal.T1B1,
+            } as unknown as Features;
+
+            const result = getUnavailableCapabilities(customFeatures, customCoins as CoinInfo[]);
+
+            expect(result).toEqual({
+                eth: 'no-support',
+                bnb: 'no-support',
+                amountUnit: 'update-required',
+                chunkify: 'no-support',
+                coinjoin: 'update-required',
+                decreaseOutput: 'update-required',
+                eip1559: 'update-required',
+                'eip712-domain-only': 'update-required',
+                replaceTransaction: 'update-required',
+                signMessageNoScriptType: 'update-required',
+                taproot: 'update-required',
             });
         });
     });
