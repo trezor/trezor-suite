@@ -1,7 +1,10 @@
 // @group_passphrase
 // @retry=2
 
-const testedVersions = ['2-latest', '1-latest'];
+const testedVersions = [
+    '2-latest',
+    '1.11.2', // Todo: fix latest version to return proper revision hash (it reports possibly FAKE device now)
+];
 
 describe('Passphrase cancel', () => {
     beforeEach(() => {
