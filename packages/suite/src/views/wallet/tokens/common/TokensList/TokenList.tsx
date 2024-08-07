@@ -121,32 +121,36 @@ export const TokenList = ({
                     />
                 ))
             )}
-            <Header
-                $isActive={isZeroBalanceOpen}
-                onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
-            >
-                <ChevronContainer>
-                    <ChevronIcon
+            {tokensWithoutBalance.length !== 0 && (
+                <>
+                    <Header
                         $isActive={isZeroBalanceOpen}
-                        size={18}
-                        color={theme.iconSubdued}
-                        icon="ARROW_DOWN"
-                    />
-                </ChevronContainer>
-                <Translation id="ZERO_BALANCE_TOKENS" />
-            </Header>
-            <AnimationWrapper opened={isZeroBalanceOpen}>
-                {tokensWithoutBalance.map(token => (
-                    <TokenRow
-                        key={token.symbol}
-                        token={token}
-                        account={account}
-                        network={network}
-                        tokenStatusType={tokenStatusType}
-                        isUnverifiedTable={isUnverifiedTable}
-                    />
-                ))}
-            </AnimationWrapper>
+                        onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
+                    >
+                        <ChevronContainer>
+                            <ChevronIcon
+                                $isActive={isZeroBalanceOpen}
+                                size={18}
+                                color={theme.iconSubdued}
+                                icon="ARROW_DOWN"
+                            />
+                        </ChevronContainer>
+                        <Translation id="ZERO_BALANCE_TOKENS" />
+                    </Header>
+                    <AnimationWrapper opened={isZeroBalanceOpen}>
+                        {tokensWithoutBalance.map(token => (
+                            <TokenRow
+                                key={token.symbol}
+                                token={token}
+                                account={account}
+                                network={network}
+                                tokenStatusType={tokenStatusType}
+                                isUnverifiedTable={isUnverifiedTable}
+                            />
+                        ))}
+                    </AnimationWrapper>
+                </>
+            )}
         </Table>
     );
 };
