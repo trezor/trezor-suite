@@ -1,4 +1,4 @@
-import type { PROTOCOL_MALFORMED } from '@trezor/protocol';
+import type { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 
 import * as ERRORS from '../errors';
 
@@ -31,4 +31,9 @@ export type AsyncResultWithTypedError<T, E> = Promise<Success<T> | ErrorGeneric<
 export type AbortableCall<T, E> = {
     promise: AsyncResultWithTypedError<T, E>;
     abort: () => void;
+};
+
+export type BridgeProtocolMessage = {
+    data: string;
+    protocol?: TransportProtocol['name'];
 };
