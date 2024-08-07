@@ -7,8 +7,8 @@ describe('Firmware', () => {
         cy.viewport(1440, 2560).resetDb();
     });
 
-    it(`Firmware 2.5.1 outdated notification banner should open firmware update modal`, () => {
-        cy.task('startEmu', { wipe: true, version: '2.5.1' });
+    it(`Firmware 2.5.2 outdated notification banner should open firmware update modal`, () => {
+        cy.task('startEmu', { wipe: true, version: '2.5.2' });
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.prefixedVisit('/');
