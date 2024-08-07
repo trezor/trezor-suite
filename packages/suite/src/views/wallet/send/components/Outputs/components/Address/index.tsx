@@ -23,6 +23,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { InputError } from 'src/components/wallet';
+import { InputErrorProps } from 'src/components/wallet/InputError';
 
 const Container = styled.div`
     position: relative;
@@ -126,10 +127,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
     }, [amountInputName, composeTransaction, dispatch, inputName, setValue, symbol]);
 
-    const getValidationButtonProps = ():
-        | { url: (typeof URLS)[NonNullable<ReturnType<typeof isAddressDeprecated>>] }
-        | { onClick: () => void; text: string }
-        | undefined => {
+    const getValidationButtonProps = (): InputErrorProps['button'] => {
         switch (addressError?.type) {
             case 'deprecated':
                 if (addressDeprecatedUrl) {

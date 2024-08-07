@@ -4,17 +4,21 @@ import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { LearnMoreButton } from '../suite/LearnMoreButton';
 import { Url } from '@trezor/urls';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: ${spacingsPx.xs};
 `;
 
-interface InputErrorProps {
-    button?: { onClick: MouseEventHandler<HTMLButtonElement>; text: string } | { url: Url };
+type ButtonProps = { onClick: MouseEventHandler<HTMLButtonElement>; text: string };
+type LinkProps = { url: Url };
+
+export type InputErrorProps = {
+    button?: ButtonProps | LinkProps;
     message?: string;
-}
+};
 
 export const InputError = ({ button, message }: InputErrorProps) => (
     <Wrapper>
