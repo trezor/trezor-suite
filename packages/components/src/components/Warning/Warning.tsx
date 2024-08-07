@@ -11,9 +11,10 @@ import {
     mapElevationToBackgroundToken,
     spacingsPx,
     typography,
+    spacings,
 } from '@trezor/theme';
 import { UIVariant } from '../../config/types';
-import { TransientProps, useElevation } from '../..';
+import { Button, ButtonProps, Row, TransientProps, useElevation } from '../..';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
 
 export const allowedWarningFrameProps: FramePropsKeys[] = ['margin'];
@@ -26,6 +27,7 @@ export type WarningVariant = Extract<
 
 export type WarningProps = AllowedFrameProps & {
     children: ReactNode;
+    buttons?: Array<ButtonProps>;
     className?: string;
     variant?: WarningVariant;
     withIcon?: boolean;
@@ -132,6 +134,7 @@ export const Warning = ({
     icon,
     filled = true,
     margin,
+    buttons,
     dataTest,
 }: WarningProps) => {
     const theme = useTheme();
@@ -158,7 +161,17 @@ export const Warning = ({
                     })}
                 />
             )}
-            {children}
+            <Row justifyContent="space-between" gap={spacings.lg} flex={1}>
+                <div>{children}</div>
+                {buttons && (
+                    <Row gap={spacings.lg} flex={1}>
+                        {buttons.length > 0 &&
+                            buttons.map(buttonProps => (
+                                <Button variant={variant} {...buttonProps} />
+                            ))}
+                    </Row>
+                )}
+            </Row>
         </Wrapper>
     );
 };
