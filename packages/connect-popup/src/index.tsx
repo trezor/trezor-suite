@@ -492,7 +492,7 @@ const initCoreInPopup = async (
     postMessageToParent(createPopupMessage(POPUP.CORE_LOADED));
     reactEventBus.dispatch({
         type: 'loading',
-        message: `waiting for handshake from from a 3rd party application`,
+        message: `waiting for handshake from a 3rd party application`,
     });
 };
 
