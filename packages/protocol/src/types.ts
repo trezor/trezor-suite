@@ -14,6 +14,7 @@ export type TransportProtocolEncode = (
 ) => Buffer;
 
 export interface TransportProtocol {
+    name: 'bridge' | 'v1';
     encode: TransportProtocolEncode;
     decode: TransportProtocolDecode;
     getChunkHeader: (data: Buffer) => Buffer;
