@@ -6,9 +6,9 @@ permissions:
 
 on:
   workflow_dispatch:
-  # schedule:
-  # Runs at midnight UTC every day at 01:00 AM CET
-  # - cron: "0 0 * * *"
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}

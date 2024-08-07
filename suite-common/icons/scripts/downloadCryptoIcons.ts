@@ -69,7 +69,7 @@ const updateIcon = async (coin: CoinListData) => {
             );
             if (platforms.length > 0) {
                 platforms.forEach(([platform, contract]) => {
-                    const name = `${platform}_${contract}`;
+                    const name = `${platform}--${contract}`;
                     const fileName = `${encodeURIComponent(name)}${size !== '1x' ? `@${size}` : ''}.webp`;
                     const destinationFile = join(FILES_CRYPTOICONS_PATH, fileName);
 
