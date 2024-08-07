@@ -231,6 +231,7 @@ describe('mergeGroups', () => {
                     sentTransactionsCount: 2,
                     receivedTransactionsCount: 2,
                     networkSymbol: 'btc',
+                    accountKey: 'accountKey',
                 },
             },
             {
@@ -241,11 +242,12 @@ describe('mergeGroups', () => {
                     sentTransactionsCount: 1,
                     receivedTransactionsCount: 1,
                     networkSymbol: 'btc',
+                    accountKey: 'accountKey',
                 },
             },
         ];
 
-        const result = mergeGroups(groups, networkSymbol);
+        const result = mergeGroups({ groups, networkSymbol, accountKey: 'accountKey' });
         expect(result).toEqual(expectedMergedGroups);
     });
 
@@ -255,7 +257,7 @@ describe('mergeGroups', () => {
 
         const expectedMergedGroups: GroupedBalanceMovementEvent[] = [];
 
-        const result = mergeGroups(groups, networkSymbol);
+        const result = mergeGroups({ groups, networkSymbol, accountKey: 'accountKey' });
         expect(result).toEqual(expectedMergedGroups);
     });
 });

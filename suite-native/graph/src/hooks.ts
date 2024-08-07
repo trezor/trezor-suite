@@ -16,7 +16,6 @@ import {
     selectDeviceMainnetAccounts,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
 import { analytics, EventType } from '@suite-native/analytics';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
@@ -74,7 +73,9 @@ const checkAndReportGraphError = (error: string | null) => {
 export const useGraphForSingleAccount = ({
     accountKey,
     fiatCurrency,
-}: CommonUseGraphParams & { accountKey: AccountKey }) => {
+    tokensFilter = [],
+    hideMainAccount = false,
+}: CommonUseGraphParams & Omit<AccountItem, 'coin' | 'descriptor'>) => {
     const dispatch = useDispatch();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -102,13 +103,19 @@ export const useGraphForSingleAccount = ({
                 descriptor: account.descriptor,
                 accountKey: account.key,
                 identity,
-
-                // hardcode empty array so it will show only main account, we should remove this once we support tokens everywhere in app
-                tokensFilter: [],
+                hideMainAccount,
+                tokensFilter,
             },
         ];
         // We need to specify all dependicies here, because whole account will be updated very often will could result in endless rerendering.
-    }, [identity, account?.symbol, account?.descriptor, account?.key]);
+    }, [
+        identity,
+        account?.symbol,
+        account?.descriptor,
+        account?.key,
+        hideMainAccount,
+        tokensFilter,
+    ]);
 
     useWatchTimeframeChangeForAnalytics(accountGraphTimeframe, account?.symbol);
 

@@ -7,6 +7,7 @@ import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
 import {
     BalanceMovementEvent,
@@ -71,7 +72,17 @@ export const groupBalanceMovementEvents = (
 /**
  * Reduces each balance movements group to a single balance movement point.
  */
-export const mergeGroups = (groups: BalanceMovementEvent[][], networkSymbol: NetworkSymbol) =>
+export const mergeGroups = ({
+    groups,
+    networkSymbol,
+    tokenAddress,
+    accountKey,
+}: {
+    groups: BalanceMovementEvent[][];
+    networkSymbol: NetworkSymbol;
+    accountKey: AccountKey;
+    tokenAddress?: TokenAddress;
+}) =>
     A.map(groups, group => {
         const averageTimestamp =
             group.reduce((sum, nextBalanceObject) => sum + nextBalanceObject.date, 0) /
@@ -100,6 +111,8 @@ export const mergeGroups = (groups: BalanceMovementEvent[][], networkSymbol: Net
                     sentTransactionsCount: 0,
                     receivedTransactionsCount: 0,
                     networkSymbol,
+                    tokenAddress,
+                    accountKey,
                 },
             ),
         } as GroupedBalanceMovementEvent;
@@ -119,7 +132,8 @@ export const getAccountMovementEvents = async ({
     endOfTimeFrameDate: Date;
     dispatch: ReturnType<typeof useDispatch>;
 }) => {
-    const { coin, identity, descriptor } = account;
+    const { coin, identity, descriptor, tokensFilter, accountKey } = account;
+    const tokenAddress = tokensFilter?.[0]; // This is only for graph on detail screen where we have always only one token
 
     const getBalanceHistory = async () => {
         const networkType = getNetworkType(coin);
@@ -130,11 +144,16 @@ export const getAccountMovementEvents = async ({
                 }),
             ).unwrap();
 
-            // Return only main because we don't support tokens in that popups in graph yet
-            return getAccountHistoryMovementFromTransactions({
+            const movements = getAccountHistoryMovementFromTransactions({
                 transactions: allTransactions,
                 coin,
-            }).main;
+            });
+
+            if (tokenAddress) {
+                return movements.tokens[tokenAddress] ?? [];
+            }
+
+            return movements.main;
         }
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,
@@ -170,6 +189,6 @@ export const getAccountMovementEvents = async ({
         accountHistoryMovements,
         formatBalanceMovementEventsAmounts,
         formattedBalances => groupBalanceMovementEvents(formattedBalances, GROUPING_THRESHOLD),
-        group => mergeGroups(group, coin),
+        groups => mergeGroups({ groups, networkSymbol: coin, tokenAddress, accountKey }),
     ) as GroupedBalanceMovementEvent[];
 };

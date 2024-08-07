@@ -43,6 +43,8 @@ export type GroupedBalanceMovementEventPayload = {
     sentTransactionsCount: number;
     receivedTransactionsCount: number;
     networkSymbol: NetworkSymbol;
+    tokenAddress?: TokenAddress;
+    accountKey: AccountKey;
 };
 
 export type GroupedBalanceMovementEvent = {
