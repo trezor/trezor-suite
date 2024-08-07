@@ -16,6 +16,7 @@ import {
 import { UIVariant } from '../../config/types';
 import { Button, ButtonProps, Row, TransientProps, useElevation } from '../..';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
+import { useWarningContextContext, WarningContext } from './WarningContext';
 
 export const allowedWarningFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedWarningFrameProps)[number]>;
@@ -25,11 +26,14 @@ export type WarningVariant = Extract<
     'primary' | 'secondary' | 'info' | 'warning' | 'destructive' | 'tertiary'
 >;
 
+const DEFAULT_VARIANT = 'warning' as WarningVariant;
+
 export type WarningProps = AllowedFrameProps & {
     children: ReactNode;
-    buttons?: Array<ButtonProps>;
+    extra?: ReactNode;
     className?: string;
     variant?: WarningVariant;
+    rightContent?: ReactNode;
     withIcon?: boolean;
     icon?: IconType;
     filled?: boolean;
@@ -129,12 +133,12 @@ const Wrapper = styled.div<WrapperParams>`
 export const Warning = ({
     children,
     className,
-    variant = 'warning',
+    variant = DEFAULT_VARIANT,
     withIcon,
     icon,
     filled = true,
     margin,
-    buttons,
+    rightContent,
     dataTest,
 }: WarningProps) => {
     const theme = useTheme();
@@ -162,16 +166,28 @@ export const Warning = ({
                 />
             )}
             <Row justifyContent="space-between" gap={spacings.lg} flex={1}>
-                <div>{children}</div>
-                {buttons && (
-                    <Row gap={spacings.lg} flex={1}>
-                        {buttons.length > 0 &&
-                            buttons.map(buttonProps => (
-                                <Button variant={variant} {...buttonProps} />
-                            ))}
-                    </Row>
+                {children}
+                {rightContent && (
+                    <WarningContext.Provider value={{ variant }}>
+                        {rightContent}
+                    </WarningContext.Provider>
                 )}
             </Row>
         </Wrapper>
     );
 };
+
+const WarningButton = ({ children, ...rest }: ButtonProps) => {
+    const { variant } = useWarningContextContext();
+    const value = { variant: DEFAULT_VARIANT };
+
+    return (
+        <WarningContext.Provider value={value}>
+            <Button {...rest} variant={rest.variant ?? variant} size={rest.size ?? 'small'}>
+                {children}
+            </Button>
+        </WarningContext.Provider>
+    );
+};
+
+Warning.Button = WarningButton;

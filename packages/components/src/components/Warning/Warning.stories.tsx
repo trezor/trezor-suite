@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Warning as WarningComponent, WarningProps, variables, Button } from '../../index';
+import { Warning as WarningComponent, WarningProps, variables } from '../../index';
 import { allowedWarningFrameProps } from './Warning';
 import styled from 'styled-components';
 import { getFramePropsStory } from '../common/frameProps';
@@ -39,18 +39,7 @@ export const Warning: StoryObj<WarningProps> = {
         withIcon: true,
         variant: 'warning',
         icon: undefined,
-        buttons: [
-            {
-                size: 'small',
-                onClick: () => null,
-                children: 'ahoj',
-            },
-            {
-                size: 'small',
-                onClick: () => null,
-                children: 'click me',
-            },
-        ],
+        rightContent: <WarningComponent.Button>Click</WarningComponent.Button>,
         ...getFramePropsStory(allowedWarningFrameProps).args,
     },
     argTypes: {
