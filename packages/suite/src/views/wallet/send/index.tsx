@@ -1,24 +1,25 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+
 import { Warning } from '@trezor/components';
+import { breakpointMediaQueries } from '@trezor/styles';
+import { spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { WalletLayout } from 'src/components/wallet';
 import { useSendForm, SendContext, UseSendFormProps } from 'src/hooks/wallet/useSendForm';
-import { Header } from './components/Header';
-import { Outputs } from './components/Outputs';
-import { Options } from './components/Options/Options';
-import { SendFees } from './components/SendFees';
-import { TotalSent } from './components/TotalSent';
-import { Raw } from './components/Raw';
 import {
     selectTargetAnonymityByAccountKey,
     selectRegisteredUtxosByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
 import { Translation } from 'src/components/suite';
-import { spacingsPx } from '@trezor/theme';
-import { breakpointMediaQueries } from '@trezor/styles';
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
+import { SendHeader } from './SendHeader';
+import { Outputs } from './Outputs/Outputs';
+import { Options } from './Options/Options';
+import { SendFees } from './SendFees';
+import { TotalSent } from './TotalSent/TotalSent';
+import { SendRaw } from './SendRaw';
 
 const SendLayout = styled(WalletLayout)`
     display: flex;
@@ -78,7 +79,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     if (props.sendRaw) {
         return (
             <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
-                <Raw account={selectedAccount.account} />
+                <SendRaw account={selectedAccount.account} />
             </WalletLayout>
         );
     }
@@ -86,7 +87,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     return (
         <SendLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
-                <Header />
+                <SendHeader />
 
                 <FormGrid data-test="@wallet/send/outputs-and-options">
                     <Outputs disableAnim={!!children} />

@@ -1,16 +1,18 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { spacingsPx } from '@trezor/theme';
+
 import { Card, CoinLogo, motionEasing } from '@trezor/components';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { Address } from './components/Address';
-import { Amount } from './components/Amount';
-import { OpReturn } from './components/OpReturn';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
-import { useLayoutSize } from '../../../../../hooks/suite';
-import { Translation } from 'src/components/suite';
+import { spacingsPx } from '@trezor/theme';
 import { networks } from '@suite-common/wallet-config';
+
+import { useSendFormContext } from 'src/hooks/wallet';
+import { useLayoutSize } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
+import { Address } from './Address';
+import { Amount } from './Amount/Amount';
+import { OpReturn } from './OpReturn';
 
 const Container = styled.div<{ $height: number }>`
     height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};

@@ -34,14 +34,14 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
-interface FiatProps {
+type FiatInputProps = {
     output: Partial<Output>;
     outputId: number;
     labelHoverRight?: React.ReactNode;
     labelRight?: React.ReactNode;
-}
+};
 
-export const Fiat = ({ output, outputId, labelHoverRight, labelRight }: FiatProps) => {
+export const FiatInput = ({ output, outputId, labelHoverRight, labelRight }: FiatInputProps) => {
     const {
         account,
         network,

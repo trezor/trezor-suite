@@ -3,7 +3,12 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled, { useTheme } from 'styled-components';
 
 import { Icon, Warning, variables } from '@trezor/components';
-import { FiatValue, Translation, NumberInput, HiddenPlaceholder } from 'src/components/suite';
+import { breakpointMediaQueries } from '@trezor/styles';
+import { spacingsPx } from '@trezor/theme';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { formInputsMaxLength } from '@suite-common/validators';
+import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { Output, TokenAddress } from '@suite-common/wallet-types';
 import {
     amountToSatoshi,
     formatNetworkAmount,
@@ -13,11 +18,9 @@ import {
     findToken,
     getFiatRateKey,
 } from '@suite-common/wallet-utils';
+
+import { FiatValue, Translation, NumberInput, HiddenPlaceholder } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { Output } from '@suite-common/wallet-types';
-import { formInputsMaxLength } from '@suite-common/validators';
-import { TokenSelect } from './components/TokenSelect';
-import { Fiat } from './components/Fiat';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import {
@@ -26,13 +29,10 @@ import {
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
-import { spacingsPx } from '@trezor/theme';
-import { breakpointMediaQueries } from '@trezor/styles';
-import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
-import { SendMaxSwitch } from './components/SendMaxSwitch';
+import { TokenSelect } from './TokenSelect';
+import { FiatInput } from './FiatInput';
+import { SendMaxSwitch } from './SendMaxSwitch';
 
 const Row = styled.div`
     position: relative;
@@ -296,7 +296,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                     />
 
                                     <Right>
-                                        <Fiat
+                                        <FiatInput
                                             output={output}
                                             outputId={outputId}
                                             labelRight={getSendMaxSwitchComponent(undefined, true)}
