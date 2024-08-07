@@ -1,7 +1,13 @@
 import { versionUtils, createDeferred, Deferred, createTimeoutPromise } from '@trezor/utils';
-import { PROTOCOL_MALFORMED, bridge as bridgeProtocol } from '@trezor/protocol';
+import {
+    PROTOCOL_MALFORMED,
+    bridge as protocolBridge,
+    v1 as protocolV1,
+    TransportProtocol,
+} from '@trezor/protocol';
 import { bridgeApiCall } from '../utils/bridgeApiCall';
 import * as bridgeApiResult from '../utils/bridgeApiResult';
+import { createProtocolMessage } from '../utils/bridgeProtocolMessage';
 import { buildMessage } from '../utils/send';
 import { receiveAndParse } from '../utils/receive';
 import {
@@ -11,7 +17,13 @@ import {
 } from './abstract';
 
 import * as ERRORS from '../errors';
-import { AnyError, AsyncResultWithTypedError, Descriptor, Session } from '../types';
+import {
+    AnyError,
+    AsyncResultWithTypedError,
+    Descriptor,
+    Session,
+    BridgeProtocolMessage,
+} from '../types';
 
 const DEFAULT_URL = 'http://127.0.0.1:21325';
 
@@ -59,6 +71,7 @@ export class BridgeTransport extends AbstractTransport {
      * information about  the latest version of trezord.
      */
     private latestVersion?: string;
+    private useProtocolMessages: boolean = false;
     /**
      * url of trezord server.
      */
@@ -94,6 +107,7 @@ export class BridgeTransport extends AbstractTransport {
             if (this.latestVersion) {
                 this.isOutdated = versionUtils.isNewer(this.latestVersion, this.version);
             }
+            this.useProtocolMessages = !!response.payload.protocolMessages;
 
             this.stopped = false;
 
@@ -232,6 +246,19 @@ export class BridgeTransport extends AbstractTransport {
         return Promise.resolve(this.success(undefined));
     }
 
+    private getProtocol(customProtocol?: TransportProtocol) {
+        if (!this.useProtocolMessages) {
+            // custom protocols not supported by legacy bridge
+            return protocolBridge;
+        }
+
+        return customProtocol || protocolV1;
+    }
+
+    private getRequestBody(body: Buffer, protocol: TransportProtocol) {
+        return createProtocolMessage(body, this.useProtocolMessages ? protocol : undefined);
+    }
+
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L534
     public call({
         session,
@@ -241,7 +268,7 @@ export class BridgeTransport extends AbstractTransport {
     }: AbstractTransportMethodParams<'call'>) {
         return this.scheduleAction(
             async signal => {
-                const protocol = customProtocol || bridgeProtocol;
+                const protocol = this.getProtocol(customProtocol);
                 const bytes = buildMessage({
                     messages: this.messages,
                     name,
@@ -250,7 +277,7 @@ export class BridgeTransport extends AbstractTransport {
                 });
                 const response = await this.post(`/call`, {
                     params: session,
-                    body: bytes.toString('hex'),
+                    body: this.getRequestBody(bytes, protocol),
                     signal,
                 });
                 if (!response.success) {
@@ -258,7 +285,7 @@ export class BridgeTransport extends AbstractTransport {
                 }
                 const message = await receiveAndParse(
                     this.messages,
-                    () => Promise.resolve(Buffer.from(response.payload, 'hex')),
+                    () => Promise.resolve(Buffer.from(response.payload.data, 'hex')),
                     protocol,
                 );
 
@@ -268,18 +295,23 @@ export class BridgeTransport extends AbstractTransport {
         );
     }
 
-    public send({ session, name, data, protocol }: AbstractTransportMethodParams<'send'>) {
+    public send({
+        session,
+        name,
+        data,
+        protocol: customProtocol,
+    }: AbstractTransportMethodParams<'send'>) {
         return this.scheduleAction(async signal => {
-            const { encode } = protocol || bridgeProtocol;
+            const protocol = this.getProtocol(customProtocol);
             const bytes = buildMessage({
                 messages: this.messages,
                 name,
                 data,
-                encode,
+                encode: protocol.encode,
             });
             const response = await this.post('/post', {
                 params: session,
-                body: bytes.toString('hex'),
+                body: this.getRequestBody(bytes, protocol),
                 signal,
             });
             if (!response.success) {
@@ -296,18 +328,19 @@ export class BridgeTransport extends AbstractTransport {
     }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(
             async signal => {
+                const protocol = this.getProtocol(customProtocol);
                 const response = await this.post('/read', {
                     params: session,
+                    body: this.getRequestBody(Buffer.alloc(0), protocol),
                     signal,
                 });
 
                 if (!response.success) {
                     return response;
                 }
-                const protocol = customProtocol || bridgeProtocol;
                 const message = await receiveAndParse(
                     this.messages,
-                    () => Promise.resolve(Buffer.from(response.payload, 'hex')),
+                    () => Promise.resolve(Buffer.from(response.payload.data, 'hex')),
                     protocol,
                 );
 
@@ -329,7 +362,10 @@ export class BridgeTransport extends AbstractTransport {
     private async post(
         endpoint: '/',
         options: IncompleteRequestOptions,
-    ): AsyncResultWithTypedError<{ version: string; configured: boolean }, BridgeCommonErrors>;
+    ): AsyncResultWithTypedError<
+        Exclude<ReturnType<typeof bridgeApiResult.info>, { success: false }>['payload'],
+        BridgeCommonErrors
+    >;
     private async post(
         endpoint: '/acquire',
         options: IncompleteRequestOptions,
@@ -341,10 +377,10 @@ export class BridgeTransport extends AbstractTransport {
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
     >;
     private async post(
-        endpoint: '/call',
+        endpoint: '/call' | '/post' | '/read',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<
-        string,
+        BridgeProtocolMessage,
         | BridgeCommonErrors
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
         | typeof PROTOCOL_MALFORMED
@@ -354,26 +390,6 @@ export class BridgeTransport extends AbstractTransport {
         endpoint: '/release',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<undefined, BridgeCommonErrors | typeof ERRORS.SESSION_NOT_FOUND>;
-    private async post(
-        endpoint: '/post',
-        options: IncompleteRequestOptions,
-    ): AsyncResultWithTypedError<
-        string,
-        | BridgeCommonErrors
-        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
-        | typeof PROTOCOL_MALFORMED
-        | typeof ERRORS.OTHER_CALL_IN_PROGRESS
-    >;
-    private async post(
-        endpoint: '/read',
-        options: IncompleteRequestOptions,
-    ): AsyncResultWithTypedError<
-        string,
-        | BridgeCommonErrors
-        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
-        | typeof PROTOCOL_MALFORMED
-        | typeof ERRORS.OTHER_CALL_IN_PROGRESS
-    >;
     private async post(
         endpoint: '/listen',
         options?: IncompleteRequestOptions,
@@ -451,10 +467,11 @@ export class BridgeTransport extends AbstractTransport {
             case '/read':
             case '/call':
                 return bridgeApiResult.call(response.payload);
+            case '/post':
+                return bridgeApiResult.post(response.payload);
             case '/enumerate':
             case '/listen':
                 return bridgeApiResult.devices(response.payload);
-            case '/post':
             case '/release':
                 return bridgeApiResult.empty(response.payload);
             default:

@@ -3,6 +3,7 @@
 import type { Descriptor, Session } from '../types';
 
 import { success, error } from './result';
+import { validateProtocolMessage } from './bridgeProtocolMessage';
 import * as ERRORS from '../errors';
 
 type UnknownPayload = string | Record<string, unknown>;
@@ -20,8 +21,9 @@ export function info(res: UnknownPayload) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
     const configured = !!res.configured;
+    const protocolMessages = !!res.protocolMessages;
 
-    return success({ version, configured });
+    return success({ version, configured, protocolMessages });
 }
 
 export function version(res: UnknownPayload) {
@@ -79,11 +81,19 @@ export function acquire(res: UnknownPayload) {
 }
 
 export function call(res: UnknownPayload) {
-    if (!isString(res)) {
+    try {
+        return success(validateProtocolMessage(res, true));
+    } catch (e) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
+}
 
-    return success(res);
+export function post(res: UnknownPayload) {
+    try {
+        return success(validateProtocolMessage(res, false));
+    } catch (e) {
+        return error({ error: ERRORS.WRONG_RESULT_TYPE });
+    }
 }
 
 export function empty(res: UnknownPayload) {
