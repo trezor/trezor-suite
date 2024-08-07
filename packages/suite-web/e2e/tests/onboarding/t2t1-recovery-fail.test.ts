@@ -9,8 +9,18 @@ describe('Onboarding - recover wallet T2T1', () => {
         // note: this is an example of test that can not be parametrized to be both integration (isolated) test and e2e test.
         // the problem is that it always needs to run the newest possible emulator. If this was pinned to use emulator which is currently
         // in production, and we locally bumped emulator version, we would get into a screen saying "update your firmware" and the test would fail.
-        cy.task('startEmu', { wipe: true, version: '2-latest' });
+        cy.task('startEmu', { wipe: true, version: '2-master' });
 
+        // Disable revision check. On emulator '2-master' it wont pass as it is unreleased version
+        cy.getTestElement('@device-compromised').should('be.visible');
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
+        cy.getTestElement('@settings/device/open-firmware-revision-check-modal-button').click();
+        cy.getTestElement('@device-authenticity/firmware-revision-checkbox').click();
+        cy.getTestElement('@device-authenticity/opt-out/button').click();
+        cy.getTestElement('@settings/menu/close').click();
+
+        // Continue with test
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
 
