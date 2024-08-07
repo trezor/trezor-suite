@@ -130,6 +130,12 @@ export const config = {
             download: 'https://www.microsoft.com/en-us/edge',
             update: 'https://www.microsoft.com/en-us/edge',
         },
+        opera: {
+            // Chromium based
+            version: 95,
+            download: 'https://www.opera.com/download',
+            update: 'https://www.opera.com/download',
+        },
     },
     supportedFirmware: [
         {
