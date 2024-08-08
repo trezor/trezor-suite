@@ -10,6 +10,7 @@
         "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.8.1-bitcoinonly.bin",
         "fingerprint": "6a064df4a928e1264d682a34cc014fc9272f312e0f8a8270ff88d6f1408fe68b",
         "fingerprint_bitcoinonly": "6b17de0c89c9a7876687d6b9c44673f4aca7f8819237a755090848a3829bc36b",
+        "firmware_revision": "632b9561559b7ab6824bb7eeac072874e07b7b82",
         "changelog": [
             "## Added",
             "- Added PIN keyboard animation.",
@@ -42,6 +43,7 @@
         "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.8.0-bitcoinonly.bin",
         "fingerprint": "bd199ce0934769aca5c3a91f71fd48e533d88c8cf087b76ac49db415fa08c286",
         "fingerprint_bitcoinonly": "3dc847cc396fe83f5a324242097a4cf97fc64acf90516efcfcf23b6d3103a992",
+        "firmware_revision": "dd4671a5104952ef505d28d1f9e94d1484b4607a",
         "changelog": "* Added tutorial flow. \n* Added Animated device label on homescreen/lockscreen. \n* Added word counter during wallet creation. \n* Improved change homescreen flow. \n* Improved swipe behavior and animations. \n* Increased Optiga read timeout to avoid spurious RSODs. \n* Fixed swipe back from address QR code screen. \n* Fixed device authenticity check. \n* Removed CoSi functionality."
     },
     {
@@ -55,6 +57,7 @@
         "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.7.2-bitcoinonly.bin",
         "fingerprint": "4daa5fd3c4c92ee0d76855997dde09a7ee25f4165b118c521ab10957c5fc92b0",
         "fingerprint_bitcoinonly": "246cca86b0a8cfcac6b7e6b3fcf55f543a8a9c9fd1f8ff88cd0de00640cb25eb",
+        "firmware_revision": "da75d8f4b67410b40a9cfd2954d183d81dd6e8e8",
         "changelog": "* Introducing repeated backups. \n* Multi-share backups can now have any number of shares. \n* Added support for Cardano Conway certificates [Universal fw only]."
     }
 ]

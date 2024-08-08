@@ -10,6 +10,7 @@
         "url_bitcoinonly": "firmware/t2b1/trezor-t2b1-2.8.0-bitcoinonly.bin",
         "fingerprint": "cf3ce230a69a681199f74cf6ac8c6c431f8fa7e0d0183437f93c5cc029fbd155",
         "fingerprint_bitcoinonly": "ae088439d44fc8643b8de28e0d7a8720cd3dbb247619f2742604bbe884542558",
+        "firmware_revision": "dd4671a5104952ef505d28d1f9e94d1484b4607a",
         "changelog": "* Removed CoSi functionality. \n* Increased Optiga read timeout to avoid spurious RSODs."
     },
     {
@@ -23,6 +24,7 @@
         "url_bitcoinonly": "firmware/t2b1/trezor-t2b1-2.7.2-bitcoinonly.bin",
         "fingerprint": "d072560f34782faf5537aa08a48c4e24671d4c60e9c291a00bfbf12cbc425666",
         "fingerprint_bitcoinonly": "5b6e312430de9db6ad3a843e1ba311f8cff9c6a691c20c0e69b711451a729f40",
+        "firmware_revision": "da75d8f4b67410b40a9cfd2954d183d81dd6e8e8",
         "changelog": "* Introducing repeated backups. \n* Multi-share backups can now have any number of shares. \n* Added support for Cardano Conway certificates [Universal fw only]."
     },
     {
@@ -36,6 +38,7 @@
         "url_bitcoinonly": "firmware/t2b1/trezor-t2b1-2.7.0-bitcoinonly.bin",
         "fingerprint": "522eb5db073c0f039f7164360668e75a43399d0b4e40edfd06f77f4401cd98aa",
         "fingerprint_bitcoinonly": "bb91489a4790b3668e2f5d574a729a0f43009510550fecb5e04c0937d355b2cf",
+        "firmware_revision": "45e8a842a31e62a6d43d7f6ccac62a45e1198ef0",
         "changelog": "* Add translations capability. \n* Add loader to homescreen when locking the device. \n* Allow for going back to previous word in recovery process. \n* Clear sign ETH staking transactions on Everstake pool. [Universal fw only] \n* Display descriptors for BTC Taproot public keys. \n* Multiple Solana instructions improved. [Universal fw only] \n* Add missing semicolon character to the passphrase entry."
     },
     {
@@ -48,6 +51,7 @@
         "url_bitcoinonly": "firmware/t2b1/trezor-t2b1-2.6.4-bitcoinonly.bin",
         "fingerprint": "5ac16cb5002aa607908be376378a7fd1a1bc18f7b05e7a047cb1365840cc93ef",
         "fingerprint_bitcoinonly": "013d595fc621c12324afd90721c6a37d055d853f6af54d5432e27e6a425656dd",
+        "firmware_revision": "42e9ed0e09033d474dee1a560fe5870646fa440e",
         "changelog": "* Trezor Safe 3 now supports Solana, expanding the range of cryptocurrencies it can securely manage. [Universal fw only] \n* Ethereum fees are now uniformly presented in Gwei, enhancing clarity and consistency for users. [Universal fw only] \n* Issue with missing address confirmation screens is now fixed. [Universal fw only] \n* Resolved an issue related to the invalid encoding of signatures from the Optiga chip."
     },
     {
@@ -60,6 +64,7 @@
         "url_bitcoinonly": "firmware/t2b1/trezor-t2b1-2.6.3-bitcoinonly.bin",
         "fingerprint": "1aea81cf4a823951540a041ae52d1950efade73531f7640c85805f8950f11a38",
         "fingerprint_bitcoinonly": "6aecc9d9fd137a661f38ce36713aa0889b77ec4d35d91c68e01bda225cda2850",
+        "firmware_revision": "2c7cc6e0255dee2339b445b5551eaffb88dbd1b4",
         "changelog": "* QR Code for Extended Public Keys (XPUBs). \n* The new bootloader version 2.1.4 is now included for enhanced system performance and security. \n* The screen will now automatically turn off when the device is locked, helping to extend the life of the OLED display and save energy."
     },
     {
@@ -72,6 +77,7 @@
         "url_bitcoinonly": "firmware/t2b1/trezor-t2b1-2.6.2-bitcoinonly.bin",
         "fingerprint": "ffe6d9f1a05fae377d2c95a5d577adc901150de368591ed52055e036f66bc01a",
         "fingerprint_bitcoinonly": "221f5720c70251a19de7fe50b6448a59e695d5e3d7b86a0d91d666d4a55c01df",
+        "firmware_revision": "6e5967af25de87bebd331d697e6ef940e64286ef",
         "changelog": "* First public release"
     }
 ]
