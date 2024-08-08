@@ -62,7 +62,7 @@ export type KnownDevice = {
     features: PROTO.Features;
     unavailableCapabilities: UnavailableCapabilities;
     availableTranslations: string[];
-    authenticityChecks: {
+    authenticityChecks?: {
         firmwareRevision: FirmwareRevisionCheckResult | null;
         // Maybe add FirmwareHashCheck result here?
         // Maybe add AuthenticityCheck result here?
