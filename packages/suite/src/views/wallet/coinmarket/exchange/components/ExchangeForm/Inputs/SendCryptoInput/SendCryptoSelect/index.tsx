@@ -32,7 +32,7 @@ const TokenLogo = styled(CoinmarketCoinImage)`
 `;
 
 const SendCryptoSelect = () => {
-    const { control, setAmountLimits, account, setValue, getValues, exchangeInfo, composeRequest } =
+    const { control, setAmountLimits, account, setValue, getValues, exchangeInfo } =
         useCoinmarketExchangeFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
@@ -92,7 +92,6 @@ const SendCryptoSelect = () => {
                                 fetchAttemptTimestamp: Date.now() as Timestamp,
                             }),
                         );
-                        composeRequest();
                     }}
                     formatOptionLabel={(option: any) => (
                         <Option>
