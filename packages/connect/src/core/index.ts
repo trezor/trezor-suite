@@ -44,7 +44,6 @@ let _core: Core; // Class with event emitter
 let _deviceList: IDeviceList; // Instance of DeviceList
 const _callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
 let _interactionTimeout: InteractionTimeout;
-let _deviceListInitReject: ((e: Error) => void) | undefined;
 let _overridePromise: Promise<void> | undefined;
 
 const methodSynchronize = getSynchronize();
@@ -1077,7 +1076,6 @@ export class Core extends EventEmitter {
 
     dispose() {
         disposeBackend();
-        _deviceListInitReject?.(new Error('Disposed during initialization'));
         this.removeAllListeners();
         this.abortController.abort();
         _deviceList.dispose();
