@@ -296,7 +296,7 @@ export const networks = {
         customBackends: ['blockfrost'],
         accountTypes: {
             legacy: {
-                // icarus-trezor derivation
+                // icarus-trezor derivation, differs from default just for 24 words seed
                 bip43Path: "m/1852'/1815'/i'",
             },
             ledger: {

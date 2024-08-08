@@ -63,22 +63,35 @@ export const filterUnavailableNetworks = (
 const calculateProgress =
     (discovery: Discovery) =>
     (_dispatch: any, getState: any): PartialDiscovery => {
-        const numberOfNonCardano = discovery.networks.filter(s => s !== 'ada').length;
+        const { numberOfNonCardano, numberOfCardano } = discovery.networks.reduce(
+            (acc, symbol) => {
+                if (symbol === 'ada') {
+                    acc.numberOfCardano += 1;
+                } else {
+                    acc.numberOfNonCardano += 1;
+                }
 
-        // This is ugly hack, but it works in both scenarios:
-        //
-        //      1) We some `discovery.networks` (we added Cardano), but only some are allowed,
-        //         the `availableCardanoDerivations` < discovery.networks(===ada).length` so it works
-        //
-        //      2) When we remove Cardano, the `availableCardanoDerivations` keeps some stuff,
-        //         but because `discovery.networks(===ada).length` becomes 0 it works
-        //
-        const numberOfCardano = Math.min(
-            discovery.availableCardanoDerivations?.length ?? 0,
-            discovery.networks.filter(s => s === 'ada').length,
+                return acc;
+            },
+            { numberOfNonCardano: 0, numberOfCardano: 0 },
         );
 
-        let total = LIMIT * (numberOfNonCardano + numberOfCardano);
+        // This approach handles both scenarios effectively:
+        //
+        // 1) Cardano added - When Cardano is included, discovery.availableCardanoDerivations may vary (2 to 3 based on device seed length).
+        //    This object might be undefined if discovery hasn't been completed yet.
+        //    To ensure the "activate coins" button appears, we set it to 1 if Cardano is enabled.
+        //
+        // 2) Cardano removed - When Cardano is removed, discovery.availableCardanoDerivations might still hold a value.
+        //    However, due to Math.min, it correctly resolves to 0 since numberOfCardano is 0.
+        //
+
+        const numberOfCardanoTotal = Math.min(
+            discovery.availableCardanoDerivations?.length ?? numberOfCardano ? 1 : 0,
+            numberOfCardano,
+        );
+
+        let total = LIMIT * (numberOfNonCardano + numberOfCardanoTotal);
 
         let loaded = 0;
         const accounts = selectAccounts(getState());
