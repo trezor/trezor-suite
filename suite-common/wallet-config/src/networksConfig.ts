@@ -82,7 +82,16 @@ export const networks = {
             'staking',
         ],
         customBackends: ['blockbook'],
-        accountTypes: {},
+        accountTypes: {
+            ledger: {
+                // ledger (live), #1 acc is same as Trezor, so it is skipped
+                bip43Path: "m/44'/60'/i'/0/0",
+            },
+            legacy: {
+                // ledger (legacy)
+                bip43Path: "m/44'/60'/0'/i",
+            },
+        },
         coingeckoId: 'ethereum',
     },
     etc: {
@@ -349,7 +358,12 @@ export const networks = {
         },
         features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
         customBackends: ['blockbook'],
-        accountTypes: {},
+        accountTypes: {
+            ledger: {
+                // ledger (live), #1 acc is same as Trezor, so it is skipped
+                bip43Path: "m/44'/60'/i'/0/0",
+            },
+        },
         coingeckoId: 'polygon-pos',
     },
     bnb: {
@@ -368,7 +382,12 @@ export const networks = {
         },
         features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
         customBackends: ['blockbook'],
-        accountTypes: {},
+        accountTypes: {
+            ledger: {
+                // ledger (live), #1 acc is same as Trezor, so it is skipped
+                bip43Path: "m/44'/60'/i'/0/0",
+            },
+        },
         coingeckoId: 'binance-smart-chain',
     },
     // testnets
