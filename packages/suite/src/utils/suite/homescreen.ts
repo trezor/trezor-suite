@@ -1,22 +1,27 @@
-import { TrezorDevice } from 'src/types/suite/index';
-import { DeviceModelInternal } from '@trezor/connect';
 import { deflateRaw } from 'pako';
+
+import { DeviceModelInternal } from '@trezor/connect';
+
+import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
+import { TrezorDevice } from 'src/types/suite/index';
 
 // TODO: this is already part of features (since certain version) so I suggest forbidding screen changes
 // prior to that version and removing this definition from here
-const t2b1 = {
+
+const safe3Information = {
     width: 128,
     height: 64,
     supports: ['png', 'jpeg'] satisfies ('png' | 'jpeg')[],
 };
+
 export const deviceModelInformation: Record<
     DeviceModelInternal,
     { width: number; height: number; supports: Array<'png' | 'jpeg'> }
 > = {
     [DeviceModelInternal.T1B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
     [DeviceModelInternal.T2T1]: { width: 240, height: 240, supports: ['jpeg'] },
-    [DeviceModelInternal.T2B1]: t2b1,
-    [DeviceModelInternal.T3B1]: t2b1,
+    [DeviceModelInternal.T2B1]: safe3Information,
+    [DeviceModelInternal.T3B1]: safe3Information,
     [DeviceModelInternal.T3T1]: { width: 240, height: 240, supports: ['jpeg'] },
 };
 
@@ -219,7 +224,7 @@ export const isValidImageHeight = (
 };
 
 export const isProgressiveJPG = (buffer: ArrayBuffer, deviceModelInternal: DeviceModelInternal) => {
-    if ([DeviceModelInternal.T2B1, DeviceModelInternal.T1B1].includes(deviceModelInternal)) {
+    if (HAS_MONOCHROME_SCREEN[deviceModelInternal]) {
         return false;
     }
 
@@ -235,7 +240,7 @@ export const isProgressiveJPG = (buffer: ArrayBuffer, deviceModelInternal: Devic
 };
 
 export const isValidImageSize = (file: File, deviceModelInternal: DeviceModelInternal) => {
-    if ([DeviceModelInternal.T2B1, DeviceModelInternal.T1B1].includes(deviceModelInternal)) {
+    if (HAS_MONOCHROME_SCREEN[deviceModelInternal]) {
         return true;
     }
 
@@ -248,7 +253,7 @@ export const validateImageColors = (
 ) => {
     const imageData = imageToImageData(origImage, deviceModelInternal);
 
-    if ([DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModelInternal)) {
+    if (HAS_MONOCHROME_SCREEN[deviceModelInternal]) {
         try {
             range(imageData.height).forEach((j: number) => {
                 range(imageData.width).forEach(i => {
@@ -313,7 +318,7 @@ export const imagePathToHex = async (
     const response = await fetch(imagePath);
 
     // image can be loaded to device without modifications -> it is in original quality
-    if (![DeviceModelInternal.T2B1, DeviceModelInternal.T1B1].includes(deviceModelInternal)) {
+    if (!HAS_MONOCHROME_SCREEN[deviceModelInternal]) {
         const arrayBuffer = await response.arrayBuffer();
 
         return Buffer.from(arrayBuffer).toString('hex');
@@ -329,7 +334,7 @@ export const imagePathToHex = async (
     const { canvas, ctx } = imageToCanvas(element, deviceModelInternal);
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-    if (deviceModelInternal === DeviceModelInternal.T2B1) {
+    if ([DeviceModelInternal.T2B1, DeviceModelInternal.T3B1].includes(deviceModelInternal)) {
         return toig(imageData, deviceModelInternal);
     }
 

@@ -68,7 +68,11 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
 
     return (
         <Wrapper>
-            {[DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModelInternal) && (
+            {[
+                DeviceModelInternal.T1B1,
+                DeviceModelInternal.T2B1,
+                DeviceModelInternal.T3B1,
+            ].includes(deviceModelInternal) && (
                 <BackgroundGalleryWrapper>
                     {homescreens[deviceModelInternal].map(image => (
                         <BackgroundImageBW64x128

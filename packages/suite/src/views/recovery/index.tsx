@@ -160,7 +160,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                 number="1"
                                 title={
                                     <Translation
-                                        id={`TR_CHECK_RECOVERY_SEED_DESC_${deviceModelInternal === DeviceModelInternal.T2B1 || deviceModelInternal === DeviceModelInternal.T3B1 ? 'T2B1' : deviceModelInternal}`}
+                                        id={`TR_CHECK_RECOVERY_SEED_DESC_${deviceModelInternal === DeviceModelInternal.T3B1 ? 'T2B1' : deviceModelInternal}`}
                                     />
                                 }
                             >
@@ -182,6 +182,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                         default: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
                                         [DeviceModelInternal.T1B1]: 'TR_SEED_WORDS_ENTER_COMPUTER',
                                         [DeviceModelInternal.T2B1]: 'TR_SEED_WORDS_ENTER_BUTTONS',
+                                        [DeviceModelInternal.T3B1]: 'TR_SEED_WORDS_ENTER_BUTTONS',
                                     })}
                                 />
                             </InstructionStep>
