@@ -12,7 +12,6 @@ interface UseCoinmarketSatsSwitcherProps {
     quoteCryptoAmount: string | undefined;
     quoteFiatAmount: string | undefined;
     network: Network | null;
-    setIsSubmittingHelper: (value: boolean) => void;
 }
 
 /**
@@ -24,7 +23,6 @@ export const useCoinmarketSatsSwitcher = ({
     quoteCryptoAmount,
     quoteFiatAmount,
     network,
-    setIsSubmittingHelper,
 }: UseCoinmarketSatsSwitcherProps) => {
     const { setValue, getValues } = methods;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
@@ -38,13 +36,13 @@ export const useCoinmarketSatsSwitcher = ({
             const amount = shouldSendInSats
                 ? amountToSatoshi(quoteCryptoAmount ?? '', networkDecimals)
                 : quoteCryptoAmount;
+
             setValue(FORM_CRYPTO_INPUT, amount);
         } else {
-            setValue(FORM_FIAT_INPUT, coinmarketGetRoundedFiatAmount(quoteFiatAmount ?? ''));
+            setValue(FORM_FIAT_INPUT, coinmarketGetRoundedFiatAmount(quoteFiatAmount));
         }
 
         setValue('amountInCrypto', !amountInCrypto);
-        setIsSubmittingHelper(true); // remove delay of sending request
     };
 
     useDidUpdate(() => {

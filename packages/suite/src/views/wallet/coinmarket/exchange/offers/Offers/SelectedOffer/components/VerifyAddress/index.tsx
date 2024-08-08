@@ -194,22 +194,21 @@ const VerifyAddressComponent = () => {
                             </>
                         )}
                     {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
-                        <Input
-                            label={
-                                <Label>
-                                    <StyledQuestionTooltip
-                                        label="TR_EXCHANGE_RECEIVING_ADDRESS"
-                                        tooltip={addressTooltipTranslationId}
-                                    />
-                                </Label>
-                            }
-                            size="small"
-                            readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
-                            inputState={errors.address ? 'error' : undefined}
-                            bottomText={errors.address?.message || null}
-                            innerRef={networkRef}
-                            {...networkField}
-                        />
+                        <>
+                            <CustomLabel>
+                                <StyledQuestionTooltip
+                                    label="TR_EXCHANGE_RECEIVING_ADDRESS"
+                                    tooltip={addressTooltipTranslationId}
+                                />
+                            </CustomLabel>
+                            <Input
+                                readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
+                                inputState={errors.address ? 'error' : undefined}
+                                bottomText={errors.address?.message || null}
+                                innerRef={networkRef}
+                                {...networkField}
+                            />
+                        </>
                     )}
 
                     {addressVerified && addressVerified === address && (

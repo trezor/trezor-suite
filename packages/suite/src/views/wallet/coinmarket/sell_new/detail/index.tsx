@@ -6,6 +6,7 @@ import {
     useCoinmarketDetail,
 } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,6 +29,11 @@ const DetailIndex = (props: UseCoinmarketProps) => {
     );
 };
 
-export default withSelectedAccountLoaded(DetailIndex, {
-    title: 'TR_NAV_SELL',
-});
+export default withSelectedAccountLoaded(
+    withCoinmarketLayoutWrap(DetailIndex, {
+        backRoute: 'wallet-coinmarket-sell',
+    }),
+    {
+        title: 'TR_NAV_SELL',
+    },
+);

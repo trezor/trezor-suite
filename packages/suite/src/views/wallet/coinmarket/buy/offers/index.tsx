@@ -4,6 +4,7 @@ import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import useCoinmarketBuyForm from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyForm';
 import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
 
 const OffersIndex = (props: UseCoinmarketProps) => {
     const coinmarketBuyFormContextValues = useCoinmarketBuyForm({
@@ -21,6 +22,11 @@ const OffersIndex = (props: UseCoinmarketProps) => {
     );
 };
 
-export default withSelectedAccountLoaded(OffersIndex, {
-    title: 'TR_NAV_BUY',
-});
+export default withSelectedAccountLoaded(
+    withCoinmarketLayoutWrap(OffersIndex, {
+        backRoute: 'wallet-coinmarket-buy',
+    }),
+    {
+        title: 'TR_NAV_BUY',
+    },
+);

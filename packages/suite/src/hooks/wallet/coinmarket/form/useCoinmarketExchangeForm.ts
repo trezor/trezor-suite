@@ -16,10 +16,7 @@ import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { useActions, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/coinmarketExchangeActions';
-import {
-    loadInvityData,
-    saveComposedTransactionInfo,
-} from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
     addIdsToQuotes,
     getComposeAddressPlaceholder,
@@ -66,6 +63,7 @@ import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRec
 import { Network, networksCompatibility } from '@suite-common/wallet-config';
 import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
 import useCoinmarketExchangeFormHelpers from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeFormHelpers';
+import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 
 export const useCoinmarketExchangeForm = ({
     selectedAccount,
@@ -536,9 +534,7 @@ export const useCoinmarketExchangeForm = ({
         }
     }, [previousValues, values, handleChange, handleSubmit, isPageOffers]);
 
-    useEffect(() => {
-        dispatch(loadInvityData());
-    }, [dispatch]);
+    useCoinmarketLoadData();
 
     useEffect(() => {
         if (!composedLevels) return;

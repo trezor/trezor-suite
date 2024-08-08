@@ -96,6 +96,7 @@ const useCoinmarketVerifyAccount = ({
     const isDebug = useSelector(selectIsDebugModeActive);
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean | undefined>(undefined);
 
     const methods = useForm<CoinmarketVerifyFormProps>({
         mode: 'onChange',
@@ -132,6 +133,7 @@ const useCoinmarketVerifyAccount = ({
 
     const onChangeAccount = (account: CoinmarketVerifyFormAccountOptionProps) => {
         if (account.type === 'ADD_SUITE' && device) {
+            setIsMenuOpen(true);
             dispatch(
                 openModal({
                     type: 'add-account',
@@ -144,6 +146,7 @@ const useCoinmarketVerifyAccount = ({
             return;
         }
 
+        setIsMenuOpen(undefined);
         selectAccountOption(account);
     };
 
@@ -167,6 +170,7 @@ const useCoinmarketVerifyAccount = ({
         receiveNetwork,
         selectAccountOptions,
         selectedAccountOption,
+        isMenuOpen,
         getTranslationIds,
         onChangeAccount,
     };

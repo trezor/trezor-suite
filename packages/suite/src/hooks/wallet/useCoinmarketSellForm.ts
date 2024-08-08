@@ -19,10 +19,7 @@ import {
     saveQuoteRequest,
     saveQuotes,
 } from 'src/actions/wallet/coinmarketSellActions';
-import {
-    loadInvityData,
-    saveComposedTransactionInfo,
-} from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
     SellFormState,
     SellFormContextValues,
@@ -52,6 +49,7 @@ import { CoinmarketTradeSellType, UseCoinmarketProps } from 'src/types/coinmarke
 import { useCoinmarketSellFormDefaultValues } from 'src/hooks/wallet/useCoinmarketSellFormDefaultValues';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
+import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -83,9 +81,7 @@ export const useCoinmarketSellForm = ({
 }: UseCoinmarketProps): SellFormContextValues => {
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(loadInvityData());
-    }, [dispatch]);
+    useCoinmarketLoadData();
 
     const accounts = useSelector(state => state.wallet.accounts);
     const device = useSelector(selectDevice);

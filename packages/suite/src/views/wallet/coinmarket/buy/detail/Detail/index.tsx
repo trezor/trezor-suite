@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import { Card, variables } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useLayout } from 'src/hooks/suite';
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
+import { useDispatch } from 'src/hooks/suite';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import {
     CoinmarketGetCryptoQuoteAmountProps,
@@ -29,8 +28,6 @@ const StyledCard = styled(Card)`
 `;
 
 const CoinmarketDetail = () => {
-    useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-buy" />);
-
     const { trade, info, account } = useCoinmarketDetailContext<CoinmarketTradeBuyType>();
     const dispatch = useDispatch();
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
@@ -65,7 +62,7 @@ const CoinmarketDetail = () => {
         amountInCrypto: trade?.data?.wantCrypto,
         sendAmount: trade?.data?.fiatStringAmount ?? '',
         sendCurrency: trade?.data?.fiatCurrency,
-        receiveAmount: trade?.data?.receiveAmount?.toString() ?? '',
+        receiveAmount: trade?.data?.receiveStringAmount ?? '',
         receiveCurrency: trade?.data?.receiveCurrency,
     };
 

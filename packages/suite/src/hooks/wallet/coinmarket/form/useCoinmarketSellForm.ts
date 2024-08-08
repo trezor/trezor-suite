@@ -57,6 +57,7 @@ import { useCoinmarketSellFormHelpers } from 'src/hooks/wallet/coinmarket/form/u
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Network } from '@suite-common/wallet-config';
 import { useCoinmarketSatsSwitcher } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSatsSwitcher';
+import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 
 export const useCoinmarketSellForm = ({
     selectedAccount,
@@ -104,7 +105,6 @@ export const useCoinmarketSellForm = ({
         openCoinmarketSellConfirmModal,
         submitRequestForm,
         saveComposedTransactionInfo,
-        loadInvityData,
         savePaymentMethods,
     } = useActions({
         goto: routerActions.goto,
@@ -247,7 +247,6 @@ export const useCoinmarketSellForm = ({
         quoteCryptoAmount: quotesByPaymentMethod?.[0]?.cryptoStringAmount,
         quoteFiatAmount: quotesByPaymentMethod?.[0]?.fiatStringAmount,
         network,
-        setIsSubmittingHelper,
     });
 
     const getQuotesRequest = useCallback(
@@ -610,10 +609,7 @@ export const useCoinmarketSellForm = ({
         }
     };
 
-    // hooks
-    useEffect(() => {
-        dispatch(loadInvityData());
-    }, [dispatch, loadInvityData]);
+    useCoinmarketLoadData();
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -654,35 +650,10 @@ export const useCoinmarketSellForm = ({
             setState(initState);
         };
 
-        // used to prevent composing transaction on empty fields
-        const shouldCompose =
-            values?.cryptoInput !== '' ||
-            values?.fiatInput !== '' ||
-            values?.setMaxOutputId === 0 ||
-            // check changing accounts
-            initState?.formValues?.outputs[0].address !== values?.outputs?.[0]?.address;
-
-        if (
-            initState &&
-            initState?.account.descriptor !== state?.account.descriptor &&
-            shouldCompose
-        ) {
+        if (initState && initState?.account.descriptor !== state?.account.descriptor) {
             setStateAsync(initState);
         }
-    }, [
-        state,
-        initState,
-        account,
-        network,
-        device,
-        accounts,
-        chunkify,
-        setValue,
-        values,
-        values?.cryptoInput,
-        values?.fiatInput,
-        values?.setMaxOutputId,
-    ]);
+    }, [state, initState, account, network, device, accounts, chunkify, setValue]);
 
     useEffect(() => {
         if (!composedLevels) return;
@@ -718,10 +689,10 @@ export const useCoinmarketSellForm = ({
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got sellInfo from Invity API server
-        if (!isDraft && sellInfo) {
+        if (!isDraft && sellInfo && !formState.isDirty) {
             reset(defaultValues);
         }
-    }, [reset, sellInfo, defaultValues, isDraft, isPageOffers]);
+    }, [reset, sellInfo, defaultValues, isDraft, isPageOffers, formState.isDirty]);
 
     useDebounce(
         () => {
