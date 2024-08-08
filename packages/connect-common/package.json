@@ -37,7 +37,7 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js",
-        "validate-releases.json": "./scripts/check-firmware-revisions.sh t1b1 && ./scripts/check-firmware-revisions.sh t2t1"
+        "validate-releases.json": "./scripts/check-all-firmware-revisions.sh"
     },
     "dependencies": {
         "@trezor/env-utils": "workspace:*",

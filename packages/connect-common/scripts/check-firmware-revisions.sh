@@ -10,11 +10,14 @@ fi
 
 DEVICE=$1
 
-if [[ $DEVICE != "t1b1" && $DEVICE != "t2t1" ]]
-    then
-        echo "device must be either 't1b1' or 't2t1' (lowercase!)"
-        exit 1
+RELEASES_FOLDER="$PARENT_PATH"/../files/firmware
+
+if ! test -d "$RELEASES_FOLDER/$DEVICE"; then
+    echo "Device $DEVICE not found in releases folder!"
+    exit 1
 fi
+
+echo "CHECKING RELEASES FOR $DEVICE"
 
 BRANCH="main"
 REPO_DIR_NAME=$PARENT_PATH"/../../../../trezor-firmware-for-revision-check"
@@ -33,7 +36,7 @@ git fetch origin
 git checkout "$BRANCH"
 git reset "origin/$BRANCH" --hard
 
-DATA=$(jq -r '.[] | .version |= join(".") | .firmware_revision + "%" + .version' < "$PARENT_PATH"/../files/firmware/"$DEVICE"/releases.json)
+DATA=$(jq -r '.[] | .version |= join(".") | .firmware_revision + "%" + .version' < "$RELEASES_FOLDER/$DEVICE"/releases.json)
 
 for ROW in $DATA;
 do 
