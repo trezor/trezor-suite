@@ -8918,7 +8918,7 @@ export default defineMessages({
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',
         defaultMessage:
-            'Stake any amount and watch that sweet {symbol} roll in. With our current APY rate of {apyPercent}%, your rewards earn too!',
+            'Stake a minimum amount of {amount} {symbol} and start earning rewards. With our current APY rate of {apyPercent}%, your rewards earn too!',
     },
     TR_STAKE_LEARN_MORE: {
         id: 'TR_STAKE_LEARN_MORE',
