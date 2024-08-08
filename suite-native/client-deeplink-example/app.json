@@ -1,0 +1,14 @@
+{
+    "expo": {
+        "name": "client-deeplink-example",
+        "slug": "client-deeplink-example",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "scheme": "connect-client",
+        "userInterfaceStyle": "automatic",
+        "plugins": ["expo-router"],
+        "experiments": {
+            "typedRoutes": true
+        }
+    }
+}

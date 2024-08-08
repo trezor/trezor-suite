@@ -193,5 +193,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             },
             isDetoxTestBuild: !!process.env.IS_DETOX_BUILD,
         },
+        scheme: 'trezor-suite',
     };
 };

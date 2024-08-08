@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "master-deeplink-example",
+    "slug": "master-deeplink-example",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "trezor-suite",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true
+    },
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9aad7c96-2912-4a16-9baa-cc03ef21d6f7"
+      }
+    },
+    "android": {
+      "package": "com.karliatto.masterdeeplinkexample"
+    }
+  }
+}
