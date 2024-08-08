@@ -3,7 +3,7 @@
 export const INTERFACE_UNABLE_TO_OPEN_DEVICE = 'Unable to open device' as const;
 export const INTERFACE_UNABLE_TO_CLOSE_DEVICE = 'Unable to close device' as const;
 /**
- * An error occured during data transfer.
+ * An error occurred during data transfer.
  * If user disconnects device DEVICE_DISCONNECTED_DURING_ACTION should be returned
  *
  * transports: webusb
