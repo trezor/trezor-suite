@@ -34,6 +34,19 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
+const ClampedTextContent = styled.div`
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+`;
+
+const ButtonGroupContainer = styled.div`
+    min-width: 230px;
+`;
+
 const ValidationMessage = styled.div`
     color: ${({ theme }) => theme.TYPE_ORANGE};
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -135,26 +148,32 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             )
                         }
                     >
-                        <ButtonGroup size="small">
-                            <Button
-                                onClick={() => fileInputElement?.current?.click()}
-                                isDisabled={isDeviceLocked || !isSupportedHomescreen}
-                                variant="secondary"
-                                data-test="@settings/device/homescreen-upload"
-                                key="@settings/device/homescreen-upload"
-                            >
-                                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
-                            </Button>
-                            <Button
-                                onClick={openGallery}
-                                isDisabled={isDeviceLocked || !isSupportedHomescreen}
-                                data-test="@settings/device/homescreen-gallery"
-                                key="@settings/device/homescreen-gallery"
-                                variant="secondary"
-                            >
-                                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
-                            </Button>
-                        </ButtonGroup>
+                        <ButtonGroupContainer>
+                            <ButtonGroup size="medium">
+                                <Button
+                                    onClick={() => fileInputElement?.current?.click()}
+                                    isDisabled={isDeviceLocked || !isSupportedHomescreen}
+                                    variant="secondary"
+                                    data-test="@settings/device/homescreen-upload"
+                                    key="@settings/device/homescreen-upload"
+                                >
+                                    <ClampedTextContent>
+                                        <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
+                                    </ClampedTextContent>
+                                </Button>
+                                <Button
+                                    onClick={openGallery}
+                                    isDisabled={isDeviceLocked || !isSupportedHomescreen}
+                                    data-test="@settings/device/homescreen-gallery"
+                                    key="@settings/device/homescreen-gallery"
+                                    variant="secondary"
+                                >
+                                    <ClampedTextContent>
+                                        <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
+                                    </ClampedTextContent>
+                                </Button>
+                            </ButtonGroup>
+                        </ButtonGroupContainer>
                     </Tooltip>
                 </ActionColumn>
             </SettingsSectionItem>
