@@ -14,7 +14,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { isChanged } from '@suite-common/suite-utils';
 import { selectDevice, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
@@ -131,29 +130,6 @@ export const useCoinmarketExchangeForm = ({
 
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
 
-    useEffect(() => {
-        const setStateAsync = async (
-            initState: NonNullable<ReturnType<typeof useExchangeState>>,
-        ) => {
-            const address = await getComposeAddressPlaceholder(
-                account,
-                network,
-                device,
-                accounts,
-                chunkify,
-            );
-            if (initState?.formValues && address) {
-                initState.formValues.outputs[0].address = address;
-
-                setState(initState);
-            }
-        };
-
-        if (!state && initState) {
-            setStateAsync(initState);
-        }
-    }, [state, initState, account, network, device, accounts, chunkify, exchangeInfo?.sellSymbols]);
-
     const methods = useForm({
         mode: 'onChange',
         defaultValues: isDraft ? draft : defaultValues,
@@ -177,22 +153,49 @@ export const useCoinmarketExchangeForm = ({
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     useEffect(() => {
-        if (!isChanged(defaultValues, values)) {
-            removeDraft(account.key);
+        if (values.sendCryptoSelect && values.sendCryptoSelect?.cryptoSymbol) {
+            const output = values?.outputs?.[0];
+            const newValues = {
+                ...values,
+                sendCryptoSelect: values.sendCryptoSelect,
+                outputs: output
+                    ? [
+                          {
+                              ...output,
+                              amount: '',
+                              fiat: '',
+                          },
+                      ]
+                    : [],
+            } as ExchangeFormState;
 
-            return;
+            saveDraft(account.key, newValues);
         }
+    }, [account.key, removeDraft, saveDraft, values, values.sendCryptoSelect]);
 
-        if (values.sendCryptoSelect && !values.sendCryptoSelect?.cryptoSymbol) {
-            removeDraft(account.key);
+    useEffect(() => {
+        const setStateAsync = async (
+            initState: NonNullable<ReturnType<typeof useExchangeState>>,
+        ) => {
+            const address = await getComposeAddressPlaceholder(
+                account,
+                network,
+                device,
+                accounts,
+                chunkify,
+            );
+            if (initState?.formValues && address) {
+                initState.formValues.outputs[0].address = address;
 
-            return;
+                // this is also starting initial composing of the transaction
+                setState(initState);
+            }
+        };
+
+        if (!state && initState) {
+            setStateAsync(initState);
         }
-
-        if (values.receiveCryptoSelect && !values.receiveCryptoSelect?.cryptoSymbol) {
-            removeDraft(account.key);
-        }
-    }, [defaultValues, values, removeDraft, account.key]);
+    }, [state, initState, account, network, device, accounts, chunkify, setValue, values]);
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -287,10 +290,7 @@ export const useCoinmarketExchangeForm = ({
         setValue(CRYPTO_INPUT, formattedCryptoValue, { shouldValidate: true });
     };
 
-    const isLoading =
-        !exchangeInfo?.exchangeList ||
-        exchangeInfo?.exchangeList.length === 0 ||
-        !state?.formValues?.outputs[0].address;
+    const isLoading = !exchangeInfo?.exchangeList || exchangeInfo?.exchangeList.length === 0;
 
     const noProviders =
         exchangeInfo?.exchangeList?.length === 0 ||

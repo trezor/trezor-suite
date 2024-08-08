@@ -17,6 +17,7 @@ import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtil
 import { CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
 import { FieldError, FieldValues } from 'react-hook-form';
 import { coinmarketGetAccountLabel } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { isCoinmarketSellOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 
 const CoinmarketFormInputCrypto = <TFieldValues extends FieldValues>({
     cryptoInputName,
@@ -25,7 +26,8 @@ const CoinmarketFormInputCrypto = <TFieldValues extends FieldValues>({
 }: CoinmarketFormInputFiatCryptoProps<TFieldValues>) => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
-    const { amountLimits, account, network } = useCoinmarketFormContext();
+    const context = useCoinmarketFormContext();
+    const { amountLimits, account, network } = context;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const {
         control,
@@ -60,6 +62,10 @@ const CoinmarketFormInputCrypto = <TFieldValues extends FieldValues>({
         <NumberInput
             name={cryptoInputName}
             onChange={() => {
+                if (isCoinmarketSellOffers(context)) {
+                    context.setValue('setMaxOutputId', undefined, { shouldDirty: true });
+                }
+
                 clearErrors(fiatInputName);
             }}
             inputState={getInputState(cryptoInputError)}
