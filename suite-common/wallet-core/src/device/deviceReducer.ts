@@ -4,7 +4,11 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInstances, getStatus } from '@suite-common/suite-utils';
 import { Device, Features, UI } from '@trezor/connect';
-import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
+import {
+    getFirmwareVersion,
+    getFirmwareVersionArray,
+    isBitcoinOnlyDevice,
+} from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -933,3 +937,6 @@ export const selectInstacelessUnselectedDevices = memoize((state: DeviceRootStat
 
     return deviceUtils.getSortedDevicesWithoutInstances(allDevices, device?.id);
 });
+
+export const selectIsBitcoinOnlyDevice = (state: DeviceRootState) =>
+    isBitcoinOnlyDevice(selectDevice(state));

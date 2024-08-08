@@ -1,15 +1,18 @@
-import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 
-import { VStack, Text, HStack, Switch, Card } from '@suite-native/atoms';
+import { VStack, Text } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { toggleEnabledDiscoveryNetworkSymbol } from '@suite-native/discovery';
+import { Translation } from '@suite-native/intl';
+import { Icon } from '@suite-common/icons';
 
 import { useCoinEnabling } from '../hooks/useCoinEnabling';
+import { NetworkSymbolSwitchItem } from './NetworkSymbolSwitchItem';
 
-export const DiscoveryCoinsFilter = () => {
-    const dispatch = useDispatch();
+type DiscoveryCoinsFilterProps = {
+    isToastEnabled?: boolean;
+};
 
+export const DiscoveryCoinsFilter = ({ isToastEnabled = true }: DiscoveryCoinsFilterProps) => {
     const { enabledNetworkSymbols, availableNetworks, applyDiscoveryChanges } = useCoinEnabling();
 
     useEffect(() => {
@@ -20,23 +23,21 @@ export const DiscoveryCoinsFilter = () => {
     const uniqueNetworkSymbols = [...new Set(availableNetworks.map(n => n.symbol))];
 
     return (
-        <Card>
-            <VStack spacing="small">
-                <Text variant="titleSmall">Enable discovery of networks</Text>
-                <VStack>
-                    {uniqueNetworkSymbols.map((networkSymbol: NetworkSymbol) => (
-                        <HStack justifyContent="space-between" key={networkSymbol}>
-                            <Text>{networkSymbol.toUpperCase()}</Text>
-                            <Switch
-                                onChange={() =>
-                                    dispatch(toggleEnabledDiscoveryNetworkSymbol(networkSymbol))
-                                }
-                                isChecked={enabledNetworkSymbols.includes(networkSymbol)}
-                            />
-                        </HStack>
-                    ))}
-                </VStack>
+        <VStack spacing={12}>
+            {uniqueNetworkSymbols.map((networkSymbol: NetworkSymbol) => (
+                <NetworkSymbolSwitchItem
+                    key={networkSymbol}
+                    networkSymbol={networkSymbol}
+                    isEnabled={enabledNetworkSymbols.includes(networkSymbol)}
+                    isToastEnabled={isToastEnabled}
+                />
+            ))}
+            <VStack paddingTop="small" paddingBottom="extraLarge" alignItems="center">
+                <Icon name="questionLight" color="textSubdued" size="large" />
+                <Text color="textSubdued" textAlign="center">
+                    <Translation id="moduleSettings.coinEnabling.bottomNote" />
+                </Text>
             </VStack>
-        </Card>
+        </VStack>
     );
 };
