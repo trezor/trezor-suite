@@ -232,7 +232,7 @@ export const useCoinmarketSellForm = ({
     const hasValues = (values.fiatInput || values.cryptoInput) && !!values.currencySelect?.value;
     const isFirstRequest = innerQuotes === undefined;
     const noProviders = sellInfo?.sellList?.providers.length === 0;
-    const isLoading = !sellInfo?.sellList || !state?.formValues?.outputs[0].address;
+    const isLoading = !sellInfo?.sellList;
     const isFormLoading =
         isLoading || formState.isSubmitting || isSubmittingHelper || isFirstRequest;
     const isFormInvalid = !(formIsValid && hasValues);
@@ -650,13 +650,39 @@ export const useCoinmarketSellForm = ({
                 setValue(FORM_OUTPUT_ADDRESS, address);
             }
 
+            // this is also starting initial composing of the transaction
             setState(initState);
         };
 
-        if (initState && initState?.account.descriptor !== state?.account.descriptor) {
+        // used to prevent composing transaction on empty fields
+        const shouldCompose =
+            values?.cryptoInput !== '' ||
+            values?.fiatInput !== '' ||
+            values?.setMaxOutputId === 0 ||
+            // check changing accounts
+            initState?.formValues?.outputs[0].address !== values?.outputs?.[0]?.address;
+
+        if (
+            initState &&
+            initState?.account.descriptor !== state?.account.descriptor &&
+            shouldCompose
+        ) {
             setStateAsync(initState);
         }
-    }, [state, initState, account, network, device, accounts, chunkify, setValue]);
+    }, [
+        state,
+        initState,
+        account,
+        network,
+        device,
+        accounts,
+        chunkify,
+        setValue,
+        values,
+        values?.cryptoInput,
+        values?.fiatInput,
+        values?.setMaxOutputId,
+    ]);
 
     useEffect(() => {
         if (!composedLevels) return;
@@ -753,13 +779,6 @@ export const useCoinmarketSellForm = ({
         setIsFromRedirect,
         handleChange,
     ]);
-
-    // compose request on account change
-    useEffect(() => {
-        if (initState?.account.descriptor === state?.account.descriptor) {
-            composeRequest(FORM_CRYPTO_INPUT);
-        }
-    }, [composeRequest, initState?.account.descriptor, state?.account.descriptor]);
 
     useEffect(() => {
         return () => {

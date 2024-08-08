@@ -73,7 +73,6 @@ export const useCoinmarketSellFormHelpers = ({
     // watch change in crypto amount and recalculate fees on change
     const onCryptoAmountChange = useCallback(
         (amount: string) => {
-            setValue('setMaxOutputId', undefined, { shouldDirty: true });
             setValue(FORM_OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
         },
         [setValue],
@@ -141,7 +140,7 @@ export const useCoinmarketSellFormHelpers = ({
                 ? amountToSatoshi(amount, network.decimals)
                 : amount;
             setValue(FORM_CRYPTO_INPUT, cryptoInputValue, { shouldDirty: true });
-            // clearErrors(FORM_CRYPTO_INPUT);
+            setValue('setMaxOutputId', undefined, { shouldDirty: true });
             onCryptoAmountChange(cryptoInputValue);
         },
         [

@@ -1,4 +1,4 @@
-import { useEffect, ReactElement } from 'react';
+import { ReactElement } from 'react';
 import styled, { css } from 'styled-components';
 import { FieldValues } from 'react-hook-form';
 import { getInputState } from '@suite-common/wallet-utils';
@@ -29,7 +29,7 @@ const StyledInput = styled(NumberInput)<{ $isWithRate: boolean }>`
                 border-right: ${spacingsPx.xxxs} solid ${({ theme }) => theme.borderElevation2};
             }
         `}
-` as <T extends FieldValues>(props: NumberInputProps<T> & { isWithRate: boolean }) => ReactElement; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-1181765843
+` as <T extends FieldValues>(props: NumberInputProps<T> & { $isWithRate: boolean }) => ReactElement; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-1181765843
 
 interface SendCryptoInputProps {
     isWithRate: boolean;
@@ -56,13 +56,6 @@ const SendCryptoInput = ({ isWithRate }: SendCryptoInputProps) => {
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
     const decimals = tokenData ? tokenData.decimals : network.decimals;
-
-    const { outputs } = getValues();
-    const amount = outputs?.[0]?.amount;
-
-    useEffect(() => {
-        composeRequest();
-    }, [amount, composeRequest]);
 
     const amountError = errors.outputs?.[0]?.amount;
     const fiatError = errors.outputs?.[0]?.fiat;
@@ -101,7 +94,7 @@ const SendCryptoInput = ({ isWithRate }: SendCryptoInputProps) => {
             inputState={getInputState(amountError || fiatError)}
             name={CRYPTO_INPUT}
             maxLength={formInputsMaxLength.amount}
-            isWithRate={isWithRate}
+            $isWithRate={isWithRate}
             rules={cryptoInputRules}
             bottomText={amountError?.message || null}
             innerAddon={<SendCryptoSelect />}
