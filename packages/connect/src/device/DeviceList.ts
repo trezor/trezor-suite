@@ -66,7 +66,6 @@ interface DeviceListEvents {
 
 export interface IDeviceList {
     isConnected(): this is DeviceList;
-    assertConnected(): asserts this is DeviceList;
     pendingConnection(): Promise<void> | undefined;
     setTransports: DeviceList['setTransports'];
     addAuthPenalty: DeviceList['addAuthPenalty'];
@@ -76,6 +75,12 @@ export interface IDeviceList {
     init: DeviceList['init'];
     dispose: DeviceList['dispose'];
 }
+
+export const assertDeviceListConnected: (
+    deviceList: IDeviceList,
+) => asserts deviceList is DeviceList = deviceList => {
+    if (!deviceList.isConnected()) throw ERRORS.TypedError('Transport_Missing');
+};
 
 type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug'> & {
     messages: Record<string, any>;
@@ -103,10 +108,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     isConnected(): this is DeviceList {
         return !!this.transport;
-    }
-
-    assertConnected(): asserts this is DeviceList {
-        if (!this.transport) throw ERRORS.TypedError('Transport_Missing');
     }
 
     pendingConnection() {
