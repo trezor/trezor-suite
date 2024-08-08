@@ -246,8 +246,14 @@ export const getBundleThunk = createThunk(
 
             if (!hasEmptyAccount && !failed && !skipCardanoDerivation) {
                 const index = prevAccounts[0] ? prevAccounts[0].index + 1 : 0;
+                const isEvmLedgerDerivationPath =
+                    configNetwork.networkType === 'ethereum' &&
+                    configNetwork.accountType === 'ledger';
+
+                const pathIndex = (index + (isEvmLedgerDerivationPath ? 1 : 0)).toString();
+
                 bundle.push({
-                    path: configNetwork.bip43Path.replace('i', index.toString()),
+                    path: configNetwork.bip43Path.replace('i', pathIndex),
                     coin: configNetwork.symbol,
                     identity: tryGetAccountIdentity({
                         networkType: configNetwork.networkType,
