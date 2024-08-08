@@ -5,7 +5,6 @@ import type { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 import { isChanged } from '@suite-common/suite-utils';
 import { formatAmount, getNetwork } from '@suite-common/wallet-utils';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
-import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import invityAPI from 'src/services/suite/invityAPI';
 import {
     createQuoteLink,
@@ -42,6 +41,7 @@ import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/coinmarket/form
 import { useCoinmarketSatsSwitcher } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSatsSwitcher';
 import { Network } from '@suite-common/wallet-config';
 import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
@@ -162,7 +162,6 @@ const useCoinmarketBuyForm = ({
         quoteCryptoAmount: quotesByPaymentMethod?.[0]?.receiveStringAmount,
         quoteFiatAmount: quotesByPaymentMethod?.[0]?.fiatStringAmount,
         network,
-        setIsSubmittingHelper,
     });
 
     const getQuotesRequest = useCallback(
@@ -373,10 +372,7 @@ const useCoinmarketBuyForm = ({
         setCallInProgress(false);
     };
 
-    // hooks
-    useEffect(() => {
-        dispatch(loadInvityData());
-    }, [dispatch]);
+    useCoinmarketLoadData();
 
     // call change handler on every change of text inputs with debounce
     useDebounce(

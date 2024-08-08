@@ -24,6 +24,7 @@ const FiatInput = () => {
         formState: { errors },
         updateSendCryptoValue,
         setValue,
+        composeRequest,
     } = useCoinmarketExchangeFormContext();
 
     const { translationString } = useTranslation();
@@ -49,6 +50,8 @@ const FiatInput = () => {
                     updateSendCryptoValue(value, network.decimals);
                     clearErrors(FIAT_INPUT);
                 }
+
+                composeRequest();
             }}
             inputState={getInputState(fiatError || amountError)}
             name={FIAT_INPUT}

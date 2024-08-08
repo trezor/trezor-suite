@@ -75,7 +75,6 @@ const CoinmarketLayoutNavigationItem = ({
             <ButtonWrapper
                 size="small"
                 variant="tertiary"
-                title={title}
                 onClick={handleTransactionRoute}
                 data-testid={`@coinmarket/menu/${transactionsRoute}`}
             >

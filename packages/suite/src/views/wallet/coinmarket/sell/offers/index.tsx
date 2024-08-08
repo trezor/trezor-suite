@@ -3,6 +3,7 @@ import Offers from './Offers';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketSellOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketSellOffers';
 import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
 
 const OffersIndex = (props: UseCoinmarketProps) => {
     const coinmarketSellOffers = useCoinmarketSellOffers(props);
@@ -14,6 +15,11 @@ const OffersIndex = (props: UseCoinmarketProps) => {
     );
 };
 
-export default withSelectedAccountLoaded(OffersIndex, {
-    title: 'TR_NAV_SELL',
-});
+export default withSelectedAccountLoaded(
+    withCoinmarketLayoutWrap(OffersIndex, {
+        backRoute: 'wallet-coinmarket-sell',
+    }),
+    {
+        title: 'TR_NAV_SELL',
+    },
+);

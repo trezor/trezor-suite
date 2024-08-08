@@ -5,6 +5,8 @@ import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
+    margin-top: -${spacingsPx.md};
+    position: relative;
 `;
 
 const SmallButton = styled(Button).attrs(props => ({
