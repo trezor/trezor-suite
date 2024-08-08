@@ -12,7 +12,7 @@ export const DeviceCompromised = () => {
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
     const authenticityError =
-        device?.features && device.authenticityChecks.firmwareRevision?.success === false
+        device?.features && device.authenticityChecks?.firmwareRevision?.success === false
             ? device.authenticityChecks.firmwareRevision?.error
             : undefined;
 

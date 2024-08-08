@@ -59,6 +59,7 @@ export const SuiteBanners = () => {
     } else if (
         !isFirmwareRevisionCheckDisabled &&
         device?.features &&
+        device?.authenticityChecks !== undefined &&
         device?.authenticityChecks.firmwareRevision !== null && // check was performed
         device?.authenticityChecks.firmwareRevision.success === false &&
         device?.authenticityChecks.firmwareRevision.error === 'cannot-perform-check-offline' // but it was not possible to finish it (user is offline & revision not found locally)
