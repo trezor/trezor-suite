@@ -147,7 +147,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     availableTranslations: string[] = [];
 
-    authenticityChecks: KnownDevice['authenticityChecks'] = {
+    authenticityChecks: NonNullable<KnownDevice['authenticityChecks']> = {
         firmwareRevision: null,
     };
 

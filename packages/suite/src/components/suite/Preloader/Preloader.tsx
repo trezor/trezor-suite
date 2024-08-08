@@ -77,11 +77,16 @@ export const Preloader = ({ children }: PreloaderProps) => {
         selectedDevice.connected === true &&
         !isFirmwareRevisionCheckDisabled
     ) {
-        const failedChecks = Object.values(selectedDevice.authenticityChecks).filter(
-            // If `check` is null, it means that it was not performed yet.
-            // If Suite is offline and we cannot perform check, the error banner shows to urge user to go online.
-            check => check?.success === false && check?.error !== 'cannot-perform-check-offline',
-        );
+        const failedChecks =
+            selectedDevice.authenticityChecks !== undefined
+                ? Object.values(selectedDevice.authenticityChecks).filter(
+                      // If `check` is null, it means that it was not performed yet.
+                      // If Suite is offline and we cannot perform check, the error banner shows to urge user to go online.
+                      check =>
+                          check?.success === false &&
+                          check?.error !== 'cannot-perform-check-offline',
+                  )
+                : [];
 
         if (failedChecks.length > 0) {
             return <DeviceCompromised />;
