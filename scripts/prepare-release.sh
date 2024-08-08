@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# Prepare release and testing branches before Suite freeze, bump beta version, and create a pull request.
+# Run this script to freeze development of the next SUite version.
+# Prepare release branch, push it to the release repository, bump beta version, and create a pull request.
 # You need to have the permission to push to pretected branches in order to execute the script correctly.
+# You need to have the permission to push to the release repository, otherwise that step is not performed.
 # For security reasons, the script can only run locally as we do not have a shared GitHub token with the necessary permissions.
 # If you want the script to automatically create a pull request to bump beta version, install and set up gh tool:
 # brew install gh
@@ -32,8 +34,6 @@ CURRENT_VERSION_MONTH=$(echo "$CURRENT_VERSION" | cut -d '.' -f 2)
 
 RELEASE_MONTH="$CURRENT_VERSION_YEAR.$CURRENT_VERSION_MONTH"
 RELEASE_VERSION="$RELEASE_MONTH.1"
-TEST_UPGRADE_VERSION="$((CURRENT_VERSION_YEAR+10)).$CURRENT_VERSION_MONTH.1"
-TEST_DOWNGRADE_VERSION="0.$CURRENT_VERSION_YEAR.$CURRENT_VERSION_MONTH"
 if [ "$CURRENT_VERSION_MONTH" == 12 ]; then
   NEXT_VERSION_YEAR="$((CURRENT_VERSION_YEAR+1))"
   NEXT_VERSION_MONTH=1
@@ -53,19 +53,12 @@ git add $FILEPATH
 git commit -m "chore(suite): bump Suite version to $RELEASE_VERSION [RELEASE ONLY]"
 git push --set-upstream $ORIGIN "$(git branch --show-current)"
 
-echo Creating testing branch "$TEST_UPGRADE_VERSION"...
-git switch -c release/test-"$TEST_UPGRADE_VERSION" $MAIN_BRANCH
-sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$TEST_UPGRADE_VERSION\2/" $FILEPATH
-git add $FILEPATH
-git commit -m "chore(suite): set Suite version to $TEST_UPGRADE_VERSION for testing [RELEASE ONLY]"
-git push --set-upstream $ORIGIN "$(git branch --show-current)"
-
-echo Creating testing branch "$TEST_DOWNGRADE_VERSION"...
-git switch -c release/test-"$TEST_DOWNGRADE_VERSION" $MAIN_BRANCH
-sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$TEST_DOWNGRADE_VERSION\2/" $FILEPATH
-git add $FILEPATH
-git commit -m "chore(suite): set Suite version to $TEST_DOWNGRADE_VERSION for testing [RELEASE ONLY]"
-git push --set-upstream $ORIGIN "$(git branch --show-current)"
+echo Pushing to the release repository...
+if ! OUTPUT=$(git push -f https://github.com/trezor/trezor-suite-release.git HEAD 2>&1); then
+  tput setaf 3
+  echo -e "Could not push to the release repository.\n${OUTPUT}"
+  tput sgr0
+fi
 
 echo Bumping beta version to "$BETA_VERSION"...
 git switch -c chore/bump-suite-version-"$BETA_VERSION" $MAIN_BRANCH
