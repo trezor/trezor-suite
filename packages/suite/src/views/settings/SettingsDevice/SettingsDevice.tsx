@@ -1,11 +1,12 @@
-import { isDeviceRemembered } from '@suite-common/suite-utils';
-import { DeviceModelInternal, type TransportInfo } from '@trezor/connect';
-import { isBitcoinOnlyDevice, pickByDeviceModel } from '@trezor/device-utils';
+import { isDeviceRemembered, isDeviceWithButtons } from '@suite-common/suite-utils';
+import type { TransportInfo } from '@trezor/connect';
+import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import type { TrezorDevice } from 'src/types/suite';
+import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
 
 import { AuthenticateDevice } from './AuthenticateDevice';
 import { AutoLock } from './AutoLock';
@@ -27,7 +28,6 @@ import { SafetyChecks } from './SafetyChecks';
 import { WipeCode } from './WipeCode';
 import { WipeDevice } from './WipeDevice';
 import { ChangeLanguage } from './ChangeLanguage';
-import { isRecoveryInProgress } from '../../../utils/device/isRecoveryInProgress';
 import { HapticFeedback } from './HapticFeedback';
 import { Brightness } from './Brightness';
 import { DefaultWalletLoading } from './DefaultWalletLoading';
@@ -97,14 +97,11 @@ export const SettingsDevice = () => {
                     title={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER" />}
                     description={
                         <Translation
-                            id={pickByDeviceModel(deviceModelInternal, {
-                                default:
-                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH',
-                                [DeviceModelInternal.T1B1]:
-                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
-                                [DeviceModelInternal.T2B1]:
-                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
-                            })}
+                            id={
+                                deviceModelInternal && isDeviceWithButtons(deviceModelInternal)
+                                    ? 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON'
+                                    : 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH'
+                            }
                         />
                     }
                 />

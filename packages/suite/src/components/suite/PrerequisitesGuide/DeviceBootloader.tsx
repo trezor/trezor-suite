@@ -1,11 +1,12 @@
 import styled from 'styled-components';
-import { Translation, TroubleshootingTips } from 'src/components/suite';
+
+import { isDeviceWithButtons } from '@suite-common/suite-utils';
 import { IconButton } from '@trezor/components';
+
+import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { TrezorDevice } from 'src/types/suite';
-import { pickByDeviceModel } from '@trezor/device-utils';
-import { DeviceModelInternal } from '@trezor/connect';
 
 const WhiteSpace = styled.div`
     min-width: 60px;
@@ -29,13 +30,11 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
             heading: <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT" />,
             description: (
                 <Translation
-                    id={pickByDeviceModel(deviceModelInternal, {
-                        default: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON',
-                        [DeviceModelInternal.T2T1]:
-                            'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH',
-                        [DeviceModelInternal.T3T1]:
-                            'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH',
-                    })}
+                    id={
+                        deviceModelInternal && isDeviceWithButtons(deviceModelInternal)
+                            ? 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON'
+                            : 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH'
+                    }
                 />
             ),
             noBullet: true,

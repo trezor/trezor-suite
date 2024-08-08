@@ -12,6 +12,7 @@ import {
     TextColumn,
     Translation,
 } from 'src/components/suite';
+import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
 import { Button, ButtonGroup, Tooltip, variables } from '@trezor/components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -95,9 +96,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     return (
         <>
             <SettingsSectionItem anchorId={SettingsAnchor.Homescreen}>
-                {[DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(
-                    deviceModelInternal,
-                ) && (
+                {HAS_MONOCHROME_SCREEN[deviceModelInternal] && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
@@ -143,7 +142,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                 data-testid="@settings/device/homescreen-upload"
                                 key="@settings/device/homescreen-upload"
                             >
-                                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
+                                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />s
                             </Button>
                             <Button
                                 onClick={openGallery}

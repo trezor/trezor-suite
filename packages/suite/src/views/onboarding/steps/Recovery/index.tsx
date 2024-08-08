@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { pickByDeviceModel } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/connect';
+import { isDeviceWithButtons } from '@suite-common/suite-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { OnboardingButtonCta } from 'src/components/onboarding';
@@ -43,8 +44,8 @@ export const RecoveryStep = () => {
     const deviceModelInternal = device.features.internal_model;
 
     if (status === 'initial') {
-        // 1. step where users chooses number of words in case of T1B1
-        // In case of T2T1, T3T1, T2B1 show CTA button to start the process
+        // 1. step where users chooses number of words in case of T1B1.
+        // Other devices show CTA button to start the process.
         if (deviceModelInternal === DeviceModelInternal.T1B1) {
             return (
                 <RecoveryStepBox
@@ -68,10 +69,11 @@ export const RecoveryStep = () => {
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 description={
                     <Translation
-                        id={pickByDeviceModel(deviceModelInternal, {
-                            default: 'TR_RECOVER_SUBHEADING_TOUCH',
-                            [DeviceModelInternal.T2B1]: 'TR_RECOVER_SUBHEADING_BUTTONS',
-                        })}
+                        id={
+                            isDeviceWithButtons(deviceModelInternal)
+                                ? 'TR_RECOVER_SUBHEADING_BUTTONS'
+                                : 'TR_RECOVER_SUBHEADING_TOUCH'
+                        }
                     />
                 }
                 innerActions={
@@ -115,6 +117,7 @@ export const RecoveryStep = () => {
                     default: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
                     [DeviceModelInternal.T1B1]: null,
                     [DeviceModelInternal.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
+                    [DeviceModelInternal.T3B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
                 device={device}
                 isActionAbortable={isActionAbortable}
@@ -148,6 +151,7 @@ export const RecoveryStep = () => {
                     default: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
                     [DeviceModelInternal.T1B1]: getModel1Description(),
                     [DeviceModelInternal.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
+                    [DeviceModelInternal.T3B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
                 isActionAbortable
             >

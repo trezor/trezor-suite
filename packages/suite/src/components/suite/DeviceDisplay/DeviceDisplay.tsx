@@ -31,7 +31,11 @@ export const DeviceDisplay = ({ address, displayMode }: DeviceDisplayProps) => {
 
     if (!deviceModel) return null;
 
-    const isPixelType = [DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModel);
+    const isPixelType = [
+        DeviceModelInternal.T1B1,
+        DeviceModelInternal.T2B1,
+        DeviceModelInternal.T3B1,
+    ].includes(deviceModel);
 
     const processedAddress = address.startsWith('bitcoincash:')
         ? address.replace('bitcoincash:', '')

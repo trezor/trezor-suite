@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import * as semver from 'semver';
 
-import { pickByDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import { H2, Button, variables, DeviceAnimation } from '@trezor/components';
 import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
 import { Modal, Translation, WebUsbButton } from 'src/components/suite';
@@ -10,6 +10,7 @@ import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useDevice, useFirmware } from 'src/hooks/suite';
 import { AbortButton } from 'src/components/suite/modals/AbortButton';
 import { ConfirmOnDevice } from '@trezor/product-components';
+import { TranslationKey } from '@suite-common/intl-types';
 
 const StyledModal = styled(Modal)`
     width: 580px;
@@ -226,23 +227,31 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     };
 
     const getSecondStep = () => {
-        const deviceFwVersion = getFirmwareVersion(uiEvent?.payload.device);
-        const deviceModelInternal = uiEvent?.payload.device.features?.internal_model;
-
         if (toNormal) {
             return 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON';
         }
 
-        return pickByDeviceModel(deviceModelInternal, {
-            default: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
+        // internal_model cannot be read from features while in bootloader mode.
+        const deviceModelFromEvent = uiEvent?.payload.device.features?.internal_model;
+
+        if (deviceModelFromEvent === undefined) {
+            // Fallback. This should never happen.
+            return 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON';
+        }
+
+        const deviceFwVersion = getFirmwareVersion(uiEvent?.payload.device);
+        const switchToBootloaderMap: Record<DeviceModelInternal, TranslationKey> = {
             [DeviceModelInternal.T1B1]:
                 semver.valid(deviceFwVersion) && semver.satisfies(deviceFwVersion, '<1.8.0')
                     ? 'TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS'
                     : 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
             [DeviceModelInternal.T2T1]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
             [DeviceModelInternal.T2B1]: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
+            [DeviceModelInternal.T3B1]: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
             [DeviceModelInternal.T3T1]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
-        } as const);
+        };
+
+        return switchToBootloaderMap[deviceModelFromEvent];
     };
 
     return (
