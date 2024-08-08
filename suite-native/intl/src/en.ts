@@ -516,6 +516,21 @@ export const en = {
                 subtitle:
                     'Only choosing coins that you use will shorten loading times when connecting your Trezor.',
             },
+            bottomNote:
+                'Didn’t find what you’re looking for? Check if it’s not a token running one of the listed coin’s network.',
+            toasts: {
+                coinEnabled: '<coin></coin> accounts will load for\nconnected Trezor.',
+                coinDisabled: '<coin></coin> accounts will be removed',
+            },
+            btcOnly: {
+                title: 'This device is BTC only.',
+                subtitle: 'So what exactly are you looking for?',
+            },
+            oneNetworkSymbolAlert: {
+                title: 'You need to keep at least 1 coin enabled at all times.',
+                description: 'Otherwise the app won’t show you anything.',
+                action: 'Got it',
+            },
         },
         viewOnly: {
             title: 'View-only',

@@ -9,6 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
@@ -16,6 +17,8 @@ type SwitchProps = {
     isChecked: boolean;
     onChange: (value: boolean) => void;
     isDisabled?: boolean; // Functionality of disabled works but styles are not implemented yet (waiting for design)
+    colorChecked?: Color;
+    colorUnchecked?: Color;
 };
 
 const SWITCH_CONTAINER_WIDTH = 44 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
@@ -41,7 +44,11 @@ const switchCircleStyle = prepareNativeStyle(utils => ({
     alignSelf: 'center',
 }));
 
-const useAnimationStyles = ({ isChecked }: Pick<SwitchProps, 'isChecked'>) => {
+const useAnimationStyles = ({
+    isChecked,
+    colorChecked,
+    colorUnchecked,
+}: Pick<SwitchProps, 'isChecked' | 'colorChecked' | 'colorUnchecked'>) => {
     const trackWidth = !isChecked ? 0 : SWITCH_CIRCLE_TRACK_WIDTH;
     const { utils } = useNativeStyles();
     const translateX = useSharedValue(trackWidth);
@@ -61,7 +68,12 @@ const useAnimationStyles = ({ isChecked }: Pick<SwitchProps, 'isChecked'>) => {
         backgroundColor: interpolateColor(
             translateX.value,
             [0, SWITCH_CIRCLE_TRACK_WIDTH],
-            [utils.colors.backgroundNeutralDisabled, utils.colors.backgroundSecondaryDefault],
+            [
+                colorUnchecked
+                    ? utils.colors[colorUnchecked]
+                    : utils.colors.backgroundNeutralDisabled,
+                colorChecked ? utils.colors[colorChecked] : utils.colors.backgroundSecondaryDefault,
+            ],
         ),
     }));
 
@@ -71,10 +83,18 @@ const useAnimationStyles = ({ isChecked }: Pick<SwitchProps, 'isChecked'>) => {
     };
 };
 
-export const Switch = ({ isChecked, onChange, isDisabled = false }: SwitchProps) => {
+export const Switch = ({
+    isChecked,
+    onChange,
+    isDisabled = false,
+    colorChecked,
+    colorUnchecked,
+}: SwitchProps) => {
     const { applyStyle } = useNativeStyles();
     const { animatedSwitchCircleStyle, animatedSwitchContainerStyle } = useAnimationStyles({
         isChecked,
+        colorChecked,
+        colorUnchecked,
     });
 
     const handlePress = () => {
