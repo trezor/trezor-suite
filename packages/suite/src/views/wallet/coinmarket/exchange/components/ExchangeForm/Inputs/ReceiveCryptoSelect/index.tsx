@@ -31,7 +31,8 @@ const Wrapper = styled.div`
 const CoinLogo = styled(CoinmarketCoinImage)`
     display: flex;
     align-items: center;
-    padding-right: 6px;
+    padding: 1px 0;
+    margin-right: 6px;
 `;
 
 const Option = styled.div`
@@ -59,6 +60,18 @@ const OptionNetwork = styled.div<{ $elevation: Elevation }>`
     border-radius: 4px;
 `;
 
+interface OptionsGroupItemProps {
+    label: string;
+    value: CryptoSymbol;
+    name: string;
+    cryptoSymbol?: CryptoSymbol;
+}
+
+interface OptionsGroup {
+    label: string;
+    options: OptionsGroupItemProps[];
+}
+
 const buildOptions = (
     account: Account,
     exchangeCoinInfo?: CryptoSymbolInfo[],
@@ -66,11 +79,6 @@ const buildOptions = (
     token?: string,
 ) => {
     if (!exchangeInfo || !exchangeCoinInfo) return [];
-
-    interface OptionsGroup {
-        label: string;
-        options: { label: string; value: string; name: string; cryptoSymbol?: CryptoSymbol }[];
-    }
 
     const symbolToFilter = token
         ? tokenToCryptoSymbol(token, account.symbol)
@@ -93,9 +101,10 @@ const buildOptions = (
                 options.push(category);
             }
             const coinSymbol = cryptoToCoinSymbol(coin.symbol);
+
             category.options.push({
                 label: coinSymbol,
-                value: coinSymbol,
+                value: coin.symbol,
                 name: coin.name,
                 cryptoSymbol: coin.symbol,
             });
@@ -142,7 +151,7 @@ const ReceiveCryptoSelect = () => {
                 render={({ field: { onChange, value } }) => (
                     <Select
                         inputState={getInputState(errors.receiveCryptoSelect)}
-                        onChange={(selected: any) => {
+                        onChange={(selected: OptionsGroupItemProps) => {
                             onChange(selected);
                             setAmountLimits(undefined);
                         }}
@@ -162,7 +171,7 @@ const ReceiveCryptoSelect = () => {
                             option: ReturnType<typeof buildOptions>[number]['options'][number],
                         ) => (
                             <Option>
-                                <CoinLogo symbol={option.value} size="small" />
+                                <CoinLogo symbol={option.label} size="small" />
                                 <OptionLabel>{option.label}</OptionLabel>
                                 <OptionName>{option.name}</OptionName>
                                 {option.cryptoSymbol &&

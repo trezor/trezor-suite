@@ -142,14 +142,17 @@ export const useCoinmarketSellFormHelpers = ({
             setValue(FORM_CRYPTO_INPUT, cryptoInputValue, { shouldDirty: true });
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
             onCryptoAmountChange(cryptoInputValue);
+
+            composeRequest(FORM_CRYPTO_INPUT);
         },
         [
-            account.formattedBalance,
-            shouldSendInSats,
-            network.decimals,
-            onCryptoAmountChange,
             tokenData,
+            account.formattedBalance,
+            network.decimals,
+            shouldSendInSats,
             setValue,
+            onCryptoAmountChange,
+            composeRequest,
         ],
     );
 

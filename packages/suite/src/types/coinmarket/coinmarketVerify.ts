@@ -29,6 +29,7 @@ export interface CoinmarketVerifyAccountReturnProps {
     receiveNetwork: NetworkSymbol | CryptoSymbol | undefined;
     selectAccountOptions: CoinmarketVerifyFormAccountOptionProps[];
     selectedAccountOption?: CoinmarketVerifyFormAccountOptionProps;
+    isMenuOpen: boolean | undefined;
     getTranslationIds: (
         type: CoinmarketVerifyFormAccountOptionProps['type'] | undefined,
     ) => CoinmarketGetTranslationIdsProps;
@@ -37,8 +38,17 @@ export interface CoinmarketVerifyAccountReturnProps {
 
 export type CoinmarketSelectedOfferVerifyOptionsProps = Pick<
     CoinmarketVerifyAccountReturnProps,
-    'receiveNetwork' | 'selectAccountOptions' | 'selectedAccountOption' | 'onChangeAccount'
+    | 'receiveNetwork'
+    | 'selectAccountOptions'
+    | 'selectedAccountOption'
+    | 'onChangeAccount'
+    | 'isMenuOpen'
 >;
+
+export interface CoinmarketSelectedOfferVerifyOptionsItemProps {
+    option: CoinmarketVerifyFormAccountOptionProps;
+    receiveNetwork: NetworkSymbol | CryptoSymbol | undefined;
+}
 
 export interface CoinmarketGetSuiteReceiveAccountsProps {
     currency: CryptoSymbol | undefined;

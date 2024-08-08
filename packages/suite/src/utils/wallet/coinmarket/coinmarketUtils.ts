@@ -95,7 +95,7 @@ export const getSendCryptoOptions = (
     }
 
     const options: {
-        value: string;
+        value: CryptoSymbol;
         label: string;
         token?: TokenInfo;
         cryptoSymbol: CryptoSymbol;
@@ -129,7 +129,7 @@ export const getSendCryptoOptions = (
 
             options.push({
                 label: token.symbol.toUpperCase(),
-                value: token.symbol.toUpperCase(),
+                value: tokenCryptoSymbol,
                 token,
                 cryptoSymbol: tokenCryptoSymbol,
             });
@@ -507,8 +507,15 @@ export const coinmarketGetAmountLabels = ({
 /**
  * Rounding up to two decimal places
  */
-export const coinmarketGetRoundedFiatAmount = (amount: string): string =>
-    new BigNumber(amount).toFixed(2, BigNumber.ROUND_HALF_UP);
+export const coinmarketGetRoundedFiatAmount = (amount: string | undefined): string => {
+    if (!amount) return '';
+
+    const numberAmount = new BigNumber(amount);
+
+    if (!numberAmount.isNaN()) return numberAmount.toFixed(2, BigNumber.ROUND_HALF_UP);
+
+    return '';
+};
 
 export const coinmarketGetAccountLabel = (label: string, shouldSendInSats: boolean | undefined) =>
     label === 'BTC' && shouldSendInSats ? 'sat' : label;

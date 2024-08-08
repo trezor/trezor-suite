@@ -23,10 +23,7 @@ import {
     saveQuoteRequest,
     saveQuotes,
 } from 'src/actions/wallet/coinmarketExchangeActions';
-import {
-    loadInvityData,
-    saveComposedTransactionInfo,
-} from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
     ExchangeFormState,
     ExchangeFormContextValues,
@@ -60,6 +57,7 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { CoinmarketTradeExchangeType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { BigNumber } from '@trezor/utils';
+import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -105,9 +103,7 @@ export const useCoinmarketExchangeForm = ({
     const { symbol, networkType } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
-    useEffect(() => {
-        dispatch(loadInvityData());
-    }, [dispatch]);
+    useCoinmarketLoadData();
 
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);

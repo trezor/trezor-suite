@@ -1,14 +1,16 @@
 import { withSelectedAccountLoaded } from 'src/components/wallet';
 import { CoinmarketAccountTransactions } from '../common/CoinmarketLayout/CoinmarketAccountTransactions/CoinmarketAccountTransactions';
-import { useLayout } from 'src/hooks/suite';
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
+import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
 
 const CoinmarketTransactions = () => {
-    useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-buy" />);
-
     return <CoinmarketAccountTransactions />;
 };
 
-export default withSelectedAccountLoaded(CoinmarketTransactions, {
-    title: 'TR_NAV_SELL',
-});
+export default withSelectedAccountLoaded(
+    withCoinmarketLayoutWrap(CoinmarketTransactions, {
+        backRoute: 'wallet-coinmarket-buy',
+    }),
+    {
+        title: 'TR_NAV_BUY',
+    },
+);

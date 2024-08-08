@@ -62,7 +62,7 @@ const SendCryptoSelect = () => {
                         setAmountLimits(undefined);
                         setValue(CRYPTO_INPUT, '');
                         setValue(FIAT_INPUT, '');
-                        const token = selected.value;
+                        const token = selected.label;
                         const invitySymbol = invityApiSymbolToSymbol(token).toLowerCase();
                         const tokenData = tokens?.find(
                             t =>
@@ -98,7 +98,7 @@ const SendCryptoSelect = () => {
                             {account.symbol === option.value.toLowerCase() ? (
                                 <CoinLogo size={18} symbol={account.symbol} />
                             ) : (
-                                <TokenLogo symbol={option.value} />
+                                <TokenLogo symbol={option.label} />
                             )}
                             <Label>{shouldSendInSats ? 'sat' : option.label}</Label>
                         </Option>

@@ -17,6 +17,7 @@ import {
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 import { useServerEnvironment } from './useServerEnviroment';
+import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 
 const isBuyTrade = (trade: Trade): trade is TradeBuy => trade.tradeType === 'buy';
 
@@ -96,6 +97,7 @@ export const useCoinmarketDetail = <T extends CoinmarketTradeType>({
         tradeType,
     });
 
+    useCoinmarketLoadData();
     useServerEnvironment();
     useCoinmarketWatchTrade({ account, trade });
 

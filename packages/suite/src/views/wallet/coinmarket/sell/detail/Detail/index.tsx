@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
 import { Card, variables } from '@trezor/components';
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useLayout } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import PaymentPending from '../components/PaymentPending';
 import PaymentSuccessful from '../components/PaymentSuccessful';
 import PaymentFailed from '../components/PaymentFailed';
@@ -27,8 +26,6 @@ const StyledCard = styled(Card)`
 `;
 
 const CoinmarketDetail = () => {
-    useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-sell" />);
-
     const { account, trade, info } = useCoinmarketDetailContext<CoinmarketTradeSellType>();
     const dispatch = useDispatch();
 

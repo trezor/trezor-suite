@@ -121,7 +121,7 @@ describe('coinmarket utils', () => {
                 cryptoSymbol: 'ETH',
             },
             {
-                value: 'USDT',
+                value: 'USDT@ETH',
                 label: 'USDT',
                 token: {
                     type: 'ERC20',
@@ -133,7 +133,7 @@ describe('coinmarket utils', () => {
             },
             {
                 label: 'USDC',
-                value: 'USDC',
+                value: 'USDC@ETH',
                 token: {
                     type: 'ERC20',
                     contract: '0x1234123412341234123412341234123412341235',
@@ -158,7 +158,7 @@ describe('coinmarket utils', () => {
             },
             {
                 label: 'USDC',
-                value: 'USDC',
+                value: 'USDC@ETH',
                 token: {
                     type: 'ERC20',
                     contract: '0x1234123412341234123412341234123412341235',
@@ -467,6 +467,8 @@ describe('coinmarket utils', () => {
         expect(coinmarketGetRoundedFiatAmount('0.23923')).toBe('0.24');
         expect(coinmarketGetRoundedFiatAmount('0.24423')).toBe('0.24');
         expect(coinmarketGetRoundedFiatAmount('0.2')).toBe('0.20');
+        expect(coinmarketGetRoundedFiatAmount(undefined)).toBe('');
+        expect(coinmarketGetRoundedFiatAmount('293SAsdj2')).toBe(''); // NaN
     });
 
     it('coinmarketGetAccountLabel', () => {

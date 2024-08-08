@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { BuyTransaction } from './BuyTransaction';
 import { SellTransaction } from './SellTransaction';
 import { ExchangeTransaction } from './ExchangeTransaction';
+import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 
 const Wrapper = styled.div`
     margin-bottom: 48px;
@@ -47,6 +48,8 @@ export const CoinmarketAccountTransactions = () => {
     const sellProviders = useSelector(
         state => state.wallet.coinmarket.sell.sellInfo?.providerInfos,
     );
+
+    useCoinmarketLoadData();
 
     if (selectedAccount.status !== 'loaded') {
         return null;

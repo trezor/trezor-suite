@@ -69,6 +69,7 @@ const CoinmarketSelectedOfferVerify = () => {
         accountAddress,
         receiveNetwork,
         selectAccountOptions,
+        isMenuOpen,
         getTranslationIds,
         onChangeAccount,
     } = useCoinmarketVerifyAccount({ currency });
@@ -113,6 +114,7 @@ const CoinmarketSelectedOfferVerify = () => {
                         receiveNetwork={receiveNetwork ?? currency}
                         selectedAccountOption={selectedAccountOption}
                         selectAccountOptions={selectAccountOptions}
+                        isMenuOpen={isMenuOpen}
                         onChangeAccount={onChangeAccount}
                     />
                 </Row>
@@ -136,22 +138,21 @@ const CoinmarketSelectedOfferVerify = () => {
                             </>
                         )}
                     {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
-                        <Input
-                            label={
-                                <Label>
-                                    <StyledQuestionTooltip
-                                        label="TR_BUY_RECEIVING_ADDRESS"
-                                        tooltip={addressTooltipTranslationId}
-                                    />
-                                </Label>
-                            }
-                            size="small"
-                            readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
-                            inputState={form.formState.errors.address ? 'error' : undefined}
-                            bottomText={form.formState.errors.address?.message || null}
-                            innerRef={networkRef}
-                            {...networkField}
-                        />
+                        <>
+                            <CustomLabel>
+                                <StyledQuestionTooltip
+                                    label="TR_EXCHANGE_RECEIVING_ADDRESS"
+                                    tooltip={addressTooltipTranslationId}
+                                />
+                            </CustomLabel>
+                            <Input
+                                readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
+                                inputState={form.formState.errors.address ? 'error' : undefined}
+                                bottomText={form.formState.errors.address?.message || null}
+                                innerRef={networkRef}
+                                {...networkField}
+                            />
+                        </>
                     )}
 
                     {addressVerified && addressVerified === address && (
