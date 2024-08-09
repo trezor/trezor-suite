@@ -39,11 +39,6 @@ import type { DeviceEvents, Device } from '../device/Device';
 import type { ConnectSettings, Device as DeviceTyped } from '../types';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 
-// Public variables
-let _overridePromise: Promise<void> | undefined;
-
-let waitForFirstMethod = createDeferred();
-
 // custom log
 const _log = initLog('Core');
 
@@ -455,7 +450,16 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         );
     }
 
-    const { uiPromises, deviceList, callMethods, methodSynchronize, sendCoreMessage } = context;
+    const {
+        uiPromises,
+        deviceList,
+        callMethods,
+        methodSynchronize,
+        resolveWaitForFirstMethod,
+        getOverridePromise,
+        setOverridePromise,
+        sendCoreMessage,
+    } = context;
     const responseID = message.id;
     const origin = DataManager.getSettings('origin')!;
     const env = DataManager.getSettings('env')!;
@@ -483,7 +487,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
 
             return method;
         });
-        waitForFirstMethod.resolve();
+        resolveWaitForFirstMethod();
         callMethods.push(method);
     } catch (error) {
         sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
@@ -565,8 +569,8 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         // interrupt potential communication with device. this should throw error in try/catch block below
         // this error will apply to the last item of pending methods
         const overrideError = ERRORS.TypedError('Method_Override');
-        _overridePromise = device.override(overrideError);
-        await _overridePromise;
+        setOverridePromise(device.override(overrideError));
+        await getOverridePromise();
         // if current method was overridden while waiting for device.override result
         // return response with status false
         if (method.overridden) {
@@ -647,8 +651,8 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
 
     try {
         // run inner function
-        if (_overridePromise) {
-            await _overridePromise;
+        if (getOverridePromise()) {
+            await getOverridePromise();
         }
         const innerAction = () =>
             inner(context, method, device).then(response => {
@@ -682,8 +686,9 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
             messageResponse = createResponseMessage(method.responseID, false, { error });
         }
     } finally {
-        if (_overridePromise) {
-            await _overridePromise;
+        // TODO This condition has to be there; awaiting undefined breaks e2e tests, which is a complete mystery
+        if (getOverridePromise()) {
+            await getOverridePromise();
         }
         // Work done
 
@@ -885,7 +890,15 @@ const onEmptyPassphraseHandler =
  * @memberof Core
  */
 const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
-    const { uiPromises, popupPromise, deviceList, callMethods, sendCoreMessage } = context;
+    const {
+        uiPromises,
+        popupPromise,
+        deviceList,
+        callMethods,
+        resetWaitForFirstMethod,
+        setOverridePromise,
+        sendCoreMessage,
+    } = context;
     const error = customErrorMessage
         ? ERRORS.TypedError('Method_Cancel', customErrorMessage)
         : ERRORS.TypedError('Method_Interrupted');
@@ -894,7 +907,7 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
         deviceList.allDevices().forEach(d => {
             d.keepSession = false; // clear session on release
             if (d.isUsedHere()) {
-                _overridePromise = d.interruptionFromUser(error);
+                setOverridePromise(d.interruptionFromUser(error));
             } else {
                 const success = uiPromises.resolve({ type: DEVICE.DISCONNECT, payload: undefined });
                 if (!success) {
@@ -902,7 +915,7 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
                         sendCoreMessage(createResponseMessage(m.responseID, false, { error }));
                     });
                     callMethods.splice(0, callMethods.length);
-                    waitForFirstMethod = createDeferred();
+                    resetWaitForFirstMethod();
                 }
             }
         });
@@ -1006,6 +1019,9 @@ export class Core extends EventEmitter {
         startInteractionTimeout(this.getCoreContext()),
     );
 
+    private overridePromise: Promise<void> | undefined;
+    private waitForFirstMethod = createDeferred();
+
     private _interactionTimeout?: InteractionTimeout;
     private get interactionTimeout() {
         return this._interactionTimeout ?? throwError('Core not initialized: interactionTimeout');
@@ -1024,7 +1040,7 @@ export class Core extends EventEmitter {
             if (index >= 0) {
                 this.callMethods.splice(index, 1);
                 if (this.callMethods.length === 0) {
-                    waitForFirstMethod = createDeferred();
+                    this.waitForFirstMethod = createDeferred();
                 }
             }
         }
@@ -1040,6 +1056,18 @@ export class Core extends EventEmitter {
             callMethods: this.callMethods,
             methodSynchronize: this.methodSynchronize,
             sendCoreMessage: this.sendCoreMessage.bind(this),
+            resetWaitForFirstMethod: () => {
+                this.waitForFirstMethod = createDeferred();
+            },
+            resolveWaitForFirstMethod: () => {
+                this.waitForFirstMethod.resolve();
+            },
+            getOverridePromise: () => {
+                return this.overridePromise;
+            },
+            setOverridePromise: (promise: Promise<void>) => {
+                this.overridePromise = promise;
+            },
         };
     }
 
@@ -1136,7 +1164,7 @@ export class Core extends EventEmitter {
     }
 
     async getCurrentMethod() {
-        await waitForFirstMethod.promise;
+        await this.waitForFirstMethod.promise;
 
         return await this.methodSynchronize(() => this.callMethods[0]);
     }
