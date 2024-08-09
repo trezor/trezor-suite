@@ -948,7 +948,7 @@
   "TR_EXPERIMENTAL_FEATURES": "Experimental",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Experimental features",
   "TR_EXPERIMENTAL_FEATURES_DESCRIPTION": "For experienced users only. Use at your own risk.\nSelect which experimental features to enable in Trezor Suite to experience the latest advancements and innovations.",
-  "TR_EXPERIMENTAL_FEATURES_WARNING": "Note, these features are in testing, may be unstable, and might not have long-term support.",
+  "TR_EXPERIMENTAL_FEATURES_WARNING": "For experienced users only. Use at your own risk. These features are in testing, may be unstable, and might not have long-term support.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Migrate Dropbox passwords",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION": "A utility for retrieving passwords stored on Dropbox and secured by Trezor, designed for former Chrome extension users of Trezor Password Manager.",
   "TR_EXPERIMENTAL_TOR_SNOWFLAKE": "Tor Snowflake",
