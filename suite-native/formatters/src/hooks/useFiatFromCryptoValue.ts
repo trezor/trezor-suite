@@ -20,7 +20,6 @@ type useFiatFromCryptoValueParams = {
 };
 
 export const useFiatFromCryptoValue = ({
-    // TODO: is balance
     cryptoValue,
     network,
     tokenAddress,

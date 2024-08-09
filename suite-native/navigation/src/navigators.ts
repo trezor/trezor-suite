@@ -1,7 +1,12 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { RequireAllOrNone } from 'type-fest';
 
-import { AccountKey, TokenAddress, XpubAddress } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    GeneralPrecomposedLevels,
+    TokenAddress,
+    XpubAddress,
+} from '@suite-common/wallet-types';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo, TokenTransfer } from '@trezor/connect';
 
@@ -64,6 +69,10 @@ export type ReceiveStackParamList = {
 export type SendStackParamList = {
     [SendStackRoutes.SendAccounts]: undefined;
     [SendStackRoutes.SendOutputs]: {
+        accountKey: AccountKey;
+    };
+    [SendStackRoutes.SendFees]: {
+        feeLevels: GeneralPrecomposedLevels;
         accountKey: AccountKey;
     };
     [SendStackRoutes.SendReview]: {

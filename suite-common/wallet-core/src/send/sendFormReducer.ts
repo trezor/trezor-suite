@@ -4,6 +4,7 @@ import {
     AccountKey,
     FormState,
     GeneralPrecomposedTransactionFinal,
+    Output,
 } from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -107,6 +108,17 @@ export const selectSendFormDraftByAccountKey = (
     if (G.isUndefined(accountKey)) return null;
 
     return state.wallet.send.drafts[accountKey] ?? null;
+};
+
+export const selectSendFormDraftOutputsByAccountKey = (
+    state: SendRootState,
+    accountKey?: AccountKey,
+): Output[] | null => {
+    if (G.isUndefined(accountKey)) return null;
+
+    const draft = selectSendFormDraftByAccountKey(state, accountKey);
+
+    return draft?.outputs ?? null;
 };
 
 export const selectSendFormReviewButtonRequestsCount = (

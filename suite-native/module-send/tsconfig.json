@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -26,13 +27,12 @@
         { "path": "../device-mutex" },
         { "path": "../formatters" },
         { "path": "../forms" },
+        { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../toasts" },
-        {
-            "path": "../../packages/blockchain-link-types"
-        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
+        { "path": "../../packages/styles" },
         { "path": "../../packages/utils" }
     ]
 }

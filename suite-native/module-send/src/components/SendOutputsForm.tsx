@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useWatch } from 'react-hook-form';
 
-import { isRejected } from '@reduxjs/toolkit';
+import { isFulfilled } from '@reduxjs/toolkit';
 import { useNavigation } from '@react-navigation/native';
 
 import { VStack, Button } from '@suite-native/atoms';
@@ -13,7 +13,9 @@ import {
     AccountsRootState,
     FeesRootState,
     SendRootState,
+    composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
+    selectDevice,
     selectNetworkFeeInfo,
     selectSendFormDraftByAccountKey,
     sendFormActions,
@@ -24,8 +26,8 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
+import { getNetwork } from '@suite-common/wallet-utils';
 
-import { onDeviceTransactionReviewThunk } from '../sendFormThunks';
 import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
 import { SendOutputFields } from './SendOutputFields';
 
@@ -36,19 +38,20 @@ type SendFormProps = {
 // TODO: this data structure will be revisited in a follow up PR
 const constructFormDraft = ({ outputs }: SendOutputsFormValues): FormState => ({
     outputs: outputs.map(({ address, amount }) => ({
-        type: 'payment',
         address,
         amount,
+        type: 'payment',
         token: null,
         fiat: '0',
-        currency: { label: 'usd', value: '1000' },
+        currency: { label: '', value: '' },
     })),
     isCoinControlEnabled: false,
     hasCoinControlBeenOpened: false,
     selectedUtxos: [],
-    feeLimit: '0',
-    feePerUnit: '0',
+    feeLimit: '',
+    feePerUnit: '',
     options: [],
+    selectedFee: 'normal',
 });
 
 export const SendOutputsForm = ({ accountKey }: SendFormProps) => {
@@ -57,6 +60,8 @@ export const SendOutputsForm = ({ accountKey }: SendFormProps) => {
     const { showToast } = useToast();
     const navigation =
         useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendReview>>();
+
+    const device = useSelector(selectDevice);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -78,8 +83,8 @@ export const SendOutputsForm = ({ accountKey }: SendFormProps) => {
         defaultValues: {
             outputs: [
                 {
-                    address: 'bcrt1q7r9yvcdgcl6wmtta58yxf29a8kc96jkyyk8fsw',
-                    amount: sendFormDraft?.outputs[0]?.amount,
+                    address: sendFormDraft?.outputs?.[0]?.address,
+                    amount: sendFormDraft?.outputs?.[0]?.amount,
                 },
             ],
         },
@@ -106,28 +111,41 @@ export const SendOutputsForm = ({ accountKey }: SendFormProps) => {
         if (watchedFormValues && isValid) debounce(storeFormDraftIfValid);
     }, [isValid, storeFormDraftIfValid, watchedFormValues, debounce]);
 
+    const network = getNetwork(account!.symbol);
+
+    if (!account || !networkFeeInfo || !device || !network) return null;
+
     const handleNavigateToReviewScreen = handleSubmit(async values => {
-        // TODO: navigate to SendFeeScreen instead, when ready
-        // issue: https://github.com/trezor/trezor-suite/issues/10871
-        navigation.navigate(SendStackRoutes.SendReview, { accountKey });
+        //compose transaction with specific fee levels
         const response = await dispatch(
-            onDeviceTransactionReviewThunk({
-                accountKey,
+            composeSendFormTransactionFeeLevelsThunk({
                 formState: constructFormDraft(values),
+                composeContext: {
+                    account,
+                    network: network!,
+                    feeInfo: networkFeeInfo,
+                },
             }),
         );
 
-        if (isRejected(response)) {
-            // TODO: display error message based on the error code
-            showToast({ variant: 'error', message: 'Something went wrong', icon: 'closeCircle' });
+        if (isFulfilled(response)) {
+            navigation.navigate(SendStackRoutes.SendFees, {
+                accountKey,
+                feeLevels: response.payload,
+            });
 
-            navigation.navigate(SendStackRoutes.SendAccounts);
+            return;
         }
+
+        // TODO: display error message based on the error code saved in the redux state
+        showToast({ variant: 'error', message: 'Something went wrong', icon: 'closeCircle' });
+
+        navigation.navigate(SendStackRoutes.SendAccounts);
     });
 
     return (
         <Form form={form}>
-            <VStack spacing="medium" padding="medium">
+            <VStack spacing="medium">
                 <SendOutputFields />
                 {isValid && (
                     <Button
@@ -137,7 +155,7 @@ export const SendOutputsForm = ({ accountKey }: SendFormProps) => {
                         onPress={handleNavigateToReviewScreen}
                         isDisabled={isSubmitting}
                     >
-                        Review & Send
+                        continue
                     </Button>
                 )}
             </VStack>

@@ -814,6 +814,31 @@ export const en = {
             title: 'Enter passphrase to continue',
         },
     },
+    moduleSend: {
+        fees: {
+            recipient: { singular: 'Recipient' },
+            description: {
+                title: 'Mining fee',
+                body: 'Fees are paid directly to network miners for processing your transactions.',
+            },
+            levels: {
+                low: {
+                    label: 'Low',
+                    timeEstimate: '~ 1 hour',
+                },
+                medium: {
+                    label: 'Medium',
+                    timeEstimate: '~ 20 minutes',
+                },
+                high: {
+                    label: 'High',
+                    timeEstimate: '~ 10 minutes',
+                },
+            },
+            totalAmount: 'Total amount',
+            submitButton: 'Review and sign',
+        },
+    },
 };
 
 export type Translations = typeof en;
