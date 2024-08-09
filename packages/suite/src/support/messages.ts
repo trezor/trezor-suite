@@ -1572,7 +1572,7 @@ export default defineMessages({
     },
     TR_COINMARKET_UNKNOWN_PROVIDER: {
         defaultMessage: 'Unknown provider',
-        id: 'TR_UNKNOWN_PROVIDER',
+        id: 'TR_COINMARKET_UNKNOWN_PROVIDER',
     },
     TR_COINMARKET_YOU_WILL_GET: {
         defaultMessage: 'You will get',
