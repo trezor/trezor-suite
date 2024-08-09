@@ -4,14 +4,13 @@ import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/
 
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
-type RadioValue = string | number;
-export interface RadioProps extends Omit<TouchableOpacityProps, 'style' | 'onPress'> {
-    value: RadioValue;
+export type RadioProps<TValue> = Omit<TouchableOpacityProps, 'style' | 'onPress'> & {
+    value: TValue;
     isChecked?: boolean;
     isDisabled?: boolean;
-    onPress: (value: RadioValue) => void;
+    onPress: (value: TValue) => void;
     style?: NativeStyleObject;
-}
+};
 
 type RadioStyleProps = {
     isChecked: boolean;
@@ -50,14 +49,14 @@ const radioCheckStyle = prepareNativeStyle<Omit<RadioStyleProps, 'isChecked'>>(
     }),
 );
 
-export const Radio = ({
+export const Radio = <TValue extends string | number>({
     value,
     isChecked = false,
     onPress,
     isDisabled = false,
     style,
     ...props
-}: RadioProps) => {
+}: RadioProps<TValue>) => {
     const { applyStyle } = useNativeStyles();
 
     return (

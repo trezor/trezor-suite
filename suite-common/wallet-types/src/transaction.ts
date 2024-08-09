@@ -155,6 +155,7 @@ export type GeneralPrecomposedTransactionFinal =
 
 export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
 export type PrecomposedLevelsCardano = { [key: string]: PrecomposedTransactionCardano };
+export type GeneralPrecomposedLevels = PrecomposedLevels | PrecomposedLevelsCardano;
 
 export interface RbfTransactionParams {
     txid: string;
@@ -284,3 +285,5 @@ export type ReviewOutputType = ReviewOutput['type'];
 export type ReviewOutputState = 'active' | 'success' | undefined;
 
 export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>;
+
+export type FeeLevelLabel = FeeLevel['label'];

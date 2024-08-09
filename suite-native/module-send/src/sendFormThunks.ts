@@ -3,73 +3,47 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    ComposeActionContext,
-    composeSendFormTransactionFeeLevelsThunk,
-    deviceActions,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectAccountByKey,
-    selectDevice,
-    selectNetworkFeeInfo,
+    selectSendFormDraftByAccountKey,
     sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey, FormState } from '@suite-common/wallet-types';
-import { getNetwork } from '@suite-common/wallet-utils';
+import {
+    Account,
+    AccountKey,
+    GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { SignedTransaction } from '@trezor/connect';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
 
-export const onDeviceTransactionReviewThunk = createThunk<
-    BlockbookTransaction,
-    { accountKey: AccountKey; formState: FormState },
-    { rejectValue: string }
->(
-    `${SEND_MODULE_PREFIX}/onDeviceTransactionReviewThunk`,
+// TODO: better naming
+export const signTransactionFeeLevelSigningThunk = createThunk(
+    `${SEND_MODULE_PREFIX}/signTransactionFeeLevelSigningThunk`,
     async (
-        { accountKey, formState },
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
+        {
+            accountKey,
+            feeLevel,
+        }: {
+            accountKey: AccountKey;
+            feeLevel: GeneralPrecomposedTransactionFinal;
+        },
+        { dispatch, rejectWithValue, fulfillWithValue, getState },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
-        const device = selectDevice(getState());
-        const networkFeeInfo = selectNetworkFeeInfo(getState(), account?.symbol);
+        const formState = selectSendFormDraftByAccountKey(getState(), accountKey);
 
-        if (!account || !networkFeeInfo || !device)
-            return rejectWithValue('Failed to get account, fee info or device from redux store.');
-
-        const network = getNetwork(account.symbol);
-
-        if (!network)
-            return rejectWithValue('Failed to derive account network from account symbol.');
-        const composeContext: ComposeActionContext = {
-            account,
-            network,
-            feeInfo: networkFeeInfo,
-        };
-
-        dispatch(deviceActions.removeButtonRequests({ device }));
-
-        //compose transaction with specific fee levels
-        const precomposedFeeLevels = await dispatch(
-            composeSendFormTransactionFeeLevelsThunk({
-                formState,
-                composeContext,
-            }),
-        ).unwrap();
-
-        // TODO: select fee level based on user selection when there is fee input added to the send form.
-        const selectedFeeLevel = precomposedFeeLevels?.normal;
-
-        if (!selectedFeeLevel || selectedFeeLevel.type !== 'final')
-            return rejectWithValue('Requested fee level not found in composed transaction levels.');
+        if (!account) return rejectWithValue('Account not found.');
+        if (!formState) return rejectWithValue('Form draft not found.');
 
         // prepare transaction with select fee level
         const precomposedTransaction = await dispatch(
             enhancePrecomposedTransactionThunk({
                 transactionFormValues: formState,
-                precomposedTransaction: selectedFeeLevel,
+                precomposedTransaction: feeLevel,
                 selectedAccount: account,
             }),
         ).unwrap();

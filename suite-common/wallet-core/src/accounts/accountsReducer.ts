@@ -305,6 +305,17 @@ export const selectAccountNetworkSymbol = (
     return account.symbol;
 };
 
+export const selectAccountAvailableBalance = (
+    state: AccountsRootState,
+    accountKey?: AccountKey,
+): string | null => {
+    const account = selectAccountByKey(state, accountKey);
+
+    if (!account) return null;
+
+    return account.availableBalance;
+};
+
 export const selectFormattedAccountType = (
     state: AccountsRootState,
     accountKey: AccountKey,

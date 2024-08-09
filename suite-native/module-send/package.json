@@ -15,6 +15,7 @@
         "@react-navigation/native": "6.1.17",
         "@react-navigation/native-stack": "6.9.26",
         "@reduxjs/toolkit": "1.9.5",
+        "@suite-common/icons": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -27,14 +28,16 @@
         "@suite-native/device-mutex": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/forms": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/toasts": "workspace:*",
-        "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/react-utils": "workspace:*",
+        "@trezor/styles": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
         "react-hook-form": "^7.50.1",
+        "react-native": "0.74.1",
         "react-redux": "8.0.7"
     }
 }
