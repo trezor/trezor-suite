@@ -7,14 +7,16 @@ export const convertCryptoToFiatAmount = ({
     value,
     rate,
     network,
+    isBalance = false,
 }: {
     value: CryptoToFiatAmountValue;
-    rate?: number;
     network: NetworkSymbol;
+    rate?: number;
+    isBalance?: boolean;
 }): string | null => {
     if (!value) return null;
 
-    const transactionAmount = formatNetworkAmount(value, network);
+    const transactionAmount = isBalance ? value : formatNetworkAmount(value, network);
     const fiatAmount = toFiatCurrency(transactionAmount, rate);
 
     return fiatAmount;

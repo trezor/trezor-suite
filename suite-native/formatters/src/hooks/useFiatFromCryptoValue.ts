@@ -16,15 +16,18 @@ type useFiatFromCryptoValueParams = {
     tokenDecimals?: number;
     historicRate?: number;
     useHistoricRate?: boolean;
+    isBalance?: boolean;
 };
 
 export const useFiatFromCryptoValue = ({
+    // TODO: is balance
     cryptoValue,
     network,
     tokenAddress,
-    tokenDecimals = 0,
     historicRate,
     useHistoricRate,
+    isBalance = false,
+    tokenDecimals = 0,
 }: useFiatFromCryptoValueParams) => {
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const fiatRateKey = getFiatRateKey(network, fiatCurrencyCode, tokenAddress);
@@ -45,8 +48,9 @@ export const useFiatFromCryptoValue = ({
     }
 
     return convertCryptoToFiatAmount({
-        value: cryptoValue,
         rate,
         network,
+        isBalance,
+        value: cryptoValue,
     });
 };
