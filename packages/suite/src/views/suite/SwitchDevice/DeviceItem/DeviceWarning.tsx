@@ -17,7 +17,7 @@ export const DeviceWarning = ({
 }: DeviceWarningProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
     const deviceStatusMessage = deviceUtils.getDeviceNeedsAttentionMessage(deviceStatus);
-    const isLocked = useDevice().isLocked();
+    const isLocked = useDevice().isLocked(true);
 
     return (
         <>
