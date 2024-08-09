@@ -102,15 +102,12 @@ export const Experimental = () => {
                 <TextColumn
                     title={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
                     description={
-                        <>
-                            <Warning>
-                                <Row gap={12}>
-                                    <Icon icon="WARNING" size={14} variant="tertiary" />
-                                    <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
-                                </Row>
-                            </Warning>
-                            <Translation id="TR_EXPERIMENTAL_FEATURES_DESCRIPTION" />
-                        </>
+                        <Warning>
+                            <Row gap={12}>
+                                <Icon icon="WARNING" size={14} variant="tertiary" />
+                                <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
+                            </Row>
+                        </Warning>
                     }
                     buttonLink={EXPERIMENTAL_FEATURES_KB_URL}
                 />
