@@ -67,6 +67,6 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
 export const waitForDataTestSelector = (window: Page, selector: string, options = {}) =>
     window.waitForSelector(`[data-test="${selector}"]`, options);
 
-export const clickDataTest = (window: Page, selector: string) => {
-    window.locator(`[data-test="${selector}"]`).click();
+export const clickDataTest = async (window: Page, selector: string) => {
+    await window.locator(`[data-test="${selector}"]`).click();
 };
