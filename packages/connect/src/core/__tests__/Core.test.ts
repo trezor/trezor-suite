@@ -18,7 +18,7 @@ describe('Core', () => {
         });
 
         const coreManager = initCoreState();
-        await expect(() => coreManager.getOrInit(getSettings(), jest.fn())).rejects.toThrow(
+        await expect(coreManager.getOrInit(getSettings(), jest.fn())).rejects.toThrow(
             'DataManager init error',
         );
 
@@ -48,13 +48,13 @@ describe('Core', () => {
     it('successful getOrInit', async () => {
         const coreManager = initCoreState();
         const eventsSpy = jest.fn();
-        const core = await coreManager.getOrInit(getSettings(), eventsSpy);
+        await coreManager.getOrInit(getSettings(), eventsSpy);
         // no events emitted before initialization
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await new Promise(resolve => setTimeout(resolve, 1));
         // device + transport events emitted in next tick
         expect(eventsSpy).toHaveBeenCalledTimes(4);
 
-        core.dispose();
+        coreManager.dispose();
     });
 });
