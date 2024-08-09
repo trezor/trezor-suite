@@ -40,7 +40,6 @@ import type { ConnectSettings, Device as DeviceTyped } from '../types';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 
 // Public variables
-const _callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
 let _overridePromise: Promise<void> | undefined;
 
 const methodSynchronize = getSynchronize();
@@ -51,9 +50,7 @@ const _log = initLog('Core');
 
 type CoreContext = ReturnType<Core['getCoreContext']>;
 
-const popupPromise = createPopupPromiseManager();
-
-const waitForPopup = ({ sendCoreMessage }: CoreContext) => {
+const waitForPopup = ({ popupPromise, sendCoreMessage }: CoreContext) => {
     sendCoreMessage(createUiMessage(UI.REQUEST_UI_WINDOW));
 
     return popupPromise.wait();
@@ -459,7 +456,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         );
     }
 
-    const { uiPromises, deviceList, sendCoreMessage } = context;
+    const { uiPromises, deviceList, callMethods, sendCoreMessage } = context;
     const responseID = message.id;
     const origin = DataManager.getSettings('origin')!;
     const env = DataManager.getSettings('env')!;
@@ -488,7 +485,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
             return method;
         });
         waitForFirstMethod.resolve();
-        _callMethods.push(method);
+        callMethods.push(method);
     } catch (error) {
         sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         sendCoreMessage(createResponseMessage(responseID, false, { error }));
@@ -558,7 +555,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
     method.setDevice(device);
 
     // find pending calls to this device
-    const previousCall = _callMethods.filter(
+    const previousCall = callMethods.filter(
         call => call && call !== method && call.devicePath === method.devicePath,
     );
     if (previousCall.length > 0 && method.overridePreviousCall) {
@@ -740,7 +737,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
  * @returns {void}
  * @memberof Core
  */
-const cleanup = ({ uiPromises, interactionTimeout }: CoreContext) => {
+const cleanup = ({ uiPromises, popupPromise, interactionTimeout }: CoreContext) => {
     popupPromise.clear();
     uiPromises.clear();
     interactionTimeout.stop();
@@ -752,7 +749,7 @@ const cleanup = ({ uiPromises, interactionTimeout }: CoreContext) => {
  * @returns {void}
  * @memberof Core
  */
-const closePopup = ({ sendCoreMessage }: CoreContext) => {
+const closePopup = ({ popupPromise, sendCoreMessage }: CoreContext) => {
     if (popupPromise.isWaiting()) {
         sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
     }
@@ -889,7 +886,7 @@ const onEmptyPassphraseHandler =
  * @memberof Core
  */
 const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
-    const { uiPromises, deviceList, sendCoreMessage } = context;
+    const { uiPromises, popupPromise, deviceList, callMethods, sendCoreMessage } = context;
     const error = customErrorMessage
         ? ERRORS.TypedError('Method_Cancel', customErrorMessage)
         : ERRORS.TypedError('Method_Interrupted');
@@ -902,10 +899,10 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
             } else {
                 const success = uiPromises.resolve({ type: DEVICE.DISCONNECT, payload: undefined });
                 if (!success) {
-                    _callMethods.forEach(m => {
+                    callMethods.forEach(m => {
                         sendCoreMessage(createResponseMessage(m.responseID, false, { error }));
                     });
-                    _callMethods.splice(0, _callMethods.length);
+                    callMethods.splice(0, callMethods.length);
                     waitForFirstMethod = createDeferred();
                 }
             }
@@ -1003,6 +1000,8 @@ const initDeviceList = (context: CoreContext) => {
  */
 export class Core extends EventEmitter {
     private abortController = new AbortController();
+    private callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
+    private popupPromise = createPopupPromiseManager();
     private uiPromises = createUiPromiseManager(() =>
         startInteractionTimeout(this.getCoreContext()),
     );
@@ -1019,10 +1018,12 @@ export class Core extends EventEmitter {
 
     private sendCoreMessage(message: CoreEventMessage) {
         if (message.event === RESPONSE_EVENT) {
-            const index = _callMethods.findIndex(call => call && call.responseID === message.id);
+            const index = this.callMethods.findIndex(
+                call => call && call.responseID === message.id,
+            );
             if (index >= 0) {
-                _callMethods.splice(index, 1);
-                if (_callMethods.length === 0) {
+                this.callMethods.splice(index, 1);
+                if (this.callMethods.length === 0) {
                     waitForFirstMethod = createDeferred();
                 }
             }
@@ -1033,8 +1034,10 @@ export class Core extends EventEmitter {
     private getCoreContext() {
         return {
             uiPromises: this.uiPromises,
+            popupPromise: this.popupPromise,
             interactionTimeout: this.interactionTimeout,
             deviceList: this.deviceList,
+            callMethods: this.callMethods,
             sendCoreMessage: this.sendCoreMessage.bind(this),
         };
     }
@@ -1044,10 +1047,10 @@ export class Core extends EventEmitter {
 
         switch (message.type) {
             case POPUP.HANDSHAKE:
-                popupPromise.resolve();
+                this.popupPromise.resolve();
                 break;
             case POPUP.CLOSED:
-                popupPromise.clear();
+                this.popupPromise.clear();
                 onPopupClosed(
                     this.getCoreContext(),
                     message.payload ? message.payload.error : null,
@@ -1134,7 +1137,7 @@ export class Core extends EventEmitter {
     async getCurrentMethod() {
         await waitForFirstMethod.promise;
 
-        return await methodSynchronize(() => _callMethods[0]);
+        return await methodSynchronize(() => this.callMethods[0]);
     }
 
     getTransportInfo(): TransportInfo | undefined {
