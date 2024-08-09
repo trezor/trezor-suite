@@ -65,14 +65,11 @@ describe('sendFormReducer', () => {
 
     it('SEND.REQUEST_SIGN_TRANSACTION - save', () => {
         const action: Action = sendFormActions.storePrecomposedTransaction({
-            accountKey: 'key1',
-            enhancedFormDraft: formStateMock,
             precomposedTransaction: precomposedTxMock,
         });
 
         const state = prepareSendFormReducer(extraDependencies)(initialState, action);
         expect(state.precomposedTx).toEqual(precomposedTxMock);
-        expect(state.drafts['key1']).toEqual(formStateMock);
     });
 
     it('SEND.REQUEST_PUSH_TRANSACTION - save', () => {
