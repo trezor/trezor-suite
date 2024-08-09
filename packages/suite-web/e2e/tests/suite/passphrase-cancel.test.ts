@@ -2,9 +2,8 @@
 // @retry=2
 
 const testedVersions = [
-    // Todo: fix latest version to return proper revision hash (it reports possibly FAKE device now)
     { version: '2-latest', model: 'T2T1' },
-    { version: '1.11.2', model: 'T1B1' },
+    { version: '1-latest', model: 'T1B1' },
 ];
 
 describe('Passphrase cancel', () => {
