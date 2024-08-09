@@ -21,6 +21,14 @@ import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
 import { selectDevice } from '@suite-common/wallet-core';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
+import { RouterAppWithParams } from '../../../constants/suite/routes';
+
+const ROUTES_TO_SKIP_REVISION_CHECK: RouterAppWithParams['app'][] = [
+    'settings',
+    'firmware',
+    'firmware-type',
+    'firmware-custom',
+];
 
 const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
@@ -72,7 +80,8 @@ export const Preloader = ({ children }: PreloaderProps) => {
     }
 
     if (
-        router.route?.app !== 'settings' &&
+        (router.route?.app === undefined ||
+            !ROUTES_TO_SKIP_REVISION_CHECK.includes(router.route?.app)) &&
         selectedDevice?.features &&
         selectedDevice.connected === true &&
         !isFirmwareRevisionCheckDisabled
