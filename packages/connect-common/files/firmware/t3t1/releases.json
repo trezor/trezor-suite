@@ -1,6 +1,38 @@
 [
     {
         "required": false,
+        "version": [2, 8, 1],
+        "min_firmware_version": [2, 7, 2],
+        "min_bootloader_version": [2, 1, 6],
+        "bootloader_version": [2, 1, 6],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR"],
+        "url": "firmware/t3t1/trezor-t3t1-2.8.1.bin",
+        "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.8.1-bitcoinonly.bin",
+        "fingerprint": "6a064df4a928e1264d682a34cc014fc9272f312e0f8a8270ff88d6f1408fe68b",
+        "fingerprint_bitcoinonly": "6b17de0c89c9a7876687d6b9c44673f4aca7f8819237a755090848a3829bc36b",
+        "changelog": [
+            "## Added",
+            "- Added PIN keyboard animation.",
+            "- Added menu entry animation.",
+            "- Added screen brightness settings.",
+
+            "## Changed",
+            "- Screen transitions and animations were improved and are now smoother.",
+            "- Improved precision of PIN validation countdown.",
+            "- Improved instruction screens during multi-share recovery process.",
+            "- New UI of firmware update.",
+            "- Improved share words swiping animation during wallet creation.",
+
+            "## Fixed",
+            "- Fixed title sometimes not fitting into result screen.",
+            "- Improved touch layer precision.",
+            "- Fixed 'More info' screen during multi-share backup creation.",
+            "- Fixed title sometimes not fitting into result screen.",
+            "- Adjusted detection of swipes: vertical swipes are preferred over horizontal swipes now."
+        ]
+    },
+    {
+        "required": false,
         "version": [2, 8, 0],
         "min_firmware_version": [2, 7, 2],
         "min_bootloader_version": [2, 1, 6],
