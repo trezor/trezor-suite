@@ -1791,7 +1791,7 @@
   "TR_SPEND_TRANS_ID": "取引 ID: ",
   "TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD": "上記のエントリー期間を認めます",
   "TR_STAKE_ADDING_TO_POOL": "ステーキングプールに追加中",
-  "TR_STAKE_ANY_AMOUNT_ETH": "好きな金額をステークして、利息の {symbol} が転がり込んでくるのを見ましょう。現在のAPYレートは {apyPercent}%で、報酬も得られます！",
+  "TR_STAKE_ANY_AMOUNT_ETH": "少なくとも {amount} {symbol} をステークして、報酬を獲得しましょう。現在のAPYレートは {apyPercent}%で、報酬が得られます！",
   "TR_STAKE_APY": "年間利回り",
   "TR_STAKE_APY_DESC": "*年間利回り",
   "TR_STAKE_AVAILABLE": "利用可能です",

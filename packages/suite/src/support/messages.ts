@@ -5332,7 +5332,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_FEATURES_WARNING: {
         id: 'TR_EXPERIMENTAL_FEATURES_WARNING',
         defaultMessage:
-            'For experienced users only. Use at your own risk. These features are in testing, may be unstable, and might not have long-term support.',
+            'Note, these features are in testing, may be unstable, and might not have long-term support.',
     },
     TR_EXPERIMENTAL_BNB_SMART_CHAIN: {
         id: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN',

@@ -1791,7 +1791,7 @@
   "TR_SPEND_TRANS_ID": "crwdns24781:0crwdne24781:0",
   "TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD": "crwdns35306:0crwdne35306:0",
   "TR_STAKE_ADDING_TO_POOL": "crwdns35308:0crwdne35308:0",
-  "TR_STAKE_ANY_AMOUNT_ETH": "crwdns35310:0{symbol}crwdnd35310:0{apyPercent}crwdne35310:0",
+  "TR_STAKE_ANY_AMOUNT_ETH": "crwdns35310:0{amount}crwdnd35310:0{symbol}crwdnd35310:0{apyPercent}crwdne35310:0",
   "TR_STAKE_APY": "crwdns35312:0crwdne35312:0",
   "TR_STAKE_APY_DESC": "crwdns35314:0crwdne35314:0",
   "TR_STAKE_AVAILABLE": "crwdns35316:0crwdne35316:0",
