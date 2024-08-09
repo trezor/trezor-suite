@@ -40,6 +40,7 @@ const Header = styled.header<{ $isOpen: boolean; onClick?: () => void }>`
     align-items: center;
     ${typography.label}
     color: ${({ theme }) => theme.textSubdued};
+    height: 40px;
 
     &:hover {
         ${ChevronIcon} {
