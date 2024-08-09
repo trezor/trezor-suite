@@ -42,7 +42,6 @@ import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 // Public variables
 let _overridePromise: Promise<void> | undefined;
 
-const methodSynchronize = getSynchronize();
 let waitForFirstMethod = createDeferred();
 
 // custom log
@@ -456,7 +455,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         );
     }
 
-    const { uiPromises, deviceList, callMethods, sendCoreMessage } = context;
+    const { uiPromises, deviceList, callMethods, methodSynchronize, sendCoreMessage } = context;
     const responseID = message.id;
     const origin = DataManager.getSettings('origin')!;
     const env = DataManager.getSettings('env')!;
@@ -1002,6 +1001,7 @@ export class Core extends EventEmitter {
     private abortController = new AbortController();
     private callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
     private popupPromise = createPopupPromiseManager();
+    private methodSynchronize = getSynchronize();
     private uiPromises = createUiPromiseManager(() =>
         startInteractionTimeout(this.getCoreContext()),
     );
@@ -1038,6 +1038,7 @@ export class Core extends EventEmitter {
             interactionTimeout: this.interactionTimeout,
             deviceList: this.deviceList,
             callMethods: this.callMethods,
+            methodSynchronize: this.methodSynchronize,
             sendCoreMessage: this.sendCoreMessage.bind(this),
         };
     }
@@ -1137,7 +1138,7 @@ export class Core extends EventEmitter {
     async getCurrentMethod() {
         await waitForFirstMethod.promise;
 
-        return await methodSynchronize(() => this.callMethods[0]);
+        return await this.methodSynchronize(() => this.callMethods[0]);
     }
 
     getTransportInfo(): TransportInfo | undefined {
