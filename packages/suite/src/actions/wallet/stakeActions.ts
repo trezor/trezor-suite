@@ -9,7 +9,11 @@ import {
     ComposeActionContext,
 } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { formatNetworkAmount, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import {
+    formatNetworkAmount,
+    isRbfTransaction,
+    tryGetAccountIdentity,
+} from '@suite-common/wallet-utils';
 
 import { StakeFormState, PrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
 
@@ -107,7 +111,7 @@ const pushTransaction =
                 );
             }
 
-            if (precomposedTx.prevTxid) {
+            if (isRbfTransaction(precomposedTx)) {
                 // notification from the backend may be delayed.
                 // modify affected transaction(s) in the reducer until the real account update occurs.
                 // this will update transaction details (like time, fee etc.)

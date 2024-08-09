@@ -12,6 +12,7 @@ import {
     hasNetworkFeatures,
     restoreOrigOutputsOrder,
     getUtxoOutpoint,
+    isRbfTransaction,
 } from '@suite-common/wallet-utils';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
 import {
@@ -268,7 +269,11 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
 
         let refTxs;
 
-        if (formState.rbfParams && precomposedTransaction.useNativeRbf) {
+        if (
+            formState.rbfParams &&
+            isRbfTransaction(precomposedTransaction) &&
+            precomposedTransaction.useNativeRbf
+        ) {
             const { txid, utxo, outputs } = formState.rbfParams;
 
             // normally taproot/coinjoin account doesn't require referenced transactions while signing

@@ -13,6 +13,7 @@ import { StakeFormState, ReviewOutput } from '@suite-common/wallet-types';
 import { TrezorDevice } from '@suite-common/suite-types';
 
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
+import { isRbfTransaction } from './transactionUtils';
 
 export const getTransactionReviewOutputState = (
     index: number,
@@ -99,8 +100,10 @@ const constructOldFlow = ({
     const hasBitcoinLockTime = 'bitcoinLockTime' in precomposedForm;
     const hasRippleDestinationTag = 'rippleDestinationTag' in precomposedForm;
 
-    // used in the bumb fee flow
-    if (typeof precomposedTx.useNativeRbf === 'boolean' && precomposedTx.useNativeRbf) {
+    const isRbf = isRbfTransaction(precomposedTx);
+
+    // used in the bump fee flow
+    if (isRbf && precomposedTx.useNativeRbf) {
         outputs.push(
             {
                 type: 'txid',
@@ -181,7 +184,7 @@ const constructOldFlow = ({
                 value: precomposedForm.rippleDestinationTag,
             });
         }
-    } else if (!precomposedTx.useNativeRbf) {
+    } else if (!isRbf || !precomposedTx.useNativeRbf) {
         outputs.push({ type: 'fee', value: precomposedTx.fee });
     }
 
@@ -208,8 +211,10 @@ const constructNewFlow = ({
         outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
     }
 
+    const isRbf = isRbfTransaction(precomposedTx);
+
     // used in the bump fee flow
-    if (typeof precomposedTx.useNativeRbf === 'boolean' && precomposedTx.useNativeRbf) {
+    if (isRbf && precomposedTx.useNativeRbf) {
         outputs.push(
             {
                 type: 'txid',

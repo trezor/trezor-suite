@@ -11,7 +11,7 @@ import {
     StakeState,
 } from '@suite-common/wallet-core';
 import { FormState, StakeFormState } from '@suite-common/wallet-types';
-import { constructTransactionReviewOutputs } from '@suite-common/wallet-utils';
+import { constructTransactionReviewOutputs, isRbfTransaction } from '@suite-common/wallet-utils';
 import { SendState } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
@@ -72,9 +72,10 @@ export const TransactionReviewModalContent = ({
             : selectSendFormDraftByAccountKey(state, account?.key),
     );
 
-    const decreaseOutputId = precomposedTx?.useNativeRbf
-        ? precomposedForm?.setMaxOutputId
-        : undefined;
+    const isRbfAction = precomposedTx !== undefined && isRbfTransaction(precomposedTx);
+
+    const decreaseOutputId =
+        isRbfAction && precomposedTx.useNativeRbf ? precomposedForm?.setMaxOutputId : undefined;
 
     const buttonRequestsCount = useSelector((state: DeviceRootState) =>
         selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId),
@@ -89,7 +90,6 @@ export const TransactionReviewModalContent = ({
     }
 
     const { networkType } = account;
-    const isRbfAction = !!precomposedTx.prevTxid;
 
     const outputs = constructTransactionReviewOutputs({
         account,

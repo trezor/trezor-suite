@@ -6,7 +6,7 @@ import {
     Account,
     FormState,
     GeneralPrecomposedTransactionFinal,
-    PrecomposedTransactionFinal,
+    PrecomposedTransactionFinalRbf,
 } from '@suite-common/wallet-types';
 import {
     enhancePrecomposedTransactionThunk,
@@ -18,7 +18,7 @@ import {
     sendFormActions,
     selectSendFormDraftByAccountKey,
 } from '@suite-common/wallet-core';
-import { isCardanoTx } from '@suite-common/wallet-utils';
+import { isCardanoTx, isRbfTransaction } from '@suite-common/wallet-utils';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { getSynchronize } from '@trezor/utils';
 
@@ -98,7 +98,7 @@ const updateRbfLabelsThunk = createThunk(
             txid,
         }: {
             labelsToBeEdited: RbfLabelsToBeUpdated;
-            precomposedTransaction: PrecomposedTransactionFinal;
+            precomposedTransaction: PrecomposedTransactionFinalRbf;
             txid: string;
         },
         { dispatch },
@@ -239,7 +239,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             return;
         }
 
-        const isRbf = precomposedTransaction.prevTxid !== undefined;
+        const isRbf = isRbfTransaction(precomposedTransaction);
 
         // This has to be executed prior to pushing the transaction!
         const rbfLabelsToBeEdited = isRbf

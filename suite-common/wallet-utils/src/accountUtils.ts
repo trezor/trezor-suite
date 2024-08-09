@@ -39,6 +39,7 @@ import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
+import { isRbfTransaction } from './transactionUtils';
 
 export const isEthereumAccountSymbol = (symbol: NetworkSymbol) => symbol === 'eth';
 
@@ -968,19 +969,22 @@ export const getPendingAccount = ({
 }) => {
     // calculate availableBalance
     let availableBalanceBig = new BigNumber(account.availableBalance);
+
+    const isRbf = isRbfTransaction(tx);
+
     if (!receivingAccount) {
-        availableBalanceBig = availableBalanceBig.minus(tx.feeDifference || tx.totalSpent);
+        availableBalanceBig = availableBalanceBig.minus(isRbf ? tx.feeDifference : tx.totalSpent);
     }
     // get utxo
     const utxo = getUtxoFromSignedTransaction({
         account,
         tx,
         txid,
-        prevTxid: tx.prevTxid,
+        prevTxid: isRbf ? tx.prevTxid : undefined,
         receivingAccount,
     });
 
-    if (!tx.prevTxid) {
+    if (!isRbf) {
         // join all account addresses
 
         const addresses = getAccountAddresses(account);
