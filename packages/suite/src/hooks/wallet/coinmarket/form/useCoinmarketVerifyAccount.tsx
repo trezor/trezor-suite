@@ -73,7 +73,7 @@ const getSuiteReceiveAccounts = ({
             n =>
                 n.symbol === receiveNetwork &&
                 !unavailableCapabilities[n.symbol] &&
-                ((n.isDebugOnly && isDebug) || !n.isDebugOnly),
+                ((n.isDebugOnlyNetwork && isDebug) || !n.isDebugOnlyNetwork),
         );
         if (receiveNetworks.length > 0) {
             // get accounts of the current symbol belonging to the current device

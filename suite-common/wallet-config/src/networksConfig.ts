@@ -86,10 +86,12 @@ export const networks = {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
                 bip43Path: "m/44'/60'/i'/0/0",
+                isDebugOnlyAccountType: true,
             },
             legacy: {
                 // ledger (legacy)
                 bip43Path: "m/44'/60'/0'/i",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'ethereum',
@@ -307,10 +309,12 @@ export const networks = {
             legacy: {
                 // icarus-trezor derivation
                 bip43Path: "m/1852'/1815'/i'",
+                isDebugOnlyAccountType: true,
             },
             ledger: {
                 // ledger derivation
                 bip43Path: "m/1852'/1815'/i'",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'cardano',
@@ -338,6 +342,7 @@ export const networks = {
             ledger: {
                 // bip44Change - Ledger Live
                 bip43Path: "m/44'/501'/i'",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'solana',
@@ -362,6 +367,7 @@ export const networks = {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
                 bip43Path: "m/44'/60'/i'/0/0",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'polygon-pos',
@@ -386,6 +392,7 @@ export const networks = {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
                 bip43Path: "m/44'/60'/i'/0/0",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'binance-smart-chain',
@@ -455,7 +462,7 @@ export const networks = {
                 bip43Path: "m/44'/1'/i'",
             },
         },
-        isDebugOnly: true,
+        isDebugOnlyNetwork: true,
         coingeckoId: undefined,
     },
     tsep: {
@@ -607,7 +614,8 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     support?: {
         [key in DeviceModelInternal]: string;
     };
-    isDebugOnly?: boolean;
+    isDebugOnlyNetwork?: boolean;
+    isDebugOnlyAccountType?: boolean;
     coingeckoId?: string;
 };
 
@@ -631,13 +639,13 @@ export const getMainnets = (debug = false, bnb = false) =>
         n =>
             !n.accountType &&
             !n.testnet &&
-            (!n.isDebugOnly || debug) &&
+            (!n.isDebugOnlyNetwork || debug) &&
             (bnb || n.symbol !== 'bnb'),
     );
 
 export const getTestnets = (debug = false) =>
     networksCompatibility.filter(
-        n => !n.accountType && n.testnet === true && (!n.isDebugOnly || debug),
+        n => !n.accountType && n.testnet === true && (!n.isDebugOnlyNetwork || debug),
     );
 
 export const getAllNetworkSymbols = () => networksCompatibility.map(n => n.symbol);

@@ -154,7 +154,7 @@ export const useCoinmarketExchangeOffers = ({
                 n =>
                     n.symbol === receiveNetwork &&
                     !unavailableCapabilities[n.symbol] &&
-                    ((n.isDebugOnly && isDebug) || !n.isDebugOnly) &&
+                    ((n.isDebugOnlyNetwork && isDebug) || !n.isDebugOnlyNetwork) &&
                     (bnbExperimentalFeature || n.symbol !== 'bnb'),
             );
             if (receiveNetworks.length > 0) {
