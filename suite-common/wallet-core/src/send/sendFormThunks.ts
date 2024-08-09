@@ -13,6 +13,7 @@ import {
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
+    PrecomposedTransactionFinalRbf,
 } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -538,14 +539,17 @@ export const enhancePrecomposedTransactionThunk = createThunk<
 
         if (!isCardanoTx(selectedAccount, enhancedPrecomposedTransaction)) {
             if (formValues.rbfParams) {
-                enhancedPrecomposedTransaction.prevTxid = formValues.rbfParams.txid;
-                enhancedPrecomposedTransaction.feeDifference = new BigNumber(
-                    precomposedTransaction.fee,
-                )
-                    .minus(formValues.rbfParams.baseFee)
-                    .toFixed();
-                enhancedPrecomposedTransaction.useNativeRbf = useNativeRbf;
-                enhancedPrecomposedTransaction.useDecreaseOutput = hasDecreasedOutput;
+                (enhancedPrecomposedTransaction as PrecomposedTransactionFinalRbf).prevTxid =
+                    formValues.rbfParams.txid;
+                (enhancedPrecomposedTransaction as PrecomposedTransactionFinalRbf).feeDifference =
+                    new BigNumber(precomposedTransaction.fee)
+                        .minus(formValues.rbfParams.baseFee)
+                        .toFixed();
+                (enhancedPrecomposedTransaction as PrecomposedTransactionFinalRbf).useNativeRbf =
+                    !!useNativeRbf;
+                (
+                    enhancedPrecomposedTransaction as PrecomposedTransactionFinalRbf
+                ).useDecreaseOutput = !!hasDecreasedOutput;
             }
         }
 
@@ -566,6 +570,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
 
             enhancedPrecomposedTransaction.isTokenKnown = isTokenKnown;
         }
+
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
         dispatch(
             sendFormActions.storePrecomposedTransaction({

@@ -105,6 +105,7 @@ type TxFinal = PrecomposedTransactionConnectResponseFinal & {
     feeLimit?: string;
     estimatedFeeLimit?: string;
     token?: TokenInfo;
+    isTokenKnown?: boolean;
 };
 
 // base of PrecomposedTransactionFinal
@@ -114,30 +115,18 @@ export type PrecomposedTransactionCardanoFinal =
         feeLimit?: string;
         estimatedFeeLimit?: string;
         token?: TokenInfo;
-        // fake all rbf props just to make it easier to work with since the codebase doesn't use type guards
-        rbf?: false;
-        prevTxid?: undefined;
-        feeDifference?: undefined;
-        useNativeRbf?: undefined;
-        useDecreaseOutput?: undefined;
     };
 
+export type PrecomposedTransactionFinalRbf = TxFinal & {
+    prevTxid: string;
+    feeDifference: string;
+    // Native RBF is a firmware feature to recognize an RBF transaction and simplify transaction review flow.
+    useNativeRbf: boolean;
+    useDecreaseOutput: boolean;
+};
+
 // strict distinction between normal and RBF type
-export type PrecomposedTransactionFinal =
-    | (TxFinal & {
-          prevTxid?: typeof undefined;
-          feeDifference?: typeof undefined;
-          useNativeRbf?: typeof undefined;
-          useDecreaseOutput?: typeof undefined;
-          isTokenKnown?: typeof undefined;
-      })
-    | (TxFinal & {
-          prevTxid: string;
-          feeDifference: string;
-          useNativeRbf: boolean;
-          useDecreaseOutput: boolean;
-          isTokenKnown?: boolean;
-      });
+export type PrecomposedTransactionFinal = TxFinal | PrecomposedTransactionFinalRbf;
 
 export type PrecomposedTransaction =
     | PrecomposedTransactionError

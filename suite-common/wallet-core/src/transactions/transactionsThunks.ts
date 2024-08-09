@@ -4,6 +4,7 @@ import {
     AccountKey,
     PrecomposedTransactionCardanoFinal,
     PrecomposedTransactionFinal,
+    PrecomposedTransactionFinalRbf,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
@@ -12,6 +13,7 @@ import {
     findTransactions,
     getPendingAccount,
     getRbfParams,
+    isRbfTransaction,
     isTrezorConnectBackendType,
     replaceEthereumSpecific,
     tryGetAccountIdentity,
@@ -39,7 +41,7 @@ import {
  */
 interface ReplaceTransactionThunkParams {
     // transaction input parameters. It has to be passed as argument rather than obtained form send-form state, because this thunk is used also by eth-staking module that uses different redux state.
-    precomposedTransaction: PrecomposedTransactionFinal;
+    precomposedTransaction: PrecomposedTransactionFinalRbf;
     newTxid: string;
 }
 
@@ -49,7 +51,7 @@ export const replaceTransactionThunk = createThunk(
         { precomposedTransaction, newTxid }: ReplaceTransactionThunkParams,
         { getState, dispatch },
     ) => {
-        if (!precomposedTransaction.prevTxid) return; // ignore if it's not a replacement tx
+        if (!isRbfTransaction(precomposedTransaction)) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
         const signedTransaction = selectSendSignedTx(getState());
@@ -151,7 +153,7 @@ export const addFakePendingTxThunk = createThunk(
 
         Object.keys(affectedAccounts).forEach(key => {
             const affectedAccount = affectedAccounts[key];
-            if (!precomposedTransaction.prevTxid) {
+            if (!isRbfTransaction(precomposedTransaction)) {
                 // create and profile pending transaction for affected account if it's not a replacement tx
                 const affectedAccountTransaction = blockbookUtils.transformTransaction(
                     signedTransaction,

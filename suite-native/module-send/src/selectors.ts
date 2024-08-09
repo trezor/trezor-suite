@@ -11,6 +11,7 @@ import {
 import {
     constructTransactionReviewOutputs,
     getTransactionReviewOutputState,
+    isRbfTransaction,
 } from '@suite-common/wallet-utils';
 
 import { StatefulReviewOutput } from './types';
@@ -22,9 +23,10 @@ export const selectTransactionReviewOutputs = (
     const precomposedForm = selectSendFormDraftByAccountKey(state, accountKey);
     const precomposedTx = selectSendPrecomposedTx(state);
 
-    const decreaseOutputId = precomposedTx?.useNativeRbf
-        ? precomposedForm?.setMaxOutputId
-        : undefined;
+    const decreaseOutputId =
+        precomposedTx !== undefined && isRbfTransaction(precomposedTx) && precomposedTx.useNativeRbf
+            ? precomposedForm?.setMaxOutputId
+            : undefined;
 
     const account = selectAccountByKey(state, accountKey);
     const device = selectDevice(state);

@@ -12,6 +12,8 @@ import {
     TokenAddress,
     RatesByTimestamps,
     Timestamp,
+    GeneralPrecomposedTransactionFinal,
+    PrecomposedTransactionFinalRbf,
 } from '@suite-common/wallet-types';
 import {
     AccountAddress,
@@ -57,6 +59,10 @@ export const isPending = (tx: WalletAccountTransaction | AccountTransaction) => 
 
     return !!tx && (!tx.blockHeight || tx.blockHeight < 0);
 };
+
+export const isRbfTransaction = (
+    tx: GeneralPrecomposedTransactionFinal,
+): tx is PrecomposedTransactionFinalRbf => 'prevTxid' in tx && tx.prevTxid !== undefined;
 
 /* Convert date to string in YYYY-MM-DD format */
 const generateTransactionDateKey = (d: Date) =>
