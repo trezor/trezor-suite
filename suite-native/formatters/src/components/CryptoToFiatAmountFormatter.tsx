@@ -12,6 +12,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | null> &
         historicRate?: number;
         useHistoricRate?: boolean;
         isDiscreetText?: boolean;
+        isBalance?: boolean;
     };
 
 export const CryptoToFiatAmountFormatter = ({
@@ -20,15 +21,17 @@ export const CryptoToFiatAmountFormatter = ({
     historicRate,
     useHistoricRate,
     isDiscreetText = true,
+    isBalance = false,
     ...textProps
 }: CryptoToFiatAmountFormatterProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
     const fiatValue = useFiatFromCryptoValue({
-        cryptoValue: value,
         network,
         historicRate,
         useHistoricRate,
+        isBalance,
+        cryptoValue: value,
     });
 
     const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? '0');
