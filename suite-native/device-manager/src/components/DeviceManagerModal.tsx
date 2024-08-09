@@ -1,4 +1,4 @@
-import { GestureResponderEvent, Modal, Pressable } from 'react-native';
+import { GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
 import { ReactNode } from 'react';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, SlideInUp } from 'react-native-reanimated';
@@ -33,7 +33,7 @@ const deviceManagerModalWrapperStyle = prepareNativeStyle(utils => ({
 
 const deviceSwitchWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
     (utils, { insets }) => ({
-        paddingTop: insets.top + utils.spacings.large,
+        paddingTop: insets.top + (StatusBar.currentHeight ?? 0),
         backgroundColor: utils.colors.backgroundSurfaceElevation1,
         borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
         borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
