@@ -13,6 +13,7 @@ import TrezorConnect, { EthereumTransaction, Success, InternalTransfer } from '@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { STAKE_GAS_LIMIT_RESERVE, ValidatorsQueue } from '@suite-common/wallet-core';
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
+import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 
 // source is a required parameter for some functions in the Everstake Wallet SDK.
 // This parameter is used for some contract calls.
@@ -56,10 +57,11 @@ export const stake = async ({
 }: StakeTxBaseArgs & {
     amount: string;
 }) => {
-    const MIN_AMOUNT = new BigNumber('100000000000000000');
     const amountWei = toWei(amount, 'ether');
 
-    if (new BigNumber(amountWei).lt(MIN_AMOUNT)) throw new Error(`Min Amount ${MIN_AMOUNT} wei`);
+    if (new BigNumber(amount).lt(MIN_ETH_AMOUNT_FOR_STAKING)) {
+        throw new Error(`Min Amount ${MIN_ETH_AMOUNT_FOR_STAKING} ${symbol.toUpperCase()}`);
+    }
 
     try {
         const ethNetwork = getEthNetworkForWalletSdk(symbol);

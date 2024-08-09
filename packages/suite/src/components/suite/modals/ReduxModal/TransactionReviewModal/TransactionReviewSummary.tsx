@@ -7,7 +7,7 @@ import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation, FormattedCryptoAmount, AccountLabel } from 'src/components/suite';
 import { Account, Network } from 'src/types/wallet';
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
@@ -198,6 +198,7 @@ interface TransactionReviewSummaryProps {
     broadcast?: boolean;
     detailsOpen: boolean;
     onDetailsClick: () => void;
+    ethereumStakeType?: StakeType | null;
     actionText: TranslationKey;
 }
 
@@ -209,6 +210,7 @@ export const TransactionReviewSummary = ({
     broadcast,
     detailsOpen,
     onDetailsClick,
+    ethereumStakeType,
     actionText,
 }: TransactionReviewSummaryProps) => {
     const drafts = useSelector(state => state.wallet.send.drafts);
@@ -312,19 +314,22 @@ export const TransactionReviewSummary = ({
                     </LeftDetailsRow>
                 )}
 
-                <LeftDetailsRow>
-                    <ReviewLeftDetailsLineLeft>
-                        <Icon size={12} color={theme.iconSubdued} icon="BROADCAST" />
-                        <Translation id="BROADCAST" />
-                    </ReviewLeftDetailsLineLeft>
+                {!ethereumStakeType && (
+                    <LeftDetailsRow>
+                        <ReviewLeftDetailsLineLeft>
+                            <Icon size={12} color={theme.iconSubdued} icon="BROADCAST" />
+                            <Translation id="BROADCAST" />
+                        </ReviewLeftDetailsLineLeft>
 
-                    <ReviewLeftDetailsLineRight
-                        $color={broadcast ? theme.textPrimaryDefault : theme.textAlertYellow}
-                        $uppercase
-                    >
-                        <Translation id={broadcast ? 'TR_ON' : 'TR_OFF'} />
-                    </ReviewLeftDetailsLineRight>
-                </LeftDetailsRow>
+                        <ReviewLeftDetailsLineRight
+                            $color={broadcast ? theme.textPrimaryDefault : theme.textAlertYellow}
+                            $uppercase
+                        >
+                            <Translation id={broadcast ? 'TR_ON' : 'TR_OFF'} />
+                        </ReviewLeftDetailsLineRight>
+                    </LeftDetailsRow>
+                )}
+
                 {tx.inputs.length !== 0 && (
                     <LeftDetailsBottom>
                         <Separator />

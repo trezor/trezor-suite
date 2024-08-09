@@ -145,6 +145,7 @@ export const TransactionReviewModalContent = ({
                 broadcast={precomposedForm.options.includes('broadcast')}
                 detailsOpen={detailsOpen}
                 onDetailsClick={() => setDetailsOpen(!detailsOpen)}
+                ethereumStakeType={ethereumStakeType}
                 actionText={getTransactionReviewModalActionText({
                     ethereumStakeType,
                     isRbfAction,
@@ -169,7 +170,10 @@ export const TransactionReviewModalContent = ({
                 setIsSending={() => setIsSending(true)}
                 ethereumStakeType={ethereumStakeType || undefined}
             />
-            <TransactionReviewEvmExplanation account={selectedAccount.account} />
+            <TransactionReviewEvmExplanation
+                account={selectedAccount.account}
+                ethereumStakeType={ethereumStakeType}
+            />
         </StyledModal>
     );
 };
