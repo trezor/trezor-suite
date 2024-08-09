@@ -1,6 +1,25 @@
 [
     {
         "required": false,
+        "version": [2, 8, 1],
+        "min_firmware_version": [2, 0, 8],
+        "min_bootloader_version": [2, 0, 0],
+        "bootloader_version": [2, 1, 6],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR"],
+        "url": "firmware/t2t1/trezor-t2t1-2.8.1.bin",
+        "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.8.1-bitcoinonly.bin",
+        "fingerprint": "d3af84a212d32785449ca6575e3cf2a641920b353a82dec9f059083ea5d4b149",
+        "fingerprint_bitcoinonly": "38ab127fcf4263a18a3b07593301fdd2c6a1a96360b62c131adb849b5d18fae3",
+        "firmware_revision": "632b9561559b7ab6824bb7eeac072874e07b7b82",
+        "changelog": [
+            "## Fixed",
+            " - Fixed displaying of a progress indicator for the formatting operation.",
+            "## Changed",
+            " - Improve precision of PIN validation countdown."
+        ]
+    },
+    {
+        "required": false,
         "version": [2, 7, 2],
         "min_firmware_version": [2, 0, 8],
         "min_bootloader_version": [2, 0, 0],
