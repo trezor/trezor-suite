@@ -574,10 +574,11 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
         dispatch(
             sendFormActions.storePrecomposedTransaction({
-                accountKey: selectedAccount.key,
-                enhancedFormDraft: formValues,
                 precomposedTransaction: enhancedPrecomposedTransaction,
             }),
+        );
+        dispatch(
+            sendFormActions.storeDraft({ accountKey: selectedAccount.key, formState: formValues }),
         );
 
         return enhancedPrecomposedTransaction;
