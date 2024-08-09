@@ -1,5 +1,116 @@
 // @group_other
 
+function setupAndAssertBuy(selectOffer: () => void) {
+    const testData = {
+        fiatInput: '500',
+        quoteBtcValue: '0.02073954',
+        tradeBtcValue: '0.02066953', // real situation: the final trade value may differ from the quote value
+        btcAddress: 'bc1q7ceqvaq7fqyywxqcx7qnfxkfk2ykpsla9pe80q',
+    };
+
+    // Tests all input windows are empty and country is set to Austria
+    cy.getTestElement('@coinmarket/form/country-select/input').should('contain.text', 'Austria');
+    cy.getTestElement('@coinmarket/form/fiat-input').should('have.value', '');
+
+    // Tests set currencies are EUR and BTC
+    cy.getTestElement('@coinmarket/form/fiat-currency-select/input').should('contain.text', 'EUR');
+
+    cy.getTestElement('@coinmarket/form/account-select/input').should('contain.text', 'BTC');
+
+    // Fills out the form
+    cy.getTestElement('@coinmarket/form/fiat-input').type(testData.fiatInput, {
+        force: true, // The Fiat input contains the inner select box, that partially covers the input.
+    });
+
+    selectOffer();
+
+    cy.getTestElement('@modal').should('be.visible');
+    cy.getTestElement('@coinmarket/buy/offers/buy-terms-confirm-button').click();
+    cy.getTestElement('@coinmarket/offer/confirm-on-trezor-button').click();
+    cy.getTestElement('@prompts/confirm-on-device');
+    cy.task('pressYes');
+
+    // Verifies amounts, currencies and providers
+    cy.get('[class*="CoinmarketSelectedOfferInfo__Info"]')
+        .should('exist')
+        .then(wrapper => {
+            cy.wrap(wrapper)
+                .find('[class*="CoinmarketSelectedOfferInfo__Dark"]')
+                .first()
+                .invoke('text')
+                .should('match', new RegExp(`€${testData.fiatInput}.[0-9][0-9]`));
+            cy.wrap(wrapper)
+                .find('[class*="FormattedCryptoAmount__Value"]')
+                .invoke('text')
+                .should('be.equal', testData.quoteBtcValue);
+            cy.wrap(wrapper)
+                .find('[class*="FormattedCryptoAmount__Container"]')
+                .should('contain.text', 'BTC');
+            cy.wrap(wrapper)
+                .find('[class*="CoinmarketProviderInfo__Wrapper"]')
+                .invoke('text')
+                .should('be.equal', 'banxa');
+            cy.wrap(wrapper)
+                .find('[class*="CoinmarketPaymentType__Wrapper"]')
+                .invoke('text')
+                .should('be.equal', 'Bank Transfer');
+        });
+
+    // Verifies receiving address
+    cy.get('[class*="AddressOptions__AddressWrapper"]')
+        .should('exist')
+        .then(wrapper => {
+            cy.wrap(wrapper)
+                .find('[class*="AddressOptions__Address"]')
+                .should('have.text', 'bc1q7ceqvaq7fqyywxqcx7qnfxkfk2ykpsla9pe80q');
+        });
+
+    // Moving on to the partner's site
+    cy.getTestElement('@coinmarket/offer/continue-transaction-button').click();
+
+    // Verifies that the buy trade was approved
+    cy.get('[class*="PaymentSuccessful__Wrapper"]')
+        .should('exist')
+        .then(wrapper => {
+            cy.wrap(wrapper)
+                .find('[class*="PaymentSuccessful__Title"]')
+                .invoke('text')
+                .should('be.equal', 'Approved');
+        });
+
+    // Goes back, then on the Last transactions page after verifies the transaction is listed
+    cy.getTestElement('@account-subpage/back').click();
+    cy.getTestElement('@coinmarket/menu/wallet-coinmarket-transactions').click();
+
+    cy.get('[class*="BuyTransaction__Wrapper"]')
+        .first()
+        .should('exist')
+        .then(wrapper => {
+            cy.wrap(wrapper)
+                .find('[class*="HiddenPlaceholder__Wrapper"]')
+                .invoke('text')
+                .should('match', new RegExp(`${testData.fiatInput} EUR`));
+            cy.wrap(wrapper)
+                .find('[class*="FormattedCryptoAmount__Value"]')
+                .invoke('text')
+                .should('be.equal', testData.tradeBtcValue);
+            cy.wrap(wrapper)
+                .find('[class*="FormattedCryptoAmount__Container"]')
+                .should('contain.text', 'BTC');
+            cy.wrap(wrapper)
+                .find('[class*="CoinmarketProviderInfo__Wrapper"]')
+                .invoke('text')
+                .should('be.equal', 'banxa');
+            cy.wrap(wrapper)
+                .find('[class*="CoinmarketPaymentPlainType__Text"]')
+                .should('contain.text', 'Bank Transfer');
+            cy.wrap(wrapper)
+                .find('[class*="Status__Text"]')
+                .invoke('text')
+                .should('be.equal', 'Approved');
+        });
+}
+
 describe('Coinmarket buy', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -14,7 +125,7 @@ describe('Coinmarket buy', () => {
                     let { href } = win.location;
                     // simulate redirect from partner back to Suite, prefix independent
                     href = href.replace(
-                        '/accounts/coinmarket/buy/confirm#/btc/0',
+                        new RegExp('/accounts/coinmarket/buy(/confirm)?#/btc/0'),
                         '/coinmarket-redirect#detail/btc/normal/0/mockedPaymentId3',
                     );
                     win.location.href = href;
@@ -44,156 +155,67 @@ describe('Coinmarket buy', () => {
      * 13. Verifies that the buy trade was approved
      * * 14. Goes back to the Buy tab and verifies the transaction is listed under "Trade transactions"
      */
-    it('Should buy crypto successfully', () => {
-        const testData = {
-            fiatInput: '500',
-            quoteBtcValue: '0.02073954',
-            tradeBtcValue: '0.02066953', // real situation: the final trade value may differ from the quote value
-            btcAddress: 'bc1q7ceqvaq7fqyywxqcx7qnfxkfk2ykpsla9pe80q',
-        };
+    it('Should buy crypto with comparing all offers successfully', () => {
+        setupAndAssertBuy(() => {
+            cy.getTestElement('@coinmarket/form/compare-button').click();
 
-        // Tests all input windows are empty and country is set to Austria
-        cy.getTestElement('@coinmarket/form/country-select/input').should(
-            'contain.text',
-            'Austria',
-        );
-        cy.getTestElement('@coinmarket/form/fiat-input').should('have.value', '');
+            // Verifies the offers displayed match the mock
+            cy.fixture('./invity/buy/quotes').then((quotes: any) => {
+                const bankAccountQuotes = quotes.filter(
+                    (quote: any) => quote.paymentMethod === 'bankTransfer',
+                );
+                const exchangeProvider: string[] = ['banxa', 'btcdirect'];
 
-        // Tests set currencies are EUR and BTC
-        cy.getTestElement('@coinmarket/form/fiat-currency-select/input').should(
-            'contain.text',
-            'EUR',
-        );
+                // Get all displayed quotes
+                cy.get('[class*="CoinmarketOffersItem__OfferWrap"]')
+                    .should('exist')
+                    // Loop all displayed quotes
+                    .each(($el, elIndex) => {
+                        // Test provider
+                        cy.wrap($el)
+                            .find('[class*="CoinmarketUtilsProvider__IconWrap"]')
+                            .then($el => {
+                                const text = $el.text();
 
-        cy.getTestElement('@coinmarket/form/account-select/input').should('contain.text', 'BTC');
+                                expect(exchangeProvider).to.include(text);
+                            });
+                        // Test quote receive amount
+                        cy.wrap($el)
+                            .find('[class*="FormattedCryptoAmount__Value"]')
+                            .invoke('text')
+                            .then((readValue: string) => {
+                                const coinValueFromApp: number = parseFloat(readValue);
+                                const coinValueFromQuote: number = parseFloat(
+                                    bankAccountQuotes[elIndex].receiveStringAmount,
+                                );
 
-        // Fills out the form
-        cy.getTestElement('@coinmarket/form/fiat-input').type(testData.fiatInput, {
-            force: true, // The Fiat input contains the inner select box, that partially covers the input.
+                                expect(coinValueFromApp).to.be.eq(coinValueFromQuote);
+                            });
+                    });
+            });
+            // Gets the deal
+            cy.getTestElement('@coinmarket/offers/get-this-deal-button').eq(0).click();
         });
-        cy.getTestElement('@coinmarket/form/compare-button').click();
+    });
 
-        // Verifies the offers displayed match the mock
-        cy.fixture('./invity/buy/quotes').then((quotes: any) => {
-            const bankAccountQuotes = quotes.filter(
-                (quote: any) => quote.paymentMethod === 'bankTransfer',
-            );
-            const exchangeProvider: string[] = ['banxa', 'btcdirect'];
-
-            // Get all displayed quotes
-            cy.get('[class*="CoinmarketOffersItem__OfferWrap"]')
-                .should('exist')
-                // Loop all displayed quotes
-                .each(($el, elIndex) => {
-                    // Test provider
-                    cy.wrap($el)
-                        .find('[class*="CoinmarketUtilsProvider__IconWrap"]')
-                        .then($el => {
-                            const text = $el.text();
-
-                            expect(exchangeProvider).to.include(text);
-                        });
-                    // Test quote receive amount
-                    cy.wrap($el)
-                        .find('[class*="FormattedCryptoAmount__Value"]')
-                        .invoke('text')
-                        .then((readValue: string) => {
-                            const coinValueFromApp: number = parseFloat(readValue);
-                            const coinValueFromQuote: number = parseFloat(
-                                bankAccountQuotes[elIndex].receiveStringAmount,
-                            );
-
-                            expect(coinValueFromApp).to.be.eq(coinValueFromQuote);
-                        });
-                });
+    /**
+     * 1. Navigates to Trade/Buy.
+     * 2. Verifies the mocked API response (country:AT).
+     * 3. Fills in an amount and clicks “Buy”.
+     * 4. Verifies that a modal opens.
+     * 5. Clicks the checkbox and “Confirm”.
+     * 6. Clicks “Confirm on Trezor”  in Suite and on the emulator.
+     * 7. Verifies “Confirmed on Trezor” text.
+     * 8. Verifies the amount, currency, crypto, provider and payment method all match the mocked/given data.
+     * 9. Clicks “Finish transaction”.
+     * 10. Simulates interaction with the partner's site
+     * 11. Verifies that the buy trade was approved
+     * * 12. Goes back to the Buy tab and verifies the transaction is listed under "Trade transactions"
+     */
+    it('Should buy crypto best offer successfully', () => {
+        setupAndAssertBuy(() => {
+            cy.getTestElement('@coinmarket/form/buy-button').click();
         });
-        // Gets the deal
-        cy.getTestElement('@coinmarket/offers/get-this-deal-button').eq(1).click();
-        cy.getTestElement('@modal').should('be.visible');
-        cy.getTestElement('@coinmarket/buy/offers/buy-terms-confirm-button').click();
-        cy.getTestElement('@coinmarket/offer/confirm-on-trezor-button').click();
-        cy.getTestElement('@prompts/confirm-on-device');
-        cy.task('pressYes');
-
-        // Verifies amounts, currencies and providers
-        cy.get('[class*="CoinmarketSelectedOfferInfo__Info"]')
-            .should('exist')
-            .then(wrapper => {
-                cy.wrap(wrapper)
-                    .find('[class*="CoinmarketSelectedOfferInfo__Dark"]')
-                    .first()
-                    .invoke('text')
-                    .should('match', new RegExp(`€${testData.fiatInput}.[0-9][0-9]`));
-                cy.wrap(wrapper)
-                    .find('[class*="FormattedCryptoAmount__Value"]')
-                    .invoke('text')
-                    .should('be.equal', testData.quoteBtcValue);
-                cy.wrap(wrapper)
-                    .find('[class*="FormattedCryptoAmount__Container"]')
-                    .should('contain.text', 'BTC');
-                cy.wrap(wrapper)
-                    .find('[class*="CoinmarketProviderInfo__Wrapper"]')
-                    .invoke('text')
-                    .should('be.equal', 'banxa');
-                cy.wrap(wrapper)
-                    .find('[class*="CoinmarketPaymentType__Wrapper"]')
-                    .invoke('text')
-                    .should('be.equal', 'Bank Transfer');
-            });
-
-        // Verifies receiving address
-        cy.get('[class*="AddressOptions__AddressWrapper"]')
-            .should('exist')
-            .then(wrapper => {
-                cy.wrap(wrapper)
-                    .find('[class*="AddressOptions__Address"]')
-                    .should('have.text', 'bc1q7ceqvaq7fqyywxqcx7qnfxkfk2ykpsla9pe80q');
-            });
-
-        // Moving on to the partner's site
-        cy.getTestElement('@coinmarket/offer/continue-transaction-button').click();
-
-        // Verifies that the buy trade was approved
-        cy.get('[class*="PaymentSuccessful__Wrapper"]')
-            .should('exist')
-            .then(wrapper => {
-                cy.wrap(wrapper)
-                    .find('[class*="PaymentSuccessful__Title"]')
-                    .invoke('text')
-                    .should('be.equal', 'Approved');
-            });
-
-        // Goes back, then on the Last transactions page after verifies the transaction is listed
-        cy.getTestElement('@account-subpage/back').click();
-        cy.getTestElement('@coinmarket/menu/wallet-coinmarket-transactions').click();
-
-        cy.get('[class*="BuyTransaction__Wrapper"]')
-            .first()
-            .should('exist')
-            .then(wrapper => {
-                cy.wrap(wrapper)
-                    .find('[class*="HiddenPlaceholder__Wrapper"]')
-                    .invoke('text')
-                    .should('match', new RegExp(`${testData.fiatInput} EUR`));
-                cy.wrap(wrapper)
-                    .find('[class*="FormattedCryptoAmount__Value"]')
-                    .invoke('text')
-                    .should('be.equal', testData.tradeBtcValue);
-                cy.wrap(wrapper)
-                    .find('[class*="FormattedCryptoAmount__Container"]')
-                    .should('contain.text', 'BTC');
-                cy.wrap(wrapper)
-                    .find('[class*="CoinmarketProviderInfo__Wrapper"]')
-                    .invoke('text')
-                    .should('be.equal', 'banxa');
-                cy.wrap(wrapper)
-                    .find('[class*="CoinmarketPaymentPlainType__Text"]')
-                    .should('contain.text', 'Bank Transfer');
-                cy.wrap(wrapper)
-                    .find('[class*="Status__Text"]')
-                    .invoke('text')
-                    .should('be.equal', 'Approved');
-            });
     });
 });
 
