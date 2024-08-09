@@ -10,9 +10,9 @@ import {
 } from '@suite-native/navigation';
 import { AccountKey } from '@suite-common/wallet-types';
 
-// TODO: So far we do not want enable send form for any other network than Bitcoin Testnet and Regtest.
+// TODO: So far we do not want enable send form for any other networkS than Bitcoin-like coins.
 // This filter will be removed in a follow up PR.
-const TESTNET_FILTER = 'TEST';
+const BITCOIN_LIKE_FILTER = 'bitcoin';
 
 export const SendAccountsScreen = ({
     navigation,
@@ -28,8 +28,11 @@ export const SendAccountsScreen = ({
             screenHeader={<DeviceManagerScreenHeader />}
             subheader={<ScreenSubHeader content="Send from" leftIcon={<GoBackIcon />} />}
         >
-            {/* TODO: Enable filtering same as receive screen has. */}
-            <AccountsList onSelectAccount={navigateToSendFormScreen} filterValue={TESTNET_FILTER} />
+            {/* TODO: Enable filtering same as receive screen account list has. */}
+            <AccountsList
+                onSelectAccount={navigateToSendFormScreen}
+                filterValue={BITCOIN_LIKE_FILTER}
+            />
         </Screen>
     );
 };
