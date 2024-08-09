@@ -1157,6 +1157,14 @@ export class Core extends EventEmitter {
         if (logWriterFactory) {
             setLogWriter(logWriterFactory);
         }
+
+        // do not send any event until Core is fully loaded
+        // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
+        const throttlePromise = createDeferred();
+        throttlePromise.promise.catch(() => {});
+        const onCoreEventThrottled = (message: CoreEventMessage) =>
+            throttlePromise.promise.then(() => onCoreEvent(message));
+
         try {
             await DataManager.load(settings);
             const { debug, priority } = DataManager.getSettings();
@@ -1176,10 +1184,11 @@ export class Core extends EventEmitter {
             });
             initDeviceList(this.getCoreContext());
 
-            this.on(CORE_EVENT, onCoreEvent);
+            this.on(CORE_EVENT, onCoreEventThrottled);
         } catch (error) {
             // TODO: kill app
             _log.error('init', error);
+            throttlePromise.reject(error);
             throw error;
         }
 
@@ -1191,6 +1200,7 @@ export class Core extends EventEmitter {
         } catch (error) {
             _log.error('setTransports', error);
             this.sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
+            throttlePromise.reject(error);
             throw error;
         }
 
@@ -1200,6 +1210,11 @@ export class Core extends EventEmitter {
         if (!transportReconnect || coreMode === 'auto') {
             await this.deviceList.pendingConnection();
         }
+
+        // Core initialized successfully, disable throttle
+        this.on(CORE_EVENT, onCoreEvent);
+        this.off(CORE_EVENT, onCoreEventThrottled);
+        setTimeout(throttlePromise.resolve, 0);
     }
 }
 
@@ -1232,29 +1247,9 @@ const disableWebUSBTransport = async ({ deviceList, sendCoreMessage }: CoreConte
     }
 };
 
-const initCore = async (
-    settings: ConnectSettings,
-    onCoreEvent: (message: CoreEventMessage) => void,
-    logWriterFactory?: () => LogWriter,
-) => {
+const initCore = async (...params: Parameters<Core['init']>) => {
     const core = new Core();
-    let promise: Promise<void>;
-
-    // do not send any event until Core is fully loaded
-    // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
-    const eventThrottle = (...args: Parameters<typeof onCoreEvent>) =>
-        promise
-            .then(() => {
-                setTimeout(() => onCoreEvent(...args), 0);
-            })
-            .catch(() => {});
-
-    promise = core.init(settings, eventThrottle, logWriterFactory);
-    await promise;
-
-    // Core initialized successfully, disable throttle
-    core.on(CORE_EVENT, onCoreEvent);
-    core.off(CORE_EVENT, eventThrottle);
+    await core.init(...params);
 
     return core;
 };
@@ -1263,7 +1258,5 @@ const disposeCore = (core: Core) => {
     core.dispose();
 };
 
-/**
- * State initialization
- */
+/** State initialization */
 export const initCoreState = () => createLazy(initCore, disposeCore);
