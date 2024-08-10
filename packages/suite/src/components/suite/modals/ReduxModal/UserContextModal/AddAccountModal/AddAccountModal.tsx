@@ -27,6 +27,7 @@ import { DeviceModelInternal } from '@trezor/connect';
 
 const StyledModal = styled(Modal)`
     width: 480px;
+    padding-top: 4px;
     text-align: left;
 `;
 
