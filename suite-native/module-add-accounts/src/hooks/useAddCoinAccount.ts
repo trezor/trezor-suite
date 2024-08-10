@@ -96,14 +96,14 @@ export const useAddCoinAccount = () => {
         const availableTypes: Map<NetworkSymbol, [AccountType, ...AccountType[]]> = new Map();
 
         Object.keys(networks).forEach(symbol => {
-            // for Cardano only allow latest account type and coinjoin is not supported
+            // for Cardano and Ethereum only allow latest account type and coinjoin and ledger are not supported
             const types = Object.keys(networks[symbol].accountTypes).filter(
                 t => !['coinjoin', 'imported', 'ledger'].includes(t),
             ) as AccountType[];
 
             availableTypes.set(symbol as NetworkSymbol, [
                 NORMAL_ACCOUNT_TYPE,
-                ...(symbol === 'ada' ? [] : types),
+                ...(['ada', 'eth'].includes(symbol) ? [] : types),
             ]);
         });
 
