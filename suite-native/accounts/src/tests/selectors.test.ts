@@ -79,7 +79,7 @@ describe('groupAccountsByNetworkAccountType', () => {
             'Bitcoin Legacy Segwit accounts': [{ symbol: 'btc', accountType: 'segwit' }],
             'Bitcoin Legacy accounts': [{ symbol: 'btc', accountType: 'legacy' }],
             'Bitcoin Taproot accounts': [{ symbol: 'btc', accountType: 'taproot' }],
-            'Ethereum accounts': [{ symbol: 'eth', accountType: 'normal' }],
+            'Ethereum default accounts': [{ symbol: 'eth', accountType: 'normal' }],
             'Litecoin Legacy Segwit accounts': [{ symbol: 'ltc', accountType: 'segwit' }],
         });
     });
