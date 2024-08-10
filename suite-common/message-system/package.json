@@ -28,8 +28,7 @@
         "fs-extra": "^11.2.0",
         "json-schema-to-typescript": "^13.1.2",
         "jws": "^4.0.0",
-        "proxy-memoize": "2.0.2",
-        "semver": "^7.6.0"
+        "proxy-memoize": "2.0.2"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",

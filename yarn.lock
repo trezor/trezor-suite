@@ -8807,7 +8807,6 @@ __metadata:
     json-schema-to-typescript: "npm:^13.1.2"
     jws: "npm:^4.0.0"
     proxy-memoize: "npm:2.0.2"
-    semver: "npm:^7.6.0"
     tsx: "npm:^4.16.3"
   languageName: unknown
   linkType: soft
@@ -9435,7 +9434,6 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
     react-redux: "npm:8.0.7"
-    semver: "npm:^7.6.0"
   languageName: unknown
   linkType: soft
 
@@ -10535,7 +10533,6 @@ __metadata:
     jest-environment-jsdom: "npm:29.7.0"
     jssha: "npm:2.3.1"
     lodash: "npm:^4.17.15"
-    rimraf: "npm:^6.0.1"
   languageName: unknown
   linkType: soft
 
@@ -10793,7 +10790,6 @@ __metadata:
     redux-thunk: "npm:^2.4.2"
     remark-gemoji: "npm:^8.0.0"
     remark-gfm: "npm:^4.0.0"
-    rimraf: "npm:^6.0.1"
     styled-components: "npm:^6.1.8"
     swr: "npm:^2.2.5"
     tsx: "npm:^4.16.3"
@@ -10806,7 +10802,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
@@ -10815,7 +10810,6 @@ __metadata:
     copy-webpack-plugin: "npm:^12.0.2"
     es6-promise: "npm:^4.2.8"
     html-webpack-plugin: "npm:^5.6.0"
-    rimraf: "npm:^6.0.1"
     terser-webpack-plugin: "npm:^5.3.9"
     webpack: "npm:^5.93.0"
     webpack-cli: "npm:^5.1.4"
@@ -10853,8 +10847,6 @@ __metadata:
   resolution: "@trezor/connect-popup@workspace:packages/connect-popup"
   dependencies:
     "@babel/plugin-proposal-class-properties": "npm:^7.18.6"
-    "@babel/preset-react": "npm:^7.24.7"
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@playwright/browser-chromium": "npm:^1.45.3"
     "@playwright/browser-firefox": "npm:^1.45.3"
     "@playwright/browser-webkit": "npm:^1.45.3"
@@ -10878,7 +10870,6 @@ __metadata:
     eth-phishing-detect: "npm:^1.2.0"
     html-webpack-plugin: "npm:^5.6.0"
     react-dom: "npm:18.2.0"
-    rimraf: "npm:^6.0.1"
     terser-webpack-plugin: "npm:^5.3.9"
     webpack: "npm:^5.93.0"
     webpack-cli: "npm:^5.1.4"
@@ -10925,7 +10916,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@playwright/browser-chromium": "npm:^1.45.3"
     "@playwright/browser-firefox": "npm:^1.45.3"
     "@playwright/browser-webkit": "npm:^1.45.3"
@@ -10937,7 +10927,6 @@ __metadata:
     "@types/w3c-web-usb": "npm:^1.0.10"
     babel-loader: "npm:^9.1.3"
     html-webpack-plugin: "npm:^5.6.0"
-    rimraf: "npm:^6.0.1"
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^4.16.3"
@@ -10956,7 +10945,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-webextension@workspace:packages/connect-webextension"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-web": "workspace:*"
@@ -10967,7 +10955,6 @@ __metadata:
     babel-loader: "npm:^9.1.3"
     copy-webpack-plugin: "npm:^12.0.2"
     events: "npm:^3.3.0"
-    rimraf: "npm:^6.0.1"
     terser-webpack-plugin: "npm:^5.3.9"
     webpack: "npm:^5.93.0"
     webpack-cli: "npm:^5.1.4"
@@ -10984,7 +10971,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@ethereumjs/common": "npm:^4.3.0"
     "@ethereumjs/tx": "npm:^5.3.0"
     "@fivebinaries/coin-selection": "npm:2.2.1"
@@ -11418,7 +11404,6 @@ __metadata:
     react-redux: "npm:8.0.7"
     react-router: "npm:^5.2.0"
     react-router-dom: "npm:^5.2.0"
-    rimraf: "npm:^6.0.1"
     styled-components: "npm:^6.1.8"
     stylelint: "npm:^16.2.1"
     stylelint-config-standard: "npm:^36.0.0"
@@ -11510,7 +11495,6 @@ __metadata:
     "@types/react-window": "npm:^1.8.8"
     "@types/redux-logger": "npm:^3.0.11"
     "@types/redux-mock-store": "npm:^1.0.6"
-    "@types/semver": "npm:^7.5.4"
     "@types/ua-parser-js": "npm:^0.7.39"
     "@types/uuid": "npm:^9.0.6"
     "@types/zxcvbn": "npm:^4.4.4"
@@ -11551,7 +11535,6 @@ __metadata:
     redux-logger: "npm:^3.0.6"
     redux-mock-store: "npm:^1.5.4"
     redux-thunk: "npm:^2.4.2"
-    semver: "npm:^7.6.0"
     styled-components: "npm:^6.1.8"
     stylelint: "npm:^16.2.1"
     stylelint-config-standard: "npm:^36.0.0"
@@ -11607,8 +11590,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
-    "@babel/preset-env": "npm:^7.23.9"
-    "@babel/preset-typescript": "npm:^7.24.7"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
@@ -11633,10 +11614,8 @@ __metadata:
   resolution: "@trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link"
   dependencies:
     "@trezor/utils": "workspace:*"
-    "@types/semver": "npm:^7.5.6"
     "@types/ws": "npm:^8.5.5"
     cross-fetch: "npm:^4.0.0"
-    semver: "npm:^7.6.0"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
@@ -13031,7 +13010,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.12, @types/semver@npm:^7.3.4, @types/semver@npm:^7.5.0, @types/semver@npm:^7.5.4, @types/semver@npm:^7.5.6":
+"@types/semver@npm:^7.3.12, @types/semver@npm:^7.3.4, @types/semver@npm:^7.5.0, @types/semver@npm:^7.5.6":
   version: 7.5.6
   resolution: "@types/semver@npm:7.5.6"
   checksum: 10/e77282b17f74354e17e771c0035cccb54b94cc53d0433fa7e9ba9d23fd5d7edcd14b6c8b7327d58bbd89e83b1c5eda71dfe408e06b929007e2b89586e9b63459

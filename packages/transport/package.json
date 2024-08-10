@@ -52,8 +52,6 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
-        "@babel/preset-env": "^7.23.9",
-        "@babel/preset-typescript": "^7.24.7",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/bytebuffer": "^5.0.48",
         "@types/sharedworker": "^0.0.111",
