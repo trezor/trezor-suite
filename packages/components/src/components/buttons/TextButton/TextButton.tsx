@@ -17,7 +17,7 @@ const TextButtonContainer = styled.button<{
     flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'right' && 'row-reverse'};
     gap: ${({ $hasIcon }) => $hasIcon && spacingsPx.xs};
     height: ${({ $size: size }) => (size === 'small' ? 22 : 26)}px;
-    padding: 4px;
+    padding: ${spacingsPx.xxs};
     border: 1px solid transparent;
     border-radius: ${borders.radii.xxs};
     background: none;
@@ -47,7 +47,7 @@ const TextButtonContainer = styled.button<{
 
     &:disabled {
         color: ${({ theme }) => theme.textDisabled};
-        cursor: default;
+        cursor: not-allowed;
 
         path {
             fill: ${({ theme }) => theme.iconDisabled};
