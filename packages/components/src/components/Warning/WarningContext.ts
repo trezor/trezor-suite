@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { WarningVariant } from './Warning';
+import { WarningVariant } from './types';
 
 export const WarningContext = createContext<{
     variant?: WarningVariant;
