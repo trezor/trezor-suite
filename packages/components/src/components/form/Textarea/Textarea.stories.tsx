@@ -21,17 +21,24 @@ const Component = ({ ...args }) => {
 export const Textarea: StoryObj<TextareaProps> = {
     render: Component,
     args: {
+        isDisabled: false,
         label: 'Label',
         rows: 5,
         maxLength: 500,
         characterCount: true,
+        hasBottomPadding: true,
     },
     argTypes: {
+        isDisabled: {
+            control: {
+                type: 'boolean',
+            },
+        },
         label: {
-            control: 'text',
+            control: { type: 'text' },
         },
         placeholder: {
-            control: 'text',
+            control: { type: 'text' },
         },
         rows: {
             control: {
@@ -41,23 +48,48 @@ export const Textarea: StoryObj<TextareaProps> = {
                 type: 'range',
             },
         },
+        maxLength: {
+            control: { type: 'number' },
+        },
         labelHoverRight: {
-            control: 'text',
+            control: { type: 'text' },
         },
         labelRight: {
-            control: 'text',
+            control: { type: 'text' },
         },
         bottomText: {
-            control: 'text',
+            control: { type: 'text' },
         },
         innerRef: {
-            control: false,
+            table: {
+                type: {
+                    summary: 'Ref<HTMLTextAreaElement>',
+                },
+            },
         },
         value: {
-            control: false,
+            control: { type: 'text' },
         },
         characterCount: {
-            control: 'boolean',
+            control: {
+                type: 'object',
+            },
+            table: {
+                type: {
+                    summary: 'boolean | { current: number | undefined; max: number }',
+                },
+            },
+        },
+        inputState: {
+            control: {
+                type: 'radio',
+            },
+            options: [null, 'warning', 'error'],
+        },
+        hasBottomPadding: {
+            control: {
+                type: 'boolean',
+            },
         },
     },
 };

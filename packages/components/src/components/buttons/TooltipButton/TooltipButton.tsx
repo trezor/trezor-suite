@@ -3,17 +3,17 @@ import styled, { useTheme } from 'styled-components';
 import { Icon } from '../../assets/Icon/Icon';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button, ButtonProps } from '../Button/Button';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledButton = styled(Button)`
     position: relative;
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-inline: ${spacingsPx.xxl};
 `;
 
 const InfoIcon = styled(Icon)`
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: ${spacingsPx.xxs};
+    right: ${spacingsPx.xxs};
 `;
 
 export interface TooltipButtonProps extends ButtonProps {
@@ -22,7 +22,7 @@ export interface TooltipButtonProps extends ButtonProps {
 
 export const TooltipButton = ({
     tooltipContent,
-    isDisabled,
+    isDisabled = false,
     children,
     ...buttonProps
 }: TooltipButtonProps) => {

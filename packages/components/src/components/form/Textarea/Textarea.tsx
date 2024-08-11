@@ -55,6 +55,11 @@ const StyledTextarea = styled.textarea<{ $inputState?: InputState; $elevation: E
     border: none;
     resize: none;
     white-space: pre-wrap;
+
+    &:disabled {
+        cursor: not-allowed;
+        pointer-events: auto;
+    }
 `;
 
 const TextareaLabel = styled(Label)`
@@ -91,7 +96,7 @@ export const Textarea = ({
     value,
     maxLength,
     labelHoverRight,
-    isDisabled,
+    isDisabled = false,
     innerRef,
     label,
     inputState,
