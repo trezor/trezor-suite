@@ -145,7 +145,7 @@ const Left = () => {
                     >
                         <TrafficLightOffset>
                             <Column justifyContent="center" alignItems="center" height="100%">
-                                <Expander data-test="@welcome/title">
+                                <Expander data-testid="@welcome/title">
                                     <TrezorLogo type="symbol" width="57px" />
                                 </Expander>
 
@@ -206,7 +206,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
             <Wrapper>
                 {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
 
-                <Body data-test="@welcome-layout/body">
+                <Body data-testid="@welcome-layout/body">
                     <ElevationDown>
                         <Left />
                     </ElevationDown>

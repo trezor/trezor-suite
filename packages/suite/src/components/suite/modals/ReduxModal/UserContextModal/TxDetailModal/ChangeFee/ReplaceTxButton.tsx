@@ -26,7 +26,7 @@ export const ReplaceTxButton = () => {
     return (
         <Wrapper>
             <StyledButton
-                data-test="@send/replace-tx-button"
+                data-testid="@send/replace-tx-button"
                 isDisabled={isDisabled || isLoading}
                 onClick={signTransaction}
             >

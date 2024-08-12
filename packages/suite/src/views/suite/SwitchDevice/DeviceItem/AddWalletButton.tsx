@@ -57,7 +57,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                 <Column flex={1} gap={spacings.xs}>
                     {!emptyPassphraseWalletExists && (
                         <Button
-                            data-test="@switch-device/add-wallet-button"
+                            data-testid="@switch-device/add-wallet-button"
                             variant="tertiary"
                             isFullWidth
                             icon="PLUS"
@@ -70,7 +70,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
 
                     {isPassphraseProtectionEnabled && (
                         <Button
-                            data-test="@switch-device/add-hidden-wallet-button"
+                            data-testid="@switch-device/add-hidden-wallet-button"
                             variant="tertiary"
                             isFullWidth
                             icon="PLUS"

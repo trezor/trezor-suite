@@ -72,7 +72,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                 <BackgroundGalleryWrapper>
                     {homescreens[deviceModelInternal].map(image => (
                         <BackgroundImageBW64x128
-                            data-test={`@modal/gallery/bw_64x128/${image}`}
+                            data-testid={`@modal/gallery/bw_64x128/${image}`}
                             key={image}
                             id={image}
                             onClick={e =>
@@ -87,7 +87,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
                 <BackgroundGalleryWrapper>
                     {homescreens[deviceModelInternal].map(image => (
                         <BackgroundImageColor240x240
-                            data-test={`@modal/gallery/color_240x240/${image}`}
+                            data-testid={`@modal/gallery/color_240x240/${image}`}
                             key={image}
                             id={image}
                             onClick={e =>

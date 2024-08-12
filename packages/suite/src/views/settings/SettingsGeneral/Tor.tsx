@@ -70,7 +70,7 @@ export const Tor = () => {
             />
             <ActionColumn>
                 <Switch
-                    dataTest="@settings/general/tor-switch"
+                    data-testid="@settings/general/tor-switch"
                     isChecked={isTorEnabled || torStatus === TorStatus.Enabling}
                     isDisabled={isTorLoading}
                     onChange={handleTorSwitch}

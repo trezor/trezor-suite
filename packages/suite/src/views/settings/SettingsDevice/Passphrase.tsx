@@ -42,7 +42,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
                 <Switch
                     isChecked={passphraseProtection}
                     onChange={handleChange}
-                    dataTest="@settings/device/passphrase-switch"
+                    data-testid="@settings/device/passphrase-switch"
                     isDisabled={isDeviceLocked}
                 />
             </ActionColumn>

@@ -53,7 +53,7 @@ export interface SearchProps {
     setExpanded: Dispatch<SetStateAction<boolean>>;
     setSearch: Dispatch<SetStateAction<string>>;
     onSearch: (event: ChangeEvent<HTMLInputElement>) => void;
-    dataTest?: string;
+    'data-testid'?: string;
 }
 
 export const SearchAction = ({
@@ -64,7 +64,7 @@ export const SearchAction = ({
     setExpanded,
     setSearch,
     onSearch,
-    dataTest,
+    'data-testid': dataTest,
 }: SearchProps) => {
     const theme = useTheme();
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -101,7 +101,7 @@ export const SearchAction = ({
 
             <StyledInput
                 $isExpanded={isExpanded}
-                data-test={dataTest}
+                data-testid={dataTest}
                 size="small"
                 innerRef={inputRef}
                 innerAddon={

@@ -15,7 +15,7 @@ type LoadingProps = {
 };
 
 export const Loading = ({ className }: LoadingProps) => (
-    <LoaderWrapper data-test="@suite/loading" className={className}>
+    <LoaderWrapper data-testid="@suite/loading" className={className}>
         <Spinner size={80} isGrey={false} hasStartAnimation={true} />
     </LoaderWrapper>
 );

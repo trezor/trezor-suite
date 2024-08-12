@@ -141,7 +141,7 @@ export const TransactionHeading = ({
                 onMouseLeave={() => setHeadingIsHovered(false)}
                 onClick={onClick}
             >
-                <HeadingWrapper data-test={`${dataTestBase}/heading`}>
+                <HeadingWrapper data-testid={`${dataTestBase}/heading`}>
                     {isPhishingTransaction && (
                         <TooltipSymbol
                             content={

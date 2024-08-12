@@ -75,27 +75,29 @@ test('popup should display error page when device disconnected and debug mode', 
 
     log('waiting for explorer to load');
     await waitAndClick(page, ['@api-playground/collapsible-box']);
-    await page.waitForSelector("div[data-test='@api-playground/collapsible-box']");
-    await explorerPage.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
+    await page.waitForSelector("div[data-testid='@api-playground/collapsible-box']");
+    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
+        state: 'visible',
+    });
 
     log('opening popup');
     [popup] = await openPopup(persistentContext, explorerPage, isWebExtension);
 
     log('waiting for popup analytics to load');
-    await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+    await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
         state: 'visible',
         timeout: 40000,
     });
     log('clicking on analytics continue button');
-    await popup.click("button[data-test='@analytics/continue-button']");
+    await popup.click("button[data-testid='@analytics/continue-button']");
 
     log('waiting for permissions');
-    await popup.waitForSelector("div[data-test='@permissions']");
+    await popup.waitForSelector("div[data-testid='@permissions']");
 
     log('stopEmu');
     await TrezorUserEnvLink.stopEmu();
     log('waiting for popup error page');
-    await popup.waitForSelector("div[data-test='@connect-ui/error']");
+    await popup.waitForSelector("div[data-testid='@connect-ui/error']");
 });
 
 test('log page should contain logs from shared worker', async ({ page, context }) => {
@@ -152,7 +154,7 @@ test('log page should contain logs from shared worker', async ({ page, context }
     log(`loaded: ${logsUrl}`);
 
     log('waiting for download-button to be visible');
-    await logsPage.waitForSelector("button[data-test='@log-container/download-button']", {
+    await logsPage.waitForSelector("button[data-testid='@log-container/download-button']", {
         state: 'visible',
         timeout: 40 * 1000,
     });
@@ -160,7 +162,7 @@ test('log page should contain logs from shared worker', async ({ page, context }
     log('clicking download button and waiting for download to start');
     const [download] = await Promise.all([
         logsPage.waitForEvent('download'), // wait for download to start
-        logsPage.click("button[data-test='@log-container/download-button']"),
+        logsPage.click("button[data-testid='@log-container/download-button']"),
     ]);
 
     log('download started');

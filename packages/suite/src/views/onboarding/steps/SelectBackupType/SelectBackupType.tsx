@@ -84,7 +84,7 @@ type SelectBackupTypeProps = {
     isDisabled: boolean;
     selected: BackupType;
     onSelect: (value: BackupType) => void;
-    'data-test'?: string;
+    'data-testid'?: string;
     onOpen: () => void;
 };
 
@@ -92,7 +92,7 @@ export const SelectBackupType = ({
     selected,
     onSelect,
     isDisabled,
-    'data-test': dataTest,
+    'data-testid': dataTest,
     onOpen,
 }: SelectBackupTypeProps) => {
     const { elevation } = useElevation();
@@ -146,7 +146,7 @@ export const SelectBackupType = ({
                             onOpen();
                         }}
                     >
-                        <OptionText data-test={dataTest}>
+                        <OptionText data-testid={dataTest}>
                             <Text variant="tertiary" typographyStyle="hint">
                                 <Translation id="TR_ONBOARDING_BACKUP_TYPE" />
                             </Text>

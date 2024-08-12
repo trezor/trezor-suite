@@ -11,7 +11,7 @@ type Align = 'left' | 'center' | 'right';
 
 type BasicProps = {
     children: React.ReactNode;
-    'data-test'?: string;
+    'data-testid'?: string;
     align?: Align;
     onClick?: () => void;
 };

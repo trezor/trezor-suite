@@ -23,7 +23,7 @@ const SecurityStep = () => {
                 description={<Translation id="TR_YOUR_WALLET_IS_ALMOST_READY_DESCRIPTION" />}
                 innerActions={
                     <OnboardingButtonCta
-                        data-test="@onboarding/create-backup-button"
+                        data-testid="@onboarding/create-backup-button"
                         onClick={() => {
                             goToNextStep();
                         }}
@@ -33,7 +33,7 @@ const SecurityStep = () => {
                 }
                 outerActions={
                     <OnboardingButtonSkip
-                        data-test="@onboarding/skip-backup"
+                        data-testid="@onboarding/skip-backup"
                         onClick={() => {
                             setShowSkipConfirmation(true);
                             updateAnalytics({ backup: 'skip' });

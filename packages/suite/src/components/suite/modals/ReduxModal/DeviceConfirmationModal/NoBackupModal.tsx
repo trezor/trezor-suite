@@ -34,7 +34,7 @@ export const NoBackupModal = () => {
                     <Button
                         variant="destructive"
                         onClick={confirm}
-                        data-test="@no-backup/take-risk-button"
+                        data-testid="@no-backup/take-risk-button"
                     >
                         <Translation id="TR_CONTINUE_ANYWAY" />
                     </Button>

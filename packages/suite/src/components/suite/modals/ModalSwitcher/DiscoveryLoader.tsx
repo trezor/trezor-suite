@@ -21,7 +21,7 @@ export const DiscoveryLoader = () => {
     if (!device) return null;
 
     return (
-        <SwitchDeviceRenderer isCancelable={false} data-test="@discovery/loader">
+        <SwitchDeviceRenderer isCancelable={false} data-testid="@discovery/loader">
             <CardWithDevice device={device} isFullHeaderVisible={false}>
                 <Expand>
                     <Spinner size={80} isGrey={false} margin={{ bottom: 48 }} />

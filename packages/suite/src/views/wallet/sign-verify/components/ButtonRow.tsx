@@ -116,7 +116,7 @@ export const ButtonRow = ({
                     iconSize={20}
                     isDisabled={isTrezorLocked}
                     isLoading={isSubmitting}
-                    data-test="@sign-verify/submit"
+                    data-testid="@sign-verify/submit"
                 >
                     <Translation id={isSignPage ? 'TR_SIGN' : 'TR_VERIFY'} />
                 </StyledButton>

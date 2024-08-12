@@ -9,13 +9,13 @@ import { Dispatch } from 'react';
 type PassphraseWalletConfirmationStep1Props = {
     setContentType: Dispatch<React.SetStateAction<ContentType>>;
     onRetry: () => void;
-    dataTest?: string;
+    'data-testid'?: string;
 };
 
 export const PassphraseWalletConfirmationStep1 = ({
     setContentType,
     onRetry,
-    dataTest,
+    'data-testid': dataTest,
 }: PassphraseWalletConfirmationStep1Props) => (
     <>
         <PassphraseHeading>
@@ -33,7 +33,7 @@ export const PassphraseWalletConfirmationStep1 = ({
                                 variant="info"
                                 iconAlignment="right"
                                 icon="EXTERNAL_LINK"
-                                data-test={dataTest}
+                                data-testid={dataTest}
                             >
                                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK" />
                             </Button>
@@ -52,7 +52,7 @@ export const PassphraseWalletConfirmationStep1 = ({
                         onClick={() => {
                             setContentType('step2');
                         }}
-                        data-test="@passphrase-confirmation/step1-open-unused-wallet-button"
+                        data-testid="@passphrase-confirmation/step1-open-unused-wallet-button"
                     >
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON" />
                     </Button>
@@ -67,7 +67,7 @@ export const PassphraseWalletConfirmationStep1 = ({
                         isFullWidth
                         variant="tertiary"
                         onClick={onRetry}
-                        data-test="@passphrase-confirmation/step1-retry-button"
+                        data-testid="@passphrase-confirmation/step1-retry-button"
                     >
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_BUTTON" />
                     </Button>

@@ -71,7 +71,7 @@ export interface ConfirmValueModalProps extends Pick<ModalProps, 'onCancel' | 'h
     copyButtonText: ReactNode;
     stepLabel: ReactNode;
     confirmStepLabel: ReactNode;
-    copyButtonDataTest?: string;
+    'data-testid'?: string;
     isConfirmed?: boolean;
     validateOnDevice: () => ThunkAction;
     value: string;
@@ -81,7 +81,7 @@ export interface ConfirmValueModalProps extends Pick<ModalProps, 'onCancel' | 'h
 export const ConfirmValueModal = ({
     account,
     copyButtonText,
-    copyButtonDataTest,
+    'data-testid': copyButtonDataTest,
     stepLabel,
     confirmStepLabel,
     heading,
@@ -174,7 +174,7 @@ export const ConfirmValueModal = ({
                             <StyledButton
                                 isDisabled={!addressConfirmed}
                                 onClick={copy}
-                                data-test={copyButtonDataTest}
+                                data-testid={copyButtonDataTest}
                             >
                                 {copyButtonText}
                             </StyledButton>

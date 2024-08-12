@@ -140,7 +140,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                 onClick={() => fileInputElement?.current?.click()}
                                 isDisabled={isDeviceLocked || !isSupportedHomescreen}
                                 variant="secondary"
-                                data-test="@settings/device/homescreen-upload"
+                                data-testid="@settings/device/homescreen-upload"
                                 key="@settings/device/homescreen-upload"
                             >
                                 <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
@@ -148,7 +148,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             <Button
                                 onClick={openGallery}
                                 isDisabled={isDeviceLocked || !isSupportedHomescreen}
-                                data-test="@settings/device/homescreen-gallery"
+                                data-testid="@settings/device/homescreen-gallery"
                                 key="@settings/device/homescreen-gallery"
                                 variant="secondary"
                             >

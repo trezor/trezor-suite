@@ -103,7 +103,7 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
         <Wrapper>
             <Textarea
                 inputState={getInputState(asciiError)}
-                data-test={inputAsciiName}
+                data-testid={inputAsciiName}
                 defaultValue={asciiValue}
                 maxLength={formInputsMaxLength.ethData}
                 bottomText={asciiError?.message || null}
@@ -114,7 +114,7 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
             <Space> = </Space>
             <Textarea
                 inputState={getInputState(hexError)}
-                data-test={inputHexName}
+                data-testid={inputHexName}
                 defaultValue={hexValue}
                 maxLength={formInputsMaxLength.ethData}
                 bottomText={hexError?.message || null}
@@ -122,7 +122,7 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
                     <Icon
                         size={20}
                         icon="CROSS"
-                        data-test="send/close-ethereum-data"
+                        data-testid="send/close-ethereum-data"
                         onClick={handleClose}
                     />
                 }

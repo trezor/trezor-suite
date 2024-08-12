@@ -24,7 +24,7 @@ export const EnableViewOnly = () => {
     const isDeviceConnected = device?.connected && device?.available;
 
     return (
-        <SectionItem data-test="@settings/device/enable-view-only">
+        <SectionItem data-testid="@settings/device/enable-view-only">
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_DESC" />}

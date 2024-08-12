@@ -35,10 +35,12 @@ class DashboardActions {
 
     async ejectWallet(window: Page, walletIndex: number = 0) {
         const wallet = window.locator(
-            `[data-test="@switch-device/wallet-on-index/${walletIndex}"]`,
+            `[data-testid="@switch-device/wallet-on-index/${walletIndex}"]`,
         );
-        await window.locator('[data-test="@switch-device/wallet-on-index/0/eject-button"]').click();
-        await window.locator('[data-test="@switch-device/eject"]').click();
+        await window
+            .locator('[data-testid="@switch-device/wallet-on-index/0/eject-button"]')
+            .click();
+        await window.locator('[data-testid="@switch-device/eject"]').click();
         await wallet.waitFor({ state: 'detached' });
     }
 

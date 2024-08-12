@@ -227,7 +227,7 @@ export const CoinmarketExchangeOfferInfo = ({
                         <CoinmarketProviderInfo
                             exchange={exchange}
                             providers={exchangeInfo?.providerInfos}
-                            data-test="@CoinmarketExchangeProviderInfo"
+                            data-testid="@CoinmarketExchangeProviderInfo"
                         />
                     </RightColumn>
                 </Row>

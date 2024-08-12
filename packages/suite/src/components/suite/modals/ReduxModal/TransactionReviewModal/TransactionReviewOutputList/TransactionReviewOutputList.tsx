@@ -241,7 +241,7 @@ export const TransactionReviewOutputList = ({
                 <RightBottom>
                     {broadcastEnabled ? (
                         <StyledButton
-                            data-test="@modal/send"
+                            data-testid="@modal/send"
                             isDisabled={!signedTx}
                             isLoading={isSending}
                             onClick={handleSend}
@@ -253,7 +253,7 @@ export const TransactionReviewOutputList = ({
                             <StyledButton
                                 isDisabled={!signedTx}
                                 onClick={handleCopy}
-                                data-test="@send/copy-raw-transaction"
+                                data-testid="@send/copy-raw-transaction"
                             >
                                 <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
                             </StyledButton>

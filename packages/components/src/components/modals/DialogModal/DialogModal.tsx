@@ -39,7 +39,7 @@ type PickedModalProps = Pick<
     | 'currentProgressBarStep'
     | 'totalProgressBarSteps'
     | 'className'
-    | 'data-test'
+    | 'data-testid'
 >;
 
 export interface DialogModalProps extends PickedModalProps {

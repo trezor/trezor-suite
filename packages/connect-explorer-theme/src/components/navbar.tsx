@@ -105,7 +105,7 @@ export function Navbar({ flatDirectories, items }: NavBarProps): ReactElement {
                         <Anchor
                             href={typeof config.logoLink === 'string' ? config.logoLink : '/'}
                             className="nx-flex nx-items-center hover:nx-opacity-75 ltr:nx-mr-auto rtl:nx-ml-auto"
-                            data-test="@navbar-logo"
+                            data-testid="@navbar-logo"
                         >
                             <TrezorLogo type="horizontal" width={150} />
                         </Anchor>

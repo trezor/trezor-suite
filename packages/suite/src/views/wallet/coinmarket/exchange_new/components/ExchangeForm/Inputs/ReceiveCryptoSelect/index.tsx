@@ -156,7 +156,7 @@ const ReceiveCryptoSelect = () => {
                             exchangeInfo,
                             tokenData?.symbol,
                         )}
-                        data-test="@coinmarket/exchange/receive-crypto-select"
+                        data-testid="@coinmarket/exchange/receive-crypto-select"
                         minValueWidth="70px"
                         formatOptionLabel={(
                             option: ReturnType<typeof buildOptions>[number]['options'][number],

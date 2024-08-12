@@ -82,7 +82,7 @@ export const OnboardingStepBox = ({
         <>
             <StyledBackdrop $show={isBackDropVisible} />
             {!disableConfirmWrapper && (
-                <WrapperWrapper data-test="@onboarding/confirm-on-device">
+                <WrapperWrapper data-testid="@onboarding/confirm-on-device">
                     {deviceModelInternal && (
                         <ConfirmWrapper>
                             <ConfirmOnDevice

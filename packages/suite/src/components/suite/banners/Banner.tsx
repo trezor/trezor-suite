@@ -12,11 +12,11 @@ interface BannerProps {
     action?: {
         label: ReactNode | string;
         onClick: () => void;
-        'data-test': string;
+        'data-testid': string;
     };
     dismissal?: {
         onClick: () => void;
-        'data-test': string;
+        'data-testid': string;
     };
     className?: string;
 }
@@ -142,7 +142,7 @@ export const Banner = ({ body, variant, action, dismissal, className }: BannerPr
                         size="tiny"
                         variant="tertiary"
                         onClick={action.onClick}
-                        data-test={action['data-test']}
+                        data-testid={action['data-testid']}
                     >
                         {action.label}
                     </Button>
@@ -154,7 +154,7 @@ export const Banner = ({ body, variant, action, dismissal, className }: BannerPr
                             icon="CROSS"
                             color={getForegroundColor(variant, theme)}
                             onClick={dismissal.onClick}
-                            data-test={dismissal['data-test']}
+                            data-testid={dismissal['data-testid']}
                         />
                     </CancelWrapper>
                 )}

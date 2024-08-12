@@ -25,7 +25,7 @@ export const Dashboard = () => {
     useLayout('Home', PageHeader);
 
     return (
-        <Wrapper data-test="@dashboard/index">
+        <Wrapper data-testid="@dashboard/index">
             <DashboardPassphraseBanner />
             <PortfolioCard />
             <T3T1PromoBanner />

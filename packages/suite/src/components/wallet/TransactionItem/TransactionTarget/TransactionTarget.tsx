@@ -206,7 +206,7 @@ export const TransactionTarget = ({
                         {
                             onClick: copyAddress,
                             label: <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />,
-                            'data-test': 'copy-address', // hack: This will be prefixed in the withDropdown()
+                            'data-testid': 'copy-address', // hack: This will be prefixed in the withDropdown()
                         },
                     ]}
                     payload={{

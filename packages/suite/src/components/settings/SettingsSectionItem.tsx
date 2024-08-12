@@ -13,7 +13,7 @@ export const SettingsSectionItem = ({ anchorId, children }: SettingsSectionItemP
     const { anchorRef, shouldHighlight } = useAnchor(anchorId);
 
     return (
-        <SectionItem data-test={anchorId} ref={anchorRef} shouldHighlight={shouldHighlight}>
+        <SectionItem data-testid={anchorId} ref={anchorRef} shouldHighlight={shouldHighlight}>
             {children}
         </SectionItem>
     );

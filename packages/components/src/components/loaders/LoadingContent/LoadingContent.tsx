@@ -69,7 +69,7 @@ export const LoadingContent = ({
                 {isSpinnerVisible && (
                     <Spinner
                         size={size}
-                        dataTest="@loading-content/loader"
+                        data-testid="@loading-content/loader"
                         hasStartAnimation
                         hasFinished={!isLoading && isSuccessful}
                         hasError={!isLoading && !isSuccessful}

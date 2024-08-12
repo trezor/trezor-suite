@@ -70,7 +70,7 @@ export interface NavigationItemProps {
     goToRoute?: Route['name'];
     preserveParams?: boolean;
     isActive?: boolean;
-    dataTest?: string;
+    'data-testid'?: string;
     className?: string;
     values?: ExtendedMessageDescriptor['values'];
     iconSize?: IconSize;
@@ -83,7 +83,7 @@ export const NavigationItem = ({
     routes,
     goToRoute,
     isActive,
-    dataTest,
+    'data-testid': dataTest,
     className,
     values,
     preserveParams,
@@ -108,7 +108,7 @@ export const NavigationItem = ({
         <Container
             $isActive={isActive || isActiveRoute}
             onClick={handleClick}
-            data-test={dataTest || `@suite/menu/${goToRoute}`}
+            data-testid={dataTest || `@suite/menu/${goToRoute}`}
             className={className}
             tabIndex={0}
             $elevation={elevation}

@@ -10,7 +10,7 @@ describe('Bridge page', () => {
         cy.prefixedVisit('/bridge');
 
         cy.getTestElement('@modal/bridge').matchImageSnapshot('bridge-modal-new', {
-            blackout: ['[data-test="@bridge/download-button"]'],
+            blackout: ['[data-testid="@bridge/download-button"]'],
         });
 
         // user may exit bridge page and use webusb

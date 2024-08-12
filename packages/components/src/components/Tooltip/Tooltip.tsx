@@ -105,7 +105,7 @@ export const Tooltip = ({
                 </TooltipTrigger>
 
                 <TooltipContent
-                    data-test="@tooltip"
+                    data-testid="@tooltip"
                     style={{ zIndex }}
                     arrowRender={hasArrow ? TooltipArrow : undefined}
                     appendTo={appendTo}

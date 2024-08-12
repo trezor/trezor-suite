@@ -90,7 +90,7 @@ type OptionProps = {
     children: ReactNode;
     onSelect: () => void;
     isChecked: boolean;
-    'data-test'?: string;
+    'data-testid'?: string;
     disabled?: boolean;
 };
 
@@ -98,7 +98,7 @@ const Option = ({
     children,
     onSelect,
     isChecked,
-    'data-test': dataTest,
+    'data-testid': dataTest,
     disabled,
 }: OptionProps) => (
     <OptionStyled
@@ -109,7 +109,7 @@ const Option = ({
         <Radio
             isChecked={isChecked}
             onClick={onSelect}
-            data-test={dataTest}
+            data-testid={dataTest}
             isDisabled={disabled}
         />
         {children}
@@ -166,7 +166,7 @@ export const OptionWithContent = ({
         <Option
             onSelect={() => onSelect(value)}
             isChecked={selected === value}
-            data-test={`@onboarding/select-seed-type-${value}`}
+            data-testid={`@onboarding/select-seed-type-${value}`}
             disabled={disabled}
         >
             <OptionText>

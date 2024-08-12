@@ -88,7 +88,7 @@ export const WordInput = memo(() => {
                     trim: true,
                     matchFrom: 'start',
                 })}
-                data-test="@word-input-select"
+                data-testid="@word-input-select"
             />
         </SelectWrapper>
     );

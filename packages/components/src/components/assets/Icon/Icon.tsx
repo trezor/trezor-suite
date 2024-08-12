@@ -99,7 +99,7 @@ export type IconProps = SVGAttributes<HTMLDivElement> & {
     size?: number;
     hoverColor?: string;
     useCursorPointer?: boolean;
-    'data-test'?: string;
+    'data-testid'?: string;
 } & ExclusiveColorOrVariant;
 
 export const Icon = forwardRef(
@@ -115,7 +115,7 @@ export const Icon = forwardRef(
             onClick,
             onMouseEnter,
             onMouseLeave,
-            'data-test': dataTest,
+            'data-testid': dataTest,
         }: IconProps,
         ref?: Ref<HTMLDivElement>,
     ) => (
@@ -129,7 +129,7 @@ export const Icon = forwardRef(
             ref={ref}
             $useCursorPointer={onClick !== undefined || useCursorPointer}
             {...(variant !== undefined ? { $variant: variant } : { $color: color })}
-            data-test={dataTest}
+            data-testid={dataTest}
         >
             <ReactSVG
                 src={ICONS[icon]}

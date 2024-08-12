@@ -121,7 +121,7 @@ const ButtonLikeLabel = ({
     defaultVisibleValue,
     onSubmit,
     onBlur,
-    'data-test': dataTest,
+    'data-testid': dataTest,
 }: ExtendedProps) => {
     const EditableButton = useMemo(() => withEditable(RelativeButton), []);
 
@@ -131,7 +131,7 @@ const ButtonLikeLabel = ({
                 // @ts-expect-error todo: hm this needs some clever generic
                 variant="tertiary"
                 icon="TAG"
-                data-test={dataTest}
+                data-testid={dataTest}
                 originalValue={payload.value ?? defaultEditableValue}
                 onSubmit={onSubmit}
                 onBlur={onBlur}
@@ -142,7 +142,7 @@ const ButtonLikeLabel = ({
 
     if (payload.value) {
         return (
-            <LabelButton variant="tertiary" icon="TAG" data-test={dataTest} size="tiny">
+            <LabelButton variant="tertiary" icon="TAG" data-testid={dataTest} size="tiny">
                 <Inline>
                     <LabelValue>{payload.value} </LabelValue>
                     {/* This is the defaultVisibleValue which shows up after you hover over the label name: */}
@@ -162,7 +162,7 @@ const TextLikeLabel = ({
     defaultVisibleValue,
     defaultEditableValue,
     payload,
-    'data-test': dataTest,
+    'data-testid': dataTest,
     onSubmit,
     onBlur,
     updateFlag,
@@ -172,7 +172,7 @@ const TextLikeLabel = ({
     if (editActive) {
         return (
             <EditableLabel
-                data-test={dataTest}
+                data-testid={dataTest}
                 originalValue={payload.value ?? defaultEditableValue}
                 onSubmit={onSubmit}
                 onBlur={onBlur}
@@ -183,7 +183,7 @@ const TextLikeLabel = ({
 
     if (payload.value) {
         return (
-            <Label data-test={dataTest}>
+            <Label data-testid={dataTest}>
                 <LabelValue>{payload.value}</LabelValue>
             </Label>
         );
@@ -302,7 +302,7 @@ export const MetadataLabeling = ({
         {
             onClick: () => activateEdit(),
             label: l10nLabelling.edit,
-            'data-test': `edit-label`, // hack: This will be prefixed in the withDropdown()
+            'data-testid': `edit-label`, // hack: This will be prefixed in the withDropdown()
         },
     ];
 
@@ -359,7 +359,7 @@ export const MetadataLabeling = ({
     // metadata is still initiating, on hover, show only disabled button with spinner
     if (metadata.initiating)
         return (
-            <LabelContainer data-test={labelContainerDataTest}>
+            <LabelContainer data-testid={labelContainerDataTest}>
                 {defaultVisibleValue}
                 <ActionButton variant="tertiary" isDisabled isLoading size="tiny">
                     <Translation id="TR_LOADING" />
@@ -376,7 +376,7 @@ export const MetadataLabeling = ({
 
     return (
         <LabelContainer
-            data-test={labelContainerDataTest}
+            data-testid={labelContainerDataTest}
             onClick={e => editActive && e.stopPropagation()}
         >
             {payload.type === 'outputLabel' ? (
@@ -385,7 +385,7 @@ export const MetadataLabeling = ({
                         editActive={editActive}
                         onSubmit={onSubmit || defaultOnSubmit}
                         onBlur={handleBlur}
-                        data-test={dataTestBase}
+                        data-testid={dataTestBase}
                         payload={payload}
                         defaultEditableValue={defaultEditableValue}
                         defaultVisibleValue={defaultVisibleValue}
@@ -393,7 +393,7 @@ export const MetadataLabeling = ({
                     />
                     {showOutputLabelActionButton && (
                         <ActionButton
-                            data-test={`${dataTestBase}/add-label-button`}
+                            data-testid={`${dataTestBase}/add-label-button`}
                             variant="tertiary"
                             icon={!actionButtonsDisabled ? 'TAG' : undefined}
                             isLoading={actionButtonsDisabled}
@@ -419,7 +419,7 @@ export const MetadataLabeling = ({
                         editActive={editActive}
                         onSubmit={onSubmit || defaultOnSubmit}
                         onBlur={handleBlur}
-                        data-test={dataTestBase}
+                        data-testid={dataTestBase}
                         payload={payload}
                         defaultEditableValue={defaultEditableValue}
                         defaultVisibleValue={defaultVisibleValue}
@@ -427,7 +427,7 @@ export const MetadataLabeling = ({
                     />
                     {showActionButton && (
                         <ActionButton
-                            data-test={
+                            data-testid={
                                 payload.value
                                     ? `${dataTestBase}/edit-label-button`
                                     : `${dataTestBase}/add-label-button`
@@ -452,7 +452,7 @@ export const MetadataLabeling = ({
             {showSuccess && !editActive && (
                 <SuccessButton
                     variant="tertiary"
-                    data-test={`${dataTestBase}/success`}
+                    data-testid={`${dataTestBase}/success`}
                     icon="CHECK"
                     size="tiny"
                 >

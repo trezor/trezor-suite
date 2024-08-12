@@ -279,7 +279,7 @@ const SecurityCheckContent = ({
                 </StyledSecurityCheckButton>
                 {initialized ? (
                     <StyledSecurityCheckButton
-                        data-test="@onboarding/exit-app-button"
+                        data-testid="@onboarding/exit-app-button"
                         onClick={handleContinueButtonClick}
                     >
                         <Translation id="TR_YES_CONTINUE" />
@@ -287,7 +287,7 @@ const SecurityCheckContent = ({
                 ) : (
                     <SecurityCheckButtonWithSecondLine
                         onClick={handleSetupButtonClick}
-                        data-test="@analytics/continue-button"
+                        data-testid="@analytics/continue-button"
                     >
                         <Translation id={primaryButtonTopText} />
                         <TimeEstimateWrapper>

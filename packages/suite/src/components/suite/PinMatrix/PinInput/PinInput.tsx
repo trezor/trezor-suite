@@ -143,7 +143,7 @@ export const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
     }, [onPinAdd, onPinBackspace, submit]);
 
     return (
-        <Wrapper data-test="@pin">
+        <Wrapper data-testid="@pin">
             <InputWrapper>
                 <InputPin value={pin} onDeleteClick={() => onPinBackspace()} />
             </InputWrapper>
@@ -152,19 +152,19 @@ export const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
                     $blur={isSubmitting}
                     data-value="7"
                     onClick={() => onPinAdd('7')}
-                    data-test="@pin/input/7"
+                    data-testid="@pin/input/7"
                 />
                 <StyledPinButton
                     $blur={isSubmitting}
                     data-value="8"
                     onClick={() => onPinAdd('8')}
-                    data-test="@pin/input/8"
+                    data-testid="@pin/input/8"
                 />
                 <StyledPinButton
                     $blur={isSubmitting}
                     data-value="9"
                     onClick={() => onPinAdd('9')}
-                    data-test="@pin/input/9"
+                    data-testid="@pin/input/9"
                 />
             </PinRow>
             <PinRow>
@@ -172,19 +172,19 @@ export const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
                     $blur={isSubmitting}
                     data-value="4"
                     onClick={() => onPinAdd('4')}
-                    data-test="@pin/input/4"
+                    data-testid="@pin/input/4"
                 />
                 <StyledPinButton
                     $blur={isSubmitting}
                     data-value="5"
                     onClick={() => onPinAdd('5')}
-                    data-test="@pin/input/5"
+                    data-testid="@pin/input/5"
                 />
                 <StyledPinButton
                     $blur={isSubmitting}
                     data-value="6"
                     onClick={() => onPinAdd('6')}
-                    data-test="@pin/input/6"
+                    data-testid="@pin/input/6"
                 />
             </PinRow>
             <PinRow>
@@ -192,20 +192,20 @@ export const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
                     $blur={isSubmitting}
                     data-value="1"
                     onClick={() => onPinAdd('1')}
-                    data-test="@pin/input/1"
+                    data-testid="@pin/input/1"
                 />
 
                 <StyledPinButton
                     $blur={isSubmitting}
                     data-value="2"
                     onClick={() => onPinAdd('2')}
-                    data-test="@pin/input/2"
+                    data-testid="@pin/input/2"
                 />
                 <StyledPinButton
                     $blur={isSubmitting}
                     data-value="3"
                     onClick={() => onPinAdd('3')}
-                    data-test="@pin/input/3"
+                    data-testid="@pin/input/3"
                 />
             </PinRow>
 
@@ -216,7 +216,7 @@ export const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
                     isDisabled={isSubmitting}
                     isFullWidth
                     onClick={submit}
-                    data-test="@pin/submit-button"
+                    data-testid="@pin/submit-button"
                 >
                     <Translation id={getTranslationId()} />
                 </Button>

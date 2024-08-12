@@ -26,16 +26,19 @@ const OpenGuideLink = styled.span`
 
 type OpenGuideFromTooltipProps = {
     id: string;
-    dataTest?: string;
+    'data-testid'?: string;
 };
 
-export const OpenGuideFromTooltip = ({ id, dataTest }: OpenGuideFromTooltipProps) => {
+export const OpenGuideFromTooltip = ({
+    id,
+    'data-testid': dataTest,
+}: OpenGuideFromTooltipProps) => {
     const { openNodeById } = useGuideOpenNode();
     const theme = useTheme();
 
     return (
         <OpenGuideLink
-            data-test={dataTest}
+            data-testid={dataTest}
             onClick={(e: MouseEvent<any>) => {
                 e.stopPropagation();
                 openNodeById(id);

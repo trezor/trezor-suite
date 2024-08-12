@@ -49,7 +49,7 @@ export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
         return {
             label: label[language] || label.en,
             onClick: onClick!,
-            'data-test': `@message-system/${id}/cta`,
+            'data-testid': `@message-system/${id}/cta`,
         };
     }, [id, cta, dispatch, language, isTorEnabled, torOnionLinks]);
 
@@ -59,7 +59,7 @@ export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
         return {
             onClick: () =>
                 dispatch(messageSystemActions.dismissMessage({ id, category: 'banner' })),
-            'data-test': `@message-system/${id}/dismiss`,
+            'data-testid': `@message-system/${id}/dismiss`,
         };
     }, [id, dismissible, dispatch]);
 

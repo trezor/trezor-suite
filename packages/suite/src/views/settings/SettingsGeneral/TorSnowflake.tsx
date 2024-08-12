@@ -92,7 +92,7 @@ export const TorSnowflake = () => {
             : 'TR_TOR_CONFIG_SNOWFLAKE_UPDATE_LABEL';
 
     return (
-        <SectionItem data-test="@settings/general/tor/snowflake-enable">
+        <SectionItem data-testid="@settings/general/tor/snowflake-enable">
             <TextColumn
                 title={<Translation id="TR_TOR_CONFIG_SNOWFLAKE_TITLE" />}
                 description={<Translation id="TR_TOR_CONFIG_SNOWFLAKE_DESCRIPTION" />}

@@ -38,9 +38,9 @@ describe('Passphrase with cardano', () => {
         // TODO: refactor using data-tests
         cy.getTestElement('@switch-device/wallet-on-index/1').then(wallet => {
             cy.wrap(wallet)
-                .find('[data-test="@collapsible-box/icon-collapsed"]')
+                .find('[data-testid="@collapsible-box/icon-collapsed"]')
                 .click({ scrollBehavior: 'bottom' });
-            cy.wrap(wallet).find('[data-test$="/enabled"]').should('be.visible').click();
+            cy.wrap(wallet).find('[data-testid$="/enabled"]').should('be.visible').click();
         });
 
         cy.getTestElement('@switch-device/cancel-button').first().click();

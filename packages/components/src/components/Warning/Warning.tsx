@@ -29,7 +29,7 @@ export type WarningProps = AllowedFrameProps & {
     withIcon?: boolean;
     icon?: IconType;
     filled?: boolean;
-    dataTest?: string;
+    'data-testid'?: string;
 };
 
 type WrapperParams = TransientProps<AllowedFrameProps> & {
@@ -74,7 +74,7 @@ export const Warning = ({
     filled = true,
     margin,
     rightContent,
-    dataTest,
+    'data-testid': dataTest,
 }: WarningProps) => {
     const theme = useTheme();
     const { elevation } = useElevation();
@@ -87,7 +87,7 @@ export const Warning = ({
             $elevation={elevation}
             $filled={filled}
             $margin={margin}
-            data-test={dataTest}
+            data-testid={dataTest}
         >
             {withIcon && (
                 <Icon

@@ -74,7 +74,7 @@ export const BackupStep = () => {
                     description={<Translation id="TR_ONBOARDING_BACKUP_SUBHEADING" />}
                     innerActions={
                         <OnboardingButtonCta
-                            data-test="@backup/start-button"
+                            data-testid="@backup/start-button"
                             onClick={handleBackup}
                             isDisabled={!canContinue(backup.userConfirmed, locks)}
                         >
@@ -83,7 +83,7 @@ export const BackupStep = () => {
                     }
                     outerActions={
                         <OnboardingButtonSkip
-                            data-test="@onboarding/exit-app-button"
+                            data-testid="@onboarding/exit-app-button"
                             onClick={handleSkip}
                         >
                             <Translation id="TR_SKIP_BACKUP" />
@@ -114,7 +114,7 @@ export const BackupStep = () => {
                     description={<Translation id="TR_BACKUP_FINISHED_TEXT" />}
                     innerActions={
                         <OnboardingButtonCta
-                            data-test="@backup/close-button"
+                            data-testid="@backup/close-button"
                             onClick={() => dispatch(goToNextStep())}
                             isDisabled={!canContinue(backup.userConfirmed)}
                         >

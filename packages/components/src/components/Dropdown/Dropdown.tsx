@@ -75,7 +75,7 @@ export type DropdownProps = Omit<MenuProps, 'setToggled'> & {
     renderOnClickPosition?: boolean;
     onToggle?: (isToggled: boolean) => void;
     className?: string;
-    'data-test'?: string;
+    'data-testid'?: string;
     children?: ((isToggled: boolean) => ReactElement<any>) | ReactElement<any>;
 };
 
@@ -100,7 +100,7 @@ export const Dropdown = forwardRef(
             onToggle,
             className,
             children,
-            'data-test': dataTest,
+            'data-testid': dataTest,
         }: DropdownProps,
         ref,
     ) => {
@@ -208,7 +208,7 @@ export const Dropdown = forwardRef(
                 onClick={e => e.stopPropagation()}
                 $isToggled={isToggled}
                 isDisabled={isDisabled}
-                data-test={dataTest}
+                data-testid={dataTest}
             />
         );
 

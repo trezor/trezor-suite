@@ -54,7 +54,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                                     },
                                 });
                             }}
-                            data-test={`@settings/device/rotation-button/${variant.value}`}
+                            data-testid={`@settings/device/rotation-button/${variant.value}`}
                         >
                             {variant.label}
                         </Button>

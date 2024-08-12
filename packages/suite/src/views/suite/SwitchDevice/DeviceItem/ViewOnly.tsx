@@ -13,7 +13,7 @@ import { AcquiredDevice } from '@suite-common/suite-types';
 type ViewOnlyProps = {
     setContentType: (contentType: ContentType) => void;
     instance: AcquiredDevice;
-    dataTest?: string;
+    'data-testid'?: string;
 };
 
 const ViewOnlyContainer = styled.div`
@@ -46,7 +46,7 @@ export const ViewOnly = ({ setContentType, instance }: ViewOnlyProps) => {
 
     return (
         <ViewOnlyContainer
-            data-test={`@viewOnlyStatus/${isViewOnly ? 'enabled' : 'disabled'}`}
+            data-testid={`@viewOnlyStatus/${isViewOnly ? 'enabled' : 'disabled'}`}
             onClick={e => {
                 e.stopPropagation();
             }}
@@ -73,7 +73,7 @@ export const ViewOnly = ({ setContentType, instance }: ViewOnlyProps) => {
                 <ViewOnlyRadios
                     isViewOnlyActive={isViewOnly}
                     toggleViewOnly={handleRememberChange}
-                    dataTest="@viewOnly/radios"
+                    data-testid="@viewOnly/radios"
                     setContentType={setContentType}
                     device={instance}
                 />

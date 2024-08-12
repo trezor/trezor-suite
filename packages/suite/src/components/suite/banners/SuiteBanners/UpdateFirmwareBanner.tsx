@@ -9,7 +9,7 @@ export const UpdateFirmware = () => {
     const action = {
         label: <Translation id="TR_SHOW_DETAILS" />,
         onClick: () => dispatch(goto('firmware-index')),
-        'data-test': '@notification/update-firmware/button',
+        'data-testid': '@notification/update-firmware/button',
     };
 
     return (

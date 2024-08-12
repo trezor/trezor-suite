@@ -6,13 +6,13 @@ import { Row } from './Row';
 interface InputProps {
     onChange: (field: FieldBasic<any>, value: string) => void;
     field: FieldBasic<any>;
-    dataTest?: string;
+    'data-testid'?: string;
 }
 
-const Input = ({ dataTest, field, onChange }: InputProps) => (
+const Input = ({ 'data-testid': dataTest, field, onChange }: InputProps) => (
     <Row>
         <InputComponent
-            dataTest={dataTest}
+            data-testid={dataTest}
             label={field.name}
             value={field.value}
             onChange={event => onChange(field, event.target.value)}

@@ -56,7 +56,7 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     const isWebUsbTransport = isWebUsb(transport);
 
     return (
-        <Wrapper data-test="@settings/device/disconnected-device-banner">
+        <Wrapper data-testid="@settings/device/disconnected-device-banner">
             <StyledLottieAnimation
                 type="CONNECT"
                 shape="CIRCLE"

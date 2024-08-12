@@ -68,7 +68,7 @@ export interface ConfirmOnDeviceProps {
 export const ConfirmOnDevice = ({ isConfirmed, ...rest }: ConfirmOnDeviceProps) => (
     <Wrapper
         $animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
-        data-test="@prompts/confirm-on-device"
+        data-testid="@prompts/confirm-on-device"
     >
         <ElevationUp>
             <ConfirmOnDeviceContent {...rest} />

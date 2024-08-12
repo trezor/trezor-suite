@@ -121,7 +121,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
     return (
         <>
             <GridItemAddress
-                data-test={`@wallet/receive/used-address/${index}`}
+                data-testid={`@wallet/receive/used-address/${index}`}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
@@ -145,7 +145,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
             >
                 <AddressActions $isVisible={isHovered}>
                     <Button
-                        data-test={`@wallet/receive/reveal-address-button/${index}`}
+                        data-testid={`@wallet/receive/reveal-address-button/${index}`}
                         variant="tertiary"
                         isDisabled={locked}
                         isLoading={locked}
@@ -263,7 +263,7 @@ export const UsedAddresses = ({
                             icon="ARROW_DOWN"
                             iconAlignment="right"
                             onClick={() => setLimit(limit + 20)}
-                            data-test="@wallet/receive/used-address/show-more"
+                            data-testid="@wallet/receive/used-address/show-more"
                         >
                             <Translation id="TR_SHOW_MORE" />
                         </Button>

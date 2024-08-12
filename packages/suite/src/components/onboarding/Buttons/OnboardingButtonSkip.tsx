@@ -11,7 +11,7 @@ const StyledSpan = styled.span`
 `;
 
 export const OnboardingButtonSkip = (props: HtmlHTMLAttributes<HTMLSpanElement>) => (
-    <StyledSpan data-test="@onboarding/skip-button" {...props}>
+    <StyledSpan data-testid="@onboarding/skip-button" {...props}>
         {props.children}
     </StyledSpan>
 );

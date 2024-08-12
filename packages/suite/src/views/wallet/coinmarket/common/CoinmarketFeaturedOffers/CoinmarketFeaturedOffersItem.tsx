@@ -156,7 +156,7 @@ const CoinmarketFeaturedOffersItem = ({
                             isLoading={callInProgress}
                             isDisabled={!!quote.error || callInProgress}
                             onClick={() => selectQuote(quote)}
-                            data-test="@coinmarket/featured-offers/get-this-deal-button"
+                            data-testid="@coinmarket/featured-offers/get-this-deal-button"
                         >
                             {actionButtonText(context, quote)}
                         </StyledButton>

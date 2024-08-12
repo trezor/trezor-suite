@@ -69,7 +69,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
                         option => autoLockDelay && autoLockDelay / 1000 === option.value,
                     )}
                     isDisabled={isDeviceLocked}
-                    data-test="@settings/auto-lock-select"
+                    data-testid="@settings/auto-lock-select"
                 />
             </ActionColumn>
         </SettingsSectionItem>

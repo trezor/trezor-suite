@@ -38,7 +38,7 @@ export const Brightness = ({ isDeviceLocked }: DeviceLabelProps) => {
                     onClick={handleClick}
                     isDisabled={isDeviceLocked}
                     variant="secondary"
-                    data-test="@settings/device/brightness-switch"
+                    data-testid="@settings/device/brightness-switch"
                 >
                     <Translation id="TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON" />
                 </ActionButton>

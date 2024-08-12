@@ -28,14 +28,14 @@ export const SendHeader = () => {
     const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
     const options: Array<DropdownMenuItemProps> = [
         {
-            'data-test': '@send/header-dropdown/opreturn',
+            'data-testid': '@send/header-dropdown/opreturn',
             onClick: addOpReturn,
             label: <Translation id="OP_RETURN_ADD" />,
             isDisabled: !!opreturnOutput,
             isHidden: networkType !== 'bitcoin',
         },
         {
-            'data-test': '@send/header-dropdown/import',
+            'data-testid': '@send/header-dropdown/import',
             onClick: () => {
                 loadTransaction();
             },
@@ -43,7 +43,7 @@ export const SendHeader = () => {
             isHidden: networkType !== 'bitcoin',
         },
         {
-            'data-test': '@send/header-dropdown/raw',
+            'data-testid': '@send/header-dropdown/raw',
             onClick: () => {
                 dispatch(sendFormActions.sendRaw(true));
             },
@@ -61,7 +61,7 @@ export const SendHeader = () => {
                         size="small"
                         variant="tertiary"
                         onClick={resetContext}
-                        data-test="clear-form"
+                        data-testid="clear-form"
                     >
                         <Translation id="TR_CLEAR_ALL" />
                     </ClearButton>
@@ -69,7 +69,7 @@ export const SendHeader = () => {
 
                 <Dropdown
                     alignMenu="bottom-right"
-                    data-test="@send/header-dropdown"
+                    data-testid="@send/header-dropdown"
                     items={[
                         {
                             key: 'header',

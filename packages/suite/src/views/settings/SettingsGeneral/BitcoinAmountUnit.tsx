@@ -26,7 +26,7 @@ export const BitcoinAmountUnit = () => {
                     }}
                     options={UNIT_OPTIONS}
                     onChange={handleUnitsChange}
-                    data-test="@settings/btc-units-select"
+                    data-testid="@settings/btc-units-select"
                 />
             </ActionColumn>
         </SettingsSectionItem>

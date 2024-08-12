@@ -74,7 +74,7 @@ interface InfoPanelProps {
 
 export const InfoPanel = ({ method, origin, hostLabel, topSlot }: InfoPanelProps) => (
     <>
-        <Aside data-test="@info-panel">
+        <Aside data-testid="@info-panel">
             {/*  notifications appear hear */}
             {topSlot && topSlot}
 

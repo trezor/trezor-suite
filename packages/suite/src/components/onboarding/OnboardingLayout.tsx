@@ -144,7 +144,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
             <Wrapper>
                 {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
 
-                <Body data-test="@onboarding-layout/body">
+                <Body data-testid="@onboarding-layout/body">
                     <ScrollingWrapper>
                         <ModalContextProvider>
                             <ContentWrapper id="layout-scroll">

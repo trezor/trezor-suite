@@ -155,7 +155,7 @@ export const TransactionList = ({
                     isExportable={isExportable}
                 />
             }
-            data-test="@wallet/accounts/transaction-list"
+            data-testid="@wallet/accounts/transaction-list"
         >
             {account.accountType === 'coinjoin' && !isSearching && (
                 <TransactionCandidates accountKey={account.key} />

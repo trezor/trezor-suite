@@ -136,7 +136,7 @@ export const CoinmarketSelectedOfferInfo = ({
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto: true });
 
     return (
-        <Wrapper data-test="@coinmarket/offer/info">
+        <Wrapper data-testid="@coinmarket/offer/info">
             <Info>
                 <Header>
                     <CoinmarketCoinImage symbol={currency} size="large" />

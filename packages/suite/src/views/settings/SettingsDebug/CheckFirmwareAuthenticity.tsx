@@ -24,7 +24,7 @@ export const CheckFirmwareAuthenticity = () => {
 
     return (
         <>
-            <SectionItem data-test="@settings/debug/check-firmware-authenticity">
+            <SectionItem data-testid="@settings/debug/check-firmware-authenticity">
                 <TextColumn
                     title="Check firmware authenticity"
                     description="Download firmware binary from data.trezor.io and compare its hash with firmware hash provided by Trezor device."
@@ -39,7 +39,7 @@ export const CheckFirmwareAuthenticity = () => {
                     </Button>
                 </ActionColumn>
             </SectionItem>
-            <SectionItem data-test="@settings/debug/check-firmware-authenticity-on-connect/switch">
+            <SectionItem data-testid="@settings/debug/check-firmware-authenticity-on-connect/switch">
                 <TextColumn
                     title="Check firmware authenticity regularly"
                     description="Carry out firmware authenticity check every time you authorize Trezor device"

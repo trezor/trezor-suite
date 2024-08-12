@@ -127,7 +127,7 @@ export const DataAnalytics = ({
     const [trackingEnabled, setTrackingEnabled] = useState<boolean>(isInitialTrackingEnabled);
 
     return (
-        <StyledCard data-test="@analytics/consent" className={className}>
+        <StyledCard data-testid="@analytics/consent" className={className}>
             <Wrapper>
                 <ContentWrapper>
                     <Heading>
@@ -171,7 +171,7 @@ export const DataAnalytics = ({
                         <Switch
                             isChecked={trackingEnabled}
                             onChange={() => setTrackingEnabled(!trackingEnabled)}
-                            dataTest="@analytics/toggle-switch"
+                            data-testid="@analytics/toggle-switch"
                         />
                         <Label>
                             <FormattedMessage
@@ -184,7 +184,7 @@ export const DataAnalytics = ({
 
                 <ButtonWrapper>
                     <StyledButton
-                        data-test="@analytics/continue-button"
+                        data-testid="@analytics/continue-button"
                         onClick={() => onConfirm(trackingEnabled)}
                     >
                         <FormattedMessage id="TR_CONFIRM" defaultMessage="Confirm" />

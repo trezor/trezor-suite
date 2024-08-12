@@ -42,7 +42,7 @@ export const Transport = () => {
 
     return (
         <>
-            <SectionItem data-test="@settings/debug/transport">
+            <SectionItem data-testid="@settings/debug/transport">
                 <TextColumn
                     title="Transport clients"
                     description="You may override TrezorConnect default settings here. Select your preferred transport clients that are to be used. You will need to reload after changes"
@@ -51,7 +51,7 @@ export const Transport = () => {
             {/* todo: make it drag and drop sortable */}
             {transports.map(transport => (
                 <SectionItem
-                    data-test={`@settings/debug/transport/${transport.name}`}
+                    data-testid={`@settings/debug/transport/${transport.name}`}
                     key={transport.name}
                 >
                     <TextColumn

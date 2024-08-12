@@ -30,7 +30,7 @@ export const withDropdown = (WrappedComponent: FC<ExtendedProps>) => (props: Pro
                 key: 'key',
                 options: props.dropdownOptions.map(it => ({
                     ...it,
-                    'data-test': `${props['data-test']}/dropdown/${it['data-test']}`, // hack: this shall be refactored somehow
+                    'data-testid': `${props['data-testid']}/dropdown/${it['data-testid']}`, // hack: this shall be refactored somehow
                 })),
             },
         ]}

@@ -72,7 +72,7 @@ const PortfolioCard = memo(() => {
         body = dashboardGraphHidden ? null : (
             <SkeletonTransactionsGraphWrapper>
                 <Wrapper>
-                    <GraphSkeleton data-test="@dashboard/loading" />
+                    <GraphSkeleton data-testid="@dashboard/loading" />
                 </Wrapper>
             </SkeletonTransactionsGraphWrapper>
         );

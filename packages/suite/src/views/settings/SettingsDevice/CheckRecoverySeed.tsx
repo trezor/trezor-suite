@@ -28,7 +28,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
             />
             <ActionColumn>
                 <ActionButton
-                    data-test="@settings/device/check-seed-button"
+                    data-testid="@settings/device/check-seed-button"
                     onClick={handleClick}
                     isDisabled={isDeviceLocked || needsBackup}
                     variant="secondary"

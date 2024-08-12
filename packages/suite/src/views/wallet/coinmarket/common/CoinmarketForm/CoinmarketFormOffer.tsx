@@ -119,7 +119,7 @@ const CoinmarketFormOffer = () => {
                     size="medium"
                     isDisabled={state.isLoadingOrInvalid}
                     isLoading={isCompareLoading}
-                    data-test="@coinmarket/form/compare-button"
+                    data-testid="@coinmarket/form/compare-button"
                 >
                     <Translation id="TR_COINMARKET_COMPARE_OFFERS" />
                 </CoinmarketFormOfferHeaderButton>
@@ -160,7 +160,7 @@ const CoinmarketFormOffer = () => {
                 }}
                 isFullWidth
                 isDisabled={state.isLoadingOrInvalid || !bestScoredQuote}
-                data-test={`@coinmarket/form/${type}-button`}
+                data-testid={`@coinmarket/form/${type}-button`}
             >
                 <Translation id={type === 'sell' ? 'TR_COINMARKET_SELL' : 'TR_BUY'} />
             </Button>

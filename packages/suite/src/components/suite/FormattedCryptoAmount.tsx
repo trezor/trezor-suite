@@ -32,7 +32,7 @@ export interface FormattedCryptoAmountProps {
     signValue?: SignValue;
     disableHiddenPlaceholder?: boolean;
     isRawString?: boolean;
-    'data-test'?: string;
+    'data-testid'?: string;
     className?: string;
 }
 
@@ -43,7 +43,7 @@ export const FormattedCryptoAmount = ({
     signValue,
     disableHiddenPlaceholder,
     isRawString,
-    'data-test': dataTest,
+    'data-testid': dataTest,
     className,
 }: FormattedCryptoAmountProps) => {
     const locale = useSelector(selectLanguage);
@@ -89,7 +89,7 @@ export const FormattedCryptoAmount = ({
     const content = (
         <Container className={className}>
             {!!signValue && <Sign value={signValue} />}
-            <Value data-test={dataTest}>{formattedValue}</Value>
+            <Value data-testid={dataTest}>{formattedValue}</Value>
             {formattedSymbol && <BlurUrls text={'\u00A0' + formattedSymbol} />}
         </Container>
     );

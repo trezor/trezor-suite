@@ -18,6 +18,6 @@ export const Transport = () => (
             TROUBLESHOOTING_TIP_SUITE_DESKTOP,
             TROUBLESHOOTING_TIP_RESTART_COMPUTER,
         ]}
-        data-test="@connect-device-prompt/bridge-not-running"
+        data-testid="@connect-device-prompt/bridge-not-running"
     />
 );

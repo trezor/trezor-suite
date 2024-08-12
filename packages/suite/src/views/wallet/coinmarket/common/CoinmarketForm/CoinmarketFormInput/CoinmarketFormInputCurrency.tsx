@@ -66,7 +66,7 @@ const CoinmarketFormInputCurrency = ({
                             </CoinmarketFormOptionLabel>
                         </CoinmarketFormOption>
                     )}
-                    data-test="@coinmarket/form/fiat-currency-select"
+                    data-testid="@coinmarket/form/fiat-currency-select"
                     minValueWidth="58px"
                     isClearable={false}
                     isClean={isClean}

@@ -4,16 +4,16 @@ import { BrowserContext, chromium, Page } from '@playwright/test';
 // Waits and clicks for an array on buttons in serial order.
 export const waitAndClick = async (page: Page, buttons: string[]) => {
     for (const button of buttons) {
-        await page.waitForSelector(`[data-test='${button}']`, { state: 'visible' });
-        await page.click(`[data-test='${button}']`);
+        await page.waitForSelector(`[data-testid='${button}']`, { state: 'visible' });
+        await page.click(`[data-testid='${button}']`);
     }
 };
 
 // Helper to use data-test attributes to find elements.
-export const findElementByDataTest = async (page: Page, dataTest: string, timeout?: number) => {
-    await page.waitForSelector(`[data-test='${dataTest}']`, { state: 'visible', timeout });
+export const findElementByDataTest = async (page: Page, dataTestId: string, timeout?: number) => {
+    await page.waitForSelector(`[data-testid='${dataTestId}']`, { state: 'visible', timeout });
 
-    return page.$(`[data-test='${dataTest}']`);
+    return page.$(`[data-testid='${dataTestId}']`);
 };
 
 export const log = (...val: string[]) => {
@@ -116,15 +116,15 @@ export const openPopup = (
     } else {
         triggerPopup.push(explorerPage.waitForEvent('popup'));
     }
-    triggerPopup.push(explorerPage.click("div[data-test='@api-playground/collapsible-box']"));
-    triggerPopup.push(explorerPage.click("button[data-test='@submit-button']"));
-    triggerPopup.push(explorerPage.waitForSelector("[data-test='@submit-button/spinner']"));
+    triggerPopup.push(explorerPage.click("div[data-testid='@api-playground/collapsible-box']"));
+    triggerPopup.push(explorerPage.click("button[data-testid='@submit-button']"));
+    triggerPopup.push(explorerPage.waitForSelector("[data-testid='@submit-button/spinner']"));
 
     return Promise.all(triggerPopup) as Promise<Page[]>;
 };
 
 export const checkHasLogs = async (logPage: Page) => {
-    const locator = await logPage.locator("button[data-test='@log-container/download-button']");
+    const locator = await logPage.locator("button[data-testid='@log-container/download-button']");
     if (await locator.isVisible()) {
         return true;
     }
@@ -135,7 +135,7 @@ export const checkHasLogs = async (logPage: Page) => {
 export const downloadLogs = async (logPage: Page, downloadLogPath: string) => {
     const [download] = await Promise.all([
         logPage.waitForEvent('download'), // wait for download to start
-        logPage.click("button[data-test='@log-container/download-button']"),
+        logPage.click("button[data-testid='@log-container/download-button']"),
     ]);
 
     await download.saveAs(downloadLogPath);
@@ -152,13 +152,13 @@ export const setConnectSettings = async (
     await explorerPage.goto(formatUrl(explorerUrl, `settings/index.html`));
     /*if (isWebExtension) {
         // When webextension and using service-worker we need to wait for handshake is confirmed with proxy.
-        await explorerPage.waitForSelector("div[data-test='@settings/handshake-confirmed']");
+        await explorerPage.waitForSelector("div[data-testid='@settings/handshake-confirmed']");
     }*/
     if (trustedHost) {
         await waitAndClick(explorerPage, ['@checkbox/trustedHost']);
     }
     if (connectSrc) {
-        (await explorerPage.waitForSelector("input[data-test='@input/connectSrc']")).fill(
+        (await explorerPage.waitForSelector("input[data-testid='@input/connectSrc']")).fill(
             connectSrc,
         );
     }

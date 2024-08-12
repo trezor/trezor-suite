@@ -121,9 +121,9 @@ export const createAccountFromMyAccounts = (coin: string, label: string) => {
     //     cy.getTestElement('@account-menu/add-account').should('be.visible').click();
     // }
     cy.getTestElement('@modal').should('be.visible');
-    cy.get(`[data-test="@settings/wallet/network/${coin}"]`).should('be.visible').click();
+    cy.get(`[data-testid="@settings/wallet/network/${coin}"]`).should('be.visible').click();
     cy.getTestElement('@add-account-type/select/input').click();
-    cy.get(`[data-test="@add-account-type/select/option/${label}"]`).click();
+    cy.get(`[data-testid="@add-account-type/select/option/${label}"]`).click();
     cy.getTestElement('@add-account').click();
 };
 
@@ -181,15 +181,17 @@ export const changeViewOnlyState = (walletIndex: number, desiredState: 'enabled'
     // get the wallet container
     cy.getTestElement(`@switch-device/wallet-on-index/${walletIndex}`).then(walletContainer => {
         // check if change is even necessary
-        if (!walletContainer.find(`[data-test="@viewOnlyStatus/${desiredState}"]`).length) {
+        if (!walletContainer.find(`[data-testid="@viewOnlyStatus/${desiredState}"]`).length) {
             // if it is, open view-only settings container and change the state
-            cy.wrap(walletContainer).find('[data-test="@collapsible-box/icon-collapsed"]').click();
             cy.wrap(walletContainer)
-                .find('[data-test="@collapsible-box/body"]')
+                .find('[data-testid="@collapsible-box/icon-collapsed"]')
+                .click();
+            cy.wrap(walletContainer)
+                .find('[data-testid="@collapsible-box/body"]')
                 .should('be.visible');
-            cy.wrap(walletContainer).find(`[data-test$="/${desiredState}"]`).click();
+            cy.wrap(walletContainer).find(`[data-testid$="/${desiredState}"]`).click();
             // close it to match the initial state
-            cy.wrap(walletContainer).find('[data-test="@collapsible-box/icon-expanded"]').click();
+            cy.wrap(walletContainer).find('[data-testid="@collapsible-box/icon-expanded"]').click();
         }
     });
 };

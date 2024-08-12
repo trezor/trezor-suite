@@ -22,7 +22,7 @@ export const ConfirmFingerprintModal = ({ device, ...rest }: ConfirmFingerprintP
             />
         }
         heading={<Translation id="TR_CHECK_FINGERPRINT" />}
-        data-test="@suite/modal/confirm-fingerprint-on-device"
+        data-testid="@suite/modal/confirm-fingerprint-on-device"
         {...rest}
     >
         <Fingerprint device={device} />

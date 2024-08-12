@@ -165,7 +165,7 @@ export const AssetRow = memo(
                 {!failed ? (
                     <CryptoBalanceWrapper
                         $isLastRow={isLastRow}
-                        data-test={`@asset-card/${symbol}/balance`}
+                        data-testid={`@asset-card/${symbol}/balance`}
                     >
                         <FiatBalanceWrapper>
                             <FiatValue amount={cryptoValue} symbol={symbol} />
@@ -199,7 +199,7 @@ export const AssetRow = memo(
                     {!isTestnet(symbol) && (
                         <CoinmarketBuyButton
                             symbol={symbol}
-                            dataTest={`@dashboard/assets/table/${symbol}/buy-button`}
+                            data-testid={`@dashboard/assets/table/${symbol}/buy-button`}
                         />
                     )}
                     <StyledArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconSubdued} />

@@ -110,7 +110,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
 
             <StyledTextarea
                 inputState={inputState}
-                data-test={INPUT_NAME}
+                data-testid={INPUT_NAME}
                 defaultValue={inputValue}
                 bottomText={error?.message || null}
                 label={<Translation id="RAW_TRANSACTION" />}

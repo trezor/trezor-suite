@@ -23,7 +23,7 @@ class WalletActions {
     }
     // asserts
     async getAccountsCount(window: Page, network: string) {
-        return await window.locator(`[data-test*="@account-menu/${network}"][tabindex]`).count();
+        return await window.locator(`[data-testid*="@account-menu/${network}"][tabindex]`).count();
     }
 }
 

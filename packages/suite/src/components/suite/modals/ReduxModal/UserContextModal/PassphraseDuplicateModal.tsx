@@ -25,7 +25,7 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
     return (
         <SwitchDeviceRenderer isCancelable={false}>
             <CardWithDevice device={device} isFullHeaderVisible={false}>
-                <H3 margin={{ top: 12 }} data-test="@passphrase-duplicate-header">
+                <H3 margin={{ top: 12 }} data-testid="@passphrase-duplicate-header">
                     <Translation id="TR_WALLET_DUPLICATE_TITLE" />
                 </H3>
                 <Text color="textSubdued">

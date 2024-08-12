@@ -29,7 +29,7 @@ export const AutoStart = () => {
             <ActionColumn>
                 <PositionedSwitch>
                     <Switch
-                        dataTest="@autostart/toggle-switch"
+                        data-testid="@autostart/toggle-switch"
                         isChecked={!!autoStartEnabled}
                         onChange={handleChange}
                     />

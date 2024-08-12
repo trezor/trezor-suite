@@ -39,14 +39,14 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
         icon: 'settings',
         goToRoute: 'settings-index',
         routes: ['settings-index', 'settings-device', 'settings-coins', 'settings-debug'],
-        dataTest: '@suite/menu/settings',
+        'data-testid': '@suite/menu/settings',
     },
     {
         nameId: 'TR_PASSWORD_MANAGER',
         icon: 'ghost',
         goToRoute: 'password-manager-index',
         routes: ['password-manager-index'],
-        dataTest: '@suite/menu/password-manager',
+        'data-testid': '@suite/menu/password-manager',
         CustomComponent: PasswordManagerNavItem,
     },
 ];

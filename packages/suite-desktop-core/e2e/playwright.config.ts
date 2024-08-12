@@ -9,7 +9,7 @@ const config: PlaywrightTestConfig = {
         trace: 'on',
         video: 'on',
         screenshot: 'on',
-        testIdAttribute: 'data-test',
+        testIdAttribute: 'data-testid',
     },
     reportSlowTests: null,
     reporter: process.env.GITHUB_ACTION ? [['list'], ['@currents/playwright']] : [['list']],

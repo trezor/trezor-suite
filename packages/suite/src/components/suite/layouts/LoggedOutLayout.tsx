@@ -34,17 +34,17 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
     return (
         <ElevationContext baseElevation={-1}>
             <TrafficLightOffset>
-                <Wrapper ref={wrapperRef} data-test="@logged-out-layout">
+                <Wrapper ref={wrapperRef} data-testid="@logged-out-layout">
                     <PageWrapper>
                         <ModalContextProvider>
                             <Metadata title={title} />
                             <ModalSwitcher />
 
                             <LayoutContext.Provider value={setLayoutPayload}>
-                                <Body data-test="@suite-layout/body">
+                                <Body data-testid="@suite-layout/body">
                                     <Columns>
                                         <AppWrapper
-                                            data-test="@app"
+                                            data-testid="@app"
                                             ref={scrollRef}
                                             id="layout-scroll"
                                         >

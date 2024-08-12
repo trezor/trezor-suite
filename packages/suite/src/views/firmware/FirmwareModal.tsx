@@ -138,7 +138,7 @@ export const FirmwareModal = ({
                 )
             }
             onCancel={onClose}
-            data-test="@firmware-modal"
+            data-testid="@firmware-modal"
             heading={<Translation id={heading} />}
         >
             <Wrapper $isWithTopPadding={!isCancelable}>{getComponent()}</Wrapper>

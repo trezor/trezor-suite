@@ -81,7 +81,7 @@ export const TransactionListActions = ({
                 setExpanded={setExpanded}
                 setSearch={setSearch}
                 onSearch={onSearch}
-                dataTest="@wallet/accounts/search-icon"
+                data-testid="@wallet/accounts/search-icon"
             />
             {isExportable && (
                 <ExportAction

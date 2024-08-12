@@ -50,7 +50,7 @@ export const PassphraseWalletConfirmationStep2 = ({
                 setContentType('step3');
             }}
             margin={{ top: 12 }}
-            data-test="@passphrase-confirmation/step2-button"
+            data-testid="@passphrase-confirmation/step2-button"
         >
             <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_BUTTON" />
         </Button>
