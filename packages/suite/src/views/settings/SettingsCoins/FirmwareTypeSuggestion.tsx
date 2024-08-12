@@ -19,8 +19,6 @@ const Row = styled.div`
 
 const StyledButton = styled(Button)`
     display: inline;
-    position: relative;
-    top: 5px;
 `;
 
 const Description = styled.div`
