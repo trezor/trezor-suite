@@ -40077,10 +40077,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:2.12.2":
-  version: 2.12.2
-  resolution: "type-fest@npm:2.12.2"
-  checksum: 10/282297d8dc45768b993256da93de561e9d0b159a2ed4cac1280ca90ee7f4cbca5d86e5775b1aa033814c1cf02cb036b528d96a998ddc1d4a4da468931ce93d9b
+"type-fest@npm:4.24.0":
+  version: 4.24.0
+  resolution: "type-fest@npm:4.24.0"
+  checksum: 10/60efd6ec71f5113ef0a0fcabe61fc722bb2520ea082bc23e4b4dfb44204234dc691560a5e837f939160d7c18b410ed8fae32ddb752d57bed009248e0f61dce6b
   languageName: node
   linkType: hard
 
