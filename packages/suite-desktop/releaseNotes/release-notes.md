@@ -1,14 +1,12 @@
+### 🚀 New features
+
+-   Enhanced protection against counterfeit devices for Trezor Model One and Trezor Model T.
+-   New official languages added: Brazilian Portuguese, Italian, and Turkish.
+
 ### 🎨 Improvements
 
--   The "Remember Wallet" feature has been enhanced and renamed to "View-Only Wallet" for better discoverability and clarity.
--   The wallet switcher has been redesigned for a smoother experience.
--   The passphrase is now integrated into the wallet switcher, eliminating prompts at every device connection.
--   Token management has been revamped with manual hide/unhide options, enhanced search functionality, and more.
--   Staked ETH balance is now included in the Dashboard Portfolio.
--   Fractional gas prices now supported for EVM transactions, allowing for more precise gas fee calculations.
+-   Reworked Buy & Sell features for improved user experience.
 
 ### 🔧 Bug fixes
 
 -   Various small improvements and bug fixes.
--   Fixed incorrect fiat rate in the send form when sending to multiple recipients in different currencies.
--   Fixed address poisoning attempts by sending zero value token transfers.
