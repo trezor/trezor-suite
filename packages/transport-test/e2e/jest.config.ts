@@ -1,4 +1,6 @@
-export default {
+import type { Config } from 'jest';
+
+export const config: Config = {
     rootDir: './',
     moduleFileExtensions: ['ts', 'js'],
     modulePathIgnorePatterns: ['node_modules'],
@@ -20,3 +22,6 @@ export default {
     testEnvironment: 'node',
     globals: {},
 };
+
+// eslint-disable-next-line import/no-default-export
+export default config;

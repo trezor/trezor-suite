@@ -171,6 +171,7 @@
         { "path": "packages/transport" },
         { "path": "packages/transport-bridge" },
         { "path": "packages/transport-native" },
+        { "path": "packages/transport-test" },
         {
             "path": "packages/trezor-user-env-link"
         },
