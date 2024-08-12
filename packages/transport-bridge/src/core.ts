@@ -255,6 +255,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     };
 
     const dispose = () => {
+        abortController.abort();
         api.dispose();
         sessionsClient.dispose();
     };
