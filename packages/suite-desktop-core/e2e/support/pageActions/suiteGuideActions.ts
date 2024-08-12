@@ -22,7 +22,7 @@ class SuiteGuide {
         const suggestionDropdown = window.getByTestId('@guide/feedback/suggestion-dropdown');
         await suggestionDropdown.waitFor({ state: 'visible' });
         await suggestionDropdown.click();
-        clickDataTest(
+        await clickDataTest(
             window,
             `@guide/feedback/suggestion-dropdown/select/option/${desiredLocation.toLowerCase()}`,
         );
