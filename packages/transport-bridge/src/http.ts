@@ -295,7 +295,6 @@ export class TrezordNode {
 
             app.post('/read/:session', [
                 validateSessionParams,
-                parseBodyJSON,
                 (req, res) => {
                     const signal = this.createAbortSignal(res);
                     this.core.receive({ session: req.params.session, signal }).then(result => {
