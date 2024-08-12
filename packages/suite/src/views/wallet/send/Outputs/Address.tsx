@@ -8,6 +8,8 @@ import * as URLS from '@trezor/urls';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
+import TrezorConnect from '@trezor/connect';
+import { useSelector } from 'src/hooks/suite';
 import {
     isAddressValid,
     isAddressDeprecated,
@@ -50,6 +52,7 @@ interface AddressProps {
 export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [addressDeprecatedUrl, setAddressDeprecatedUrl] =
         useState<ReturnType<typeof isAddressDeprecated>>(undefined);
+    const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
     const dispatch = useDispatch();
     const { device } = useDevice();
     const {
@@ -80,6 +83,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const address = watch(inputName);
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
+    const isOnline = useSelector(state => state.suite.online);
     const inputState = getInputState(addressError);
 
     const handleQrClick = useCallback(async () => {
@@ -140,10 +144,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
             case 'checksum':
                 return {
-                    onClick: () =>
+                    onClick: () => {
                         setValue(inputName, toChecksumAddress(address), {
                             shouldValidate: true,
-                        }),
+                        });
+
+                        setHasAddressChecksummed(true);
+                    },
                     text: translationString('TR_CONVERT_TO_CHECKSUM_ADDRESS'),
                 };
 
@@ -161,7 +168,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     };
 
     const { ref: inputRef, ...inputField } = register(inputName, {
-        onChange: () => composeTransaction(amountInputName),
+        onChange: () => {
+            composeTransaction(amountInputName);
+            setHasAddressChecksummed(false);
+        },
         required: translationString('RECIPIENT_IS_NOT_SET'),
         validate: {
             deprecated: (value: string) => {
@@ -194,9 +204,37 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
             },
             // eth addresses are valid without checksum but Trezor displays them as checksummed
-            checksum: (value: string) => {
-                if (networkType === 'ethereum' && !checkAddressCheckSum(value)) {
-                    return translationString('RECIPIENT_IS_NOT_VALID');
+            checksum: async (address: string) => {
+                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
+                    if (isOnline) {
+                        const params = {
+                            descriptor: address,
+                            coin: symbol,
+                        };
+                        // 1. If the address is used but unchecksummed, then Suite will automatically
+                        // convert the address to the correct checksummed form and inform the user as described in the OP.
+                        const result = await TrezorConnect.getAccountInfo(params);
+
+                        if (result.success) {
+                            const hasHistory = result.payload.history.total !== 0;
+                            if (hasHistory) {
+                                setValue(inputName, toChecksumAddress(address), {
+                                    shouldValidate: true,
+                                });
+                                setHasAddressChecksummed(true);
+
+                                return;
+                            }
+
+                            // 2. If the address is not checksummed at all and not found in blockbook.
+                            // offer to checksum it with a button
+                            if (!hasHistory && address === address.toLowerCase()) {
+                                return translationString('TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED');
+                            }
+                        }
+                    }
+
+                    return translationString('TR_ETH_ADDRESS_CANT_VERIFY_HISTORY');
                 }
             },
             rippleToSelf: (value: string) => {
