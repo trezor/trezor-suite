@@ -10,7 +10,8 @@
         "node-libs-browser",
         "rimraf",
         "tslib",
-        "protobufjs-cli"
+        "protobufjs-cli",
+        "buffer"
     ],
     "skip-missing": true
 }
