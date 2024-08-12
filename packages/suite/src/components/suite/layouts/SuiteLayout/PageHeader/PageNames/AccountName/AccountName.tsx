@@ -10,7 +10,7 @@ interface AccountNameProps {
 }
 
 export const AccountName = ({ selectedAccount }: AccountNameProps) => {
-    const [isScrolled, setIsScrolled] = useState(false);
+    const [, setIsScrolled] = useState(false);
 
     useEffect(() => {
         const scrollContainer = document.getElementById(SCROLL_WRAPPER_ID);
@@ -32,5 +32,5 @@ export const AccountName = ({ selectedAccount }: AccountNameProps) => {
         };
     }, []);
 
-    return <AccountDetails selectedAccount={selectedAccount} isBalanceShown={isScrolled} />;
+    return <AccountDetails selectedAccount={selectedAccount} isBalanceShown />;
 };
