@@ -70,6 +70,9 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
     public enumerate() {
         return this.scheduleAction(async signal => {
+            // todo: consider doing await this.sessionsClient.enumerateIntent() here
+            // it looks like Webusb does not need it is not needed at least on macos.
+
             // enumerate usb api
             const enumerateResult = await this.api.enumerate(signal);
 

@@ -83,6 +83,7 @@ export type Params = {
 
 export interface HandleMessageApi {
     handshake: () => HandshakeResponse;
+    enumerateIntent: () => BackgroundResponse<void>;
     enumerateDone: (payload: EnumerateDoneRequest) => EnumerateDoneResponse;
     acquireIntent: (payload: AcquireIntentRequest) => AcquireIntentResponse;
     acquireDone: (payload: AcquireDoneRequest) => AcquireDoneResponse;
