@@ -9,13 +9,13 @@ on:
   pull_request:
     paths:
       - "packages/transport/**"
+      - "packages/transport-bridge/**"
+      - "packages/transport-test/**"
       - "packages/protobuf/**"
       - "packages/protocol/**"
       - "packages/trezor-user-env-link/**"
       - "packages/utils/**"
-      - "docker/docker-transport-test.sh"
-      - "docker/docker-compose.transport-test.yml"
-      - ".github/workflows/connect-transport-e2e-test.yml"
+      - "docker/docker-compose.transport-test-ci.yml"
       - "yarn.lock"
   workflow_dispatch:
 
@@ -23,8 +23,6 @@ jobs:
   transport-e2e:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
-    env:
-      COMPOSE_FILE: ./docker/docker-compose.transport-test.yml
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,7 +37,15 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/transport
+          yarn workspaces focus @trezor/transport-test
 
-      - name: Run E2E tests
-        run: ./docker/docker-transport-test.sh
+      - name: Setup containers
+        run: |
+          docker compose -f ./docker/docker-compose.transport-test-ci.yml pull
+          docker compose -f ./docker/docker-compose.transport-test-ci.yml up -d
+
+      - name: Run E2E tests (old-bridge:emu)
+        run: yarn workspace @trezor/transport-test test:e2e:old-bridge:emu
+
+      - name: Run E2E tests (new-bridge:emu)
+        run: yarn workspace @trezor/transport-test test:e2e:new-bridge:emu

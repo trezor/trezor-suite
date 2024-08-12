@@ -52,7 +52,7 @@ interface ReadAndConfirmShamirMnemonicEmu {
     threshold: number;
 }
 
-class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> {
+export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> {
     private client: WebsocketClient;
     public firmwares?: Firmwares;
     private defaultFirmware?: string;
@@ -136,14 +136,16 @@ class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> {
 
         return null;
     }
-    startEmu(arg?: StartEmu) {
+    async startEmu(arg?: StartEmu) {
         const params = {
             type: 'emulator-start',
             version: this.defaultFirmware || '2-main',
             ...arg,
         };
 
-        return this.client.send(params);
+        await this.client.send(params);
+
+        return null;
     }
     startEmuFromUrl({ url, model, wipe }: StartEmuFromUrl) {
         return this.client.send({

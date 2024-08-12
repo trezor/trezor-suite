@@ -11610,6 +11610,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/transport-test@workspace:packages/transport-test":
+  version: 0.0.0-use.local
+  resolution: "@trezor/transport-test@workspace:packages/transport-test"
+  dependencies:
+    "@jest/types": "npm:^29.6.3"
+    "@trezor/transport": "workspace:*"
+    "@trezor/transport-bridge": "workspace:*"
+    "@trezor/trezor-user-env-link": "workspace:^"
+    "@trezor/utils": "workspace:*"
+    jest: "npm:^29.7.0"
+    ts-node: "npm:^10.9.1"
+    usb: "npm:^2.11.0"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/transport@workspace:*, @trezor/transport@workspace:packages/transport":
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
@@ -11635,7 +11650,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/trezor-user-env-link@workspace:*, @trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link":
+"@trezor/trezor-user-env-link@workspace:*, @trezor/trezor-user-env-link@workspace:^, @trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link":
   version: 0.0.0-use.local
   resolution: "@trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link"
   dependencies:
