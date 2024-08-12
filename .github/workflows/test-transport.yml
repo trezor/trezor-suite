@@ -1,5 +1,9 @@
 name: "[Test] transport e2e"
 
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
 on:
   schedule:
     # Runs at midnight UTC every day at 01:00 AM CET
@@ -20,7 +24,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  transport-e2e:
+  transport-e2e-test:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     steps:
@@ -49,3 +53,54 @@ jobs:
 
       - name: Run E2E tests (new-bridge:emu)
         run: yarn workspace @trezor/transport-test test:e2e:new-bridge:emu
+
+  extract-branch:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.extract_branch.outputs.branch }}
+    steps:
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+  build-deploy:
+    needs: [extract-branch]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.extract-branch.outputs.branch }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/transport -A
+
+      - name: Build transport tester
+        run: |
+          yarn workspace @trezor/transport-test build:e2e:api:browser
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      - name: Upload transport tester
+        shell: bash
+        env:
+          DEPLOY_PATH: s3://dev.suite.sldev.cz/transport-test/${{ needs.extract-branch.outputs.branch }}
+        run: |
+          echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
+          mkdir -p tmp_build_directory
+          cp -R ./packages/transport-test/e2e/dist/* tmp_build_directory/
+          aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"

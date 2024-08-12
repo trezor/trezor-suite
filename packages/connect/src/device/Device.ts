@@ -382,6 +382,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     return this._runInner(() => Promise.resolve({}), options);
                 }
+
+                // todo: this is wrong, this can change perfectly readable device to unreadable. it should only apply to the
+                // else branch
                 if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
                     this.unreadableError = 'Connection timeout';
                 }

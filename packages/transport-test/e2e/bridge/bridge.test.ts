@@ -1,8 +1,8 @@
 import * as messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
 
-import { controller as TrezorUserEnvLink } from '../controller';
-import { pathLength, descriptor as expectedDescriptor } from '../expect';
+import { controller as TrezorUserEnvLink } from './controller';
+import { pathLength, descriptor as expectedDescriptor } from './expect';
 
 // todo: introduce global jest config for e2e
 jest.setTimeout(60000);
