@@ -12,6 +12,17 @@ const Wrapper = styled.div`
     gap: ${spacingsPx.xs};
 `;
 
+const ButtonWrapper = styled.div`
+    position: absolute;
+    top: 4px;
+    right: 16px;
+`;
+
+const ContentWrapper = styled.div`
+    flex-grow: 1;
+    padding-right: 150px;
+`;
+
 type ButtonProps = { onClick: MouseEventHandler<HTMLButtonElement>; text: string };
 type LinkProps = { url: Url };
 
@@ -22,14 +33,16 @@ export type InputErrorProps = {
 
 export const InputError = ({ button, message }: InputErrorProps) => (
     <Wrapper>
-        {message}
+        <ContentWrapper>{message}</ContentWrapper>
         {button &&
             ('url' in button ? (
                 <LearnMoreButton url={button.url} />
             ) : (
-                <Button size="tiny" variant="tertiary" onClick={button.onClick}>
-                    {button.text}
-                </Button>
+                <ButtonWrapper>
+                    <Button size="tiny" variant="tertiary" onClick={button.onClick}>
+                        {button.text}
+                    </Button>
+                </ButtonWrapper>
             ))}
     </Wrapper>
 );

@@ -18,7 +18,10 @@ import {
     getInputState,
 } from '@suite-common/wallet-utils';
 
-import { AddressLabeling, Translation, MetadataLabeling } from 'src/components/suite';
+import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
+import { Link } from '@trezor/components';
+import { Translation } from '../../../../components/suite/Translation';
+
 import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -26,7 +29,10 @@ import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
+import { Row } from '@trezor/components';
 
+import { HELP_CENTER_EVM_ADDRESS_CHECKSUM } from '@trezor/urls';
+import { spacings } from '@trezor/theme';
 const Container = styled.div`
     position: relative;
 `;
@@ -68,7 +74,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         setDraftSaveRequest,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
@@ -84,7 +89,16 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
     const isOnline = useSelector(state => state.suite.online);
-    const inputState = getInputState(addressError);
+    const getInputErrorState = () => {
+        if (hasAddressChecksummed) {
+            return 'primary';
+        }
+        if (addressError) {
+            return getInputState(addressError);
+        }
+
+        return undefined;
+    };
 
     const handleQrClick = useCallback(async () => {
         const uri = await dispatch(scanOrRequestSendFormThunk()).unwrap();
@@ -256,10 +270,49 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     });
     const addressBottomText = isAddressWithLabel ? addressLabelComponent : null;
 
+    const getBottomText = () => {
+        if (hasAddressChecksummed) {
+            return (
+                <Row width="100%" justifyContent="flex-start" gap={spacings.xs}>
+                    <Translation
+                        id="TR_CHECKSUM_CONVERSION_INFO"
+                        values={{
+                            a: chunks => (
+                                <Link
+                                    href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}
+                                    variant="nostyle"
+                                    icon="EXTERNAL_LINK"
+                                    type="label"
+                                >
+                                    {chunks}
+                                </Link>
+                            ),
+                        }}
+                    />
+                </Row>
+            );
+        }
+        if (addressError) {
+            return (
+                <InputError message={addressError.message} button={getValidationButtonProps()} />
+            );
+        }
+
+        return addressBottomText;
+    };
+
+    const getBottomTextIcon = () => {
+        if (hasAddressChecksummed) {
+            return 'check';
+        }
+
+        return undefined;
+    };
+
     return (
         <Container>
             <Input
-                inputState={inputState}
+                inputState={getInputErrorState()}
                 innerAddon={
                     metadataEnabled && broadcastEnabled ? (
                         <MetadataLabelingWrapper>
@@ -321,16 +374,8 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         />
                     ) : undefined
                 }
-                bottomText={
-                    addressError ? (
-                        <InputError
-                            message={addressError.message}
-                            button={getValidationButtonProps()}
-                        />
-                    ) : (
-                        addressBottomText
-                    )
-                }
+                bottomText={getBottomText()}
+                bottomTextIcon={getBottomTextIcon()}
                 data-testid={inputName}
                 defaultValue={addressValue}
                 maxLength={formInputsMaxLength.address}
