@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Warning as WarningComponent, WarningProps, variables } from '../../index';
+import { Warning as WarningComponent, WarningProps, variables, Row } from '../../index';
 import { allowedWarningFrameProps } from './Warning';
 import styled from 'styled-components';
 import { getFramePropsStory } from '../common/frameProps';
@@ -37,8 +37,10 @@ export const Warning: StoryObj<WarningProps> = {
     args: {
         children: 'Insert text here.',
         withIcon: true,
+        filled: true,
         variant: 'warning',
         icon: undefined,
+        rightContent: <WarningComponent.Button>Click</WarningComponent.Button>,
         ...getFramePropsStory(allowedWarningFrameProps).args,
     },
     argTypes: {
@@ -49,6 +51,31 @@ export const Warning: StoryObj<WarningProps> = {
             options: variables.ICONS,
             control: {
                 type: 'select',
+            },
+        },
+        rightContent: {
+            options: ['nothing', 'button', 'buttons', 'iconButton'],
+            mapping: {
+                nothing: undefined,
+                button: <WarningComponent.Button>Button</WarningComponent.Button>,
+                buttons: (
+                    <Row gap={8}>
+                        <WarningComponent.Button>Button 1</WarningComponent.Button>
+                        <WarningComponent.Button variant="tertiary">
+                            Button 2
+                        </WarningComponent.Button>
+                    </Row>
+                ),
+                iconButton: <WarningComponent.IconButton icon="CROSS" />,
+            },
+            control: {
+                type: 'select',
+                labels: {
+                    nothing: 'undefined',
+                    button: '1 button',
+                    buttons: '2 buttons',
+                    iconButton: 'icon button',
+                },
             },
         },
         ...getFramePropsStory(allowedWarningFrameProps).argTypes,
