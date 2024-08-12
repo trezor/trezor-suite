@@ -11651,6 +11651,8 @@ __metadata:
     "@trezor/transport-bridge": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:^"
     "@trezor/utils": "workspace:*"
+    buffer: "npm:^6.0.3"
+    esbuild: "npm:^0.20.0"
     jest: "npm:^29.7.0"
     ts-node: "npm:^10.9.1"
     usb: "npm:^2.11.0"

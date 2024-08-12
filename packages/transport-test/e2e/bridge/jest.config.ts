@@ -5,7 +5,7 @@ export const config: Config = {
     moduleFileExtensions: ['ts', 'js'],
     modulePathIgnorePatterns: ['node_modules'],
     watchPathIgnorePatterns: ['<rootDir>/libDev', '<rootDir>/lib'],
-    testPathIgnorePatterns: ['<rootDir>/libDev/', '<rootDir>/lib/', '<rootDir>/tests/'],
+    testPathIgnorePatterns: ['<rootDir>/libDev/', '<rootDir>/lib/', '<rootDir>/e2e/api'],
     transform: {
         '\\.(js|ts)$': [
             'babel-jest',

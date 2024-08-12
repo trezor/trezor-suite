@@ -8,11 +8,15 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
-        "test:e2e": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/run.ts",
-        "test:e2e:old-bridge:hw": "USE_HW=true USE_NODE_BRIDGE=false yarn test:e2e",
-        "test:e2e:old-bridge:emu": "USE_HW=false USE_NODE_BRIDGE=false yarn test:e2e",
-        "test:e2e:new-bridge:hw": "USE_HW=true USE_NODE_BRIDGE=true yarn test:e2e",
-        "test:e2e:new-bridge:emu": "USE_HW=false USE_NODE_BRIDGE=true yarn test:e2e"
+        "test:e2e:bridge": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/bridge/run.ts",
+        "test:e2e:old-bridge:hw": "USE_HW=true USE_NODE_BRIDGE=false yarn test:e2e:bridge",
+        "test:e2e:old-bridge:emu": "USE_HW=false USE_NODE_BRIDGE=false yarn test:e2e:bridge",
+        "test:e2e:new-bridge:hw": "USE_HW=true USE_NODE_BRIDGE=true yarn test:e2e:bridge",
+        "test:e2e:new-bridge:emu": "USE_HW=false USE_NODE_BRIDGE=true yarn test:e2e:bridge",
+        "build:e2e:api:node": "yarn esbuild ./e2e/api/api.test.ts --bundle --outfile=./e2e/dist/api.test.node.js --platform=node --target=node18 --external:usb",
+        "build:e2e:api:browser": "yarn esbuild ./e2e/api/api.test.ts --bundle --outfile=./e2e/dist/api.test.browser.js --platform=browser --external:usb  && cp e2e/ui/api.test.html e2e/dist/index.html",
+        "test:e2e:api:node:hw": "yarn build:e2e:api:node && node ./e2e/dist/api.test.node.js",
+        "test:e2e:api:browser:hw": "yarn build:e2e:api:browser && npx http-serve ./e2e/dist"
     },
     "devDependencies": {
         "@jest/types": "^29.6.3",
@@ -20,6 +24,8 @@
         "@trezor/transport-bridge": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:^",
         "@trezor/utils": "workspace:*",
+        "buffer": "^6.0.3",
+        "esbuild": "^0.20.0",
         "jest": "^29.7.0",
         "ts-node": "^10.9.1",
         "usb": "^2.11.0"

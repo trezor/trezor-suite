@@ -382,6 +382,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     return this._runInner(() => Promise.resolve({}), options);
                 }
+
                 if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
                     this.unreadableError = 'Connection timeout';
                 }
