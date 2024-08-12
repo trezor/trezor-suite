@@ -15,6 +15,9 @@ export const DiscoveryProgress = () => {
     if (!discovery || !isDiscoveryRunning) return null;
 
     return (
-        <StyledProgressBar value={calculateProgress()} data-test="@wallet/discovery-progress-bar" />
+        <StyledProgressBar
+            value={calculateProgress()}
+            data-testid="@wallet/discovery-progress-bar"
+        />
     );
 };

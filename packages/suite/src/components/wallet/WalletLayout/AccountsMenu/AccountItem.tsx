@@ -226,13 +226,13 @@ export const AccountItem = forwardRef(
                 $isGroupSelected={isGroupSelected}
                 ref={ref}
                 onClick={handleHeaderClick}
-                data-test={dataTestKey}
+                data-testid={dataTestKey}
                 tabIndex={0}
             >
                 <Left>{getLeftComponent()}</Left>
                 <Right>
                     <Row>
-                        <AccountName $isSelected={isSelected} data-test={`${dataTestKey}/label`}>
+                        <AccountName $isSelected={isSelected} data-testid={`${dataTestKey}/label`}>
                             <AccountLabelContainer>
                                 {type === 'coin' && (
                                     <AccountLabel

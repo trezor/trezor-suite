@@ -164,7 +164,7 @@ export const StakingCard = ({
                         </AmountHeading>
 
                         <TrimmedCryptoAmount
-                            data-test="@account/staking/pending"
+                            data-testid="@account/staking/pending"
                             value={totalPendingStakeBalance}
                             symbol={selectedAccount?.symbol}
                         />
@@ -186,7 +186,7 @@ export const StakingCard = ({
                     </AmountHeading>
 
                     <TrimmedCryptoAmount
-                        data-test="@account/staking/staked"
+                        data-testid="@account/staking/staked"
                         value={depositedBalance}
                         symbol={selectedAccount?.symbol}
                     />
@@ -207,7 +207,7 @@ export const StakingCard = ({
                     </AmountHeading>
 
                     <TrimmedCryptoAmount
-                        data-test="@account/staking/rewards"
+                        data-testid="@account/staking/rewards"
                         value={restakedReward}
                         symbol={selectedAccount?.symbol}
                         isRewards
@@ -244,7 +244,7 @@ export const StakingCard = ({
                         </AmountHeading>
 
                         <TrimmedCryptoAmount
-                            data-test="@account/staking/unstaking"
+                            data-testid="@account/staking/unstaking"
                             value={withdrawTotalAmount}
                             symbol={selectedAccount?.symbol}
                         />

@@ -19,7 +19,7 @@ export const WebUsbButton = ({
     variant = 'primary',
     ...rest
 }: WebUsbButtonProps) => (
-    <div data-test="web-usb-button">
+    <div data-testid="web-usb-button">
         <Button
             {...rest}
             icon={icon === false ? undefined : icon}
@@ -38,7 +38,7 @@ export const WebUsbIconButton = ({
     variant = 'primary',
     ...rest
 }: WebUsbButtonProps) => (
-    <div data-test="web-usb-button">
+    <div data-testid="web-usb-button">
         <Tooltip content={<Translation id={translationId} />}>
             <IconButton
                 {...rest}

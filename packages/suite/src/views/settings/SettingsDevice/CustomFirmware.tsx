@@ -27,7 +27,7 @@ export const CustomFirmware = () => {
                     onClick={openModal}
                     variant="destructive"
                     isDisabled={isDeviceLocked}
-                    data-test="@settings/device/custom-firmware-modal-button"
+                    data-testid="@settings/device/custom-firmware-modal-button"
                 >
                     <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON" />
                 </ActionButton>

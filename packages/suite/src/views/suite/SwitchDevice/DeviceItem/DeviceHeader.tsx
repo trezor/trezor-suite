@@ -64,7 +64,7 @@ export const DeviceHeader = ({
                         onClick={onBackButtonClick}
                         variant="tertiary"
                         size="small"
-                        data-test="@switch-device/back-button"
+                        data-testid="@switch-device/back-button"
                     />
                 )}
 
@@ -101,7 +101,7 @@ export const DeviceHeader = ({
                                 size="small"
                                 variant="tertiary"
                                 onClick={() => onCancel?.()}
-                                data-test="@switch-device/cancel-button"
+                                data-testid="@switch-device/cancel-button"
                             />
                         </motion.div>
                     </Tooltip>

@@ -20,7 +20,7 @@ export const AccountItemSkeleton = () => {
     const { shouldAnimate } = useLoadingSkeleton();
 
     return (
-        <Wrapper data-test="@account-menu/account-item-skeleton">
+        <Wrapper data-testid="@account-menu/account-item-skeleton">
             <Left>
                 <SkeletonCircle size="24px" />
             </Left>

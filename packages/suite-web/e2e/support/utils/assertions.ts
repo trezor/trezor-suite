@@ -19,7 +19,7 @@ export const discoveryShouldFinish = () => {
 export const discoveryMightAppearAndShouldFinish = () => {
     cy.wait(1000); // after one second, discovery would have started if it was supposed to.
     cy.get('body').then($body => {
-        if ($body.find('[data-test="@wallet/discovery-progress-bar"]').length > 0) {
+        if ($body.find('[data-testid="@wallet/discovery-progress-bar"]').length > 0) {
             discoveryShouldFinish();
         }
     });

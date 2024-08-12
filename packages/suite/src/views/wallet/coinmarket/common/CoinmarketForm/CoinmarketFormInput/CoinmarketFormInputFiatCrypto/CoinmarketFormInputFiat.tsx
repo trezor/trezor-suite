@@ -95,7 +95,7 @@ const CoinmarketFormInputFiat = <TFieldValues extends FieldValues>({
             bottomText={fiatInputError?.message || null}
             innerAddon={<CoinmarketFormInputCurrencyWrapper />}
             hasBottomPadding={false}
-            data-test="@coinmarket/form/fiat-input"
+            data-testid="@coinmarket/form/fiat-input"
         />
     );
 };

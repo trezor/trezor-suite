@@ -8,7 +8,7 @@ export const TranslationMode = () => (
         action={{
             label: 'Turn off',
             onClick: () => setTranslationMode(false),
-            'data-test': '@notification/translation-mode/button',
+            'data-testid': '@notification/translation-mode/button',
         }}
     />
 );

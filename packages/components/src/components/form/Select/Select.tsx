@@ -262,7 +262,7 @@ interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     minValueWidth?: string; // TODO: should be probably removed
     inputState?: InputState;
     onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
-    'data-test'?: string;
+    'data-testid'?: string;
 }
 
 // Make sure isSearchable can't be defined if useKeyPressScroll===true
@@ -289,7 +289,7 @@ export const Select = ({
     onChange,
     placeholder,
     isDisabled = false,
-    'data-test': dataTest,
+    'data-testid': dataTest,
     ...props
 }: SelectProps) => {
     const selectRef = useRef<SelectInstance<Option, boolean>>(null);
@@ -322,10 +322,10 @@ export const Select = ({
     const memoizedComponents = useMemo(
         () => ({
             Control: (controlProps: ControlComponentProps) => (
-                <Control {...controlProps} dataTest={dataTest} />
+                <Control {...controlProps} data-testid={dataTest} />
             ),
             Option: (optionProps: OptionComponentProps) => (
-                <Option {...optionProps} dataTest={dataTest} />
+                <Option {...optionProps} data-testid={dataTest} />
             ),
             GroupHeading,
             ...components,

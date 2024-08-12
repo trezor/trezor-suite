@@ -99,7 +99,7 @@ export type ButtonProps = SelectedHTMLButtonProps &
         children: React.ReactNode;
         title?: string;
         className?: string;
-        'data-test'?: string;
+        'data-testid'?: string;
     };
 
 export const Button = ({
@@ -131,7 +131,9 @@ export const Button = ({
         />
     ) : null;
 
-    const Loader = <Spinner size={getIconSize(size)} dataTest={`${rest['data-test']}/spinner`} />;
+    const Loader = (
+        <Spinner size={getIconSize(size)} data-testid={`${rest['data-testid']}/spinner`} />
+    );
 
     return (
         <ButtonContainer

@@ -114,7 +114,7 @@ export const SecurityCard = ({ variant, icon, heading, description, cta }: Secur
                                     size="small"
                                     {...(cta.dataTest
                                         ? {
-                                              'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
+                                              'data-testid': `@dashboard/security-card/${cta.dataTest}/button`,
                                           }
                                         : {})}
                                 >
@@ -137,7 +137,7 @@ export const SecurityCard = ({ variant, icon, heading, description, cta }: Secur
                                     size="small"
                                     {...(cta.dataTest
                                         ? {
-                                              'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
+                                              'data-testid': `@dashboard/security-card/${cta.dataTest}/button`,
                                           }
                                         : {})}
                                 >

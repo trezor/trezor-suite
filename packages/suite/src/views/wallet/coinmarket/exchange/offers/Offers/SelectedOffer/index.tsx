@@ -126,7 +126,7 @@ const SelectedOffer = () => {
                 account={account}
                 exchangeInfo={exchangeInfo}
                 receiveAccount={receiveAccount}
-                data-test="@coinmarket/exchange/offers/coinmarket-exchange-offer-info"
+                data-testid="@coinmarket/exchange/offers/coinmarket-exchange-offer-info"
             />
         </Wrapper>
     );

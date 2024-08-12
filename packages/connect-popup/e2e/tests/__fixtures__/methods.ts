@@ -84,11 +84,11 @@ const getAddress = [
         views: [
             confirmExportAddressScreen,
             {
-                selector: '[data-test="@passphrase/enter-on-device-button"]',
+                selector: '[data-testid="@passphrase/enter-on-device-button"]',
                 screenshot: {
                     name: 'passhprase-screen',
                 },
-                next: '[data-test="@passphrase/enter-on-device-button"]',
+                next: '[data-testid="@passphrase/enter-on-device-button"]',
             },
             {
                 selector: '.passphrase-on-device >> visible=true',
@@ -236,7 +236,7 @@ const signMessage = [
         device: initializedDevice,
         views: [
             {
-                selector: '[data-test="@info-panel"]', // does not have a special screen
+                selector: '[data-testid="@info-panel"]', // does not have a special screen
                 screenshot: {
                     name: 'sign-message',
                 },
@@ -245,7 +245,7 @@ const signMessage = [
                 },
             },
             {
-                selector: '[data-test="@info-panel"]',
+                selector: '[data-testid="@info-panel"]',
                 nextEmu: {
                     type: 'emulator-press-yes',
                 },

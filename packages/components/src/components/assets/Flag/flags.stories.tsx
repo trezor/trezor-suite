@@ -47,7 +47,7 @@ export const All: StoryFn = () => {
                     <Text>{country}</Text>
                     <Flag
                         country={country}
-                        data-test={`icon-${country.toLowerCase().replace('_', '-')}`}
+                        data-testid={`icon-${country.toLowerCase().replace('_', '-')}`}
                     />
                 </FlagWrapper>
             ))}

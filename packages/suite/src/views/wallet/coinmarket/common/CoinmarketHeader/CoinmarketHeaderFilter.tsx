@@ -29,7 +29,7 @@ const CoinmarketHeaderFilter = () => {
     const context = useCoinmarketOffersContext<CoinmarketTradeBuySellType>();
 
     return (
-        <Wrapper data-test="@coinmarket/filter">
+        <Wrapper data-testid="@coinmarket/filter">
             {isCoinmarketBuyOffers(context) ? (
                 <InputWrapper>
                     <CoinmarketFormInputFiatCrypto<CoinmarketBuyFormProps>

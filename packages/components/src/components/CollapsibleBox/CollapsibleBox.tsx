@@ -67,7 +67,7 @@ type CollapsibleBoxCommon = AllowedFrameProps & {
     isIconFlipped?: boolean; // Open upwards, affects the icon rotation
     hasDivider?: boolean;
     onAnimationComplete?: (isOpen: boolean) => void;
-    'data-test'?: string;
+    'data-testid'?: string;
     /** @deprecated */
     className?: string;
 };
@@ -208,7 +208,7 @@ const CollapsibleBoxContent = ({
     margin,
     className,
     onAnimationComplete,
-    'data-test': dataTest,
+    'data-testid': dataTest,
 }: CollapsibleBoxContentProps) => {
     const { elevation } = useElevation();
 
@@ -240,7 +240,7 @@ const CollapsibleBoxContent = ({
                         }}
                         name="caretCircleDown"
                         size="medium"
-                        dataTest={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
+                        data-testid={`@collapsible-box/icon-${isOpen ? 'expanded' : 'collapsed'}`}
                     />
                 </IconWrapper>
             </Header>
@@ -257,7 +257,7 @@ const CollapsibleBoxContent = ({
                         ease: isOpen ? motionEasing.exit : motionEasing.enter,
                     },
                 }}
-                data-test="@collapsible-box/body"
+                data-testid="@collapsible-box/body"
             >
                 <Content
                     $elevation={elevation}
@@ -273,7 +273,7 @@ const CollapsibleBoxContent = ({
 
     const containerProps = {
         $margin: margin,
-        'data-test': dataTest,
+        'data-testid': dataTest,
         className,
     };
 

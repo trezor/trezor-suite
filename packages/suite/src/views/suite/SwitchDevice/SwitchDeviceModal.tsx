@@ -9,7 +9,7 @@ type SwitchDeviceModalProps = {
     isCancelable?: boolean;
     onBackClick?: () => void;
     onCancel?: () => void;
-    'data-test'?: string;
+    'data-testid'?: string;
     isAnimationEnabled?: boolean;
 };
 
@@ -35,7 +35,7 @@ export const SwitchDeviceModal = ({
     children,
     onCancel,
     isAnimationEnabled,
-    'data-test': dataTest = '@modal',
+    'data-testid': dataTest = '@modal',
 }: SwitchDeviceModalProps) => {
     useEvent('keydown', (e: KeyboardEvent) => {
         if (onCancel && e.key === 'Escape') {
@@ -47,7 +47,7 @@ export const SwitchDeviceModal = ({
         <TrafficLightOffset>
             <Container
                 onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
-                data-test={dataTest}
+                data-testid={dataTest}
             >
                 <DeviceItemsWrapper>
                     <motion.div

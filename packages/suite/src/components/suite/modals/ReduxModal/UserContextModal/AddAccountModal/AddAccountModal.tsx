@@ -239,7 +239,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                                           />
                                       </>
                                   }
-                                  data-test="@modal/account/activate_more_coins"
+                                  data-testid="@modal/account/activate_more_coins"
                                   margin={{ top: spacings.md }}
                               >
                                   <CoinList
@@ -261,7 +261,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                                           />
                                       </>
                                   }
-                                  data-test="@modal/account/activate_more_coins"
+                                  data-testid="@modal/account/activate_more_coins"
                                   margin={{ top: spacings.md }}
                               >
                                   <CoinList

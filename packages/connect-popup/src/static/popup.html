@@ -275,7 +275,7 @@
             <!-- Passphrase: END -->
 
             <!-- invalid passphrase -->
-            <div data-test="@invalid-passphrase" class="invalid-passphrase">
+            <div data-testid="@invalid-passphrase" class="invalid-passphrase">
                 <div>
                     <h3>Passphrase doesn't match</h3>
                     <p>Looks like You have set a different passphrase</p>
@@ -475,11 +475,11 @@
                 </div>
 
                 <div class="buttons">
-                    <button data-test="@invalid-passphrase/try-again" class="confirm retry">
+                    <button data-testid="@invalid-passphrase/try-again" class="confirm retry">
                         No, Try again
                     </button>
                     <button
-                        data-test="@invalid-passphrase/use-this-passphrase"
+                        data-testid="@invalid-passphrase/use-this-passphrase"
                         class="cancel useCurrent"
                         tabindex="4"
                     >
@@ -490,7 +490,7 @@
             <!-- invalid passphrase: END -->
 
             <!-- Permissions -->
-            <div data-test="@permissions" class="permissions">
+            <div data-testid="@permissions" class="permissions">
                 <h3>Allow<span class="host-name"></span>permissions to:</h3>
 
                 <div class="list-wrapper">
@@ -511,10 +511,10 @@
                     >
                 </div>
                 <div class="buttons">
-                    <button data-test="@permissions/confirm-button" class="confirm">
+                    <button data-testid="@permissions/confirm-button" class="confirm">
                         Allow once for this session
                     </button>
-                    <button data-test="@permissions/cancel-button" class="cancel">Cancel</button>
+                    <button data-testid="@permissions/cancel-button" class="cancel">Cancel</button>
                 </div>
             </div>
             <!-- Permissions: END -->
@@ -2772,7 +2772,7 @@
             <!-- No backup confirmation: END -->
 
             <!-- Export address -->
-            <div data-test="@export-address" class="export-address">
+            <div data-testid="@export-address" class="export-address">
                 <div>
                     <h3></h3>
                 </div>
@@ -3067,16 +3067,18 @@
                     </svg>
                 </div>
                 <div class="buttons">
-                    <button data-test="@export-address/confirm-button" class="confirm">
+                    <button data-testid="@export-address/confirm-button" class="confirm">
                         Export
                     </button>
-                    <button data-test="@export-address/cancel-button" class="cancel">Cancel</button>
+                    <button data-testid="@export-address/cancel-button" class="cancel">
+                        Cancel
+                    </button>
                 </div>
             </div>
             <!-- Export address: END -->
 
             <!-- Check address on device -->
-            <div data-test="@check-address-on-device" class="check-address">
+            <div data-testid="@check-address-on-device" class="check-address">
                 <svg width="12px" height="35px" viewBox="0 0 20 57">
                     <g stroke="none" stroke-width="1" fill="none" transform="translate(1, 1)">
                         <path

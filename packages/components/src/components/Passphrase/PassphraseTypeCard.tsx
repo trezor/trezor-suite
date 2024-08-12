@@ -125,7 +125,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                     setHiddenWalletTouched(true);
                 }
             }}
-            data-test={`@passphrase-type/${type}`}
+            data-testid={`@passphrase-type/${type}`}
         >
             <Item>
                 {!singleColModal && (

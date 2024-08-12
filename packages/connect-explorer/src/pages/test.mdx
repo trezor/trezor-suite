@@ -10,7 +10,7 @@ export const InitButton = ({ label, behavior }) => {
     });
 
     return (
-        <Button onClick={actions.onSubmitInit} data-test="@testpage/init">
+        <Button onClick={actions.onSubmitInit} data-testid="@testpage/init">
           Init
         </Button>
     );
@@ -38,9 +38,9 @@ export const subsequentCallsWithError = async () => {
 Hidden page for testing purposes.
 
 <InitButton />
-<Button onClick={() => subsequentCalls()} data-test="@testpage/subsequentCalls">
+<Button onClick={() => subsequentCalls()} data-testid="@testpage/subsequentCalls">
     Subsequent calls
 </Button>
-<Button onClick={() => subsequentCallsWithError()} data-test="@testpage/subsequentCallsWithError">
+<Button onClick={() => subsequentCallsWithError()} data-testid="@testpage/subsequentCallsWithError">
     Subsequent calls with error
 </Button>

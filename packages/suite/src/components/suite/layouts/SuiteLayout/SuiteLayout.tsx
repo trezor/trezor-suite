@@ -115,7 +115,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
     return (
         <ElevationContext baseElevation={-1}>
-            <Wrapper ref={wrapperRef} data-test="@suite-layout">
+            <Wrapper ref={wrapperRef} data-testid="@suite-layout">
                 <PageWrapper>
                     <ModalContextProvider>
                         <Metadata title={title} />
@@ -129,7 +129,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                         <DiscoveryProgress />
 
                         <LayoutContext.Provider value={setLayoutPayload}>
-                            <Body data-test="@suite-layout/body">
+                            <Body data-testid="@suite-layout/body">
                                 <Columns>
                                     {!isMobileLayout && (
                                         <ElevationDown>
@@ -139,7 +139,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                     <MainBar>
                                         <SuiteBanners />
                                         <AppWrapper
-                                            data-test="@app"
+                                            data-testid="@app"
                                             ref={scrollRef}
                                             id={SCROLL_WRAPPER_ID}
                                         >

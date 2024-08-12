@@ -21,7 +21,7 @@ interface TrimmedCryptoAmountProps {
     symbol: string;
     maxDecimalPlaces?: number;
     isRewards?: boolean;
-    'data-test'?: string;
+    'data-testid'?: string;
 }
 
 export const TrimmedCryptoAmount = ({
@@ -29,7 +29,7 @@ export const TrimmedCryptoAmount = ({
     symbol,
     maxDecimalPlaces = DEFAULT_MAX_DECIMAL_PLACES,
     isRewards,
-    'data-test': dataTest,
+    'data-testid': dataTest,
 }: TrimmedCryptoAmountProps) => {
     const hasDecimals = value.toString().includes('.');
 
@@ -39,7 +39,7 @@ export const TrimmedCryptoAmount = ({
                 value={value}
                 symbol={symbol}
                 $isRewards={isRewards}
-                data-test={dataTest}
+                data-testid={dataTest}
             />
         );
     }
@@ -50,7 +50,7 @@ export const TrimmedCryptoAmount = ({
     return (
         <Tooltip content={<StyledFormattedCryptoAmount value={value} symbol={symbol} $isSmall />}>
             <StyledFormattedCryptoAmount
-                data-test={dataTest}
+                data-testid={dataTest}
                 value={trimmedAmount}
                 symbol={symbol}
                 $isRewards={isRewards}

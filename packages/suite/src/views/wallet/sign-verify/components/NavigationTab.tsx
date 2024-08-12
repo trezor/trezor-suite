@@ -58,14 +58,14 @@ export interface NavigationTabProps {
     values?: ExtendedMessageDescriptor['values'];
     badge?: ExtendedMessageDescriptor['id'];
     onClick: () => void;
-    'data-test'?: string;
+    'data-testid'?: string;
 }
 
 export const NavigationTab = (props: NavigationTabProps) => {
     const { active, title, onClick, values, badge } = props;
 
     return (
-        <NavLink $active={active} onClick={onClick} data-test={props['data-test']}>
+        <NavLink $active={active} onClick={onClick} data-testid={props['data-testid']}>
             <NavLinkText>
                 <Translation id={title} values={values} />
                 {badge && (

@@ -2,17 +2,17 @@ import { components, ControlProps, OptionProps, GroupHeadingProps } from 'react-
 import type { Option as OptionType } from './Select';
 
 export interface ControlComponentProps extends ControlProps<OptionType, boolean> {
-    dataTest?: string;
+    'data-testid'?: string;
 }
 
-export const Control = ({ dataTest, ...controlProps }: ControlComponentProps) => (
+export const Control = ({ 'data-testid': dataTest, ...controlProps }: ControlComponentProps) => (
     <components.Control
         {...controlProps}
         innerProps={
             dataTest
                 ? ({
                       ...controlProps.innerProps,
-                      'data-test': `${dataTest}/input`,
+                      'data-testid': `${dataTest}/input`,
                   } as ControlProps<OptionType>['innerProps'])
                 : controlProps.innerProps
         }
@@ -20,16 +20,16 @@ export const Control = ({ dataTest, ...controlProps }: ControlComponentProps) =>
 );
 
 export interface OptionComponentProps extends OptionProps<OptionType, boolean> {
-    dataTest?: string;
+    'data-testid'?: string;
 }
 
-export const Option = ({ dataTest, ...optionProps }: OptionComponentProps) => (
+export const Option = ({ 'data-testid': dataTest, ...optionProps }: OptionComponentProps) => (
     <components.Option
         {...optionProps}
         innerProps={
             {
                 ...optionProps.innerProps,
-                'data-test': `${dataTest}/option/${
+                'data-testid': `${dataTest}/option/${
                     typeof optionProps.data.value === 'string'
                         ? optionProps.data.value
                         : optionProps.label

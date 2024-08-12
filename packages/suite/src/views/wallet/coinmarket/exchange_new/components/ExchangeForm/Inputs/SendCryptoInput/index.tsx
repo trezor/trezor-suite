@@ -90,7 +90,7 @@ const SendCryptoInput = ({ isWithRate }: SendCryptoInputProps) => {
     return (
         <StyledInput
             control={control}
-            data-test="@coinmarket/exchange/crypto-input"
+            data-testid="@coinmarket/exchange/crypto-input"
             onChange={value => {
                 updateFiatValue(value);
                 clearErrors(FIAT_INPUT);

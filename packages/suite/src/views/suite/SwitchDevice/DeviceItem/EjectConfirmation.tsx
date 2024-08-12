@@ -69,7 +69,7 @@ const EjectConfirmationContainer = ({
                     onClick={handleEject}
                     variant="primary"
                     isFullWidth
-                    data-test="@switch-device/eject"
+                    data-testid="@switch-device/eject"
                 >
                     {primaryButtonLabel}
                 </Button>
@@ -78,7 +78,7 @@ const EjectConfirmationContainer = ({
                     onClick={onCancel}
                     variant="tertiary"
                     isFullWidth
-                    data-test="@switch-device/cancelEject"
+                    data-testid="@switch-device/cancelEject"
                 >
                     <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON" />
                 </Button>

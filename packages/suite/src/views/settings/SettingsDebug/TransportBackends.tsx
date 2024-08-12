@@ -58,13 +58,13 @@ export const TransportBackends = () => {
 
     return (
         <>
-            <SectionItem data-test="@settings/debug/processes">
+            <SectionItem data-testid="@settings/debug/processes">
                 <TextColumn
                     title="Transport backends"
                     description="You may need to restart your application after changes are made."
                 />
             </SectionItem>
-            <SectionItem data-test="@settings/debug/processes/Bridge">
+            <SectionItem data-testid="@settings/debug/processes/Bridge">
                 <TextColumn title="Bridge running" />
                 <ActionColumn>
                     <Checkbox
@@ -75,7 +75,7 @@ export const TransportBackends = () => {
                     />
                 </ActionColumn>
             </SectionItem>
-            <SectionItem data-test="@settings/debug/processes/bridgeLegacy">
+            <SectionItem data-testid="@settings/debug/processes/bridgeLegacy">
                 <TextColumn
                     title="Use legacy bridge"
                     description="Legacy trezord-go will be spawned as a subprocess"
@@ -92,7 +92,7 @@ export const TransportBackends = () => {
                     />
                 </ActionColumn>
             </SectionItem>
-            <SectionItem data-test="@settings/debug/processes/runOnStartUp">
+            <SectionItem data-testid="@settings/debug/processes/runOnStartUp">
                 <TextColumn title="Run on startup" />
                 <ActionColumn>
                     <Checkbox
@@ -107,7 +107,7 @@ export const TransportBackends = () => {
                 </ActionColumn>
             </SectionItem>
             {!isDevEnv && (
-                <SectionItem data-test="@settings/debug/processes/newBridgeRollout">
+                <SectionItem data-testid="@settings/debug/processes/newBridgeRollout">
                     <TextColumn
                         title="New bridge rollout"
                         description={`New bridge is being rolled out to only ${NEW_BRIDGE_ROLLOUT_THRESHOLD * 100}% of Trezor Suite instances that have applied for the Early access program. Your rollout score is ${((bridgeSettings.newBridgeRollout ?? 0) * 100).toFixed()}%`}

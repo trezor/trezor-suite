@@ -131,7 +131,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
                 heading="Method testing tool"
                 paddingType="large"
                 isIconFlipped
-                data-test="@api-playground/collapsible-box"
+                data-testid="@api-playground/collapsible-box"
             >
                 <OptionsRow $manualMode={manualMode}>
                     <div>

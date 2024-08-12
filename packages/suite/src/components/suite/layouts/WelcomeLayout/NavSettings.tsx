@@ -15,7 +15,7 @@ export const NavSettings = () => {
             size="medium"
             variant="tertiary"
             onClick={handleClick}
-            data-test="@suite/menu/settings"
+            data-testid="@suite/menu/settings"
         />
     );
 };

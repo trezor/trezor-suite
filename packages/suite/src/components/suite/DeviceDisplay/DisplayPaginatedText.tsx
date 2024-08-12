@@ -96,7 +96,7 @@ export const DisplayPaginatedText = ({
                 return (
                     <Page
                         key={`page-${pageIndex}`}
-                        data-test={isFirstPage ? '@device-display/paginated-text' : undefined}
+                        data-testid={isFirstPage ? '@device-display/paginated-text' : undefined}
                     >
                         {page.rows.map((row, index) => (
                             <Row

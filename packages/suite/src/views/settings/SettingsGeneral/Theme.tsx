@@ -96,7 +96,7 @@ export const Theme = () => {
                     value={selectedValue}
                     options={optionGroups}
                     onChange={onChange}
-                    data-test="@theme/color-scheme-select"
+                    data-testid="@theme/color-scheme-select"
                 />
             </ActionColumn>
         </SettingsSectionItem>

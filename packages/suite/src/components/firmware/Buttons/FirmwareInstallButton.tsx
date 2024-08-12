@@ -5,7 +5,7 @@ import { useTranslation } from 'src/hooks/suite';
 const InstallButtonCommon = (
     props: Omit<ButtonProps, 'children'> & { children?: React.ReactNode },
 ) => (
-    <Button {...props} data-test="@firmware/install-button">
+    <Button {...props} data-testid="@firmware/install-button">
         {props.children || <Translation id="TR_INSTALL" />}
     </Button>
 );

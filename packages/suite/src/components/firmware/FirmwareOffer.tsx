@@ -82,7 +82,7 @@ export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOf
     const futureFirmwareType = getSuiteFirmwareTypeString(targetFirmwareType);
 
     const nextVersionElement = (
-        <Version $isNew data-test="@firmware/offer-version/new">
+        <Version $isNew data-testid="@firmware/offer-version/new">
             {futureFirmwareType ? translationString(futureFirmwareType) : ''}
             {nextVersion ? ` ${nextVersion}` : ''}
             {!customFirmware && useDevkit ? ' DEVKIT' : ''}

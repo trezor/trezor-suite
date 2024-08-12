@@ -129,7 +129,7 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
                 <FirmwareButtonsRow withCancelButton={willBeWiped} onClose={onClose}>
                     <Button
                         onClick={onSuccess}
-                        data-test="@firmware/confirm-seed-button"
+                        data-testid="@firmware/confirm-seed-button"
                         isDisabled={!device?.connected || !isChecked}
                     >
                         <Translation id={willBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_CONTINUE'} />
@@ -147,7 +147,7 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
             <StyledCheckbox
                 isChecked={isChecked}
                 onClick={handleCheckboxClick}
-                data-test="@firmware/confirm-seed-checkbox"
+                data-testid="@firmware/confirm-seed-checkbox"
             >
                 {checkbox}
             </StyledCheckbox>

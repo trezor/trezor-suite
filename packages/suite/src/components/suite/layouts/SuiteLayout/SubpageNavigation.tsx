@@ -62,7 +62,7 @@ export type NavigationItem = {
     id: Route['name'];
     callback: () => void;
     title: JSX.Element;
-    'data-test'?: string;
+    'data-testid'?: string;
     isHidden?: boolean;
     activeRoutes?: TabRoute[];
 };
@@ -101,7 +101,7 @@ export const SubpageNavigation = ({ items, className }: SubpageNavigationProps) 
                                         $isActive={isActive}
                                         $isNavigationDisabled={isAccountLoading}
                                         onClick={onClick}
-                                        data-test={item['data-test']}
+                                        data-testid={item['data-testid']}
                                     >
                                         {title}
                                     </StyledNavLink>

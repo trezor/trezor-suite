@@ -50,7 +50,7 @@ export const CoinmarketLayoutNavigation = () => {
         icon: IconName;
     }) => (
         <NavListItem
-            data-test={`@coinmarket/menu/${route}`}
+            data-testid={`@coinmarket/menu/${route}`}
             nameId={title}
             isActive={routeName === route}
             icon={icon}

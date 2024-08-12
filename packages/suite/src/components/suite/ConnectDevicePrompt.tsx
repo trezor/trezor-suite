@@ -140,7 +140,7 @@ export const ConnectDevicePrompt = ({
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: -0 }}
             transition={{ delay: 0.2, duration: 0.6, ease: motionEasing.enter }}
-            data-test="@connect-device-prompt"
+            data-testid="@connect-device-prompt"
         >
             <ElevationUp>
                 <ConnectImage connected={connected} showWarning={showWarning} />

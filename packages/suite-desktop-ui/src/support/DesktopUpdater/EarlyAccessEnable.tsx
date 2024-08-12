@@ -63,7 +63,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                     <Button
                         onClick={hideWindow}
                         variant="tertiary"
-                        data-test="@settings/early-access-skip-button"
+                        data-testid="@settings/early-access-skip-button"
                     >
                         <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
                     </Button>
@@ -85,7 +85,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                     <Button
                         onClick={allowPrerelease}
                         isDisabled={!understood}
-                        data-test="@settings/early-access-confirm-button"
+                        data-testid="@settings/early-access-confirm-button"
                     >
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM" />
                     </Button>
@@ -105,7 +105,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
             </DescriptionWrapper>
             <Divider />
             <Checkbox
-                data-test="@settings/early-access-confirm-check"
+                data-testid="@settings/early-access-confirm-check"
                 title={
                     <Paragraph typographyStyle="highlight">
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK" />

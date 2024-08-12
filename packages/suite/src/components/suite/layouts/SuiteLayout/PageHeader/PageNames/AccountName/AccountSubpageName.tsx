@@ -42,7 +42,7 @@ export const AccountSubpageName = ({
                 variant="tertiary"
                 size="medium"
                 onClick={handleBackClick}
-                data-test="@account-subpage/back"
+                data-testid="@account-subpage/back"
             />
             <AccountDetails selectedAccount={selectedAccount} isBalanceShown />
         </Container>

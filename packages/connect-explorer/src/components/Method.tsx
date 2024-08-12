@@ -88,7 +88,7 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
         case 'number':
             return (
                 <Input
-                    dataTest={`@input/${field.name}`}
+                    data-testid={`@input/${field.name}`}
                     key={field.name}
                     field={field}
                     onChange={props.actions.onFieldChange}
@@ -100,7 +100,7 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
         case 'checkbox':
             return (
                 <Checkbox
-                    data-test={`@checkbox/${field.name}`}
+                    data-testid={`@checkbox/${field.name}`}
                     key={field.name}
                     field={field}
                     onChange={props.actions.onFieldChange}
@@ -240,7 +240,7 @@ const SubmitButton = ({ onClick, text, isFullWidth, isLoading }: SubmitButtonPro
     return (
         <Button
             onClick={onClick}
-            data-test="@submit-button"
+            data-testid="@submit-button"
             isFullWidth={isFullWidth}
             isLoading={isLoading}
         >
@@ -326,7 +326,7 @@ export const Method = () => {
             <div>
                 <Sticky>
                     {!manualMode && (
-                        <Container data-test="@code">
+                        <Container data-testid="@code">
                             <Heading>Method with params</Heading>
                             <CopyWrapper>
                                 <CopyToClipboard getValue={() => javascriptCode ?? ''} />
@@ -335,7 +335,7 @@ export const Method = () => {
                             <SubmitButton {...buttonProps} isFullWidth />
                         </Container>
                     )}
-                    <Container data-test="@response">
+                    <Container data-testid="@response">
                         <Heading>Response</Heading>
                         <CopyWrapper>
                             <CopyToClipboard getValue={() => JSON.stringify(response, null, 2)} />

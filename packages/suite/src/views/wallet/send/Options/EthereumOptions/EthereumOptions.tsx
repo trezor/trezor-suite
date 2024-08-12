@@ -51,7 +51,7 @@ export const EthereumOptions = () => {
                             variant="tertiary"
                             size="small"
                             icon="DATA"
-                            data-test="send/open-ethereum-data"
+                            data-testid="send/open-ethereum-data"
                             onClick={toggleData}
                         >
                             <Translation id="DATA_ETH_ADD" />
@@ -64,7 +64,7 @@ export const EthereumOptions = () => {
                         variant="tertiary"
                         size="small"
                         icon="BROADCAST"
-                        data-test="send/broadcast"
+                        data-testid="send/broadcast"
                         onClick={toggleBroadcast}
                     >
                         <Translation id="BROADCAST" />

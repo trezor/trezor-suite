@@ -106,7 +106,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                         deviceModel={deviceModel ?? undefined}
                         learnMoreTooltipOnClick={
                             <OpenGuideFromTooltip
-                                dataTest="@tooltip/guideAnchor"
+                                data-testid="@tooltip/guideAnchor"
                                 id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
                             />
                         }
@@ -141,7 +141,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                     deviceModel={deviceModel ?? undefined}
                     learnMoreTooltipOnClick={
                         <OpenGuideFromTooltip
-                            dataTest="@tooltip/guideAnchor"
+                            data-testid="@tooltip/guideAnchor"
                             id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
                         />
                     }

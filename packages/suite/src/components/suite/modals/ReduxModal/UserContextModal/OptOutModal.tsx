@@ -31,7 +31,7 @@ type OptOutModalProps = {
     headingKey: TranslationKey;
     confirmKey: TranslationKey;
     checkboxLabelKey: TranslationKey;
-    'data-test': string;
+    'data-testid': string;
     onChange: (props: { isDisabled: boolean }) => void;
     children: ReactNode;
 };
@@ -41,7 +41,7 @@ export const OptOutModal = ({
     headingKey,
     confirmKey,
     checkboxLabelKey,
-    'data-test': dataTest,
+    'data-testid': dataTest,
     onChange,
     children,
 }: OptOutModalProps) => {
@@ -62,7 +62,7 @@ export const OptOutModal = ({
                     variant="destructive"
                     onClick={handleTurningOffRevisionCheck}
                     isDisabled={!isConfirmed}
-                    data-test={`${dataTest}/opt-out-button`}
+                    data-testid={`${dataTest}/opt-out-button`}
                 >
                     <Translation id={confirmKey} />
                 </Button>
@@ -77,7 +77,7 @@ export const OptOutModal = ({
                     title={<Translation id={checkboxLabelKey} />}
                     isChecked={isConfirmed}
                     onClick={() => setIsConfirmed(!isConfirmed)}
-                    data-test={`${dataTest}/checkbox`}
+                    data-testid={`${dataTest}/checkbox`}
                 />
             </CheckboxWrapper>
         </StyledModal>

@@ -63,7 +63,11 @@ export const FirmwareInstallation = ({
         }
         if (status === 'done') {
             return (
-                <Button variant="primary" onClick={onSuccess} data-test="@firmware/continue-button">
+                <Button
+                    variant="primary"
+                    onClick={onSuccess}
+                    data-testid="@firmware/continue-button"
+                >
                     <Translation id={standaloneFwUpdate ? 'TR_CLOSE' : 'TR_CONTINUE'} />
                 </Button>
             );

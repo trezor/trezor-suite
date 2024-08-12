@@ -213,7 +213,7 @@ export const CollapsibleOnboardingCard = ({
             $withImage={!!image}
             $nested={nested}
             onClick={expandable && !expanded ? onToggle : undefined}
-            data-test="@components/collapsible-box"
+            data-testid="@components/collapsible-box"
             {...rest}
         >
             <motion.div

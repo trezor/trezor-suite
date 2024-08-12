@@ -15,7 +15,10 @@ export const DisplaySinglePageWrapText = ({
     isPixelType,
     text,
 }: DisplaySinglePageWrapTextProps) => (
-    <DeviceDisplayText $isPixelType={isPixelType} data-test="@device-display/single-page-wrap-text">
+    <DeviceDisplayText
+        $isPixelType={isPixelType}
+        data-testid="@device-display/single-page-wrap-text"
+    >
         <TextWrapper $isPixelType={isPixelType}>{text}</TextWrapper>
     </DeviceDisplayText>
 );

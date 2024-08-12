@@ -42,7 +42,7 @@ export const DisplayChunks = ({ isPixelType, address }: DisplayChunksProps) => {
                     <DeviceDisplayText
                         $isPixelType={isPixelType}
                         key={chunkIndex}
-                        data-test="chunk"
+                        data-testid="chunk"
                     >
                         {chunk}
                     </DeviceDisplayText>
@@ -54,7 +54,7 @@ export const DisplayChunks = ({ isPixelType, address }: DisplayChunksProps) => {
     const groupedChunks = groupByN(chunks, 4);
 
     return (
-        <ChunksContainer onCopy={handleOnCopy} data-test="@device-display/chunked-text">
+        <ChunksContainer onCopy={handleOnCopy} data-testid="@device-display/chunked-text">
             {showChunksInRows(groupedChunks)}
         </ChunksContainer>
     );

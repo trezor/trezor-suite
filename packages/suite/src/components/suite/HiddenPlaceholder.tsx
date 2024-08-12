@@ -27,7 +27,7 @@ export interface HiddenPlaceholderProps {
     enforceIntensity?: number;
     children: ReactNode;
     className?: string;
-    ['data-test']?: string;
+    ['data-testid']?: string;
 }
 
 export const HiddenPlaceholder = ({
@@ -60,7 +60,7 @@ export const HiddenPlaceholder = ({
             $intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
             className={className}
             ref={ref}
-            data-test={rest['data-test']}
+            data-testid={rest['data-testid']}
         >
             {children}
         </Wrapper>

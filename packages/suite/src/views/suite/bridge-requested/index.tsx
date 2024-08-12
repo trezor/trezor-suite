@@ -76,7 +76,7 @@ export const BridgeRequested = () => {
                         icon="ARROW_LEFT"
                         variant="tertiary"
                         onClick={() => setConfirmGoToWallet(true)}
-                        data-test="@bridge/goto/wallet-index"
+                        data-testid="@bridge/goto/wallet-index"
                     >
                         <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
                     </StyledButton>

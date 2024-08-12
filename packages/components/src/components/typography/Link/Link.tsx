@@ -54,7 +54,7 @@ interface LinkProps {
     variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
     icon?: IconProps['icon'];
     iconProps?: IconProps;
-    'data-test'?: string;
+    'data-testid'?: string;
 }
 
 const Link = ({
@@ -64,7 +64,7 @@ const Link = ({
     iconProps,
     type,
     onClick,
-    'data-test': dataTest,
+    'data-testid': dataTest,
     children,
     className,
     variant,
@@ -84,7 +84,7 @@ const Link = ({
             href={href}
             target={target || '_blank'}
             rel="noreferrer noopener"
-            data-test={dataTest}
+            data-testid={dataTest}
             onClick={(e: MouseEvent<any>) => {
                 e.stopPropagation();
                 onClick?.(e);

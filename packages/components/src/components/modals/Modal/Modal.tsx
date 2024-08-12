@@ -194,7 +194,7 @@ interface ModalProps {
     headerComponent?: ReactNode;
     className?: string;
     hasBackdropCancel?: boolean;
-    'data-test'?: string;
+    'data-testid'?: string;
 }
 
 const Modal = ({
@@ -215,7 +215,7 @@ const Modal = ({
     currentProgressBarStep,
     headerComponent,
     className,
-    'data-test': dataTest = '@modal',
+    'data-testid': dataTest = '@modal',
 }: ModalProps) => {
     const [componentsWidth, setComponentsWidth] = useState<number>();
     const theme = useTheme();
@@ -250,7 +250,7 @@ const Modal = ({
 
             <Container
                 onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
-                data-test={dataTest}
+                data-testid={dataTest}
                 className={className}
             >
                 {(!!onBackClick || !!heading || showHeaderActions) && (
@@ -304,7 +304,7 @@ const Modal = ({
                                     <IconButton
                                         variant="tertiary"
                                         icon="CROSS"
-                                        data-test="@modal/close-button"
+                                        data-testid="@modal/close-button"
                                         onClick={onCancel}
                                         size={HEADING_SIZES[headingSize].buttonSize}
                                     />

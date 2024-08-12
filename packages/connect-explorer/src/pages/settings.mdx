@@ -69,21 +69,21 @@ export const Settings = () => {
     return (
         <SettingsContent>
             {fields.map(field => getField(field, { actions }))}
-            <Button onClick={actions.onSubmitInit} data-test="@submit-button">
+            <Button onClick={actions.onSubmitInit} data-testid="@submit-button">
                 {submitButton}
             </Button>
             {initError && (
-                <ErrorMessage data-test="@settings/init-error">
+                <ErrorMessage data-testid="@settings/init-error">
                     Init error: {initError}
                 </ErrorMessage>
             )}
             {isInitSuccess && (
-                <ConfirmationMessage data-test="@settings/init-success">
+                <ConfirmationMessage data-testid="@settings/init-success">
                     Init success!
                 </ConfirmationMessage>
             )}
             {isHandshakeConfirmed && (
-                <ConfirmationMessage data-test="@settings/handshake-confirmed">
+                <ConfirmationMessage data-testid="@settings/handshake-confirmed">
                     Handshake confirmed!
                 </ConfirmationMessage>
             )}

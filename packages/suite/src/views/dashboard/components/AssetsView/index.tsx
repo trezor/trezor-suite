@@ -159,14 +159,14 @@ export const AssetsView = () => {
                                 icon="PLUS"
                                 size="small"
                                 onClick={goToCoinsSettings}
-                                data-test="@dashboard/assets/enable-more-coins"
+                                data-testid="@dashboard/assets/enable-more-coins"
                             >
                                 <Translation id="TR_ENABLE_MORE_COINS" />
                             </StyledAddAccountButton>
                         )}
                         <Icon
                             icon="TABLE"
-                            data-test="@dashboard/assets/table-icon"
+                            data-testid="@dashboard/assets/table-icon"
                             onClick={setTable}
                             color={
                                 !dashboardAssetsGridMode
@@ -176,7 +176,7 @@ export const AssetsView = () => {
                         />
                         <Icon
                             icon="GRID"
-                            data-test="@dashboard/assets/grid-icon"
+                            data-testid="@dashboard/assets/grid-icon"
                             onClick={setGrid}
                             color={
                                 dashboardAssetsGridMode

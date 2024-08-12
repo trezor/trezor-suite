@@ -32,13 +32,13 @@ interface SendMaxSwitchProps {
     hideOnLargeScreens?: boolean;
     hideOnSmallScreens?: boolean;
     isSetMaxActive: boolean;
-    dataTest: string;
+    'data-testid'?: string;
     onChange: () => void;
 }
 
 export const SendMaxSwitch = ({
     isSetMaxActive,
-    dataTest,
+    'data-testid': dataTest,
     onChange,
     hideOnLargeScreens,
     hideOnSmallScreens,
@@ -48,7 +48,7 @@ export const SendMaxSwitch = ({
         $hideOnSmallScreens={hideOnSmallScreens}
         labelPosition="left"
         isChecked={isSetMaxActive}
-        dataTest={dataTest}
+        data-testid={dataTest}
         isSmall
         onChange={onChange}
         label={<Translation id="AMOUNT_SEND_MAX" />}

@@ -32,7 +32,7 @@ describe('Database migration', () => {
         const baseUrl = 'https://dev.suite.sldev.cz/suite-web';
         const btcAddressInputSelector = 'outputs[0].address';
         const workaroundBtcAddressInputSelector = 'outputs.0.address';
-        const hiddenWalletSelector = '[data-test^="@switch-device/wallet-on-index"]';
+        const hiddenWalletSelector = '[data-testid^="@switch-device/wallet-on-index"]';
         cy.viewport(1440, 2560);
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
@@ -91,15 +91,15 @@ describe('Database migration', () => {
         cy.getTestElement('@wallet/menu/close-button').last().click();
 
         // check and store address of first btc tx
-        cy.get('[data-test^="@metadata/outputLabel"] > span').should('be.visible');
-        cy.get('[data-test^="@metadata/outputLabel"] > span')
+        cy.get('[data-testid^="@metadata/outputLabel"] > span').should('be.visible');
+        cy.get('[data-testid^="@metadata/outputLabel"] > span')
             .first()
             .invoke('text')
             .as('firstTxLabel');
         // remember the wallet
         cy.getTestElement('@menu/switch-device').click();
         cy.contains(hiddenWalletSelector, 'Hidden wallet #1')
-            .find('[data-test*="toggle-remember-switch"]')
+            .find('[data-testid*="toggle-remember-switch"]')
             .click()
             .find('input')
             .should('be.checked');
@@ -119,10 +119,10 @@ describe('Database migration', () => {
 
         cy.getTestElement('@switch-device/cancel-button').click();
 
-        cy.get('[data-test^="@metadata/outputLabel"]').first().should('be.visible');
+        cy.get('[data-testid^="@metadata/outputLabel"]').first().should('be.visible');
 
         // check the first tx and verify it against the stored one
-        cy.get('[data-test^="@metadata/outputLabel"]')
+        cy.get('[data-testid^="@metadata/outputLabel"]')
             .first()
             .invoke('text')
             .then(readFirstTx => {

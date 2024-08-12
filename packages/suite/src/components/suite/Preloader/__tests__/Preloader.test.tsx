@@ -9,7 +9,7 @@ import { DeepPartial } from '@trezor/type-utils';
 
 // render only Translation.id in data-test attribute
 jest.mock('src/components/suite/Translation', () => ({
-    Translation: ({ id }: any) => <div data-test={id}>{id}</div>,
+    Translation: ({ id }: any) => <div data-testid={id}>{id}</div>,
 }));
 
 // @trezor/connect fetching ethereum definitions
@@ -22,17 +22,17 @@ jest.mock('cross-fetch', () => ({
 
 // jest.mock('@firmware-components/ReconnectDevicePrompt', () => ({
 //     __esModule: true, // export as module
-//     default: ({ children }: any) => <div data-test="box">{children}</div>,
+//     default: ({ children }: any) => <div data-testid="box">{children}</div>,
 // }));
 // jest.mock('src/components/onboarding/DeviceAnimation', () => ({
 //     __esModule: true, // export as module
-//     default: ({ children }: any) => <div data-test="box">{children}</div>,
+//     default: ({ children }: any) => <div data-testid="box">{children}</div>,
 // }));
 // do not render animations
 // jest.mock('lottie-react', () => ({
 //     // Lottie: ({ trezorVersion }: any) => <div>{trezorVersion}</div>,
 //     __esModule: true, // export as module
-//     default: ({ trezorVersion }: any) => <div data-test="lottie-image">{trezorVersion}</div>,
+//     default: ({ trezorVersion }: any) => <div data-testid="lottie-image">{trezorVersion}</div>,
 // }));
 // jest.mock('react-use/lib/useMeasure', () => ({
 //     // Lottie: ({ trezorVersion }: any) => <div>{trezorVersion}</div>,

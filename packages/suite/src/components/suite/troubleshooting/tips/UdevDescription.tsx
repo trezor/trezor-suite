@@ -25,7 +25,7 @@ export const UdevDescription = () => {
                         <TrezorLink
                             variant="underline"
                             onClick={handleClick}
-                            data-test="@goto/udev"
+                            data-testid="@goto/udev"
                         >
                             {chunks}
                         </TrezorLink>

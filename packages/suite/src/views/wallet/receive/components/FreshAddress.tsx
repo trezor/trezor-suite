@@ -159,7 +159,7 @@ export const FreshAddress = ({
     };
 
     const buttonRevealAddressProps = {
-        'data-test': '@wallet/receive/reveal-address-button',
+        'data-testid': '@wallet/receive/reveal-address-button',
         onClick: handleAddressReveal,
         isDisabled: disabled || locked || coinjoinDisallowReveal || !firstFreshAddress,
         isLoading: locked,

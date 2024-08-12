@@ -80,7 +80,7 @@ const CoinmarketFormInputAccountActive = ({ label }: CoinmarketFormInputDefaultP
                                 </CoinmarketFormOption>
                             );
                         }}
-                        data-test="@coinmarket/form/account-select-active"
+                        data-testid="@coinmarket/form/account-select-active"
                         isClearable={false}
                         isSearchable
                     />

@@ -57,11 +57,11 @@ export const SettingsName = () => {
                     variant="tertiary"
                     size="medium"
                     onClick={handleBackClick}
-                    data-test="@settings/menu/close"
+                    data-testid="@settings/menu/close"
                 />
             )}
 
-            <HeaderHeading onClick={handleTitleClick} data-test="@settings/menu/title">
+            <HeaderHeading onClick={handleTitleClick} data-testid="@settings/menu/title">
                 <Translation id="TR_SETTINGS" />
             </HeaderHeading>
         </Container>

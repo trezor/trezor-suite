@@ -48,7 +48,7 @@ export const FirmwareRevisionCheck = () => {
                 <ActionButton
                     onClick={handleClick}
                     variant={isFirmwareRevisionCheckDisabled ? 'primary' : 'destructive'}
-                    data-test="@settings/device/open-firmware-revision-check-modal-button"
+                    data-testid="@settings/device/open-firmware-revision-check-modal-button"
                 >
                     <Translation
                         id={

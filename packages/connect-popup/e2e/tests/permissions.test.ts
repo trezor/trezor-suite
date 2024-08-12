@@ -32,7 +32,7 @@ const fixtures = [
             'iframe and host same origins but with settings to NOT trustedHost -> show permissions',
         queryString: '',
         setTrustedHost: false,
-        expect: () => popup.waitForSelector("[data-test='@permissions/confirm-button']"),
+        expect: () => popup.waitForSelector("[data-testid='@permissions/confirm-button']"),
     },
 ];
 
@@ -42,13 +42,13 @@ fixtures.forEach(f => {
         const page = await browserInstance.newPage();
         await setConnectSettings(page, url, { trustedHost: f.setTrustedHost }, false);
 
-        await page.click("a[data-test='@navbar-logo']");
+        await page.click("a[data-testid='@navbar-logo']");
         await page.click("a[href$='/methods/bitcoin/verifyMessage/']");
         await waitAndClick(page, ['@api-playground/collapsible-box']);
 
         [popup] = await Promise.all([
             page.waitForEvent('popup'),
-            page.click("button[data-test='@submit-button']"),
+            page.click("button[data-testid='@submit-button']"),
         ]);
 
         await f.expect();

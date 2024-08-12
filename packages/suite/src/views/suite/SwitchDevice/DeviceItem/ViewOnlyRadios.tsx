@@ -9,7 +9,7 @@ import { AcquiredDevice } from '@suite-common/suite-types';
 type ViewOnlyRadiosProps = {
     isViewOnlyActive: boolean;
     toggleViewOnly: () => void;
-    dataTest?: string;
+    'data-testid'?: string;
     setContentType: (contentType: ContentType) => void;
     device: AcquiredDevice;
 };
@@ -18,7 +18,7 @@ type ViewOnlyRadioProps = {
     children: React.ReactNode;
     onClick: () => void;
     isChecked: boolean;
-    dataTest?: string;
+    'data-testid'?: string;
 };
 const Container = styled.div`
     display: flex;
@@ -56,7 +56,7 @@ export const ViewOnlyRadio = ({
     children,
     onClick,
     isChecked,
-    dataTest,
+    'data-testid': dataTest,
 }: ViewOnlyRadioProps) => {
     const { elevation } = useElevation();
     const theme = useTheme();
@@ -69,14 +69,14 @@ export const ViewOnlyRadio = ({
                     {children}
                 </Text>
             </Left>
-            <Radio onClick={onClick} isChecked={isChecked} data-test={dataTest} />
+            <Radio onClick={onClick} isChecked={isChecked} data-testid={dataTest} />
         </Item>
     );
 };
 export const ViewOnlyRadios = ({
     isViewOnlyActive,
     toggleViewOnly,
-    dataTest,
+    'data-testid': dataTest,
     setContentType,
     device,
 }: ViewOnlyRadiosProps) => {
@@ -101,7 +101,7 @@ export const ViewOnlyRadios = ({
                 title={<Translation id="TR_VIEW_ONLY_RADIOS_ENABLED_TITLE" />}
                 onClick={() => handleConfirm(true)}
                 isChecked={isViewOnlyActive}
-                dataTest={`${dataTest}/enabled`}
+                data-testid={`${dataTest}/enabled`}
             >
                 <Translation
                     id="TR_VIEW_ONLY_RADIOS_ENABLED_DESCRIPTION"
@@ -114,7 +114,7 @@ export const ViewOnlyRadios = ({
                 title={<Translation id="TR_VIEW_ONLY_RADIOS_DISABLED_TITLE" />}
                 onClick={() => handleConfirm(false)}
                 isChecked={!isViewOnlyActive}
-                dataTest={`${dataTest}/disabled`}
+                data-testid={`${dataTest}/disabled`}
             >
                 <Translation
                     id="TR_VIEW_ONLY_RADIOS_DISABLED_DESCRIPTION"

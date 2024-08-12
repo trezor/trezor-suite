@@ -12,11 +12,11 @@ test.beforeAll(async () => {
 });
 
 const handleAnalyticsConfirm = async (popup: Page) => {
-    await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+    await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
         state: 'visible',
         timeout: 40000,
     });
-    await popup.click("button[data-test='@analytics/continue-button']");
+    await popup.click("button[data-testid='@analytics/continue-button']");
 };
 
 /**

@@ -23,7 +23,7 @@ const TextRow = styled.div`
 type DeviceConnectionTextProps = {
     onClick?: () => void;
     variant: IconVariant;
-    'data-test'?: string;
+    'data-testid'?: string;
     icon: IconType;
     children: ReactNode;
     isAction?: boolean;
@@ -32,12 +32,12 @@ type DeviceConnectionTextProps = {
 export const DeviceConnectionText = ({
     onClick,
     variant,
-    'data-test': dataTest,
+    'data-testid': dataTest,
     children,
     icon,
     isAction,
 }: DeviceConnectionTextProps) => (
-    <Container $isAction={isAction} onClick={onClick} data-test={dataTest}>
+    <Container $isAction={isAction} onClick={onClick} data-testid={dataTest}>
         <TextRow>
             <Icon icon={icon} size={12} variant={variant} />
             <Text variant={variant}>{children} </Text>

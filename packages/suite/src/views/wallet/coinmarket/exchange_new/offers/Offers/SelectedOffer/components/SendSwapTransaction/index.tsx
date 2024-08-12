@@ -298,7 +298,7 @@ const SendSwapTransactionComponent = () => {
                                     size="small"
                                     inputState={customSlippageError && 'error'}
                                     name="CustomSlippage"
-                                    data-test="CustomSlippage"
+                                    data-testid="CustomSlippage"
                                     onChange={changeCustomSlippage}
                                 />
                             </RightColumn>

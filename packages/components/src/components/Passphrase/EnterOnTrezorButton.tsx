@@ -25,7 +25,7 @@ export const EnterOnTrezorButton = ({ submit, value, deviceModel }: EnterOnTrezo
         <Card
             paddingType="small"
             onClick={() => submit(value, true)}
-            data-test="@passphrase/enter-on-device-button"
+            data-testid="@passphrase/enter-on-device-button"
         >
             <Row gap={spacings.lg} alignItems="center" justifyContent="space-between">
                 {deviceModel && <Image alt="Trezor" image={`TREZOR_${deviceModel}`} height={34} />}

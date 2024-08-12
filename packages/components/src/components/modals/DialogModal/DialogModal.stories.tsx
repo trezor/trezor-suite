@@ -44,7 +44,7 @@ export const DialogModal: StoryObj<DialogModalProps> = {
         className: {
             control: 'none',
         },
-        'data-test': {
+        'data-testid': {
             control: 'none',
         },
         icon: {

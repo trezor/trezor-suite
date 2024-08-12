@@ -57,7 +57,7 @@ export const AmountUnitSwitchWrapper = ({ symbol, children }: AmountUnitSwitchWr
         >
             <Container
                 onClick={handleToggleBitcoinAmountUnits}
-                data-test={`amount-unit-switch/${symbol}`}
+                data-testid={`amount-unit-switch/${symbol}`}
             >
                 {children}
             </Container>

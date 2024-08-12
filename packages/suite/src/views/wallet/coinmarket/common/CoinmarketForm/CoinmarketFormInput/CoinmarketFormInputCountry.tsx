@@ -68,7 +68,7 @@ const CoinmarketFormInputCountry = ({ label }: CoinmarketFormInputDefaultProps) 
                                 </CoinmarketFormOption>
                             );
                         }}
-                        data-test="@coinmarket/form/country-select"
+                        data-testid="@coinmarket/form/country-select"
                         isClearable={false}
                         minValueWidth="160px"
                         isSearchable

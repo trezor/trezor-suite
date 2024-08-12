@@ -47,7 +47,7 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
                     options={languageOptions}
                     onChange={onChange}
                     isDisabled={isDeviceLocked}
-                    data-test="@settings/device/firmware-language-select"
+                    data-testid="@settings/device/firmware-language-select"
                 />
             </ActionColumn>
         </SettingsSectionItem>

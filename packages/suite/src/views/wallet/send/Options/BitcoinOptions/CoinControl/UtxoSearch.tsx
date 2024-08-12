@@ -42,7 +42,7 @@ export const UtxoSearch = ({ searchQuery, setSearch, setSelectedPage }: UtxoSear
     return (
         <Container>
             <Input
-                data-test="@wallet/send/search-icon"
+                data-testid="@wallet/send/search-icon"
                 innerRef={inputRef}
                 innerAddon={<Icon icon="SEARCH" size={16} color={theme.iconSubdued} />}
                 placeholder={translationString('TR_SEARCH_UTXOS')}

@@ -138,7 +138,9 @@ export const ConfirmOnDeviceContent = ({
                 <Title>{title}</Title>
 
                 {successText && hasSteps && activeStep > steps && (
-                    <Success data-test="@prompts/confirm-on-device/success">{successText}</Success>
+                    <Success data-testid="@prompts/confirm-on-device/success">
+                        {successText}
+                    </Success>
                 )}
 
                 {hasSteps && activeStep <= steps && (
@@ -147,7 +149,7 @@ export const ConfirmOnDeviceContent = ({
                             <Step
                                 key={step}
                                 $isActive={isStepActive(index, activeStep)}
-                                data-test={`@prompts/confirm-on-device/step/${index}${
+                                data-testid={`@prompts/confirm-on-device/step/${index}${
                                     isStepActive(index, activeStep) ? '/active' : ''
                                 }`}
                             />
@@ -162,7 +164,7 @@ export const ConfirmOnDeviceContent = ({
                         <Close
                             $elevation={elevation}
                             onClick={onCancel}
-                            data-test="@confirm-on-device/close-button"
+                            data-testid="@confirm-on-device/close-button"
                         >
                             <Icon icon="CROSS" size={16} color={theme.textOnTertiary} />
                         </Close>

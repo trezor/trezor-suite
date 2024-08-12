@@ -110,7 +110,7 @@ const SendCryptoSelect = () => {
                     isDisabled={!hasNetworkTypeTradableTokens(account.networkType)}
                     minValueWidth="58px"
                     isClean
-                    data-test="@coinmarket/exchange/crypto-currency-select"
+                    data-testid="@coinmarket/exchange/crypto-currency-select"
                 />
             )}
         />

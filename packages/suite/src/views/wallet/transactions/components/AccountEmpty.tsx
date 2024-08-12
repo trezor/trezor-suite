@@ -107,7 +107,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
 
                 <Actions>
                     <ActionButton
-                        data-test="@accounts/empty-account/receive"
+                        data-testid="@accounts/empty-account/receive"
                         variant="primary"
                         onClick={handleNavigateToReceivePage}
                     >
@@ -115,7 +115,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     </ActionButton>
 
                     <ActionButton
-                        data-test="@accounts/empty-account/buy"
+                        data-testid="@accounts/empty-account/buy"
                         variant="primary"
                         onClick={handleNavigateToBuyPage}
                     >

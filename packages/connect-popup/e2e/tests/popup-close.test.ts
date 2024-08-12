@@ -80,7 +80,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     await explorerPage.click("a[href$='/methods/bitcoin/verifyMessage/']");
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
 
-    await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
         state: 'visible',
     });
 
@@ -88,12 +88,12 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
     log('beforeEach', 'waiting for analytics confirm button');
-    await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+    await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
         state: 'visible',
         timeout: 40000,
     });
     log('beforeEach', 'clicking on analytics confirm button');
-    await popup.click("button[data-test='@analytics/continue-button']");
+    await popup.click("button[data-testid='@analytics/continue-button']");
 
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
@@ -169,7 +169,7 @@ test(`device dialog canceled ON DEVICE by user`, async ({ page, context }) => {
 
     await explorerPage.waitForTimeout(WAIT_AFTER_TEST);
 
-    await popup.click("button[data-test='@connect-ui/error-close-button']");
+    await popup.click("button[data-testid='@connect-ui/error-close-button']");
 
     await popupClosedPromise;
 
@@ -186,7 +186,7 @@ test(`device disconnected during device interaction`, async ({ page, context }) 
 
     try {
         log('waiting to click @connect-ui/error-close-button');
-        await popup.click("button[data-test='@connect-ui/error-close-button']");
+        await popup.click("button[data-testid='@connect-ui/error-close-button']");
     } catch (error) {
         // Sometimes this crashes with error that the page is already closed.
     }
@@ -216,8 +216,8 @@ test('when user cancels permissions in popup it closes automatically', async ({
     await popupClosedPromise;
 
     await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-    await explorerPage.click("[data-test='@api-playground/collapsible-box']");
-    await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+    await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
+    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
         state: 'visible',
     });
 
@@ -236,9 +236,9 @@ test('when user cancels permissions in popup it closes automatically', async ({
     }
 
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
-    await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
+    await popup.waitForSelector("button[data-testid='@permissions/confirm-button']");
     // We are testing that when cancel permissions, popup is closed automatically.
-    await popup.click("button[data-test='@permissions/cancel-button']");
+    await popup.click("button[data-testid='@permissions/cancel-button']");
     // Wait for popup to close.
     await popupClosedPromise;
 });
@@ -260,8 +260,8 @@ test('device dialogue cancelled IN POPUP by user', async ({ page, context }) => 
     await popupClosedPromise;
 
     await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-    await explorerPage.click("[data-test='@api-playground/collapsible-box']");
-    await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+    await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
+    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
         state: 'visible',
     });
 
@@ -273,11 +273,11 @@ test('device dialogue cancelled IN POPUP by user', async ({ page, context }) => 
 
     await popup.waitForLoadState('load');
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
-    await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
-    await popup.click("button[data-test='@permissions/confirm-button']");
-    await popup.waitForSelector("button[data-test='@export-address/cancel-button']");
+    await popup.waitForSelector("button[data-testid='@permissions/confirm-button']");
+    await popup.click("button[data-testid='@permissions/confirm-button']");
+    await popup.waitForSelector("button[data-testid='@export-address/cancel-button']");
     // We are testing that when cancel Export Bitcoin address, popup is closed automatically.
-    await popup.click("button[data-test='@export-address/cancel-button']");
+    await popup.click("button[data-testid='@export-address/cancel-button']");
     // Wait for popup to close.
     await popupClosedPromise;
 });
@@ -335,8 +335,8 @@ test('popup should be focused when a call is in progress and user triggers new c
     await popupClosedPromise;
 
     await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-    await explorerPage.click("[data-test='@api-playground/collapsible-box']");
-    await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+    await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
+    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
         state: 'visible',
     });
 
@@ -347,13 +347,13 @@ test('popup should be focused when a call is in progress and user triggers new c
         popup.on('close', () => resolve(undefined));
     });
 
-    await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
+    await popup.waitForSelector("button[data-testid='@permissions/confirm-button']");
 
     await waitAndClick(popup, ['@permissions/confirm-button']);
 
     // Click in 3rd party to trigger new call. But instead of new call it should focus on open popup.
-    await explorerPage.waitForSelector(`[data-test='@submit-button']`, { state: 'visible' });
-    await explorerPage.click(`[data-test='@submit-button']`, {
+    await explorerPage.waitForSelector(`[data-testid='@submit-button']`, { state: 'visible' });
+    await explorerPage.click(`[data-testid='@submit-button']`, {
         // submit button is disabled in connect-explorer if there is a call in progress. we want to simulate what happens if 3rd party
         // does not respect this and tries to call connect-api again.
         force: true,
@@ -390,8 +390,8 @@ test('popup should close when third party is closed', async ({ page, context }) 
     await popupClosedPromise;
 
     await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-    await explorerPage.click("[data-test='@api-playground/collapsible-box']");
-    await explorerPage.waitForSelector("button[data-test='@submit-button']", {
+    await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
+    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
         state: 'visible',
     });
     log('waiting for popup open');

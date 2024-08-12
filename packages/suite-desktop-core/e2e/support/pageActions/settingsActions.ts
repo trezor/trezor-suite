@@ -39,7 +39,7 @@ class SettingsActions {
         }
         await window.getByTestId(`@settings/menu/${desiredLocation}`).click();
         await window
-            .locator(`[data-test="${desiredLocationTestid}"]`)
+            .locator(`[data-testid="${desiredLocationTestid}"]`)
             // TODO: fix data-testid selectors in the app
             // .getByTestId(desiredLocationTestid)
             .waitFor({ state: 'visible', timeout: 10_000 });

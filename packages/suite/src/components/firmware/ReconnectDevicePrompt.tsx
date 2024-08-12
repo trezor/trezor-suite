@@ -113,14 +113,19 @@ interface ReconnectStepProps {
     order?: number;
     active: boolean;
     children: ReactNode;
-    dataTest: string;
+    'data-testid'?: string;
 }
 
-const ReconnectStep = ({ order, active, dataTest, children }: ReconnectStepProps) => (
+const ReconnectStep = ({
+    order,
+    active,
+    'data-testid': dataTest,
+    children,
+}: ReconnectStepProps) => (
     <BulletPointWrapper>
         {order && <BulletPointNumber $active={active}>{order}</BulletPointNumber>}
 
-        <BulletPointText $active={active} data-test={active ? dataTest : undefined}>
+        <BulletPointText $active={active} data-testid={active ? dataTest : undefined}>
             {children}
         </BulletPointText>
     </BulletPointWrapper>
@@ -251,7 +256,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         >
             {isAbortable && <StyledAbortButton onAbort={onClose} />}
 
-            <Wrapper data-test="@firmware/reconnect-device">
+            <Wrapper data-testid="@firmware/reconnect-device">
                 {!isRebootDone && (
                     <RebootDeviceGraphics
                         device={uiEvent?.payload.device}
@@ -272,7 +277,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                                     <ReconnectStep
                                         order={1}
                                         active={rebootPhase !== 'disconnected'}
-                                        dataTest="@firmware/disconnect-message"
+                                        data-testid="@firmware/disconnect-message"
                                     >
                                         <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
                                     </ReconnectStep>
@@ -281,7 +286,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                                     <ReconnectStep
                                         order={2}
                                         active={rebootPhase === 'disconnected'}
-                                        dataTest="@firmware/connect-in-bootloader-message"
+                                        data-testid="@firmware/connect-in-bootloader-message"
                                     >
                                         <Translation id={getSecondStep()} />
                                     </ReconnectStep>
@@ -298,7 +303,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                         </>
                     ) : (
                         <>
-                            <Button onClick={onSuccess} data-test="@firmware/install-button">
+                            <Button onClick={onSuccess} data-testid="@firmware/install-button">
                                 <Translation id="TR_INSTALL" />
                             </Button>
                         </>

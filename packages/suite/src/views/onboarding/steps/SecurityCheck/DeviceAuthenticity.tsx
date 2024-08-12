@@ -94,7 +94,7 @@ export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
                 onClick={handleClick}
                 isDisabled={isLoading}
                 isLoading={isLoading}
-                data-test={
+                data-testid={
                     isCheckSuccessful
                         ? '@authenticity-check/continue-button'
                         : `@authenticity-check/start-button`

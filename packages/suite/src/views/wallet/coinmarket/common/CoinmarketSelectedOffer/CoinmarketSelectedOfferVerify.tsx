@@ -164,7 +164,7 @@ const CoinmarketSelectedOfferVerify = () => {
                     {(!addressVerified || addressVerified !== address) &&
                         selectedAccountOption.account && (
                             <Button
-                                data-test="@coinmarket/offer/confirm-on-trezor-button"
+                                data-testid="@coinmarket/offer/confirm-on-trezor-button"
                                 isLoading={callInProgress}
                                 isDisabled={callInProgress}
                                 onClick={() => {
@@ -183,7 +183,7 @@ const CoinmarketSelectedOfferVerify = () => {
                     {((addressVerified && addressVerified === address) ||
                         selectedAccountOption?.type === 'NON_SUITE') && (
                         <Button
-                            data-test="@coinmarket/offer/continue-transaction-button"
+                            data-testid="@coinmarket/offer/continue-transaction-button"
                             isLoading={callInProgress}
                             onClick={() => {
                                 if (address) {

@@ -41,7 +41,7 @@ export const DestinationTag = ({ close }: DestinationTagProps) => {
     return (
         <Input
             inputState={getInputState(error)}
-            data-test={inputName}
+            data-testid={inputName}
             defaultValue={inputValue}
             maxLength={formInputsMaxLength.xrpDestinationTag}
             label={<Translation id="DESTINATION_TAG" />}

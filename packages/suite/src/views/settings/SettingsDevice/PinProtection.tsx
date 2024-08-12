@@ -38,7 +38,7 @@ export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
                     isChecked={!!pinProtection}
                     onChange={handleChange}
                     isDisabled={isDeviceLocked}
-                    dataTest="@settings/device/pin-switch"
+                    data-testid="@settings/device/pin-switch"
                 />
             </ActionColumn>
         </SettingsSectionItem>

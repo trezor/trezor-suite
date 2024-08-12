@@ -7,7 +7,7 @@ export const TriggerHighlight = () => {
     const dispatch = useDispatch();
 
     return (
-        <SectionItem data-test="@settings/debug/github">
+        <SectionItem data-testid="@settings/debug/github">
             <TextColumn
                 title="Trigger highlight"
                 description="Goes to the anchor in the application and highlights it. This allows testing of this functionality with custom anchor."

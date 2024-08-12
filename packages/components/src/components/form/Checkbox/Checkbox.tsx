@@ -160,7 +160,7 @@ export type CheckboxProps = AllowedFrameProps & {
     isDisabled?: boolean;
     labelAlignment?: LabelAlignment;
     onClick: EventHandler<SyntheticEvent>;
-    'data-test'?: string;
+    'data-testid'?: string;
     className?: string;
     children?: ReactNode;
 };
@@ -171,7 +171,7 @@ export const Checkbox = ({
     isDisabled = false,
     labelAlignment = 'right',
     onClick,
-    'data-test': dataTest,
+    'data-testid': dataTest,
     className,
     children,
     margin,
@@ -197,7 +197,7 @@ export const Checkbox = ({
             $labelAlignment={labelAlignment}
             onClick={isDisabled ? undefined : onClick}
             onKeyUp={handleKeyUp}
-            data-test={dataTest}
+            data-testid={dataTest}
             className={className}
             {...makePropsTransient(frameProps)}
         >

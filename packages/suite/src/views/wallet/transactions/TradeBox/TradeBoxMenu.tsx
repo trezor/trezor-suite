@@ -84,7 +84,7 @@ export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
                             dispatch(goto(item.route, { preserveParams: true }));
                         }}
                         isDisabled={item.type !== 'buy' && account.empty}
-                        data-test={`@coinmarket/menu/${item.route}`}
+                        data-testid={`@coinmarket/menu/${item.route}`}
                     >
                         {item.title}
                     </StyledButton>

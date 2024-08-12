@@ -82,7 +82,7 @@ const CoinmarketFormInputCrypto = <TFieldValues extends FieldValues>({
                     )}
                 </CoinmarketFormOptionLabel>
             }
-            data-test="@coinmarket/form/crypto-input"
+            data-testid="@coinmarket/form/crypto-input"
         />
     );
 };

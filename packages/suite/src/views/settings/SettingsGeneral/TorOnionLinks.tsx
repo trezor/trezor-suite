@@ -31,7 +31,7 @@ export const TorOnionLinks = () => {
             />
             <ActionColumn>
                 <Switch
-                    dataTest="@settings/general/onion-links-switch"
+                    data-testid="@settings/general/onion-links-switch"
                     isChecked={torOnionLinks}
                     onChange={handleChange}
                 />

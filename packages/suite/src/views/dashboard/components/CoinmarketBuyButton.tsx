@@ -8,10 +8,10 @@ import { MouseEvent } from 'react';
 
 interface BuyButtonProps {
     symbol: NetworkSymbol;
-    dataTest: string;
+    'data-testid'?: string;
 }
 
-export const CoinmarketBuyButton = ({ symbol, dataTest }: BuyButtonProps) => {
+export const CoinmarketBuyButton = ({ symbol, 'data-testid': dataTest }: BuyButtonProps) => {
     const dispatch = useDispatch();
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
@@ -41,7 +41,7 @@ export const CoinmarketBuyButton = ({ symbol, dataTest }: BuyButtonProps) => {
     };
 
     return (
-        <Button onClick={onClick} variant="tertiary" data-test={dataTest} size="small">
+        <Button onClick={onClick} variant="tertiary" data-testid={dataTest} size="small">
             <Translation id="TR_BUY_BUY" />
         </Button>
     );

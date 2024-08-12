@@ -39,7 +39,7 @@ export const Fiat = () => {
                     onChange={handleChange}
                     value={value}
                     options={options}
-                    data-test="@settings/fiat-select"
+                    data-testid="@settings/fiat-select"
                 />
             </ActionColumn>
         </SettingsSectionItem>

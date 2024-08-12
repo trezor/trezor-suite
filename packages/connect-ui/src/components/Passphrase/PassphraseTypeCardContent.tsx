@@ -140,7 +140,7 @@ export const PassphraseTypeCardContent = ({
                             {/* Show passphrase input */}
                             <Description>
                                 <PassphraseInput
-                                    data-test="@passphrase/input"
+                                    data-testid="@passphrase/input"
                                     placeholder={intl.formatMessage({
                                         defaultMessage: 'Enter passphrase',
                                         id: 'TR_ENTER_PASSPHRASE',
@@ -175,7 +175,7 @@ export const PassphraseTypeCardContent = ({
                                                 }
                                                 setShowPassword(!showPassword);
                                             }}
-                                            data-test="@passphrase/show-toggle"
+                                            data-testid="@passphrase/show-toggle"
                                         />
                                     }
                                 />
@@ -195,7 +195,7 @@ export const PassphraseTypeCardContent = ({
                             {(singleColModal || hiddenWalletTouched) && (
                                 <motion.div {...motionAnimation.expand}>
                                     <ActionButton
-                                        data-test={`@passphrase/${
+                                        data-testid={`@passphrase/${
                                             type === 'hidden' ? 'hidden' : 'standard'
                                         }/submit-button`}
                                         isDisabled={isPassphraseEmpty || isPassphraseTooLong}

@@ -70,7 +70,7 @@ export const PassphraseTypeCardHeading = ({
             <Column justifyContent="center" flex="1">
                 <WalletTitle
                     $withMargin={type === 'hidden'}
-                    data-test={type === 'hidden' && '@tooltip/passphrase-tooltip'}
+                    data-testid={type === 'hidden' && '@tooltip/passphrase-tooltip'}
                 >
                     {type === 'hidden' ? (
                         <Tooltip

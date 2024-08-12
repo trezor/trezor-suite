@@ -87,7 +87,7 @@ interface TroubleshootingTipsProps {
     items: Item[];
     offerWebUsb?: boolean;
     opened?: boolean;
-    'data-test'?: string;
+    'data-testid'?: string;
 }
 
 export const TroubleshootingTips = ({
@@ -96,7 +96,7 @@ export const TroubleshootingTips = ({
     cta,
     offerWebUsb,
     opened,
-    'data-test': dataTest,
+    'data-testid': dataTest,
 }: TroubleshootingTipsProps) => {
     const { elevation } = useElevation();
 
@@ -125,14 +125,14 @@ export const TroubleshootingTips = ({
             heading={cta}
             iconLabel={label}
             defaultIsOpen={opened}
-            data-test={dataTest || '@onboarding/expand-troubleshooting-tips'}
+            data-testid={dataTest || '@onboarding/expand-troubleshooting-tips'}
         >
             {items.length > 0 && <Items>{memoizedItems}</Items>}
 
             {offerWebUsb && !isAndroid() && (
                 <StyledButton
                     variant="secondary"
-                    data-test="@onboarding/try-bridge-button"
+                    data-testid="@onboarding/try-bridge-button"
                     onClick={() => TrezorConnect.disableWebUSB()}
                 >
                     <Translation id="TR_DISABLE_WEBUSB_TRY_BRIDGE" />

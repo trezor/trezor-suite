@@ -31,7 +31,7 @@ export const DeviceCompromised = () => {
 
     return (
         <WelcomeLayout>
-            <Card data-test="@device-compromised">
+            <Card data-testid="@device-compromised">
                 <SecurityCheckFail />
             </Card>
         </WelcomeLayout>

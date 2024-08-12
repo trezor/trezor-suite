@@ -90,7 +90,7 @@ export const TransactionsGroup = ({
         <TransactionsGroupWrapper
             key={dateKey}
             onMouseEnter={() => setIsHovered(true)}
-            data-test={`@wallet/accounts/transaction-list/${isPending ? 'pending' : 'confirmed'}/group/${index}`}
+            data-testid={`@wallet/accounts/transaction-list/${isPending ? 'pending' : 'confirmed'}/group/${index}`}
             onMouseLeave={() => setIsHovered(false)}
             {...rest}
         >
