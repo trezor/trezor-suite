@@ -61,11 +61,30 @@ describe(checkFirmwareRevision.name, () => {
             expected: { success: false, error: 'revision-mismatch' },
         },
         {
-            it: 'fails when firmware version is not found locally, and also not in the online release',
+            it: 'passes when firmware version is not found locally, but found in the online release',
             httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_MOCK),
             params: createDevicePrams({
                 deviceRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
                 expectedRevision: undefined, // firmware not known by local releases.json file
+            }),
+            expected: { success: true },
+        },
+        {
+            it: 'fails when firmware version is not found locally, found in the online release, but does NOT match',
+            httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_MOCK),
+            params: createDevicePrams({
+                deviceRevision: '1234567890987654321',
+                expectedRevision: undefined, // firmware not known by local releases.json file
+            }),
+            expected: { success: false, error: 'revision-mismatch' },
+        },
+        {
+            it: 'fails when firmware version is not found locally, and also not in the online release',
+            httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_MOCK),
+            params: createDevicePrams({
+                deviceRevision: '1234567890987654321',
+                firmwareVersion: [2, 9, 9], // completely unrecognized version
+                expectedRevision: undefined,
             }),
             expected: { success: false, error: 'firmware-version-unknown' },
         },
