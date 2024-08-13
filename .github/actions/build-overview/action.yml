@@ -31,6 +31,7 @@ runs:
         aws-region: eu-central-1
 
     - name: use set-data.js to set data
+      shell: bash
       run: |
         echo "Setting data"
         echo $(node set-data.js)
