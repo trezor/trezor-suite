@@ -10,7 +10,7 @@ describe(calculateRevisionForDevice.name, () => {
         ).toBe('dd4671a5104952ef505d28d1f9e94d1484b4607a');
     });
 
-    it('shortens the hash for `version > 2.3.0` && `version <= 2.4.0` to 9 characters', () => {
+    it('shortens the hash for `version > 2.2.0` && `version <= 2.4.0` to 9 characters', () => {
         expect(
             calculateRevisionForDevice({
                 version: [2, 4, 0],
