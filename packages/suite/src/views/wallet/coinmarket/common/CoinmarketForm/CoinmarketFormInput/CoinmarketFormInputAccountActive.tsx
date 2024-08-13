@@ -28,13 +28,14 @@ import { CoinmarketFormOptionIcon } from 'src/views/wallet/coinmarket/common/Coi
 
 const CoinmarketFormInputAccountActive = ({ label }: CoinmarketFormInputDefaultProps) => {
     const {
+        type,
         form: {
             helpers: { onCryptoCurrencyChange },
         },
     } = useCoinmarketFormContext<CoinmarketTradeSellExchangeType>();
     const { elevation } = useElevation();
     const { control } = useCoinmarketFormContext();
-    const optionGroups = useCoinmarketBuildAccountGroups();
+    const optionGroups = useCoinmarketBuildAccountGroups(type);
 
     return (
         <>

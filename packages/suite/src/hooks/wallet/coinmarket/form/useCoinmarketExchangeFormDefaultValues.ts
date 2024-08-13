@@ -16,7 +16,7 @@ export const useCoinmarketExchangeFormDefaultValues = (
 ): CoinmarketExchangeFormDefaultValuesProps => {
     const localCurrency = useSelector(selectLocalCurrency);
     const defaultCurrency = useMemo(() => buildFiatOption(localCurrency), [localCurrency]);
-    const cryptoGroups = useCoinmarketBuildAccountGroups();
+    const cryptoGroups = useCoinmarketBuildAccountGroups('exchange');
     const cryptoOptions = cryptoGroups.flatMap(group => group.options);
     const defaultCrypto = useMemo(
         () => cryptoOptions.find(option => option.descriptor === account.descriptor),
