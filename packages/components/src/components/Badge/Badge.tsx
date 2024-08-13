@@ -5,7 +5,7 @@ import { Icon } from '@suite-common/icons/src/webComponents';
 import { borders, Color, CSSColor, spacings, spacingsPx, typography } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
 import type { UISize, UIVariant } from '../../config/types';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
 export const allowedBadgeFrameProps: FramePropsKeys[] = ['margin'];

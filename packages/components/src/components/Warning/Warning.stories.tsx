@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Warning as WarningComponent, WarningProps, variables, Row } from '../../index';
 import { allowedWarningFrameProps } from './Warning';
 import styled from 'styled-components';
-import { getFramePropsStory } from '../common/frameProps';
+import { getFramePropsStory } from '../../utils/frameProps';
 
 const Wrapper = styled.div`
     display: flex;

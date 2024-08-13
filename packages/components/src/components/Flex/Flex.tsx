@@ -1,6 +1,6 @@
 import { SpacingValues } from '@trezor/theme';
 import styled from 'styled-components';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../common/frameProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 
 export const allowedFlexFrameProps: FramePropsKeys[] = ['margin', 'width', 'height'];

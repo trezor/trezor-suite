@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { ConfirmOnDevice, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { Deferred } from '@trezor/utils';
 import {
     DeviceRootState,
@@ -21,6 +21,7 @@ import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
 import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
 import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
+import { ConfirmOnDevice } from '@trezor/product-components';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {

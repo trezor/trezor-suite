@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 import styled from 'styled-components';
 
 import { acquireDevice, selectDevice } from '@suite-common/wallet-core';
-import { ConfirmOnDevice, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import { CheckSeedStep, FirmwareCloseButton, FirmwareInstallation } from 'src/components/firmware';
@@ -10,6 +10,7 @@ import { Translation, Modal, PrerequisitesGuide } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
 import { TranslationKey } from '@suite-common/intl-types';
+import { ConfirmOnDevice } from '@trezor/product-components';
 
 const Wrapper = styled.div<{ $isWithTopPadding: boolean }>`
     display: flex;

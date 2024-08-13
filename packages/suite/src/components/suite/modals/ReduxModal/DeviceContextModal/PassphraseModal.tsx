@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { PassphraseTypeCard, Text } from '@trezor/components';
+import { Text } from '@trezor/components';
 import {
     selectIsDiscoveryAuthConfirmationRequired,
     onPassphraseSubmit,
@@ -18,6 +18,7 @@ import { PassphraseHeading } from './PassphraseHeading';
 import TrezorConnect from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 import styled from 'styled-components';
+import { PassphraseTypeCard } from '@trezor/product-components';
 
 const MarginContainer = styled.div`
     margin: 0 ${spacingsPx.sm};

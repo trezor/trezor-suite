@@ -10,7 +10,7 @@ const Wrapper = styled.div`
     color: ${({ theme }) => theme.textDefault};
 `;
 
-const StoryWrapper = (story: any) => (
+export const StoryWrapper = (story: any) => (
     <>
         <ThemeProvider theme={intermediaryTheme.light}>
             <Wrapper>{story.children}</Wrapper>
@@ -42,10 +42,8 @@ const Col = styled.div<StoryColumnProps>`
     }
 `;
 
-const StoryColumn = ({ minWidth, maxWidth, children }: StoryColumnProps) => (
+export const StoryColumn = ({ minWidth, maxWidth, children }: StoryColumnProps) => (
     <Col minWidth={minWidth || 250} maxWidth={maxWidth || 500}>
         {children}
     </Col>
 );
-
-export { StoryWrapper, StoryColumn };

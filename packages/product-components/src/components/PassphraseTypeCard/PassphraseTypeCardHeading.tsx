@@ -1,10 +1,8 @@
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import { FormattedMessage } from 'react-intl';
 import styled, { useTheme } from 'styled-components';
-import { Tooltip, TooltipProps } from '../Tooltip/Tooltip';
+import { Tooltip, TooltipProps, Icon, Column, Row } from '@trezor/components';
 import { WalletType } from './types';
-import { Icon } from '../assets/Icon/Icon';
-import { Column, Row } from '../Flex/Flex';
 import { ReactNode } from 'react';
 
 const IconWrapper = styled.div<{ $type: WalletType }>`

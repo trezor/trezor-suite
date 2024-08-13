@@ -1,0 +1,27 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "paths": {
+            "@trezor/theme": [
+                "./packages/theme/src/*"
+            ]
+        },
+        "plugins": [
+            { "name": "typescript-styled-plugin" }
+        ],
+        "outDir": "./libDev"
+    },
+    "include": [".", "**/*.json"],
+    "references": [
+        {
+            "path": "../../suite-common/validators"
+        },
+        { "path": "../components" },
+        { "path": "../connect" },
+        { "path": "../dom-utils" },
+        { "path": "../env-utils" },
+        { "path": "../react-utils" },
+        { "path": "../theme" },
+        { "path": "../utils" }
+    ]
+}

@@ -1,19 +1,22 @@
 import { isAndroid } from '@trezor/env-utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Card } from '../Card/Card';
-import { Column, Row } from '../Flex/Flex';
-import { PasswordStrengthIndicator } from '../PasswordStrengthIndicator/PasswordStrengthIndicator';
+import {
+    Card,
+    PasswordStrengthIndicator,
+    Column,
+    Row,
+    Icon,
+    Input,
+    Button,
+    motionAnimation,
+} from '@trezor/components';
 import styled, { useTheme } from 'styled-components';
-import { Input } from '../form/Input/Input';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { useKeyPress } from '@trezor/react-utils';
 import { ChangeEvent, MutableRefObject, ReactNode, RefObject } from 'react';
-import { Button } from '../buttons/Button/Button';
 import { WalletType } from './types';
 import { DOT } from './consts';
-import { Icon } from '../assets/Icon/Icon';
-import { motion as motionConfig } from '../../config';
 
 const PassphraseInput = styled(Input)`
     input {
@@ -187,7 +190,7 @@ export const PassphraseTypeCardContent = ({
                             {/* Submit button */}
                             {/* Visible in standalone modal for creating a passphrase wallet or after a click also in modal for selecting wallet type */}
                             {(singleColModal || hiddenWalletTouched) && (
-                                <motion.div {...motionConfig.motionAnimation.expand}>
+                                <motion.div {...motionAnimation.expand}>
                                     <ActionButton
                                         data-testid={`@passphrase/${
                                             type === 'hidden' ? 'hidden' : 'standard'

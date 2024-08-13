@@ -6,7 +6,7 @@ import {
     CheckboxProps,
     allowedCheckboxFrameProps,
 } from './Checkbox';
-import { getFramePropsStory } from '../../common/frameProps';
+import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta = {
     title: 'Form/Checkbox',

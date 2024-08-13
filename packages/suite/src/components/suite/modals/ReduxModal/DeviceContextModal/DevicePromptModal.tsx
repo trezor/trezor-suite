@@ -4,11 +4,7 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import TrezorConnect from '@trezor/connect';
-import {
-    ConfirmOnDevice,
-    Modal as TrezorModal,
-    ModalProps as TrezorModalProps,
-} from '@trezor/components';
+import { Modal as TrezorModal, ModalProps as TrezorModalProps } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -17,6 +13,7 @@ import { useDevice } from 'src/hooks/suite';
 import { useModalTarget } from 'src/support/suite/ModalContext';
 import { ModalEnvironment } from '../../ModalEnvironment';
 import { Modal } from '../../Modal/Modal';
+import { ConfirmOnDevice } from '@trezor/product-components';
 
 const StyledTrezorModal = styled(TrezorModal)`
     ${Modal.Header} {

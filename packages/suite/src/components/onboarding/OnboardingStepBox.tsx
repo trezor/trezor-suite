@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from '@trezor/connect';
-import { ConfirmOnDevice, Backdrop } from '@trezor/components';
+import { Backdrop } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useIntl } from 'react-intl';
 import messages from 'src/support/messages';
@@ -11,6 +11,7 @@ import {
 } from './CollapsibleOnboardingCard';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { spacingsPx, zIndices } from '@trezor/theme';
+import { ConfirmOnDevice } from '@trezor/product-components';
 
 const WrapperWrapper = styled.div`
     z-index: ${zIndices.onboardingForeground};

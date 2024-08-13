@@ -11096,6 +11096,37 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/product-components@workspace:*, @trezor/product-components@workspace:packages/product-components":
+  version: 0.0.0-use.local
+  resolution: "@trezor/product-components@workspace:packages/product-components"
+  dependencies:
+    "@storybook/addon-actions": "npm:^7.6.13"
+    "@storybook/addon-controls": "npm:^7.6.13"
+    "@storybook/addon-links": "npm:^7.6.13"
+    "@storybook/addon-viewport": "npm:^7.6.13"
+    "@storybook/addons": "npm:^7.6.13"
+    "@storybook/client-api": "npm:^7.6.13"
+    "@storybook/react": "npm:^7.6.13"
+    "@storybook/react-webpack5": "npm:^7.6.13"
+    "@suite-common/validators": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/dom-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/react-utils": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@types/react": "npm:18.2.79"
+    framer-motion: "npm:^11.0.3"
+    react: "npm:18.2.0"
+    react-intl: "npm:^6.6.8"
+    storybook: "npm:^7.6.13"
+    styled-components: "npm:^6.1.8"
+    stylelint: "npm:^16.2.1"
+    typescript-styled-plugin: "npm:^0.18.3"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/protobuf@workspace:*, @trezor/protobuf@workspace:^, @trezor/protobuf@workspace:packages/protobuf":
   version: 0.0.0-use.local
   resolution: "@trezor/protobuf@workspace:packages/protobuf"
@@ -11494,6 +11525,7 @@ __metadata:
     "@trezor/dom-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
+    "@trezor/product-components": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/suite-analytics": "workspace:*"

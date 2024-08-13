@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { TransientProps } from '../../utils/transientProps';
+import { TransientProps } from './transientProps';
 import { SpacingValues } from '@trezor/theme';
 
 type Margin = {

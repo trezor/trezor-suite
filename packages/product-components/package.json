@@ -1,0 +1,47 @@
+{
+    "name": "@trezor/product-components",
+    "version": "1.0.0",
+    "private": true,
+    "main": "src/index",
+    "author": "SatoshiLabs s.r.o.",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "sideEffects": false,
+    "scripts": {
+        "lint": "yarn lint:js && yarn lint:styles",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
+        "lint-fix": "npx eslint ./src --fix",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check:watch": "yarn type-check -- --watch",
+        "storybook": "storybook dev -p 9004 -c .storybook",
+        "storybook-build": "storybook build -c .storybook -o .build-storybook"
+    },
+    "dependencies": {
+        "@suite-common/validators": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/dom-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/react-utils": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "framer-motion": "^11.0.3",
+        "react": "18.2.0",
+        "react-intl": "^6.6.8",
+        "styled-components": "^6.1.8"
+    },
+    "devDependencies": {
+        "@storybook/addon-actions": "^7.6.13",
+        "@storybook/addon-controls": "^7.6.13",
+        "@storybook/addon-links": "^7.6.13",
+        "@storybook/addon-viewport": "^7.6.13",
+        "@storybook/addons": "^7.6.13",
+        "@storybook/client-api": "^7.6.13",
+        "@storybook/react": "^7.6.13",
+        "@storybook/react-webpack5": "^7.6.13",
+        "@types/react": "18.2.79",
+        "storybook": "^7.6.13",
+        "stylelint": "^16.2.1",
+        "typescript-styled-plugin": "^0.18.3"
+    }
+}

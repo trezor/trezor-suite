@@ -3,7 +3,7 @@ import styled, { css, keyframes } from 'styled-components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { borders, spacingsPx } from '@trezor/theme';
 
-import { ElevationUp } from '../ElevationContext/ElevationContext';
+import { ElevationUp } from '@trezor/components';
 import { ConfirmOnDeviceContent } from './ConfirmOnDeviceContent';
 
 enum AnimationDirection {

@@ -5,7 +5,7 @@ import animationStart from './animationData/refresh-spinner-start.json';
 import animationMiddle from './animationData/refresh-spinner-middle.json';
 import animationEnd from './animationData/refresh-spinner-end-success.json';
 import animationWarn from './animationData/refresh-spinner-end-warning.json';
-import { withFrameProps, FrameProps, FramePropsKeys } from '../../common/frameProps';
+import { withFrameProps, FrameProps, FramePropsKeys } from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
 
 export const allowedSpinnerFrameProps: FramePropsKeys[] = ['margin'];

@@ -149,6 +149,7 @@
         { "path": "packages/env-utils" },
         { "path": "packages/ipc-proxy" },
         { "path": "packages/node-utils" },
+        { "path": "packages/product-components" },
         { "path": "packages/protobuf" },
         { "path": "packages/protocol" },
         { "path": "packages/react-native-usb" },

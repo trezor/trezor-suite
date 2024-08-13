@@ -90,7 +90,7 @@
             "eslint --fix",
             "git add"
         ],
-        "packages/{suite,suite-web,suite-desktop-ui,connect-explorer,connect-popup,connect-ui,components}/**/*.{ts,tsx}": [
+        "packages/{suite,suite-web,suite-desktop-ui,connect-explorer,connect-popup,connect-ui,components,product-components}/**/*.{ts,tsx}": [
             "stylelint --fix",
             "git add"
         ]

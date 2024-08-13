@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Divider as DividerComponent, allowedDividerFrameProps } from './Divider';
 import styled from 'styled-components';
-import { getFramePropsStory } from '../common/frameProps';
+import { getFramePropsStory } from '../../utils/frameProps';
 
 const Container = styled.div`
     width: 200px;
