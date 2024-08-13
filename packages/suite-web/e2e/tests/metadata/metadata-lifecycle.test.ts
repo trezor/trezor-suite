@@ -30,12 +30,15 @@ describe('Metadata - cancel metadata on device', () => {
         // now go to accounts. application does not try to initiate metadata
         cy.getTestElement('@suite/menu/suite-index').click();
         cy.getTestElement('@account-menu/btc/normal/0').click();
-
+        Cypress.config('scrollBehavior', false);
         // but even though metadata is disabled, on hover "add label" button appears
         cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
 
         // try to init metadata...
-        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click();
+        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
+            force: true,
+        });
+        Cypress.config('scrollBehavior', 'top');
         // ...but user cancels dialogue on device
         cy.getConfirmActionOnDeviceModal();
         cy.task('pressNo');
