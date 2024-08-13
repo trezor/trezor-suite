@@ -102,12 +102,7 @@ export const NetworkSymbolSwitchItem = ({
             </View>
             <HStack justifyContent="space-between" spacing={12} flex={1} alignItems="center">
                 <Text variant="callout">{name}</Text>
-                <Switch
-                    onChange={handleEnabledChange}
-                    isChecked={isEnabled}
-                    colorChecked="backgroundPrimaryDefault"
-                    colorUnchecked="backgroundNeutralSubtleOnElevationNegative"
-                />
+                <Switch onChange={handleEnabledChange} isChecked={isEnabled} />
             </HStack>
         </Card>
     );
