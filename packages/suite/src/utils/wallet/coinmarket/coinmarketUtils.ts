@@ -84,6 +84,7 @@ export const symbolToInvityApiSymbol = (symbol?: string) => {
     return result ? result.invitySymbol : symbol;
 };
 
+/** @deprecated */
 export const getSendCryptoOptions = (
     account: Account,
     supportedSymbols: Set<CryptoSymbol>,
@@ -406,6 +407,8 @@ export const coinmarketBuildAccountOptions = ({
     deviceState,
     accounts,
     accountLabels,
+    tokenDefinitions,
+    supportedSymbols,
     defaultAccountLabelString,
 }: CoinmarketBuildAccountOptionsProps): CoinmarketAccountsOptionsGroupProps[] => {
     const accountsSorted = coinmarketGetSortedAccounts({
@@ -443,17 +446,36 @@ export const coinmarketBuildAccountOptions = ({
                 balance: formattedBalance ?? '',
             },
         ];
-
         // add crypto tokens to options
         if (tokens && tokens.length > 0) {
+            const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes(
+                'coin-definitions',
+            );
+            const coinDefinitions = tokenDefinitions?.[account.symbol]?.[DefinitionType.COIN];
+
             tokens.forEach(token => {
                 const { symbol, balance, contract } = token;
+
                 if (!symbol || !balance || balance === '0') {
                     return;
                 }
 
                 const tokenCryptoSymbol = tokenToCryptoSymbol(symbol, account.symbol);
+
                 if (!tokenCryptoSymbol) {
+                    return;
+                }
+
+                if (supportedSymbols && !supportedSymbols.has(tokenCryptoSymbol)) {
+                    return;
+                }
+
+                // exclude unknown tokens
+                if (
+                    hasCoinDefinitions &&
+                    coinDefinitions &&
+                    !isTokenDefinitionKnown(coinDefinitions.data, account.symbol, token.contract)
+                ) {
                     return;
                 }
 

@@ -350,6 +350,7 @@ describe('coinmarket utils', () => {
             FIXTURE_ACCOUNTS[0],
             FIXTURE_ACCOUNTS[1],
             FIXTURE_ACCOUNTS[2],
+            FIXTURE_ACCOUNTS[5],
         ]);
     });
 
@@ -387,6 +388,8 @@ describe('coinmarket utils', () => {
             accountLabels: {},
             defaultAccountLabelString,
             symbolsInfo,
+            tokenDefinitions: { eth: { coin: coinDefinitions } },
+            supportedSymbols: new Set(['BTC', 'LTC', 'ETH', 'USDC@ETH', 'MATIC', 'VEE@ETH']),
         });
 
         expect(sortedAccounts).toStrictEqual([
@@ -425,12 +428,24 @@ describe('coinmarket utils', () => {
                         value: 'ETH',
                     },
                     {
-                        balance: '2.76149',
-                        contractAddress: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-                        cryptoName: 'Tether',
+                        balance: '2230',
+                        contractAddress: '0x1234123412341234123412341234123412341236',
+                        cryptoName: null,
                         descriptor: 'descriptor3',
-                        label: 'USDT',
-                        value: 'USDT@ETH',
+                        label: 'VEE',
+                        value: 'VEE',
+                    },
+                ],
+            },
+            {
+                label,
+                options: [
+                    {
+                        balance: '250',
+                        cryptoName: null,
+                        descriptor: 'descriptor6',
+                        label: 'MATIC',
+                        value: 'MATIC',
                     },
                 ],
             },
