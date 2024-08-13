@@ -26,28 +26,33 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: eu-central-1
-
       - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
           cache: yarn
-
       - name: Install dependencies
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn workspaces focus @trezor/components
+          yarn workspaces focus @trezor/product-components
 
       - name: Build storybook
         env:
           ASSET_PREFIX: /components/develop
-          DESKTOP_APP_NAME: "Trezor-Suite"
         run: |
           yarn workspace @trezor/components storybook-build
-      # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
+      - name: Build product-components storybook
+        env:
+          ASSET_PREFIX: /product-components/develop
+        run: |
+          yarn workspace @trezor/product-components storybook-build
+
       - name: Upload suite storybook to dev.suite.sldev.cz
         env:
-          DEPLOY_PATH: s3://dev.suite.sldev.cz/components/develop
+          COMPONENTS_DEPLOY_PATH: s3://dev.suite.sldev.cz/components/develop
+          PRODUCT_COMPONENTS_DEPLOY_PATH: s3://dev.suite.sldev.cz/product-components/develop
         run: |
-          aws s3 sync --delete ./packages/components/.build-storybook ${DEPLOY_PATH}
+          aws s3 sync --delete ./packages/components/.build-storybook ${COMPONENTS_DEPLOY_PATH}
+          aws s3 sync --delete ./packages/product-components/.build-storybook ${PRODUCT_COMPONENTS_DEPLOY_PATH}
