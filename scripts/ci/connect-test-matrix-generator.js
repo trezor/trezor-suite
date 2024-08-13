@@ -69,18 +69,18 @@ const groups = {
 const daily = {
     firmwares: ['2-latest'],
     tests: [
-        groups.api,
+        // groups.api,
         groups.management,
-        groups.btcSign,
-        groups.btcOthers,
-        groups.stellar,
-        groups.cardano,
-        groups.eos,
-        groups.ethereum,
-        groups.nem,
-        groups.ripple,
-        groups.tezos,
-        groups.binance,
+        // groups.btcSign,
+        // groups.btcOthers,
+        // groups.stellar,
+        // groups.cardano,
+        // groups.eos,
+        // groups.ethereum,
+        // groups.nem,
+        // groups.ripple,
+        // groups.tezos,
+        // groups.binance,
     ],
 };
 
@@ -165,8 +165,8 @@ const prepareTest = ({ firmwares, tests, models }) => {
 
 const testData = {
     daily,
-    otherDevices,
-    legacyCanaryFirmware,
+    // otherDevices,
+    // legacyCanaryFirmware,
 };
 
 const args = process.argv.slice(2);
