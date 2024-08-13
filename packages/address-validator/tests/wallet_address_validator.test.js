@@ -1622,5 +1622,21 @@ describe('WAValidator.validate()', function () {
             invalid('grs1q49qls5kklryt95g5xq4p6msycpgjp8ramfc9jq', 'grs'),
                 invalid('tgrs1qqjd3qhncsxdyh5gt7hz4k6zzvfguslwxwgv23j', 'grs');
         });
+
+        it('should return true for correct solana addresses', function () {
+            valid('64duFXLEMcVaZpm4SRmtqEdSQ5LFht22hK1SLu2ayU9b', 'sol');
+            valid('DkMYphwx9Z9AdR5Y8M4md1H96TKxfyoAHxUYH56F4ij5', 'sol');
+            valid('CN2JT7qJ84aVUMtSGuNSte5ytP5eMeeHgTVzyBiHDxMr', 'sol');
+            valid('H22WwH3qSAbZ6fH1n9PzGso3vBwQUz7gmK827ijLTgJW', 'sol');
+        });
+
+        it('should return false for incorrect solana addresses', function () {
+            invalid('sol_123456', 'sol');
+            invalid('65udFxlkjm1xfyo', 'sol');
+            invalid(
+                'CN2JT7qJ84aVUMtSGuNSte5ytP5eMeeHgTVzyBiHDxMrH22WwH3qSAbZ6fH1n9PzGso3vBwQUz7gmK827ijLTgJW',
+                'sol',
+            );
+        });
     });
 });
