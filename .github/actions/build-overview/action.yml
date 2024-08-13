@@ -43,5 +43,5 @@ runs:
         echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
         mkdir -p tmp_build_directory/${{ inputs.dir }}
         echo "<html><head>build metadata</head><body><a href="./${{ inputs.dir}}">connect coverage</a></body></html>" > tmp_build_directory/index.html
-        cp -R ${{source_dir}}/* tmp_build_directory/${{inputs.dir}}
+        cp -R ${{ inputs.source_dir }}/* tmp_build_directory/${{inputs.dir}}
         aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
