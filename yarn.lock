@@ -20936,6 +20936,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-local-rules@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "eslint-plugin-local-rules@npm:3.0.2"
+  checksum: 10/6ec5a9e6d5a0a8f56ed22307761d1bc2bebee75ebfc9518e0eeed0d334c45c84713aff1969eefa5ac0fdeca63e427fee53b3912333caa9e70cc1f87e4c198f11
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-markdown@npm:^3.0.1":
   version: 3.0.1
   resolution: "eslint-plugin-markdown@npm:3.0.1"
@@ -39703,6 +39710,7 @@ __metadata:
     eslint-plugin-import: "npm:^2.29.1"
     eslint-plugin-jest: "npm:^27.6.3"
     eslint-plugin-jsx-a11y: "npm:^6.8.0"
+    eslint-plugin-local-rules: "npm:^3.0.2"
     eslint-plugin-react: "npm:^7.33.2"
     eslint-plugin-react-hooks: "npm:^4.6.0"
     jest: "npm:29.7.0"
