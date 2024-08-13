@@ -30,7 +30,12 @@ runs:
         role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
         aws-region: eu-central-1
 
-    - name: Upload data to dev server
+    - name: use set-data.js to set data
+      run: |
+        echo "Setting data"
+        echo $(node set-data.js)
+
+    - name: Upload data to dev server and refresh html
       shell: bash
       env:
         DEPLOY_PATH: s3://dev.suite.sldev.cz/meta/${{ steps.extract_branch.outputs.branch }}
