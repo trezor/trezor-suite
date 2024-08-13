@@ -14,7 +14,7 @@ describe('Coinmarket buy', () => {
                     let { href } = win.location;
                     // simulate redirect from partner back to Suite, prefix independent
                     href = href.replace(
-                        '/accounts/coinmarket/buy/offers#/btc/0',
+                        '/accounts/coinmarket/buy/confirm#/btc/0',
                         '/coinmarket-redirect#detail/btc/normal/0/mockedPaymentId3',
                     );
                     win.location.href = href;

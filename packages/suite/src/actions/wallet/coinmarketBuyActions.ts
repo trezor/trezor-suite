@@ -42,6 +42,7 @@ export type CoinmarketBuyAction =
           type: typeof COINMARKET_BUY.SAVE_QUOTES;
           quotes: BuyTrade[];
       }
+    | { type: typeof COINMARKET_BUY.SAVE_QUOTE; quote: BuyTrade | undefined }
     | { type: typeof COINMARKET_BUY.CLEAR_QUOTES }
     | {
           type: typeof COINMARKET_COMMON.SAVE_TRADE;
@@ -174,6 +175,11 @@ export const saveCachedAccountInfo = (
 export const saveQuotes = (quotes: BuyTrade[]): CoinmarketBuyAction => ({
     type: COINMARKET_BUY.SAVE_QUOTES,
     quotes,
+});
+
+export const saveSelectedQuote = (quote: BuyTrade | undefined): CoinmarketBuyAction => ({
+    type: COINMARKET_BUY.SAVE_QUOTE,
+    quote,
 });
 
 export const clearQuotes = (): CoinmarketBuyAction => ({
