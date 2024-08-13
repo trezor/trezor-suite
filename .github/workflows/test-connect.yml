@@ -133,21 +133,11 @@ jobs:
         with:
           name: coverage-combined
           path: ./packages/connect
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Deploy coverage to dev server
+        uses: ./.github/actions/build-overview
         with:
-          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
-          aws-region: eu-central-1
-      - name: Upload coverage to dev server
-        shell: bash
-        env:
-          DEPLOY_PATH: s3://dev.suite.sldev.cz/meta/${{ steps.extract_branch.outputs.branch }}
-        run: |
-          echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
-          mkdir -p tmp_build_directory/coverage
-          echo "<html><head>build metadata</head><body><a href="./coverage">connect coverage</a></body></html>" > tmp_build_directory/index.html
-          cp -R ./packages/connect/coverage/merged-report/* tmp_build_directory/coverage
-          aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
+          dir: coverage
+          source_dir: ./packages/connect/coverage/merged-report
 
   connect-legacy-canary-firmware:
     needs: [build, set-matrix]
