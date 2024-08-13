@@ -27,6 +27,7 @@ export const useCoinmarketNavigation = (account: Account) => {
         navigateToBuyForm: useNavigateToRouteName('wallet-coinmarket-buy'),
         navigateToBuyOffers: useNavigateToRouteName('wallet-coinmarket-buy-offers'),
         navigateToBuyDetail: useNavigateToRouteName('wallet-coinmarket-buy-detail'),
+        navigateToBuyOffer: useNavigateToRouteName('wallet-coinmarket-buy-confirm'),
 
         navigateToExchangeForm: useNavigateToRouteName('wallet-coinmarket-exchange'),
         navigateToExchangeOffers: useNavigateToRouteName('wallet-coinmarket-exchange-offers'),
@@ -34,5 +35,6 @@ export const useCoinmarketNavigation = (account: Account) => {
 
         navigateToSellForm: useNavigateToRouteName('wallet-coinmarket-sell'),
         navigateToSellOffers: useNavigateToRouteName('wallet-coinmarket-sell-offers'),
+        navigateToSellOffer: useNavigateToRouteName('wallet-coinmarket-sell-confirm'),
     };
 };

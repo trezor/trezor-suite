@@ -165,7 +165,7 @@ export const SellTransaction = ({ trade, providers, account }: SellTransactionPr
                 }),
             );
             dispatch(
-                goto('wallet-coinmarket-sell-offers', {
+                goto('wallet-coinmarket-sell-confirm', {
                     params: {
                         symbol: account.symbol,
                         accountIndex: account.index,

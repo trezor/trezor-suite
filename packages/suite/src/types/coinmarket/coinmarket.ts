@@ -58,6 +58,7 @@ export interface UseCoinmarketCommonReturnProps<T extends CoinmarketTradeType> {
     setSelectedQuote: (quote: CoinmarketTradeDetailMapProps[T] | undefined) => void;
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
+export type CoinmarketPageType = 'form' | 'offers' | 'confirm';
 export type UseCoinmarketFormProps = UseCoinmarketProps & {
     /**
      * Difference between form and offers is that on the offers page are used all data filled in the form
@@ -65,7 +66,7 @@ export type UseCoinmarketFormProps = UseCoinmarketProps & {
      *
      * default value is 'form'
      */
-    pageType?: 'form' | 'offers';
+    pageType?: CoinmarketPageType;
 };
 
 export type CoinmarketTradeBuyType = 'buy';

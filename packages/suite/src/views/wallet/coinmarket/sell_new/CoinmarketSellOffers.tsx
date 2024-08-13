@@ -5,7 +5,6 @@ import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinm
 import { useCoinmarketSellForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellForm';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import CoinmarketOffers from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffers';
-import { CoinmarketSelectedOffer } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOffer';
 import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
 
 const CoinmarketSellOffersComponent = (props: UseCoinmarketProps) => {
@@ -13,13 +12,12 @@ const CoinmarketSellOffersComponent = (props: UseCoinmarketProps) => {
         ...props,
         pageType: 'offers',
     });
-    const { selectedQuote } = coinmarketSellFormContextValues;
 
     // CoinmarketOffersContext.Provider is temporary FIX
     return (
         <CoinmarketFormContext.Provider value={coinmarketSellFormContextValues}>
             <CoinmarketOffersContext.Provider value={coinmarketSellFormContextValues}>
-                {!selectedQuote ? <CoinmarketOffers /> : <CoinmarketSelectedOffer />}
+                <CoinmarketOffers />
                 <CoinmarketFooter />
             </CoinmarketOffersContext.Provider>
         </CoinmarketFormContext.Provider>

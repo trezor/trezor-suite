@@ -48,26 +48,18 @@ const useCoinmarketBuyForm = ({
     pageType = 'form',
 }: UseCoinmarketFormProps): CoinmarketBuyFormContextProps => {
     const type = 'buy';
-    const isPageOffers = pageType === 'offers';
+    const isNotFormPage = pageType !== 'form';
     const dispatch = useDispatch();
-    const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest } = useSelector(
-        state => state.wallet.coinmarket.buy,
-    );
-    const {
-        callInProgress,
-        account,
-        selectedQuote,
-        timer,
-        device,
-        setCallInProgress,
-        setSelectedQuote,
-        checkQuotesTimer,
-    } = useCoinmarketCommonOffers<CoinmarketTradeBuyType>({ selectedAccount, type });
+    const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest, selectedQuote } =
+        useSelector(state => state.wallet.coinmarket.buy);
+    const { callInProgress, account, timer, device, setCallInProgress, checkQuotesTimer } =
+        useCoinmarketCommonOffers<CoinmarketTradeBuyType>({ selectedAccount, type });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
         useCoinmarketPaymentMethod<CoinmarketTradeBuyType>();
     const {
         saveTrade,
         saveQuotes,
+        saveSelectedQuote,
         setIsFromRedirect,
         openCoinmarketBuyConfirmModal,
         addNotification,
@@ -81,6 +73,7 @@ const useCoinmarketBuyForm = ({
     } = useActions({
         saveTrade: coinmarketBuyActions.saveTrade,
         saveQuotes: coinmarketBuyActions.saveQuotes,
+        saveSelectedQuote: coinmarketBuyActions.saveSelectedQuote,
         setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
         openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
         addNotification: notificationsActions.addToast,
@@ -92,12 +85,13 @@ const useCoinmarketBuyForm = ({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
     });
-    const { navigateToBuyForm, navigateToBuyOffers } = useCoinmarketNavigation(account);
+    const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyOffer } =
+        useCoinmarketNavigation(account);
 
     // states
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
-        isPageOffers ? quotes : undefined,
+        isNotFormPage ? quotes : undefined,
     );
     const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -131,14 +125,14 @@ const useCoinmarketBuyForm = ({
           }
         : null;
 
-    const isDraft = !!draftUpdated || !!isPageOffers;
+    const isDraft = !!draftUpdated || !!isNotFormPage;
     const methods = useForm<CoinmarketBuyFormProps>({
         mode: 'onChange',
         defaultValues: isDraft && draftUpdated ? draftUpdated : defaultValues,
     });
     const { register, control, formState, reset, setValue, handleSubmit } = methods;
     const values = useWatch<CoinmarketBuyFormProps>({ control });
-    const previousValues = useRef<typeof values | null>(isPageOffers ? draftUpdated : null);
+    const previousValues = useRef<typeof values | null>(isNotFormPage ? draftUpdated : null);
 
     // form states
     const formIsValid = Object.keys(formState.errors).length === 0;
@@ -327,12 +321,14 @@ const useCoinmarketBuyForm = ({
                         });
                     }
                 } else {
-                    setSelectedQuote(quote);
+                    saveSelectedQuote(quote);
                     dispatch({
                         type: SET_MODAL_CRYPTO_CURRENCY,
                         modalCryptoSymbol: quote.receiveCurrency,
                     });
                     timer.stop();
+
+                    navigateToBuyOffer();
                 }
             }
         }
@@ -405,7 +401,7 @@ const useCoinmarketBuyForm = ({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, handleChange, handleSubmit, isPageOffers]);
+    }, [previousValues, values, handleChange, handleSubmit, isNotFormPage]);
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
