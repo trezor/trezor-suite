@@ -1,5 +1,9 @@
 name: "[Test] connect core e2e"
 
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
 # run only if there are changes in connect or related libs paths
 on:
   schedule:
