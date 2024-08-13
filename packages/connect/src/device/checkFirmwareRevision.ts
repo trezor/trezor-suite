@@ -1,3 +1,4 @@
+import { isEqual } from '@trezor/utils/src/versionUtils';
 import { PROTO } from '../constants';
 import { downloadReleasesMetadata } from '../data/downloadReleasesMetadata';
 import { FirmwareRelease, VersionArray } from '../types';
@@ -15,7 +16,7 @@ const getOnlineReleaseMetadata = async ({
 }: GetOnlineReleaseMetadataParams): Promise<FirmwareRelease | undefined> => {
     const onlineReleases = await downloadReleasesMetadata({ internal_model: internalModel });
 
-    return onlineReleases.find(onlineRelease => onlineRelease.version === firmwareVersion);
+    return onlineReleases.find(onlineRelease => isEqual(onlineRelease.version, firmwareVersion));
 };
 
 const failFirmwareRevisionCheck = (
