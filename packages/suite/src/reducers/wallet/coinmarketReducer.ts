@@ -50,6 +50,7 @@ interface Buy extends CoinmarketTradeCommonProps {
     isFromRedirect: boolean;
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[] | undefined;
+    selectedQuote: BuyTrade | undefined;
     cachedAccountInfo: {
         accountType?: Account['accountType'];
         index?: Account['index'];
@@ -71,6 +72,7 @@ interface Sell extends CoinmarketTradeCommonProps {
     sellInfo?: SellInfo;
     quotesRequest?: SellFiatTradeQuoteRequest;
     quotes: SellFiatTrade[] | undefined;
+    selectedQuote: SellFiatTrade | undefined;
     transactionId?: string;
     isFromRedirect: boolean;
     coinmarketAccount?: Account;
@@ -98,6 +100,7 @@ export const initialState: State = {
         isFromRedirect: false,
         buyInfo: undefined,
         quotesRequest: undefined,
+        selectedQuote: undefined,
         cachedAccountInfo: {
             accountType: undefined,
             index: undefined,
@@ -119,6 +122,7 @@ export const initialState: State = {
         sellInfo: undefined,
         quotesRequest: undefined,
         quotes: [],
+        selectedQuote: undefined,
         transactionId: undefined,
         isFromRedirect: false,
         coinmarketAccount: undefined,
@@ -159,6 +163,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_BUY.SAVE_QUOTES:
                 draft.buy.quotes = action.quotes;
+                break;
+            case COINMARKET_BUY.SAVE_QUOTE:
+                draft.buy.selectedQuote = action.quote;
                 break;
             case COINMARKET_BUY.CLEAR_QUOTES:
                 draft.buy.quotes = undefined;
@@ -217,6 +224,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SELL.SAVE_QUOTES:
                 draft.sell.quotes = action.quotes;
+                break;
+            case COINMARKET_SELL.SAVE_QUOTE:
+                draft.sell.selectedQuote = action.quote;
                 break;
             case COINMARKET_SELL.CLEAR_QUOTES:
                 draft.sell.quotes = undefined;

@@ -58,6 +58,11 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
     'wallet-coinmarket-buy-offers': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/buy/offers'),
     ),
+    'wallet-coinmarket-buy-confirm': lazy(() =>
+        import(
+            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/buy/CoinmarketBuyConfirm'
+        ).then(({ CoinmarketBuyConfirm }) => ({ default: CoinmarketBuyConfirm })),
+    ),
     'wallet-coinmarket-sell': lazy(() =>
         import(
             /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell_new/CoinmarketSellForm'
@@ -73,6 +78,11 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
         import(
             /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell_new/CoinmarketSellOffers'
         ).then(({ CoinmarketSellOffers }) => ({ default: CoinmarketSellOffers })),
+    ),
+    'wallet-coinmarket-sell-confirm': lazy(() =>
+        import(
+            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell_new/CoinmarketSellConfirm'
+        ).then(({ CoinmarketSellConfirm }) => ({ default: CoinmarketSellConfirm })),
     ),
     'wallet-coinmarket-exchange': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/exchange'),

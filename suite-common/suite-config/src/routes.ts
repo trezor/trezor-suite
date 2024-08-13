@@ -222,6 +222,19 @@ export const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-coinmarket-buy-confirm',
+        pattern: '/accounts/coinmarket/buy/confirm',
+        app: 'wallet',
+        params: walletParams,
+        exact: true,
+    },
+    {
+        name: 'wallet-coinmarket-sell-confirm',
+        pattern: '/accounts/coinmarket/sell/confirm',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-coinmarket-redirect',
         pattern: '/coinmarket-redirect',
         app: 'wallet',

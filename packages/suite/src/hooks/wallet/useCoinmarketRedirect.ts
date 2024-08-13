@@ -73,7 +73,7 @@ export const useCoinmarketRedirect = () => {
         dispatch(coinmarketBuyActions.saveQuoteRequest(request));
         dispatch(coinmarketBuyActions.setIsFromRedirect(true));
         dispatch(
-            goto('wallet-coinmarket-buy-offers', {
+            goto('wallet-coinmarket-buy-confirm', {
                 params: { symbol, accountIndex: index, accountType },
             }),
         );
@@ -120,7 +120,7 @@ export const useCoinmarketRedirect = () => {
         dispatch(saveComposedTransactionInfo({ selectedFee: selectedFee || 'normal', composed }));
         dispatch(coinmarketSellActions.saveTransactionId(orderId));
         dispatch(
-            goto('wallet-coinmarket-sell-offers', {
+            goto('wallet-coinmarket-sell-confirm', {
                 params: { symbol, accountIndex: index, accountType },
             }),
         );
