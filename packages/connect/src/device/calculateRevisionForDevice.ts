@@ -14,7 +14,7 @@ export const calculateRevisionForDevice = ({
         return commitRevision;
     }
 
-    if (isNewer(version, '2.3.0')) {
+    if (isNewer(version, '2.2.0')) {
         return commitRevision.slice(0, 9);
     }
 
