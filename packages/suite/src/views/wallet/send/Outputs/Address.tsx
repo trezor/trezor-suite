@@ -8,6 +8,8 @@ import * as URLS from '@trezor/urls';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
+import TrezorConnect from '@trezor/connect';
+import { useSelector } from 'src/hooks/suite';
 import {
     isAddressValid,
     isAddressDeprecated,
@@ -16,7 +18,10 @@ import {
     getInputState,
 } from '@suite-common/wallet-utils';
 
-import { AddressLabeling, Translation, MetadataLabeling } from 'src/components/suite';
+import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
+import { Link } from '@trezor/components';
+import { Translation } from '../../../../components/suite/Translation';
+
 import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -24,7 +29,10 @@ import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
+import { Row } from '@trezor/components';
 
+import { HELP_CENTER_EVM_ADDRESS_CHECKSUM } from '@trezor/urls';
+import { spacings } from '@trezor/theme';
 const Container = styled.div`
     position: relative;
 `;
@@ -50,6 +58,7 @@ interface AddressProps {
 export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [addressDeprecatedUrl, setAddressDeprecatedUrl] =
         useState<ReturnType<typeof isAddressDeprecated>>(undefined);
+    const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
     const dispatch = useDispatch();
     const { device } = useDevice();
     const {
@@ -65,7 +74,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         setDraftSaveRequest,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
@@ -80,7 +88,17 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const address = watch(inputName);
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
-    const inputState = getInputState(addressError);
+    const isOnline = useSelector(state => state.suite.online);
+    const getInputErrorState = () => {
+        if (hasAddressChecksummed) {
+            return 'primary';
+        }
+        if (addressError) {
+            return getInputState(addressError);
+        }
+
+        return undefined;
+    };
 
     const handleQrClick = useCallback(async () => {
         const uri = await dispatch(scanOrRequestSendFormThunk()).unwrap();
@@ -140,10 +158,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
             case 'checksum':
                 return {
-                    onClick: () =>
+                    onClick: () => {
                         setValue(inputName, toChecksumAddress(address), {
                             shouldValidate: true,
-                        }),
+                        });
+
+                        setHasAddressChecksummed(true);
+                    },
                     text: translationString('TR_CONVERT_TO_CHECKSUM_ADDRESS'),
                 };
 
@@ -161,7 +182,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     };
 
     const { ref: inputRef, ...inputField } = register(inputName, {
-        onChange: () => composeTransaction(amountInputName),
+        onChange: () => {
+            composeTransaction(amountInputName);
+            setHasAddressChecksummed(false);
+        },
         required: translationString('RECIPIENT_IS_NOT_SET'),
         validate: {
             deprecated: (value: string) => {
@@ -194,9 +218,37 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
             },
             // eth addresses are valid without checksum but Trezor displays them as checksummed
-            checksum: (value: string) => {
-                if (networkType === 'ethereum' && !checkAddressCheckSum(value)) {
-                    return translationString('RECIPIENT_IS_NOT_VALID');
+            checksum: async (address: string) => {
+                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
+                    if (isOnline) {
+                        const params = {
+                            descriptor: address,
+                            coin: symbol,
+                        };
+                        // 1. If the address is used but unchecksummed, then Suite will automatically
+                        // convert the address to the correct checksummed form and inform the user as described in the OP.
+                        const result = await TrezorConnect.getAccountInfo(params);
+
+                        if (result.success) {
+                            const hasHistory = result.payload.history.total !== 0;
+                            if (hasHistory) {
+                                setValue(inputName, toChecksumAddress(address), {
+                                    shouldValidate: true,
+                                });
+                                setHasAddressChecksummed(true);
+
+                                return;
+                            }
+
+                            // 2. If the address is not checksummed at all and not found in blockbook.
+                            // offer to checksum it with a button
+                            if (!hasHistory && address === address.toLowerCase()) {
+                                return translationString('TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED');
+                            }
+                        }
+                    }
+
+                    return translationString('TR_ETH_ADDRESS_CANT_VERIFY_HISTORY');
                 }
             },
             rippleToSelf: (value: string) => {
@@ -218,10 +270,49 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     });
     const addressBottomText = isAddressWithLabel ? addressLabelComponent : null;
 
+    const getBottomText = () => {
+        if (hasAddressChecksummed) {
+            return (
+                <Row width="100%" justifyContent="flex-start" gap={spacings.xs}>
+                    <Translation
+                        id="TR_CHECKSUM_CONVERSION_INFO"
+                        values={{
+                            a: chunks => (
+                                <Link
+                                    href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}
+                                    variant="nostyle"
+                                    icon="EXTERNAL_LINK"
+                                    type="label"
+                                >
+                                    {chunks}
+                                </Link>
+                            ),
+                        }}
+                    />
+                </Row>
+            );
+        }
+        if (addressError) {
+            return (
+                <InputError message={addressError.message} button={getValidationButtonProps()} />
+            );
+        }
+
+        return addressBottomText;
+    };
+
+    const getBottomTextIcon = () => {
+        if (hasAddressChecksummed) {
+            return 'check';
+        }
+
+        return undefined;
+    };
+
     return (
         <Container>
             <Input
-                inputState={inputState}
+                inputState={getInputErrorState()}
                 innerAddon={
                     metadataEnabled && broadcastEnabled ? (
                         <MetadataLabelingWrapper>
@@ -283,16 +374,8 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         />
                     ) : undefined
                 }
-                bottomText={
-                    addressError ? (
-                        <InputError
-                            message={addressError.message}
-                            button={getValidationButtonProps()}
-                        />
-                    ) : (
-                        addressBottomText
-                    )
-                }
+                bottomText={getBottomText()}
+                bottomTextIcon={getBottomTextIcon()}
                 data-testid={inputName}
                 defaultValue={addressValue}
                 maxLength={formInputsMaxLength.address}

@@ -16,6 +16,7 @@ import { InputState, InputSize } from '../inputTypes';
 import { TopAddons } from '../TopAddons';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { UIHorizontalAlignment } from '../../../config/types';
+import { IconName } from '@suite-common/icons';
 
 const Wrapper = styled.div<{ $width?: number; $hasBottomPadding: boolean }>`
     display: inline-flex;
@@ -90,6 +91,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
      * @description pass `null` if bottom text can be `undefined`
      */
     bottomText?: ReactNode;
+    bottomTextIcon?: IconName;
     isDisabled?: boolean;
     size?: InputSize;
     className?: string;
@@ -115,6 +117,7 @@ const Input = ({
     innerAddon,
     innerAddonAlign = 'right',
     bottomText,
+    bottomTextIcon,
     size = 'large',
     isDisabled,
     'data-testid': dataTest,
@@ -203,7 +206,7 @@ const Input = ({
             </InputWrapper>
 
             {bottomText && (
-                <BottomText inputState={inputState} isDisabled={isDisabled}>
+                <BottomText inputState={inputState} isDisabled={isDisabled} icon={bottomTextIcon}>
                     {bottomText}
                 </BottomText>
             )}

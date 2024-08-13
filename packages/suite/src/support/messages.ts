@@ -2181,6 +2181,10 @@ export default defineMessages({
         description: 'Placeholder in seed input asking user to pay attention to his device',
         id: 'TR_CHECK_YOUR_DEVICE',
     },
+    TR_CHECKSUM_CONVERSION_INFO: {
+        defaultMessage: 'Converted to checksum. <a>Learn more</a>',
+        id: 'TR_CHECKSUM_CONVERSION_INFO',
+    },
     TR_CLEAR_ALL: {
         defaultMessage: 'Clear all',
         description: 'Clear form button',
@@ -2351,6 +2355,16 @@ export default defineMessages({
     TR_EDIT: {
         defaultMessage: 'Edit',
         id: 'TR_EDIT',
+    },
+    TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED: {
+        defaultMessage:
+            'Address has no transaction history and is not checksummed. Please verify it is correct.',
+        id: 'TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED',
+    },
+    TR_ETH_ADDRESS_CANT_VERIFY_HISTORY: {
+        defaultMessage:
+            'Can not verify address history. Please verify the addrress is correct yourself.',
+        id: 'TR_ETH_ADDRESS_CANT_VERIFY_HISTORY',
     },
     TR_NEEDS_ATTENTION_BOOTLOADER: {
         defaultMessage: 'Trezor is in Bootloader mode.',
@@ -5753,7 +5767,7 @@ export default defineMessages({
         id: 'TR_CONVERT_TO_LOWERCASE',
     },
     TR_CONVERT_TO_CHECKSUM_ADDRESS: {
-        defaultMessage: 'Convert to checksum address',
+        defaultMessage: 'Convert to checksum',
         id: 'TR_CONVERT_TO_CHECKSUM_ADDRESS',
     },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {

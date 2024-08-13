@@ -627,7 +627,7 @@
   "TR_CONTRACT": "Contract",
   "TR_CONTRACT_ADDRESS": "Contract address:",
   "TR_CONTRACT_TRANSACTION": "Contract transaction",
-  "TR_CONVERT_TO_CHECKSUM_ADDRESS": "Convert to checksum address",
+  "TR_CONVERT_TO_CHECKSUM_ADDRESS": "Convert to checksum",
   "TR_CONVERT_TO_LOWERCASE": "Convert to lowercase",
   "TR_COPY_ADDRESS_CONTRACT": "Never send funds to a contract address.",
   "TR_COPY_ADDRESS_FINGERPRINT": "Never send funds to a fingerprint address.",

@@ -89,6 +89,7 @@ const Link = ({
                 e.stopPropagation();
                 onClick?.(e);
             }}
+            $type={type}
             $variant={variant}
             className={className}
         >
