@@ -78,12 +78,31 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         descriptor: 'descriptor3',
         symbol: 'eth',
         tokens: [
+            // unsupported token
             {
                 balance: '2.76149',
-                contract: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                contract: '0x1234123412341234123412341234123412341236',
                 decimals: 6,
                 name: 'Tether USD',
                 symbol: 'usdt',
+                type: 'ERC20',
+            },
+            // unknown token
+            {
+                balance: '2230',
+                contract: '0xdAC17F958D2ee523a2206206994597C13D831ec',
+                decimals: 6,
+                name: 'USDC',
+                symbol: 'usdc',
+                type: 'ERC20',
+            },
+            // supported and known token
+            {
+                balance: '2230',
+                contract: '0x1234123412341234123412341234123412341236',
+                decimals: 6,
+                name: 'VeChain',
+                symbol: 'VEE',
                 type: 'ERC20',
             },
         ],
@@ -102,7 +121,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         tokens: [
             {
                 balance: '2.76149',
-                contract: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                contract: '0x1234123412341234123412341234123412341235',
                 decimals: 6,
                 name: 'Tether USD',
                 symbol: 'usdt',
@@ -110,5 +129,22 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
             },
         ],
         descriptor: 'descriptor5',
+    },
+    {
+        deviceState: 'deviceState',
+        formattedBalance: '250',
+        symbol: 'matic',
+        tokens: [
+            // unsupported token
+            {
+                balance: '2.76149',
+                contract: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                decimals: 6,
+                name: 'USDC',
+                symbol: 'usdc',
+                type: 'ERC20',
+            },
+        ],
+        descriptor: 'descriptor6',
     },
 ];
