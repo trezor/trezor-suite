@@ -226,6 +226,11 @@ export const selectIsLoadingAccountTransactions = (
 export const selectTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.transactions;
 
+export const selectAreAllTransactionsLoaded = (
+    state: TransactionsRootState,
+    accountKey: AccountKey | null,
+) => state.wallet.transactions.fetchStatusDetail?.[accountKey ?? '']?.areAllTransactionsLoaded;
+
 /**
  * The list is not sorted here because it may contain null values as placeholders
  * for transactions that have not been fetched yet. (This affects pagination.)

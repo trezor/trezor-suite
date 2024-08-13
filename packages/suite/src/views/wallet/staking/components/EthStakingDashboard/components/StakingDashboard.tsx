@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Divider, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { StakingCard } from './StakingCard';
@@ -11,6 +11,7 @@ import { PayoutCard } from './PayoutCard';
 import { ClaimCard } from './claim/ClaimCard';
 import { Transactions } from './Transactions';
 import {
+    fetchAllTransactionsForAccountThunk,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
     selectPoolStatsApyData,
@@ -19,7 +20,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/stake';
 import { InstantStakeBanner } from './InstantStakeBanner';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const FlexCol = styled.div`
     display: flex;
@@ -48,6 +49,7 @@ const FlexRow = styled.div`
 
 export const StakingDashboard = () => {
     const account = useSelector(selectSelectedAccount);
+    const accountKey = account?.key ?? '';
 
     const { data, isLoading } =
         useSelector(state => selectValidatorsQueue(state, account?.symbol)) || {};
@@ -57,12 +59,21 @@ export const StakingDashboard = () => {
         selectPoolStatsNextRewardPayout(state, account?.symbol),
     );
 
-    const stakeTxs = useSelector(state =>
-        selectAccountStakeTransactions(state, account?.key ?? ''),
-    );
-    const unstakeTxs = useSelector(state =>
-        selectAccountUnstakeTransactions(state, account?.key ?? ''),
-    );
+    const stakeTxs = useSelector(state => selectAccountStakeTransactions(state, accountKey));
+    const unstakeTxs = useSelector(state => selectAccountUnstakeTransactions(state, accountKey));
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (accountKey) {
+            dispatch(
+                fetchAllTransactionsForAccountThunk({
+                    accountKey,
+                    noLoading: true,
+                }),
+            );
+        }
+    }, [account, accountKey, dispatch]);
 
     const txs = useMemo(() => [...stakeTxs, ...unstakeTxs], [stakeTxs, unstakeTxs]);
 
