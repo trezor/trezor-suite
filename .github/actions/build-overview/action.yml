@@ -41,7 +41,7 @@ runs:
       run: |
         echo "Setting data"
         ls -la
-        echo "data=$(node ./scripts/ci/build-overview/set-data.js)" >> $GITHUB_OUTPUT
+        echo "data=$(node ../scripts/ci/build-overview/set-data.js)" >> $GITHUB_OUTPUT
 
     - name: Upload data to dev server and refresh html
       shell: bash
