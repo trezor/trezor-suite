@@ -1,11 +1,12 @@
-import styled from 'styled-components';
-import { Badge, Button, Card } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Badge, Button, Card, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { spacingsPx } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
     isCoinmarketBuyOffers,
+    isCoinmarketExchangeOffers,
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import {
@@ -14,13 +15,15 @@ import {
     getSelectQuoteTyped,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { BuyTrade, SellFiatTrade } from 'invity-api';
+import { SellFiatTrade } from 'invity-api';
+import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
+import { CoinmarketFeaturedOffersAmounts } from './CoinmarketFeaturedOffersAmounts';
+import { CoinmarketFeaturedOffersPaymentInfo } from './CoinmarketFeaturedOffersPaymentInfo';
 import {
-    CoinmarketBuyFormContextProps,
-    CoinmarketSellFormContextProps,
-} from 'src/types/coinmarket/coinmarketForm';
-import CoinmarketFeaturedOffersAmounts from './CoinmarketFeaturedOffersAmounts';
-import CoinmarketFeaturedOffersPaymentInfo from './CoinmarketFeaturedOffersPaymentInfo';
+    CoinmarketTradeDetailBuySellType,
+    CoinmarketTradeDetailType,
+    CoinmarketTradeType,
+} from 'src/types/coinmarket/coinmarket';
 
 const Offer = styled.div`
     display: flex;
@@ -45,6 +48,11 @@ const OfferColumn = styled.div`
 const OfferColumn1 = styled(OfferColumn)`
     width: 50%;
     justify-content: space-between;
+    gap: ${spacingsPx.sm};
+
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
+        width: 100%;
+    }
 `;
 
 const OfferColumn2 = styled(OfferColumn)`
@@ -63,55 +71,35 @@ const OfferBadgeWrap = styled.div`
     align-items: center;
     width: 100%;
     flex-wrap: wrap;
+    gap: ${spacingsPx.xs};
 `;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const OfferBadge = styled(Badge)`
-    margin-right: ${spacingsPx.xs};
-    margin-bottom: ${spacingsPx.xs};
-`;
-
-const OfferBadgeInfo = styled.div`
-    ${typography.label};
-    margin-bottom: ${spacingsPx.xs};
-    padding: ${spacingsPx.xxxs} 0;
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    width: 168px;
-
-    ${SCREEN_QUERY.BELOW_LAPTOP} {
-        width: 100%;
-    }
-`;
-
-export type BuySellQuote = BuyTrade | SellFiatTrade;
-export type BuySellContext = CoinmarketBuyFormContextProps | CoinmarketSellFormContextProps;
 
 interface CoinmarketOffersItemProps {
-    quote: BuySellQuote;
-    context: BuySellContext;
+    quote: CoinmarketTradeDetailType;
+    context: CoinmarketFormContextValues<CoinmarketTradeType>;
     isBestRate: boolean;
 }
 
-const actionButtonText = (context: BuySellContext, quote: BuySellQuote) => {
-    if (
-        isCoinmarketSellOffers(context) &&
-        context.needToRegisterOrVerifyBankAccount(quote as SellFiatTrade)
-    ) {
-        return <Translation id="TR_SELL_REGISTER" />;
-    }
+const actionButtonText = (
+    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+    quote: CoinmarketTradeDetailType,
+) => {
     if (isCoinmarketBuyOffers(context)) {
         return <Translation id="TR_COINMARKET_FEATURED_OFFER_BUY" />;
     }
     if (isCoinmarketSellOffers(context)) {
+        if (context.needToRegisterOrVerifyBankAccount(quote as SellFiatTrade))
+            return <Translation id="TR_SELL_REGISTER" />;
+
         return <Translation id="TR_COINMARKET_FEATURED_OFFER_SELL" />;
+    }
+    if (isCoinmarketExchangeOffers(context)) {
+        return <Translation id="TR_COINMARKET_FEATURED_OFFER_EXCHANGE" />;
     }
 };
 
-const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffersItemProps) => {
+export const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffersItemProps) => {
+    const theme = useTheme();
     const { callInProgress, type } = context;
     const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
@@ -121,6 +109,56 @@ const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffersItemPr
     if (!cryptoAmountProps) return null;
 
     return (
+        <OfferWrap>
+            <Card>
+                <Offer>
+                    <OfferColumn1>
+                        <OfferBadgeWrap>
+                            {tag && <Badge variant="tertiary">{tag}</Badge>}
+                            {infoNote && (
+                                <Text typographyStyle="label" color={theme.textSubdued}>
+                                    {infoNote}
+                                </Text>
+                            )}
+                        </OfferBadgeWrap>
+                        <CoinmarketFeaturedOffersAmounts quote={quote} />
+                    </OfferColumn1>
+                    <OfferColumn2>
+                        <CoinmarketUtilsProvider exchange={quote.exchange} providers={providers} />
+                        {!isCoinmarketExchangeOffers(context) && (
+                            <CoinmarketFeaturedOffersPaymentInfo
+                                quote={quote as CoinmarketTradeDetailBuySellType}
+                                type={type}
+                            />
+                        )}
+                    </OfferColumn2>
+                    <OfferColumn3>
+                        <ButtonWrapper>
+                            {quote.status === 'LOGIN_REQUEST' ? (
+                                <Button
+                                    variant="tertiary"
+                                    isFullWidth
+                                    onClick={() => selectQuote(quote)}
+                                >
+                                    <Translation id="TR_LOGIN_PROCEED" />
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="tertiary"
+                                    isFullWidth
+                                    isLoading={callInProgress}
+                                    isDisabled={!!quote.error || callInProgress}
+                                    onClick={() => selectQuote(quote)}
+                                    data-testid="@coinmarket/featured-offers/get-this-deal-button"
+                                >
+                                    {actionButtonText(context, quote)}
+                                </Button>
+                            )}
+                        </ButtonWrapper>
+                    </OfferColumn3>
+                </Offer>
+            </Card>
+        </OfferWrap>
         <Card margin={{ top: spacings.md }} minHeight={100}>
             <Offer>
                 <OfferColumn1>
@@ -155,5 +193,3 @@ const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffersItemPr
         </Card>
     );
 };
-
-export default CoinmarketFeaturedOffersItem;

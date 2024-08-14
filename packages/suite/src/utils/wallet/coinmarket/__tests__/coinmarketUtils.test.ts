@@ -459,27 +459,43 @@ describe('coinmarket utils', () => {
 
     it('coinmarketGetAmountLabels', () => {
         expect(coinmarketGetAmountLabels({ type: 'sell', amountInCrypto: true })).toEqual({
-            label1: 'TR_COINMARKET_YOU_PAY',
-            label2: 'TR_COINMARKET_YOU_GET',
+            inputLabel: 'TR_COINMARKET_YOU_PAY',
+            offerLabel: 'TR_COINMARKET_YOU_GET',
             labelComparatorOffer: 'TR_COINMARKET_YOU_WILL_GET',
+            sendLabel: 'TR_COINMARKET_YOU_GET',
+            receiveLabel: 'TR_COINMARKET_YOU_PAY',
         });
 
         expect(coinmarketGetAmountLabels({ type: 'sell', amountInCrypto: false })).toEqual({
-            label1: 'TR_COINMARKET_YOU_GET',
-            label2: 'TR_COINMARKET_YOU_PAY',
+            inputLabel: 'TR_COINMARKET_YOU_GET',
+            offerLabel: 'TR_COINMARKET_YOU_PAY',
             labelComparatorOffer: 'TR_COINMARKET_YOU_WILL_PAY',
+            sendLabel: 'TR_COINMARKET_YOU_GET',
+            receiveLabel: 'TR_COINMARKET_YOU_PAY',
         });
 
         expect(coinmarketGetAmountLabels({ type: 'buy', amountInCrypto: true })).toEqual({
-            label1: 'TR_COINMARKET_YOU_GET',
-            label2: 'TR_COINMARKET_YOU_PAY',
+            inputLabel: 'TR_COINMARKET_YOU_GET',
+            offerLabel: 'TR_COINMARKET_YOU_PAY',
             labelComparatorOffer: 'TR_COINMARKET_YOU_WILL_PAY',
+            sendLabel: 'TR_COINMARKET_YOU_PAY',
+            receiveLabel: 'TR_COINMARKET_YOU_GET',
         });
 
         expect(coinmarketGetAmountLabels({ type: 'buy', amountInCrypto: false })).toEqual({
-            label1: 'TR_COINMARKET_YOU_PAY',
-            label2: 'TR_COINMARKET_YOU_GET',
+            inputLabel: 'TR_COINMARKET_YOU_PAY',
+            offerLabel: 'TR_COINMARKET_YOU_GET',
             labelComparatorOffer: 'TR_COINMARKET_YOU_WILL_GET',
+            sendLabel: 'TR_COINMARKET_YOU_PAY',
+            receiveLabel: 'TR_COINMARKET_YOU_GET',
+        });
+
+        expect(coinmarketGetAmountLabels({ type: 'exchange', amountInCrypto: false })).toEqual({
+            inputLabel: 'TR_COINMARKET_EXCHANGE_AMOUNT',
+            offerLabel: 'TR_COINMARKET_YOU_GET',
+            labelComparatorOffer: 'TR_COINMARKET_YOU_WILL_GET',
+            sendLabel: 'TR_COINMARKET_EXCHANGE',
+            receiveLabel: 'TR_COINMARKET_YOU_RECEIVE',
         });
     });
 

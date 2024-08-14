@@ -5,7 +5,7 @@ import { buildCryptoOption, getDefaultCountry } from 'src/utils/wallet/coinmarke
 import { Account } from 'src/types/wallet';
 import { SellFormState } from 'src/types/wallet/coinmarketSellForm';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { defaultCryptoCurrency } from 'src/constants/wallet/coinmarket/cryptoCurrencies';
+import { FORM_DEFAULT_CRYPTO_CURRENCY } from 'src/constants/wallet/coinmarket/form';
 
 export const useCoinmarketSellFormDefaultValues = (
     symbol: Account['symbol'],
@@ -27,7 +27,7 @@ export const useCoinmarketSellFormDefaultValues = (
                       fiatCurrencySelect: defaultCurrency,
                       cryptoInput: '',
                       cryptoCurrencySelect: buildCryptoOption(
-                          networkToCryptoSymbol(symbol) ?? defaultCryptoCurrency,
+                          networkToCryptoSymbol(symbol) ?? FORM_DEFAULT_CRYPTO_CURRENCY,
                       ),
                       countrySelect: defaultCountry,
                       options: ['broadcast'],

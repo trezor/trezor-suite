@@ -2,7 +2,7 @@ import { Account } from 'src/types/wallet';
 import { NetworkCompatible } from '@suite-common/wallet-config';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
-import { TrezorDevice } from 'src/types/suite';
+import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import { BuyTrade, CryptoSymbol, SellFiatTrade } from 'invity-api';
 import {
     cryptoToCoinSymbol,
@@ -44,7 +44,7 @@ import CryptoCategories, {
     CryptoCategoryD,
     CryptoCategoryE,
 } from 'src/constants/wallet/coinmarket/cryptoCategories';
-import { sortByCoin } from '@suite-common/wallet-utils';
+import { isTestnet, sortByCoin } from '@suite-common/wallet-utils';
 
 /** @deprecated */
 const suiteToInvitySymbols: {
@@ -233,7 +233,8 @@ export const getComposeAddressPlaceholder = async (
         case 'cardano':
             // it is not possible to use change address of the current account as the placeholder, some exchanges use Byron addresses
             // which need more fees than Shelley addresses used in the Suite, using dummy Byron address for the placeholder
-            return '37btjrVyb4KDXBNC4haBVPCrro8AQPHwvCMp3RFhhSVWwfFmZ6wwzSK6JK1hY6wHNmtrpTf1kdbva8TCneM2YsiXT7mrzT21EacHnPpz5YyUdj64na';
+            // return '37btjrVyb4KDXBNC4haBVPCrro8AQPHwvCMp3RFhhSVWwfFmZ6wwzSK6JK1hY6wHNmtrpTf1kdbva8TCneM2YsiXT7mrzT21EacHnPpz5YyUdj64na';
+            return '';
         case 'ethereum':
         case 'ripple':
         case 'solana':
@@ -337,6 +338,7 @@ export const getBestRatedQuote = (
 export const coinmarketBuildCryptoOptions = ({
     symbolsInfo,
     cryptoCurrencies,
+    excludeAccountSymbol,
 }: CoinmarketBuildOptionsProps) => {
     const groups: CoinmarketOptionsGroupProps[] = Object.keys(CryptoCategories).map(category => ({
         label: category as CryptoCategoryType,
@@ -347,6 +349,8 @@ export const coinmarketBuildCryptoOptions = ({
         const coinSymbol = cryptoToCoinSymbol(symbol);
         const symbolInfo = symbolsInfo?.find(symbolInfoItem => symbolInfoItem.symbol === symbol);
         const cryptoSymbol = cryptoToNetworkSymbol(symbol);
+
+        if (excludeAccountSymbol && excludeAccountSymbol === symbol.toLowerCase()) return;
 
         const option = {
             value: symbol,
@@ -399,7 +403,7 @@ export const coinmarketGetSortedAccounts = ({
 }: CoinmarketGetSortedAccountsProps) => {
     if (!deviceState) return [];
 
-    return sortByCoin(accounts.filter(a => a.deviceState === deviceState));
+    return sortByCoin(accounts.filter(a => a.deviceState === deviceState && a.visible));
 };
 
 export const coinmarketBuildAccountOptions = ({
@@ -416,7 +420,9 @@ export const coinmarketBuildAccountOptions = ({
         deviceState,
     });
 
-    const groups: CoinmarketAccountsOptionsGroupProps[] = accountsSorted.map(account => {
+    const groups: CoinmarketAccountsOptionsGroupProps[] = [];
+
+    accountsSorted.forEach(account => {
         const {
             descriptor,
             tokens,
@@ -426,6 +432,8 @@ export const coinmarketBuildAccountOptions = ({
             accountType,
         } = account;
 
+        if (isTestnet(accountSymbol)) return;
+
         const groupLabel =
             accountLabels[account.key] ??
             defaultAccountLabelString({
@@ -433,6 +441,7 @@ export const coinmarketBuildAccountOptions = ({
                 symbol: accountSymbol,
                 index,
             });
+
         const foundSymbolInfo = symbolsInfo?.find(
             item => item.symbol === networkToCryptoSymbol(accountSymbol),
         );
@@ -447,6 +456,7 @@ export const coinmarketBuildAccountOptions = ({
                 accountType: account.accountType,
             },
         ];
+
         // add crypto tokens to options
         if (tokens && tokens.length > 0) {
             const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes(
@@ -496,10 +506,10 @@ export const coinmarketBuildAccountOptions = ({
             });
         }
 
-        return {
+        groups.push({
             label: groupLabel,
             options,
-        };
+        });
     });
 
     return groups;
@@ -509,22 +519,40 @@ export const coinmarketGetAmountLabels = ({
     type,
     amountInCrypto,
 }: CoinmarketGetAmountLabelsProps): CoinmarketGetAmountLabelsReturnProps => {
+    const youGet = 'TR_COINMARKET_YOU_GET';
+    const youPay = 'TR_COINMARKET_YOU_PAY';
+    const youWillGet = 'TR_COINMARKET_YOU_WILL_GET';
+    const youWillPay = 'TR_COINMARKET_YOU_WILL_PAY';
+    const youReceive = 'TR_COINMARKET_YOU_RECEIVE';
+    const exchange = 'TR_COINMARKET_EXCHANGE';
+    const exchangeAmount = 'TR_COINMARKET_EXCHANGE_AMOUNT';
+
+    if (type === 'exchange') {
+        return {
+            inputLabel: exchangeAmount,
+            offerLabel: youGet,
+            labelComparatorOffer: youWillGet,
+            sendLabel: exchange,
+            receiveLabel: youReceive,
+        };
+    }
+
     if (type === 'sell') {
         return {
-            label1: amountInCrypto ? 'TR_COINMARKET_YOU_PAY' : 'TR_COINMARKET_YOU_GET',
-            label2: amountInCrypto ? 'TR_COINMARKET_YOU_GET' : 'TR_COINMARKET_YOU_PAY',
-            labelComparatorOffer: amountInCrypto
-                ? 'TR_COINMARKET_YOU_WILL_GET'
-                : 'TR_COINMARKET_YOU_WILL_PAY',
+            inputLabel: amountInCrypto ? youPay : youGet,
+            offerLabel: amountInCrypto ? youGet : youPay,
+            labelComparatorOffer: amountInCrypto ? youWillGet : youWillPay,
+            sendLabel: youGet,
+            receiveLabel: youPay,
         };
     }
 
     return {
-        label1: amountInCrypto ? 'TR_COINMARKET_YOU_GET' : 'TR_COINMARKET_YOU_PAY',
-        label2: amountInCrypto ? 'TR_COINMARKET_YOU_PAY' : 'TR_COINMARKET_YOU_GET',
-        labelComparatorOffer: amountInCrypto
-            ? 'TR_COINMARKET_YOU_WILL_PAY'
-            : 'TR_COINMARKET_YOU_WILL_GET',
+        inputLabel: amountInCrypto ? youGet : youPay,
+        offerLabel: amountInCrypto ? youPay : youGet,
+        labelComparatorOffer: amountInCrypto ? youWillPay : youWillGet,
+        sendLabel: youPay,
+        receiveLabel: youGet,
     };
 };
 
@@ -543,3 +571,15 @@ export const coinmarketGetRoundedFiatAmount = (amount: string | undefined): stri
 
 export const coinmarketGetAccountLabel = (label: string, shouldSendInSats: boolean | undefined) =>
     label === 'BTC' && shouldSendInSats ? 'sat' : label;
+
+export const coinmarketGetSectionActionLabel = (
+    type: CoinmarketTradeType,
+): Extract<
+    ExtendedMessageDescriptor['id'],
+    'TR_BUY' | 'TR_COINMARKET_SELL' | 'TR_COINMARKET_EXCHANGE'
+> => {
+    if (type === 'buy') return 'TR_BUY';
+    if (type === 'sell') return 'TR_COINMARKET_SELL';
+
+    return 'TR_COINMARKET_EXCHANGE';
+};

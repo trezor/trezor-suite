@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Card, variables } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
@@ -12,18 +11,14 @@ import PaymentSuccessful from 'src/views/wallet/coinmarket/buy/detail/components
 import WaitingForUser from 'src/views/wallet/coinmarket/buy/detail/components/WaitingForUser';
 import PaymentProcessing from 'src/views/wallet/coinmarket/buy/detail/components/PaymentProcessing';
 import PaymentFailed from 'src/views/wallet/coinmarket/buy/detail/components/PaymentFailed';
+import {
+    CoinmarketLeftWrapper,
+    CoinmarketRightWrapper,
+    CoinmarketWrapper,
+} from 'src/views/wallet/coinmarket';
 
 const Wrapper = styled.div`
-    display: flex;
-    margin-top: 20px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        flex-direction: column;
-    }
-`;
-
-const Flex = styled.div`
-    flex: 1;
+    ${CoinmarketWrapper}
 `;
 
 const CoinmarketDetail = () => {
@@ -67,27 +62,28 @@ const CoinmarketDetail = () => {
 
     return (
         <Wrapper>
-            <Flex>
-                <Card paddingType="none">
-                    {showError && <PaymentFailed account={account} supportUrl={supportUrl} />}
-                    {showProcessing && <PaymentProcessing />}
-                    {showWaiting && (
-                        <WaitingForUser
-                            trade={trade.data}
-                            account={account}
-                            providerName={provider?.brandName || provider?.companyName}
-                        />
-                    )}
-                    {showSuccess && <PaymentSuccessful account={account} />}
-                </Card>
-            </Flex>
-            <CoinmarketSelectedOfferInfo
-                selectedQuote={trade.data}
-                transactionId={trade.key}
-                providers={info?.providerInfos}
-                quoteAmounts={quoteAmounts}
-                type="buy"
-            />
+            <CoinmarketLeftWrapper>
+                {showError && <PaymentFailed account={account} supportUrl={supportUrl} />}
+                {showProcessing && <PaymentProcessing />}
+                {showWaiting && (
+                    <WaitingForUser
+                        trade={trade.data}
+                        account={account}
+                        providerName={provider?.brandName || provider?.companyName}
+                    />
+                )}
+                {showSuccess && <PaymentSuccessful account={account} />}
+            </CoinmarketLeftWrapper>
+            <CoinmarketRightWrapper>
+                <CoinmarketSelectedOfferInfo
+                    account={account}
+                    selectedQuote={trade.data}
+                    transactionId={trade.key}
+                    providers={info?.providerInfos}
+                    quoteAmounts={quoteAmounts}
+                    type="buy"
+                />
+            </CoinmarketRightWrapper>
         </Wrapper>
     );
 };

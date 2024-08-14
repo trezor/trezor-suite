@@ -1,45 +1,45 @@
+import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { CoinmarketFiatAmount } from '../CoinmarketFiatAmount';
-import { isBuyTrade } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { Icon } from '@trezor/components';
-import { BuySellQuote } from './CoinmarketFeaturedOffersItem';
+import { IconLegacy } from '@trezor/components';
+import { CoinmarketTradeDetailType } from 'src/types/coinmarket/coinmarket';
+import { spacingsPx } from '@trezor/theme';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import {
+    isCoinmarketBuyOffers,
+    isCoinmarketSellOffers,
+} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CryptoSymbol } from 'invity-api';
 
 const Arrow = styled.div`
     display: flex;
     align-items: center;
-    padding: 0 11px;
 `;
 
 const AmountsWrapper = styled.div`
     font-size: 22px;
     display: flex;
+    flex-wrap: wrap;
+    gap: ${spacingsPx.sm};
 `;
 
-const CoinmarketFeaturedOffersAmounts = ({ quote }: { quote: BuySellQuote }) => {
+interface CoinmarketFeaturedOffersAmountProps {
+    fromAmount: React.ReactNode;
+    toAmount: React.ReactNode;
+}
+
+interface CoinmarketFeaturedOffersAmountsProps {
+    quote: CoinmarketTradeDetailType;
+}
+
+const CoinmarketFeaturedOffersAmount = ({
+    fromAmount,
+    toAmount,
+}: CoinmarketFeaturedOffersAmountProps) => {
     const theme = useTheme();
-    const fiatAmount = (
-        <CoinmarketFiatAmount amount={quote.fiatStringAmount} currency={quote.fiatCurrency} />
-    );
-    const fromAmount = isBuyTrade(quote) ? (
-        fiatAmount
-    ) : (
-        <FormattedCryptoAmount
-            disableHiddenPlaceholder
-            value={quote.cryptoStringAmount}
-            symbol={cryptoToCoinSymbol(quote.cryptoCurrency!)}
-        />
-    );
-    const toAmount = isBuyTrade(quote) ? (
-        <FormattedCryptoAmount
-            disableHiddenPlaceholder
-            value={quote.receiveStringAmount}
-            symbol={cryptoToCoinSymbol(quote.receiveCurrency!)}
-        />
-    ) : (
-        fiatAmount
-    );
 
     return (
         <AmountsWrapper>
@@ -52,4 +52,74 @@ const CoinmarketFeaturedOffersAmounts = ({ quote }: { quote: BuySellQuote }) => 
     );
 };
 
-export default CoinmarketFeaturedOffersAmounts;
+export const CoinmarketFeaturedOffersAmounts = ({
+    quote,
+}: CoinmarketFeaturedOffersAmountsProps) => {
+    const context = useCoinmarketFormContext();
+    const quoteProps = getCryptoQuoteAmountProps(quote, context);
+
+    if (!quoteProps?.receiveCurrency) return null;
+
+    if (isCoinmarketBuyOffers(context)) {
+        return (
+            <CoinmarketFeaturedOffersAmount
+                fromAmount={
+                    <CoinmarketFiatAmount
+                        amount={quoteProps.sendAmount}
+                        currency={quoteProps.sendCurrency}
+                    />
+                }
+                toAmount={
+                    <FormattedCryptoAmount
+                        disableHiddenPlaceholder
+                        value={quoteProps.sendAmount}
+                        symbol={cryptoToCoinSymbol(quoteProps.receiveCurrency)}
+                    />
+                }
+            />
+        );
+    }
+
+    if (isCoinmarketSellOffers(context)) {
+        return (
+            <CoinmarketFeaturedOffersAmount
+                fromAmount={
+                    <FormattedCryptoAmount
+                        disableHiddenPlaceholder
+                        value={quoteProps.receiveAmount}
+                        symbol={cryptoToCoinSymbol(quoteProps.receiveCurrency)}
+                    />
+                }
+                toAmount={
+                    <CoinmarketFiatAmount
+                        amount={quoteProps.sendAmount}
+                        currency={quoteProps.sendCurrency}
+                    />
+                }
+            />
+        );
+    }
+
+    const sendCurrencyExchange = quoteProps?.sendCurrency as CryptoSymbol | undefined;
+
+    if (!sendCurrencyExchange) return null;
+
+    return (
+        <CoinmarketFeaturedOffersAmount
+            fromAmount={
+                <FormattedCryptoAmount
+                    disableHiddenPlaceholder
+                    value={quoteProps.sendAmount}
+                    symbol={cryptoToCoinSymbol(sendCurrencyExchange)}
+                />
+            }
+            toAmount={
+                <FormattedCryptoAmount
+                    disableHiddenPlaceholder
+                    value={quoteProps.receiveAmount}
+                    symbol={cryptoToCoinSymbol(quoteProps.receiveCurrency)}
+                />
+            }
+        />
+    );
+};

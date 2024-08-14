@@ -1,15 +1,27 @@
 import { buildCurrencyOptions } from '@suite-common/wallet-utils';
 import { Select } from '@trezor/components';
+import { useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
-import { FORM_FIAT_CURRENCY_SELECT, FORM_FIAT_INPUT } from 'src/constants/wallet/coinmarket/form';
+import {
+    FORM_FIAT_CURRENCY_SELECT,
+    FORM_FIAT_INPUT,
+    FORM_OUTPUT_CURRENCY,
+} from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { isCoinmarketBuyOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import {
+    isCoinmarketBuyOffers,
+    isCoinmarketExchangeOffers,
+    isCoinmarketSellOffers,
+} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import {
     CoinmarketAllFormProps,
     CoinmarketFormInputCurrencyProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { FiatCurrencyOption } from 'src/types/wallet/coinmarketCommonTypes';
-import { getFiatCurrenciesProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import {
+    getFiatCurrenciesProps,
+    getSelectedCurrency,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormOption, CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
 import styled from 'styled-components';
@@ -28,26 +40,37 @@ const CoinmarketFormInputCurrency = ({
     isDarkLabel = false,
 }: CoinmarketFormInputCurrencyProps) => {
     const context = useCoinmarketFormContext();
-    const { defaultCurrency, control, setAmountLimits } = context;
-
+    const { control, setAmountLimits, defaultCurrency } = context;
+    const name = isCoinmarketBuyOffers(context) ? FORM_FIAT_CURRENCY_SELECT : FORM_OUTPUT_CURRENCY;
+    const currentCurrency = getSelectedCurrency(context);
     const fiatCurrencies = getFiatCurrenciesProps(context);
     const currencies = fiatCurrencies?.supportedFiatCurrencies ?? null;
-    const options = currencies
-        ? [...currencies].map(currency => buildFiatOption(currency))
-        : buildCurrencyOptions(defaultCurrency);
+    const options = useMemo(
+        () =>
+            currencies
+                ? [...currencies]
+                      .map(currency => buildFiatOption(currency))
+                      .filter(currency => currency.value !== currentCurrency.value)
+                : buildCurrencyOptions(currentCurrency),
+        [currencies, currentCurrency],
+    );
 
-    const setBuyDefaultFiatAmount = (option: FiatCurrencyOption) => {
+    const onChangeAdditional = (option: FiatCurrencyOption) => {
         if (isCoinmarketBuyOffers(context)) {
             context.setValue(
                 FORM_FIAT_INPUT,
                 fiatCurrencies?.defaultAmountsOfFiatCurrencies?.get(option.value) ?? '',
             );
         }
+
+        if (isCoinmarketExchangeOffers(context) || isCoinmarketSellOffers(context)) {
+            context.form.helpers.onFiatCurrencyChange(option.value);
+        }
     };
 
     return (
         <Controller
-            name={FORM_FIAT_CURRENCY_SELECT}
+            name={name}
             defaultValue={defaultCurrency}
             control={control as Control<CoinmarketAllFormProps>}
             render={({ field: { onChange, value } }) => (
@@ -57,7 +80,7 @@ const CoinmarketFormInputCurrency = ({
                         onChange(selected);
                         setAmountLimits(undefined);
 
-                        setBuyDefaultFiatAmount(selected);
+                        onChangeAdditional(selected);
                     }}
                     options={options}
                     formatOptionLabel={option => (

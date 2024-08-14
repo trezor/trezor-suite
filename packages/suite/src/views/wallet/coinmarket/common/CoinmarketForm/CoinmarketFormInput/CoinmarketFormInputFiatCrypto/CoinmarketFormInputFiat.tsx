@@ -6,10 +6,16 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useDidUpdate } from '@trezor/react-utils';
 import CoinmarketFormInputCurrency from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
-import { CoinmarketFormInputFiatCryptoProps } from 'src/types/coinmarket/coinmarketForm';
+import {
+    CoinmarketAllFormProps,
+    CoinmarketBuyFormProps,
+    CoinmarketFormInputFiatCryptoProps,
+    CoinmarketSellExchangeFormProps,
+} from 'src/types/coinmarket/coinmarketForm';
 import styled from 'styled-components';
 import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { FieldError, FieldValues, UseControllerProps } from 'react-hook-form';
+import { FieldErrors, UseControllerProps } from 'react-hook-form';
+import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/coinmarket/form';
 
 const CoinmarketFormInputCurrencyWrapper = styled(CoinmarketFormInputCurrency)`
     width: 64px;
@@ -22,7 +28,7 @@ const CoinmarketFormInputCurrencyWrapper = styled(CoinmarketFormInputCurrency)`
     }
 `;
 
-const CoinmarketFormInputFiat = <TFieldValues extends FieldValues>({
+const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormProps>({
     cryptoInputName,
     fiatInputName,
     methods,
@@ -36,7 +42,15 @@ const CoinmarketFormInputFiat = <TFieldValues extends FieldValues>({
         trigger,
         clearErrors,
     } = methods;
-    const fiatInputError = errors[fiatInputName] as FieldError;
+
+    const fiatInputError =
+        cryptoInputName === FORM_OUTPUT_FIAT
+            ? (errors as FieldErrors<CoinmarketSellExchangeFormProps>)?.outputs?.[0]?.fiat
+            : (errors as FieldErrors<CoinmarketBuyFormProps>).fiatInput;
+    const cryptoInputError =
+        cryptoInputName === FORM_OUTPUT_AMOUNT
+            ? (errors as FieldErrors<CoinmarketSellExchangeFormProps>)?.outputs?.[0]?.amount
+            : undefined;
 
     const fiatInputRules: UseControllerProps['rules'] = {
         ...(isCoinmarketExchangeOffers(context)
@@ -79,8 +93,10 @@ const CoinmarketFormInputFiat = <TFieldValues extends FieldValues>({
     };
 
     useDidUpdate(() => {
-        trigger(fiatInputName);
-    }, [amountLimits, trigger]);
+        if (amountLimits) {
+            trigger(fiatInputName);
+        }
+    }, [amountLimits, fiatInputName, trigger]);
 
     return (
         <NumberInput
@@ -88,11 +104,11 @@ const CoinmarketFormInputFiat = <TFieldValues extends FieldValues>({
             onChange={() => {
                 clearErrors(cryptoInputName);
             }}
-            inputState={getInputState(fiatInputError)}
+            inputState={getInputState(fiatInputError ?? cryptoInputError)}
             control={control}
             rules={fiatInputRules}
             maxLength={formInputsMaxLength.amount}
-            bottomText={fiatInputError?.message || null}
+            bottomText={fiatInputError?.message ?? cryptoInputError?.message ?? null}
             innerAddon={<CoinmarketFormInputCurrencyWrapper />}
             hasBottomPadding={false}
             data-testid="@coinmarket/form/fiat-input"

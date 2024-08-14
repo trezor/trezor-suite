@@ -1,27 +1,24 @@
 import styled from 'styled-components';
-
-import { Card, variables } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import PaymentPending from '../components/PaymentPending';
 import PaymentSuccessful from '../components/PaymentSuccessful';
 import PaymentFailed from '../components/PaymentFailed';
-import { CoinmarketSellOfferInfo } from '../../components/CoinmarketSellOfferInfo';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketGetCryptoQuoteAmountProps,
+    CoinmarketTradeSellType,
+} from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketLeftWrapper,
+    CoinmarketRightWrapper,
+    CoinmarketWrapper,
+} from 'src/views/wallet/coinmarket';
+import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
 
 const Wrapper = styled.div`
-    display: flex;
-    margin-top: 20px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        flex-direction: column;
-    }
-`;
-
-const Flex = styled.div`
-    flex: 1;
+    ${CoinmarketWrapper}
 `;
 
 const CoinmarketDetail = () => {
@@ -54,28 +51,37 @@ const CoinmarketDetail = () => {
     const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
     const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
 
+    const quoteAmounts: CoinmarketGetCryptoQuoteAmountProps = {
+        amountInCrypto: trade?.data?.amountInCrypto,
+        sendAmount: trade?.data?.fiatStringAmount ?? '',
+        sendCurrency: trade?.data?.fiatCurrency,
+        receiveAmount: trade?.data?.cryptoStringAmount ?? '',
+        receiveCurrency: trade?.data?.cryptoCurrency,
+    };
+
     return (
         <Wrapper>
-            <Flex>
-                <Card paddingType="none">
-                    {tradeStatus === 'SUCCESS' && <PaymentSuccessful account={account} />}
-                    {sellFiatTradeFinalStatuses.includes(tradeStatus) &&
-                        tradeStatus !== 'SUCCESS' && (
-                            <PaymentFailed
-                                account={account}
-                                transactionId={trade.key}
-                                supportUrl={supportUrl}
-                            />
-                        )}
-                    {showPending && <PaymentPending supportUrl={supportUrl} />}
-                </Card>
-            </Flex>
-            <CoinmarketSellOfferInfo
-                account={account}
-                providers={info?.providerInfos}
-                selectedQuote={trade.data}
-                transactionId={trade.key}
-            />
+            <CoinmarketLeftWrapper>
+                {tradeStatus === 'SUCCESS' && <PaymentSuccessful account={account} />}
+                {sellFiatTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'SUCCESS' && (
+                    <PaymentFailed
+                        account={account}
+                        transactionId={trade.key}
+                        supportUrl={supportUrl}
+                    />
+                )}
+                {showPending && <PaymentPending supportUrl={supportUrl} />}
+            </CoinmarketLeftWrapper>
+            <CoinmarketRightWrapper>
+                <CoinmarketSelectedOfferInfo
+                    account={account}
+                    providers={info?.providerInfos}
+                    selectedQuote={trade.data}
+                    transactionId={trade.key}
+                    type="sell"
+                    quoteAmounts={quoteAmounts}
+                />
+            </CoinmarketRightWrapper>
         </Wrapper>
     );
 };

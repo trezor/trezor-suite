@@ -1,4 +1,4 @@
-export { AddressOptions } from './AddressOptions';
+export { CoinmarketAddressOptions } from './CoinmarketAddressOptions';
 export { CoinmarketCryptoAmount } from './CoinmarketCryptoAmount';
 export { CoinmarketFiatAmount } from './CoinmarketFiatAmount';
 export { CoinmarketFooter } from './CoinmarketFooter/CoinmarketFooter';

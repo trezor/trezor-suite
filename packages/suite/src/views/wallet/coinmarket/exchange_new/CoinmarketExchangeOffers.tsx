@@ -1,22 +1,20 @@
 import { withSelectedAccountLoaded } from 'src/components/wallet';
-import { useCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketExchangeOffers';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import CoinmarketOffers from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffers';
-import SelectedOffer from 'src/views/wallet/coinmarket/exchange_new/offers/Offers/SelectedOffer';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
-import { CoinmarketExchangeFormContextProps } from 'src/types/coinmarket/coinmarketForm';
 import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
+import { useCoinmarketExchangeForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeForm';
 
 const CoinmarketExchangeOffersComponent = (props: UseCoinmarketProps) => {
-    const coinmarketExchangeOffers = useCoinmarketExchangeOffers(
-        props,
-    ) as unknown as CoinmarketExchangeFormContextProps; // FIXME: exchange;
-    const { selectedQuote } = coinmarketExchangeOffers;
+    const coinmarketExchangeContextValues = useCoinmarketExchangeForm({
+        ...props,
+        pageType: 'offers',
+    });
 
     return (
-        <CoinmarketOffersContext.Provider value={coinmarketExchangeOffers}>
-            {!selectedQuote ? <CoinmarketOffers /> : <SelectedOffer />}
+        <CoinmarketOffersContext.Provider value={coinmarketExchangeContextValues}>
+            <CoinmarketOffers />
             <CoinmarketFooter />
         </CoinmarketOffersContext.Provider>
     );

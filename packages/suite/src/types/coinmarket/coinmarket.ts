@@ -21,6 +21,7 @@ import {
     ExchangeTradeStatus,
     FiatCurrencyCode,
     SavingsTradeItemStatus,
+    SellCryptoPaymentMethod,
     SellFiatTrade,
     SellProviderInfo,
     SellTradeStatus,
@@ -28,7 +29,7 @@ import {
     WatchExchangeTradeResponse,
     WatchSellTradeResponse,
 } from 'invity-api';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountSymbol } from '@suite-common/wallet-types';
 import { AnyAction, Dispatch } from 'redux';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
 import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
@@ -49,14 +50,12 @@ export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
     type: CoinmarketTradeType;
 };
-export interface UseCoinmarketCommonReturnProps<T extends CoinmarketTradeType> {
+export interface UseCoinmarketCommonReturnProps {
     callInProgress: boolean;
     account: Account;
-    selectedQuote: CoinmarketTradeDetailMapProps[T] | undefined;
     timer: Timer;
     device: TrezorDevice | undefined;
     setCallInProgress: (state: boolean) => void;
-    setSelectedQuote: (quote: CoinmarketTradeDetailMapProps[T] | undefined) => void;
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
 export type CoinmarketPageType = 'form' | 'offers' | 'confirm';
@@ -79,6 +78,7 @@ export type CoinmarketTradeType =
     | CoinmarketTradeExchangeType;
 export type CoinmarketTradeBuySellType = Exclude<CoinmarketTradeType, CoinmarketTradeExchangeType>;
 export type CoinmarketTradeSellExchangeType = Exclude<CoinmarketTradeType, CoinmarketTradeBuyType>;
+export type CoinmarketTradeBuyExchangeType = Exclude<CoinmarketTradeType, CoinmarketTradeSellType>;
 
 export type CoinmarketTradeMapProps = {
     buy: TradeBuy;
@@ -87,6 +87,8 @@ export type CoinmarketTradeMapProps = {
 };
 
 export type CoinmarketTradeDetailType = BuyTrade | SellFiatTrade | ExchangeTrade;
+export type CoinmarketTradeDetailBuySellType = BuyTrade | SellFiatTrade;
+
 export type CoinmarketTradeDetailMapProps = {
     buy: BuyTrade;
     sell: SellFiatTrade;
@@ -182,6 +184,7 @@ export type CoinmarketUtilsProvidersProps = {
 export interface CoinmarketBuildOptionsProps {
     symbolsInfo: CryptoSymbolInfo[] | undefined;
     cryptoCurrencies: Set<CryptoSymbol>;
+    excludeAccountSymbol?: AccountSymbol | undefined;
 }
 
 export interface CoinmarketOptionsGroupProps {
@@ -229,18 +232,20 @@ export interface CoinmarketGetAmountLabelsProps {
     amountInCrypto: boolean;
 }
 
-type CoinmarketPayGetLabelType = Extract<
-    ExtendedMessageDescriptor['id'],
-    `TR_COINMARKET_YOU_${'PAY' | 'GET'}`
->;
+export type CoinmarketPayGetLabelType =
+    | Extract<ExtendedMessageDescriptor['id'], `TR_COINMARKET_YOU_${'PAY' | 'GET' | 'RECEIVE'}`>
+    | 'TR_COINMARKET_EXCHANGE'
+    | 'TR_COINMARKET_EXCHANGE_AMOUNT';
 
 export interface CoinmarketGetAmountLabelsReturnProps {
-    label1: CoinmarketPayGetLabelType;
-    label2: CoinmarketPayGetLabelType;
+    inputLabel: CoinmarketPayGetLabelType;
+    offerLabel: CoinmarketPayGetLabelType;
     labelComparatorOffer: Extract<
         ExtendedMessageDescriptor['id'],
         `TR_COINMARKET_YOU_WILL_${'PAY' | 'GET'}`
     >;
+    sendLabel: CoinmarketPayGetLabelType;
+    receiveLabel: CoinmarketPayGetLabelType;
 }
 
 export type CoinmarketGetProvidersInfoProps =
@@ -255,9 +260,14 @@ export interface CoinmarketGetFiatCurrenciesProps {
 }
 
 export interface CoinmarketGetCryptoQuoteAmountProps {
-    amountInCrypto: boolean | undefined;
+    amountInCrypto?: boolean | undefined;
     sendAmount: string;
-    sendCurrency: string | undefined;
+    sendCurrency: CryptoSymbol | string | undefined;
     receiveAmount: string;
     receiveCurrency: CryptoSymbol | undefined;
+}
+
+export interface CoinmarketGetPaymentMethodProps {
+    paymentMethod?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
+    paymentMethodName?: string;
 }

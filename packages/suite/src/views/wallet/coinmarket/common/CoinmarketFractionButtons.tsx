@@ -1,13 +1,7 @@
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
+import { Button, Row } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { spacingsPx } from '@trezor/theme';
-
-const Wrapper = styled.div`
-    display: flex;
-    margin-top: -${spacingsPx.md};
-    position: relative;
-`;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const SmallButton = styled(Button).attrs(props => ({
@@ -30,9 +24,8 @@ export const CoinmarketFractionButtons = ({
     disabled,
     onFractionClick,
     onAllClick,
-    className,
 }: CoinmarketFractionButtonsProps) => (
-    <Wrapper className={className} data-testid="@coinmarket/form/fraction-buttons">
+    <Row data-testid="@coinmarket/form/fraction-buttons">
         <SmallButton isDisabled={disabled} onClick={() => onFractionClick(4)}>
             1/4
         </SmallButton>
@@ -45,5 +38,5 @@ export const CoinmarketFractionButtons = ({
         <SmallButton isDisabled={disabled} onClick={() => onAllClick()}>
             <Translation id="TR_FRACTION_BUTTONS_ALL" />
         </SmallButton>
-    </Wrapper>
+    </Row>
 );

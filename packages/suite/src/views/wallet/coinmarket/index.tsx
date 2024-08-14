@@ -1,18 +1,72 @@
 import styled from 'styled-components';
-import { Icon, variables, SelectBar, Paragraph, TextButton, H2 } from '@trezor/components';
+import {
+    IconLegacy,
+    variables,
+    SelectBar,
+    Paragraph,
+    TextButton,
+    H2,
+    Card,
+    Spinner,
+} from '@trezor/components';
 import {
     Elevation,
     mapElevationToBackground,
     nativeTypography,
     nextElevation,
+    spacings,
     spacingsPx,
     typography,
 } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { Margin } from 'recharts/types/util/types';
 
 interface ResponsiveSize {
     $responsiveSize: keyof typeof variables.SCREEN_SIZE;
 }
+
+export const CoinmarketWrapper = `
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: ${spacingsPx.xxxl};
+
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
+        flex-wrap: wrap;
+    }
+`;
+
+// eslint-disable-next-line local-rules/no-override-ds-component
+export const CoinmarketLeftWrapper = styled(Card)<{ $isWithoutPadding?: boolean }>`
+    padding: ${({ $isWithoutPadding }) =>
+        $isWithoutPadding ? 0 : `${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.lg}`};
+    width: 60%;
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        padding: ${spacingsPx.md};
+        width: 49%;
+    }
+
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
+        width: 100%;
+        padding-bottom: ${spacingsPx.zero};
+    }
+`;
+
+// eslint-disable-next-line local-rules/no-override-ds-component
+export const CoinmarketRightWrapper = styled(Card)`
+    padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxxl};
+    width: 37%;
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        padding: ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.xxl};
+        width: 49%;
+    }
+
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
+        width: 100%;
+        margin-top: ${spacingsPx.sm};
+    }
+`;
 
 export const Wrapper = styled.div<ResponsiveSize>`
     display: flex;
@@ -97,9 +151,10 @@ export const CoinmarketParagraph = styled(Paragraph)`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
-export const CoinmarketFormInput = styled.div`
+export const CoinmarketFormInput = styled.div<{ $isWithoutPadding?: boolean }>`
     position: relative;
-    padding-bottom: ${spacingsPx.xl};
+    padding-bottom: ${({ $isWithoutPadding }) =>
+        $isWithoutPadding ? spacings.zero : spacingsPx.md};
 
     input {
         color: ${({ theme }) => theme.textSubdued};
@@ -190,4 +245,50 @@ export const CoinmarketAmountWrapperText = styled.div`
     font-variant-numeric: tabular-nums;
     overflow: hidden;
     text-overflow: ellipsis;
+`;
+
+export const CoinmarketInfoLeftColumn = styled.div`
+    display: flex;
+    flex: 1;
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
+`;
+
+export const CoinmarketInfoRightColumn = styled.div`
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1;
+    ${typography.body}
+    color: ${({ theme }) => theme.textDefault};
+`;
+
+export const CoinmarketInfoAmount = styled.div`
+    padding-left: ${spacingsPx.xs};
+`;
+
+export const CoinmarketBorder = styled.div<{ $margin?: Margin }>`
+    width: 100%;
+    height: 1px;
+    background: ${({ theme }) => theme.borderElevation1};
+    ${({ $margin }) =>
+        `margin: ${$margin?.top ?? spacings.zero}px ${$margin?.right ?? spacings.zero}px ${$margin?.bottom ?? spacings.zero}px ${$margin?.left ?? spacings.zero}px`};
+`;
+
+export const CoinmarketFormOfferSpinnerWrapper = styled.div`
+    width: 100%;
+    padding: ${spacingsPx.sm} 0;
+`;
+
+export const CoinmarketFormOfferSpinnerText = styled.div<{ $withoutSpinner?: boolean }>`
+    ${({ $withoutSpinner }) => ($withoutSpinner ? typography.label : typography.hint)}
+    color: ${({ theme, $withoutSpinner }) =>
+        $withoutSpinner ? theme.textDefault : theme.textSubdued};
+    text-align: center;
+`;
+
+export const CoinmarketSpinnerWrapper = styled(Spinner)`
+    flex: none;
+    margin: 0 ${spacingsPx.xs};
 `;

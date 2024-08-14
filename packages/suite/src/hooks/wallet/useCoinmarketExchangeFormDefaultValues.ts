@@ -5,7 +5,11 @@ import { buildCryptoOption, buildFiatOption } from 'src/utils/wallet/coinmarket/
 import { Account } from 'src/types/wallet';
 import { ExchangeFormState } from 'src/types/wallet/coinmarketExchangeForm';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { defaultCryptoCurrency } from 'src/constants/wallet/coinmarket/cryptoCurrencies';
+import {
+    FORM_DEFAULT_CRYPTO_CURRENCY,
+    FORM_EXCHANGE_CEX,
+    FORM_RATE_FIXED,
+} from 'src/constants/wallet/coinmarket/form';
 
 export const useCoinmarketExchangeFormDefaultValues = (
     symbol: Account['symbol'],
@@ -26,7 +30,7 @@ export const useCoinmarketExchangeFormDefaultValues = (
                       cryptoInput: '',
                       receiveCryptoSelect: null,
                       sendCryptoSelect: buildCryptoOption(
-                          networkToCryptoSymbol(symbol) ?? defaultCryptoCurrency,
+                          networkToCryptoSymbol(symbol) ?? FORM_DEFAULT_CRYPTO_CURRENCY,
                       ),
                       options: ['broadcast'],
                       outputs: [
@@ -37,6 +41,8 @@ export const useCoinmarketExchangeFormDefaultValues = (
                           },
                       ],
                       selectedUtxos: [],
+                      rateType: FORM_RATE_FIXED,
+                      exchangeType: FORM_EXCHANGE_CEX,
                       // TODO: remove type casting (options string[])
                   } as ExchangeFormState)
                 : undefined,

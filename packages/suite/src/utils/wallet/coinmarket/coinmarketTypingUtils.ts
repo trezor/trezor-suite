@@ -1,11 +1,19 @@
+import { CurrencyOption } from '@suite-common/wallet-types';
 import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import {
+    FORM_FIAT_CURRENCY_SELECT,
+    FORM_OUTPUT_CURRENCY,
+} from 'src/constants/wallet/coinmarket/form';
+import {
     isCoinmarketBuyOffers,
+    isCoinmarketExchangeOffers,
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import {
+    CoinmarketCryptoListProps,
     CoinmarketGetCryptoQuoteAmountProps,
     CoinmarketGetFiatCurrenciesProps,
+    CoinmarketGetPaymentMethodProps,
     CoinmarketGetProvidersInfoProps,
     CoinmarketTradeDetailMapProps,
     CoinmarketTradeDetailType,
@@ -106,6 +114,44 @@ export const getSelectQuoteTyped = (
     return selectQuote;
 };
 
-export const isBuyTrade = (quote: CoinmarketTradeDetailType): quote is BuyTrade => {
-    return 'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
+export const getSelectedCrypto = (
+    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+): CoinmarketCryptoListProps | null | undefined => {
+    if (isCoinmarketExchangeOffers(context)) {
+        return context.getValues().receiveCryptoSelect;
+    }
+
+    if (isCoinmarketSellOffers(context)) {
+        return context.getValues().sendCryptoSelect;
+    }
+
+    return context.getValues().cryptoSelect;
+};
+
+export const getSelectedCurrency = (
+    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+): CurrencyOption => {
+    if (isCoinmarketExchangeOffers(context)) {
+        return context.getValues(FORM_OUTPUT_CURRENCY);
+    }
+
+    if (isCoinmarketSellOffers(context)) {
+        return context.getValues(FORM_OUTPUT_CURRENCY);
+    }
+
+    return context.getValues(FORM_FIAT_CURRENCY_SELECT);
+};
+
+export const getPaymentMethod = (
+    selectedQuote: SellFiatTrade | ExchangeTrade | BuyTrade,
+    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+): CoinmarketGetPaymentMethodProps => {
+    if (isCoinmarketExchangeOffers(context)) return {};
+
+    const selectedQuoteTyped = selectedQuote as SellFiatTrade | BuyTrade;
+
+    return {
+        paymentMethod: selectedQuoteTyped.paymentMethod,
+        paymentMethodName: selectedQuoteTyped.paymentMethodName,
+    };
 };
