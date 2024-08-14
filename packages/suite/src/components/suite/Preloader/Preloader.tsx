@@ -22,6 +22,7 @@ import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
 import { selectDevice } from '@suite-common/wallet-core';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 
 const ROUTES_TO_SKIP_REVISION_CHECK: RouterAppWithParams['app'][] = [
     'settings',
@@ -56,6 +57,9 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const selectedDevice = useSelector(selectDevice);
     const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
     const { isFirmwareRevisionCheckDisabled } = useSelector(state => state.suite.settings);
+    const isFirmwareRevisionCheckDisabledByMessageSystem = useSelector(state =>
+        selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck),
+    );
 
     const dispatch = useDispatch();
 
@@ -84,7 +88,8 @@ export const Preloader = ({ children }: PreloaderProps) => {
             !ROUTES_TO_SKIP_REVISION_CHECK.includes(router.route?.app)) &&
         selectedDevice?.features &&
         selectedDevice.connected === true &&
-        !isFirmwareRevisionCheckDisabled
+        !isFirmwareRevisionCheckDisabled &&
+        !isFirmwareRevisionCheckDisabledByMessageSystem
     ) {
         const failedChecks =
             selectedDevice.authenticityChecks !== undefined
