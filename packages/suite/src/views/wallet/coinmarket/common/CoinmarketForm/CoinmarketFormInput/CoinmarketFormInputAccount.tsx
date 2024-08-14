@@ -28,6 +28,7 @@ import {
     CoinmarketExchangeFormProps,
     CoinmarketFormInputAccountProps,
 } from 'src/types/coinmarket/coinmarketForm';
+import { createFilter } from 'react-select';
 
 const CoinmarketFormInputAccount = <
     TFieldValues extends CoinmarketBuyFormProps | CoinmarketExchangeFormProps,
@@ -61,6 +62,9 @@ const CoinmarketFormInputAccount = <
                         value={value}
                         options={options}
                         onChange={onChange}
+                        filterOption={createFilter<CoinmarketCryptoListProps>({
+                            stringify: option => `${option.value} ${option.data.cryptoName}`,
+                        })}
                         formatGroupLabel={group => {
                             const translationId =
                                 CryptoCategories[(group as CoinmarketOptionsGroupProps).label]
