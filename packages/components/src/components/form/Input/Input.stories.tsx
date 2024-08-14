@@ -5,7 +5,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Input as InputComponent, InputProps } from './Input';
 
 const meta: Meta = {
-    title: 'Form/Input',
+    title: 'Form',
     args: {
         value: 'Input',
         label: 'Label',

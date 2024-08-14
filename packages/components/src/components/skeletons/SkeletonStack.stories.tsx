@@ -4,7 +4,7 @@ import { SkeletonCircle } from './SkeletonCircle';
 import { ElevationContext } from '../ElevationContext/ElevationContext';
 
 const meta: Meta = {
-    title: 'Skeletons/SkeletonStack',
+    title: 'Skeletons',
     component: SkeletonStackComponent,
 } as Meta;
 export default meta;

@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Icon as IconComponent, IconProps, variables, IconVariant } from '../../../index';
+import { Icon as IconComponent, IconProps, variables, IconVariant } from '../../index';
 
 const meta: Meta = {
-    title: 'Assets/Icons',
+    title: 'Icons',
     component: IconComponent,
 } as Meta;
 export default meta;

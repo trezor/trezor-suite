@@ -1,4 +1,4 @@
-import { Icon, IconType } from '../assets/Icon/Icon';
+import { Icon, IconType } from '../Icon/Icon';
 import { ReactElement, ReactNode } from 'react';
 import { borders, palette, spacings, spacingsPx, typography } from '@trezor/theme';
 import styled from 'styled-components';

@@ -16,7 +16,7 @@ const options = Object.keys(values)
     .map((k: string) => values[k]);
 
 const meta: Meta = {
-    title: 'Form/Select',
+    title: 'Form',
     component: SelectComponent,
 } as Meta;
 export default meta;

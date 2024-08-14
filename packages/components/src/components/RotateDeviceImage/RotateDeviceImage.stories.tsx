@@ -6,7 +6,7 @@ import {
 import { DeviceModelInternal } from '@trezor/connect';
 
 const meta: Meta = {
-    title: 'Misc/RotateDeviceImage',
+    title: 'RotateDeviceImage',
     component: RotateDeviceImageComponent,
 } as Meta;
 export default meta;

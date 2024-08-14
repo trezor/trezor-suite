@@ -7,7 +7,7 @@ import { Meta, StoryObj } from '@storybook/react';
 const variants: Array<Exclude<ButtonVariant, 'danger'>> = ['primary', 'secondary', 'tertiary'];
 
 const meta: Meta = {
-    title: 'Buttons/IconButton',
+    title: 'Buttons',
 } as Meta;
 export default meta;
 

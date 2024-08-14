@@ -17,7 +17,7 @@ const Content = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Misc/ResizableBox',
+    title: 'ResizableBox',
     component: ResizableBoxComponent,
 } as Meta;
 export default meta;

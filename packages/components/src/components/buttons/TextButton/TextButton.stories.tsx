@@ -3,7 +3,7 @@ import { TextButton as TextButtonComponent, TextButtonProps } from './TextButton
 import { variables } from '../../../config';
 
 const meta: Meta = {
-    title: 'Buttons/TextButton',
+    title: 'Buttons',
     component: TextButtonComponent,
 } as Meta;
 export default meta;

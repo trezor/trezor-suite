@@ -29,7 +29,7 @@ const StyledDropdown = styled(DropdownComponent)`
 `;
 
 const meta: Meta = {
-    title: 'Misc/Dropdown',
+    title: 'Dropdown',
     component: DropdownComponent,
 } as Meta;
 export default meta;

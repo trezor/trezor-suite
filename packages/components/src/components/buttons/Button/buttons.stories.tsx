@@ -14,11 +14,11 @@ const variants: Array<ButtonVariant> = [
 ];
 
 const meta: Meta<typeof Button> = {
-    title: 'Buttons/Button/All',
+    title: 'Buttons',
 };
 export default meta;
 
-export const All: StoryFn = () => (
+export const AllButtons: StoryFn = () => (
     <>
         {variants.map(variant => (
             <StoryColumn key={variant} minWidth={350} maxWidth={420}>

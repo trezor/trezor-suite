@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { ButtonProps } from '../Button/Button';
 import { ButtonSize, getIconSize, IconAlignment } from '../buttonStyleUtils';
-import { Icon } from '../../assets/Icon/Icon';
+import { Icon } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 

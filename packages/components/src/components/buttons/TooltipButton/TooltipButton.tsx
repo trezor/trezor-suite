@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Icon } from '../../assets/Icon/Icon';
+import { Icon } from '../../Icon/Icon';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button, ButtonProps } from '../Button/Button';
 import { spacingsPx } from '@trezor/theme';

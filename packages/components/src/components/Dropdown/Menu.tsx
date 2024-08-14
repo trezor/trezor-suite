@@ -9,7 +9,7 @@ import {
     mapElevationToBackground,
     nextElevation,
 } from '@trezor/theme';
-import { Icon, IconProps } from '../assets/Icon/Icon';
+import { Icon, IconProps } from '../Icon/Icon';
 import type { Coords } from './getAdjustedCoords';
 import { menuStyle } from './menuStyle';
 import { useElevation } from '../ElevationContext/ElevationContext';

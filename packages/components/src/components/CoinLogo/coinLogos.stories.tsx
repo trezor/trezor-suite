@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { CoinLogo, CoinType, variables } from '../../../index';
-import { StoryColumn } from '../../../support/Story';
+import { CoinLogo, CoinType, variables } from '../../index';
+import { StoryColumn } from '../../support/Story';
 
 const CoinName = styled.div`
     margin-bottom: 0.5rem;
@@ -24,7 +24,7 @@ const Icon = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Assets/CoinLogos',
+    title: 'CoinLogos',
 } as Meta;
 export default meta;
 

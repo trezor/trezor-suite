@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { ProgressPie as ProgressPieComponent, ProgressPieProps } from './ProgressPie';
 
 const meta: Meta = {
-    title: 'Loaders/ProgressPie',
+    title: 'ProgressPie',
     component: ProgressPieComponent,
 } as Meta;
 export default meta;

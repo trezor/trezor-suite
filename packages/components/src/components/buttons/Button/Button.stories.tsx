@@ -4,7 +4,7 @@ import { getFramePropsStory } from '../../../utils/frameProps';
 import { variables } from '../../../config';
 
 const meta: Meta = {
-    title: 'Buttons/Button',
+    title: 'Buttons',
     component: ButtonComponent,
 } as Meta;
 export default meta;

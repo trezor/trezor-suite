@@ -9,7 +9,7 @@ import {
 import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta = {
-    title: 'Form/Checkbox',
+    title: 'Form',
     component: CheckboxComponent,
 } as Meta;
 export default meta;

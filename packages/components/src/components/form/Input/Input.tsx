@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { useMeasure } from 'react-use';
 import { spacingsPx, spacings, typography } from '@trezor/theme';
 
-import { Icon } from '../../assets/Icon/Icon';
+import { Icon } from '../../Icon/Icon';
 import {
     baseInputStyle,
     INPUT_HEIGHTS,

@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Switch as SwitchComponent, SwitchProps } from './Switch';
 
 const meta: Meta = {
-    title: 'Form/Switch',
+    title: 'Form',
 } as Meta;
 export default meta;
 

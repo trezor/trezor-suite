@@ -10,7 +10,7 @@ const Center = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Misc/Timerange',
+    title: 'Timerange',
     component: TimerangeComponent,
 } as Meta;
 export default meta;

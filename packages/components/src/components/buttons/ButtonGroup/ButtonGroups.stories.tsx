@@ -7,7 +7,7 @@ import { IconButton } from '../IconButton/IconButton';
 import { Tooltip } from '../../Tooltip/Tooltip';
 
 const meta: Meta = {
-    title: 'Buttons/ButtonGroup',
+    title: 'Buttons',
     component: ButtonGroup,
 } as Meta;
 export default meta;

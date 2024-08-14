@@ -3,7 +3,7 @@ import { Spinner as SpinnerComponent, SpinnerProps, allowedSpinnerFrameProps } f
 import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta = {
-    title: 'Loaders/Spinner',
+    title: 'Spinner',
     component: SpinnerComponent,
 } as Meta;
 export default meta;

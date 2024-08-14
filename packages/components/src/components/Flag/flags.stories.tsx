@@ -28,7 +28,7 @@ const Text = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Assets/Flags',
+    title: 'Flags',
     parameters: {
         options: {
             showPanel: false,

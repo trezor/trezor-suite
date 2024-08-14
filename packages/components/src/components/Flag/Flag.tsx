@@ -17,7 +17,7 @@ export interface FlagProps {
 export const Flag = ({ size = 24, country, className }: FlagProps) => (
     <Wrapper>
         <img
-            src={require(`../../../images/flags/${country.toLowerCase()}.svg`)}
+            src={require(`../../images/flags/${country.toLowerCase()}.svg`)}
             width={`${size}px`}
             alt={`flag-${country}`}
             className={className}

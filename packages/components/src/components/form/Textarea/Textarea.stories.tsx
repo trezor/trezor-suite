@@ -4,7 +4,7 @@ import { ChangeEventHandler } from 'react';
 import { Textarea as TextareaComponent, TextareaProps } from './Textarea';
 
 const meta: Meta = {
-    title: 'Form/Textarea',
+    title: 'Form',
     component: TextareaComponent,
 } as Meta;
 export default meta;

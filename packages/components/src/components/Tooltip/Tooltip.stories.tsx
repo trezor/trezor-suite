@@ -55,7 +55,7 @@ const Addon = styled.span`
 `;
 
 const meta: Meta = {
-    title: 'Misc/Tooltip',
+    title: 'Tooltip',
     component: TooltipComponent,
 } as Meta;
 export default meta;

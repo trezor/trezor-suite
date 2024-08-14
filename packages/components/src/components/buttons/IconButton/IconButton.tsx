@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Icon, IconType } from '../../assets/Icon/Icon';
+import { Icon, IconType } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { ButtonContainer, ButtonProps } from '../Button/Button';
 import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';

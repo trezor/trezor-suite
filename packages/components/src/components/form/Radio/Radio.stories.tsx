@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Form/RadioButton',
+    title: 'Form',
     component: RadioComponent,
 } as Meta;
 export default meta;

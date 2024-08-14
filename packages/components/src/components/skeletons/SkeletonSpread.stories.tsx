@@ -9,7 +9,7 @@ const Container = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Skeletons/SkeletonSpread',
+    title: 'Skeletons',
     component: SkeletonSpreadComponent,
 } as Meta;
 export default meta;

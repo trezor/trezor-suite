@@ -27,7 +27,7 @@ const UiBox = styled.div<{ $elevation: Elevation }>`
 `;
 
 const meta: Meta = {
-    title: 'Misc/ElevationContext',
+    title: 'ElevationContext',
 } as Meta;
 export default meta;
 

@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Note as NoteComponent, NoteProps } from './Note';
 
 const meta: Meta = {
-    title: 'Misc/Note',
+    title: 'Note',
     component: NoteComponent,
 } as Meta;
 export default meta;

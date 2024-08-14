@@ -3,7 +3,7 @@ import { Badge as BadgeComponent, BadgeProps, allowedBadgeFrameProps } from './B
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
-    title: 'Misc/Badge',
+    title: 'Badge',
     component: BadgeComponent,
 } as Meta;
 export default meta;

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
-import { Icon, IconType } from '../assets/Icon/Icon';
+import { Icon, IconType } from '../Icon/Icon';
 import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
 import { Row, TransientProps, useElevation } from '../..';

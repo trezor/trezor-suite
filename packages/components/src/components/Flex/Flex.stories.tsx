@@ -77,7 +77,7 @@ const argTypes: Partial<ArgTypes<FlexProps>> = {
 };
 
 const meta: Meta = {
-    title: 'Misc/Layout',
+    title: 'Layout',
 } as Meta;
 export default meta;
 

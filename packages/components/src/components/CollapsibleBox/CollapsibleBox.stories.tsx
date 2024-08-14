@@ -13,7 +13,7 @@ const Content = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Misc/CollapsibleBox',
+    title: 'CollapsibleBox',
     component: CollapsibleBoxComponent,
 } as Meta;
 export default meta;

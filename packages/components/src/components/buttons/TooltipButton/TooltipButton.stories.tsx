@@ -5,7 +5,7 @@ import { allowedButtonFrameProps } from '../Button/Button';
 import { variables } from '../../../config';
 
 const meta: Meta = {
-    title: 'Buttons/TooltipButton',
+    title: 'Buttons',
     component: TooltipButtonComponent,
 } as Meta;
 export default meta;

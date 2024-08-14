@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Paragraph as P, ParagraphProps } from '../../../index';
 
 const meta: Meta = {
-    title: 'Typography/Paragraph',
+    title: 'Typography',
     component: P,
 } as Meta;
 export default meta;

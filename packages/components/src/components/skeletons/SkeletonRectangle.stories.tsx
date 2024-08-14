@@ -5,7 +5,7 @@ import {
 } from './SkeletonRectangle';
 
 const meta: Meta = {
-    title: 'Skeletons/SkeletonRectangle',
+    title: 'Skeletons',
     component: SkeletonRectangleComponent,
 } as Meta;
 export default meta;
