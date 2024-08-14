@@ -74,10 +74,13 @@ export interface CoinmarketSellFormProps
     cryptoSelect: CoinmarketAccountOptionsGroupOptionProps | undefined;
 }
 
+export type RateType = 'fixed' | 'floating';
+
 export interface CoinmarketExchangeFormProps extends FormState {
     receiveCryptoSelect: CoinmarketCryptoListProps | null;
     sendCryptoSelect: CoinmarketAccountOptionsGroupOptionProps | undefined;
     amountInCrypto: boolean;
+    rateType: RateType;
 }
 
 export type CoinmarketBuySellFormProps = CoinmarketBuyFormProps | CoinmarketSellFormProps;

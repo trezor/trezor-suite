@@ -26,8 +26,8 @@ import {
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import CoinmarketFormOfferFiatAmount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
 import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-// import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-// import CoinmarketFormOffersSwitcher from './CoinmarketFormOffersSwitcher';
+import CoinmarketFormOffersSwitcher from './CoinmarketFormOffersSwitcher';
+import { ExchangeTrade } from 'invity-api';
 
 const CoinmarketFormOfferHeader = styled.div`
     display: flex;
@@ -68,6 +68,7 @@ const CoinmarketFormOffer = () => {
     } = context;
     const providers = getProvidersInfoProps(context);
     const bestScoredQuote = quotes?.[0];
+    const [selectedQuote, setSelectedQuote] = useState(bestScoredQuote);
     const bestRatedQuote = getBestRatedQuote(quotes, type);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(bestScoredQuote, context);
 
@@ -128,20 +129,15 @@ const CoinmarketFormOffer = () => {
                     <Translation id="TR_COINMARKET_COMPARE_OFFERS" />
                 </CoinmarketFormOfferHeaderButton>
             </CoinmarketFormOfferHeader>
-            <CoinmarketFormOfferItem
-                bestQuote={bestScoredQuote}
-                isFormLoading={state.isFormLoading}
-                isFormInvalid={state.isFormInvalid}
-                providers={providers}
-                isBestRate={bestRatedQuote?.orderId === bestScoredQuote?.orderId}
-            />
-            {/*
-            {isCoinmarketExchangeOffers(context) ? (
+            {isCoinmarketExchangeOffers(context) ? ( // TODO: add exchange quote type guard?
                 <CoinmarketFormOffersSwitcher
                     isFormLoading={state.isFormLoading}
                     isFormInvalid={state.isFormInvalid}
                     providers={providers}
-                /
+                    quotes={quotes as ExchangeTrade[] | undefined}
+                    selectedQuote={selectedQuote as ExchangeTrade | undefined}
+                    setSelectedQuote={setSelectedQuote}
+                />
             ) : (
                 <CoinmarketFormOfferItem
                     bestQuote={bestScoredQuote}
@@ -150,10 +146,12 @@ const CoinmarketFormOffer = () => {
                     providers={providers}
                     isBestRate={bestRatedQuote?.orderId === bestScoredQuote?.orderId}
                 />
-            )} */}
+            )}
             <Button
                 onClick={() => {
-                    if (bestScoredQuote) {
+                    if (isCoinmarketExchangeOffers(context) && selectedQuote) {
+                        selectQuote(selectedQuote);
+                    } else if (bestScoredQuote) {
                         selectQuote(bestScoredQuote);
                     }
                 }}

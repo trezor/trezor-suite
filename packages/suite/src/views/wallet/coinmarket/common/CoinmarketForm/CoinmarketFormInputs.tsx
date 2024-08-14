@@ -27,7 +27,7 @@ import CoinmarketFormInputCountry from 'src/views/wallet/coinmarket/common/Coinm
 import CoinmarketFormInputFiatCrypto from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiatCrypto';
 import CoinmarketFormInputPaymentMethod from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
 import styled from 'styled-components';
-// import CoinmarketFormExchangeRates from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormExchangeRates';
+import CoinmarketFormSwitcherExchangeRates from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormSwitcherExchangeRates';
 
 const CoinmarketFeesWrapper = styled.div`
     margin-bottom: ${spacingsPx.md};
@@ -115,7 +115,7 @@ const CoinmarketFormInputs = () => {
             getValues,
             changeFeeLevel,
         } = context;
-        const { amountInCrypto } = getValues();
+        const { amountInCrypto, rateType } = getValues();
         const currencySelect = getValues().outputs[0].currency;
         const supportedCryptoCurrencies = exchangeInfo?.buySymbols;
 
@@ -163,7 +163,7 @@ const CoinmarketFormInputs = () => {
                         changeFeeLevel={changeFeeLevel}
                     />
                 </CoinmarketFeesWrapper>
-                {/* <CoinmarketFormExchangeRates /> */}
+                <CoinmarketFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
             </div>
         );
     }

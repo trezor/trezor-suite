@@ -1,10 +1,11 @@
-/*
 import styled, { css } from 'styled-components';
 import { Radio } from '@trezor/components';
 import { variables } from '@trezor/components/src/config';
 import { Translation } from 'src/components/suite';
 import { borders, spacingsPx } from '@trezor/theme';
 import CoinmarketFormInputLabel from './CoinmarketFormInputLabel';
+import { CoinmarketExchangeFormProps, RateType } from 'src/types/coinmarket/coinmarketForm';
+import { UseFormSetValue } from 'react-hook-form';
 
 const RadioItems = styled.div`
     display: flex;
@@ -42,12 +43,16 @@ const RadioItem = styled.div<{ $isSelected: boolean }>`
               `}
 `;
 
-type Rate = 'fixed' | 'floating';
+interface CoinmarketFormSwitcherExchangeRatesProps {
+    rateType: RateType;
+    setValue: UseFormSetValue<CoinmarketExchangeFormProps>;
+}
 
-const CoinmarketFormExchangeRates = () => {
-    const selectedRate: Rate = 'fixed'; // TODO: get from state
-    const onChange = (_rate: Rate) => {}; // TODO: dispatch
-    const floatingRateSelected = selectedRate === 'floating';
+const CoinmarketFormSwitcherExchangeRates = ({
+    rateType,
+    setValue,
+}: CoinmarketFormSwitcherExchangeRatesProps) => {
+    const floatingRateSelected = rateType === 'floating';
 
     return (
         <>
@@ -57,7 +62,7 @@ const CoinmarketFormExchangeRates = () => {
                     <Radio
                         labelAlignment="left"
                         isChecked={!floatingRateSelected}
-                        onClick={() => onChange('fixed')}
+                        onClick={() => setValue('rateType', 'fixed')}
                     >
                         <div>
                             <div className="header">
@@ -73,7 +78,7 @@ const CoinmarketFormExchangeRates = () => {
                     <Radio
                         labelAlignment="left"
                         isChecked={floatingRateSelected}
-                        onClick={() => onChange('floating')}
+                        onClick={() => setValue('rateType', 'floating')}
                     >
                         <div>
                             <div className="header">
@@ -90,5 +95,4 @@ const CoinmarketFormExchangeRates = () => {
     );
 };
 
-export default CoinmarketFormExchangeRates;
-*/
+export default CoinmarketFormSwitcherExchangeRates;

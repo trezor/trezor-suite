@@ -1,5 +1,23 @@
 [
     {
+      "fiatStringAmount": "500.00",
+      "fiatCurrency": "EUR",
+      "receiveCurrency": "BTC",
+      "receiveStringAmount": "0.02073954",
+      "rate": 24108.538569322172,
+      "quoteId": "mockedQuote3",
+      "paymentId": "mockedPaymentId3",
+      "exchange": "banxa",
+      "minFiat": 50,
+      "maxFiat": 30000,
+      "minCrypto": 0.00217306,
+      "maxCrypto": 1.30383763,
+      "paymentMethod": "bankTransfer",
+      "country": "AT",
+      "wantCrypto": false,
+      "partnerData2": "6053"
+    },
+    {
         "fiatStringAmount": "500",
         "fiatCurrency": "EUR",
         "receiveCurrency": "BTC",
@@ -34,24 +52,6 @@
         "paymentMethod": "giropay",
         "country": "AT",
         "wantCrypto": false
-    },
-    {
-        "fiatStringAmount": "500.00",
-        "fiatCurrency": "EUR",
-        "receiveCurrency": "BTC",
-        "receiveStringAmount": "0.02073954",
-        "rate": 24108.538569322172,
-        "quoteId": "mockedQuote3",
-        "paymentId": "mockedPaymentId3",
-        "exchange": "banxa",
-        "minFiat": 50,
-        "maxFiat": 30000,
-        "minCrypto": 0.00217306,
-        "maxCrypto": 1.30383763,
-        "paymentMethod": "bankTransfer",
-        "country": "AT",
-        "wantCrypto": false,
-        "partnerData2": "6053"
     },
     {
         "fiatStringAmount": "500.00",
