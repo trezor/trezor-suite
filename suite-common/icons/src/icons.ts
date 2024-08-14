@@ -11,6 +11,7 @@ export const icons = {
     arrowURightDown: require('../assets/icons/arrowURightDown.svg'),
     arrowUp: require('../assets/icons/arrowUp.svg'),
     arrowUpRight: require('../assets/icons/arrowUpRight.svg'),
+    arrowsCircle: require('../assets/icons/arrowsCircle.svg'),
     backspace: require('../assets/icons/backspace.svg'),
     biometric: require('../assets/icons/biometric.svg'),
     bookmark: require('../assets/icons/bookmark.svg'),
@@ -124,6 +125,7 @@ export type IconName = keyof typeof icons;
 export const cryptoIcons = {
     ada: require('../assets/cryptoIcons/ada.svg'),
     bch: require('../assets/cryptoIcons/bch.svg'),
+    bnb: require('../assets/cryptoIcons/bnb.svg'),
     btc: require('../assets/cryptoIcons/btc.svg'),
     btg: require('../assets/cryptoIcons/btg.svg'),
     dash: require('../assets/cryptoIcons/dash.svg'),
@@ -132,7 +134,6 @@ export const cryptoIcons = {
     dsol: require('../assets/cryptoIcons/dsol.svg'),
     etc: require('../assets/cryptoIcons/etc.svg'),
     eth: require('../assets/cryptoIcons/eth.svg'),
-    bnb: require('../assets/cryptoIcons/bnb.svg'),
     gnt: require('../assets/cryptoIcons/gnt.svg'),
     ltc: require('../assets/cryptoIcons/ltc.svg'),
     matic: require('../assets/cryptoIcons/matic.svg'),
