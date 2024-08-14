@@ -911,7 +911,6 @@
   "TR_EXCHANGE_VIEW_DETAILS": "Zobraziť podrobnosti",
   "TR_EXPERIMENTAL_FEATURES": "Experimentálne funkcie",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Allow experimental features",
-  "TR_EXPERIMENTAL_FEATURES_DESCRIPTION": "Allows you to select which experimental, cutting edge and/or unstable features you want to enable in Trezor Suite.",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "There is no guarantee of long-term support of these features.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Password manager",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION": "Re-implementation of Trezor password manager webextension",
