@@ -752,6 +752,7 @@ export const useCoinmarketSellForm = ({
         transactionId,
         trades,
         trade,
+        isNotFormPage,
         dispatch,
         navigateToSellForm,
         checkQuotesTimer,
