@@ -311,7 +311,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
 
             {isLowAnonymity && (
                 <WarningWrapper>
-                    <Warning withIcon>
+                    <Warning icon>
                         <Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />
                     </Warning>
                 </WarningWrapper>

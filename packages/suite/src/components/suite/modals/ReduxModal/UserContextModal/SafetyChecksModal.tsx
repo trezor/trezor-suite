@@ -83,7 +83,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL" />
                         </H3>
                         <WarningWrapper>
-                            <Warning withIcon>
+                            <Warning icon>
                                 <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />
                             </Warning>
                         </WarningWrapper>
