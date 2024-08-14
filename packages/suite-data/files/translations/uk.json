@@ -911,7 +911,6 @@
   "TR_EXCHANGE_VIEW_DETAILS": "Переглянути деталі",
   "TR_EXPERIMENTAL_FEATURES": "Експериментальні функції",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Дозволити експериментальні функції",
-  "TR_EXPERIMENTAL_FEATURES_DESCRIPTION": "Дозволяє вибрати, які експериментальні, передові та/або нестабільні функції ви хочете ввімкнути в Trezor Suite.",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Довготривала підтримка цих функцій не гарантується.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Менеджер паролів",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION": "Повторна реалізація веб-розширення менеджера паролів Trezor",
