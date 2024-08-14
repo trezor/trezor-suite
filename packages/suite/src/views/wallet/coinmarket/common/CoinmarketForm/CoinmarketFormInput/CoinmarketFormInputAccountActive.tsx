@@ -25,6 +25,7 @@ import {
 import { FORM_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormDefaultValues';
 import { CoinmarketFormOptionIcon } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
+import { HiddenPlaceholder } from 'src/components/suite';
 
 const CoinmarketFormInputAccountActive = ({ label }: CoinmarketFormInputDefaultProps) => {
     const {
@@ -69,7 +70,9 @@ const CoinmarketFormInputAccountActive = ({ label }: CoinmarketFormInputDefaultP
                                         {option.cryptoName}
                                     </CoinmarketFormOptionLabelLong>
                                     <CoinmarketFormOptionLabelLong>
-                                        ({option.balance} {option.label})
+                                        <HiddenPlaceholder>
+                                            ({option.balance} {option.label})
+                                        </HiddenPlaceholder>
                                     </CoinmarketFormOptionLabelLong>
                                     {option.value &&
                                         isCryptoSymbolToken(option.value) &&
