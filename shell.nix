@@ -1,14 +1,14 @@
-# the last successful build of nixos-unstable as of 2023-10-30
+# pinned to nixos-24.05 on commit https://github.com/NixOS/nixpkgs/commit/4a92571f9207810b559c9eac203d1f4d79830073
 with import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/08b9151ed40350725eb40b1fe96b0b86304a654b.tar.gz";
-    sha256 = "09k701xi2zlxdzvsa276b4vs8h4vjjshlaik25bfv1hkrwm30s56";
+    url = "https://github.com/NixOS/nixpkgs/archive/4a92571f9207810b559c9eac203d1f4d79830073.tar.gz";
+    sha256 = "0sp7qjbb7dvrh4zvd40i6y7jwsd1v1qj44f0c95q88g7fikda8gq";
   })
 { };
 
 let
   # unstable packages
-  electron = electron_27; # use the same version as defined in packages/suite-desktop/package.json
+  electron = electron_30; # use the same version as defined in packages/suite-desktop/package.json
   nodejs = nodejs_20;
   # use older gcc. 10.2.0 with glibc 2.32 for node_modules bindings.
   # electron-builder is packing the app with glibc 2.32, bindings should not be compiled with newer version.
