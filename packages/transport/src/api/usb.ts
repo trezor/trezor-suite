@@ -8,7 +8,7 @@ import {
     TREZOR_USB_DESCRIPTORS,
     WEBUSB_BOOTLOADER_PRODUCT,
 } from '../constants';
-import { createTimeoutPromise } from '@trezor/utils';
+import { createTimeoutPromise, getSynchronize } from '@trezor/utils';
 
 import * as ERRORS from '../errors';
 
@@ -27,6 +27,8 @@ interface TransportInterfaceDevice {
  * Local error. We cast it to "device disconnected during action" from bridge as it means the same
  */
 const INTERFACE_DEVICE_DISCONNECTED = 'The device was disconnected.' as const;
+
+const synchronize = getSynchronize();
 
 export class UsbApi extends AbstractApi {
     chunkSize = 64;
@@ -141,14 +143,16 @@ export class UsbApi extends AbstractApi {
     public async enumerate(signal?: AbortSignal) {
         try {
             this.logger?.debug('usb: enumerate');
-            const devices = await this.abortableMethod(
-                () => this.usbInterface.getDevices(),
-                signal,
-            );
+            return synchronize(async () => {
+                const devices = await this.abortableMethod(
+                    () => this.usbInterface.getDevices(),
+                    signal,
+                );
 
-            this.devices = await this.createDevices(devices, signal);
+                this.devices = await this.createDevices(devices, signal);
 
-            return this.success(this.devicesToDescriptors());
+                return this.success(this.devicesToDescriptors());
+            });
         } catch (err) {
             // this shouldn't throw
             return this.unknownError(err, []);
