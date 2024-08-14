@@ -10579,7 +10579,6 @@ __metadata:
     cbor-js: "npm:^0.1.0"
     crc: "npm:^3.8.0"
     groestl-hash-js: "npm:1.0.0"
-    jest-environment-jsdom: "npm:29.7.0"
     jssha: "npm:2.3.1"
     lodash: "npm:^4.17.15"
     rimraf: "npm:^6.0.1"
@@ -11714,6 +11713,7 @@ __metadata:
     "@types/w3c-web-usb": "npm:^1.0.10"
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
+    jest-environment-node: "npm:^29.7.0"
     long: "npm:^4.0.0"
     protobufjs: "npm:7.2.6"
     ts-node: "npm:^10.9.1"
@@ -11754,7 +11754,6 @@ __metadata:
   resolution: "@trezor/utils@workspace:packages/utils"
   dependencies:
     bignumber.js: "npm:^9.1.2"
-    jest-environment-node: "npm:^29.7.0"
     tsx: "npm:^4.16.3"
   peerDependencies:
     tslib: ^2.6.2
@@ -26438,7 +26437,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-node@npm:^29.6.3, jest-environment-node@npm:^29.7.0":
+"jest-environment-node@npm:29.7.0, jest-environment-node@npm:^29.6.3, jest-environment-node@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest-environment-node@npm:29.7.0"
   dependencies:
@@ -39756,6 +39755,8 @@ __metadata:
     eslint-plugin-react: "npm:^7.33.2"
     eslint-plugin-react-hooks: "npm:^4.6.0"
     jest: "npm:29.7.0"
+    jest-environment-jsdom: "npm:29.7.0"
+    jest-environment-node: "npm:29.7.0"
     jest-expo: "npm:^50.0.2"
     metro-react-native-babel-preset: "npm:0.77.0"
     nx: "npm:^18.0.3"
