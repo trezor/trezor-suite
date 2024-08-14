@@ -19,6 +19,7 @@ import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { useAccountLabel } from 'src/components/suite/AccountLabel';
+import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 export const useCoinmarketBuildAccountGroups = (
     type: CoinmarketTradeSellExchangeType,
@@ -70,8 +71,13 @@ export const useCoinmarketSellFormDefaultValues = (
     const cryptoGroups = useCoinmarketBuildAccountGroups('sell');
     const cryptoOptions = cryptoGroups.flatMap(group => group.options);
     const defaultCrypto = useMemo(
-        () => cryptoOptions.find(option => option.descriptor === account.descriptor),
-        [account.descriptor, cryptoOptions],
+        () =>
+            cryptoOptions.find(
+                option =>
+                    option.descriptor === account.descriptor &&
+                    cryptoToNetworkSymbol(option.value) === account.symbol,
+            ),
+        [account.descriptor, account.symbol, cryptoOptions],
     );
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     const defaultPaymentMethod: CoinmarketPaymentMethodListProps = useMemo(
