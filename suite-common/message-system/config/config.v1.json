@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-07-029T00:00:00+00:00",
-    "sequence": 60,
+    "timestamp": "2024-08-14T00:00:00+00:00",
+    "sequence": 61,
     "actions": [
         {
             "conditions": [
@@ -813,6 +813,30 @@
                         "de": "Suite aktualisieren"
                     }
                 }
+            }
+        },
+        {
+            "conditions": [],
+            "message": {
+                "id": "c4d9cc37-4b5b-4d5a-8f51-8b2c72e1735c",
+                "priority": 1,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "security.firmware.check",
+                        "flag": false
+                    }
+                ]
             }
         }
     ]
