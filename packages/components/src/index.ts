@@ -77,5 +77,6 @@ export * from './constants/keyboardEvents';
 
 export * from './utils/useScrollShadow';
 export * from './utils/transientProps';
+export { useMediaQuery } from './utils/useMediaQuery';
 
 export { colors, THEME, intermediaryTheme, type SuiteThemeColors };
