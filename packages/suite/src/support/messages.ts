@@ -1759,6 +1759,10 @@ export default defineMessages({
         defaultMessage: 'No methods available',
         id: 'TR_COINMARKET_NO_METHODS_AVAILABLE',
     },
+    TR_COINMARKET_EXCHANGE: {
+        defaultMessage: 'Exchange',
+        id: 'TR_COINMARKET_EXCHANGE',
+    },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',

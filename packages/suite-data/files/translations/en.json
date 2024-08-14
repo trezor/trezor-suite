@@ -549,6 +549,7 @@
   "TR_COINMARKET_NO_OFFERS_LOADING_FAILED_MESSAGE": "Sorry, we don't have any offers at the moment due to a server connectivity issue.",
   "TR_COINMARKET_NO_OFFERS_MESSAGE": "Sorry, we don't have any offers at the moment. Try to reload the page or change your query.",
   "TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON": "Reload page",
+  "TR_COINMARKET_EXCHANGE": "Exchange",
   "TR_COINMARKET_OFFERS_EMPTY": "No offers available for your request. Change country or buy amount.",
   "TR_COINMARKET_OFFERS_REFRESH": "Offers refresh in",
   "TR_COINMARKET_OFFERS_SELECT": "Select",

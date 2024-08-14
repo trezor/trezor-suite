@@ -14,7 +14,6 @@ import {
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import CoinmarketSelectedOfferSell from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferSell/CoinmarketSelectedOfferSell';
-import { BuyTrade, SellFiatTrade } from 'invity-api';
 
 const Wrapper = styled.div`
     display: flex;
@@ -52,7 +51,7 @@ export const CoinmarketSelectedOffer = () => {
                 </StyledCard>
             )}
             <CoinmarketSelectedOfferInfo
-                selectedQuote={selectedQuote as BuyTrade | SellFiatTrade} // TODO: exchange
+                selectedQuote={selectedQuote}
                 providers={providers}
                 quoteAmounts={quoteAmounts}
                 type={context.type}

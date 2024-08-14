@@ -1,6 +1,7 @@
 import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import {
     isCoinmarketBuyOffers,
+    isCoinmarketExchangeOffers,
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import {
@@ -108,4 +109,12 @@ export const getSelectQuoteTyped = (
 
 export const isBuyTrade = (quote: CoinmarketTradeDetailType): quote is BuyTrade => {
     return 'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
+};
+
+export const getSelectedCrypto = (context: CoinmarketFormContextValues<CoinmarketTradeType>) => {
+    if (isCoinmarketExchangeOffers(context)) {
+        return context.getValues().receiveCryptoSelect;
+    }
+
+    return context.getValues().cryptoSelect;
 };

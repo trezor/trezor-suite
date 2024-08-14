@@ -10,3 +10,6 @@ export const FORM_CRYPTO_INPUT = 'cryptoInput';
 export const FORM_CRYPTO_CURRENCY_SELECT = 'cryptoSelect';
 export const FORM_COUNTRY_SELECT = 'countrySelect';
 export const FORM_PAYMENT_METHOD_SELECT = 'paymentMethod';
+
+export const FORM_SEND_CRYPTO_CURRENCY_SELECT = 'sendCryptoSelect';
+export const FORM_RECEIVE_CRYPTO_CURRENCY_SELECT = 'receiveCryptoSelect';

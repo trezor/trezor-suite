@@ -176,7 +176,8 @@ export const useCoinmarketExchangeForm = ({
 
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues =
-        (values.outputs?.[0]?.fiat || values.outputs?.[0]?.amount) && !!values.cryptoSelect?.value;
+        (values.outputs?.[0]?.fiat || values.outputs?.[0]?.amount) &&
+        !!values.receiveCryptoSelect?.value;
     const isFirstRequest = innerQuotes === undefined;
     const noProviders = exchangeInfo?.exchangeList?.length === 0;
     const isLoading = !exchangeInfo?.exchangeList || !state?.formValues?.outputs[0].address;
@@ -249,17 +250,17 @@ export const useCoinmarketExchangeForm = ({
     );
 
     const getQuoteRequestData = useCallback((): ExchangeTradeQuoteRequest | null => {
-        const { outputs, cryptoSelect, sendCryptoSelect } = getValues();
+        const { outputs, receiveCryptoSelect, sendCryptoSelect } = getValues();
         const unformattedOutputAmount = outputs[0].amount || '';
         const sendStringAmount =
             unformattedOutputAmount && shouldSendInSats
                 ? formatAmount(unformattedOutputAmount, network.decimals)
                 : unformattedOutputAmount;
 
-        if (!cryptoSelect?.value || !sendCryptoSelect?.value) return null;
+        if (!receiveCryptoSelect?.value || !sendCryptoSelect?.value) return null;
 
         const request: ExchangeTradeQuoteRequest = {
-            receive: cryptoSelect.value as CryptoSymbol,
+            receive: receiveCryptoSelect.value as CryptoSymbol,
             send: sendCryptoSelect.value as CryptoSymbol,
             sendStringAmount,
             dex: 'enable',
@@ -525,7 +526,12 @@ export const useCoinmarketExchangeForm = ({
 
     // call change handler on every change of select inputs
     useEffect(() => {
-        if (isChanged(previousValues.current?.cryptoSelect?.value, values?.cryptoSelect?.value)) {
+        if (
+            isChanged(
+                previousValues.current?.receiveCryptoSelect?.value,
+                values?.receiveCryptoSelect?.value,
+            )
+        ) {
             handleSubmit(() => {
                 handleChange();
             })();
@@ -615,13 +621,13 @@ export const useCoinmarketExchangeForm = ({
             return;
         }
 
-        if (values.sendCryptoSelect && !values.sendCryptoSelect?.cryptoSymbol) {
+        if (values.sendCryptoSelect && !values.sendCryptoSelect?.value) {
             removeDraft(account.key);
 
             return;
         }
 
-        if (values.cryptoSelect && !values.cryptoSelect?.value) {
+        if (values.receiveCryptoSelect && !values.receiveCryptoSelect?.value) {
             removeDraft(account.key);
         }
     }, [defaultValues, values, removeDraft, account.key]);
@@ -741,6 +747,7 @@ export const useCoinmarketExchangeForm = ({
         exchangeStep,
         suiteReceiveAccounts,
         receiveAccount,
+        selectedQuote,
         setReceiveAccount,
         composeRequest,
         changeFeeLevel,

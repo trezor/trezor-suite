@@ -15,7 +15,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 import { FiatCurrencyCode } from 'invity-api';
 import { useCallback } from 'react';
-import { setCoinmarketSellAccount } from 'src/actions/wallet/coinmarketSellActions';
+import { setCoinmarketExchangeAccount } from 'src/actions/wallet/coinmarketExchangeActions';
 import {
     FORM_CRYPTO_TOKEN,
     FORM_OUTPUT_ADDRESS,
@@ -107,6 +107,7 @@ export const useCoinmarketExchangeFormHelpers = ({
         [getValues, fiatRate, shouldSendInSats, network.decimals, setValue],
     );
 
+    // TODO: chore - same for sell
     const onCryptoCurrencyChange = useCallback(
         (selected: CoinmarketAccountOptionsGroupOptionProps) => {
             const networkSymbol = cryptoToNetworkSymbol(selected.value);
@@ -130,7 +131,7 @@ export const useCoinmarketExchangeFormHelpers = ({
             setAmountLimits(undefined);
 
             if (account) {
-                dispatch(setCoinmarketSellAccount(account));
+                dispatch(setCoinmarketExchangeAccount(account));
                 changeFeeLevel('normal'); // reset fee level
             }
         },
@@ -150,6 +151,7 @@ export const useCoinmarketExchangeFormHelpers = ({
         setValue(FORM_OUTPUT_AMOUNT, formattedCryptoValue, { shouldValidate: true });
     };
 
+    // TODO: chore - same for sell
     const setRatioAmount = useCallback(
         (divisor: number) => {
             const amount = tokenData
@@ -178,6 +180,7 @@ export const useCoinmarketExchangeFormHelpers = ({
         ],
     );
 
+    // TODO: chore - same for sell
     const setAllAmount = useCallback(() => {
         setValue('setMaxOutputId', 0, { shouldDirty: true });
         setValue(FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });

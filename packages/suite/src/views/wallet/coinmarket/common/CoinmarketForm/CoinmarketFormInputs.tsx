@@ -6,6 +6,8 @@ import {
     FORM_FIAT_INPUT,
     FORM_OUTPUT_AMOUNT,
     FORM_OUTPUT_FIAT,
+    FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    FORM_SEND_CRYPTO_CURRENCY_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
@@ -19,8 +21,8 @@ import {
 } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketFormInput } from 'src/views/wallet/coinmarket';
 import { CoinmarketFractionButtons } from 'src/views/wallet/coinmarket/common';
+import CoinmarketFormInputCrypto from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCrypto';
 import CoinmarketFormInputAccount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccount';
-import CoinmarketFormInputAccountActive from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccountActive';
 import CoinmarketFormInputCountry from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
 import CoinmarketFormInputFiatCrypto from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiatCrypto';
 import CoinmarketFormInputPaymentMethod from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
@@ -56,7 +58,10 @@ const CoinmarketFormInputs = () => {
         return (
             <>
                 <CoinmarketFormInput>
-                    <CoinmarketFormInputAccountActive label="TR_COINMARKET_YOU_SELL" />
+                    <CoinmarketFormInputAccount<CoinmarketBuyFormProps>
+                        accountSelectName={FORM_CRYPTO_CURRENCY_SELECT}
+                        label="TR_COINMARKET_YOU_SELL"
+                    />
                 </CoinmarketFormInput>
                 <CoinmarketFormInput>
                     <CoinmarketFormInputFiatCrypto<CoinmarketSellFormProps>
@@ -104,6 +109,7 @@ const CoinmarketFormInputs = () => {
             composedLevels,
             formState: { errors },
             form: { helpers },
+            exchangeInfo,
             register,
             setValue,
             getValues,
@@ -111,11 +117,15 @@ const CoinmarketFormInputs = () => {
         } = context;
         const { amountInCrypto } = getValues();
         const currencySelect = getValues().outputs[0].currency;
+        const supportedCryptoCurrencies = exchangeInfo?.buySymbols;
 
         return (
             <div>
                 <CoinmarketFormInput>
-                    <CoinmarketFormInputAccountActive label="TR_FROM" />
+                    <CoinmarketFormInputAccount
+                        accountSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                        label="TR_FROM"
+                    />
                 </CoinmarketFormInput>
                 <CoinmarketFormInput>
                     <CoinmarketFormInputFiatCrypto<CoinmarketExchangeFormProps>
@@ -132,6 +142,14 @@ const CoinmarketFormInputs = () => {
                         onAllClick={helpers.setAllAmount}
                     />
                 )}
+                <CoinmarketFormInput>
+                    <CoinmarketFormInputCrypto<CoinmarketExchangeFormProps>
+                        label="TR_TO"
+                        cryptoSelectName={FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
+                        supportedCryptoCurrencies={supportedCryptoCurrencies}
+                        methods={{ ...context }}
+                    />
+                </CoinmarketFormInput>
                 <CoinmarketFeesWrapper>
                     <Fees
                         control={control}
@@ -157,7 +175,7 @@ const CoinmarketFormInputs = () => {
     return (
         <>
             <CoinmarketFormInput>
-                <CoinmarketFormInputAccount<CoinmarketBuyFormProps>
+                <CoinmarketFormInputCrypto<CoinmarketBuyFormProps>
                     label="TR_COINMARKET_YOU_BUY"
                     cryptoSelectName={FORM_CRYPTO_CURRENCY_SELECT}
                     supportedCryptoCurrencies={supportedCryptoCurrencies}

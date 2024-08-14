@@ -5,6 +5,7 @@ import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCo
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
+    getSelectedCrypto,
     getSelectQuoteTyped,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useState } from 'react';
@@ -20,9 +21,11 @@ import CoinmarketFormOfferCryptoAmount from 'src/views/wallet/coinmarket/common/
 import {
     coinmarketGetAmountLabels,
     coinmarketGetRoundedFiatAmount,
+    coinmarketGetSectionActionLabel,
     getBestRatedQuote,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import CoinmarketFormOfferFiatAmount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
+import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 // import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 // import CoinmarketFormOffersSwitcher from './CoinmarketFormOffersSwitcher';
 
@@ -68,7 +71,7 @@ const CoinmarketFormOffer = () => {
     const bestRatedQuote = getBestRatedQuote(quotes, type);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(bestScoredQuote, context);
 
-    const selectedCrypto = getValues().cryptoSelect;
+    const selectedCrypto = getSelectedCrypto(context);
     const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency
         ? cryptoToCoinSymbol(bestScoredQuoteAmounts.receiveCurrency)
         : null;
@@ -80,6 +83,7 @@ const CoinmarketFormOffer = () => {
             : '0';
 
     const selectQuote = getSelectQuoteTyped(context);
+    const shouldDisplayFiatAmount = isCoinmarketExchangeOffers(context) ? false : amountInCrypto;
 
     return (
         <>
@@ -88,7 +92,7 @@ const CoinmarketFormOffer = () => {
                     <Translation id={amountLabels.label2} />
                 </CoinmarketFormInputLabelText>
             </CoinmarketFormInputLabelWrapper>
-            {amountInCrypto ? (
+            {shouldDisplayFiatAmount ? (
                 <CoinmarketFormOfferFiatAmount
                     amount={coinmarketGetRoundedFiatAmount(sendAmount)}
                 />
@@ -162,7 +166,7 @@ const CoinmarketFormOffer = () => {
                 isDisabled={state.isLoadingOrInvalid || !bestScoredQuote}
                 data-testid={`@coinmarket/form/${type}-button`}
             >
-                <Translation id={type === 'sell' ? 'TR_COINMARKET_SELL' : 'TR_BUY'} />
+                <Translation id={coinmarketGetSectionActionLabel(type)} />
             </Button>
         </>
     );

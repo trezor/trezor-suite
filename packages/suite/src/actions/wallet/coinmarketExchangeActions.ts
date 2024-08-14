@@ -138,3 +138,8 @@ export const clearQuotes = (): CoinmarketExchangeAction => ({
 
 export const verifyAddress = (account: Account, address?: string, path?: string) =>
     verifyExchangeAddress(account, address, path, COINMARKET_EXCHANGE.VERIFY_ADDRESS);
+
+export const setCoinmarketExchangeAccount = (account: Account): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT,
+    account,
+});

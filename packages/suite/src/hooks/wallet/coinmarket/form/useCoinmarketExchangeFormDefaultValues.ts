@@ -1,9 +1,7 @@
 import { useMemo } from 'react';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { buildCryptoOption, buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
-import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { defaultCryptoCurrency } from 'src/constants/wallet/coinmarket/cryptoCurrencies';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useSelector } from 'src/hooks/suite';
 import { CoinmarketExchangeFormDefaultValuesProps } from 'src/types/coinmarket/coinmarketForm';
@@ -18,13 +16,9 @@ export const useCoinmarketExchangeFormDefaultValues = (
     const defaultCurrency = useMemo(() => buildFiatOption(localCurrency), [localCurrency]);
     const cryptoGroups = useCoinmarketBuildAccountGroups('exchange');
     const cryptoOptions = cryptoGroups.flatMap(group => group.options);
-    const defaultCrypto = useMemo(
+    const defaultSendCryptoSelect = useMemo(
         () => cryptoOptions.find(option => option.descriptor === account.descriptor),
         [account.descriptor, cryptoOptions],
-    );
-    const defaultSendCryptoSelect = useMemo(
-        () => buildCryptoOption(networkToCryptoSymbol(account.symbol) ?? defaultCryptoCurrency),
-        [account.symbol],
     );
 
     const defaultPayment: Output = useMemo(
@@ -47,13 +41,11 @@ export const useCoinmarketExchangeFormDefaultValues = (
     const defaultValues = useMemo(
         () => ({
             ...defaultFormState,
-            fiatInput: '',
-            cryptoInput: '',
             amountInCrypto: true,
-            cryptoSelect: defaultCrypto,
             sendCryptoSelect: defaultSendCryptoSelect,
+            receiveCryptoSelect: null,
         }),
-        [defaultCrypto, defaultFormState, defaultSendCryptoSelect],
+        [defaultFormState, defaultSendCryptoSelect],
     );
 
     return { defaultValues, defaultCurrency };

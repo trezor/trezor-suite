@@ -75,8 +75,8 @@ export interface CoinmarketSellFormProps
 }
 
 export interface CoinmarketExchangeFormProps extends FormState {
-    cryptoSelect: CoinmarketAccountOptionsGroupOptionProps | undefined;
-    sendCryptoSelect?: Option & { cryptoSymbol?: CryptoSymbol };
+    receiveCryptoSelect: CoinmarketCryptoListProps | null;
+    sendCryptoSelect: CoinmarketAccountOptionsGroupOptionProps | undefined;
     amountInCrypto: boolean;
 }
 
@@ -256,7 +256,7 @@ export type CoinmarketFormStateMapProps = {
     exchange: CoinmarketExchangeFormProps;
 };
 
-export interface CoinmarketFormInputAccountProps<TFieldValues extends FieldValues>
+export interface CoinmarketFormInputCryptoProps<TFieldValues extends FieldValues>
     extends CoinmarketFormInputDefaultProps {
     cryptoSelectName: FieldPath<TFieldValues>;
     supportedCryptoCurrencies: Set<CryptoSymbol> | undefined;
@@ -275,6 +275,11 @@ export interface CoinmarketFormInputFiatCryptoWrapProps<TFieldValues extends Fie
     cryptoInputName: FieldPath<TFieldValues>;
     fiatInputName: FieldPath<TFieldValues>;
     currencySelectLabel?: string;
+}
+
+export interface CoinmarketFormInputAccountProps<TFieldValues extends FieldValues>
+    extends CoinmarketFormInputLabelProps {
+    accountSelectName: FieldPath<TFieldValues>;
 }
 
 export interface CoinmarketFormInputCurrencyProps extends CoinmarketFormInputCommonProps {

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BuyTrade, SellFiatTrade } from 'invity-api';
+import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import { variables } from '@trezor/components';
 import {
     CoinmarketPaymentType,
@@ -109,7 +109,7 @@ const TransactionIdWrapper = styled.div`
 `;
 
 interface CoinmarketSelectedOfferInfoProps {
-    selectedQuote: BuyTrade | SellFiatTrade; // TODO: exchange
+    selectedQuote: BuyTrade | SellFiatTrade | ExchangeTrade; // TODO: exchange
     transactionId?: string;
     providers: CoinmarketGetProvidersInfoProps;
     quoteAmounts: CoinmarketGetCryptoQuoteAmountProps | null;
