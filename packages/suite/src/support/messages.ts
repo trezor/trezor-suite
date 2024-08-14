@@ -1567,7 +1567,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON',
     },
     TR_COINMARKET_OFFERS_EMPTY: {
-        defaultMessage: 'No offer for your request. Please change country or buy amount.',
+        defaultMessage: 'No offers available for your request. Change country or buy amount.',
         id: 'TR_COINMARKET_OFFERS_EMPTY',
     },
     TR_COINMARKET_UNKNOWN_PROVIDER: {
@@ -1575,11 +1575,11 @@ export default defineMessages({
         id: 'TR_COINMARKET_UNKNOWN_PROVIDER',
     },
     TR_COINMARKET_YOU_WILL_GET: {
-        defaultMessage: 'You will get',
+        defaultMessage: "You'll get",
         id: 'TR_COINMARKET_YOU_WILL_GET',
     },
     TR_COINMARKET_YOU_WILL_PAY: {
-        defaultMessage: 'You will pay',
+        defaultMessage: "You'll pay",
         id: 'TR_COINMARKET_YOU_WILL_PAY',
     },
     TR_COINMARKET_SHOW_OFFERS: {
@@ -1627,11 +1627,11 @@ export default defineMessages({
         id: 'TR_COINMARKET_COMPARE_OFFERS',
     },
     TR_COINMARKET_OFFER_LOOKING: {
-        defaultMessage: 'Looking for your best offer',
+        defaultMessage: 'Searching for your best offer',
         id: 'TR_COINMARKET_OFFER_LOOKING',
     },
     TR_COINMARKET_OFFER_NO_FOUND: {
-        defaultMessage: 'No offers found for your request. Try a different amount or currency.',
+        defaultMessage: 'No offers available for your request. Change amount or currency.',
         id: 'TR_COINMARKET_OFFER_NO_FOUND',
     },
     TR_COINMARKET_BEST_RATE: {
@@ -1648,7 +1648,7 @@ export default defineMessages({
     },
     TR_COINMARKET_FEES_ON_WEBSITE: {
         defaultMessage:
-            "Certain fees are not included in the displayed price. You will review the final price on the provider's website.",
+            "Some fees aren't included in the displayed price; the final cost will be shown on the provider's website.",
         id: 'TR_COINMARKET_FEES_ON_WEBSITE',
     },
     TR_COINMARKET_NETWORK_FEE: {
@@ -1672,7 +1672,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_CRYPTO_CATEGORY_A',
     },
     TR_COINMARKET_CRYPTO_CATEGORY_B: {
-        defaultMessage: 'Ethereum ERC20 tokens',
+        defaultMessage: 'Ethereum ERC-20 tokens',
         id: 'TR_COINMARKET_CRYPTO_CATEGORY_B',
     },
     TR_COINMARKET_CRYPTO_CATEGORY_C: {
@@ -1680,7 +1680,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_CRYPTO_CATEGORY_C',
     },
     TR_COINMARKET_CRYPTO_CATEGORY_D: {
-        defaultMessage: 'Polygon ERC20 tokens',
+        defaultMessage: 'Polygon ERC-20 tokens',
         id: 'TR_COINMARKET_CRYPTO_CATEGORY_D',
     },
     TR_COINMARKET_CRYPTO_CATEGORY_E: {
@@ -1713,11 +1713,11 @@ export default defineMessages({
     },
     TR_COINMARKET_FIX_RATE_DESCRIPTION: {
         id: 'TR_COINMARKET_FIX_RATE_DESCRIPTION',
-        defaultMessage: 'Guarantee your rate for 15 minutes with a higher fee.',
+        defaultMessage: 'Lock in your rate for 15 minutes by paying a higher fee.',
     },
     TR_COINMARKET_FLOATING_RATE_DESCRIPTION: {
         id: 'TR_COINMARKET_FLOATING_RATE_DESCRIPTION',
-        defaultMessage: 'Get an approximate rate subject to real-time market change.',
+        defaultMessage: 'Get an estimated rate that may adjust with real-time market changes.',
     },
     TR_COINMARKET_CEX_TOOLTIP: {
         id: 'TR_COINMARKET_CEX_TOOLTIP',
@@ -4254,7 +4254,7 @@ export default defineMessages({
     TR_TOR_CONFIG_SNOWFLAKE_DESCRIPTION: {
         id: 'TR_TOR_CONFIG_SNOWFLAKE_DESCRIPTION',
         defaultMessage:
-            'Input the path to Tor Snowflake binary in your system. Tor should be disable to change it.',
+            'Enter the path to the Tor Snowflake binary on your system. Make sure Tor is disabled before making this change.',
     },
     TR_TOR_CONFIG_SNOWFLAKE_ERROR_PATH: {
         id: 'TR_TOR_CONFIG_SNOWFLAKE_ERROR_PATH',
@@ -4266,7 +4266,7 @@ export default defineMessages({
     },
     TR_TOR_CONFIG_SNOWFLAKE_DISABLE_LABEL: {
         id: 'TR_TOR_CONFIG_SNOWFLAKE_DISABLE_LABEL',
-        defaultMessage: 'Disable Snowflake',
+        defaultMessage: 'Disable Tor Snowflake',
     },
     TR_TOR_ENABLE_TITLE: {
         id: 'TR_TOR_ENABLE_TITLE',
@@ -5344,8 +5344,7 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON: {
         id: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON',
-        defaultMessage:
-            'Allows to enable network BNB Smart Chain. Missing historical internal transactions.',
+        defaultMessage: 'Enable the BNB Smart Chain without historical internal transactions.',
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
@@ -5354,7 +5353,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
         defaultMessage:
-            'A utility for retrieving passwords stored on Dropbox and secured by Trezor, designed for former Chrome extension users of Trezor Password Manager.',
+            'A utility for retrieving passwords stored on Dropbox and secured by Trezor. Designed for previous Chrome extension users of Trezor Password Manager.',
     },
     TR_EXPERIMENTAL_TOR_SNOWFLAKE: {
         id: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE',
@@ -5363,7 +5362,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_TOR_SNOWFLAKE_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE_DESCRIPTION',
         defaultMessage:
-            'Tor Snowflake is a system that allows people from all over the world to access censored websites and applications.',
+            'Tor Snowflake is a system that allows access to censored websites and apps.',
     },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
@@ -7354,12 +7353,12 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION',
         defaultMessage:
-            'Firmware revision check is a vital security feature. We don’t recommend turning it off.',
+            'Firmware revision check is a crucial security feature. We strongly recommend keeping it turned on.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED',
         defaultMessage:
-            'Firmware revision is a vital security feature. We strongly recommend turning it on.',
+            'Firmware revision check is a crucial security feature. We strongly recommend keeping it turned on.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON',
@@ -7384,22 +7383,22 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1',
         defaultMessage:
-            "Only turn off the firmware revision check if you're fully aware of what you're doing and have clear reasons for doing so. If you're uncertain, contact Trezor Support for assistance.",
+            'Turn off the firmware revision check only if you fully understand the risks and have a valid reason. If unsure, contact Trezor Support for help.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_2: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_2',
         defaultMessage:
-            'Don’t turn off this feature unless your device has successfully passed the check before. Using an unverified device may lead to the loss of your funds.',
+            'Only turn off this feature if your device has successfully passed the check before. Using an unverified device could result in the loss of your funds.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3',
         defaultMessage:
-            'Trezor Support will never ask you to turn off the firmware revision check. This feature has been designed to ensure your security.',
+            'Trezor Support will never ask you to turn off the firmware revision check. This feature is designed to protect your security.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',
         defaultMessage:
-            'Firmware check cannot be performed. To verify your firmware revision go online.',
+            "Firmware revision check couldn't be performed. Go online to verify your firmware vision.",
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
@@ -7577,7 +7576,7 @@ export default defineMessages({
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION',
         defaultMessage:
-            "Devices set up in seedless mode can't access Trezor Suite. This is to avoid irreversible coin loss, which happens when using an improperly setup device for the wrong purpose.",
+            "Devices set up in seedless mode can't access Trezor Suite. This is to avoid irreversible coin loss, which happens when using an improperly set up device for the wrong purpose.",
     },
     TR_DO_YOU_REALLY_WANT_TO_SKIP: {
         id: 'TR_DO_YOU_REALLY_WANT_TO_SKIP',
@@ -7699,7 +7698,7 @@ export default defineMessages({
     },
     TR_STAKING_TREZOR_POOL_FAIL: {
         id: 'TR_STAKING_TREZOR_POOL_FAIL',
-        defaultMessage: "Can't reach Trezor stake pool to delegate on.",
+        defaultMessage: "Couldn't reach Trezor stake pool to delegate on.",
     },
     TR_STAKING_TX_PENDING: {
         id: 'TR_STAKING_TX_PENDING',
@@ -9279,12 +9278,12 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_TITLE: {
         id: 'TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_TITLE',
-        defaultMessage: 'Default wallet loading',
+        defaultMessage: 'Wallet type to open on start',
     },
     TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_DESC: {
         id: 'TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_DESC',
         defaultMessage:
-            'Select "Passphrase" to open the passphrase entry dialog when you open Trezor Suite',
+            'Set "Standard" or "Passphrase" as your default wallet option when Trezor Suite starts. Selecting "Passphrase" displays the passphrase entry box when you open the app. ',
     },
     TR_DEFAULT_WALLET_LOADING_STANDARD: {
         id: 'TR_DEFAULT_WALLET_LOADING_STANDARD',
@@ -9433,17 +9432,17 @@ export default defineMessages({
     TR_BRIDGE_REQUESTED_DESCRIPTION: {
         id: 'TR_BRIDGE_REQUESTED_DESCRIPTION',
         defaultMessage:
-            'Another application requested Trezor Suite to connect with your Trezor device. Keep Trezor Suite running in the background and retry the action in the other application.',
+            'Another app requested Trezor Suite to connect with your Trezor device. Keep Trezor Suite running in the background and retry the action in the other app.',
     },
     TR_BRIDGE_GO_TO_WALLET_DESCRIPTION: {
         id: 'TR_BRIDGE_GO_TO_WALLET_DESCRIPTION',
         defaultMessage:
-            "Are you sure? Your device can only be used by one application at a time. If you're currently using another application with your Trezor device, please finish that session first.",
+            "Are you sure? Your device can only be used by one app at a time. If you're currently using another app with your Trezor device, finish that session first.",
     },
     TR_BRIDGE_NEEDED_DESCRIPTION: {
         id: 'TR_BRIDGE_NEEDED_DESCRIPTION',
         defaultMessage:
-            'Your browser is not supported. For the best experience, download and run the Trezor Suite desktop app in the background, or use a supported Chromium-based browser that is compatible with WebUSB.',
+            "Your browser isn't supported. For the best experience, download and run the Trezor Suite desktop app in the background, or use a supported Chromium-based browser that is compatible with WebUSB.",
     },
     TR_OPEN_TREZOR_SUITE_DESKTOP: {
         id: 'TR_OPEN_TREZOR_SUITE_DESKTOP',
@@ -9460,6 +9459,6 @@ export default defineMessages({
     TR_CUSTOM_FEE_WARNING: {
         id: 'TR_CUSTOM_FEE_WARNING',
         defaultMessage:
-            'Setting a low fee may result in transaction failure or significant delays.',
+            'Setting a low fee might cause your transaction to fail or experience significant delays.',
     },
 });
