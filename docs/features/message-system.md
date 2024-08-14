@@ -6,6 +6,8 @@ Message system was implemented to allow sending emergency messages to Trezor Sui
 
 [Issue on Github](https://github.com/trezor/trezor-suite/issues/2752)
 
+[Notion for production deployment](https://www.notion.so/satoshilabs/Message-system-production-release-c0ac4275461f4755bc9050ff2de57425)
+
 ## Types of in-app messages
 
 There are multiple ways of displaying message to a user:
@@ -261,9 +263,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                  // Used only for feature
                 "feature": [
                     {
-                        "domain": [
-                          "coinjoin"
-                        ],
+                        "domain": "coinjoin",
                         "flag": false
                     }
                 ]
