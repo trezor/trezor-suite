@@ -13,11 +13,14 @@ inputs:
     description: "Source directory to upload"
     required: true
     type: string
+outputs:
+  data:
+    description: "Data to be uploaded"
+    value: ${{ steps.set-data.outputs.data }}
 
 runs:
   using: "composite"
-  outputs:
-    data: ${{ steps.runs.outputs.data }}
+
   steps:
     - name: Extract branch version
       shell: bash
@@ -32,7 +35,8 @@ runs:
         role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
         aws-region: eu-central-1
 
-    - name: set-data
+    - name: set data
+      id: set-data
       shell: bash
       run: |
         echo "Setting data"
