@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { PixelRatio } from 'react-native';
 
 import * as Haptics from 'expo-haptics';
 
@@ -55,6 +56,14 @@ const graphStyle = prepareNativeStyle(_ => ({
 
 const triggerHaptics = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+};
+
+const BASE_LINE_THICKNESS = 1.5;
+
+const getAccessibilityLineThickness = () => {
+    const fontScale = PixelRatio.getFontScale();
+
+    return Math.max(BASE_LINE_THICKNESS, BASE_LINE_THICKNESS * fontScale);
 };
 
 export const Graph = <TGraphPoint extends FiatGraphPoint>({
@@ -139,7 +148,7 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
                 EventComponent={TransactionEvent}
                 EventTooltipComponent={TransactionEventTooltip}
                 onEventHover={triggerHaptics}
-                lineThickness={2}
+                lineThickness={getAccessibilityLineThickness()}
                 loading={delayedLoading}
                 loadingLineColor={colors.borderDashed}
                 blurOverlay={showBlurredGraph}
