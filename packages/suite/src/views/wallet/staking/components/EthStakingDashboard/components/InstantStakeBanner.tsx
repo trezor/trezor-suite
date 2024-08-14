@@ -1,6 +1,6 @@
-import { Button, Icon, Row, Warning, Text } from '@trezor/components';
+import { Warning, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { spacings } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
 import { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
@@ -31,7 +31,6 @@ export const InstantStakeBanner = ({
     daysToAddToPool,
     daysToUnstake,
 }: InstantStakeBannerProps) => {
-    const theme = useTheme();
     const { descriptor: address, symbol } = useSelector(selectSelectedAccount) || {};
 
     const [instantStakeTransfer, setInstantStakeTransfer] = useState<InternalTransfer | null>(null);
@@ -65,27 +64,28 @@ export const InstantStakeBanner = ({
     const remainingDays = stakeType === 'stake' ? daysToAddToPool : daysToUnstake;
 
     return (
-        <Warning variant="info" margin={{ bottom: spacings.sm }}>
-            <Row alignItems="center" gap={spacings.sm}>
-                <Icon icon="LIGHTNING" size={24} color={theme.iconAlertBlue} />
-
-                <TextWrapper>
-                    <Text typographyStyle="body" color="inherit">
-                        <Translation
-                            id={getTranslationId(stakeType)}
-                            values={{
-                                amount,
-                                symbol: symbol?.toUpperCase(),
-                                days: remainingDays ?? 0,
-                            }}
-                        />
-                    </Text>
-                </TextWrapper>
-
-                <Button variant="tertiary" onClick={closeBanner} size="small">
+        <Warning
+            variant="info"
+            icon="LIGHTNING"
+            margin={{ bottom: spacings.sm }}
+            rightContent={
+                <Warning.Button onClick={closeBanner}>
                     <Translation id="TR_GOT_IT" />
-                </Button>
-            </Row>
+                </Warning.Button>
+            }
+        >
+            <TextWrapper>
+                <Text typographyStyle="body" color="inherit">
+                    <Translation
+                        id={getTranslationId(stakeType)}
+                        values={{
+                            amount,
+                            symbol: symbol?.toUpperCase(),
+                            days: remainingDays ?? 0,
+                        }}
+                    />
+                </Text>
+            </TextWrapper>
         </Warning>
     );
 };

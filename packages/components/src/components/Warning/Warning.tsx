@@ -4,7 +4,7 @@ import styled, { css, useTheme } from 'styled-components';
 import { Icon, IconType } from '../assets/Icon/Icon';
 import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
-import { Row, TransientProps, useElevation } from '../..';
+import { Row, Column, TransientProps, useElevation } from '../..';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { WarningContext } from './WarningContext';
 import { WarningButton } from './WarningButton';
@@ -102,7 +102,7 @@ export const Warning = ({
             )}
 
             <Row justifyContent="space-between" gap={spacings.lg} flex={1}>
-                {children}
+                <Column alignItems="flex-start">{children}</Column>
                 {rightContent && (
                     <WarningContext.Provider value={{ variant }}>
                         {rightContent}
