@@ -13,11 +13,11 @@ inputs:
     description: "Source directory to upload"
     required: true
     type: string
-outputs:
-  data: ${{ steps.set-matrix-daily.outputs.dailyMatrix }}
 
 runs:
   using: "composite"
+  outputs:
+    data: ${{ steps.runs.outputs.data }}
   steps:
     - name: Extract branch version
       shell: bash
@@ -32,7 +32,7 @@ runs:
         role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
         aws-region: eu-central-1
 
-    - name: use set-data.js to set data
+    - name: set-data
       shell: bash
       run: |
         echo "Setting data"
@@ -46,6 +46,7 @@ runs:
         DEPLOY_PATH: s3://dev.suite.sldev.cz/meta/${{ steps.extract_branch.outputs.branch }}
       run: |
         echo $GITHUB_OUTPUT
+        echo ${{ steps.set-data.outputs.data }}
         echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
         mkdir -p tmp_build_directory/${{ inputs.dir }}
         echo "<html><head>build metadata</head><body><a href="./${{ inputs.dir}}">connect coverage</a></body></html>" > tmp_build_directory/index.html
