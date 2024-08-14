@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { borders, Color, spacingsPx, typography } from '@trezor/theme';
 
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
-import { Icon } from '../../assets/Icon/Icon';
+import { Icon } from '../../Icon/Icon';
 import { getFocusShadowStyle } from '../../../utils/utils';
 import { UIHorizontalAlignment, UIVariant } from '../../../config/types';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';

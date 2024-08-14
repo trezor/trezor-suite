@@ -4,11 +4,11 @@ import { TextButton } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
 
 const meta: Meta = {
-    title: 'Buttons/TextButton/All',
+    title: 'Buttons',
 } as Meta;
 export default meta;
 
-export const All: StoryFn = () => (
+export const AllTextButtons: StoryFn = () => (
     <>
         <StoryColumn minWidth={350} maxWidth={420}>
             <TextButton

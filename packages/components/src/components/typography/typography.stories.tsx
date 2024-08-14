@@ -3,11 +3,11 @@ import { H1, H2, Paragraph, Link } from '../../index';
 import { Meta, StoryFn } from '@storybook/react';
 
 const meta: Meta = {
-    title: 'Typography/All',
+    title: 'Typography',
 } as Meta;
 export default meta;
 
-export const All: StoryFn = () => (
+export const AllTypography: StoryFn = () => (
     <>
         <StoryColumn>
             <H1 data-testid="heading-1">Heading 1</H1>

@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Misc/Warning',
+    title: 'Warning',
     component: WarningComponent,
     render: ({ children, ...rest }) => (
         <Wrapper>

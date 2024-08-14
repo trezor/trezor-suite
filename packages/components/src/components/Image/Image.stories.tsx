@@ -3,7 +3,7 @@ import { Image as ImageComponent, ImageProps } from './Image';
 import { PNG_IMAGES, SVG_IMAGES } from './images';
 
 const meta: Meta = {
-    title: 'Misc/Image',
+    title: 'Image',
     component: ImageComponent,
 } as Meta;
 export default meta;

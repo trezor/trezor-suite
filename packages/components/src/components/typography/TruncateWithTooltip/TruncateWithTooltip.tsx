@@ -31,6 +31,7 @@ export const TruncateWithTooltip = ({
         const resizeObserver = new ResizeObserver(entries => {
             const { inlineSize: elementWidth, blockSize: elementHeight } =
                 entries[0].borderBoxSize?.[0];
+            console.log('___', scrollWidth, elementWidth);
             setIsTooltipVisible(
                 scrollWidth > Math.ceil(elementWidth) || scrollHeight > Math.ceil(elementHeight),
             );

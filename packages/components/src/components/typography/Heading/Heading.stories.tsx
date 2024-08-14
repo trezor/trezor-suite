@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Typography/Heading',
+    title: 'Typography',
 } as Meta;
 export default meta;
 

@@ -22,7 +22,7 @@ const Content = styled.div<{ $color: string }>`
 `;
 
 const meta: Meta = {
-    title: 'Misc/ResizableBox',
+    title: 'ResizableBox',
 } as Meta;
 export default meta;
 

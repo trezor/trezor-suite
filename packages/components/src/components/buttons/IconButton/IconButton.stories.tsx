@@ -3,7 +3,7 @@ import { IconButton as IconButtonComponent, IconButtonProps } from './IconButton
 import { variables } from '../../../config';
 
 const meta: Meta = {
-    title: 'Buttons/IconButton',
+    title: 'Buttons',
     component: IconButtonComponent,
 } as Meta;
 export default meta;

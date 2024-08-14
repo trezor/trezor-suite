@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Meta } from '@storybook/react';
-import { Icon, variables, IconType } from '../../../index';
+import { Icon, variables, IconType } from '../../index';
 
 const Wrapper = styled.div`
     display: grid;
@@ -27,7 +27,7 @@ const IconText = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Assets/Icons/All',
+    title: 'Icons',
 } as Meta;
 export default meta;
 

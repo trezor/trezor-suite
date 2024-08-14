@@ -5,7 +5,7 @@ import {
 } from './PasswordStrengthIndicator';
 
 const meta: Meta = {
-    title: 'Misc/PasswordStrengthIndicator',
+    title: 'PasswordStrengthIndicator',
     component: PasswordStrengthIndicatorComponent,
 } as Meta;
 export default meta;

@@ -14,7 +14,7 @@ const Block = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Typography/Text',
+    title: 'Typography',
 } as Meta;
 export default meta;
 

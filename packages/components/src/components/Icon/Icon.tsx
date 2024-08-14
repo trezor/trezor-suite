@@ -3,9 +3,9 @@ import styled, { css } from 'styled-components';
 import { Ref, forwardRef, SVGAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 import { ICONS } from './icons';
-import { UIVariant } from '../../../config/types';
+import { UIVariant } from '../../config/types';
 import { CSSColor, Color, Colors } from '@trezor/theme';
-import { TransientProps } from '../../../utils/transientProps';
+import { TransientProps } from '../../utils/transientProps';
 
 export type IconVariant = Extract<
     UIVariant,

@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Range as RangeComponent, RangeProps } from './Range';
 
 const meta: Meta = {
-    title: 'Form/Range',
+    title: 'Form',
 } as Meta;
 export default meta;
 

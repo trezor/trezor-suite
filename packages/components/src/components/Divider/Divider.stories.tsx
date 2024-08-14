@@ -9,7 +9,7 @@ const Container = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Misc/Divider',
+    title: 'Divider',
     component: DividerComponent,
 } as Meta;
 export default meta;

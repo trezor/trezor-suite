@@ -1,7 +1,7 @@
-import { COINS as CoinsObject } from '../components/assets/CoinLogo/coins';
-import { ICONS as IconsObject } from '../components/assets/Icon/icons';
-import { CoinType } from '../components/assets/CoinLogo/CoinLogo';
-import { IconType } from '../components/assets/Icon/Icon';
+import { COINS as CoinsObject } from '../components/CoinLogo/coins';
+import { ICONS as IconsObject } from '../components/Icon/icons';
+import { CoinType } from '../components/CoinLogo/CoinLogo';
+import { IconType } from '../components/Icon/Icon';
 
 export const SCREEN_SIZE = {
     UNAVAILABLE: '260px',

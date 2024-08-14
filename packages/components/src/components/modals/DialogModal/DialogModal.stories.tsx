@@ -15,7 +15,7 @@ const Buttons = () => (
 );
 
 const meta: Meta = {
-    title: 'Modals/DialogModal',
+    title: 'DialogModal',
     component: ModalComponent,
 } as Meta;
 export default meta;

@@ -4,7 +4,7 @@ import styled, { css, useTheme } from 'styled-components';
 import { useEvent } from 'react-use';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Icon, IconType } from '../../assets/Icon/Icon';
+import { Icon, IconType } from '../../Icon/Icon';
 import { Stepper } from '../../loaders/Stepper/Stepper';
 import { IconButton } from '../../buttons/IconButton/IconButton';
 import { H3 } from '../../typography/Heading/Heading';

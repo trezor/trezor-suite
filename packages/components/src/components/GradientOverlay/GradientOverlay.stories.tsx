@@ -14,7 +14,7 @@ const TestContainer = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Misc/GradientOverlay',
+    title: 'GradientOverlay',
     component: GradientOverlayComponent,
     decorators: [
         (Story: React.FC) => (

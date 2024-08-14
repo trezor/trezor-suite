@@ -11,7 +11,7 @@ const options = [
 ];
 
 const meta: Meta = {
-    title: 'Form/SelectBar',
+    title: 'Form',
     args: {
         label: 'fee',
         options,

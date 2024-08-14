@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { HotkeyBadge as HotkeyBadgeComponent, HotkeyBadgeProps } from './HotkeyBadge';
 
 const meta: Meta = {
-    title: 'Form/HotkeyBadge',
+    title: 'HotkeyBadge',
     component: HotkeyBadgeComponent,
 } as Meta;
 export default meta;

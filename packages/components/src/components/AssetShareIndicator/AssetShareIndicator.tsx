@@ -2,7 +2,7 @@ import { SVGProps } from 'react';
 import { motion, AnimationProps, SVGMotionProps } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 import { coinsColors } from '@trezor/theme';
-import { motionEasing } from '../../../config/motion';
+import { motionEasing } from '../../config/motion';
 import { CoinLogo, CoinLogoProps } from '../CoinLogo/CoinLogo';
 
 const Container = styled.div`
