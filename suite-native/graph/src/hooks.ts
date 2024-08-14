@@ -73,7 +73,7 @@ const checkAndReportGraphError = (error: string | null) => {
 export const useGraphForSingleAccount = ({
     accountKey,
     fiatCurrency,
-    tokensFilter = [],
+    tokensFilter,
     hideMainAccount = false,
 }: CommonUseGraphParams & Omit<AccountItem, 'coin' | 'descriptor'>) => {
     const dispatch = useDispatch();

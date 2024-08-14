@@ -73,7 +73,7 @@ export type AccountHistoryMovementItem = {
 export type AccountHistoryMovement = {
     main: AccountHistoryMovementItem[];
     tokens: {
-        [contract: string]: AccountHistoryMovementItem[];
+        [contract: TokenAddress]: AccountHistoryMovementItem[];
     };
 };
 

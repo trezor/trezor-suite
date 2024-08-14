@@ -1,3 +1,5 @@
+import { TokenAddress } from '@suite-common/wallet-types';
+
 import { btcAccountBalanceHistoryResult, btcAccountTransactions } from './__fixtures__/btc';
 import { xrpAccountTransactions, xrpBalanceHistoryResult } from './__fixtures__/xrp';
 import {
@@ -110,7 +112,9 @@ describe('Account balance movement history', () => {
                 item => item.time >= from && item.time <= to,
             );
 
-            expect(balanceHistory.tokens[token]).toMatchObject(filteredBalanceHistory);
+            expect(balanceHistory.tokens[token as TokenAddress]).toMatchObject(
+                filteredBalanceHistory,
+            );
         }
     });
 });
