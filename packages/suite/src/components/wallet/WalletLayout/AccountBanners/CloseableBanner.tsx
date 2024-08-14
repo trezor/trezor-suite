@@ -1,39 +1,28 @@
-import styled from 'styled-components';
-import { Button, H3, Box, Divider, BoxProps } from '@trezor/components';
+import { H3, Divider, Warning, WarningProps, Column } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { ReactNode } from 'react';
-import { borders } from '@trezor/theme';
-
-const Heading = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-`;
-
-const StyledBox = styled(Box)`
-    flex-direction: column;
-    align-items: flex-start;
-    border-left-width: 10px;
-    border-radius: ${borders.radii.lg};
-`;
+import { spacings } from '@trezor/theme/src';
 
 interface Props {
     onClose: () => void;
-    variant: BoxProps['variant'];
+    variant: WarningProps['variant'];
     title: ReactNode;
     children: React.ReactNode;
 }
 
 export const CloseableBanner = ({ onClose, variant, title, children }: Props) => (
-    <StyledBox variant={variant}>
-        <Heading>
-            <H3>{title}</H3>
-            <Button variant="tertiary" onClick={onClose}>
+    <Warning
+        variant={variant}
+        rightContent={
+            <Warning.Button onClick={onClose}>
                 <Translation id="TR_GOT_IT" />
-            </Button>
-        </Heading>
-        <Divider />
-        {children}
-    </StyledBox>
+            </Warning.Button>
+        }
+    >
+        <Column flex={1} alignItems="flex-start">
+            <H3>{title}</H3>
+            <Divider margin={{ top: spacings.xs, bottom: spacings.md }} />
+            {children}
+        </Column>
+    </Warning>
 );
