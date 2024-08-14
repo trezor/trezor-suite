@@ -43,10 +43,18 @@ describe('api/udp', () => {
     });
 
     it('write aborted', async () => {
+        let listeners = 0;
+
         jest.spyOn(UDP, 'createSocket').mockImplementation(() =>
             createUdpSocketMock({
                 send: (...args: any[]) => {
                     setTimeout(() => args[3](), 200);
+                },
+                addListener: () => {
+                    listeners++;
+                },
+                removeListener: () => {
+                    listeners--;
                 },
             }),
         );
@@ -61,6 +69,7 @@ describe('api/udp', () => {
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
         expect(result.error).toContain('Aborted by signal');
+        expect(listeners).toBe(0);
     });
 
     it('enumerate aborted', async () => {
