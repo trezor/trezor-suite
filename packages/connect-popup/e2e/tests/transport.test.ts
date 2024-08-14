@@ -1,35 +1,45 @@
 import { test, expect, firefox, chromium, Page, BrowserContext } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { waitAndClick, log, formatUrl } from '../support/helpers';
+import http from 'http';
+import https from 'https';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
 // different origin URL for testing cross-origin requests
-const simulatedCrossOrigin = 'https://connect.trezor.io/9/';
+const proxyPort = 5088;
+const proxyUrl = `http://localhost:${proxyPort}/`;
 
-const handleSimulatedCrossOrigin = (context: BrowserContext) => {
-    context.route('**/*', async route => {
-        // proxy request to simulatedCrossOrigin to the real URL
-        if (route.request().url().startsWith(simulatedCrossOrigin)) {
-            const newUrl = route.request().url().replace(simulatedCrossOrigin, url);
-
-            const request = await fetch(newUrl, {
-                method: route.request().method(),
-                headers: route.request().headers(),
-                body: route.request().postData(),
-            });
-
-            const body = await request.text();
-
-            return route.fulfill({
-                status: request.status,
-                headers: Object.fromEntries(request.headers.entries()),
-                body,
-            });
-        }
-
-        route.continue();
+const handleSimulatedCrossOrigin = () => {
+    // HTTP proxy server that stands in front of the actual server
+    const server = http.createServer((request, response) => {
+        if (!request.url) return;
+        const oldUrl = new URL(request.url, proxyUrl).toString();
+        const newUrl = oldUrl.replace(proxyUrl, url);
+        // make a new request to the actual server
+        const proxy = (newUrl.startsWith('http://') ? http : https).request(newUrl, {
+            method: request.method,
+            headers: {
+                ...request.headers,
+                // rewrite host header to match
+                host: new URL(newUrl).host,
+            },
+        });
+        request.pipe(proxy);
+        proxy.on('response', proxyResponse => {
+            response.writeHead(proxyResponse.statusCode || 500, proxyResponse.headers);
+            proxyResponse.pipe(response);
+        });
     });
+    server.unref();
+    server.on('error', e => {
+        console.error('HTTP proxy error', e);
+    });
+    server.listen(proxyPort, () => {
+        console.log(`HTTP proxy listening on port ${proxyPort}`);
+    });
+
+    return () => new Promise(resolve => server.close(resolve));
 };
 
 let page: Page;
@@ -56,8 +66,8 @@ const fixtures = [
     {
         browser: chromium,
         description: `iframe and host different origins: iframe mode -> bridge`,
-        queryString: `?trezor-connect-src=${simulatedCrossOrigin}&core-mode=iframe`,
-        before: handleSimulatedCrossOrigin,
+        queryString: `?trezor-connect-src=${proxyUrl}&core-mode=iframe`,
+        setup: handleSimulatedCrossOrigin,
         expect: () =>
             expect(
                 popup.getByRole('heading', { name: "Browser can't communicate with device" }),
@@ -72,24 +82,23 @@ const fixtures = [
                 timeout: 10000,
             }),
     },
-    // todo: fails when there are changes in session shared worker https://github.com/trezor/trezor-suite/issues/13762
-    // {
-    //     browser: chromium,
-    //     description: `iframe and host different origins: auto mode -> popup`,
-    //     queryString: `?trezor-connect-src=${simulatedCrossOrigin}&core-mode=auto`,
-    //     before: handleSimulatedCrossOrigin,
-    //     expect: async () => {
-    //         await expect(popup.getByText('Connect Trezor to continue').first()).toBeVisible({
-    //             timeout: 30000,
-    //         });
-    //         await expect(page.locator('iframe')).not.toBeAttached();
-    //     },
-    // },
+    {
+        browser: chromium,
+        description: `iframe and host different origins: auto mode -> popup`,
+        queryString: `?trezor-connect-src=${proxyUrl}&core-mode=auto`,
+        setup: handleSimulatedCrossOrigin,
+        expect: async () => {
+            await expect(popup.getByText('Connect Trezor to continue').first()).toBeVisible({
+                timeout: 300000,
+            });
+            await expect(page.locator('iframe')).not.toBeAttached();
+        },
+    },
     {
         browser: chromium,
         description: `iframe blocked -> fallback to popup`,
         queryString: '?core-mode=auto',
-        before: (context: BrowserContext) => {
+        setup: (context: BrowserContext) => {
             context.route('**/*', route => {
                 // block iframe
                 if (route.request().url().includes('iframe.html')) {
@@ -97,6 +106,8 @@ const fixtures = [
                 }
                 route.continue();
             });
+
+            return () => {};
         },
         expect: async () => {
             await expect(popup.getByText('Connect Trezor to continue').first()).toBeVisible({
@@ -116,7 +127,7 @@ fixtures.forEach(f => {
         const context = await browserInstance.newContext();
         page = await context.newPage();
 
-        await f.before?.(context);
+        const afterCleanup = await f.setup?.(context);
 
         log(`going to: ${url}${f.queryString}#/method/verifyMessage`);
         await page.goto(formatUrl(url, `methods/bitcoin/verifyMessage/${f.queryString}`));
@@ -137,5 +148,7 @@ fixtures.forEach(f => {
         log('testing expect');
         await f.expect();
         await browserInstance.close();
+
+        await afterCleanup?.();
     });
 });
