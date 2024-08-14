@@ -191,7 +191,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             if (
                 cryptoValue.gt(balanceMinusFee.minus(MIN_ETH_FOR_WITHDRAWALS)) &&
                 cryptoValue.lt(balanceMinusFee) &&
-                cryptoValue.gt(MIN_ETH_AMOUNT_FOR_STAKING)
+                cryptoValue.gte(MIN_ETH_AMOUNT_FOR_STAKING)
             ) {
                 setIsAdviceForWithdrawalWarningShown(true);
             }
