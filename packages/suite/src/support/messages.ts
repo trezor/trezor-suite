@@ -1365,6 +1365,10 @@ export default defineMessages({
         defaultMessage: 'You get',
         id: 'TR_COINMARKET_YOU_GET',
     },
+    TR_COINMARKET_YOU_RECEIVE: {
+        defaultMessage: 'You receive',
+        id: 'TR_COINMARKET_YOU_RECEIVE',
+    },
     TR_COINMARKET_COUNTRY: {
         defaultMessage: 'Country of residence',
         id: 'TR_COINMARKET_COUNTRY',
@@ -1382,7 +1386,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_OFFER_LOOKING',
     },
     TR_COINMARKET_OFFER_NO_FOUND: {
-        defaultMessage: 'No offers available for your request. Change amount or currency.',
+        defaultMessage: 'No offers found for your request. Try a different amount or currency.',
         id: 'TR_COINMARKET_OFFER_NO_FOUND',
     },
     TR_COINMARKET_BEST_RATE: {
@@ -1470,6 +1474,16 @@ export default defineMessages({
         id: 'TR_COINMARKET_FLOATING_RATE_DESCRIPTION',
         defaultMessage: 'Get an estimated rate that may adjust with real-time market changes.',
     },
+    TR_COINMARKET_CEX_TOOLTIP: {
+        id: 'TR_COINMARKET_CEX_TOOLTIP',
+        defaultMessage: 'Centralized exchange',
+        dynamic: true,
+    },
+    TR_COINMARKET_DEX_TOOLTIP: {
+        id: 'TR_COINMARKET_DEX_TOOLTIP',
+        defaultMessage: 'Decentralized exchange',
+        dynamic: true,
+    },
     TR_COINMARKET_NO_CEX_PROVIDER_FOUND: {
         id: 'TR_COINMARKET_NO_CEX_PROVIDER_FOUND',
         defaultMessage: 'No CEX provider found',
@@ -1500,9 +1514,21 @@ export default defineMessages({
         defaultMessage: 'Sell',
         id: 'TR_COINMARKET_FEATURED_OFFER_SELL',
     },
+    TR_COINMARKET_FEATURED_OFFER_EXCHANGE: {
+        defaultMessage: 'Exchange',
+        id: 'TR_COINMARKET_FEATURED_OFFER_EXCHANGE',
+    },
     TR_COINMARKET_NO_METHODS_AVAILABLE: {
         defaultMessage: 'No methods available',
         id: 'TR_COINMARKET_NO_METHODS_AVAILABLE',
+    },
+    TR_COINMARKET_EXCHANGE: {
+        defaultMessage: 'Exchange',
+        id: 'TR_COINMARKET_EXCHANGE',
+    },
+    TR_COINMARKET_ON_NETWORK_CHAIN: {
+        defaultMessage: 'On {networkName} chain',
+        id: 'TR_COINMARKET_ON_NETWORK_CHAIN',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',

@@ -1,11 +1,14 @@
 import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import {
     isCoinmarketBuyOffers,
+    isCoinmarketExchangeOffers,
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import {
+    CoinmarketCryptoListProps,
     CoinmarketGetCryptoQuoteAmountProps,
     CoinmarketGetFiatCurrenciesProps,
+    CoinmarketGetPaymentMethodProps,
     CoinmarketGetProvidersInfoProps,
     CoinmarketTradeDetailMapProps,
     CoinmarketTradeDetailType,
@@ -108,4 +111,40 @@ export const getSelectQuoteTyped = (
 
 export const isBuyTrade = (quote: CoinmarketTradeDetailType): quote is BuyTrade => {
     return 'fiatStringAmount' in quote && 'receiveStringAmount' in quote;
+};
+
+export const isSellTrade = (quote: CoinmarketTradeDetailType): quote is SellFiatTrade => {
+    return 'fiatStringAmount' in quote && 'cryptoStringAmount' in quote;
+};
+
+export const isExchangeTrade = (quote: CoinmarketTradeDetailType): quote is ExchangeTrade => {
+    return 'sendStringAmount' in quote && 'receiveStringAmount' in quote;
+};
+
+export const getSelectedCrypto = (
+    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+): CoinmarketCryptoListProps | null | undefined => {
+    if (isCoinmarketExchangeOffers(context)) {
+        return context.getValues().receiveCryptoSelect;
+    }
+
+    if (isCoinmarketSellOffers(context)) {
+        return context.getValues().sendCryptoSelect;
+    }
+
+    return context.getValues().cryptoSelect;
+};
+
+export const getPaymentMethod = (
+    selectedQuote: SellFiatTrade | ExchangeTrade | BuyTrade,
+    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+): CoinmarketGetPaymentMethodProps => {
+    if (isCoinmarketExchangeOffers(context)) return {};
+
+    const selectedQuoteTyped = selectedQuote as SellFiatTrade | BuyTrade;
+
+    return {
+        paymentMethod: selectedQuoteTyped.paymentMethod,
+        paymentMethodName: selectedQuoteTyped.paymentMethodName,
+    };
 };

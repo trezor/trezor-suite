@@ -26,6 +26,7 @@ const DEFAULT_FIELD = 'outputs.0.amount';
 interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
     // theoretically state should be always defined (and it is in case of useRbfForm/useSendForm)
     // TODO: but it is not in Coinmarket hooks (Exchange, Sell)
+    // TODO: will be always defined after clearing old hooks
     state?: ComposeActionContext;
     defaultField?: FieldPath<TFieldValues>;
 }

@@ -1,9 +1,18 @@
 import { buildCurrencyOptions } from '@suite-common/wallet-utils';
 import { Select } from '@trezor/components';
+import { useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
-import { FORM_FIAT_CURRENCY_SELECT, FORM_FIAT_INPUT } from 'src/constants/wallet/coinmarket/form';
+import {
+    FORM_FIAT_CURRENCY_SELECT,
+    FORM_FIAT_INPUT,
+    FORM_OUTPUT_CURRENCY,
+} from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { isCoinmarketBuyOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import {
+    isCoinmarketBuyOffers,
+    isCoinmarketExchangeOffers,
+    isCoinmarketSellOffers,
+} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import {
     CoinmarketAllFormProps,
     CoinmarketFormInputCurrencyProps,
@@ -31,22 +40,31 @@ const CoinmarketFormInputCurrency = ({
 
     const fiatCurrencies = getFiatCurrenciesProps(context);
     const currencies = fiatCurrencies?.supportedFiatCurrencies ?? null;
-    const options = currencies
-        ? [...currencies].map(currency => buildFiatOption(currency))
-        : buildCurrencyOptions(defaultCurrency);
+    const options = useMemo(
+        () =>
+            currencies
+                ? [...currencies].map(currency => buildFiatOption(currency))
+                : buildCurrencyOptions(defaultCurrency),
+        [currencies, defaultCurrency],
+    );
+    const name = isCoinmarketBuyOffers(context) ? FORM_FIAT_CURRENCY_SELECT : FORM_OUTPUT_CURRENCY;
 
-    const setBuyDefaultFiatAmount = (option: FiatCurrencyOption) => {
+    const onChangeAdditional = (option: FiatCurrencyOption) => {
         if (isCoinmarketBuyOffers(context)) {
             context.setValue(
                 FORM_FIAT_INPUT,
                 fiatCurrencies?.defaultAmountsOfFiatCurrencies?.get(option.value) ?? '',
             );
         }
+
+        if (isCoinmarketExchangeOffers(context) || isCoinmarketSellOffers(context)) {
+            context.form.helpers.onFiatCurrencyChange(option.value);
+        }
     };
 
     return (
         <Controller
-            name={FORM_FIAT_CURRENCY_SELECT}
+            name={name}
             defaultValue={defaultCurrency}
             control={control as Control<CoinmarketAllFormProps>}
             render={({ field: { onChange, value } }) => (
@@ -56,7 +74,7 @@ const CoinmarketFormInputCurrency = ({
                         onChange(selected);
                         setAmountLimits(undefined);
 
-                        setBuyDefaultFiatAmount(selected);
+                        onChangeAdditional(selected);
                     }}
                     options={options}
                     formatOptionLabel={option => (

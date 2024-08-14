@@ -1,7 +1,7 @@
 import { Account, Network } from 'src/types/wallet';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
-import { TrezorDevice } from 'src/types/suite';
+import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import { BuyTrade, CryptoSymbol, SellFiatTrade } from 'invity-api';
 import {
     cryptoToCoinSymbol,
@@ -398,7 +398,7 @@ export const coinmarketGetSortedAccounts = ({
 }: CoinmarketGetSortedAccountsProps) => {
     if (!deviceState) return [];
 
-    return sortByCoin(accounts.filter(a => a.deviceState === deviceState));
+    return sortByCoin(accounts.filter(a => a.deviceState === deviceState && a.visible));
 };
 
 export const coinmarketBuildAccountOptions = ({
@@ -506,22 +506,39 @@ export const coinmarketGetAmountLabels = ({
     type,
     amountInCrypto,
 }: CoinmarketGetAmountLabelsProps): CoinmarketGetAmountLabelsReturnProps => {
+    const youGet = 'TR_COINMARKET_YOU_GET';
+    const youPay = 'TR_COINMARKET_YOU_PAY';
+    const youWillGet = 'TR_COINMARKET_YOU_WILL_GET';
+    const youWillPay = 'TR_COINMARKET_YOU_WILL_PAY';
+    const youReceive = 'TR_COINMARKET_YOU_RECEIVE';
+    const exchange = 'TR_COINMARKET_EXCHANGE';
+
+    if (type === 'exchange') {
+        return {
+            label1: youPay,
+            label2: youGet,
+            labelComparatorOffer: youWillGet,
+            sendLabel: exchange,
+            receiveLabel: youReceive,
+        };
+    }
+
     if (type === 'sell') {
         return {
-            label1: amountInCrypto ? 'TR_COINMARKET_YOU_PAY' : 'TR_COINMARKET_YOU_GET',
-            label2: amountInCrypto ? 'TR_COINMARKET_YOU_GET' : 'TR_COINMARKET_YOU_PAY',
-            labelComparatorOffer: amountInCrypto
-                ? 'TR_COINMARKET_YOU_WILL_GET'
-                : 'TR_COINMARKET_YOU_WILL_PAY',
+            label1: amountInCrypto ? youPay : youGet,
+            label2: amountInCrypto ? youGet : youPay,
+            labelComparatorOffer: amountInCrypto ? youWillGet : youWillPay,
+            sendLabel: youGet,
+            receiveLabel: youPay,
         };
     }
 
     return {
-        label1: amountInCrypto ? 'TR_COINMARKET_YOU_GET' : 'TR_COINMARKET_YOU_PAY',
-        label2: amountInCrypto ? 'TR_COINMARKET_YOU_PAY' : 'TR_COINMARKET_YOU_GET',
-        labelComparatorOffer: amountInCrypto
-            ? 'TR_COINMARKET_YOU_WILL_PAY'
-            : 'TR_COINMARKET_YOU_WILL_GET',
+        label1: amountInCrypto ? youGet : youPay,
+        label2: amountInCrypto ? youPay : youGet,
+        labelComparatorOffer: amountInCrypto ? youWillPay : youWillGet,
+        sendLabel: youPay,
+        receiveLabel: youGet,
     };
 };
 
@@ -540,3 +557,15 @@ export const coinmarketGetRoundedFiatAmount = (amount: string | undefined): stri
 
 export const coinmarketGetAccountLabel = (label: string, shouldSendInSats: boolean | undefined) =>
     label === 'BTC' && shouldSendInSats ? 'sat' : label;
+
+export const coinmarketGetSectionActionLabel = (
+    type: CoinmarketTradeType,
+): Extract<
+    ExtendedMessageDescriptor['id'],
+    'TR_BUY' | 'TR_COINMARKET_SELL' | 'TR_COINMARKET_EXCHANGE'
+> => {
+    if (type === 'buy') return 'TR_BUY';
+    if (type === 'sell') return 'TR_COINMARKET_SELL';
+
+    return 'TR_COINMARKET_EXCHANGE';
+};

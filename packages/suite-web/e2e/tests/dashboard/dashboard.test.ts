@@ -17,7 +17,7 @@ describe('Dashboard', () => {
     });
 
     const testCoinmarketInputs = () => {
-        cy.getTestElement('@coinmarket/form/account-select/input').should('exist');
+        cy.getTestElement('@coinmarket/form/select-crypto/input').should('exist');
         cy.getTestElement('@coinmarket/form/fiat-input').should('exist');
         cy.getTestElement('@coinmarket/form/country-select/input').should('exist');
         cy.getTestElement('@coinmarket/form/payment-method-select/input').should('exist');

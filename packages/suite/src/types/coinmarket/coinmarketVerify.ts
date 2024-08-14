@@ -6,6 +6,7 @@ import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 
 export interface CoinmarketVerifyFormProps {
     address?: string;
+    extraField?: string;
 }
 
 export type CoinmarketAccountType = 'SUITE' | 'ADD_SUITE' | 'NON_SUITE';
@@ -36,7 +37,7 @@ export interface CoinmarketVerifyAccountReturnProps {
     onChangeAccount: (account: CoinmarketVerifyFormAccountOptionProps) => void;
 }
 
-export type CoinmarketSelectedOfferVerifyOptionsProps = Pick<
+export type CoinmarketVerifyOptionsProps = Pick<
     CoinmarketVerifyAccountReturnProps,
     | 'receiveNetwork'
     | 'selectAccountOptions'
@@ -45,7 +46,7 @@ export type CoinmarketSelectedOfferVerifyOptionsProps = Pick<
     | 'isMenuOpen'
 >;
 
-export interface CoinmarketSelectedOfferVerifyOptionsItemProps {
+export interface CoinmarketVerifyOptionsItemProps {
     option: CoinmarketVerifyFormAccountOptionProps;
     receiveNetwork: NetworkSymbol | CryptoSymbol | undefined;
 }

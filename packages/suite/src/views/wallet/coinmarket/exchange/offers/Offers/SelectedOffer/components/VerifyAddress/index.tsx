@@ -5,7 +5,7 @@ import addressValidator from '@trezor/address-validator';
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { Input, variables, Button } from '@trezor/components';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
-import { AddressOptions } from 'src/views/wallet/coinmarket/common';
+import { CoinmarketAddressOptions } from 'src/views/wallet/coinmarket/common';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { ReceiveOptions, AccountSelectOption } from './ReceiveOptions';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
@@ -184,7 +184,7 @@ const VerifyAddressComponent = () => {
                                         tooltip={addressTooltipTranslationId}
                                     />
                                 </CustomLabel>
-                                <AddressOptions
+                                <CoinmarketAddressOptions
                                     account={selectedAccountOption?.account}
                                     address={address}
                                     control={control}

@@ -37,11 +37,16 @@ import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmark
 import useCoinmarketPaymentMethod from 'src/hooks/wallet/coinmarket/form/useCoinmarketPaymentMethod';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/coinmarket/form';
-import { useCoinmarketSatsSwitcher } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSatsSwitcher';
+import {
+    FORM_CRYPTO_INPUT,
+    FORM_DEFAULT_CRYPTO_CURRENCY,
+    FORM_FIAT_INPUT,
+    FORM_PAYMENT_METHOD_SELECT,
+} from 'src/constants/wallet/coinmarket/form';
 import { Network } from '@suite-common/wallet-config';
 import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
+import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketCurrencySwitcher';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
@@ -85,7 +90,7 @@ const useCoinmarketBuyForm = ({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
     });
-    const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyOffer } =
+    const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =
         useCoinmarketNavigation(account);
 
     // states
@@ -95,13 +100,8 @@ const useCoinmarketBuyForm = ({
     );
     const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
-
-    // parameters
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const isLoading = !buyInfo || !buyInfo?.buyInfo;
-    const noProviders = !isLoading && buyInfo?.buyInfo?.providers.length === 0;
 
-    // form initialization
     const {
         defaultValues,
         defaultCountry,
@@ -134,42 +134,52 @@ const useCoinmarketBuyForm = ({
     const values = useWatch<CoinmarketBuyFormProps>({ control });
     const previousValues = useRef<typeof values | null>(isNotFormPage ? draftUpdated : null);
 
-    // form states
+    const isInitialDataLoading = !buyInfo || !buyInfo?.buyInfo;
+    const noProviders = !isInitialDataLoading && buyInfo?.buyInfo?.providers.length === 0;
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues = (values.fiatInput || values.cryptoInput) && !!values.currencySelect?.value;
     const isFirstRequest = innerQuotes === undefined;
     const isFormLoading =
-        isLoading || formState.isSubmitting || isSubmittingHelper || isFirstRequest;
+        isInitialDataLoading || formState.isSubmitting || isSubmittingHelper || isFirstRequest;
     const isFormInvalid = !(formIsValid && hasValues);
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
+
     const quotesByPaymentMethod = getQuotesByPaymentMethod(
         innerQuotes,
         values?.paymentMethod?.value ?? '',
     );
     // based on selected cryptoSymbol, because of using for validation cryptoInput
     const network = getNetwork(
-        cryptoToNetworkSymbol(values.cryptoSelect?.value ?? 'BTC') ?? 'btc',
+        cryptoToNetworkSymbol(values.cryptoSelect?.value ?? FORM_DEFAULT_CRYPTO_CURRENCY) ?? 'btc',
     ) as Network;
-    const { toggleAmountInCrypto } = useCoinmarketSatsSwitcher({
+    const { toggleAmountInCrypto } = useCoinmarketCurrencySwitcher({
         account,
         methods,
         quoteCryptoAmount: quotesByPaymentMethod?.[0]?.receiveStringAmount,
         quoteFiatAmount: quotesByPaymentMethod?.[0]?.fiatStringAmount,
         network,
+        inputNames: {
+            cryptoInput: FORM_CRYPTO_INPUT,
+            fiatInput: FORM_FIAT_INPUT,
+        },
     });
 
     const getQuotesRequest = useCallback(
-        async (request: BuyTradeQuoteRequest) => {
+        async (request: BuyTradeQuoteRequest, offLoading?: boolean) => {
+            setIsSubmittingHelper(!offLoading);
+
             if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
             }
 
             // no need to fetch quotes if amount is not set
             if (
-                (!request.fiatStringAmount && !request.cryptoStringAmount) ||
+                ((!request.fiatStringAmount || request.fiatStringAmount === '') &&
+                    (!request.cryptoStringAmount || request.cryptoStringAmount === '')) ||
                 !request.receiveCurrency
             ) {
                 timer.stop();
+                setIsSubmittingHelper(false);
 
                 return;
             }
@@ -177,16 +187,12 @@ const useCoinmarketBuyForm = ({
             abortControllerRef.current = new AbortController();
             invityAPI.createInvityAPIKey(account.descriptor);
 
-            try {
-                const allQuotes = await invityAPI.getBuyQuotes(
-                    request,
-                    abortControllerRef.current.signal,
-                );
+            const allQuotes = await invityAPI.getBuyQuotes(
+                request,
+                abortControllerRef.current.signal,
+            );
 
-                return allQuotes;
-            } catch (error) {
-                console.log('Abort', error);
-            }
+            return allQuotes;
         },
         [account.descriptor, timer],
     );
@@ -221,11 +227,10 @@ const useCoinmarketBuyForm = ({
 
     const handleChange = useCallback(
         async (offLoading?: boolean) => {
-            setIsSubmittingHelper(!offLoading);
             timer.loading();
 
             const quoteRequest = getQuoteRequestData();
-            const allQuotes = await getQuotesRequest(quoteRequest);
+            const allQuotes = await getQuotesRequest(quoteRequest, offLoading);
 
             if (Array.isArray(allQuotes)) {
                 if (allQuotes.length === 0) {
@@ -265,12 +270,13 @@ const useCoinmarketBuyForm = ({
                         label: bestQuotePaymentMethodName ?? '',
                     });
                 }
+
+                setIsSubmittingHelper(false);
             } else {
                 setInnerQuotes([]);
             }
 
             timer.reset();
-            setIsSubmittingHelper(false);
         },
         [
             timer,
@@ -287,7 +293,7 @@ const useCoinmarketBuyForm = ({
     );
 
     const goToOffers = async () => {
-        await handleChange(true);
+        await handleChange();
 
         dispatch(saveCachedAccountInfo(account.symbol, account.index, account.accountType));
         navigateToBuyOffers();
@@ -328,13 +334,13 @@ const useCoinmarketBuyForm = ({
                     });
                     timer.stop();
 
-                    navigateToBuyOffer();
+                    navigateToBuyConfirm();
                 }
             }
         }
     };
 
-    const goToPayment = async (address: string) => {
+    const confirmTrade = async (address: string) => {
         setCallInProgress(true);
         if (!selectedQuote) return;
 
@@ -502,7 +508,7 @@ const useCoinmarketBuyForm = ({
         quotesRequest,
         selectedQuote,
         selectQuote,
-        goToPayment,
+        confirmTrade,
         goToOffers,
         verifyAddress,
         removeDraft,

@@ -373,7 +373,7 @@ export const useCoinmarketExchangeForm = ({
                     setAmountLimits(limits);
                 } else {
                     const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
-                        getSuccessQuotesOrdered(allQuotes, exchangeInfo),
+                        getSuccessQuotesOrdered(allQuotes),
                         'exchange',
                     );
                     dispatch(saveQuotes(successQuotes));

@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-
-import { Card, variables } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import PaymentFailed from '../components/PaymentFailed';
@@ -8,23 +6,21 @@ import PaymentSuccessful from '../components/PaymentSuccessful';
 import PaymentKYC from '../components/PaymentKYC';
 import PaymentConverting from '../components/PaymentConverting';
 import PaymentSending from '../components/PaymentSending';
-import { CoinmarketExchangeOfferInfo } from '../../components/ExchangeForm/CoinmarketExchangeOfferInfo';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketGetCryptoQuoteAmountProps,
+    CoinmarketTradeExchangeType,
+} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
+import {
+    CoinmarketLeftWrapper,
+    CoinmarketRightWrapper,
+    CoinmarketWrapper,
+} from 'src/views/wallet/coinmarket';
 
 const Wrapper = styled.div`
-    display: flex;
-    margin-top: 20px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        flex-direction: column;
-    }
-`;
-
-const StyledCard = styled(Card)`
-    flex: 1;
-    padding: 0;
+    ${CoinmarketWrapper}
 `;
 
 const CoinmarketDetail = () => {
@@ -58,9 +54,16 @@ const CoinmarketDetail = () => {
     const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
     const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
 
+    const quoteAmounts: CoinmarketGetCryptoQuoteAmountProps = {
+        sendAmount: trade?.data?.sendStringAmount ?? '',
+        sendCurrency: trade?.data?.send,
+        receiveAmount: trade?.data?.receiveStringAmount ?? '',
+        receiveCurrency: trade?.data?.receive,
+    };
+
     return (
         <Wrapper>
-            <StyledCard>
+            <CoinmarketLeftWrapper>
                 {tradeStatus === 'SUCCESS' && <PaymentSuccessful account={account} />}
                 {tradeStatus === 'KYC' && (
                     <PaymentKYC account={account} provider={provider} supportUrl={supportUrl} />
@@ -74,13 +77,16 @@ const CoinmarketDetail = () => {
                 )}
                 {tradeStatus === 'CONVERTING' && <PaymentConverting supportUrl={supportUrl} />}
                 {showSending && <PaymentSending supportUrl={supportUrl} />}
-            </StyledCard>
-            <CoinmarketExchangeOfferInfo
-                account={account}
-                exchangeInfo={info}
-                selectedQuote={trade.data}
-                transactionId={trade.key}
-            />
+            </CoinmarketLeftWrapper>
+            <CoinmarketRightWrapper>
+                <CoinmarketSelectedOfferInfo
+                    selectedQuote={trade.data}
+                    transactionId={trade.key}
+                    providers={info?.providerInfos}
+                    type="exchange"
+                    quoteAmounts={quoteAmounts}
+                />
+            </CoinmarketRightWrapper>
         </Wrapper>
     );
 };

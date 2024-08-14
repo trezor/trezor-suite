@@ -9,9 +9,12 @@ import {
 import { CoinmarketBuyFormDefaultValuesProps } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
 import { FiatCurrencyCode } from 'invity-api';
-import { formDefaultCurrency } from 'src/constants/wallet/coinmarket/formDefaults';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { defaultCryptoCurrency } from 'src/constants/wallet/coinmarket/cryptoCurrencies';
+import {
+    FORM_DEFAULT_CRYPTO_CURRENCY,
+    FORM_DEFAULT_FIAT_CURRENCY,
+    FORM_DEFAULT_PAYMENT_METHOD,
+} from 'src/constants/wallet/coinmarket/form';
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
@@ -22,19 +25,22 @@ export const useCoinmarketBuyFormDefaultValues = (
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     // set defaultCryptoCurrency (BTC), when accountSymbol is not in the list of supported currencies (e.g. VTC)
     const defaultCrypto = useMemo(
-        () => buildCryptoOption(networkToCryptoSymbol(accountSymbol) ?? defaultCryptoCurrency),
+        () =>
+            buildCryptoOption(networkToCryptoSymbol(accountSymbol) ?? FORM_DEFAULT_CRYPTO_CURRENCY),
         [accountSymbol],
     );
     const defaultPaymentMethod: CoinmarketPaymentMethodListProps = useMemo(
         () =>
-            paymentMethods.find(paymentMethod => paymentMethod.value === 'creditCard') ?? {
+            paymentMethods.find(
+                paymentMethod => paymentMethod.value === FORM_DEFAULT_PAYMENT_METHOD,
+            ) ?? {
                 value: '',
                 label: '',
             },
         [paymentMethods],
     );
     const suggestedFiatCurrency = (buyInfo?.buyInfo?.suggestedFiatCurrency?.toLowerCase() ??
-        formDefaultCurrency) as FiatCurrencyCode;
+        FORM_DEFAULT_FIAT_CURRENCY) as FiatCurrencyCode;
     const defaultCurrency = useMemo(
         () => buildFiatOption(suggestedFiatCurrency),
         [suggestedFiatCurrency],

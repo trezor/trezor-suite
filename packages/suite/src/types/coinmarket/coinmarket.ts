@@ -21,6 +21,7 @@ import {
     ExchangeTradeStatus,
     FiatCurrencyCode,
     SavingsTradeItemStatus,
+    SellCryptoPaymentMethod,
     SellFiatTrade,
     SellProviderInfo,
     SellTradeStatus,
@@ -52,11 +53,11 @@ export type UseCoinmarketCommonProps = UseCoinmarketProps & {
 export interface UseCoinmarketCommonReturnProps<T extends CoinmarketTradeType> {
     callInProgress: boolean;
     account: Account;
-    selectedQuote: CoinmarketTradeDetailMapProps[T] | undefined;
+    selectedQuote: CoinmarketTradeDetailMapProps[T] | undefined; // TODO: delete
     timer: Timer;
     device: TrezorDevice | undefined;
     setCallInProgress: (state: boolean) => void;
-    setSelectedQuote: (quote: CoinmarketTradeDetailMapProps[T] | undefined) => void;
+    setSelectedQuote: (quote: CoinmarketTradeDetailMapProps[T] | undefined) => void; // TODO: delete
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
 export type CoinmarketPageType = 'form' | 'offers' | 'confirm';
@@ -79,6 +80,7 @@ export type CoinmarketTradeType =
     | CoinmarketTradeExchangeType;
 export type CoinmarketTradeBuySellType = Exclude<CoinmarketTradeType, CoinmarketTradeExchangeType>;
 export type CoinmarketTradeSellExchangeType = Exclude<CoinmarketTradeType, CoinmarketTradeBuyType>;
+export type CoinmarketTradeBuyExchangeType = Exclude<CoinmarketTradeType, CoinmarketTradeSellType>;
 
 export type CoinmarketTradeMapProps = {
     buy: TradeBuy;
@@ -228,10 +230,9 @@ export interface CoinmarketGetAmountLabelsProps {
     amountInCrypto: boolean;
 }
 
-type CoinmarketPayGetLabelType = Extract<
-    ExtendedMessageDescriptor['id'],
-    `TR_COINMARKET_YOU_${'PAY' | 'GET'}`
->;
+export type CoinmarketPayGetLabelType =
+    | Extract<ExtendedMessageDescriptor['id'], `TR_COINMARKET_YOU_${'PAY' | 'GET' | 'RECEIVE'}`>
+    | 'TR_COINMARKET_EXCHANGE';
 
 export interface CoinmarketGetAmountLabelsReturnProps {
     label1: CoinmarketPayGetLabelType;
@@ -240,6 +241,8 @@ export interface CoinmarketGetAmountLabelsReturnProps {
         ExtendedMessageDescriptor['id'],
         `TR_COINMARKET_YOU_WILL_${'PAY' | 'GET'}`
     >;
+    sendLabel: CoinmarketPayGetLabelType;
+    receiveLabel: CoinmarketPayGetLabelType;
 }
 
 export type CoinmarketGetProvidersInfoProps =
@@ -254,9 +257,14 @@ export interface CoinmarketGetFiatCurrenciesProps {
 }
 
 export interface CoinmarketGetCryptoQuoteAmountProps {
-    amountInCrypto: boolean | undefined;
+    amountInCrypto?: boolean | undefined;
     sendAmount: string;
-    sendCurrency: string | undefined;
+    sendCurrency: CryptoSymbol | string | undefined;
     receiveAmount: string;
     receiveCurrency: CryptoSymbol | undefined;
+}
+
+export interface CoinmarketGetPaymentMethodProps {
+    paymentMethod?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
+    paymentMethodName?: string;
 }

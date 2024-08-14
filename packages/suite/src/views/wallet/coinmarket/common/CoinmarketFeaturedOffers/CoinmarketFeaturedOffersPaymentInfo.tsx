@@ -1,9 +1,13 @@
-import { CoinmarketTradeBuySellType } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketTradeBuySellType,
+    CoinmarketTradeDetailType,
+    CoinmarketTradeType,
+} from 'src/types/coinmarket/coinmarket';
 import { Translation } from 'src/components/suite';
 import { CoinmarketPaymentPlainType } from '../CoinmarketPaymentPlainType';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
-import { BuySellQuote } from './CoinmarketFeaturedOffersItem';
+import { isExchangeTrade } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 const PaymentInfoWrapper = styled.div`
     display: flex;
@@ -11,22 +15,24 @@ const PaymentInfoWrapper = styled.div`
     gap: ${spacingsPx.xxs};
 `;
 
-const CoinmarketFeaturedOffersPaymentInfo = ({
+export const CoinmarketFeaturedOffersPaymentInfo = ({
     quote,
     type,
 }: {
-    quote: BuySellQuote;
-    type: CoinmarketTradeBuySellType;
-}) => (
-    <PaymentInfoWrapper>
-        <Translation
-            id={`TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_${type.toUpperCase() as Uppercase<CoinmarketTradeBuySellType>}_LABEL`}
-        />
-        <CoinmarketPaymentPlainType
-            method={quote.paymentMethod}
-            methodName={quote.paymentMethodName}
-        />
-    </PaymentInfoWrapper>
-);
+    quote: CoinmarketTradeDetailType;
+    type: CoinmarketTradeType;
+}) => {
+    if (isExchangeTrade(quote)) return null;
 
-export default CoinmarketFeaturedOffersPaymentInfo;
+    return (
+        <PaymentInfoWrapper>
+            <Translation
+                id={`TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_${type.toUpperCase() as Uppercase<CoinmarketTradeBuySellType>}_LABEL`}
+            />
+            <CoinmarketPaymentPlainType
+                method={quote.paymentMethod}
+                methodName={quote.paymentMethodName}
+            />
+        </PaymentInfoWrapper>
+    );
+};

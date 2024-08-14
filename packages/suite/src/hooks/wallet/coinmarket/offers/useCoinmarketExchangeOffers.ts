@@ -79,7 +79,7 @@ export const useCoinmarketExchangeOffers = ({
     const isDebug = useSelector(selectIsDebugModeActive);
 
     const [innerQuotes, setInnerQuotes] = useState<ExchangeTrade[] | undefined>(
-        quotes ? getSuccessQuotesOrdered(quotes, exchangeInfo) : undefined,
+        quotes ? getSuccessQuotesOrdered(quotes) : undefined,
     );
 
     const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
@@ -100,7 +100,7 @@ export const useCoinmarketExchangeOffers = ({
                     return;
                 }
                 const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
-                    getSuccessQuotesOrdered(allQuotes, exchangeInfo),
+                    getSuccessQuotesOrdered(allQuotes),
                     'exchange',
                 );
                 setInnerQuotes(successQuotes);
@@ -109,7 +109,7 @@ export const useCoinmarketExchangeOffers = ({
             }
             timer.reset();
         }
-    }, [account.descriptor, exchangeInfo, quotesRequest, selectedQuote, timer]);
+    }, [account.descriptor, quotesRequest, selectedQuote, timer]);
 
     useEffect(() => {
         if (!quotesRequest) {
