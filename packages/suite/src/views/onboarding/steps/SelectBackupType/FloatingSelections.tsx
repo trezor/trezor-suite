@@ -77,7 +77,7 @@ const DividerWrapper = styled.div`
 `;
 
 const LegacyWarning = () => (
-    <Warning variant="info" withIcon>
+    <Warning variant="info" icon>
         <Column alignItems="start">
             <Text typographyStyle="highlight" variant="info">
                 <Translation id="TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER" />

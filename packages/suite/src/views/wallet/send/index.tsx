@@ -95,7 +95,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
                     <SendFees />
 
                     {symbol === 'dsol' && (
-                        <Warning withIcon>
+                        <Warning icon>
                             <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
                         </Warning>
                     )}

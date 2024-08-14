@@ -62,7 +62,7 @@ export const FirmwareTypeSuggestion = () => {
     return (
         <Warning
             variant="info"
-            withIcon
+            icon
             margin={{ bottom: 20 }}
             rightContent={
                 <Warning.Button onClick={handleClose}>

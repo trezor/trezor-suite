@@ -268,7 +268,7 @@ export const TransactionReviewOutputList = ({
                     )}
                     {isSending && networkType === 'solana' ? (
                         <TxReviewFootnote>
-                            <Warning variant="tertiary" icon="INFO" withIcon>
+                            <Warning variant="tertiary" icon="INFO">
                                 <Translation
                                     id="TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN"
                                     values={{ nowrap: chunks => <Nowrap>{chunks}</Nowrap> }}

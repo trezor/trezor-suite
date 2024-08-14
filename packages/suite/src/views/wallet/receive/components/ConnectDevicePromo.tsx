@@ -15,7 +15,7 @@ const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => 
         selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
 
     return (
-        <Warning variant="warning" withIcon={false} data-testid="@warning/trezorNotConnected">
+        <Warning variant="warning" data-testid="@warning/trezorNotConnected">
             <Row alignItems="center" justifyContent="space-between" gap={12} flex="1">
                 <Column alignItems="start">
                     <Text typographyStyle="highlight" variant="warning">

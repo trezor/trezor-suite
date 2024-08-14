@@ -22,7 +22,7 @@ export const PassphraseWalletConfirmationStep3 = ({
             <PassphraseHeading>
                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE" />
             </PassphraseHeading>
-            <Warning icon="INFO" withIcon>
+            <Warning icon="INFO">
                 <Translation
                     id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING"
                     values={{

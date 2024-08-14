@@ -36,7 +36,6 @@ export default meta;
 export const Warning: StoryObj<WarningProps> = {
     args: {
         children: 'Insert text here.',
-        withIcon: true,
         filled: true,
         variant: 'warning',
         icon: undefined,
@@ -48,7 +47,7 @@ export const Warning: StoryObj<WarningProps> = {
             control: false,
         },
         icon: {
-            options: variables.ICONS,
+            options: [undefined, true, ...variables.ICONS],
             control: {
                 type: 'select',
             },

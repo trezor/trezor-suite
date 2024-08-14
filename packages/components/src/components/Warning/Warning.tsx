@@ -26,8 +26,7 @@ export type WarningProps = AllowedFrameProps & {
     className?: string;
     variant?: WarningVariant;
     rightContent?: ReactNode;
-    withIcon?: boolean;
-    icon?: IconType;
+    icon?: IconType | true;
     filled?: boolean;
     'data-testid'?: string;
 };
@@ -69,7 +68,6 @@ export const Warning = ({
     children,
     className,
     variant = DEFAULT_VARIANT,
-    withIcon,
     icon,
     filled = true,
     margin,
@@ -78,6 +76,8 @@ export const Warning = ({
 }: WarningProps) => {
     const theme = useTheme();
     const { elevation } = useElevation();
+
+    const withIcon = icon !== undefined;
 
     return (
         <Wrapper
@@ -92,7 +92,7 @@ export const Warning = ({
             {withIcon && (
                 <Icon
                     size={20}
-                    icon={icon === undefined ? mapVariantToIcon({ $variant: variant }) : icon}
+                    icon={icon === true ? mapVariantToIcon({ $variant: variant }) : icon}
                     color={mapVariantToIconColor({
                         $variant: variant,
                         theme,

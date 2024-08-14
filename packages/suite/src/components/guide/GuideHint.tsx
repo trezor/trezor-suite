@@ -69,7 +69,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
     });
 
     return (
-        <StyledWarning withIcon variant={variant}>
+        <StyledWarning icon variant={variant}>
             {clonedChildren}
         </StyledWarning>
     );
