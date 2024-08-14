@@ -423,7 +423,7 @@ const useCoinmarketBuyForm = ({
     }, [defaultValues, values, removeDraft, buyDraftKey]);
 
     useEffect(() => {
-        if (!quotesRequest) {
+        if (!quotesRequest && isNotFormPage) {
             navigateToBuyForm();
 
             return;

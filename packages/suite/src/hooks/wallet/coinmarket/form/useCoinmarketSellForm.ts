@@ -729,7 +729,7 @@ export const useCoinmarketSellForm = ({
     }, 50);
 
     useEffect(() => {
-        if (!quotesRequest) {
+        if (!quotesRequest && isNotFormPage) {
             navigateToSellForm();
 
             return;
@@ -752,6 +752,7 @@ export const useCoinmarketSellForm = ({
         transactionId,
         trades,
         trade,
+        isNotFormPage,
         dispatch,
         navigateToSellForm,
         checkQuotesTimer,
