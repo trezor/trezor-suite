@@ -4,5 +4,5 @@ module.exports = {
     ...baseConfig,
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
-    testEnvironment: './JestCustomEnv.js',
+    testEnvironment: '../../JestCustomEnv.js',
 };

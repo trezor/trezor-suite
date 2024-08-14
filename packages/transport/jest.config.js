@@ -6,4 +6,5 @@ module.exports = {
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
     watchPathIgnorePatterns: ['<rootDir>/libDev', '<rootDir>/lib'],
+    testEnvironment: '../../JestCustomEnv.js',
 };
