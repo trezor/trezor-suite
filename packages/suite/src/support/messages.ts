@@ -3083,6 +3083,10 @@ export default defineMessages({
         defaultMessage: 'BNB Smart Chain',
         id: 'TR_NETWORK_BNB',
     },
+    TR_NETWORK_OP: {
+        defaultMessage: 'Optimism',
+        id: 'TR_NETWORK_OP',
+    },
     TR_NETWORK_LITECOIN: {
         defaultMessage: 'Litecoin',
         id: 'TR_NETWORK_LITECOIN',

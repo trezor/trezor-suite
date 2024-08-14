@@ -357,6 +357,7 @@ export interface WsInfoRes {
     bestHeight: number;
     bestHash: string;
     block0Hash: string;
+    network: string;
     testnet: boolean;
     backend: WsBackendInfo;
 }

@@ -103,6 +103,7 @@ export const fixtures = [
                 bestHeight: 19960825,
                 bestHash: '0x8339e411cd2f62b9493e36c444f7bd11ec716ceaa94f491e9726233d22abc024',
                 block0Hash: '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3',
+                network: 'ETH',
                 testnet: false,
                 backend: {
                     version: 'erigon/2.59.3/linux-amd64/go1.21.6',

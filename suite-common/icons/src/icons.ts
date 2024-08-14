@@ -133,6 +133,7 @@ export const cryptoIcons = {
     etc: require('../assets/cryptoIcons/etc.svg'),
     eth: require('../assets/cryptoIcons/eth.svg'),
     bnb: require('../assets/cryptoIcons/bnb.svg'),
+    op: require('../assets/cryptoIcons/op.svg'),
     gnt: require('../assets/cryptoIcons/gnt.svg'),
     ltc: require('../assets/cryptoIcons/ltc.svg'),
     matic: require('../assets/cryptoIcons/matic.svg'),

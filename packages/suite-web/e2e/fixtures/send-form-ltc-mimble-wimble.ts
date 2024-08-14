@@ -95,6 +95,7 @@ export const fixtures = [
                 bestHeight: 2373436,
                 bestHash: '2c1bc2b99f8a4447a57dfc7b694b9c82bff1b3af7cce8ff151df01238dc07c8b',
                 block0Hash: '12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2',
+                network: 'LTC',
                 testnet: false,
                 backend: { version: '210201', subversion: '/LitecoinCore:0.21.2.1/' },
             },

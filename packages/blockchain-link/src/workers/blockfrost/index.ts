@@ -26,6 +26,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
         type: RESPONSES.GET_INFO,
         payload: {
             url: api.options.url,
+            network: info.shortcut,
             ...info,
         },
     } as const;

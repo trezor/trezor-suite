@@ -90,6 +90,7 @@ export const EthereumNetworkInfo = Type.Intersect([
         type: Type.Literal('ethereum'),
         chainId: Type.Number(),
         network: Type.Optional(Type.Undefined()),
+        chain: Type.String(),
     }),
 ]);
 

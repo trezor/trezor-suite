@@ -1452,6 +1452,11 @@ var CURRENCIES = [
         validator: ETHValidator,
     },
     {
+        name: 'Optimism',
+        symbol: 'eth',
+        validator: ETHValidator,
+    },
+    {
         name: 'EOS',
         symbol: 'eos',
         validator: EOSValidator,

@@ -18,6 +18,7 @@ const getInfo: Api<Req, Res> = client => {
         blockHash: blockheaderToBlockhash(hex),
         name: 'Bitcoin',
         shortcut: coin,
+        network: coin,
         testnet: coin === 'REGTEST',
         decimals: 8,
     });
