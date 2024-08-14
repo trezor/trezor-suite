@@ -1,10 +1,10 @@
 // @group_other
 // @retry=2
-// @user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.43
+// @user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15
 
 // note that running tests in /browser folder will not work in 'debug local setup'
 
-describe('Windows 10 with edge browser ', () => {
+describe('Safari on MacOS 14 ', () => {
     before(() => {
         cy.viewport(1440, 2560);
         cy.resetDb();
