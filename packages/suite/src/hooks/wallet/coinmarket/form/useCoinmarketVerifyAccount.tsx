@@ -92,6 +92,7 @@ const getSuiteReceiveAccounts = ({
 const useCoinmarketVerifyAccount = ({
     currency,
 }: CoinmarketVerifyAccountProps): CoinmarketVerifyAccountReturnProps => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const accounts = useSelector(state => state.wallet.accounts);
     const isDebug = useSelector(selectIsDebugModeActive);
     const device = useSelector(selectDevice);
@@ -102,8 +103,9 @@ const useCoinmarketVerifyAccount = ({
         mode: 'onChange',
     });
 
-    const [selectedAccountOption, setSelectedAccountOption] =
-        useState<CoinmarketVerifyFormAccountOptionProps>();
+    const [selectedAccountOption, setSelectedAccountOption] = useState<
+        CoinmarketVerifyFormAccountOptionProps | undefined
+    >();
 
     const receiveNetwork = currency && cryptoToNetworkSymbol(currency);
     const suiteReceiveAccounts = getSuiteReceiveAccounts({
@@ -114,7 +116,11 @@ const useCoinmarketVerifyAccount = ({
         accounts,
     });
     const selectAccountOptions = getSelectAccountOptions(suiteReceiveAccounts, device);
-    const preselectedAccount = selectAccountOptions[0];
+    const preselectedAccount =
+        selectAccountOptions.find(
+            accountOption =>
+                accountOption.account?.descriptor === selectedAccount.account?.descriptor,
+        ) ?? selectAccountOptions[0];
 
     const { address } = methods.getValues();
     const addressDictionary = useAccountAddressDictionary(selectedAccountOption?.account);
