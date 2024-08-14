@@ -15,7 +15,6 @@ export * from './components/assets/Icon/Icon';
 export * from './components/assets/TrezorLogo/TrezorLogo';
 export * from './components/AutoScalingInput/AutoScalingInput';
 export * from './components/Badge/Badge';
-export * from './components/Box/Box';
 export * from './components/buttons/Button/Button';
 export * from './components/buttons/ButtonGroup/ButtonGroup';
 export * from './components/buttons/IconButton/IconButton';

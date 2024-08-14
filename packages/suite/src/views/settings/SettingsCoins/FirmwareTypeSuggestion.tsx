@@ -5,20 +5,12 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { Box, Button } from '@trezor/components';
+import { Button, Warning } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { spacingsPx, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
-const Row = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-    gap: ${spacingsPx.sm};
-`;
-
-const StyledButton = styled(Button)`
-    display: inline;
+const InlineButtonWrapper = styled.div`
+    display: inline-block;
 `;
 
 const Description = styled.div`
@@ -43,14 +35,16 @@ const FirmwareTypeSuggestionDescription = () => {
                 id={translationId}
                 values={{
                     button: chunks => (
-                        <StyledButton
-                            margin={{ left: 2, right: 2 }}
-                            variant="tertiary"
-                            size="tiny"
-                            onClick={goToFirmwareType}
-                        >
-                            {chunks}
-                        </StyledButton>
+                        <InlineButtonWrapper>
+                            <Button
+                                margin={{ left: 2, right: 2 }}
+                                variant="info"
+                                size="tiny"
+                                onClick={goToFirmwareType}
+                            >
+                                {chunks}
+                            </Button>
+                        </InlineButtonWrapper>
                     ),
                     bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
                     regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
@@ -66,13 +60,17 @@ export const FirmwareTypeSuggestion = () => {
     const handleClose = () => dispatch(setFlag('firmwareTypeBannerClosed', true));
 
     return (
-        <Box variant="primary" margin={{ bottom: 20 }}>
-            <Row>
-                <FirmwareTypeSuggestionDescription />
-                <Button variant="tertiary" size="small" onClick={handleClose}>
+        <Warning
+            variant="info"
+            withIcon
+            margin={{ bottom: 20 }}
+            rightContent={
+                <Warning.Button onClick={handleClose}>
                     <Translation id="TR_GOT_IT" />
-                </Button>
-            </Row>
-        </Box>
+                </Warning.Button>
+            }
+        >
+            <FirmwareTypeSuggestionDescription />
+        </Warning>
     );
 };

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { Icon } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
@@ -19,14 +19,13 @@ const Point = styled.div`
 `;
 
 export const BannerPoints = ({ points }: BannerPointsProps) => {
-    const theme = useTheme();
     if (points.length === 0) return null;
 
     return (
         <>
             {points.map((point, i) => (
                 <Point key={i}>
-                    <Icon icon="CHECK" size={20} color={theme.iconPrimaryDefault} />
+                    <Icon icon="CHECK" size={20} />
                     {point}
                 </Point>
             ))}

@@ -1,9 +1,9 @@
 import styled, { useTheme } from 'styled-components';
 
 import { Translation } from 'src/components/suite';
-import { Icon, Box, variables } from '@trezor/components';
+import { Icon, variables, Card } from '@trezor/components';
 import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { borders, zIndices } from '@trezor/theme';
+import { borders, typography, zIndices } from '@trezor/theme';
 
 const TransactionDetailsWrapper = styled.div`
     display: flex;
@@ -44,16 +44,9 @@ const DetailsBodyInner = styled.div`
     margin: 0 0 20px;
 `;
 
-const HeadSection = styled(Box)`
-    text-align: left;
-    margin: 0 0 12px;
-    border: 0;
-    background: ${({ theme }) => theme.BG_GREY};
-`;
-
 const HeadSectionLine = styled.div`
     display: flex;
-    font-size: ${variables.FONT_SIZE.SMALL};
+    ${typography.hint}
 
     & + & {
         margin: 5px 0 0;
@@ -61,26 +54,24 @@ const HeadSectionLine = styled.div`
 `;
 
 const HeadSectionName = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     margin-right: 15px;
     width: 60px;
 `;
 
 const HeadSectionValue = styled.div`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
     flex: 1;
 `;
 
 const Section = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.label}
 `;
 
 const SectionName = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.label}
     margin: 7px 0;
 `;
 
@@ -92,20 +83,12 @@ const SectionDivider = styled.div`
     }
 `;
 
-const StyledBox = styled(Box)`
-    border: 0;
-    background: ${({ theme }) => theme.BG_GREY};
-    flex-direction: column;
-    align-items: start;
-    word-break: break-all;
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
 const Pre = styled.pre`
     text-align: left;
     word-break: break-all;
     white-space: pre-wrap;
-    font-size: ${variables.FONT_SIZE.TINY};
+    font-family: monospace;
+    ${typography.label}
 `;
 
 export interface TransactionReviewDetailsProps {
@@ -126,7 +109,7 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
             </DetailsHeader>
             <DetailsBody>
                 <DetailsBodyInner>
-                    <HeadSection>
+                    <Card paddingType="small" margin={{ bottom: 12 }}>
                         <HeadSectionLine>
                             <HeadSectionName>
                                 <Translation id="TR_SIZE" />
@@ -135,14 +118,14 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
                                 {tx.bytes} <Translation id="TR_BYTES" />
                             </HeadSectionValue>
                         </HeadSectionLine>
-                    </HeadSection>
+                    </Card>
                     <Section>
                         <SectionName>
                             <Translation id="TR_INPUTS" />
                         </SectionName>
-                        <StyledBox>
+                        <Card paddingType="small">
                             <Pre>{prettify(tx.inputs)}</Pre>
-                        </StyledBox>
+                        </Card>
                     </Section>
                     <SectionDivider>
                         <Icon icon="ARROW_DOWN" size={20} color={theme.TYPE_LIGHT_GREY} />
@@ -151,18 +134,18 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
                         <SectionName>
                             <Translation id="TR_OUTPUTS" />
                         </SectionName>
-                        <StyledBox>
+                        <Card paddingType="small">
                             <Pre>{prettify(tx.outputs)}</Pre>
-                        </StyledBox>
+                        </Card>
                     </Section>
                     {txHash && (
                         <Section>
                             <SectionName>
                                 <Translation id="RAW_TRANSACTION" />
                             </SectionName>
-                            <StyledBox>
+                            <Card paddingType="small">
                                 <Pre>{txHash}</Pre>
-                            </StyledBox>
+                            </Card>
                         </Section>
                     )}
                 </DetailsBodyInner>
