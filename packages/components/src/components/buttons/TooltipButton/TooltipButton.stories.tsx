@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { TooltipButton as TooltipButtonComponent } from './TooltipButton';
-import { getFramePropsStory } from '../../common/frameProps';
+import { getFramePropsStory } from '../../../utils/frameProps';
 import { allowedButtonFrameProps } from '../Button/Button';
 import { variables } from '../../../config';
 
