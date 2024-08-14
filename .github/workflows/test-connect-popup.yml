@@ -64,6 +64,7 @@ jobs:
           serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
           uploadArtifacts: "true"
           buildArtifacts: "true"
+          nodeEnv: "development"
 
   methods:
     needs: [build-deploy]
