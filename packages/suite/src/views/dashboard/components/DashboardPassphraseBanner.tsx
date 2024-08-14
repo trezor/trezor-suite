@@ -55,17 +55,10 @@ export const DashboardPassphraseBanner = () => {
                     {...bannerAnimationConfig}
                     onAnimationComplete={handleClose}
                 >
-                    <Warning variant="tertiary" icon="ASTERISK">
-                        <Row justifyContent="space-between" alignItems="center" gap={16} flex={1}>
-                            <Column gap={4} alignItems="flex-start" flex={1}>
-                                <H3 color="textDefault">
-                                    <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE" />
-                                </H3>
-                                <Text color="textDefaultInverted">
-                                    <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION" />
-                                </Text>
-                            </Column>
-
+                    <Warning
+                        variant="tertiary"
+                        icon="ASTERISK"
+                        rightContent={
                             <Row gap={8}>
                                 <Button onClick={handleManageClick}>
                                     <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON" />
@@ -78,7 +71,16 @@ export const DashboardPassphraseBanner = () => {
                                     }}
                                 />
                             </Row>
-                        </Row>
+                        }
+                    >
+                        <Column gap={4} alignItems="flex-start" flex={1}>
+                            <H3 color="textDefault">
+                                <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE" />
+                            </H3>
+                            <Text color="textDefaultInverted">
+                                <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION" />
+                            </Text>
+                        </Column>
                     </Warning>
                 </Container>
             )}

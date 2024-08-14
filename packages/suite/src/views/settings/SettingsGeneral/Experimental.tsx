@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Checkbox, Switch, Icon, variables, Row } from '@trezor/components';
+import { Checkbox, Switch, Warning } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 
@@ -23,16 +23,6 @@ const FeatureLineWrapper = styled.div`
         margin-top: ${spacingsPx.md};
         border-top: 1px solid ${({ theme }) => theme.borderElevation2};
     }
-`;
-
-const Warning = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xxs};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.BOLD};
-    margin-bottom: 4px;
 `;
 
 type FeatureLineProps = {
@@ -102,11 +92,8 @@ export const Experimental = () => {
                 <TextColumn
                     title={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
                     description={
-                        <Warning>
-                            <Row gap={12}>
-                                <Icon icon="WARNING" size={14} variant="tertiary" />
-                                <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
-                            </Row>
+                        <Warning icon="WARNING" variant="warning">
+                            <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
                         </Warning>
                     }
                     buttonLink={EXPERIMENTAL_FEATURES_KB_URL}

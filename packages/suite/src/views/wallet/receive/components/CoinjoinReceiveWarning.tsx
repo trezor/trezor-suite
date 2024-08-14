@@ -6,15 +6,6 @@ import { Button, Icon, variables, Warning } from '@trezor/components';
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-const InnerContainer = styled.div`
-    justify-content: space-between;
-    gap: 16px;
-    ${variables.SCREEN_QUERY.MOBILE} {
-        align-items: stretch;
-        flex-direction: column;
-    }
-`;
-
 const Container = styled.div`
     margin-bottom: 16px;
 `;
@@ -75,29 +66,29 @@ export const CoinjoinReceiveWarning = () => {
 
     return (
         <Container>
-            <Warning>
-                <InnerContainer>
-                    <Text>
-                        <Heading>
-                            <InfoIcon icon="INFO" size={14} color={theme.TYPE_DARK_ORANGE} />
-                            <Translation id="TR_COINJOIN_RECEIVE_WARNING_TITLE" />
-                        </Heading>
-
-                        <WarningList>
-                            <li>
-                                <Translation id="TR_COINJOIN_CEX_WARNING" />
-                            </li>
-
-                            <li>
-                                <Translation id="TR_UNECO_COINJOIN_RECEIVE_WARNING" />
-                            </li>
-                        </WarningList>
-                    </Text>
-
+            <Warning
+                rightContent={
                     <StyledButton onClick={() => dispatch(hideCoinjoinReceiveWarning())}>
                         <Translation id="TR_GOT_IT" />
                     </StyledButton>
-                </InnerContainer>
+                }
+            >
+                <Text>
+                    <Heading>
+                        <InfoIcon icon="INFO" size={14} color={theme.TYPE_DARK_ORANGE} />
+                        <Translation id="TR_COINJOIN_RECEIVE_WARNING_TITLE" />
+                    </Heading>
+
+                    <WarningList>
+                        <li>
+                            <Translation id="TR_COINJOIN_CEX_WARNING" />
+                        </li>
+
+                        <li>
+                            <Translation id="TR_UNECO_COINJOIN_RECEIVE_WARNING" />
+                        </li>
+                    </WarningList>
+                </Text>
             </Warning>
         </Container>
     );
