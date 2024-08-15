@@ -7,10 +7,8 @@ import { UIVariant } from '../../config/types';
 import { CSSColor, Color, Colors } from '@trezor/theme';
 import { TransientProps } from '../../utils/transientProps';
 
-export type IconVariant = Extract<
-    UIVariant,
-    'primary' | 'tertiary' | 'info' | 'warning' | 'destructive'
->;
+export const iconVariants = ['primary', 'tertiary', 'info', 'warning', 'destructive'] as const;
+export type IconVariant = Extract<UIVariant, (typeof iconVariants)[number]>;
 
 type ExclusiveColorOrVariant =
     | { variant?: IconVariant; color?: undefined }

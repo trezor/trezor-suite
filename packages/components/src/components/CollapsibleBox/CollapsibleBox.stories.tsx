@@ -4,6 +4,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import {
     CollapsibleBox as CollapsibleBoxComponent,
     allowedCollapsibleBoxFrameProps,
+    paddingTypes,
 } from './CollapsibleBox';
 import { action } from '@storybook/addon-actions';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -43,7 +44,7 @@ export const CollapsibleBox: StoryObj = {
             control: {
                 type: 'select',
             },
-            options: ['none', 'normal', 'large'],
+            options: paddingTypes,
         },
 
         subHeading: {

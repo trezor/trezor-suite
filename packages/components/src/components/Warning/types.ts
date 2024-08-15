@@ -1,6 +1,12 @@
 import { UIVariant } from '../../config/types';
 
-export type WarningVariant = Extract<
-    UIVariant,
-    'primary' | 'secondary' | 'info' | 'warning' | 'destructive' | 'tertiary'
->;
+export const warningVariants = [
+    'primary',
+    'secondary',
+    'info',
+    'warning',
+    'destructive',
+    'tertiary',
+] as const;
+
+export type WarningVariant = Extract<UIVariant, (typeof warningVariants)[number]>;

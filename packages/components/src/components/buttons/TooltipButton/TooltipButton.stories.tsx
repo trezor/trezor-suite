@@ -3,6 +3,7 @@ import { TooltipButton as TooltipButtonComponent } from './TooltipButton';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { allowedButtonFrameProps } from '../Button/Button';
 import { variables } from '../../../config';
+import { buttonSizes, buttonVariants } from '../buttonStyleUtils';
 
 const meta: Meta = {
     title: 'Buttons',
@@ -35,13 +36,13 @@ export const TooltipButton: StoryObj<typeof TooltipButtonComponent> = {
             control: {
                 type: 'radio',
             },
-            options: ['primary', 'secondary', 'tertiary', 'info', 'warning', 'destructive'],
+            options: buttonVariants,
         },
         size: {
             control: {
                 type: 'radio',
             },
-            options: ['large', 'medium', 'small', 'tiny'],
+            options: buttonSizes,
         },
         isDisabled: {
             control: {

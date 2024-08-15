@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { IconButton as IconButtonComponent, IconButtonProps } from './IconButton';
 import { variables } from '../../../config';
-import { subtleButtonVariants } from '../buttonStyleUtils';
+import { buttonSizes, buttonVariants, subtleButtonVariants } from '../buttonStyleUtils';
 
 const meta: Meta = {
     title: 'Buttons',
@@ -36,13 +36,13 @@ export const IconButton: StoryObj<IconButtonProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['primary', 'secondary', 'tertiary', 'info', 'warning', 'destructive'],
+            options: buttonVariants,
         },
         size: {
             control: {
                 type: 'radio',
             },
-            options: ['large', 'medium', 'small', 'tiny'],
+            options: buttonSizes,
         },
         iconSize: {
             control: {

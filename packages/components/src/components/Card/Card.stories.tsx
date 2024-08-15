@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Card as CardComponent, allowedCardFrameProps } from './Card';
+import { Card as CardComponent, allowedCardFrameProps, paddingTypes } from './Card';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
@@ -17,7 +17,7 @@ export const Card: StoryObj = {
     },
     argTypes: {
         paddingType: {
-            options: ['small', 'none', 'normal'],
+            options: paddingTypes,
             control: {
                 type: 'radio',
             },

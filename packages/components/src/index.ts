@@ -21,8 +21,11 @@ export * from './components/buttons/IconButton/IconButton';
 export * from './components/buttons/PinButton/PinButton';
 export * from './components/buttons/TextButton/TextButton';
 export * from './components/buttons/TooltipButton/TooltipButton';
-export * from './components/Card/Card';
-export * from './components/CollapsibleBox/CollapsibleBox';
+export { Card, type CardProps } from './components/Card/Card';
+export {
+    CollapsibleBox,
+    type CollapsibleBoxProps,
+} from './components/CollapsibleBox/CollapsibleBox';
 export * from './components/RotateDeviceImage/RotateDeviceImage';
 export * from './components/DataAnalytics';
 export * from './components/Divider/Divider';

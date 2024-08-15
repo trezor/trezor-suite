@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Icon as IconComponent, IconProps, variables, IconVariant } from '../../index';
+import { Icon as IconComponent, IconProps, variables, iconVariants } from '../../index';
 
 const meta: Meta = {
     title: 'Icons',
@@ -20,7 +20,7 @@ export const Icon: StoryObj<IconProps> = {
             },
         },
         variant: {
-            options: ['primary', 'tertiary', 'info', 'destructive', 'warning'] as IconVariant[],
+            options: iconVariants,
             control: {
                 type: 'select',
             },
