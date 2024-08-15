@@ -18,6 +18,7 @@
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
+        { "path": "../config" },
         { "path": "../formatters" },
         { "path": "../intl" },
         { "path": "../navigation" },

@@ -1,4 +1,5 @@
 import { memoize } from 'proxy-memoize';
+import { A, F, pipe } from '@mobily/ts-belt';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
@@ -11,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
+import { discoverySupportedNetworks } from '@suite-native/config';
 
 type Assets = Partial<Record<NetworkSymbol, string[]>>;
 type FormattedAssets = Partial<Record<NetworkSymbol, BigNumber>>;
@@ -57,8 +59,15 @@ export const selectDeviceAssetsWithBalances = memoize(
 
         const fiatCurrencyCode = selectFiatCurrencyCode(state);
 
-        return deviceNetworksWithAssets
-            .map((networkSymbol: NetworkSymbol) => {
+        return pipe(
+            deviceNetworksWithAssets,
+            A.sort((a, b) => {
+                const aOrder = discoverySupportedNetworks.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
+                const bOrder = discoverySupportedNetworks.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
+
+                return aOrder - bOrder;
+            }),
+            A.map((networkSymbol: NetworkSymbol) => {
                 const fiatRateKey = getFiatRateKey(networkSymbol, fiatCurrencyCode);
                 const fiatRate = selectFiatRatesByFiatRateKey(state, fiatRateKey);
 
@@ -80,7 +89,9 @@ export const selectDeviceAssetsWithBalances = memoize(
                 };
 
                 return asset;
-            })
-            .filter(data => data !== undefined) as AssetType[];
+            }),
+            A.filter(data => data !== undefined),
+            F.toMutable,
+        );
     },
 );
