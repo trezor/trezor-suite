@@ -7,19 +7,22 @@ import {
 } from 'react-native';
 import Animated, {
     Easing,
+    FadeIn,
+    FadeOut,
     interpolate,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
 
-import { D } from '@mobily/ts-belt';
+import { RequireOneOrNone } from 'type-fest';
+import { D, G, S } from '@mobily/ts-belt';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { nativeSpacings } from '@trezor/theme';
 
 import { Box } from '../Box';
-import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from '../Text';
+import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
 import { SurfaceElevation } from '../types';
 
 const LABEL_ANIMATION_DURATION = 200;
@@ -42,7 +45,7 @@ export type InputProps = TextInputProps &
     >;
 
 const INPUT_LABEL_TOP_PADDING = 35;
-const INPUT_LABEL_TOP_PADDING_MINIMIZED = 40;
+const INPUT_LABEL_TOP_PADDING_MINIMIZED = 37;
 const INPUT_WRAPPER_PADDING_HORIZONTAL = 14 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_WRAPPER_PADDING_VERTICAL = 17 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED =
@@ -66,6 +69,7 @@ type InputLabelStyleProps = {
 type InputStyleProps = {
     isLeftIconDisplayed: boolean;
     isRightIconDisplayed: boolean;
+    isDisabled: boolean;
 };
 
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
@@ -75,7 +79,6 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
         borderWidth: utils.borders.widths.small,
         borderRadius: 1.5 * utils.borders.radii.small,
         paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
-        paddingBottom: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
         minHeight: INPUT_WRAPPER_HEIGHT,
         justifyContent: 'flex-end',
         extend: [
@@ -111,7 +114,7 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
 );
 
 const inputStyle = prepareNativeStyle<InputStyleProps>(
-    (utils, { isLeftIconDisplayed, isRightIconDisplayed }) => ({
+    (utils, { isLeftIconDisplayed, isRightIconDisplayed, isDisabled }) => ({
         ...utils.typography.body,
         // letterSpacing from `typography.body` is making strange layout jumps on Android while filling the input.
         // This resets it to the default TextInput value.
@@ -119,14 +122,13 @@ const inputStyle = prepareNativeStyle<InputStyleProps>(
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: INPUT_TEXT_HEIGHT,
-        color: utils.colors.textDefault,
+        color: isDisabled ? utils.colors.textSubdued : utils.colors.textDefault,
         left: isLeftIconDisplayed ? utils.spacings.large : 0,
-        marginRight: isRightIconDisplayed ? utils.spacings.extraLarge : 0,
+        paddingRight: isRightIconDisplayed ? 40 : 0,
         borderWidth: 0,
         flex: 1,
         // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
-        paddingTop: utils.spacings.large,
-        paddingBottom: utils.spacings.extraSmall,
+        paddingVertical: utils.spacings.medium,
     }),
 );
 
@@ -137,7 +139,7 @@ const inputHitSlop = {
     bottom: INPUT_WRAPPER_PADDING_VERTICAL,
 };
 
-const inputLabelStyle = prepareNativeStyle(
+const labelStyle = prepareNativeStyle(
     (utils, { isLabelMinimized, isLeftIconDisplayed }: InputLabelStyleProps) => ({
         ...D.deleteKey(utils.typography.body, 'fontSize'),
         color: utils.colors.textSubdued,
@@ -154,11 +156,22 @@ const inputLabelStyle = prepareNativeStyle(
     }),
 );
 
+const placeholderStyle = prepareNativeStyle(
+    (utils, { isLeftIconDisplayed }: InputLabelStyleProps) => ({
+        position: 'absolute',
+        height: INPUT_WRAPPER_HEIGHT,
+        color: utils.colors.textSubdued,
+        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.large : 0),
+        justifyContent: 'center',
+    }),
+);
+
 const iconStyle = prepareNativeStyle(() => ({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    top: 20,
+    top: 0,
+    height: '100%',
 }));
 
 const leftIconStyle = prepareNativeStyle(utils => ({
@@ -215,11 +228,14 @@ export const Input = forwardRef<TextInput, InputProps>(
             onFocus,
             onBlur,
             label,
+            placeholder,
             leftIcon,
             rightIcon,
+            style,
             hasError = false,
             hasWarning = false,
             elevation = '0',
+            editable,
             ...props
         }: InputProps,
         ref,
@@ -260,37 +276,59 @@ export const Input = forwardRef<TextInput, InputProps>(
                             {leftIcon}
                         </Box>
                     )}
-                    <Animated.Text
-                        style={[
-                            /*
+                    {label && (
+                        <Animated.Text
+                            style={[
+                                /*
                             fontSize has to be defined by the animation style itself.
                             Otherwise, it re-renders and blinks when the size is defined
                             in both places (native and animated style).
                             */
-                            animatedInputLabelStyle,
-                            applyStyle(inputLabelStyle, { isLabelMinimized, isLeftIconDisplayed }),
-                        ]}
-                        numberOfLines={1}
-                    >
-                        {label}
-                    </Animated.Text>
+                                animatedInputLabelStyle,
+                                applyStyle(labelStyle, {
+                                    isLabelMinimized,
+                                    isLeftIconDisplayed,
+                                }),
+                            ]}
+                            numberOfLines={1}
+                        >
+                            {label}
+                        </Animated.Text>
+                    )}
+                    {!isFocused && S.isEmpty(value) && placeholder && (
+                        <Animated.View
+                            entering={labelEnteringAnimation}
+                            exiting={labelExitingAnimation}
+                            style={applyStyle(placeholderStyle, {
+                                isLabelMinimized,
+                                isLeftIconDisplayed,
+                            })}
+                        >
+                            <Text color="textSubdued">{placeholder}</Text>
+                        </Animated.View>
+                    )}
                     <Box flexDirection="row" alignItems="center">
                         <TextInput
                             ref={ref}
-                            style={applyStyle(inputStyle, {
-                                isLeftIconDisplayed,
-                                isRightIconDisplayed,
-                            })}
+                            style={[
+                                applyStyle(inputStyle, {
+                                    isLeftIconDisplayed,
+                                    isRightIconDisplayed,
+                                    isDisabled: G.isBoolean(editable) && !editable,
+                                }),
+                                style,
+                            ]}
                             onFocus={handleOnFocus}
                             onBlur={handleOnBlur}
                             hitSlop={inputHitSlop}
                             value={value}
+                            editable={editable}
                             {...props}
                         />
                     </Box>
                     {rightIcon && (
                         <Box style={[applyStyle(iconStyle), applyStyle(rightIconStyle)]}>
-                            {rightIcon}
+                            <Box style={{}}>{rightIcon}</Box>
                         </Box>
                     )}
                 </Box>

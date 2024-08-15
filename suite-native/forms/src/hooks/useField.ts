@@ -6,7 +6,7 @@ import { FormContext } from '../Form';
 
 interface UseFieldArgs {
     name: FieldName;
-    label: string;
+    label?: string;
     defaultValue?: unknown;
     valueTransformer?: (value: string) => string;
 }
@@ -26,7 +26,7 @@ export const useField = ({
 
     const {
         field: { onBlur, onChange, value },
-        fieldState: { error },
+        fieldState: { error, isDirty },
     } = useController({
         name,
         control,
@@ -38,12 +38,13 @@ export const useField = ({
     const transformedValue = valueTransformer(value);
 
     // TODO: proper error message resolution using intl
-    const errorMessage = error?.message?.replace(name, label);
+    const errorMessage = label ? error?.message?.replace(name, label) : error?.message;
     const hasError = !!error;
 
     return {
         errorMessage,
         hasError,
+        isDirty,
         value: transformedValue,
         onBlur,
         onChange,

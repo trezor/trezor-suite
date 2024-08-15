@@ -36,6 +36,7 @@
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
+        { "path": "../helpers" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
