@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import type { CryptoSymbol, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
+import type { ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 import {
     amountToSatoshi,
@@ -70,11 +70,19 @@ export const useCoinmarketExchangeForm = ({
     pageType = 'form',
 }: UseCoinmarketFormProps): CoinmarketExchangeFormContextProps => {
     const type = 'exchange';
-    const isPageOffers = pageType === 'offers';
+    const isNotFormPage = pageType !== 'form';
     const { exchangeInfo, quotesRequest, quotes, coinmarketAccount } = useSelector(
         state => state.wallet.coinmarket.exchange,
     );
-    const account = coinmarketAccount ?? selectedAccount.account;
+    // selectedAccount is used as initial state if this is form page
+    // coinmarketAccount is used on offers page
+    const [account, setAccount] = useState<Account>(() => {
+        if (coinmarketAccount && isNotFormPage) {
+            return coinmarketAccount;
+        }
+
+        return selectedAccount.account;
+    });
     const {
         callInProgress,
         selectedQuote,
@@ -110,8 +118,12 @@ export const useCoinmarketExchangeForm = ({
 
     const [exchangeStep, setExchangeStep] =
         useState<CoinmarketExchangeStepType>('RECEIVING_ADDRESS');
-    const { navigateToExchangeForm, navigateToExchangeDetail, navigateToExchangeOffers } =
-        useCoinmarketNavigation(account);
+    const {
+        navigateToExchangeForm,
+        navigateToExchangeDetail,
+        navigateToExchangeOffers,
+        navigateToExchangeConfirm,
+    } = useCoinmarketNavigation(account);
     const isDebug = useSelector(selectIsDebugModeActive);
     const receiveNetwork = selectedQuote?.receive && cryptoToNetworkSymbol(selectedQuote?.receive);
 
@@ -163,7 +175,7 @@ export const useCoinmarketExchangeForm = ({
         control,
     } = methods;
     const values = useWatch<CoinmarketExchangeFormProps>({ control });
-    const previousValues = useRef<typeof values | null>(isPageOffers ? draftUpdated : null);
+    const previousValues = useRef<typeof values | null>(isNotFormPage ? draftUpdated : null);
     const { outputs } = getValues();
     const token = outputs?.[0]?.token;
     const currency: Option | undefined = getValues(FORM_OUTPUT_CURRENCY);
@@ -218,6 +230,7 @@ export const useCoinmarketExchangeForm = ({
         setAmountLimits,
         changeFeeLevel,
         composeRequest,
+        setAccount,
     });
 
     const getQuotesRequest = useCallback(
@@ -260,8 +273,8 @@ export const useCoinmarketExchangeForm = ({
         if (!receiveCryptoSelect?.value || !sendCryptoSelect?.value) return null;
 
         const request: ExchangeTradeQuoteRequest = {
-            receive: receiveCryptoSelect.value as CryptoSymbol,
-            send: sendCryptoSelect.value as CryptoSymbol,
+            receive: receiveCryptoSelect.value,
+            send: sendCryptoSelect.value,
             sendStringAmount,
             dex: 'enable',
         };
@@ -342,6 +355,8 @@ export const useCoinmarketExchangeForm = ({
                     type: SET_MODAL_CRYPTO_CURRENCY,
                     modalCryptoSymbol: quote.receive,
                 });
+
+                navigateToExchangeConfirm();
                 timer.stop();
             }
         }
@@ -538,7 +553,7 @@ export const useCoinmarketExchangeForm = ({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, handleChange, handleSubmit, isPageOffers]);
+    }, [previousValues, values, handleChange, handleSubmit, isNotFormPage]);
 
     useCoinmarketLoadData();
 
@@ -698,7 +713,7 @@ export const useCoinmarketExchangeForm = ({
     }, [accounts, device, exchangeStep, isDebug, receiveNetwork, selectedQuote]);
 
     useEffect(() => {
-        if (!quotesRequest) {
+        if (!quotesRequest && !isNotFormPage) {
             navigateToExchangeForm();
 
             return;

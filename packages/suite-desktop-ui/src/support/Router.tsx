@@ -26,6 +26,7 @@ import { CoinmarketSellConfirm } from 'src/views/wallet/coinmarket/sell_new/Coin
 import { CoinmarketExchangeForm } from 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeForm';
 import WalletCoinmarketExchangeDetail from 'src/views/wallet/coinmarket/exchange/detail';
 import { CoinmarketExchangeOffers } from 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeOffers';
+import { CoinmarketExchangeConfirm } from 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeConfirm';
 import WalletCoinmarketRedirect from 'src/views/wallet/coinmarket/redirect';
 import WalletCoinmarketTransactions from 'src/views/wallet/coinmarket/transactions';
 import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
@@ -59,6 +60,7 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-coinmarket-sell-confirm': CoinmarketSellConfirm,
     'wallet-coinmarket-exchange-detail': WalletCoinmarketExchangeDetail,
     'wallet-coinmarket-exchange-offers': CoinmarketExchangeOffers,
+    'wallet-coinmarket-exchange-confirm': CoinmarketExchangeConfirm,
     'wallet-coinmarket-redirect': WalletCoinmarketRedirect,
     'wallet-coinmarket-transactions': WalletCoinmarketTransactions,
 

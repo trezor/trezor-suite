@@ -4,7 +4,10 @@ import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useSelector } from 'src/hooks/suite';
-import { CoinmarketExchangeFormDefaultValuesProps } from 'src/types/coinmarket/coinmarketForm';
+import {
+    CoinmarketExchangeFormDefaultValuesProps,
+    RateType,
+} from 'src/types/coinmarket/coinmarketForm';
 import { FormState, Output } from '@suite-common/wallet-types';
 import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormDefaultValues';
 
@@ -44,6 +47,7 @@ export const useCoinmarketExchangeFormDefaultValues = (
             amountInCrypto: true,
             sendCryptoSelect: defaultSendCryptoSelect,
             receiveCryptoSelect: null,
+            rateType: 'fixed' as RateType,
         }),
         [defaultFormState, defaultSendCryptoSelect],
     );

@@ -122,7 +122,7 @@ export const useCoinmarketSellForm = ({
         savePaymentMethods: coinmarketInfoActions.savePaymentMethods,
     });
     const accounts = useSelector(selectAccounts);
-    const { navigateToSellForm, navigateToSellOffers, navigateToSellOffer } =
+    const { navigateToSellForm, navigateToSellOffers, navigateToSellConfirm } =
         useCoinmarketNavigation(account);
 
     const { symbol, networkType } = account;
@@ -521,7 +521,7 @@ export const useCoinmarketSellForm = ({
                 saveSelectedQuote(quote);
                 timer.stop();
 
-                navigateToSellOffer();
+                navigateToSellConfirm();
             }
         }
     };

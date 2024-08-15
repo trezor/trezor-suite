@@ -79,6 +79,7 @@ export type CoinmarketTradeType =
     | CoinmarketTradeExchangeType;
 export type CoinmarketTradeBuySellType = Exclude<CoinmarketTradeType, CoinmarketTradeExchangeType>;
 export type CoinmarketTradeSellExchangeType = Exclude<CoinmarketTradeType, CoinmarketTradeBuyType>;
+export type CoinmarketTradeBuyExchangeType = Exclude<CoinmarketTradeType, CoinmarketTradeSellType>;
 
 export type CoinmarketTradeMapProps = {
     buy: TradeBuy;

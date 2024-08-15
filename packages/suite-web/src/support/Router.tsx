@@ -100,6 +100,11 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
             /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeOffers'
         ).then(({ CoinmarketExchangeOffers }) => ({ default: CoinmarketExchangeOffers })),
     ),
+    'wallet-coinmarket-exchange-confirm': lazy(() =>
+        import(
+            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeConfirm'
+        ).then(({ CoinmarketExchangeConfirm }) => ({ default: CoinmarketExchangeConfirm })),
+    ),
     'wallet-coinmarket-redirect': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/redirect'),
     ),

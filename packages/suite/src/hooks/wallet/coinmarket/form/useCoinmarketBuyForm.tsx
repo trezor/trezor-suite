@@ -85,7 +85,7 @@ const useCoinmarketBuyForm = ({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
     });
-    const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyOffer } =
+    const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =
         useCoinmarketNavigation(account);
 
     // states
@@ -328,7 +328,7 @@ const useCoinmarketBuyForm = ({
                     });
                     timer.stop();
 
-                    navigateToBuyOffer();
+                    navigateToBuyConfirm();
                 }
             }
         }

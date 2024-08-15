@@ -297,11 +297,11 @@ export interface CoinmarketUseFormHelpersProps {
     setAmountLimits: (limits?: AmountLimits) => void;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     composeRequest: SendContextValues<SellFormState>['composeTransaction'];
+    setAccount: (account: Account) => void;
 }
 
 export interface CoinmarketUseSellFormHelpersProps extends CoinmarketUseFormHelpersProps {
     methods: UseFormReturn<CoinmarketSellFormProps>;
-    setAccount: (account: Account) => void;
 }
 
 export interface CoinmarketUseExchangeFormHelpersProps extends CoinmarketUseFormHelpersProps {

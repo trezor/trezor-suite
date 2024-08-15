@@ -48,6 +48,7 @@ export const useCoinmarketExchangeFormHelpers = ({
     setAmountLimits,
     changeFeeLevel,
     composeRequest,
+    setAccount,
 }: CoinmarketUseExchangeFormHelpersProps): CoinmarketExchangeFormHelpersProps => {
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
@@ -113,6 +114,8 @@ export const useCoinmarketExchangeFormHelpers = ({
             const networkSymbol = cryptoToNetworkSymbol(selected.value);
             const account = accountsSorted.find(item => item.descriptor === selected.descriptor);
 
+            if (!account) return;
+
             setValue(FORM_OUTPUT_ADDRESS, '');
             setValue(FORM_CRYPTO_TOKEN, selected?.contractAddress ?? null);
 
@@ -130,12 +133,11 @@ export const useCoinmarketExchangeFormHelpers = ({
             setValue(FORM_OUTPUT_AMOUNT, '');
             setAmountLimits(undefined);
 
-            if (account) {
-                dispatch(setCoinmarketExchangeAccount(account));
-                changeFeeLevel('normal'); // reset fee level
-            }
+            dispatch(setCoinmarketExchangeAccount(account));
+            changeFeeLevel('normal'); // reset fee level
+            setAccount(account);
         },
-        [accountsSorted, setValue, setAmountLimits, changeFeeLevel, dispatch],
+        [accountsSorted, setValue, setAmountLimits, changeFeeLevel, dispatch, setAccount],
     );
 
     const onSendCryptoValueChange = (amount: string, decimals: number) => {
