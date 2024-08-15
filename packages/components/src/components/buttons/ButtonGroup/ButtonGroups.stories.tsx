@@ -65,6 +65,14 @@ export const ButtonGroups: StoryObj = {
                 <IconButton icon="TWO_USERS" />
                 <IconButton icon="BACKEND" />
             </ButtonGroup>
+
+            <ButtonGroup>
+                <Button>Button</Button>
+                <Button>
+                    A very long Lorem ipsum dolor sit amet, which wraps to many lines, but the
+                    buttons have consistent height
+                </Button>
+            </ButtonGroup>
         </StoryColumn>
     ),
 };
