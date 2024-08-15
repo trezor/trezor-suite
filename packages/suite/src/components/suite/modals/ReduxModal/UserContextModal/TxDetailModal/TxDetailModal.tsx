@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
+import { Button, NewModal } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import {
     isPending,
@@ -15,20 +15,12 @@ import {
     selectAllPendingTransactions,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
-import { Translation, Modal, TrezorLink } from 'src/components/suite';
+import { Translation, TrezorLink } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { BasicTxDetails } from './BasicTxDetails';
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { ChangeFee } from './ChangeFee/ChangeFee';
 import { borders, spacingsPx, typography } from '@trezor/theme';
-
-const StyledModal = styled(Modal)`
-    width: 755px;
-
-    ${Modal.Body} {
-        padding: 10px;
-    }
-`;
 
 const PhishingBanner = styled.div`
     margin-bottom: ${spacingsPx.xs};
@@ -107,10 +99,10 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
     );
 
     return (
-        <StyledModal
-            isCancelable
+        <NewModal
             onCancel={onCancel}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
+            size="large"
         >
             {isPhishingTransaction && (
                 <PhishingBanner>
@@ -205,6 +197,6 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                     isPhishingTransaction={isPhishingTransaction}
                 />
             )}
-        </StyledModal>
+        </NewModal>
     );
 };
