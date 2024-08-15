@@ -31,7 +31,8 @@
                     "fr": "Coinjoin a été supprimé dans Trezor Suite le 1er juin 2024. Vos fonds resteront accessibles et aucune action n'est nécessaire.",
                     "de": "Coinjoin wurde in der Trezor Suite am 1. Juni 2024 eingestellt. Ihre Gelder bleiben zugänglich, und es sind keine Maßnahmen erforderlich.",
                     "tr": "Coinjoin, 1 Haziran 2024 tarihinde Trezor Suite'de sonlandırıldı. Fonlarınız erişilebilir durumda kalacak ve herhangi bir işlem yapmanıza gerek yok.",
-                    "pt": "O Coinjoin foi descontinuado no Trezor Suite em 1 de junho de 2024. Seus fundos permanecerão acessíveis e nenhuma ação é necessária."
+                    "pt": "O Coinjoin foi descontinuado no Trezor Suite em 1 de junho de 2024. Seus fundos permanecerão acessíveis e nenhuma ação é necessária.",
+                    "uk": "Coinjoin було припинено в Trezor Suite 1 червня 2024 року. Ваші кошти залишаться доступними, і ніяких дій не потрібно."
                 },
                 "cta": {
                     "action": "external-link",
@@ -48,7 +49,8 @@
                         "fr": "En Savoir Plus",
                         "de": "Mehr Erfahren",
                         "tr": "Daha Fazla Bilgi",
-                        "pt": "Saiba Mais"
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
                     }
                 },
                 "context": { "domain": "accounts.coinjoin" }
@@ -82,7 +84,8 @@
                     "fr": "Pour la meilleure expérience de staking, veuillez mettre à jour vers la dernière version de Trezor Suite",
                     "de": "Für die beste Staking-Erfahrung, bitte auf die neueste Version von Trezor Suite aktualisieren.",
                     "tr": "En iyi staking deneyimi için lütfen Trezor Suite'in en son sürümüne güncelleyin.",
-                    "pt": "Para a melhor experiência de staking, atualize para a versão mais recente do Trezor Suite."
+                    "pt": "Para a melhor experiência de staking, atualize para a versão mais recente do Trezor Suite.",
+                    "uk": "Для найкращого досвіду стейкінгу, будь ласка, оновіть до останньої версії Trezor Suite."
                 },
                 "context": { "domain": "accounts.eth.staking" }
             }
@@ -115,7 +118,8 @@
                     "fr": "Coinjoin a été supprimé dans Trezor Suite le 1er juin 2024. Veuillez mettre à jour la dernière version de Trezor Suite pour vous assurer que vos fonds restent accessibles.",
                     "de": "Coinjoin wurde in der Trezor Suite am 1. Juni 2024 eingestellt. Bitte aktualisieren Sie auf die neueste Version der Trezor Suite, um sicherzustellen, dass Sie weiterhin Zugriff auf Ihre Kryptowährungen haben.",
                     "tr": "Coinjoin, 1 Haziran 2024 tarihinde Trezor Suite'de sonlandırıldı. Fonlarınızın erişilebilir kalmasını sağlamak için lütfen Trezor Suite'in en son sürümüne güncelleyin.",
-                    "pt": "O Coinjoin foi descontinuado no Trezor Suite em 1 de junho de 2024. Por favor, atualize para a versão mais recente do Trezor Suite para garantir que seus fundos permaneçam acessíveis."
+                    "pt": "O Coinjoin foi descontinuado no Trezor Suite em 1 de junho de 2024. Por favor, atualize para a versão mais recente do Trezor Suite para garantir que seus fundos permaneçam acessíveis.",
+                    "uk": "Coinjoin було припинено в Trezor Suite 1 червня 2024 року. Будь ласка, оновіть Trezor Suite до останньої версії, щоб ваші кошти залишалися доступними."
                 },
                 "cta": {
                     "action": "external-link",
@@ -132,7 +136,8 @@
                         "fr": "En Savoir Plus",
                         "de": "Mehr Erfahren",
                         "tr": "Daha Fazla Bilgi",
-                        "pt": "Saiba Mais"
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
                     }
                 },
                 "context": { "domain": "accounts.coinjoin" }
@@ -176,7 +181,8 @@
                     "fr": "Une mise à jour essentielle de Trezor Suite est nécessaire pour votre nouveau portefeuille Trezor Safe 3.",
                     "de": "Für deinen neuen Trezor Safe 3 ist ein wichtiges Update der Trezor Suite erforderlich.",
                     "tr": "Yeni Trezor Safe 3'ünüz için Trezor Suite'in temel güncellemesi gereklidir.",
-                    "pt": "É necessária uma atualização essencial do Trezor Suite para o seu novo Trezor Safe 3."
+                    "pt": "É necessária uma atualização essencial do Trezor Suite para o seu novo Trezor Safe 3.",
+                    "uk": "Для вашого нового Trezor Safe 3 потрібне обов’язкове оновлення Trezor Suite."
                 },
                 "cta": {
                     "action": "internal-link",
@@ -194,7 +200,8 @@
                         "fr": "Mettre à jour Suite",
                         "de": "Suite aktualisieren",
                         "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite"
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
                     }
                 }
             }
@@ -237,7 +244,8 @@
                     "fr": "Une mise à jour est disponible pour votre dispositif Trezor. Assurez-vous d’avoir votre seed de récupération à portée de main, car vous en aurez besoin pour accéder à nouveau à vos coins.",
                     "de": "Es gibt ein Update für dein Trezor Gerät. Halte deinen Recovery Seed bereit. Du brauchst ihn, um wieder auf deine Coins zuzugreifen.",
                     "tr": "Trezor cihazınız için bir güncelleme mevcut. Paralarınıza yeniden erişmek için kurtarma tohumunuzu hazırda bulundurduğunuzdan emin olun.",
-                    "pt": "Está disponível uma atualização para o seu dispositivo Trezor. Certifique-se de que tem a sua semente de recuperação pronta, pois vai precisar dela para recuperar o acesso às suas moedas."
+                    "pt": "Está disponível uma atualização para o seu dispositivo Trezor. Certifique-se de que tem a sua semente de recuperação pronta, pois vai precisar dela para recuperar o acesso às suas moedas.",
+                    "uk": "Для вашого пристрою Trezor доступне оновлення. Переконайтеся, що у вас готовий резервний ключ, оскільки вам знадобиться він для відновлення доступу до монет."
                 },
                 "cta": {
                     "action": "internal-link",
@@ -254,7 +262,8 @@
                         "fr": "Mettre à jour maintenant",
                         "de": "Jetzt aktualisieren",
                         "tr": "Şimdi Güncelle",
-                        "pt": "Atualizar agora"
+                        "pt": "Atualizar agora",
+                        "uk": "Оновити зараз"
                     }
                 }
             }
@@ -287,7 +296,8 @@
                     "fr": "Mise à jour requise ! Installez la dernière version de Trezor Suite pour une sécurité renforcée et une expérience utilisateur améliorée.",
                     "de": "Update erforderlich! Installiere die neueste Version von Trezor Suite, um Sicherheit und Benutzerfreundlichkeit zu verbessern.",
                     "tr": "Güncelleme gerekiyor! Geliştirilmiş güvenlik ve kullanıcı deneyimi için en son Trezor Suite sürümünü yükleyin.",
-                    "pt": "Atualização necessária! Instale a versão mais recente do Trezor Suite para uma segurança reforçada e uma experiência de utilizador melhorada."
+                    "pt": "Atualização necessária! Instale a versão mais recente do Trezor Suite para uma segurança reforçada e uma experiência de utilizador melhorada.",
+                    "uk": "Потрібне оновлення! Встановіть останню версію Trezor Suite для покращення безпеки та поліпшення користувацького досвіду."
                 },
                 "cta": {
                     "action": "external-link",
@@ -304,7 +314,8 @@
                         "fr": "Accédez à trezor.io/trezor-suite",
                         "de": "Gehe zu trezor.io/trezor-suite",
                         "tr": "trezor.io/trezor-suite adresine git",
-                        "pt": "Ir para trezor.io/trezor-suite"
+                        "pt": "Ir para trezor.io/trezor-suite",
+                        "uk": "Перейти на trezor.io/trezor-suite"
                     }
                 }
             }
@@ -337,7 +348,8 @@
                     "fr": "Mettez à jour Trezor Suite pour bénéficier d’une sécurité renforcée, de toutes les dernières fonctionnalités, et pour garantir un fonctionnement optimal.",
                     "de": "Aktualisiere Trezor Suite für mehr Sicherheit, neue Funktionen und reibungslose Abläufe.",
                     "tr": "Geliştirilmi",
-                    "pt": "Atualize o Trezor Suite para uma segurança reforçada, todas as funcionalidades mais"
+                    "pt": "Atualize o Trezor Suite para uma segurança reforçada, todas as funcionalidades mais",
+                    "uk": "Потрібне оновлення! Встановіть останню версію Trezor Suite для покращення безпеки та поліпшення користувацького досвіду."
                 },
                 "cta": {
                     "action": "internal-link",
@@ -355,7 +367,8 @@
                         "fr": "Mettre à jour Suite",
                         "de": "Suite aktualisieren",
                         "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite"
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
                     }
                 }
             }
@@ -388,7 +401,8 @@
                     "fr": "AVERTISSEMENT : vous utilisez actuellement une version contrefaite de Trezor Suite. QUITTEZ CE PROGRAMME IMMÉDIATEMENT !",
                     "de": "WARNUNG: Du verwendest momentan eine gefälschte Version von Trezor Suite. BEENDE DIESES PROGRAMM SOFORT!",
                     "tr": "UYARI: Şu anda sahte bir Trezor Suite sürümü kullanıyorsunuz. BU PROGRAMDAN HEMEN ÇIKIN!",
-                    "pt": "AVISO: Você está atualmente usando uma versão falsa do Trezor Suite. SAIA DESTE PROGRAMA IMEDIATAMENTE!"
+                    "pt": "AVISO: Você está atualmente usando uma versão falsa do Trezor Suite. SAIA DESTE PROGRAMA IMEDIATAMENTE!",
+                    "uk": "УВАГА: Ви в даний момент використовуєте підроблену версію Trezor Suite. НЕГАЙНО ВИЙДІТЬ З ЦЬОГО ПРОГРАМИ!"
                 }
             }
         },
@@ -647,7 +661,8 @@
                     "fr": "ATTENTION : micrologiciel non officiel détecté ! Votre Trezor est peut-être une contrefaçon. Contactez immédiatement help@trezor.io.",
                     "de": "ACHTUNG: Inoffizielle Firmware erkannt! Dein Trezor könnte eine Fälschung sein. Wende dich sofort an help@trezor.io.",
                     "tr": "DİKKAT: Resmi olmayan bir firmware tespit edildi! Trezor'unuz sahte olabilir. Derhal",
-                    "pt": "CUIDADO: Foi detetado um firmware não oficial! O seu Trezor pode ser uma falsificação. Contacte imediatamente"
+                    "pt": "CUIDADO: Foi detetado um firmware não oficial! O seu Trezor pode ser uma falsificação. Contacte imediatamente",
+                    "uk": "УВАГА: Виявлено неофіційне програмне забезпечення! Ваш Trezor може бути підробкою. Негайно зверніться на"
                 }
             }
         },
@@ -697,7 +712,8 @@
                     "fr": "Veuillez mettre à jour le micrologiciel de l'appareil maintenant : Votre Trezor ne sera pas reconnu ou utilisable dans les nouvelles versions de Trezor Suite.",
                     "de": "Bitte aktualisieren Sie jetzt die Firmware: Ihr Trezor wird in neuen Versionen der Trezor Suite nicht mehr erkannt und kann nicht verwendet werden.",
                     "tr": "Lütfen cihaz yazılımını şimdi güncelleyin: Trezor'unuz, Trezor Suite'in yeni sürümlerinde tanınmayacak veya kullanılamayacaktır.",
-                    "pt": "Atualize agora o firmware do dispositivo: O seu Trezor não será reconhecido nem utilizável nas novas versões do Trezor Suite."
+                    "pt": "Atualize agora o firmware do dispositivo: O seu Trezor não será reconhecido nem utilizável nas novas versões do Trezor Suite.",
+                    "uk": "Будь ласка, оновіть прошивку пристрою зараз: Ваш Trezor не буде визнаний або використаний в нових версіях Trezor Suite."
                 },
                 "cta": {
                     "action": "internal-link",
@@ -714,7 +730,8 @@
                         "fr": "Mettre à jour le micrologiciel",
                         "de": "Firmware aktualisieren",
                         "tr": "Firmware Güncelle",
-                        "pt": "Atualizar Firmware"
+                        "pt": "Atualizar Firmware",
+                        "uk": "Оновити прошивку"
                     }
                 }
             }
@@ -773,7 +790,8 @@
                     "fr": "Mise à jour requise ! Cette version de Trezor Suite n’est pas compatible avec votre dispositif. Procédez à la mise à jour pour continuer.",
                     "de": "Update erforderlich! Diese Version von Trezor Suite ist nicht mit deinem Gerät kompatibel. Aktualisiere, um fortzufahren.",
                     "tr": "Güncelleme gerekiyor! Bu Trezor Suite sürümü cihazınızla uyumlu değil. Devam etmek için güncelleyin.",
-                    "pt": "Atualização necessária! Esta versão do Trezor Suite não é compatível com o seu dispositivo. Atualize para continuar."
+                    "pt": "Atualização necessária! Esta versão do Trezor Suite não é compatível com o seu dispositivo. Atualize para continuar.",
+                    "uk": "Потрібне оновлення! Ця версія Trezor Suite несумісна з вашим пристроєм. Оновіть програму, щоб продовжити."
                 },
                 "cta": {
                     "action": "internal-link",
@@ -791,7 +809,8 @@
                         "fr": "Mettre à jour Suite",
                         "de": "Suite aktualisieren",
                         "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite"
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
                     }
                 }
             }
@@ -834,7 +853,8 @@
                     "fr": "Mise à jour requise ! Cette version de Trezor Suite n’est pas compatible avec votre dispositif. Procédez à la mise à jour pour continuer.",
                     "de": "Update erforderlich! Diese Version von Trezor Suite ist nicht mit deinem Gerät kompatibel. Aktualisiere, um fortzufahren.",
                     "tr": "Güncelleme gerekiyor! Bu Trezor Suite sürümü cihazınızla uyumlu değil. Devam etmek için güncelleyin.",
-                    "pt": "Atualização necessária! Esta versão do Trezor Suite não é compatível com o seu dispositivo. Atualize para continuar."
+                    "pt": "Atualização necessária! Esta versão do Trezor Suite não é compatível com o seu dispositivo. Atualize para continuar.",
+                    "uk": "Потрібне оновлення! Ця версія Trezor Suite несумісна з вашим пристроєм. Оновіть програму, щоб продовжити."
                 },
                 "cta": {
                     "action": "internal-link",
@@ -852,7 +872,8 @@
                         "fr": "Mettre à jour Suite",
                         "de": "Suite aktualisieren",
                         "tr": "Suite'i Güncelle",
-                        "pt": "Atualizar Suite"
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
                     }
                 }
             }
