@@ -82,7 +82,7 @@ const sortKeysPendingFirst = (a: string, b: string) => {
     const dateA = new Date(a);
     const dateB = new Date(b);
 
-    return dateA.getTime() - dateB.getTime();
+    return dateB.getTime() - dateA.getTime();
 };
 
 const sortPendingTransactions = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
