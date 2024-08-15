@@ -11,7 +11,7 @@ const Container = styled.div<{
 }>`
     position: relative;
     display: flex;
-    align-items: center;
+    align-items: stretch;
 
     button {
         border-radius: 0;
