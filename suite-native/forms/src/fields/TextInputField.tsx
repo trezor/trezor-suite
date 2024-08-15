@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 
 import { TextInput } from 'react-native/types';
+import { RequireOneOrNone } from 'type-fest';
 
 import { Input, InputWrapper, InputProps, InputWrapperProps } from '@suite-native/atoms';
 
@@ -12,13 +13,19 @@ type AllowedTextInputFieldProps = Omit<
     keyof ReturnType<typeof useField> | 'defaultValue'
 >;
 type AllowedInputWrapperProps = Pick<InputWrapperProps, 'hint'>;
-export interface FieldProps extends AllowedTextInputFieldProps, AllowedInputWrapperProps {
-    name: FieldName;
-    label: string;
-    onBlur?: () => void;
-    defaultValue?: string;
-    valueTransformer?: (value: string) => string;
-}
+export type FieldProps = AllowedTextInputFieldProps &
+    AllowedInputWrapperProps &
+    RequireOneOrNone<
+        {
+            name: FieldName;
+            label?: string;
+            placeholder?: string;
+            onBlur?: () => void;
+            defaultValue?: string;
+            valueTransformer?: (value: string) => string;
+        },
+        'label' | 'placeholder'
+    >;
 
 export const TextInputField = forwardRef<TextInput, FieldProps>(
     ({ name, hint, onBlur, defaultValue = '', valueTransformer, ...otherProps }, ref) => {

@@ -1,5 +1,8 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": [{ "path": "../toasts" }]
+    "references": [
+        { "path": "../config" },
+        { "path": "../toasts" }
+    ]
 }

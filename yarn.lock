@@ -9600,6 +9600,7 @@ __metadata:
   resolution: "@suite-native/helpers@workspace:suite-native/helpers"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-native/config": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     expo-clipboard: "npm:6.0.3"
     react: "npm:18.2.0"
@@ -9680,6 +9681,7 @@ __metadata:
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
+    "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"

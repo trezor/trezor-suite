@@ -25,6 +25,7 @@ import {
 
 import { icons } from '@suite-common/icons';
 import { useNativeStyles } from '@trezor/styles';
+import { ENDLESS_ANIMATION_VALUE } from '@suite-native/helpers';
 
 const ROUNDED_CORNER_SIZE = 15;
 
@@ -105,7 +106,7 @@ export const QrWithLaser = () => {
     useEffect(() => {
         progress.value = withRepeat(
             withTiming(1, { duration: 1200, easing: Easing.bezier(0, 0, 0.3, 1) }),
-            -1,
+            ENDLESS_ANIMATION_VALUE,
             false,
         );
     }, [progress]);
