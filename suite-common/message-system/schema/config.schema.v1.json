@@ -178,6 +178,7 @@
                                                     "T2B1",
                                                     "Safe 3",
                                                     "T3T1",
+                                                    "T3B1",
                                                     ""
                                                 ]
                                             },
@@ -367,7 +368,7 @@
             "title": "Localization",
             "description": "A multilingual text localization.",
             "type": "object",
-            "required": ["en-GB", "en", "es", "cs", "ru", "ja"],
+            "required": ["en-GB", "en", "es", "cs", "de", "fr", "it", "pt", "tr"],
             "properties": {
                 "en-GB": {
                     "type": "string"
@@ -385,6 +386,27 @@
                     "type": "string"
                 },
                 "ja": {
+                    "type": "string"
+                },
+                "de": {
+                    "type": "string"
+                },
+                "fr": {
+                    "type": "string"
+                },
+                "it": {
+                    "type": "string"
+                },
+                "pt": {
+                    "type": "string"
+                },
+                "tr": {
+                    "type": "string"
+                },
+                "uk": {
+                    "type": "string"
+                },
+                "hu": {
                     "type": "string"
                 }
             },

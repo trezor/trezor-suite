@@ -8,7 +8,7 @@
  */
 export type DateTime = string;
 export type Version = string | string[];
-export type Model = '1' | 'T' | 'T1B1' | 'T2T1' | 'T2B1' | 'Safe 3' | 'T3T1' | '';
+export type Model = '1' | 'T' | 'T1B1' | 'T2T1' | 'T2B1' | 'Safe 3' | 'T3T1' | 'T3B1' | '';
 export type FirmwareRevision = string;
 export type FirmwareVariant = '*' | 'bitcoin-only' | 'regular';
 /**
@@ -121,6 +121,13 @@ export interface Localization {
     cs: string;
     ru: string;
     ja: string;
+    de: string;
+    fr: string;
+    it: string;
+    pt: string;
+    tr: string;
+    uk: string;
+    hu: string;
     [k: string]: string;
 }
 /**
