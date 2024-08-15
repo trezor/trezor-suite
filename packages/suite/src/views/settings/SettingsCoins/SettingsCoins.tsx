@@ -6,7 +6,7 @@ import {
     startDiscoveryThunk,
     selectDeviceModel,
 } from '@suite-common/wallet-core';
-import { Button, motionEasing } from '@trezor/components';
+import { Button, motionEasing, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import type { Network } from 'src/types/wallet';
 
@@ -31,8 +31,9 @@ import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 import { spacingsPx } from '@trezor/theme';
 import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
-const StyledButton = styled(Button)`
+const DiscoveryButtonWrapper = styled.div`
     margin-top: ${spacingsPx.xl};
+    width: fit-content;
 `;
 
 const StyledSettingsSection = styled(SettingsSection)`
@@ -91,7 +92,8 @@ export const SettingsCoins = () => {
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const deviceModel = useSelector(selectDeviceModel);
-    const { device } = useDevice();
+    const { device, isLocked } = useDevice();
+    const isDeviceLocked = !!device && isLocked();
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
 
@@ -197,9 +199,19 @@ export const SettingsCoins = () => {
             <AnimatePresence>
                 {isDiscoveryButtonVisible && (
                     <motion.div {...animation} key="discover-button">
-                        <StyledButton onClick={startDiscovery}>
-                            <Translation id="TR_DISCOVERY_NEW_COINS" />
-                        </StyledButton>
+                        <DiscoveryButtonWrapper>
+                            <Tooltip
+                                content={
+                                    isDeviceLocked ? (
+                                        <Translation id="TR_CONNECT_YOUR_DEVICE" />
+                                    ) : null
+                                }
+                            >
+                                <Button onClick={startDiscovery} isDisabled={isDeviceLocked}>
+                                    <Translation id="TR_DISCOVERY_NEW_COINS" />
+                                </Button>
+                            </Tooltip>
+                        </DiscoveryButtonWrapper>
                     </motion.div>
                 )}
             </AnimatePresence>
