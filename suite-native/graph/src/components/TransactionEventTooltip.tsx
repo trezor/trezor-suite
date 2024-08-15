@@ -20,7 +20,7 @@ import { AccountsRootState } from '@suite-common/wallet-core';
 import {
     selectEthereumAccountTokenInfo,
     selectEthereumAccountTokenSymbol,
-} from '@suite-native/ethereum-tokens';
+} from '@suite-native/tokens';
 
 export type TransactionEventTooltipProps =
     EventTooltipComponentProps<GroupedBalanceMovementEventPayload>;

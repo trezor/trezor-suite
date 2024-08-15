@@ -5,7 +5,7 @@ import { A } from '@mobily/ts-belt';
 import {
     getEthereumTokenName,
     selectEthereumAccountsTokensWithFiatRates,
-} from '@suite-native/ethereum-tokens';
+} from '@suite-native/tokens';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { SettingsSliceRootState } from '@suite-native/settings';
 import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';

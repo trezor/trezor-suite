@@ -18,11 +18,11 @@
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
-        { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../settings" },
+        { "path": "../tokens" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/utils" }
     ]

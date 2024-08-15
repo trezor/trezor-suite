@@ -13,7 +13,7 @@ import {
     selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';

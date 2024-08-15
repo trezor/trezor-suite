@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
+import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/tokens';
 import { SettingsSliceRootState } from '@suite-native/settings';
 import { Box } from '@suite-native/atoms';
 

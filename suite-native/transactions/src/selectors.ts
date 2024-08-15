@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
-import { selectEthereumTokenHasFiatRates } from '@suite-native/ethereum-tokens';
+import { selectEthereumTokenHasFiatRates } from '@suite-native/tokens';
 import { SettingsSliceRootState } from '@suite-native/settings';
 
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';

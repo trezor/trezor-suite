@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
-import { selectEthereumAccountTokenInfo } from '@suite-native/ethereum-tokens';
+import { selectEthereumAccountTokenInfo } from '@suite-native/tokens';
 import { Screen } from '@suite-native/navigation';
 import { TransactionList } from '@suite-native/transactions';
 

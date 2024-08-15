@@ -8,7 +8,7 @@ import {
 } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { selectEthereumAccountTokenSymbol } from '@suite-native/ethereum-tokens';
+import { selectEthereumAccountTokenSymbol } from '@suite-native/tokens';
 import { AccountsRootState } from '@suite-common/wallet-core';
 
 import { accountDescriptionStyle, valuesContainerStyle } from './AccountListItem';

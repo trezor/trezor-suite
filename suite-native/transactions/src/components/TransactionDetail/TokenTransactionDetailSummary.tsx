@@ -1,5 +1,5 @@
 import { AccountKey } from '@suite-common/wallet-types';
-import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer } from '@suite-native/tokens';
 import { VStack } from '@suite-native/atoms';
 
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';

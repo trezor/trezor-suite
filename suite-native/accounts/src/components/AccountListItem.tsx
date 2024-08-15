@@ -9,7 +9,7 @@ import { Badge, Box, RoundedIcon, Text } from '@suite-native/atoms';
 import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
+import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/tokens';
 import { SettingsSliceRootState } from '@suite-native/settings';
 
 export type AccountListItemProps = {

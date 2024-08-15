@@ -32,7 +32,6 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../config" },
-        { "path": "../ethereum-tokens" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
@@ -40,6 +39,7 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../settings" },
+        { "path": "../tokens" },
         { "path": "../video-assets" },
         {
             "path": "../../packages/blockchain-link-types"

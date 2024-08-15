@@ -9104,13 +9104,13 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
-    "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
@@ -9271,11 +9271,11 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
     proxy-memoize: "npm:2.0.2"
@@ -9512,21 +9512,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/ethereum-tokens@workspace:*, @suite-native/ethereum-tokens@workspace:suite-native/ethereum-tokens":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/ethereum-tokens@workspace:suite-native/ethereum-tokens"
-  dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
-    "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
-    "@suite-native/settings": "workspace:*"
-    "@trezor/blockchain-link": "workspace:*"
-    proxy-memoize: "npm:2.0.2"
-    react: "npm:18.2.0"
-  languageName: unknown
-  linkType: soft
-
 "@suite-native/feature-flags@workspace:*, @suite-native/feature-flags@workspace:suite-native/feature-flags":
   version: 0.0.0-use.local
   resolution: "@suite-native/feature-flags@workspace:suite-native/feature-flags"
@@ -9594,12 +9579,12 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/react-native-graph": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/theme": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     expo-haptics: "npm:13.0.1"
@@ -9694,7 +9679,6 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
-    "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
@@ -9702,6 +9686,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
     "@suite-native/video-assets": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -9734,7 +9719,6 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
-    "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/graph": "workspace:*"
@@ -9742,6 +9726,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/styles": "workspace:*"
     date-fns: "npm:^2.30.0"
@@ -10098,7 +10083,6 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
-    "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -10106,6 +10090,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/toasts": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -10229,6 +10214,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/tokens@workspace:*, @suite-native/tokens@workspace:suite-native/tokens":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/tokens@workspace:suite-native/tokens"
+  dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/settings": "workspace:*"
+    "@trezor/blockchain-link": "workspace:*"
+    proxy-memoize: "npm:2.0.2"
+    react: "npm:18.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/transactions@workspace:*, @suite-native/transactions@workspace:suite-native/transactions":
   version: 0.0.0-use.local
   resolution: "@suite-native/transactions@workspace:suite-native/transactions"
@@ -10248,13 +10248,13 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"

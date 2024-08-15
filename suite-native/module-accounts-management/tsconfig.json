@@ -24,7 +24,6 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device-manager" },
-        { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../graph" },
@@ -32,6 +31,7 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../settings" },
+        { "path": "../tokens" },
         { "path": "../transactions" },
         { "path": "../../packages/styles" }
     ]

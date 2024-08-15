@@ -12,7 +12,7 @@ import {
     EthereumTokenToFiatAmountFormatter,
     SignValueFormatter,
 } from '@suite-native/formatters';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { SignValue } from '@suite-common/suite-types';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
 

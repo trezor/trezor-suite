@@ -20,7 +20,6 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device-mutex" },
-        { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../helpers" },
         { "path": "../intl" },
@@ -28,6 +27,7 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../toasts" },
+        { "path": "../tokens" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

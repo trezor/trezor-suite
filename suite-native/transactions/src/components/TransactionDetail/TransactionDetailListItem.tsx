@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Box, RoundedIcon, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import {
     StackNavigationProps,
     RootStackParamList,

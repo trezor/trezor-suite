@@ -24,7 +24,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 import { SettingsSliceRootState } from '@suite-native/settings';
-import { selectNumberOfUniqueEthereumTokensPerDevice } from '@suite-native/ethereum-tokens';
+import { selectNumberOfUniqueEthereumTokensPerDevice } from '@suite-native/tokens';
 import { Translation } from '@suite-native/intl';
 
 type AssetItemProps = {
