@@ -52,11 +52,11 @@ export type UseCoinmarketCommonProps = UseCoinmarketProps & {
 export interface UseCoinmarketCommonReturnProps<T extends CoinmarketTradeType> {
     callInProgress: boolean;
     account: Account;
-    selectedQuote: CoinmarketTradeDetailMapProps[T] | undefined;
+    selectedQuote: CoinmarketTradeDetailMapProps[T] | undefined; // TODO: delete
     timer: Timer;
     device: TrezorDevice | undefined;
     setCallInProgress: (state: boolean) => void;
-    setSelectedQuote: (quote: CoinmarketTradeDetailMapProps[T] | undefined) => void;
+    setSelectedQuote: (quote: CoinmarketTradeDetailMapProps[T] | undefined) => void; // TODO: delete
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
 export type CoinmarketPageType = 'form' | 'offers' | 'confirm';

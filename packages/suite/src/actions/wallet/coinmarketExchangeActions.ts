@@ -31,6 +31,10 @@ export type CoinmarketExchangeAction =
           type: typeof COINMARKET_EXCHANGE.SAVE_QUOTES;
           quotes: ExchangeTrade[];
       }
+    | {
+          type: typeof COINMARKET_EXCHANGE.SAVE_QUOTE;
+          quote: ExchangeTrade | undefined;
+      }
     | { type: typeof COINMARKET_EXCHANGE.CLEAR_QUOTES }
     | { type: typeof COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT; account: Account }
     | {
@@ -130,6 +134,11 @@ export const saveTransactionId = (transactionId: string): CoinmarketExchangeActi
 export const saveQuotes = (quotes: ExchangeTrade[]): CoinmarketExchangeAction => ({
     type: COINMARKET_EXCHANGE.SAVE_QUOTES,
     quotes,
+});
+
+export const saveSelectedQuote = (quote: ExchangeTrade | undefined): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SAVE_QUOTE,
+    quote,
 });
 
 export const clearQuotes = (): CoinmarketExchangeAction => ({

@@ -34,7 +34,7 @@ export const CoinmarketSelectedOffer = () => {
     const context = useCoinmarketFormContext();
     const { selectedQuote } = context;
     const providers = getProvidersInfoProps(context);
-    console.log(selectedQuote);
+
     if (!selectedQuote) return null;
 
     const quoteAmounts = getCryptoQuoteAmountProps(selectedQuote, context);

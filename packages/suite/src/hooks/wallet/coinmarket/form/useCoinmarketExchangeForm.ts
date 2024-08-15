@@ -71,7 +71,7 @@ export const useCoinmarketExchangeForm = ({
 }: UseCoinmarketFormProps): CoinmarketExchangeFormContextProps => {
     const type = 'exchange';
     const isNotFormPage = pageType !== 'form';
-    const { exchangeInfo, quotesRequest, quotes, coinmarketAccount } = useSelector(
+    const { exchangeInfo, quotesRequest, quotes, coinmarketAccount, selectedQuote } = useSelector(
         state => state.wallet.coinmarket.exchange,
     );
     // selectedAccount is used as initial state if this is form page
@@ -83,15 +83,8 @@ export const useCoinmarketExchangeForm = ({
 
         return selectedAccount.account;
     });
-    const {
-        callInProgress,
-        selectedQuote,
-        timer,
-        device,
-        setCallInProgress,
-        setSelectedQuote,
-        checkQuotesTimer,
-    } = useCoinmarketCommonOffers<CoinmarketTradeExchangeType>({ selectedAccount, type });
+    const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
+        useCoinmarketCommonOffers<CoinmarketTradeExchangeType>({ selectedAccount, type });
 
     const accounts = useSelector(state => state.wallet.accounts);
     const { symbolsInfo } = useSelector(state => state.wallet.coinmarket.info);
@@ -133,6 +126,7 @@ export const useCoinmarketExchangeForm = ({
         saveTransactionId,
         addNotification,
         verifyAddress,
+        saveSelectedQuote,
     } = useActions({
         saveTrade: coinmarketExchangeActions.saveTrade,
         openCoinmarketExchangeConfirmModal:
@@ -140,6 +134,7 @@ export const useCoinmarketExchangeForm = ({
         saveTransactionId: coinmarketExchangeActions.saveTransactionId,
         addNotification: notificationsActions.addToast,
         verifyAddress: coinmarketExchangeActions.verifyAddress,
+        saveSelectedQuote: coinmarketExchangeActions.saveSelectedQuote,
     });
 
     const { symbol, networkType } = account;
@@ -350,7 +345,7 @@ export const useCoinmarketExchangeForm = ({
                 quote.receive,
             );
             if (result) {
-                setSelectedQuote(quote);
+                saveSelectedQuote(quote);
                 dispatch({
                     type: SET_MODAL_CRYPTO_CURRENCY,
                     modalCryptoSymbol: quote.receive,
@@ -396,13 +391,13 @@ export const useCoinmarketExchangeForm = ({
                 type: 'error',
                 error: response.error || 'Error response from the server',
             });
-            setSelectedQuote(response);
+            saveSelectedQuote(response);
         } else if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
-            setSelectedQuote(response);
+            saveSelectedQuote(response);
             setExchangeStep('SEND_APPROVAL_TRANSACTION');
             ok = true;
         } else if (response.status === 'CONFIRM') {
-            setSelectedQuote(response);
+            saveSelectedQuote(response);
             if (response.isDex) {
                 if (exchangeStep === 'RECEIVING_ADDRESS' || trade.approvalType === 'ZERO') {
                     setExchangeStep('SEND_APPROVAL_TRANSACTION');
