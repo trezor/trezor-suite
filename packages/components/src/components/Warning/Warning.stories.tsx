@@ -19,6 +19,12 @@ const meta: Meta = {
             <WarningComponent {...rest} variant="primary">
                 {children}
             </WarningComponent>
+            <WarningComponent {...rest} variant="secondary">
+                {children}
+            </WarningComponent>
+            <WarningComponent {...rest} variant="tertiary">
+                {children}
+            </WarningComponent>
             <WarningComponent {...rest} variant="warning">
                 {children}
             </WarningComponent>
@@ -53,19 +59,23 @@ export const Warning: StoryObj<WarningProps> = {
             },
         },
         rightContent: {
-            options: ['nothing', 'button', 'buttons', 'iconButton'],
+            options: ['nothing', 'button', 'buttons', 'iconButton', 'iconButtons'],
             mapping: {
                 nothing: undefined,
                 button: <WarningComponent.Button>Button</WarningComponent.Button>,
                 buttons: (
                     <Row gap={8}>
                         <WarningComponent.Button>Button 1</WarningComponent.Button>
-                        <WarningComponent.Button variant="tertiary">
-                            Button 2
-                        </WarningComponent.Button>
+                        <WarningComponent.Button isSubtle>Button 2</WarningComponent.Button>
                     </Row>
                 ),
                 iconButton: <WarningComponent.IconButton icon="CROSS" />,
+                iconButtons: (
+                    <Row gap={8}>
+                        <WarningComponent.IconButton icon="CROSS" />
+                        <WarningComponent.IconButton icon="ASTERISK" isSubtle />
+                    </Row>
+                ),
             },
             control: {
                 type: 'select',
@@ -73,7 +83,8 @@ export const Warning: StoryObj<WarningProps> = {
                     nothing: 'undefined',
                     button: '1 button',
                     buttons: '2 buttons',
-                    iconButton: 'icon button',
+                    iconButton: '1 icon button',
+                    iconButtons: '2 icon buttons',
                 },
             },
         },

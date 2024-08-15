@@ -5,7 +5,6 @@ import { Spinner } from '../../loaders/Spinner/Spinner';
 import { ButtonContainer, ButtonProps } from '../Button/Button';
 import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT } from '../../Tooltip/TooltipDelay';
-import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Tooltip } from '../../Tooltip/Tooltip';
 
 const IconButtonContainer = styled(ButtonContainer)`
@@ -42,16 +41,16 @@ export const IconButton = ({
     isDisabled = false,
     isLoading = false,
     onClick,
+    isSubtle = false,
     ...rest
 }: IconButtonProps) => {
     const theme = useTheme();
-    const { elevation } = useElevation();
 
     const IconComponent = (
         <Icon
             icon={icon}
             size={iconSize || getIconSize(size)}
-            color={getIconColor(variant, isDisabled, theme)}
+            color={getIconColor({ variant, isDisabled, theme, isSubtle })}
         />
     );
 
@@ -74,8 +73,8 @@ export const IconButton = ({
                 $variant={variant}
                 $size={size}
                 disabled={isDisabled || isLoading}
-                $elevation={elevation}
                 onClick={handleClick}
+                $isSubtle={isSubtle}
                 {...rest}
             >
                 {!isLoading && icon && IconComponent}

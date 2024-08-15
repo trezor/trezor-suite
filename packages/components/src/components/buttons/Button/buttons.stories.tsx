@@ -3,6 +3,7 @@ import { Meta, StoryFn } from '@storybook/react';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import { StoryColumn } from '../../../support/Story';
 import { ButtonVariant } from '../buttonStyleUtils';
+import { action } from '@storybook/addon-actions';
 
 const variants: Array<ButtonVariant> = [
     'primary',
@@ -20,73 +21,41 @@ export default meta;
 
 export const AllButtons: StoryFn = () => (
     <>
-        {variants.map(variant => (
-            <StoryColumn key={variant} minWidth={350} maxWidth={420}>
-                <Button
-                    variant={variant}
-                    data-testid={`button-${variant}`}
-                    onClick={() => {
-                        console.log('click');
-                    }}
-                >
-                    {capitalizeFirstLetter(variant)}
-                </Button>
-                <Button
-                    variant={variant}
-                    size="medium"
-                    data-testid={`button-${variant}`}
-                    onClick={() => {
-                        console.log('click');
-                    }}
-                >
-                    {capitalizeFirstLetter(variant)} medium
-                </Button>
-                <Button
-                    variant={variant}
-                    size="small"
-                    data-testid={`button-${variant}`}
-                    onClick={() => {
-                        console.log('click');
-                    }}
-                >
-                    {capitalizeFirstLetter(variant)} small
-                </Button>
+        {variants.map(variant => {
+            const commonProps = {
+                onClick: action('click'),
+                variant,
+            };
 
-                <Button
-                    variant={variant}
-                    data-testid={`button-${variant}-icon`}
-                    icon="PALETTE"
-                    onClick={() => {
-                        console.log('click');
-                    }}
-                >
-                    {capitalizeFirstLetter(variant)} icon
-                </Button>
-                <Button
-                    variant={variant}
-                    data-testid={`button-${variant}-icon-right`}
-                    iconAlignment="right"
-                    icon="PLUS"
-                >
-                    {capitalizeFirstLetter(variant)} icon right
-                </Button>
-                <Button variant={variant} data-testid={`button-${variant}-loading`} isLoading>
-                    {capitalizeFirstLetter(variant)} loading
-                </Button>
-                <Button variant={variant} data-testid={`button-${variant}-full-width`} isFullWidth>
-                    {capitalizeFirstLetter(variant)} full width
-                </Button>
-                <Button
-                    variant={variant}
-                    isDisabled
-                    data-testid={`button-${variant}-disabled`}
-                    onClick={() => {
-                        console.log('click');
-                    }}
-                >
-                    {capitalizeFirstLetter(variant)} disabled
-                </Button>
-            </StoryColumn>
-        ))}
+            return (
+                <StoryColumn key={variant} minWidth={350} maxWidth={420}>
+                    <Button {...commonProps}>{capitalizeFirstLetter(variant)}</Button>
+                    <Button {...commonProps} size="medium">
+                        {capitalizeFirstLetter(variant)} medium
+                    </Button>
+                    <Button {...commonProps} size="small">
+                        {capitalizeFirstLetter(variant)} small
+                    </Button>
+                    <Button {...commonProps} icon="PALETTE">
+                        {capitalizeFirstLetter(variant)} icon
+                    </Button>
+                    <Button {...commonProps} iconAlignment="right" icon="PLUS">
+                        {capitalizeFirstLetter(variant)} icon right
+                    </Button>
+                    <Button {...commonProps} isLoading>
+                        {capitalizeFirstLetter(variant)} loading
+                    </Button>
+                    <Button {...commonProps} isFullWidth>
+                        {capitalizeFirstLetter(variant)} full width
+                    </Button>
+                    <Button {...commonProps} isSubtle icon="PALETTE">
+                        {capitalizeFirstLetter(variant)} subtle
+                    </Button>
+                    <Button {...commonProps} isDisabled>
+                        {capitalizeFirstLetter(variant)} disabled
+                    </Button>
+                </StoryColumn>
+            );
+        })}
     </>
 );

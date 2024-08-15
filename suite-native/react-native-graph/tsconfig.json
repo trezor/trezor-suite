@@ -4,5 +4,9 @@
         "outDir": "libDev",
         "noUncheckedIndexedAccess": true
     },
-    "references": []
+    "references": [
+        {
+            "path": "../../suite-common/suite-utils"
+        }
+    ]
 }
