@@ -158,7 +158,9 @@ export const SettingsDevice = () => {
                         {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
                         <Passphrase isDeviceLocked={isDeviceLocked} />
                         {safetyChecks && <SafetyChecks isDeviceLocked={isDeviceLocked} />}
-                        {supportsDeviceAuthentication && <AuthenticateDevice />}
+                        {supportsDeviceAuthentication && (
+                            <AuthenticateDevice isDeviceLocked={isDeviceLocked} />
+                        )}
                     </SettingsSection>
 
                     <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="PALETTE">

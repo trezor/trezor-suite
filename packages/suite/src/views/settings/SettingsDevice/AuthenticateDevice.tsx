@@ -10,7 +10,11 @@ import {
 } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 
-export const AuthenticateDevice = () => {
+interface AuthenticateDeviceProps {
+    isDeviceLocked: boolean;
+}
+
+export const AuthenticateDevice = ({ isDeviceLocked }: AuthenticateDeviceProps) => {
     const dispatch = useDispatch();
 
     const handleClick = () => dispatch(openModal({ type: 'authenticate-device' }));
@@ -23,7 +27,7 @@ export const AuthenticateDevice = () => {
                 buttonLink={HELP_CENTER_DEVICE_AUTHENTICATION}
             />
             <ActionColumn>
-                <ActionButton variant="secondary" onClick={handleClick}>
+                <ActionButton variant="secondary" onClick={handleClick} isDisabled={isDeviceLocked}>
                     <Translation id="TR_CHECK_ORIGIN" />
                 </ActionButton>
             </ActionColumn>
