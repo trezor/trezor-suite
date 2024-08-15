@@ -1,4 +1,5 @@
 import { memoize } from 'proxy-memoize';
+import { pipe, A } from '@mobily/ts-belt';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
@@ -7,13 +8,10 @@ import {
     DeviceRootState,
     FiatRatesRootState,
     selectVisibleDeviceAccounts,
-    selectFiatRatesByFiatRateKey,
+    selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
-
-type Assets = Partial<Record<NetworkSymbol, string[]>>;
-type FormattedAssets = Partial<Record<NetworkSymbol, BigNumber>>;
 
 export interface AssetType {
     symbol: NetworkSymbol;
@@ -27,60 +25,61 @@ type AssetsRootState = AccountsRootState & FiatRatesRootState & SettingsSliceRoo
 const sumBalance = (balances: string[]): BigNumber =>
     balances.reduce((prev, balance) => prev.plus(balance), new BigNumber(0));
 
-export const selectDeviceBalancesPerNetwork = memoize(
-    (state: AssetsRootState & DeviceRootState): FormattedAssets => {
-        const accounts = selectVisibleDeviceAccounts(state);
-
-        const assets: Assets = {};
-        accounts.forEach(account => {
-            if (!assets[account.symbol]) {
-                assets[account.symbol] = [];
-            }
-            assets[account.symbol]?.push(account.formattedBalance);
-        });
-
-        const formattedNetworkAssets: FormattedAssets = {};
-        const assetKeys = Object.keys(assets) as NetworkSymbol[];
-        assetKeys.forEach((asset: NetworkSymbol) => {
-            const balances = assets[asset] ?? [];
-            formattedNetworkAssets[asset] = sumBalance(balances);
-        });
-
-        return formattedNetworkAssets;
-    },
-);
-
 export const selectDeviceAssetsWithBalances = memoize(
     (state: AssetsRootState & DeviceRootState) => {
-        const deviceBalancesPerNetwork = selectDeviceBalancesPerNetwork(state);
-        const deviceNetworksWithAssets = Object.keys(deviceBalancesPerNetwork) as NetworkSymbol[];
+        const accounts = selectVisibleDeviceAccounts(state);
+
+        const deviceNetworksWithAssets = pipe(
+            accounts,
+            A.map(account => account.symbol),
+            A.uniq,
+        );
 
         const fiatCurrencyCode = selectFiatCurrencyCode(state);
+        const rates = selectCurrentFiatRates(state);
 
-        return deviceNetworksWithAssets
-            .map((networkSymbol: NetworkSymbol) => {
-                const fiatRateKey = getFiatRateKey(networkSymbol, fiatCurrencyCode);
-                const fiatRate = selectFiatRatesByFiatRateKey(state, fiatRateKey);
+        const accountsWithFiatBalance = accounts.map(account => {
+            const fiatValue = getAccountFiatBalance({
+                account,
+                localCurrency: fiatCurrencyCode,
+                rates,
+                // TODO: this should be removed once Trezor Suite Lite supports staking
+                shouldIncludeStaking: false,
+            });
 
-                // Note: This shouldn't be happening in a selector but rather in component itself.
-                // In future, we will probably have something like `CryptoAmountToFiatFormatter` in component just using value sent from this selector.
-                const fiatBalance =
-                    toFiatCurrency(
-                        deviceBalancesPerNetwork[networkSymbol]?.toString() ?? '0',
-                        fiatRate?.rate,
-                    ) ?? '0';
+            return {
+                symbol: account.symbol,
+                fiatValue,
+                cryptoValue: account.formattedBalance,
+            };
+        });
 
-                const network = networks[networkSymbol];
+        return deviceNetworksWithAssets.map((networkSymbol: NetworkSymbol) => {
+            const networkAccounts = accountsWithFiatBalance.filter(
+                account => account.symbol === networkSymbol,
+            );
+            const fiatBalance = networkAccounts
+                .reduce((prev, { symbol, fiatValue }) => {
+                    if (symbol === networkSymbol && fiatValue) {
+                        return prev + Number(fiatValue);
+                    }
 
-                const asset: AssetType = {
-                    symbol: networkSymbol,
-                    network,
-                    assetBalance: deviceBalancesPerNetwork[networkSymbol] ?? new BigNumber(0),
-                    fiatBalance,
-                };
+                    return prev;
+                }, 0)
+                .toFixed();
 
-                return asset;
-            })
-            .filter(data => data !== undefined) as AssetType[];
+            const cryptoValue = sumBalance(networkAccounts.map(account => account.cryptoValue));
+
+            const network = networks[networkSymbol];
+
+            const asset: AssetType = {
+                symbol: networkSymbol,
+                network,
+                assetBalance: cryptoValue,
+                fiatBalance,
+            };
+
+            return asset;
+        });
     },
 );

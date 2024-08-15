@@ -3,10 +3,12 @@ import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
     AccountsRootState,
+    DeviceRootState,
     FiatRatesRootState,
     selectAccountByKey,
     selectAccountTransactions,
     selectFiatRatesByFiatRateKey,
+    selectVisibleDeviceAccounts,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import {
@@ -205,5 +207,19 @@ export const selectIsEthereumAccountWithTokensWithFiatRates = (
                 token.symbol as TokenSymbol,
             ),
         )
+    );
+};
+
+export const selectNumberOfUniqueEthereumTokensPerDevice = (
+    state: AccountsRootState & DeviceRootState & FiatRatesRootState & SettingsSliceRootState,
+) => {
+    const accounts = selectVisibleDeviceAccounts(state);
+
+    return pipe(
+        accounts,
+        A.map(account => selectEthereumAccountsTokensWithFiatRates(state, account.key)),
+        A.flat,
+        A.uniqBy(token => token.contract),
+        A.length,
     );
 };

@@ -7,6 +7,7 @@ import { Color } from '@trezor/theme';
 import { Text } from './Text';
 import { HStack } from './Stack';
 import { SurfaceElevation } from './types';
+import { BoxProps } from './Box';
 
 export type BadgeVariant = 'neutral' | 'green' | 'red' | 'bold';
 export type BadgeSize = 'small' | 'medium';
@@ -18,6 +19,7 @@ type BadgeProps = {
     iconSize?: IconSize;
     elevation?: SurfaceElevation;
     isDisabled?: boolean;
+    style?: BoxProps['style'];
 };
 
 type BadgeStyle = {
@@ -33,7 +35,7 @@ type BadgeStyleProps = {
     size?: BadgeSize;
 };
 
-const BadgeStyle = prepareNativeStyle<BadgeStyleProps>(
+const badgeStyle = prepareNativeStyle<BadgeStyleProps>(
     (utils, { backgroundColor, isDisabled, size }) => ({
         alignItems: 'center',
         justifyContent: 'center',
@@ -88,6 +90,7 @@ export const Badge = ({
     variant = 'neutral',
     elevation = '0',
     isDisabled = false,
+    style,
 }: BadgeProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const {
@@ -115,11 +118,14 @@ export const Badge = ({
 
     return (
         <HStack
-            style={applyStyle(BadgeStyle, {
-                backgroundColor,
-                isDisabled,
-                size,
-            })}
+            style={[
+                applyStyle(badgeStyle, {
+                    backgroundColor,
+                    isDisabled,
+                    size,
+                }),
+                style,
+            ]}
             spacing={utils.spacings.extraSmall}
         >
             {icon && badgeIcon}

@@ -82,6 +82,9 @@ export const en = {
             },
         },
     },
+    accountList: {
+        numberOfTokens: '+{numberOfTokens} tokens',
+    },
     assets: {
         dashboard: {
             discoveryProgress: { loading: 'Loading...', stillWorking: 'Retrieving balances' },

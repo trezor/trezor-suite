@@ -9,9 +9,10 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
+    FiatRatesRootState,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { Box, Text } from '@suite-native/atoms';
+import { Badge, Box, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
 import {
     AppTabsParamList,
@@ -21,6 +22,10 @@ import {
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
+import { SettingsSliceRootState } from '@suite-native/settings';
+import { selectNumberOfUniqueEthereumTokensPerDevice } from '@suite-native/ethereum-tokens';
+import { Translation } from '@suite-native/intl';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
@@ -52,6 +57,10 @@ const iconStyle = prepareNativeStyle(() => ({
     marginRight: 6,
 }));
 
+const numberOfTokensStyle = prepareNativeStyle(() => ({
+    marginLeft: 10,
+}));
+
 type NavigationType = TabToStackCompositeNavigationProp<
     AppTabsParamList,
     AppTabsRoutes.HomeStack,
@@ -76,6 +85,21 @@ export const AssetItem = memo(
             selectVisibleDeviceAccountsByNetworkSymbol(state, cryptoCurrencySymbol),
         );
         const accountsPerAsset = accountsForNetworkSymbol.length;
+
+        const numberOfTokens = useSelector(
+            (
+                state: AccountsRootState &
+                    DeviceRootState &
+                    FiatRatesRootState &
+                    SettingsSliceRootState,
+            ) => {
+                if (isEthereumAccountSymbol(cryptoCurrencySymbol)) {
+                    return selectNumberOfUniqueEthereumTokensPerDevice(state);
+                }
+
+                return 0;
+            },
+        );
 
         const handleAssetPress = () => {
             if (accountsPerAsset === 1) {
@@ -106,6 +130,19 @@ export const AssetItem = memo(
                                 <Text variant="hint" color="textSubdued">
                                     {accountsPerAsset}
                                 </Text>
+
+                                {numberOfTokens > 0 && (
+                                    <Badge
+                                        style={applyStyle(numberOfTokensStyle)}
+                                        size="small"
+                                        label={
+                                            <Translation
+                                                id="accountList.numberOfTokens"
+                                                values={{ numberOfTokens }}
+                                            />
+                                        }
+                                    />
+                                )}
                             </Box>
                         </Box>
                         <Box alignItems="flex-end" style={applyStyle(assetValuesStyle)}>
