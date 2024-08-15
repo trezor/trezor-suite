@@ -12,7 +12,6 @@ export const networks = {
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
             address: 'https://btc1.trezor.io/address/',
-            queryString: '',
         },
         features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
@@ -45,7 +44,6 @@ export const networks = {
             tx: 'https://ltc1.trezor.io/tx/',
             account: 'https://ltc1.trezor.io/xpub/',
             address: 'https://ltc1.trezor.io/address/',
-            queryString: '',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -71,7 +69,6 @@ export const networks = {
             account: 'https://eth1.trezor.io/address/',
             nft: 'https://eth1.trezor.io/nft/',
             address: 'https://eth1.trezor.io/address/',
-            queryString: '',
         },
         features: [
             'rbf',
@@ -108,7 +105,6 @@ export const networks = {
             account: 'https://etc1.trezor.io/address/',
             nft: 'https://etc1.trezor.io/nft/',
             address: 'https://etc1.trezor.io/address/',
-            queryString: '',
         },
         features: ['sign-verify', 'tokens', 'coin-definitions'],
         customBackends: ['blockbook'],
@@ -126,7 +122,6 @@ export const networks = {
             tx: 'https://xrpscan.com/tx/',
             account: 'https://xrpscan.com/account/',
             address: 'https://xrpscan.com/account/',
-            queryString: '',
         },
         features: [],
         customBackends: [],
@@ -143,7 +138,6 @@ export const networks = {
             tx: 'https://bch1.trezor.io/tx/',
             account: 'https://bch1.trezor.io/xpub/',
             address: 'https://bch1.trezor.io/address/',
-            queryString: '',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -160,7 +154,6 @@ export const networks = {
             tx: 'https://btg1.trezor.io/tx/',
             account: 'https://btg1.trezor.io/xpub/',
             address: 'https://btg1.trezor.io/address/',
-            queryString: '',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -181,7 +174,6 @@ export const networks = {
             tx: 'https://dash1.trezor.io/tx/',
             account: 'https://dash1.trezor.io/xpub/',
             address: 'https://dash1.trezor.io/address/',
-            queryString: '',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -198,7 +190,6 @@ export const networks = {
             tx: 'https://dgb1.trezor.io/tx/',
             account: 'https://dgb1.trezor.io/xpub/',
             address: 'https://dgb1.trezor.io/address/',
-            queryString: '',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -219,7 +210,6 @@ export const networks = {
             tx: 'https://doge1.trezor.io/tx/',
             account: 'https://doge1.trezor.io/xpub/',
             address: 'https://doge1.trezor.io/address/',
-            queryString: '',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -236,7 +226,6 @@ export const networks = {
             tx: 'https://nmc1.trezor.io/tx/',
             account: 'https://nmc1.trezor.io/xpub/',
             address: 'https://nmc1.trezor.io/address/',
-            queryString: '',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -253,7 +242,6 @@ export const networks = {
             tx: 'https://vtc1.trezor.io/tx/',
             account: 'https://vtc1.trezor.io/xpub/',
             address: 'https://vtc1.trezor.io/address/',
-            queryString: '',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -277,7 +265,6 @@ export const networks = {
             tx: 'https://zec1.trezor.io/tx/',
             account: 'https://zec1.trezor.io/xpub/',
             address: 'https://zec1.trezor.io/address/',
-            queryString: '',
         },
         features: ['sign-verify'],
         customBackends: ['blockbook'],
@@ -297,7 +284,6 @@ export const networks = {
             address: 'https://cexplorer.io/address/',
             account: 'https://cexplorer.io/address/',
             token: 'https://cexplorer.io/asset/',
-            queryString: '',
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',
@@ -330,7 +316,6 @@ export const networks = {
             tx: 'https://explorer.solana.com/tx/',
             account: 'https://explorer.solana.com/address/',
             address: 'https://explorer.solana.com/address/',
-            queryString: '',
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.6.4',
@@ -359,7 +344,6 @@ export const networks = {
             account: 'https://matic2.trezor.io/address/',
             nft: 'https://matic2.trezor.io/nft/',
             address: 'https://matic2.trezor.io/address/',
-            queryString: '',
         },
         features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
         customBackends: ['blockbook'],
@@ -384,7 +368,6 @@ export const networks = {
             account: 'https://bsc1.trezor.io/address/',
             nft: 'https://bsc1.trezor.io/nft/',
             address: 'https://bsc1.trezor.io/address/',
-            queryString: '',
         },
         features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
         customBackends: ['blockbook'],
@@ -408,7 +391,6 @@ export const networks = {
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
             address: 'https://tbtc1.trezor.io/address/',
-            queryString: '',
         },
         features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
@@ -441,7 +423,6 @@ export const networks = {
             tx: 'http://localhost:19121/tx/',
             account: 'http://localhost:19121/xpub/',
             address: 'http://localhost:19121/address/',
-            queryString: '',
         },
         features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
@@ -477,7 +458,6 @@ export const networks = {
             account: 'https://sepolia1.trezor.io/address/',
             nft: 'https://sepolia1.trezor.io/nft/',
             address: 'https://sepolia1.trezor.io/address/',
-            queryString: '',
         },
         features: ['rbf', 'sign-verify', 'tokens'],
         customBackends: ['blockbook'],
@@ -496,7 +476,6 @@ export const networks = {
             account: 'https://holesky1.trezor.io/address/',
             nft: 'https://holesky1.trezor.io/nft/',
             address: 'https://holesky1.trezor.io/address/',
-            queryString: '',
         },
         features: ['rbf', 'sign-verify', 'tokens', 'staking'],
         customBackends: ['blockbook'],
@@ -513,7 +492,6 @@ export const networks = {
             tx: 'https://test.bithomp.com/explorer/',
             account: 'https://test.bithomp.com/explorer/',
             address: 'https://test.bithomp.com/explorer/',
-            queryString: '',
         },
         features: ['tokens'],
         customBackends: [],
@@ -533,7 +511,6 @@ export const networks = {
             address: 'https://preview.cexplorer.io/address/',
             account: 'https://preview.cexplorer.io/address/',
             token: 'https://preview.cexplorer.io/asset/',
-            queryString: '',
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',
@@ -603,6 +580,16 @@ export type NetworkFeature =
     | 'staking'
     | 'coin-definitions'
     | 'nft-definitions';
+
+export type Explorer = {
+    tx: string;
+    account: string;
+    address: string;
+    nft?: string;
+    token?: string;
+    queryString?: string;
+};
+
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkSymbol;
     accountType?: AccountType;
@@ -616,6 +603,7 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     };
     isDebugOnlyNetwork?: boolean;
     isDebugOnlyAccountType?: boolean;
+    explorer: Explorer;
     coingeckoId?: string;
 };
 

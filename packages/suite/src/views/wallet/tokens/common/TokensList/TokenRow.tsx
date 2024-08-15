@@ -115,7 +115,9 @@ const getTokenExplorerUrl = (network: Network, token: EnhancedTokenInfo) => {
 
     const contractAddress = network.networkType === 'cardano' ? token.fingerprint : token.contract;
 
-    return `${explorerUrl}${contractAddress}${network.explorer.queryString}`;
+    const queryString = network.explorer.queryString ?? '';
+
+    return `${explorerUrl}${contractAddress}${queryString}`;
 };
 
 interface TokenRowProps {
