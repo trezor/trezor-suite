@@ -68,7 +68,7 @@ const CoinmarketFormOffer = () => {
     } = context;
     const providers = getProvidersInfoProps(context);
     const bestScoredQuote = quotes?.[0];
-    const [selectedQuote, setSelectedQuote] = useState(bestScoredQuote);
+    const [selectedExchangeQuote, setSelectedExchangeQuote] = useState<ExchangeTrade>();
     const bestRatedQuote = getBestRatedQuote(quotes, type);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(bestScoredQuote, context);
 
@@ -129,14 +129,16 @@ const CoinmarketFormOffer = () => {
                     <Translation id="TR_COINMARKET_COMPARE_OFFERS" />
                 </CoinmarketFormOfferHeaderButton>
             </CoinmarketFormOfferHeader>
-            {isCoinmarketExchangeOffers(context) ? ( // TODO: add exchange quote type guard?
+            {isCoinmarketExchangeOffers(context) ? (
                 <CoinmarketFormOffersSwitcher
                     isFormLoading={state.isFormLoading}
                     isFormInvalid={state.isFormInvalid}
+                    context={context}
                     providers={providers}
-                    quotes={quotes as ExchangeTrade[] | undefined}
-                    selectedQuote={selectedQuote as ExchangeTrade | undefined}
-                    setSelectedQuote={setSelectedQuote}
+                    allQuotes={quotes as ExchangeTrade[] | undefined}
+                    bestRatedQuote={bestRatedQuote}
+                    selectedQuote={selectedExchangeQuote}
+                    setSelectedQuote={setSelectedExchangeQuote}
                 />
             ) : (
                 <CoinmarketFormOfferItem
@@ -149,8 +151,8 @@ const CoinmarketFormOffer = () => {
             )}
             <Button
                 onClick={() => {
-                    if (isCoinmarketExchangeOffers(context) && selectedQuote) {
-                        selectQuote(selectedQuote);
+                    if (isCoinmarketExchangeOffers(context) && selectedExchangeQuote) {
+                        selectQuote(selectedExchangeQuote);
                     } else if (bestScoredQuote) {
                         selectQuote(bestScoredQuote);
                     }
@@ -161,7 +163,9 @@ const CoinmarketFormOffer = () => {
                     top: spacings.xxl,
                 }}
                 isFullWidth
-                isDisabled={state.isLoadingOrInvalid || !bestScoredQuote}
+                isDisabled={
+                    state.isLoadingOrInvalid || (!bestScoredQuote && !selectedExchangeQuote)
+                }
                 data-testid={`@coinmarket/form/${type}-button`}
             >
                 <Translation id={coinmarketGetSectionActionLabel(type)} />

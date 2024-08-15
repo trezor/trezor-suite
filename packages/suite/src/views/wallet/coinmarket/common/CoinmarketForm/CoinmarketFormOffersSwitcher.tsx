@@ -4,9 +4,11 @@ import { variables } from '@trezor/components/src/config';
 import { Badge, Radio, Spinner, Text, Tooltip } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
-import { ExchangeTrade } from 'invity-api';
+import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
-import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useEffect, useMemo } from 'react';
+import { fixedRateQuotes, floatRateQuotes } from 'src/utils/wallet/coinmarket/exchangeUtils';
+import { CoinmarketExchangeFormContextProps } from 'src/types/coinmarket/coinmarketForm';
 
 const BestOffers = styled.div`
     padding: ${spacingsPx.xxs};
@@ -87,7 +89,7 @@ const OfferItem = ({
     isSelectable,
 }: OfferItemProps) => {
     const exchangeType = quote.isDex ? 'DEX' : 'CEX';
-    const isSelected = isSelectable && selectedQuote?.isDex === quote.isDex;
+    const isSelected = selectedQuote?.isDex === quote.isDex;
 
     const content = (
         <div className="content">
@@ -119,34 +121,45 @@ const OfferItem = ({
 };
 
 interface CoinmarketFormOffersSwitcherProps {
+    context: CoinmarketExchangeFormContextProps;
     isFormLoading: boolean;
     isFormInvalid: boolean;
     providers: CoinmarketUtilsProvidersProps | undefined;
-    quotes: ExchangeTrade[] | undefined;
+    allQuotes: ExchangeTrade[] | undefined;
     selectedQuote: ExchangeTrade | undefined;
     setSelectedQuote: (quote: ExchangeTrade | undefined) => void;
+    bestRatedQuote: BuyTrade | SellFiatTrade | ExchangeTrade | undefined;
 }
 
 const CoinmarketFormOffersSwitcher = ({
+    context,
     isFormLoading,
     isFormInvalid,
     providers,
-    quotes = [],
+    allQuotes,
     selectedQuote,
     setSelectedQuote,
+    bestRatedQuote,
 }: CoinmarketFormOffersSwitcherProps) => {
     const theme = useTheme();
-    const bestRatedQuote = getBestRatedQuote(quotes, 'exchange');
-    const cexOffer = quotes.find(quote => !quote.isDex);
-    const dexOffer = quotes.find(quote => quote.isDex);
-    const hasSingleOption = !cexOffer !== !dexOffer;
+    const { rateType } = context.getValues();
+    const { exchangeInfo } = context;
+    const filteredQuotes = useMemo(() => {
+        if (!allQuotes) return undefined;
+        if (rateType === 'fixed') return fixedRateQuotes(allQuotes, exchangeInfo);
+        if (rateType === 'floating') return floatRateQuotes(allQuotes, exchangeInfo);
+        else return allQuotes;
+    }, [allQuotes, rateType, exchangeInfo]);
+    const cexQuote = filteredQuotes?.[0];
+    const dexQuote = allQuotes?.find(quote => quote.isDex);
+    const hasSingleOption = !cexQuote !== !dexQuote;
 
-    // TODO: check
-    // useEffect(() => {
-    //     console.log(`changed`, selectedQuote);
-    //     if (quotes.length && !quotes.some(quote => quote.orderId === selectedQuote?.orderId))
-    //         setSelectedQuote(quotes[0]);
-    // }, [quotes, selectedQuote, setSelectedQuote]);
+    useEffect(() => {
+        const quotes = selectedQuote?.isDex ? allQuotes : filteredQuotes;
+        if (!quotes?.length) setSelectedQuote(undefined);
+        else if (!quotes.some(quote => quote.orderId === selectedQuote?.orderId))
+            setSelectedQuote(quotes[0]);
+    }, [allQuotes, filteredQuotes, selectedQuote, setSelectedQuote]);
 
     if (isFormLoading && !isFormInvalid) {
         return (
@@ -161,7 +174,7 @@ const CoinmarketFormOffersSwitcher = ({
         );
     }
 
-    if (!quotes.length) {
+    if (!cexQuote && !dexQuote) {
         return (
             <BestOffers>
                 <NoOffers>
@@ -173,28 +186,28 @@ const CoinmarketFormOffersSwitcher = ({
 
     return (
         <BestOffers>
-            {cexOffer ? (
+            {cexQuote ? (
                 <OfferItem
                     selectedQuote={selectedQuote}
                     isSelectable={!hasSingleOption}
-                    onSelect={() => setSelectedQuote(cexOffer)}
+                    onSelect={() => setSelectedQuote(cexQuote)}
                     providers={providers}
-                    quote={cexOffer}
-                    isBestRate={bestRatedQuote?.orderId === cexOffer?.orderId}
+                    quote={cexQuote}
+                    isBestRate={bestRatedQuote?.orderId === cexQuote?.orderId}
                 />
             ) : (
                 <ProviderNotFound>
                     <Translation id="TR_COINMARKET_NO_CEX_PROVIDER_FOUND" />
                 </ProviderNotFound>
             )}
-            {dexOffer ? (
+            {dexQuote ? (
                 <OfferItem
                     selectedQuote={selectedQuote}
                     isSelectable={!hasSingleOption}
-                    onSelect={() => setSelectedQuote(dexOffer)}
+                    onSelect={() => setSelectedQuote(dexQuote)}
                     providers={providers}
-                    quote={dexOffer}
-                    isBestRate={bestRatedQuote?.orderId === dexOffer?.orderId}
+                    quote={dexQuote}
+                    isBestRate={bestRatedQuote?.orderId === dexQuote?.orderId}
                 />
             ) : (
                 <ProviderNotFound>

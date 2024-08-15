@@ -52,24 +52,28 @@ export const isQuoteError = (quote: ExchangeTrade): boolean => {
     return false;
 };
 
+export const fixedRateQuotes = (quotes: ExchangeTrade[], exchangeInfo: ExchangeInfo | undefined) =>
+    quotes.filter(
+        q =>
+            exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
+            !q.isDex &&
+            !isQuoteError(q),
+    );
+
+export const floatRateQuotes = (quotes: ExchangeTrade[], exchangeInfo: ExchangeInfo | undefined) =>
+    quotes.filter(
+        q =>
+            !exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
+            !q.isDex &&
+            !isQuoteError(q),
+    );
+
 export const getSuccessQuotesOrdered = (
     quotes: ExchangeTrade[],
     exchangeInfo: ExchangeInfo | undefined,
 ): ExchangeTrade[] => {
-    const fixed =
-        quotes.filter(
-            q =>
-                exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
-                !q.isDex &&
-                !isQuoteError(q),
-        ) || [];
-    const float =
-        quotes.filter(
-            q =>
-                !exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
-                !q.isDex &&
-                !isQuoteError(q),
-        ) || [];
+    const fixed = fixedRateQuotes(quotes, exchangeInfo);
+    const float = floatRateQuotes(quotes, exchangeInfo);
     const dex = quotes.filter(q => q.isDex && !isQuoteError(q)) || [];
 
     return [...dex, ...fixed, ...float];
