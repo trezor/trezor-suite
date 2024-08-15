@@ -17,7 +17,6 @@ const Wrapper = styled.div<{ $alignment: ModalAlignment }>`
     inset: 0;
     display: flex;
     flex-direction: column;
-
     overflow: auto;
 
     /* backdrop-filter does not work in Firefox, use darker background instead */
