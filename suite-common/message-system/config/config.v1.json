@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-07-029T00:00:00+00:00",
-    "sequence": 60,
+    "timestamp": "2024-08-015T00:00:00+00:00",
+    "sequence": 61,
     "actions": [
         {
             "conditions": [
@@ -245,14 +245,14 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<23.7.2",
+                        "desktop": "<23.10.1",
                         "mobile": "!",
-                        "web": "<23.7.2"
+                        "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "aa6fed5a-807f-42ab-8d10-5b6b25443039",
+                "id": "3bed56a4-ecd8-4e0f-9e5f-014b484c2aff",
                 "priority": 98,
                 "dismissible": false,
                 "variant": "critical",
@@ -291,14 +291,14 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<=24.5.4",
+                        "desktop": "<=24.6.3",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "81eae8d0-0338-4513-8e6c-6acdb728dcaf",
+                "id": "b6766e0d-cf11-4dc0-91c3-925a9d7bbe8a",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
