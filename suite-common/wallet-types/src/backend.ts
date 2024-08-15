@@ -1,4 +1,4 @@
-import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import { Explorer, networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
 import { Timeout } from '@trezor/type-utils';
 
 /**
@@ -33,14 +33,7 @@ export interface ConnectionStatus {
 
 export interface Blockchain extends ConnectionStatus {
     url?: string;
-    explorer: {
-        tx: string;
-        account: string;
-        queryString: string;
-        nft?: string;
-        address: string;
-        token?: string;
-    };
+    explorer: Explorer;
     blockHash: string;
     blockHeight: number;
     version: string;

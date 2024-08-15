@@ -162,7 +162,7 @@ interface BasicTxDetailsProps {
     network: Network;
     confirmations: number;
     explorerUrl: string;
-    explorerUrlQueryString: string;
+    explorerUrlQueryString?: string;
 }
 
 export const BasicTxDetails = ({
