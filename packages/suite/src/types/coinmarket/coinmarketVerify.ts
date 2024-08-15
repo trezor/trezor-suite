@@ -36,7 +36,7 @@ export interface CoinmarketVerifyAccountReturnProps {
     onChangeAccount: (account: CoinmarketVerifyFormAccountOptionProps) => void;
 }
 
-export type CoinmarketSelectedOfferVerifyOptionsProps = Pick<
+export type CoinmarketVerifyOptionsProps = Pick<
     CoinmarketVerifyAccountReturnProps,
     | 'receiveNetwork'
     | 'selectAccountOptions'
@@ -45,7 +45,7 @@ export type CoinmarketSelectedOfferVerifyOptionsProps = Pick<
     | 'isMenuOpen'
 >;
 
-export interface CoinmarketSelectedOfferVerifyOptionsItemProps {
+export interface CoinmarketVerifyOptionsItemProps {
     option: CoinmarketVerifyFormAccountOptionProps;
     receiveNetwork: NetworkSymbol | CryptoSymbol | undefined;
 }

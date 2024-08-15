@@ -3,7 +3,8 @@ import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCo
 import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 import CoinmarketSelectedOfferBankAccount from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferSell/CoinmarketSelectedOfferSellBankAccount';
 import CoinmarketSelectedOfferSellTransaction from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferSell/CoinmarketSelectedOfferSellTransaction';
-import CoinmarketSelectedOfferStepper, {
+import {
+    CoinmarketSelectedOfferStepper,
     CoinmarketSelectedOfferStepperItemProps,
 } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferStepper';
 

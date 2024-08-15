@@ -6,7 +6,7 @@ import {
     FormattedCryptoAmount,
     Translation,
 } from 'src/components/suite';
-import { CoinmarketSelectedOfferVerifyOptionsItemProps } from 'src/types/coinmarket/coinmarketVerify';
+import { CoinmarketVerifyOptionsItemProps } from 'src/types/coinmarket/coinmarketVerify';
 import styled, { useTheme } from 'styled-components';
 
 const LogoWrapper = styled.div`
@@ -41,10 +41,10 @@ const AccountType = styled.span`
     padding-left: ${spacingsPx.xxs};
 `;
 
-const CoinmarketSelectedOfferVerifyOptionsItem = ({
+export const CoinmarketVerifyOptionsItem = ({
     option,
     receiveNetwork,
-}: CoinmarketSelectedOfferVerifyOptionsItemProps) => {
+}: CoinmarketVerifyOptionsItemProps) => {
     const theme = useTheme();
     const iconSize = 24;
 
@@ -126,5 +126,3 @@ const CoinmarketSelectedOfferVerifyOptionsItem = ({
         </Row>
     );
 };
-
-export default CoinmarketSelectedOfferVerifyOptionsItem;

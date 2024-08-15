@@ -47,7 +47,7 @@ interface CoinmarketSelectedOfferStepperProps {
     steps: CoinmarketSelectedOfferStepperItemProps[];
 }
 
-const CoinmarketSelectedOfferStepper = ({ steps }: CoinmarketSelectedOfferStepperProps) => {
+export const CoinmarketSelectedOfferStepper = ({ steps }: CoinmarketSelectedOfferStepperProps) => {
     const theme = useTheme();
 
     return (
@@ -69,5 +69,3 @@ const CoinmarketSelectedOfferStepper = ({ steps }: CoinmarketSelectedOfferSteppe
         </Header>
     );
 };
-
-export default CoinmarketSelectedOfferStepper;

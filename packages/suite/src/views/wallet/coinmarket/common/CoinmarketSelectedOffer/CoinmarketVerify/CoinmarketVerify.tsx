@@ -7,9 +7,9 @@ import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import useCoinmarketVerifyAccount from 'src/hooks/wallet/coinmarket/form/useCoinmarketVerifyAccount';
-import CoinmarketSelectedOfferVerifyOptions from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferVerifyOptions';
+import { CoinmarketTradeBuyExchangeType } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketVerifyOptions } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerifyOptions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -57,12 +57,13 @@ const Row = styled.div`
     margin: 12px 0;
 `;
 
-// TODO: refactor with exchange redesign
-const CoinmarketSelectedOfferVerify = () => {
+export const CoinmarketVerify = () => {
     const { translationString } = useTranslation();
     const { callInProgress, device, verifyAddress, selectedQuote, addressVerified, goToPayment } =
-        useCoinmarketFormContext<CoinmarketTradeBuyType>();
+        useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
     const currency = selectedQuote?.receiveCurrency;
+
+    console.log(currency);
     const {
         form,
         selectedAccountOption,
@@ -110,7 +111,7 @@ const CoinmarketSelectedOfferVerify = () => {
                             tooltip={accountTooltipTranslationId}
                         />
                     </CustomLabel>
-                    <CoinmarketSelectedOfferVerifyOptions
+                    <CoinmarketVerifyOptions
                         receiveNetwork={receiveNetwork ?? currency}
                         selectedAccountOption={selectedAccountOption}
                         selectAccountOptions={selectAccountOptions}
@@ -202,5 +203,3 @@ const CoinmarketSelectedOfferVerify = () => {
         </Wrapper>
     );
 };
-
-export default CoinmarketSelectedOfferVerify;

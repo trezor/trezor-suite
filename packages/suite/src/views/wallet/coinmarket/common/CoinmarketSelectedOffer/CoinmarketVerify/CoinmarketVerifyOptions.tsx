@@ -2,23 +2,23 @@ import styled from 'styled-components';
 import { Select } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import {
-    CoinmarketSelectedOfferVerifyOptionsProps,
+    CoinmarketVerifyOptionsProps,
     CoinmarketVerifyFormAccountOptionProps,
 } from 'src/types/coinmarket/coinmarketVerify';
-import CoinmarketSelectedOfferVerifyOptionsItem from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferVerifyOptionsItem';
+import { CoinmarketVerifyOptionsItem } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerifyOptionsItem';
 
 const SelectWrapper = styled.div`
     position: relative;
     z-index: 30;
 `;
 
-const CoinmarketSelectedOfferVerifyOptions = ({
+export const CoinmarketVerifyOptions = ({
     receiveNetwork,
     selectAccountOptions,
     selectedAccountOption,
     isMenuOpen,
     onChangeAccount,
-}: CoinmarketSelectedOfferVerifyOptionsProps) => {
+}: CoinmarketVerifyOptionsProps) => {
     return (
         <SelectWrapper>
             <Select
@@ -30,10 +30,7 @@ const CoinmarketSelectedOfferVerifyOptions = ({
                 options={selectAccountOptions}
                 minValueWidth="70px"
                 formatOptionLabel={option => (
-                    <CoinmarketSelectedOfferVerifyOptionsItem
-                        option={option}
-                        receiveNetwork={receiveNetwork}
-                    />
+                    <CoinmarketVerifyOptionsItem option={option} receiveNetwork={receiveNetwork} />
                 )}
                 menuIsOpen={isMenuOpen}
                 isDisabled={selectAccountOptions.length === 1}
@@ -47,5 +44,3 @@ const CoinmarketSelectedOfferVerifyOptions = ({
         </SelectWrapper>
     );
 };
-
-export default CoinmarketSelectedOfferVerifyOptions;
