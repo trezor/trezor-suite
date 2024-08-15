@@ -50,6 +50,9 @@ export interface DialogModalProps extends PickedModalProps {
     body?: ReactNode;
 }
 
+/**
+ * @deprecated Use NewModal.
+ */
 export const DialogModal = ({
     headerHeading,
     bodyHeading,

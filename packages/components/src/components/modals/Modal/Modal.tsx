@@ -197,6 +197,9 @@ interface ModalProps {
     'data-testid'?: string;
 }
 
+/**
+ * @deprecated Use NewModal.
+ */
 const Modal = ({
     children,
     heading,

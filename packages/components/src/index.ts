@@ -50,6 +50,7 @@ export * from './components/Markdown/Markdown';
 export * from './components/modals/DialogModal/DialogModal';
 export * from './components/modals/Modal/Backdrop';
 export * from './components/modals/Modal/Modal';
+export * from './components/NewModal/NewModal';
 export * from './components/Note/Note';
 export * from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export * from './components/ResizableBox/ResizableBox';
