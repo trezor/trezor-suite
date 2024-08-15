@@ -14,6 +14,7 @@
         { "path": "../discovery" },
         { "path": "../feature-flags" },
         { "path": "../intl" },
+        { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../../packages/styles" }

@@ -1,5 +1,5 @@
 import { TouchableOpacity, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { CryptoIcon } from '@suite-common/icons';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
@@ -9,13 +9,14 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
 import { useAlert } from '@suite-native/alerts';
+import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 
 import { useCoinEnabling } from '../hooks/useCoinEnabling';
 
 type NetworkSymbolProps = {
     networkSymbol: NetworkSymbol;
     isEnabled: boolean;
-    isToastEnabled: boolean;
+    allowDeselectLastCoin: boolean;
 };
 
 const wrapperStyle = prepareNativeStyle<{ isEnabled: boolean }>((utils, { isEnabled }) => ({
@@ -43,9 +44,10 @@ const iconWrapperStyle = prepareNativeStyle(utils => ({
 export const NetworkSymbolSwitchItem = ({
     networkSymbol,
     isEnabled,
-    isToastEnabled,
+    allowDeselectLastCoin,
 }: NetworkSymbolProps) => {
     const dispatch = useDispatch();
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const { applyStyle } = useNativeStyles();
     const { showToast } = useToast();
     const { enabledNetworkSymbols } = useCoinEnabling();
@@ -67,6 +69,7 @@ export const NetworkSymbolSwitchItem = ({
     const handleEnabledChange = (isChecked: boolean) => {
         if (
             !isChecked &&
+            !allowDeselectLastCoin &&
             enabledNetworkSymbols.length === 1 &&
             enabledNetworkSymbols.includes(networkSymbol)
         ) {
@@ -75,7 +78,7 @@ export const NetworkSymbolSwitchItem = ({
             return;
         }
 
-        if (isToastEnabled) {
+        if (!isDeviceConnected) {
             showToast({
                 variant: 'default',
                 message: isChecked ? (

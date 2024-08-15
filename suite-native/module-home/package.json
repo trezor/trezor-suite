@@ -12,6 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "6.1.17",
         "@react-navigation/native-stack": "6.9.26",
         "@reduxjs/toolkit": "1.9.5",
@@ -22,6 +23,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/biometrics": "workspace:*",
         "@suite-native/blockchain": "workspace:*",
+        "@suite-native/coin-enabling": "workspace:*",
         "@suite-native/device": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/discovery": "workspace:*",

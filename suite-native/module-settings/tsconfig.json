@@ -25,6 +25,7 @@
         { "path": "../coin-enabling" },
         { "path": "../config" },
         { "path": "../device-manager" },
+        { "path": "../discovery" },
         { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../link" },

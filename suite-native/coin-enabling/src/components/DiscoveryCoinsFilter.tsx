@@ -1,4 +1,6 @@
-import { useEffect } from 'react';
+import { useCallback } from 'react';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { VStack, Text } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -9,16 +11,20 @@ import { useCoinEnabling } from '../hooks/useCoinEnabling';
 import { NetworkSymbolSwitchItem } from './NetworkSymbolSwitchItem';
 
 type DiscoveryCoinsFilterProps = {
-    isToastEnabled?: boolean;
+    allowDeselectLastCoin?: boolean; // If true, the last coin can be deselected
 };
 
-export const DiscoveryCoinsFilter = ({ isToastEnabled = true }: DiscoveryCoinsFilterProps) => {
+export const DiscoveryCoinsFilter = ({
+    allowDeselectLastCoin = false,
+}: DiscoveryCoinsFilterProps) => {
     const { enabledNetworkSymbols, availableNetworks, applyDiscoveryChanges } = useCoinEnabling();
 
-    useEffect(() => {
-        // This will run when the component is unmounted (leaving the screen) and trigger the applyDiscoveryChanges function
-        return () => applyDiscoveryChanges();
-    }, [applyDiscoveryChanges]);
+    useFocusEffect(
+        useCallback(() => {
+            // run on leaving the screen
+            return () => applyDiscoveryChanges();
+        }, [applyDiscoveryChanges]),
+    );
 
     const uniqueNetworkSymbols = [...new Set(availableNetworks.map(n => n.symbol))];
 
@@ -29,7 +35,7 @@ export const DiscoveryCoinsFilter = ({ isToastEnabled = true }: DiscoveryCoinsFi
                     key={networkSymbol}
                     networkSymbol={networkSymbol}
                     isEnabled={enabledNetworkSymbols.includes(networkSymbol)}
-                    isToastEnabled={isToastEnabled}
+                    allowDeselectLastCoin={allowDeselectLastCoin}
                 />
             ))}
             <VStack paddingTop="small" paddingBottom="extraLarge" alignItems="center">

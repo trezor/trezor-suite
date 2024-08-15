@@ -21,6 +21,7 @@ import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-de
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
 import { DeviceInfoModalScreen, useHandleDeviceConnection } from '@suite-native/device';
 import { SendStackNavigator } from '@suite-native/module-send';
+import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
@@ -76,6 +77,12 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.AddCoinAccountStack}
                 component={AddCoinAccountStackNavigator}
             />
+            <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
+                <RootStack.Screen
+                    name={RootStackRoutes.CoinEnablingInit}
+                    component={CoinEnablingInitScreen}
+                />
+            </RootStack.Group>
             <RootStack.Screen name={RootStackRoutes.ReceiveModal} component={ReceiveModalScreen} />
             <RootStack.Screen name={RootStackRoutes.DeviceInfo} component={DeviceInfoModalScreen} />
             <RootStack.Screen

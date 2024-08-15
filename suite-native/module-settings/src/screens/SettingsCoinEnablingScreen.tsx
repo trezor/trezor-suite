@@ -1,4 +1,7 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCallback } from 'react';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -9,13 +12,27 @@ import {
 } from '@suite-native/coin-enabling';
 import { Box, Text } from '@suite-native/atoms';
 import { selectIsBitcoinOnlyDevice } from '@suite-common/wallet-core';
+import { setIsCoinEnablingInitFinished } from '@suite-native/discovery';
 
 export const SettingsCoinEnablingScreen = () => {
+    const dispatch = useDispatch();
+
     const { translate } = useTranslate();
-    const { availableNetworks } = useCoinEnabling();
+    const { availableNetworks, enabledNetworkSymbols } = useCoinEnabling();
     const isBitcoinOnlyDevice = useSelector(selectIsBitcoinOnlyDevice);
 
     const showBtcOnly = availableNetworks.length === 1 && isBitcoinOnlyDevice;
+
+    useFocusEffect(
+        useCallback(() => {
+            // mark coin init as finished if there are enabled coins on leaving the screen
+            return () => {
+                if (enabledNetworkSymbols.length > 0) {
+                    dispatch(setIsCoinEnablingInitFinished(true));
+                }
+            };
+        }, [dispatch, enabledNetworkSymbols.length]),
+    );
 
     return (
         <Screen

@@ -81,6 +81,12 @@ export const en = {
                 enable: 'Enable',
             },
         },
+        coinEnabling: {
+            title: 'Choose coins you want to use with your Trezor.',
+            subtitle:
+                'The more coins are enabled, the more it takes to load the app. You can always add more later.',
+            button: 'Confirm selection',
+        },
     },
     accountList: {
         numberOfTokens: '+{numberOfTokens} tokens',
@@ -525,8 +531,8 @@ export const en = {
             bottomNote:
                 'Didn’t find what you’re looking for? Check if it’s not a token running one of the listed coin’s network.',
             toasts: {
-                coinEnabled: '<coin></coin> accounts will load for\nconnected Trezor.',
-                coinDisabled: '<coin></coin> accounts will be removed',
+                coinEnabled: '<coin></coin> will load once you connect Trezor.',
+                coinDisabled: '<coin></coin> disabled',
             },
             btcOnly: {
                 title: 'This device is BTC only.',
