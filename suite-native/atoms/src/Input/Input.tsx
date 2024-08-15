@@ -22,15 +22,24 @@ import { Box } from '../Box';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from '../Text';
 import { SurfaceElevation } from '../types';
 
-export type InputProps = TextInputProps & {
-    value: string;
-    label: string;
-    hasError?: boolean;
-    hasWarning?: boolean;
-    leftIcon?: ReactNode;
-    rightIcon?: ReactNode;
-    elevation?: SurfaceElevation;
-};
+const LABEL_ANIMATION_DURATION = 200;
+const labelEnteringAnimation = FadeIn.duration(LABEL_ANIMATION_DURATION);
+const labelExitingAnimation = FadeOut.duration(LABEL_ANIMATION_DURATION);
+
+export type InputProps = TextInputProps &
+    RequireOneOrNone<
+        {
+            value: string;
+            label: string;
+            placeholder: string;
+            hasError?: boolean;
+            hasWarning?: boolean;
+            leftIcon?: ReactNode;
+            rightIcon?: ReactNode;
+            elevation?: SurfaceElevation;
+        },
+        'label' | 'placeholder'
+    >;
 
 const INPUT_LABEL_TOP_PADDING = 35;
 const INPUT_LABEL_TOP_PADDING_MINIMIZED = 40;

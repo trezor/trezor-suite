@@ -21,8 +21,14 @@ export interface FieldProps extends AllowedTextInputFieldProps, AllowedInputWrap
 }
 
 export const TextInputField = forwardRef<TextInput, FieldProps>(
-    ({ name, label, hint, onBlur, defaultValue = '', valueTransformer, ...otherProps }, ref) => {
-        const field = useField({ name, label, defaultValue, valueTransformer });
+    ({ name, hint, onBlur, defaultValue = '', valueTransformer, ...otherProps }, ref) => {
+        const field = useField({
+            name,
+            defaultValue,
+            valueTransformer,
+            // Accessing `label` from destructured props does break the `RequireOneOrNone` validation of `Input` props.
+            label: otherProps.label,
+        });
         const { errorMessage, onBlur: hookFormOnBlur, onChange, value, hasError } = field;
 
         const handleOnBlur = () => {
@@ -40,7 +46,6 @@ export const TextInputField = forwardRef<TextInput, FieldProps>(
                     onChangeText={onChange}
                     value={value}
                     hasError={hasError}
-                    label={label}
                     ref={ref}
                 />
             </InputWrapper>

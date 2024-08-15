@@ -10,7 +10,7 @@ import {
 import { Box, BoxProps } from './Box';
 
 type DividerProps = Omit<BoxProps, 'style'> & {
-    style: NativeStyleObject;
+    style?: NativeStyleObject;
 };
 
 const dividerStyle = prepareNativeStyle(utils => ({
