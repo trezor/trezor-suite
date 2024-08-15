@@ -41,7 +41,7 @@ runs:
       run: |
         echo "Setting data"
         ls -la
-        echo "data=$(node ../scripts/ci/build-overview/set-data.js)" >> $GITHUB_OUTPUT
+        echo "data=$(node ../scripts/ci/build-overview/build-data.js {{ steps.extract_branch.outputs.branch }} foo-bar-name foo-bar-url)" >> $GITHUB_OUTPUT
 
     - name: Upload data to dev server and refresh html
       shell: bash
@@ -52,6 +52,7 @@ runs:
         echo ${{ steps.set-data.outputs.data }}
         echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
         mkdir -p tmp_build_directory/${{ inputs.dir }}
-        echo "<html><head>build metadata</head><body><a href="./${{ inputs.dir}}">connect coverage</a></body></html>" > tmp_build_directory/index.html
+        echo ${{ steps.set-data.outputs.data }} > tmp_build_directory/data.json
+        node ../scripts/ci/build-overview/build-html.js ${{ steps.set-data.outputs.data }} > tmp_build_directory/index.html
         cp -R ${{ inputs.source_dir }}/* tmp_build_directory/${{inputs.dir}}
         aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"

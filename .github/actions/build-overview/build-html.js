@@ -2,12 +2,10 @@ const getData = require('./get-data');
 const processArgs = require('./process-args');
 
 const run = async () => {
-    const [branch, job, url] = processArgs();
-
-    const data = await getData(branch);
+    const [data_raw] = processArgs();
+    const data = JSON.parse(data_raw);
 
     if (!data) {
-        console.log('no data available');
         return process.exit(1);
     }
     console.log('fetched data:', data);
@@ -19,7 +17,7 @@ const run = async () => {
 
     html += '</body></html>';
 
-    process.stdout.write(JSON.stringify(data));
+    process.stdout.write(JSON.stringify(html));
 };
 
 run();
