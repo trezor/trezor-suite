@@ -15,7 +15,6 @@ type SwitchDeviceModalProps = {
 
 const Container = styled.div`
     width: 378px;
-    margin: 5px;
 `;
 
 const DeviceItemsWrapper = styled.div`

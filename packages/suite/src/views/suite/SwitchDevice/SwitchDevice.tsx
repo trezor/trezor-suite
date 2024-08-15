@@ -1,11 +1,12 @@
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevice, selectDevices } from '@suite-common/wallet-core';
+import { NewModal } from '@trezor/components';
 
 import { ForegroundAppProps } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
-import { SwitchDeviceRenderer } from './SwitchDeviceRenderer';
+import { SwitchDeviceModal } from './SwitchDeviceModal';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 
@@ -15,7 +16,7 @@ const Flex = styled.div`
     gap: ${spacingsPx.xs};
 `;
 
-export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
+export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
     const selectedDevice = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
 
@@ -31,18 +32,20 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     }
 
     return (
-        <SwitchDeviceRenderer isCancelable={cancelable} onCancel={onCancel} isAnimationEnabled>
-            <Flex>
-                {sortedDevices.map((device, index) => (
-                    <DeviceItem
-                        key={`${device.id}-${device.instance}`}
-                        device={device}
-                        instances={deviceUtils.getDeviceInstances(device, devices)}
-                        onCancel={onCancel}
-                        isFullHeaderVisible={index === 0}
-                    />
-                ))}
-            </Flex>
-        </SwitchDeviceRenderer>
+        <NewModal.Backdrop onClick={onCancel} alignment={{ x: 'left', y: 'top' }} padding={5}>
+            <SwitchDeviceModal isAnimationEnabled onCancel={onCancel}>
+                <Flex>
+                    {sortedDevices.map((device, index) => (
+                        <DeviceItem
+                            key={`${device.id}-${device.instance}`}
+                            device={device}
+                            instances={deviceUtils.getDeviceInstances(device, devices)}
+                            onCancel={onCancel}
+                            isFullHeaderVisible={index === 0}
+                        />
+                    ))}
+                </Flex>
+            </SwitchDeviceModal>
+        </NewModal.Backdrop>
     );
 };
