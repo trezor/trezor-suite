@@ -29,6 +29,7 @@ type DiscoveryInfo = {
 type DiscoveryConfigState = {
     areTestnetsEnabled: boolean;
     discoveryInfo: DiscoveryInfo | null;
+    isCoinEnablingInitFinished: boolean;
     enabledDiscoveryNetworkSymbols: NetworkSymbol[];
 };
 
@@ -39,11 +40,13 @@ export type DiscoveryConfigSliceRootState = {
 const discoveryConfigInitialState: DiscoveryConfigState = {
     areTestnetsEnabled: false,
     discoveryInfo: null,
+    isCoinEnablingInitFinished: false,
     enabledDiscoveryNetworkSymbols: [],
 };
 
 export const discoveryConfigPersistWhitelist: Array<keyof DiscoveryConfigState> = [
     'areTestnetsEnabled',
+    'isCoinEnablingInitFinished',
     'enabledDiscoveryNetworkSymbols',
 ];
 
@@ -68,6 +71,12 @@ export const discoveryConfigSlice = createSlice({
                 // If the network is not in the list, add it
                 state.enabledDiscoveryNetworkSymbols.push(networkSymbol);
             }
+        },
+        setEnabledDiscoveryNetworkSymbols: (state, { payload }: PayloadAction<NetworkSymbol[]>) => {
+            state.enabledDiscoveryNetworkSymbols = payload;
+        },
+        setIsCoinEnablingInitFinished: (state, { payload }: PayloadAction<boolean>) => {
+            state.isCoinEnablingInitFinished = payload;
         },
     },
 });
@@ -109,6 +118,17 @@ export const selectDiscoveryNetworkSymbols = memoizeWithArgs(
     { size: 2 },
 );
 
+export const selectIsCoinEnablingInitFinished = (
+    state: DiscoveryConfigSliceRootState & FeatureFlagsRootState,
+) => {
+    const isCoinEnablingActive = selectIsFeatureFlagEnabled(
+        state,
+        FeatureFlag.IsCoinEnablingActive,
+    );
+
+    return isCoinEnablingActive ? state.discoveryConfig.isCoinEnablingInitFinished : true;
+};
+
 export const selectEnabledDiscoveryNetworkSymbols = memoizeWithArgs(
     (
         state: DiscoveryConfigSliceRootState & DeviceRootState & FeatureFlagsRootState,
@@ -132,6 +152,11 @@ export const selectEnabledDiscoveryNetworkSymbols = memoizeWithArgs(
     { size: 2 },
 );
 
-export const { toggleAreTestnetsEnabled, setDiscoveryInfo, toggleEnabledDiscoveryNetworkSymbol } =
-    discoveryConfigSlice.actions;
+export const {
+    toggleAreTestnetsEnabled,
+    setDiscoveryInfo,
+    toggleEnabledDiscoveryNetworkSymbol,
+    setEnabledDiscoveryNetworkSymbols,
+    setIsCoinEnablingInitFinished,
+} = discoveryConfigSlice.actions;
 export const discoveryConfigReducer = discoveryConfigSlice.reducer;

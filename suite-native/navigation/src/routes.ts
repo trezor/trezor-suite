@@ -11,7 +11,7 @@ export enum RootStackRoutes {
     SendStack = 'SendStack',
     DeviceInfo = 'DeviceInfo',
     AddCoinAccountStack = 'AddCoinAccountStack',
-    PassphraseStack = 'PassphraseStack',
+    CoinEnablingInit = 'CoinEnablingInit',
 }
 
 export enum AppTabsRoutes {

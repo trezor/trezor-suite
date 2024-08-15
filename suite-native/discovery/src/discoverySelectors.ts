@@ -33,6 +33,7 @@ import {
     DiscoveryConfigSliceRootState,
     selectDiscoverySupportedNetworks,
     selectEnabledDiscoveryNetworkSymbols,
+    selectIsCoinEnablingInitFinished,
 } from './discoveryConfigSlice';
 import { getNetworksWithUnfinishedDiscovery } from './utils';
 
@@ -119,6 +120,7 @@ export const selectCanRunDiscoveryForDevice = (
         return false;
     }
 
+    const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(state);
     const discovery = selectDeviceDiscovery(state);
     const deviceModel = selectDeviceModel(state);
     const deviceFwVersion = selectDeviceFirmwareVersion(state);
@@ -135,7 +137,8 @@ export const selectCanRunDiscoveryForDevice = (
     const hasDeviceAuthConfirm = selectHasDeviceAuthConfirm(state);
     const hasDeviceAuthFailed = selectDeviceAuthFailed(state);
 
-    const canRunDiscovery =
+    return (
+        isCoinEnablingInitFinished &&
         !discovery &&
         isDeviceConnectedAndAuthorized &&
         !isPortfolioTrackerDevice &&
@@ -143,7 +146,6 @@ export const selectCanRunDiscoveryForDevice = (
         isDeviceUnlocked &&
         !hasDeviceAuthConfirm &&
         !hasDeviceAuthFailed &&
-        isDeviceFirmwareVersionSupported;
-
-    return canRunDiscovery;
+        isDeviceFirmwareVersionSupported
+    );
 };

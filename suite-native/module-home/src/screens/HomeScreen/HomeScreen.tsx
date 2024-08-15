@@ -17,6 +17,7 @@ import { PortfolioContent } from './components/PortfolioContent';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { EnableViewOnlyBottomSheet } from './components/EnableViewOnlyBottomSheet';
 import { PortfolioGraphRef } from './components/PortfolioGraph';
+import { useCoinEnablingInitialCheck } from '../../hooks/useCoinEnablingInitialCheck';
 
 export const HomeScreen = () => {
     const isEmptyDevice = useSelector(selectIsEmptyDevice);
@@ -34,6 +35,8 @@ export const HomeScreen = () => {
         isEmptyDevice,
         portfolioContentRef,
     });
+
+    useCoinEnablingInitialCheck();
 
     return (
         <Screen

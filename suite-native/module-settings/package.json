@@ -30,6 +30,7 @@
         "@suite-native/coin-enabling": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
+        "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",

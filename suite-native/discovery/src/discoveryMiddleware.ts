@@ -10,7 +10,11 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isFirmwareVersionSupported } from '@suite-native/device';
 
 import { startDescriptorPreloadedDiscoveryThunk, discoveryCheckThunk } from './discoveryThunks';
-import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from './discoveryConfigSlice';
+import {
+    selectAreTestnetsEnabled,
+    selectIsCoinEnablingInitFinished,
+    toggleAreTestnetsEnabled,
+} from './discoveryConfigSlice';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
@@ -21,6 +25,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         const deviceModel = selectDeviceModel(getState());
         const deviceFwVersion = selectDeviceFirmwareVersion(getState());
         const areTestnetsEnabled = selectAreTestnetsEnabled(getState());
+        const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(getState());
 
         const isDeviceFirmwareVersionSupported = isFirmwareVersionSupported(
             deviceFwVersion,
@@ -31,7 +36,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         if (
             toggleAreTestnetsEnabled.match(action) &&
             !areTestnetsEnabled &&
-            isDeviceFirmwareVersionSupported
+            isDeviceFirmwareVersionSupported &&
+            isCoinEnablingInitFinished
         ) {
             dispatch(
                 startDescriptorPreloadedDiscoveryThunk({
@@ -45,7 +51,11 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         next(action);
 
         // On successful authorization, create discovery instance and run it with received device state.
-        if (authorizeDeviceThunk.fulfilled.match(action) && isDeviceFirmwareVersionSupported) {
+        if (
+            authorizeDeviceThunk.fulfilled.match(action) &&
+            isDeviceFirmwareVersionSupported &&
+            isCoinEnablingInitFinished
+        ) {
             dispatch(
                 startDescriptorPreloadedDiscoveryThunk({
                     forcedDeviceState: action.payload.state,
