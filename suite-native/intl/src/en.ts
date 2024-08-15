@@ -817,6 +817,13 @@ export const en = {
         },
     },
     moduleSend: {
+        outputs: {
+            recipients: {
+                title: 'Amount & recipients',
+                addressLabel: 'Recipient address',
+                amountLabel: 'Amount to be sent',
+            },
+        },
         fees: {
             recipient: { singular: 'Recipient' },
             description: {

@@ -79,7 +79,7 @@ export const sendOutputsFormValidationSchema = yup.object({
                     ),
                 amount: yup
                     .string()
-                    .required()
+                    .required('Amount is required.')
                     .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
                     .test(
                         'is-dust-amount',
@@ -117,6 +117,7 @@ export const sendOutputsFormValidationSchema = yup.object({
                             });
                         },
                     ),
+                fiat: yup.string(),
                 // TODO: other validations have to be added in the following PRs
                 //       1) validation of token amount
                 //       2) check if the amount is not higher than XRP reserve
@@ -126,3 +127,4 @@ export const sendOutputsFormValidationSchema = yup.object({
 });
 
 export type SendOutputsFormValues = yup.InferType<typeof sendOutputsFormValidationSchema>;
+export type SendOutputFieldName = keyof SendOutputsFormValues['outputs'][number];

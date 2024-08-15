@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useWatch } from 'react-hook-form';
+import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useNavigation } from '@react-navigation/native';
 
-import { VStack, Button } from '@suite-native/atoms';
+import { Button, Box } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
 import { AccountKey, FormState } from '@suite-common/wallet-types';
 import { useDebounce } from '@trezor/react-utils';
@@ -27,6 +28,8 @@ import {
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import { getNetwork } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
 import { SendOutputFields } from './SendOutputFields';
@@ -35,14 +38,20 @@ type SendFormProps = {
     accountKey: AccountKey;
 };
 
+const buttonWrapperStyle = prepareNativeStyle(() => ({
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+}));
+
 // TODO: this data structure will be revisited in a follow up PR
 const constructFormDraft = ({ outputs }: SendOutputsFormValues): FormState => ({
-    outputs: outputs.map(({ address, amount }) => ({
+    outputs: outputs.map(({ address, amount, fiat = '' }) => ({
         address,
         amount,
         type: 'payment',
         token: null,
-        fiat: '0',
+        fiat,
         currency: { label: '', value: '' },
     })),
     isCoinControlEnabled: false,
@@ -55,6 +64,7 @@ const constructFormDraft = ({ outputs }: SendOutputsFormValues): FormState => ({
 });
 
 export const SendOutputsForm = ({ accountKey }: SendFormProps) => {
+    const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const { showToast } = useToast();
@@ -79,12 +89,14 @@ export const SendOutputsForm = ({ accountKey }: SendFormProps) => {
             networkFeeInfo,
             networkSymbol: account?.symbol,
             availableAccountBalance: account?.availableBalance,
+            mode: 'onChange',
         },
         defaultValues: {
             outputs: [
                 {
-                    address: sendFormDraft?.outputs?.[0]?.address,
-                    amount: sendFormDraft?.outputs?.[0]?.amount,
+                    address: sendFormDraft?.outputs?.[0]?.address ?? '',
+                    amount: sendFormDraft?.outputs?.[0]?.amount ?? '',
+                    fiat: sendFormDraft?.outputs?.[0]?.fiat ?? '',
                 },
             ],
         },
@@ -116,7 +128,6 @@ export const SendOutputsForm = ({ accountKey }: SendFormProps) => {
     if (!account || !networkFeeInfo || !device || !network) return null;
 
     const handleNavigateToReviewScreen = handleSubmit(async values => {
-        //compose transaction with specific fee levels
         const response = await dispatch(
             composeSendFormTransactionFeeLevelsThunk({
                 formState: constructFormDraft(values),
@@ -145,20 +156,27 @@ export const SendOutputsForm = ({ accountKey }: SendFormProps) => {
 
     return (
         <Form form={form}>
-            <VStack spacing="medium">
-                <SendOutputFields />
+            <Box flex={1} justifyContent="space-between">
+                <SendOutputFields accountKey={accountKey} />
+
                 {isValid && (
-                    <Button
-                        accessibilityRole="button"
-                        accessibilityLabel="validate send form"
-                        testID="@send/form-submit-button"
-                        onPress={handleNavigateToReviewScreen}
-                        isDisabled={isSubmitting}
+                    <Animated.View
+                        entering={SlideInDown}
+                        exiting={SlideOutDown}
+                        style={applyStyle(buttonWrapperStyle)}
                     >
-                        continue
-                    </Button>
+                        <Button
+                            accessibilityRole="button"
+                            accessibilityLabel="validate send form"
+                            testID="@send/form-submit-button"
+                            onPress={handleNavigateToReviewScreen}
+                            isDisabled={isSubmitting}
+                        >
+                            <Translation id="generic.buttons.continue" />
+                        </Button>
+                    </Animated.View>
                 )}
-            </VStack>
+            </Box>
         </Form>
     );
 };
