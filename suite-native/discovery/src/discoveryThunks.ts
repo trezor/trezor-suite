@@ -25,6 +25,7 @@ import { AccountType, Network, NetworkSymbol, getNetworkType } from '@suite-comm
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 
 import { selectDiscoveryInfo, setDiscoveryInfo } from './discoveryConfigSlice';
 import {
@@ -293,13 +294,25 @@ const discoverAccountsByDescriptorThunk = createThunk(
                 if (accountInfo.empty) {
                     isFinalRound = true;
                 }
+                const isCoinEnablingActive = selectIsFeatureFlagEnabled(
+                    getState(),
+                    FeatureFlag.IsCoinEnablingActive,
+                );
+
+                const isVisible =
+                    // If the account is not empty, it should be visible.
+                    !accountInfo.empty ||
+                    // If the feature flag is enabled, first normal account should be visible.
+                    (isCoinEnablingActive &&
+                        bundleItem.accountType === 'normal' &&
+                        bundleItem.index === 0);
 
                 dispatch(
                     accountsActions.createIndexLabeledAccount({
                         discoveryItem: bundleItem,
                         deviceState,
                         accountInfo,
-                        visible: !accountInfo.empty,
+                        visible: isVisible,
                     }),
                 );
             }
