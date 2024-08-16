@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { H2, Row, Text, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
-import { TREZOR_SUPPORT_URL } from '@trezor/urls';
+import { TREZOR_SUPPORT_FW_CHECK_FAILED } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { SecurityChecklist } from '../../../views/onboarding/steps/SecurityCheck/SecurityChecklist';
@@ -40,7 +40,7 @@ const checklistItems = [
     },
 ] as const;
 
-const supportChatUrl = `${TREZOR_SUPPORT_URL}#open-chat`;
+const supportChatUrl = `${TREZOR_SUPPORT_FW_CHECK_FAILED}#open-chat`;
 
 interface SecurityCheckFailProps {
     goBack?: () => void;
