@@ -2029,7 +2029,6 @@
   "TR_UNKNOWN_CONFIRMATION_TIME": "sconosciuto",
   "TR_UNKNOWN_DEVICE": "Dispositivo sconosciuto",
   "TR_UNKNOWN_ERROR_SEE_CONSOLE": "Errore sconosciuto. Guarda i log della console per maggiori dettagli.",
-  "TR_UNKNOWN_PROVIDER": "Provider sconosciuto",
   "TR_UNKNOWN_TRANSACTION": "Transazione sconosciuta",
   "TR_UNREADABLE": "Illeggibile",
   "TR_UNREADABLE_EXPLAINED": "Non è possibile visualizzare i dettagli del tuo dispositivo Trezor. È possibile che sia in esecuzione un firmware obsoleto o che un altro dispositivo USB stia interferendo. Per consentire la comunicazione, devi installare Trezor Bridge.",

@@ -1648,7 +1648,7 @@ export default defineMessages({
     },
     TR_COINMARKET_FEES_ON_WEBSITE: {
         defaultMessage:
-            "Some fees aren't included in the displayed price; the final cost will be shown on the provider's website.",
+            "Some fees aren't included in the displayed price; the final cost is shown on the provider's website.",
         id: 'TR_COINMARKET_FEES_ON_WEBSITE',
     },
     TR_COINMARKET_NETWORK_FEE: {
@@ -2358,12 +2358,11 @@ export default defineMessages({
     },
     TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED: {
         defaultMessage:
-            'Address has no transaction history and is not checksummed. Please verify it is correct.',
+            "Address has no transaction history and isn't checksummed. Check that the address is correct.",
         id: 'TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED',
     },
     TR_ETH_ADDRESS_CANT_VERIFY_HISTORY: {
-        defaultMessage:
-            'Can not verify address history. Please verify the addrress is correct yourself.',
+        defaultMessage: 'Unable to verify address history. Check that the address is correct.',
         id: 'TR_ETH_ADDRESS_CANT_VERIFY_HISTORY',
     },
     TR_NEEDS_ATTENTION_BOOTLOADER: {
@@ -3451,7 +3450,7 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE',
     },
     TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED: {
-        defaultMessage: 'Connect device to change Crypto settings',
+        defaultMessage: 'Connect device to change Coins settings',
         id: 'TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
@@ -5819,7 +5818,7 @@ export default defineMessages({
     },
     REMAINING_BALANCE_LESS_THAN_RENT: {
         defaultMessage:
-            'Sending this amount would leave your account with {remainingSolBalance} SOL, balance of a non-empty account has to be more then {rent} SOL',
+            'After sending this amount, your account will have {remainingSolBalance} SOL remaining. A non-empty account must maintain a balance of more than {rent} SOL.',
         id: 'REMAINING_BALANCE_LESS_THAN_RENT',
     },
     OP_RETURN: {
