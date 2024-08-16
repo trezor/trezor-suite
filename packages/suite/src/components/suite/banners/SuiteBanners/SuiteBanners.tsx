@@ -19,10 +19,15 @@ import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
 import { UnableToPerformRevisionCheck } from './UnableToPerformRevisionCheck';
+import { spacingsPx } from '@trezor/theme';
 
 const Container = styled.div<{ $isVisible?: boolean }>`
     width: 100%;
     max-width: ${MAX_CONTENT_WIDTH};
+    padding: ${spacingsPx.sm} ${spacingsPx.md};
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.xs};
 `;
 
 export const SuiteBanners = () => {
