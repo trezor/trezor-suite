@@ -48,37 +48,37 @@ describe('Database migration', () => {
 
         cy.visit(`${baseUrl}/${from}`);
         // naming of data-tests has been changed in current version so we need to use the old ones
-        cy.get('[data-test="@onboarding/continue-button"]', { timeout: 40000 })
+        cy.get('[data-testid="@onboarding/continue-button"]', { timeout: 40000 })
             .click()
-            .get('[data-test="@onboarding/exit-app-button"]')
+            .get('[data-testid="@onboarding/exit-app-button"]')
             .click()
-            .get('[data-test="@suite/loading"]')
+            .get('[data-testid="@suite/loading"]')
             .should('not.exist');
-        cy.get('[data-test="@passphrase-type/standard"]').click();
-        cy.get('[data-test="@wallet/discovery-progress-bar"]', { timeout: 45_000 });
-        cy.get('[data-test="@wallet/discovery-progress-bar"]', { timeout: 45_000 }).should(
+        cy.get('[data-testid="@passphrase-type/standard"]').click();
+        cy.get('[data-testid="@wallet/discovery-progress-bar"]', { timeout: 45_000 });
+        cy.get('[data-testid="@wallet/discovery-progress-bar"]', { timeout: 45_000 }).should(
             'not.exist',
         );
 
         // change settings
-        cy.get('[data-test="@suite/menu/settings"]').click();
-        cy.get('[data-test="@theme/color-scheme-select/input"]').click();
-        cy.get('[data-test="@theme/color-scheme-select/option/dark"]').click();
-        cy.get('[data-test="@theme/color-scheme-select/input"]').should('contain', 'Dark');
+        cy.get('[data-testid="@suite/menu/settings"]').click();
+        cy.get('[data-testid="@theme/color-scheme-select/input"]').click();
+        cy.get('[data-testid="@theme/color-scheme-select/option/dark"]').click();
+        cy.get('[data-testid="@theme/color-scheme-select/input"]').should('contain', 'Dark');
 
         // remembering the wallet
-        cy.get('[data-test="@menu/switch-device"]').click();
-        cy.get('[data-test="@modal"]').should('be.visible');
-        cy.get('[data-test="@switch-device/add-hidden-wallet-button"]').click();
-        cy.get('[data-test="@passphrase/input"]').should('be.visible').type(testData.accPhrase);
-        cy.get('[data-test="@passphrase/hidden/submit-button"]').click();
+        cy.get('[data-testid="@menu/switch-device"]').click();
+        cy.get('[data-testid="@modal"]').should('be.visible');
+        cy.get('[data-testid="@switch-device/add-hidden-wallet-button"]').click();
+        cy.get('[data-testid="@passphrase/input"]').should('be.visible').type(testData.accPhrase);
+        cy.get('[data-testid="@passphrase/hidden/submit-button"]').click();
         cy.wait(500);
         cy.task('pressYes');
         cy.task('pressYes');
-        cy.get('[data-test="@discovery/loader"]').should('be.visible');
-        cy.get('[data-test="@discovery/loader"]').should('not.exist');
-        cy.get('[data-test="@wallet/discovery-progress-bar"]', { timeout: 45_000 });
-        cy.get('[data-test="@wallet/discovery-progress-bar"]', { timeout: 45_000 }).should(
+        cy.get('[data-testid="@discovery/loader"]').should('be.visible');
+        cy.get('[data-testid="@discovery/loader"]').should('not.exist');
+        cy.get('[data-testid="@wallet/discovery-progress-bar"]', { timeout: 45_000 });
+        cy.get('[data-testid="@wallet/discovery-progress-bar"]', { timeout: 45_000 }).should(
             'not.exist',
         );
 
@@ -87,24 +87,24 @@ describe('Database migration', () => {
         //       The test currently still works with tagged release version that has old selectors
         //       from before the redesign.
         //
-        cy.get('[data-test="@suite/menu/wallet-index').click();
+        cy.get('[data-testid="@suite/menu/wallet-index').click();
 
         // in the Send form, fill in a btc address
-        cy.get('[data-test="@wallet/menu/wallet-send"]').click();
-        cy.get('[data-test="outputs[0].address"]').should('be.visible').type(testData.btcAddress);
+        cy.get('[data-testid="@wallet/menu/wallet-send"]').click();
+        cy.get('[data-testid="outputs[0].address"]').should('be.visible').type(testData.btcAddress);
         cy.wait(500); // wait has to be for a state save to happen
-        cy.get('[data-test="@wallet/menu/close-button"]').last().click();
+        cy.get('[data-testid="@wallet/menu/close-button"]').last().click();
 
         // check and store address of first btc tx
-        cy.get('[data-test^="@metadata/outputLabel"] > span').should('be.visible');
-        cy.get('[data-test^="@metadata/outputLabel"] > span')
+        cy.get('[data-testid^="@metadata/outputLabel"] > span').should('be.visible');
+        cy.get('[data-testid^="@metadata/outputLabel"] > span')
             .first()
             .invoke('text')
             .as('firstTxLabel');
         // remember the wallet
-        cy.get('[data-test="@menu/switch-device"]').click();
-        cy.contains('[data-test^="@switch-device/wallet-on-index"]', 'Hidden wallet #1')
-            .find('[data-test*="toggle-remember-switch"]')
+        cy.get('[data-testid="@menu/switch-device"]').click();
+        cy.contains('[data-testid^="@switch-device/wallet-on-index"]', 'Hidden wallet #1')
+            .find('[data-testid*="toggle-remember-switch"]')
             .click()
             .find('input')
             .should('be.checked');

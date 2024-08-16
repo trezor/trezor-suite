@@ -139,14 +139,14 @@ const NewModal = ({
                         $elevation={MODAL_ELEVATION}
                         $size={size}
                         onClick={e => e.stopPropagation()}
-                        data-test={dataTest}
+                        data-testid={dataTest}
                     >
                         <Header>
                             {onBackClick && (
                                 <IconButton
                                     variant="tertiary"
                                     icon="ARROW_LEFT"
-                                    data-test="@modal/back-button"
+                                    data-testid="@modal/back-button"
                                     onClick={onBackClick}
                                     size="small"
                                 />
@@ -165,7 +165,7 @@ const NewModal = ({
                                 <IconButton
                                     variant="tertiary"
                                     icon="CROSS"
-                                    data-test="@modal/close-button"
+                                    data-testid="@modal/close-button"
                                     onClick={onCancel}
                                     size="small"
                                 />
