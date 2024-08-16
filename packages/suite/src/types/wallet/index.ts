@@ -19,11 +19,12 @@ import { FormDraftAction } from 'src/actions/wallet/formDraftActions';
 import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
 import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
-import { NETWORKS } from 'src/config/wallet';
 import { CoinmarketInfoAction } from 'src/actions/wallet/coinmarketInfoActions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
+import { networksCompatibility } from '@suite-common/wallet-config';
 
-export type Network = ArrayElement<typeof NETWORKS>;
+// TODO: why?
+export type Network = ArrayElement<typeof networksCompatibility>;
 export type NetworkSymbol = Network['symbol'];
 // reexport
 export type { Icon } from './iconTypes';

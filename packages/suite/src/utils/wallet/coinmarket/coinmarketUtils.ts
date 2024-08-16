@@ -1,5 +1,4 @@
 import { Account, Network } from 'src/types/wallet';
-import { NETWORKS } from 'src/config/wallet';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
@@ -12,7 +11,7 @@ import {
     networkToCryptoSymbol,
     tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { getNetworkFeatures } from '@suite-common/wallet-config';
+import { getNetworkFeatures, networksCompatibility } from '@suite-common/wallet-config';
 import {
     DefinitionType,
     TokenDefinitions,
@@ -196,11 +195,11 @@ export const getComposeAddressPlaceholder = async (
             // use legacy (the most expensive) address for fee calculation
             // as we do not know what address type the exchange will use
             const legacy =
-                NETWORKS.find(
+                networksCompatibility.find(
                     network =>
                         network.symbol === account.symbol && network.accountType === 'legacy',
                 ) ||
-                NETWORKS.find(
+                networksCompatibility.find(
                     network =>
                         network.symbol === account.symbol && network.accountType === 'segwit',
                 ) ||

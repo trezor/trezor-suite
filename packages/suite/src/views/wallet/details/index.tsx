@@ -13,12 +13,12 @@ import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/compone
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL } from '@trezor/urls';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { WalletLayout } from 'src/components/wallet';
-import { NETWORKS } from 'src/config/wallet';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
 import { Row } from './Row';
+import { networksCompatibility } from '@suite-common/wallet-config';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
@@ -82,7 +82,7 @@ const Details = () => {
     // check if all network types
     const accountTypes =
         account.networkType === 'bitcoin'
-            ? NETWORKS.filter(n => n.symbol === account.symbol)
+            ? networksCompatibility.filter(n => n.symbol === account.symbol)
             : undefined;
     // display type name only if there is more than 1 network type
     const accountTypeName =

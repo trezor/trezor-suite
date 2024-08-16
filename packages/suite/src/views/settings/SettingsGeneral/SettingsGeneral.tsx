@@ -9,7 +9,6 @@ import {
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
-import { NETWORKS } from 'src/config/wallet';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 
 import { Language } from './Language';
@@ -30,6 +29,7 @@ import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { AddressDisplay } from './AddressDisplay';
 import { EnableViewOnly } from './EnableViewOnly';
 import { Experimental } from './Experimental';
+import { networksCompatibility } from '@suite-common/wallet-config';
 import { TorSnowflake } from './TorSnowflake';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
 
@@ -47,7 +47,7 @@ export const SettingsGeneral = () => {
         selectHasExperimentalFeature(ExperimentalFeature.TorSnowflake),
     );
 
-    const hasBitcoinNetworks = NETWORKS.some(
+    const hasBitcoinNetworks = networksCompatibility.some(
         ({ symbol, features }) =>
             enabledNetworks.includes(symbol) && features?.includes('amount-unit'),
     );
