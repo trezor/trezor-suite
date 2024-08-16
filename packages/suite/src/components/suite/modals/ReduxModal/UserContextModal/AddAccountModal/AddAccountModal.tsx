@@ -7,7 +7,7 @@ import {
     selectDeviceModel,
 } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
-import { networksCompatibility, type NetworkSymbol } from '@suite-common/wallet-config';
+import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, CollapsibleBox } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
