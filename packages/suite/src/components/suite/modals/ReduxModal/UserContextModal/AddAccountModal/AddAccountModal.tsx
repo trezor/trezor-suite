@@ -7,12 +7,11 @@ import {
     selectDeviceModel,
 } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networksCompatibility, type NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, CollapsibleBox } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation, Modal, CoinList, TooltipSymbol } from 'src/components/suite';
-import { NETWORKS } from 'src/config/wallet';
 import { Account, Network } from 'src/types/wallet';
 import { TrezorDevice } from 'src/types/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
@@ -72,7 +71,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
     const networkPinned = !!symbol;
     const preselectedNetwork = symbol && supportedNetworks.find(n => n.symbol === symbol);
     // or in case of only btc is enabled on bitcoin-only firmware
-    const bitcoinNetwork = NETWORKS.find(n => n.symbol === 'btc');
+    const bitcoinNetwork = networksCompatibility.find(n => n.symbol === 'btc');
     const bitcoinOnlyDefaultNetworkSelection =
         device.firmwareType === FirmwareType.BitcoinOnly &&
         supportedMainnets.length === 1 &&
@@ -110,7 +109,8 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
 
     // Collect possible accountTypes
     const accountTypes = isSelectedNetworkEnabled
-        ? NETWORKS.filter(n => n.symbol === selectedNetwork.symbol)
+        ? networksCompatibility
+              .filter(n => n.symbol === selectedNetwork.symbol)
               /**
                * Filter out coinjoin account type if it is not visible.
                * Visibility of coinjoin account type depends on coinjoin feature config in message system.
@@ -127,7 +127,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
 
     const selectNetwork = (symbol?: Network['symbol']) => {
         if (symbol) {
-            const networkToSelect = NETWORKS.find(n => n.symbol === symbol);
+            const networkToSelect = networksCompatibility.find(n => n.symbol === symbol);
 
             // To prevent account type selection reset
             const alreadySelected =

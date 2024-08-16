@@ -1,5 +1,5 @@
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-import { networksCompatibility as NETWORKS, NetworkSymbol } from '@suite-common/wallet-config';
+import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FormatterConfig } from '../types';
 import { makeFormatter } from '../makeFormatter';
@@ -13,7 +13,7 @@ export const prepareNetworkSymbolFormatter = (config: FormatterConfig) =>
             const { areAmountUnitsEnabled = true } = dataContext;
 
             const { features: networkFeatures, testnet: isTestnet } =
-                NETWORKS.find(network => network.symbol === symbol) ?? {};
+                networksCompatibility.find(network => network.symbol === symbol) ?? {};
             const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
             let formattedSymbol = symbol.toUpperCase();
 

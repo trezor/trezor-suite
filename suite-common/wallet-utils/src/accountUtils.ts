@@ -11,7 +11,7 @@ import {
 } from '@trezor/connect';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
-    networksCompatibility as NETWORKS,
+    networksCompatibility,
     Network,
     NetworkFeature,
     NetworkSymbol,
@@ -273,7 +273,7 @@ export const getAccountTypeUrl = (path: string) => {
 };
 
 export const getAccountDecimals = (symbol: NetworkSymbol) => {
-    const network = NETWORKS.find(n => n.symbol === symbol);
+    const network = networksCompatibility.find(n => n.symbol === symbol);
 
     return network?.decimals;
 };
@@ -367,12 +367,12 @@ export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {
 
 export const sortByCoin = (accounts: Account[]) =>
     accounts.sort((a, b) => {
-        const aIndex = NETWORKS.findIndex(n => {
+        const aIndex = networksCompatibility.findIndex(n => {
             const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
 
             return accountType === a.accountType && n.symbol === a.symbol;
         });
-        const bIndex = NETWORKS.findIndex(n => {
+        const bIndex = networksCompatibility.findIndex(n => {
             const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
 
             return accountType === b.accountType && n.symbol === b.symbol;
@@ -418,13 +418,15 @@ export const getAllAccounts = (deviceState: string | typeof undefined, accounts:
 };
 
 export const getNetwork = (symbol: string): Network | null =>
-    NETWORKS.find(c => c.symbol === symbol) || null;
+    networksCompatibility.find(c => c.symbol === symbol) || null;
 
 export const getAccountNetwork = ({
     symbol,
     accountType,
 }: Pick<Account, 'symbol' | 'accountType'>) =>
-    NETWORKS.find(n => n.symbol === symbol && (n.accountType || 'normal') === accountType);
+    networksCompatibility.find(
+        n => n.symbol === symbol && (n.accountType || 'normal') === accountType,
+    );
 
 /**
  * Returns a string used as an index to separate txs for given account inside a transactions reducer
@@ -647,7 +649,7 @@ export const getTotalFiatBalance = (
 };
 
 export const isTestnet = (symbol: NetworkSymbol) => {
-    const net = NETWORKS.find(n => n.symbol === symbol);
+    const net = networksCompatibility.find(n => n.symbol === symbol);
 
     return net?.testnet ?? false;
 };
@@ -986,7 +988,7 @@ export const getNetworkFeatures = ({
     symbol,
     accountType,
 }: Pick<Account, 'networkType' | 'symbol' | 'accountType'>) =>
-    NETWORKS.find(
+    networksCompatibility.find(
         network =>
             network.networkType === networkType &&
             network.symbol === symbol &&

@@ -4,7 +4,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Icon, Button, LoadingContent, Card } from '@trezor/components';
 import { selectCurrentFiatRates, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
-import { NETWORKS } from 'src/config/wallet';
 import { DashboardSection } from 'src/components/dashboard';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
@@ -20,7 +19,7 @@ import { AssetFiatBalance } from '@suite-common/assets';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { AssetTable, AssetTableRowType } from './components/AssetTable';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -112,7 +111,7 @@ export const AssetsView = () => {
 
     const assetsData: AssetTableRowType[] = networks
         .map(symbol => {
-            const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
+            const network = networksCompatibility.find(n => n.symbol === symbol && !n.accountType);
             if (!network) {
                 console.error('unknown network');
 

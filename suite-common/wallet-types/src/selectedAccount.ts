@@ -44,7 +44,7 @@ export type SelectedAccountException =
           loader:
               | 'account-not-loaded' // Account discovery failed
               | 'account-not-enabled' // Requested account network is not enabled in settings
-              | 'account-not-exists'; // Requested account network is not listed in NETWORKS
+              | 'account-not-exists'; // Requested account network is not listed in networksCompatibility
           account?: undefined;
           network: Network;
           discovery: Discovery;
