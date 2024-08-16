@@ -21,6 +21,7 @@ import {
     ExchangeTradeStatus,
     FiatCurrencyCode,
     SavingsTradeItemStatus,
+    SellCryptoPaymentMethod,
     SellFiatTrade,
     SellProviderInfo,
     SellTradeStatus,
@@ -229,10 +230,9 @@ export interface CoinmarketGetAmountLabelsProps {
     amountInCrypto: boolean;
 }
 
-type CoinmarketPayGetLabelType = Extract<
-    ExtendedMessageDescriptor['id'],
-    `TR_COINMARKET_YOU_${'PAY' | 'GET'}`
->;
+export type CoinmarketPayGetLabelType =
+    | Extract<ExtendedMessageDescriptor['id'], `TR_COINMARKET_YOU_${'PAY' | 'GET' | 'RECEIVE'}`>
+    | 'TR_COINMARKET_EXCHANGE';
 
 export interface CoinmarketGetAmountLabelsReturnProps {
     label1: CoinmarketPayGetLabelType;
@@ -241,6 +241,8 @@ export interface CoinmarketGetAmountLabelsReturnProps {
         ExtendedMessageDescriptor['id'],
         `TR_COINMARKET_YOU_WILL_${'PAY' | 'GET'}`
     >;
+    sendLabel: CoinmarketPayGetLabelType;
+    receiveLabel: CoinmarketPayGetLabelType;
 }
 
 export type CoinmarketGetProvidersInfoProps =
@@ -257,7 +259,12 @@ export interface CoinmarketGetFiatCurrenciesProps {
 export interface CoinmarketGetCryptoQuoteAmountProps {
     amountInCrypto: boolean | undefined;
     sendAmount: string;
-    sendCurrency: string | undefined;
+    sendCurrency: CryptoSymbol | string | undefined;
     receiveAmount: string;
     receiveCurrency: CryptoSymbol | undefined;
+}
+
+export interface CoinmarketGetPaymentMethodProps {
+    paymentMethod?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
+    paymentMethodName?: string;
 }

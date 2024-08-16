@@ -7,6 +7,7 @@ import {
 import {
     CoinmarketGetCryptoQuoteAmountProps,
     CoinmarketGetFiatCurrenciesProps,
+    CoinmarketGetPaymentMethodProps,
     CoinmarketGetProvidersInfoProps,
     CoinmarketTradeDetailMapProps,
     CoinmarketTradeDetailType,
@@ -117,4 +118,18 @@ export const getSelectedCrypto = (context: CoinmarketFormContextValues<Coinmarke
     }
 
     return context.getValues().cryptoSelect;
+};
+
+export const getPaymentMethod = (
+    selectedQuote: SellFiatTrade | ExchangeTrade | BuyTrade,
+    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+): CoinmarketGetPaymentMethodProps => {
+    if (isCoinmarketExchangeOffers(context)) return {};
+
+    const selectedQuoteTyped = selectedQuote as SellFiatTrade | BuyTrade;
+
+    return {
+        paymentMethod: selectedQuoteTyped.paymentMethod,
+        paymentMethodName: selectedQuoteTyped.paymentMethodName,
+    };
 };

@@ -1614,6 +1614,10 @@ export default defineMessages({
         defaultMessage: 'You get',
         id: 'TR_COINMARKET_YOU_GET',
     },
+    TR_COINMARKET_YOU_RECEIVE: {
+        defaultMessage: 'You receive',
+        id: 'TR_COINMARKET_YOU_RECEIVE',
+    },
     TR_COINMARKET_COUNTRY: {
         defaultMessage: 'Country of residence',
         id: 'TR_COINMARKET_COUNTRY',

@@ -186,3 +186,22 @@ export const CoinmarketAmountWrapperText = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
 `;
+
+export const CoinmarketInfoLeftColumn = styled.div`
+    display: flex;
+    flex: 1;
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
+`;
+
+export const CoinmarketInfoRightColumn = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    flex: 1;
+    ${typography.body}
+    color: ${({ theme }) => theme.textDefault};
+`;
+
+export const CoinmarketInfoAmount = styled.div`
+    padding-left: ${spacingsPx.xs};
+`;

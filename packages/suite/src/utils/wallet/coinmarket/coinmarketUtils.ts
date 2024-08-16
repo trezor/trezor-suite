@@ -511,12 +511,16 @@ export const coinmarketGetAmountLabels = ({
     const youPay = 'TR_COINMARKET_YOU_PAY';
     const youWillGet = 'TR_COINMARKET_YOU_WILL_GET';
     const youWillPay = 'TR_COINMARKET_YOU_WILL_PAY';
+    const youReceive = 'TR_COINMARKET_YOU_RECEIVE';
+    const exchange = 'TR_COINMARKET_EXCHANGE';
 
     if (type === 'exchange') {
         return {
             label1: youPay,
             label2: youGet,
             labelComparatorOffer: youWillGet,
+            sendLabel: exchange,
+            receiveLabel: youReceive,
         };
     }
 
@@ -525,6 +529,8 @@ export const coinmarketGetAmountLabels = ({
             label1: amountInCrypto ? youPay : youGet,
             label2: amountInCrypto ? youGet : youPay,
             labelComparatorOffer: amountInCrypto ? youWillGet : youWillPay,
+            sendLabel: youGet,
+            receiveLabel: youPay,
         };
     }
 
@@ -532,6 +538,8 @@ export const coinmarketGetAmountLabels = ({
         label1: amountInCrypto ? youGet : youPay,
         label2: amountInCrypto ? youPay : youGet,
         labelComparatorOffer: amountInCrypto ? youWillPay : youWillGet,
+        sendLabel: youPay,
+        receiveLabel: youGet,
     };
 };
 

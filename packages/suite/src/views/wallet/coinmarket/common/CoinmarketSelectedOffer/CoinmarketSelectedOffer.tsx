@@ -6,6 +6,7 @@ import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
 import {
     getCryptoQuoteAmountProps,
+    getPaymentMethod,
     getProvidersInfoProps,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import {
@@ -38,18 +39,23 @@ export const CoinmarketSelectedOffer = () => {
     if (!selectedQuote) return null;
 
     const quoteAmounts = getCryptoQuoteAmountProps(selectedQuote, context);
+    const paymentMethod = getPaymentMethod(selectedQuote, context);
 
     return (
         <Wrapper>
-            {isCoinmarketBuyOffers(context) ||
-                (isCoinmarketExchangeOffers(context) && (
-                    <StyledCard>
-                        <CoinmarketVerify />
-                    </StyledCard>
-                ))}
+            {isCoinmarketBuyOffers(context) && (
+                <StyledCard>
+                    <CoinmarketVerify />
+                </StyledCard>
+            )}
             {isCoinmarketSellOffers(context) && (
                 <StyledCard>
                     <CoinmarketSelectedOfferSell />
+                </StyledCard>
+            )}
+            {isCoinmarketExchangeOffers(context) && (
+                <StyledCard>
+                    <CoinmarketVerify />
                 </StyledCard>
             )}
             <CoinmarketSelectedOfferInfo
@@ -57,6 +63,7 @@ export const CoinmarketSelectedOffer = () => {
                 providers={providers}
                 quoteAmounts={quoteAmounts}
                 type={context.type}
+                {...paymentMethod}
             />
         </Wrapper>
     );
