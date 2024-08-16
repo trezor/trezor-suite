@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { CryptoIcon } from '@suite-common/icons';
@@ -96,14 +96,20 @@ export const NetworkSymbolSwitchItem = ({
     };
 
     return (
-        <Card style={applyStyle(wrapperStyle, { isEnabled })}>
-            <View style={applyStyle(iconWrapperStyle)}>
-                <CryptoIcon symbol={networkSymbol} />
-            </View>
-            <HStack justifyContent="space-between" spacing={12} flex={1} alignItems="center">
-                <Text variant="callout">{name}</Text>
-                <Switch onChange={handleEnabledChange} isChecked={isEnabled} />
-            </HStack>
-        </Card>
+        <TouchableOpacity
+            onPress={_ => handleEnabledChange(!isEnabled)}
+            accessibilityRole="togglebutton"
+            activeOpacity={0.6}
+        >
+            <Card style={applyStyle(wrapperStyle, { isEnabled })}>
+                <View style={applyStyle(iconWrapperStyle)}>
+                    <CryptoIcon symbol={networkSymbol} />
+                </View>
+                <HStack justifyContent="space-between" spacing={12} flex={1} alignItems="center">
+                    <Text variant="callout">{name}</Text>
+                    <Switch onChange={handleEnabledChange} isChecked={isEnabled} />
+                </HStack>
+            </Card>
+        </TouchableOpacity>
     );
 };
