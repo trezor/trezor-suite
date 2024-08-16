@@ -97,7 +97,7 @@ const runTests = async () => {
         // concurrent enumeration triggered couple of lines below works correctly
         await sharedTest('concurrent enumerate - as the first operation', () =>
             // todo: 3 doesn't work in node!!! FIX
-            concurrentEnumerate(typeof window === 'undefined' ? 3 : 1),
+            concurrentEnumerate(typeof window !== 'undefined' ? 3 : 1),
         );
         await getConnectedDevicePath();
 
