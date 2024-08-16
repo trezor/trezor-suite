@@ -9,7 +9,6 @@ import {
     COINMARKET_SELL,
 } from 'src/actions/wallet/constants';
 import {
-    BuyTrade,
     BuyTradeQuoteRequest,
     CryptoSymbolInfo,
     ExchangeTradeQuoteRequest,
@@ -17,6 +16,12 @@ import {
 } from 'invity-api';
 import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
+import {
+    buyQuotes,
+    exchangeQuotes,
+    sellQuotes,
+} from 'src/reducers/wallet/__fixtures__/coinmarketReducerFixtures';
+import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 
 describe('settings reducer', () => {
     it('test initial state', () => {
@@ -139,44 +144,38 @@ describe('settings reducer', () => {
     });
 
     it('COINMARKET_BUY.SAVE_QUOTES', () => {
-        const quotes: BuyTrade[] = [
-            {
-                fiatStringAmount: '47.12',
-                fiatCurrency: 'EUR',
-                receiveCurrency: 'BTC',
-                receiveStringAmount: '0.004705020432603938',
-                rate: 10014.834297738,
-                quoteId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
-                exchange: 'mercuryo',
-                minFiat: 20.03,
-                maxFiat: 2000.05,
-                minCrypto: 0.002,
-                maxCrypto: 0.19952,
-                paymentMethod: 'creditCard',
-            },
-            {
-                fiatStringAmount: '47.12',
-                fiatCurrency: 'EUR',
-                receiveCurrency: 'BTC',
-                receiveStringAmount: '0.0041',
-                rate: 11492.682926829268,
-                quoteId: '53233267-8181-4151-9a67-9d8efc9a15db',
-                exchange: 'cexdirect',
-                minFiat: 25,
-                maxFiat: 1000,
-                minCrypto: 0.002,
-                maxCrypto: 0.1055,
-                paymentMethod: 'creditCard',
-            },
-        ];
         expect(
             reducer(undefined, {
                 type: COINMARKET_BUY.SAVE_QUOTES,
-                quotes,
+                quotes: buyQuotes,
             }),
         ).toEqual({
             ...initialState,
-            buy: { ...initialState.buy, quotes },
+            buy: { ...initialState.buy, quotes: buyQuotes },
+        });
+    });
+
+    it('COINMARKET_SELL.SELL_QUOTES', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_SELL.SAVE_QUOTES,
+                quotes: sellQuotes,
+            }),
+        ).toEqual({
+            ...initialState,
+            sell: { ...initialState.sell, quotes: sellQuotes },
+        });
+    });
+
+    it('COINMARKET_EXCHANGE.EXCHANGE_QUOTES', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_EXCHANGE.SAVE_QUOTES,
+                quotes: exchangeQuotes,
+            }),
+        ).toEqual({
+            ...initialState,
+            exchange: { ...initialState.exchange, quotes: exchangeQuotes },
         });
     });
 
@@ -407,6 +406,81 @@ describe('settings reducer', () => {
         ).toEqual({
             ...initialState,
             sell: { ...initialState.sell, quotes: undefined },
+        });
+    });
+
+    it('COINMARKET_BUY.SAVE_QUOTE', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_BUY.SAVE_QUOTE,
+                quote: buyQuotes[0],
+            }),
+        ).toEqual({
+            ...initialState,
+            buy: {
+                ...initialState.buy,
+                selectedQuote: buyQuotes[0],
+            },
+        });
+    });
+
+    it('COINMARKET_SELL.SAVE_QUOTE', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_SELL.SAVE_QUOTE,
+                quote: sellQuotes[0],
+            }),
+        ).toEqual({
+            ...initialState,
+            sell: {
+                ...initialState.sell,
+                selectedQuote: sellQuotes[0],
+            },
+        });
+    });
+
+    it('COINMARKET_EXCHANGE.SAVE_QUOTE', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_EXCHANGE.SAVE_QUOTE,
+                quote: exchangeQuotes[0],
+            }),
+        ).toEqual({
+            ...initialState,
+            exchange: {
+                ...initialState.exchange,
+                selectedQuote: exchangeQuotes[0],
+            },
+        });
+    });
+
+    it('COINMARKET_SELL.SET_COINMARKET_ACCOUNT', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_SELL.SET_COINMARKET_ACCOUNT,
+                account: accounts[0],
+            }),
+        ).toEqual({
+            ...initialState,
+            sell: {
+                ...initialState.sell,
+                coinmarketAccount: accounts[0],
+            },
+        });
+    });
+
+    it('COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT,
+                account: accounts[0],
+            }),
+        ).toEqual({
+            ...initialState,
+            exchange: {
+                ...initialState.exchange,
+                coinmarketAccount: accounts[0],
+            },
         });
     });
 });
