@@ -869,9 +869,9 @@ export default defineMessages({
         id: 'TR_SELL_REGISTER',
         defaultMessage: 'Register',
     },
-    TR_SELL_PROVIDER: {
+    TR_COINMARKET_PROVIDER: {
         defaultMessage: 'provider',
-        id: 'TR_SELL_PROVIDER',
+        id: 'TR_COINMARKET_PROVIDER',
     },
     TR_SELL_FEES: {
         defaultMessage: 'Fees',
