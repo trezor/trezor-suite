@@ -708,7 +708,7 @@ export const useCoinmarketExchangeForm = ({
     }, [accounts, device, exchangeStep, isDebug, receiveNetwork, selectedQuote]);
 
     useEffect(() => {
-        if (!quotesRequest && !isNotFormPage) {
+        if (!quotesRequest && isNotFormPage) {
             navigateToExchangeForm();
 
             return;
