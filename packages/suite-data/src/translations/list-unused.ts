@@ -67,8 +67,10 @@ for (const message in messages) {
 }
 
 if (unused.length) {
-    console.log('there are unused messages!');
-    console.log(unused);
+    console.log('there are unused messages:');
+    for (const message of unused) {
+        console.log(message);
+    }
 
     if (process.argv.includes('--cleanup')) {
         console.log('cleaning up...');
