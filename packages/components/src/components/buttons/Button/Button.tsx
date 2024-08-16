@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 import { Icon, IconType } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
@@ -9,11 +9,10 @@ import {
     getIconColor,
     getIconSize,
     getPadding,
-    getVariantStyle,
     IconAlignment,
+    useVariantStyle,
 } from '../buttonStyleUtils';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
-import { useElevation } from '../../ElevationContext/ElevationContext';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
 
@@ -26,7 +25,7 @@ type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
     $iconAlignment?: IconAlignment;
     $hasIcon?: boolean;
     $isFullWidth?: boolean;
-    $elevation: Elevation;
+    $isSubtle: boolean;
 };
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
@@ -46,10 +45,10 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     border: 1px solid transparent;
 
     ${getFocusShadowStyle()}
-    ${({ $variant, $elevation }) => getVariantStyle($variant, $elevation)}
+    ${({ $variant, $isSubtle }) => useVariantStyle($variant, $isSubtle)}
 
     &:disabled {
-        background: ${({ theme }) => theme.BG_GREY};
+        background: ${({ theme }) => theme.backgroundNeutralDisabled};
         color: ${({ theme }) => theme.textDisabled};
         cursor: not-allowed;
     }
@@ -89,6 +88,7 @@ type SelectedHTMLButtonProps = Pick<
 export type ButtonProps = SelectedHTMLButtonProps &
     AllowedFrameProps & {
         variant?: ButtonVariant;
+        isSubtle?: boolean;
         size?: ButtonSize;
         isDisabled?: boolean;
         isLoading?: boolean;
@@ -108,6 +108,7 @@ export const Button = ({
     isDisabled = false,
     isLoading = false,
     isFullWidth = false,
+    isSubtle = false,
     icon,
     iconSize,
     iconAlignment = 'left',
@@ -121,13 +122,12 @@ export const Button = ({
     };
 
     const theme = useTheme();
-    const { elevation } = useElevation();
 
     const IconComponent = icon ? (
         <Icon
             icon={icon}
             size={iconSize || getIconSize(size)}
-            color={getIconColor(variant, isDisabled, theme)}
+            color={getIconColor({ variant, isDisabled, theme, isSubtle })}
         />
     ) : null;
 
@@ -142,9 +142,9 @@ export const Button = ({
             $iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
             $isFullWidth={isFullWidth}
+            $isSubtle={isSubtle}
             type={type}
             $hasIcon={!!icon || isLoading}
-            $elevation={elevation}
             {...rest}
             onClick={isDisabled ? undefined : rest?.onClick}
             {...makePropsTransient(frameProps)}

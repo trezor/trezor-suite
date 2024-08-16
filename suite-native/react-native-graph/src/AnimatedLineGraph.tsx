@@ -43,11 +43,11 @@ import {
 import { getSixDigitHex } from './utils/getSixDigitHex';
 import { usePanGesture } from './hooks/usePanGesture';
 import { getYForX } from './GetYForX';
-import { hexToRgba } from './utils/hexToRgba';
 import { DefaultGraphEvent } from './DefaultGraphEvent';
 import { useEventTooltipProps } from './hooks/useEventTooltipProps';
 import { LoadingLine } from './LoadingLine';
 import { BlurOverlay } from './BlurOverlay';
+import { hexToRgba } from '@suite-common/suite-utils';
 
 const INDICATOR_RADIUS = 7;
 const INDICATOR_BORDER_MULTIPLIER = 1.3;

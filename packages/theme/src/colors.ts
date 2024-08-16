@@ -318,7 +318,7 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
         textDefault: palette.darkGray1000,
         textDefaultInverted: palette.darkGray000,
         textDisabled: palette.darkGray600,
-        textOnBlue: palette.darkAccentBlue800,
+        textOnBlue: palette.darkGray1000,
         textOnPrimary: palette.darkGray000,
         textOnRed: palette.darkGray1000,
         textOnSecondary: palette.darkGray000,

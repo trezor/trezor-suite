@@ -1,42 +1,18 @@
-import { css } from 'styled-components';
+import { css, useTheme } from 'styled-components';
 
-import { Color, Colors, Elevation, spacings, spacingsPx } from '@trezor/theme';
-import { capitalizeFirstLetter } from '@trezor/utils';
+import { Colors, spacings, spacingsPx } from '@trezor/theme';
 import type { UIHorizontalAlignment, UISize, UIVariant } from '../../config/types';
+import { hexToRgba } from '@suite-common/suite-utils';
+
+const SUBTLE_ALPHA = 0.12;
+const SUBTLE_ALPHA_HOVER = 0.2;
 
 export type ButtonVariant = Extract<
     UIVariant,
     'primary' | 'secondary' | 'tertiary' | 'info' | 'warning' | 'destructive'
 >;
 export type ButtonSize = Extract<UISize, 'large' | 'medium' | 'small' | 'tiny'>;
-export type ButtonState = 'normal' | 'hover';
 export type IconAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
-
-const mapElevationToButtonBackground = ({
-    elevation,
-    variant,
-    state,
-}: {
-    elevation: Elevation;
-    variant: Extract<ButtonVariant, 'destructive' | 'tertiary' | 'info' | 'warning'>;
-    state: ButtonState;
-}) => {
-    const capitalizedVariant = capitalizeFirstLetter(variant);
-    const capitalizedState = capitalizeFirstLetter(state);
-
-    const map: Record<Elevation, Color> = {
-        '-1': `interactionBackground${capitalizedVariant}DefaultHoverOnElevation3`, // For example left menu is negative elevation
-
-        // Button lies always on elevation so for example Button that lies has elevation 0, lies on elevation -1.
-        // This is why the values here a shifted by 1.
-        0: `interactionBackground${capitalizedVariant}Default${capitalizedState}OnElevationNegative`,
-        1: `interactionBackground${capitalizedVariant}Default${capitalizedState}OnElevation0`,
-        2: `interactionBackground${capitalizedVariant}Default${capitalizedState}OnElevation1`,
-        3: `interactionBackground${capitalizedVariant}Default${capitalizedState}OnElevation2`,
-    };
-
-    return ({ theme }: { theme: Colors }) => theme[map[elevation]];
-};
 
 export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
     const map: Record<ButtonSize, string> = {
@@ -49,7 +25,17 @@ export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
     return map[size];
 };
 
-export const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme: Colors) => {
+export const getIconColor = ({
+    variant,
+    isDisabled,
+    theme,
+    isSubtle,
+}: {
+    variant: ButtonVariant;
+    isDisabled: boolean;
+    theme: Colors;
+    isSubtle: boolean;
+}) => {
     if (isDisabled) {
         return theme.iconDisabled;
     }
@@ -62,11 +48,11 @@ export const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme:
         case 'tertiary':
             return theme.iconOnTertiary;
         case 'info':
-            return theme.iconAlertBlue;
+            return isSubtle ? theme.iconAlertBlue : theme.iconOnBlue;
         case 'warning':
-            return theme.iconAlertYellow;
+            return isSubtle ? theme.iconAlertYellow : theme.iconOnYellow;
         case 'destructive':
-            return theme.iconAlertRed;
+            return isSubtle ? theme.iconAlertRed : theme.iconOnRed;
         // no default
     }
 };
@@ -87,91 +73,72 @@ export const getIconSize = (size: ButtonSize) => {
     }
 };
 
-export const getVariantStyle = (
+export const useVariantStyle = (
     variant: ButtonVariant,
-    elevation: Elevation,
+    isSubtle: boolean,
 ): ReturnType<typeof css> => {
-    switch (variant) {
-        case 'primary':
-            return css`
-                background: ${({ theme }) => theme.backgroundPrimaryDefault};
-                color: ${({ theme }) => theme.textOnPrimary};
+    const theme = useTheme();
 
-                &:hover,
-                &:active {
-                    /* we use this color only for this case  */
-                    background: ${({ theme }) => theme.backgroundPrimaryPressed};
-                }
-            `;
+    const variantsColors: Record<ButtonVariant, Record<string, string | Colors>> = {
+        primary: {
+            background: theme.backgroundPrimaryDefault,
+            backgroundHover: theme.backgroundPrimaryPressed,
+            text: theme.textOnPrimary,
+        },
+        secondary: {
+            background: theme.backgroundSecondaryDefault,
+            backgroundHover: theme.backgroundSecondaryPressed,
+            text: theme.textOnSecondary,
+        },
+        tertiary: {
+            background: theme.backgroundTertiaryDefaultOnElevation0,
+            backgroundHover: theme.backgroundTertiaryPressedOnElevation0,
+            text: theme.textOnTertiary,
+        },
+        info: {
+            background: theme.backgroundAlertBlueBold,
+            backgroundSubtle: hexToRgba(theme.backgroundAlertBlueBold, SUBTLE_ALPHA),
+            backgroundHover: theme.backgroundAlertBlueBoldAlt,
+            backgroundSubtleHover: hexToRgba(theme.backgroundAlertBlueBoldAlt, SUBTLE_ALPHA_HOVER),
+            text: theme.textOnBlue,
+            textSubtle: theme.textAlertBlue,
+        },
+        warning: {
+            background: theme.backgroundAlertYellowBold,
+            backgroundSubtle: hexToRgba(theme.backgroundAlertYellowBold, SUBTLE_ALPHA),
+            backgroundHover: theme.backgroundAlertYellowBoldAlt,
+            backgroundSubtleHover: hexToRgba(
+                theme.backgroundAlertYellowBoldAlt,
+                SUBTLE_ALPHA_HOVER,
+            ),
+            text: theme.textOnYellow,
+            textSubtle: theme.textAlertYellow,
+        },
+        destructive: {
+            background: theme.backgroundAlertRedBold,
+            backgroundSubtle: hexToRgba(theme.backgroundAlertRedBold, SUBTLE_ALPHA),
+            backgroundHover: theme.backgroundAlertRedBoldAlt,
+            backgroundSubtleHover: hexToRgba(theme.backgroundAlertRedBoldAlt, SUBTLE_ALPHA_HOVER),
+            text: theme.textOnRed,
+            textSubtle: theme.textAlertRed,
+        },
+    };
 
-        case 'secondary':
-            return css`
-                background: ${({ theme }) => theme.backgroundSecondaryDefault};
-                color: ${({ theme }) => theme.textOnSecondary};
+    const colors = variantsColors[variant];
 
-                &:hover,
-                &:active {
-                    /* we use this color only for this case  */
-                    background: ${({ theme }) => theme.backgroundSecondaryPressed};
-                }
-            `;
-        case 'tertiary':
-            return css`
-                background: ${mapElevationToButtonBackground({
-                    elevation,
-                    variant,
-                    state: 'normal',
-                })};
-                color: ${({ theme }) => theme.textOnTertiary};
+    return css`
+        background: ${isSubtle && colors.backgroundSubtle
+            ? colors.backgroundSubtle
+            : colors.background};
+        color: ${isSubtle && colors.textSubtle ? colors.textSubtle : colors.text};
 
-                &:hover,
-                &:active {
-                    background: ${mapElevationToButtonBackground({
-                        elevation,
-                        variant,
-                        state: 'hover',
-                    })};
-                }
-            `;
-        case 'info':
-            return css`
-                background: ${mapElevationToButtonBackground({
-                    elevation,
-                    variant,
-                    state: 'normal',
-                })};
-                color: ${({ theme }) => theme.textAlertBlue};
-
-                &:hover,
-                &:active {
-                    background: ${mapElevationToButtonBackground({
-                        elevation,
-                        variant,
-                        state: 'hover',
-                    })};
-                }
-            `;
-        case 'warning':
-            return css`
-                background: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation0};
-                color: ${({ theme }) => theme.textAlertYellow};
-
-                &:hover,
-                &:active {
-                    background: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation1};
-                }
-            `;
-        case 'destructive':
-            return css`
-                background: ${({ theme }) => theme.backgroundAlertRedSubtleOnElevation0};
-                color: ${({ theme }) => theme.textAlertRed};
-
-                &:hover,
-                &:active {
-                    background: ${({ theme }) => theme.backgroundAlertRedSubtleOnElevation1};
-                }
-            `;
-
-        // no default
-    }
+        &:hover,
+        &:active {
+            background: ${isSubtle && colors.backgroundSubtleHover
+                ? colors.backgroundSubtleHover
+                : colors.backgroundHover};
+        }
+    `;
 };
+
+export const subtleButtonVariants = ['info', 'warning', 'destructive'] as const;

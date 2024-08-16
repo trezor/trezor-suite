@@ -7,3 +7,4 @@ export * from './comparison';
 export * from './txsPerPage';
 export * from './stake';
 export * from './parseFirmwareChangelog';
+export { hexToRgba } from './hexToRgba';

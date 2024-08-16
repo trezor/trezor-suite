@@ -2,11 +2,13 @@ import { Meta, StoryObj } from '@storybook/react';
 import { allowedButtonFrameProps, Button as ButtonComponent, ButtonProps } from './Button';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { variables } from '../../../config';
+import { subtleButtonVariants } from '../buttonStyleUtils';
 
-const meta: Meta = {
+const meta: Meta<ButtonProps> = {
     title: 'Buttons',
     component: ButtonComponent,
-} as Meta;
+};
+
 export default meta;
 
 export const Button: StoryObj<ButtonProps> = {
@@ -17,6 +19,7 @@ export const Button: StoryObj<ButtonProps> = {
         isDisabled: false,
         isLoading: false,
         isFullWidth: false,
+        isSubtle: false,
         iconAlignment: 'left',
         title: 'Button title',
         ...getFramePropsStory(allowedButtonFrameProps).args,
@@ -45,6 +48,12 @@ export const Button: StoryObj<ButtonProps> = {
             control: {
                 type: 'boolean',
             },
+        },
+        isSubtle: {
+            control: {
+                type: 'boolean',
+            },
+            description: `Available only for variants: <strong>${subtleButtonVariants.join(', ')}</strong>`,
         },
         isLoading: {
             control: {
@@ -80,5 +89,9 @@ export const Button: StoryObj<ButtonProps> = {
             control: { type: 'text' },
         },
         ...getFramePropsStory(allowedButtonFrameProps).argTypes,
+    },
+
+    parameters: {
+        controls: { expanded: true },
     },
 };

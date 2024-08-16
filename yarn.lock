@@ -10069,6 +10069,7 @@ __metadata:
   resolution: "@suite-native/react-native-graph@workspace:suite-native/react-native-graph"
   dependencies:
     "@shopify/react-native-skia": "npm:1.3.8"
+    "@suite-common/suite-utils": "workspace:*"
     "@types/react": "npm:18.2.79"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
@@ -10698,6 +10699,7 @@ __metadata:
     "@storybook/react-webpack5": "npm:^7.6.13"
     "@suite-common/icons": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/dom-utils": "workspace:*"

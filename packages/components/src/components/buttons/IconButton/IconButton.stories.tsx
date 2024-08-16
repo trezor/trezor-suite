@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { IconButton as IconButtonComponent, IconButtonProps } from './IconButton';
 import { variables } from '../../../config';
+import { subtleButtonVariants } from '../buttonStyleUtils';
 
 const meta: Meta = {
     title: 'Buttons',
@@ -16,6 +17,7 @@ export const IconButton: StoryObj<IconButtonProps> = {
         size: 'large',
         isDisabled: false,
         isLoading: false,
+        isSubtle: false,
     },
     argTypes: {
         label: {
@@ -56,6 +58,12 @@ export const IconButton: StoryObj<IconButtonProps> = {
             control: {
                 type: 'boolean',
             },
+        },
+        isSubtle: {
+            control: {
+                type: 'boolean',
+            },
+            description: `Available only for variants: <strong>${subtleButtonVariants.join(', ')}</strong>`,
         },
     },
 };
