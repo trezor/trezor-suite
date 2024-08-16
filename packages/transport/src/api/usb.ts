@@ -187,7 +187,7 @@ export class UsbApi extends AbstractApi {
                 `usb: device.transferIn done. status: ${res.status}, byteLength: ${res.data?.byteLength}. device: ${this.formatDeviceForLog(device)}`,
             );
 
-            if (!res.data) {
+            if (!res.data?.byteLength) {
                 return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER });
             }
 
