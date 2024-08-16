@@ -1,0 +1,17 @@
+{
+  "AMOUNT": "Сума",
+  "AMOUNT_IS_BELOW_DUST": "Сума павінна быць не менш за {dust}",
+  "AMOUNT_IS_NOT_ENOUGH": "Не хапае сродкаў",
+  "AMOUNT_IS_NOT_INTEGER": "Сума не з'яўляецца цэлым лікам",
+  "AMOUNT_IS_NOT_IN_RANGE_DECIMALS": "Максімальна дазволена {decimals} знакаў пасля коскі",
+  "AMOUNT_IS_NOT_SET": "Сума не ўстаноўлена",
+  "AMOUNT_IS_TOO_LOW": "Сума занадта малая",
+  "AMOUNT_NOT_ENOUGH_CURRENCY_FEE": "Недастаткова {symbol}, каб пакрыць камісію за трансакцыю",
+  "AMOUNT_SEND_MAX": "Адправіць усё",
+  "DATA_ETH": "Даныя",
+  "DATA_ETH_ADD": "Дадаць даныя",
+  "DATA_ETH_ADD_TOOLTIP": "Даныя для транзакцый Ethereum.",
+  "DATA_HEX_TOO_BIG": "Перавышаны ліміт даных",
+  "DATA_NOT_SET": "Даныя не ўстаноўлены",
+  "DATA_NOT_VALID_HEX": "Несапраўдны шаснаццатковы код"
+}
