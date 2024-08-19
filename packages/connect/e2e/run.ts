@@ -93,9 +93,12 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
         // eslint-disable-next-line no-console
         console.log('jest version: ', getJestVersion());
         // @ts-expect-error
-        const { results } = await runCLI(argv, [__dirname]);
+        const { results } = await runCLI(argv, [__dirname]).catch(err => {
+            console.error(err);
+            process.exit(1);
+        });
 
-        process.exit(results.numFailedTests);
+        process.exit(results.numFailedTestSuites);
     } else if (process.argv[2] === 'web') {
         const { parseConfig } = karma.config;
         const { Server } = karma;
