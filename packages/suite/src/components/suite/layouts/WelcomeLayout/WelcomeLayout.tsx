@@ -30,6 +30,10 @@ import { NavSettings } from './NavSettings';
 import { Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { TrafficLightOffset } from '../../TrafficLightOffset';
 
+const MessageContainer = styled.div`
+    margin: ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs};
+`;
+
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -203,20 +207,24 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
 
     return (
         <ElevationContext baseElevation={-1}>
-            <Wrapper>
-                {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
+            <TrafficLightOffset isVisible={Boolean(bannerMessage)}>
+                <Wrapper>
+                    <MessageContainer>
+                        {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
+                    </MessageContainer>
 
-                <Body data-testid="@welcome-layout/body">
-                    <ElevationDown>
-                        <Left />
-                    </ElevationDown>
+                    <Body data-testid="@welcome-layout/body">
+                        <ElevationDown>
+                            <Left />
+                        </ElevationDown>
 
-                    <Right>{children}</Right>
+                        <Right>{children}</Right>
 
-                    <GuideButton />
-                    <GuideRouter />
-                </Body>
-            </Wrapper>
+                        <GuideButton />
+                        <GuideRouter />
+                    </Body>
+                </Wrapper>
+            </TrafficLightOffset>
         </ElevationContext>
     );
 };

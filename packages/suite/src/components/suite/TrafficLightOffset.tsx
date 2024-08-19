@@ -5,6 +5,7 @@ import styled from 'styled-components';
 type Props = {
     children?: React.ReactNode;
     offset?: number;
+    isVisible?: boolean;
 };
 
 // See: https://github.com/electron/electron/issues/5678
@@ -24,9 +25,11 @@ const Container = styled.div<{ $hasTopPadding?: boolean; $offset: number }>`
 `;
 
 // on Mac in desktop app we don't use window bar and close/maximize/minimize icons are positioned directly in the app
-export const TrafficLightOffset = ({ children, offset = 35 }: Props) => {
+export const TrafficLightOffset = ({ children, offset = 35, isVisible = true }: Props) => {
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
+
+    if (!isVisible) return children;
 
     return (
         <>

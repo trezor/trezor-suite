@@ -25,8 +25,6 @@ export const mapElevationToBorder = ({
 
 // ---------------------------
 
-// @TODO create iconDefaultInverse (packages/suite/src/components/suite/banners/Banner.tsx)
-
 const light = {
     transparent: '#00000000',
 

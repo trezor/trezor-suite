@@ -53,7 +53,6 @@ const Wrapper = styled.div<WrapperParams>`
     ${typography.hint}
     gap: ${spacingsPx.sm};
     padding: ${spacingsPx.sm} ${spacingsPx.lg};
-    width: 100%;
 
     ${withFrameProps}
 

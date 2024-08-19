@@ -1,9 +1,8 @@
 import { Translation } from 'src/components/suite';
-import { Banner } from '../Banner';
+import { Warning } from '@trezor/components';
 
 export const UnableToPerformRevisionCheck = () => (
-    <Banner
-        variant="destructive"
-        body={<Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM" />}
-    />
+    <Warning icon variant="destructive">
+        <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM" />
+    </Warning>
 );

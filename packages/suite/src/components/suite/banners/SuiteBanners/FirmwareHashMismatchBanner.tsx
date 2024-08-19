@@ -1,6 +1,8 @@
-import { Banner } from '../Banner';
 import { Translation } from 'src/components/suite';
+import { Warning } from '@trezor/components';
 
 export const FirmwareHashMismatch = () => (
-    <Banner variant="destructive" body={<Translation id="TR_FIRMWARE_HASH_MISMATCH" />} />
+    <Warning icon variant="destructive">
+        <Translation id="TR_FIRMWARE_HASH_MISMATCH" />
+    </Warning>
 );

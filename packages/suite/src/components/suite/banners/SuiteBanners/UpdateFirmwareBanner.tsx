@@ -1,22 +1,25 @@
 import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Banner } from '../Banner';
+import { Warning } from '@trezor/components';
 
 export const UpdateFirmware = () => {
     const dispatch = useDispatch();
 
-    const action = {
-        label: <Translation id="TR_SHOW_DETAILS" />,
-        onClick: () => dispatch(goto('firmware-index')),
-        'data-testid': '@notification/update-firmware/button',
-    };
-
     return (
-        <Banner
+        <Warning
+            icon
             variant="info"
-            body={<Translation id="TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT" />}
-            action={action}
-        />
+            rightContent={
+                <Warning.Button
+                    onClick={() => dispatch(goto('firmware-index'))}
+                    data-testid="@notification/update-firmware/button"
+                >
+                    <Translation id="TR_SHOW_DETAILS" />
+                </Warning.Button>
+            }
+        >
+            <Translation id="TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT" />
+        </Warning>
     );
 };

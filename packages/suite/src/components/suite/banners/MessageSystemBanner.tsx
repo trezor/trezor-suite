@@ -1,21 +1,12 @@
 import { useMemo } from 'react';
-import styled from 'styled-components';
-import { zIndices } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';
 import { messageSystemActions } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
-import { Banner } from './Banner';
 
 import { selectLanguage, selectTorState } from 'src/reducers/suite/suiteReducer';
-
-const BannerOnTop = styled(Banner)`
-    position: relative;
-    z-index: ${zIndices.guide};
-    margin: 4px;
-    align-self: stretch;
-`;
+import { Row, Warning as WarningComponent, Warning } from '@trezor/components';
 
 type MessageSystemBannerProps = {
     message: Message;
@@ -64,11 +55,31 @@ export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
     }, [id, dismissible, dispatch]);
 
     return (
-        <BannerOnTop
+        <Warning
+            icon
             variant={variant === 'critical' ? 'destructive' : variant}
-            body={content[language] || content.en}
-            action={actionConfig}
-            dismissal={dismissalConfig}
-        />
+            rightContent={
+                <Row gap={8}>
+                    {actionConfig && (
+                        <Warning.Button
+                            onClick={actionConfig.onClick}
+                            data-testid={actionConfig['data-testid']}
+                        >
+                            {actionConfig.label}
+                        </Warning.Button>
+                    )}
+                    {dismissalConfig && (
+                        <WarningComponent.IconButton
+                            icon="CROSS"
+                            onClick={dismissalConfig.onClick}
+                            isSubtle
+                            data-testid={dismissalConfig['data-testid']}
+                        />
+                    )}
+                </Row>
+            }
+        >
+            {content[language] || content.en}
+        </Warning>
     );
 };
