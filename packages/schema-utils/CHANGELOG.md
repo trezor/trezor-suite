@@ -1,3 +1,8 @@
+# 1.1.1
+
+-   npm-prerelease: @trezor/schema-utils 1.1.1-beta.1 (2d695ff6e0)
+-   chore: update txs from 4.7.0 to 4.16.2 (59c856fd0f)
+
 # 1.0.5-beta.1
 
 -   chore(suite): depcheck enabled (2206f19f2e)
