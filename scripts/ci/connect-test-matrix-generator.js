@@ -66,40 +66,29 @@ const groups = {
         methods: 'binanceGetAddress,binanceGetPublicKey,binanceSignTransaction',
     },
 };
+
 const daily = {
     firmwares: ['2-latest'],
-    tests: [
-        groups.api,
-        groups.management,
-        groups.btcSign,
-        groups.btcOthers,
-        groups.stellar,
-        groups.cardano,
-        groups.eos,
-        groups.ethereum,
-        groups.nem,
-        groups.ripple,
-        groups.tezos,
-        groups.binance,
-    ],
+    tests: [...Object.values(groups)],
 };
 
-const legacyCanaryFirmware = {
-    firmwares: ['2.3.0', '2-main'],
+const legacyFirmware = {
+    firmwares: ['2.3.0'],
     tests: daily.tests
         // Cardano supports >=2.6.0
         .filter(test => test.name !== 'cardano'),
+};
+
+const canaryFirmware = {
+    firmwares: ['2-main'],
+    tests: daily.tests,
 };
 
 const otherDevices = {
     firmwares: ['2-latest'],
     models: ['R', 'T3T1'],
     tests: [
-        {
-            ...groups.api,
-            webEnvironment: true,
-            nodeEnvironment: true,
-        },
+        ...Object.values(groups).filter(g => g.name !== 'management' && g.name !== 'btc-others'),
         {
             ...groups.management,
             methods: groups.management.methods
@@ -107,8 +96,6 @@ const otherDevices = {
                 // getFeatures test is not abstract enough to serve all models
                 .filter(m => m !== 'getFeatures')
                 .join(','),
-            webEnvironment: false,
-            nodeEnvironment: true,
         },
         {
             ...groups.btcOthers,
@@ -117,38 +104,6 @@ const otherDevices = {
                 // getAddress (decred) does not work for model R
                 .filter(m => m !== 'getAddress')
                 .join(','),
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.stellar,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.cardano,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.ethereum,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.ripple,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.tezos,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.binance,
-            webEnvironment: false,
-            nodeEnvironment: true,
         },
     ],
 };
@@ -165,8 +120,9 @@ const prepareTest = ({ firmwares, tests, models }) => {
 
 const testData = {
     daily,
+    legacyFirmware,
+    canaryFirmware,
     otherDevices,
-    legacyCanaryFirmware,
 };
 
 const args = process.argv.slice(2);
