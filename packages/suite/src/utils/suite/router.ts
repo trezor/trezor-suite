@@ -49,7 +49,7 @@ export const getApp = (url: string) => {
 const validateWalletParams = (url: string): CommonWalletParams => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
-    const [symbol, index, type, contractAddress] = hash.split('/').filter(p => p.length > 0);
+    const [symbol, index, type] = hash.split('/').filter(p => p.length > 0);
     if (!symbol || !index) return;
     const network = networksCompatibility.find(
         n => n.symbol === symbol && (n.accountType || 'normal') === (type || 'normal'),
@@ -63,7 +63,6 @@ const validateWalletParams = (url: string): CommonWalletParams => {
         symbol: network.symbol,
         accountIndex,
         accountType: network.accountType || 'normal',
-        contractAddress,
     };
 };
 

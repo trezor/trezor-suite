@@ -64,6 +64,14 @@ export type SuiteAction =
           variant: AppState['suite']['settings']['theme']['variant'];
       }
     | {
+          type: typeof SUITE.SET_SEND_FORM_PREFILL;
+          payload: string;
+      }
+    | {
+          type: typeof SUITE.SET_TRANSACTION_HISTORY_PREFILL;
+          payload: string;
+      }
+    | {
           type: typeof SUITE.SET_ADDRESS_DISPLAY_TYPE;
           option: AppState['suite']['settings']['addressDisplayType'];
       }

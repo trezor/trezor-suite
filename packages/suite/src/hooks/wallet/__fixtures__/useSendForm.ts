@@ -194,6 +194,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                 online: true,
                 settings: { debug: {}, theme: { variant: 'light' } },
                 evmSettings: { confirmExplanationModalClosed: {}, explanationBannerClosed: {} },
+                prefillFields: { sendForm: '', transactionHistory: '' },
                 flags: { stakeEthBannerClosed: false },
             },
             () => ({}),

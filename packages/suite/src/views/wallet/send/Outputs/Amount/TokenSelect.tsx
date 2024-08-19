@@ -4,7 +4,7 @@ import { Select } from '@trezor/components';
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
-import { Output, WalletParams } from '@suite-common/wallet-types';
+import { Output } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { updateFiatRatesThunk, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -19,6 +19,7 @@ import {
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TokenDefinitions, selectCoinDefinitions } from '@suite-common/token-definitions';
+import { SUITE } from 'src/actions/suite/constants';
 
 const UnrecognizedTokensHeading = styled.div`
     display: flex;
@@ -110,6 +111,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
         setDraftSaveRequest,
     } = useSendFormContext();
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
+    const sendFormPrefill = useSelector(state => state.suite.prefillFields.sendForm);
     const localCurrency = useSelector(selectLocalCurrency);
     const fiatRates = useSelector(selectCurrentFiatRates);
     const tokensWithRates = enhanceTokensWithRates(
@@ -119,7 +121,6 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
         fiatRates,
     );
     const dispatch = useDispatch();
-    const routerParams = useSelector(state => state.router.params) as WalletParams;
 
     const sortedTokens = useMemo(() => {
         return tokensWithRates.sort(sortTokensWithRates);
@@ -148,11 +149,15 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     }, [outputId, tokenWatch, setAmount, getValues, account.networkType, isSetMaxActive]);
 
     useEffect(() => {
-        if (routerParams?.contractAddress) {
-            setValue(tokenInputName, routerParams.contractAddress, { shouldValidate: true });
+        if (sendFormPrefill) {
+            setValue(tokenInputName, sendFormPrefill, { shouldValidate: true, shouldDirty: true });
             setDraftSaveRequest(true);
+            dispatch({
+                type: SUITE.SET_SEND_FORM_PREFILL,
+                payload: '',
+            });
         }
-    }, [routerParams?.contractAddress, setValue, tokenInputName, setDraftSaveRequest]);
+    }, [sendFormPrefill, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
 
     return (
         <Controller

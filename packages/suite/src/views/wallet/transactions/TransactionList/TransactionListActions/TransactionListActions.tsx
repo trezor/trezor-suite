@@ -6,8 +6,9 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'reac
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { Account, WalletParams } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
 import { AccountLabels } from '@suite-common/metadata-types';
+import { SUITE } from 'src/actions/suite/constants';
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,7 +35,10 @@ export const TransactionListActions = ({
     const [isExpanded, setExpanded] = useState(false);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
-    const routerParams = useSelector(state => state.router.params) as WalletParams;
+    const transactionHistoryPrefill = useSelector(
+        state => state.suite.prefillFields.transactionHistory,
+    );
+
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
@@ -73,11 +77,15 @@ export const TransactionListActions = ({
     }, [account.symbol, account.index, account.accountType, setSearch]);
 
     useEffect(() => {
-        if (routerParams?.contractAddress) {
-            onSearch(routerParams?.contractAddress);
-            setSearch(routerParams?.contractAddress);
+        if (transactionHistoryPrefill) {
+            onSearch(transactionHistoryPrefill);
+            setSearch(transactionHistoryPrefill);
+            dispatch({
+                type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
+                payload: '',
+            });
         }
-    }, [routerParams?.contractAddress, setSearch, onSearch, account]);
+    }, [transactionHistoryPrefill, setSearch, onSearch, account, dispatch]);
 
     return (
         <Wrapper>
