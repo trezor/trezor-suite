@@ -40,6 +40,7 @@ show_usage() {
   echo "  -s       actual test script. default: 'yarn test:integration'"
   echo "  -u       Firmware url"
   echo "  -m       Firmware model, example: R'"
+  echo "  -r       Randomize test order (node only)"
 }
 
 # default options
@@ -54,10 +55,11 @@ USE_TX_CACHE=true
 USE_WS_CACHE=true
 PATTERN=""
 FIRMWARE_MODEL=""
+RANDOMIZE=false
 
 # user options
 OPTIND=2
-while getopts ":p:i:e:f:u:m:D:hdc" opt; do
+while getopts ":p:i:e:f:u:m:D:hdcr" opt; do
   case $opt in
   d)
     DOCKER=false
@@ -86,6 +88,9 @@ while getopts ":p:i:e:f:u:m:D:hdc" opt; do
     ;;
   m)
     FIRMWARE_MODEL=$OPTARG
+    ;;
+  r)
+    RANDOMIZE=true
     ;;
   h) # Script usage
     show_usage
@@ -118,6 +123,7 @@ export TESTS_PATTERN=$PATTERN
 export TESTS_SCRIPT=$SCRIPT
 export TESTS_FIRMWARE_URL=$FIRMWARE_URL
 export TESTS_FIRMWARE_MODEL=$FIRMWARE_MODEL
+export TESTS_RANDOM=$RANDOMIZE
 
 runDocker() {
   docker compose -f ./docker/docker-compose.connect-test.yml up --abort-on-container-exit
@@ -134,6 +140,7 @@ run() {
   echo "  Excluded methods: ${EXCLUDED_METHODS}"
   echo "  TxCache: ${USE_TX_CACHE}"
   echo "  WsCache: ${USE_WS_CACHE}"
+  echo "  Random: ${RANDOMIZE}"
 
   if [ $DOCKER = true ]; then
     runDocker

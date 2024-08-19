@@ -92,6 +92,14 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     if (process.argv[2] === 'node') {
         // eslint-disable-next-line no-console
         console.log('jest version: ', getJestVersion());
+
+        if (process.env.TESTS_RANDOM === 'true') {
+            // @ts-expect-error
+            argv.showSeed = true;
+            // @ts-expect-error
+            argv.randomize = true;
+        }
+
         // @ts-expect-error
         const { results } = await runCLI(argv, [__dirname]).catch(err => {
             console.error(err);
