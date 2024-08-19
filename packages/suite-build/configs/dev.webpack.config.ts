@@ -21,6 +21,10 @@ const config: webpack.Configuration = {
         filename: 'js/[name].js',
         chunkFilename: 'js/[id].js',
     },
+    watchOptions: {
+        // reduce number of file watchers; for HMR it is not necessary to watch both source code & node_modules
+        ignored: /node_modules/,
+    },
     plugins: [
         new WebpackPluginServe({
             port: DEV_PORTS[project],
