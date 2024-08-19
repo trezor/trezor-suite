@@ -189,6 +189,9 @@ export const getInputState = (
     }
 };
 
+export const getNonComposeErrorMessage = (error: FieldError | undefined) =>
+    (error?.type !== 'compose' && error?.message) ?? null;
+
 export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<Output>>) =>
     error?.amount?.type === COMPOSE_ERROR_TYPES.ANONYMITY;
 

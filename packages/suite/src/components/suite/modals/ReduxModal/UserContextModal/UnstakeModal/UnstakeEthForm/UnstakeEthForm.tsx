@@ -74,6 +74,9 @@ export const UnstakeEthForm = () => {
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 
+    const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT];
+    const showError = inputError && inputError.type === 'compose';
+
     return (
         <form onSubmit={handleSubmit(signTx)}>
             {canClaim && (
@@ -92,10 +95,8 @@ export const UnstakeEthForm = () => {
             <Options symbol={symbol} />
 
             <WarningsWrapper>
-                {errors[CRYPTO_INPUT] && (
-                    <StyledWarning variant="destructive">
-                        {errors[CRYPTO_INPUT]?.message}
-                    </StyledWarning>
+                {showError && (
+                    <StyledWarning variant="destructive">{inputError?.message}</StyledWarning>
                 )}
             </WarningsWrapper>
 
