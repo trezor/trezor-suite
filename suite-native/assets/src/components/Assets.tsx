@@ -1,10 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { calculateAssetsPercentage } from '@suite-common/assets';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectIsDeviceAuthorized, selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { OnSelectAccount } from '@suite-native/accounts';
 import { Card, VStack } from '@suite-native/atoms';
 import {
     AppTabsParamList,
@@ -13,14 +16,11 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { selectIsDeviceDiscoveryActive, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
-import { calculateAssetsPercentage } from '@suite-common/assets';
 
-import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
-import { selectDeviceAssetsWithBalances, AssetType } from '../assetsSelectors';
-import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
+import { AssetType, selectDeviceAssetsWithBalances } from '../assetsSelectors';
 import { AssetItem } from './AssetItem';
+import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
+import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
 
 type NavigationProp = TabToStackCompositeNavigationProp<
     AppTabsParamList,
@@ -43,10 +43,10 @@ export const Assets = () => {
         [deviceAssetsData],
     );
 
-    const handleSelectAssetsAccount = useCallback(
-        (accountKey: AccountKey, tokenContract?: TokenAddress) => {
+    const handleSelectAssetsAccount: OnSelectAccount = useCallback(
+        ({ account, tokenContract }) => {
             navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey,
+                accountKey: account.key,
                 tokenContract,
                 closeActionType: 'back',
             });
@@ -70,7 +70,6 @@ export const Assets = () => {
                         >
                             <AssetItem
                                 iconName={asset.symbol}
-                                cryptoCurrencyName={networks[asset.symbol].name}
                                 cryptoCurrencySymbol={asset.symbol}
                                 fiatBalance={asset.fiatBalance}
                                 fiatPercentage={asset.fiatPercentage}

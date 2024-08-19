@@ -22,7 +22,7 @@ export interface AssetType {
 
 type AssetsRootState = AccountsRootState & FiatRatesRootState & SettingsSliceRootState;
 
-const sumBalance = (balances: string[]): BigNumber =>
+const sumCryptoBalance = (balances: string[]): BigNumber =>
     balances.reduce((prev, balance) => prev.plus(balance), new BigNumber(0));
 
 export const selectDeviceAssetsWithBalances = memoize(
@@ -44,7 +44,7 @@ export const selectDeviceAssetsWithBalances = memoize(
                 localCurrency: fiatCurrencyCode,
                 rates,
                 // TODO: this should be removed once Trezor Suite Lite supports staking
-                shouldIncludeStaking: false,
+                shouldIncludeStaking: true,
             });
 
             return {
@@ -68,7 +68,9 @@ export const selectDeviceAssetsWithBalances = memoize(
                 }, 0)
                 .toFixed();
 
-            const cryptoValue = sumBalance(networkAccounts.map(account => account.cryptoValue));
+            const cryptoValue = sumCryptoBalance(
+                networkAccounts.map(account => account.cryptoValue),
+            );
 
             const network = networks[networkSymbol];
 

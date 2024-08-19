@@ -2,37 +2,58 @@ import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
+import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { SettingsSliceRootState } from '@suite-native/settings';
 import {
     getEthereumTokenName,
     selectEthereumAccountsTokensWithFiatRates,
 } from '@suite-native/tokens';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { SettingsSliceRootState } from '@suite-native/settings';
-import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';
+import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Box, Text } from '@suite-native/atoms';
 
 import { TokenListItem } from './TokenListItem';
+import { OnSelectAccount } from '../types';
 
 type TokenListProps = {
-    accountKey: string;
-    onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
+    account: Account;
+    onSelectAccount: OnSelectAccount;
 };
 
-export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
+const titleContainerStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.medium,
+    paddingTop: 12,
+}));
+
+export const TokenList = ({ account, onSelectAccount }: TokenListProps) => {
+    const { applyStyle } = useNativeStyles();
     const accountTokens = useSelector(
         (state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState) =>
-            selectEthereumAccountsTokensWithFiatRates(state, accountKey),
+            selectEthereumAccountsTokensWithFiatRates(state, account.key),
     );
 
     if (A.isEmpty(accountTokens)) return null;
 
     return (
         <>
+            <Box style={applyStyle(titleContainerStyle)}>
+                <Text variant="callout" color="textSubdued">
+                    <Translation id="accountList.tokens" />
+                </Text>
+            </Box>
             {accountTokens.map(token => (
                 <TokenListItem
                     key={token.contract}
                     contract={token.contract}
-                    accountKey={accountKey}
-                    onSelectAccount={onSelectAccount}
+                    accountKey={account.key}
+                    onSelectAccount={() =>
+                        onSelectAccount({
+                            account,
+                            tokenContract: token.contract,
+                            hasAnyTokensWithFiatRates: true,
+                        })
+                    }
                     balance={token.balance}
                     label={getEthereumTokenName(token.name)}
                 />

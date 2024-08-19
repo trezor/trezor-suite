@@ -1,32 +1,41 @@
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { AccountsRootState } from '@suite-common/wallet-core';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Box, RoundedIcon, Text } from '@suite-native/atoms';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { selectEthereumAccountTokenSymbol } from '@suite-native/tokens';
-import { AccountsRootState } from '@suite-common/wallet-core';
-
-import { accountDescriptionStyle, valuesContainerStyle } from './AccountListItem';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TokenListItemProps = {
     balance?: string;
     label: string;
     accountKey: AccountKey;
     contract: TokenAddress;
-    onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
+    onSelectAccount: () => void;
 };
 
-const horizontalLine = prepareNativeStyle(utils => ({
-    height: utils.spacings.medium,
-    borderLeftColor: utils.colors.borderDashed,
-    borderLeftWidth: 1,
-    marginVertical: utils.spacings.extraSmall,
-    marginLeft: utils.spacings.large,
+const tokenListItemStyle = prepareNativeStyle(utils => ({
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: utils.spacings.medium,
+}));
+
+const accountDescriptionStyle = prepareNativeStyle(_ => ({
+    flexShrink: 1,
+}));
+
+const valuesContainerStyle = prepareNativeStyle(utils => ({
+    maxWidth: '40%',
+    flexShrink: 0,
+    alignItems: 'flex-end',
+    paddingLeft: utils.spacings.small,
 }));
 
 export const TokenListItem = ({
@@ -42,14 +51,9 @@ export const TokenListItem = ({
         selectEthereumAccountTokenSymbol(state, accountKey, contract),
     );
 
-    const handleOnPress = () => {
-        onSelectAccount(accountKey, contract);
-    };
-
     return (
-        <TouchableOpacity onPress={handleOnPress}>
-            <Box style={applyStyle(horizontalLine)} />
-            <Box flexDirection="row" justifyContent="space-between" alignItems="center">
+        <TouchableOpacity onPress={onSelectAccount}>
+            <Box style={applyStyle(tokenListItemStyle)}>
                 <Box flex={1} flexDirection="row" alignItems="center">
                     <Box marginRight="medium">
                         <RoundedIcon name={contract} />

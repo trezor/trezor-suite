@@ -84,6 +84,7 @@ export const en = {
     },
     accountList: {
         numberOfTokens: '+{numberOfTokens} tokens',
+        tokens: 'Tokens',
     },
     assets: {
         dashboard: {

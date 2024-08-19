@@ -159,9 +159,6 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
                 descriptor: account.descriptor,
                 identity: tryGetAccountIdentity(account),
                 accountKey: account.key,
-
-                // hardcode empty array so it will show only main account, we should remove this once we support tokens everywhere in app
-                tokensFilter: [],
             })),
         [accounts],
     );

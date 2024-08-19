@@ -8,11 +8,14 @@ import {
     selectVisibleDeviceAccountsByNetworkSymbol,
     selectVisibleDeviceAccounts,
     FiatRatesRootState,
+    selectCurrentFiatRates,
+    selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { SettingsSliceRootState } from '@suite-native/settings';
+import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 
-import { GroupedAccounts } from './types';
+import { GroupedByTypeAccounts } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
     groupAccountsByNetworkAccountType,
@@ -33,7 +36,7 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = memoizeWi
             sortAccountsByNetworksAndAccountTypes,
             accountsSorted => filterAccountsByLabelAndNetworkNames(accountsSorted, filterValue),
             groupAccountsByNetworkAccountType,
-        ) as GroupedAccounts;
+        ) as GroupedByTypeAccounts;
     },
     // This selector is used only in one search component, so cache size equal to 1 is enough.
     { size: 1 },
@@ -45,7 +48,7 @@ export const selectDeviceNetworkAccountsGroupedByAccountType = memoizeWithArgs(
             selectVisibleDeviceAccountsByNetworkSymbol(state, networkSymbol),
             sortAccountsByNetworksAndAccountTypes,
             groupAccountsByNetworkAccountType,
-        ) as GroupedAccounts,
+        ) as GroupedByTypeAccounts,
     { size: D.keys(networks).length },
 );
 
@@ -67,3 +70,26 @@ export const selectIsAccountAlreadyDiscovered = (
                 account.deviceState === deviceState,
         ),
     );
+
+export const selectAccountFiatBalance = (
+    state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState,
+    accountKey: string,
+) => {
+    const fiatRates = selectCurrentFiatRates(state);
+    const account = selectAccountByKey(state, accountKey);
+    const localCurrency = selectFiatCurrencyCode(state);
+
+    if (!account) {
+        return '0';
+    }
+
+    // Staking should be true once we support it in Trezor Suite Lite
+    const totalBalance = getAccountFiatBalance({
+        account,
+        rates: fiatRates,
+        localCurrency,
+        shouldIncludeStaking: false,
+    });
+
+    return totalBalance;
+};

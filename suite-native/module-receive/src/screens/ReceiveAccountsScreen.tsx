@@ -2,17 +2,20 @@ import { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
-import { AccountsList, SearchableAccountsListScreenHeader } from '@suite-native/accounts';
 import {
-    Screen,
+    AccountsList,
+    OnSelectAccount,
+    SearchableAccountsListScreenHeader,
+} from '@suite-native/accounts';
+import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
+import {
     ReceiveStackParamList,
     ReceiveStackRoutes,
-    RootStackRoutes,
-    StackToStackCompositeNavigationProps,
     RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     ReceiveStackParamList,
@@ -23,9 +26,9 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const ReceiveAccountsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
-    const navigateToReceiveScreen = (accountKey: AccountKey, tokenContract?: TokenAddress) =>
+    const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenContract }) =>
         navigation.navigate(RootStackRoutes.ReceiveModal, {
-            accountKey,
+            accountKey: account.key,
             tokenContract,
             closeActionType: 'back',
         });

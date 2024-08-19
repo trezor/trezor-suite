@@ -3,19 +3,24 @@ import { useSelector } from 'react-redux';
 import { D } from '@mobily/ts-belt';
 
 import { AccountsRootState, DeviceRootState, FiatRatesRootState } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { SettingsSliceRootState } from '@suite-native/settings';
 
 import { selectFilteredDeviceAccountsGroupedByNetworkAccountType } from '../selectors';
 import { AccountListPlaceholder } from './AccountListPlaceholder';
-import { GroupedAccountsList } from './GroupedAccountsList';
+import { GroupedByTypeAccountsList } from './GroupedAccountsList';
+import { OnSelectAccount } from '../types';
 
 type AccountsListProps = {
-    onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
+    onSelectAccount: OnSelectAccount;
     filterValue?: string;
+    hideTokens?: boolean;
 };
 
-export const AccountsList = ({ onSelectAccount, filterValue = '' }: AccountsListProps) => {
+export const AccountsList = ({
+    onSelectAccount,
+    filterValue = '',
+    hideTokens = false,
+}: AccountsListProps) => {
     const groupedAccounts = useSelector(
         (
             state: AccountsRootState &
@@ -29,6 +34,10 @@ export const AccountsList = ({ onSelectAccount, filterValue = '' }: AccountsList
         return <AccountListPlaceholder isFilterEmpty={!filterValue?.length} />;
 
     return (
-        <GroupedAccountsList groupedAccounts={groupedAccounts} onSelectAccount={onSelectAccount} />
+        <GroupedByTypeAccountsList
+            groupedAccounts={groupedAccounts}
+            onSelectAccount={onSelectAccount}
+            hideTokens={hideTokens}
+        />
     );
 };
