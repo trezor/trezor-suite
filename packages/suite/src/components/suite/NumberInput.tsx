@@ -59,14 +59,7 @@ const cleanValueString = (value: string, locale: Locale) => {
         cleanedValue = cleanedValue.slice(0, cleanedValue.length - 1);
     }
 
-    if (cleanedValue) {
-        // do not convert to the exponential format to avoid unexpected results
-        BigNumber.config({ EXPONENTIAL_AT: 20 });
-
-        cleanedValue = new BigNumber(cleanedValue).toFixed();
-    }
-
-    return cleanedValue;
+    return cleanedValue ? new BigNumber(cleanedValue).toFixed() : cleanedValue;
 };
 
 const DECIMAL_SEPARATORS = [',', '.'];
