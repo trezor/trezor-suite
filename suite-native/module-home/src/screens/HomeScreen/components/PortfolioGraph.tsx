@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useSetAtom } from 'jotai';
 
 import { useGraphForAllDeviceAccounts, Graph, TimeSwitch } from '@suite-native/graph';
-import { selectFiatCurrency } from '@suite-native/settings';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { VStack } from '@suite-native/atoms';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 
@@ -19,13 +19,12 @@ export type PortfolioGraphRef = {
 };
 
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
-    const fiatCurrency = useSelector(selectFiatCurrency);
-
+    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
 
     const { graphPoints, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
         useGraphForAllDeviceAccounts({
-            fiatCurrency: fiatCurrency.label,
+            fiatCurrency: fiatCurrencyCode,
         });
     const setSelectedPoint = useSetAtom(selectedPointAtom);
     const setReferencePoint = useSetAtom(referencePointAtom);

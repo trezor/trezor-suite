@@ -6,7 +6,7 @@ import { useSetAtom } from 'jotai';
 
 import { useGraphForSingleAccount, Graph, TimeSwitch } from '@suite-native/graph';
 import { VStack } from '@suite-native/atoms';
-import { selectFiatCurrency } from '@suite-native/settings';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 import { TokenAddress } from '@suite-common/wallet-types';
 
@@ -22,12 +22,12 @@ type AccountDetailGraphProps = {
 };
 
 export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailGraphProps) => {
-    const fiatCurrency = useSelector(selectFiatCurrency);
+    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const tokensFilter = useMemo(() => (tokenContract ? [tokenContract] : []), [tokenContract]);
     const { graphPoints, graphEvents, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
         useGraphForSingleAccount({
             accountKey,
-            fiatCurrency: fiatCurrency.label,
+            fiatCurrency: fiatCurrencyCode,
             tokensFilter,
             hideMainAccount: !!tokenContract,
         });

@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Select } from '@suite-native/atoms';
 import { PROTO } from '@trezor/connect';
 import { analytics, EventType } from '@suite-native/analytics';
-import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
+import { Translation } from '@suite-native/intl';
 import { selectBitcoinUnits, setBitcoinUnits } from '@suite-native/settings';
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 
 const bitcoinUnitsItems = [
     { label: 'Bitcoin', value: PROTO.AmountUnit.BITCOIN },
@@ -25,7 +26,7 @@ export const CryptoUnitsSelector = () => {
 
     return (
         <Select<PROTO.AmountUnit>
-            selectLabel="Bitcoin Amount Units"
+            selectLabel={<Translation id="moduleSettings.localizations.bitcoinUnitsLabel" />}
             selectValue={bitcoinUnit}
             items={bitcoinUnitsItems}
             onSelectItem={handleSelectUnit}
