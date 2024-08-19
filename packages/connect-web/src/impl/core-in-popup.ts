@@ -8,6 +8,7 @@ import {
     createErrorMessage,
     UiResponseEvent,
     CallMethodPayload,
+    CallMethodAnyResponse,
 } from '@trezor/connect/src/events';
 import * as ERRORS from '@trezor/connect/src/constants/errors';
 import type {
@@ -22,6 +23,7 @@ import * as popup from '../popup';
 
 import { parseConnectSettings } from '../connectSettings';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
+import { createDeferred } from '@trezor/utils';
 
 /**
  * Base class for CoreInPopup methods for TrezorConnect factory.
@@ -123,7 +125,7 @@ export class CoreInPopup implements ConnectFactoryDependencies {
      * 2. sends request to popup where the request is handled by core
      * 3. returns response
      */
-    public async call(params: CallMethodPayload): Promise<any> {
+    public async call(params: CallMethodPayload): Promise<CallMethodAnyResponse> {
         this.logger.debug('call', params);
 
         if (!this._popupManager) {
@@ -135,24 +137,19 @@ export class CoreInPopup implements ConnectFactoryDependencies {
             await this._popupManager.request();
         }
 
+        // We need to handle the case when the popup is closed during initialization
+        // In this case, we need to listen to the POPUP.CLOSED event and return an error
+        const popupClosed = createDeferred();
+        const popupClosedHandler = () => {
+            this.logger.log('Popup closed during initialization');
+            popupClosed.reject(ERRORS.TypedError('Method_Interrupted'));
+        };
+        this._popupManager.once(POPUP.CLOSED, popupClosedHandler);
+
         try {
-            await this._popupManager.channel.init();
-
-            if (this._settings.env === 'webextension') {
-                // In webextension we init based on the popup promise
-                // In core this is handled in the popup manager
-                await this._popupManager.popupPromise?.promise;
-
-                this._popupManager.channel.postMessage({
-                    type: POPUP.INIT,
-                    payload: {
-                        settings: this._settings,
-                        useCore: true,
-                    },
-                });
-            }
-
-            await this._popupManager.handshakePromise?.promise;
+            this.logger.debug('call: popup initialing');
+            await Promise.race([popupClosed.promise, this.callInit()]);
+            this.logger.debug('call: popup initialized');
 
             // post message to core in popup
             const response = await this._popupManager.channel.postMessage({
@@ -170,13 +167,39 @@ export class CoreInPopup implements ConnectFactoryDependencies {
                 return response;
             }
 
-            return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
+            throw ERRORS.TypedError('Method_NoResponse');
         } catch (error) {
             this.logger.error('call: error', error);
             this._popupManager.clear(false);
 
             return createErrorMessage(error);
+        } finally {
+            this._popupManager.removeListener(POPUP.CLOSED, popupClosedHandler);
         }
+    }
+
+    private async callInit(): Promise<void> {
+        if (!this._popupManager) {
+            throw ERRORS.TypedError('Init_NotInitialized');
+        }
+
+        await this._popupManager.channel.init();
+
+        if (this._settings.env === 'webextension') {
+            // In webextension we init based on the popup promise
+            // In core this is handled in the popup manager
+            await this._popupManager.popupPromise?.promise;
+
+            this._popupManager.channel.postMessage({
+                type: POPUP.INIT,
+                payload: {
+                    settings: this._settings,
+                    useCore: true,
+                },
+            });
+        }
+
+        await this._popupManager.handshakePromise?.promise;
     }
 
     uiResponse(response: UiResponseEvent) {
