@@ -34,6 +34,11 @@ on:
         type: "string"
         required: false
         default: ""
+      testRandomizedOrder:
+        description: "Tests will be run in randomized order"
+        type: "boolean"
+        required: false
+        default: false
 
 jobs:
   node:
@@ -59,7 +64,9 @@ jobs:
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.testFirmwareModel }}" >> "$GITHUB_ENV"
       - if: ${{ inputs.methods }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
-      - run: './docker/docker-connect-test.sh node -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" -r $ADDITIONAL_ARGS'
+      - if: ${{ inputs.testRandomizedOrder }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -r" >> "$GITHUB_ENV"
+      - run: './docker/docker-connect-test.sh node -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
 
   web:
     name: "web-${{ inputs.testDescription }}"

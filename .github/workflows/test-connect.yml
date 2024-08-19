@@ -69,7 +69,8 @@ jobs:
     outputs:
       dailyMatrix: ${{ steps.set-matrix-daily.outputs.dailyMatrix }}
       otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.otherDevicesMatrix }}
-      legacyCanaryFirmwareMatrix: ${{ steps.set-matrix-legacy-canary-firmware.outputs.legacyCanaryFirmwareMatrix }}
+      legacyFirmwareMatrix: ${{ steps.set-matrix-legacy-firmware.outputs.legacyFirmwareMatrix }}
+      canaryFirmwareMatrix: ${{ steps.set-matrix-canary-firmware.outputs.canaryFirmwareMatrix }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -78,17 +79,21 @@ jobs:
         id: set-matrix-daily
         run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js daily)" >> $GITHUB_OUTPUT
 
+      - name: Set legacy devices matrix
+        id: set-matrix-legacy-firmware
+        run: echo "legacyFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js legacyFirmware)" >> $GITHUB_OUTPUT
+
+      - name: Set canary devices matrix
+        id: set-matrix-canary-firmware
+        run: echo "canaryFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js canaryFirmware)" >> $GITHUB_OUTPUT
+
       - name: Set other devices matrix
         id: set-matrix-other-devices
         run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js otherDevices)" >> $GITHUB_OUTPUT
 
-      - name: Set other devices matrix
-        id: set-matrix-legacy-canary-firmware
-        run: echo "legacyCanaryFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js legacyCanaryFirmware)" >> $GITHUB_OUTPUT
-
-  connect-daily:
+  connect-PR:
     needs: [build, set-matrix]
-    name: daily-${{ matrix.name }}
+    name: PR-${{ matrix.name }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       testPattern: ${{ matrix.pattern }}
@@ -99,10 +104,27 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
 
-  connect-legacy-canary-firmware:
+  connect-randomized-order:
     needs: [build, set-matrix]
     if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    name: legacy-canary-${{ matrix.name }}
+    name: randomized-${{ matrix.name }}
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      testPattern: ${{ matrix.pattern }}
+      methods: ${{ matrix.methods }}
+      testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
+      testRandomizedOrder: true
+      webEnvironment: false
+      nodeEnvironment: true
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
+
+  connect-legacy-firmware:
+    needs: [build, set-matrix]
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+    name: legacy-${{ matrix.name }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       testPattern: ${{ matrix.pattern }}
@@ -111,7 +133,21 @@ jobs:
       testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.legacyCanaryFirmwareMatrix) }}
+      matrix: ${{ fromJson(needs.set-matrix.outputs.legacyFirmwareMatrix) }}
+
+  connect-canary-firmware:
+    needs: [build, set-matrix]
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+    name: canary-${{ matrix.name }}
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      testPattern: ${{ matrix.pattern }}
+      methods: ${{ matrix.methods }}
+      testsFirmware: ${{ matrix.firmware }}
+      testDescription: ${{ matrix.name }}-${{ matrix.firmware }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.canaryFirmwareMatrix) }}
 
   connect-other-devices:
     needs: [build, set-matrix]
@@ -123,8 +159,8 @@ jobs:
       methods: ${{ matrix.methods }}
       testsFirmware: ${{ matrix.firmware }}
       testFirmwareModel: ${{ matrix.model }}
-      nodeEnvironment: ${{ matrix.nodeEnvironment }}
-      webEnvironment: ${{ matrix.webEnvironment }}
+      nodeEnvironment: true
+      webEnvironment: false
       testDescription: ${{ matrix.name }}-${{ matrix.firmware }}-${{ matrix.model }}
     strategy:
       fail-fast: false
