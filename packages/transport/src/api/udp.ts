@@ -18,9 +18,11 @@ export class UdpApi extends AbstractApi {
 
     private enumerationTimeout: ReturnType<typeof setTimeout> | undefined;
     private enumerateAbortController = new AbortController();
+    private debugLink?: boolean;
 
-    constructor({ logger }: AbstractApiConstructorParams) {
+    constructor({ logger, debugLink }: AbstractApiConstructorParams & { debugLink?: boolean }) {
         super({ logger });
+        this.debugLink = debugLink;
     }
 
     listen() {
@@ -160,7 +162,7 @@ export class UdpApi extends AbstractApi {
 
     public async enumerate(signal?: AbortSignal) {
         // in theory we could support multiple devices, but we don't yet
-        const paths = ['127.0.0.1:21324'];
+        const paths = this.debugLink ? ['127.0.0.1:21325'] : ['127.0.0.1:21324'];
 
         try {
             const enumerateResult = await Promise.all(

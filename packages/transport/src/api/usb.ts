@@ -6,6 +6,8 @@ import {
     CONFIGURATION_ID,
     ENDPOINT_ID,
     INTERFACE_ID,
+    DEBUGLINK_ENDPOINT_ID,
+    DEBUGLINK_INTERFACE_ID,
     T1_HID_VENDOR,
     TREZOR_USB_DESCRIPTORS,
     WEBUSB_BOOTLOADER_PRODUCT,
@@ -16,6 +18,7 @@ import * as ERRORS from '../errors';
 interface ConstructorParams extends AbstractApiConstructorParams {
     usbInterface: USB;
     forceReadSerialOnConnect?: boolean;
+    debugLink?: boolean;
 }
 
 interface TransportInterfaceDevice {
@@ -36,12 +39,14 @@ export class UsbApi extends AbstractApi {
     protected usbInterface: ConstructorParams['usbInterface'];
     private forceReadSerialOnConnect?: boolean;
     private abortController = new AbortController();
+    private debugLink?: boolean;
 
-    constructor({ usbInterface, logger, forceReadSerialOnConnect }: ConstructorParams) {
+    constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
         super({ logger });
 
         this.usbInterface = usbInterface;
         this.forceReadSerialOnConnect = forceReadSerialOnConnect;
+        this.debugLink = debugLink;
     }
 
     public listen() {
@@ -171,7 +176,11 @@ export class UsbApi extends AbstractApi {
         try {
             this.logger?.debug('usb: device.transferIn');
             const res = await this.abortableMethod(
-                () => device.transferIn(ENDPOINT_ID, this.chunkSize),
+                () =>
+                    device.transferIn(
+                        this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
+                        this.chunkSize,
+                    ),
                 signal,
             );
             this.logger?.debug(
@@ -208,7 +217,11 @@ export class UsbApi extends AbstractApi {
             // https://wicg.github.io/webusb/#ref-for-dom-usbdevice-transferout
             this.logger?.debug('usb: device.transferOut');
             const result = await this.abortableMethod(
-                () => device.transferOut(ENDPOINT_ID, newArray),
+                () =>
+                    device.transferOut(
+                        this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
+                        newArray,
+                    ),
                 signal,
             );
             this.logger?.debug(
@@ -299,11 +312,12 @@ export class UsbApi extends AbstractApi {
             }
         }
         try {
-            this.logger?.debug(`usb: device.claimInterface: ${INTERFACE_ID}`);
+            const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
+            this.logger?.debug(`usb: device.claimInterface: ${interfaceId}`);
             // claim device for exclusive access by this app
-            await this.abortableMethod(() => device.claimInterface(INTERFACE_ID), signal);
+            await this.abortableMethod(() => device.claimInterface(interfaceId), signal);
             this.logger?.debug(
-                `usb: device.claimInterface done: ${INTERFACE_ID}. device: ${this.formatDeviceForLog(device)}`,
+                `usb: device.claimInterface done: ${interfaceId}. device: ${this.formatDeviceForLog(device)}`,
             );
         } catch (err) {
             this.logger?.error(
@@ -329,7 +343,7 @@ export class UsbApi extends AbstractApi {
 
         if (device.opened) {
             try {
-                const interfaceId = INTERFACE_ID;
+                const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
                 this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
                 await device.releaseInterface(interfaceId);
                 this.logger?.debug(

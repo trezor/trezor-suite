@@ -11,7 +11,7 @@ export class UdpTransport extends AbstractApiTransport {
     private enumerateTimeout: ReturnType<typeof setTimeout> | undefined;
 
     constructor(params: AbstractTransportParams) {
-        const { messages, logger, signal } = params;
+        const { messages, logger, signal, debugLink } = params;
         const sessionsBackground = new SessionsBackground({ signal });
 
         // in udp there is no synchronization yet. it depends where this transport runs (node or browser)
@@ -26,7 +26,7 @@ export class UdpTransport extends AbstractApiTransport {
 
         super({
             messages,
-            api: new UdpApi({ logger }),
+            api: new UdpApi({ logger, debugLink }),
             logger,
             sessionsClient,
             signal,
