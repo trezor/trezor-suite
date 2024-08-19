@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { PROTO } from '@trezor/connect';
-import { fiatCurrencies, FiatCurrency, FiatCurrencyCode } from '@suite-common/suite-config';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
-    fiatCurrency: FiatCurrency;
+    fiatCurrencyCode: FiatCurrencyCode;
     bitcoinUnits: PROTO.AmountUnit;
     viewOnlyCancelationTimestamp?: number;
 }
@@ -15,7 +15,7 @@ export type SettingsSliceRootState = {
 };
 
 export const appSettingsInitialState: AppSettingsState = {
-    fiatCurrency: fiatCurrencies.usd,
+    fiatCurrencyCode: 'usd',
     bitcoinUnits: PROTO.AmountUnit.BITCOIN,
     isOnboardingFinished: false,
     viewOnlyCancelationTimestamp: undefined,
@@ -23,7 +23,7 @@ export const appSettingsInitialState: AppSettingsState = {
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isOnboardingFinished',
-    'fiatCurrency',
+    'fiatCurrencyCode',
     'bitcoinUnits',
     'viewOnlyCancelationTimestamp',
 ];
@@ -36,7 +36,7 @@ export const appSettingsSlice = createSlice({
             state,
             { payload: { localCurrency } }: PayloadAction<{ localCurrency: FiatCurrencyCode }>,
         ) => {
-            state.fiatCurrency = fiatCurrencies[localCurrency];
+            state.fiatCurrencyCode = localCurrency;
         },
         setIsOnboardingFinished: state => {
             state.isOnboardingFinished = true;
@@ -50,9 +50,8 @@ export const appSettingsSlice = createSlice({
     },
 });
 
-export const selectFiatCurrency = (state: SettingsSliceRootState) => state.appSettings.fiatCurrency;
 export const selectFiatCurrencyCode = (state: SettingsSliceRootState) =>
-    state.appSettings.fiatCurrency.label;
+    state.appSettings.fiatCurrencyCode;
 export const selectBitcoinUnits = (state: SettingsSliceRootState) => state.appSettings.bitcoinUnits;
 export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;

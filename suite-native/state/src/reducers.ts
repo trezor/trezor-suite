@@ -51,7 +51,12 @@ export const prepareRootReducers = async () => {
         reducer: appSettingsReducer,
         persistedKeys: appSettingsPersistWhitelist,
         key: 'appSettings',
-        version: 1,
+        version: 2,
+        migrations: {
+            2: (oldState: any) => {
+                return { ...oldState, fiatCurrencyCode: oldState.fiatCurrency.label };
+            },
+        },
     });
 
     const walletReducers = combineReducers({

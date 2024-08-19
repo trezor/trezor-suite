@@ -3,17 +3,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Select } from '@suite-native/atoms';
 import { FiatCurrency, fiatCurrencies, FiatCurrencyCode } from '@suite-common/suite-config';
 import { analytics, EventType } from '@suite-native/analytics';
-import { selectFiatCurrency, setFiatCurrency } from '@suite-native/settings';
+import { Translation } from '@suite-native/intl';
+import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/settings';
 
-export const transformFiatCurrencyToSelectItem = (fiatCurrency: FiatCurrency) => ({
-    label: fiatCurrency.value,
-    value: fiatCurrency.label,
+export const transformFiatCurrencyToSelectItem = ({ code, label }: FiatCurrency) => ({
+    value: code,
+    label: `${code.toUpperCase()} · ${label}`,
 });
 
 const fiatCurrencyItems = Object.values(fiatCurrencies).map(transformFiatCurrencyToSelectItem);
 
 export const CurrencySelector = () => {
-    const selectedFiatCurrency = useSelector(selectFiatCurrency);
+    const selectedFiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const dispatch = useDispatch();
 
     const handleSelectCurrency = (localCurrency: FiatCurrencyCode) => {
@@ -27,9 +28,8 @@ export const CurrencySelector = () => {
     return (
         <Select<FiatCurrencyCode>
             items={fiatCurrencyItems}
-            selectLabel="Currency"
-            selectValue={selectedFiatCurrency.label}
-            valueLabel={selectedFiatCurrency.label.toUpperCase()}
+            selectLabel={<Translation id="moduleSettings.localizations.fiatCurrencyLabel" />}
+            selectValue={selectedFiatCurrencyCode}
             onSelectItem={handleSelectCurrency}
         />
     );

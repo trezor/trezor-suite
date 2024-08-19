@@ -382,7 +382,7 @@ export const en = {
 
                 localization: {
                     title: 'Localization',
-                    subtitle: 'Currency, Bitcoin units',
+                    subtitle: 'Fiat currency, Bitcoin units',
                 },
                 customization: {
                     title: 'Customization',
@@ -500,6 +500,8 @@ export const en = {
         },
         localizations: {
             title: 'Localization',
+            fiatCurrencyLabel: 'Fiat currency',
+            bitcoinUnitsLabel: 'Bitcoin units',
         },
         customization: {
             title: 'Customization',
