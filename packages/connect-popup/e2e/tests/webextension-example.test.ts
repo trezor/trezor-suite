@@ -12,27 +12,19 @@ test.beforeAll(async () => {
 
 test.beforeEach(async () => {
     await TrezorUserEnvLink.connect();
-    await TrezorUserEnvLink.send({
-        type: 'bridge-stop',
-    });
-    await TrezorUserEnvLink.send({
-        type: 'emulator-stop',
-    });
-    await TrezorUserEnvLink.send({
-        type: 'emulator-start',
+    await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.stopEmu();
+    await TrezorUserEnvLink.startEmu({
         wipe: true,
     });
-    await TrezorUserEnvLink.send({
-        type: 'emulator-setup',
+    await TrezorUserEnvLink.setupEmu({
         mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: false,
         label: 'My Trevor',
         needs_backup: false,
     });
-    await TrezorUserEnvLink.send({
-        type: 'bridge-start',
-    });
+    await TrezorUserEnvLink.startBridge();
 });
 
 const getBrowserContext = async (pathToExtension: string) => {
@@ -103,10 +95,7 @@ test('Basic web extension MV2', async () => {
 
     await popup.waitForSelector('text=3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX');
 
-    await Promise.all([
-        popup.waitForEvent('close'),
-        TrezorUserEnvLink.send({ type: 'emulator-press-yes' }),
-    ]);
+    await Promise.all([popup.waitForEvent('close'), TrezorUserEnvLink.pressYes()]);
 
     await page.waitForSelector('text=3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX');
 
@@ -156,10 +145,7 @@ test('Basic web extension MV3', async () => {
 
     await popup.waitForSelector('text=3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX');
 
-    await Promise.all([
-        popup.waitForEvent('close'),
-        TrezorUserEnvLink.send({ type: 'emulator-press-yes' }),
-    ]);
+    await Promise.all([popup.waitForEvent('close'), TrezorUserEnvLink.pressYes()]);
 
     await browserContext.close();
 });
