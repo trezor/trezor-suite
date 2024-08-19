@@ -1,3 +1,11 @@
+# 1.1.1
+
+-   npm-prerelease: @trezor/protobuf 1.1.1-beta.2 (0639cf5bdb)
+-   chore: update txs from 4.7.0 to 4.16.2 (59c856fd0f)
+-   npm-prerelease: @trezor/protobuf 1.1.1-beta.1 (8c9f17688c)
+-   chore(connect): add basic types support for T3B1 (131c4af73a)
+-   feat(protobuf): update protobuf messages for newest version (f8d8a23a85)
+
 # 1.0.14-beta.2
 
 -   chore(suite): unused package dependencies removed (f7907e1496)
