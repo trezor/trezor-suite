@@ -59,7 +59,7 @@ jobs:
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.testFirmwareModel }}" >> "$GITHUB_ENV"
       - if: ${{ inputs.methods }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
-      - run: './docker/docker-connect-test.sh node -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
+      - run: './docker/docker-connect-test.sh node -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" -r $ADDITIONAL_ARGS'
 
   web:
     name: "web-${{ inputs.testDescription }}"
