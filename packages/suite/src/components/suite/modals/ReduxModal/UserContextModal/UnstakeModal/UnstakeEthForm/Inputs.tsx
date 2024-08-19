@@ -9,7 +9,7 @@ import { variables } from '@trezor/components/src/config';
 import { validateDecimals, validateLimitsBigNum, validateMin } from 'src/utils/suite/validation';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { useFormatters } from '@suite-common/formatters';
-import { getInputState } from '@suite-common/wallet-utils';
+import { getInputState, getNonComposeErrorMessage } from '@suite-common/wallet-utils';
 
 const HStack = styled.div`
     display: flex;
@@ -74,7 +74,7 @@ export const Inputs = () => {
                 rules={cryptoInputRules}
                 maxLength={formInputsMaxLength.amount}
                 innerAddon={<InputAddon>{symbol}</InputAddon>}
-                bottomText={errors[CRYPTO_INPUT]?.message ?? null}
+                bottomText={getNonComposeErrorMessage(errors[CRYPTO_INPUT])}
                 inputState={getInputState(cryptoError || fiatError)}
                 onChange={value => {
                     onCryptoAmountChange(value);
@@ -94,7 +94,7 @@ export const Inputs = () => {
                         rules={fiatInputRules}
                         maxLength={formInputsMaxLength.fiat}
                         innerAddon={<InputAddon>{localCurrency}</InputAddon>}
-                        bottomText={errors[FIAT_INPUT]?.message ?? null}
+                        bottomText={getNonComposeErrorMessage(errors[FIAT_INPUT])}
                         inputState={getInputState(fiatError || cryptoError)}
                         onChange={value => {
                             onFiatAmountChange(value);
