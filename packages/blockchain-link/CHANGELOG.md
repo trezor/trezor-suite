@@ -1,3 +1,13 @@
+# 2.2.1
+
+-   feat(solana): validate send amount against rent (9f1f76b994)
+-   npm-prerelease: @trezor/blockchain-link 2.2.1-beta.2 (ff5875c801)
+-   chore: update ws from 8.17.1 to 8.18.0 (f4f1aa5d6e)
+-   chore: update webpack-dev-server from 4.15.1 to 5.0.4 (cf90006585)
+-   chore: update txs from 4.7.0 to 4.16.2 (59c856fd0f)
+-   npm-prerelease: @trezor/blockchain-link 2.2.1-beta.1 (3b74de9765)
+-   chore: update trends libs (70b9c112bf)
+
 # 2.1.31-beta.2
 
 -   chore(deps): bump ws from 8.16.0 to 8.17.1 (bc5b787f3e)
