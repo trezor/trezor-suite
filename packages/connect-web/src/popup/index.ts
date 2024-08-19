@@ -184,11 +184,6 @@ export class PopupManager extends EventEmitter {
         const url = this.buildPopupUrl(src);
         this.openWrapper(url);
 
-        if (this.settings.useCoreInPopup) {
-            // Timeout not used in Core mode, we can't run showPopupRequest with no DOM
-            return;
-        }
-
         this.closeInterval = setInterval(() => {
             if (!this.popupWindow) return;
             if (this.popupWindow.mode === 'tab' && this.popupWindow.tab.id) {
