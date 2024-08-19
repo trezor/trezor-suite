@@ -2,6 +2,8 @@
 export const CONFIGURATION_ID = 1;
 export const INTERFACE_ID = 0;
 export const ENDPOINT_ID = 1;
+export const DEBUGLINK_INTERFACE_ID = 1;
+export const DEBUGLINK_ENDPOINT_ID = 2;
 export const T1_HID_VENDOR = 0x534c;
 
 const T1_HID_PRODUCT = 0x0001;

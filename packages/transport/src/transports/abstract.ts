@@ -48,6 +48,7 @@ export interface AbstractTransportParams {
     messages?: Record<string, any>;
     signal: AbortSignal;
     logger?: Logger;
+    debugLink?: boolean;
 }
 
 export const isTransportInstance = (transport?: AbstractTransport) => {
