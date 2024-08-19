@@ -2,12 +2,13 @@ import styled from 'styled-components';
 
 import { SearchAction } from 'src/components/wallet/SearchAction';
 import { ExportAction } from './ExportAction';
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
-import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { AccountLabels } from '@suite-common/metadata-types';
+import { SUITE } from 'src/actions/suite/constants';
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,13 +35,17 @@ export const TransactionListActions = ({
     const [isExpanded, setExpanded] = useState(false);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
+    const transactionHistoryPrefill = useSelector(
+        state => state.suite.prefillFields.transactionHistory,
+    );
+
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
     const onSearch = useCallback(
-        async ({ target }: ChangeEvent<HTMLInputElement>) => {
+        async (query: string) => {
             setSelectedPage(1);
-            setSearch(target.value);
+            setSearch(query);
 
             if (!hasFetchedAll) {
                 setHasFetchedAll(true);
@@ -70,6 +75,17 @@ export const TransactionListActions = ({
         setExpanded(false);
         setSearch('');
     }, [account.symbol, account.index, account.accountType, setSearch]);
+
+    useEffect(() => {
+        if (transactionHistoryPrefill) {
+            onSearch(transactionHistoryPrefill);
+            setSearch(transactionHistoryPrefill);
+            dispatch({
+                type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
+                payload: '',
+            });
+        }
+    }, [transactionHistoryPrefill, setSearch, onSearch, account, dispatch]);
 
     return (
         <Wrapper>

@@ -40,6 +40,7 @@ import {
     selectIsUnhideTokenModalShown,
 } from 'src/reducers/suite/suiteReducer';
 import { GroupedMenuItems } from '@trezor/components/src/components/Dropdown/Menu';
+import { SUITE } from 'src/actions/suite/constants';
 
 const Cell = styled.div<{ $isActions?: boolean; $isBigger?: boolean }>`
     ${typography.hint}
@@ -294,6 +295,23 @@ export const TokenRow = ({
                                             !isMobileLayout,
                                     },
                                     {
+                                        label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
+                                        icon: 'NEWSPAPER',
+                                        onClick: () => {
+                                            dispatch({
+                                                type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
+                                                payload: token.contract,
+                                            });
+                                            goToWithAnalytics('wallet-index', {
+                                                params: {
+                                                    symbol: account.symbol,
+                                                    accountIndex: account.index,
+                                                    accountType: account.accountType,
+                                                },
+                                            });
+                                        },
+                                    },
+                                    {
                                         label: <Translation id="TR_VIEW_IN_EXPLORER" />,
                                         icon: 'EXTERNAL_LINK',
                                         onClick: () => {
@@ -393,12 +411,15 @@ export const TokenRow = ({
                                 variant="tertiary"
                                 icon="SEND"
                                 onClick={() => {
+                                    dispatch({
+                                        type: SUITE.SET_SEND_FORM_PREFILL,
+                                        payload: token.contract,
+                                    });
                                     goToWithAnalytics('wallet-send', {
                                         params: {
                                             symbol: account.symbol,
                                             accountIndex: account.index,
                                             accountType: account.accountType,
-                                            contractAddress: token.contract,
                                         },
                                     });
                                 }}

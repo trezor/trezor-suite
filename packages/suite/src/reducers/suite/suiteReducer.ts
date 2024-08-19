@@ -76,6 +76,11 @@ export interface EvmSettings {
     explanationBannerClosed: Partial<Record<Network['symbol'], boolean>>;
 }
 
+export interface PrefillFields {
+    sendForm?: string;
+    transactionHistory?: string;
+}
+
 export interface SuiteSettings {
     theme: {
         variant: Exclude<SuiteThemeVariant, 'system'> | 'debug';
@@ -104,6 +109,7 @@ export interface SuiteState {
     locks: Lock[];
     flags: Flags;
     evmSettings: EvmSettings;
+    prefillFields: PrefillFields;
     settings: SuiteSettings;
 }
 
@@ -137,6 +143,10 @@ const initialState: SuiteState = {
     evmSettings: {
         confirmExplanationModalClosed: {},
         explanationBannerClosed: {},
+    },
+    prefillFields: {
+        sendForm: '',
+        transactionHistory: '',
     },
     settings: {
         theme: {
@@ -250,6 +260,14 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_THEME:
                 draft.settings.theme.variant = action.variant;
+                break;
+
+            case SUITE.SET_SEND_FORM_PREFILL:
+                draft.prefillFields.sendForm = action.payload;
+                break;
+
+            case SUITE.SET_TRANSACTION_HISTORY_PREFILL:
+                draft.prefillFields.transactionHistory = action.payload;
                 break;
 
             case SUITE.SET_ADDRESS_DISPLAY_TYPE:
