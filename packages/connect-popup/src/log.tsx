@@ -6,7 +6,7 @@ import { ErrorBoundary } from '@trezor/connect-ui/src/support/ErrorBoundary';
 import { GlobalStyle } from '@trezor/connect-ui/src/support/GlobalStyle';
 import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
 import { View } from '@trezor/connect-ui/src/components/View';
-import { Button, Paragraph, THEME } from '@trezor/components';
+import { Button, Paragraph, intermediaryTheme } from '@trezor/components';
 import { LogMessage } from '@trezor/connect/src/utils/debug';
 
 interface ReactWrapperProps {
@@ -17,7 +17,7 @@ const MAX_ENTRIES = 1000;
 const LOG_DEBOUNCE_TIME = 1000;
 
 const ThemeWrapper = ({ children }: ReactWrapperProps) => (
-    <ThemeProvider theme={THEME.light}>{children}</ThemeProvider>
+    <ThemeProvider theme={intermediaryTheme.light}>{children}</ThemeProvider>
 );
 
 const Layout = styled.div`
