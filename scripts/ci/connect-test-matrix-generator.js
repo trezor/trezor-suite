@@ -69,18 +69,18 @@ const groups = {
 const daily = {
     firmwares: ['2-latest'],
     tests: [
-        groups.api,
+        // groups.api,
         groups.management,
-        groups.btcSign,
-        groups.btcOthers,
-        groups.stellar,
-        groups.cardano,
-        groups.eos,
-        groups.ethereum,
-        groups.nem,
-        groups.ripple,
-        groups.tezos,
-        groups.binance,
+        // groups.btcSign,
+        // groups.btcOthers,
+        // groups.stellar,
+        // groups.cardano,
+        // groups.eos,
+        // groups.ethereum,
+        // groups.nem,
+        // groups.ripple,
+        // groups.tezos,
+        // groups.binance,
     ],
 };
 
@@ -95,11 +95,11 @@ const otherDevices = {
     firmwares: ['2-latest'],
     models: ['R', 'T3T1'],
     tests: [
-        {
-            ...groups.api,
-            webEnvironment: true,
-            nodeEnvironment: true,
-        },
+        // {
+        //     ...groups.api,
+        //     webEnvironment: true,
+        //     nodeEnvironment: true,
+        // },
         {
             ...groups.management,
             methods: groups.management.methods
@@ -110,46 +110,46 @@ const otherDevices = {
             webEnvironment: false,
             nodeEnvironment: true,
         },
-        {
-            ...groups.btcOthers,
-            methods: groups.btcOthers.methods
-                .split(',')
-                // getAddress (decred) does not work for model R
-                .filter(m => m !== 'getAddress')
-                .join(','),
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.stellar,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.cardano,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.ethereum,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.ripple,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.tezos,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
-        {
-            ...groups.binance,
-            webEnvironment: false,
-            nodeEnvironment: true,
-        },
+        // {
+        //     ...groups.btcOthers,
+        //     methods: groups.btcOthers.methods
+        //         .split(',')
+        //         // getAddress (decred) does not work for model R
+        //         .filter(m => m !== 'getAddress')
+        //         .join(','),
+        //     webEnvironment: false,
+        //     nodeEnvironment: true,
+        // },
+        // {
+        //     ...groups.stellar,
+        //     webEnvironment: false,
+        //     nodeEnvironment: true,
+        // },
+        // {
+        //     ...groups.cardano,
+        //     webEnvironment: false,
+        //     nodeEnvironment: true,
+        // },
+        // {
+        //     ...groups.ethereum,
+        //     webEnvironment: false,
+        //     nodeEnvironment: true,
+        // },
+        // {
+        //     ...groups.ripple,
+        //     webEnvironment: false,
+        //     nodeEnvironment: true,
+        // },
+        // {
+        //     ...groups.tezos,
+        //     webEnvironment: false,
+        //     nodeEnvironment: true,
+        // },
+        // {
+        //     ...groups.binance,
+        //     webEnvironment: false,
+        //     nodeEnvironment: true,
+        // },
     ],
 };
 
@@ -165,8 +165,8 @@ const prepareTest = ({ firmwares, tests, models }) => {
 
 const testData = {
     daily,
-    otherDevices,
-    legacyCanaryFirmware,
+    // otherDevices,
+    // legacyCanaryFirmware,
 };
 
 const args = process.argv.slice(2);

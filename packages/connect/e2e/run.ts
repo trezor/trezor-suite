@@ -90,7 +90,12 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     }
 
     if (process.argv[2] === 'node') {
-        // eslint-disable-next-line no-console
+        // @ts-expect-error
+        argv.coverageDirectory = path.join(
+            __dirname,
+            '..',
+            `coverage/coverage-partial/${(process.env.TESTS_PATTERN || '').replaceAll(' ', '-')}${(process.env.TESTS_INCLUDED_METHODS || '').replaceAll(',', '-')}`,
+        );
         console.log('jest version: ', getJestVersion());
         // @ts-expect-error
         const { results } = await runCLI(argv, [__dirname]);

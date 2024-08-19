@@ -22,4 +22,6 @@ export default {
     globals: {},
     watchPathIgnorePatterns: ['<rootDir>/libDev'],
     testPathIgnorePatterns: ['<rootDir>/libDev'],
+    collectCoverage: true,
+    coverageReporters: ['json'],
 };
