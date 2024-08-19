@@ -20,9 +20,9 @@ module.exports = config => {
                 bail: true,
             },
             // uncomment to disable random ordering of tests
-            // jasmine: {
-            //     random: false,
-            // },
+            jasmine: {
+                random: false,
+            },
         },
         browserConsoleLogOptions: {
             terminal: true,
