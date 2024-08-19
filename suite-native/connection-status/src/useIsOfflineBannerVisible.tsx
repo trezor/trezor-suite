@@ -6,7 +6,9 @@ import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 export const useIsOfflineBannerVisible = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
-    const { isConnected } = useNetInfo();
+    const { isInternetReachable } = useNetInfo();
 
-    return !isConnected && isOnboardingFinished;
+    const isReachable = isInternetReachable ?? true;
+
+    return !isReachable && isOnboardingFinished;
 };
