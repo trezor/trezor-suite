@@ -61,7 +61,7 @@ export default defineMessages({
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY',
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC: {
-        defaultMessage: 'All coins are currently disabled. Please enable some coins in Settings.',
+        defaultMessage: 'All coins are currently disabled. Please enable in Settings.',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC',
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR: {
@@ -73,7 +73,7 @@ export default defineMessages({
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_DESCRIPTION',
     },
     TR_ACCOUNT_EXCEPTION_NOT_ENABLED: {
-        defaultMessage: '{networkName} not enabled in settings.',
+        defaultMessage: '{networkName} not enabled in Settings.',
         id: 'TR_ACCOUNT_EXCEPTION_NOT_ENABLED',
     },
     TR_ACCOUNT_EXCEPTION_NOT_EXIST: {
@@ -870,7 +870,7 @@ export default defineMessages({
         defaultMessage: 'Register',
     },
     TR_SELL_PROVIDER: {
-        defaultMessage: 'provider',
+        defaultMessage: 'Provider',
         id: 'TR_SELL_PROVIDER',
     },
     TR_SELL_FEES: {
@@ -3450,7 +3450,7 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE',
     },
     TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED: {
-        defaultMessage: 'Connect device to change Coins settings',
+        defaultMessage: 'Connect your Trezor to change settings',
         id: 'TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
@@ -3458,7 +3458,7 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED: {
-        defaultMessage: 'Connect your Trezor to change Device settings',
+        defaultMessage: 'Connect your Trezor to change settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS: {
@@ -8311,7 +8311,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_0',
         description: '140 symbols max',
         defaultMessage:
-            "Your Coinjoin account isn't detected automatically. If you haven't enabled view-only mode on this wallet, you'll need to manually re-add the account after reconnecting your Trezor.",
+            "Your coinjoin account isn't detected automatically. If you haven't enabled view-only mode on this wallet, you'll need to manually re-add the account after reconnecting your Trezor.",
     },
     TR_LOADING_FACT_1: {
         id: 'TR_LOADING_FACT_1',
@@ -9233,7 +9233,7 @@ export default defineMessages({
     TR_VIEW_ONLY_RADIOS_ENABLED_DESCRIPTION: {
         id: 'TR_VIEW_ONLY_RADIOS_ENABLED_DESCRIPTION',
         defaultMessage:
-            'Balances & transactions <strong>remain visible</strong> in app even after Trezor is disconnected.',
+            'Balances & transactions <strong>remain visible</strong> in app after Trezor is disconnected.',
     },
     TR_VIEW_ONLY_RADIOS_DISABLED_DESCRIPTION: {
         id: 'TR_VIEW_ONLY_RADIOS_DISABLED_DESCRIPTION',
@@ -9242,7 +9242,7 @@ export default defineMessages({
     },
     TR_VIEW_ONLY_SEND_COINS_INFO: {
         id: 'TR_VIEW_ONLY_SEND_COINS_INFO',
-        defaultMessage: 'You always need to connect Trezor to move coins.',
+        defaultMessage: 'You always need to connect your Trezor to move coins.',
     },
     TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE: {
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE',

@@ -153,7 +153,6 @@
   "TR_ACCOUNT_PASSPHRASE_DISABLED": "기기를 사용하시려면 암호 설정을 바꾸세요",
   "TR_ACCOUNT_SEARCH_NO_RESULTS": "결과 없음",
   "TR_ACCOUNT_TYPE": "계정 유형",
-  "TR_ACQUIRE_DEVICE_DESCRIPTION": "귀하의 Trezor가 다른 창에서 사용 중입니다. Trezor를 사용 중인 모든 창을 닫아 주십시오.",
   "TR_ACQUIRE_DEVICE_TITLE": "다른 세션이 진행 중입니다",
   "TR_ACTIVE": "활성",
   "TR_ADD_WALLET": "지갑 추가",
