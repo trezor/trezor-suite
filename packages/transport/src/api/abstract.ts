@@ -141,7 +141,7 @@ export abstract class AbstractApi extends TypedEmitter<{
         return error(payload);
     }
 
-    protected unknownError<E extends AnyError>(err: Error, expectedErrors: E[]) {
+    protected unknownError<E extends AnyError = never>(err: Error, expectedErrors: E[] = []) {
         this.logger?.error('transport: abstract api: unknown error', err);
 
         return unknownError(err, expectedErrors);
@@ -190,7 +190,7 @@ export abstract class AbstractApi extends TypedEmitter<{
             // this should never happen, incorrectly handled error on api level. fn should not throw.
             this.logger?.error('transport: abstract api: runInIsolation error', err);
 
-            return this.unknownError(err, []);
+            return this.unknownError(err);
         } finally {
             this.lock[path] = {
                 read: lock.read ? false : this.lock[path].read,

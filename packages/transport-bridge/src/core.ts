@@ -107,7 +107,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         } catch (err) {
             logger?.debug(`core: readUtil catch: ${err.message}`);
 
-            return unknownError(err, []);
+            return unknownError(err);
         }
     };
 

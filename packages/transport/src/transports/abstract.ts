@@ -442,7 +442,10 @@ export abstract class AbstractTransport extends TypedEmitter<{
         return error<E>(payload);
     }
 
-    protected unknownError = <E extends AnyError>(err: Error | string, expectedErrors: E[]) => {
+    protected unknownError = <E extends AnyError = never>(
+        err: Error | string,
+        expectedErrors: E[] = [],
+    ) => {
         this.logger?.error(this.name, 'unexpected error: ', err);
 
         return unknownError(typeof err !== 'string' ? err : new Error(err), expectedErrors);
@@ -462,10 +465,10 @@ export abstract class AbstractTransport extends TypedEmitter<{
         return { signal: localAbortController.signal, abort };
     };
 
-    protected scheduleAction = <T, E extends AnyError>(
+    protected scheduleAction = <T, E extends AnyError = never>(
         action: ScheduledAction<T>,
         params?: ScheduleActionParams,
-        errors?: E[],
+        errors: E[] = [],
     ) => {
         const { signal, abort } = this.createLocalAbortController();
 
@@ -475,14 +478,13 @@ export abstract class AbstractTransport extends TypedEmitter<{
                 timeout: ACTION_TIMEOUT,
                 ...params,
             })
-                .catch(err => {
-                    const expectedErrors = [ERRORS.ABORTED_BY_TIMEOUT, ERRORS.ABORTED_BY_SIGNAL];
-                    if (errors) {
-                        (expectedErrors as E[]).push(...errors);
-                    }
-
-                    return unknownError(err, expectedErrors);
-                })
+                .catch(err =>
+                    unknownError(err, [
+                        ERRORS.ABORTED_BY_TIMEOUT,
+                        ERRORS.ABORTED_BY_SIGNAL,
+                        ...errors,
+                    ]),
+                )
                 .finally(() => {
                     this.abortController.signal.removeEventListener('abort', abort);
                 }),

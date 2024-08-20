@@ -185,7 +185,7 @@ export class UsbApi extends AbstractApi {
                 return this.success(this.devicesToDescriptors());
             } catch (err) {
                 // this shouldn't throw
-                return this.unknownError(err, []);
+                return this.unknownError(err);
             }
         });
     }

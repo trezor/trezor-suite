@@ -409,7 +409,7 @@ export class BridgeTransport extends AbstractTransport {
 
             switch (endpoint) {
                 case '/':
-                    return this.unknownError(response.error, []);
+                    return this.unknownError(response.error);
                 case '/acquire':
                     return this.unknownError(response.error, [
                         ERRORS.SESSION_WRONG_PREVIOUS,
@@ -427,7 +427,7 @@ export class BridgeTransport extends AbstractTransport {
                     ]);
                 case '/enumerate':
                 case '/listen':
-                    return this.unknownError(response.error, []);
+                    return this.unknownError(response.error);
                 case '/post':
                     return this.unknownError(response.error, [
                         ERRORS.SESSION_NOT_FOUND,
