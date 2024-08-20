@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
+import { discoverySupportedNetworks } from '@suite-native/config';
 
 export interface AssetType {
     symbol: NetworkSymbol;
@@ -33,6 +34,12 @@ export const selectDeviceAssetsWithBalances = memoize(
             accounts,
             A.map(account => account.symbol),
             A.uniq,
+            A.sort((a, b) => {
+                const aOrder = discoverySupportedNetworks.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
+                const bOrder = discoverySupportedNetworks.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
+
+                return aOrder - bOrder;
+            }),
         );
 
         const fiatCurrencyCode = selectFiatCurrencyCode(state);

@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/assets" },
+        {
+            "path": "../../suite-common/formatters"
+        },
         { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/wallet-config"
@@ -18,6 +21,7 @@
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
+        { "path": "../config" },
         { "path": "../formatters" },
         { "path": "../intl" },
         { "path": "../navigation" },
