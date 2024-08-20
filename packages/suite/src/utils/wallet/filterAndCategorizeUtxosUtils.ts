@@ -19,7 +19,7 @@ export const filterAndCategorizeUtxos = (params: FilterAndCategorizeUtxosParams)
     const filterUtxos = (utxo: Utxo) =>
         utxo.address.includes(searchQuery) ||
         utxo.txid.includes(searchQuery) ||
-        outputLabels?.[utxo.txid]?.[utxo.vout].includes(searchQuery);
+        outputLabels?.[utxo.txid]?.[utxo.vout]?.includes(searchQuery);
 
     return {
         filteredUtxos: utxos.filter(filterUtxos),
