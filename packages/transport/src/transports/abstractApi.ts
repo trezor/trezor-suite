@@ -39,7 +39,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
             return handshakeRes.success
                 ? this.success(undefined)
-                : this.unknownError('handshake error', []);
+                : this.unknownError('handshake error');
         });
     }
 
