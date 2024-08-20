@@ -1,4 +1,4 @@
-import { expect as detoxExpect } from 'detox';
+import { scrollUntilVisible } from '../utils';
 
 const platform = device.getPlatform();
 
@@ -22,7 +22,7 @@ class OnOnboardingActions {
             await element(by.id('@onboarding/TrackBalances/nextBtn')).tap();
         }
 
-        await detoxExpect(element(by.id('@onboarding/UserDataConsent/allow'))).toBeVisible();
+        await scrollUntilVisible(by.id(`@onboarding/UserDataConsent/allow`));
         await element(by.id('@onboarding/UserDataConsent/allow')).tap();
 
         try {
