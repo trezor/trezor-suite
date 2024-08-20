@@ -3,7 +3,7 @@ import { runCLI, getVersion as getJestVersion } from 'jest';
 import webpack from 'webpack';
 import karma from 'karma';
 
-import { TrezorUserEnvLink, Firmwares } from '@trezor/trezor-user-env-link';
+import { TrezorUserEnvLink, Firmwares, Model } from '@trezor/trezor-user-env-link';
 
 import argv from './jest.config';
 
@@ -19,10 +19,13 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     const getLatestFirmware = (model: keyof Firmwares) =>
         availableFirmwares[model].find(fw => !fw.replace('-arm', '').includes('-'));
 
-    const latest2 = getLatestFirmware('2');
-    const latest1 = getLatestFirmware('1');
+    const model =
+        firmwareModel && Object.keys(availableFirmwares).includes(firmwareModel)
+            ? (firmwareModel as Model)
+            : 'T2T1';
+    const latest = getLatestFirmware(model);
 
-    if (!latest2 || !latest1) {
+    if (!latest) {
         // should never happen
         throw new Error('could not translate n-latest into specific firmware version');
     }
@@ -31,35 +34,21 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
         type: 'emulator-start',
         wipe: true,
         version: firmwareArg,
+        model,
     };
 
-    if (firmwareArg === '2-latest') {
-        Object.assign(emulatorStartOpts, { version: latest2 });
-    }
-    if (firmwareArg === '1-latest') {
-        Object.assign(emulatorStartOpts, { version: latest1 });
+    if (firmwareArg?.endsWith('-latest')) {
+        Object.assign(emulatorStartOpts, { version: latest });
     }
     // no firmwareArg and not loading from url at the same time - provide fallback
     if (!firmwareArg && !firmwareUrl) {
-        Object.assign(emulatorStartOpts, { version: latest2 });
+        Object.assign(emulatorStartOpts, { version: latest });
     }
     if (firmwareUrl) {
         Object.assign(emulatorStartOpts, {
             type: 'emulator-start-from-url',
             url: firmwareUrl,
         });
-    }
-
-    if (firmwareModel) {
-        Object.assign(emulatorStartOpts, { model: firmwareModel });
-
-        // temporary, it seems that model "R" does not have any built versions
-        // and only master build is available
-        if (firmwareModel === 'R') {
-            [emulatorStartOpts.version] = availableFirmwares.R;
-        } else if (firmwareModel === 'T3T1') {
-            [emulatorStartOpts.version] = availableFirmwares.T3T1;
-        }
     }
 
     return emulatorStartOpts;

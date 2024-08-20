@@ -3,7 +3,7 @@
 
 describe('Onboarding - recover wallet T1B1', () => {
     beforeEach(() => {
-        cy.task('startEmu', { version: '1-latest', wipe: true });
+        cy.task('startEmu', { model: 'T1B1', version: '1-latest', wipe: true });
         cy.task('startBridge');
 
         cy.viewport(1440, 2560).resetDb();
@@ -33,7 +33,7 @@ describe('Onboarding - recover wallet T1B1', () => {
         cy.wait(501);
         cy.task('stopEmu');
         cy.getTestElement('@connect-device-prompt', { timeout: 20000 });
-        cy.task('startEmu', { version: '1-latest' });
+        cy.task('startEmu', { model: 'T1B1', version: '1-latest' });
 
         cy.getTestElement('@onboarding/recovery/retry-button').click();
         cy.getTestElement('@recover/select-count/12').click();

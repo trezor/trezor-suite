@@ -5,7 +5,7 @@
 // udp transport in suite and trying to enable this test again.
 describe.skip('T1B1 - Device settings', () => {
     beforeEach(() => {
-        cy.task('startEmu', { version: '1-latest', wipe: true });
+        cy.task('startEmu', { model: 'T1B1', version: '1-latest', wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
     });

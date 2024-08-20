@@ -66,7 +66,7 @@ describe('T2T1 - Device settings', () => {
     });
 
     it('unable to change homescreen in firmware < 2.5.4', () => {
-        cy.task('startEmu', { wipe: true, version: '2.5.3' });
+        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.5.3' });
         cy.task('setupEmu');
 
         cy.prefixedVisit('/');
@@ -82,7 +82,7 @@ describe('T2T1 - Device settings', () => {
     });
 
     it('able to change homescreen in firmware >= 2.5.4', () => {
-        cy.task('startEmu', { wipe: true, version: '2-main' });
+        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2-main' });
         cy.task('setupEmu');
 
         cy.prefixedVisit('/');

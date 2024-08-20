@@ -2,8 +2,9 @@
 // @retry=2
 
 const testedVersions = [
-    '2-latest',
-    '1.11.2', // Todo: fix latest version to return proper revision hash (it reports possibly FAKE device now)
+    // Todo: fix latest version to return proper revision hash (it reports possibly FAKE device now)
+    { version: '2-latest', model: 'T2T1' },
+    { version: '1.11.2', model: 'T1B1' },
 ];
 
 describe('Passphrase cancel', () => {
@@ -12,8 +13,8 @@ describe('Passphrase cancel', () => {
     });
 
     testedVersions.forEach(version => {
-        it(version, () => {
-            cy.task('startEmu', { wipe: true, version });
+        it(version.model + '_' + version.version, () => {
+            cy.task('startEmu', { wipe: true, ...version });
             cy.task('setupEmu', {
                 mnemonic: 'all all all all all all all all all all all all',
                 passphrase_protection: true,

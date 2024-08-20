@@ -23,7 +23,7 @@ describe('Analytics Events', () => {
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
         cy.getTestElement('@settings/menu/close').click();
 
-        cy.task('startEmu', { wipe: true, version: '2.6.0' });
+        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.6.0' });
         cy.task('setupEmu', {
             needs_backup: false,
             mnemonic: 'all all all all all all all all all all all all',

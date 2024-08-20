@@ -10,7 +10,7 @@ describe('Metadata - cancel metadata on device', () => {
 
     it('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', () => {
         // prepare test
-        cy.task('startEmu', { wipe: true, version: '2.7.0' });
+        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.7.0' });
         cy.task('setupEmu', {
             mnemonic,
             passphrase_protection: true,

@@ -20,10 +20,9 @@ set -euo pipefail
 
 ENVIRONMENT=$1
 
-if [[ "$ENVIRONMENT" != "web" && "$ENVIRONMENT" != "node" ]];
-    then
-        echo "either 'web' or 'node' must be specified as the first argument"
-        exit 1
+if [[ "$ENVIRONMENT" != "web" && "$ENVIRONMENT" != "node" ]]; then
+  echo "either 'web' or 'node' must be specified as the first argument"
+  exit 1
 fi
 
 show_usage() {
@@ -35,7 +34,7 @@ show_usage() {
   echo "  -D PATH  Set path to docker executable. Can be replaced with \`podman\`. default: docker"
   echo "  -e       All methods except excluded, example: applySettings,signTransaction"
   echo "  -p       Test pattern"
-  echo "  -f       Use specific firmware version, example: 2.1.4, 1.8.0 default: 2-main"
+  echo "  -f       Use specific firmware version, example: 2.1.4, 1.8.0 default: -main"
   echo "  -i       Included methods only, example: applySettings,signTransaction"
   echo "  -s       actual test script. default: 'yarn test:integration'"
   echo "  -u       Firmware url"
@@ -106,11 +105,10 @@ shift $((OPTIND - 1))
 
 export DOCKER_PATH
 
-if [[ $ENVIRONMENT == "node" ]];
-  then
-    SCRIPT="yarn workspace @trezor/connect test:e2e:node"
-  else
-    SCRIPT="yarn workspace @trezor/connect test:e2e:web"
+if [[ $ENVIRONMENT == "node" ]]; then
+  SCRIPT="yarn workspace @trezor/connect test:e2e:node"
+else
+  SCRIPT="yarn workspace @trezor/connect test:e2e:web"
 fi
 
 # export essential process.env variables

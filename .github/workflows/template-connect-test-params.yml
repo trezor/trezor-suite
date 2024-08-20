@@ -16,7 +16,7 @@ on:
         required: false
         default: "2-latest"
       testFirmwareModel:
-        description: "Firmware model for the tests (example: R)"
+        description: "Firmware model for the tests (example: T3T1)"
         type: "string"
         required: false
       nodeEnvironment:
@@ -30,7 +30,7 @@ on:
         required: false
         default: true
       testDescription:
-        description: "A description to make test title more descriptive (example: 2-latest-R)"
+        description: "A description to make test title more descriptive (example: T3T1-latest)"
         type: "string"
         required: false
         default: ""
