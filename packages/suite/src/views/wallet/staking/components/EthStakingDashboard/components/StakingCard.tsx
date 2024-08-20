@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled, { useTheme } from 'styled-components';
-import { Button, Card, Icon, Tooltip, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Badge, Button, Card, Icon, Tooltip, variables } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
 import { FiatValue, Translation } from 'src/components/suite';
@@ -50,15 +50,6 @@ const ProgressBarWrapper = styled.div`
     margin-top: ${spacingsPx.xxxl};
 `;
 
-const Info = styled.div`
-    margin: ${spacingsPx.md} 0 0 ${spacingsPx.xs};
-    display: flex;
-    gap: ${spacingsPx.xxs};
-    align-items: center;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
 const ButtonsWrapper = styled.div`
     margin-top: 66px;
     display: flex;
@@ -73,6 +64,12 @@ const StyledButton = styled(Button).attrs(props => ({
 }))`
     padding: 9px 22px;
     font-size: ${variables.FONT_SIZE.NORMAL};
+`;
+
+const Wrapper = styled.span`
+    display: flex;
+    gap: ${spacingsPx.xxs};
+    align-items: center;
 `;
 
 interface StakingCardProps {
@@ -204,6 +201,22 @@ export const StakingCard = ({
                     <AmountHeading>
                         <Icon icon="PLUS_CIRCLE" size={16} />
                         <Translation id="TR_STAKE_REWARDS" />
+                        <Tooltip
+                            maxWidth={250}
+                            content={
+                                <Translation
+                                    id="TR_STAKE_ETH_REWARDS_EARN_APY"
+                                    values={{ symbol: selectedAccount?.symbol?.toUpperCase() }}
+                                />
+                            }
+                        >
+                            <Badge variant="primary" size="small">
+                                <Wrapper>
+                                    <Translation id="TR_STAKE_RESTAKED_BADGE" />
+                                    <Icon icon="INFO" size={spacings.sm} variant="primary" />
+                                </Wrapper>
+                            </Badge>
+                        </Tooltip>
                     </AmountHeading>
 
                     <TrimmedCryptoAmount
@@ -272,14 +285,6 @@ export const StakingCard = ({
                     $isPendingUnstakeShown={isPendingUnstakeShown}
                 />
             </ProgressBarWrapper>
-
-            <Info>
-                <Icon icon="INFO" size={12} />
-                <Translation
-                    id="TR_STAKE_ETH_REWARDS_EARN_APY"
-                    values={{ symbol: selectedAccount?.symbol?.toUpperCase() }}
-                />
-            </Info>
 
             <ButtonsWrapper>
                 <Tooltip content={stakingMessageContent}>

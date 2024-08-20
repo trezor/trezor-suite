@@ -8374,6 +8374,10 @@ export default defineMessages({
         id: 'TR_STAKE_ETH_BADGE',
         defaultMessage: 'New',
     },
+    TR_STAKE_RESTAKED_BADGE: {
+        id: 'TR_STAKE_RESTAKED_BADGE',
+        defaultMessage: 'Restaked',
+    },
     TR_STAKE_ETH_CARD_TITLE: {
         id: 'TR_STAKE_ETH_CARD_TITLE',
         defaultMessage: 'The easiest way to earn {symbol}.',
