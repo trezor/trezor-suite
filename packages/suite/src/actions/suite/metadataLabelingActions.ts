@@ -643,7 +643,7 @@ export const init =
                     return;
                 }
                 dispatch(fetchAndSaveMetadata(device.state));
-            }, 10000);
+            }, 60_000);
         }
 
         return true;
