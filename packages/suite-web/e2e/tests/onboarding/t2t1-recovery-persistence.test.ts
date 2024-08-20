@@ -49,7 +49,7 @@ const shareTwoOfThree = [
 describe('Onboarding - T2T1 in recovery mode', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.task('startEmu', { wipe: true, version: '2.4.3' });
+        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.5.3' });
         cy.resetDb();
         cy.viewport(1440, 2560);
         cy.prefixedVisit('/');
@@ -82,7 +82,7 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.safeReload();
 
         // now suite has reloaded. database is wiped.
-        cy.task('startEmu', { wipe: false, version: '2.4.3' });
+        cy.task('startEmu', { wipe: false, model: 'T2T1', version: '2.5.3' });
         // analytics opt-out again
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
@@ -121,7 +121,7 @@ describe('Onboarding - T2T1 in recovery mode', () => {
         cy.task('stopEmu');
         cy.wait(501);
         cy.getTestElement('@connect-device-prompt', { timeout: 30000 });
-        cy.task('startEmu', { wipe: false, version: '2.4.3' });
+        cy.task('startEmu', { wipe: false, model: 'T2T1', version: '2.5.3' });
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.wait(501);
         cy.task('pressYes');

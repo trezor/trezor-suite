@@ -11,7 +11,7 @@ import {
 } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
-const bridgeVersion = '2.0.31';
+const bridgeVersion = '2.0.33';
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
 const isCoreInPopup = process.env.CORE_IN_POPUP === 'true';

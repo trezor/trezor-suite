@@ -86,7 +86,7 @@ const canaryFirmware = {
 
 const otherDevices = {
     firmwares: ['2-latest'],
-    models: ['R', 'T3T1'],
+    models: ['T2B1', 'T3T1'],
     tests: [
         ...Object.values(groups).filter(
             // management, btc-others are specified below

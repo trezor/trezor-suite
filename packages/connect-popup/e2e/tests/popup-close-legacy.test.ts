@@ -3,7 +3,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { createDeferred, Deferred } from '@trezor/utils';
 import { log } from '../support/helpers';
 
-const BRIDGE_VERSION = '2.0.31';
+const BRIDGE_VERSION = '2.0.33';
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
 const CONNECT_LEGACY_VERSION = '9.0.10';
 

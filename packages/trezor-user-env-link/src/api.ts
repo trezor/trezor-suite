@@ -56,6 +56,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
     private client: WebsocketClient;
     public firmwares?: Firmwares;
     private defaultFirmware?: string;
+    private defaultModel: Model = 'T2T1';
 
     // todo: remove later, used in some of the tests
     public send: WebsocketClient['send'];
@@ -69,7 +70,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
             // select the highest version from the list of available firmwares.
             // this is the version that is likely to be the newest production.
             this.defaultFirmware = semverRSort(
-                this.firmwares['2'].filter(fw => semverValid(fw)),
+                this.firmwares[this.defaultModel].filter(fw => semverValid(fw)),
             )[0];
         });
 
@@ -139,6 +140,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
     async startEmu(arg?: StartEmu) {
         const params = {
             type: 'emulator-start',
+            model: this.defaultModel,
             version: this.defaultFirmware || '2-main',
             ...arg,
         };

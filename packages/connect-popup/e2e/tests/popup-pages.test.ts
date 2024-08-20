@@ -13,7 +13,7 @@ import fs from 'fs';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
-const bridgeVersion = '2.0.31';
+const bridgeVersion = '2.0.33';
 // popup window reference
 let popup: Page;
 let persistentContext: BrowserContext | undefined;

@@ -8,7 +8,7 @@ let requests: Requests;
 
 describe('Backup fail', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { wipe: true, model: 'T2T1' });
         cy.task('setupEmu', { needs_backup: true });
         cy.task('startBridge');
         cy.viewport(1440, 2560).resetDb();

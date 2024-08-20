@@ -8,7 +8,7 @@ describe('Firmware', () => {
     });
 
     it(`Firmware 2.5.2 outdated notification banner should open firmware update modal`, () => {
-        cy.task('startEmu', { wipe: true, version: '2.5.2' });
+        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.5.2' });
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.prefixedVisit('/');

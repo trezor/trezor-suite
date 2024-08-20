@@ -7,7 +7,7 @@ import { pathLength, descriptor as expectedDescriptor } from './expect';
 // todo: introduce global jest config for e2e
 jest.setTimeout(60000);
 
-const emulatorStartOpts = { version: '2-main', wipe: true };
+const emulatorStartOpts = { model: 'T2T1', version: '2-main', wipe: true } as const;
 
 describe('bridge', () => {
     beforeAll(async () => {

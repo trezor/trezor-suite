@@ -7,7 +7,7 @@ describe('Onboarding - recover wallet T2T1', () => {
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
 
-        cy.task('startEmu', { wipe: true, version: '2.5.3' });
+        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.5.3' });
         cy.getTestElement('@analytics/continue-button').click();
         cy.getTestElement('@analytics/continue-button').click();
 
