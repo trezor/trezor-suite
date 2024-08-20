@@ -10,7 +10,7 @@ import { useSelector } from 'src/hooks/suite';
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';
-import { OnlineStatus } from './OnlineStatusBanner';
+import { NoConnectionBanner } from './NoConnectionBanner';
 import { UpdateBridge } from './UpdateBridgeBanner';
 import { UpdateFirmware } from './UpdateFirmwareBanner';
 import { NoBackup } from './NoBackupBanner';
@@ -33,7 +33,7 @@ const Container = styled.div<{ $isVisible?: boolean }>`
 export const SuiteBanners = () => {
     const transport = useSelector(state => state.suite.transport);
     const device = useSelector(selectDevice);
-    const online = useSelector(state => state.suite.online);
+    const isOnline = useSelector(state => state.suite.online);
     const firmwareHashInvalid = useSelector(state => state.firmware.firmwareHashInvalid);
     const bannerMessage = useSelector(selectBannerMessage);
     const { isFirmwareRevisionCheckDisabled } = useSelector(state => state.suite.settings);
@@ -104,14 +104,21 @@ export const SuiteBanners = () => {
     }
 
     // message system banners should always be visible in the app even if app body is blurred
-    const useMessageSystemBanner = bannerMessage && bannerMessage.priority >= priority;
+    const isMessageSystemBannerVisible = bannerMessage && bannerMessage.priority >= priority;
+
+    const isBannerVisible =
+        isMessageSystemBannerVisible ||
+        isTranslationMode() ||
+        !isOnline ||
+        (!isMessageSystemBannerVisible && banner !== null);
+    if (!isBannerVisible) return null;
 
     return (
         <Container>
-            {useMessageSystemBanner && <MessageSystemBanner message={bannerMessage} />}
+            {isMessageSystemBannerVisible && <MessageSystemBanner message={bannerMessage} />}
             {isTranslationMode() && <TranslationMode />}
-            <OnlineStatus isOnline={online} />
-            {!useMessageSystemBanner && banner}
+            {!isOnline && <NoConnectionBanner />}
+            {!isMessageSystemBannerVisible && banner}
             {/* TODO: add Pin not set */}
         </Container>
     );
