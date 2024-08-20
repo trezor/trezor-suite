@@ -13,13 +13,19 @@ type FilterAndCategorizeUtxosParams = {
 /**
  * Filter UTXOs based on search query and categorize them into spendable, low anonymity and dust UTXOs.
  */
-export const filterAndCategorizeUtxos = (params: FilterAndCategorizeUtxosParams) => {
-    const { searchQuery, utxos, spendableUtxos, lowAnonymityUtxos, dustUtxos, outputLabels } =
-        params;
+export const filterAndCategorizeUtxos = ({
+    searchQuery,
+    utxos,
+    spendableUtxos,
+    lowAnonymityUtxos,
+    dustUtxos,
+    outputLabels,
+}: FilterAndCategorizeUtxosParams) => {
+    const lowerCaseSearchQuery = searchQuery.toLowerCase();
     const filterUtxos = (utxo: Utxo) =>
-        utxo.address.includes(searchQuery) ||
-        utxo.txid.includes(searchQuery) ||
-        outputLabels?.[utxo.txid]?.[utxo.vout]?.includes(searchQuery);
+        utxo.address.includes(lowerCaseSearchQuery) ||
+        utxo.txid.includes(lowerCaseSearchQuery) ||
+        outputLabels?.[utxo.txid]?.[utxo.vout]?.toLowerCase().includes(lowerCaseSearchQuery);
 
     return {
         filteredUtxos: utxos.filter(filterUtxos),
