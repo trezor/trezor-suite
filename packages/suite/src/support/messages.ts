@@ -34,11 +34,6 @@ export default defineMessages({
         defaultMessage:
             'A passphrase adds a custom phrase (like a word, sentence, or string of characters) to your existing wallet backup, creating a hidden wallet. Each hidden wallet has its own passphrase. Your standard wallet remains accessible without a passphrase.',
     },
-    TR_HIDDEN_WALLET_MODAL_DESCRIPTION: {
-        id: 'TR_HIDDEN_WALLET_MODAL_DESCRIPTION',
-        defaultMessage:
-            'Passphrase is a custom word, sentence, or string of characters added to your wallet backup. Entering a new one creates a new Passphrase wallet.',
-    },
     TR_ACCESS_STANDARD_WALLET: {
         defaultMessage: 'Access standard wallet',
         id: 'TR_ACCESS_STANDARD_WALLET',
@@ -102,11 +97,6 @@ export default defineMessages({
         description:
             'call-to-action to use device in current window when it is used in other window',
         id: 'TR_ACQUIRE_DEVICE',
-    },
-    TR_ACQUIRE_DEVICE_DESCRIPTION: {
-        defaultMessage:
-            'Your Trezor seems to be in use in another window. Please close all other windows or tabs that might be using your Trezor.',
-        id: 'TR_ACQUIRE_DEVICE_DESCRIPTION',
     },
     TR_RECONNECT_DEVICE_DESCRIPTION: {
         defaultMessage:
@@ -199,23 +189,6 @@ export default defineMessages({
         defaultMessage: 'All',
         id: 'TR_FRACTION_BUTTONS_ALL',
     },
-    TR_SPEND_NO_PROVIDERS: {
-        defaultMessage: 'No providers',
-        id: 'TR_SPEND_NO_PROVIDERS',
-    },
-    TR_SPEND_PROVIDER_CONTENT: {
-        defaultMessage: 'This content is fully provided by our partner',
-        id: 'TR_SPEND_PROVIDER_CONTENT',
-    },
-    TR_SPEND_PROVIDER_CONTENT_WINDOW: {
-        defaultMessage:
-            'Spend content is fully provided by our partner Bitrefill. You’ll choose your purchase on their website and finish the transaction in Trezor Suite.',
-        id: 'TR_SPEND_PROVIDER_CONTENT_WINDOW',
-    },
-    TR_SPEND_STATUS_FINISHED: {
-        defaultMessage: 'Finished',
-        id: 'TR_SPEND_STATUS_FINISHED',
-    },
     TR_EXCHANGE_NO_PROVIDERS: {
         defaultMessage: 'No providers',
         id: 'TR_EXCHANGE_NO_PROVIDERS',
@@ -224,41 +197,15 @@ export default defineMessages({
         defaultMessage: 'Provider',
         id: 'TR_EXCHANGE_PROVIDER',
     },
-    TR_EXCHANGE_KYC: {
-        id: 'TR_EXCHANGE_KYC',
-        defaultMessage: 'KYC',
-    },
-    TR_EXCHANGE_KYC_INFO: {
-        id: 'TR_EXCHANGE_KYC_INFO',
-        defaultMessage:
-            '"Know your customer" (KYC) refers to providing identifying information to the exchange provider, usually a phone number and a copy of an identification document. This varies from provider to provider and may depend on the amount you\'re exchanging, so check this information carefully before proceeding.',
-    },
-    TR_EXCHANGE_FIXED_OFFERS: {
-        id: 'TR_EXCHANGE_FIXED_OFFERS',
-        defaultMessage: 'Fixed-rate offers',
-    },
     TR_EXCHANGE_FIXED_OFFERS_INFO: {
         id: 'TR_EXCHANGE_FIXED_OFFERS_INFO',
         defaultMessage:
             "Fixed rates show you exactly how much you'll end up with at the end of the exchange—the amount won't change between when you select the rate and when your transaction is complete. You're guaranteed the amount shown, but these rates are usually less generous, meaning your money won't buy as much crypto.",
     },
-    TR_EXCHANGE_FLOAT_OFFERS: {
-        id: 'TR_EXCHANGE_FLOAT_OFFERS',
-        defaultMessage: 'Floating-rate offers',
-    },
     TR_EXCHANGE_FLOAT_OFFERS_INFO: {
         id: 'TR_EXCHANGE_FLOAT_OFFERS_INFO',
         defaultMessage:
             "Floating rates mean that the final amount you'll get may change slightly due to fluctuations in the market between when you select the rate and when your transaction is complete. These rates are usually higher, meaning you could end up with more crypto in the end.",
-    },
-    TR_EXCHANGE_DEX_OFFERS: {
-        id: 'TR_EXCHANGE_DEX_OFFERS',
-        defaultMessage: 'Decentralized exchange offers',
-    },
-    TR_EXCHANGE_DEX_OFFERS_INFO: {
-        id: 'TR_EXCHANGE_DEX_OFFERS_INFO',
-        defaultMessage:
-            'Decentralized exchange (DEX) swaps are performed via smart contracts running on the blockchain. They may be faster and offer better rates, especially for large amounts.',
     },
     TR_EXCHANGE_DEX_OFFER_NO_FUNDS_FEES: {
         id: 'TR_EXCHANGE_DEX_OFFER_NO_FUNDS_FEES',
@@ -274,20 +221,6 @@ export default defineMessages({
         id: 'TR_EXCHANGE_FEES_INFO',
         defaultMessage:
             'All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).',
-    },
-    TR_EXCHANGE_DEX_FEES_INFO: {
-        id: 'TR_EXCHANGE_DEX_FEES_INFO',
-        defaultMessage: 'See info about fees in each DEX offer.',
-    },
-    TR_EXCHANGE_DEX_FEES_INFO_TOOLTIP: {
-        id: 'TR_EXCHANGE_DEX_FEES_INFO_TOOLTIP',
-        defaultMessage:
-            'To perform a DEX swap, it may be necessary to perform two blockchain transactions: an approval transaction and a swap transaction. Each transaction has a different fee.',
-    },
-    TR_EXCHANGE_FEES_INCLUDED_INFO: {
-        id: 'TR_EXCHANGE_FEES_INCLUDED_INFO',
-        defaultMessage:
-            "What you see is close to what you'll get—the amount shown is the best estimate of the final amount you'll receive, with all exchange fees included. For float-rate offers, there may be slight changes between accepting the offer and completing the transaction.",
     },
     TR_EXCHANGE_SHOW_OFFERS: {
         defaultMessage: 'Compare offers',
@@ -783,11 +716,6 @@ export default defineMessages({
         defaultMessage: 'Order now',
         id: 'TR_ORDER_NOW',
     },
-    TREZOR_SAFE_PROMO_TEXT: {
-        id: 'TREZOR_SAFE_PROMO_TEXT',
-        defaultMessage:
-            '<underline>The most convenient</underline> <white>hardware wallet to securely manage your crypto</white>',
-    },
     TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT: {
         defaultMessage: 'Minimum is {minimum} {currency}',
         id: 'TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT',
@@ -857,14 +785,6 @@ export default defineMessages({
         id: 'TR_SELL_MODAL_TERMS_6',
         dynamic: true,
     },
-    TR_SELL_OTHER_OFFERS_IN: {
-        defaultMessage: 'Other offers in',
-        id: 'TR_SELL_OTHER_OFFERS_IN',
-    },
-    TR_SELL_NO_OFFERS: {
-        defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
-        id: 'TR_SELL_NO_OFFERS',
-    },
     TR_SELL_REGISTER: {
         id: 'TR_SELL_REGISTER',
         defaultMessage: 'Register',
@@ -873,21 +793,9 @@ export default defineMessages({
         defaultMessage: 'Provider',
         id: 'TR_SELL_PROVIDER',
     },
-    TR_SELL_FEES: {
-        defaultMessage: 'Fees',
-        id: 'TR_SELL_FEES',
-    },
     TR_SELL_PAID_BY: {
         defaultMessage: 'paid by',
         id: 'TR_SELL_PAID_BY',
-    },
-    TR_SELL_BANK_ACCOUNT_VERIFICATION_INFO: {
-        defaultMessage: '1-3 days to verify bank account',
-        id: 'TR_SELL_BANK_ACCOUNT_VERIFICATION_INFO',
-    },
-    TR_SELL_ALL_FEES_INCLUDED: {
-        defaultMessage: 'All fees included',
-        id: 'TR_SELL_ALL_FEES_INCLUDED',
     },
     TR_SELL_SPEND: {
         defaultMessage: 'spend',
@@ -1010,53 +918,10 @@ export default defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
-    TR_P2P_WORTH_OF: {
-        defaultMessage: 'worth of',
-        id: 'TR_P2P_WORTH_OF',
-    },
     TR_P2P_INFO: {
         defaultMessage:
             'With {peerToPeer} (P2P) technology, there is no KYC verification involved neither on the side of the buyer nor the seller. All parties are protected against fraud by secure {multisigEscrow}.',
         id: 'TR_P2P_INFO',
-    },
-    TR_P2P_INFO_PEER_TO_PEER: {
-        defaultMessage: 'Peer-to-Peer',
-        id: 'TR_P2P_INFO_PEER_TO_PEER',
-    },
-    TR_P2P_INFO_PEER_TO_PEER_TOOLTIP: {
-        defaultMessage:
-            'You conduct business directly with a specific person instead of a centralized institution. The P2P platform helps you find sellers and provides security.',
-        id: 'TR_P2P_INFO_PEER_TO_PEER_TOOLTIP',
-    },
-    TR_P2P_INFO_MULTISIG_ESCROW: {
-        defaultMessage: 'multisig escrow',
-        id: 'TR_P2P_INFO_MULTISIG_ESCROW',
-    },
-    TR_P2P_INFO_MULTISIG_ESCROW_TOOLTIP: {
-        defaultMessage:
-            'This is a unique generated address where the bitcoins are kept safe during the trade. To release it, a “signature” is needed from at least two out of three parties (buyer, seller, platform provider) to validate a successful transaction.',
-        id: 'TR_P2P_INFO_MULTISIG_ESCROW_TOOLTIP',
-    },
-    TR_P2P_OFFERS_FOR: {
-        defaultMessage: 'Offers for',
-        id: 'TR_P2P_OFFERS_FOR',
-    },
-    TR_P2P_SHOW_OFFERS: {
-        defaultMessage: 'Show offers',
-        id: 'TR_P2P_SHOW_OFFERS',
-    },
-    TR_P2P_NO_OFFERS: {
-        defaultMessage:
-            'Sorry, there are no offers for your selection. You can choose from other deals below.',
-        id: 'TR_P2P_NO_OFFERS',
-    },
-    TR_P2P_MORE_OFFERS_AVAILABLE: {
-        defaultMessage: 'Check out more offers in different currencies.',
-        id: 'TR_P2P_MORE_OFFERS_AVAILABLE',
-    },
-    TR_P2P_ALTERNATIVE_OFFERS: {
-        defaultMessage: 'Alternative offers',
-        id: 'TR_P2P_ALTERNATIVE_OFFERS',
     },
     TR_P2P_PRICE: {
         defaultMessage: 'Price for 1 {symbol}',
@@ -1066,80 +931,23 @@ export default defineMessages({
         defaultMessage: '{symbol} price offered by this user.',
         id: 'TR_P2P_PRICE_TOOLTIP',
     },
-    TR_P2P_AMOUNT: {
-        defaultMessage: 'Amount',
-        id: 'TR_P2P_AMOUNT',
-    },
-    TR_P2P_AMOUNT_RANGE: {
-        defaultMessage: 'Amount range',
-        id: 'TR_P2P_AMOUNT_RANGE',
-    },
     TR_P2P_AMOUNT_RANGE_TOOLTIP: {
         defaultMessage:
             'The minimum and maximum amount for which this user is willing to sell {symbol}.',
         id: 'TR_P2P_AMOUNT_RANGE_TOOLTIP',
     },
-    TR_P2P_GET_THIS_OFFER: {
-        defaultMessage: 'Get this deal',
-        id: 'TR_P2P_GET_THIS_OFFER',
-    },
-    TR_P2P_PROVIDER: {
-        defaultMessage: 'Provider',
-        id: 'TR_P2P_PROVIDER',
-    },
-    TR_P2P_USER: {
-        defaultMessage: 'User',
-        id: 'TR_P2P_USER',
-    },
-    TR_P2P_USER_TOOLTIP: {
-        defaultMessage:
-            'The user offering this deal. Note their rating and number of performed trades.',
-        id: 'TR_P2P_USER_TOOLTIP',
-    },
     TR_P2P_USER_REPUTATION: {
         defaultMessage: '({rating}, {numberOfTrades})',
         id: 'TR_P2P_USER_REPUTATION',
-    },
-    TR_P2P_UNKNOWN_RATING: {
-        defaultMessage: '?',
-        id: 'TR_P2P_UNKNOWN_RATING',
-    },
-    TR_P2P_TITLE: {
-        defaultMessage: 'Title',
-        id: 'TR_P2P_TITLE',
     },
     TR_P2P_TITLE_NOT_AVAILABLE: {
         defaultMessage: 'Hey there, I’m using {providerName}!',
         id: 'TR_P2P_TITLE_NOT_AVAILABLE',
     },
-    TR_P2P_LOCATION: {
-        defaultMessage: 'Location',
-        id: 'TR_P2P_LOCATION',
-    },
-    TR_P2P_PAYMENT_METHODS: {
-        defaultMessage: 'Payment methods',
-        id: 'TR_P2P_PAYMENT_METHODS',
-    },
-    TR_P2P_PAYMENT_METHODS_TOOLTIP: {
-        defaultMessage: 'All payment methods accepted by this user.',
-        id: 'TR_P2P_PAYMENT_METHODS_TOOLTIP',
-    },
-    TR_P2P_PAYMENT_WINDOW: {
-        defaultMessage: 'Payment window',
-        id: 'TR_P2P_PAYMENT_WINDOW',
-    },
     TR_P2P_PAYMENT_WINDOW_TOOLTIP: {
         defaultMessage:
             'The transaction needs to be completed within this time limit, counting from creating a contract on the {providerName} site.',
         id: 'TR_P2P_PAYMENT_WINDOW_TOOLTIP',
-    },
-    TR_P2P_PAYMENT_WINDOW_MINUTES: {
-        defaultMessage: 'min',
-        id: 'TR_P2P_PAYMENT_WINDOW_MINUTES',
-    },
-    TR_P2P_CONFIRMATIONS: {
-        defaultMessage: 'Confirmations',
-        id: 'TR_P2P_CONFIRMATIONS',
     },
     TR_P2P_WARNING_AMOUNT_RANGE_MINIMUM: {
         defaultMessage:
@@ -1206,14 +1014,6 @@ export default defineMessages({
         id: 'TR_P2P_MODAL_CONFIRM',
         dynamic: true,
     },
-    TR_P2P_GET_STARTED_STEP: {
-        defaultMessage: 'Get started',
-        id: 'TR_P2P_GET_STARTED_STEP',
-    },
-    TR_P2P_RECEIVING_ADDRESS_STEP: {
-        defaultMessage: 'Receive address',
-        id: 'TR_P2P_RECEIVING_ADDRESS_STEP',
-    },
     TR_P2P_GET_STARTED_INTRO: {
         defaultMessage:
             'You need to initiate the transaction on {providerName} – make sure to follow the steps below carefully.',
@@ -1223,44 +1023,19 @@ export default defineMessages({
         defaultMessage: 'Select “Go to {providerName}” to be redirected to our partner’s website.',
         id: 'TR_P2P_GET_STARTED_ITEM_1',
     },
-    TR_P2P_GET_STARTED_ITEM_2: {
-        defaultMessage: 'Sign in or create an account on the platform and follow its instructions.',
-        id: 'TR_P2P_GET_STARTED_ITEM_2',
-    },
     TR_P2P_GET_STARTED_ITEM_3: {
         defaultMessage:
             'Once {providerName} asks you for a release address, return here and continue.',
         id: 'TR_P2P_GET_STARTED_ITEM_3',
     },
-    TR_P2P_GET_STARTED_ATTENTION: {
-        defaultMessage:
-            'Attention: Do NOT close Trezor Suite at any time during the process or you will have to start over.',
-        id: 'TR_P2P_GET_STARTED_ATTENTION',
-    },
     TR_P2P_GO_TO_PROVIDER: {
         defaultMessage: 'Go to {providerName}',
         id: 'TR_P2P_GO_TO_PROVIDER',
-    },
-    TR_P2P_GO_TO_RECEIVING_ADDRESS: {
-        defaultMessage: 'Go to receive address',
-        id: 'TR_P2P_GO_TO_RECEIVING_ADDRESS',
-    },
-    TR_P2P_RECEIVING_ADDRESS: {
-        defaultMessage: 'Receive address',
-        id: 'TR_P2P_RECEIVING_ADDRESS',
     },
     TR_P2P_RECEIVING_ADDRESS_ALMOST_THERE: {
         defaultMessage:
             'Almost there! Reveal and copy your address, paste it into the “Release address” field back on {providerName}, and finalize the transaction.',
         id: 'TR_P2P_GET_STARTED_ITEM_4',
-    },
-    TR_P2P_REVEAL_ADDRESS: {
-        defaultMessage: 'Reveal address',
-        id: 'TR_P2P_REVEAL_ADDRESS',
-    },
-    TR_P2P_BACK_TO_ACCOUNT: {
-        defaultMessage: 'Done! Back to my account',
-        id: 'TR_P2P_BACK_TO_ACCOUNT',
     },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
@@ -1333,14 +1108,6 @@ export default defineMessages({
         id: 'TR_BUY_MODAL_TERMS_6',
         dynamic: true,
     },
-    TR_BUY_OTHER_OFFERS_IN: {
-        defaultMessage: 'More offers available if you pay in',
-        id: 'TR_BUY_OTHER_OFFERS_IN',
-    },
-    TR_BUY_NO_OFFERS: {
-        defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
-        id: 'TR_BUY_NO_OFFERS',
-    },
     TR_VALIDATION_ERROR_MINIMUM_CRYPTO: {
         defaultMessage: 'Minimum is {minimum}',
         id: 'TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO',
@@ -1385,10 +1152,6 @@ export default defineMessages({
         defaultMessage: 'Approved',
         id: 'TR_BUY_STATUS_SUCCESS',
     },
-    TR_BUY_NO_PROVIDERS: {
-        defaultMessage: 'No providers',
-        id: 'TR_BUY_NO_PROVIDERS',
-    },
     TR_LOGIN_PROCEED: {
         id: 'TR_LOGIN_PROCEED',
         defaultMessage: 'Proceed',
@@ -1416,10 +1179,6 @@ export default defineMessages({
     TR_TERMS_OF_USE_INVITY: {
         defaultMessage: 'Terms of Use',
         id: 'TR_TERMS_OF_USE_INVITY',
-    },
-    TR_BUY_SPEND: {
-        defaultMessage: 'Spend',
-        id: 'TR_BUY_SPEND',
     },
     TR_BUY_PROVIDED_BY_INVITY: {
         defaultMessage: 'Powered by',
@@ -1453,17 +1212,9 @@ export default defineMessages({
         defaultMessage: 'Confirmed on Trezor',
         id: 'TR_BUY_CONFIRMED_ON_TREZOR',
     },
-    TR_BUY_OFFERS_FOR: {
-        defaultMessage: 'Offers for',
-        id: 'TR_BUY_OFFERS_FOR',
-    },
     TR_BUY_NOT_TRANSACTIONS: {
         defaultMessage: 'No transactions yet.',
         id: 'TR_BUY_NOT_TRANSACTIONS',
-    },
-    TR_BUY_SHOW_OFFERS: {
-        defaultMessage: 'Compare offers',
-        id: 'TR_BUY_SHOW_OFFERS',
     },
     TR_BUY_CONFIRM_ON_TREZOR: {
         defaultMessage: 'Confirm on Trezor',
@@ -1718,14 +1469,6 @@ export default defineMessages({
     TR_COINMARKET_FLOATING_RATE_DESCRIPTION: {
         id: 'TR_COINMARKET_FLOATING_RATE_DESCRIPTION',
         defaultMessage: 'Get an estimated rate that may adjust with real-time market changes.',
-    },
-    TR_COINMARKET_CEX_TOOLTIP: {
-        id: 'TR_COINMARKET_CEX_TOOLTIP',
-        defaultMessage: 'Centralized exchange',
-    },
-    TR_COINMARKET_DEX_TOOLTIP: {
-        id: 'TR_COINMARKET_DEX_TOOLTIP',
-        defaultMessage: 'Decentralized exchange',
     },
     TR_COINMARKET_NO_CEX_PROVIDER_FOUND: {
         id: 'TR_COINMARKET_NO_CEX_PROVIDER_FOUND',
@@ -2166,10 +1909,6 @@ export default defineMessages({
         defaultMessage: 'Find Trezor',
         id: 'TR_CHECK_FOR_DEVICES',
     },
-    TR_CHECK_PGP_SIGNATURE: {
-        defaultMessage: 'Check PGP signature',
-        id: 'TR_CHECK_PGP_SIGNATURE',
-    },
     TR_CHECK_RECOVERY_SEED: {
         defaultMessage: 'Check backup',
         id: 'TR_CHECK_RECOVERY_SEED',
@@ -2196,10 +1935,6 @@ export default defineMessages({
         defaultMessage: 'Close',
         id: 'TR_CLOSE',
     },
-    TR_COIN_DISCOVERY_IN_PROGRESS: {
-        defaultMessage: 'Checking balances',
-        id: 'TR_COIN_DISCOVERY_IN_PROGRESS',
-    },
     TR_COIN_DISCOVERY_LOADER_DESCRIPTION: {
         defaultMessage: 'Checking passphrase wallet for balances & transactions',
         id: 'TR_COIN_DISCOVERY_LOADER_DESCRIPTION',
@@ -2223,10 +1958,6 @@ export default defineMessages({
     TR_CONFIRM_ACTION_ON_YOUR: {
         defaultMessage: "Follow the instructions on your Trezor's screen",
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
-    },
-    TR_CONFIRM_EMPTY_HIDDEN_WALLET: {
-        defaultMessage: 'Confirm empty Passphrase wallet',
-        id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON: {
         defaultMessage: 'Confirm empty Passprase wallet on "{deviceLabel}" device.',
@@ -2353,10 +2084,6 @@ export default defineMessages({
     TR_DEVICE_LABEL_IS_UNAVAILABLE: {
         defaultMessage: 'Device "{deviceLabel}" is unavailable',
         id: 'TR_DEVICE_LABEL_IS_UNAVAILABLE',
-    },
-    TR_EDIT: {
-        defaultMessage: 'Edit',
-        id: 'TR_EDIT',
     },
     TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED: {
         defaultMessage:
@@ -2823,10 +2550,6 @@ export default defineMessages({
         defaultMessage:
             'All data collected is anonymous and is used to improve product performance and development. More in <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>.',
     },
-    TR_EJECT_WALLET_EXPLANATION: {
-        defaultMessage: 'Removes all wallet data from Trezor Suite.',
-        id: 'TR_EJECT_WALLET_EXPLANATION',
-    },
     TR_HOLOGRAM_STEP_HEADING: {
         defaultMessage: 'Verify your seal',
         description: 'Heading on hologram step page',
@@ -3153,11 +2876,6 @@ export default defineMessages({
             'DSOL will display SOL on your Trezor due to network limitations. Check the provided blockhash on Devnet explorer if you want to verify the transaction network.',
         id: 'TR_SOLANA_DEVNET_SHORTCUT_WARNING',
     },
-    TR_NEW_COMMUNICATION_TOOL: {
-        defaultMessage:
-            'A new communication tool to facilitate the connection between your Trezor and your browser.',
-        id: 'TR_NEW_COMMUNICATION_TOOL',
-    },
     TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE: {
         defaultMessage: 'New Trezor Bridge is available.',
         id: 'TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE',
@@ -3200,22 +2918,6 @@ export default defineMessages({
     TR_OUTGOING: {
         defaultMessage: 'Outgoing',
         id: 'TR_OUTGOING',
-    },
-    TR_SPEND_LEAVE: {
-        defaultMessage: 'Leave anyway',
-        id: 'TR_SPEND_LEAVE',
-    },
-    TR_SPEND_LEAVE_MODAL_INFO: {
-        defaultMessage: 'Suite is communicating with Bitrefill; do not leave this tab.',
-        id: 'TR_SPEND_LEAVE_MODAL_INFO',
-    },
-    TR_SPEND_OPEN_WINDOW: {
-        defaultMessage: 'Go to partner site',
-        id: 'TR_SPEND_OPEN_WINDOW',
-    },
-    TR_SPEND_TRANS_ID: {
-        defaultMessage: 'Trans. ID:',
-        id: 'TR_SPEND_TRANS_ID',
     },
     TR_PASSPHRASE_CASE_SENSITIVE: {
         defaultMessage: 'Note: Passphrase is case-sensitive.',
@@ -3367,10 +3069,6 @@ export default defineMessages({
             'There are two methods of recovery for T1B1. This is a short explanation text.',
         id: 'TR_RECOVERY_TYPES_DESCRIPTION',
     },
-    TR_REMEMBER_ALLOWS_YOU_TO: {
-        defaultMessage: 'Keeps your wallet visible even when your Trezor is disconnected.',
-        id: 'TR_REMEMBER_ALLOWS_YOU_TO',
-    },
     TR_RETRY: {
         defaultMessage: 'Retry',
         description: 'Retry button',
@@ -3409,10 +3107,6 @@ export default defineMessages({
     TR_SELECT_PASSPHRASE_SOURCE: {
         defaultMessage: 'Select where to enter passphrase on "{deviceLabel}" .',
         id: 'TR_SELECT_PASSPHRASE_SOURCE',
-    },
-    TR_SELECT_WALLET_TO_ACCESS: {
-        defaultMessage: 'Select wallet type',
-        id: 'TR_SELECT_WALLET_TO_ACCESS',
     },
     TR_SENT_TO_SELF: {
         defaultMessage: 'Sent to myself',
@@ -3596,19 +3290,10 @@ export default defineMessages({
         defaultMessage: 'Check <b>{deviceLabel}</b> screen for the keypad layout.',
         id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',
     },
-    TR_THIS_HIDDEN_WALLET_IS_EMPTY: {
-        defaultMessage:
-            'This Passphrase wallet is empty. To make sure you are in the correct wallet, enter the passphrase again.',
-        id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY',
-    },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE: {
         defaultMessage:
             'This Passphrase wallet is empty. To make sure you are in the correct wallet, enter the passphrase on your Trezor.',
         id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE',
-    },
-    TR_TO_FIND_YOUR_ACCOUNTS_AND: {
-        defaultMessage: 'Trezor is running a coin discovery check to find your accounts and funds.',
-        id: 'TR_TO_FIND_YOUR_ACCOUNTS_AND',
     },
     TR_ADDRESS_PHISHING_WARNING: {
         defaultMessage:
@@ -3693,15 +3378,6 @@ export default defineMessages({
     TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
         id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',
-    },
-    TR_UNLOCK: {
-        defaultMessage: 'Please confirm passphrase to continue.',
-        id: 'TR_UNLOCK',
-    },
-    TR_UNREADABLE: {
-        defaultMessage: 'Unreadable',
-        description: 'Device status',
-        id: 'TR_UNREADABLE',
     },
     TR_UNACQUIRED: {
         defaultMessage: 'Unrecognized device',
@@ -4292,10 +3968,6 @@ export default defineMessages({
         defaultMessage:
             'With this setting enabled, all trezor.io links will be opened as .onion links.',
     },
-    TR_TOR_BRIDGE: {
-        id: 'TR_TOR_BRIDGE',
-        defaultMessage: "Trezor Bridge isn't working in Tor Browser?",
-    },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE',
         defaultMessage: '<b>Tor</b> must be enabled to remain private when running coinjoin.',
@@ -4321,18 +3993,9 @@ export default defineMessages({
         id: 'TR_N_TRANSACTIONS',
         defaultMessage: '{value} {value, plural, one {transaction} other {transactions}}',
     },
-    TR_TREZOR_BRIDGE_DOWNLOAD: {
-        id: 'TR_TREZOR_BRIDGE_DOWNLOAD',
-        defaultMessage: 'Trezor Bridge download',
-    },
     TR_TREZOR_BRIDGE_RUNNING_VERSION: {
         id: 'TR_TREZOR_BRIDGE_RUNNING_VERSION',
         defaultMessage: 'Trezor Bridge running version {version}',
-    },
-    TR_OUTDATED_BRIDGE_DESKTOP: {
-        id: 'TR_OUTDATED_BRIDGE_DESKTOP',
-        defaultMessage:
-            "Trezor Suite includes Trezor Bridge. If you're only using Trezor Suite, uninstall the standalone Trezor Bridge to use the bundled version. If you use Trezor with your browser, update Trezor Bridge.",
     },
     EVENT_DEVICE_CONNECT: {
         id: 'EVENT_DEVICE_CONNECT',
@@ -4582,10 +4245,6 @@ export default defineMessages({
         defaultMessage:
             'Resetting the app to its default settings is a recommended initial step for troubleshooting. The app will automatically restart once the process is complete.',
     },
-    TR_CHOOSE_WALLET: {
-        id: 'TR_CHOOSE_WALLET',
-        defaultMessage: 'Wallets',
-    },
     TR_TO_ACCESS_OTHER_WALLETS: {
         id: 'TR_TO_ACCESS_OTHER_WALLETS',
         defaultMessage: 'Connect your device to add other wallets',
@@ -4598,11 +4257,6 @@ export default defineMessages({
         id: 'TR_EJECT_HEADING',
         defaultMessage: 'Eject',
         description: 'Heading above col with "eject wallet" buttons in switch wallets modal',
-    },
-    TR_REMEMBER_HEADING: {
-        id: 'TR_REMEMBER_HEADING',
-        defaultMessage: 'Remember',
-        description: 'Heading above col with "remember wallet" buttons in switch wallets modal',
     },
     TR_VIEW_ONLY_CALL_TO_ACTION: {
         id: 'TR_VIEW_ONLY_CALL_TO_ACTION',
@@ -4700,37 +4354,9 @@ export default defineMessages({
         defaultMessage: 'Accounts were not loaded properly {details}',
         id: 'TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC',
     },
-    TR_RECOVERY_SEED_IS_OFFLINE: {
-        id: 'TR_RECOVERY_SEED_IS_OFFLINE',
-        defaultMessage: 'Your wallet backup is an offline backup of your wallet',
-    },
-    TR_BACKUP_NOW: {
-        id: 'TR_BACKUP_NOW',
-        defaultMessage: 'Back up wallet',
-    },
-    TR_BACKUP_SEED_CREATED_SUCCESSFULLY: {
-        id: 'TR_BACKUP_SEED_CREATED_SUCCESSFULLY',
-        defaultMessage: 'Wallet backup created',
-    },
-    TR_CHECK_SEED_IN_SETTINGS: {
-        id: 'TR_CHECK_SEED_IN_SETTINGS',
-        defaultMessage: 'Check backup in Settings',
-    },
     TR_PIN: {
         id: 'TR_PIN',
         defaultMessage: 'PIN',
-    },
-    TR_ENABLE_PIN: {
-        id: 'TR_ENABLE_PIN',
-        defaultMessage: 'Enable PIN',
-    },
-    TR_SET_STRONG_PIN_NUMBER_AGAINST: {
-        id: 'TR_SET_STRONG_PIN_NUMBER_AGAINST',
-        defaultMessage: 'Protects your Trezor against unauthorized access',
-    },
-    TR_CHANGE_PIN_IN_SETTINGS: {
-        id: 'TR_CHANGE_PIN_IN_SETTINGS',
-        defaultMessage: 'Change PIN in Settings',
     },
     TR_CHANGE_PIN: {
         id: 'TR_CHANGE_PIN',
@@ -4748,38 +4374,6 @@ export default defineMessages({
     TR_REMOVE_WIPE_CODE: {
         id: 'TR_REMOVE_WIPE_CODE',
         defaultMessage: 'Remove wipe code',
-    },
-    TR_DEVICE_PIN_PROTECTION_ENABLED: {
-        id: 'TR_DEVICE_PIN_PROTECTION_ENABLED',
-        defaultMessage: 'PIN enabled',
-    },
-    TR_ENABLE_PASSPHRASE_DESCRIPTION: {
-        id: 'TR_ENABLE_PASSPHRASE_DESCRIPTION',
-        defaultMessage: 'Allows you to create Passphrase wallets',
-    },
-    TR_ENABLE_PASSPHRASE: {
-        id: 'TR_ENABLE_PASSPHRASE',
-        defaultMessage: 'Enable passphrase',
-    },
-    TR_PASSPHRASE_PROTECTION: {
-        id: 'TR_PASSPHRASE_PROTECTION',
-        defaultMessage: 'Passphrase',
-    },
-    TR_PASSPHRASE_PROTECTION_ENABLED: {
-        id: 'TR_PASSPHRASE_PROTECTION_ENABLED',
-        defaultMessage: 'Passphrase enabled',
-    },
-    TR_CREATE_HIDDEN_WALLET: {
-        id: 'TR_CREATE_HIDDEN_WALLET',
-        defaultMessage: 'Add Passphrase wallet',
-    },
-    TR_DISCREET_MODE: {
-        id: 'TR_DISCREET_MODE',
-        defaultMessage: 'Discreet mode',
-    },
-    TR_HIDE_BUTTON: {
-        id: 'TR_HIDE_BUTTON',
-        defaultMessage: 'Hide',
     },
     TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
         id: 'TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
@@ -4806,10 +4400,6 @@ export default defineMessages({
     TR_TRADE_EXCHANGES: {
         id: 'TR_TRADE_EXCHANGES',
         defaultMessage: 'exchanges',
-    },
-    TR_TRADE_SPENDS: {
-        id: 'TR_TRADE_SPENDS',
-        defaultMessage: 'spends',
     },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',
@@ -4854,43 +4444,6 @@ export default defineMessages({
     TR_PAYMENT_METHOD_UNKNOWN: {
         id: 'TR_PAYMENT_METHOD_UNKNOWN',
         defaultMessage: 'Unknown',
-    },
-    TR_PAYMENT_METHOD_ALL: {
-        id: 'TR_PAYMENT_METHOD_ALL',
-        defaultMessage: 'All payment methods',
-    },
-    TR_OFFER_FEE_INFO: {
-        id: 'TR_OFFER_FEE_INFO',
-        defaultMessage:
-            "The amount shown is the final amount you'll receive, with provider exchange fees included. However, your bank may charge additional currency exchange fees if your bank account is not denominated in the chosen currency.",
-    },
-    TR_SHOW_BUTTON: {
-        id: 'TR_SHOW_BUTTON',
-        defaultMessage: 'Show',
-    },
-    TR_TRY_TO_TEMPORARILY_HIDE: {
-        id: 'TR_TRY_TO_TEMPORARILY_HIDE',
-        defaultMessage: 'Hide your balances',
-    },
-    TR_TRY_DISCREET_MODE: {
-        id: 'TR_TRY_DISCREET_MODE',
-        defaultMessage: 'Try discreet mode',
-    },
-    TR_DISCREET_MODE_TRIED_OUT: {
-        id: 'TR_DISCREET_MODE_TRIED_OUT',
-        defaultMessage: 'Discreet mode',
-    },
-    TR_ENABLE_DISCREET_MODE: {
-        id: 'TR_ENABLE_DISCREET_MODE',
-        defaultMessage: 'Enable discreet mode',
-    },
-    TR_DISABLE_DISCREET_MODE: {
-        id: 'TR_DISABLE_DISCREET_MODE',
-        defaultMessage: 'Disable discreet mode',
-    },
-    TR_BACKUP_YOUR_DEVICE: {
-        id: 'TR_BACKUP_YOUR_DEVICE',
-        defaultMessage: 'Backup your wallet',
     },
     TR_SECURITY_FEATURES_COMPLETED_N: {
         id: 'TR_SECURITY_FEATURES_COMPLETED_N',
@@ -5053,11 +4606,6 @@ export default defineMessages({
         id: 'TR_YOUR_DEVICE_IS_SEEDLESS',
         defaultMessage: "Your device is in seedless mode and can't be used with this wallet.",
     },
-    TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE: {
-        id: 'TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE',
-        defaultMessage:
-            "Your device is connected correctly, but your browser can't communicate with it at the moment. You need to install Trezor Bridge.",
-    },
     TR_DEVICE_NOT_INITIALIZED: {
         id: 'TR_DEVICE_NOT_INITIALIZED',
         defaultMessage: 'Trezor is not set up',
@@ -5087,11 +4635,6 @@ export default defineMessages({
     TR_UNKNOWN_DEVICE: {
         id: 'TR_UNKNOWN_DEVICE',
         defaultMessage: 'Unknown device',
-    },
-    TR_UNREADABLE_EXPLAINED: {
-        id: 'TR_UNREADABLE_EXPLAINED',
-        defaultMessage:
-            "We can't see details about your Trezor device. It may be running old firmware, or another USB device may be interfering. To make communication possible, you need to install Trezor Bridge.",
     },
     TR_SEE_DETAILS: {
         id: 'TR_SEE_DETAILS',
@@ -5639,10 +5182,6 @@ export default defineMessages({
         id: 'TR_NAV_SELL',
         defaultMessage: 'Sell',
     },
-    TR_NAV_INVITY: {
-        id: 'TR_NAV_INVITY',
-        defaultMessage: 'Invity',
-    },
     TR_NAV_SIGN_VERIFY: {
         id: 'TR_NAV_SIGN_VERIFY',
         defaultMessage: 'Sign/Verify message',
@@ -5682,16 +5221,6 @@ export default defineMessages({
     TR_ADD_TOKEN_TITLE: {
         id: 'TR_ADD_TOKEN_TITLE',
         defaultMessage: 'Add ERC20 token',
-    },
-    TR_ADD_TOKEN_DESCRIPTION: {
-        id: 'TR_ADD_TOKEN_DESCRIPTION',
-        defaultMessage:
-            'Enter a contract address of a token to add to your wallet. This is typically a 42-character alphanumeric string starting with "0x".',
-    },
-    TR_ADD_TOKEN_NOTE: {
-        id: 'TR_ADD_TOKEN_NOTE',
-        defaultMessage:
-            'No need to activate tokens first. Simply click the receive button to create a receive address and send your tokens to your Trezor. Just make sure to match the network to access your tokens correctly.',
     },
     TR_ADD_TOKEN_LABEL: {
         id: 'TR_ADD_TOKEN_LABEL',
@@ -5840,24 +5369,6 @@ export default defineMessages({
     RBF: {
         id: 'RBF',
         defaultMessage: 'RBF',
-    },
-    RBF_TOOLTIP: {
-        id: 'RBF_TOOLTIP',
-        defaultMessage:
-            'A node policy allows an unconfirmed transaction in the mempool to be replaced with a new transaction that uses the same inputs and pays a higher fee.',
-    },
-    RBF_ON: {
-        id: 'RBF_ON',
-        defaultMessage: 'RBF = ON',
-    },
-    RBF_OFF: {
-        id: 'RBF_OFF',
-        defaultMessage: 'RBF = OFF',
-    },
-    RBF_DESCRIPTION: {
-        id: 'RBF_DESCRIPTION',
-        defaultMessage:
-            'RBF lets you increase the fee if you want your transaction to be mined faster.',
     },
     LOCKTIME_ADD: {
         id: 'LOCKTIME_ADD',
@@ -6521,11 +6032,6 @@ export default defineMessages({
         id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON',
         defaultMessage: "Don't hold any buttons while connecting the cable.",
     },
-    FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH: {
-        id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
-        defaultMessage:
-            "Please ensure that you're not touching the display when connecting the device.",
-    },
     TR_TAKES_N_MINUTES: {
         id: 'TR_TAKES_N_MINUTES',
         defaultMessage: 'Takes ~15 mins',
@@ -6932,10 +6438,6 @@ export default defineMessages({
     TR_PAGINATION_OLDER: {
         id: 'TR_PAGINATION_OLDER',
         defaultMessage: 'Older',
-    },
-    TR_RBF_STATUS: {
-        id: 'TR_RBF_STATUS',
-        defaultMessage: 'Status',
     },
     TR_TXID: {
         id: 'TR_TXID',
@@ -9292,10 +8794,6 @@ export default defineMessages({
         id: 'TR_URL_IN_TOKEN',
         defaultMessage: "Never visit URLs in token names or symbols; they're usually scams.",
     },
-    TR_DEVICE_SETTINGS_APPLICATION: {
-        id: 'TR_DEVICE_SETTINGS_APPLICATION',
-        defaultMessage: 'Application',
-    },
     TR_DEVICE_SETTINGS_WALLET_LOADING: {
         id: 'TR_DEVICE_SETTINGS_WALLET_LOADING',
         defaultMessage: 'Wallet loading',
@@ -9440,10 +8938,6 @@ export default defineMessages({
     TR_SELECT_TREZOR_TO_CONTINUE: {
         id: 'TR_SELECT_TREZOR_TO_CONTINUE',
         defaultMessage: 'Select your Trezor to continue.',
-    },
-    TR_RUN_TREZOR_SUITE_IN_BACKGROUND: {
-        id: 'TR_RUN_TREZOR_SUITE_IN_BACKGROUND',
-        defaultMessage: 'Run Trezor Suite in the background',
     },
     TR_KEEP_RUNNING_IN_BACKGROUND: {
         id: 'TR_KEEP_RUNNING_IN_BACKGROUND',
