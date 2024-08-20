@@ -1,4 +1,4 @@
-import { app, ipcMain } from 'electron';
+import { ipcMain } from 'electron';
 
 import TrezorConnect from '@trezor/connect';
 import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
@@ -48,15 +48,15 @@ export const init: Module = ({ store }) => {
 
     const unregisterProxy = createIpcProxyHandler(ipcMain, 'TrezorConnect', ipcProxyOptions);
 
-    app.on('before-quit', () => {
-        unregisterProxy();
-        TrezorConnect.dispose();
-    });
-
     const onLoad = () => {
         // reset previous instance, possible left over after renderer refresh (F5)
         TrezorConnect.dispose();
     };
 
-    return { onLoad };
+    const onQuit = () => {
+        unregisterProxy();
+        TrezorConnect.dispose();
+    };
+
+    return { onLoad, onQuit };
 };

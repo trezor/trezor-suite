@@ -116,14 +116,8 @@ const shouldUseLegacyBridge = (store: Dependencies['store']) => {
     );
 };
 
-const load = async ({ store }: Pick<Dependencies, 'store'>) => {
+const load = async (bridge: BridgeInterface, store: Dependencies['store']) => {
     const { logger } = global;
-    const bridge = shouldUseLegacyBridge(store) ? new BridgeProcess() : new TrezordNodeProcess();
-
-    app.on('before-quit', () => {
-        logger.info(SERVICE_NAME, 'Stopping (app quit)');
-        bridge.stop();
-    });
 
     ipcMain.handle('bridge/toggle', async ipcEvent => {
         validateIpcMessage(ipcEvent);
@@ -204,18 +198,25 @@ type BridgeModule = ({ store }: Pick<Dependencies, 'store'>) => {
     onLoad: () => void;
 };
 
-export const init: BridgeModule = dependencies => {
+export const init: BridgeModule = ({ store }) => {
     let loaded = false;
+    let bridge: BridgeInterface;
 
     const onLoad = () => {
         if (loaded) return;
         loaded = true;
 
-        return scheduleAction(() => load(dependencies), { timeout: 3000 }).catch(err => {
+        bridge = shouldUseLegacyBridge(store) ? new BridgeProcess() : new TrezordNodeProcess();
+
+        return scheduleAction(() => load(bridge, store), { timeout: 3000 }).catch(err => {
             // Error ignored, user will see transport error afterwards
             logger.error(SERVICE_NAME, `Failed to load: ${err.message}`);
         });
     };
 
-    return { onLoad };
+    const onQuit = async () => {
+        await bridge?.stop();
+    };
+
+    return { onLoad, onQuit };
 };

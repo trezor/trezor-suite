@@ -4,6 +4,7 @@ import { app, BrowserWindow } from 'electron';
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { createTimeoutPromise } from '@trezor/utils';
 import { isMacOs } from '@trezor/env-utils';
 
 import { ipcMain } from './typed-electron';
@@ -156,14 +157,9 @@ const init = async () => {
         mainWindow.focus();
     });
 
-    app.on('before-quit', () => {
-        mainWindow.removeAllListeners();
-        logger.exit();
-    });
-
     // init modules
     const interceptor = createInterceptor();
-    const { loadModules } = initModules({
+    const { loadModules, quitModules } = initModules({
         mainWindow,
         store,
         interceptor,
@@ -191,7 +187,7 @@ const init = async () => {
 
     // Tor module initializes separated from general `initModules` because Tor is different
     // since it is allowed to fail and then the user decides whether to `try again` or `disable`.
-    const { onLoad: loadTorModule } = initTorModule({
+    const { onLoad: loadTorModule, onQuit: quitTorModule } = initTorModule({
         mainWindow,
         store,
         interceptor,
@@ -202,6 +198,28 @@ const init = async () => {
         validateIpcMessage(ipcEvent);
 
         return loadTorModule();
+    });
+
+    let readyToQuit = false;
+    app.on('before-quit', async event => {
+        if (readyToQuit) return;
+        event.preventDefault();
+        logger.info('modules', 'Quitting all modules');
+
+        await Promise.race([
+            // await quitting all registered modules
+            Promise.allSettled([quitModules(), quitTorModule()]),
+            // or timeout after 5s
+            createTimeoutPromise(5000),
+        ]);
+
+        // global cleanup
+        logger.info('modules', 'All modules quit, exiting');
+        mainWindow.removeAllListeners();
+        logger.exit();
+
+        readyToQuit = true;
+        app.quit();
     });
 
     const statePatch = processStatePatch();

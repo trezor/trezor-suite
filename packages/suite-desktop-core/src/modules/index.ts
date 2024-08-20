@@ -85,7 +85,11 @@ export type Dependencies = {
 
 type ModuleLoad = (payload: HandshakeClient) => any | Promise<any>;
 
-type ModuleInit = (dependencies: Dependencies) => { onLoad?: ModuleLoad } | void;
+type ModuleQuit = () => void | Promise<void>;
+
+type ModuleInit = (
+    dependencies: Dependencies,
+) => { onLoad?: ModuleLoad; onQuit?: ModuleQuit } | void;
 
 export type Module = ModuleInit;
 
@@ -94,26 +98,24 @@ export const initModules = (dependencies: Dependencies) => {
 
     logger.info('modules', `Initializing ${MODULES.length} modules`);
 
-    const modules = MODULES.map(moduleToInit => {
+    const modulesToLoad: [(typeof MODULES)[number], ModuleLoad][] = [];
+    const modulesToQuit: [(typeof MODULES)[number], ModuleQuit][] = [];
+
+    MODULES.forEach(moduleToInit => {
         logger.debug('modules', `Initializing ${moduleToInit.SERVICE_NAME}`);
         try {
             const initModule: Module = moduleToInit.init;
-            const { onLoad } = initModule(dependencies) ?? {};
-            if (onLoad) {
-                return [moduleToInit, onLoad] as const;
-            }
+            const { onLoad, onQuit } = initModule(dependencies) ?? {};
+            if (onLoad) modulesToLoad.push([moduleToInit, onLoad]);
+            if (onQuit) modulesToQuit.push([moduleToInit, onQuit]);
         } catch (err) {
             logger.error(
                 'modules',
                 `Couldn't initialize ${moduleToInit.SERVICE_NAME} (${err.toString()})`,
             );
         }
-
-        return undefined;
     });
     logger.info('modules', 'All modules initialized');
-
-    const modulesToLoad = modules.filter(isNotUndefined);
 
     const loadModules = (handshake: HandshakeClient) => {
         let loaded = 0;
@@ -164,5 +166,13 @@ export const initModules = (dependencies: Dependencies) => {
             );
     };
 
-    return { loadModules };
+    const quitModules = () =>
+        Promise.allSettled(
+            modulesToQuit.map(async ([moduleToQuit, onQuit]) => {
+                logger.info(moduleToQuit.SERVICE_NAME, 'Stopping (app quit)');
+                await onQuit();
+            }),
+        );
+
+    return { loadModules, quitModules };
 };
