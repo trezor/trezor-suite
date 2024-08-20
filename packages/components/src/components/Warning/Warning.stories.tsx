@@ -42,7 +42,7 @@ export default meta;
 export const Warning: StoryObj<WarningProps> = {
     args: {
         children: 'Insert text here.',
-        filled: true,
+        isSubtle: true,
         variant: 'warning',
         icon: undefined,
         rightContent: <WarningComponent.Button>Click</WarningComponent.Button>,

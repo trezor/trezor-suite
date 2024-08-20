@@ -7,15 +7,23 @@ type MapArgs = {
     $variant: WarningVariant;
     theme: DefaultTheme;
     $elevation: Elevation;
+    $isSubtle: boolean;
 };
 
-export const mapVariantToBackgroundColor = ({ $variant, theme, $elevation }: MapArgs): CSSColor => {
+export const mapVariantToBackgroundColor = ({
+    $variant,
+    theme,
+    $elevation,
+    $isSubtle,
+}: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
-        primary: 'backgroundPrimarySubtleOnElevation0',
-        secondary: 'backgroundNeutralBold',
-        info: 'backgroundAlertBlueSubtleOnElevation0',
-        warning: 'backgroundAlertYellowSubtleOnElevation0',
-        destructive: 'backgroundAlertRedSubtleOnElevation0',
+        primary: $isSubtle ? 'backgroundPrimaryDefault' : 'backgroundPrimarySubtleOnElevation0',
+        secondary: 'backgroundNeutralBold', // @TODO delete
+        info: $isSubtle ? 'backgroundAlertBlueBold' : 'backgroundAlertBlueSubtleOnElevation0',
+        warning: $isSubtle
+            ? 'backgroundAlertYellowBold'
+            : 'backgroundAlertYellowSubtleOnElevation0',
+        destructive: $isSubtle ? 'backgroundAlertRedBold' : 'backgroundAlertRedSubtleOnElevation0',
         tertiary: mapElevationToBackgroundToken({ $elevation }),
     };
 

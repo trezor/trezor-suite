@@ -3,7 +3,8 @@ import { WarningVariant } from './types';
 
 export const WarningContext = createContext<{
     variant?: WarningVariant;
-}>({ variant: undefined });
+    isSubtle?: boolean;
+}>({ variant: undefined, isSubtle: undefined });
 
 export const useWarningContextContext = () => {
     const context = useContext(WarningContext);

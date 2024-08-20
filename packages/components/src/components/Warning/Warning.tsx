@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import styled, { css, useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { Icon, IconType } from '../Icon/Icon';
 import { variables } from '../../config';
@@ -27,7 +27,7 @@ export type WarningProps = AllowedFrameProps & {
     variant?: WarningVariant;
     rightContent?: ReactNode;
     icon?: IconType | true;
-    filled?: boolean;
+    isSubtle?: boolean;
     'data-testid'?: string;
 };
 
@@ -35,19 +35,13 @@ type WrapperParams = TransientProps<AllowedFrameProps> & {
     $variant: WarningVariant;
     $withIcon?: boolean;
     $elevation: Elevation;
-    $filled: boolean;
+    $isSubtle: boolean;
 };
 
 const Wrapper = styled.div<WrapperParams>`
     align-items: center;
-    ${({ $filled }) =>
-        $filled
-            ? css<WrapperParams>`
-                  background: ${mapVariantToBackgroundColor};
-                  border-radius: ${borders.radii.xs};
-              `
-            : ''}
-
+    background: ${mapVariantToBackgroundColor};
+    border-radius: ${borders.radii.xs};
     color: ${mapVariantToTextColor};
     display: flex;
     ${typography.hint}
@@ -68,7 +62,7 @@ export const Warning = ({
     className,
     variant = DEFAULT_VARIANT,
     icon,
-    filled = true,
+    isSubtle = false,
     margin,
     rightContent,
     'data-testid': dataTest,
@@ -84,7 +78,7 @@ export const Warning = ({
             $withIcon={withIcon}
             className={className}
             $elevation={elevation}
-            $filled={filled}
+            $isSubtle={isSubtle}
             $margin={margin}
             data-testid={dataTest}
         >
@@ -96,6 +90,7 @@ export const Warning = ({
                         $variant: variant,
                         theme,
                         $elevation: elevation,
+                        $isSubtle: isSubtle,
                     })}
                 />
             )}
@@ -103,7 +98,7 @@ export const Warning = ({
             <Row justifyContent="space-between" gap={spacings.lg} flex={1}>
                 <Column alignItems="flex-start">{children}</Column>
                 {rightContent && (
-                    <WarningContext.Provider value={{ variant }}>
+                    <WarningContext.Provider value={{ variant, isSubtle }}>
                         {rightContent}
                     </WarningContext.Provider>
                 )}

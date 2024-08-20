@@ -4,7 +4,7 @@ import { Colors, spacings, spacingsPx } from '@trezor/theme';
 import type { UIHorizontalAlignment, UISize, UIVariant } from '../../config/types';
 import { hexToRgba } from '@suite-common/suite-utils';
 
-const SUBTLE_ALPHA = 0.12;
+const SUBTLE_ALPHA = 0.3;
 const SUBTLE_ALPHA_HOVER = 0.2;
 
 export type ButtonVariant = Extract<
@@ -126,10 +126,11 @@ export const useVariantStyle = (
 
     const colors = variantsColors[variant];
 
+    const color = isSubtle && colors.backgroundSubtle ? colors.backgroundSubtle : colors.background;
+
     return css`
-        background: ${isSubtle && colors.backgroundSubtle
-            ? colors.backgroundSubtle
-            : colors.background};
+        background-image: linear-gradient(${color}, ${color}), linear-gradient(white, white);
+
         color: ${isSubtle && colors.textSubtle ? colors.textSubtle : colors.text};
 
         &:hover,
