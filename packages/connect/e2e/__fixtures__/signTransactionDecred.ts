@@ -3,7 +3,8 @@ const { ADDRESS_N, TX_CACHE } = global.TestUtils;
 const legacyResults = [
     {
         // not allowed for lower versions
-        rules: ['<1.10.1', '<2.4.0'],
+        // not allowed for newer devices
+        rules: ['<1.10.1', '<2.4.0', '!T2B1', '!T3B1', '!T3T1'],
         success: false,
     },
 ];
