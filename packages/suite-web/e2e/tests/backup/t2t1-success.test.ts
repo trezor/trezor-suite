@@ -8,7 +8,7 @@ let requests: Requests;
 
 describe('Backup success', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.8.1' });
         cy.task('setupEmu', {
             needs_backup: true,
             mnemonic: 'all all all all all all all all all all all all',
@@ -37,6 +37,7 @@ describe('Backup success', () => {
         cy.getTestElement('@backup/start-button').click();
         cy.getConfirmActionOnDeviceModal();
 
+        cy.task('pressYes');
         cy.task('pressYes');
         cy.task('swipeEmu', 'up');
         cy.task('swipeEmu', 'up');
