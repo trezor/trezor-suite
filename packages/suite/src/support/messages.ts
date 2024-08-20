@@ -1742,10 +1742,12 @@ export default defineMessages({
     TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL: {
         defaultMessage: 'Payment:',
         id: 'TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL',
+        dynamic: true,
     },
     TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL: {
         defaultMessage: 'Receive method:',
         id: 'TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL',
+        dynamic: true,
     },
     TR_COINMARKET_FEATURED_OFFER_BUY: {
         defaultMessage: 'Buy',
