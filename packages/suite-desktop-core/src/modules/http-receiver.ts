@@ -45,11 +45,6 @@ export const init: Module = ({ mainWindow }) => {
             });
         });
 
-        app.on('before-quit', () => {
-            logger.info(SERVICE_NAME, 'Stopping server (app quit)');
-            receiver.stop();
-        });
-
         // when httpReceiver was asked to provide current address for given pathname
         ipcMain.handle('server/request-address', (ipcEvent, pathname) => {
             validateIpcMessage(ipcEvent);
@@ -63,5 +58,9 @@ export const init: Module = ({ mainWindow }) => {
         return receiver.getInfo();
     };
 
-    return { onLoad };
+    const onQuit = async () => {
+        await httpReceiver?.stop();
+    };
+
+    return { onLoad, onQuit };
 };
