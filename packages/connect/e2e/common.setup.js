@@ -13,6 +13,7 @@ const MNEMONICS = {
 
 const emulatorStartOpts = process.env.emulatorStartOpts || global.emulatorStartOpts;
 const firmware = emulatorStartOpts.version;
+const deviceModel = emulatorStartOpts.model;
 
 const getController = name => {
     TrezorUserEnvLink.on('disconnect', () => {
@@ -124,10 +125,14 @@ const initTrezorConnect = async (TrezorUserEnvLink, options) => {
 // "<1.9.3" - skip for FW lower than 1.9.3
 // "1.9.3" - skip for FW exact with 1.9.3
 // "1.9.3-1.9.6" - skip for FW gte 1.9.3 && lte 1.9.6
+// "!T3T1" - skip for specific device model
 const skipTest = rules => {
     if (!rules || !Array.isArray(rules)) return;
     const fwModel = firmware.substring(0, 1);
     const fwMaster = firmware.includes('-main');
+    const deviceRule = rules.find(skip => skip === '!' + deviceModel);
+    if (deviceRule) return deviceRule;
+
     const rule = rules
         .filter(skip => skip.substring(0, 1) === fwModel || skip.substring(1, 2) === fwModel) // filter rules only for current model
         .find(skip => {
