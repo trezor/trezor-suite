@@ -65,7 +65,7 @@ export const useScrollShadow = () => {
         }
     };
 
-    const { parentElevation: elevation } = useElevation();
+    const { elevation } = useElevation();
 
     useEffect(() => {
         setShadows();

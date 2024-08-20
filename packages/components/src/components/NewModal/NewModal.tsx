@@ -1,7 +1,13 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { useEvent } from 'react-use';
-import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import {
+    borders,
+    Elevation,
+    mapElevationToBackground,
+    mapElevationToBackgroundToken,
+    spacingsPx,
+} from '@trezor/theme';
 
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { Text } from '../typography/Text/Text';
@@ -124,6 +130,7 @@ const NewModal = ({
 }: NewModalProps) => {
     const { scrollElementRef, onScroll, ShadowContainer, ShadowTop, ShadowBottom } =
         useScrollShadow();
+    const modalBackgroundColor = mapElevationToBackgroundToken({ $elevation: MODAL_ELEVATION });
 
     useEvent('keydown', (e: KeyboardEvent) => {
         if (onCancel && e.key === 'Escape') {
@@ -172,7 +179,7 @@ const NewModal = ({
                             )}
                         </Header>
                         <ShadowContainer>
-                            <ShadowTop />
+                            <ShadowTop backgroundColor={modalBackgroundColor} />
                             <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                                 <Body id={NEW_MODAL_CONTENT_ID}>
                                     {icon && (
@@ -183,7 +190,7 @@ const NewModal = ({
                                     {children}
                                 </Body>
                             </ScrollContainer>
-                            <ShadowBottom />
+                            <ShadowBottom backgroundColor={modalBackgroundColor} />
                         </ShadowContainer>
                         {bottomContent && <Footer>{bottomContent}</Footer>}
                     </Container>
