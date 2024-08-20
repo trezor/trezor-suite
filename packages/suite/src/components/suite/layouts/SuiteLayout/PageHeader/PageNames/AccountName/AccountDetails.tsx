@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Account } from '@suite-common/wallet-types';
 import { spacingsPx } from '@trezor/theme';
@@ -36,11 +37,19 @@ const rotateOut = keyframes`
     }
 `;
 
-const DetailsContainer = styled.div<{ $isBalanceShown: boolean }>`
+const getAnimation = ($isBalanceShown: boolean, $shouldAnimate: boolean) => {
+    if (!$shouldAnimate) return 'none';
+
+    return $isBalanceShown ? rotateIn : rotateOut;
+};
+
+const DetailsContainer = styled.div<{ $isBalanceShown: boolean; $shouldAnimate: boolean }>`
     display: flex;
     flex-direction: column;
     justify-content: ${({ $isBalanceShown }) => ($isBalanceShown ? 'space-between' : 'center')};
-    animation: ${({ $isBalanceShown }) => ($isBalanceShown ? rotateIn : rotateOut)} 0.3s forwards;
+    animation: ${({ $isBalanceShown, $shouldAnimate }) =>
+            getAnimation($isBalanceShown, $shouldAnimate)}
+        0.3s forwards;
 `;
 
 const AccountHeading = styled(H2)<{ $isBalanceShown: boolean }>`
@@ -69,12 +78,25 @@ interface AccountDetailsProps {
 }
 
 export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
+    const [shouldAnimate, setShouldAnimate] = useState(false);
+    const [hasMounted, setHasMounted] = useState(false);
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
     const { defaultAccountLabelString } = useAccountLabel();
     const { symbol, key, path, index, accountType, formattedBalance } = selectedAccount;
 
+    useEffect(() => {
+        setHasMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!hasMounted) return;
+
+        setShouldAnimate(true);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isBalanceShown]);
+
     return (
-        <DetailsContainer $isBalanceShown={isBalanceShown}>
+        <DetailsContainer $isBalanceShown={isBalanceShown} $shouldAnimate={shouldAnimate}>
             <AccountHeading $isBalanceShown={isBalanceShown}>
                 <MetadataLabeling
                     defaultVisibleValue={
