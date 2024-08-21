@@ -8,6 +8,9 @@
         },
         { "path": "../../suite-common/icons" },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -28,9 +31,6 @@
         { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/utils" },
-        {
-            "path": "../../suite-common/redux-utils"
-        }
+        { "path": "../../packages/utils" }
     ]
 }
