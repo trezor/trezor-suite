@@ -1,3 +1,9 @@
+# 1.2.0
+
+-   npm-prerelease: @trezor/protocol 1.1.1-beta.1 (cdd837ba2b)
+-   chore: update txs from 4.7.0 to 4.16.2 (59c856fd0f)
+-   chore(protocol): accept Buffer in decode function (858837bb2a)
+
 # 1.0.10-beta.2
 
 -   chore(suite): depcheck enabled (2206f19f2e)
