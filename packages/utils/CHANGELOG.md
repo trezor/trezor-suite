@@ -1,3 +1,17 @@
+# 9.2.0
+
+-   npm-prerelease: @trezor/utils 9.1.1-beta.3 (f44360e077)
+-   test(transport): unit tests now fail when eventlisteners memory leak is detected (e602689079)
+-   feat(utils): new util isFullPath (5c5a14a220)
+-   chore(utils): introduce new test for PEPE2.0 token (91d819cc9b)
+-   npm-prerelease: @trezor/utils 9.1.1-beta.2 (e39de7010b)
+-   chore: update txs from 4.7.0 to 4.16.2 (59c856fd0f)
+-   feat(utils): add extractUrlsFromText util (15e03f9cf2)
+-   npm-prerelease: @trezor/utils 9.1.1-beta.1 (bd593189f6)
+-   fix(utils): adjust scheduleAction to stricter tests (cc5641f9b8)
+-   chore(utils): catch leaking listeners in unit tests (7c960dc1ed)
+-   feat(utils): scheduleAction with attempt failure handler (3e342aaa5b)
+
 # 9.0.25-beta.2
 
 -   chore(connect-web): refactor into classes (fc7a45b19d)
