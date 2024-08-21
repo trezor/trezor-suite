@@ -15,8 +15,8 @@ export const prepareFiatAmountFormatter = (config: FormatterConfig) =>
         string | number,
         string | null,
         FiatAmountFormatterDataContext<FormatNumberOptions>
-    >((value, dataContext) => {
-        const { intl, fiatCurrency, discreetMode } = config;
+    >((value, dataContext, shouldRedactNumbers) => {
+        const { intl, fiatCurrency } = config;
 
         const { style, currency, minimumFractionDigits, maximumFractionDigits } = dataContext;
         const fiatValue = new BigNumber(value);
@@ -40,5 +40,5 @@ export const prepareFiatAmountFormatter = (config: FormatterConfig) =>
             maximumFractionDigits: maximumFractionDigits ?? 2,
         });
 
-        return discreetMode ? redactNumericalSubstring(formattedValue) : formattedValue;
+        return shouldRedactNumbers ? redactNumericalSubstring(formattedValue) : formattedValue;
     }, 'FiatAmountFormatter');

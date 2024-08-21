@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 import { rewriteReactNodeRecursively } from '@trezor/react-utils';
-import { redactNumericalSubstring } from '@suite-common/wallet-utils';
+import { redactNumericalSubstring, RedactNumbersContext } from '@suite-common/wallet-utils';
 
 interface WrapperProps {
     $intensity: number;
@@ -41,6 +41,8 @@ export const HiddenPlaceholder = ({
     const ref = useRef<HTMLSpanElement>(null);
     const [automaticIntensity, setAutomaticIntensity] = useState(10);
     const discreetMode = useSelector(selectIsDiscreteModeActive);
+    const [isHovered, setIsHovered] = useState(false);
+    const shouldRedactNumbers = discreetMode && !isHovered;
 
     useEffect(() => {
         if (ref.current === null) {
@@ -64,21 +66,25 @@ export const HiddenPlaceholder = ({
     */
     const modifiedChildren = useMemo(
         () =>
-            discreetMode
+            shouldRedactNumbers
                 ? rewriteReactNodeRecursively(children, redactNumericalSubstring)
                 : children,
-        [children, discreetMode],
+        [children, shouldRedactNumbers],
     );
 
     return (
         <Wrapper
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
             $discreetMode={discreetMode}
             $intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
             className={className}
             ref={ref}
             data-testid={dataTestId}
         >
-            {modifiedChildren}
+            <RedactNumbersContext.Provider value={{ shouldRedactNumbers }}>
+                {modifiedChildren}
+            </RedactNumbersContext.Provider>
         </Wrapper>
     );
 };

@@ -50,8 +50,9 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
                 maxDisplayedDecimals = 8,
                 isEllipsisAppended = true,
             },
+            shouldRedactNumbers,
         ) => {
-            const { bitcoinAmountUnit, discreetMode } = config;
+            const { bitcoinAmountUnit } = config;
 
             const decimals = networks[symbol!]?.decimals || 0;
 
@@ -91,7 +92,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
                 formattedValue = `${formattedValue} ${NetworkSymbolFormatter.format(symbol!)}`;
             }
 
-            return discreetMode ? redactNumericalSubstring(formattedValue) : formattedValue;
+            return shouldRedactNumbers ? redactNumericalSubstring(formattedValue) : formattedValue;
         },
         'CryptoAmountFormatter',
     );
