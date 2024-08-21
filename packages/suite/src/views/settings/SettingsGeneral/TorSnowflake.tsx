@@ -54,14 +54,13 @@ export const TorSnowflake = () => {
 
     const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target: { value } }) => {
         if (!torSettings) return;
-
         setHasPathChanged(true);
         if (!isFullPath(value) && value !== '') {
             setError(translationString('TR_TOR_CONFIG_SNOWFLAKE_ERROR_PATH'));
         } else {
             setError(null);
         }
-        setTorSettings(prevSettings => ({
+        setTorSettings(prexvSettings => ({
             ...prevSettings!,
             snowflakeBinaryPath: value,
         }));

@@ -12,7 +12,7 @@ import { ensureLocale } from 'src/utils/suite/l10n';
 import type { Locale } from 'src/config/suite/languages';
 import { SUITE, STORAGE } from 'src/actions/suite/constants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
+import { Action, Lock, TorBootstrap, TorConfig, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
 import { Network } from '@suite-common/wallet-config';
@@ -190,6 +190,8 @@ const setFlag = (draft: SuiteState, key: keyof Flags, value: boolean) => {
 
 const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteState =>
     produce(state, draft => {
+        console.log('suiteReducer');
+        console.log('state', state);
         switch (action.type) {
             case STORAGE.LOAD:
                 draft.flags = {

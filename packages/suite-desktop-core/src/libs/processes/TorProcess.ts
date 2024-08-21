@@ -36,7 +36,9 @@ export class TorProcess extends BaseProcess {
     }
 
     async status(): Promise<TorProcessStatus> {
+        console.log('status in tor process');
         const torControllerStatus = await this.torController.getStatus();
+        console.log('torControllerStatus', torControllerStatus);
 
         return {
             service: torControllerStatus === TOR_CONTROLLER_STATUS.CircuitEstablished,
@@ -55,5 +57,18 @@ export class TorProcess extends BaseProcess {
         await super.start(torConfiguration);
 
         return this.torController.waitUntilAlive();
+    }
+
+    async startExternal(): Promise<void> {
+        console.log('startExternal');
+        this.torController = new TorController({
+            host: '127.0.0.1',
+            port: 9050,
+            controlPort: 35095,
+            torDataDir: '/home/karliatto/.tor',
+            snowflakeBinaryPath: '',
+        });
+
+        return this.torController.waitUntilAliveExternal();
     }
 }

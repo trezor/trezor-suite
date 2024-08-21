@@ -2,7 +2,7 @@ import { RendererChannels } from './api';
 import { SuiteThemeVariant } from './messages';
 
 type Primitive = 'boolean' | 'string' | 'number';
-type OptionalPrimitive = Primitive | [Primitive, boolean];
+export type OptionalPrimitive = Primitive | [Primitive, boolean];
 
 export const isPrimitive = (type: OptionalPrimitive, value: any) => {
     const [t, optional] = Array.isArray(type) ? type : [type];

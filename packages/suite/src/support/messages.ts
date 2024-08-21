@@ -4922,6 +4922,15 @@ export default defineMessages({
         defaultMessage:
             'Tor Snowflake is a system that allows access to censored websites and apps.',
     },
+    TR_EXPERIMENTAL_TOR_EXTERNAL: {
+        id: 'TR_EXPERIMENTAL_TOR_EXTERNAL',
+        defaultMessage: 'Tor external',
+    },
+    TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_TOR_EXTERNAL_DESCRIPTION',
+        defaultMessage:
+            'Allow you to use Tor daemon running in a external process instead of the one bundled with Trezor Suite.',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',

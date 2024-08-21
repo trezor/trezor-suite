@@ -169,9 +169,13 @@ export const updateTorStatus = (payload: TorStatus): SuiteAction => ({
 
 export const toggleTor =
     (shouldEnable: boolean) => async (dispatch: Dispatch, getState: GetState) => {
+        console.log('toggleTor');
+        console.log('shouldEnable', shouldEnable);
         const { torBootstrap } = selectTorState(getState());
+        console.log('torBootstrap', torBootstrap);
 
         const backends = getCustomBackends(getState().wallet.blockchain);
+        console.log('backends', backends);
         // Is there any network with only onion custom backends?
         const hasOnlyOnionBackends = backends.some(
             ({ urls }) => urls.length && urls.every(isOnionUrl),
@@ -197,6 +201,7 @@ export const toggleTor =
         }
 
         const ipcResponse = await desktopApi.toggleTor(shouldEnable);
+        console.log('ipcResponse', ipcResponse);
 
         if (ipcResponse.success) {
             analytics.report({
