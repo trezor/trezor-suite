@@ -17,6 +17,7 @@ import type { CoinInfo, BitcoinNetworkInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
 import { Assert } from '@trezor/schema-utils';
 import { resolveDescriptorForTaproot } from './resolveDescriptorForTaproot';
+import { promptPin, promptPassphrase, promptWord } from './prompts';
 
 type MessageType = Messages.MessageType;
 type MessageKey = keyof MessageType;
@@ -28,12 +29,6 @@ type TypedCallResponseMap = {
     [K in keyof MessageType]: TypedPayload<K>;
 };
 type DefaultPayloadMessage = TypedCallResponseMap[keyof MessageType];
-
-export type PassphrasePromptResponse = {
-    passphrase?: string;
-    passphraseOnDevice?: boolean;
-    cache?: boolean;
-};
 
 const logger = initLog('DeviceCommands');
 
@@ -97,7 +92,6 @@ export class DeviceCommands {
     callPromise?: ReturnType<Transport['call']>;
 
     // see DeviceCommands.cancel
-    _cancelableRequest?: (error?: any) => void;
     _cancelableRequestBySend?: boolean;
 
     constructor(device: Device, transport: Transport, transportSession: Session) {
@@ -109,7 +103,6 @@ export class DeviceCommands {
 
     dispose() {
         this.disposed = true;
-        this._cancelableRequest = undefined;
     }
 
     isDisposed() {
@@ -442,7 +435,7 @@ export class DeviceCommands {
         }
 
         if (res.type === 'PinMatrixRequest') {
-            return this._promptPin(res.message.type).then(
+            return promptPin(this.device, res.message.type).then(
                 pin =>
                     this._commonCall('PinMatrixAck', { pin }).then(response => {
                         if (!this.device.features.unlocked) {
@@ -452,32 +445,25 @@ export class DeviceCommands {
 
                         return response;
                     }),
-                () => this._commonCall('Cancel', {}),
+                error => Promise.reject(error),
             );
         }
 
         if (res.type === 'PassphraseRequest') {
-            return this._promptPassphrase().then(
-                response => {
-                    const { passphrase, passphraseOnDevice } = response;
-
+            return promptPassphrase(this.device).then(
+                ({ value, passphraseOnDevice }) => {
                     return !passphraseOnDevice
-                        ? this._commonCall('PassphraseAck', { passphrase })
+                        ? this._commonCall('PassphraseAck', { passphrase: value.normalize('NFKD') })
                         : this._commonCall('PassphraseAck', { on_device: true });
                 },
-                // todo: does it make sense? error might have resulted from device disconnected.
-                // with webusb, this leads to pretty common "Session not found"
-                err =>
-                    this._commonCall('Cancel', {}).catch((e: any) => {
-                        throw err || e;
-                    }),
+                error => Promise.reject(error),
             );
         }
 
         if (res.type === 'WordRequest') {
-            return this._promptWord(res.message.type).then(
+            return promptWord(this.device, res.message.type).then(
                 word => this._commonCall('WordAck', { word }),
-                () => this._commonCall('Cancel', {}),
+                error => Promise.reject(error),
             );
         }
 
@@ -492,71 +478,6 @@ export class DeviceCommands {
         });
 
         return message.address;
-    }
-
-    _promptPin(type?: Messages.PinMatrixRequestType) {
-        return new Promise<string>((resolve, reject) => {
-            if (this.device.listenerCount(DEVICE.PIN) > 0) {
-                this._cancelableRequest = reject;
-                this.device.emit(DEVICE.PIN, this.device, type, (err, pin) => {
-                    this._cancelableRequest = undefined;
-                    if (err || pin == null) {
-                        reject(err);
-                    } else {
-                        resolve(pin);
-                    }
-                });
-            } else {
-                console.warn(
-                    '[DeviceCommands] [call] PIN callback not configured, cancelling request',
-                );
-                reject(ERRORS.TypedError('Runtime', '_promptPin: PIN callback not configured'));
-            }
-        });
-    }
-
-    _promptPassphrase() {
-        return new Promise<PassphrasePromptResponse>((resolve, reject) => {
-            if (this.device.listenerCount(DEVICE.PASSPHRASE) > 0) {
-                this._cancelableRequest = reject;
-                this.device.emit(
-                    DEVICE.PASSPHRASE,
-                    this.device,
-                    (response: PassphrasePromptResponse, error?: Error) => {
-                        this._cancelableRequest = undefined;
-                        if (error) {
-                            reject(error);
-                        } else {
-                            resolve(response);
-                        }
-                    },
-                );
-            } else {
-                console.warn(
-                    '[DeviceCommands] [call] Passphrase callback not configured, cancelling request',
-                );
-                reject(
-                    ERRORS.TypedError(
-                        'Runtime',
-                        '_promptPassphrase: Passphrase callback not configured',
-                    ),
-                );
-            }
-        });
-    }
-
-    _promptWord(type: Messages.WordRequestType) {
-        return new Promise<string>((resolve, reject) => {
-            this._cancelableRequest = reject;
-            this.device.emit(DEVICE.WORD, this.device, type, (err, word) => {
-                this._cancelableRequest = undefined;
-                if (err || word == null) {
-                    reject(err);
-                } else {
-                    resolve(word.toLocaleLowerCase());
-                }
-            });
-        });
     }
 
     async getAccountDescriptor(
@@ -634,14 +555,6 @@ export class DeviceCommands {
     }
 
     async cancel() {
-        // _cancelableRequest is transport.call({ name: 'Cancel' }).
-        if (this._cancelableRequest) {
-            this._cancelableRequest();
-            this._cancelableRequest = undefined;
-
-            return;
-        }
-
         if (this.disposed) {
             return;
         }

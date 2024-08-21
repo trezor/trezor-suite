@@ -49,21 +49,23 @@ export interface UiResponseDevice {
 
 export interface UiResponsePin {
     type: typeof UI_RESPONSE.RECEIVE_PIN;
-    payload: string;
+    payload: string | undefined;
 }
 
 export interface UiResponseWord {
     type: typeof UI_RESPONSE.RECEIVE_WORD;
-    payload: string;
+    payload: string | undefined;
 }
 
 export interface UiResponsePassphrase {
     type: typeof UI_RESPONSE.RECEIVE_PASSPHRASE;
-    payload: {
-        value: string;
-        passphraseOnDevice?: boolean;
-        save?: boolean;
-    };
+    payload:
+        | {
+              value: string;
+              passphraseOnDevice?: boolean;
+              save?: boolean;
+          }
+        | undefined;
 }
 
 export interface UiResponsePassphraseAction {
