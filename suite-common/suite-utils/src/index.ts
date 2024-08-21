@@ -7,4 +7,5 @@ export * from './comparison';
 export * from './txsPerPage';
 export * from './stake';
 export * from './parseFirmwareChangelog';
+export * from './uppercaseType';
 export { hexToRgba } from './hexToRgba';

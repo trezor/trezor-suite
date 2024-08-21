@@ -8,12 +8,19 @@ import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
 import { WalletLabeling } from './WalletLabeling';
+import { BadgeProps } from '@trezor/components';
 
 interface AccountProps {
     account: WalletAccount | WalletAccount[];
+    accountTypeBadgeSize?: BadgeProps['size'];
+    showAccountTypeBadge?: boolean;
 }
 
-export const AccountLabeling = ({ account }: AccountProps) => {
+export const AccountLabeling = ({
+    account,
+    accountTypeBadgeSize,
+    showAccountTypeBadge,
+}: AccountProps) => {
     const device = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
 
@@ -30,6 +37,8 @@ export const AccountLabeling = ({ account }: AccountProps) => {
             accountType={accountType}
             symbol={symbol}
             index={index}
+            showAccountTypeBadge={showAccountTypeBadge}
+            accountTypeBadgeSize={accountTypeBadgeSize}
         />
     );
 
@@ -42,7 +51,7 @@ export const AccountLabeling = ({ account }: AccountProps) => {
                     <WalletLabeling
                         device={accountDevice}
                         shouldUseDeviceLabel={!isSelectedDevice(device, accountDevice)}
-                    />{' '}
+                    />
                     {accountLabel}
                 </span>
             );

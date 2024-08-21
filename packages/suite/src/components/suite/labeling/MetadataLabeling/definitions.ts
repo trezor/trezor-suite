@@ -1,8 +1,10 @@
 import { ReactNode } from 'react';
 import { DropdownMenuItemProps } from '@trezor/components';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
+import { AccountType } from '@suite-common/wallet-types';
 
 export interface Props {
+    accountType?: AccountType;
     defaultVisibleValue?: ReactNode;
     defaultEditableValue?: string;
     payload: MetadataAddPayload;

@@ -110,6 +110,9 @@ export type Account = {
     AccountNetworkSpecific;
 
 export type AccountType = Account['accountType'];
+export type AccountSymbol = Account['symbol'];
+
+export type UppercaseAccountType = Uppercase<AccountType>;
 
 export type WalletParams =
     | NonNullable<{

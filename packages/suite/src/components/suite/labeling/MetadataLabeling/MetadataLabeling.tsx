@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
-import { Button, DropdownMenuItemProps } from '@trezor/components';
+import { Button, DropdownMenuItemProps, Row } from '@trezor/components';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
@@ -14,6 +14,7 @@ import {
     selectIsLabelingInitPossible,
 } from 'src/reducers/suite/metadataReducer';
 import type { Timeout } from '@trezor/type-utils';
+import { AccountTypeBadge } from '../../AccountTypeBadge';
 
 const LabelValue = styled.div`
     overflow: hidden;
@@ -158,6 +159,7 @@ const ButtonLikeLabel = ({
 };
 
 const TextLikeLabel = ({
+    accountType,
     editActive,
     defaultVisibleValue,
     defaultEditableValue,
@@ -169,22 +171,30 @@ const TextLikeLabel = ({
 }: ExtendedProps) => {
     const EditableLabel = useMemo(() => withEditable(RelativeLabel), []);
 
+    const isAccountLabel = payload.type === 'accountLabel';
+
     if (editActive) {
         return (
-            <EditableLabel
-                data-testid={dataTest}
-                originalValue={payload.value ?? defaultEditableValue}
-                onSubmit={onSubmit}
-                onBlur={onBlur}
-                updateFlag={updateFlag}
-            />
+            <Row gap={12}>
+                <EditableLabel
+                    data-testid={dataTest}
+                    originalValue={payload.value ?? defaultEditableValue}
+                    onSubmit={onSubmit}
+                    onBlur={onBlur}
+                    updateFlag={updateFlag}
+                />
+                {isAccountLabel && <AccountTypeBadge accountType={accountType} />}
+            </Row>
         );
     }
 
     if (payload.value) {
         return (
             <Label data-testid={dataTest}>
-                <LabelValue>{payload.value}</LabelValue>
+                <Row gap={12}>
+                    <LabelValue>{payload.value}</LabelValue>
+                    {isAccountLabel && <AccountTypeBadge accountType={accountType} />}
+                </Row>
             </Label>
         );
     }
@@ -240,6 +250,7 @@ const getLocalizedActions = (type: MetadataAddPayload['type']) => {
  */
 export const MetadataLabeling = ({
     payload,
+    accountType,
     dropdownOptions,
     defaultEditableValue,
     defaultVisibleValue,
@@ -279,18 +290,18 @@ export const MetadataLabeling = ({
     const editActive = metadata.editing === payload.defaultValue;
 
     const activateEdit = () => {
-        // when clicking on inline input edit, ensure that everything needed is already ready
+        // When clicking on inline input edit, ensure that everything needed is already ready.
         if (
-            // isn't initiation in progress?
+            // Isn't initiation in progress?
             !metadata.initiating &&
-            // is there something that needs to be initiated?
+            // Is there something that needs to be initiated?
             !isLabelingAvailable
         ) {
             dispatch(
                 init(
-                    // provide force=true argument (user wants to enable metadata)
+                    // Provide force=true argument (user wants to enable metadata).
                     true,
-                    // if this is wallet(device) label, provide unique identifier entityKey which equals to device.state
+                    // If this is wallet(device) label, provide unique identifier entityKey which equals to device.state.
                     deviceState,
                 ),
             );
@@ -302,7 +313,7 @@ export const MetadataLabeling = ({
         {
             onClick: () => activateEdit(),
             label: l10nLabelling.edit,
-            'data-testid': `edit-label`, // hack: This will be prefixed in the withDropdown()
+            'data-testid': `edit-label`, // Hack: This will be prefixed in the withDropdown()
         },
     ];
 
@@ -326,7 +337,7 @@ export const MetadataLabeling = ({
             }),
         );
         // payload.defaultValue might change during next render, this comparison
-        // ensures that success state does not appear if it is no longer relevant
+        // ensures that success state does not appear if it is no longer relevant.
         if (isSubscribedToSubmitResult.current === payload.defaultValue) {
             setPending(false);
             if (result) {
@@ -348,7 +359,7 @@ export const MetadataLabeling = ({
 
     const labelContainerDataTest = `${dataTestBase}/hover-container`;
 
-    // should "add label"/"edit label" button be visible
+    // Should "add label"/"edit label" button be visible?
     const showActionButton =
         !isDisabled &&
         (isLabelingAvailable || isLabelingInitPossible) &&
@@ -356,7 +367,7 @@ export const MetadataLabeling = ({
         !editActive;
     const isVisible = pending || visible;
 
-    // metadata is still initiating, on hover, show only disabled button with spinner
+    // Metadata is still initiating, on hover, show only disabled button with spinner.
     if (metadata.initiating)
         return (
             <LabelContainer data-testid={labelContainerDataTest}>
@@ -403,9 +414,9 @@ export const MetadataLabeling = ({
                             $isValueVisible={!!payload.value}
                             onClick={e => {
                                 e.stopPropagation();
-                                // by clicking on add label button, metadata.editing field is set
+                                // By clicking on add label button, metadata.editing field is set
                                 // to default value of whatever may be labeled (address, etc..)
-                                // this way we ensure that only one field may be active at time
+                                // this way we ensure that only one field may be active at time.
                                 activateEdit();
                             }}
                         >
@@ -417,6 +428,7 @@ export const MetadataLabeling = ({
                 <>
                     <TextLikeLabel
                         editActive={editActive}
+                        accountType={accountType}
                         onSubmit={onSubmit || defaultOnSubmit}
                         onBlur={handleBlur}
                         data-testid={dataTestBase}
