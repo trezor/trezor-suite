@@ -58,6 +58,7 @@ export const AccountNavigation = () => {
             },
             title: <Translation id="TR_NAV_STAKING" />,
             isHidden: !hasNetworkFeatures(account, 'staking'),
+            'data-testid': '@wallet/menu/wallet-staking',
         },
         {
             id: 'wallet-details',
@@ -66,7 +67,7 @@ export const AccountNavigation = () => {
             },
             title: <Translation id="TR_NAV_DETAILS" />,
             isHidden: !['cardano', 'bitcoin'].includes(networkType),
-            'data-testid': `@wallet/menu/wallet-details`,
+            'data-testid': '@wallet/menu/wallet-details',
         },
     ];
 
