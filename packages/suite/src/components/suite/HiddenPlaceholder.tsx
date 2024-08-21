@@ -1,7 +1,9 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
+import { rewriteReactNodeRecursively } from '@trezor/react-utils';
+import { redactNumericalSubstring } from '@suite-common/wallet-utils';
 
 interface WrapperProps {
     $intensity: number;
@@ -34,7 +36,7 @@ export const HiddenPlaceholder = ({
     children,
     enforceIntensity,
     className,
-    ...rest
+    'data-testid': dataTestId,
 }: HiddenPlaceholderProps) => {
     const ref = useRef<HTMLSpanElement>(null);
     const [automaticIntensity, setAutomaticIntensity] = useState(10);
@@ -54,15 +56,29 @@ export const HiddenPlaceholder = ({
         setAutomaticIntensity(fontSize / 5);
     }, []);
 
+    /*
+        Recursively redact all numbers in children hierarchy of HiddenPlaceholder.
+        This works for children hierarchy that consists of simple components which wrap another 'children'.
+        When applied to complex components (Formatters), only the blur is applied from HiddenPlaceholder.
+        Redaction is handled in prepareFiatAmountFormatter, prepareCryptoAmountFormatter.
+    */
+    const modifiedChildren = useMemo(
+        () =>
+            discreetMode
+                ? rewriteReactNodeRecursively(children, redactNumericalSubstring)
+                : children,
+        [children, discreetMode],
+    );
+
     return (
         <Wrapper
             $discreetMode={discreetMode}
             $intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
             className={className}
             ref={ref}
-            data-testid={rest['data-testid']}
+            data-testid={dataTestId}
         >
-            {children}
+            {modifiedChildren}
         </Wrapper>
     );
 };

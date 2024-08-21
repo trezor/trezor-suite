@@ -1,7 +1,11 @@
 import { A } from '@mobily/ts-belt';
 
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
+import {
+    amountToSatoshi,
+    formatAmount,
+    redactNumericalSubstring,
+} from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 
 import { makeFormatter } from '../makeFormatter';
@@ -47,7 +51,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
                 isEllipsisAppended = true,
             },
         ) => {
-            const { bitcoinAmountUnit } = config;
+            const { bitcoinAmountUnit, discreetMode } = config;
 
             const decimals = networks[symbol!]?.decimals || 0;
 
@@ -84,10 +88,10 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
             if (withSymbol) {
                 const NetworkSymbolFormatter = prepareNetworkSymbolFormatter(config);
 
-                return `${formattedValue} ${NetworkSymbolFormatter.format(symbol!)}`;
+                formattedValue = `${formattedValue} ${NetworkSymbolFormatter.format(symbol!)}`;
             }
 
-            return formattedValue;
+            return discreetMode ? redactNumericalSubstring(formattedValue) : formattedValue;
         },
         'CryptoAmountFormatter',
     );
