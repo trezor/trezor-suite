@@ -116,7 +116,7 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
     return (
         <AddButton
             disabledMessage={disabledMessage}
-            handleClick={onCreateCoinjoinAccountClick}
+            onClick={onCreateCoinjoinAccountClick}
             isLoading={isLoading}
             networkName={network.name}
         />

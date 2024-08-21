@@ -6,6 +6,9 @@ import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useModalTarget } from 'src/support/suite/ModalContext';
 import { ModalEnvironment } from '../ModalEnvironment';
 
+/**
+ * @deprecated Use NewModal.
+ */
 export const DefaultRenderer = ({
     headerComponent,
     isCancelable,
