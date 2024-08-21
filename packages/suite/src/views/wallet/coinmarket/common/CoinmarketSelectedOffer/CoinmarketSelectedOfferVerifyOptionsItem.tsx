@@ -36,11 +36,6 @@ const AccountName = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const AccountType = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    padding-left: ${spacingsPx.xxs};
-`;
-
 const CoinmarketSelectedOfferVerifyOptionsItem = ({
     option,
     receiveNetwork,
@@ -63,12 +58,11 @@ const CoinmarketSelectedOfferVerifyOptionsItem = ({
                 <AccountWrapper>
                     <Column alignItems="flex-start">
                         <AccountName>
-                            <AccountLabeling account={option.account} />
-                            <AccountType>
-                                {option.account.accountType !== 'normal'
-                                    ? option.account.accountType
-                                    : ''}
-                            </AccountType>
+                            <AccountLabeling
+                                account={option.account}
+                                accountTypeBadgeSize="small"
+                                showAccountTypeBadge
+                            />
                         </AccountName>
                         <Amount>
                             <CryptoWrapper>

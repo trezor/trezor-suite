@@ -99,8 +99,10 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
         <DetailsContainer $isBalanceShown={isBalanceShown} $shouldAnimate={shouldAnimate}>
             <AccountHeading $isBalanceShown={isBalanceShown}>
                 <MetadataLabeling
+                    accountType={accountType}
                     defaultVisibleValue={
                         <AccountLabel
+                            showAccountTypeBadge
                             accountLabel={selectedAccountLabels.accountLabel}
                             accountType={accountType}
                             symbol={selectedAccount.symbol}

@@ -2682,6 +2682,41 @@ export default defineMessages({
         defaultMessage: 'Ledger accounts',
         id: 'TR_CARDANO_LEDGER_ACCOUNTS',
     },
+    TR_ACCOUNT_TYPE_LEGACY: {
+        defaultMessage: 'Legacy',
+        id: 'TR_ACCOUNT_TYPE_LEGACY',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_TAPROOT: {
+        defaultMessage: 'Taproot',
+        id: 'TR_ACCOUNT_TYPE_TAPROOT',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_COINJOIN: {
+        defaultMessage: 'Coinjoin',
+        id: 'TR_ACCOUNT_TYPE_COINJOIN',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_LEDGER: {
+        defaultMessage: 'Ledger',
+        id: 'TR_ACCOUNT_TYPE_LEDGER',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_IMPORTED: {
+        defaultMessage: 'Imported',
+        id: 'TR_ACCOUNT_TYPE_IMPORTED',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_NORMAL: {
+        defaultMessage: 'Normal',
+        id: 'TR_ACCOUNT_TYPE_NORMAL',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_SEGWIT: {
+        defaultMessage: 'Legacy SegWit',
+        id: 'TR_ACCOUNT_TYPE_SEGWIT',
+        dynamic: true,
+    },
     TR_LOG: {
         defaultMessage: 'Application log',
         description: 'application event and error',

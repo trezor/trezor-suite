@@ -3,11 +3,11 @@ import { useSelector } from 'src/hooks/suite';
 import { AccountLabeling } from './AccountLabeling';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-interface AddressLabelingProps {
+type AddressLabelingProps = {
     networkSymbol: NetworkSymbol;
     address?: string | null;
     knownOnly?: boolean;
-}
+};
 
 export const AddressLabeling = ({ networkSymbol, address, knownOnly }: AddressLabelingProps) => {
     const accounts = useSelector(state => state.wallet.accounts);
@@ -22,5 +22,11 @@ export const AddressLabeling = ({ networkSymbol, address, knownOnly }: AddressLa
         return !knownOnly ? <span>{address}</span> : null;
     }
 
-    return <AccountLabeling account={relevantAccounts[0]} />;
+    return (
+        <AccountLabeling
+            account={relevantAccounts[0]}
+            accountTypeBadgeSize="small"
+            showAccountTypeBadge
+        />
+    );
 };
