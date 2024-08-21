@@ -1,3 +1,7 @@
+# 1.2.0
+
+-   npm-prerelease: @trezor/connect-analytics 1.1.1-beta.1 (dffb8c9c4d)
+
 # 1.0.16-beta.1
 
 -   chore(suite): depcheck enabled (2206f19f2e)
