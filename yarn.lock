@@ -8866,6 +8866,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    lodash: "npm:^4.17.21"
     react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
     redux: "npm:^4.2.1"

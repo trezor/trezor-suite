@@ -30,6 +30,7 @@
         "@suite-native/tokens": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "proxy-memoize": "2.0.2",
         "react": "^18.2.0",
         "react-native": "0.74.1",

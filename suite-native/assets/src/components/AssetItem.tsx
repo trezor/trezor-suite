@@ -6,13 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
 import { CryptoIconName, CryptoIconWithPercentage, Icon } from '@suite-common/icons';
+import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    FiatRatesRootState,
-    selectVisibleDeviceAccountsByNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, DeviceRootState, FiatRatesRootState } from '@suite-common/wallet-core';
 import { Badge, Box, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -26,6 +22,8 @@ import {
 import { SettingsSliceRootState } from '@suite-native/settings';
 import { selectNumberOfUniqueTokensForCoinPerDevice } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { selectVisibleDeviceAccountsKeysByNetworkSymbol } from '../assetsSelectors';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
@@ -79,11 +77,11 @@ export const AssetItem = memo(
         const { applyStyle } = useNativeStyles();
         const navigation = useNavigation<NavigationType>();
         const { NetworkNameFormatter } = useFormatters();
-
-        const accountsForNetworkSymbol = useSelector((state: AccountsRootState & DeviceRootState) =>
-            selectVisibleDeviceAccountsByNetworkSymbol(state, cryptoCurrencySymbol),
+        const accountsKeysForNetworkSymbol = useSelectorDeepComparison(
+            (state: AccountsRootState & DeviceRootState) =>
+                selectVisibleDeviceAccountsKeysByNetworkSymbol(state, cryptoCurrencySymbol),
         );
-        const accountsPerAsset = accountsForNetworkSymbol.length;
+        const accountsPerAsset = accountsKeysForNetworkSymbol.length;
         const numberOfTokens = useSelector(
             (
                 state: AccountsRootState &
@@ -96,7 +94,7 @@ export const AssetItem = memo(
         const handleAssetPress = () => {
             if (accountsPerAsset === 1 && numberOfTokens === 0) {
                 navigation.navigate(RootStackRoutes.AccountDetail, {
-                    accountKey: accountsForNetworkSymbol[0].key,
+                    accountKey: accountsKeysForNetworkSymbol[0],
                     closeActionType: 'back',
                 });
             } else if (onPress) {

@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { calculateAssetsPercentage } from '@suite-common/assets';
+import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDeviceAuthorized, selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { OnSelectAccount } from '@suite-native/accounts';
@@ -31,7 +32,8 @@ type NavigationProp = TabToStackCompositeNavigationProp<
 export const Assets = () => {
     const navigation = useNavigation<NavigationProp>();
 
-    const deviceAssetsData = useSelector(selectDeviceAssetsWithBalances);
+    const deviceAssetsData = useSelectorDeepComparison(selectDeviceAssetsWithBalances);
+
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isLoading = isDiscoveryActive || !isDeviceAuthorized;
@@ -44,10 +46,10 @@ export const Assets = () => {
     );
 
     const handleSelectAssetsAccount: OnSelectAccount = useCallback(
-        ({ account, tokenContract }) => {
+        ({ account, tokenAddress }) => {
             navigation.navigate(RootStackRoutes.AccountDetail, {
                 accountKey: account.key,
-                tokenContract,
+                tokenContract: tokenAddress,
                 closeActionType: 'back',
             });
             setSelectedAssetSymbol(null);
@@ -74,7 +76,7 @@ export const Assets = () => {
                                 fiatBalance={asset.fiatBalance}
                                 fiatPercentage={asset.fiatPercentage}
                                 fiatPercentageOffset={asset.fiatPercentageOffset}
-                                cryptoCurrencyValue={asset.assetBalance.toFixed()}
+                                cryptoCurrencyValue={asset.assetBalance}
                                 onPress={setSelectedAssetSymbol}
                             />
                         </Animated.View>

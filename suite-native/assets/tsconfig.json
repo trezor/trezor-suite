@@ -28,6 +28,9 @@
         { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/redux-utils"
+        }
     ]
 }

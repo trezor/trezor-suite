@@ -6,3 +6,4 @@ export * from './extraDependenciesType';
 export * from './createReducerWithExtraDeps';
 export * from './createActionWithExtraDeps';
 export * from './createSingleInstanceThunk';
+export * from './hooks/useSelectorDeepComparison';

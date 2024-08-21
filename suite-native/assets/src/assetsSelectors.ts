@@ -1,23 +1,22 @@
-import { memoize } from 'proxy-memoize';
-import { pipe, A } from '@mobily/ts-belt';
+import { A, G, pipe } from '@mobily/ts-belt';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
     FiatRatesRootState,
-    selectVisibleDeviceAccounts,
     selectCurrentFiatRates,
+    selectDeviceAccounts,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
-import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 import { discoverySupportedNetworks } from '@suite-native/config';
+import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export interface AssetType {
     symbol: NetworkSymbol;
-    network: (typeof networks)[NetworkSymbol];
-    assetBalance: BigNumber;
+    assetBalance: string;
     fiatBalance: string;
 }
 
@@ -26,69 +25,79 @@ type AssetsRootState = AccountsRootState & FiatRatesRootState & SettingsSliceRoo
 const sumCryptoBalance = (balances: string[]): BigNumber =>
     balances.reduce((prev, balance) => prev.plus(balance), new BigNumber(0));
 
-export const selectDeviceAssetsWithBalances = memoize(
-    (state: AssetsRootState & DeviceRootState) => {
-        const accounts = selectVisibleDeviceAccounts(state);
+/* 
+We do not memoize any of following selectors because they are using only with `useSelectorDeepComparison` hook which is faster than memoization in proxy-memoize.
+*/
 
-        const deviceNetworksWithAssets = pipe(
-            accounts,
-            A.map(account => account.symbol),
-            A.uniq,
-            A.sort((a, b) => {
-                const aOrder = discoverySupportedNetworks.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
-                const bOrder = discoverySupportedNetworks.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
+export const selectVisibleDeviceAccountsKeysByNetworkSymbol = (
+    state: AccountsRootState & DeviceRootState,
+    networkSymbol: NetworkSymbol | null,
+) => {
+    if (G.isNull(networkSymbol)) return [];
 
-                return aOrder - bOrder;
-            }),
+    const accounts = selectDeviceAccounts(state).filter(
+        account => account.symbol === networkSymbol && account.visible,
+    );
+
+    return accounts.map(account => account.key);
+};
+
+export const selectDeviceAssetsWithBalances = (state: AssetsRootState & DeviceRootState) => {
+    const accounts = selectVisibleDeviceAccounts(state);
+
+    const deviceNetworksWithAssets = pipe(
+        accounts,
+        A.map(account => account.symbol),
+        A.uniq,
+        A.sort((a, b) => {
+            const aOrder = discoverySupportedNetworks.indexOf(a) ?? Number.MAX_SAFE_INTEGER;
+            const bOrder = discoverySupportedNetworks.indexOf(b) ?? Number.MAX_SAFE_INTEGER;
+
+            return aOrder - bOrder;
+        }),
+    );
+
+    const fiatCurrencyCode = selectFiatCurrencyCode(state);
+    const rates = selectCurrentFiatRates(state);
+
+    const accountsWithFiatBalance = accounts.map(account => {
+        const fiatValue = getAccountFiatBalance({
+            account,
+            localCurrency: fiatCurrencyCode,
+            rates,
+            // TODO: this should be removed once Trezor Suite Lite supports staking
+            shouldIncludeStaking: true,
+        });
+
+        return {
+            symbol: account.symbol,
+            fiatValue,
+            cryptoValue: account.formattedBalance,
+        };
+    });
+
+    return deviceNetworksWithAssets.map((networkSymbol: NetworkSymbol) => {
+        const networkAccounts = accountsWithFiatBalance.filter(
+            account => account.symbol === networkSymbol,
         );
+        const fiatBalance = networkAccounts
+            .reduce((prev, { symbol, fiatValue }) => {
+                if (symbol === networkSymbol && fiatValue) {
+                    return prev + Number(fiatValue);
+                }
 
-        const fiatCurrencyCode = selectFiatCurrencyCode(state);
-        const rates = selectCurrentFiatRates(state);
+                return prev;
+            }, 0)
+            .toFixed();
 
-        const accountsWithFiatBalance = accounts.map(account => {
-            const fiatValue = getAccountFiatBalance({
-                account,
-                localCurrency: fiatCurrencyCode,
-                rates,
-                // TODO: this should be removed once Trezor Suite Lite supports staking
-                shouldIncludeStaking: true,
-            });
+        const cryptoValue = sumCryptoBalance(networkAccounts.map(account => account.cryptoValue));
 
-            return {
-                symbol: account.symbol,
-                fiatValue,
-                cryptoValue: account.formattedBalance,
-            };
-        });
+        const asset: AssetType = {
+            symbol: networkSymbol,
+            assetBalance: cryptoValue.toFixed(),
+            fiatBalance,
+        };
 
-        return deviceNetworksWithAssets.map((networkSymbol: NetworkSymbol) => {
-            const networkAccounts = accountsWithFiatBalance.filter(
-                account => account.symbol === networkSymbol,
-            );
-            const fiatBalance = networkAccounts
-                .reduce((prev, { symbol, fiatValue }) => {
-                    if (symbol === networkSymbol && fiatValue) {
-                        return prev + Number(fiatValue);
-                    }
-
-                    return prev;
-                }, 0)
-                .toFixed();
-
-            const cryptoValue = sumCryptoBalance(
-                networkAccounts.map(account => account.cryptoValue),
-            );
-
-            const network = networks[networkSymbol];
-
-            const asset: AssetType = {
-                symbol: networkSymbol,
-                network,
-                assetBalance: cryptoValue,
-                fiatBalance,
-            };
-
-            return asset;
-        });
-    },
-);
+        return asset;
+    });
+};
