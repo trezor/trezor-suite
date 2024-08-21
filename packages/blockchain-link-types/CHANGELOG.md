@@ -1,3 +1,16 @@
+# 1.2.0
+
+-   npm-prerelease: @trezor/blockchain-link-types 1.1.1-beta.3 (2be3a59462)
+-   chore(suite): get rid of NETWORKS reexport (02bd51829a)
+-   feat(solana): validate send amount against rent (9f1f76b994)
+-   feat(staking): instant staking/unstaking success (6f42f9f86b)
+-   npm-prerelease: @trezor/blockchain-link-types 1.1.1-beta.2 (67e3933906)
+-   chore: update txs from 4.7.0 to 4.16.2 (59c856fd0f)
+-   npm-prerelease: @trezor/blockchain-link-types 1.1.1-beta.1 (83c91308b5)
+-   fix(suite): transaction search with token name, symbol or contract (#13410) (986032c736)
+-   chore: update trends libs (70b9c112bf)
+-   chore(blockchain-link): cardano using unit as contract address again (0e58ab32b3)
+
 # 1.0.18-beta.2
 
 -   chore(suite): unused package dependencies removed (f7907e1496)
