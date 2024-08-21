@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Meta } from '@storybook/react';
-import { IconName, icons } from '@suite-common/icons';
+import { IconName, icons } from '@suite-common/icons/src/icons';
 import { Icon } from '@suite-common/icons/src/webComponents';
 
 const Wrapper = styled.div`

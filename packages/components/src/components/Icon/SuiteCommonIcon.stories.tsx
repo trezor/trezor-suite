@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Icon as IconComponent, WebIconProps } from '@suite-common/icons/src/webComponents';
-import { IconName, icons } from '@suite-common/icons';
+import { IconName, icons } from '@suite-common/icons/src/icons';
 import { colorVariants } from '@trezor/theme';
 const meta: Meta = {
     title: 'Icons',
