@@ -5,6 +5,9 @@ import { useModalTarget } from 'src/support/suite/ModalContext';
 import { ModalEnvironment } from '../ModalEnvironment';
 import { ModalProps, Modal } from './Modal';
 
+/**
+ * @deprecated Use NewModal.
+ */
 export const DialogRenderer = ({
     headerComponent,
     isCancelable,

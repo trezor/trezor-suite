@@ -100,7 +100,7 @@ const AddDefaultAccountButton = ({
         <AddButton
             disabledMessage={disabledMessage && <Translation id={disabledMessage} />}
             networkName={network.name}
-            handleClick={handleClick}
+            onClick={handleClick}
         />
     );
 };

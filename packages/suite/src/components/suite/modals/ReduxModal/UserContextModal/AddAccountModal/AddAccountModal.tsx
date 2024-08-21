@@ -8,10 +8,10 @@ import {
 } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
 import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
-import { Button, CollapsibleBox } from '@trezor/components';
+import { CollapsibleBox, NewModal } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { Translation, Modal, CoinList, TooltipSymbol } from 'src/components/suite';
+import { Translation, CoinList, TooltipSymbol } from 'src/components/suite';
 import { Account, Network } from 'src/types/wallet';
 import { TrezorDevice } from 'src/types/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
@@ -24,11 +24,6 @@ import { SelectNetwork } from './SelectNetwork';
 import { AddAccountButton } from './AddAccountButton/AddAccountButton';
 import { DeviceModelInternal } from '@trezor/connect';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-
-const StyledModal = styled(Modal)`
-    width: 480px;
-    text-align: left;
-`;
 
 const NetworksWrapper = styled.div`
     display: flex;
@@ -189,7 +184,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                           }}
                       />
                   ),
-                  subheading: <Translation id="TR_SELECT_TYPE" />,
+                  description: <Translation id="TR_SELECT_TYPE" />,
                   children: (
                       <AccountTypeSelect
                           network={selectedNetwork}
@@ -201,7 +196,6 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
               }
             : {
                   heading: <Translation id="TR_ADD_ACCOUNT" />,
-                  headingSize: 'large',
                   children: (
                       <>
                           <NetworksWrapper>
@@ -268,10 +262,10 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
     };
 
     return (
-        <StyledModal
-            isCancelable
+        <NewModal
             onCancel={onCancel}
-            bottomBarComponents={
+            size="small"
+            bottomContent={
                 selectedNetwork &&
                 (isSelectedNetworkEnabled ? (
                     <AddAccountButton
@@ -280,12 +274,12 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                         onEnableAccount={addAccount}
                     />
                 ) : (
-                    <Button variant="primary" size="small" onClick={enableNetwork}>
+                    <NewModal.Button onClick={enableNetwork}>
                         <Translation
                             id="TR_ENABLE_NETWORK_BUTTON"
                             values={{ networkName: selectedNetwork.name }}
                         />
-                    </Button>
+                    </NewModal.Button>
                 ))
             }
             {...getStepConfig()}

@@ -6,6 +6,9 @@ export type ModalProps = TrezorModalProps & {
     renderer?: ComponentType<TrezorModalProps>;
 };
 
+/**
+ * @deprecated Use NewModal.
+ */
 export const Modal = ({ renderer: View = DefaultRenderer, ...props }: ModalProps) => (
     <View {...props} />
 );
