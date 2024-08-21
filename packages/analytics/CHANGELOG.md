@@ -1,3 +1,7 @@
+# 1.2.0
+
+-   npm-prerelease: @trezor/analytics 1.1.1-beta.1 (69ebdd96a5)
+
 # 1.0.18-beta.1
 
 -   chore(suite): depcheck enabled (2206f19f2e)
