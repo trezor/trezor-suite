@@ -1,3 +1,19 @@
+# 0.2.0
+
+-   npm-prerelease: @trezor/connect-common 0.1.1-beta.3 (2bf4c38c95)
+-   feat(connect-common): Generalize firmware-check script for all devices, backfill revisionIds into releases (655b9d3574)
+-   chore(connect-common): add fw 2.8.1 (847cfd6a1d)
+-   chore(connect): rename bsc to bnb as it is declared in fw repo (0174dc2f38)
+-   feat(connect-common): adding revisions into releases.json & adding a script to check their correctness (fcc68d281c)
+-   npm-prerelease: @trezor/connect-common 0.1.1-beta.2 (c9bf01cb8a)
+-   chore: update txs from 4.7.0 to 4.16.2 (59c856fd0f)
+-   npm-prerelease: @trezor/connect-common 0.1.1-beta.1 (fe9453ed05)
+-   chore(connect-common): fw version 1.9.0 and 2.3.0 required (ee623e4090)
+-   feat(suite): add support for Bitcoin Only changelog + add Markdown support for all changelogs (a707883081)
+-   chore(connect-common): added fw 2.8.0 changelog (8accbc4ab3)
+-   chore: add T3T1 fw binaries to lfs (abaff39c54)
+-   chore(connect-common): add new fw 2.8.0 (314052b56a)
+
 # 0.0.34-beta.1
 
 -   chore(connect-common): edit firmware changelogs (3637a56cf7)
