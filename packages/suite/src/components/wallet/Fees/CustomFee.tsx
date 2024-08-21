@@ -1,5 +1,5 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import {
     Control,
     FieldErrors,
@@ -24,6 +24,8 @@ import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { Icon } from '@suite-common/icons/src/webComponents';
+import { getInputStateTextColor } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -69,6 +71,7 @@ export const CustomFee = <TFieldValues extends FormState>({
     ...props
 }: CustomFeeProps<TFieldValues>) => {
     const { translationString } = useTranslation();
+    const theme = useTheme();
 
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { getValues, setValue } = props as unknown as UseFormReturn<FormState>;
@@ -105,7 +108,7 @@ export const CustomFee = <TFieldValues extends FormState>({
 
     const sharedRules = {
         required: translationString('CUSTOM_FEE_IS_NOT_SET'),
-        // allow decimals in ETH since GWEI is not a satoshi
+        // Allow decimals in ETH since GWEI is not a satoshi.
         validate: (value: string) => {
             if (['bitcoin', 'ethereum'].includes(networkType) && !isInteger(value)) {
                 return translationString('CUSTOM_FEE_IS_NOT_INTEGER');
@@ -132,7 +135,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                 decimals: 2,
                 except: networkType !== 'bitcoin',
             }),
-            // GWEI: 9 decimal places
+            // GWEI: 9 decimal places.
             ethereumDecimalsLimit: validateDecimals(translationString, {
                 decimals: 9,
                 except: networkType !== 'ethereum',
@@ -205,7 +208,16 @@ export const CustomFee = <TFieldValues extends FormState>({
             </Wrapper>
             {useFeeLimit && feeLimitError?.message ? (
                 <div style={{ marginTop: '-1.5rem' }}>
-                    <BottomText inputState="error">
+                    <BottomText
+                        inputState="error"
+                        iconComponent={
+                            <Icon
+                                name="warningCircle"
+                                size="medium"
+                                color={getInputStateTextColor('error', theme)}
+                            />
+                        }
+                    >
                         <InputError
                             message={feeLimitError?.message}
                             button={validationButtonProps}
