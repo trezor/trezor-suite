@@ -1,8 +1,5 @@
-import styled, { keyframes, useTheme } from 'styled-components';
-import { CSSColor, Color, spacingsPx, typography } from '@trezor/theme';
-import { Icon } from '@suite-common/icons/src/webComponents';
-import { IconName } from '@suite-common/icons';
-
+import styled, { keyframes } from 'styled-components';
+import { spacingsPx, typography } from '@trezor/theme';
 import { getInputStateTextColor } from './InputStyles';
 import { ReactNode } from 'react';
 import { InputState } from './inputTypes';
@@ -35,26 +32,19 @@ export const Container = styled.div<{ $inputState?: InputState; $isDisabled?: bo
 interface BottomTextProps {
     inputState?: InputState;
     isDisabled?: boolean;
-    icon?: IconName;
+    iconComponent?: ReactNode;
     children: ReactNode;
 }
 
 export const BottomText = ({
     inputState,
     isDisabled,
-    icon = 'warningCircle',
+    iconComponent,
     children,
 }: BottomTextProps) => {
-    const theme = useTheme();
-
-    const iconColor: Color | CSSColor = isDisabled
-        ? 'iconDisabled'
-        : getInputStateTextColor(inputState, theme);
-
     return (
         <Container $inputState={inputState} $isDisabled={isDisabled}>
-            {icon && <Icon name={icon} size="medium" color={iconColor} />}
-
+            {iconComponent}
             {children}
         </Container>
     );
