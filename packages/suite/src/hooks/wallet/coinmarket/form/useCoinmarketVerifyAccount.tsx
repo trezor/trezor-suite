@@ -1,4 +1,4 @@
-import { networksCompatibility } from '@suite-common/wallet-config';
+import { isDebugOnlyAccountType, networksCompatibility } from '@suite-common/wallet-config';
 import { selectDevice } from '@suite-common/wallet-core';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -68,20 +68,38 @@ const getSuiteReceiveAccounts = ({
     // exchangeStep === 'RECEIVING_ADDRESS'
     if (currency) {
         const unavailableCapabilities = device?.unavailableCapabilities ?? {};
-        // is the symbol supported by the suite and the device natively
+
+        // Is the symbol supported by the suite and the device natively?
         const receiveNetworks = networksCompatibility.filter(
             n =>
                 n.symbol === receiveNetwork &&
                 !unavailableCapabilities[n.symbol] &&
                 ((n.isDebugOnlyNetwork && isDebug) || !n.isDebugOnlyNetwork),
         );
+
+        const isSameDevice = (account: Account) => account.deviceState === device?.state;
+        const isSameNetwork = (account: Account) => account.symbol === receiveNetwork;
+        const isDebugAndIsAccountDebugOnly = (account: Account) =>
+            isDebugOnlyAccountType(account.accountType, account.symbol) && isDebug;
+        const isNotDebugOnlyAccount = (account: Account) =>
+            !isDebugOnlyAccountType(account.accountType, account.symbol);
+        // Check if the account is not empty
+        const isNotEmptyAccount = (account: Account) => !account.empty;
+        // Check if the account is marked as visible
+        const isVisibleAccount = (account: Account) => account.visible;
+        const isFirstNormalAccount = (account: Account) =>
+            account.accountType === 'normal' && account.index === 0;
+
         if (receiveNetworks.length > 0) {
-            // get accounts of the current symbol belonging to the current device
+            // Get accounts of the current symbol belonging to the current device.
             return accounts.filter(
-                a =>
-                    a.deviceState === device?.state &&
-                    a.symbol === receiveNetwork &&
-                    (!a.empty || a.visible || (a.accountType === 'normal' && a.index === 0)),
+                account =>
+                    isSameDevice(account) &&
+                    isSameNetwork(account) &&
+                    (isDebugAndIsAccountDebugOnly(account) || isNotDebugOnlyAccount(account)) &&
+                    (isNotEmptyAccount(account) ||
+                        isVisibleAccount(account) ||
+                        isFirstNormalAccount(account)),
             );
         }
     }
