@@ -1,3 +1,8 @@
+# 2.2.0
+
+-   npm-prerelease: @trezor/utxo-lib 2.1.1-beta.1 (7173ccf5fe)
+-   chore: update txs from 4.7.0 to 4.16.2 (59c856fd0f)
+
 # 2.0.11-beta.1
 
 -   chore(utxo-lib): remove create-hash dependency (840ecb5b0f)
