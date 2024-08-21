@@ -1,3 +1,13 @@
+# 1.2.0
+
+-   npm-prerelease: @trezor/blockchain-link-utils 1.1.1-beta.3 (20a2fe6372)
+-   feat(staking): instant staking/unstaking success (6f42f9f86b)
+-   npm-prerelease: @trezor/blockchain-link-utils 1.1.1-beta.2 (a4ebac3e6f)
+-   chore: update txs from 4.7.0 to 4.16.2 (59c856fd0f)
+-   npm-prerelease: @trezor/blockchain-link-utils 1.1.1-beta.1 (bc36f6ecfa)
+-   chore: update trends libs (70b9c112bf)
+-   chore(blockchain-link): cardano using unit as contract address again (0e58ab32b3)
+
 # 1.0.19-beta.1
 
 -   fix(blockchain-link): omit solana foreign tx effects (80836ddb90)
