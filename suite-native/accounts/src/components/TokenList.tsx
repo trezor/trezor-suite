@@ -50,7 +50,7 @@ export const TokenList = ({ account, onSelectAccount }: TokenListProps) => {
                     onSelectAccount={() =>
                         onSelectAccount({
                             account,
-                            tokenContract: token.contract,
+                            tokenAddress: token.contract,
                             hasAnyTokensWithFiatRates: true,
                         })
                     }

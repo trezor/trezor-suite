@@ -26,10 +26,10 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const ReceiveAccountsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
-    const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenContract }) =>
+    const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress }) =>
         navigation.navigate(RootStackRoutes.ReceiveModal, {
             accountKey: account.key,
-            tokenContract,
+            tokenContract: tokenAddress,
             closeActionType: 'back',
         });
 

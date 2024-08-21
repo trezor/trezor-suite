@@ -1,7 +1,7 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { TokenAddress, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { LocalBalanceHistoryCoin } from './constants';
 import { AccountHistoryMovement, AccountHistoryMovementItem } from './types';
 
 /*
@@ -307,19 +307,20 @@ export const getAccountHistoryMovementFromTransactions = ({
     to,
 }: {
     transactions: WalletAccountTransaction[];
-    coin: NetworkSymbol;
+    // We need to revaluate if we want to calculate BTC history from transactions or use blockbook
+    coin: LocalBalanceHistoryCoin | 'btc';
     from?: number;
     to?: number;
 }): AccountHistoryMovement => {
-    const networkType = getNetworkType(coin);
-    switch (networkType) {
-        case 'bitcoin':
+    switch (coin) {
+        case 'btc':
             return getAccountHistoryMovementItemBTC({ transactions, from, to });
-        case 'ripple':
+        case 'xrp':
             return getAccountHistoryMovementItemRipple({ transactions, from, to });
-        case 'ethereum':
+        case 'eth':
             return getAccountHistoryMovementItemETH({ transactions, from, to });
         default:
+            coin satisfies never;
             throw new Error(`getAccountHistoryMovementItem: Unsupported network ${coin}`);
     }
 };

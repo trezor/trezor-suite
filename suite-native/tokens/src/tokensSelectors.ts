@@ -1,4 +1,4 @@
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -7,11 +7,11 @@ import {
 } from '@suite-common/wallet-core';
 import { SettingsSliceRootState } from '@suite-native/settings';
 
-import { NetworksWithTokens, isCoinWithTokens } from './utils';
 import {
     selectNumberOfEthereumAccountTokensWithFiatRates,
     selectNumberOfUniqueEthereumTokensPerDevice,
 } from './ethereumTokensSelectors';
+import { isCoinWithTokens } from './utils';
 
 export const selectNumberOfUniqueTokensForCoinPerDevice = (
     state: AccountsRootState & DeviceRootState & FiatRatesRootState & SettingsSliceRootState,
@@ -19,15 +19,12 @@ export const selectNumberOfUniqueTokensForCoinPerDevice = (
 ) => {
     if (!isCoinWithTokens(coin)) return 0;
 
-    // We can typecast coin to NetworksWithTokens because isCoinWithTokens(coin) act as type guard
-    const networkType = getNetworkType(coin) as NetworksWithTokens;
-
-    switch (networkType) {
-        case 'ethereum':
+    switch (coin) {
+        case 'eth':
             return selectNumberOfUniqueEthereumTokensPerDevice(state);
         default:
             // Exhaustive check, all coin types in NETWORKS_WITH_TOKENS should be handled above
-            networkType satisfies never;
+            coin satisfies never;
 
             return 0;
     }
@@ -41,14 +38,12 @@ export const selectNumberOfAccountTokensWithFiatRates = (
 
     if (!account || !isCoinWithTokens(account.symbol)) return 0;
 
-    const networkType = getNetworkType(account.symbol) as NetworksWithTokens;
-
-    switch (networkType) {
-        case 'ethereum':
+    switch (account.symbol) {
+        case 'eth':
             return selectNumberOfEthereumAccountTokensWithFiatRates(state, accountKey);
         default:
             // Exhaustive check, all coin types in NETWORKS_WITH_TOKENS should be handled above
-            networkType satisfies never;
+            account.symbol satisfies never;
 
             return 0;
     }

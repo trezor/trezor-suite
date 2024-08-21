@@ -16,8 +16,9 @@ import {
     selectIsUnacquiredDevice,
 } from '@suite-common/wallet-core';
 import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
+import { getTotalFiatBalance } from '@suite-common/wallet-utils';
 
-import { getTotalFiatBalanceNative, isFirmwareVersionSupported } from './utils';
+import { isFirmwareVersionSupported } from './utils';
 
 export const selectIsDeviceFirmwareSupported = (state: DeviceRootState) => {
     const deviceFwVersion = selectDeviceFirmwareVersion(state);
@@ -60,10 +61,9 @@ export const selectDeviceTotalFiatBalanceNative = memoizeWithArgs(
         deviceState: string,
     ) => {
         const accounts = deviceState ? selectAccountsByDeviceState(state, deviceState) : [];
-
         const rates = selectCurrentFiatRates(state);
-        const fiatCurrencyCode = selectFiatCurrencyCode(state);
-        const fiatBalance = getTotalFiatBalanceNative(accounts, fiatCurrencyCode, rates);
+
+        const fiatBalance = getTotalFiatBalance(accounts, selectFiatCurrencyCode(state), rates);
 
         return fiatBalance;
     },

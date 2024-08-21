@@ -136,7 +136,7 @@ export const ReceiveModalScreen = () => {
 
     const handleSelectAccount: OnSelectAccount = ({
         account,
-        tokenContract: selectedTokenContract,
+        tokenAddress: selectedTokenContract,
     }) => {
         navigation.dispatch({
             ...CommonActions.setParams({

@@ -644,7 +644,7 @@ export const getAccountFiatBalance = ({
 
 export const getTotalFiatBalance = (
     deviceAccounts: Account[],
-    localCurrency: string,
+    localCurrency: FiatCurrencyCode,
     rates?: RatesByKey,
 ) => {
     let instanceBalance = new BigNumber(0);
@@ -652,7 +652,7 @@ export const getTotalFiatBalance = (
         const accountFiatBalance =
             getAccountFiatBalance({
                 account: a,
-                localCurrency: localCurrency as FiatCurrencyCode,
+                localCurrency,
                 rates,
             }) ?? '0';
         instanceBalance = instanceBalance.plus(accountFiatBalance);

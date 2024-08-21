@@ -44,39 +44,32 @@ export const AccountListItemInteractive = ({
             selectAccountFiatBalance(state, account.key),
     );
 
-    const shouldShowHeader = doesCoinSupportTokens && !hideTokens;
     const shouldShowTokens = doesCoinSupportTokens && !hideTokens;
     const showSeparator = hasAnyTokensWithFiatRates && shouldShowTokens;
 
     return (
         <Box>
-            {shouldShowHeader && (
-                <>
-                    <HStack
-                        alignItems="center"
-                        justifyContent="space-between"
-                        marginBottom="medium"
-                    >
-                        <Text variant="highlight">{account.accountLabel}</Text>
+            {shouldShowTokens && (
+                <HStack alignItems="center" justifyContent="space-between" marginBottom="medium">
+                    <Text variant="highlight">{account.accountLabel}</Text>
 
-                        {hasAnyTokensWithFiatRates && (
-                            <VStack spacing={0} alignItems="flex-end">
-                                <FiatAmountFormatter
-                                    numberOfLines={1}
-                                    adjustsFontSizeToFit
-                                    value={fiatBalance}
-                                />
-                                <CryptoAmountFormatter
-                                    value={account.availableBalance}
-                                    network={account.symbol}
-                                    isBalance={false}
-                                    numberOfLines={1}
-                                    adjustsFontSizeToFit
-                                />
-                            </VStack>
-                        )}
-                    </HStack>
-                </>
+                    {hasAnyTokensWithFiatRates && (
+                        <VStack spacing={0} alignItems="flex-end">
+                            <FiatAmountFormatter
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
+                                value={fiatBalance}
+                            />
+                            <CryptoAmountFormatter
+                                value={account.availableBalance}
+                                network={account.symbol}
+                                isBalance={false}
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
+                            />
+                        </VStack>
+                    )}
+                </HStack>
             )}
             <Card style={applyStyle(cardStyle)}>
                 <TouchableOpacity

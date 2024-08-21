@@ -3,19 +3,20 @@ import { useDispatch } from 'react-redux';
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import TrezorConnect from '@trezor/connect';
-import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
+import TrezorConnect from '@trezor/connect';
 
+import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
+import { isLocalBalanceHistoryCoin } from './constants';
 import {
+    AccountHistoryMovementItem,
+    AccountItem,
     BalanceMovementEvent,
     GroupedBalanceMovementEvent,
-    AccountItem,
-    AccountHistoryMovementItem,
 } from './types';
-import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 
 /**
  * Calculates received and sent values of each balance movement point.
@@ -136,8 +137,7 @@ export const getAccountMovementEvents = async ({
     const tokenAddress = tokensFilter?.[0]; // This is only for graph on detail screen where we have always only one token
 
     const getBalanceHistory = async () => {
-        const networkType = getNetworkType(coin);
-        if (networkType === 'ethereum' || networkType === 'ripple') {
+        if (isLocalBalanceHistoryCoin(coin)) {
             const allTransactions = await dispatch(
                 fetchAllTransactionsForAccountThunk({
                     accountKey: account.accountKey,

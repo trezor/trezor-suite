@@ -27,17 +27,17 @@ export const AccountsScreen = () => {
     const bottomSheetAccountAtom = useMemo(() => atom<Account | null>(null), []);
     const setBottomSheetAccountAtom = useSetAtom(bottomSheetAccountAtom);
 
-    const handleSelectAccount: OnSelectAccount = ({ account, tokenContract }) => {
+    const handleSelectAccount: OnSelectAccount = ({ account, tokenAddress }) => {
         navigation.navigate(RootStackRoutes.AccountDetail, {
             accountKey: account.key,
-            tokenContract,
+            tokenContract: tokenAddress,
             closeActionType: 'back',
         });
     };
 
     const handleSetBottomSheetAccount: OnSelectAccount = ({
         account,
-        tokenContract,
+        tokenAddress,
         hasAnyTokensWithFiatRates,
     }) => {
         if (hasAnyTokensWithFiatRates) {
@@ -47,7 +47,7 @@ export const AccountsScreen = () => {
         }
         handleSelectAccount({
             account,
-            tokenContract,
+            tokenAddress,
             hasAnyTokensWithFiatRates,
         });
     };
