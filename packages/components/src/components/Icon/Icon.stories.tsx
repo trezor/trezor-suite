@@ -7,7 +7,7 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const Icon: StoryObj<IconProps> = {
+export const LegacyIcon: StoryObj<IconProps> = {
     args: {
         icon: 'TAG',
         variant: 'primary',
