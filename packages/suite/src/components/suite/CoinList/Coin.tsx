@@ -6,6 +6,7 @@ import { Translation } from 'src/components/suite';
 import type { Network } from 'src/types/wallet';
 import { typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
+import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 
 const SettingsWrapper = styled.div<{
     $toggled: boolean;
@@ -79,7 +80,9 @@ export const CoinWrapper = styled.button<{
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     cursor: pointer;
-    transition: 0.2s ease-in-out;
+    transition:
+        0.2s ease-in-out,
+        ${focusStyleTransition};
     overflow: hidden;
 
     &:disabled {
@@ -87,6 +90,8 @@ export const CoinWrapper = styled.button<{
         opacity: 0.5;
         background: ${({ theme }) => theme.BG_GREY};
     }
+
+    ${getFocusShadowStyle()}
 
     &:hover {
         background: ${({ theme }) => theme.BG_GREY_ALT};
