@@ -74,21 +74,6 @@ describe('address', () => {
         });
     });
 
-    describe('toBase58Check', () => {
-        fixtures.standard.forEach(f => {
-            if (!f.base58check) return;
-            it(`encodes ${f.hash} (${f.network})`, () => {
-                const address = baddress.toBase58Check(
-                    Buffer.from(f.hash, 'hex'),
-                    f.version,
-                    getNetwork(f.network),
-                );
-
-                expect(address).toEqual(f.base58check);
-            });
-        });
-    });
-
     describe('toBech32', () => {
         fixtures.bech32.forEach(f => {
             const data = Buffer.from(f.data, 'hex');

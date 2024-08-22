@@ -1,14 +1,12 @@
 // upstream: https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/address.ts
 // differences:
 // - `fromBase58Check` method is using additional "network" param and bs58check.decodeAddress instead of bs58check.decode. checking multibyte version (Zcash and Decred support).
-// - `toBase58Check` method is using additional "network" param and bs58check.encodeAddress instead of bs58check.encode.
 
 import { bech32, bech32m } from 'bech32';
 import * as bs58check from './bs58check';
 import * as bscript from './script';
 import * as payments from './payments';
 import { bitcoin as BITCOIN_NETWORK, Network } from './networks';
-import * as types from './types';
 
 export interface Base58CheckResult {
     hash: Buffer;
@@ -50,12 +48,6 @@ export function fromBech32(address: string): Bech32Result {
         prefix: result.prefix,
         data: Buffer.from(data),
     };
-}
-
-export function toBase58Check(hash: Buffer, version: number, network = BITCOIN_NETWORK): string {
-    types.typeforce(types.tuple(types.Hash160bit, types.UInt16), [hash, version]);
-
-    return bs58check.encodeAddress(hash, version, network);
 }
 
 export function toBech32(data: Buffer, version: number, prefix: string) {
