@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { Icon, IconType, variables } from '@trezor/components';
+import { IconLegacy, IconType, variables } from '@trezor/components';
 
 const Items = styled.div`
     display: flex;
@@ -39,7 +39,7 @@ export const SecurityChecklist = ({ items }: SecurityChecklistProps) => {
         <Items>
             {items.map(item => (
                 <Item key={item.icon}>
-                    <Icon size={24} icon={item.icon} color={theme.TYPE_DARK_GREY} />
+                    <IconLegacy size={24} icon={item.icon} color={theme.TYPE_DARK_GREY} />
                     <Text>{item.content}</Text>
                 </Item>
             ))}

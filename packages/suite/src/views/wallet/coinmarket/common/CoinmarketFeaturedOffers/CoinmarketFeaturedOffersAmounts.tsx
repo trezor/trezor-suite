@@ -3,7 +3,7 @@ import { CoinmarketFiatAmount } from '../CoinmarketFiatAmount';
 import { isBuyTrade } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { Icon } from '@trezor/components';
+import { IconLegacy } from '@trezor/components';
 import { BuySellQuote } from './CoinmarketFeaturedOffersItem';
 
 const Arrow = styled.div`
@@ -45,7 +45,7 @@ const CoinmarketFeaturedOffersAmounts = ({ quote }: { quote: BuySellQuote }) => 
         <AmountsWrapper>
             {fromAmount}
             <Arrow>
-                <Icon color={theme.TYPE_LIGHT_GREY} size={20} icon="ARROW_RIGHT_LONG" />
+                <IconLegacy color={theme.TYPE_LIGHT_GREY} size={20} icon="ARROW_RIGHT_LONG" />
             </Arrow>
             {toAmount}
         </AmountsWrapper>

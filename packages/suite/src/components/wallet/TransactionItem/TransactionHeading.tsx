@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { variables, Icon } from '@trezor/components';
+import { variables, IconLegacy } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import {
     FormattedCryptoAmount,
@@ -177,7 +177,7 @@ export const TransactionHeading = ({
                     $show={txItemIsHovered}
                     $animate={nestedItemIsHovered || headingIsHovered}
                 >
-                    <Icon
+                    <IconLegacy
                         size={nestedItemIsHovered || headingIsHovered ? 18 : 16}
                         color={theme.TYPE_DARK_GREY}
                         icon="ARROW_RIGHT"

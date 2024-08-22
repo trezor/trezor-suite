@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Translation } from 'src/components/suite';
-import { Textarea, Icon, Tooltip, variables } from '@trezor/components';
+import { Textarea, IconLegacy, Tooltip, variables } from '@trezor/components';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -12,7 +12,7 @@ const Container = styled.div`
     position: relative;
 `;
 
-const CloseIcon = styled(Icon)`
+const CloseIcon = styled(IconLegacy)`
     position: absolute;
     right: 0;
     top: 0;

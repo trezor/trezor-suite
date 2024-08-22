@@ -9,7 +9,7 @@ import {
     mapElevationToBackground,
     nextElevation,
 } from '@trezor/theme';
-import { Icon, IconProps } from '../Icon/Icon';
+import { IconLegacy, IconLegacyProps } from '../Icon/IconLegacy';
 import type { Coords } from './getAdjustedCoords';
 import { menuStyle } from './menuStyle';
 import { useElevation } from '../ElevationContext/ElevationContext';
@@ -130,7 +130,7 @@ const MenuItemContainer = styled.li<MenuItemContainerProps>`
 
 type AddonProps = {
     label: React.ReactNode;
-    icon: IconProps['icon'];
+    icon: IconLegacyProps['icon'];
     onClick?: () => void;
 };
 
@@ -145,7 +145,7 @@ const Addon = ({ label, icon, onClick, isKeyboardSelected, onMouseOver }: AddonC
     return (
         <AddonContainer onClick={onClick} $isFocused={isKeyboardSelected} onMouseOver={onMouseOver}>
             <span>{label}</span>
-            <Icon icon={icon} size={spacings.sm} color={theme.iconPrimaryDefault} />
+            <IconLegacy icon={icon} size={spacings.sm} color={theme.iconPrimaryDefault} />
         </AddonContainer>
     );
 };
@@ -154,8 +154,8 @@ export type DropdownMenuItemProps = {
     label: React.ReactNode;
     onClick?: () => any | Promise<any>;
     shouldCloseOnClick?: boolean;
-    icon?: IconProps['icon'];
-    iconRight?: IconProps['icon'];
+    icon?: IconLegacyProps['icon'];
+    iconRight?: IconLegacyProps['icon'];
     isDisabled?: boolean;
     isHidden?: boolean;
     separatorBefore?: boolean;
@@ -205,9 +205,9 @@ const MenuItem = ({
             $separatorBefore={separatorBefore}
             data-testid={dataTest}
         >
-            {icon && <Icon icon={icon} size={spacings.md} />}
+            {icon && <IconLegacy icon={icon} size={spacings.md} />}
             <span>{label}</span>
-            {iconRight && <Icon icon={iconRight} size={spacings.md} />}
+            {iconRight && <IconLegacy icon={iconRight} size={spacings.md} />}
         </MenuItemContainer>
     );
 };

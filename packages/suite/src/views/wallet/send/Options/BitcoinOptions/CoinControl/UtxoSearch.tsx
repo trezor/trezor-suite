@@ -1,6 +1,6 @@
 import { useCallback, useRef, Dispatch, SetStateAction, ChangeEvent, KeyboardEvent } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Input, Icon, KEYBOARD_CODE } from '@trezor/components';
+import { Input, IconLegacy, KEYBOARD_CODE } from '@trezor/components';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 
 const Container = styled.div`
@@ -44,7 +44,7 @@ export const UtxoSearch = ({ searchQuery, setSearch, setSelectedPage }: UtxoSear
             <Input
                 data-testid="@wallet/send/search-icon"
                 innerRef={inputRef}
-                innerAddon={<Icon icon="SEARCH" size={16} color={theme.iconSubdued} />}
+                innerAddon={<IconLegacy icon="SEARCH" size={16} color={theme.iconSubdued} />}
                 placeholder={translationString('TR_SEARCH_UTXOS')}
                 onChange={onSearch}
                 onKeyDown={onKeyDown}

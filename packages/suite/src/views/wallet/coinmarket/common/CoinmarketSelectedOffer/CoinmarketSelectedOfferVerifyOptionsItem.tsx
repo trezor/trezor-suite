@@ -1,4 +1,4 @@
-import { CoinLogo, Column, Icon, Row, variables } from '@trezor/components';
+import { CoinLogo, Column, IconLegacy, Row, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import {
     AccountLabeling,
@@ -89,7 +89,7 @@ const CoinmarketSelectedOfferVerifyOptionsItem = ({
             <Row>
                 <LogoWrapper>
                     <Row alignItems="center">
-                        <Icon icon="PLUS" size={iconSize} color={theme.TYPE_DARK_GREY} />
+                        <IconLegacy icon="PLUS" size={iconSize} color={theme.TYPE_DARK_GREY} />
                     </Row>
                 </LogoWrapper>
                 <AccountWrapper>
@@ -110,7 +110,7 @@ const CoinmarketSelectedOfferVerifyOptionsItem = ({
         <Row>
             <LogoWrapper>
                 <Row alignItems="center">
-                    <Icon icon="NON_SUITE" size={iconSize} color={theme.TYPE_DARK_GREY} />
+                    <IconLegacy icon="NON_SUITE" size={iconSize} color={theme.TYPE_DARK_GREY} />
                 </Row>
             </LogoWrapper>
             <AccountWrapper>

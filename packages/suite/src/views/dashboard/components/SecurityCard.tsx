@@ -1,4 +1,4 @@
-import { Button, Card, Icon, IconProps, variables } from '@trezor/components';
+import { Button, Card, IconLegacy, IconLegacyProps, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
@@ -70,7 +70,7 @@ const Line = styled.div`
 
 export type SecurityCardProps = {
     variant: 'primary' | 'secondary';
-    icon: IconProps['icon'];
+    icon: IconLegacyProps['icon'];
     heading: ReactNode;
     description?: ReactNode;
     cta?: {
@@ -90,11 +90,15 @@ export const SecurityCard = ({ variant, icon, heading, description, cta }: Secur
         <Wrapper>
             <Card>
                 <Header>
-                    <Icon icon={icon} size={32} color={theme.iconDefault} />
+                    <IconLegacy icon={icon} size={32} color={theme.iconDefault} />
                     <CheckIconContainer $isDone={isDone}>
                         {isDone && (
                             <CheckIconBackground>
-                                <Icon icon="CHECK" color={theme.iconPrimaryDefault} size={16} />
+                                <IconLegacy
+                                    icon="CHECK"
+                                    color={theme.iconPrimaryDefault}
+                                    size={16}
+                                />
                             </CheckIconBackground>
                         )}
                     </CheckIconContainer>

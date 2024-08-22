@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { Icon, variables } from '@trezor/components';
+import { IconLegacy, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 
@@ -48,7 +48,7 @@ export const DeviceAuthenticationExplainer = ({
     <Items $isHorizontal={horizontal}>
         {items.map(({ icon, text }) => (
             <Item key={icon}>
-                <Icon icon={icon} size={32} />
+                <IconLegacy icon={icon} size={32} />
                 <Translation id={text} />
             </Item>
         ))}

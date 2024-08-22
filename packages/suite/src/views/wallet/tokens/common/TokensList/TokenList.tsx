@@ -1,5 +1,5 @@
 import styled, { css, useTheme } from 'styled-components';
-import { Card, Icon } from '@trezor/components';
+import { Card, IconLegacy } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
@@ -32,7 +32,7 @@ const NoResults = styled.div`
     text-align: center;
 `;
 
-const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
+const ChevronIcon = styled(IconLegacy)<{ $isActive: boolean }>`
     padding: ${spacingsPx.sm};
     border-radius: 50%;
     transition:

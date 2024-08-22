@@ -1,32 +1,30 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Icon as IconComponent, IconProps, variables, iconVariants } from '../../index';
-
+import { Icon as IconComponent, IconProps } from './Icon';
+import { IconName, icons } from '@suite-common/icons/src/icons';
+import { colorVariants } from '@trezor/theme';
 const meta: Meta = {
     title: 'Icons',
     component: IconComponent,
 } as Meta;
 export default meta;
 
-export const LegacyIcon: StoryObj<IconProps> = {
+const iconNames = Object.keys(icons) as IconName[];
+const colors = Object.keys(colorVariants.standard);
+
+export const Icon: StoryObj<IconProps> = {
     args: {
-        icon: 'TAG',
-        variant: 'primary',
+        name: 'discover',
+        color: 'iconDefault',
     },
     argTypes: {
-        icon: {
-            options: variables.ICONS,
-            control: {
-                type: 'select',
-            },
-        },
-        variant: {
-            options: iconVariants,
+        name: {
+            options: iconNames,
             control: {
                 type: 'select',
             },
         },
         color: {
-            options: [undefined, '#9be887'],
+            options: colors,
             control: {
                 type: 'select',
             },

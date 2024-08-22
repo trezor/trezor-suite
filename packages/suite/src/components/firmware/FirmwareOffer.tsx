@@ -5,7 +5,7 @@ import {
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
-import { Icon, Markdown, Tooltip, variables } from '@trezor/components';
+import { IconLegacy, Markdown, Tooltip, variables } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/connect';
 
@@ -102,7 +102,7 @@ export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOf
                             {currentVersion ? ` ${currentVersion}` : ''}
                         </Version>
                     </FwVersion>
-                    <Icon icon="ARROW_RIGHT_LONG" size={16} />
+                    <IconLegacy icon="ARROW_RIGHT_LONG" size={16} />
                 </>
             )}
             <FwVersion>

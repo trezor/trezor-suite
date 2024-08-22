@@ -1,7 +1,7 @@
 import { QRCodeSVG } from 'qrcode.react';
 import styled from 'styled-components';
 
-import { Icon, Tooltip, colors, variables } from '@trezor/components';
+import { IconLegacy, Tooltip, colors, variables } from '@trezor/components';
 import { Translation } from './Translation';
 
 export const QRCODE_SIZE = 384;
@@ -29,7 +29,7 @@ const Message = styled.div`
     white-space: nowrap;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     display: inline-block;
     margin-left: 5px;
     vertical-align: middle;

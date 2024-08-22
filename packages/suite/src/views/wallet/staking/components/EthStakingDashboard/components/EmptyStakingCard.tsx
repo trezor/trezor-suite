@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Button, Card, Icon, Paragraph, Row, Tooltip, variables } from '@trezor/components';
+import { Button, Card, IconLegacy, Paragraph, Row, Tooltip, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -71,7 +71,7 @@ export const EmptyStakingCard = () => {
         () => [
             {
                 id: 0,
-                icon: <Icon icon="PIGGY_BANK" size={32} color={theme.iconPrimaryDefault} />,
+                icon: <IconLegacy icon="PIGGY_BANK" size={32} color={theme.iconPrimaryDefault} />,
                 title: <Translation id="TR_STAKE_ETH_SEE_MONEY_DANCE" />,
                 description: (
                     <Translation
@@ -86,14 +86,18 @@ export const EmptyStakingCard = () => {
             {
                 id: 1,
                 icon: (
-                    <Icon icon="LOCK_LAMINATED_OPEN" size={32} color={theme.iconPrimaryDefault} />
+                    <IconLegacy
+                        icon="LOCK_LAMINATED_OPEN"
+                        size={32}
+                        color={theme.iconPrimaryDefault}
+                    />
                 ),
                 title: <Translation id="TR_STAKE_ETH_LOCK_FUNDS" />,
                 description: <Translation id="TR_STAKE_ETH_LOCK_FUNDS_DESC" />,
             },
             {
                 id: 2,
-                icon: <Icon icon="EVERSTAKE_LOGO" size={32} color={theme.iconEverstake} />,
+                icon: <IconLegacy icon="EVERSTAKE_LOGO" size={32} color={theme.iconEverstake} />,
                 title: <Translation id="TR_STAKE_ETH_EVERSTAKE" />,
                 description: <Translation id="TR_STAKE_ETH_EVERSTAKE_DESC" />,
             },
@@ -106,7 +110,11 @@ export const EmptyStakingCard = () => {
             <StyledCard>
                 <Header>
                     <Row alignItems="center" gap={spacings.xxs}>
-                        <Icon icon="QUESTION_FILLED" size={11} color={theme.iconPrimaryDefault} />
+                        <IconLegacy
+                            icon="QUESTION_FILLED"
+                            size={11}
+                            color={theme.iconPrimaryDefault}
+                        />
 
                         <GreenP>
                             <Translation id="TR_STAKE_WHAT_IS_STAKING" />

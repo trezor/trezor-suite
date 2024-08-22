@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Icon, IconType } from '../../Icon/Icon';
+import { IconLegacy, IconType } from '../../Icon/IconLegacy';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { ButtonContainer, ButtonProps } from '../Button/Button';
 import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
@@ -47,7 +47,7 @@ export const IconButton = ({
     const theme = useTheme();
 
     const IconComponent = (
-        <Icon
+        <IconLegacy
             icon={icon}
             size={iconSize || getIconSize(size)}
             color={getIconColor({ variant, isDisabled, theme, isSubtle })}

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Icon, variables, SelectBar, Paragraph, TextButton, H2 } from '@trezor/components';
+import { IconLegacy, variables, SelectBar, Paragraph, TextButton, H2 } from '@trezor/components';
 import {
     Elevation,
     mapElevationToBackground,
@@ -54,7 +54,7 @@ export const Middle = styled.div<ResponsiveSize>`
     }
 `;
 
-export const StyledIcon = styled(Icon)<ResponsiveSize>`
+export const StyledIcon = styled(IconLegacy)<ResponsiveSize>`
     @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.$responsiveSize]}) {
         transform: rotate(90deg);
     }

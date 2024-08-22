@@ -1,6 +1,6 @@
 import { ReactNode, MouseEvent } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { Icon, IconProps } from '../../Icon/Icon';
+import { IconLegacy, IconLegacyProps } from '../../Icon/IconLegacy';
 import { TypographyStyle, spacingsPx, typography, typographyStylesBase } from '@trezor/theme';
 
 type AProps = {
@@ -52,8 +52,8 @@ interface LinkProps {
     children?: ReactNode;
     className?: string;
     variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
-    icon?: IconProps['icon'];
-    iconProps?: IconProps;
+    icon?: IconLegacyProps['icon'];
+    iconProps?: IconLegacyProps;
     'data-testid'?: string;
 }
 
@@ -95,7 +95,7 @@ const Link = ({
         >
             {children}
             {icon && (
-                <Icon
+                <IconLegacy
                     size={iconSize}
                     icon={icon}
                     {...(variant !== undefined

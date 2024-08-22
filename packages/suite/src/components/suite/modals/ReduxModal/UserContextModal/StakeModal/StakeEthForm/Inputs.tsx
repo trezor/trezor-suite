@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Icon, Warning } from '@trezor/components';
+import { IconLegacy, Warning } from '@trezor/components';
 import { getInputState } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -22,7 +22,7 @@ const VStack = styled.div`
     align-items: center;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     transform: rotate(90deg);
     margin-bottom: 26px;
 `;

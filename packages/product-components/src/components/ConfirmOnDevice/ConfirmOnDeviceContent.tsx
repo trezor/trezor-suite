@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { Icon } from '@trezor/components';
+import { IconLegacy } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import {
     Elevation,
@@ -166,7 +166,7 @@ export const ConfirmOnDeviceContent = ({
                             onClick={onCancel}
                             data-testid="@confirm-on-device/close-button"
                         >
-                            <Icon icon="CROSS" size={16} color={theme.textOnTertiary} />
+                            <IconLegacy icon="CROSS" size={16} color={theme.textOnTertiary} />
                         </Close>
                     )}
                 </CloseWrapper>

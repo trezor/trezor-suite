@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Button, Icon, IconType, Paragraph } from '@trezor/components';
+import { Button, IconLegacy, IconType, Paragraph } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -91,7 +91,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
             <VStack>
                 {STAKING_DETAILS.map(({ id, icon, translationId }) => (
                     <Flex key={id}>
-                        <Icon icon={icon} color={theme.iconPrimaryDefault} />
+                        <IconLegacy icon={icon} color={theme.iconPrimaryDefault} />
 
                         <GreyP>
                             <Translation

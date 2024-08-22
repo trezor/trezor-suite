@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Icon } from '@trezor/components';
+import { IconLegacy } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 
 import { ResultRow, parseTextToPagesAndLines } from './parseTextToPagesAndLines';
@@ -8,12 +8,12 @@ import { DeviceDisplayText } from './DeviceDisplayText';
 import { DisplayPageSeparator } from './DisplayPageSeparator';
 import { handleOnCopy } from 'src/utils/suite/deviceDisplay';
 
-const StyledNextIcon = styled(Icon)<{ $isPixelType: boolean }>`
+const StyledNextIcon = styled(IconLegacy)<{ $isPixelType: boolean }>`
     display: inline-block;
     margin-left: ${({ $isPixelType }) => ($isPixelType ? '12px' : '24px')};
 `;
 
-const StyledContinuesIcon = styled(Icon)<{ $isPixelType: boolean }>`
+const StyledContinuesIcon = styled(IconLegacy)<{ $isPixelType: boolean }>`
     display: inline-block;
     margin-right: ${({ $isPixelType }) => ($isPixelType ? '12px' : '24px')};
 `;

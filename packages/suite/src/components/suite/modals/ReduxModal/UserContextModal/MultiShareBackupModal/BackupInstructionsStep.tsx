@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { H3, Icon, IconVariant, Paragraph, Row, Text, TextVariant } from '@trezor/components';
+import { H3, IconLegacy, IconVariant, Paragraph, Row, Text, TextVariant } from '@trezor/components';
 import { borders, spacings, spacingsPx, typographyStylesBase } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -83,7 +83,7 @@ export const BackupInstructionsStep = ({
         <Step>
             <StepNumber $subdued={completeness === 'todo'} $isDone={completeness === 'done'}>
                 {completeness === 'done' ? (
-                    <Icon icon="CHECK" variant="primary" size={24} />
+                    <IconLegacy icon="CHECK" variant="primary" size={24} />
                 ) : (
                     <StyledParagraph typographyStyle="highlight">{stepNumber}</StyledParagraph>
                 )}
@@ -96,7 +96,7 @@ export const BackupInstructionsStep = ({
                 </H3>
                 {completeness === 'done' ? null : (
                     <Row gap={spacings.xxs}>
-                        <Icon icon="TIMER" variant={variant ?? 'tertiary'} size={16} />
+                        <IconLegacy icon="TIMER" variant={variant ?? 'tertiary'} size={16} />
                         <Text typographyStyle="hint" variant={variant ?? 'tertiary'}>
                             <Translation id="TR_N_MIN" values={{ n: time }} />
                         </Text>

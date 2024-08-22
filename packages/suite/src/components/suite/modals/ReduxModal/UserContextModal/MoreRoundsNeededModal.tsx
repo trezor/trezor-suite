@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 import { useDispatch } from 'src/hooks/suite';
-import { Button, Icon, variables } from '@trezor/components';
+import { Button, IconLegacy, variables } from '@trezor/components';
 import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { Modal, Translation } from 'src/components/suite';
 
@@ -12,7 +12,7 @@ const StyledButton = styled(Button)`
     flex: 1;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     width: 84px;
     height: 84px;
     margin: 12px auto 32px;

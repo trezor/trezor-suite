@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Card, Icon, variables, colors } from '@trezor/components';
+import { Card, IconLegacy, variables, colors } from '@trezor/components';
 import { SelectBankAccount } from './components/SelectBankAccount';
 import { SendTransaction } from './components/SendTransaction';
 import { Translation } from 'src/components/suite';
@@ -80,7 +80,7 @@ export const SelectedOffer = () => {
                         </Step>
                     </Left>
                     <Middle>
-                        <Icon icon="ARROW_RIGHT" color={colors.TYPE_LIGHT_GREY} />
+                        <IconLegacy icon="ARROW_RIGHT" color={colors.TYPE_LIGHT_GREY} />
                     </Middle>
                     <Right>
                         <Step active={sellStep === 'SEND_TRANSACTION'}>

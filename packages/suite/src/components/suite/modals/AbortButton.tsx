@@ -1,6 +1,6 @@
 import styled, { css, useTheme } from 'styled-components';
 
-import { Icon, variables } from '@trezor/components';
+import { IconLegacy, variables } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { Translation } from '..';
@@ -58,7 +58,7 @@ const AbortContainer = styled.div`
     }
 `;
 
-const CloseIcon = styled(Icon)`
+const CloseIcon = styled(IconLegacy)`
     position: absolute;
     left: 0;
     top: 0;

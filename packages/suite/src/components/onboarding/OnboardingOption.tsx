@@ -1,6 +1,6 @@
 import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, IconProps, useElevation, variables } from '@trezor/components';
+import { IconLegacy, IconLegacyProps, useElevation, variables } from '@trezor/components';
 import {
     Elevation,
     borders,
@@ -70,7 +70,7 @@ export const OptionsDivider = styled.div`
 interface OnboardingOptionProps extends HTMLAttributes<HTMLDivElement> {
     heading: ReactNode;
     description?: ReactNode;
-    icon?: IconProps['icon'];
+    icon?: IconLegacyProps['icon'];
 }
 
 export const OnboardingOption = ({
@@ -85,7 +85,7 @@ export const OnboardingOption = ({
         <Wrapper $elevation={elevation} {...rest}>
             {icon && (
                 <IconWrapper>
-                    <Icon icon={icon} size={48} />
+                    <IconLegacy icon={icon} size={48} />
                 </IconWrapper>
             )}
             <Content>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { Icon, IconType } from '@trezor/components';
+import { IconLegacy, IconType } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -11,7 +11,7 @@ import { borders, typography } from '@trezor/theme';
 
 const TRANSITION_CONFIG = '0.1s ease';
 
-const StyledIcon = styled(Icon)<{ $isActivated: boolean }>`
+const StyledIcon = styled(IconLegacy)<{ $isActivated: boolean }>`
     position: absolute;
     left: 6px;
     width: 15px;

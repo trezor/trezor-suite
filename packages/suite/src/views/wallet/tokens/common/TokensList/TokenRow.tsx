@@ -11,7 +11,7 @@ import {
 } from '@suite-common/token-definitions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { Dropdown, IconButton, ButtonGroup, Button, Icon } from '@trezor/components';
+import { Dropdown, IconButton, ButtonGroup, Button, IconLegacy } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -105,7 +105,7 @@ const ContractAddress = styled.div`
     white-space: wrap;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     display: inline-block;
     margin-left: ${spacingsPx.xxs};
 `;

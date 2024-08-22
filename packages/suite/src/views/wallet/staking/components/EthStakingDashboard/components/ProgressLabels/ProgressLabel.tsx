@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import styled, { DefaultTheme, useTheme } from 'styled-components';
-import { Icon, variables } from '@trezor/components';
+import { IconLegacy, variables } from '@trezor/components';
 import { ProgressLabelState } from './types';
 import { borders, spacingsPx } from '@trezor/theme';
 
@@ -147,11 +147,11 @@ export const ProgressLabel = ({ children, progressState = 'stale' }: ProgressLab
 
     const getProgressStateIcon = () => {
         if (progressState === 'active') {
-            return <Icon icon="SPINNER" size={20} color={theme.iconAlertYellow} />;
+            return <IconLegacy icon="SPINNER" size={20} color={theme.iconAlertYellow} />;
         }
 
         if (progressState === 'done') {
-            return <Icon icon="CHECK" size={16} color={theme.backgroundPrimaryDefault} />;
+            return <IconLegacy icon="CHECK" size={16} color={theme.backgroundPrimaryDefault} />;
         }
 
         return <IconDot />;

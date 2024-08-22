@@ -1,4 +1,4 @@
-import { Icon, Tooltip } from '@trezor/components';
+import { IconLegacy, Tooltip } from '@trezor/components';
 import { CoinmarketOffersItemProps } from '../CoinmarketOffers/CoinmarketOffersItem';
 import styled, { useTheme } from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -12,7 +12,7 @@ const TooltipWrap = styled.div`
     margin-top: ${spacingsPx.xxxs};
 `;
 
-const TooltipIcon = styled(Icon)`
+const TooltipIcon = styled(IconLegacy)`
     margin-top: 1px;
     margin-right: ${spacingsPx.xs};
 `;

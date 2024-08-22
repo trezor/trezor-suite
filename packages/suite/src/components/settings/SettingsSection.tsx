@@ -1,6 +1,6 @@
 import { ReactNode, ReactElement } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Paragraph, Icon, IconType, H3, Card } from '@trezor/components';
+import { Paragraph, IconLegacy, IconType, H3, Card } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
 
@@ -77,7 +77,7 @@ export const SettingsSection = ({
                 {!title && customHeader}
                 {title && !customHeader && (
                     <Title>
-                        {icon && <Icon icon={icon} size={24} color={theme.iconDefault} />}
+                        {icon && <IconLegacy icon={icon} size={24} color={theme.iconDefault} />}
                         <H3>{title}</H3>
                     </Title>
                 )}

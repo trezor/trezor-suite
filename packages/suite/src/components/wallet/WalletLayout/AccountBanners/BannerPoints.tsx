@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Icon } from '@trezor/components';
+import { IconLegacy } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
 interface BannerPointsProps {
@@ -25,7 +25,7 @@ export const BannerPoints = ({ points }: BannerPointsProps) => {
         <>
             {points.map((point, i) => (
                 <Point key={i}>
-                    <Icon icon="CHECK" size={20} />
+                    <IconLegacy icon="CHECK" size={20} />
                     {point}
                 </Point>
             ))}

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath, isDevEnv } from '@suite-common/suite-utils';
-import { Icon, Link, variables } from '@trezor/components';
+import { IconLegacy, Link, variables } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { selectDevice } from '@suite-common/wallet-core';
@@ -72,7 +72,7 @@ const DetailItem = styled.div`
     align-items: center;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     padding: 0 6px;
 `;
 
@@ -196,7 +196,7 @@ export const SupportFeedbackSelection = () => {
                             <Label>
                                 <LabelHeadline>
                                     <Translation id="TR_GUIDE_FORUM" />
-                                    <Icon size={20} icon="EXTERNAL_LINK" />
+                                    <IconLegacy size={20} icon="EXTERNAL_LINK" />
                                 </LabelHeadline>
                                 <LabelSubheadline>
                                     <Translation id="TR_GUIDE_FORUM_LABEL" />
@@ -210,7 +210,7 @@ export const SupportFeedbackSelection = () => {
                             <Label>
                                 <LabelHeadline>
                                     <Translation id="TR_GUIDE_SUPPORT" />
-                                    <Icon size={20} icon="EXTERNAL_LINK" />
+                                    <IconLegacy size={20} icon="EXTERNAL_LINK" />
                                 </LabelHeadline>
                             </Label>
                         </SectionButton>

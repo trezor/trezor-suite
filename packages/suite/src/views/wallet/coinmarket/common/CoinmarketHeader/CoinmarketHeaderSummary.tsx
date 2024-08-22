@@ -1,4 +1,4 @@
-import { H2, Icon, Row, variables } from '@trezor/components';
+import { H2, IconLegacy, Row, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { CoinmarketCryptoAmount, CoinmarketFiatAmount } from '..';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
@@ -19,7 +19,7 @@ const SummaryWrap = styled.div`
     }
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     padding: 0 ${spacingsPx.sm};
     margin: 0 ${spacingsPx.lg};
 `;

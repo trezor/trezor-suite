@@ -3,7 +3,7 @@ import { memo, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid, Cell } from 'recharts';
 
-import { variables, Icon } from '@trezor/components';
+import { variables, IconLegacy } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { useGraph } from 'src/hooks/suite';
@@ -142,7 +142,7 @@ export const TransactionsGraph = memo(
                 {!hideToolbar && (
                     <Toolbar>
                         <GraphRangeSelector align="bottom-right" />
-                        {onRefresh && <Icon size={14} icon="REFRESH" onClick={onRefresh} />}
+                        {onRefresh && <IconLegacy size={14} icon="REFRESH" onClick={onRefresh} />}
                     </Toolbar>
                 )}
                 <Description>

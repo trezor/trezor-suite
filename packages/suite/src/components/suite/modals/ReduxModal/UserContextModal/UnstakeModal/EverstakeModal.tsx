@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Button, Checkbox, Icon } from '@trezor/components';
+import { Button, Checkbox, IconLegacy } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -102,7 +102,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
 
             <VStack>
                 <VStackItem>
-                    <Icon icon="FILE" color={theme.textAlertBlue} />
+                    <IconLegacy icon="FILE" color={theme.textAlertBlue} />
 
                     <div>
                         <Translation
@@ -115,7 +115,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                     </div>
                 </VStackItem>
                 <VStackItem>
-                    <Icon icon="SHIELD" color={theme.textAlertBlue} />
+                    <IconLegacy icon="SHIELD" color={theme.textAlertBlue} />
 
                     <div>
                         <Translation

@@ -2,7 +2,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled from 'styled-components';
 import { NumberInput, Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { Card, Icon, IconButton } from '@trezor/components';
+import { Card, IconLegacy, IconButton } from '@trezor/components';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { spacingsPx } from '@trezor/theme';
@@ -86,7 +86,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
                 rules={rules}
                 label={
                     <Label>
-                        <Icon size={16} icon="CALENDAR" />
+                        <IconLegacy size={16} icon="CALENDAR" />
                         <Translation id="LOCKTIME_SCHEDULE_SEND" />
                     </Label>
                 }

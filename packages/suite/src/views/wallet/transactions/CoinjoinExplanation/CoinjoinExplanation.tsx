@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { darken } from 'polished';
 
-import { Card, Icon, variables } from '@trezor/components';
+import { Card, IconLegacy, variables } from '@trezor/components';
 import { HELP_CENTER_COINJOIN_URL } from '@trezor/urls';
 import { mediaQueries } from '@trezor/styles';
 
@@ -22,7 +22,7 @@ const Heading = styled.div`
     ${typography.hint};
 `;
 
-const QuestionIcon = styled(Icon)`
+const QuestionIcon = styled(IconLegacy)`
     margin-right: 4px;
 `;
 

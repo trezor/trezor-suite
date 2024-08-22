@@ -1,7 +1,7 @@
 import { useState, ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
-import { Icon } from '@trezor/components';
+import { IconLegacy } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 import { TorSection } from './TorSection';
@@ -69,9 +69,17 @@ export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
                         expandableIcon={
                             <IconWrapper>
                                 {isTorEnabled ? (
-                                    <Icon icon="CHECK" size={24} color={theme.TYPE_LIGHT_GREY} />
+                                    <IconLegacy
+                                        icon="CHECK"
+                                        size={24}
+                                        color={theme.TYPE_LIGHT_GREY}
+                                    />
                                 ) : (
-                                    <Icon icon="PLUS" size={24} color={theme.TYPE_LIGHT_GREY} />
+                                    <IconLegacy
+                                        icon="PLUS"
+                                        size={24}
+                                        color={theme.TYPE_LIGHT_GREY}
+                                    />
                                 )}
                             </IconWrapper>
                         }

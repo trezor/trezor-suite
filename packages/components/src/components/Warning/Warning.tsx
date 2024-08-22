@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
-import { Icon, IconType } from '../Icon/Icon';
+import { IconLegacy, IconType } from '../Icon/IconLegacy';
 import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
 import { Row, Column, TransientProps, useElevation } from '../..';
@@ -89,7 +89,7 @@ export const Warning = ({
             data-testid={dataTest}
         >
             {withIcon && (
-                <Icon
+                <IconLegacy
                     size={20}
                     icon={icon === true ? mapVariantToIcon({ $variant: variant }) : icon}
                     color={mapVariantToIconColor({

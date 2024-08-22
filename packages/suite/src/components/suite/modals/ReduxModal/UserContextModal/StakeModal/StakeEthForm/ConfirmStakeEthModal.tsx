@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Button, Checkbox, H2, Icon, Divider } from '@trezor/components';
+import { Button, Checkbox, H2, IconLegacy, Divider } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Modal, Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -95,7 +95,7 @@ export const ConfirmStakeEthModal = ({
 
             <VStack>
                 <Flex>
-                    <Icon icon="CLOCK" size={24} color={theme.iconAlertYellow} />
+                    <IconLegacy icon="CLOCK" size={24} color={theme.iconAlertYellow} />
                     <Translation
                         id="TR_STAKE_ENTERING_POOL_MAY_TAKE"
                         values={{
@@ -105,7 +105,7 @@ export const ConfirmStakeEthModal = ({
                     />
                 </Flex>
                 <Flex>
-                    <Icon icon="HAND" size={24} color={theme.iconAlertYellow} />
+                    <IconLegacy icon="HAND" size={24} color={theme.iconAlertYellow} />
                     <Translation
                         id="TR_STAKE_ETH_WILL_BE_BLOCKED"
                         values={{

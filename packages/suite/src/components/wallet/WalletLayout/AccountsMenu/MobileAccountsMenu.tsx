@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { H2, variables, Icon } from '@trezor/components';
+import { H2, variables, IconLegacy } from '@trezor/components';
 import { zIndices, spacingsPx } from '@trezor/theme';
 import { selectDevice } from '@suite-common/wallet-core';
 import { Translation } from 'src/components/suite';
@@ -84,7 +84,7 @@ const ExpandedMobileWrapper = styled.div`
     padding-bottom: 16px;
 `;
 
-const StyledIcon = styled(Icon)<{ $isActive: boolean }>`
+const StyledIcon = styled(IconLegacy)<{ $isActive: boolean }>`
     transform: ${({ $isActive }) => ($isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
 `;
 

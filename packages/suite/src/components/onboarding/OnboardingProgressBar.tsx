@@ -1,6 +1,6 @@
 import { ReactNode, Fragment } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { Icon, variables } from '@trezor/components';
+import { IconLegacy, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
 const ProgressBarWrapper = styled.div`
@@ -85,7 +85,7 @@ const Divider = styled.div`
     }
 `;
 
-const ConfettiIcon = styled(Icon)`
+const ConfettiIcon = styled(IconLegacy)`
     margin-left: 1px;
 `;
 
@@ -116,7 +116,7 @@ export const OnboardingProgressBar = ({
                         <StepWrapper $active={stepActive}>
                             <IconWrapper $active={stepActive} $stepCompleted={stepCompleted}>
                                 {stepCompleted ? (
-                                    <Icon icon="CHECK" color={theme.TYPE_GREEN} />
+                                    <IconLegacy icon="CHECK" color={theme.TYPE_GREEN} />
                                 ) : (
                                     <>
                                         {index === steps.length - 1 ? (

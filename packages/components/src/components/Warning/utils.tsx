@@ -1,6 +1,6 @@
 import { Color, CSSColor, Elevation, mapElevationToBackgroundToken } from '@trezor/theme';
 import { WarningVariant } from './types';
-import { IconType } from '../Icon/Icon';
+import { IconType } from '../Icon/IconLegacy';
 import { DefaultTheme } from 'styled-components';
 
 type MapArgs = {

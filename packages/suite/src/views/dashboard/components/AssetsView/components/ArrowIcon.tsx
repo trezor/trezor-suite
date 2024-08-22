@@ -1,8 +1,8 @@
-import { Icon } from '@trezor/components';
+import { IconLegacy } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import styled, { css } from 'styled-components';
 
-export const ArrowIcon = styled(Icon)`
+export const ArrowIcon = styled(IconLegacy)`
     transition: opacity 0.1s;
     margin: ${spacingsPx.xs};
 `;

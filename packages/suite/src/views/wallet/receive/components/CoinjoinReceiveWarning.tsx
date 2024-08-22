@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { darken } from 'polished';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
-import { Button, Icon, variables, Warning } from '@trezor/components';
+import { Button, IconLegacy, variables, Warning } from '@trezor/components';
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -10,7 +10,7 @@ const Container = styled.div`
     margin-bottom: 16px;
 `;
 
-const InfoIcon = styled(Icon)`
+const InfoIcon = styled(IconLegacy)`
     width: 18px;
     height: 18px;
     margin-right: 6px;

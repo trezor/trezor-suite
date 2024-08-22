@@ -11,7 +11,7 @@ export * from './components/animations/LottieAnimation';
 export * from './components/AssetShareIndicator/AssetShareIndicator';
 export * from './components/CoinLogo/CoinLogo';
 export * from './components/Flag/Flag';
-export * from './components/Icon/Icon';
+export * from './components/Icon/IconLegacy';
 export * from './components/TrezorLogo/TrezorLogo';
 export * from './components/AutoScalingInput/AutoScalingInput';
 export * from './components/Badge/Badge';

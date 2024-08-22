@@ -9,7 +9,7 @@ import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Pagination } from 'src/components/wallet';
-import { Card, Checkbox, Icon, Switch, variables } from '@trezor/components';
+import { Card, Checkbox, IconLegacy, Switch, variables } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
@@ -196,7 +196,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
             <Row>
                 <Translation id="TR_COIN_CONTROL" />
                 <StyledSwitch isChecked={!!isCoinControlEnabled} onChange={toggleCoinControl} />
-                <Icon size={24} icon="ARROW_UP" onClick={close} />
+                <IconLegacy size={24} icon="ARROW_UP" onClick={close} />
             </Row>
 
             <SecondRow>

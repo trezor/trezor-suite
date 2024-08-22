@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { useMeasure } from 'react-use';
 import { spacingsPx, spacings, typography } from '@trezor/theme';
 
-import { Icon } from '../../Icon/Icon';
+import { IconLegacy } from '../../Icon/IconLegacy';
 import {
     baseInputStyle,
     INPUT_HEIGHTS,
@@ -167,7 +167,7 @@ const Input = ({
                         {!hasShowClearButton && innerAddon}
 
                         {hasShowClearButton && (
-                            <Icon
+                            <IconLegacy
                                 icon="CANCEL"
                                 size={16}
                                 onClick={onClear}

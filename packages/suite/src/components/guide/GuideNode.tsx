@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
-import { Icon, variables } from '@trezor/components';
+import { IconLegacy, variables } from '@trezor/components';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openNode } from 'src/actions/suite/guideActions';
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
@@ -34,7 +34,7 @@ const PageNodeButton = styled(NodeButton)`
     text-align: left;
 `;
 
-const PageNodeButtonIcon = styled(Icon)`
+const PageNodeButtonIcon = styled(IconLegacy)`
     margin: 0 18px 0 0;
 `;
 
