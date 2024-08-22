@@ -113,11 +113,7 @@ const actionButtonText = (context: BuySellContext, quote: BuySellQuote) => {
     }
 };
 
-const CoinmarketFeaturedOffersItem = ({
-    context,
-    quote,
-    isBestRate,
-}: CoinmarketOffersItemProps) => {
+const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffersItemProps) => {
     const { callInProgress, type } = context;
     const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
@@ -131,11 +127,6 @@ const CoinmarketFeaturedOffersItem = ({
             <Offer>
                 <OfferColumn1>
                     <OfferBadgeWrap>
-                        {isBestRate && (
-                            <OfferBadge variant="primary">
-                                <Translation id="TR_COINMARKET_BEST_RATE" />
-                            </OfferBadge>
-                        )}
                         {tag && <OfferBadge variant="tertiary">{tag}</OfferBadge>}
                         {infoNote && <OfferBadgeInfo>{infoNote}</OfferBadgeInfo>}
                     </OfferBadgeWrap>
