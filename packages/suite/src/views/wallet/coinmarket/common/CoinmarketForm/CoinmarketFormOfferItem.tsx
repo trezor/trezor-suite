@@ -1,4 +1,4 @@
-import { Badge, Row, Spinner, useElevation } from '@trezor/components';
+import { Row, Spinner, useElevation } from '@trezor/components';
 import {
     borders,
     Elevation,
@@ -49,7 +49,6 @@ const CoinmarketFormOfferItem = ({
     isFormLoading,
     isFormInvalid,
     providers,
-    isBestRate,
 }: CoinmarketFormOfferItemProps) => {
     const { elevation } = useElevation();
 
@@ -85,11 +84,6 @@ const CoinmarketFormOfferItem = ({
     return (
         <CoinmarketFormOfferItemWrapper $elevation={elevation}>
             <CoinmarketUtilsProvider providers={providers} exchange={bestQuote?.exchange} />
-            {isBestRate && (
-                <Badge variant="primary" size="small">
-                    <Translation id="TR_COINMARKET_BEST_RATE" />
-                </Badge>
-            )}
         </CoinmarketFormOfferItemWrapper>
     );
 };
