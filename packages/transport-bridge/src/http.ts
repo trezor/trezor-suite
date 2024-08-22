@@ -182,12 +182,16 @@ export class TrezordNode {
                     ) {
                         next(req, res);
                     } else {
-                        allowOrigins(['https://sldev.cz', 'https://trezor.io', 'http://localhost'])(
-                            req,
-                            res,
-                            next,
-                            context,
-                        );
+                        allowOrigins([
+                            'https://sldev.cz',
+                            'https://trezor.io',
+                            'http://localhost',
+                            // When using Tor it will send string "null" as default, and it will not allow calling to localhost.
+                            // To allow it to be sent, you can go to about:config and set the attributes below:
+                            // "network.http.referer.hideOnionSource - false"
+                            // "network.proxy.allow_hijacking_localhost - false"
+                            'http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                        ])(req, res, next, context);
                     }
                 },
             ]);
