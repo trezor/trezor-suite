@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { Translation, Modal, Metadata } from 'src/components/suite';
-import { Button } from '@trezor/components';
+import { Button, Link } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
+import { DATA_URL } from '@trezor/urls';
 
 const StyledButton = styled(Button)`
     path {
@@ -19,10 +20,27 @@ const Footer = styled.div`
     justify-content: space-between;
 `;
 
+const DownloadStandalone = ({ target }: { target: string }) => {
+    return (
+        <Modal.Description>
+            Alternatively you may{' '}
+            <Link variant="underline" href={target}>
+                download
+            </Link>{' '}
+            a standalone Trezor Bridge binary
+        </Modal.Description>
+    );
+};
+
 // it actually changes to "Install suite desktop"
 export const BridgeUnavailable = () => {
     const transport = useSelector(state => state.suite.transport);
     const dispatch = useDispatch();
+
+    const preferredTarget = transport?.bridge?.packages?.find(i => i.preferred === true);
+    const target = preferredTarget
+        ? `${DATA_URL}${preferredTarget.url}`
+        : 'https://github.com/trezor/data/tree/master/bridge/2.0.27';
 
     const handleOpenSuite = useOpenSuiteDesktop();
 
@@ -46,6 +64,7 @@ export const BridgeUnavailable = () => {
             >
                 <Metadata title="Bridge | Trezor Suite" />
 
+                <DownloadStandalone target={target} />
                 <Footer>
                     <StyledButton
                         icon="ARROW_LEFT"
@@ -71,6 +90,7 @@ export const BridgeUnavailable = () => {
             data-test="@modal/bridge"
         >
             <Metadata title="Bridge | Trezor Suite" />
+            <DownloadStandalone target={target} />
 
             <Footer>
                 <Button onClick={handleOpenSuite}>
