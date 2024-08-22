@@ -112,7 +112,11 @@ export const WalletInstance = ({
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
-    const instanceBalance = getTotalFiatBalance(deviceAccounts, localCurrency, currentFiatRates);
+    const instanceBalance = getTotalFiatBalance({
+        deviceAccounts,
+        localCurrency,
+        rates: currentFiatRates,
+    });
     const isSelected = enabled && selected && !!discoveryProcess;
     const { walletLabel } = useSelector(state =>
         selectLabelingDataForWallet(state, instance.state),

@@ -60,10 +60,15 @@ export const selectDeviceTotalFiatBalanceNative = memoizeWithArgs(
         state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState,
         deviceState: string,
     ) => {
-        const accounts = deviceState ? selectAccountsByDeviceState(state, deviceState) : [];
+        const deviceAccounts = deviceState ? selectAccountsByDeviceState(state, deviceState) : [];
         const rates = selectCurrentFiatRates(state);
 
-        const fiatBalance = getTotalFiatBalance(accounts, selectFiatCurrencyCode(state), rates);
+        const fiatBalance = getTotalFiatBalance({
+            deviceAccounts,
+            localCurrency: selectFiatCurrencyCode(state),
+            rates,
+            shouldIncludeStaking: false,
+        });
 
         return fiatBalance;
     },
