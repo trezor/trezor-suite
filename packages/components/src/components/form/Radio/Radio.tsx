@@ -8,6 +8,7 @@ import {
     CheckboxVariant,
     Label,
     LabelAlignment,
+    VerticalAlignment,
     variantStyles,
     Container,
     HiddenInput,
@@ -102,6 +103,7 @@ export interface RadioProps {
     isChecked?: boolean;
     isDisabled?: boolean;
     labelAlignment?: LabelAlignment;
+    verticalAlignment?: VerticalAlignment;
     onClick: EventHandler<SyntheticEvent>;
     'data-testid'?: string;
     children?: ReactNode;
@@ -110,7 +112,8 @@ export interface RadioProps {
 export const Radio = ({
     variant = 'primary',
     isChecked,
-    labelAlignment,
+    labelAlignment = 'right',
+    verticalAlignment = 'top',
     isDisabled = false,
     onClick,
     'data-testid': dataTest,
@@ -131,6 +134,7 @@ export const Radio = ({
             onKeyUp={handleKeyUp}
             $isDisabled={isDisabled}
             $labelAlignment={labelAlignment}
+            $verticalAlignment={verticalAlignment}
             data-checked={isChecked}
             data-testid={dataTest}
         >

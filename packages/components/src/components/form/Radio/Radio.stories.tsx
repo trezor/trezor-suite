@@ -37,6 +37,8 @@ export const RadioButton: StoryObj<RadioProps> = {
         variant: 'primary',
         isChecked: false,
         isDisabled: false,
+        labelAlignment: 'right',
+        verticalAlignment: 'top',
     },
     argTypes: {
         variant: {
@@ -49,7 +51,13 @@ export const RadioButton: StoryObj<RadioProps> = {
             control: {
                 type: 'radio',
             },
-            options: [null, 'left', 'right'],
+            options: ['left', 'right'],
+        },
+        verticalAlignment: {
+            control: {
+                type: 'radio',
+            },
+            options: ['top', 'center'],
         },
     },
 };
