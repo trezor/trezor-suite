@@ -26,6 +26,7 @@ import { fromWei } from 'web3-utils';
 import { useStakeCompose } from './form/useStakeCompose';
 import {
     MIN_ETH_AMOUNT_FOR_STAKING,
+    MIN_ETH_BALANCE_FOR_STAKING,
     MIN_ETH_FOR_WITHDRAWALS,
 } from 'src/constants/suite/ethStaking';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
@@ -171,6 +172,8 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
     const [isAmountForWithdrawalWarningShown, setIsAmountForWithdrawalWarningShown] =
         useState(false);
+    const [isLessAmountForWithdrawalWarningShown, setIsLessAmountForWithdrawalWarningShown] =
+        useState(false);
     const [isAdviceForWithdrawalWarningShown, setIsAdviceForWithdrawalWarningShown] =
         useState(false);
 
@@ -181,6 +184,12 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             ? new BigNumber(fromWei(transactionInfo.fee, 'ether'))
             : new BigNumber('0');
     }, [composedLevels, selectedFee]);
+
+    const clearWithdrawalWarnings = useCallback(() => {
+        setIsAmountForWithdrawalWarningShown(false);
+        setIsLessAmountForWithdrawalWarningShown(false);
+        setIsAdviceForWithdrawalWarningShown(false);
+    }, []);
 
     const shouldShowAdvice = useCallback(
         (amount: string, formattedBalance: string) => {
@@ -201,8 +210,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
     const onCryptoAmountChange = useCallback(
         async (amount: string) => {
-            setIsAmountForWithdrawalWarningShown(false);
-            setIsAdviceForWithdrawalWarningShown(false);
+            clearWithdrawalWarnings();
 
             if (currentRate) {
                 const fiatValue = toFiatCurrency(amount, currentRate?.rate);
@@ -215,14 +223,20 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
             shouldShowAdvice(amount, account.formattedBalance);
         },
-        [account.formattedBalance, composeRequest, currentRate, setValue, shouldShowAdvice],
+        [
+            account.formattedBalance,
+            composeRequest,
+            currentRate,
+            setValue,
+            shouldShowAdvice,
+            clearWithdrawalWarnings,
+        ],
     );
 
     const onFiatAmountChange = useCallback(
         async (amount: string) => {
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
-            setIsAmountForWithdrawalWarningShown(false);
-            setIsAdviceForWithdrawalWarningShown(false);
+            clearWithdrawalWarnings();
             if (!currentRate) return;
 
             const cryptoValue = fromFiatCurrency(amount, network.decimals, currentRate?.rate);
@@ -241,6 +255,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             network.decimals,
             setValue,
             shouldShowAdvice,
+            clearWithdrawalWarnings,
         ],
     );
 
@@ -248,8 +263,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         async (divisor: number) => {
             setValue('setMaxOutputId', undefined, { shouldDirty: true });
             clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
-            setIsAmountForWithdrawalWarningShown(false);
-            setIsAdviceForWithdrawalWarningShown(false);
+            clearWithdrawalWarnings();
 
             const amount = new BigNumber(account.formattedBalance)
                 .dividedBy(divisor)
@@ -259,28 +273,45 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             setValue(CRYPTO_INPUT, amount, { shouldDirty: true, shouldValidate: true });
             await onCryptoAmountChange(amount);
         },
-        [account.formattedBalance, clearErrors, network.decimals, onCryptoAmountChange, setValue],
+        [
+            account.formattedBalance,
+            clearErrors,
+            network.decimals,
+            onCryptoAmountChange,
+            setValue,
+            clearWithdrawalWarnings,
+        ],
     );
 
     const setMax = useCallback(async () => {
         setIsAdviceForWithdrawalWarningShown(false);
         setValue('setMaxOutputId', 0, { shouldDirty: true });
         clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
-        const amount = new BigNumber(account.formattedBalance)
-            .minus(MIN_ETH_FOR_WITHDRAWALS)
-            .toString();
+
+        const amount = new BigNumber(account.formattedBalance).toString();
+
+        if (amount < MIN_ETH_BALANCE_FOR_STAKING.toString()) {
+            setIsLessAmountForWithdrawalWarningShown(true);
+        }
+
         setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
         await composeRequest(CRYPTO_INPUT);
         setIsAmountForWithdrawalWarningShown(true);
     }, [account.formattedBalance, clearErrors, composeRequest, setValue]);
 
+    useEffect(() => {
+        if (formState.errors[CRYPTO_INPUT]) {
+            setIsAmountForWithdrawalWarningShown(false);
+            setIsLessAmountForWithdrawalWarningShown(false);
+        }
+    }, [formState]);
+
     const clearForm = useCallback(async () => {
         removeDraft(account.key);
         reset(defaultValues);
         await composeRequest(CRYPTO_INPUT);
-        setIsAdviceForWithdrawalWarningShown(false);
-        setIsAmountForWithdrawalWarningShown(false);
-    }, [account.key, composeRequest, defaultValues, removeDraft, reset]);
+        clearWithdrawalWarnings();
+    }, [account.key, composeRequest, defaultValues, removeDraft, reset, clearWithdrawalWarnings]);
 
     const { translationString } = useTranslation();
     useEffect(() => {
@@ -366,6 +397,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         setMax,
         setRatioAmount,
         isAmountForWithdrawalWarningShown,
+        isLessAmountForWithdrawalWarningShown,
         isAdviceForWithdrawalWarningShown,
         selectedFee,
         feeInfo,

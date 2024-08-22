@@ -97,6 +97,7 @@ export type StakeContextValues = UseFormReturn<StakeFormState> &
         isDraft: boolean;
         amountLimits: AmountLimitsString;
         isAmountForWithdrawalWarningShown: boolean;
+        isLessAmountForWithdrawalWarningShown: boolean;
         isAdviceForWithdrawalWarningShown: boolean;
         isConfirmModalOpen: boolean;
         onCryptoAmountChange: (amount: string) => void;

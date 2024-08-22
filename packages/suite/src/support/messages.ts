@@ -8697,6 +8697,11 @@ export default defineMessages({
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
         defaultMessage: 'We’ve left {amount} {symbol} out so you can pay for withdrawal fees.',
     },
+    TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL: {
+        id: 'TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL',
+        defaultMessage:
+            'We’ve left a small amount of {symbol} out so you can pay for withdrawal fees.',
+    },
     TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS: {
         id: 'TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS',
         defaultMessage:

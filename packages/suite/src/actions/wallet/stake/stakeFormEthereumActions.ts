@@ -31,7 +31,11 @@ import {
     prepareStakeEthTx,
     prepareUnstakeEthTx,
 } from 'src/utils/suite/stake';
-import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
+import {
+    MIN_ETH_AMOUNT_FOR_STAKING,
+    MIN_ETH_BALANCE_FOR_STAKING,
+    MIN_ETH_FOR_WITHDRAWALS,
+} from 'src/constants/suite/ethStaking';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ComposeActionContext } from '@suite-common/wallet-core';
 
@@ -42,28 +46,33 @@ const calculate = (
     compareWithAmount = true,
     symbol: NetworkSymbol,
 ): PrecomposedTransaction => {
-    const feeInSatoshi = calculateEthFee(
-        toWei(feeLevel.feePerUnit, 'gwei'),
-        feeLevel.feeLimit || '0',
-    );
+    const feeInWei = calculateEthFee(toWei(feeLevel.feePerUnit, 'gwei'), feeLevel.feeLimit || '0');
 
     let amount: string;
     let max: string | undefined;
 
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = new BigNumber(calculateMax(availableBalance, feeInSatoshi))
-            .minus(toWei(MIN_ETH_FOR_WITHDRAWALS.toString(), 'ether'))
-            .toString();
+        const minEthBalanceForStakingWei = toWei(MIN_ETH_BALANCE_FOR_STAKING.toString(), 'ether');
+        const minAmountWithFeeWei = new BigNumber(minEthBalanceForStakingWei).plus(feeInWei);
+
+        if (new BigNumber(availableBalance).lt(minAmountWithFeeWei)) {
+            max = toWei(MIN_ETH_AMOUNT_FOR_STAKING.toString(), 'ether');
+        } else {
+            max = new BigNumber(calculateMax(availableBalance, feeInWei))
+                .minus(toWei(MIN_ETH_FOR_WITHDRAWALS.toString(), 'ether'))
+                .toString();
+        }
+
         amount = max;
     } else {
         amount = output.amount;
     }
 
     // total ETH spent (amount + fee), in ERC20 only fee
-    const totalSpent = new BigNumber(calculateTotal(amount, feeInSatoshi));
+    const totalSpent = new BigNumber(calculateTotal(amount, feeInWei));
 
     if (
-        new BigNumber(feeInSatoshi).gt(availableBalance) ||
+        new BigNumber(feeInWei).gt(availableBalance) ||
         (compareWithAmount && totalSpent.isGreaterThan(availableBalance))
     ) {
         const error = 'TR_STAKE_NOT_ENOUGH_FUNDS';
@@ -80,7 +89,7 @@ const calculate = (
         type: 'nonfinal' as const,
         totalSpent: totalSpent.toString(),
         max,
-        fee: feeInSatoshi,
+        fee: feeInWei,
         feePerByte: feeLevel.feePerUnit,
         feeLimit: feeLevel.feeLimit,
         bytes: 0, // TODO: calculate
