@@ -6,7 +6,8 @@ import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/framePro
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
 
-type PaddingType = 'small' | 'none' | 'normal';
+export const paddingTypes = ['small', 'none', 'normal'] as const;
+export type PaddingType = (typeof paddingTypes)[number];
 
 type MapArgs = {
     $paddingType: PaddingType;

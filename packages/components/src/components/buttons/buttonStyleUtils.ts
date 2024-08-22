@@ -7,11 +7,20 @@ import { hexToRgba } from '@suite-common/suite-utils';
 const SUBTLE_ALPHA = 0.12;
 const SUBTLE_ALPHA_HOVER = 0.2;
 
-export type ButtonVariant = Extract<
-    UIVariant,
-    'primary' | 'secondary' | 'tertiary' | 'info' | 'warning' | 'destructive'
->;
-export type ButtonSize = Extract<UISize, 'large' | 'medium' | 'small' | 'tiny'>;
+export const subtleButtonVariants = ['info', 'warning', 'destructive'] as const;
+
+export const buttonVariants = [
+    'primary',
+    'secondary',
+    'tertiary',
+    ...subtleButtonVariants,
+] as const;
+
+export type ButtonVariant = Extract<UIVariant, (typeof buttonVariants)[number]>;
+
+export const buttonSizes: Array<UISize> = ['large', 'medium', 'small', 'tiny'];
+export type ButtonSize = Extract<UISize, (typeof buttonSizes)[number]>;
+
 export type IconAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
 export const getPadding = (size: ButtonSize, hasLabel?: boolean) => {
@@ -140,5 +149,3 @@ export const useVariantStyle = (
         }
     `;
 };
-
-export const subtleButtonVariants = ['info', 'warning', 'destructive'] as const;

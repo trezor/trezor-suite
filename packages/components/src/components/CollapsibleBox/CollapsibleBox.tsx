@@ -20,7 +20,8 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedCollapsibleBoxFrameProp
 
 const ANIMATION_DURATION = 0.4;
 
-type PaddingType = 'none' | 'normal' | 'large';
+export const paddingTypes = ['none', 'normal', 'large'] as const;
+export type PaddingType = (typeof paddingTypes)[number];
 
 const animationVariants = {
     closed: {

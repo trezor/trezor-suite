@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { allowedButtonFrameProps, Button as ButtonComponent, ButtonProps } from './Button';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { variables } from '../../../config';
-import { subtleButtonVariants } from '../buttonStyleUtils';
+import { buttonSizes, buttonVariants, subtleButtonVariants } from '../buttonStyleUtils';
 
 const meta: Meta<ButtonProps> = {
     title: 'Buttons',
@@ -36,13 +36,13 @@ export const Button: StoryObj<ButtonProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['primary', 'secondary', 'tertiary', 'info', 'warning', 'destructive'],
+            options: buttonVariants,
         },
         size: {
             control: {
                 type: 'radio',
             },
-            options: ['large', 'medium', 'small', 'tiny'],
+            options: buttonSizes,
         },
         isDisabled: {
             control: {

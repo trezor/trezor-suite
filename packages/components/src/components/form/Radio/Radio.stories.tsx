@@ -2,7 +2,7 @@ import { useArgs } from '@storybook/client-api';
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Radio as RadioComponent, RadioProps } from './Radio';
+import { Radio as RadioComponent, RadioProps, radioVariants } from './Radio';
 import { H2 } from '../../typography/Heading/Heading';
 
 const Wrapper = styled.div`
@@ -43,7 +43,7 @@ export const RadioButton: StoryObj<RadioProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['primary', 'warning', 'destructive'],
+            options: radioVariants,
         },
         labelAlignment: {
             control: {

@@ -5,6 +5,7 @@ import {
     Checkbox as CheckboxComponent,
     CheckboxProps,
     allowedCheckboxFrameProps,
+    checkboxVariants,
 } from './Checkbox';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
@@ -45,7 +46,7 @@ export const Checkbox: StoryObj<CheckboxProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['primary', 'warning', 'destructive'],
+            options: checkboxVariants,
         },
         labelAlignment: {
             control: {

@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { TextButton as TextButtonComponent, TextButtonProps } from './TextButton';
 import { variables } from '../../../config';
+import { buttonSizes } from '../buttonStyleUtils';
 
 const meta: Meta = {
     title: 'Buttons',
@@ -43,7 +44,7 @@ export const TextButton: StoryObj<TextButtonProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['large', 'medium', 'small', 'tiny'],
+            options: buttonSizes,
         },
         isDisabled: {
             control: {

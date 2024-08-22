@@ -151,7 +151,9 @@ export const HiddenInput = styled.input`
     height: 0;
 `;
 
-export type CheckboxVariant = Extract<UIVariant, 'primary' | 'destructive' | 'warning'>;
+export const checkboxVariants = ['primary', 'destructive', 'warning'] as const;
+export type CheckboxVariant = Extract<UIVariant, (typeof checkboxVariants)[number]>;
+
 export type LabelAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
 export type CheckboxProps = AllowedFrameProps & {
