@@ -10,6 +10,7 @@ import { Account, Network } from 'src/types/wallet';
 import { GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { NetworkType } from '@suite-common/wallet-config';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;
@@ -190,6 +191,14 @@ const ReviewLeftDetailsLineRight = styled.div<{ $color: string; $uppercase?: boo
   `};
 `;
 
+const feeLabelTranslationIdByNetworkTypeMap: { [key in NetworkType]: TranslationKey } = {
+    bitcoin: 'TR_FEE_RATE',
+    ethereum: 'TR_GAS_PRICE',
+    ripple: 'TR_TX_FEE',
+    solana: 'TR_TX_FEE',
+    cardano: 'TR_TX_FEE',
+};
+
 interface TransactionReviewSummaryProps {
     estimateTime?: number;
     tx: GeneralPrecomposedTransactionFinal;
@@ -295,11 +304,9 @@ export const TransactionReviewSummary = ({
                 <LeftDetailsRow>
                     <ReviewLeftDetailsLineLeft>
                         <Icon size={12} color={theme.iconSubdued} icon="GAS" />
-                        {network.networkType === 'bitcoin' && <Translation id="TR_FEE_RATE" />}
-                        {network.networkType === 'ethereum' && <Translation id="TR_GAS_PRICE" />}
-                        {network.networkType === 'ripple' && <Translation id="TR_TX_FEE" />}
-                        {network.networkType === 'solana' && <Translation id="TR_TX_FEE" />}
-                        {network.networkType === 'cardano' && <Translation id="TR_TX_FEE" />}
+                        <Translation
+                            id={feeLabelTranslationIdByNetworkTypeMap[network.networkType]}
+                        />
                     </ReviewLeftDetailsLineLeft>
 
                     <ReviewLeftDetailsLineRight $color={theme.textSubdued}>
