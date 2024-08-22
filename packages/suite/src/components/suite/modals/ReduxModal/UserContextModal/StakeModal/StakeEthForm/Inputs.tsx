@@ -14,7 +14,7 @@ import {
 } from 'src/utils/suite/validation';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacingsPx } from '@trezor/theme';
 import { validateStakingMax } from 'src/utils/suite/stake';
 
 const IconWrapper = styled.div`
@@ -36,6 +36,7 @@ export const Inputs = () => {
         onFiatAmountChange,
         localCurrency,
         isAmountForWithdrawalWarningShown,
+        isLessAmountForWithdrawalWarningShown,
         isAdviceForWithdrawalWarningShown,
         currentRate,
     } = useStakeEthFormContext();
@@ -65,6 +66,25 @@ export const Inputs = () => {
             }),
         },
     };
+
+    const shouldShowAmountForWithdrawalWarning =
+        isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
+    const amountForWithdrawalTranslation = isLessAmountForWithdrawalWarningShown ? (
+        <Translation
+            id="TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL"
+            values={{
+                symbol: account.symbol.toUpperCase(),
+            }}
+        />
+    ) : (
+        <Translation
+            id="TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL"
+            values={{
+                amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
+                symbol: account.symbol.toUpperCase(),
+            }}
+        />
+    );
 
     return (
         <Column>
@@ -102,17 +122,10 @@ export const Inputs = () => {
                 </>
             )}
 
-            {isAmountForWithdrawalWarningShown && (
-                <Banner variant="info" margin={{ top: spacings.md }}>
-                    <Translation
-                        id="TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL"
-                        values={{
-                            amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
-                            symbol: account.symbol.toUpperCase(),
-                        }}
-                    />
-                </Banner>
+            {shouldShowAmountForWithdrawalWarning && (
+                <Banner variant="info">{amountForWithdrawalTranslation}</Banner>
             )}
+
             {isAdviceForWithdrawalWarningShown && (
                 <Banner variant="info" margin={{ top: spacings.md }}>
                     <Translation

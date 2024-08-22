@@ -2,10 +2,7 @@ import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { Button, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import {
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    MIN_ETH_BALANCE_FOR_STAKING,
-} from 'src/constants/suite/ethStaking';
+import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const Flex = styled.div`
@@ -50,7 +47,7 @@ export const FormFractionButtons = ({
     const is25PercentDisabled = isDisabled || isFractionButtonDisabled(4);
     const is50PercentDisabled = isDisabled || isFractionButtonDisabled(2);
     const isMaxDisabled =
-        isDisabled || new BigNumber(totalAmount || '0').lt(MIN_ETH_BALANCE_FOR_STAKING);
+        isDisabled || new BigNumber(totalAmount || '0').lt(MIN_ETH_AMOUNT_FOR_STAKING);
 
     return (
         <Flex>
