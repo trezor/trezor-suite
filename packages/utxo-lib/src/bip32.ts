@@ -6,7 +6,7 @@
 // - `fromBase58` and `toBase58` methods are using additional "network" param in bs58check.encode/decode (Decred support).
 
 import ecc from 'tiny-secp256k1';
-import wif from 'wif';
+import * as wif from 'wif';
 import { typeforce } from './types/typeforce';
 import * as bs58check from './bs58check';
 import * as crypto from './crypto';
@@ -210,7 +210,11 @@ class BIP32 implements BIP32Interface {
     toWIF(): string {
         if (!this.privateKey) throw new TypeError('Missing private key');
 
-        return wif.encode(this.network.wif, this.privateKey, true);
+        return wif.encode({
+            version: this.network.wif,
+            privateKey: this.privateKey,
+            compressed: true,
+        });
     }
 
     // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#child-key-derivation-ckd-functions

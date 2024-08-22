@@ -12,7 +12,10 @@
     },
     "dependencies": {
         "express": "^4.19.2",
-        "uuid": "^9.0.1",
+        "uuid": "^10.0.0",
         "ws": "^8.18.0"
+    },
+    "devDependencies": {
+        "@types/uuid": "^10.0.0"
     }
 }

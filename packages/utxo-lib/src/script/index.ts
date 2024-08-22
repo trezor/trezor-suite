@@ -2,7 +2,7 @@
 // differences:
 // - bitcoin-ops extended by decred codes.
 
-import bip66 from 'bip66';
+import * as bip66 from 'bip66';
 import pushdata from 'pushdata-bitcoin';
 import ecc from 'tiny-secp256k1';
 import * as scriptNumber from './scriptNumber';

@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import * as base58check from 'bs58check';
+import base58check from 'bs58check';
 import { FetchIntervalTrackingId } from 'src/actions/suite/metadataProviderActions';
 import { DataType, MetadataProvider } from '@suite-common/metadata-types';
 import { TrezorDevice } from '@suite-common/suite-types';

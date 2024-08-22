@@ -1,6 +1,4 @@
-// origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/eosSignTx.js
-
-import * as bs58 from 'bs58';
+import bs58 from 'bs58';
 
 import { PROTO, ERRORS } from '../../constants';
 import type {

@@ -17,7 +17,7 @@
         "@sentry/react-native": "5.22.3",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
-        "bs58": "^5.0.0",
+        "bs58": "^6.0.0",
         "expo-crypto": "13.0.2",
         "expo-secure-store": "13.0.1",
         "expo-splash-screen": "0.27.4",

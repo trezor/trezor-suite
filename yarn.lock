@@ -10358,7 +10358,7 @@ __metadata:
     "@sentry/react-native": "npm:5.22.3"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    bs58: "npm:^5.0.0"
+    bs58: "npm:^6.0.0"
     expo-crypto: "npm:13.0.2"
     expo-secure-store: "npm:13.0.1"
     expo-splash-screen: "npm:0.27.4"
@@ -11256,8 +11256,8 @@ __metadata:
     "@types/karma": "npm:^6.3.8"
     babel-loader: "npm:^9.1.3"
     blakejs: "npm:^1.2.1"
-    bs58: "npm:^5.0.0"
-    bs58check: "npm:^3.0.1"
+    bs58: "npm:^6.0.0"
+    bs58check: "npm:^4.0.0"
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
     karma: "npm:^6.4.4"
@@ -11301,8 +11301,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/e2e-utils@workspace:packages/e2e-utils"
   dependencies:
+    "@types/uuid": "npm:^10.0.0"
     express: "npm:^4.19.2"
-    uuid: "npm:^9.0.1"
+    uuid: "npm:^10.0.0"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
@@ -11546,7 +11547,7 @@ __metadata:
     postcss-modules-local-by-default: "npm:^4.0.5"
     postcss-modules-scope: "npm:^3.2.0"
     postcss-modules-values: "npm:^4.0.0"
-    simple-git: "npm:^3.22.0"
+    simple-git: "npm:^3.25.0"
     style-loader: "npm:^3.3.4"
     tsx: "npm:^4.16.3"
     webpack: "npm:^5.93.0"
@@ -11602,7 +11603,7 @@ __metadata:
     fs-extra: "npm:^11.2.0"
     glob: "npm:^10.3.10"
     openpgp: "npm:^5.11.2"
-    systeminformation: "npm:^5.23.4"
+    systeminformation: "npm:^5.23.5"
     terser-webpack-plugin: "npm:^5.3.9"
     webpack: "npm:^5.93.0"
     xvfb-maybe: "npm:^0.2.1"
@@ -11798,9 +11799,9 @@ __metadata:
     "@types/redux-mock-store": "npm:^1.0.6"
     "@types/semver": "npm:^7.5.8"
     "@types/ua-parser-js": "npm:^0.7.39"
-    "@types/uuid": "npm:^9.0.6"
+    "@types/uuid": "npm:^10.0.0"
     "@types/zxcvbn": "npm:^4.4.4"
-    bs58check: "npm:^3.0.1"
+    bs58check: "npm:^4.0.0"
     date-fns: "npm:^2.30.0"
     dropbox: "npm:^10.34.0"
     file-saver: "npm:^2.0.5"
@@ -11842,7 +11843,7 @@ __metadata:
     stylelint: "npm:^16.2.1"
     stylelint-config-standard: "npm:^36.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
-    uuid: "npm:^9.0.1"
+    uuid: "npm:^10.0.0"
     web3-utils: "npm:^4.3.1"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
@@ -11973,20 +11974,20 @@ __metadata:
   resolution: "@trezor/utxo-lib@workspace:packages/utxo-lib"
   dependencies:
     "@trezor/utils": "workspace:*"
-    "@types/bchaddrjs": "npm:^0.4.2"
+    "@types/bchaddrjs": "npm:^0.4.3"
     "@types/bs58": "npm:^4.0.4"
-    "@types/bs58check": "npm:^2.1.1"
-    "@types/create-hmac": "npm:^1.1.2"
+    "@types/bs58check": "npm:^2.1.2"
+    "@types/create-hmac": "npm:^1.1.3"
     "@types/wif": "npm:^2.0.5"
     bchaddrjs: "npm:^0.5.2"
     bech32: "npm:^2.0.0"
-    bip66: "npm:^1.1.5"
+    bip66: "npm:^2.0.0"
     bitcoin-ops: "npm:^1.4.1"
     blake-hash: "npm:^2.0.0"
     blakejs: "npm:^1.2.1"
     bn.js: "npm:^5.2.1"
-    bs58: "npm:^5.0.0"
-    bs58check: "npm:^3.0.1"
+    bs58: "npm:^6.0.0"
+    bs58check: "npm:^4.0.0"
     create-hmac: "npm:^1.1.7"
     int64-buffer: "npm:^1.0.1"
     minimaldata: "npm:^1.0.2"
@@ -11995,7 +11996,7 @@ __metadata:
     tsx: "npm:^4.16.3"
     typeforce: "npm:^1.18.0"
     varuint-bitcoin: "npm:^1.1.2"
-    wif: "npm:^4.0.0"
+    wif: "npm:^5.0.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -12120,7 +12121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/bchaddrjs@npm:^0.4.2":
+"@types/bchaddrjs@npm:^0.4.3":
   version: 0.4.3
   resolution: "@types/bchaddrjs@npm:0.4.3"
   checksum: 10/ebffc96914a95b3251ca5ce023105a4977a02032a994a2765f8620ffe43c55a283753f50347b592f8b89726e14d15be884563e723bdadf7689f43fd9b868fdff
@@ -12165,7 +12166,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/bs58check@npm:^2.1.1":
+"@types/bs58check@npm:^2.1.2":
   version: 2.1.2
   resolution: "@types/bs58check@npm:2.1.2"
   dependencies:
@@ -12317,7 +12318,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/create-hmac@npm:^1.1.2":
+"@types/create-hmac@npm:^1.1.3":
   version: 1.1.3
   resolution: "@types/create-hmac@npm:1.1.3"
   dependencies:
@@ -13467,6 +13468,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@types/uuid@npm:10.0.0"
+  checksum: 10/e3958f8b0fe551c86c14431f5940c3470127293280830684154b91dc7eb3514aeb79fe3216968833cf79d4d1c67f580f054b5be2cd562bebf4f728913e73e944
+  languageName: node
+  linkType: hard
+
 "@types/uuid@npm:^8.3.4":
   version: 8.3.4
   resolution: "@types/uuid@npm:8.3.4"
@@ -13474,7 +13482,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^9.0.1, @types/uuid@npm:^9.0.6":
+"@types/uuid@npm:^9.0.1":
   version: 9.0.8
   resolution: "@types/uuid@npm:9.0.8"
   checksum: 10/b8c60b7ba8250356b5088302583d1704a4e1a13558d143c549c408bf8920535602ffc12394ede77f8a8083511b023704bc66d1345792714002bfa261b17c5275
@@ -15602,6 +15610,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base-x@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "base-x@npm:5.0.0"
+  checksum: 10/fa82bc9a963f7a765a3287ba632661669fe553d06ee0d4d4e282640335bff30ec685e3c3b1714e265f697b234facd02a310f1e2465db88f4f1a448e6267fbc65
+  languageName: node
+  linkType: hard
+
 "base32.js@npm:^0.1.0":
   version: 0.1.0
   resolution: "base32.js@npm:0.1.0"
@@ -15787,12 +15802,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip66@npm:^1.1.5":
-  version: 1.1.5
-  resolution: "bip66@npm:1.1.5"
-  dependencies:
-    safe-buffer: "npm:^5.0.1"
-  checksum: 10/6257e90ff2149aa08740ff4009730c1bceb1a3456571d3006a36b39f30044f2973e05f043ea6977046d6ab66e4a8d6f5c9785094f8317f4ff546a325baece1ab
+"bip66@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "bip66@npm:2.0.0"
+  checksum: 10/919b25d3ed2b9d774eefe550ae6e825e29e1aa450fc1af12e7cef39115a8bc867018b5aa3d8e68b459ec198decabfc1ebe2bdbae9edfdca61c97e862d1db098d
   languageName: node
   linkType: hard
 
@@ -16193,6 +16206,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bs58@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "bs58@npm:6.0.0"
+  dependencies:
+    base-x: "npm:^5.0.0"
+  checksum: 10/7c9bb2b2d93d997a8c652de3510d89772007ac64ee913dc4e16ba7ff47624caad3128dcc7f360763eb6308760c300b3e9fd91b8bcbd489acd1a13278e7949c4e
+  languageName: node
+  linkType: hard
+
 "bs58check@npm:2.1.2, bs58check@npm:^2.1.2":
   version: 2.1.2
   resolution: "bs58check@npm:2.1.2"
@@ -16204,13 +16226,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bs58check@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "bs58check@npm:3.0.1"
+"bs58check@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "bs58check@npm:4.0.0"
   dependencies:
     "@noble/hashes": "npm:^1.2.0"
-    bs58: "npm:^5.0.0"
-  checksum: 10/dbbecc7a09f3836e821149266c864c4bbd545539cea43c35f23f4c3c46b54c86c52b65d224b9ea2e916fa6d93bd2ce9fac5b6c6bfcf19621a9c209a5602f71c8
+    bs58: "npm:^6.0.0"
+  checksum: 10/cf5691bdfdf317574f722582360a834f01a36e8f6c850bd5791f04e040b334a0800b7c322ad24c77979c3ed6ef6cf31a6373366b4018223e3005278d491d8799
   languageName: node
   linkType: hard
 
@@ -37832,14 +37854,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@npm:^3.22.0":
-  version: 3.22.0
-  resolution: "simple-git@npm:3.22.0"
+"simple-git@npm:^3.25.0":
+  version: 3.25.0
+  resolution: "simple-git@npm:3.25.0"
   dependencies:
     "@kwsites/file-exists": "npm:^1.1.1"
     "@kwsites/promise-deferred": "npm:^1.1.1"
-    debug: "npm:^4.3.4"
-  checksum: 10/309e7f0b73550f99949c0c6cfd4b4799ec0452fc4835dc440f89ec9351fe553c979c4e2bf7a772308e608697d3a27512281fbc64df0328a73607641f389b0aaf
+    debug: "npm:^4.3.5"
+  checksum: 10/f284162c941e36970db171eacfe0df1f7ce50313fa7841b95abb704ec78ffe4f27b6a46a4b621ed88711104faa295eb47fb2b54b23cead4400cb2204ed491074
   languageName: node
   linkType: hard
 
@@ -39310,12 +39332,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:^5.23.4":
-  version: 5.23.4
-  resolution: "systeminformation@npm:5.23.4"
+"systeminformation@npm:^5.23.5":
+  version: 5.23.5
+  resolution: "systeminformation@npm:5.23.5"
   bin:
     systeminformation: lib/cli.js
-  checksum: 10/ab2c51d9755ba9a9ece3cc67fedf7079860345b6c6e687c10d5b18d5ff48602675ef8b330accf2a1a16cef434f84caeaab00b804e451fd7e3c17868252cd3749
+  checksum: 10/cc7afa317cf6f106ae89fb533f65ea47982972e3a5b4a8747ddc34d4bf06052bfba4ca64a0320828b62155f0e34c42a9b79520a75f9c8db632cad2dfc77dce98
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
@@ -41350,6 +41372,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "uuid@npm:10.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 10/35aa60614811a201ff90f8ca5e9ecb7076a75c3821e17f0f5ff72d44e36c2d35fcbc2ceee9c4ac7317f4cc41895da30e74f3885e30313bee48fda6338f250538
+  languageName: node
+  linkType: hard
+
 "uuid@npm:^3.0.1, uuid@npm:^3.3.2":
   version: 3.4.0
   resolution: "uuid@npm:3.4.0"
@@ -42902,12 +42933,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wif@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "wif@npm:4.0.0"
+"wif@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "wif@npm:5.0.0"
   dependencies:
-    bs58check: "npm:^3.0.1"
-  checksum: 10/5b3438202c0e4509c1963872730d8aa33dd34f0da5c65d8fde8e1cd6338bae78d1f2144099d5cb2a4a9de4679e13a09e4d3da8a22af52be98dc9abf4de0581e4
+    bs58check: "npm:^4.0.0"
+  checksum: 10/3af0d4e9f1d1b35672b860470b6545f34f77b4a804e06ccae2f06f43c96a31fba859cf64889344eded621433eb609fc4c95aa28d62c02057372232b85231e414
   languageName: node
   linkType: hard
 
