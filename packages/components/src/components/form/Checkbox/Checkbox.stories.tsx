@@ -38,6 +38,7 @@ export const Checkbox: StoryObj<CheckboxProps> = {
         isChecked: false,
         isDisabled: false,
         labelAlignment: 'right',
+        verticalAlignment: 'top',
         ...getFramePropsStory(allowedCheckboxFrameProps).args,
     },
 
@@ -53,6 +54,12 @@ export const Checkbox: StoryObj<CheckboxProps> = {
                 type: 'radio',
             },
             options: ['left', 'right'],
+        },
+        verticalAlignment: {
+            control: {
+                type: 'radio',
+            },
+            options: ['top', 'center'],
         },
         ...getFramePropsStory(allowedCheckboxFrameProps).argTypes,
     },

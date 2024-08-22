@@ -5,7 +5,7 @@ import { borders, Color, spacingsPx, typography } from '@trezor/theme';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { Icon } from '../../Icon/Icon';
 import { getFocusShadowStyle } from '../../../utils/utils';
-import { UIHorizontalAlignment, UIVariant } from '../../../config/types';
+import { UIHorizontalAlignment, UIVerticalAlignment, UIVariant } from '../../../config/types';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 
@@ -67,12 +67,14 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
 type ContainerProps = TransientProps<AllowedFrameProps> & {
     $isDisabled?: boolean;
     $labelAlignment?: LabelAlignment;
+    $verticalAlignment?: VerticalAlignment;
 };
 
 export const Container = styled.div<ContainerProps>`
     display: flex;
-    align-items: flex-start;
-    gap: ${spacingsPx.xs};
+    align-items: ${({ $verticalAlignment }) =>
+        $verticalAlignment === 'top' ? 'flex-start' : 'center'};
+    gap: ${spacingsPx.sm};
     flex-direction: ${({ $labelAlignment }) => $labelAlignment === 'left' && 'row-reverse'};
     pointer-events: ${({ $isDisabled }) => $isDisabled && 'none'};
     cursor: ${({ $isDisabled }) => ($isDisabled ? 'default' : 'pointer')};
@@ -155,12 +157,14 @@ export const checkboxVariants = ['primary', 'destructive', 'warning'] as const;
 export type CheckboxVariant = Extract<UIVariant, (typeof checkboxVariants)[number]>;
 
 export type LabelAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
+export type VerticalAlignment = Extract<UIVerticalAlignment, 'top' | 'center'>;
 
 export type CheckboxProps = AllowedFrameProps & {
     variant?: CheckboxVariant;
     isChecked?: boolean;
     isDisabled?: boolean;
     labelAlignment?: LabelAlignment;
+    verticalAlignment?: VerticalAlignment;
     onClick: EventHandler<SyntheticEvent>;
     'data-testid'?: string;
     className?: string;
@@ -172,6 +176,7 @@ export const Checkbox = ({
     isChecked,
     isDisabled = false,
     labelAlignment = 'right',
+    verticalAlignment = 'top',
     onClick,
     'data-testid': dataTest,
     className,
@@ -197,6 +202,7 @@ export const Checkbox = ({
         <Container
             $isDisabled={isDisabled}
             $labelAlignment={labelAlignment}
+            $verticalAlignment={verticalAlignment}
             onClick={isDisabled ? undefined : onClick}
             onKeyUp={handleKeyUp}
             data-testid={dataTest}
