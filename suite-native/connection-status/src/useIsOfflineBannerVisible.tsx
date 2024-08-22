@@ -6,11 +6,9 @@ import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 export const useIsOfflineBannerVisible = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
-    const { isInternetReachable } = useNetInfo({
-        reachabilityUrl: 'https://cdn.trezor.io/204',
-    });
+    const { isInternetReachable } = useNetInfo();
 
-    const isConnected = isInternetReachable ?? true;
+    const isReachable = isInternetReachable ?? true;
 
-    return !isConnected && isOnboardingFinished;
+    return !isReachable && isOnboardingFinished;
 };
