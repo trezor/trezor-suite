@@ -13,7 +13,6 @@
     "dependencies": {
         "@react-navigation/native": "6.1.17",
         "@react-navigation/native-stack": "6.9.26",
-        "@suite-common/wallet-types": "workspace:*",
         "@suite-native/accounts": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/navigation": "workspace:*",
