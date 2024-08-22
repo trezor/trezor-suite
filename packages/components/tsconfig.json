@@ -18,9 +18,6 @@
             "path": "../../suite-common/suite-constants"
         },
         {
-            "path": "../../suite-common/suite-utils"
-        },
-        {
             "path": "../../suite-common/validators"
         },
         { "path": "../connect" },

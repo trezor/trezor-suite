@@ -5,8 +5,6 @@
         "noUncheckedIndexedAccess": true
     },
     "references": [
-        {
-            "path": "../../suite-common/suite-utils"
-        }
+        { "path": "../../packages/theme" }
     ]
 }

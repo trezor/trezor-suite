@@ -1,5 +1,5 @@
 export type CSSColor =
-    | `#${string}`
+    | `#${string | number}`
     | `rgb(${number}, ${number}, ${number})`
     | `rgba(${number}, ${number}, ${number}, ${number})`
     | 'transparent';

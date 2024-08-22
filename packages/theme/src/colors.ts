@@ -3,6 +3,7 @@
 import { Elevation } from './elevation';
 import { palette } from './palette';
 import { CSSColor } from './types';
+import { hexToRgba } from './utils/hexToRgba';
 
 type StyledComponentElevationProps = {
     theme: Colors; // this package does not depend on styled-components
@@ -57,7 +58,7 @@ const light = {
     backgroundAlertYellowSubtleOnElevationNegative: palette.lightAccentYellow400,
     backgroundNeutralBold: palette.lightGray1000,
     backgroundNeutralBoldInverted: palette.lightWhiteAlpha1000,
-    backgroundNeutralDisabled: palette.lightGray200,
+    backgroundNeutralDisabled: hexToRgba(palette.lightGray1000, 0.08),
     backgroundNeutralSubdued: palette.lightGray400,
     backgroundNeutralSubtleOnElevation0: palette.lightGray200,
     backgroundNeutralSubtleOnElevation1: palette.lightGray100,
@@ -75,10 +76,10 @@ const light = {
     backgroundSurfaceElevation2: palette.lightGray100,
     backgroundSurfaceElevation3: palette.lightWhiteAlpha1000,
     backgroundSurfaceElevationNegative: palette.lightGray200,
-    backgroundTertiaryDefaultOnElevation0: palette.lightGray200,
+    backgroundTertiaryDefaultOnElevation0: hexToRgba(palette.lightGray1000, 0.12),
     backgroundTertiaryDefaultOnElevation1: palette.lightGray100,
     backgroundTertiaryDefaultOnElevationNegative: palette.lightGray300,
-    backgroundTertiaryPressedOnElevation0: palette.lightGray300,
+    backgroundTertiaryPressedOnElevation0: hexToRgba(palette.lightGray1000, 0.16),
     backgroundTertiaryPressedOnElevation1: palette.lightGray200,
     backgroundTertiaryPressedOnElevationNegative: palette.lightGray400,
     borderAlertRed: palette.lightAccentRed600,
@@ -221,7 +222,7 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
         backgroundAlertYellowSubtleOnElevationNegative: '#FFFFFF',
         backgroundNeutralBold: palette.darkGray1000,
         backgroundNeutralBoldInverted: palette.darkGray000,
-        backgroundNeutralDisabled: palette.darkGray200,
+        backgroundNeutralDisabled: hexToRgba(palette.darkGray1000, 0.08),
         backgroundNeutralSubdued: palette.darkGray300,
         backgroundNeutralSubtleOnElevation0: palette.darkGray100,
         backgroundNeutralSubtleOnElevation1: palette.darkGray200,
@@ -239,10 +240,10 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
         backgroundSurfaceElevation2: palette.darkGray200,
         backgroundSurfaceElevation3: palette.darkGray300,
         backgroundSurfaceElevationNegative: palette.darkGray000,
-        backgroundTertiaryDefaultOnElevation0: palette.darkGray100,
+        backgroundTertiaryDefaultOnElevation0: hexToRgba(palette.darkGray1000, 0.16),
         backgroundTertiaryDefaultOnElevation1: palette.darkGray200,
         backgroundTertiaryDefaultOnElevationNegative: palette.darkGray50,
-        backgroundTertiaryPressedOnElevation0: palette.darkGray200,
+        backgroundTertiaryPressedOnElevation0: hexToRgba(palette.darkGray1000, 0.24),
         backgroundTertiaryPressedOnElevation1: palette.darkGray300,
         backgroundTertiaryPressedOnElevationNegative: palette.darkGray100,
         borderAlertRed: palette.darkAccentRed600,

@@ -12,3 +12,4 @@ export * from './spacings';
 export * from './types';
 export * from './typography';
 export * from './zIndices';
+export { hexToRgba } from './utils/hexToRgba';

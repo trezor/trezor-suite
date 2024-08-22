@@ -47,7 +47,7 @@ import { DefaultGraphEvent } from './DefaultGraphEvent';
 import { useEventTooltipProps } from './hooks/useEventTooltipProps';
 import { LoadingLine } from './LoadingLine';
 import { BlurOverlay } from './BlurOverlay';
-import { hexToRgba } from '@suite-common/suite-utils';
+import { hexToRgba } from '@trezor/theme';
 
 const INDICATOR_RADIUS = 7;
 const INDICATOR_BORDER_MULTIPLIER = 1.3;

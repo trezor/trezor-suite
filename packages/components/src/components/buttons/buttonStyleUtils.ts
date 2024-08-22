@@ -1,8 +1,7 @@
 import { css, useTheme } from 'styled-components';
 
-import { Colors, spacings, spacingsPx } from '@trezor/theme';
+import { Colors, spacings, spacingsPx, hexToRgba } from '@trezor/theme';
 import type { UIHorizontalAlignment, UISize, UIVariant } from '../../config/types';
-import { hexToRgba } from '@suite-common/suite-utils';
 
 const SUBTLE_ALPHA = 0.12;
 const SUBTLE_ALPHA_HOVER = 0.2;
