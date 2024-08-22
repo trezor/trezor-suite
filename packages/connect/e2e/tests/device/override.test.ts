@@ -5,16 +5,11 @@ import { getController, setup, initTrezorConnect } from '../../common.setup';
 const controller = getController();
 
 describe('TrezorConnect override param', () => {
-    beforeEach(async () => {
-        await TrezorConnect.dispose();
+    beforeAll(async () => {
         await setup(controller, {
             mnemonic: 'mnemonic_all',
         });
         await initTrezorConnect(controller);
-    });
-
-    afterEach(async () => {
-        await new Promise(resolve => setTimeout(resolve, 1000));
     });
 
     afterAll(async () => {
