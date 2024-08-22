@@ -11,11 +11,11 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@hookform/resolvers": "3.3.4",
+        "@hookform/resolvers": "3.9.0",
         "@suite-common/icons": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "react": "18.2.0",
-        "react-hook-form": "^7.50.1",
+        "react-hook-form": "^7.53.0",
         "react-native": "0.74.1",
         "yup": "^1.4.0"
     }

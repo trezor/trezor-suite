@@ -4530,12 +4530,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:3.3.4":
-  version: 3.3.4
-  resolution: "@hookform/resolvers@npm:3.3.4"
+"@hookform/resolvers@npm:3.9.0":
+  version: 3.9.0
+  resolution: "@hookform/resolvers@npm:3.9.0"
   peerDependencies:
     react-hook-form: ^7.0.0
-  checksum: 10/0845e15f53b515ab5dc8d970d4ee7f47bbdfc4f4391bc166361535482d96b6ae3d1812669107fca05bf8687fa5447e3ed65f2eee3e349759b23b229ca978f917
+  checksum: 10/b878e92cebc703106a70987437ab4add0e71a327a0bb9864f82ab480b5d9a38b0d639f6154b138c3c4828af0db00c1b413279c102715146b19edc76b9786f1c3
   languageName: node
   linkType: hard
 
@@ -9233,7 +9233,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
     proxy-memoize: "npm:2.0.2"
-    react-hook-form: "npm:^7.50.1"
+    react-hook-form: "npm:^7.53.0"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
@@ -9281,7 +9281,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.50.1"
+    react-hook-form: "npm:^7.53.0"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
   linkType: soft
@@ -9746,11 +9746,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@hookform/resolvers": "npm:3.3.4"
+    "@hookform/resolvers": "npm:3.9.0"
     "@suite-common/icons": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.50.1"
+    react-hook-form: "npm:^7.53.0"
     react-native: "npm:0.74.1"
     yup: "npm:^1.4.0"
   languageName: unknown
@@ -9930,7 +9930,7 @@ __metadata:
     date-fns: "npm:^2.30.0"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.50.1"
+    react-hook-form: "npm:^7.53.0"
     react-native: "npm:0.74.1"
     react-native-reanimated: "npm:3.11.0"
     react-redux: "npm:8.0.7"
@@ -10131,7 +10131,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:18.2.0"
-    react-hook-form: "npm:^7.50.1"
+    react-hook-form: "npm:^7.53.0"
     react-native: "npm:0.74.1"
     react-native-reanimated: "npm:3.11.0"
     react-redux: "npm:8.0.7"
@@ -11724,7 +11724,7 @@ __metadata:
     "@floating-ui/react": "npm:^0.26.9"
     "@formatjs/cli": "npm:^6.2.7"
     "@formatjs/intl": "npm:2.10.0"
-    "@hookform/resolvers": "npm:3.3.4"
+    "@hookform/resolvers": "npm:3.9.0"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/core": "npm:^7.100.1"
@@ -11820,7 +11820,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     react-focus-lock: "npm:^2.9.7"
     react-helmet-async: "npm:^2.0.4"
-    react-hook-form: "npm:^7.50.1"
+    react-hook-form: "npm:^7.53.0"
     react-intl: "npm:^6.6.8"
     react-qr-reader: "npm:^2.2.1"
     react-redux: "npm:8.0.7"
@@ -19118,7 +19118,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:*, debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4, debug@npm:~4.3.1, debug@npm:~4.3.2, debug@npm:~4.3.4":
+"debug@npm:*, debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4, debug@npm:^4.3.5, debug@npm:~4.3.1, debug@npm:~4.3.2, debug@npm:~4.3.4":
   version: 4.3.6
   resolution: "debug@npm:4.3.6"
   dependencies:
@@ -35248,12 +35248,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.50.1":
-  version: 7.50.1
-  resolution: "react-hook-form@npm:7.50.1"
+"react-hook-form@npm:^7.53.0":
+  version: 7.53.0
+  resolution: "react-hook-form@npm:7.53.0"
   peerDependencies:
-    react: ^16.8.0 || ^17 || ^18
-  checksum: 10/54a9daa2143c601a9867e96a2159a0bbe98707b5bbeb5953bfdf3342d2f04bfcaa6169907ed167c5c1f3a044630860d4f43685f4ac4e15b9cd892d1b00d54dde
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  checksum: 10/b7d73696b7c10e042f6ea6fcec01f951091146bfbc89d1378327a970bcd724b968e93fae1657bddada75caf648cfaf8693c5ba03c25e96816b755079d29f65da
   languageName: node
   linkType: hard
 
