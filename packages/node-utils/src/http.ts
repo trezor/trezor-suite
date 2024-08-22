@@ -364,8 +364,13 @@ const checkOrigin = ({
 
     if (origin) {
         isOriginAllowed = origins.some(o => {
-            // match from the end to allow subdomains
-            return new URL(origin).hostname.endsWith(new URL(o).hostname);
+            try {
+                // match from the end to allow subdomains
+                return new URL(origin).hostname.endsWith(new URL(o).hostname);
+            } catch (error) {
+                // If parsing URL fails we don't want it to crash but silently logs error.
+                logger.error(`Failed parsing URL: ${error}`);
+            }
         });
     }
     if (!isOriginAllowed) {
