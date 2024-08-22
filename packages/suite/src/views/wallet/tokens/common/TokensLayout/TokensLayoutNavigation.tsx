@@ -71,6 +71,30 @@ interface TokensLayoutNavigationProps {
     setSearchQuery: Dispatch<SetStateAction<string>>;
 }
 
+const Item = ({
+    route,
+    title,
+    icon,
+    currentRoute,
+    count,
+}: {
+    route: Route['name'];
+    title: TranslationKey;
+    icon: IconName;
+    currentRoute?: Route['name'];
+    count: number;
+}) => (
+    <NavListItem
+        nameId={title}
+        isActive={currentRoute === route}
+        icon={icon}
+        goToRoute={route}
+        preserveParams
+        iconSize="mediumLarge"
+        itemsCount={count}
+    />
+);
+
 export const TokensLayoutNavigation = ({
     selectedAccount,
     searchQuery,
@@ -93,28 +117,6 @@ export const TokensLayoutNavigation = ({
         coinDefinitions,
     );
     const showAddToken = ['ethereum'].includes(account.networkType) && isDebug;
-
-    const Item = ({
-        route,
-        title,
-        icon,
-        count,
-    }: {
-        route: Route['name'];
-        title: TranslationKey;
-        icon: IconName;
-        count: number;
-    }) => (
-        <NavListItem
-            nameId={title}
-            isActive={routeName === route}
-            icon={icon}
-            goToRoute={route}
-            preserveParams
-            iconSize="mediumLarge"
-            itemsCount={count}
-        />
-    );
 
     const handleAddToken = () => {
         if (account.symbol) {
@@ -139,13 +141,15 @@ export const TokensLayoutNavigation = ({
                     title="TR_COINS"
                     icon="tokens"
                     count={tokens.shownWithBalance.length}
+                    currentRoute={routeName}
                 />
                 <Divider />
                 <Item
                     route="wallet-tokens-hidden"
                     title="TR_HIDDEN"
                     icon="eyeClosed"
-                    count={tokens.unverifiedWithBalance.length + tokens.hiddenWithBalance.length}
+                    count={tokens.hiddenWithBalance.length}
+                    currentRoute={routeName}
                 />
             </List>
             <Actions>
