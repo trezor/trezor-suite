@@ -37,7 +37,7 @@
         "postcss-modules-local-by-default": "^4.0.5",
         "postcss-modules-scope": "^3.2.0",
         "postcss-modules-values": "^4.0.0",
-        "simple-git": "^3.22.0",
+        "simple-git": "^3.25.0",
         "style-loader": "^3.3.4",
         "tsx": "^4.16.3",
         "webpack": "^5.93.0",
