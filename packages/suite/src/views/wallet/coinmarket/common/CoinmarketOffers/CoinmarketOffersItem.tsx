@@ -18,9 +18,7 @@ import {
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { SellFiatTrade } from 'invity-api';
 
-const OfferWrap = styled(Card)`
-    min-height: 100px;
-`;
+const OfferWrap = styled.div``;
 
 const Offer = styled.div`
     display: flex;
@@ -126,50 +124,52 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     if (!cryptoAmountProps) return null;
 
     return (
-        <OfferWrap margin={{ top: spacings.md }}>
-            <Offer>
-                <OfferColumn1>
-                    {tagsExist && (
-                        <OfferBadgeWrap>
-                            {tag && <OfferBadge variant="tertiary">{tag}</OfferBadge>}
-                            {infoNote && <OfferBadgeInfo>{infoNote}</OfferBadgeInfo>}
-                        </OfferBadgeWrap>
-                    )}
-                    <OfferProvider
-                        exchange={exchange}
-                        providers={providers}
-                        $isMargined={tagsExist}
-                    />
-                </OfferColumn1>
-                <OfferColumn2>
-                    <CoinmarketUtilsPrice {...cryptoAmountProps} />
-                </OfferColumn2>
-                <OfferColumn3>
-                    {quote.status === 'LOGIN_REQUEST' ? (
-                        <StyledButton onClick={() => selectQuote(quote)}>
-                            <Translation id="TR_LOGIN_PROCEED" />
-                        </StyledButton>
-                    ) : (
-                        <StyledButton
-                            isLoading={callInProgress}
-                            isDisabled={!!quote.error || callInProgress}
-                            onClick={() => selectQuote(quote)}
-                            data-testid="@coinmarket/offers/get-this-deal-button"
-                        >
-                            <Translation
-                                id={
-                                    isCoinmarketSellOffers(context) &&
-                                    context.needToRegisterOrVerifyBankAccount(
-                                        quote as SellFiatTrade,
-                                    )
-                                        ? 'TR_SELL_REGISTER'
-                                        : 'TR_COINMARKET_OFFERS_SELECT'
-                                }
-                            />
-                        </StyledButton>
-                    )}
-                </OfferColumn3>
-            </Offer>
+        <OfferWrap>
+            <Card margin={{ top: spacings.md }} minHeight={100}>
+                <Offer>
+                    <OfferColumn1>
+                        {tagsExist && (
+                            <OfferBadgeWrap>
+                                {tag && <OfferBadge variant="tertiary">{tag}</OfferBadge>}
+                                {infoNote && <OfferBadgeInfo>{infoNote}</OfferBadgeInfo>}
+                            </OfferBadgeWrap>
+                        )}
+                        <OfferProvider
+                            exchange={exchange}
+                            providers={providers}
+                            $isMargined={tagsExist}
+                        />
+                    </OfferColumn1>
+                    <OfferColumn2>
+                        <CoinmarketUtilsPrice {...cryptoAmountProps} />
+                    </OfferColumn2>
+                    <OfferColumn3>
+                        {quote.status === 'LOGIN_REQUEST' ? (
+                            <StyledButton onClick={() => selectQuote(quote)}>
+                                <Translation id="TR_LOGIN_PROCEED" />
+                            </StyledButton>
+                        ) : (
+                            <StyledButton
+                                isLoading={callInProgress}
+                                isDisabled={!!quote.error || callInProgress}
+                                onClick={() => selectQuote(quote)}
+                                data-testid="@coinmarket/offers/get-this-deal-button"
+                            >
+                                <Translation
+                                    id={
+                                        isCoinmarketSellOffers(context) &&
+                                        context.needToRegisterOrVerifyBankAccount(
+                                            quote as SellFiatTrade,
+                                        )
+                                            ? 'TR_SELL_REGISTER'
+                                            : 'TR_COINMARKET_OFFERS_SELECT'
+                                    }
+                                />
+                            </StyledButton>
+                        )}
+                    </OfferColumn3>
+                </Offer>
+            </Card>
         </OfferWrap>
     );
 };

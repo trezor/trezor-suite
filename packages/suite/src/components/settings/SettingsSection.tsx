@@ -1,6 +1,6 @@
 import { ReactNode, ReactElement } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Paragraph, H3, Card, IconName, Icon } from '@trezor/components';
+import { Paragraph, IconName, Icon, H3, Card, Column } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
 
@@ -37,11 +37,6 @@ const Description = styled(Paragraph)`
     ${breakpointMediaQueries.below_lg} {
         margin-bottom: ${spacingsPx.lg};
     }
-`;
-
-const StyledCard = styled(Card)`
-    gap: ${spacingsPx.xxl};
-    flex: 1;
 `;
 
 const Content = styled.div`
@@ -87,7 +82,11 @@ export const SettingsSection = ({
             </Header>
 
             <Content>
-                <StyledCard className={className}>{children}</StyledCard>
+                <Card className={className}>
+                    <Column gap={spacings.xxl} flex={1} alignItems="normal">
+                        {children}
+                    </Column>
+                </Card>
                 {bottomActions}
             </Content>
         </Wrapper>

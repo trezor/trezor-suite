@@ -22,9 +22,8 @@ const Wrapper = styled.div`
     }
 `;
 
-const StyledCard = styled(Card)`
+const Flex = styled.div`
     flex: 1;
-    padding: 0;
 `;
 
 const CoinmarketDetail = () => {
@@ -60,21 +59,23 @@ const CoinmarketDetail = () => {
 
     return (
         <Wrapper>
-            <StyledCard>
-                {tradeStatus === 'SUCCESS' && <PaymentSuccessful account={account} />}
-                {tradeStatus === 'KYC' && (
-                    <PaymentKYC account={account} provider={provider} supportUrl={supportUrl} />
-                )}
-                {tradeStatus === 'ERROR' && (
-                    <PaymentFailed
-                        account={account}
-                        transactionId={trade.key}
-                        supportUrl={supportUrl}
-                    />
-                )}
-                {tradeStatus === 'CONVERTING' && <PaymentConverting supportUrl={supportUrl} />}
-                {showSending && <PaymentSending supportUrl={supportUrl} />}
-            </StyledCard>
+            <Flex>
+                <Card paddingType="none">
+                    {tradeStatus === 'SUCCESS' && <PaymentSuccessful account={account} />}
+                    {tradeStatus === 'KYC' && (
+                        <PaymentKYC account={account} provider={provider} supportUrl={supportUrl} />
+                    )}
+                    {tradeStatus === 'ERROR' && (
+                        <PaymentFailed
+                            account={account}
+                            transactionId={trade.key}
+                            supportUrl={supportUrl}
+                        />
+                    )}
+                    {tradeStatus === 'CONVERTING' && <PaymentConverting supportUrl={supportUrl} />}
+                    {showSending && <PaymentSending supportUrl={supportUrl} />}
+                </Card>
+            </Flex>
             <CoinmarketExchangeOfferInfo
                 account={account}
                 exchangeInfo={info}

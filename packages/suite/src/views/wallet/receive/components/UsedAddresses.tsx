@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { AccountAddress } from '@trezor/connect';
-import { Card, Button, GradientOverlay } from '@trezor/components';
+import { Card, Button, GradientOverlay, Column } from '@trezor/components';
 import { Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';
@@ -12,14 +12,7 @@ import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch } from 'src/hooks/suite/';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { spacingsPx, typography } from '@trezor/theme';
-
-const StyledCard = styled(Card)`
-    flex-direction: column;
-    margin-bottom: ${spacingsPx.xxxl};
-    overflow: hidden;
-    padding: ${spacingsPx.xl};
-`;
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 const GridTable = styled.div`
     display: grid;
@@ -227,59 +220,61 @@ export const UsedAddresses = ({
     const actionHideVisible = limit > DEFAULT_LIMIT;
 
     return (
-        <StyledCard>
-            <GridTable>
-                <HeaderItem>
-                    <Translation id="RECEIVE_TABLE_ADDRESS" />
-                </HeaderItem>
-                <HeaderItem />
-                <HeaderItem $align="right">
-                    <Translation id="RECEIVE_TABLE_RECEIVED" />
-                </HeaderItem>
+        <Card margin={{ bottom: spacings.xxxl }} overflow="hidden" paddingType="large">
+            <Column>
+                <GridTable>
+                    <HeaderItem>
+                        <Translation id="RECEIVE_TABLE_ADDRESS" />
+                    </HeaderItem>
+                    <HeaderItem />
+                    <HeaderItem $align="right">
+                        <Translation id="RECEIVE_TABLE_RECEIVED" />
+                    </HeaderItem>
 
-                {list.slice(0, limit).map((addr, index) => (
-                    <Item
-                        index={index}
-                        key={addr.path}
-                        addr={addr}
-                        symbol={account.symbol}
-                        locked={locked}
-                        metadataPayload={{
-                            type: 'addressLabel',
-                            entityKey: account.key,
-                            defaultValue: addr.address,
-                            value: addressLabels[addr.address],
-                        }}
-                        onClick={() => dispatch(showAddress(addr.path, addr.address))}
-                    />
-                ))}
-            </GridTable>
+                    {list.slice(0, limit).map((addr, index) => (
+                        <Item
+                            index={index}
+                            key={addr.path}
+                            addr={addr}
+                            symbol={account.symbol}
+                            locked={locked}
+                            metadataPayload={{
+                                type: 'addressLabel',
+                                entityKey: account.key,
+                                defaultValue: addr.address,
+                                value: addressLabels[addr.address],
+                            }}
+                            onClick={() => dispatch(showAddress(addr.path, addr.address))}
+                        />
+                    ))}
+                </GridTable>
 
-            {actionButtonsVisible && (
-                <Actions>
-                    {actionShowVisible && (
-                        <Button
-                            variant="tertiary"
-                            icon="chevronDown"
-                            iconAlignment="right"
-                            onClick={() => setLimit(limit + 20)}
-                            data-testid="@wallet/receive/used-address/show-more"
-                        >
-                            <Translation id="TR_SHOW_MORE" />
-                        </Button>
-                    )}
+                {actionButtonsVisible && (
+                    <Actions>
+                        {actionShowVisible && (
+                            <Button
+                                variant="tertiary"
+                                icon="chevronDown"
+                                iconAlignment="right"
+                                onClick={() => setLimit(limit + 20)}
+                                data-testid="@wallet/receive/used-address/show-more"
+                            >
+                                <Translation id="TR_SHOW_MORE" />
+                            </Button>
+                        )}
 
-                    {actionHideVisible && (
-                        <Button
-                            variant="tertiary"
-                            icon="chevronUp"
-                            onClick={() => setLimit(DEFAULT_LIMIT)}
-                        >
-                            <Translation id="TR_SHOW_LESS" />
-                        </Button>
-                    )}
-                </Actions>
-            )}
-        </StyledCard>
+                        {actionHideVisible && (
+                            <Button
+                                variant="tertiary"
+                                icon="chevronUp"
+                                onClick={() => setLimit(DEFAULT_LIMIT)}
+                            >
+                                <Translation id="TR_SHOW_LESS" />
+                            </Button>
+                        )}
+                    </Actions>
+                )}
+            </Column>
+        </Card>
     );
 };

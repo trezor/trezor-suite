@@ -5,12 +5,6 @@ import { HiddenPlaceholder, FormattedCryptoAmount, Sign } from 'src/components/s
 import { Account } from 'src/types/wallet';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-const Wrapper = styled(Card)`
-    display: flex;
-    flex: 1;
-    min-height: 100px;
-`;
-
 const InfoCardContent = styled.div`
     display: flex;
     width: 100%;
@@ -74,7 +68,7 @@ export const InfoCard = (props: InfoCardProps) => {
     bigValue = bigValue?.isNaN() ? null : bigValue;
 
     return (
-        <Wrapper>
+        <Card minHeight={100}>
             <InfoCardContent>
                 <Title>{props.title}</Title>
                 {props.isLoading && <SkeletonRectangle width="160px" />}
@@ -108,6 +102,6 @@ export const InfoCard = (props: InfoCardProps) => {
                     </>
                 )}
             </InfoCardContent>
-        </Wrapper>
+        </Card>
     );
 };

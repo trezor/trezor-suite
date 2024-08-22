@@ -20,9 +20,8 @@ const Wrapper = styled.div`
     }
 `;
 
-const StyledCard = styled(Card)`
+const Flex = styled.div`
     flex: 1;
-    padding: 0;
 `;
 
 const CoinmarketDetail = () => {
@@ -57,17 +56,20 @@ const CoinmarketDetail = () => {
 
     return (
         <Wrapper>
-            <StyledCard>
-                {tradeStatus === 'SUCCESS' && <PaymentSuccessful account={account} />}
-                {sellFiatTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'SUCCESS' && (
-                    <PaymentFailed
-                        account={account}
-                        transactionId={trade.key}
-                        supportUrl={supportUrl}
-                    />
-                )}
-                {showPending && <PaymentPending supportUrl={supportUrl} />}
-            </StyledCard>
+            <Flex>
+                <Card paddingType="none">
+                    {tradeStatus === 'SUCCESS' && <PaymentSuccessful account={account} />}
+                    {sellFiatTradeFinalStatuses.includes(tradeStatus) &&
+                        tradeStatus !== 'SUCCESS' && (
+                            <PaymentFailed
+                                account={account}
+                                transactionId={trade.key}
+                                supportUrl={supportUrl}
+                            />
+                        )}
+                    {showPending && <PaymentPending supportUrl={supportUrl} />}
+                </Card>
+            </Flex>
             <CoinmarketSellOfferInfo
                 account={account}
                 providers={info?.providerInfos}

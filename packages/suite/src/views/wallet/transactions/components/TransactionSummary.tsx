@@ -30,7 +30,7 @@ const ContentWrapper = styled.div`
     flex-direction: column;
 `;
 
-const GraphWrapper = styled(Card)`
+const GraphWrapper = styled.div`
     flex-direction: row;
     display: flex;
     height: 320px;
@@ -110,33 +110,37 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
             </Actions>
             <ContentWrapper>
                 {error ? (
-                    <GraphWrapper>
-                        <ErrorMessage>
-                            <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                            <Button onClick={onRefresh} icon="refresh" variant="tertiary">
-                                <Translation id="TR_RETRY" />
-                            </Button>
-                        </ErrorMessage>
-                    </GraphWrapper>
+                    <Card>
+                        <GraphWrapper>
+                            <ErrorMessage>
+                                <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
+                                <Button onClick={onRefresh} icon="refresh" variant="tertiary">
+                                    <Translation id="TR_RETRY" />
+                                </Button>
+                            </ErrorMessage>
+                        </GraphWrapper>
+                    </Card>
                 ) : (
                     <HiddenPlaceholder enforceIntensity={8}>
-                        <GraphWrapper>
-                            <TransactionsGraph
-                                hideToolbar
-                                variant="one-asset"
-                                xTicks={xTicks}
-                                account={account}
-                                isLoading={isLoading}
-                                data={data}
-                                minMaxValues={minMaxValues}
-                                localCurrency={localCurrency}
-                                onRefresh={onRefresh}
-                                selectedRange={selectedRange}
-                                receivedValueFn={data => data.received}
-                                sentValueFn={data => data.sent}
-                                balanceValueFn={data => data.balance}
-                            />
-                        </GraphWrapper>
+                        <Card>
+                            <GraphWrapper>
+                                <TransactionsGraph
+                                    hideToolbar
+                                    variant="one-asset"
+                                    xTicks={xTicks}
+                                    account={account}
+                                    isLoading={isLoading}
+                                    data={data}
+                                    minMaxValues={minMaxValues}
+                                    localCurrency={localCurrency}
+                                    onRefresh={onRefresh}
+                                    selectedRange={selectedRange}
+                                    receivedValueFn={data => data.received}
+                                    sentValueFn={data => data.sent}
+                                    balanceValueFn={data => data.balance}
+                                />
+                            </GraphWrapper>
+                        </Card>
                     </HiddenPlaceholder>
                 )}
 

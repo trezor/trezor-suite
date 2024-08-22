@@ -1,15 +1,9 @@
 import styled from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
-import { Card, Image, Note, Paragraph, Switch } from '@trezor/components';
+import { Card, Image, Note, Paragraph, Row, Switch } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-
-const Container = styled(Card)`
-    align-items: center;
-    flex-direction: row;
-    gap: ${spacingsPx.xxl};
-`;
 
 const StyledImage = styled(Image)`
     align-self: flex-start;
@@ -31,19 +25,21 @@ interface RememberWalletProps {
 }
 
 export const RememberWallet = ({ isChecked, onChange }: RememberWalletProps) => (
-    <Container>
-        <StyledImage image="FOLDER" width={50} />
-        <Middle>
-            <Paragraph typographyStyle="titleSmall">
-                <Translation id="TR_REMEMBER_WALLET_TITLE" />
-            </Paragraph>
-            <Note>
-                <Translation id="TR_REMEMBER_WALLET_NOTE" />
-            </Note>
-            <Paragraph>
-                <Translation id="TR_REMEMBER_WALLET_DESCRIPTION" />
-            </Paragraph>
-        </Middle>
-        <StyledSwitch isChecked={isChecked} onChange={onChange} />
-    </Container>
+    <Card>
+        <Row gap={spacings.xxl} alignItems="center">
+            <StyledImage image="FOLDER" width={50} />
+            <Middle>
+                <Paragraph typographyStyle="titleSmall">
+                    <Translation id="TR_REMEMBER_WALLET_TITLE" />
+                </Paragraph>
+                <Note>
+                    <Translation id="TR_REMEMBER_WALLET_NOTE" />
+                </Note>
+                <Paragraph>
+                    <Translation id="TR_REMEMBER_WALLET_DESCRIPTION" />
+                </Paragraph>
+            </Middle>
+            <StyledSwitch isChecked={isChecked} onChange={onChange} />
+        </Row>
+    </Card>
 );

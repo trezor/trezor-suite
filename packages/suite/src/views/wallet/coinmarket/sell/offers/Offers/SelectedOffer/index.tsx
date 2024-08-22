@@ -18,9 +18,8 @@ const Wrapper = styled.div`
     }
 `;
 
-const StyledCard = styled(Card)`
+const Flex = styled.div`
     flex: 1;
-    padding: 0;
 `;
 
 const Header = styled.div`
@@ -73,25 +72,27 @@ export const SelectedOffer = () => {
 
     return (
         <Wrapper>
-            <StyledCard>
-                <Header>
-                    <Left>
-                        <Step active={sellStep === 'BANK_ACCOUNT'}>
-                            <Translation id="TR_SELL_BANK_ACCOUNT_STEP" />
-                        </Step>
-                    </Left>
-                    <Middle>
-                        <Icon name="chevronRight" color={colors.legacy.TYPE_LIGHT_GREY} />
-                    </Middle>
-                    <Right>
-                        <Step active={sellStep === 'SEND_TRANSACTION'}>
-                            <Translation id="TR_SELL_CONFIRM_SEND_STEP" />
-                        </Step>
-                    </Right>
-                </Header>
-                {sellStep === 'BANK_ACCOUNT' && <SelectBankAccount />}
-                {sellStep === 'SEND_TRANSACTION' && <SendTransaction />}
-            </StyledCard>
+            <Flex>
+                <Card paddingType="none">
+                    <Header>
+                        <Left>
+                            <Step active={sellStep === 'BANK_ACCOUNT'}>
+                                <Translation id="TR_SELL_BANK_ACCOUNT_STEP" />
+                            </Step>
+                        </Left>
+                        <Middle>
+                            <Icon name="chevronRight" color={colors.legacy.TYPE_LIGHT_GREY} />
+                        </Middle>
+                        <Right>
+                            <Step active={sellStep === 'SEND_TRANSACTION'}>
+                                <Translation id="TR_SELL_CONFIRM_SEND_STEP" />
+                            </Step>
+                        </Right>
+                    </Header>
+                    {sellStep === 'BANK_ACCOUNT' && <SelectBankAccount />}
+                    {sellStep === 'SEND_TRANSACTION' && <SendTransaction />}
+                </Card>
+            </Flex>
             <CoinmarketSellOfferInfo
                 selectedQuote={selectedQuote}
                 account={account}

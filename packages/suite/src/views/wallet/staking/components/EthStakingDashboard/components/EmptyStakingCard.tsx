@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Button, Card, Icon, Paragraph, Row, Tooltip, variables } from '@trezor/components';
+import { Button, Card, Column, Icon, Paragraph, Row, Tooltip, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -9,11 +9,6 @@ import { DashboardSection } from 'src/components/dashboard';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-
-const StyledCard = styled(Card)`
-    padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxl};
-    flex-direction: column;
-`;
 
 const StyledP = styled(Paragraph)`
     margin-top: ${spacingsPx.xs};
@@ -101,52 +96,58 @@ export const EmptyStakingCard = () => {
 
     return (
         <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
-            <StyledCard>
-                <Header>
-                    <Row alignItems="center" gap={spacings.xxs}>
-                        <Icon name="questionFilled" size={11} color={theme.iconPrimaryDefault} />
+            <Card>
+                <Column>
+                    <Header>
+                        <Row alignItems="center" gap={spacings.xxs}>
+                            <Icon
+                                name="questionFilled"
+                                size={11}
+                                color={theme.iconPrimaryDefault}
+                            />
 
-                        <GreenP>
-                            <Translation id="TR_STAKE_WHAT_IS_STAKING" />
-                        </GreenP>
-                    </Row>
-                    <StyledP>
-                        <Translation
-                            id="TR_STAKE_STAKING_IS"
-                            values={{ symbol: account?.symbol.toUpperCase() }}
-                        />
-                    </StyledP>
-                </Header>
+                            <GreenP>
+                                <Translation id="TR_STAKE_WHAT_IS_STAKING" />
+                            </GreenP>
+                        </Row>
+                        <StyledP>
+                            <Translation
+                                id="TR_STAKE_STAKING_IS"
+                                values={{ symbol: account?.symbol.toUpperCase() }}
+                            />
+                        </StyledP>
+                    </Header>
 
-                <Body>
-                    <FlexRow>
-                        {stakeEthFeatures.map(
-                            ({ id, icon, title, description, extraDescription }) => (
-                                <FlexRowChild key={id}>
-                                    <StakingFeature
-                                        icon={icon}
-                                        title={title}
-                                        titleSize="small"
-                                        description={description}
-                                        extraDescription={extraDescription}
-                                    />
-                                </FlexRowChild>
-                            ),
-                        )}
-                    </FlexRow>
+                    <Body>
+                        <FlexRow>
+                            {stakeEthFeatures.map(
+                                ({ id, icon, title, description, extraDescription }) => (
+                                    <FlexRowChild key={id}>
+                                        <StakingFeature
+                                            icon={icon}
+                                            title={title}
+                                            titleSize="small"
+                                            description={description}
+                                            extraDescription={extraDescription}
+                                        />
+                                    </FlexRowChild>
+                                ),
+                            )}
+                        </FlexRow>
 
-                    {/* TODO: Add arrow line down icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                    <StyledTooltip content={stakingMessageContent}>
-                        <Button
-                            onClick={openStakingEthInANutshellModal}
-                            isDisabled={isStakingDisabled}
-                            icon={isStakingDisabled ? 'info' : undefined}
-                        >
-                            <Translation id="TR_STAKE_START_STAKING" />
-                        </Button>
-                    </StyledTooltip>
-                </Body>
-            </StyledCard>
+                        {/* TODO: Add arrow line down icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
+                        <StyledTooltip content={stakingMessageContent}>
+                            <Button
+                                onClick={openStakingEthInANutshellModal}
+                                isDisabled={isStakingDisabled}
+                                icon={isStakingDisabled ? 'info' : undefined}
+                            >
+                                <Translation id="TR_STAKE_START_STAKING" />
+                            </Button>
+                        </StyledTooltip>
+                    </Body>
+                </Column>
+            </Card>
         </DashboardSection>
     );
 };

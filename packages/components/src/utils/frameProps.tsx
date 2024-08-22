@@ -8,13 +8,31 @@ type Margin = {
     left?: SpacingValues;
     right?: SpacingValues;
 };
+const overflows = [
+    'auto',
+    'hidden',
+    'scroll',
+    'visible',
+    'inherit',
+    'initial',
+    'unset',
+    'clip',
+    'no-display',
+    'no-content',
+    'no-scroll',
+] as const;
+
+type Overflow = (typeof overflows)[number];
 
 export type FrameProps = {
     margin?: Margin;
     width?: string | number;
+    minWidth?: string | number;
     maxWidth?: string | number;
     height?: string | number;
+    minHeight?: string | number;
     maxHeight?: string | number;
+    overflow?: Overflow;
 };
 export type FramePropsKeys = keyof FrameProps;
 
@@ -29,6 +47,7 @@ export const withFrameProps = ({
     $height,
     $width,
     $maxHeight,
+    $overflow,
 }: TransientFrameProps) => {
     return css`
         ${$margin &&
@@ -55,7 +74,44 @@ export const withFrameProps = ({
         css`
             height: ${getValueWithUnit($height)};
         `};
+        ${$overflow &&
+        css`
+            overflow: ${$overflow};
+        `};
     `;
+};
+
+const getStorybookType = (key: FramePropsKeys) => {
+    switch (key) {
+        case 'margin':
+            return {
+                control: {
+                    type: 'object',
+                },
+            };
+        case 'width':
+        case 'height':
+        case 'maxWidth':
+        case 'maxHeight':
+            return {
+                control: {
+                    type: 'text',
+                },
+            };
+        case 'overflow':
+            return {
+                options: overflows,
+                control: {
+                    type: 'select',
+                },
+            };
+        default:
+            return {
+                control: {
+                    type: 'text',
+                },
+            };
+    }
 };
 
 export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => {
@@ -66,7 +122,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
                 table: {
                     category: 'Frame props',
                 },
-                type: key === 'margin' ? 'object' : 'number',
+                ...getStorybookType(key),
             },
         }),
         {},
@@ -88,6 +144,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('height') ? { height: undefined } : {}),
             ...(allowedFrameProps.includes('maxWidth') ? { maxWidth: undefined } : {}),
             ...(allowedFrameProps.includes('maxHeight') ? { maxHeight: undefined } : {}),
+            ...(allowedFrameProps.includes('overflow') ? { overflow: undefined } : {}),
         },
         argTypes,
     };

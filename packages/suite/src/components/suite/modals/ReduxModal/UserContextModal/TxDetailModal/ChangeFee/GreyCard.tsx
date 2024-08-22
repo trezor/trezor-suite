@@ -1,10 +1,8 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Card } from '@trezor/components';
+import { Card, Column } from '@trezor/components';
 
 const Wrapper = styled(Card)`
-    display: flex;
-    flex-direction: column;
     text-align: left;
     background-color: ${({ theme }) => theme.legacy.BG_GREY};
     margin-left: -10px;
@@ -12,4 +10,8 @@ const Wrapper = styled(Card)`
     margin-top: 12px;
 `;
 
-export const GreyCard = (props: { children?: ReactNode }) => <Wrapper>{props.children}</Wrapper>;
+export const GreyCard = (props: { children?: ReactNode }) => (
+    <Wrapper>
+        <Column>{props.children}</Column>
+    </Wrapper>
+);

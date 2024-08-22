@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { selectHasAccountTransactions } from '@suite-common/wallet-core';
-import { Card } from '@trezor/components';
+import { Card, Column } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { selectHasAnonymitySetError } from 'src/reducers/wallet/coinjoinReducer';
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown/BalancePrivacyBreakdown';
@@ -16,12 +16,6 @@ export const Container = styled.div`
     width: 100%;
     height: 160px;
     align-items: center;
-`;
-
-const LeftSideContainer = styled(Card)`
-    width: 100%;
-    height: 100%;
-    justify-content: center;
 `;
 
 interface CoinjoinBalanceSectionProps {
@@ -53,13 +47,15 @@ export const CoinjoinBalanceSection = ({ accountKey }: CoinjoinBalanceSectionPro
 
     return (
         <Container>
-            <LeftSideContainer>
-                {errorMessageConfig ? (
-                    <CoinjoinBalanceError {...errorMessageConfig} />
-                ) : (
-                    <BalancePrivacyBreakdown />
-                )}
-            </LeftSideContainer>
+            <Card width="100%" height="100%">
+                <Column justifyContent="center">
+                    {errorMessageConfig ? (
+                        <CoinjoinBalanceError {...errorMessageConfig} />
+                    ) : (
+                        <BalancePrivacyBreakdown />
+                    )}
+                </Column>
+            </Card>
 
             <CoinjoinStatusWheel accountKey={accountKey} />
         </Container>

@@ -35,6 +35,7 @@ export const flexAlignItems = [
     'self-start',
     'start',
     'stretch',
+    'normal',
 ] as const;
 
 export type FlexDirection = (typeof flexDirection)[number];

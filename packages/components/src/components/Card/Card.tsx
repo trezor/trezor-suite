@@ -6,14 +6,19 @@ import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/framePro
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
 
-export const paddingTypes = ['small', 'none', 'normal'] as const;
+export const paddingTypes = ['small', 'none', 'normal', 'large'] as const;
 export type PaddingType = (typeof paddingTypes)[number];
 
 type MapArgs = {
     $paddingType: PaddingType;
 };
 
-export const allowedCardFrameProps: FramePropsKeys[] = ['margin', 'maxWidth'];
+export const allowedCardFrameProps: FramePropsKeys[] = [
+    'margin',
+    'maxWidth',
+    'minWidth',
+    'overflow',
+];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]>;
 
 const mapPaddingTypeToLabelPadding = ({ $paddingType }: MapArgs): number | string => {
@@ -21,6 +26,7 @@ const mapPaddingTypeToLabelPadding = ({ $paddingType }: MapArgs): number | strin
         none: `${spacingsPx.xxs} 0`,
         small: `${spacingsPx.xxs} ${spacingsPx.sm}`,
         normal: `${spacingsPx.xs} ${spacingsPx.lg}`,
+        large: `${spacingsPx.sm} ${spacingsPx.xl}`,
     };
 
     return paddingMap[$paddingType];
@@ -30,6 +36,7 @@ const mapPaddingTypeToPadding = ({ $paddingType }: MapArgs): number | string => 
         none: 0,
         small: spacingsPx.sm,
         normal: spacingsPx.lg,
+        large: spacingsPx.xl,
     };
 
     return paddingMap[$paddingType];
@@ -123,7 +130,7 @@ const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: Padd
 );
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ paddingType = 'normal', label, margin, maxWidth, ...rest }, ref) => {
+    ({ paddingType = 'normal', label, margin, maxWidth, minWidth, ...rest }, ref) => {
         const props = {
             paddingType,
             ...rest,
@@ -132,6 +139,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         const frameProps = {
             margin,
             maxWidth,
+            minWidth,
         };
 
         return label ? (

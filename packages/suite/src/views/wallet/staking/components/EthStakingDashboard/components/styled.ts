@@ -1,10 +1,6 @@
 import styled from 'styled-components';
-import { Card, Paragraph, variables } from '@trezor/components';
+import { Paragraph, variables } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
-
-export const StyledCard = styled(Card)`
-    padding: ${spacingsPx.sm};
-`;
 
 export const CardBottomContent = styled.div`
     margin-top: ${spacingsPx.lg};

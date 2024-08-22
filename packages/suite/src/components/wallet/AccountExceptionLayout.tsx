@@ -1,11 +1,15 @@
 import { ReactText } from 'react';
 import styled from 'styled-components';
-import { variables, H2, Button, Card, ButtonProps, Image, ImageProps } from '@trezor/components';
-
-const StyledCard = styled(Card)`
-    width: 100%;
-    align-items: center;
-`;
+import {
+    variables,
+    H2,
+    Button,
+    Card,
+    ButtonProps,
+    Image,
+    ImageProps,
+    Column,
+} from '@trezor/components';
 
 const Title = styled(H2)`
     text-align: center;
@@ -59,19 +63,23 @@ interface AccountExceptionLayoutProps {
 }
 
 export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
-    <StyledCard>
-        {props.image && <StyledImage image={props.image} />}
-        {props.imageComponent && props.imageComponent}
-        <Title>{props.title}</Title>
-        <Description>{props.description}</Description>
-        {(props.actionComponent || (props.actions && props.actions.length > 0)) && (
-            <>
-                <Divider />
-                <Actions>
-                    {props.actions?.map(action => <ActionButton {...action} key={action.key} />)}
-                    {props.actionComponent && props.actionComponent}
-                </Actions>
-            </>
-        )}
-    </StyledCard>
+    <Card width="100%">
+        <Column alignItems="center">
+            {props.image && <StyledImage image={props.image} />}
+            {props.imageComponent && props.imageComponent}
+            <Title>{props.title}</Title>
+            <Description>{props.description}</Description>
+            {(props.actionComponent || (props.actions && props.actions.length > 0)) && (
+                <>
+                    <Divider />
+                    <Actions>
+                        {props.actions?.map(action => (
+                            <ActionButton {...action} key={action.key} />
+                        ))}
+                        {props.actionComponent && props.actionComponent}
+                    </Actions>
+                </>
+            )}
+        </Column>
+    </Card>
 );

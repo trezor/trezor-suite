@@ -6,7 +6,7 @@ import {
     getAccountTypeUrl,
     getAccountTypeDesc,
 } from '@suite-common/wallet-utils';
-import { Paragraph, variables, Card } from '@trezor/components';
+import { Paragraph, variables, Card, Column } from '@trezor/components';
 
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 
@@ -19,6 +19,7 @@ import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
 import { Row } from './Row';
 import { networksCompatibility } from '@suite-common/wallet-config';
+import { spacings } from '@trezor/theme';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
@@ -43,18 +44,6 @@ const AccountTypeLabel = styled.div`
     text-align: center;
     min-width: 170px;
     gap: 8px;
-`;
-
-const StyledCard = styled(Card)`
-    flex-direction: column;
-
-    > :first-child {
-        padding-top: 0;
-    }
-
-    > :last-child {
-        padding-bottom: 0;
-    }
 `;
 
 const StyledActionButton = styled(ActionButton)`
@@ -110,59 +99,61 @@ const Details = () => {
                     </>
                 )}
 
-                <StyledCard>
-                    <Row>
-                        <TextColumn
-                            title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
-                            description={<Translation id={accountTypeDesc} />}
-                            buttonLink={accountTypeUrl}
-                        />
-                        <AccountTypeLabel>
-                            {accountTypeName && (
-                                <Paragraph typographyStyle="hint">
-                                    <NoWrap>
-                                        <Translation id={accountTypeName} />
-                                    </NoWrap>
-                                </Paragraph>
-                            )}
-                            <Paragraph typographyStyle="label">
-                                (<Translation id={accountTypeTech} />)
-                            </Paragraph>
-                        </AccountTypeLabel>
-                    </Row>
-                    <Row>
-                        <TextColumn
-                            title={<Translation id="TR_ACCOUNT_DETAILS_PATH_HEADER" />}
-                            description={<Translation id="TR_ACCOUNT_DETAILS_PATH_DESC" />}
-                            buttonLink={HELP_CENTER_BIP32_URL}
-                        />
-                        <AccountTypeLabel>
-                            <Paragraph typographyStyle="hint">{account.path}</Paragraph>
-                        </AccountTypeLabel>
-                    </Row>
-                    {!isCoinjoinAccount ? (
+                <Card>
+                    <Column gap={spacings.md}>
                         <Row>
                             <TextColumn
-                                title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
-                                description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
-                                buttonLink={HELP_CENTER_XPUB_URL}
+                                title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
+                                description={<Translation id={accountTypeDesc} />}
+                                buttonLink={accountTypeUrl}
                             />
-                            <ActionColumn>
-                                <StyledActionButton
-                                    variant="secondary"
-                                    data-testid="@wallets/details/show-xpub-button"
-                                    onClick={handleXpubClick}
-                                    isDisabled={disabled}
-                                    isLoading={locked}
-                                >
-                                    <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
-                                </StyledActionButton>
-                            </ActionColumn>
+                            <AccountTypeLabel>
+                                {accountTypeName && (
+                                    <Paragraph typographyStyle="hint">
+                                        <NoWrap>
+                                            <Translation id={accountTypeName} />
+                                        </NoWrap>
+                                    </Paragraph>
+                                )}
+                                <Paragraph typographyStyle="label">
+                                    (<Translation id={accountTypeTech} />)
+                                </Paragraph>
+                            </AccountTypeLabel>
                         </Row>
-                    ) : (
-                        <RescanAccount account={account} />
-                    )}
-                </StyledCard>
+                        <Row>
+                            <TextColumn
+                                title={<Translation id="TR_ACCOUNT_DETAILS_PATH_HEADER" />}
+                                description={<Translation id="TR_ACCOUNT_DETAILS_PATH_DESC" />}
+                                buttonLink={HELP_CENTER_BIP32_URL}
+                            />
+                            <AccountTypeLabel>
+                                <Paragraph typographyStyle="hint">{account.path}</Paragraph>
+                            </AccountTypeLabel>
+                        </Row>
+                        {!isCoinjoinAccount ? (
+                            <Row>
+                                <TextColumn
+                                    title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
+                                    description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
+                                    buttonLink={HELP_CENTER_XPUB_URL}
+                                />
+                                <ActionColumn>
+                                    <StyledActionButton
+                                        variant="secondary"
+                                        data-testid="@wallets/details/show-xpub-button"
+                                        onClick={handleXpubClick}
+                                        isDisabled={disabled}
+                                        isLoading={locked}
+                                    >
+                                        <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
+                                    </StyledActionButton>
+                                </ActionColumn>
+                            </Row>
+                        ) : (
+                            <RescanAccount account={account} />
+                        )}
+                    </Column>
+                </Card>
 
                 {isCoinjoinAccount && <CoinjoinLogs />}
             </Cards>

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Icon } from '@trezor/components';
+import { Card, Column, Icon } from '@trezor/components';
 
 import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Translation } from 'src/components/suite/Translation';
@@ -18,11 +18,11 @@ import {
     Value,
     Title,
     Content,
-    Column,
-    StyledCard,
+    Column as CardanoColumn,
 } from './CardanoPrimitives';
 import { CardanoActionPending } from './CardanoActionPending';
 import { DeviceModelInternal } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
 interface CardanoRewardsProps {
     account: Account;
@@ -53,65 +53,67 @@ export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) =>
         !!pendingStakeTx;
 
     return (
-        <StyledCard>
-            <StyledH2>
-                <Icon name="check" size={25} />
-                <Heading>
-                    <Translation id="TR_STAKING_REWARDS_TITLE" />
-                </Heading>
-            </StyledH2>
-            <Text>
-                <Translation id="TR_STAKING_REWARDS_DESCRIPTION" />
-            </Text>
-            <Row>
-                <Content>
-                    <Column>
-                        <Title>
-                            <Translation id="TR_STAKING_STAKE_ADDRESS" />
-                        </Title>
-                        <HiddenPlaceholder>
-                            <Value>{address}</Value>
-                        </HiddenPlaceholder>
-                    </Column>
-                </Content>
-            </Row>
-            <Row>
-                <Content>
-                    <Column>
-                        <Title>
-                            <Translation id="TR_STAKING_REWARDS" />
-                        </Title>
-                        <HiddenPlaceholder>
-                            <Value>
-                                {formatNetworkAmount(rewards, account.symbol)}{' '}
-                                {account.symbol.toUpperCase()}
-                            </Value>
-                        </HiddenPlaceholder>
-                    </Column>
-                </Content>
-            </Row>
-            {pendingStakeTx && (
+        <Card>
+            <Column gap={spacings.xs}>
+                <StyledH2>
+                    <Icon name="check" size={25} />
+                    <Heading>
+                        <Translation id="TR_STAKING_REWARDS_TITLE" />
+                    </Heading>
+                </StyledH2>
+                <Text>
+                    <Translation id="TR_STAKING_REWARDS_DESCRIPTION" />
+                </Text>
                 <Row>
-                    <CardanoActionPending />
+                    <Content>
+                        <CardanoColumn>
+                            <Title>
+                                <Translation id="TR_STAKING_STAKE_ADDRESS" />
+                            </Title>
+                            <HiddenPlaceholder>
+                                <Value>{address}</Value>
+                            </HiddenPlaceholder>
+                        </CardanoColumn>
+                    </Content>
                 </Row>
-            )}
+                <Row>
+                    <Content>
+                        <CardanoColumn>
+                            <Title>
+                                <Translation id="TR_STAKING_REWARDS" />
+                            </Title>
+                            <HiddenPlaceholder>
+                                <Value>
+                                    {formatNetworkAmount(rewards, account.symbol)}{' '}
+                                    {account.symbol.toUpperCase()}
+                                </Value>
+                            </HiddenPlaceholder>
+                        </CardanoColumn>
+                    </Content>
+                </Row>
+                {pendingStakeTx && (
+                    <Row>
+                        <CardanoActionPending />
+                    </Row>
+                )}
 
-            <Actions>
-                <DeviceButton
-                    isLoading={loading}
-                    isDisabled={isRewardsWithdrawDisabled}
-                    deviceModelInternal={deviceModel}
-                    onClick={withdraw}
-                    tooltipContent={
-                        !reasonMessageId ||
-                        (deviceAvailable.status && withdrawingAvailable.status) ? undefined : (
-                            <Translation id={reasonMessageId} />
-                        )
-                    }
-                >
-                    <Translation id="TR_STAKING_WITHDRAW" />
-                </DeviceButton>
-            </Actions>
-        </StyledCard>
+                <Actions>
+                    <DeviceButton
+                        isLoading={loading}
+                        isDisabled={isRewardsWithdrawDisabled}
+                        deviceModelInternal={deviceModel}
+                        onClick={withdraw}
+                        tooltipContent={
+                            !reasonMessageId ||
+                            (deviceAvailable.status && withdrawingAvailable.status) ? undefined : (
+                                <Translation id={reasonMessageId} />
+                            )
+                        }
+                    >
+                        <Translation id="TR_STAKING_WITHDRAW" />
+                    </DeviceButton>
+                </Actions>
+            </Column>
+        </Card>
     );
 };

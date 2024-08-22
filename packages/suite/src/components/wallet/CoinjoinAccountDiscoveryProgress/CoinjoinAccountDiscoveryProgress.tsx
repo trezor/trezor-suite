@@ -1,21 +1,22 @@
 import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { Card, H3, Icon, LottieAnimation, ProgressBar, variables } from '@trezor/components';
+import {
+    Card,
+    Column,
+    H3,
+    Icon,
+    LottieAnimation,
+    ProgressBar,
+    variables,
+} from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite';
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
 import { RotatingFacts } from './RotatingFacts';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
-
-const Container = styled(Card)`
-    flex-direction: column;
-    align-items: center;
-    padding-top: 36px;
-    padding-bottom: 36px;
-    margin-bottom: 24px;
-`;
+import { spacings } from '@trezor/theme';
 
 const Subheader = styled.div`
     display: flex;
@@ -77,27 +78,29 @@ export const CoinjoinAccountDiscoveryProgress = () => {
     );
 
     return (
-        <Container>
-            <H3>
-                <Translation id="TR_LOADING_FUNDS" />
-            </H3>
-            <Subheader>
-                <StyledLottieAnimation
-                    type={stage === 'block' ? 'BLOCK' : 'MEMPOOL'}
-                    size={64}
-                    loop
-                />
-                {messageId && <Translation id={messageId} values={messageValues} />}
-            </Subheader>
+        <Card margin={{ bottom: spacings.xl }}>
+            <Column alignItems="center" margin={{ top: spacings.xl, bottom: spacings.xl }}>
+                <H3>
+                    <Translation id="TR_LOADING_FUNDS" />
+                </H3>
+                <Subheader>
+                    <StyledLottieAnimation
+                        type={stage === 'block' ? 'BLOCK' : 'MEMPOOL'}
+                        size={64}
+                        loop
+                    />
+                    {messageId && <Translation id={messageId} values={messageValues} />}
+                </Subheader>
 
-            <DiscoveryProgress max={1.01} value={progress} />
+                <DiscoveryProgress max={1.01} value={progress} />
 
-            <FactHeading>
-                <SparksIcon name="experimental" size={13} color={theme.legacy.TYPE_ORANGE} />
-                <Translation id="TR_LOADING_FACT_TITLE" />
-            </FactHeading>
+                <FactHeading>
+                    <SparksIcon name="experimental" size={13} color={theme.legacy.TYPE_ORANGE} />
+                    <Translation id="TR_LOADING_FACT_TITLE" />
+                </FactHeading>
 
-            <RotatingFacts />
-        </Container>
+                <RotatingFacts />
+            </Column>
+        </Card>
     );
 };

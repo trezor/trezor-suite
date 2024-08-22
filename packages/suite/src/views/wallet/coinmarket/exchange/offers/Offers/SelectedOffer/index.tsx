@@ -20,9 +20,8 @@ const Wrapper = styled.div`
     }
 `;
 
-const StyledCard = styled(Card)`
+const Flex = styled.div`
     flex: 1;
-    padding: 0;
 `;
 
 const Header = styled.div`
@@ -40,8 +39,7 @@ interface ActiveProps {
 const Step = styled.div<ActiveProps>`
     font-weight: ${({ active }) =>
         active ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ active, theme }) =>
-        active ? theme.legacy.TYPE_GREEN : theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ active, theme }) => (active ? theme.legacy.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     flex: 1;
@@ -83,45 +81,55 @@ const SelectedOffer = () => {
 
     return (
         <Wrapper>
-            <StyledCard>
-                <Header>
-                    <Left>
-                        <Step active={exchangeStep === 'RECEIVING_ADDRESS'}>
-                            <Translation id="TR_EXCHANGE_VERIFY_ADDRESS_STEP" />
-                        </Step>
-                    </Left>
-                    {selectedQuote.isDex ? (
-                        <>
-                            <MiddleNarrow>
+            <Flex>
+                <Card paddingType="none">
+                    <Header>
+                        <Left>
+                            <Step active={exchangeStep === 'RECEIVING_ADDRESS'}>
+                                <Translation id="TR_EXCHANGE_VERIFY_ADDRESS_STEP" />
+                            </Step>
+                        </Left>
+                        {selectedQuote.isDex ? (
+                            <>
+                                <MiddleNarrow>
+                                    <Icon
+                                        name="chevronRight"
+                                        color={colors.legacy.TYPE_LIGHT_GREY}
+                                    />
+                                </MiddleNarrow>
+                                <Left>
+                                    <Step active={exchangeStep === 'SEND_APPROVAL_TRANSACTION'}>
+                                        <Translation id="TR_EXCHANGE_CREATE_APPROVAL_STEP" />
+                                    </Step>
+                                </Left>
+                                <MiddleNarrow>
+                                    <Icon
+                                        name="chevronRight"
+                                        color={colors.legacy.TYPE_LIGHT_GREY}
+                                    />
+                                </MiddleNarrow>
+                            </>
+                        ) : (
+                            <Middle>
                                 <Icon name="chevronRight" color={colors.legacy.TYPE_LIGHT_GREY} />
-                            </MiddleNarrow>
-                            <Left>
-                                <Step active={exchangeStep === 'SEND_APPROVAL_TRANSACTION'}>
-                                    <Translation id="TR_EXCHANGE_CREATE_APPROVAL_STEP" />
-                                </Step>
-                            </Left>
-                            <MiddleNarrow>
-                                <Icon name="chevronRight" color={colors.legacy.TYPE_LIGHT_GREY} />
-                            </MiddleNarrow>
-                        </>
-                    ) : (
-                        <Middle>
-                            <Icon name="chevronRight" color={colors.legacy.TYPE_LIGHT_GREY} />
-                        </Middle>
+                            </Middle>
+                        )}
+                        <Right>
+                            <Step active={exchangeStep === 'SEND_TRANSACTION'}>
+                                <Translation id="TR_EXCHANGE_CONFIRM_SEND_STEP" />
+                            </Step>
+                        </Right>
+                    </Header>
+                    {exchangeStep === 'RECEIVING_ADDRESS' && <VerifyAddress />}
+                    {exchangeStep === 'SEND_TRANSACTION' && !selectedQuote.isDex && (
+                        <SendTransaction />
                     )}
-                    <Right>
-                        <Step active={exchangeStep === 'SEND_TRANSACTION'}>
-                            <Translation id="TR_EXCHANGE_CONFIRM_SEND_STEP" />
-                        </Step>
-                    </Right>
-                </Header>
-                {exchangeStep === 'RECEIVING_ADDRESS' && <VerifyAddress />}
-                {exchangeStep === 'SEND_TRANSACTION' && !selectedQuote.isDex && <SendTransaction />}
-                {exchangeStep === 'SEND_APPROVAL_TRANSACTION' && <SendApprovalTransaction />}
-                {exchangeStep === 'SEND_TRANSACTION' && selectedQuote.isDex && (
-                    <SendSwapTransaction />
-                )}
-            </StyledCard>
+                    {exchangeStep === 'SEND_APPROVAL_TRANSACTION' && <SendApprovalTransaction />}
+                    {exchangeStep === 'SEND_TRANSACTION' && selectedQuote.isDex && (
+                        <SendSwapTransaction />
+                    )}
+                </Card>
+            </Flex>
             <CoinmarketExchangeOfferInfo
                 selectedQuote={selectedQuote}
                 account={account}

@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { variables, H2, Button, Card, Image } from '@trezor/components';
+import { variables, H2, Button, Card, Image, Column } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -14,15 +14,9 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const StyledCard = styled(Card)`
-    width: 100%;
-    align-items: center;
-`;
-
 const Title = styled(H2)`
     text-align: center;
     font-weight: 600;
-    margin-bottom: ${spacingsPx.md};
 `;
 
 const Description = styled.span`
@@ -46,10 +40,6 @@ const Actions = styled.div`
     margin-bottom: ${spacingsPx.lg};
     flex-flow: row wrap;
     gap: ${spacingsPx.md};
-`;
-
-const ActionButton = styled(Button)`
-    min-width: 160px;
 `;
 
 const Divider = styled.div`
@@ -89,40 +79,47 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
 
     return (
         <Wrapper>
-            <StyledCard>
-                <StyledImage image="CLOUDY" />
+            <Card width="100%">
+                <Column alignItems="center">
+                    <StyledImage image="CLOUDY" />
 
-                <Title>
-                    <Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />
-                </Title>
+                    <Title margin={{ bottom: spacings.md }}>
+                        <Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />
+                    </Title>
 
-                <Description>
-                    <Translation
-                        id="TR_ACCOUNT_IS_EMPTY_DESCRIPTION"
-                        values={{ network: networkSymbol }}
-                    />
-                </Description>
+                    <Description>
+                        <Translation
+                            id="TR_ACCOUNT_IS_EMPTY_DESCRIPTION"
+                            values={{ network: networkSymbol }}
+                        />
+                    </Description>
 
-                <Divider />
+                    <Divider />
 
-                <Actions>
-                    <ActionButton
-                        data-testid="@accounts/empty-account/receive"
-                        variant="primary"
-                        onClick={handleNavigateToReceivePage}
-                    >
-                        <Translation id="TR_RECEIVE_NETWORK" values={{ network: networkSymbol }} />
-                    </ActionButton>
+                    <Actions>
+                        <Button
+                            data-testid="@accounts/empty-account/receive"
+                            variant="primary"
+                            onClick={handleNavigateToReceivePage}
+                            minWidth={160}
+                        >
+                            <Translation
+                                id="TR_RECEIVE_NETWORK"
+                                values={{ network: networkSymbol }}
+                            />
+                        </Button>
 
-                    <ActionButton
-                        data-testid="@accounts/empty-account/buy"
-                        variant="primary"
-                        onClick={handleNavigateToBuyPage}
-                    >
-                        <Translation id="TR_BUY_NETWORK" values={{ network: networkSymbol }} />
-                    </ActionButton>
-                </Actions>
-            </StyledCard>
+                        <Button
+                            data-testid="@accounts/empty-account/buy"
+                            variant="primary"
+                            onClick={handleNavigateToBuyPage}
+                            minWidth={160}
+                        >
+                            <Translation id="TR_BUY_NETWORK" values={{ network: networkSymbol }} />
+                        </Button>
+                    </Actions>
+                </Column>
+            </Card>
         </Wrapper>
     );
 };
