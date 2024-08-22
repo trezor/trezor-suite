@@ -4,7 +4,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { PROTO } from '../constants';
-import { Assert } from '@trezor/schema-utils';
+// import { Assert } from '@trezor/schema-utils';
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
     init() {
@@ -15,7 +15,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
 
         const { payload } = this;
         // validate bundle type
-        Assert(PROTO.ResetDevice, payload);
+        // Assert(PROTO.ResetDevice, payload);
 
         this.params = {
             strength: payload.strength || 256,
@@ -42,9 +42,35 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
     }
 
     async run() {
-        const cmd = this.device.getCommands();
-        const response = await cmd.typedCall('ResetDevice', 'Success', this.params);
+        // const cmd = this.device.getCommands();
+        // const response = await cmd.typedCall('ResetDevice', 'Success', this.params);
+        console.log('----> running reset function!');
+        const response = await this.device.transport.call({
+            session: this.device.transportSession!,
+            name: 'LoadDevice',
+            data: {
+                pin: '',
+                label: 'THP device',
+                passphrase_protection: true,
+                mnemonics: ['all all all all all all all all all all all all'],
+                skip_checksum: true,
+            },
+            protocol: this.device.protocol,
+            protocolState: this.device.protocolState,
+        });
 
-        return response.message;
+        if (response.success && response.payload.type === 'ButtonRequest') {
+            return this.device.transport.call({
+                session: this.device.transportSession!,
+                name: 'ButtonAck',
+                data: {},
+                protocol: this.device.protocol,
+                protocolState: this.device.protocolState,
+            });
+        }
+
+        console.log('----> end reset function!', response);
+
+        return response as any;
     }
 }
