@@ -2003,6 +2003,7 @@
   "TR_VIEW": "表示",
   "TR_VIEW_ACCOUNT": "アカウントを表示",
   "TR_VIEW_ALL": "すべて表示",
+  "TR_VIEW_ALL_TRANSACTION": "すべての取引を表示",
   "TR_VIEW_IN_EXPLORER": "エクスプローラーで表示",
   "TR_VIEW_ONLY": "閲覧専用",
   "TR_VIEW_ONLY_CALL_TO_ACTION": "<primary>Trezorを切断した後でも</primary> 残高を確認するには、閲覧専用モードを有効にしてください",

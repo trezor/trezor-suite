@@ -188,6 +188,7 @@
   "TR_UP_TO_DAYS": "upp till {days} dagar",
   "TR_VERSION": "Version {version}",
   "TR_VIEW_ACCOUNT": "Visa konto",
+  "TR_VIEW_ALL_TRANSACTION": "Visa alla transaktioner",
   "TR_VIEW_ONLY_PROMO_YES": "Ja",
   "TR_WALLET": "Konton",
   "TR_WORDS": "{count} ord",

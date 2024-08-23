@@ -6924,7 +6924,7 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',
         defaultMessage:
-            "Firmware revision check couldn't be performed. Go online to verify your firmware vision.",
+            "Firmware revision check couldn't be performed. Go online to verify your firmware version.",
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
