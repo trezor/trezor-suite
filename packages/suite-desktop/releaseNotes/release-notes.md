@@ -10,3 +10,4 @@
 ### 🔧 Bug fixes
 
 -   Various small improvements and bug fixes.
+-   Resolved the missing fixed/floating rates in the Exchange feature.
