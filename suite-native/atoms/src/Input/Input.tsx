@@ -4,6 +4,7 @@ import {
     NativeSyntheticEvent,
     TextInputProps,
     TextInputFocusEventData,
+    Platform,
 } from 'react-native';
 import Animated, {
     Easing,
@@ -44,19 +45,23 @@ export type InputProps = TextInputProps &
         'label' | 'placeholder'
     >;
 
-const INPUT_LABEL_TOP_PADDING = 35;
-const INPUT_LABEL_TOP_PADDING_MINIMIZED = 37;
-const INPUT_WRAPPER_PADDING_HORIZONTAL = 14 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
-const INPUT_WRAPPER_PADDING_VERTICAL = 17 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const INPUT_VERTICAL_PADDING =
+    Platform.OS == 'android' ? nativeSpacings.medium - 2 : nativeSpacings.medium;
+const INPUT_WITH_LABEL_BOTTOM_PADDING =
+    Platform.OS == 'android' ? nativeSpacings.extraSmall : nativeSpacings.small;
+const INPUT_LABEL_TOP_PADDING = nativeSpacings.extraLarge;
+const INPUT_LABEL_TOP_PADDING_MINIMIZED = INPUT_LABEL_TOP_PADDING + nativeSpacings.small;
+const INPUT_WRAPPER_PADDING_HORIZONTAL = nativeSpacings.medium * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const INPUT_WRAPPER_PADDING_VERTICAL = nativeSpacings.medium * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED =
     nativeSpacings.small * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_TEXT_HEIGHT = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
-const INPUT_WRAPPER_HEIGHT = 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 
 type InputWrapperStyleProps = {
     hasWarning: boolean;
     hasError: boolean;
     isLabelMinimized: boolean;
+    isDisabled: boolean;
     isFocused: boolean;
     elevation: SurfaceElevation;
 };
@@ -67,25 +72,32 @@ type InputLabelStyleProps = {
 };
 
 type InputStyleProps = {
+    isLabelDisplayed: boolean;
     isLeftIconDisplayed: boolean;
     isRightIconDisplayed: boolean;
     isDisabled: boolean;
 };
 
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
-    (utils, { hasError, hasWarning, isFocused, elevation }) => ({
-        backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
-        borderColor: utils.colors.backgroundNeutralSubtleOnElevation1,
+    (utils, { hasError, hasWarning, isDisabled, isFocused, elevation }) => ({
+        backgroundColor: isDisabled
+            ? utils.colors.backgroundNeutralSubtleOnElevation1
+            : utils.colors.backgroundNeutralSubtleOnElevation0,
+        borderColor: isDisabled
+            ? utils.colors.backgroundNeutralSubtleOnElevation1
+            : utils.colors.borderInputDefault,
         borderWidth: utils.borders.widths.small,
         borderRadius: 1.5 * utils.borders.radii.small,
+        margin: utils.borders.widths.small,
         paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
-        minHeight: INPUT_WRAPPER_HEIGHT,
         justifyContent: 'flex-end',
         extend: [
             {
                 condition: isFocused,
                 style: {
-                    borderColor: utils.colors.borderFocus,
+                    borderColor: utils.colors.borderInputFocus,
+                    borderWidth: utils.borders.widths.large,
+                    margin: 0,
                 },
             },
             {
@@ -114,7 +126,7 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
 );
 
 const inputStyle = prepareNativeStyle<InputStyleProps>(
-    (utils, { isLeftIconDisplayed, isRightIconDisplayed, isDisabled }) => ({
+    (utils, { isLabelDisplayed, isLeftIconDisplayed, isRightIconDisplayed, isDisabled }) => ({
         ...utils.typography.body,
         // letterSpacing from `typography.body` is making strange layout jumps on Android while filling the input.
         // This resets it to the default TextInput value.
@@ -128,7 +140,8 @@ const inputStyle = prepareNativeStyle<InputStyleProps>(
         borderWidth: 0,
         flex: 1,
         // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
-        paddingVertical: utils.spacings.medium,
+        paddingTop: isLabelDisplayed ? utils.spacings.large : INPUT_VERTICAL_PADDING,
+        paddingBottom: isLabelDisplayed ? INPUT_WITH_LABEL_BOTTOM_PADDING : INPUT_VERTICAL_PADDING,
     }),
 );
 
@@ -144,8 +157,8 @@ const labelStyle = prepareNativeStyle(
         ...D.deleteKey(utils.typography.body, 'fontSize'),
         color: utils.colors.textSubdued,
         position: 'absolute',
-        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.large : 0),
         top: INPUT_LABEL_TOP_PADDING,
+        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.large : 0),
         extend: {
             condition: isLabelMinimized,
             style: {
@@ -159,10 +172,9 @@ const labelStyle = prepareNativeStyle(
 const placeholderStyle = prepareNativeStyle(
     (utils, { isLeftIconDisplayed }: InputLabelStyleProps) => ({
         position: 'absolute',
-        height: INPUT_WRAPPER_HEIGHT,
-        color: utils.colors.textSubdued,
+        top: INPUT_VERTICAL_PADDING + utils.borders.widths.large,
         left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.large : 0),
-        justifyContent: 'center',
+        color: utils.colors.textSubdued,
     }),
 );
 
@@ -241,9 +253,11 @@ export const Input = forwardRef<TextInput, InputProps>(
         ref,
     ) => {
         const [isFocused, setIsFocused] = useState<boolean>(false);
+        const isLabelDisplayed = !!label;
         const isLabelMinimized = isFocused || !!value?.length;
         const isLeftIconDisplayed = !!leftIcon;
         const isRightIconDisplayed = !!rightIcon;
+        const isDisabled = G.isBoolean(editable) && !editable;
 
         const { applyStyle } = useNativeStyles();
         const { animatedInputLabelStyle } = useInputLabelAnimationStyles({
@@ -267,6 +281,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                         hasError,
                         hasWarning,
                         isLabelMinimized,
+                        isDisabled,
                         isFocused,
                         elevation,
                     })}
@@ -312,9 +327,10 @@ export const Input = forwardRef<TextInput, InputProps>(
                             ref={ref}
                             style={[
                                 applyStyle(inputStyle, {
+                                    isLabelDisplayed,
                                     isLeftIconDisplayed,
                                     isRightIconDisplayed,
-                                    isDisabled: G.isBoolean(editable) && !editable,
+                                    isDisabled,
                                 }),
                                 style,
                             ]}
@@ -328,7 +344,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                     </Box>
                     {rightIcon && (
                         <Box style={[applyStyle(iconStyle), applyStyle(rightIconStyle)]}>
-                            <Box style={{}}>{rightIcon}</Box>
+                            {rightIcon}
                         </Box>
                     )}
                 </Box>
