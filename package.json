@@ -59,6 +59,7 @@
         "generate-package": "yarn tsx ./scripts/generatePackage.js",
         "deps": "rimraf **/node_modules && yarn",
         "depcheck": "yarn nx affected --target=depcheck",
+        "list-outdated": "./scripts/list-outdated-dependencies/list-outdated-dependencies.sh",
         "message-system-sign-config": "yarn workspace @suite-common/message-system sign-config",
         "format": "yarn nx format:write",
         "format:all": "yarn prettier --write \"**/*.{js,ts,tsx,mdx,md,html,json,yml,yaml}\"",

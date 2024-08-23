@@ -1,0 +1,10 @@
+@playwright/browser-chromium
+@playwright/browser-firefox
+@playwright/browser-webkit
+@playwright/test
+cypress
+cypress-file-upload
+cypress-image-snapshot
+cypress-real-events
+@currents/playwright
+@types/cypress-image-snapshot
