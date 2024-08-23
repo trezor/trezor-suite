@@ -234,15 +234,17 @@ class ReactNativeUsbModule : Module() {
 
     private fun closeDevice(deviceName: String) {
         Log.d(LOG_TAG, "Closing device $deviceName")
-        val usbConnection = getOpenedConnection(deviceName)
-        usbConnection.close()
+        getOpenedConnection(deviceName).close()
         openedConnections.remove(deviceName)
     }
 
     private fun closeAllOpenedDevices() {
         Log.d(LOG_TAG, "Closing all devices")
-        openedConnections.forEach { (deviceName, _) ->
-            closeDevice(deviceName)
+        with(openedConnections.iterator()) {
+            forEach {
+                it.value.close()
+                remove()
+            }
         }
     }
 
