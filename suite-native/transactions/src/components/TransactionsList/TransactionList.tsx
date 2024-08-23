@@ -18,7 +18,7 @@ import {
     EthereumTokenTransfer,
     selectAccountOrTokenAccountTransactions,
     WalletAccountTransaction,
-} from '@suite-native/ethereum-tokens';
+} from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SettingsSliceRootState } from '@suite-native/settings';
 import { arrayPartition } from '@trezor/utils';

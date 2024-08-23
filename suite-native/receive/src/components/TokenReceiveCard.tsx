@@ -12,7 +12,7 @@ import {
     getEthereumTokenName,
     selectEthereumAccountTokenInfo,
     selectEthereumAccountTokenSymbol,
-} from '@suite-native/ethereum-tokens';
+} from '@suite-native/tokens';
 
 type TokenReceiveCardProps = {
     accountKey: AccountKey;

@@ -13,7 +13,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 
-import { NUMBER_OF_POINTS } from './constants';
+import { NUMBER_OF_POINTS, isLocalBalanceHistoryCoin } from './constants';
 import {
     findOldestBalanceMovementTimestamp,
     getTimestampsInTimeFrame,
@@ -132,8 +132,7 @@ const getAccountBalanceHistory = async ({
     }
 
     const getBalanceHistory = async () => {
-        const networkType = getNetworkType(coin);
-        if (networkType === 'ripple' || networkType === 'ethereum') {
+        if (isLocalBalanceHistoryCoin(coin)) {
             const allTransactions = await dispatch(
                 fetchAllTransactionsForAccountThunk({
                     accountKey,

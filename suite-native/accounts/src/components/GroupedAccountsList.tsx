@@ -1,20 +1,19 @@
-import React from 'react';
-
 import { VStack } from '@suite-native/atoms';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
-import { GroupedAccounts } from '../types';
+import { GroupedByTypeAccounts, OnSelectAccount } from '../types';
 import { AccountsListGroup } from './AccountsListGroup';
 
-type GroupedAccountsListProps = {
-    groupedAccounts: GroupedAccounts;
-    onSelectAccount: (accountKey: AccountKey, tokenContract?: TokenAddress) => void;
+type GroupedByTypeAccountsListProps = {
+    groupedAccounts: GroupedByTypeAccounts;
+    onSelectAccount: OnSelectAccount;
+    hideTokens?: boolean;
 };
 
-export const GroupedAccountsList = ({
+export const GroupedByTypeAccountsList = ({
     groupedAccounts,
     onSelectAccount,
-}: GroupedAccountsListProps) => (
+    hideTokens = false,
+}: GroupedByTypeAccountsListProps) => (
     <VStack spacing="medium" paddingBottom="medium">
         {Object.entries(groupedAccounts).map(
             ([accountTypeHeader, networkAccounts]) =>
@@ -23,6 +22,7 @@ export const GroupedAccountsList = ({
                         key={accountTypeHeader}
                         accounts={networkAccounts}
                         onSelectAccount={onSelectAccount}
+                        hideTokens={hideTokens}
                     />
                 ),
         )}

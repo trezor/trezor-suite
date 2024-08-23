@@ -24,12 +24,12 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../intl" },
         { "path": "../react-native-graph" },
         { "path": "../storage" },
         { "path": "../theme" },
+        { "path": "../tokens" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

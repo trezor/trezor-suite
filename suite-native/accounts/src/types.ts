@@ -1,3 +1,9 @@
-import { Account } from '@suite-common/wallet-types';
+import { Account, TokenAddress } from '@suite-common/wallet-types';
 
-export type GroupedAccounts = Record<string, [Account, ...Account[]]>;
+export type GroupedByTypeAccounts = Record<string, [Account, ...Account[]]>;
+
+export type OnSelectAccount = (params: {
+    account: Account;
+    tokenAddress?: TokenAddress;
+    hasAnyTokensWithFiatRates: boolean;
+}) => void;

@@ -1,4 +1,4 @@
-import { createContext, useMemo, ReactNode } from 'react';
+import { ReactNode, createContext, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
 import { FormatNumberOptions } from '@formatjs/intl';
@@ -6,26 +6,27 @@ import { FormatNumberOptions } from '@formatjs/intl';
 import { SignValue } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
+import { NetworkNameFormatter } from './formatters/NetworkNameFormatter';
+import { SignValueFormatter } from './formatters/SignValueFormatter';
 import {
     CryptoAmountFormatterDataContext,
     CryptoAmountFormatterInputValue,
     prepareCryptoAmountFormatter,
 } from './formatters/prepareCryptoAmountFormatter';
+import { prepareDateFormatter } from './formatters/prepareDateFormatter';
+import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
 import {
     FiatAmountFormatterDataContext,
     prepareFiatAmountFormatter,
 } from './formatters/prepareFiatAmountFormatter';
-import { Formatter } from './makeFormatter';
-import { FormatterConfig, FormatterProviderConfig } from './types';
-import { SignValueFormatter } from './formatters/SignValueFormatter';
-import { prepareDateFormatter } from './formatters/prepareDateFormatter';
-import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
-import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
+import { MonthNameFormatter } from './formatters/prepareMonthNameFormatter';
 import {
     NetworkSymbolFormatterDataContext,
     prepareNetworkSymbolFormatter,
 } from './formatters/prepareNetworkSymbolFormatter';
-import { MonthNameFormatter } from './formatters/prepareMonthNameFormatter';
+import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
+import { Formatter } from './makeFormatter';
+import { FormatterConfig, FormatterProviderConfig } from './types';
 
 type FormatterProviderProps = {
     children: ReactNode;
@@ -39,6 +40,7 @@ export type Formatters = {
         CryptoAmountFormatterDataContext
     >;
     NetworkSymbolFormatter: Formatter<NetworkSymbol, string, NetworkSymbolFormatterDataContext>;
+    NetworkNameFormatter: Formatter<NetworkSymbol, string>;
     SignValueFormatter: Formatter<SignValue | undefined, string>;
     FiatAmountFormatter: Formatter<
         string | number,
@@ -64,6 +66,7 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
     return {
         CryptoAmountFormatter,
         NetworkSymbolFormatter,
+        NetworkNameFormatter,
         FiatAmountFormatter,
         DateFormatter,
         SignValueFormatter,

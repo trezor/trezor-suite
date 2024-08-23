@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { FiatRatesRootState, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
 import { AccountKey, Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,

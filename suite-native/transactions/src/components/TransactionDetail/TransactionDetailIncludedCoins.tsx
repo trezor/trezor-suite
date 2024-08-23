@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { BottomSheet, Box, Card, RoundedIcon, Text } from '@suite-native/atoms';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Icon } from '@suite-common/icons';
 

@@ -4,15 +4,14 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useFormatters } from '@suite-common/formatters';
 import { CryptoIconName, CryptoIconWithPercentage, Icon } from '@suite-common/icons';
+import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectVisibleDeviceAccountsByNetworkSymbol,
-} from '@suite-common/wallet-core';
-import { Box, Text } from '@suite-native/atoms';
+import { AccountsRootState, DeviceRootState, FiatRatesRootState } from '@suite-common/wallet-core';
+import { Badge, Box, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
+import { Translation } from '@suite-native/intl';
 import {
     AppTabsParamList,
     AppTabsRoutes,
@@ -20,11 +19,14 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
+import { SettingsSliceRootState } from '@suite-native/settings';
+import { selectNumberOfUniqueTokensForCoinPerDevice } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { selectVisibleDeviceAccountsKeysByNetworkSymbol } from '../assetsSelectors';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
-    cryptoCurrencyName: string;
     cryptoCurrencyValue: string;
     iconName: CryptoIconName;
     onPress?: (symbol: NetworkSymbol) => void;
@@ -52,6 +54,10 @@ const iconStyle = prepareNativeStyle(() => ({
     marginRight: 6,
 }));
 
+const numberOfTokensStyle = prepareNativeStyle(() => ({
+    marginLeft: 10,
+}));
+
 type NavigationType = TabToStackCompositeNavigationProp<
     AppTabsParamList,
     AppTabsRoutes.HomeStack,
@@ -62,7 +68,6 @@ export const AssetItem = memo(
     ({
         cryptoCurrencySymbol,
         cryptoCurrencyValue,
-        cryptoCurrencyName,
         iconName,
         fiatBalance,
         fiatPercentage,
@@ -71,16 +76,25 @@ export const AssetItem = memo(
     }: AssetItemProps) => {
         const { applyStyle } = useNativeStyles();
         const navigation = useNavigation<NavigationType>();
-
-        const accountsForNetworkSymbol = useSelector((state: AccountsRootState & DeviceRootState) =>
-            selectVisibleDeviceAccountsByNetworkSymbol(state, cryptoCurrencySymbol),
+        const { NetworkNameFormatter } = useFormatters();
+        const accountsKeysForNetworkSymbol = useSelectorDeepComparison(
+            (state: AccountsRootState & DeviceRootState) =>
+                selectVisibleDeviceAccountsKeysByNetworkSymbol(state, cryptoCurrencySymbol),
         );
-        const accountsPerAsset = accountsForNetworkSymbol.length;
+        const accountsPerAsset = accountsKeysForNetworkSymbol.length;
+        const numberOfTokens = useSelector(
+            (
+                state: AccountsRootState &
+                    DeviceRootState &
+                    FiatRatesRootState &
+                    SettingsSliceRootState,
+            ) => selectNumberOfUniqueTokensForCoinPerDevice(state, cryptoCurrencySymbol),
+        );
 
         const handleAssetPress = () => {
-            if (accountsPerAsset === 1) {
+            if (accountsPerAsset === 1 && numberOfTokens === 0) {
                 navigation.navigate(RootStackRoutes.AccountDetail, {
-                    accountKey: accountsForNetworkSymbol[0].key,
+                    accountKey: accountsKeysForNetworkSymbol[0],
                     closeActionType: 'back',
                 });
             } else if (onPress) {
@@ -98,7 +112,9 @@ export const AssetItem = memo(
                     />
                     <Box style={applyStyle(assetContentStyle)}>
                         <Box flex={1} justifyContent="space-between" alignItems="flex-start">
-                            <Text>{cryptoCurrencyName}</Text>
+                            <Text>
+                                <NetworkNameFormatter value={cryptoCurrencySymbol} />
+                            </Text>
                             <Box flexDirection="row" alignItems="center">
                                 <Box style={applyStyle(iconStyle)}>
                                     <Icon size="medium" color="iconSubdued" name="standardWallet" />
@@ -106,6 +122,19 @@ export const AssetItem = memo(
                                 <Text variant="hint" color="textSubdued">
                                     {accountsPerAsset}
                                 </Text>
+
+                                {numberOfTokens > 0 && (
+                                    <Badge
+                                        style={applyStyle(numberOfTokensStyle)}
+                                        size="small"
+                                        label={
+                                            <Translation
+                                                id="accountList.numberOfTokens"
+                                                values={{ numberOfTokens }}
+                                            />
+                                        }
+                                    />
+                                )}
                             </Box>
                         </Box>
                         <Box alignItems="flex-end" style={applyStyle(assetValuesStyle)}>

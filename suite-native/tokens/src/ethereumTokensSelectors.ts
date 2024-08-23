@@ -3,10 +3,12 @@ import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
     AccountsRootState,
+    DeviceRootState,
     FiatRatesRootState,
     selectAccountByKey,
     selectAccountTransactions,
     selectFiatRatesByFiatRateKey,
+    selectVisibleDeviceAccounts,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import {
@@ -172,7 +174,7 @@ export const selectAccountOrTokenAccountTransactions = (
 export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
     (
         state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState,
-        ethereumAccountKey: string,
+        ethereumAccountKey: AccountKey,
     ): TokenInfoBranded[] => {
         const account = selectAccountByKey(state, ethereumAccountKey);
         if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
@@ -188,22 +190,32 @@ export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
     { size: 50 },
 );
 
+export const selectNumberOfEthereumAccountTokensWithFiatRates = (
+    state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState,
+    ethereumAccountKey: AccountKey,
+): number => {
+    const tokens = selectEthereumAccountsTokensWithFiatRates(state, ethereumAccountKey);
+
+    return tokens.length;
+};
+
 export const selectIsEthereumAccountWithTokensWithFiatRates = (
     state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState,
     ethereumAccountKey: AccountKey,
 ): boolean => {
-    const account = selectAccountByKey(state, ethereumAccountKey);
-    if (!account || G.isNullable(account.tokens) || !isEthereumAccountSymbol(account.symbol))
-        return false;
+    return selectNumberOfEthereumAccountTokensWithFiatRates(state, ethereumAccountKey) > 0;
+};
 
-    return (
-        account.tokens,
-        A.any(account.tokens, token =>
-            selectEthereumTokenHasFiatRates(
-                state,
-                token.contract as TokenAddress,
-                token.symbol as TokenSymbol,
-            ),
-        )
+export const selectNumberOfUniqueEthereumTokensPerDevice = (
+    state: AccountsRootState & DeviceRootState & FiatRatesRootState & SettingsSliceRootState,
+) => {
+    const accounts = selectVisibleDeviceAccounts(state);
+
+    return pipe(
+        accounts,
+        A.map(account => selectEthereumAccountsTokensWithFiatRates(state, account.key)),
+        A.flat,
+        A.uniqBy(token => token.contract),
+        A.length,
     );
 };

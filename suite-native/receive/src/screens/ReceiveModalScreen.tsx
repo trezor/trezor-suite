@@ -14,7 +14,7 @@ import {
     StackNavigationProps,
     GoBackIcon,
 } from '@suite-native/navigation';
-import { AccountsList } from '@suite-native/accounts';
+import { AccountsList, OnSelectAccount } from '@suite-native/accounts';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import {
@@ -24,7 +24,7 @@ import {
     selectAccountNetworkSymbol,
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
 } from '@suite-common/wallet-core';
-import { selectEthereumAccountTokenSymbol } from '@suite-native/ethereum-tokens';
+import { selectEthereumAccountTokenSymbol } from '@suite-native/tokens';
 import { CryptoIcon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -134,13 +134,13 @@ export const ReceiveModalScreen = () => {
 
     const accountKey = routeAccountKey ?? foundAccountKey;
 
-    const handleSelectAccount = (
-        selectedAccountKey: AccountKey,
-        selectedTokenContract?: TokenAddress,
-    ) => {
+    const handleSelectAccount: OnSelectAccount = ({
+        account,
+        tokenAddress: selectedTokenContract,
+    }) => {
         navigation.dispatch({
             ...CommonActions.setParams({
-                accountKey: selectedAccountKey,
+                accountKey: account.key,
                 tokenContract: selectedTokenContract,
             }),
         });

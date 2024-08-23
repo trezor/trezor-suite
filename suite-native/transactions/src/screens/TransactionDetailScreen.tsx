@@ -17,7 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { useOpenLink } from '@suite-native/link';
 

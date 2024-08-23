@@ -16,7 +16,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { EmptyAmountText } from '@suite-native/formatters/src/components/EmptyAmountText';
-import { WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import { WalletAccountTransaction } from '@suite-native/tokens';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 import { TransactionListItemContainer } from './TransactionListItemContainer';

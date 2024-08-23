@@ -7,7 +7,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
-import { selectEthereumAccountTokenSymbol } from '@suite-native/ethereum-tokens';
+import { selectEthereumAccountTokenSymbol } from '@suite-native/tokens';
 import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { GraphDateFormatter, PriceChangeIndicator, percentageDiff } from '@suite-native/graph';
 

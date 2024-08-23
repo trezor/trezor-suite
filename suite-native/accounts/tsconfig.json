@@ -24,13 +24,13 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../config" },
-        { "path": "../ethereum-tokens" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../settings" },
+        { "path": "../tokens" },
         { "path": "../../packages/styles" }
     ]
 }

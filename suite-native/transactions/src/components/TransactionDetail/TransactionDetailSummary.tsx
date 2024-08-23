@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Card } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
+import { EthereumTokenTransfer } from '@suite-native/tokens';
 
 import { TransactionDetailAddressesSheet } from './TransactionDetailAddressesSheet';
 import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';

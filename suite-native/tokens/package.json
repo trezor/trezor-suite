@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/ethereum-tokens",
+    "name": "@suite-native/tokens",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
+        "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",

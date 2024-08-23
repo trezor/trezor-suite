@@ -56,7 +56,11 @@ const PortfolioCard = memo(() => {
     const { device } = useDevice();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
-    const fiatAmount = getTotalFiatBalance(accounts, localCurrency, currentFiatRates).toString();
+    const fiatAmount = getTotalFiatBalance({
+        deviceAccounts: accounts,
+        localCurrency,
+        rates: currentFiatRates,
+    }).toString();
 
     const discoveryStatus = getDiscoveryStatus();
 

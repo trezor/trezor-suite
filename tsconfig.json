@@ -60,9 +60,6 @@
         { "path": "suite-native/device-manager" },
         { "path": "suite-native/device-mutex" },
         { "path": "suite-native/discovery" },
-        {
-            "path": "suite-native/ethereum-tokens"
-        },
         { "path": "suite-native/feature-flags" },
         { "path": "suite-native/formatters" },
         { "path": "suite-native/forms" },
@@ -108,6 +105,7 @@
         { "path": "suite-native/test-utils" },
         { "path": "suite-native/theme" },
         { "path": "suite-native/toasts" },
+        { "path": "suite-native/tokens" },
         { "path": "suite-native/transactions" },
         { "path": "suite-native/video-assets" },
         { "path": "packages/address-validator" },

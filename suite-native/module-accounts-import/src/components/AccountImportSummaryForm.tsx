@@ -24,7 +24,7 @@ import { AccountInfo } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
-import { selectAnyOfTokensHasFiatRates } from '@suite-native/ethereum-tokens';
+import { selectAnyOfTokensHasFiatRates } from '@suite-native/tokens';
 import {
     selectFilterKnownTokens,
     TokenDefinitionsRootState,
