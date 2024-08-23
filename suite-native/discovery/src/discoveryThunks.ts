@@ -511,13 +511,15 @@ const discoverNetworkBatchThunk = createThunk(
 
 export const createDescriptorPreloadedDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/createDescriptorPreloadedDiscoveryThunk`,
-    async (
+    (
         {
             deviceState,
             networks,
+            availableCardanoDerivations,
         }: {
             deviceState: string;
             networks: readonly Network[];
+            availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] | undefined;
         },
         { dispatch, getState },
     ) => {
@@ -525,15 +527,6 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
 
         if (!device) {
             return;
-        }
-
-        let availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] | undefined;
-        if (networks.some(network => network.networkType === 'cardano')) {
-            availableCardanoDerivations = await dispatch(
-                getCardanoSupportedAccountTypesThunk({
-                    deviceState,
-                }),
-            ).unwrap();
         }
 
         const runningDiscovery = selectDeviceDiscovery(getState());
@@ -545,16 +538,7 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        const networksSymbols = networks
-            .filter(
-                // Skip Cardano account types that device does not support
-                network =>
-                    network.networkType !== 'cardano' ||
-                    ((availableCardanoDerivations ?? []) as string[]).includes(
-                        (network.accountType ?? NORMAL_ACCOUNT_TYPE) as string,
-                    ),
-            )
-            .map(network => network.symbol);
+        const networksSymbols = networks.map(network => network.symbol);
 
         const discoveryNetworksTotalCount = networksSymbols.length;
 
@@ -629,10 +613,29 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             }),
         );
 
+        // Some cardano derivation are not supported by the device. We need to filter them out.
+        let availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] = [];
+        if (networksWithUnfinishedDiscovery.some(network => network.networkType === 'cardano')) {
+            availableCardanoDerivations =
+                (await dispatch(
+                    getCardanoSupportedAccountTypesThunk({
+                        deviceState,
+                    }),
+                ).unwrap()) ?? [];
+        }
+        const networksFiltered = networksWithUnfinishedDiscovery.filter(
+            network =>
+                network.networkType !== 'cardano' ||
+                (availableCardanoDerivations as string[]).includes(
+                    (network.accountType ?? NORMAL_ACCOUNT_TYPE) as string,
+                ),
+        );
+
         await dispatch(
             createDescriptorPreloadedDiscoveryThunk({
                 deviceState,
-                networks: networksWithUnfinishedDiscovery,
+                networks: networksFiltered,
+                availableCardanoDerivations,
             }),
         );
 
@@ -643,7 +646,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         }
 
         // Start discovery for every network account type.
-        networksWithUnfinishedDiscovery.forEach(network => {
+        networksFiltered.forEach(network => {
             dispatch(discoverNetworkBatchThunk({ deviceState, network }));
         });
     },
