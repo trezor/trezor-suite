@@ -11,7 +11,7 @@ import {
     Row,
     Input,
     Button,
-    Icon,
+    IconLegacy,
     motionAnimation,
     PasswordStrengthIndicator,
 } from '@trezor/components';
@@ -161,7 +161,7 @@ export const PassphraseTypeCardContent = ({
                                     inputState={isPassphraseTooLong ? 'error' : undefined}
                                     autoFocus={!isAndroid()}
                                     innerAddon={
-                                        <Icon
+                                        <IconLegacy
                                             size={18}
                                             color={theme.iconSubdued}
                                             icon={showPassword ? 'HIDE' : 'SHOW'}

@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
-import { Column, Row, Tooltip, TooltipProps, Icon } from '@trezor/components';
+import { Column, Row, Tooltip, TooltipProps, IconLegacy } from '@trezor/components';
 
 import { WalletType } from './types';
 
@@ -62,9 +62,9 @@ export const PassphraseTypeCardHeading = ({
         <Row gap={spacings.xl}>
             <IconWrapper $type={type}>
                 {type === 'standard' ? (
-                    <Icon size={24} icon="WALLET" color={theme.iconPrimaryDefault} />
+                    <IconLegacy size={24} icon="WALLET" color={theme.iconPrimaryDefault} />
                 ) : (
-                    <Icon size={24} icon="LOCK" color={theme.iconSubdued} />
+                    <IconLegacy size={24} icon="LOCK" color={theme.iconSubdued} />
                 )}
             </IconWrapper>
             <Column justifyContent="center" flex="1">
@@ -90,7 +90,7 @@ export const PassphraseTypeCardHeading = ({
             </Column>
             {type === 'standard' && (
                 <ArrowCol>
-                    <Icon icon="ARROW_RIGHT" color={theme.iconSubdued} />
+                    <IconLegacy icon="ARROW_RIGHT" color={theme.iconSubdued} />
                 </ArrowCol>
             )}
         </Row>

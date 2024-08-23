@@ -2,7 +2,7 @@ import {
     Button,
     Card,
     ElevationContext,
-    Icon,
+    IconLegacy,
     Image,
     Text,
     useElevation,
@@ -280,7 +280,7 @@ export const ViewOnlyPromoContent = () => {
 
                 <Callout>
                     <Circle>
-                        <Icon icon="LINK" size={spacings.xl} />
+                        <IconLegacy icon="LINK" size={spacings.xl} />
                     </Circle>
                     <Text variant="tertiary">
                         <Translation

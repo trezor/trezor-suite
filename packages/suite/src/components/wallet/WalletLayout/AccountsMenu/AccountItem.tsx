@@ -5,7 +5,7 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import {
     CoinLogo,
-    Icon,
+    IconLegacy,
     SkeletonRectangle,
     SkeletonStack,
     TOOLTIP_DELAY_LONG,
@@ -59,7 +59,7 @@ const StyledCoinLogo = styled(CoinLogo)`
     z-index: 20;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     z-index: 20;
 `;
 

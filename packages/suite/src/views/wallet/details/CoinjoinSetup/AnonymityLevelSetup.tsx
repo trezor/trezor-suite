@@ -5,7 +5,7 @@ import styled, { useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { AnonymityStatus } from 'src/constants/suite/coinjoin';
 import { useAnonymityStatus, useDispatch } from 'src/hooks/suite';
-import { Icon, Warning, motionEasing } from '@trezor/components';
+import { IconLegacy, Warning, motionEasing } from '@trezor/components';
 import { coinjoinAccountUpdateAnonymity } from 'src/actions/wallet/coinjoinAccountActions';
 import { SetupSlider } from './SetupSlider/SetupSlider';
 
@@ -83,7 +83,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 value: 1,
                 component: (
                     <Label>
-                        <Icon icon="ONE_USER" size={14} color={theme.TYPE_DARK_GREY} /> 1
+                        <IconLegacy icon="ONE_USER" size={14} color={theme.TYPE_DARK_GREY} /> 1
                     </Label>
                 ),
             },
@@ -91,7 +91,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 value: 3,
                 component: (
                     <Label>
-                        <Icon icon="TWO_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 3
+                        <IconLegacy icon="TWO_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 3
                     </Label>
                 ),
             },
@@ -99,7 +99,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 value: 10,
                 component: (
                     <Label>
-                        <Icon icon="THREE_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 10
+                        <IconLegacy icon="THREE_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 10
                     </Label>
                 ),
             },
@@ -107,7 +107,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 value: 30,
                 component: (
                     <Label>
-                        <Icon icon="FOUR_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 30
+                        <IconLegacy icon="FOUR_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 30
                     </Label>
                 ),
             },
@@ -115,7 +115,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 value: 100,
                 component: (
                     <Label>
-                        <Icon icon="FOUR_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 100
+                        <IconLegacy icon="FOUR_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 100
                     </Label>
                 ),
             },

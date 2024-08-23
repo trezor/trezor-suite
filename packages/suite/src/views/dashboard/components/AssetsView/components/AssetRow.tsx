@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Network } from 'src/types/wallet';
-import { Icon, variables, SkeletonRectangle } from '@trezor/components';
+import { IconLegacy, variables, SkeletonRectangle } from '@trezor/components';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
@@ -181,7 +181,7 @@ export const AssetRow = memo(
                     <FailedCol $isLastRow={isLastRow}>
                         <Translation id="TR_DASHBOARD_ASSET_FAILED" />
 
-                        <Icon
+                        <IconLegacy
                             style={{ paddingLeft: '4px', paddingBottom: '2px' }}
                             icon="WARNING"
                             color={theme.TYPE_RED}

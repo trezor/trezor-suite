@@ -1,4 +1,4 @@
-import { Card, Row, Icon, Column, Text } from '@trezor/components';
+import { Card, Row, IconLegacy, Column, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { Body, Section } from './multiShareModalLayout';
@@ -28,7 +28,7 @@ const IconQuestionMarkWrapper = styled.div`
     margin-bottom: ${spacingsPx.xxxl};
 `;
 
-const IconQuestionMark = styled(Icon)`
+const IconQuestionMark = styled(IconLegacy)`
     position: absolute;
     top: -7px;
     left: 25px;
@@ -71,11 +71,11 @@ export const MultiShareBackupStep5Done = () => (
                     header="TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_HEADER"
                     items={[
                         <>
-                            <Icon icon="COINS" />
+                            <IconLegacy icon="COINS" />
                             <Translation id="TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE1" />
                         </>,
                         <>
-                            <Icon icon="EYE_SLASH" />
+                            <IconLegacy icon="EYE_SLASH" />
                             <Translation id="TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE2" />
                         </>,
                     ]}
@@ -84,11 +84,11 @@ export const MultiShareBackupStep5Done = () => (
                     header="TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_HEADER"
                     items={[
                         <>
-                            <Icon icon="COINS" />
+                            <IconLegacy icon="COINS" />
                             <Translation id="TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE1" />
                         </>,
                         <>
-                            <Icon icon="EYE_SLASH" />
+                            <IconLegacy icon="EYE_SLASH" />
                             <Translation id="TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE2" />
                         </>,
                     ]}
@@ -103,7 +103,7 @@ export const MultiShareBackupStep5Done = () => (
                 <Row gap={spacings.lg} alignItems="stretch">
                     <GradientCalloutCard>
                         <IconQuestionMarkWrapper>
-                            <Icon icon="TREZOR_T2T1" size={40} />
+                            <IconLegacy icon="TREZOR_T2T1" size={40} />
                             <IconQuestionMark icon="QUESTION_FILLED" size={24} variant="primary" />
                         </IconQuestionMarkWrapper>
 
@@ -116,7 +116,7 @@ export const MultiShareBackupStep5Done = () => (
                     </GradientCalloutCard>
                     <GradientCalloutCard>
                         <IconQuestionMarkWrapper>
-                            <Icon icon="BACKUP_2" size={40} />
+                            <IconLegacy icon="BACKUP_2" size={40} />
                             <IconQuestionMark icon="QUESTION_FILLED" size={24} variant="warning" />
                         </IconQuestionMarkWrapper>
 

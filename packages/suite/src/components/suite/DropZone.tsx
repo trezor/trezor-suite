@@ -1,6 +1,6 @@
 import { useRef, useCallback, useMemo, useState, MouseEvent, DragEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
-import { Icon, IconType, Paragraph } from '@trezor/components';
+import { IconLegacy, IconType, Paragraph } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { borders } from '@trezor/theme';
@@ -166,7 +166,7 @@ const StyledInput = styled.input`
     display: none;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     margin-right: 10px;
 `;
 

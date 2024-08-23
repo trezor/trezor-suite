@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Icon, variables, CoinLogo, H3, useElevation } from '@trezor/components';
+import { IconLegacy, variables, CoinLogo, H3, useElevation } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { WalletAccountTransaction, Network } from 'src/types/wallet';
 import { getTxIcon, isPending, getFeeUnits, getFeeRate } from '@suite-common/wallet-utils';
@@ -148,7 +148,7 @@ const Timestamp = styled.span`
     white-space: nowrap;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     margin-right: ${spacingsPx.xs};
 `;
 
@@ -185,7 +185,7 @@ export const BasicTxDetails = ({
                     <CoinLogo symbol={tx.symbol} size={48} />
 
                     <NestedIconWrapper $elevation={elevation}>
-                        <Icon
+                        <IconLegacy
                             size={14}
                             color={tx.type === 'failed' ? theme.iconAlertRed : theme.iconDefault}
                             icon={getTxIcon(tx.type)}

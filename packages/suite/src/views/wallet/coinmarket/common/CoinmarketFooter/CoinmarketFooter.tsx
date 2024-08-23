@@ -1,4 +1,4 @@
-import { variables, Icon, Link, Image } from '@trezor/components';
+import { variables, IconLegacy, Link, Image } from '@trezor/components';
 import { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useOnClickOutside } from '@trezor/react-utils';
@@ -136,7 +136,7 @@ export const CoinmarketFooter = () => {
                             <BoxRight>
                                 <Link href={INVITY_URL}>invity.io</Link>
                                 <IconWrapper onClick={() => setToggled(false)}>
-                                    <Icon icon="CROSS" size={16} />
+                                    <IconLegacy icon="CROSS" size={16} />
                                 </IconWrapper>
                             </BoxRight>
                         </Header>

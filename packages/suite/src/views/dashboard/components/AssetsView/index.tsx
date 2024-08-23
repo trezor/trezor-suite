@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Icon, Button, LoadingContent, Card } from '@trezor/components';
+import { IconLegacy, Button, LoadingContent, Card } from '@trezor/components';
 import { selectCurrentFiatRates, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 import { DashboardSection } from 'src/components/dashboard';
@@ -49,7 +49,7 @@ const StyledAddAccountButton = styled(Button)`
     margin-right: ${spacingsPx.sm};
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     margin-right: ${spacingsPx.xxs};
 `;
 
@@ -163,7 +163,7 @@ export const AssetsView = () => {
                                 <Translation id="TR_ENABLE_MORE_COINS" />
                             </StyledAddAccountButton>
                         )}
-                        <Icon
+                        <IconLegacy
                             icon="TABLE"
                             data-testid="@dashboard/assets/table-icon"
                             onClick={setTable}
@@ -173,7 +173,7 @@ export const AssetsView = () => {
                                     : theme.textSubdued
                             }
                         />
-                        <Icon
+                        <IconLegacy
                             icon="GRID"
                             data-testid="@dashboard/assets/grid-icon"
                             onClick={setGrid}

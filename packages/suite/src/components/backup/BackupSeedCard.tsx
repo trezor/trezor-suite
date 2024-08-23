@@ -1,6 +1,6 @@
 import { ReactNode, SyntheticEvent } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Icon, IconProps, variables, Checkbox, Card } from '@trezor/components';
+import { IconLegacy, IconLegacyProps, variables, Checkbox, Card } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
 const StyledCheckbox = styled(Checkbox)`
@@ -82,7 +82,7 @@ const IconWrapper = styled.div`
 
 interface BackupSeedCardProps {
     label: ReactNode;
-    icon: IconProps['icon'];
+    icon: IconLegacyProps['icon'];
     isChecked: boolean;
     onClick: () => void;
     ['data-testid']: string;
@@ -106,7 +106,7 @@ export const BackupSeedCard = ({
         <Container forceElevation={2} $checked={isChecked} data-testid={dataTest}>
             <Content>
                 <IconWrapper>
-                    <Icon icon={icon} color={theme.iconDefault} />
+                    <IconLegacy icon={icon} color={theme.iconDefault} />
                 </IconWrapper>
 
                 <Label>{label}</Label>

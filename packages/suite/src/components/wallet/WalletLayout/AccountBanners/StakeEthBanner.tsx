@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Button, Card, Icon, Paragraph, variables, IconButton } from '@trezor/components';
+import { Button, Card, IconLegacy, Paragraph, variables, IconButton } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation, IconBorderedWrapper } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -82,7 +82,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
             <Flex>
                 <Left>
                     <IconBorderedWrapper>
-                        <Icon icon="PIGGY_BANK" size={32} color={theme.iconPrimaryDefault} />
+                        <IconLegacy icon="PIGGY_BANK" size={32} color={theme.iconPrimaryDefault} />
                     </IconBorderedWrapper>
 
                     <Text>

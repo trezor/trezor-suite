@@ -8,7 +8,7 @@ import { DiscordIcon, GitHubIcon } from 'nextra/icons';
 import type { Item } from 'nextra/normalize-pages';
 import { z } from 'zod';
 
-import { Icon, IconType } from '@trezor/components';
+import { IconLegacy, IconType } from '@trezor/components';
 
 import { Anchor, Flexsearch, Footer, Navbar, TOC } from './components';
 import { MatchSorterSearch } from './components/match-sorter-search';
@@ -328,7 +328,7 @@ export const DEFAULT_THEME: DocsThemeConfig = {
                         gap: '0.5rem',
                     }}
                 >
-                    {icon && <Icon icon={icon as IconType} size={16} color="currentColor" />}
+                    {icon && <IconLegacy icon={icon as IconType} size={16} color="currentColor" />}
                     {title}
                 </div>
             );

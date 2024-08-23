@@ -3,7 +3,7 @@ import { lazy, Suspense, useState } from 'react';
 import styled from 'styled-components';
 
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
-import { Icon, colors, Paragraph, Button, Textarea, SelectBar } from '@trezor/components';
+import { IconLegacy, colors, Paragraph, Button, Textarea, SelectBar } from '@trezor/components';
 import { UserContextPayload } from '@suite-common/suite-types';
 
 import { TrezorLink, Translation, Modal, BundleLoader } from 'src/components/suite';
@@ -204,7 +204,7 @@ export const QrScannerModal = ({ onCancel, decision, allowPaste }: QrScannerModa
                 <ContentWrapper $show>
                     <CameraPlaceholder>
                         <IconWrapper>
-                            <Icon icon="QR" size={100} />
+                            <IconLegacy icon="QR" size={100} />
                         </IconWrapper>
                         <Translation id="TR_PLEASE_ALLOW_YOUR_CAMERA" />
                     </CameraPlaceholder>

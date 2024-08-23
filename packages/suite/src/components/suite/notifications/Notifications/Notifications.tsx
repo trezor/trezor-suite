@@ -1,5 +1,5 @@
 import { useSelector } from 'src/hooks/suite';
-import { Icon, variables } from '@trezor/components';
+import { IconLegacy, variables } from '@trezor/components';
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
@@ -93,7 +93,7 @@ export const Notifications = (props: NotificationsProps) => {
                 </TabSelector>
                 {props.onCancel && (
                     <CloseButtonWrapper>
-                        <Icon
+                        <IconLegacy
                             icon="CROSS"
                             size={20}
                             color={theme.TYPE_LIGHT_GREY}

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Card, Icon, IconType } from '@trezor/components';
+import { Card, IconLegacy, IconType } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 const StyledCard = styled(Card)<{ $isHorizontal: boolean }>`
@@ -18,7 +18,7 @@ const StyledCard = styled(Card)<{ $isHorizontal: boolean }>`
               `}
 `;
 
-const StyledIcon = styled(Icon)<{ $isCircled: boolean }>`
+const StyledIcon = styled(IconLegacy)<{ $isCircled: boolean }>`
     ${({ $isCircled }) =>
         $isCircled &&
         css`

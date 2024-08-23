@@ -5,7 +5,7 @@ import { Elevation, borders, mapElevationToBackground, zIndices } from '@trezor/
 import {
     ElevationUp,
     H2,
-    Icon,
+    IconLegacy,
     Image,
     ImageType,
     Text,
@@ -167,7 +167,7 @@ const Tag = styled.div`
     letter-spacing: 0.2px;
 `;
 
-const CloseIcon = styled(Icon)`
+const CloseIcon = styled(IconLegacy)`
     position: absolute;
     top: 24px;
     right: 24px;

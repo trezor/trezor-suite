@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { QuestionTooltip, Translation } from 'src/components/suite';
-import { variables, Button, Select, Icon } from '@trezor/components';
+import { variables, Button, Select, IconLegacy } from '@trezor/components';
 import { BankAccount } from 'invity-api';
 import { formatIban } from 'src/utils/wallet/coinmarket/sellUtils';
 import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
@@ -105,7 +105,7 @@ const StyledButton = styled(Button)`
     min-width: 200px;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     margin-right: 3px;
 `;
 

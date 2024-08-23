@@ -10,7 +10,7 @@ Each component can be inspected separately in [Storybook](https://storybook.js.o
 
 ## Icons
 
-Icons in Suite are SVGs stored in [src/images/icons](./src/images/icons) and accessed via [icons.ts](./src/components/Icon/icons.ts). The SVGs should follow a set of rules so that they are efficient and easy to handle:
+Icons in Suite are SVGs stored in [src/images/icons](./src/images/icons) and accessed via [icons.ts](./src/components/Icon/iconsLegacy.ts). The SVGs should follow a set of rules so that they are efficient and easy to handle:
 
 -   minify the icon file by an [optimizer](https://iconly.io/tools/svg-cleaner)
 -   the icon should be defined by fills rather than strokes - you can use an [online tool](https://iconly.io/tools/svg-convert-stroke-to-fill) or ask the designer if it does not work properly

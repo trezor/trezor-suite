@@ -5,7 +5,7 @@ import {
     selectCurrentFiatRates,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import { variables, Card, Divider, Icon, Tooltip } from '@trezor/components';
+import { variables, Card, Divider, IconLegacy, Tooltip } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
 
@@ -159,7 +159,7 @@ export const WalletInstance = ({
                         <InstanceType $isSelected={isSelected}>
                             {!instance.useEmptyPassphrase && (
                                 <Tooltip content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}>
-                                    <Icon icon="ASTERISK" size={12} />
+                                    <IconLegacy icon="ASTERISK" size={12} />
                                 </Tooltip>
                             )}
                             {instance.state ? (

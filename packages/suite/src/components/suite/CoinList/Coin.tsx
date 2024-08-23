@@ -1,7 +1,7 @@
 import { MouseEvent } from 'react';
 import { transparentize } from 'polished';
 import styled, { css, useTheme } from 'styled-components';
-import { variables, CoinLogo, Icon } from '@trezor/components';
+import { variables, CoinLogo, IconLegacy } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import type { Network } from 'src/types/wallet';
 import { typography } from '@trezor/theme';
@@ -194,7 +194,7 @@ export const Coin = ({
             <ImageWrapper>
                 <CoinLogo size={24} symbol={symbol} />
                 <Check $visible={toggled}>
-                    <Icon size={8} color={theme.TYPE_WHITE} icon="CHECK" />
+                    <IconLegacy size={8} color={theme.TYPE_WHITE} icon="CHECK" />
                 </Check>
             </ImageWrapper>
             {label ? (
@@ -212,7 +212,7 @@ export const Coin = ({
                 $toggled={toggled}
                 data-testid={`@settings/wallet/network/${symbol}/advance`}
             >
-                <Icon icon="SETTINGS" />
+                <IconLegacy icon="SETTINGS" />
             </SettingsWrapper>
         </CoinWrapper>
     );

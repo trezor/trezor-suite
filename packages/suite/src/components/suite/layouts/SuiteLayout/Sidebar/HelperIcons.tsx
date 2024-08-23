@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Icon, Tooltip } from '@trezor/components';
+import { IconLegacy, Tooltip } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -75,14 +75,14 @@ export const HelperIcons = () => {
                     $isExperimental={isExperimental}
                 >
                     <Tooltip cursor="pointer" content={experimentalTooltip}>
-                        <Icon icon="EXPERIMENTAL" size={16} color={theme.iconOnSecondary} />
+                        <IconLegacy icon="EXPERIMENTAL" size={16} color={theme.iconOnSecondary} />
                     </Tooltip>
                 </ExperimentalIcon>
             )}
             {showDebugMode && (
                 <DebugModeIcon>
                     <Tooltip content="Debug mode active">
-                        <Icon icon="FLAG" size={16} color={theme.iconOnSecondary} />
+                        <IconLegacy icon="FLAG" size={16} color={theme.iconOnSecondary} />
                     </Tooltip>
                 </DebugModeIcon>
             )}

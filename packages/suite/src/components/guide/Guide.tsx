@@ -5,7 +5,7 @@ import { spacingsPx, typography, zIndices } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Icon } from '@trezor/components';
+import { IconLegacy } from '@trezor/components';
 import {
     GuideHeader,
     GuideContent,
@@ -57,7 +57,7 @@ const FeedbackButtonLabel = styled.div`
     white-space: nowrap;
 `;
 
-const FeedbackButtonRightIcon = styled(Icon)`
+const FeedbackButtonRightIcon = styled(IconLegacy)`
     margin-top: -1px;
 `;
 
@@ -88,7 +88,7 @@ export const Guide = () => {
                     data-testid="@guide/button-feedback"
                     onClick={handleFeedbackButtonClick}
                 >
-                    <Icon icon="USERS" size={24} color={theme.iconOnTertiary} />
+                    <IconLegacy icon="USERS" size={24} color={theme.iconOnTertiary} />
                     <FeedbackButtonLabel>
                         <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
                     </FeedbackButtonLabel>

@@ -1,6 +1,6 @@
 import { ReactNode, HTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Icon, variables } from '@trezor/components';
+import { IconLegacy, variables } from '@trezor/components';
 
 const Header = styled.div`
     display: flex;
@@ -27,7 +27,7 @@ export const WarnHeader = ({ action, children, ...rest }: WarnHeaderProps) => {
 
     return (
         <Header {...rest}>
-            <Icon size={16} icon="WARNING" color={theme.TYPE_ORANGE} />
+            <IconLegacy size={16} icon="WARNING" color={theme.TYPE_ORANGE} />
             <Body>{children}</Body>
             {action}
         </Header>

@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { useDispatch } from 'src/hooks/suite';
 import { transparentize } from 'polished';
 
-import { Button, Icon, variables } from '@trezor/components';
+import { Button, IconLegacy, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
 import { goto } from 'src/actions/suite/routerActions';
@@ -19,7 +19,7 @@ const StyledButton = styled(Button)`
     flex: 1;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     width: 84px;
     height: 84px;
     margin: 12px auto 32px;

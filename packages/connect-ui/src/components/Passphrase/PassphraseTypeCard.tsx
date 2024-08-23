@@ -13,7 +13,7 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import {
     Button,
     Checkbox,
-    Icon,
+    IconLegacy,
     Input,
     Tooltip,
     TooltipProps,
@@ -285,9 +285,13 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                     <Row>
                         <IconWrapper $type={props.type}>
                             {props.type === 'standard' ? (
-                                <Icon size={24} icon="WALLET" color={theme.iconPrimaryDefault} />
+                                <IconLegacy
+                                    size={24}
+                                    icon="WALLET"
+                                    color={theme.iconPrimaryDefault}
+                                />
                             ) : (
-                                <Icon size={24} icon="LOCK" color={theme.iconSubdued} />
+                                <IconLegacy size={24} icon="LOCK" color={theme.iconSubdued} />
                             )}
                         </IconWrapper>
                         <Col>
@@ -325,7 +329,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                         </Col>
                         {props.type === 'standard' && (
                             <ArrowCol>
-                                <Icon icon="ARROW_RIGHT" color={theme.iconSubdued} />
+                                <IconLegacy icon="ARROW_RIGHT" color={theme.iconSubdued} />
                             </ArrowCol>
                         )}
                     </Row>
@@ -359,7 +363,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                                 inputState={isTooLong ? 'error' : undefined}
                                 autoFocus={!isAndroid()}
                                 innerAddon={
-                                    <Icon
+                                    <IconLegacy
                                         size={18}
                                         color={theme.iconSubdued}
                                         icon={showPassword ? 'HIDE' : 'SHOW'}

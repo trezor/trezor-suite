@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getFeeUnits, formatNetworkAmount, formatAmount, getFee } from '@suite-common/wallet-utils';
-import { Icon, CoinLogo, variables } from '@trezor/components';
+import { IconLegacy, CoinLogo, variables } from '@trezor/components';
 import { formatDuration } from '@suite-common/suite-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
@@ -248,7 +248,7 @@ export const TransactionReviewSummary = ({
                 <IconWrapper>
                     <CoinLogo size={48} symbol={symbol} />
                     <NestedIconWrapper>
-                        <Icon size={12} color={theme.iconSubdued} icon="SEND" />
+                        <IconLegacy size={12} color={theme.iconSubdued} icon="SEND" />
                     </NestedIconWrapper>
                 </IconWrapper>
 
@@ -264,7 +264,7 @@ export const TransactionReviewSummary = ({
                 </Headline>
 
                 <AccountWrapper>
-                    <Icon size={12} color={theme.iconSubdued} icon="WALLET" />
+                    <IconLegacy size={12} color={theme.iconSubdued} icon="WALLET" />
                     <AccountLabel
                         accountLabel={accountLabel}
                         accountType={accountType}
@@ -280,7 +280,7 @@ export const TransactionReviewSummary = ({
                 {estimateTime !== undefined && (
                     <LeftDetailsRow>
                         <ReviewLeftDetailsLineLeft>
-                            <Icon size={12} color={theme.iconSubdued} icon="CALENDAR" />
+                            <IconLegacy size={12} color={theme.iconSubdued} icon="CALENDAR" />
                             <Translation id="TR_DELIVERY" />
                         </ReviewLeftDetailsLineLeft>
 
@@ -292,7 +292,7 @@ export const TransactionReviewSummary = ({
                 {!!tx.feeLimit && network.networkType !== 'solana' && (
                     <LeftDetailsRow>
                         <ReviewLeftDetailsLineLeft>
-                            <Icon size={12} color={theme.iconSubdued} icon="GAS" />
+                            <IconLegacy size={12} color={theme.iconSubdued} icon="GAS" />
                             <Translation id="TR_GAS_LIMIT" />
                         </ReviewLeftDetailsLineLeft>
 
@@ -303,12 +303,11 @@ export const TransactionReviewSummary = ({
                 )}
                 <LeftDetailsRow>
                     <ReviewLeftDetailsLineLeft>
-                        <Icon size={12} color={theme.iconSubdued} icon="GAS" />
+                        <IconLegacy size={12} color={theme.iconSubdued} icon="GAS" />
                         <Translation
                             id={feeLabelTranslationIdByNetworkTypeMap[network.networkType]}
                         />
                     </ReviewLeftDetailsLineLeft>
-
                     <ReviewLeftDetailsLineRight $color={theme.textSubdued}>
                         {fee} {getFeeUnits(network.networkType)}
                     </ReviewLeftDetailsLineRight>
@@ -325,7 +324,7 @@ export const TransactionReviewSummary = ({
                 {!ethereumStakeType && (
                     <LeftDetailsRow>
                         <ReviewLeftDetailsLineLeft>
-                            <Icon size={12} color={theme.iconSubdued} icon="BROADCAST" />
+                            <IconLegacy size={12} color={theme.iconSubdued} icon="BROADCAST" />
                             <Translation id="BROADCAST" />
                         </ReviewLeftDetailsLineLeft>
 
@@ -348,7 +347,7 @@ export const TransactionReviewSummary = ({
                                 onClick={() => onDetailsClick()}
                             >
                                 <Translation id="TR_TRANSACTION_DETAILS" />
-                                <Icon
+                                <IconLegacy
                                     size={12}
                                     color={theme.iconSubdued}
                                     icon={detailsOpen ? 'CROSS' : 'ARROW_RIGHT'}

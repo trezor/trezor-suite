@@ -6,7 +6,7 @@ import {
     PasswordStrengthIndicator,
     Column,
     Row,
-    Icon,
+    IconLegacy,
     Input,
     Button,
     motionAnimation,
@@ -158,7 +158,7 @@ export const PassphraseTypeCardContent = ({
                                     inputState={isPassphraseTooLong ? 'error' : undefined}
                                     autoFocus={!isAndroid()}
                                     innerAddon={
-                                        <Icon
+                                        <IconLegacy
                                             size={18}
                                             color={theme.iconSubdued}
                                             icon={showPassword ? 'HIDE' : 'SHOW'}

@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Icon } from '@trezor/components';
+import { IconLegacy } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { FiatValueWrapper, FormattedCryptoAmountWrapper } from './styled';
 import { useSelector } from 'src/hooks/suite';
@@ -55,7 +55,7 @@ export const ClaimPendingCard = ({ claimAmount }: ClaimPendingCardProps) => {
     return (
         <StyledCard>
             <Flex>
-                <Icon icon="SPINNER" size={40} color={theme.iconPrimaryDefault} />
+                <IconLegacy icon="SPINNER" size={40} color={theme.iconPrimaryDefault} />
 
                 <div>
                     <Heading>

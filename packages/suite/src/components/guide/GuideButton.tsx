@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Icon, useElevation } from '@trezor/components';
+import { IconLegacy, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } from '@trezor/theme';
 import { useGuide } from 'src/hooks/guide';
 import { FreeFocusInside } from 'react-focus-lock';
@@ -44,7 +44,7 @@ export const GuideButton = () => {
                 $isGuideOpen={isGuideOpen}
                 $elevation={elevation}
             >
-                <Icon size={18} icon="LIGHTBULB" />
+                <IconLegacy size={18} icon="LIGHTBULB" />
             </Wrapper>
         </FreeFocusInside>
     );

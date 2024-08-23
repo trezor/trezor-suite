@@ -19,7 +19,7 @@ import { NewModalContext } from './NewModalContext';
 import { NewModalBackdrop } from './NewModalBackdrop';
 import { NewModalProvider } from './NewModalProvider';
 import type { NewModalVariant, NewModalSize, NewModalAlignment } from './types';
-import { Icon, IconType } from '../Icon/Icon';
+import { IconLegacy, IconType } from '../Icon/IconLegacy';
 import {
     mapVariantToIconBackground,
     mapVariantToIconBorderColor,
@@ -184,7 +184,11 @@ const NewModal = ({
                                 <Body id={NEW_MODAL_CONTENT_ID}>
                                     {icon && (
                                         <IconWrapper $variant={variant} $size={ICON_SIZE}>
-                                            <Icon icon={icon} size={ICON_SIZE} variant={variant} />
+                                            <IconLegacy
+                                                icon={icon}
+                                                size={ICON_SIZE}
+                                                variant={variant}
+                                            />
                                         </IconWrapper>
                                     )}
                                     {children}

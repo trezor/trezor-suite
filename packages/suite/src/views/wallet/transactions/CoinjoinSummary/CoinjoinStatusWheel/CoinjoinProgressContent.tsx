@@ -1,5 +1,5 @@
 import styled, { css, useTheme } from 'styled-components';
-import { Spinner, Icon, Tooltip } from '@trezor/components';
+import { Spinner, IconLegacy, Tooltip } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -64,12 +64,12 @@ const iconBase = css`
     margin-bottom: ${spacingsPx.xxs};
 `;
 
-const PlayIcon = styled(Icon)`
+const PlayIcon = styled(IconLegacy)`
     ${iconBase}
     margin-left: ${spacingsPx.xxs};
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     ${iconBase};
 `;
 

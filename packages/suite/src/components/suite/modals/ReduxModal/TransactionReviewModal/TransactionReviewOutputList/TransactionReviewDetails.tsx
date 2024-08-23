@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
 import { Translation } from 'src/components/suite';
-import { Icon, variables, Card } from '@trezor/components';
+import { IconLegacy, variables, Card } from '@trezor/components';
 import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { borders, typography, zIndices } from '@trezor/theme';
 
@@ -128,7 +128,7 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
                         </Card>
                     </Section>
                     <SectionDivider>
-                        <Icon icon="ARROW_DOWN" size={20} color={theme.TYPE_LIGHT_GREY} />
+                        <IconLegacy icon="ARROW_DOWN" size={20} color={theme.TYPE_LIGHT_GREY} />
                     </SectionDivider>
                     <Section>
                         <SectionName>

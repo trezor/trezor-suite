@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import styled, { DefaultTheme, useTheme } from 'styled-components';
 
 import {
-    Icon,
+    IconLegacy,
     Button,
     Spinner,
     variables,
@@ -156,7 +156,7 @@ export const NotificationCard = ({
                         <Spinner size={22} />
                     ) : (
                         iconElement && (
-                            <Icon
+                            <IconLegacy
                                 icon={iconElement}
                                 size={22}
                                 color={getMainColor(variant, theme)}

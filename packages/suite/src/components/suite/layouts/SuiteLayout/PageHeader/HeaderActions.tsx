@@ -6,7 +6,7 @@ import {
     Dropdown,
     DropdownMenuItemProps,
     IconButton,
-    IconProps,
+    IconLegacyProps,
 } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -25,7 +25,7 @@ const Container = styled.div`
 
 type ActionItem = {
     id: string;
-    icon?: IconProps['icon'];
+    icon?: IconLegacyProps['icon'];
     callback: () => void;
     title: JSX.Element;
     'data-testid'?: string;

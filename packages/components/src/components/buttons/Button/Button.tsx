@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
-import { Icon, IconType } from '../../Icon/Icon';
+import { IconLegacy, IconType } from '../../Icon/IconLegacy';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,
@@ -124,7 +124,7 @@ export const Button = ({
     const theme = useTheme();
 
     const IconComponent = icon ? (
-        <Icon
+        <IconLegacy
             icon={icon}
             size={iconSize || getIconSize(size)}
             color={getIconColor({ variant, isDisabled, theme, isSubtle })}

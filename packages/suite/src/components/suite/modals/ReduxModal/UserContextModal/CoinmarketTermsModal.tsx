@@ -1,4 +1,4 @@
-import { Button, Icon } from '@trezor/components';
+import { Button, IconLegacy } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import type { Deferred } from '@trezor/utils';
@@ -13,7 +13,7 @@ const TermsText = styled.div`
     padding-bottom: 20px;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconLegacy)`
     border-radius: 50%;
     padding: 20px;
     display: flex;

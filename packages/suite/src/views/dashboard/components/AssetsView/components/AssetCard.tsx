@@ -13,7 +13,7 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
-import { Card, H2, Icon, SkeletonRectangle, variables } from '@trezor/components';
+import { Card, H2, IconLegacy, SkeletonRectangle, variables } from '@trezor/components';
 import { useDispatch } from 'react-redux';
 import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -46,7 +46,7 @@ const BuyContainerCard = styled(Card)`
     padding: ${spacingsPx.md};
 `;
 
-const WarningIcon = styled(Icon)`
+const WarningIcon = styled(IconLegacy)`
     padding-left: ${spacingsPx.xxs};
     padding-bottom: ${spacingsPx.xxxs};
 `;

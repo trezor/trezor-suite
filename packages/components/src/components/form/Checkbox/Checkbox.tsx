@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { borders, Color, spacingsPx, typography } from '@trezor/theme';
 
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
-import { Icon } from '../../Icon/Icon';
+import { IconLegacy } from '../../Icon/IconLegacy';
 import { getFocusShadowStyle } from '../../../utils/utils';
 import { UIHorizontalAlignment, UIVerticalAlignment, UIVariant } from '../../../config/types';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
@@ -127,7 +127,7 @@ export const CheckContainer = styled.div<{ $variant: CheckboxVariant }>`
     ${getFocusShadowStyle()}
 `;
 
-const CheckIcon = styled(Icon)<{ $isVisible: boolean }>`
+const CheckIcon = styled(IconLegacy)<{ $isVisible: boolean }>`
     opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
     transition: opacity 0.1s;
 `;

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Image, Icon, IconProps, variables } from '@trezor/components';
+import { Image, IconLegacy, IconLegacyProps, variables } from '@trezor/components';
 import { useGuide } from 'src/hooks/guide';
 import { DeviceModelInternal } from '@trezor/connect';
 
@@ -61,9 +61,9 @@ interface DeviceImageItem extends CommonItemProps {
 
 interface IconItem extends CommonItemProps {
     deviceModelInternal?: DeviceModelInternal;
-    icon: IconProps['icon'];
-    iconColor?: IconProps['color'];
-    iconSize?: IconProps['size'];
+    icon: IconLegacyProps['icon'];
+    iconColor?: IconLegacyProps['color'];
+    iconSize?: IconLegacyProps['size'];
 }
 
 type Item = DeviceImageItem | IconItem;
@@ -81,7 +81,7 @@ export const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps)
                 <Item key={item.key}>
                     <ItemIconWrapper>
                         {item.icon ? (
-                            <Icon
+                            <IconLegacy
                                 icon={item.icon}
                                 color={item.iconColor}
                                 size={item.iconSize ?? 26}

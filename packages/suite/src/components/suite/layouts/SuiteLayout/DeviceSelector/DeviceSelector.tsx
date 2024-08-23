@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import { Icon } from '@trezor/components';
+import { IconLegacy } from '@trezor/components';
 import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
 import type { Timeout } from '@trezor/type-utils';
 import { SHAKE } from 'src/support/suite/styles/animations';
@@ -114,7 +114,7 @@ export const DeviceSelector = () => {
 
                     {selectedDevice && selectedDevice.state && (
                         <CaretContainer>
-                            <Icon size={20} icon="CARET_CIRCLE_DOWN" />
+                            <IconLegacy size={20} icon="CARET_CIRCLE_DOWN" />
                         </CaretContainer>
                     )}
                 </InnerContainer>

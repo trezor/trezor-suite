@@ -1,6 +1,6 @@
 import { useCallback, useRef, Dispatch, SetStateAction, KeyboardEvent } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { Input, Icon, KEYBOARD_CODE, motionEasing } from '@trezor/components';
+import { Input, IconLegacy, KEYBOARD_CODE, motionEasing } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { useTranslation } from 'src/hooks/suite/useTranslation';
@@ -41,7 +41,7 @@ const StyledInput = styled(Input)<{ $isExpanded: boolean }>`
     }
 `;
 
-const SearchIcon = styled(Icon)`
+const SearchIcon = styled(IconLegacy)`
     cursor: pointer;
 `;
 

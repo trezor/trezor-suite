@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Icon } from '../../Icon/Icon';
+import { IconLegacy } from '../../Icon/IconLegacy';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button, ButtonProps } from '../Button/Button';
 import { spacingsPx } from '@trezor/theme';
@@ -10,7 +10,7 @@ const StyledButton = styled(Button)`
     padding-inline: ${spacingsPx.xxl};
 `;
 
-const InfoIcon = styled(Icon)`
+const InfoIcon = styled(IconLegacy)`
     position: absolute;
     top: ${spacingsPx.xxs};
     right: ${spacingsPx.xxs};

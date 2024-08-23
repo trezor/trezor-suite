@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { Text, Radio, Icon, useElevation } from '@trezor/components';
+import { Text, Radio, IconLegacy, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBorder, spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { ContentType } from '../types';
@@ -125,7 +125,7 @@ export const ViewOnlyRadios = ({
             </ViewOnlyRadio>
 
             <SendCoinsInfo>
-                <Icon icon="INFO" size={12} color={theme.iconSubdued} />
+                <IconLegacy icon="INFO" size={12} color={theme.iconSubdued} />
                 <Translation id="TR_VIEW_ONLY_SEND_COINS_INFO" />
             </SendCoinsInfo>
         </Container>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Paragraph, Icon, motionAnimation } from '@trezor/components';
+import { Paragraph, IconLegacy, motionAnimation } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectIsLabelingAvailable } from 'src/reducers/suite/metadataReducer';
@@ -67,7 +67,7 @@ export const ExampleCSV = () => {
                     }
                 />
 
-                <Icon size={16} icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'} />
+                <IconLegacy size={16} icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'} />
             </ExpandButton>
 
             <AnimatePresence initial={false}>

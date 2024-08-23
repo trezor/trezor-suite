@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { spacingsPx } from '@trezor/theme';
 
-import { Icon } from '../Icon/Icon';
+import { IconLegacy } from '../Icon/IconLegacy';
 import { Paragraph } from '../typography/Paragraph/Paragraph';
 
 const Row = styled.div`
@@ -11,7 +11,7 @@ const Row = styled.div`
     gap: ${spacingsPx.xs};
 `;
 
-const InfoIcon = styled(Icon)`
+const InfoIcon = styled(IconLegacy)`
     margin-top: 2px;
 `;
 

@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Modal as ModalComponent, Button, ModalProps, Icon } from '../../../index';
+import { Modal as ModalComponent, Button, ModalProps, IconLegacy } from '../../../index';
 
 const Buttons = () => (
     <>
@@ -53,7 +53,7 @@ export const Modal: StoryObj<ModalProps> = {
         },
         headerComponent: {
             options: ['none', 'withComponent'],
-            mapping: { none: undefined, withComponent: <Icon icon="APP" /> },
+            mapping: { none: undefined, withComponent: <IconLegacy icon="APP" /> },
             control: {
                 type: 'select',
                 labels: {

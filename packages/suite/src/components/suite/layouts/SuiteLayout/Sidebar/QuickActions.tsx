@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Icon, Tooltip } from '@trezor/components';
+import { IconLegacy, Tooltip } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
@@ -45,7 +45,7 @@ const Label = styled.span`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const StyledCheckIcon = styled(Icon)`
+const StyledCheckIcon = styled(IconLegacy)`
     position: absolute;
     bottom: 50%;
     left: 50%;
@@ -90,7 +90,7 @@ export const QuickActions = () => {
                         onClick={handleDiscreetModeClick}
                         data-testid="@quickActions/hideBalances"
                     >
-                        <Icon size={16} icon={isDiscreetModeActive ? 'HIDE' : 'SHOW'} />
+                        <IconLegacy size={16} icon={isDiscreetModeActive ? 'HIDE' : 'SHOW'} />
                         <Label>{translationString(translationLabel)} </Label>
                     </DescreetContainer>
                 ) : (

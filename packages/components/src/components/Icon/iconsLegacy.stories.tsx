@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { Meta } from '@storybook/react';
-import { IconName, icons } from '@suite-common/icons/src/icons';
-import { Icon } from '@suite-common/icons/src/webComponents';
+import { IconLegacy, variables, IconType } from '../../index';
 
 const Wrapper = styled.div`
     display: grid;
@@ -24,7 +23,7 @@ const IconWrapper = styled.div`
 
 const IconText = styled.div`
     padding-bottom: 10px;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const meta: Meta = {
@@ -32,15 +31,16 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const AllIcons = () => (
+export const LegacyIconsAll = () => (
     <Wrapper>
-        {Object.keys(icons).map(iconKey => {
-            return (
-                <IconWrapper key={iconKey}>
-                    <IconText>{iconKey}</IconText>
-                    <Icon name={iconKey as IconName} color="iconDefault" />
-                </IconWrapper>
-            );
-        })}
+        {variables.ICONS.map((icon: IconType) => (
+            <IconWrapper key={icon}>
+                <IconText>{icon}</IconText>
+                <IconLegacy
+                    icon={icon}
+                    data-testid={`icon-${icon.toLowerCase().replace('_', '-')}`}
+                />
+            </IconWrapper>
+        ))}
     </Wrapper>
 );

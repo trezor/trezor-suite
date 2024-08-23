@@ -4,7 +4,7 @@ import styled, { css, useTheme } from 'styled-components';
 import { useEvent } from 'react-use';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Icon, IconType } from '../../Icon/Icon';
+import { IconLegacy, IconType } from '../../Icon/IconLegacy';
 import { Stepper } from '../../loaders/Stepper/Stepper';
 import { IconButton } from '../../buttons/IconButton/IconButton';
 import { H3 } from '../../typography/Heading/Heading';
@@ -54,7 +54,7 @@ const Header = styled.header<HeaderProps>`
 `;
 
 const BACK_ICON_WIDTH = spacingsPx.xxxl;
-const BackIcon = styled(Icon)`
+const BackIcon = styled(IconLegacy)`
     position: relative;
     width: ${BACK_ICON_WIDTH};
     padding-right: ${spacingsPx.lg};
@@ -282,7 +282,7 @@ const Modal = ({
 
                                 <Heading $headingSize={headingSize} $isWithIcon={!!headerIcon}>
                                     {headerIcon && (
-                                        <Icon
+                                        <IconLegacy
                                             icon={headerIcon}
                                             size={16}
                                             color={theme.iconDefault}

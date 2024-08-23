@@ -7,7 +7,7 @@ import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-co
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
-import { Icon, CollapsibleBox, useElevation, Divider } from '@trezor/components';
+import { IconLegacy, CollapsibleBox, useElevation, Divider } from '@trezor/components';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
@@ -222,7 +222,7 @@ const GridRowGroupComponent = ({
                 )}
             </RowGridItem>
             <IconWrapper>
-                <Icon icon="ARROW_RIGHT" size={17} color={theme.TYPE_LIGHT_GREY} />
+                <IconLegacy icon="ARROW_RIGHT" size={17} color={theme.TYPE_LIGHT_GREY} />
             </IconWrapper>
             <RowGridItem>
                 <IOAddress
@@ -407,7 +407,7 @@ const IOSectionColumn = ({ tx, inputs, outputs, isPhishingTransaction }: IOSecti
                     </div>
                 )}
                 <IconWrapper>
-                    <Icon icon="ARROW_RIGHT" size={17} color={theme.TYPE_LIGHT_GREY} />
+                    <IconLegacy icon="ARROW_RIGHT" size={17} color={theme.TYPE_LIGHT_GREY} />
                 </IconWrapper>
                 {hasOutputs && (
                     <div>

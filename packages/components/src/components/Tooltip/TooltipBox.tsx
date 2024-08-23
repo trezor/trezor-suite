@@ -1,4 +1,4 @@
-import { Icon, IconType } from '../Icon/Icon';
+import { IconLegacy, IconType } from '../Icon/IconLegacy';
 import { ReactElement, ReactNode } from 'react';
 import { borders, palette, spacings, spacingsPx, typography } from '@trezor/theme';
 import styled from 'styled-components';
@@ -94,7 +94,7 @@ export const TooltipBox = ({
                 <HeaderContainer>
                     {title && (
                         <TooltipTitle $isLarge={isLarge}>
-                            {headerIcon && <Icon icon={headerIcon} size={spacings.md} />}
+                            {headerIcon && <IconLegacy icon={headerIcon} size={spacings.md} />}
                             {title}
                         </TooltipTitle>
                     )}

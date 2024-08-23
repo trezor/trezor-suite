@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 import styled from 'styled-components';
-import { Icon, variables } from '@trezor/components';
+import { IconLegacy, variables } from '@trezor/components';
 import { showAddress } from 'src/actions/wallet/signVerifyActions';
 import { useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
@@ -60,7 +60,7 @@ export const VerifyAddressButton = ({ item: { label, value } }: VerifyAddressBut
                 <Translation id="TR_REVEAL_ADDRESS" />
             </RevealText>
 
-            <Icon size={20} icon="SHOW" />
+            <IconLegacy size={20} icon="SHOW" />
         </ButtonWrapper>
     );
 };

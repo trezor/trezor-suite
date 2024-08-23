@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { ExchangeProviderInfo } from 'invity-api';
 
-import { Button, Icon, variables } from '@trezor/components';
+import { Button, IconLegacy, variables } from '@trezor/components';
 import { CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common';
 import { TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
 import { goto } from 'src/actions/suite/routerActions';
@@ -136,7 +136,7 @@ export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTrans
                         <FormattedCryptoAmount value={sendStringAmount} symbol={send} />
                     </Amount>
                     <Arrow>
-                        <Icon color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
+                        <IconLegacy color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
                     <FormattedCryptoAmount
                         value={receiveStringAmount}

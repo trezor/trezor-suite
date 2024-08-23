@@ -1,4 +1,4 @@
-export const ICONS = {
+export const IconsLegacy = {
     ANCHOR: require('../../images/icons/anchor.svg'),
     APP: require('../../images/icons/app.svg'),
     ARROW_BEND_DOUBLE_UP_LEFT: require('../../images/icons/arrow_bend_double_up_left.svg'),
