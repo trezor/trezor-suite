@@ -17,8 +17,23 @@ const Wrapper = styled.span<WrapperProps>`
             transition: all 0.1s ease;
             filter: blur(${$intensity}px);
 
+            /*
+                It is needed to target both this element, and all of its children.
+                Otherwise the * global selector, which declares normal font, overrides font for HiddenPlaceholder's children (even when !important is used).
+            */
+            font-family: 'TT Satoshi redacted numbers', sans-serif;
+            
+            & * {
+                font-family: 'TT Satoshi redacted numbers', sans-serif;
+            }
+
             &:hover {
                 filter: none;
+                font-family: unset;
+
+                & * {
+                    font-family: unset;
+                }
             }
         `}
 `;

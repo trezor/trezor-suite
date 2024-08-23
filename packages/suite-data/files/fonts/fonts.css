@@ -25,3 +25,14 @@
     font-weight: 500;
     font-style: normal;
 }
+
+/*
+    Special font that has all numbers replaced with the same placeholder symbol.
+    DO NOT USE except when you need to redact sensitive information!
+*/
+@font-face {
+    font-family: 'TT Satoshi redacted numbers';
+    src: url('./TTSatoshi/TTSatoshi-redacted-numbers.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
