@@ -20,7 +20,7 @@ export const HeaderWrapper = styled.div`
 
 export const Col = styled(HiddenPlaceholder)`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
@@ -30,7 +30,7 @@ export const ColDate = styled(Col)`
 `;
 
 export const ColPending = styled(Col)`
-    color: ${({ theme }) => theme.TYPE_ORANGE};
+    color: ${({ theme }) => theme.legacy.TYPE_ORANGE};
     font-variant-numeric: tabular-nums;
 `;
 

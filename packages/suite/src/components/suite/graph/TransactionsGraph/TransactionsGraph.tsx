@@ -53,7 +53,7 @@ const Description = styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     flex: 1;
 `;
 
@@ -162,7 +162,10 @@ export const TransactionsGraph = memo(
                                 }}
                                 onMouseLeave={() => setHovered(-1)}
                             >
-                                <CartesianGrid vertical={false} stroke={theme.STROKE_LIGHT_GREY} />
+                                <CartesianGrid
+                                    vertical={false}
+                                    stroke={theme.legacy.STROKE_LIGHT_GREY}
+                                />
 
                                 <XAxis
                                     // xAxisId="primary"
@@ -170,7 +173,7 @@ export const TransactionsGraph = memo(
                                     type="number"
                                     domain={calcXDomain(xTicks, data, selectedRange)}
                                     // width={10}
-                                    stroke={theme.STROKE_LIGHT_GREY}
+                                    stroke={theme.legacy.STROKE_LIGHT_GREY}
                                     interval="preserveEnd"
                                     tick={<GraphXAxisTick selectedRange={selectedRange} />}
                                     ticks={xTicks}
@@ -203,7 +206,7 @@ export const TransactionsGraph = memo(
                                 <Tooltip
                                     position={{ y: 0, x: 0 }}
                                     wrapperStyle={{ zIndex: zIndices.tooltip }}
-                                    cursor={{ stroke: theme.BG_TOOLTIP, strokeWidth: 1 }}
+                                    cursor={{ stroke: theme.legacy.BG_TOOLTIP, strokeWidth: 1 }}
                                     content={
                                         variant === 'one-asset' ? (
                                             <GraphTooltipAccount
@@ -231,7 +234,7 @@ export const TransactionsGraph = memo(
                                                 ? Number(balanceValueFn(data)) || yDomain[0]
                                                 : Number(balanceValueFn(data))
                                         }
-                                        stroke={theme.TYPE_ORANGE}
+                                        stroke={theme.legacy.TYPE_ORANGE}
                                         dot={false}
                                         activeDot={false}
                                     />
@@ -245,8 +248,14 @@ export const TransactionsGraph = memo(
                                         y2="100%"
                                         spreadMethod="reflect"
                                     >
-                                        <stop offset="0" stopColor={theme.GRADIENT_GREEN_START} />
-                                        <stop offset="1" stopColor={theme.GRADIENT_GREEN_END} />
+                                        <stop
+                                            offset="0"
+                                            stopColor={theme.legacy.GRADIENT_GREEN_START}
+                                        />
+                                        <stop
+                                            offset="1"
+                                            stopColor={theme.legacy.GRADIENT_GREEN_END}
+                                        />
                                     </linearGradient>
                                 </defs>
                                 <defs>
@@ -258,8 +267,14 @@ export const TransactionsGraph = memo(
                                         y2="100%"
                                         spreadMethod="reflect"
                                     >
-                                        <stop offset="0" stopColor={theme.GRADIENT_RED_START} />
-                                        <stop offset="1" stopColor={theme.GRADIENT_RED_END} />
+                                        <stop
+                                            offset="0"
+                                            stopColor={theme.legacy.GRADIENT_RED_START}
+                                        />
+                                        <stop
+                                            offset="1"
+                                            stopColor={theme.legacy.GRADIENT_RED_END}
+                                        />
                                     </linearGradient>
                                 </defs>
                                 <defs>

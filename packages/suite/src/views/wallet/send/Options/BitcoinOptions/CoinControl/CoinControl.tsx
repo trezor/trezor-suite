@@ -25,7 +25,7 @@ const Row = styled.div`
 `;
 
 const SecondRow = styled(Row)`
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     margin-top: 20px;
     padding-bottom: 14px;
@@ -57,7 +57,7 @@ const MissingToInput = styled.div<{ $isVisible: boolean }>`
 `;
 
 const Empty = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     margin-bottom: 12px;
     padding: 14px 0;
 `;
@@ -237,7 +237,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                     }
                     icon="SHIELD_CHECK"
-                    iconColor={theme.BG_GREEN}
+                    iconColor={theme.legacy.BG_GREEN}
                     utxos={spendableUtxosOnPage}
                 />
             )}
@@ -249,7 +249,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         <Translation id="TR_NOT_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                     }
                     icon="SHIELD_CROSS"
-                    iconColor={theme.TYPE_DARK_ORANGE}
+                    iconColor={theme.legacy.TYPE_DARK_ORANGE}
                     utxos={lowAnonymityUtxosOnPage}
                 />
             )}
@@ -264,7 +264,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     heading={<Translation id="TR_DUST" />}
                     description={<Translation id="TR_DUST_DESCRIPTION" />}
                     icon="INFO"
-                    iconColor={theme.TYPE_LIGHT_GREY}
+                    iconColor={theme.legacy.TYPE_LIGHT_GREY}
                     utxos={dustUtxosOnPage}
                 />
             )}

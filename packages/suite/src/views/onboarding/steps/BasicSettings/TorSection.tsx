@@ -13,7 +13,7 @@ const TorWrapper = styled.div`
     align-items: center;
     padding-top: 16px;
     margin-bottom: 12px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const Label = styled.div`

@@ -20,27 +20,28 @@ const BreadcrumbWrapper = styled.span`
 `;
 
 const PreviousCategoryLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     transition: ${({ theme }) =>
-        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
+        `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
 
     &:hover {
-        color: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_LIGHT_GREY)};
+        color: ${({ theme }) =>
+            darken(theme.legacy.HOVER_DARKEN_FILTER, theme.legacy.TYPE_LIGHT_GREY)};
     }
 `;
 
 const BreadcrumbDelimiter = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     margin: 0 5px;
 `;
 
 const CategoryLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
     transition: ${({ theme }) =>
-        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
+        `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
 
     &:hover {
-        color: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_GREEN)};
+        color: ${({ theme }) => darken(theme.legacy.HOVER_DARKEN_FILTER, theme.legacy.TYPE_GREEN)};
     }
 `;
 

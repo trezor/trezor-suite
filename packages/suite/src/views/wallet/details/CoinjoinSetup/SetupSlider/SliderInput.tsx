@@ -19,13 +19,13 @@ const Level = styled(Input)`
         background: none;
         height: 42px;
         padding: ${({ innerAddon }) => !innerAddon && '1px 12px 0 12px'};
-        border: 1.5px solid ${({ theme }) => theme.STROKE_GREY};
-        color: ${({ theme }) => theme.TYPE_GREEN};
+        border: 1.5px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+        color: ${({ theme }) => theme.legacy.TYPE_GREEN};
         font-size: ${variables.FONT_SIZE.H3};
         text-align: center;
 
         &:disabled {
-            color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+            color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
         }
     }
 `;
@@ -33,7 +33,7 @@ const Level = styled(Input)`
 const InnerAddon = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const MAX_ALLOWED_INTEGER = 1000000;

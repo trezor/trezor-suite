@@ -79,7 +79,7 @@ const StyledButton = styled(Button)`
     margin: ${spacingsPx.xl} auto 0;
 
     &:disabled {
-        background: ${({ theme }) => theme.STROKE_GREY};
+        background: ${({ theme }) => theme.legacy.STROKE_GREY};
     }
 `;
 

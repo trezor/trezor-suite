@@ -23,7 +23,7 @@ const NoTransactions = styled.div`
     display: flex;
     justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const StyledH2 = styled(H2)`
@@ -35,7 +35,7 @@ const TransactionCount = styled.div`
     margin-top: 6px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 export const CoinmarketAccountTransactions = () => {

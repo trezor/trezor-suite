@@ -114,7 +114,7 @@ export const LabelLeft = styled.label`
     margin-bottom: 8px;
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 export const RightLabel = styled.div`

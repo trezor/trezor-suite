@@ -19,7 +19,7 @@ const BackendRowWrapper = styled.div`
     padding: 12px 0;
 
     & + & {
-        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     }
 `;
 
@@ -40,7 +40,7 @@ const CoinTitle = styled.span`
 const CoinUrls = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     white-space: nowrap;
     overflow: hidden;
     width: 100%;

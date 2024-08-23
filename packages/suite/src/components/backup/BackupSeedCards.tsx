@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 const Instructions = styled.div`
     text-align: center;
     margin: 16px 0 26px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
 `;

@@ -51,7 +51,7 @@ const Search = styled.div`
 
 const Heading = styled(H2)<{ $isInline?: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     ${props =>
         props.$isInline &&
         css`
@@ -78,7 +78,7 @@ const ExpandedMobileWrapper = styled.div`
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 4px 10px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
+    box-shadow: 0 4px 10px 0 ${({ theme }) => theme.legacy.BOX_SHADOW_BLACK_20};
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     padding-bottom: 16px;
@@ -122,7 +122,7 @@ export const MobileAccountsMenu = () => {
                         <StyledIcon
                             $isActive={isExpanded}
                             size={20}
-                            color={theme.TYPE_LIGHT_GREY}
+                            color={theme.legacy.TYPE_LIGHT_GREY}
                             onClick={() => {
                                 setIsExpanded(!isExpanded);
                             }}

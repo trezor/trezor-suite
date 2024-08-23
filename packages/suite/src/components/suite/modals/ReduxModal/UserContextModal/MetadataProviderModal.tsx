@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 const Error = styled.div`
     margin-top: 8px;
     font-size: ${FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_RED};
+    color: ${({ theme }) => theme.legacy.TYPE_RED};
 `;
 
 // todo: can't use button from @trezor/components directly, probably inconsistent design again
@@ -29,14 +29,14 @@ const Error = styled.div`
 const StyledButton = styled(Button)`
     padding: 10px;
     font-size: ${FONT_SIZE.NORMAL};
-    background-color: ${({ theme }) => theme.BG_GREY};
+    background-color: ${({ theme }) => theme.legacy.BG_GREY};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
     height: 42px;
 `;
 
 // todo: typography shall be unified and these ad hoc styles removed..
 const StyledP = styled(Paragraph)`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 const StyledModal = styled(Modal)`

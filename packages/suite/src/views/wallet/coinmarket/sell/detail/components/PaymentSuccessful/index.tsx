@@ -23,7 +23,7 @@ const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 17px 0 30px;
     max-width: 310px;
@@ -33,7 +33,7 @@ const Description = styled.div`
 const FixedRate = styled.div`
     display: flex;
     flex-direction: column;
-    background-color: ${({ theme }) => theme.BG_GREY};
+    background-color: ${({ theme }) => theme.legacy.BG_GREY};
     padding: 14px 18px;
     border-radius: ${borders.radii.xs};
     margin-bottom: 30px;
@@ -43,7 +43,7 @@ const FixedRateHeader = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 const FixedRateMessage = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 interface PaymentSuccessfulProps {
     account: Account;

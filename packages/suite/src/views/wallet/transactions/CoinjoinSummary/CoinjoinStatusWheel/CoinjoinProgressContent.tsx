@@ -15,7 +15,7 @@ import { spacingsPx, typography } from '@trezor/theme';
 export const Container = styled.div<{ $isWide: boolean }>`
     width: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};
     height: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.legacy.BG_WHITE};
     border-radius: 50%;
     transition:
         background 0.15s ease-out,

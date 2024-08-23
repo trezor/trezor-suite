@@ -21,7 +21,7 @@ const StyledImage = styled(Image)`
 
 const StyledButton = styled(Button)`
     path {
-        fill: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+        fill: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     }
 `;
 

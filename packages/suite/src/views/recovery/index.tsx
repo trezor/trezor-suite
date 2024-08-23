@@ -40,7 +40,7 @@ const StepsContainer = styled.div`
 `;
 
 const StyledP = styled(Paragraph)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const StyledImage = styled(Image)`

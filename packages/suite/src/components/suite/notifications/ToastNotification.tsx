@@ -26,7 +26,7 @@ const BodyWrapper = styled.div<{ $isTall: boolean }>`
 
 const Message = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 const StyledButton = styled(Button)<{ $action: NotificationViewProps['action'] }>`
@@ -118,7 +118,7 @@ const ToastNotification = ({
                 <StyledCancelIcon
                     size={16}
                     icon="CROSS"
-                    hoverColor={theme.TYPE_LIGHTER_GREY}
+                    hoverColor={theme.legacy.TYPE_LIGHTER_GREY}
                     onClick={handleCancelClick}
                     data-testid={`${dataTestBase}/close`}
                 />

@@ -23,7 +23,7 @@ const ApiPlaygroundWrapper = styled.div`
     overscroll-behavior: contain;
     border-radius: 1rem;
     padding: 0;
-    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
 
     @media (min-width: ${variables.SCREEN_SIZE.LG}) {

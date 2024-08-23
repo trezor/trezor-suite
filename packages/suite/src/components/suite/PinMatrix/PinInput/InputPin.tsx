@@ -11,7 +11,7 @@ const StyledInput = styled(Input)`
         font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
         font-size: ${variables.FONT_SIZE.SMALL};
         padding: 0 ${spacingsPx.md} 0 ${spacingsPx.lg};
-        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+        color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
         background: transparent;
         box-sizing: border-box;
     }
@@ -32,7 +32,7 @@ export const InputPin = ({ value, onDeleteClick }: InputPinProps) => {
             innerAddon={
                 <IconLegacy
                     onClick={onDeleteClick}
-                    color={!value ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY}
+                    color={!value ? theme.legacy.TYPE_LIGHT_GREY : theme.legacy.TYPE_DARK_GREY}
                     icon="BACK"
                 />
             }

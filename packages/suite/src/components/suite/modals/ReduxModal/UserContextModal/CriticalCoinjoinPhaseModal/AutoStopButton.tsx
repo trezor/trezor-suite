@@ -17,7 +17,8 @@ const StyledIcon = styled(IconLegacy)<{ $isActivated: boolean }>`
     width: 15px;
     height: 15px;
     border: 1.5px solid
-        ${({ theme, $isActivated }) => ($isActivated ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
+        ${({ theme, $isActivated }) =>
+            $isActivated ? theme.legacy.TYPE_GREEN : theme.legacy.TYPE_LIGHT_GREY};
     border-radius: 50%;
     transition:
         background ${TRANSITION_CONFIG},
@@ -54,7 +55,7 @@ const Container = styled.button<{
     width: 290px;
     margin: 14px auto 0;
     padding: 3px 8px 3px 26px;
-    border: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
+    border: 1px solid ${({ theme }) => theme.legacy.STROKE_LIGHT_GREY};
     border-radius: ${borders.radii.lg};
     color: ${({ theme }) => theme.textSubdued};
     ${typography.hint}
@@ -67,24 +68,29 @@ const Container = styled.button<{
     appearance: none;
 
     &:focus-visible {
-        ${({ theme }) => getHoverStyle(theme.BG_GREY, theme.TYPE_LIGHTER_GREY)}
+        ${({ theme }) => getHoverStyle(theme.legacy.BG_GREY, theme.legacy.TYPE_LIGHTER_GREY)}
     }
 
     ${({ theme, $isHovered }) =>
-        $isHovered && getHoverStyle(theme.BG_GREY, theme.TYPE_LIGHTER_GREY)}
+        $isHovered && getHoverStyle(theme.legacy.BG_GREY, theme.legacy.TYPE_LIGHTER_GREY)}
 
     ${({ theme, $isActivated, $isHovered }) =>
         $isActivated &&
         css`
-            border-color: ${theme.BG_LIGHT_GREEN};
-            background: ${theme.BG_LIGHT_GREEN};
-            color: ${theme.TYPE_GREEN};
+            border-color: ${theme.legacy.BG_LIGHT_GREEN};
+            background: ${theme.legacy.BG_LIGHT_GREEN};
+            color: ${theme.legacy.TYPE_GREEN};
 
             &:focus-visible {
-                ${getHoverStyle(theme.BG_LIGHT_RED, theme.TYPE_RED, theme.TYPE_RED)}
+                ${getHoverStyle(
+                    theme.legacy.BG_LIGHT_RED,
+                    theme.legacy.TYPE_RED,
+                    theme.legacy.TYPE_RED,
+                )}
             }
 
-            ${$isHovered && getHoverStyle(theme.BG_LIGHT_RED, theme.TYPE_RED, theme.TYPE_RED)}
+            ${$isHovered &&
+            getHoverStyle(theme.legacy.BG_LIGHT_RED, theme.legacy.TYPE_RED, theme.legacy.TYPE_RED)}
         `};
 `;
 

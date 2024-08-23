@@ -25,8 +25,8 @@ const HeaderWrapper = styled.div<{ $noLabel?: boolean; $isScrolled: boolean }>`
     ${({ $isScrolled }) =>
         $isScrolled &&
         css`
-            box-shadow: 0 9px 27px 0 ${({ theme }) => transparentize(0.5, theme.STROKE_GREY)};
-            border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+            box-shadow: 0 9px 27px 0 ${({ theme }) => transparentize(0.5, theme.legacy.STROKE_GREY)};
+            border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
         `}
 
     ${({ $noLabel }) =>
@@ -45,7 +45,7 @@ const Label = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-align: center;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     padding: 0 15px;
     width: 100%;
 `;

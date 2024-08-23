@@ -7,7 +7,7 @@ import { borders } from '@trezor/theme';
 const Wrapper = styled.div`
     display: flex;
     text-align: left;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.legacy.BG_GREY};
     align-items: center;
     border-radius: ${borders.radii.xs};
     width: 100%;

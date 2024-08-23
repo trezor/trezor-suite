@@ -64,7 +64,7 @@ const Left = styled.div`
 
 const TokenBalance = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     height: 18px;
 `;
 
@@ -90,7 +90,7 @@ const Right = styled.div`
 `;
 
 const Symbol = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -292,7 +292,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                     <StyledTransferIcon
                                         icon="TRANSFER"
                                         size={16}
-                                        color={theme.TYPE_LIGHT_GREY}
+                                        color={theme.legacy.TYPE_LIGHT_GREY}
                                     />
 
                                     <Right>

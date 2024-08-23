@@ -14,8 +14,8 @@ const Container = styled.div<{
     height: ${({ $size }) => `${$size}px`};
     border-radius: 50%;
     background: ${({ theme, $valueInPercents, $color, $backgroundColor }) =>
-        `conic-gradient(${$color || theme.BG_GREEN} ${3.6 * $valueInPercents}deg, ${
-            $backgroundColor || theme.STROKE_GREY
+        `conic-gradient(${$color || theme.legacy.BG_GREEN} ${3.6 * $valueInPercents}deg, ${
+            $backgroundColor || theme.legacy.STROKE_GREY
         } 0)`};
 `;
 

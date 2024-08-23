@@ -52,7 +52,7 @@ const ErrorMessage = styled.div`
     padding: 20px;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
 `;

@@ -40,7 +40,7 @@ const FiatWrapper = styled.div`
 const Amount = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -55,7 +55,7 @@ const Option = styled.div`
 `;
 
 const AccountType = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     padding-left: 5px;
 `;
 
@@ -179,7 +179,7 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
                                     <IconLegacy
                                         icon="PLUS"
                                         size={25}
-                                        color={theme.TYPE_DARK_GREY}
+                                        color={theme.legacy.TYPE_DARK_GREY}
                                     />
                                 </LogoWrapper>
                                 <AccountWrapper>
@@ -199,7 +199,7 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
                                     <IconLegacy
                                         icon="NON_SUITE"
                                         size={25}
-                                        color={theme.TYPE_DARK_GREY}
+                                        color={theme.legacy.TYPE_DARK_GREY}
                                     />
                                 </LogoWrapper>
                                 <AccountWrapper>

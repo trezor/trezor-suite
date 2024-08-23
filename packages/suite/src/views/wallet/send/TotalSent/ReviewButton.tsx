@@ -20,17 +20,17 @@ const StyledWarning = styled(Warning)`
 `;
 
 const ButtonReview = styled(TooltipButton)<{ $isRed: boolean }>`
-    background: ${({ $isRed, theme }) => $isRed && theme.BUTTON_RED};
+    background: ${({ $isRed, theme }) => $isRed && theme.legacy.BUTTON_RED};
     display: flex;
     flex-direction: column;
     min-width: 200px;
 
     &:disabled {
-        background: ${({ theme }) => theme.STROKE_GREY};
+        background: ${({ theme }) => theme.legacy.STROKE_GREY};
     }
 
     &:hover {
-        background: ${({ $isRed, theme }) => $isRed && theme.BUTTON_RED_HOVER};
+        background: ${({ $isRed, theme }) => $isRed && theme.legacy.BUTTON_RED_HOVER};
     }
 `;
 
@@ -46,7 +46,7 @@ const List = styled.ul`
 const TextButton = styled.button`
     background: none;
     border: none;
-    color: ${({ theme }) => theme.TYPE_WHITE};
+    color: ${({ theme }) => theme.legacy.TYPE_WHITE};
     cursor: pointer;
     padding: 0;
     text-decoration: underline;

@@ -31,7 +31,7 @@ const GalleryWrapper = styled.div`
     padding: ${spacingsPx.xs} 0;
     height: 200px;
     overflow-y: auto;
-    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const DeviceImageWrapper = styled.div`
@@ -63,7 +63,7 @@ const SetupActions = styled.div`
     align-items: flex-start;
     margin-bottom: ${spacingsPx.xxl};
     padding-bottom: ${spacingsPx.xxl};
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     width: fit-content;
     gap: ${spacingsPx.md};
     flex-flow: row wrap;

@@ -10,7 +10,7 @@ const IconWrapper = styled.div`
     height: 120px;
     border-radius: 50%;
     margin-bottom: 28px;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.legacy.BG_GREY};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -19,7 +19,7 @@ const IconWrapper = styled.div`
 const Text = styled.h2`
     font-size: ${variables.FONT_SIZE.H2};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 const InfoWrapper = styled.div`
@@ -42,12 +42,12 @@ const MessageSlowWrapper = styled(MessageWrapper)`
 
 const DisableButton = styled(Button)`
     margin-left: 10px;
-    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    background: ${({ theme }) => theme.BG_WHITE};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+    background: ${({ theme }) => theme.legacy.BG_WHITE};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 
     &:hover {
-        background: ${({ theme }) => theme.BG_LIGHT_RED};
+        background: ${({ theme }) => theme.legacy.BG_LIGHT_RED};
     }
 `;
 
@@ -73,7 +73,7 @@ const StyledProgressBar = styled(ProgressBar)`
 const ProgressWrapper = styled.div`
     display: flex;
     align-items: center;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.legacy.BG_GREY};
     border-radius: ${borders.radii.xs};
     width: 100%;
     min-height: 45px;
@@ -81,7 +81,7 @@ const ProgressWrapper = styled.div`
 
 const ProgressMessage = styled.div`
     margin-right: 16px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

@@ -54,7 +54,7 @@ const GuideWrapper = styled.div`
 const MotionGuide = styled(motion.div)`
     max-width: 100vw;
     height: 100%;
-    border-left: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-left: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     display: flex;
     overflow-x: hidden;
 `;

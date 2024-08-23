@@ -43,7 +43,7 @@ export const GraphXAxisTick = ({ x, y, payload, selectedRange }: GraphXAxisProps
                 y={0}
                 dy={16}
                 textAnchor="middle"
-                fill={theme.TYPE_LIGHT_GREY}
+                fill={theme.legacy.TYPE_LIGHT_GREY}
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
                 {date && getFormattedDate(selectedRange, date)}

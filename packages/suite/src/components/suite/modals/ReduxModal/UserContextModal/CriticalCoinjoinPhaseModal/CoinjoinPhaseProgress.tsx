@@ -33,9 +33,9 @@ const StepConiainer = styled.div<{ $isCurrent: boolean; $isComplete: boolean }>`
     height: 44px;
     border-radius: 50%;
     border: ${({ theme, $isCurrent, $isComplete }) =>
-        !$isCurrent && !$isComplete && `1.5px solid ${theme.STROKE_GREY}`};
+        !$isCurrent && !$isComplete && `1.5px solid ${theme.legacy.STROKE_GREY}`};
     background: ${({ theme, $isCurrent, $isComplete }) =>
-        ($isCurrent || $isComplete) && theme.BG_GREY};
+        ($isCurrent || $isComplete) && theme.legacy.BG_GREY};
 `;
 
 const Message = styled.p`
@@ -46,7 +46,7 @@ const Message = styled.p`
 const Separator = styled.div`
     height: 1px;
     width: 50px;
-    background: ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const TimerCointainer = styled.p`
@@ -74,7 +74,9 @@ const Step = ({ phase, currentPhase }: StepProps) => {
 
             {isCurrent && <Spinner size={16} />}
 
-            {isComplete && <IconLegacy icon="CHECK" size={28} color={theme.TYPE_DARK_GREY} />}
+            {isComplete && (
+                <IconLegacy icon="CHECK" size={28} color={theme.legacy.TYPE_DARK_GREY} />
+            )}
         </StepConiainer>
     );
 };

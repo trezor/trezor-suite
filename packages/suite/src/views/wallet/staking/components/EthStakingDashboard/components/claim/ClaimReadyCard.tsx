@@ -27,7 +27,7 @@ const StyledIcon = styled(IconLegacy)`
 `;
 
 const BgImgWrapper = styled.div<{ $top: number; $left: number }>`
-    opacity: ${({ theme }) => (theme.THEME === 'dark' ? '0.5' : '0.1')};
+    opacity: ${({ theme }) => (theme.legacy.THEME === 'dark' ? '0.5' : '0.1')};
     position: absolute;
     left: ${({ $left = 0 }) => $left}px;
     top: ${({ $top = 30 }) => $top}px;

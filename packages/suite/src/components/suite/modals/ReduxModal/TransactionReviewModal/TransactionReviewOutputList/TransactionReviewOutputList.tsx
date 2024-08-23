@@ -52,7 +52,7 @@ const RightTopInner = styled.div`
 const RightBottom = styled.div`
     margin-left: 30px;
     padding: 20px 0 0;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     display: flex;
     flex-direction: column;
 

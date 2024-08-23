@@ -36,8 +36,8 @@ export const EjectButton = ({ setContentType, 'data-testid': dataTest }: EjectBu
                     data-testid={`${dataTest}/eject-button`}
                     icon="EJECT"
                     size={22}
-                    color={theme.TYPE_LIGHT_GREY}
-                    hoverColor={theme.TYPE_DARK_GREY}
+                    color={theme.legacy.TYPE_LIGHT_GREY}
+                    hoverColor={theme.legacy.TYPE_DARK_GREY}
                     onClick={onEjectClick}
                 />
             </Tooltip>

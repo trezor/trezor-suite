@@ -34,7 +34,7 @@ const Label = styled.div`
     white-space: nowrap;
     padding-top: 1px;
     margin-right: ${spacingsPx.sm};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const StyledButton = styled(Button)`

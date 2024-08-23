@@ -12,7 +12,7 @@ import { SecurityCheck } from '../onboarding/steps/SecurityCheck/SecurityCheck';
 import { typography } from '@trezor/theme';
 
 const StyledTrezorLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     ${typography.hint}
 `;
 

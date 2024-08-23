@@ -35,7 +35,7 @@ const StepTitle = styled(H3)`
 `;
 
 const StepDescription = styled(Paragraph)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -58,7 +58,7 @@ const Container = styled.div`
             left: -15px;
             width: 1px;
             height: 130px;
-            background: ${({ theme }) => theme.STROKE_GREY};
+            background: ${({ theme }) => theme.legacy.STROKE_GREY};
         }
     }
 

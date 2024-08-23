@@ -22,7 +22,7 @@ const NodeButton = styled.button`
     cursor: pointer;
     line-height: 1.57;
     transition: ${({ theme }) =>
-        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
+        `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
 
     &:hover,
     &:focus {
@@ -43,7 +43,7 @@ const Label = styled.div<{ $isBold: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${({ $isBold }) =>
         $isBold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     overflow: hidden;
     line-height: 16px;
     display: flex;
@@ -97,7 +97,7 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
     if (node.type === 'page') {
         return (
             <PageNodeButton data-testid={`@guide/node${node.id}`} onClick={navigateToNode}>
-                <PageNodeButtonIcon icon="ARTICLE" size={20} color={theme.TYPE_LIGHT_GREY} />
+                <PageNodeButtonIcon icon="ARTICLE" size={20} color={theme.legacy.TYPE_LIGHT_GREY} />
                 {label}
             </PageNodeButton>
         );

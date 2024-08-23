@@ -24,7 +24,7 @@ const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-align: left;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     padding: 0 0 11px;
     width: 100%;
 `;
@@ -52,7 +52,7 @@ const RatingItem = styled.button<{ $selected?: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     cursor: pointer;
     font-size: 30px;
     background-color: inherit;
@@ -60,11 +60,11 @@ const RatingItem = styled.button<{ $selected?: boolean }>`
     ${({ $selected, theme }) =>
         $selected &&
         css`
-            background: ${theme.BG_GREEN};
-            border: 1px solid ${theme.BG_GREEN};
+            background: ${theme.legacy.BG_GREEN};
+            border: 1px solid ${theme.legacy.BG_GREEN};
 
             &:hover {
-                background: ${theme.BG_GREEN};
+                background: ${theme.legacy.BG_GREEN};
             }
         `};
 `;
@@ -77,7 +77,7 @@ const AnonymousDataItem = styled.li`
     margin-bottom: 4px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 const StyledTextarea = styled(Textarea)`

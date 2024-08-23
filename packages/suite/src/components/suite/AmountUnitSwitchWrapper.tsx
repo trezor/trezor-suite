@@ -18,7 +18,7 @@ const Container = styled.div`
     cursor: pointer;
     ${mediaQueries.hover} {
         &:hover {
-            background: ${({ theme }) => theme.BG_GREY};
+            background: ${({ theme }) => theme.legacy.BG_GREY};
         }
     }
 `;

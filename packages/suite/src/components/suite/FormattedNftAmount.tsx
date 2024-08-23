@@ -23,7 +23,7 @@ const Symbol = styled.div`
 `;
 
 const StyledTrezorLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
     text-decoration: underline;
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};

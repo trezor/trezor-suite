@@ -9,7 +9,7 @@ import { SecurityCheckButton } from '../../../views/onboarding/steps/SecurityChe
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 
 const TopSection = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     margin-top: 8px;
     padding-bottom: 24px;
     width: 100%;
@@ -22,7 +22,7 @@ const StyledH2 = styled(H2)`
 `;
 
 const Text = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

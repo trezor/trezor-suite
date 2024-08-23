@@ -41,7 +41,7 @@ const HeaderFirstRow = styled.div<{ $elevation: Elevation }>`
     padding-bottom: ${spacingsPx.xl};
     padding-right: ${spacingsPx.xs};
     border-bottom: 1px solid ${mapElevationToBorder};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 
     ${variables.SCREEN_QUERY.MOBILE} {
         grid-template-columns: 55px 1fr fit-content(15px);
@@ -50,7 +50,7 @@ const HeaderFirstRow = styled.div<{ $elevation: Elevation }>`
 
 const Grid = styled.div<{ $showRbfCols?: boolean }>`
     display: grid;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     grid-gap: ${spacingsPx.sm};
     grid-template-columns: 105px minmax(0, 2.5fr) 90px minmax(0, 2.5fr); /* title value title value */
     ${typography.hint}

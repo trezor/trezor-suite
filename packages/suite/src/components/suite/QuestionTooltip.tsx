@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 
 const Label = styled(H3)`
     margin-right: 4px;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 // Label container to avoid jumping when tooltip appears

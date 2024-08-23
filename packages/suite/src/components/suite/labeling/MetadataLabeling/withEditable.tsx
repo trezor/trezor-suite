@@ -113,7 +113,7 @@ export const withEditable =
                 </WrappedComponent>
 
                 <IconListWrapper>
-                    <IconWrapper $bgColor={theme.BG_LIGHT_GREEN}>
+                    <IconWrapper $bgColor={theme.legacy.BG_LIGHT_GREEN}>
                         <IconLegacy
                             useCursorPointer
                             size={14}
@@ -123,11 +123,11 @@ export const withEditable =
                                 e.stopPropagation();
                                 submit(value);
                             }}
-                            color={theme.TYPE_GREEN}
+                            color={theme.legacy.TYPE_GREEN}
                         />
                     </IconWrapper>
 
-                    <IconWrapper $bgColor={theme.BG_GREY}>
+                    <IconWrapper $bgColor={theme.legacy.BG_GREY}>
                         <IconLegacy
                             useCursorPointer
                             size={14}
@@ -137,7 +137,7 @@ export const withEditable =
                                 e.stopPropagation();
                                 onBlur();
                             }}
-                            color={theme.TYPE_DARK_GREY}
+                            color={theme.legacy.TYPE_DARK_GREY}
                         />
                     </IconWrapper>
                 </IconListWrapper>

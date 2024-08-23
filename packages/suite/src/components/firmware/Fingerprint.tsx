@@ -6,8 +6,8 @@ const Wrapper = styled.pre`
     padding: 8px;
     width: 100%;
     overflow: hidden;
-    background-color: ${({ theme }) => theme.BG_GREY};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    background-color: ${({ theme }) => theme.legacy.BG_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     text-align: center;
     word-break: break-all;
     font-family: monospace;

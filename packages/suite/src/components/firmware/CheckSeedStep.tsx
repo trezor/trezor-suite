@@ -28,8 +28,8 @@ const TextButton = styled.span`
 
 const StyledSwitchWarning = styled(FirmwareSwitchWarning)`
     align-self: flex-start;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     margin: ${spacingsPx.xs} ${spacingsPx.md};
     padding-bottom: ${spacingsPx.md};

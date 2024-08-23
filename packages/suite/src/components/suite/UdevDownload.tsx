@@ -36,7 +36,7 @@ const LoaderWrapper = styled.div`
 const Manual = styled(Download)`
     margin-top: 24px;
     padding-top: 24px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const StyledButton = styled(Button)`

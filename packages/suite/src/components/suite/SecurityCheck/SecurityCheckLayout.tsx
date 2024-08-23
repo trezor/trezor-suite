@@ -22,7 +22,7 @@ const ImageWrapper = styled.div`
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.legacy.BG_GREY};
     border-radius: 12px;
     padding: 32px;
 `;

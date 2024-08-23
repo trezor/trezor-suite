@@ -17,7 +17,7 @@ const Wrapper = styled.div<{ $hideBorder: boolean }>`
     ${({ $hideBorder }) =>
         !$hideBorder &&
         css`
-            border-bottom: solid 1px ${({ theme }) => theme.STROKE_GREY};
+            border-bottom: solid 1px ${({ theme }) => theme.legacy.STROKE_GREY};
         `}
 `;
 

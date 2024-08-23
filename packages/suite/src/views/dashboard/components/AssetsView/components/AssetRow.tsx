@@ -184,7 +184,7 @@ export const AssetRow = memo(
                         <IconLegacy
                             style={{ paddingLeft: '4px', paddingBottom: '2px' }}
                             icon="WARNING"
-                            color={theme.TYPE_RED}
+                            color={theme.legacy.TYPE_RED}
                             size={14}
                         />
                     </FailedCol>

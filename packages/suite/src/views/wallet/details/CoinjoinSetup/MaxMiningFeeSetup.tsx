@@ -42,11 +42,11 @@ export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetu
     const trackStyle = {
         background: `\
             linear-gradient(90deg,\
-                ${theme.GRADIENT_SLIDER_RED_END} 0%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_END} ${feeRateMedianPercentage / 1.1}%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_START} ${feeRateMedianPercentage}%,\
-                ${theme.GRADIENT_SLIDER_GREEN_END} ${defaultMaxMiningFeePercentage}%,\
-                ${theme.GRADIENT_SLIDER_GREEN_START} 100%\
+                ${theme.legacy.GRADIENT_SLIDER_RED_END} 0%,\
+                ${theme.legacy.GRADIENT_SLIDER_YELLOW_END} ${feeRateMedianPercentage / 1.1}%,\
+                ${theme.legacy.GRADIENT_SLIDER_YELLOW_START} ${feeRateMedianPercentage}%,\
+                ${theme.legacy.GRADIENT_SLIDER_GREEN_END} ${defaultMaxMiningFeePercentage}%,\
+                ${theme.legacy.GRADIENT_SLIDER_GREEN_START} 100%\
             );`,
     };
 

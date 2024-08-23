@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     padding: ${spacingsPx.lg} ${spacingsPx.xl};
     width: 100%;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     align-items: center;
 
     ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
@@ -28,7 +28,7 @@ const StyledProgressBar = styled(ProgressBar)`
     display: flex;
     margin-right: ${spacingsPx.lg};
     border-radius: ${borders.radii.xxs};
-    background: ${({ theme }) => theme.STROKE_GREY_ALT};
+    background: ${({ theme }) => theme.legacy.STROKE_GREY_ALT};
     flex: 1;
 
     ${ProgressBar.Value} {
@@ -57,7 +57,7 @@ export const FirmwareProgressBar = () => {
             <StyledProgressBar value={progress} />
             <Percentage>
                 {isDone ? (
-                    <IconLegacy icon="CHECK" color={theme.TYPE_GREEN} size={24} />
+                    <IconLegacy icon="CHECK" color={theme.legacy.TYPE_GREEN} size={24} />
                 ) : (
                     `${progress} %`
                 )}

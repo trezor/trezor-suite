@@ -15,7 +15,7 @@ const InfoIcon = styled(IconLegacy)`
     height: 18px;
     margin-right: 6px;
     align-self: flex-start;
-    background: ${({ theme }) => theme.TYPE_LIGHT_ORANGE};
+    background: ${({ theme }) => theme.legacy.TYPE_LIGHT_ORANGE};
     border-radius: 50%;
 
     ${variables.SCREEN_QUERY.MOBILE} {
@@ -24,7 +24,7 @@ const InfoIcon = styled(IconLegacy)`
 `;
 
 const Text = styled.div`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -32,7 +32,7 @@ const Heading = styled.div`
     display: flex;
     align-items: center;
     margin-bottom: 8px;
-    color: ${({ theme }) => theme.TYPE_DARK_ORANGE};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_ORANGE};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
 `;
@@ -45,12 +45,13 @@ const WarningList = styled.ul`
 `;
 
 const StyledButton = styled(Button)`
-    background: ${({ theme }) => theme.TYPE_DARK_ORANGE};
+    background: ${({ theme }) => theme.legacy.TYPE_DARK_ORANGE};
 
     &:hover,
     &:focus,
     &:active {
-        background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_DARK_ORANGE)};
+        background: ${({ theme }) =>
+            darken(theme.legacy.HOVER_DARKEN_FILTER, theme.legacy.TYPE_DARK_ORANGE)};
     }
 `;
 
@@ -75,7 +76,7 @@ export const CoinjoinReceiveWarning = () => {
             >
                 <Text>
                     <Heading>
-                        <InfoIcon icon="INFO" size={14} color={theme.TYPE_DARK_ORANGE} />
+                        <InfoIcon icon="INFO" size={14} color={theme.legacy.TYPE_DARK_ORANGE} />
                         <Translation id="TR_COINJOIN_RECEIVE_WARNING_TITLE" />
                     </Heading>
 

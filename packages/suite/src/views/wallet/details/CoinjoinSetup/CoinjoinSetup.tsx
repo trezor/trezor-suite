@@ -26,7 +26,7 @@ const SetupOptions = styled.div`
 `;
 
 const CustomSetup = styled.div`
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     display: flex;
     flex-direction: column;
     gap: 32px;

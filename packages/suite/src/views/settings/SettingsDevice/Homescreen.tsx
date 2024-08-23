@@ -35,7 +35,7 @@ const Col = styled.div`
 `;
 
 const ValidationMessage = styled.div`
-    color: ${({ theme }) => theme.TYPE_ORANGE};
+    color: ${({ theme }) => theme.legacy.TYPE_ORANGE};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

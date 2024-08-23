@@ -15,7 +15,7 @@ const Header = styled.div`
     margin-top: -8px;
     padding: 0 22px;
     align-items: center;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY_ALT};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY_ALT};
 `;
 const TabSelector = styled.div`
     display: flex;
@@ -33,13 +33,15 @@ const TabButton = styled.button<{ $selected: boolean }>`
     cursor: pointer;
 
     /* change styles if the button is selected */
-    color: ${({ $selected, theme }) => ($selected ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY)};
+    color: ${({ $selected, theme }) =>
+        $selected ? theme.legacy.TYPE_DARK_GREY : theme.legacy.TYPE_LIGHT_GREY};
     border-bottom: 2px solid;
-    border-color: ${({ $selected, theme }) => ($selected ? theme.TYPE_DARK_GREY : 'transparent')};
+    border-color: ${({ $selected, theme }) =>
+        $selected ? theme.legacy.TYPE_DARK_GREY : 'transparent'};
     transition: border-color 0.1s;
 
     &:hover {
-        border-color: ${({ theme, $selected }) => !$selected && theme.STROKE_GREY};
+        border-color: ${({ theme, $selected }) => !$selected && theme.legacy.STROKE_GREY};
     }
 `;
 
@@ -96,8 +98,8 @@ export const Notifications = (props: NotificationsProps) => {
                         <IconLegacy
                             icon="CROSS"
                             size={20}
-                            color={theme.TYPE_LIGHT_GREY}
-                            hoverColor={theme.TYPE_LIGHTER_GREY}
+                            color={theme.legacy.TYPE_LIGHT_GREY}
+                            hoverColor={theme.legacy.TYPE_LIGHTER_GREY}
                             useCursorPointer
                             onClick={onCancel}
                         />

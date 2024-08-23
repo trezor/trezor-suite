@@ -56,7 +56,7 @@ const StyledLearnMoreButton = styled(LearnMoreButton)`
 
     button:hover,
     button:focus {
-        background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, '#d9d9d9')};
+        background: ${({ theme }) => darken(theme.legacy.HOVER_DARKEN_FILTER, '#d9d9d9')};
     }
 
     ${mediaQueries.dark_theme} {
@@ -67,7 +67,7 @@ const StyledLearnMoreButton = styled(LearnMoreButton)`
         button:hover,
         button:focus {
             background: ${({ theme }) =>
-                darken(theme.HOVER_DARKEN_FILTER, theme.backgroundSurfaceElevation0)};
+                darken(theme.legacy.HOVER_DARKEN_FILTER, theme.backgroundSurfaceElevation0)};
         }
     }
 `;

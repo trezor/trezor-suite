@@ -26,12 +26,12 @@ const OutputHeadline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-bottom: 6px;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     word-break: break-word;
 `;
 
 const OutputValue = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
@@ -61,9 +61,9 @@ const MultiIndicatorWrapper = styled.div<{ $linesCount: number }>`
         left: 10px;
         position: absolute;
         height: 100%;
-        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-        border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-        border-left: 1px solid ${({ theme }) => theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+        border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+        border-left: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
         content: '';
         display: block;
     }
@@ -71,7 +71,7 @@ const MultiIndicatorWrapper = styled.div<{ $linesCount: number }>`
     &::before {
         z-index: -1;
         width: 20px;
-        background: ${({ theme }) => theme.BG_WHITE};
+        background: ${({ theme }) => theme.legacy.BG_WHITE};
         position: absolute;
         height: 50%;
         content: '';
@@ -112,7 +112,7 @@ const DotSeparator = styled.div`
     width: 3px;
     height: 3px;
     border-radius: 50%;
-    background: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    background: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 // token name is fingerprint in Cardano

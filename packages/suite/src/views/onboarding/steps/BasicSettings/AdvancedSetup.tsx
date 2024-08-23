@@ -72,13 +72,13 @@ export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
                                     <IconLegacy
                                         icon="CHECK"
                                         size={24}
-                                        color={theme.TYPE_LIGHT_GREY}
+                                        color={theme.legacy.TYPE_LIGHT_GREY}
                                     />
                                 ) : (
                                     <IconLegacy
                                         icon="PLUS"
                                         size={24}
-                                        color={theme.TYPE_LIGHT_GREY}
+                                        color={theme.legacy.TYPE_LIGHT_GREY}
                                     />
                                 )}
                             </IconWrapper>

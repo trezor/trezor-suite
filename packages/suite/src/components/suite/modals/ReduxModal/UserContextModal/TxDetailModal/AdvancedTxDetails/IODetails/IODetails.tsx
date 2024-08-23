@@ -222,7 +222,7 @@ const GridRowGroupComponent = ({
                 )}
             </RowGridItem>
             <IconWrapper>
-                <IconLegacy icon="ARROW_RIGHT" size={17} color={theme.TYPE_LIGHT_GREY} />
+                <IconLegacy icon="ARROW_RIGHT" size={17} color={theme.legacy.TYPE_LIGHT_GREY} />
             </IconWrapper>
             <RowGridItem>
                 <IOAddress
@@ -407,7 +407,7 @@ const IOSectionColumn = ({ tx, inputs, outputs, isPhishingTransaction }: IOSecti
                     </div>
                 )}
                 <IconWrapper>
-                    <IconLegacy icon="ARROW_RIGHT" size={17} color={theme.TYPE_LIGHT_GREY} />
+                    <IconLegacy icon="ARROW_RIGHT" size={17} color={theme.legacy.TYPE_LIGHT_GREY} />
                 </IconWrapper>
                 {hasOutputs && (
                     <div>

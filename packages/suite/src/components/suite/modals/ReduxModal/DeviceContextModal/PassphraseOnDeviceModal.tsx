@@ -24,7 +24,7 @@ const StyledH2 = styled(H2)`
 
 const Tip = styled.span`
     margin-top: 12px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 

@@ -18,7 +18,7 @@ const Label = styled.span`
 
 const RedText = styled.span`
     margin-right: 2px;
-    color: ${({ theme }) => theme.TYPE_RED};
+    color: ${({ theme }) => theme.legacy.TYPE_RED};
 `;
 
 const expandAnimation: HTMLMotionProps<'div'> = {
@@ -62,11 +62,11 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
     const trackStyle = {
         background: `\
             linear-gradient(270deg,\
-                ${theme.GRADIENT_SLIDER_GREEN_START} 0%,\
-                ${theme.GRADIENT_SLIDER_GREEN_END} 60%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_START} 70%,\
-                ${theme.GRADIENT_SLIDER_YELLOW_END} 85%,\
-                ${theme.GRADIENT_SLIDER_RED_END} 100%\
+                ${theme.legacy.GRADIENT_SLIDER_GREEN_START} 0%,\
+                ${theme.legacy.GRADIENT_SLIDER_GREEN_END} 60%,\
+                ${theme.legacy.GRADIENT_SLIDER_YELLOW_START} 70%,\
+                ${theme.legacy.GRADIENT_SLIDER_YELLOW_END} 85%,\
+                ${theme.legacy.GRADIENT_SLIDER_RED_END} 100%\
             );`,
     };
 
@@ -83,7 +83,8 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 value: 1,
                 component: (
                     <Label>
-                        <IconLegacy icon="ONE_USER" size={14} color={theme.TYPE_DARK_GREY} /> 1
+                        <IconLegacy icon="ONE_USER" size={14} color={theme.legacy.TYPE_DARK_GREY} />{' '}
+                        1
                     </Label>
                 ),
             },
@@ -91,7 +92,12 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 value: 3,
                 component: (
                     <Label>
-                        <IconLegacy icon="TWO_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 3
+                        <IconLegacy
+                            icon="TWO_USERS"
+                            size={14}
+                            color={theme.legacy.TYPE_DARK_GREY}
+                        />{' '}
+                        3
                     </Label>
                 ),
             },
@@ -99,7 +105,12 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 value: 10,
                 component: (
                     <Label>
-                        <IconLegacy icon="THREE_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 10
+                        <IconLegacy
+                            icon="THREE_USERS"
+                            size={14}
+                            color={theme.legacy.TYPE_DARK_GREY}
+                        />{' '}
+                        10
                     </Label>
                 ),
             },
@@ -107,7 +118,12 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 value: 30,
                 component: (
                     <Label>
-                        <IconLegacy icon="FOUR_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 30
+                        <IconLegacy
+                            icon="FOUR_USERS"
+                            size={14}
+                            color={theme.legacy.TYPE_DARK_GREY}
+                        />{' '}
+                        30
                     </Label>
                 ),
             },
@@ -115,7 +131,12 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                 value: 100,
                 component: (
                     <Label>
-                        <IconLegacy icon="FOUR_USERS" size={14} color={theme.TYPE_DARK_GREY} /> 100
+                        <IconLegacy
+                            icon="FOUR_USERS"
+                            size={14}
+                            color={theme.legacy.TYPE_DARK_GREY}
+                        />{' '}
+                        100
                     </Label>
                 ),
             },

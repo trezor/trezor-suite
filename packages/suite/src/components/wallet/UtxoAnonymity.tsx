@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 `;
 
 const AnonymityLevel = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-variant-numeric: tabular-nums;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

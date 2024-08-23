@@ -19,7 +19,7 @@ const Content = styled.div`
     text-align: start;
     gap: ${spacingsPx.xxxl};
     padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxl} ${spacingsPx.xxl};
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_LIGHT_GREY};
 `;
 
 const TextContainer = styled.div`
@@ -41,7 +41,7 @@ const DisconnectWarning = styled.p`
 
 const Phase = styled.p`
     margin-top: ${spacingsPx.md};
-    color: ${({ theme }) => theme.TYPE_LIGHTER_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHTER_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

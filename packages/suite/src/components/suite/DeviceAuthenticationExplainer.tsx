@@ -14,7 +14,7 @@ const Item = styled.div`
 const Items = styled.div<{ $isHorizontal: DeviceAuthenticationExplainerProps['horizontal'] }>`
     display: grid;
     gap: 40px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 

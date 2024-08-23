@@ -10,7 +10,7 @@ import { spacingsPx } from '@trezor/theme';
 const StyledLottieAnimation = styled(LottieAnimation)`
     margin: 8px 16px 8px 0;
     min-width: 64px;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.legacy.BG_GREY};
 `;
 
 const Wrapper = styled(Card)`
@@ -19,7 +19,7 @@ const Wrapper = styled(Card)`
 `;
 
 const Description = styled(Paragraph)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const Column = styled.div`

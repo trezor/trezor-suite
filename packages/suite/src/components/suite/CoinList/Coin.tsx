@@ -26,8 +26,8 @@ const SettingsWrapper = styled.div<{
         css`
             &:hover {
                 background-color: ${transparentize(
-                    theme.HOVER_TRANSPARENTIZE_FILTER,
-                    theme.HOVER_PRIMER_COLOR,
+                    theme.legacy.HOVER_TRANSPARENTIZE_FILTER,
+                    theme.legacy.HOVER_PRIMER_COLOR,
                 )};
             }
         `}
@@ -72,12 +72,12 @@ export const CoinWrapper = styled.button<{
 }>`
     display: flex;
     place-items: center flex-start;
-    border: 1.5px solid ${({ theme }) => theme.STROKE_GREY};
-    background: ${({ theme }) => theme.BG_WHITE};
+    border: 1.5px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+    background: ${({ theme }) => theme.legacy.BG_WHITE};
     border-radius: 9999px;
     height: 47px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     cursor: pointer;
     transition: 0.2s ease-in-out;
     overflow: hidden;
@@ -85,13 +85,13 @@ export const CoinWrapper = styled.button<{
     &:disabled {
         cursor: not-allowed;
         opacity: 0.5;
-        background: ${({ theme }) => theme.BG_GREY};
+        background: ${({ theme }) => theme.legacy.BG_GREY};
     }
 
     &:hover {
-        background: ${({ theme }) => theme.BG_GREY_ALT};
+        background: ${({ theme }) => theme.legacy.BG_GREY_ALT};
         border-color: ${({ theme, $toggled }) =>
-            $toggled ? theme.BG_GREEN_HOVER : theme.TYPE_LIGHTER_GREY};
+            $toggled ? theme.legacy.BG_GREEN_HOVER : theme.legacy.TYPE_LIGHTER_GREY};
     }
 
     ${({ disabled, $forceHover, $hasSettings, theme, $toggled }) =>
@@ -194,7 +194,7 @@ export const Coin = ({
             <ImageWrapper>
                 <CoinLogo size={24} symbol={symbol} />
                 <Check $visible={toggled}>
-                    <IconLegacy size={8} color={theme.TYPE_WHITE} icon="CHECK" />
+                    <IconLegacy size={8} color={theme.legacy.TYPE_WHITE} icon="CHECK" />
                 </Check>
             </ImageWrapper>
             {label ? (

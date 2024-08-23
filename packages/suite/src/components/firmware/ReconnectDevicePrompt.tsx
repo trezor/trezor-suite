@@ -56,22 +56,23 @@ const BulletPointNumber = styled.div<{ $active?: boolean }>`
     margin-right: 14px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    background: ${({ theme }) => theme.BG_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    background: ${({ theme }) => theme.legacy.BG_GREY};
     font-variant-numeric: tabular-nums;
 
     ${({ $active, theme }) =>
         $active &&
         css`
-            color: ${theme.TYPE_GREEN};
-            background: ${theme.BG_LIGHT_GREEN};
+            color: ${theme.legacy.TYPE_GREEN};
+            background: ${theme.legacy.BG_LIGHT_GREEN};
         `}
 `;
 
 const BulletPointText = styled.span<{ $active?: boolean }>`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme, $active }) => ($active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
+    color: ${({ theme, $active }) =>
+        $active ? theme.legacy.TYPE_GREEN : theme.legacy.TYPE_LIGHT_GREY};
     text-align: left;
 `;
 

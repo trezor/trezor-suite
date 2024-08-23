@@ -38,7 +38,7 @@ const Info = styled.div`
 
     padding-top: 10px;
     min-height: 200px;
-    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     border-radius: 4px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
@@ -83,12 +83,12 @@ const Dark = styled.div`
     justify-content: flex-end;
     flex: 1;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 const RowWithBorder = styled(Row)`
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     margin-bottom: 0;
     margin-top: 10px;
     padding-bottom: 10px;

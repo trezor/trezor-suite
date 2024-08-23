@@ -10,11 +10,11 @@ const Option = styled.div`
 `;
 
 const On = styled(Option)`
-    color: ${({ theme }) => theme.BG_GREEN};
+    color: ${({ theme }) => theme.legacy.BG_GREEN};
 `;
 
 const Off = styled(Option)`
-    color: ${({ theme }) => theme.TYPE_RED};
+    color: ${({ theme }) => theme.legacy.TYPE_RED};
 `;
 
 const EqualSign = styled.div`

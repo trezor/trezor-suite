@@ -173,7 +173,9 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
         ? selectedUtxos.some(selected => isSameUtxo(selected, utxo))
         : composedInputs.some(u => u.prev_hash === utxo.txid && u.prev_index === utxo.vout);
     const isDisabled = coinjoinRegisteredUtxos.includes(utxo);
-    const utxoTagIconColor = isDisabled ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY;
+    const utxoTagIconColor = isDisabled
+        ? theme.legacy.TYPE_LIGHT_GREY
+        : theme.legacy.TYPE_DARK_GREY;
 
     const handleCheckbox = () => toggleUtxoSelection(utxo);
     const showTransactionDetail: MouseEventHandler = e => {
