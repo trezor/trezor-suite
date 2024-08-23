@@ -49,7 +49,7 @@ export const DisconnectLabelingProvider = () => {
             />
             <ActionColumn>
                 <ActionButton
-                    variant="secondary"
+                    variant="tertiary"
                     onClick={handleClick}
                     data-testid="@settings/metadata/disconnect-provider-button"
                 >

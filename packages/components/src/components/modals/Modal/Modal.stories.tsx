@@ -8,7 +8,7 @@ const Buttons = () => (
             Button
         </Button>
 
-        <Button variant="secondary" size="small">
+        <Button variant="tertiary" size="small">
             Button
         </Button>
     </>

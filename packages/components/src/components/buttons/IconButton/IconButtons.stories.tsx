@@ -4,7 +4,7 @@ import { StoryColumn } from '../../../support/Story';
 import { ButtonVariant } from '../buttonStyleUtils';
 import { Meta, StoryObj } from '@storybook/react';
 
-const variants: Array<Exclude<ButtonVariant, 'danger'>> = ['primary', 'secondary', 'tertiary'];
+const variants: Array<Exclude<ButtonVariant, 'danger'>> = ['primary', 'tertiary'];
 
 const meta: Meta = {
     title: 'Buttons',

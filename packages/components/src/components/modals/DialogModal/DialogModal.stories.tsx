@@ -4,7 +4,7 @@ import { variables } from '../../../config';
 
 const Buttons = () => (
     <>
-        <Button variant="secondary" size="small">
+        <Button variant="primary" size="small">
             Yes
         </Button>
 

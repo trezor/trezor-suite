@@ -82,7 +82,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
         <StyledModal
             bottomBarComponents={
                 <>
-                    <Button isFullWidth variant="secondary" onClick={close}>
+                    <Button isFullWidth variant="tertiary" onClick={close}>
                         <Translation id="TR_DISMISS" />
                     </Button>
                     {!isOnAccountPage && (

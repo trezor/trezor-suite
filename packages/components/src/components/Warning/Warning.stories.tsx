@@ -19,9 +19,6 @@ const meta: Meta = {
             <WarningComponent {...rest} variant="primary">
                 {children}
             </WarningComponent>
-            <WarningComponent {...rest} variant="secondary">
-                {children}
-            </WarningComponent>
             <WarningComponent {...rest} variant="tertiary">
                 {children}
             </WarningComponent>

@@ -60,7 +60,7 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
             />
             <ActionColumn>
                 <ActionButton
-                    variant="secondary"
+                    variant="tertiary"
                     data-testid="@settings/device/create-multi-share-backup-button"
                     onClick={handleClick}
                     isDisabled={isDeviceLocked}

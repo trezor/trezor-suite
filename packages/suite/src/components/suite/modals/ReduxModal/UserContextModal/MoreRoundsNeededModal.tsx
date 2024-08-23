@@ -40,7 +40,7 @@ export const MoreRoundsNeededModal = () => {
     return (
         <StyledModal
             bottomBarComponents={
-                <Button variant="secondary" onClick={close} isFullWidth>
+                <Button variant="primary" onClick={close} isFullWidth>
                     <Translation id="TR_OK" />
                 </Button>
             }

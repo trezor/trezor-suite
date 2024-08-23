@@ -120,7 +120,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
             />
             <ActionColumn>
                 <ActionButton
-                    variant="secondary"
+                    variant="tertiary"
                     onClick={handleUpdate}
                     data-testid="@settings/device/update-button"
                     isDisabled={isDeviceLocked}

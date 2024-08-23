@@ -131,7 +131,7 @@ export const TroubleshootingTips = ({
 
             {offerWebUsb && !isAndroid() && (
                 <StyledButton
-                    variant="secondary"
+                    variant="tertiary"
                     data-testid="@onboarding/try-bridge-button"
                     onClick={() => TrezorConnect.disableWebUSB()}
                 >

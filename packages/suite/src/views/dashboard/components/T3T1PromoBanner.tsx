@@ -266,11 +266,11 @@ export const T3T1PromoBanner = () => {
                         variant="nostyle"
                         onClick={onPreorderNow}
                     >
-                        <ButtonShopNow variant="secondary">
+                        <ButtonShopNow variant="primary">
                             <Translation id="TR_ORDER_NOW" />
                         </ButtonShopNow>
                     </LinkButtonShopNow>
-                    <ButtonClose icon="close" variant="secondary" onClick={onCloseBanner} />
+                    <ButtonClose icon="close" variant="tertiary" onClick={onCloseBanner} />
                 </BannerWrapper>
             )}
         </AnimatePresence>

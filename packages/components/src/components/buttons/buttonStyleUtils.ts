@@ -9,12 +9,7 @@ const SUBTLE_ALPHA_HOVER = 0.2;
 
 export const subtleButtonVariants = ['info', 'warning', 'destructive'] as const;
 
-export const buttonVariants = [
-    'primary',
-    'secondary',
-    'tertiary',
-    ...subtleButtonVariants,
-] as const;
+export const buttonVariants = ['primary', 'tertiary', ...subtleButtonVariants] as const;
 
 export type ButtonVariant = Extract<UIVariant, (typeof buttonVariants)[number]>;
 
@@ -52,8 +47,6 @@ export const getIconColor = ({
     switch (variant) {
         case 'primary':
             return theme.iconOnPrimary;
-        case 'secondary':
-            return theme.iconOnSecondary;
         case 'tertiary':
             return theme.iconOnTertiary;
         case 'info':
@@ -93,11 +86,6 @@ export const useVariantStyle = (
             background: theme.backgroundPrimaryDefault,
             backgroundHover: theme.backgroundPrimaryPressed,
             text: theme.textOnPrimary,
-        },
-        secondary: {
-            background: theme.backgroundSecondaryDefault,
-            backgroundHover: theme.backgroundSecondaryPressed,
-            text: theme.textOnSecondary,
         },
         tertiary: {
             background: theme.backgroundTertiaryDefaultOnElevation0,

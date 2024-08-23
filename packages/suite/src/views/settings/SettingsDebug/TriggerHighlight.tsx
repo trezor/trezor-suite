@@ -14,7 +14,7 @@ export const TriggerHighlight = () => {
             />
             <ActionColumn>
                 <ActionButton
-                    variant="secondary"
+                    variant="tertiary"
                     onClick={() =>
                         dispatch(goto('settings-index', { anchor: SettingsAnchor.Labeling }))
                     }

@@ -62,7 +62,7 @@ export const ButtonRow = ({
             {isCompleted ? (
                 <>
                     <StyledButton
-                        variant="secondary"
+                        variant="tertiary"
                         icon="refresh"
                         iconSize={20}
                         onClick={e => {
@@ -75,7 +75,7 @@ export const ButtonRow = ({
 
                     {isSignPage ? (
                         <StyledButton
-                            variant={isCompleteHovered ? 'primary' : 'secondary'}
+                            variant={isCompleteHovered ? 'primary' : 'tertiary'}
                             icon={isCompleteHovered ? undefined : 'check'}
                             iconSize={20}
                             onClick={() => closeScreen(true)}
@@ -92,7 +92,7 @@ export const ButtonRow = ({
                         </StyledButton>
                     ) : (
                         <StyledButton
-                            variant={isCompleteHovered ? 'primary' : 'secondary'}
+                            variant={isCompleteHovered ? 'primary' : 'tertiary'}
                             icon={isCompleteHovered ? undefined : 'check'}
                             iconSize={20}
                             onClick={() => closeScreen()}

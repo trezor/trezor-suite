@@ -44,7 +44,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                     {DISPLAY_ROTATIONS.map(variant => (
                         <Button
                             key={variant.value}
-                            variant={currentRotation === variant.value ? 'primary' : 'secondary'}
+                            variant={currentRotation === variant.value ? 'primary' : 'tertiary'}
                             onClick={() => {
                                 dispatch(applySettings({ display_rotation: variant.value }));
                                 analytics.report({
