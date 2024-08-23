@@ -18,6 +18,7 @@ detox
 @babel/plugin-transform-export-namespace-from
 @config-plugins/detox
 @react-native/metro-config
+@react-native-community/netinfo
 @react-navigation/bottom-tabs
 @react-navigation/core
 @react-navigation/native
