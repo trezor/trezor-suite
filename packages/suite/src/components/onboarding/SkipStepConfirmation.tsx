@@ -1,28 +1,8 @@
-import styled from 'styled-components';
-
 import * as STEP from 'src/constants/onboarding/steps';
 import { AnyStepId } from 'src/types/onboarding';
-import { Button } from '@trezor/components';
-import { Translation, Modal } from 'src/components/suite';
+import { NewModal } from '@trezor/components';
+import { Translation } from 'src/components/suite';
 import { useOnboarding } from 'src/hooks/suite';
-import { typography } from '@trezor/theme';
-
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    color: ${({ theme }) => theme.textDefault};
-    ${typography.body};
-    padding: 16px 0;
-`;
-
-const StyledModal = styled(Modal)`
-    width: 600px;
-    ${Modal.BottomBar} {
-        > * {
-            flex: 1;
-        }
-    }
-`;
 
 interface SkipStepConfirmationProps {
     onCancel: () => void;
@@ -51,28 +31,26 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
     };
 
     return (
-        <StyledModal
-            isCancelable
+        <NewModal
             heading={text}
             onCancel={onCancel}
-            bottomBarComponents={
+            size="small"
+            bottomContent={
                 <>
-                    <Button variant="primary" onClick={onCancel}>
+                    <NewModal.Button onClick={onCancel}>
                         <Translation id="TR_DONT_SKIP" />
-                    </Button>
-                    <Button
+                    </NewModal.Button>
+                    <NewModal.Button
                         variant="tertiary"
                         data-testid="@onboarding/skip-button-confirm"
                         onClick={handleSkipStepConfirm}
                     >
                         {text}
-                    </Button>
+                    </NewModal.Button>
                 </>
             }
         >
-            <Wrapper>
-                <Translation id="TR_DO_YOU_REALLY_WANT_TO_SKIP" />
-            </Wrapper>
-        </StyledModal>
+            <Translation id="TR_DO_YOU_REALLY_WANT_TO_SKIP" />
+        </NewModal>
     );
 };

@@ -1,16 +1,10 @@
-import styled from 'styled-components';
-
 import { onReceiveConfirmation } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { Button } from '@trezor/components';
+import { NewModal, Paragraph, H2 } from '@trezor/components';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { DialogModal } from '../../Modal/DialogRenderer';
-
-const StyledModal = styled(DialogModal)`
-    width: 600px;
-`;
+import { spacings } from '@trezor/theme';
 
 export const NoBackupModal = () => {
     const dispatch = useDispatch();
@@ -23,26 +17,28 @@ export const NoBackupModal = () => {
     };
 
     return (
-        <StyledModal
-            isCancelable
+        <NewModal
             onCancel={close}
-            icon="warningTriangleLight"
-            bodyHeading={<Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />}
-            body={<Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />}
-            bottomBarComponents={
+            icon="WARNING"
+            variant="warning"
+            size="small"
+            bottomContent={
                 <>
-                    <Button
-                        variant="destructive"
-                        onClick={confirm}
-                        data-testid="@no-backup/take-risk-button"
-                    >
+                    <NewModal.Button onClick={confirm} data-testid="@no-backup/take-risk-button">
                         <Translation id="TR_CONTINUE_ANYWAY" />
-                    </Button>
-                    <Button onClick={goToSettings}>
+                    </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={goToSettings}>
                         <Translation id="TR_CREATE_BACKUP" />
-                    </Button>
+                    </NewModal.Button>
                 </>
             }
-        />
+        >
+            <H2>
+                <Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />
+            </H2>
+            <Paragraph margin={{ top: spacings.sm }}>
+                <Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />
+            </Paragraph>
+        </NewModal>
     );
 };
