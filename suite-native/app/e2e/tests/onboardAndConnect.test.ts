@@ -42,11 +42,13 @@ describe('Go through onboarding and connect Trezor.', () => {
         if (platform === 'android') {
             await TrezorUserEnvLink.startEmu();
 
-            await waitFor(element(by.text(TREZOR_DEVICE_LABEL)))
+            await waitFor(element(by.id('skip-view-only-mode')))
                 .toBeVisible()
-                .withTimeout(10000); // communication between connected Trezor and app takes some time.
+                .withTimeout(60000); // communication between connected Trezor and app takes some time.
 
-            await detoxExpect(element(by.id('@home/portfolio/graph'))); // discovery finished or at least started and graph is visible
+            await element(by.id('skip-view-only-mode')).tap();
+
+            await detoxExpect(element(by.id('@home/portfolio/graph'))); // discovery finished and graph is visible
         } else {
             await detoxExpect(element(by.text('Hi there!'))).toBeVisible();
             await detoxExpect(element(by.text('Get started'))).toBeVisible();

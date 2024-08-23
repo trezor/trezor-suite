@@ -13,6 +13,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  IS_DETOX_BUILD: "true"
+
 jobs:
   build_android_test_app:
     runs-on: ubuntu-latest
@@ -45,7 +48,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node_modules-${{ github.ref }}
+          key: node_modules/${{ github.ref }}/${{github.run_id}}
 
       - name: Install Yarn dependencies
         run: yarn install
@@ -73,7 +76,7 @@ jobs:
         with:
           path: |
             suite-native/app/android/app/build/
-          key: android_test_build-${{ github.ref }}
+          key: android_test_build/${{ github.ref }}/${{github.run_id}}
 
   run_android_e2e_tests:
     runs-on: ubuntu-latest
@@ -106,7 +109,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node_modules-${{ github.ref }}
+          key: node_modules/${{ github.ref }}/${{github.run_id}}
 
       - name: Install Yarn dependencies
         run: yarn install
@@ -127,7 +130,7 @@ jobs:
         with:
           path: |
             suite-native/app/android/app/build/
-          key: android_test_build-${{ github.ref }}
+          key: android_test_build/${{ github.ref }}/${{github.run_id}}
 
       - name: Enable Android emulator KVM optimalization
         run: |
