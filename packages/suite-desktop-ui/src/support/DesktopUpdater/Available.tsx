@@ -11,12 +11,12 @@ import { download } from 'src/actions/suite/desktopUpdateActions';
 
 const GreenH2 = styled(H2)`
     text-align: left;
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
 `;
 
 const ChangelogWrapper = styled.div`
     margin: 20px 0;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.legacy.BG_GREY};
     border-radius: ${borders.radii.xs};
     max-height: 400px;
     overflow-y: auto;

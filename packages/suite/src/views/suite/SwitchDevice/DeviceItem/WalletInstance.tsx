@@ -55,7 +55,7 @@ const InstanceType = styled.div<{ $isSelected: boolean }>`
 const InstanceTitle = styled.div`
     font-weight: 500;
     line-height: 1.57;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-variant-numeric: tabular-nums;
 `;

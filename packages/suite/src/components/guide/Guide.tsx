@@ -34,7 +34,7 @@ const FeedbackButton = styled.button`
     padding: 11px;
     background: none;
     transition: ${({ theme }) =>
-        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
+        `background ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
 
     /* speficy position and z-index so that GuideButton does not interfere */
     position: relative;

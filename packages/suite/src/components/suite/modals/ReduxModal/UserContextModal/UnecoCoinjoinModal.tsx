@@ -32,15 +32,15 @@ const Message = styled.p`
 `;
 
 const Explanation = styled.i`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const AgreeButton = styled(Button)`
-    background: ${({ theme }) => theme.TYPE_DARK_ORANGE};
+    background: ${({ theme }) => theme.legacy.TYPE_DARK_ORANGE};
 
     &:hover {
-        background: ${({ theme }) => transparentize(0.2, theme.TYPE_DARK_ORANGE)};
+        background: ${({ theme }) => transparentize(0.2, theme.legacy.TYPE_DARK_ORANGE)};
     }
 `;
 

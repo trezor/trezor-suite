@@ -42,7 +42,7 @@ const Row = styled.div<{ $spaceBefore?: boolean }>`
 `;
 
 const Balance = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

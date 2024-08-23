@@ -18,14 +18,14 @@ const Wrapper = styled.div`
     flex: 1;
     align-items: center;
     margin-bottom: 20px;
-    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     border-radius: 4px;
     padding: 12px 0;
 
     &:hover {
-        background: ${({ theme }) => theme.BG_WHITE};
-        border: 1px solid ${({ theme }) => theme.TYPE_WHITE};
-        box-shadow: 0 1px 2px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
+        background: ${({ theme }) => theme.legacy.BG_WHITE};
+        border: 1px solid ${({ theme }) => theme.legacy.TYPE_WHITE};
+        box-shadow: 0 1px 2px 0 ${({ theme }) => theme.legacy.BOX_SHADOW_BLACK_20};
     }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -56,7 +56,7 @@ const BuyColumn = styled(Column)`
         border-left: 0;
     }
 
-    border-left: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-left: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const ProviderColumn = styled(Column)`
@@ -65,7 +65,7 @@ const ProviderColumn = styled(Column)`
 
 const TradeID = styled.span`
     padding-left: 5px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     overflow: hidden;
     text-overflow: ellipsis;
@@ -74,14 +74,14 @@ const TradeID = styled.span`
 const Row = styled.div`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const SmallRow = styled.div`
     padding-top: 8px;
     display: flex;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
     white-space: nowrap;
@@ -136,7 +136,11 @@ export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTrans
                         <FormattedCryptoAmount value={sendStringAmount} symbol={send} />
                     </Amount>
                     <Arrow>
-                        <IconLegacy color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
+                        <IconLegacy
+                            color={theme.legacy.TYPE_LIGHT_GREY}
+                            size={13}
+                            icon="ARROW_RIGHT"
+                        />
                     </Arrow>
                     <FormattedCryptoAmount
                         value={receiveStringAmount}

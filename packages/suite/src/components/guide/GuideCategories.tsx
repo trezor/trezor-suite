@@ -12,7 +12,7 @@ const Section = styled.section`
 const SectionHeading = styled.h3`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     padding: 0 0 18px;
 `;
 

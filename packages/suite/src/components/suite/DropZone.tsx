@@ -146,7 +146,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 2px dashed ${({ theme }) => theme.STROKE_GREY};
+    border: 2px dashed ${({ theme }) => theme.legacy.STROKE_GREY};
     border-radius: ${borders.radii.xs};
     cursor: pointer;
     min-height: 250px;
@@ -154,7 +154,7 @@ const Wrapper = styled.div`
 
     &:hover,
     &.dragging {
-        background: ${({ theme }) => theme.BG_GREY};
+        background: ${({ theme }) => theme.legacy.BG_GREY};
     }
 
     * {

@@ -8,13 +8,13 @@ import { isAndroid } from '@trezor/env-utils';
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
 const ItemLabel = styled.span`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const ItemDescription = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-top: 2px;
@@ -23,7 +23,7 @@ const ItemDescription = styled.span`
 const Bullet = styled.span`
     margin-right: 8px;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 const Items = styled.div`
@@ -63,7 +63,7 @@ const ContactSupport = styled.div<{ $elevation: Elevation }>`
 `;
 
 const FooterText = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const Heading = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     padding: 16px 24px 0;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -49,7 +49,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     margin: 20px 0;
 `;
 

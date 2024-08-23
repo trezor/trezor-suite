@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 const Title = styled(H2)`
     display: flex;
     text-align: center;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 const getExceptionPage = (

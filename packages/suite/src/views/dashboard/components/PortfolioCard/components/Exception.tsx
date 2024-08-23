@@ -28,12 +28,12 @@ const Wrapper = styled.div`
 `;
 
 const Title = styled(H3)`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 const Description = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     text-align: center;
 `;
 

@@ -8,7 +8,7 @@ const Fact = styled(motion.p)`
     max-width: 460px;
     height: 42px;
     margin-top: 6px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.5;

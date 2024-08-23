@@ -37,7 +37,7 @@ const Wrapper = styled.div`
 
 const Units = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const StyledNote = styled(Note)`

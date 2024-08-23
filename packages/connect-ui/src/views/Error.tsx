@@ -14,7 +14,7 @@ import {
 import { isFirefox } from '@trezor/env-utils';
 
 const WhiteCollapsibleBox = styled(CollapsibleBox)`
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.legacy.BG_WHITE};
     width: 500px;
 
     ${CollapsibleBox.Content} {
@@ -210,13 +210,13 @@ const InnerWrapper = styled.div`
 `;
 
 const H = styled.h1`
-    color: ${colors.TYPE_RED};
+    color: ${colors.legacy.TYPE_RED};
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const Text = styled.div`
-    color: ${colors.TYPE_LIGHT_GREY};
+    color: ${colors.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
@@ -243,7 +243,7 @@ const HeadingText = styled.div`
 `;
 
 const HeadingH1 = styled.div`
-    color: ${colors.TYPE_DARK_GREY};
+    color: ${colors.legacy.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     margin-bottom: 4px;

@@ -25,7 +25,7 @@ const Buttons = styled.div`
 `;
 
 const Separator = styled.div`
-    background: ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.legacy.STROKE_GREY};
     height: 1px;
     margin: 30px 0;
     width: 80%;
@@ -51,7 +51,7 @@ const ErrorMessage = styled.span`
     max-width: 600px;
     font-family: Consolas, Menlo, Courier, monospace;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 type ErrorProps = {

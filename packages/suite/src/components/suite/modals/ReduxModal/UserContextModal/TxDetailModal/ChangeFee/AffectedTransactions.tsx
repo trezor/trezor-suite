@@ -11,7 +11,7 @@ const ChainedTxs = styled.div`
     flex-direction: column;
     padding-top: 24px;
     margin-top: 24px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 export const AffectedTransactions = ({ showChained }: { showChained: () => void }) => {

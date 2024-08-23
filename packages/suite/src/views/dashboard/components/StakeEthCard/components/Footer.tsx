@@ -8,7 +8,7 @@ import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     padding: ${spacingsPx.lg} ${spacingsPx.lg} ${spacingsPx.lg} ${spacingsPx.xxl};
-    border-top: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_LIGHT_GREY};
     display: flex;
     justify-content: space-between;
     align-items: center;

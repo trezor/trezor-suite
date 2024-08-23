@@ -9,7 +9,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
@@ -29,7 +29,7 @@ const Header = styled.div`
 
 const CryptoAmount = styled(FormattedCryptoAmount)<{ $color?: string }>`
     margin: 6px 0 4px;
-    color: ${({ theme, $color }) => $color || theme.TYPE_DARK_GREY};
+    color: ${({ theme, $color }) => $color || theme.legacy.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.H3};
 `;

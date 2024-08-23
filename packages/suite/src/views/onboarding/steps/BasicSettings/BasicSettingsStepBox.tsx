@@ -15,7 +15,7 @@ const Separator = styled.hr`
     width: 100%;
     background: none;
     border: 0;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     margin-bottom: 30px;
 `;
 

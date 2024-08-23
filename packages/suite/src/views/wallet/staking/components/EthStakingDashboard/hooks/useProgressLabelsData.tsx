@@ -6,7 +6,7 @@ import { Translation } from 'src/components/suite';
 
 const DaysToAddToPool = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     line-height: 12px;
 `;
 

@@ -15,12 +15,12 @@ const LogWrapper = styled.pre`
     height: 380px;
     width: 100%;
     overflow: auto;
-    background-color: ${({ theme }) => theme.BG_LIGHT_GREY};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    background-color: ${({ theme }) => theme.legacy.BG_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     text-align: left;
     word-break: break-all;
-    box-shadow: inset 0 0 6px -2px ${({ theme }) => theme.BG_GREY};
+    box-shadow: inset 0 0 6px -2px ${({ theme }) => theme.legacy.BG_GREY};
     border-radius: 6px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {

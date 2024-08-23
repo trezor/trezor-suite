@@ -61,7 +61,7 @@ const Title = styled.div`
 
 const Subtitle = styled.div<{ $error?: boolean }>`
     ${typography.hint}
-    color: ${({ $error, theme }) => ($error ? theme.textAlertRed : theme.TYPE_LIGHT_GREY)};
+    color: ${({ $error, theme }) => ($error ? theme.textAlertRed : theme.legacy.TYPE_LIGHT_GREY)};
 `;
 
 const BackendItem = ({

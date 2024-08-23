@@ -18,7 +18,7 @@ const Container = styled(motion.div)`
     margin-bottom: 40px;
     padding: 12px 20px;
     border-radius: 12px;
-    background: ${({ theme }) => theme.BG_GREEN};
+    background: ${({ theme }) => theme.legacy.BG_GREEN};
     overflow: hidden;
 `;
 
@@ -36,11 +36,11 @@ const CloseButton = styled(IconLegacy)`
     cursor: pointer;
 
     path {
-        fill: ${({ theme }) => theme.BG_WHITE};
+        fill: ${({ theme }) => theme.legacy.BG_WHITE};
     }
 
     &:hover {
-        background: ${({ theme }) => theme.BG_GREEN_HOVER};
+        background: ${({ theme }) => theme.legacy.BG_GREEN_HOVER};
         opacity: 0.7;
     }
 
@@ -67,18 +67,18 @@ const TextContainer = styled.div`
     grid-column: 1/3;
 
     * {
-        color: ${({ theme }) => theme.TYPE_WHITE};
+        color: ${({ theme }) => theme.legacy.TYPE_WHITE};
     }
 `;
 
 const StyledButton = styled(Button)`
-    background: ${({ theme }) => theme.BG_WHITE};
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    background: ${({ theme }) => theme.legacy.BG_WHITE};
+    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
     transition: opacity 0.2s;
 
     &:hover,
     &:focus {
-        background: ${({ theme }) => theme.BG_WHITE};
+        background: ${({ theme }) => theme.legacy.BG_WHITE};
         opacity: 0.8;
     }
 `;
@@ -91,7 +91,7 @@ const OSIcons = styled.div`
     opacity: 0.7;
 
     path {
-        fill: ${({ theme }) => theme.BG_WHITE};
+        fill: ${({ theme }) => theme.legacy.BG_WHITE};
     }
 `;
 

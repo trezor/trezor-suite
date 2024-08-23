@@ -20,7 +20,7 @@ const Content = styled.div<{ $dashed: boolean; $cursor: Cursor }>`
 
     > * {
         border-bottom: ${({ $dashed, theme }) =>
-            $dashed && `1.5px dashed ${transparentize(0.66, theme.TYPE_LIGHT_GREY)}`};
+            $dashed && `1.5px dashed ${transparentize(0.66, theme.legacy.TYPE_LIGHT_GREY)}`};
         cursor: ${({ $cursor }) => $cursor};
     }
 `;

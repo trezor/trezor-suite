@@ -4,7 +4,7 @@ import ReactMarkdown, { Options } from 'react-markdown';
 import { variables } from '../../config';
 
 const StyledMarkdown = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.5;
@@ -16,7 +16,7 @@ const StyledMarkdown = styled.div`
     h4,
     h5,
     h6 {
-        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+        color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
         font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     }
 
@@ -54,7 +54,7 @@ const StyledMarkdown = styled.div`
     }
 
     a {
-        color: ${({ theme }) => theme.TYPE_GREEN};
+        color: ${({ theme }) => theme.legacy.TYPE_GREEN};
 
         &:hover {
             text-decoration: underline;

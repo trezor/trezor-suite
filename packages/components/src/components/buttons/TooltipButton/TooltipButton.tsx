@@ -35,7 +35,7 @@ export const TooltipButton = ({
                     <InfoIcon
                         icon="INFO"
                         size={12}
-                        color={isDisabled ? theme.TYPE_LIGHT_GREY : theme.BG_WHITE}
+                        color={isDisabled ? theme.legacy.TYPE_LIGHT_GREY : theme.legacy.BG_WHITE}
                     />
                 )}
                 {children}

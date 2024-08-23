@@ -29,7 +29,7 @@ const StopButton = styled(Button)`
     background: none;
 
     path {
-        fill: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+        fill: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     }
 `;
 

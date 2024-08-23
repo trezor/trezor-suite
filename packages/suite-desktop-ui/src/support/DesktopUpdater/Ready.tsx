@@ -9,7 +9,7 @@ import { installUpdate } from 'src/actions/suite/desktopUpdateActions';
 const Description = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const StyledModal = styled(Modal)`

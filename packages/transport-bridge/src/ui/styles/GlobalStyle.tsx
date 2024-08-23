@@ -45,6 +45,6 @@ export const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
     }
 
     :root {
-        color-scheme: ${({ theme }) => (theme.THEME === 'light' ? 'light' : 'dark')};
+        color-scheme: ${({ theme }) => (theme.legacy.THEME === 'light' ? 'light' : 'dark')};
     }
 `;

@@ -9,7 +9,7 @@ export const SVG_PATH = 'images/svg';
 const StyledImage = styled.img`
     /* should not overflow it's container */
     max-width: 100%;
-    filter: ${({ theme }) => theme.IMAGE_FILTER};
+    filter: ${({ theme }) => theme.legacy.IMAGE_FILTER};
 `;
 
 const buildSrcSet = <

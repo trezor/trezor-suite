@@ -29,7 +29,7 @@ const Description = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: 500;
     text-align: center;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const StyledImage = styled(Image)`
@@ -55,7 +55,7 @@ const ActionButton = styled(Button)`
 const Divider = styled.div`
     width: 100%;
     height: 1px;
-    background: ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.legacy.STROKE_GREY};
     margin: 30px 0 36px;
 `;
 

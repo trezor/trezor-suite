@@ -38,6 +38,9 @@ export const LAYOUT_SIZE = {
     GUIDE_PANEL_CONTENT_WIDTH: '349px',
 } as const;
 
+/**
+ * @deprecated This key is deprecated. Please use e.g. `typography.hint` or different typographic style.
+ */
 export const FONT_SIZE = {
     BIG: '18px',
     NORMAL: '16px',
@@ -48,6 +51,9 @@ export const FONT_SIZE = {
     H3: '20px',
 } as const;
 
+/**
+ * @deprecated This key is deprecated. Please use e.g. `typography.hint` or different typographic style.
+ */
 export const FONT_WEIGHT = {
     LIGHT: 300,
     REGULAR: 400,

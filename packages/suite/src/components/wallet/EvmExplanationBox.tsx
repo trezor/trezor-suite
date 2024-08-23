@@ -33,14 +33,14 @@ const EvmExplanationBoxWrapper = styled(Card)<{ $caret?: boolean; $elevation: El
 `;
 
 const EvmExplanationTitle = styled.div`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: 600;
     margin-bottom: 4px;
 `;
 
 const EvmExplanationDescription = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: 500;
     line-height: 18px;

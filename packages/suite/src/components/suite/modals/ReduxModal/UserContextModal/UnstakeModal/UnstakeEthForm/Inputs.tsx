@@ -24,7 +24,7 @@ const IconWrapper = styled.div`
 
 const InputAddon = styled.span`
     text-transform: uppercase;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

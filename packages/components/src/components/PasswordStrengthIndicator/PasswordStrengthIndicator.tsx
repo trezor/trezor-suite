@@ -2,11 +2,16 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import type { ZXCVBNScore } from 'zxcvbn';
-import { colors } from '../../config';
 
 interface WrapperProps {
     $width?: number;
 }
+
+const colors = {
+    GREEN: '#30C101',
+    YELLOW: '#fdcb33',
+    RED: '#cd4949',
+} as const;
 
 const Wrapper = styled.div<WrapperProps>`
     display: flex;

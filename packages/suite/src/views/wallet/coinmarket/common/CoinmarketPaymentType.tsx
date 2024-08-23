@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 `;
 
 const Bg = styled.div`
-    background: ${({ theme }) => theme.BG_ICON};
+    background: ${({ theme }) => theme.legacy.BG_ICON};
     display: flex;
     align-items: center;
     border-radius: 4px;

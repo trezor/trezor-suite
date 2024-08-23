@@ -21,8 +21,8 @@ const Wrapper = styled.div<{ $elevation: Elevation }>`
     transition: all 0.3s;
 
     &:hover {
-        box-shadow: 0 6px 40px 0 ${({ theme }) => theme.BOX_SHADOW_OPTION_CARD};
-        border: 1px solid ${({ theme }) => theme.STROKE_GREY_ALT};
+        box-shadow: 0 6px 40px 0 ${({ theme }) => theme.legacy.BOX_SHADOW_OPTION_CARD};
+        border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY_ALT};
     }
 `;
 
@@ -33,14 +33,14 @@ const Content = styled.div`
 `;
 
 const Heading = styled.span`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
 const Description = styled.span`
     margin-top: 5px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;

@@ -32,7 +32,7 @@ const AddUrlButton = styled(Button)`
 const Heading = styled(H3)`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     margin-bottom: 6px;
 `;
 

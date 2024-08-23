@@ -8,7 +8,7 @@ const Wrapper = styled.div`
 `;
 
 const Bg = styled.div`
-    background: ${({ theme }) => theme.BG_ICON};
+    background: ${({ theme }) => theme.legacy.BG_ICON};
     display: flex;
     align-items: center;
     border-radius: 4px;
@@ -29,7 +29,7 @@ const Text = styled.div`
     padding-left: 9px;
     align-items: center;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

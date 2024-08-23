@@ -21,7 +21,7 @@ import { Row } from './Row';
 import { networksCompatibility } from '@suite-common/wallet-config';
 
 const Heading = styled.h3`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     margin: 14px 0 4px;

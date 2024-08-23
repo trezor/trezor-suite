@@ -83,7 +83,7 @@ const StyledSelectBar = styled(SelectBar)`
 const Divider = styled.div`
     margin: 15px 0 30px;
     height: 1px;
-    background: ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const CopyButton = styled(Button)`

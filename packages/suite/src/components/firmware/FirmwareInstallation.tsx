@@ -17,7 +17,7 @@ const SelectDevice = styled.div`
     align-items: center;
     justify-content: center;
     gap: ${spacingsPx.lg};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 interface FirmwareInstallationProps {

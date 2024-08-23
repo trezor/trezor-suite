@@ -38,20 +38,20 @@ const WarningListWrapper = styled.div`
     align-items: flex-start;
     flex-direction: column;
     gap: ${spacingsPx.md};
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     margin: ${spacingsPx.xs} ${spacingsPx.md};
     padding-bottom: ${spacingsPx.md};
 `;
 
 const Important = styled.div`
     align-self: flex-start;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: uppercase;
 `;
 
 const EmphasizedText = styled.b`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 

@@ -20,7 +20,7 @@ const Box = styled.div`
     display: flex;
     flex-direction: column;
     padding: 18px 26px;
-    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     border-radius: ${borders.radii.xs};
 `;
 
@@ -28,7 +28,7 @@ const Inner = styled.div`
     display: flex;
 
     & + & {
-        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
         margin-top: 28px;
         padding-top: 22px;
     }
@@ -55,7 +55,7 @@ const RateWrapper = styled.div`
 const Rate = styled.div`
     margin: 1px 20px 0 0;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const Amount = styled.div`
@@ -76,7 +76,7 @@ const StyledCryptoAmount = styled.div`
 
 const StyledFiatValue = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 /* children are only for test purposes, this prop is not available in regular build */

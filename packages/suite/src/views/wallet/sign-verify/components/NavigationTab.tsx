@@ -8,13 +8,15 @@ const { FONT_WEIGHT, FONT_SIZE } = variables;
 const NavLink = styled.div<{ $active?: boolean }>`
     cursor: pointer;
     font-size: ${FONT_SIZE.NORMAL};
-    color: ${({ $active, theme }) => ($active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
+    color: ${({ $active, theme }) =>
+        $active ? theme.legacy.TYPE_GREEN : theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     display: flex;
     align-items: center;
     padding: 14px 6px 12px;
     white-space: nowrap;
-    border-bottom: 2px solid ${({ $active, theme }) => ($active ? theme.BG_GREEN : 'transparent')};
+    border-bottom: 2px solid
+        ${({ $active, theme }) => ($active ? theme.legacy.BG_GREEN : 'transparent')};
     transition: border-color 0.1s;
 
     & + & {
@@ -26,7 +28,7 @@ const NavLink = styled.div<{ $active?: boolean }>`
     }
 
     &:hover {
-        border-bottom: 2px solid ${({ theme, $active }) => !$active && theme.STROKE_GREY};
+        border-bottom: 2px solid ${({ theme, $active }) => !$active && theme.legacy.STROKE_GREY};
     }
 `;
 
@@ -41,8 +43,8 @@ const Badge = styled.span`
     right: -24px;
     padding: 2px 4px 0;
     border-radius: 4px;
-    background: ${({ theme }) => theme.BG_LIGHT_GREEN};
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    background: ${({ theme }) => theme.legacy.BG_LIGHT_GREEN};
+    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
     font-size: 10px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;

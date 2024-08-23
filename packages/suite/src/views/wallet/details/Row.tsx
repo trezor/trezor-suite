@@ -10,7 +10,7 @@ const Container = styled.div`
 
     &:not(:first-child) {
         padding-top: ${spacingsPx.md};
-        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     }
 `;
 

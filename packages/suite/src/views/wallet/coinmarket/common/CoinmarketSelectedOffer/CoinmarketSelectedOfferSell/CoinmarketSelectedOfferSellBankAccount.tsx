@@ -180,7 +180,7 @@ const CoinmarketSelectedOfferSellBankAccount = () => {
                                     {option.verified ? (
                                         <AccountVerified>
                                             <StyledIcon
-                                                color={theme.TYPE_GREEN}
+                                                color={theme.legacy.TYPE_GREEN}
                                                 size={15}
                                                 icon="CHECK"
                                             />

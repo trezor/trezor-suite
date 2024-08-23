@@ -18,7 +18,7 @@ const Item = styled.div`
 `;
 
 const Text = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -39,7 +39,7 @@ export const SecurityChecklist = ({ items }: SecurityChecklistProps) => {
         <Items>
             {items.map(item => (
                 <Item key={item.icon}>
-                    <IconLegacy size={24} icon={item.icon} color={theme.TYPE_DARK_GREY} />
+                    <IconLegacy size={24} icon={item.icon} color={theme.legacy.TYPE_DARK_GREY} />
                     <Text>{item.content}</Text>
                 </Item>
             ))}

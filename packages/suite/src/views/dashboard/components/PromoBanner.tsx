@@ -19,12 +19,12 @@ const Container = styled.div`
     align-items: center;
     width: 100%;
     height: 70px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         border-radius: 20px;
-        box-shadow: 0 -4px 6px -4px ${({ theme }) => theme.BOX_SHADOW_OPTION_CARD};
+        box-shadow: 0 -4px 6px -4px ${({ theme }) => theme.legacy.BOX_SHADOW_OPTION_CARD};
     }
 `;
 
@@ -44,7 +44,7 @@ const promoContainerCss = css`
 const DesktopPromoContainer = styled.div`
     ${promoContainerCss}
     min-width: 50%;
-    border-right: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-right: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const MobilePromoContainer = styled.div`
@@ -75,15 +75,15 @@ const StyledLink = styled(TrezorLink)`
 `;
 
 const DesktopLinkButton = styled(Button)`
-    background: ${({ theme }) => theme.STROKE_GREY};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    background: ${({ theme }) => theme.legacy.STROKE_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     transition: opacity 0.15s;
     opacity: 0.6;
 
     &:hover,
     &:focus {
-        background: ${({ theme }) => theme.STROKE_GREY};
+        background: ${({ theme }) => theme.legacy.STROKE_GREY};
         opacity: 1;
     }
 `;

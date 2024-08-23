@@ -31,7 +31,10 @@ const SettingsWrapper = styled.div<{ $disabled: boolean }>`
         `}
     &:hover {
         background-color: ${({ theme }) =>
-            transparentize(theme.HOVER_TRANSPARENTIZE_FILTER, theme.HOVER_PRIMER_COLOR)};
+            transparentize(
+                theme.legacy.HOVER_TRANSPARENTIZE_FILTER,
+                theme.legacy.HOVER_PRIMER_COLOR,
+            )};
     }
 `;
 

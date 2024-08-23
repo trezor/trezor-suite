@@ -16,7 +16,7 @@ const Wrapper = styled.div<{ $size?: string; $isHoverable?: boolean }>`
         transform: scale(0.5);
         border-radius: ${borders.radii.sm};
         transition: ${({ theme }) =>
-            `all ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
+            `all ${theme.legacy.HOVER_TRANSITION_TIME} ${theme.legacy.HOVER_TRANSITION_EFFECT}`};
 
         background-color: transparent;
         pointer-events: none;

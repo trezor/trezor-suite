@@ -62,7 +62,7 @@ export const StyledIcon = styled(IconLegacy)<ResponsiveSize>`
 
 export const FeesWrapper = styled.div`
     margin: 25px 0;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 export const NoProviders = styled.div`
@@ -74,7 +74,7 @@ export const FooterWrapper = styled.div`
     display: flex;
     align-items: center;
     padding-top: 30px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex-direction: column;
@@ -91,7 +91,7 @@ export const StyledSelectBar = styled(SelectBar)`
 
 export const CoinmarketParagraph = styled(Paragraph)`
     text-align: center;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 export const CoinmarketFormInput = styled.div`

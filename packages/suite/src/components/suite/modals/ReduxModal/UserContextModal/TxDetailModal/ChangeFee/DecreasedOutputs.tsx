@@ -14,7 +14,7 @@ const OutputsWrapper = styled.div`
     flex-direction: column;
     padding-top: 12px;
     margin-top: 24px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const Output = styled.div`
@@ -35,14 +35,14 @@ const OutputLabel = styled.div<{ $isChecked: boolean }>`
     line-height: 24px; /* icon height */
     font-weight: ${$props =>
         $props.$isChecked ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ $isChecked, theme }) => ($isChecked ? theme.TYPE_GREEN : 'inherit')};
+    color: ${({ $isChecked, theme }) => ($isChecked ? theme.legacy.TYPE_GREEN : 'inherit')};
 `;
 
 const OutputAddress = styled.div<{ $isChecked: boolean }>`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${$props =>
         $props.$isChecked ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ $isChecked, theme }) => ($isChecked ? theme.TYPE_DARK_GREY : 'inherit')};
+    color: ${({ $isChecked, theme }) => ($isChecked ? theme.legacy.TYPE_DARK_GREY : 'inherit')};
     padding-top: 2px;
 `;
 
@@ -55,7 +55,7 @@ const ArrowIcon = styled(IconLegacy)`
     margin: 0 8px;
 
     & svg {
-        fill: ${({ theme }) => theme.TYPE_GREEN};
+        fill: ${({ theme }) => theme.legacy.TYPE_GREEN};
     }
 `;
 

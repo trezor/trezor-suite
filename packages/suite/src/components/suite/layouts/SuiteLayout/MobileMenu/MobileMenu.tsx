@@ -70,7 +70,7 @@ export const MobileMenu = () => {
                                 onClick={() => setOpened(!opened)}
                                 icon={opened ? 'CROSS' : 'MENU'}
                                 size={24}
-                                color={theme.TYPE_DARK_GREY}
+                                color={theme.legacy.TYPE_DARK_GREY}
                             />
                         </HamburgerWrapper>
                     </Wrapper>

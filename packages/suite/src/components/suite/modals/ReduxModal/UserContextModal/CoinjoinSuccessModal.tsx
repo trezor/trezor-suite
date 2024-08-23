@@ -24,7 +24,7 @@ const StyledIcon = styled(IconLegacy)`
     height: 84px;
     margin: 12px auto 32px;
     border-radius: 50%;
-    background: ${({ theme }) => transparentize(0.9, theme.BG_GREEN)};
+    background: ${({ theme }) => transparentize(0.9, theme.legacy.BG_GREEN)};
 `;
 
 const Heading = styled.h3`
@@ -32,11 +32,11 @@ const Heading = styled.h3`
     font-size: 32px;
     line-height: 32px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
 `;
 
 const Text = styled.p`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -95,7 +95,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
                 </>
             }
         >
-            <StyledIcon icon="CONFETTI_SUCCESS" size={32} color={theme.TYPE_GREEN} />
+            <StyledIcon icon="CONFETTI_SUCCESS" size={32} color={theme.legacy.TYPE_GREEN} />
 
             <Heading>
                 <Translation id="TR_COINJOIN_COMPLETED" />

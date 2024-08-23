@@ -45,7 +45,7 @@ const CameraPlaceholder = styled.div`
     padding: 40px;
     height: 100%;
     border-radius: 16px;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.legacy.BG_GREY};
 `;
 
 const Error = styled.div`
@@ -57,11 +57,11 @@ const Error = styled.div`
 
 const ErrorTitle = styled(Paragraph)`
     text-align: center;
-    color: ${colors.TYPE_RED};
+    color: ${colors.legacy.TYPE_RED};
 `;
 const ErrorMessage = styled.span`
     text-align: center;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
 const IconWrapper = styled.div`

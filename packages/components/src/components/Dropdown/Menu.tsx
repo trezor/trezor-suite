@@ -73,7 +73,7 @@ const Container = styled.ul<ContainerProps>`
 
 const GroupLabel = styled.li`
     padding: ${spacingsPx.sm} ${spacingsPx.sm} ${spacingsPx.xxs};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     ${typography.label};
     cursor: default;
 

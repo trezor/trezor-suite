@@ -9,7 +9,7 @@ import { DATA_URL } from '@trezor/urls';
 
 const StyledButton = styled(Button)`
     path {
-        fill: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+        fill: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     }
 `;
 

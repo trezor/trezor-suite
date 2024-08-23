@@ -17,7 +17,7 @@ const Column = styled.div<{ $textAlign: 'left' | 'right' }>`
     align-self: start;
     min-height: 32px;
     white-space: nowrap;
-    color: ${({ theme }) => `${theme.TYPE_LIGHT_GREY}`};
+    color: ${({ theme }) => `${theme.legacy.TYPE_LIGHT_GREY}`};
 
     ${({ $textAlign }) => ($textAlign === 'left' ? leftAlignedStyles : rightAlignedStyles)};
 `;

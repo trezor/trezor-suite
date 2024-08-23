@@ -81,7 +81,7 @@ const Handle = styled.button<{
     border: none;
     left: 1px;
     border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.TYPE_WHITE};
+    background: ${({ theme }) => theme.legacy.TYPE_WHITE};
     transform: ${({ $isChecked, $isSmall }) =>
         $isChecked && `translateX(${$isSmall ? '14px' : '20px'})`};
     transition: transform 0.25s ease 0s;

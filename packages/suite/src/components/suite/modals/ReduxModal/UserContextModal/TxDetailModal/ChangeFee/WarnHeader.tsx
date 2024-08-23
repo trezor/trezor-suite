@@ -5,7 +5,7 @@ import { IconLegacy, variables } from '@trezor/components';
 const Header = styled.div`
     display: flex;
     margin-top: 4px;
-    color: ${({ theme }) => theme.TYPE_ORANGE};
+    color: ${({ theme }) => theme.legacy.TYPE_ORANGE};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.TINY};
     align-items: center;
@@ -27,7 +27,7 @@ export const WarnHeader = ({ action, children, ...rest }: WarnHeaderProps) => {
 
     return (
         <Header {...rest}>
-            <IconLegacy size={16} icon="WARNING" color={theme.TYPE_ORANGE} />
+            <IconLegacy size={16} icon="WARNING" color={theme.legacy.TYPE_ORANGE} />
             <Body>{children}</Body>
             {action}
         </Header>

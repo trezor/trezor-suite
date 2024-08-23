@@ -9,7 +9,7 @@ const StyledBalanceContainer = styled.div`
 
 const Heading = styled.p<{ $color?: string }>`
     margin-bottom: 4px;
-    color: ${({ theme, color }) => color || theme.TYPE_LIGHT_GREY};
+    color: ${({ theme, color }) => color || theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.TINY};
 `;

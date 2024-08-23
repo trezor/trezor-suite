@@ -31,7 +31,7 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
 
 const CustomLabel = styled(Label)`
     padding: 12px 0;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const LabelText = styled.div``;
@@ -52,7 +52,7 @@ const AccountInfo = styled.div`
 
 const AccountName = styled.div`
     display: flex;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const AccountNumber = styled.div`
@@ -64,11 +64,11 @@ const AccountVerified = styled.div`
     display: flex;
     justify-content: flex-end;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
 `;
 
 const AccountNotVerified = styled(AccountVerified)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const ButtonWrapper = styled.div`
@@ -76,7 +76,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
     margin: 20px 0;
 `;
 
@@ -161,7 +161,7 @@ export const SelectBankAccount = () => {
                                 {option.verified ? (
                                     <AccountVerified>
                                         <StyledIcon
-                                            color={theme.TYPE_GREEN}
+                                            color={theme.legacy.TYPE_GREEN}
                                             size={15}
                                             icon="CHECK"
                                         />

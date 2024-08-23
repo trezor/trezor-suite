@@ -79,7 +79,7 @@ export const PinMatrix = ({ device, hideExplanation, invalid }: PinMatrixProps) 
                                   title: <Translation id="TR_WRONG_PIN_ENTERED" />,
                                   icon: 'WARNING',
                                   iconSize: 40,
-                                  iconColor: theme.TYPE_RED,
+                                  iconColor: theme.legacy.TYPE_RED,
                               }
                             : {
                                   key: 'matrix',

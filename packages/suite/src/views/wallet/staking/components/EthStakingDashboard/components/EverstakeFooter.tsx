@@ -24,7 +24,7 @@ const Left = styled.div`
 
 export const EverstakeFooter = () => {
     const theme = useTheme();
-    const isDarkMode = theme.THEME === 'dark';
+    const isDarkMode = theme.legacy.THEME === 'dark';
 
     return (
         <Wrapper>

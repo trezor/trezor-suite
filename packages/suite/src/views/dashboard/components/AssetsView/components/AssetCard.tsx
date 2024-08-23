@@ -158,7 +158,7 @@ export const AssetCard = ({
                     </>
                 ) : (
                     <FailedContainer>
-                        <WarningIcon icon="WARNING" color={theme.TYPE_RED} size={14} />
+                        <WarningIcon icon="WARNING" color={theme.legacy.TYPE_RED} size={14} />
                         <Translation id="TR_DASHBOARD_ASSET_FAILED" />
                     </FailedContainer>
                 )}

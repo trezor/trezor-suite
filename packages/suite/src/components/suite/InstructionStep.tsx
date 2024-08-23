@@ -22,9 +22,9 @@ const Number = styled.div`
     flex-shrink: 0;
     width: 24px;
     height: 24px;
-    background-color: ${({ theme }) => theme.STROKE_GREY};
+    background-color: ${({ theme }) => theme.legacy.STROKE_GREY};
     border-radius: 50%;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: 13px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-align: center;
@@ -33,13 +33,13 @@ const Number = styled.div`
 const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     margin-bottom: 8px;
 `;
 
 const Description = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 interface InstructionStepProps {

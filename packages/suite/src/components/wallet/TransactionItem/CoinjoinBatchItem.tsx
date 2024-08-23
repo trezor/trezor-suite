@@ -46,7 +46,7 @@ const RoundRow = styled.div`
     cursor: pointer;
 
     &:hover {
-        background-color: ${({ theme }) => theme.BG_GREY};
+        background-color: ${({ theme }) => theme.legacy.BG_GREY};
     }
 
     > div:first-child {
@@ -101,7 +101,7 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
 };
 
 const StyledCollapsibleBox = styled(CollapsibleBox)<{ $isPending: boolean }>`
-    background-color: ${({ theme }) => theme.BG_WHITE};
+    background-color: ${({ theme }) => theme.legacy.BG_WHITE};
     box-shadow: none;
     border-radius: 12px;
     margin-bottom: 0;
@@ -138,7 +138,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)<{ $isPending: boolean }>`
     ${({ $isPending }) =>
         $isPending &&
         css`
-            border-left: 8px solid ${({ theme }) => theme.TYPE_ORANGE};
+            border-left: 8px solid ${({ theme }) => theme.legacy.TYPE_ORANGE};
 
             > div {
                 margin-left: -8px;

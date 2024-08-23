@@ -26,7 +26,7 @@ const StyledCryptoAmountWithHeader = styled(CryptoAmountWithHeader)`
 `;
 
 const PrivateBalanceHeading = styled.span`
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
 `;
 
 // svg padding offset
@@ -79,7 +79,7 @@ export const BalancePrivacyBreakdown = () => {
                 headerIcon={getBalanceIcon()}
                 value={notAnonymized}
                 symbol={currentAccount?.symbol}
-                color={!isZero(notAnonymized || '0') ? undefined : theme.TYPE_LIGHT_GREY}
+                color={!isZero(notAnonymized || '0') ? undefined : theme.legacy.TYPE_LIGHT_GREY}
             />
 
             <StyledCryptoAmountWithHeader
@@ -88,10 +88,14 @@ export const BalancePrivacyBreakdown = () => {
                         <Translation id="TR_PRIVATE" />
                     </PrivateBalanceHeading>
                 }
-                headerIcon={<CheckIcon icon="CHECK" size={19} color={theme.TYPE_GREEN} />}
+                headerIcon={<CheckIcon icon="CHECK" size={19} color={theme.legacy.TYPE_GREEN} />}
                 value={anonymized}
                 symbol={currentAccount?.symbol}
-                color={!isZero(anonymized || '0') ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY}
+                color={
+                    !isZero(anonymized || '0')
+                        ? theme.legacy.TYPE_GREEN
+                        : theme.legacy.TYPE_LIGHT_GREY
+                }
             />
         </BalanceContainer>
     );

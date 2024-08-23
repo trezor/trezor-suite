@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 
 const ExpandWrapper = styled(motion.div)`
     width: 100%;
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.legacy.BG_GREY};
     border-radius: ${borders.radii.xs};
     overflow: hidden;
     margin-top: 8px;

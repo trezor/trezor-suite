@@ -42,7 +42,7 @@ const Option = styled.div`
 
 const OptionName = styled.div`
     display: flex;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     max-width: 150px;
 `;

@@ -16,7 +16,7 @@ const IconWrapper = styled.div`
 `;
 
 const Text = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-variant-numeric: tabular-nums;
@@ -37,7 +37,7 @@ const Timestamp = styled(Text)`
 const Bullet = styled.div`
     margin-left: 8px;
     margin-right: 8px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 export const AffectedTransactionItem = ({
@@ -60,7 +60,7 @@ export const AffectedTransactionItem = ({
                 <IconWrapper>
                     <IconLegacy
                         size={16}
-                        color={theme.TYPE_LIGHT_GREY}
+                        color={theme.legacy.TYPE_LIGHT_GREY}
                         icon={isAccountOwned ? iconType : 'CLOCK'}
                     />
                 </IconWrapper>

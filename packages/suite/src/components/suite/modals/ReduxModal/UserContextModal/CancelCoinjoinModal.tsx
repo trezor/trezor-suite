@@ -15,11 +15,11 @@ const StyledButton = styled(Button)`
 `;
 
 const CancelButton = styled(StyledButton)`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    background: ${({ theme }) => theme.BG_WHITE_ALT_HOVER};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    background: ${({ theme }) => theme.legacy.BG_WHITE_ALT_HOVER};
 
     &:hover {
-        background: ${({ theme }) => theme.STROKE_GREY};
+        background: ${({ theme }) => theme.legacy.STROKE_GREY};
     }
 `;
 

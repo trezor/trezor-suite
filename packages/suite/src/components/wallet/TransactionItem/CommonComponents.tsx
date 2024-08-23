@@ -37,7 +37,7 @@ export const Content = styled.div`
 `;
 
 export const Description = styled(HiddenPlaceholder)`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.5;
@@ -65,7 +65,7 @@ export const TargetsWrapper = styled.div`
 
 const amountStyle = css`
     width: 100%;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;

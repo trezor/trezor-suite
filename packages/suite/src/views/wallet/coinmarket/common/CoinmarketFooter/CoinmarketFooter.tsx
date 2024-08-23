@@ -21,7 +21,7 @@ const Left = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
@@ -40,10 +40,10 @@ const FooterBox = styled.div`
     flex: 1;
     min-width: 345px;
     bottom: 30px;
-    box-shadow: 0 1px 2px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
+    box-shadow: 0 1px 2px 0 ${({ theme }) => theme.legacy.BOX_SHADOW_BLACK_20};
     z-index: ${zIndices.tooltip};
 
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${({ theme }) => theme.legacy.BG_WHITE};
     overflow: hidden;
 `;
 
@@ -52,7 +52,7 @@ const Header = styled.div`
     justify-content: space-between;
     padding-bottom: 10px;
     margin-bottom: 10px;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const BoxLeft = styled.div``;
@@ -75,17 +75,17 @@ const IconWrapper = styled.div`
 
 const Text = styled.div`
     padding-left: 10px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-bottom: 15px;
 `;
 
 const linkStyle = css`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     cursor: pointer;
 
     &:hover {
-        color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+        color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
         text-decoration: underline;
     }
 `;
@@ -100,7 +100,7 @@ const LearnMoreToggle = styled.div`
 
 const VerticalDivider = styled.div`
     height: 12px;
-    border-left: 1px solid ${({ theme }) => theme.TYPE_LIGHTER_GREY};
+    border-left: 1px solid ${({ theme }) => theme.legacy.TYPE_LIGHTER_GREY};
     margin: 0 8px;
 `;
 

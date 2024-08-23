@@ -36,7 +36,7 @@ export const DefaultRenderer = ({
                                 <IconLegacy
                                     icon="LIGHTBULB"
                                     size={20}
-                                    hoverColor={colors.TYPE_ORANGE}
+                                    hoverColor={colors.legacy.TYPE_ORANGE}
                                     onClick={openGuide}
                                 />
                             )}

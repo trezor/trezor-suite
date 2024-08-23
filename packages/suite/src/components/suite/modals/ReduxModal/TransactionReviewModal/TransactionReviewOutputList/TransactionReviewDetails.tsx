@@ -8,8 +8,8 @@ import { borders, typography, zIndices } from '@trezor/theme';
 const TransactionDetailsWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 5px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
-    background: ${({ theme }) => theme.BG_WHITE_ALT};
+    box-shadow: 0 2px 5px 0 ${({ theme }) => theme.legacy.BOX_SHADOW_BLACK_20};
+    background: ${({ theme }) => theme.legacy.BG_WHITE_ALT};
     width: calc(100% + 20px);
     height: calc(100% + 20px);
     position: absolute;
@@ -25,7 +25,7 @@ const TransactionDetailsWrapper = styled.div`
 const DetailsHeader = styled.div`
     padding: 14px 16px 10px;
     text-align: left;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     display: flex;
@@ -128,7 +128,11 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
                         </Card>
                     </Section>
                     <SectionDivider>
-                        <IconLegacy icon="ARROW_DOWN" size={20} color={theme.TYPE_LIGHT_GREY} />
+                        <IconLegacy
+                            icon="ARROW_DOWN"
+                            size={20}
+                            color={theme.legacy.TYPE_LIGHT_GREY}
+                        />
                     </SectionDivider>
                     <Section>
                         <SectionName>

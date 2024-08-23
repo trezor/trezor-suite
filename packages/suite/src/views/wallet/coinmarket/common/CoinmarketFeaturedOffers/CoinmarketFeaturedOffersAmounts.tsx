@@ -45,7 +45,11 @@ const CoinmarketFeaturedOffersAmounts = ({ quote }: { quote: BuySellQuote }) => 
         <AmountsWrapper>
             {fromAmount}
             <Arrow>
-                <IconLegacy color={theme.TYPE_LIGHT_GREY} size={20} icon="ARROW_RIGHT_LONG" />
+                <IconLegacy
+                    color={theme.legacy.TYPE_LIGHT_GREY}
+                    size={20}
+                    icon="ARROW_RIGHT_LONG"
+                />
             </Arrow>
             {toAmount}
         </AmountsWrapper>

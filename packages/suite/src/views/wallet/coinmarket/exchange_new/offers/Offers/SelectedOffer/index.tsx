@@ -30,7 +30,7 @@ const Header = styled.div`
     align-items: center;
     justify-content: center;
     padding: 10px 25px;
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 interface ActiveProps {
@@ -40,7 +40,8 @@ interface ActiveProps {
 const Step = styled.div<ActiveProps>`
     font-weight: ${({ active }) =>
         active ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ active, theme }) => (active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
+    color: ${({ active, theme }) =>
+        active ? theme.legacy.TYPE_GREEN : theme.legacy.TYPE_LIGHT_GREY};
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     flex: 1;
@@ -64,7 +65,7 @@ const Middle = styled.div`
     height: 48px;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.STROKE_GREY};
+    color: ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const MiddleNarrow = styled.div`
@@ -72,7 +73,7 @@ const MiddleNarrow = styled.div`
     height: 48px;
     align-items: center;
     justify-content: center;
-    color: ${({ theme }) => theme.STROKE_GREY};
+    color: ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
 const SelectedOffer = () => {
@@ -92,7 +93,10 @@ const SelectedOffer = () => {
                     {selectedQuote.isDex ? (
                         <>
                             <MiddleNarrow>
-                                <IconLegacy icon="ARROW_RIGHT" color={colors.TYPE_LIGHT_GREY} />
+                                <IconLegacy
+                                    icon="ARROW_RIGHT"
+                                    color={colors.legacy.TYPE_LIGHT_GREY}
+                                />
                             </MiddleNarrow>
                             <Left>
                                 <Step active={exchangeStep === 'SEND_APPROVAL_TRANSACTION'}>
@@ -100,12 +104,15 @@ const SelectedOffer = () => {
                                 </Step>
                             </Left>
                             <MiddleNarrow>
-                                <IconLegacy icon="ARROW_RIGHT" color={colors.TYPE_LIGHT_GREY} />
+                                <IconLegacy
+                                    icon="ARROW_RIGHT"
+                                    color={colors.legacy.TYPE_LIGHT_GREY}
+                                />
                             </MiddleNarrow>
                         </>
                     ) : (
                         <Middle>
-                            <IconLegacy icon="ARROW_RIGHT" color={colors.TYPE_LIGHT_GREY} />
+                            <IconLegacy icon="ARROW_RIGHT" color={colors.legacy.TYPE_LIGHT_GREY} />
                         </Middle>
                     )}
                     <Right>

@@ -45,11 +45,11 @@ interface WrapperProps {
 const CustomTooltipWrapper = styled.div<WrapperProps>`
     display: flex;
     flex-direction: column;
-    color: ${({ theme }) => theme.TYPE_WHITE};
-    background: ${({ theme }) => theme.BG_TOOLTIP};
+    color: ${({ theme }) => theme.legacy.TYPE_WHITE};
+    background: ${({ theme }) => theme.legacy.BG_TOOLTIP};
     padding: 8px 6px;
     border-radius: 4px;
-    box-shadow: 0 3px 14px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_15};
+    box-shadow: 0 3px 14px 0 ${({ theme }) => theme.legacy.BOX_SHADOW_BLACK_15};
     font-variant-numeric: tabular-nums;
     ${({ $positionX, $boxWidth }) =>
         $positionX >= $boxWidth - OFFSET_LIMIT_HORIZONTAL && `position: absolute; right: 0;`}
@@ -68,7 +68,7 @@ const CustomTooltipWrapper = styled.div<WrapperProps>`
         height: 0;
         border-left: 10px solid transparent;
         border-right: 10px solid transparent;
-        border-top: 10px solid ${({ theme }) => theme.BG_TOOLTIP};
+        border-top: 10px solid ${({ theme }) => theme.legacy.BG_TOOLTIP};
     }
 `;
 

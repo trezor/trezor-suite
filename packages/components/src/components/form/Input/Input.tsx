@@ -171,7 +171,7 @@ const Input = ({
                                 icon="CANCEL"
                                 size={16}
                                 onClick={onClear}
-                                color={theme.TYPE_DARK_GREY}
+                                color={theme.legacy.TYPE_DARK_GREY}
                                 useCursorPointer
                             />
                         )}

@@ -36,7 +36,7 @@ const Title = styled(H3)`
 `;
 
 const Description = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: 500;
     line-height: 20px;

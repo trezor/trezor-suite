@@ -14,7 +14,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.div`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     ${typography.highlight};
 `;
 

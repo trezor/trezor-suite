@@ -10,7 +10,7 @@ const containerGridStyle = css`
 `;
 
 const Container = styled(Card)`
-    background: ${({ theme }) => theme.BG_GREY};
+    background: ${({ theme }) => theme.legacy.BG_GREY};
     box-shadow: none;
     display: block;
 
@@ -81,7 +81,7 @@ const descriptionGridStyle = css`
 `;
 
 const Description = styled.p`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 

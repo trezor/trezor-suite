@@ -25,7 +25,7 @@ const SPACING = 6;
 
 const ViewText = styled.div`
     margin-left: auto;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     transition: transform 0.15s ease-in-out;
 `;
 
@@ -45,7 +45,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
             cursor: pointer;
 
             &:hover {
-                background: ${theme.BG_WHITE_ALT_HOVER};
+                background: ${theme.legacy.BG_WHITE_ALT_HOVER};
                 ${ViewText} {
                     text-decoration: underline;
                     transform: translateX(-4px);
@@ -59,11 +59,11 @@ const StyledProgressPie = styled(ProgressPie)`
 `;
 
 const StatusText = styled.span`
-    color: ${({ theme }) => theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
 `;
 
 const Note = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 const Separator = styled.span`

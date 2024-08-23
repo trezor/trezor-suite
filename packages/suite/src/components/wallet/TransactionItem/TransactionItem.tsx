@@ -45,7 +45,7 @@ const Wrapper = styled(Card)<{
     ${({ $isPending }) =>
         $isPending &&
         css`
-            border-left: 8px solid ${({ theme }) => theme.TYPE_ORANGE};
+            border-left: 8px solid ${({ theme }) => theme.legacy.TYPE_ORANGE};
             padding-left: 16px;
 
             @media (max-width: ${variables.SCREEN_SIZE.SM}) {

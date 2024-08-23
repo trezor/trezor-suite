@@ -22,7 +22,7 @@ const Content = styled.div`
 `;
 
 const Title = styled(H3)`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     margin-bottom: 30px;
 
     @media (max-width: ${variables.SCREEN_SIZE.MD}) {

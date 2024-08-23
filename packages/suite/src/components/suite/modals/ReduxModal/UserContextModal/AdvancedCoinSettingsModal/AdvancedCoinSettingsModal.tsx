@@ -30,7 +30,7 @@ const Header = styled.div`
 const Subheader = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 interface AdvancedCoinSettingsModalProps {

@@ -38,7 +38,7 @@ const ItemTitleWrapper = styled.span`
 `;
 
 const ItemTitle = styled.span<ComponentProps>`
-    color: ${({ theme }) => transparentize(0.3, theme.TYPE_DARK_GREY)};
+    color: ${({ theme }) => transparentize(0.3, theme.legacy.TYPE_DARK_GREY)};
     line-height: 24px;
 
     ${({ isActive }) =>
