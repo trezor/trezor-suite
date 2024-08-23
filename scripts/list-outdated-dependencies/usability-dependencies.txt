@@ -1,0 +1,54 @@
+@crowdin/cli
+@floating-ui/react
+@headlessui/react
+@storybook/addon-actions
+@storybook/addon-controls
+@storybook/addon-links
+@storybook/addon-viewport
+@storybook/addons
+@storybook/client-api
+@storybook/react
+@storybook/react-webpack5
+@types/qrcode .react
+@types/react-date-range
+@types/react-qr-reader
+@types/ua-parser-js
+autoprefixer
+babel-plugin-styled-components
+css-in-js-utils
+css-loader
+css-minimiz
+css-minimizer-webpack-plugin
+csstype
+framer-motion
+lottie-react
+qrcode.react
+react-date-range
+react-helmet-async
+react-intl
+react-markdown
+react-medium-image-zoom
+react-qr-reader
+react-select
+react-svg
+recharts
+storybook
+style-loader
+styled-components
+stylelint
+stylelint-config-standard
+typescript-styled-plugin
+ua-parser-js
+zxcvbn
+date-fns
+@types/zxcvbn
+react-focus-lock
+@formatjs/cli // je potřeba?
+@formatjs/intl // je potřeba?
+@types/pako
+pako
+polished // je potřeba?
+svgo
+sharp
+@types/pdfmake
+pdfmake
