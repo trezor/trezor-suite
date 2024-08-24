@@ -53,6 +53,10 @@
             "inputs": ["default", "{workspaceRoot}/.stylelintrc"],
             "outputs": ["{projectRoot}/.stylelintcache"],
             "cache": true
+        },
+        "depcheck": {
+            "inputs": ["default"],
+            "cache": true
         }
     },
     "affected": {
