@@ -7,9 +7,11 @@ import { Box } from '../Box';
 import { BoxSkeleton } from './BoxSkeleton';
 import { VStack } from '../Stack';
 
-const skeletonContainer = prepareNativeStyle(_ => ({
+const skeletonContainer = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: utils.spacings.medium,
 }));
 
 const MAIN_ITEM_HEIGHT = 48;

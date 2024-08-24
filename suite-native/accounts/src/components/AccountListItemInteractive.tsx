@@ -1,4 +1,3 @@
-import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';
@@ -17,10 +16,6 @@ interface AccountListItemInteractiveProps extends AccountListItemProps {
     onSelectAccount: OnSelectAccount;
     hideTokens?: boolean;
 }
-
-const cardStyle = prepareNativeStyle(_utils => ({
-    padding: 0,
-}));
 
 const separatorStyle = prepareNativeStyle(utils => ({
     borderBottomWidth: 1,
@@ -71,17 +66,18 @@ export const AccountListItemInteractive = ({
                     )}
                 </HStack>
             )}
-            <Card style={applyStyle(cardStyle)}>
-                <TouchableOpacity
+            <Card noPadding>
+                <AccountListItem
+                    key={account.key}
+                    account={account}
+                    hideTokens={hideTokens}
                     onPress={() =>
                         onSelectAccount({
                             account,
                             hasAnyTokensWithFiatRates,
                         })
                     }
-                >
-                    <AccountListItem key={account.key} account={account} hideTokens={hideTokens} />
-                </TouchableOpacity>
+                />
                 {showSeparator && <Box style={applyStyle(separatorStyle)} />}
                 {shouldShowTokens && (
                     <TokenList account={account} onSelectAccount={onSelectAccount} />

@@ -1,8 +1,10 @@
 import { WritableAtom, useAtom } from 'jotai';
 
 import { Account } from '@suite-common/wallet-types';
-import { AccountListItemInteractive, OnSelectAccount } from '@suite-native/accounts';
 import { BottomSheet } from '@suite-native/atoms';
+
+import { OnSelectAccount } from '../types';
+import { AccountListItemInteractive } from './AccountListItemInteractive';
 
 type TokenSelectBottomSheetProps = {
     bottomSheetAccountAtom: WritableAtom<Account | null, Account | null>;
@@ -26,7 +28,6 @@ export const TokenSelectBottomSheet = ({
 
     return (
         <BottomSheet
-            title="Select Account"
             isVisible
             onClose={() => {
                 setSelectedAccount(null);

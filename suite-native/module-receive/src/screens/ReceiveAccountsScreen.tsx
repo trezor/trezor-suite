@@ -53,6 +53,7 @@ export const ReceiveAccountsScreen = () => {
             <AccountsList
                 onSelectAccount={navigateToReceiveScreen}
                 filterValue={accountsFilterValue}
+                hideTokensIntoModal
             />
         </Screen>
     );

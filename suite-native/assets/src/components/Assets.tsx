@@ -63,8 +63,8 @@ export const Assets = () => {
 
     return (
         <>
-            <Card>
-                <VStack spacing={19}>
+            <Card noPadding>
+                <VStack spacing={0}>
                     {assetsDataWithPercentage.map(asset => (
                         <Animated.View
                             entering={isLoading ? FadeInDown : undefined}

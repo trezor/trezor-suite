@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -22,6 +21,7 @@ import {
 import { SettingsSliceRootState } from '@suite-native/settings';
 import { selectNumberOfUniqueTokensForCoinPerDevice } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { AccountListItemBase } from '@suite-native/accounts';
 
 import { selectVisibleDeviceAccountsKeysByNetworkSymbol } from '../assetsSelectors';
 
@@ -34,25 +34,6 @@ type AssetItemProps = {
     fiatPercentage: number;
     fiatPercentageOffset: number;
 };
-
-const assetItemWrapperStyle = prepareNativeStyle(() => ({
-    flexDirection: 'row',
-    alignItems: 'center',
-}));
-
-const assetContentStyle = prepareNativeStyle(() => ({
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flex: 1,
-    marginLeft: 10,
-}));
-
-const assetValuesStyle = prepareNativeStyle(_ => ({ maxWidth: '60%' }));
-
-const iconStyle = prepareNativeStyle(() => ({
-    marginRight: 6,
-}));
 
 const numberOfTokensStyle = prepareNativeStyle(() => ({
     marginLeft: 10,
@@ -103,55 +84,53 @@ export const AssetItem = memo(
         };
 
         return (
-            <TouchableOpacity disabled={!onPress} onPress={handleAssetPress}>
-                <Box style={applyStyle(assetItemWrapperStyle)}>
+            <AccountListItemBase
+                disabled={!onPress}
+                onPress={handleAssetPress}
+                icon={
                     <CryptoIconWithPercentage
                         iconName={iconName}
                         percentage={fiatPercentage}
                         percentageOffset={fiatPercentageOffset}
                     />
-                    <Box style={applyStyle(assetContentStyle)}>
-                        <Box flex={1} justifyContent="space-between" alignItems="flex-start">
-                            <Text>
-                                <NetworkNameFormatter value={cryptoCurrencySymbol} />
-                            </Text>
-                            <Box flexDirection="row" alignItems="center">
-                                <Box style={applyStyle(iconStyle)}>
-                                    <Icon size="medium" color="iconSubdued" name="standardWallet" />
-                                </Box>
-                                <Text variant="hint" color="textSubdued">
-                                    {accountsPerAsset}
-                                </Text>
+                }
+                title={<NetworkNameFormatter value={cryptoCurrencySymbol} />}
+                badges={
+                    <>
+                        <Box>
+                            <Icon size="medium" color="iconSubdued" name="standardWallet" />
+                        </Box>
+                        <Text variant="hint" color="textSubdued">
+                            {accountsPerAsset}
+                        </Text>
 
-                                {numberOfTokens > 0 && (
-                                    <Badge
-                                        style={applyStyle(numberOfTokensStyle)}
-                                        size="small"
-                                        label={
-                                            <Translation
-                                                id="accountList.numberOfTokens"
-                                                values={{ numberOfTokens }}
-                                            />
-                                        }
+                        {numberOfTokens > 0 && (
+                            <Badge
+                                style={applyStyle(numberOfTokensStyle)}
+                                size="small"
+                                label={
+                                    <Translation
+                                        id="accountList.numberOfTokens"
+                                        values={{ numberOfTokens }}
                                     />
-                                )}
-                            </Box>
-                        </Box>
-                        <Box alignItems="flex-end" style={applyStyle(assetValuesStyle)}>
-                            <FiatAmountFormatter
-                                network={cryptoCurrencySymbol}
-                                value={fiatBalance}
+                                }
                             />
-                            <CryptoAmountFormatter
-                                value={cryptoCurrencyValue}
-                                network={cryptoCurrencySymbol}
-                                // Every asset crypto amount is rounded to 8 decimals to prevent UI overflow.
-                                decimals={8}
-                            />
-                        </Box>
-                    </Box>
-                </Box>
-            </TouchableOpacity>
+                        )}
+                    </>
+                }
+                mainValue={
+                    <FiatAmountFormatter network={cryptoCurrencySymbol} value={fiatBalance} />
+                }
+                secondaryValue={
+                    <CryptoAmountFormatter
+                        value={cryptoCurrencyValue}
+                        network={cryptoCurrencySymbol}
+                        // Every asset crypto amount is rounded to 8 decimals to prevent UI overflow.
+
+                        decimals={8}
+                    />
+                }
+            />
         );
     },
 );
