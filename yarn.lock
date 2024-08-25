@@ -11621,7 +11621,7 @@ __metadata:
     electron-store: "npm:8.2.0"
     electron-updater: "npm:6.3.3"
     glob: "npm:^10.3.10"
-    usb: "npm:^2.11.0"
+    usb: "npm:^2.13.0"
   languageName: unknown
   linkType: soft
 
@@ -11845,7 +11845,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     react-intl: "npm:^6.6.8"
     styled-components: "npm:^6.1.8"
-    usb: "npm:^2.11.0"
+    usb: "npm:^2.13.0"
     webpack: "npm:^5.91.0"
   languageName: unknown
   linkType: soft
@@ -11872,7 +11872,7 @@ __metadata:
     esbuild: "npm:^0.23.1"
     jest: "npm:^29.7.0"
     ts-node: "npm:^10.9.1"
-    usb: "npm:^2.11.0"
+    usb: "npm:^2.13.0"
   languageName: unknown
   linkType: soft
 
@@ -11896,7 +11896,7 @@ __metadata:
     protobufjs: "npm:7.4.0"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.16.3"
-    usb: "npm:^2.11.0"
+    usb: "npm:^2.13.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -31974,12 +31974,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-addon-api@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "node-addon-api@npm:7.0.0"
+"node-addon-api@npm:^8.0.0":
+  version: 8.1.0
+  resolution: "node-addon-api@npm:8.1.0"
   dependencies:
     node-gyp: "npm:latest"
-  checksum: 10/f1a54ae38f6cbd4cdfe69d1b2f3f0c4a3d227eb50f5073f0a3b985d29a0c39c94b82c88213e5075ee1bc262f2e869841c733ebe7111a5e376f1732649edf6a93
+  checksum: 10/25124c99a12d2a94cd39ff942e16399640ab04747e09085ee85dd8f3903ef67b621c12a1b30de49c5498522237785dace2de87910715448ce547ee726ce777e0
   languageName: node
   linkType: hard
 
@@ -41108,15 +41108,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"usb@npm:^2.11.0":
-  version: 2.11.0
-  resolution: "usb@npm:2.11.0"
+"usb@npm:^2.13.0":
+  version: 2.13.0
+  resolution: "usb@npm:2.13.0"
   dependencies:
     "@types/w3c-web-usb": "npm:^1.0.6"
-    node-addon-api: "npm:^7.0.0"
+    node-addon-api: "npm:^8.0.0"
     node-gyp: "npm:latest"
     node-gyp-build: "npm:^4.5.0"
-  checksum: 10/f65f513dd5ed5abcfec9e38383276dd1c97d95be09d37b16531cd86766b9fae0f058ad65bac595fdb1db5fe266c5706af1b1a545aa2247034f5e868457094614
+  checksum: 10/6e7d2544f5213d73e6747420ac105b7e450dcdd98ec03397db9856c750f06e62a66354e70b228dfb9d26cb4fc75eab39125fc3c83314953ba394c0785479992d
   languageName: node
   linkType: hard
 
