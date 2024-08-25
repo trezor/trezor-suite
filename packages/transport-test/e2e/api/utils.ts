@@ -16,7 +16,12 @@ export const buildMessage = (message: keyof typeof MESSAGES) => {
 export const assertMessage = (message: Buffer, expected: keyof typeof MESSAGES) => {
     const assertedChunk = message.toString('hex').substring(0, MAGIC.length + 2);
     if (assertedChunk !== `${MAGIC}${MESSAGES[expected]}`) {
-        throw new Error(error(`Expected message ${expected} but got ${assertedChunk}`));
+        const unexpected = Object.entries(MESSAGES).find(
+            ([, v]) => v === assertedChunk.replace(MAGIC, ''),
+        )?.[0];
+        throw new Error(
+            error(`Expected message ${expected} but got ${unexpected || assertedChunk}`),
+        );
     }
 };
 export function assertSuccess(result: any): asserts result is { success: true; payload: any } {
