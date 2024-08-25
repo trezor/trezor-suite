@@ -68,7 +68,7 @@
         "@trezor/utils": "workspace:*",
         "cross-fetch": "^4.0.0",
         "long": "^4.0.0",
-        "protobufjs": "7.2.6",
+        "protobufjs": "7.4.0",
         "usb": "^2.11.0"
     },
     "peerDependencies": {
