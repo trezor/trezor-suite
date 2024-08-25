@@ -104,6 +104,26 @@ const runTests = async () => {
         // here concurrent enumeration works correctly, even in node.
         await sharedTest('concurrent enumerate', () => concurrentEnumerate(3));
         await sharedTest('ping pong', pingPong);
+
+        await sharedTest('read-abort-write', async () => {
+            debug('open device');
+            await api.openDevice(path, true);
+
+            const abortController = new AbortController();
+            debug('read with abort signal');
+            const readPromise = api.read(path, abortController.signal);
+            debug('trigger abort');
+            abortController.abort();
+            await readPromise;
+            debug('write PING');
+            await api.write(path, buildMessage('PING'));
+            debug('read and expect SUCCESS');
+            const readResponse = await api.read(path);
+            assertSuccess(readResponse);
+            assertMessage(readResponse.payload, 'SUCCESS');
+            await api.closeDevice(path);
+            debug('device closed');
+        });
     }
     success('All tests passed');
 };
