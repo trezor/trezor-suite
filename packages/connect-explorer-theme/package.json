@@ -27,10 +27,10 @@
         "@trezor/components": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@vitejs/plugin-react": "^3.0.1",
-        "clsx": "^2.0.0",
+        "clsx": "^2.1.1",
         "escape-string-regexp": "^5.0.0",
         "flexsearch": "^0.7.31",
-        "focus-visible": "^5.2.0",
+        "focus-visible": "^5.2.1",
         "git-url-parse": "^13.1.0",
         "intersection-observer": "^0.12.2",
         "match-sorter": "^6.3.1",
@@ -38,8 +38,8 @@
         "next-themes": "^0.2.1",
         "scroll-into-view-if-needed": "^3.1.0",
         "styled-components": "^6.1.8",
-        "tailwindcss": "^3.3.3",
-        "zod": "^3.22.3"
+        "tailwindcss": "^3.4.10",
+        "zod": "^3.23.8"
     },
     "devDependencies": {
         "@tailwindcss/nesting": "^0.0.0-insiders.565cd3e",
@@ -52,10 +52,10 @@
         "jsdom": "^23.0.0",
         "next": "^14.1.1",
         "nextra": "^2.13.4",
-        "postcss": "^8.4.31",
+        "postcss": "^8.4.41",
         "postcss-cli": "^10.1.0",
         "postcss-import": "^15.1.0",
-        "postcss-lightningcss": "^1.0.0",
+        "postcss-lightningcss": "^1.0.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "vitest": "^0.34.0"
