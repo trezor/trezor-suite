@@ -21,6 +21,7 @@ export const config: Config = {
     bail: true,
     testEnvironment: 'node',
     globals: {},
+    setupFilesAfterEnv: ['<rootDir>/e2e/bridge/testSetup.js'],
     testTimeout: 60000,
 };
 
