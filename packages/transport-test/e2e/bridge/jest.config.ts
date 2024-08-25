@@ -21,6 +21,7 @@ export const config: Config = {
     bail: true,
     testEnvironment: 'node',
     globals: {},
+    testTimeout: 60000,
 };
 
 // eslint-disable-next-line import/no-default-export

@@ -4,9 +4,6 @@ import { BridgeTransport, Descriptor } from '@trezor/transport';
 import { controller as TrezorUserEnvLink } from './controller';
 import { descriptor as fixtureDescriptor } from './expect';
 
-// todo: introduce global jest config for e2e
-jest.setTimeout(60000);
-
 const wait = (ms = 1000) =>
     new Promise(resolve => {
         setTimeout(() => {
