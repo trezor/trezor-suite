@@ -1,4 +1,4 @@
-import { Type, Static, TypeClone } from '@trezor/schema-utils';
+import { Type, Static, CloneType } from '@trezor/schema-utils';
 
 export enum DeviceModelInternal {
     T1B1 = 'T1B1',
@@ -470,7 +470,7 @@ export const TxInputType = Type.Union(
 );
 
 export type TxInput = Static<typeof TxInput>;
-export const TxInput = TypeClone.Type(TxInputType, { $id: 'TxInput' });
+export const TxInput = CloneType(TxInputType, { $id: 'TxInput' });
 
 export type TxOutputBinType = Static<typeof TxOutputBinType>;
 export const TxOutputBinType = Type.Object(
@@ -537,7 +537,7 @@ export const TxOutputType = Type.Union(
 );
 
 export type TxOutput = Static<typeof TxOutput>;
-export const TxOutput = TypeClone.Type(TxOutputType, { $id: 'TxOutput' });
+export const TxOutput = CloneType(TxOutputType, { $id: 'TxOutput' });
 
 export type PrevTx = Static<typeof PrevTx>;
 export const PrevTx = Type.Object(
