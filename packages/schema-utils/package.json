@@ -27,7 +27,7 @@
         "tsx": "^4.16.3"
     },
     "dependencies": {
-        "@sinclair/typebox": "^0.31.28",
+        "@sinclair/typebox": "^0.33.7",
         "ts-mixer": "^6.0.3"
     },
     "peerDependencies": {

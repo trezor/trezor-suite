@@ -6,7 +6,8 @@ import {
     TObject,
     Optional,
     Kind,
-    TypeClone,
+    OptionalKind,
+    CloneType,
 } from '@sinclair/typebox';
 import { ValueErrorType, Errors, ValueError } from '@sinclair/typebox/errors';
 import { Mixin } from 'ts-mixer';
@@ -75,7 +76,7 @@ export function Assert<T extends TSchema>(schema: T, value: unknown): asserts va
     while (error) {
         if (error.path === '/' && errors.length > 1) {
             // This might be a nested error, try to find the root cause
-        } else if (error.value == null && error.schema[Optional] === 'Optional') {
+        } else if (error.value == null && error.schema[OptionalKind] === 'Optional') {
             // Optional can also accept null values
         } else if (error.type === ValueErrorType.Union) {
             // Drill down into the union
@@ -119,5 +120,5 @@ export function AssertWeak<T extends TSchema>(
 }
 
 export const Type = new CustomTypeBuilder();
-export { Optional, TypeClone };
+export { Optional, CloneType };
 export type { Static, TObject, TSchema };

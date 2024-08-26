@@ -36,7 +36,9 @@ describe('Assert', () => {
         try {
             Assert(schema, value);
         } catch (e) {
-            expect(e.message).toEqual('Invalid parameter "type" (= undefined): Required property');
+            expect(e.message).toEqual(
+                'Invalid parameter "type" (= undefined): Expected required property',
+            );
         }
     });
 

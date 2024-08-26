@@ -1,4 +1,4 @@
-import { TypeRegistry, Kind, TSchema, JavaScriptTypeBuilder } from '@sinclair/typebox';
+import { TypeRegistry, Kind, TSchema, JavaScriptTypeBuilder, CreateType } from '@sinclair/typebox';
 
 export interface TUintOptions {
     allowNegative?: boolean;
@@ -24,6 +24,6 @@ TypeRegistry.Set('Uint', (schema: TUint, value: unknown) => {
 
 export class UintBuilder extends JavaScriptTypeBuilder {
     Uint(options?: TUintOptions): TUint {
-        return this.Create({ ...options, [Kind]: 'Uint', type: 'Uint' });
+        return CreateType({ [Kind]: 'Uint', type: 'Uint' }, options) as never;
     }
 }

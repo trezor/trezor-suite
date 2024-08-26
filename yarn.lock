@@ -8187,6 +8187,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sinclair/typebox@npm:^0.33.7":
+  version: 0.33.7
+  resolution: "@sinclair/typebox@npm:0.33.7"
+  checksum: 10/73d55197ccff7cd93e799cda37163d062e5985d4e03c21ab9d478258b2e2c84c3e19814dd3b31dccbbd01f71efb83800341611efa0e6ea17c77b6593915dbfe5
+  languageName: node
+  linkType: hard
+
 "@sindresorhus/is@npm:^4.0.0, @sindresorhus/is@npm:^4.6.0":
   version: 4.6.0
   resolution: "@sindresorhus/is@npm:4.6.0"
@@ -11157,7 +11164,7 @@ __metadata:
   dependencies:
     "@codemirror/state": "npm:^6.4.1"
     "@hbsnow/rehype-sectionize": "npm:^1.0.7"
-    "@sinclair/typebox": "npm:^0.31.28"
+    "@sinclair/typebox": "npm:^0.33.7"
     "@trezor/components": "workspace:^"
     "@trezor/connect": "workspace:^"
     "@trezor/connect-explorer-theme": "workspace:^"
@@ -11580,7 +11587,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/schema-utils@workspace:packages/schema-utils"
   dependencies:
-    "@sinclair/typebox": "npm:^0.31.28"
+    "@sinclair/typebox": "npm:^0.33.7"
     "@sinclair/typebox-codegen": "npm:^0.8.13"
     ts-mixer: "npm:^6.0.3"
     ts-node: "npm:^10.9.2"

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Kind, Optional, TIntersect, TObject, TSchema } from '@sinclair/typebox';
+import { Kind, OptionalKind, TIntersect, TObject, TSchema } from '@sinclair/typebox';
 
 import { Param } from './Param';
 import { getTypeName } from '../utils/getTypeName';
@@ -54,7 +54,7 @@ const SingleParam = ({
     let isRequired: boolean | undefined;
     if (schema?.required?.includes(name)) {
         isRequired = true;
-    } else if (value[Optional] === 'Optional') {
+    } else if (value[OptionalKind] === 'Optional') {
         isRequired = false;
     }
 

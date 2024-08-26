@@ -125,7 +125,7 @@ describe('complex-example', () => {
             a: 123,
         };
         expect(() => Assert(schema, invalidSchema4)).toThrow(
-            'Invalid parameter "b" (= undefined): Required property',
+            'Invalid parameter "b" (= undefined): Expected required property',
         );
     });
 });
