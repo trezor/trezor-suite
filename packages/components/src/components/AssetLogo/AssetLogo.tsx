@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { SkeletonCircle } from '../skeletons/SkeletonCircle';
 import { useCallback, useState } from 'react';
 import { borders } from '@trezor/theme';
 import { AssetInitials } from './AssetInitials';
@@ -43,7 +42,7 @@ const Logo = styled.img<{ $size: number; $isVisible: boolean }>(
 
 const useAssetLogo = (logoUrl: string, shouldTryToFetch: boolean) => {
     const [isLoading, setIsLoading] = useState(true);
-    const [isLogoRendered, setIsLogoRendered] = useState<boolean | null>(null);
+    const [isPlaceholder, setIsPlaceholder] = useState<boolean | null>(null);
 
     const isImageOnUrlExist = useCallback((url: string): Promise<boolean> => {
         return new Promise(resolve => {
@@ -62,20 +61,23 @@ const useAssetLogo = (logoUrl: string, shouldTryToFetch: boolean) => {
     useEffect(() => {
         const checkLogoExistence = async () => {
             const logoExists = await isImageOnUrlExist(logoUrl);
-            setIsLogoRendered(logoExists);
+            setIsPlaceholder(!logoExists);
             setIsLoading(false);
         };
 
         if (shouldTryToFetch) {
             checkLogoExistence();
         } else {
-            setIsLogoRendered(false);
+            setIsPlaceholder(true);
             setIsLoading(false);
         }
     }, [shouldTryToFetch, logoUrl, isImageOnUrlExist]);
 
-    return { isLoading, isLogoRendered, setIsLoading };
+    return { isLoading, isPlaceholder, setIsLoading };
 };
+
+const getAssetLogoUrl = (fileName: string, quality?: '@2x') =>
+    `${ICONS_URL_BASE}${fileName}${quality === undefined ? '' : quality}.webp`;
 
 export const AssetLogo = ({
     size,
@@ -87,32 +89,33 @@ export const AssetLogo = ({
     'data-testid': dataTest,
 }: AssetLogoProps) => {
     const fileName = contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
-    const getAssetLogoUrl = useCallback(
-        (quality?: '@2x') =>
-            `${ICONS_URL_BASE}${fileName}${quality === undefined ? '' : quality}.webp`,
-        [fileName],
-    );
-    const logoUrl = getAssetLogoUrl();
+    const logoUrl = getAssetLogoUrl(fileName);
 
-    const { isLoading, setIsLoading, isLogoRendered } = useAssetLogo(logoUrl, shouldTryToFetch);
+    const { isLoading, setIsLoading, isPlaceholder } = useAssetLogo(logoUrl, shouldTryToFetch);
 
     const frameProps = {
         margin,
     };
 
+    const handleLoad = () => {
+        setIsLoading(false);
+    };
+    const handleError = () => {
+        setIsLoading(false);
+    };
+
     return (
         <Container $size={size} {...makePropsTransient(frameProps)}>
-            {isLoading && <SkeletonCircle size={size} />}
-            {!isLoading && isLogoRendered === false && (
+            {(isLoading || isPlaceholder) && (
                 <AssetInitials size={size}>{placeholder}</AssetInitials>
             )}
-            {isLogoRendered === true && (
+            {!isLoading && !isPlaceholder && (
                 <Logo
                     src={logoUrl}
-                    srcSet={`${logoUrl} 1x, ${getAssetLogoUrl('@2x')} 2x`}
+                    srcSet={`${logoUrl} 1x, ${getAssetLogoUrl(fileName, '@2x')} 2x`}
                     $size={size}
-                    onLoad={() => setIsLoading(false)}
-                    onError={() => setIsLoading(false)}
+                    onLoad={handleLoad}
+                    onError={handleError}
                     $isVisible={!isLoading}
                     data-testid={dataTest}
                     alt={placeholder}

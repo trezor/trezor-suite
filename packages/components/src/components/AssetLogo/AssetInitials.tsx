@@ -1,11 +1,17 @@
 import styled from 'styled-components';
 import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
-import { borders, Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import {
+    borders,
+    Elevation,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacingsPx,
+} from '@trezor/theme';
 import { Text } from '../typography/Text/Text';
 import { Tooltip } from '../Tooltip/Tooltip';
 
 const Content = styled.div`
-    margin: 4px;
+    margin: ${spacingsPx.xxs};
     overflow: hidden;
 `;
 
