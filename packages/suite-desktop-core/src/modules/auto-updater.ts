@@ -75,6 +75,26 @@ export const init: Module = ({ mainWindow, store }) => {
         mainWindow.webContents.send('update/checking');
     });
 
+    const startDownload = async () => {
+        logger.info(SERVICE_NAME, 'Download requested');
+
+        mainWindow.webContents.send('update/downloading', {
+            percent: 0,
+            bytesPerSecond: 0,
+            total: 0,
+            transferred: 0,
+        });
+
+        updateCancellationToken = new CancellationToken();
+
+        try {
+            await autoUpdater.downloadUpdate(updateCancellationToken);
+            logger.info(SERVICE_NAME, 'Update downloaded');
+        } catch {
+            logger.info(SERVICE_NAME, 'Update cancelled');
+        }
+    };
+
     autoUpdater.on('update-available', ({ version, releaseDate, releaseNotes }: UpdateInfo) => {
         logger.warn(SERVICE_NAME, [
             'Update is available:',
@@ -98,7 +118,7 @@ export const init: Module = ({ mainWindow, store }) => {
         isManualCheck = false;
 
         if (isAutomaticUpdateEnabled) {
-            autoUpdater.downloadUpdate();
+            startDownload();
         }
     });
 
@@ -186,25 +206,7 @@ export const init: Module = ({ mainWindow, store }) => {
         autoUpdater.checkForUpdates();
     });
 
-    ipcMain.on('update/download', async () => {
-        logger.info(SERVICE_NAME, 'Download requested');
-
-        mainWindow.webContents.send('update/downloading', {
-            percent: 0,
-            bytesPerSecond: 0,
-            total: 0,
-            transferred: 0,
-        });
-
-        updateCancellationToken = new CancellationToken();
-
-        try {
-            await autoUpdater.downloadUpdate(updateCancellationToken);
-            logger.info(SERVICE_NAME, 'Update downloaded');
-        } catch {
-            logger.info(SERVICE_NAME, 'Update cancelled');
-        }
-    });
+    ipcMain.on('update/download', startDownload);
 
     ipcMain.on('update/install', () => {
         logger.info(SERVICE_NAME, 'Restart and update request');
@@ -250,7 +252,9 @@ export const init: Module = ({ mainWindow, store }) => {
         store.setUpdateSettings({ ...settings, isAutomaticUpdateEnabled: value });
         isAutomaticUpdateEnabled = value;
 
-        autoUpdater.checkForUpdates();
+        if (isAutomaticUpdateEnabled) {
+            autoUpdater.checkForUpdates();
+        }
 
         if (!isAutomaticUpdateEnabled) {
             // In case
