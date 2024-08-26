@@ -87,8 +87,8 @@ export const Experimental = () => {
     const dispatch = useDispatch();
 
     const onSwitchExperimental = () => {
-        Object.values(EXPERIMENTAL_FEATURES).forEach(config =>
-            config?.onToggle?.({ dispatch, newValue: false }),
+        enabledFeatures?.forEach(feature =>
+            EXPERIMENTAL_FEATURES[feature]?.onToggle?.({ dispatch, newValue: false }),
         );
 
         dispatch({
