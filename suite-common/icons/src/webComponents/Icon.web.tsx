@@ -1,5 +1,5 @@
 import { ReactSVG } from 'react-svg';
-import { MouseEvent } from 'react';
+import { MouseEvent, useCallback } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
@@ -58,34 +58,43 @@ export const Icon = ({
 
     const iconSize = getIconSize(size);
 
-    const handleOnKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+    const handleOnKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                onClick?.();
+            }
+        },
+        [onClick],
+    );
+
+    const handleInjection = useCallback(
+        (svg: SVGSVGElement) => {
+            const strokeColor = isCSSColor(color) ? color : theme[color];
+
+            svg.querySelectorAll('path')?.forEach(path => {
+                if (path.hasAttribute('fill')) {
+                    path.setAttribute('fill', strokeColor);
+                }
+                if (path.hasAttribute('stroke')) {
+                    path.setAttribute('stroke', strokeColor);
+                }
+            });
+            svg.setAttribute('width', `${iconSize}px`);
+            svg.setAttribute('height', `${iconSize}px`);
+        },
+        [color, iconSize, theme],
+    );
+
+    const handleClick = useCallback(
+        (e: MouseEvent<any>) => {
             onClick?.();
-        }
-    };
 
-    const handleInjection = (svg: SVGSVGElement) => {
-        const strokeColor = isCSSColor(color) ? color : theme[color];
-
-        svg.querySelectorAll('path')?.forEach(path => {
-            if (path.hasAttribute('fill')) {
-                path.setAttribute('fill', strokeColor);
-            }
-            if (path.hasAttribute('stroke')) {
-                path.setAttribute('stroke', strokeColor);
-            }
-        });
-        svg.setAttribute('width', `${iconSize}px`);
-        svg.setAttribute('height', `${iconSize}px`);
-    };
-
-    const handleClick = (e: MouseEvent<any>) => {
-        onClick?.();
-
-        // We need to stop default/propagation in case the icon is rendered in popup/modal so it won't close it.
-        e.preventDefault();
-        e.stopPropagation();
-    };
+            // We need to stop default/propagation in case the icon is rendered in popup/modal so it won't close it.
+            e.preventDefault();
+            e.stopPropagation();
+        },
+        [onClick],
+    );
 
     return (
         <SVG
