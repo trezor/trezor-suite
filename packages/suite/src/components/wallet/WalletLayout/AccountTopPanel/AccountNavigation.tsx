@@ -51,6 +51,7 @@ export const AccountNavigation = () => {
             title: <Translation id="TR_NAV_TOKENS" />,
             isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
             activeRoutes: ['wallet-tokens-coins', 'wallet-tokens-hidden'],
+            'data-testid': '@wallet/menu/wallet-tokens-coins',
         },
         {
             id: 'wallet-staking',
@@ -59,6 +60,7 @@ export const AccountNavigation = () => {
             },
             title: <Translation id="TR_NAV_STAKING" />,
             isHidden: !hasNetworkFeatures(account, 'staking'),
+            'data-testid': '@wallet/menu/staking',
         },
         {
             id: 'wallet-details',

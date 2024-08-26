@@ -26,9 +26,8 @@ describe(
             cy.viewport(1440, 2560).resetDb();
         });
 
-        //TODO: this test case will require substantial refactoring as the "remember wallet" has been changed with the view-only mode
         providers.forEach(f => {
-            it.skip(f.provider, () => {
+            it(f.provider, () => {
                 // prepare test
                 cy.task('stopBridge');
                 cy.task('startEmu', { wipe: true });
@@ -121,14 +120,13 @@ describe(
 
                 // device saved, disconnect provider
                 cy.getTestElement('@menu/switch-device').click();
-                cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch').click({
-                    force: true,
-                });
                 cy.getTestElement('@switch-device/wallet-on-index/0').click();
                 cy.task('stopEmu');
 
                 cy.log('Device is saved, when disconnected, user still can edit labels');
-                cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click();
+                cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
+                    force: true,
+                });
                 cy.getTestElement('@metadata/input').type(' edited for remembered{enter}');
 
                 cy.log('Now again, lets try disconnecting provider');

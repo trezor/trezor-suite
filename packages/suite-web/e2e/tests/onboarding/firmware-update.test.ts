@@ -63,7 +63,7 @@ describe.skip('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', 
         cy.prefixedVisit('/');
     });
 
-    it.skip('firmware update error', () => {
+    it('firmware update error', () => {
         cy.getTestElement('@analytics/continue-button').click();
 
         // hook into redux actions to bypass firmware hash check

@@ -9,6 +9,8 @@ describe('Onboarding - recover wallet T1B1', () => {
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.disableFirmwareHashCheck();
+        // TODO: Remove this compromised device workaround
+        cy.contains('Back').click();
     });
 
     it('Incomplete run of advanced recovery', () => {
