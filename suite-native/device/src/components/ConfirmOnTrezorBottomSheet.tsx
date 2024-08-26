@@ -1,7 +1,5 @@
-import { BottomSheet, Button, VStack, Box } from '@suite-native/atoms';
+import { BottomSheet, Button, VStack, Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-
-import { ReceiveAddressBottomSheetHeader } from './ReceiveAddressBottomSheetHeader';
 
 export const ConfirmOnTrezorBottomSheet = ({
     isOpened,
@@ -18,12 +16,15 @@ export const ConfirmOnTrezorBottomSheet = ({
             paddingHorizontal="large"
         >
             <VStack spacing="large">
-                <ReceiveAddressBottomSheetHeader
-                    title={<Translation id="moduleReceive.bottomSheets.confirmOnTrezor.title" />}
-                    description={
+                <VStack alignItems="center">
+                    <Text textAlign="center" variant="titleSmall">
+                        <Translation id="moduleReceive.bottomSheets.confirmOnTrezor.title" />
+                    </Text>
+                    <Text textAlign="center" color="textSubdued">
                         <Translation id="moduleReceive.bottomSheets.confirmOnTrezor.description" />
-                    }
-                />
+                    </Text>
+                </VStack>
+
                 <Box flex={1}>
                     <Button onPress={onClose}>
                         <Translation id="generic.buttons.close" />
