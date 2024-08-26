@@ -26,9 +26,9 @@ export type AccountListItemProps = {
 
 export const AccountListItem = ({
     account,
-    hideTokens = false,
     onPress,
     disabled,
+    hideTokens = false,
 }: AccountListItemProps) => {
     const { accountLabel } = account;
     const { NetworkNameFormatter } = useFormatters();

@@ -7,9 +7,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 export type AccountListItemBaseProps = {
     icon: React.ReactNode;
     title: React.ReactNode;
-    badges?: React.ReactNode;
     mainValue: React.ReactNode;
     secondaryValue: React.ReactNode;
+    badges?: React.ReactNode;
 
     onPress?: TouchableOpacityProps['onPress'];
     disabled?: boolean;
