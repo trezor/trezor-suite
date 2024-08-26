@@ -10,6 +10,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
             "path": "../../suite-common/validators"
         },
         {
@@ -26,10 +29,12 @@
         },
         { "path": "../accounts" },
         { "path": "../atoms" },
+        { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
         { "path": "../formatters" },
         { "path": "../forms" },
+        { "path": "../helpers" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../settings" },

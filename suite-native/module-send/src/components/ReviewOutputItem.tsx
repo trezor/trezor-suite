@@ -1,68 +1,46 @@
-import { AlertBox, AlertBoxVariant, Box, Text, VStack } from '@suite-native/atoms';
-import { ReviewOutputState } from '@suite-common/wallet-types';
+import { LayoutChangeEvent, View } from 'react-native';
+
 import { ReviewOutputType } from '@suite-common/wallet-types';
-import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TxKeyPath, useTranslate } from '@suite-native/intl';
 
 import { StatefulReviewOutput } from '../types';
+import { ReviewOutputCard } from './ReviewOutputCard';
+import { ReviewOutputItemContent } from './ReviewOutputItemContent';
 
 type ReviewOutputItemProps = {
     networkSymbol: NetworkSymbol;
     reviewOutput: StatefulReviewOutput;
-    status: ReviewOutputState;
+    onLayout: (event: LayoutChangeEvent) => void;
 };
+type SupportedOutputType = Extract<ReviewOutputType, 'amount' | 'address'>;
 
-const alertBoxVariantMap = {
-    active: 'warning',
-    success: 'success',
-} as const satisfies Record<Exclude<ReviewOutputState, undefined>, AlertBoxVariant>;
+const outputLabelTranslationMap = {
+    address: 'moduleSend.review.outputs.addressLabel',
+    amount: 'moduleSend.review.outputs.amountLabel',
+} as const satisfies Record<SupportedOutputType, TxKeyPath>;
 
-const ReviewOutputItemValue = ({
-    outputType,
+export const ReviewOutputItem = ({
+    reviewOutput,
     networkSymbol,
-    value,
-}: {
-    outputType: ReviewOutputType;
-    value: string;
-    networkSymbol: NetworkSymbol;
-}) => {
-    if (outputType === 'amount') {
-        return (
-            <CryptoAmountFormatter
-                color="textDefault"
-                variant="body"
-                isBalance={false}
-                value={value}
-                network={networkSymbol}
-            />
-        );
-    }
+    onLayout,
+}: ReviewOutputItemProps) => {
+    const { translate } = useTranslate();
+
+    const { state, type, value } = reviewOutput;
 
     return (
-        <Text numberOfLines={1} adjustsFontSizeToFit>
-            {value}
-        </Text>
-    );
-};
-
-export const ReviewOutputItem = ({ reviewOutput, networkSymbol }: ReviewOutputItemProps) => {
-    const alertBoxVariant = reviewOutput.state ? alertBoxVariantMap[reviewOutput.state] : 'error';
-
-    return (
-        <VStack flex={1} justifyContent="center" alignItems="center">
-            <Box alignItems="center" justifyContent="center">
-                <Text>{reviewOutput.type}:</Text>
-            </Box>
-            <AlertBox
-                variant={alertBoxVariant}
-                title={
-                    <ReviewOutputItemValue
-                        outputType={reviewOutput.type}
-                        networkSymbol={networkSymbol}
-                        value={reviewOutput.value}
-                    />
-                }
-            />
-        </VStack>
+        <View onLayout={onLayout}>
+            <ReviewOutputCard
+                title={translate(outputLabelTranslationMap[type as SupportedOutputType])}
+                outputState={state}
+            >
+                <ReviewOutputItemContent
+                    outputType={type}
+                    networkSymbol={networkSymbol}
+                    value={value}
+                />
+            </ReviewOutputCard>
+        </View>
     );
 };

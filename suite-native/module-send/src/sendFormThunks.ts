@@ -3,9 +3,11 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    deviceActions,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectAccountByKey,
+    selectDevice,
     selectSendFormDraftByAccountKey,
     sendFormActions,
     signTransactionThunk,
@@ -20,9 +22,8 @@ import { SignedTransaction } from '@trezor/connect';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
 
-// TODO: better naming
-export const signTransactionFeeLevelSigningThunk = createThunk(
-    `${SEND_MODULE_PREFIX}/signTransactionFeeLevelSigningThunk`,
+export const signTransactionNativeThunk = createThunk(
+    `${SEND_MODULE_PREFIX}/signTransactionNativeThunk`,
     async (
         {
             accountKey,
@@ -35,6 +36,7 @@ export const signTransactionFeeLevelSigningThunk = createThunk(
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
         const formState = selectSendFormDraftByAccountKey(getState(), accountKey);
+        const device = selectDevice(getState());
 
         if (!account) return rejectWithValue('Account not found.');
         if (!formState) return rejectWithValue('Form draft not found.');
@@ -64,10 +66,24 @@ export const signTransactionFeeLevelSigningThunk = createThunk(
         if (
             !signTransactionResponse.success ||
             G.isNullable(signTransactionResponse.payload?.signedTx)
-        )
+        ) {
+            dispatch(deviceActions.removeButtonRequests({ device }));
+
             return rejectWithValue('Device failed to sign the transaction.');
+        }
 
         return fulfillWithValue(signTransactionResponse.payload.signedTx);
+    },
+);
+
+export const cleanupSendFormThunk = createThunk(
+    `${SEND_MODULE_PREFIX}/cleanupSendFormThunk`,
+    ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
+        const device = selectDevice(getState());
+
+        dispatch(sendFormActions.dispose());
+        dispatch(sendFormActions.removeDraft({ accountKey }));
+        dispatch(deviceActions.removeButtonRequests({ device }));
     },
 );
 
@@ -89,8 +105,7 @@ export const sendTransactionAndCleanupSendFormThunk = createThunk(
             return rejectWithValue(response.error);
         }
 
-        dispatch(sendFormActions.dispose());
-        dispatch(sendFormActions.removeDraft({ accountKey: account.key }));
+        dispatch(cleanupSendFormThunk({ accountKey: account.key }));
 
         return response.payload;
     },

@@ -32,16 +32,18 @@ const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
     (utils, { isCloseDisplayed }) => ({
         flexDirection: isCloseDisplayed ? 'row' : 'column',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: isCloseDisplayed ? 'center' : 'flex-start',
         paddingHorizontal: utils.spacings.large,
         paddingTop: utils.spacings.large,
         paddingBottom: utils.spacings.medium,
     }),
 );
 
-const titlesContainer = prepareNativeStyle(_ => ({
-    maxWidth: '70%',
-}));
+const titlesContainer = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
+    (_, { isCloseDisplayed }) => ({
+        maxWidth: isCloseDisplayed ? '70%' : '100%',
+    }),
+);
 
 const bottomSheetGrabberStyle = prepareNativeStyle(utils => ({
     width: 32,
@@ -78,15 +80,10 @@ export const BottomSheetHeader = ({
             <BottomSheetGrabber />
             {isHeaderDisplayed && (
                 <View style={applyStyle(sheetHeaderStyle, { isCloseDisplayed })}>
-                    <View style={applyStyle(titlesContainer)}>
+                    <View style={applyStyle(titlesContainer, { isCloseDisplayed })}>
                         {title && <Text variant="titleSmall">{title}</Text>}
                         {subtitle && (
-                            <Text
-                                variant="label"
-                                color="textSubdued"
-                                numberOfLines={1}
-                                ellipsizeMode="tail"
-                            >
+                            <Text variant="label" color="textSubdued">
                                 {subtitle}
                             </Text>
                         )}

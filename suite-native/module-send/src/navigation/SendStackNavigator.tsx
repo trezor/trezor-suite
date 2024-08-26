@@ -8,8 +8,9 @@ import {
 
 import { SendAccountsScreen } from '../screens/SendAccountsScreen';
 import { SendOutputsScreen } from '../screens/SendOutputsScreen';
-import { SendReviewScreen } from '../screens/SendReviewScreen';
 import { SendFeesScreen } from '../screens/SendFeesScreen';
+import { SendAddressReviewScreen } from '../screens/SendAddressReviewScreen';
+import { SendOutputsReviewScreen } from '../screens/SendOutputsReviewScreen';
 
 const SendStack = createNativeStackNavigator<SendStackParamList>();
 
@@ -21,6 +22,13 @@ export const SendStackNavigator = () => (
         <SendStack.Screen name={SendStackRoutes.SendAccounts} component={SendAccountsScreen} />
         <SendStack.Screen name={SendStackRoutes.SendOutputs} component={SendOutputsScreen} />
         <SendStack.Screen name={SendStackRoutes.SendFees} component={SendFeesScreen} />
-        <SendStack.Screen name={SendStackRoutes.SendReview} component={SendReviewScreen} />
+        <SendStack.Screen
+            name={SendStackRoutes.SendAddressReview}
+            component={SendAddressReviewScreen}
+        />
+        <SendStack.Screen
+            name={SendStackRoutes.SendOutputsReview}
+            component={SendOutputsReviewScreen}
+        />
     </SendStack.Navigator>
 );

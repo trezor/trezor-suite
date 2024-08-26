@@ -9811,6 +9811,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
+    react-native-reanimated: "npm:3.11.0"
     react-redux: "npm:8.0.7"
     semver: "npm:^7.6.3"
   languageName: unknown
@@ -10246,6 +10247,7 @@ __metadata:
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -10253,10 +10255,12 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
+    "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
@@ -10266,10 +10270,12 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
+    expo-linear-gradient: "npm:13.0.2"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.53.0"
     react-native: "npm:0.75.2"
     react-native-reanimated: "npm:3.15.0"
+    react-native-svg: "npm:15.3.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -10420,6 +10426,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/device": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/helpers": "workspace:*"
@@ -35533,6 +35540,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-reanimated@npm:3.11.0":
+  version: 3.11.0
+  resolution: "react-native-reanimated@npm:3.11.0"
+  dependencies:
+    "@babel/plugin-transform-arrow-functions": "npm:^7.0.0-0"
+    "@babel/plugin-transform-nullish-coalescing-operator": "npm:^7.0.0-0"
+    "@babel/plugin-transform-optional-chaining": "npm:^7.0.0-0"
+    "@babel/plugin-transform-shorthand-properties": "npm:^7.0.0-0"
+    "@babel/plugin-transform-template-literals": "npm:^7.0.0-0"
+    "@babel/preset-typescript": "npm:^7.16.7"
+    convert-source-map: "npm:^2.0.0"
+    invariant: "npm:^2.2.4"
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+    react: "*"
+    react-native: "*"
+  checksum: 10/5ea68fa2c20bf98772a79e312adefb27aa8a97792849d6587d9e07eb5290c17745ad0bef5bc3343c0f0d8954ee81521deeb06399dc59f52723f0574df9c427b7
+  languageName: node
+  linkType: hard
+
 "react-native-reanimated@npm:3.15.0":
   version: 3.15.0
   resolution: "react-native-reanimated@npm:3.15.0"
@@ -35586,6 +35613,19 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/dfcbde7de4aae27980191bc64861190b2edece8f0e3988ef7e83ee6a7895df35fe006024d8fa0611cefc1e7dd6d574ce598f1dcb036750dc6b0a5fca073dd2b9
+  languageName: node
+  linkType: hard
+
+"react-native-svg@npm:15.3.0":
+  version: 15.3.0
+  resolution: "react-native-svg@npm:15.3.0"
+  dependencies:
+    css-select: "npm:^5.1.0"
+    css-tree: "npm:^1.1.3"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/03cb153da260bf31f325f2c98e235f76a15af2211e5ee056667230d872b125ded2d3a7910f41b6239f5d35554eb276581e08629b6d27ffb7da55784ac6041a64
   languageName: node
   linkType: hard
 

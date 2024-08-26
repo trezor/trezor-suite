@@ -191,7 +191,7 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
 
 export const cancelSignSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/cancelSignSendFormTransactionThunk`,
-    (_, { dispatch, getState, extra }) => {
+    (_, { dispatch, getState, extra, rejectWithValue }) => {
         const {
             actions: { onModalCancel },
         } = extra;
@@ -205,6 +205,8 @@ export const cancelSignSendFormTransactionThunk = createThunk(
         }
         // otherwise just close modal
         dispatch(onModalCancel());
+
+        return rejectWithValue('No active signing process found.');
     },
 );
 

@@ -1,10 +1,9 @@
 import React from 'react';
 
 import { formInputsMaxLength } from '@suite-common/validators';
-import { VStack, Divider, Text } from '@suite-native/atoms';
+import { VStack, Text, CardDivider } from '@suite-native/atoms';
 import { TextInputField } from '@suite-native/forms';
 import { AccountKey } from '@suite-common/wallet-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 
 import { AmountInputs } from './AmountInputs';
@@ -14,15 +13,7 @@ type RecipientInputsProps = {
     index: number;
     accountKey: AccountKey;
 };
-
-const dividerStyle = prepareNativeStyle(utils => ({
-    //  fill the whole width of the parent card
-    marginHorizontal: -utils.spacings.medium,
-}));
-
 export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => {
-    const { applyStyle } = useNativeStyles();
-
     const addressFieldName = getOutputFieldName(index, 'address');
 
     return (
@@ -39,7 +30,7 @@ export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => 
                     accessibilityLabel="address input"
                 />
             </VStack>
-            <Divider style={applyStyle(dividerStyle)} />
+            <CardDivider />
             <AmountInputs index={index} accountKey={accountKey} />
         </VStack>
     );
