@@ -55,9 +55,9 @@ export const transactionsInitialState: TransactionsState = {
 export type TransactionsRootState = {
     wallet: {
         transactions: TransactionsState & {
-            // We need to override types because there could be nulls in transactions array because of pagination
+            // We need to override types because there could be nulls/undefined in transactions array because of pagination
             // This should be fixed in TransactionsState but it will throw lot of errors then in desktop Suite
-            transactions: { [key: AccountKey]: (WalletAccountTransaction | null)[] };
+            transactions: { [key: AccountKey]: (WalletAccountTransaction | null | undefined)[] };
         };
     };
 };
@@ -239,7 +239,7 @@ export const selectAccountTransactions = memoizeWithArgs(
     (state: TransactionsRootState, accountKey: AccountKey | null): WalletAccountTransaction[] => {
         const transactions = selectAccountTransactionsWithNulls(state, accountKey);
 
-        return transactions.filter(t => t !== null);
+        return transactions.filter(t => !!t);
     },
     { size: EXPECTED_MAX_NUMBER_OF_ACCOUNTS },
 );
