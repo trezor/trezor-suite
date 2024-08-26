@@ -115,7 +115,19 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         getTorSettings: () => ipcRenderer.invoke('tor/get-settings'),
 
         changeTorSettings: payload => {
-            if (validation.isObject({ snowflakeBinaryPath: 'string' }, payload)) {
+            console.log('changeTorSettings');
+            console.log('payload before validation', payload);
+            console.log(
+                'validation.isObject({ snowflakeBinaryPath: string }, payload)',
+                validation.isObject({ snowflakeBinaryPath: 'string' }, payload),
+            );
+            const valid = (
+                [{ snowflakeBinaryPath: 'string' }, { torDataDir: 'string' }] as {
+                    [key: string]: validation.OptionalPrimitive;
+                }[]
+            ).some(validObject => validation.isObject(validObject, payload));
+            console.log('valid', valid);
+            if (valid) {
                 return ipcRenderer.invoke('tor/change-settings', payload);
             }
 

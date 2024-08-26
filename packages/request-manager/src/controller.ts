@@ -30,8 +30,12 @@ export class TorController extends EventEmitter {
     }
 
     private getIsCircuitEstablished() {
+        console.log('getIsCircuitEstablished');
         // We rely on TOR_CONTROLLER_STATUS but check controlPort is actives as sanity check.
-        return this.controlPort.ping() && this.status === TOR_CONTROLLER_STATUS.CircuitEstablished;
+        const responseFromPing = this.controlPort.ping();
+        console.log('this.status', this.status);
+        console.log('responseFromPing', responseFromPing);
+        return responseFromPing && this.status === TOR_CONTROLLER_STATUS.CircuitEstablished;
     }
 
     private getIsStopped() {
@@ -173,6 +177,8 @@ export class TorController extends EventEmitter {
         return config;
     }
 
+    // public useExternalTor(port, controlPort and torDataDir) {}
+
     public onMessageReceived(message: string) {
         const bootstrap: BootstrapEvent[] = bootstrapParser(message);
         bootstrap.forEach(event => {
@@ -228,7 +234,25 @@ export class TorController extends EventEmitter {
         return waitUntilResponse(1);
     }
 
+    public async waitUntilAliveExternal(): Promise<void> {
+        console.log('waitUntilAliveExternal');
+        try {
+            // TODO: make it a wait for method like the `waitUntilAlive`.
+            const isConnected = await this.controlPort.connect();
+            console.log('isConnected', isConnected);
+            const isAlive = this.controlPort.ping();
+            console.log('isAlive', isAlive);
+            this.successfullyBootstrapped();
+            this.emit('bootstrap/event', {
+                type: 'progress',
+                progress: 100,
+                summary: 'Using External Tor',
+            });
+        } catch (error) {}
+    }
+
     public getStatus(): Promise<TorControllerStatus> {
+        console.log('getStatus in request-manager tor controller');
         return new Promise(resolve => {
             if (this.getIsCircuitEstablished()) {
                 return resolve(TOR_CONTROLLER_STATUS.CircuitEstablished);

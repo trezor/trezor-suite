@@ -55,6 +55,7 @@ export type HandshakeTorModule = {
 
 export type TorSettings = {
     snowflakeBinaryPath: string;
+    torDataDir: string;
 };
 
 export type HandshakeElectron = {
