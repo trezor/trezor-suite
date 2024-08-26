@@ -9281,6 +9281,7 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
+    jotai: "npm:1.9.1"
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"

@@ -31,6 +31,7 @@ export const SendAccountsScreen = ({
             <AccountsList
                 onSelectAccount={navigateToSendFormScreen}
                 filterValue={BITCOIN_LIKE_FILTER}
+                hideTokensIntoModal
             />
         </Screen>
     );

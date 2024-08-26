@@ -10,16 +10,17 @@ import { AlertBox, AlertBoxProps } from '../AlertBox';
 export type CardProps = {
     children: ReactNode;
     style?: NativeStyleObject;
+    noPadding?: boolean;
 } & RequireAllOrNone<
     { alertVariant: AlertBoxProps['variant']; alertTitle: AlertBoxProps['title'] },
     'alertVariant' | 'alertTitle'
 >;
 
-const cardContainerStyle = prepareNativeStyle<{ isAlertDisplayed: boolean }>(
-    (utils, { isAlertDisplayed }) => ({
+const cardContainerStyle = prepareNativeStyle<{ isAlertDisplayed: boolean; noPadding: boolean }>(
+    (utils, { isAlertDisplayed, noPadding }) => ({
         backgroundColor: utils.colors.backgroundSurfaceElevation1,
         borderRadius: utils.borders.radii.medium,
-        padding: utils.spacings.medium,
+        padding: noPadding ? 0 : utils.spacings.medium,
         ...utils.boxShadows.small,
 
         extend: {
@@ -40,7 +41,13 @@ const alertBoxWrapperStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.extraSmall,
 }));
 
-export const Card = ({ children, style, alertVariant, alertTitle }: CardProps) => {
+export const Card = ({
+    children,
+    style,
+    alertVariant,
+    alertTitle,
+    noPadding = false,
+}: CardProps) => {
     const { applyStyle } = useNativeStyles();
 
     const isAlertDisplayed = !!alertVariant;
@@ -53,7 +60,7 @@ export const Card = ({ children, style, alertVariant, alertTitle }: CardProps) =
                 </View>
             )}
             {/* CAUTION: in case that alert is displayed, it is not possible to change styles of the top borders by the `style` prop. */}
-            <View style={[applyStyle(cardContainerStyle, { isAlertDisplayed }), style]}>
+            <View style={[applyStyle(cardContainerStyle, { isAlertDisplayed, noPadding }), style]}>
                 {children}
             </View>
         </View>

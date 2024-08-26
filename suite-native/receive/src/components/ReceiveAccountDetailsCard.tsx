@@ -33,7 +33,7 @@ export const ReceiveAccountDetailsCard = ({
 
     return (
         <VStack spacing="medium">
-            <Card>
+            <Card noPadding={!tokenContract}>
                 {tokenContract ? (
                     <TokenReceiveCard contract={tokenContract} accountKey={accountKey} />
                 ) : (

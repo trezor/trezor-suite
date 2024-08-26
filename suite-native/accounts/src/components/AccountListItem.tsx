@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { TouchableOpacityProps } from 'react-native';
 
 import { useFormatters } from '@suite-common/formatters';
 import {
@@ -7,40 +8,28 @@ import {
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { Badge, Box, HStack, RoundedIcon, Text } from '@suite-native/atoms';
+import { Badge, RoundedIcon } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { SettingsSliceRootState } from '@suite-native/settings';
 import { isCoinWithTokens, selectNumberOfAccountTokensWithFiatRates } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { AccountListItemBase } from './AccountListItemBase';
 
 export type AccountListItemProps = {
     account: Account;
     hideTokens?: boolean;
+
+    onPress?: TouchableOpacityProps['onPress'];
+    disabled?: boolean;
 };
 
-const accountListItemStyle = prepareNativeStyle(utils => ({
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItem: 'center',
-
-    paddingVertical: 12,
-    paddingHorizontal: utils.spacings.medium,
-}));
-
-const accountDescriptionStyle = prepareNativeStyle(_ => ({
-    flexShrink: 1,
-}));
-
-const valuesContainerStyle = prepareNativeStyle(utils => ({
-    maxWidth: '40%',
-    flexShrink: 0,
-    alignItems: 'flex-end',
-    paddingLeft: utils.spacings.small,
-}));
-
-export const AccountListItem = ({ account, hideTokens = false }: AccountListItemProps) => {
-    const { applyStyle } = useNativeStyles();
+export const AccountListItem = ({
+    account,
+    onPress,
+    disabled,
+    hideTokens = false,
+}: AccountListItemProps) => {
     const { accountLabel } = account;
     const { NetworkNameFormatter } = useFormatters();
 
@@ -57,43 +46,43 @@ export const AccountListItem = ({ account, hideTokens = false }: AccountListItem
     const shouldShowTokenBadge = numberOfTokens > 0 && hideTokens;
 
     return (
-        <Box style={applyStyle(accountListItemStyle)}>
-            <Box flexDirection="row" alignItems="center" flex={1}>
-                <Box marginRight="medium">
-                    <RoundedIcon name={account.symbol} />
-                </Box>
-                <Box style={applyStyle(accountDescriptionStyle)}>
-                    {shouldShowAccountLabel ? (
-                        <Text>{accountLabel}</Text>
-                    ) : (
-                        <Text>
-                            <NetworkNameFormatter value={account.symbol} />
-                        </Text>
+        <AccountListItemBase
+            onPress={onPress}
+            disabled={disabled}
+            icon={<RoundedIcon name={account.symbol} />}
+            title={
+                shouldShowAccountLabel ? (
+                    accountLabel
+                ) : (
+                    <NetworkNameFormatter value={account.symbol} />
+                )
+            }
+            badges={
+                <>
+                    {formattedAccountType && (
+                        <Badge label={formattedAccountType} size="small" elevation="1" />
                     )}
-                    <HStack spacing="extraSmall">
-                        {formattedAccountType && (
-                            <Badge label={formattedAccountType} size="small" elevation="1" />
-                        )}
-                        {shouldShowTokenBadge && (
-                            <Badge
-                                elevation="1"
-                                size="small"
-                                label={
-                                    <Translation
-                                        id="accountList.numberOfTokens"
-                                        values={{ numberOfTokens }}
-                                    />
-                                }
-                            />
-                        )}
-                    </HStack>
-                </Box>
-            </Box>
-            <Box style={applyStyle(valuesContainerStyle)}>
+                    {shouldShowTokenBadge && (
+                        <Badge
+                            elevation="1"
+                            size="small"
+                            label={
+                                <Translation
+                                    id="accountList.numberOfTokens"
+                                    values={{ numberOfTokens }}
+                                />
+                            }
+                        />
+                    )}
+                </>
+            }
+            mainValue={
                 <CryptoToFiatAmountFormatter
                     value={account.availableBalance}
                     network={account.symbol}
                 />
+            }
+            secondaryValue={
                 <CryptoAmountFormatter
                     value={account.availableBalance}
                     network={account.symbol}
@@ -101,7 +90,7 @@ export const AccountListItem = ({ account, hideTokens = false }: AccountListItem
                     numberOfLines={1}
                     adjustsFontSizeToFit
                 />
-            </Box>
-        </Box>
+            }
+        />
     );
 };

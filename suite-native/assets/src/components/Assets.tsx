@@ -9,7 +9,7 @@ import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDeviceAuthorized, selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { OnSelectAccount } from '@suite-native/accounts';
-import { Card, VStack } from '@suite-native/atoms';
+import { Card } from '@suite-native/atoms';
 import {
     AppTabsParamList,
     AppTabsRoutes,
@@ -63,28 +63,23 @@ export const Assets = () => {
 
     return (
         <>
-            <Card>
-                <VStack spacing={19}>
-                    {assetsDataWithPercentage.map(asset => (
-                        <Animated.View
-                            entering={isLoading ? FadeInDown : undefined}
-                            key={asset.symbol}
-                        >
-                            <AssetItem
-                                iconName={asset.symbol}
-                                cryptoCurrencySymbol={asset.symbol}
-                                fiatBalance={asset.fiatBalance}
-                                fiatPercentage={asset.fiatPercentage}
-                                fiatPercentageOffset={asset.fiatPercentageOffset}
-                                cryptoCurrencyValue={asset.assetBalance}
-                                onPress={setSelectedAssetSymbol}
-                            />
-                        </Animated.View>
-                    ))}
-                    {isLoading && (
-                        <DiscoveryAssetsLoader numberOfAssets={assetsDataWithPercentage.length} />
-                    )}
-                </VStack>
+            <Card noPadding>
+                {assetsDataWithPercentage.map(asset => (
+                    <Animated.View entering={isLoading ? FadeInDown : undefined} key={asset.symbol}>
+                        <AssetItem
+                            iconName={asset.symbol}
+                            cryptoCurrencySymbol={asset.symbol}
+                            fiatBalance={asset.fiatBalance}
+                            fiatPercentage={asset.fiatPercentage}
+                            fiatPercentageOffset={asset.fiatPercentageOffset}
+                            cryptoCurrencyValue={asset.assetBalance}
+                            onPress={setSelectedAssetSymbol}
+                        />
+                    </Animated.View>
+                ))}
+                {isLoading && (
+                    <DiscoveryAssetsLoader numberOfAssets={assetsDataWithPercentage.length} />
+                )}
             </Card>
             {selectedAssetSymbol && (
                 <NetworkAssetsBottomSheet
