@@ -4,16 +4,11 @@ import { useEffect, useRef } from 'react';
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    selectDevice,
-    selectIsPortfolioTrackerDevice,
-    selectIsBitcoinOnlyDevice,
-    selectIsDeviceUnlocked,
-} from '@suite-common/wallet-core';
+import { selectIsBitcoinOnlyDevice } from '@suite-common/wallet-core';
 import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
-import { useCoinEnabling } from '@suite-native/coin-enabling';
+import { selectShouldShowCoinEnablingInitFlow } from '@suite-native/coin-enabling';
 import {
-    selectIsCoinEnablingInitFinished,
+    applyDiscoveryChangesThunk,
     setEnabledDiscoveryNetworkSymbols,
     setIsCoinEnablingInitFinished,
 } from '@suite-native/discovery';
@@ -22,39 +17,33 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 export const useCoinEnablingInitialCheck = () => {
     const dispatch = useDispatch();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.CoinEnablingInit>>();
-    const { isCoinEnablingActive, applyDiscoveryChanges } = useCoinEnabling();
-    const device = useSelector(selectDevice);
-    const isDeviceUnlocked = useSelector(selectIsDeviceUnlocked);
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+
+    const isDeviceUnlocked = useSelector(selectShouldShowCoinEnablingInitFlow);
     const isBitcoinOnlyDevice = useSelector(selectIsBitcoinOnlyDevice);
-    const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
     const viewOnlyDevicesAccountsNetworkSymbols = useSelector(
         selectViewOnlyDevicesAccountsNetworkSymbols,
     );
+    const shouldShowCoinEnablingInitFlow = useSelector(selectShouldShowCoinEnablingInitFlow);
+    const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
     const wasInitScreenShown = useRef(false);
 
     useEffect(() => {
-        if (
-            isCoinEnablingActive &&
-            !isCoinEnablingInitFinished &&
-            isDeviceUnlocked &&
-            !!device?.connected &&
-            !isPortfolioTrackerDevice &&
-            !wasInitScreenShown.current
-        ) {
+        if (isCoinEnablingActive && shouldShowCoinEnablingInitFlow && !wasInitScreenShown.current) {
             let timeoutId: ReturnType<typeof setTimeout>;
-            //if btc only device, just run discovery and do not show the UI
+            //if btc only device, just run discovery for btc and do not show the UI
             if (isBitcoinOnlyDevice) {
+                dispatch(setEnabledDiscoveryNetworkSymbols(['btc']));
                 dispatch(setIsCoinEnablingInitFinished(true));
-                applyDiscoveryChanges();
+                dispatch(applyDiscoveryChangesThunk());
             } else {
                 wasInitScreenShown.current = true;
-                // if there are remembered accounts, enable their networks
+                // if there are remembered accounts, enable its networks
                 if (A.isNotEmpty(viewOnlyDevicesAccountsNetworkSymbols)) {
                     dispatch(
                         setEnabledDiscoveryNetworkSymbols(viewOnlyDevicesAccountsNetworkSymbols),
@@ -73,15 +62,12 @@ export const useCoinEnablingInitialCheck = () => {
             };
         }
     }, [
-        applyDiscoveryChanges,
         isDeviceUnlocked,
-        device?.connected,
         dispatch,
         isBitcoinOnlyDevice,
         isCoinEnablingActive,
-        isCoinEnablingInitFinished,
-        isPortfolioTrackerDevice,
         navigation,
         viewOnlyDevicesAccountsNetworkSymbols,
+        shouldShowCoinEnablingInitFlow,
     ]);
 };

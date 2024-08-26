@@ -175,6 +175,18 @@ export const en = {
                 confirm: 'Continue with <type></type>',
             },
         },
+        coinDiscoveryRunningScreen: {
+            title: 'Checking {coin} for balances & transactions.',
+            subtitle: 'This should take just a moment.',
+        },
+        coinDiscoveryFinishedScreen: {
+            title: {
+                singular: 'We’ve found {count} {coin} account',
+                plural: 'We’ve found {count} {coin} accounts',
+            },
+            orSeparator: 'OR',
+            addNewButton: 'Add new',
+        },
         selectAccountTypeScreen: {
             title: 'Select <symbol></symbol> account type',
             accountTypes: {

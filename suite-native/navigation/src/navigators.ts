@@ -130,6 +130,14 @@ export type AddCoinAccountStackParamList = {
         networkSymbol: NetworkSymbol;
         flowType: AddCoinFlowType;
     };
+    [AddCoinAccountStackRoutes.AddCoinDiscoveryRunning]: {
+        networkSymbol: NetworkSymbol;
+        flowType: AddCoinFlowType;
+    };
+    [AddCoinAccountStackRoutes.AddCoinDiscoveryFinished]: {
+        networkSymbol: NetworkSymbol;
+        flowType: AddCoinFlowType;
+    };
 };
 
 export type AuthorizeDeviceStackParamList = {
