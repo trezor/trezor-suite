@@ -62,6 +62,7 @@ export const passThroughBackupShamir = (shares: number, threshold: number) => {
     cy.log('Create Shamir backup on device');
     cy.getTestElement('@backup/start-button').click();
     cy.getTestElement('@onboarding/confirm-on-device');
+    cy.wait(1000); // It seems that there is a race condition and the next task fails sometimes, because it hits the homescreen instead of the expected one
     cy.task('readAndConfirmShamirMnemonicEmu', { shares, threshold });
 
     cy.getTestElement('@backup/close-button').click();
@@ -211,4 +212,34 @@ export const changeViewOnlyState = (walletIndex: number, desiredState: 'enabled'
             cy.wrap(walletContainer).find('[data-testid="@collapsible-box/icon-expanded"]').click();
         }
     });
+};
+
+export const clearInput = (elementSelector: string) => {
+    cy.getTestElement(elementSelector).then(element => {
+        // get number of characters in the input
+        const charCount = element.attr('value')?.length ?? 0;
+        cy.getTestElement(elementSelector).type('{rightArrow}'.repeat(charCount));
+        for (let i = 0; i < charCount; i++) {
+            cy.getTestElement(elementSelector).type('{backspace}');
+        }
+    });
+};
+
+export const forceLightMode = {
+    onBeforeLoad(win: Window): void {
+        const matchMediaStub = cy.stub().callsFake(query => {
+            return {
+                matches: query === '(prefers-color-scheme: light)',
+                media: query,
+                onchange: null,
+                addListener: cy.stub(),
+                removeListener: cy.stub(),
+                addEventListener: cy.stub(),
+                removeEventListener: cy.stub(),
+                dispatchEvent: cy.stub(),
+            };
+        });
+
+        cy.stub(win, 'matchMedia').callsFake(matchMediaStub);
+    },
 };

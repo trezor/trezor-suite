@@ -1,6 +1,8 @@
 // @group_wallet
 // @retry=2
 
+import { onModal } from '../../support/pageObjects/modalObject';
+import { onSettingsMenu } from '../../support/pageObjects/settingsMenuObject';
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 describe('Cardano', () => {
@@ -15,11 +17,14 @@ describe('Cardano', () => {
         cy.task('startBridge');
 
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/coins');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
+        onNavBar.openSettings();
+        onSettingsMenu.openWalletSettings();
     });
 
-    it.skip('Basic cardano walkthrough', () => {
+    it('Basic cardano walkthrough', () => {
         // go to coin settings and enable cardano
         cy.getTestElement('@settings/wallet/network/tada').click();
 
@@ -31,9 +36,8 @@ describe('Cardano', () => {
 
         // go to cardano account #1
         cy.getTestElement('@suite/menu/suite-index').click();
-        cy.getTestElement('@suite/menu/wallet-index').click();
-        cy.getTestElement('@account-menu/tada/normal/0').click();
         cy.discoveryShouldFinish();
+        cy.getTestElement('@account-menu/tada/normal/0').click();
 
         // go to cardano account #1 - account details
         cy.getTestElement('@wallet/menu/wallet-details').click();
@@ -43,12 +47,7 @@ describe('Cardano', () => {
         cy.getTestElement('@wallets/details/show-xpub-button').click();
         // todo: matchImageSnapshot producing diff not obvious why.
         cy.getTestElement('@modal').screenshot('cardano-show-xpub');
-        cy.get('body').type('{esc}');
-
-        // todo: enable staking - cardano lib problem
-        // go to cardano account #1 - staking
-        // cy.getTestElement('@wallet/menu/wallet-staking').click();
-        // cy.getTestElement('@app').matchImageSnapshot();
+        onModal.close();
 
         //  go to cardano account #1 - send
         cy.getTestElement('@wallet/menu/wallet-send').click();
@@ -59,11 +58,12 @@ describe('Cardano', () => {
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
         cy.getTestElement('@modal').matchImageSnapshot('cardano-receive');
         cy.task('pressYes');
+        cy.wait(501);
         cy.getTestElement('@modal/close-button').click();
         cy.getTestElement('@account-subpage/back').last().click();
 
         // go to cardano account #1 - staking
-        cy.getTestElement('@wallet/menu/wallet-tokens-coins').click();
+        cy.getTestElement('@wallet/menu/staking').click();
         cy.getTestElement('@app').matchImageSnapshot('cardano-tokens');
 
         // lets 'hack' routing

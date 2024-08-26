@@ -7,6 +7,10 @@ class SettingsDevicePage {
             .click();
         cy.getTestElement('@multi-share-backup/1st-info/submit-button').should('be.visible');
     }
+
+    togglePinSwitch(): void {
+        cy.getTestElement('@settings/device/pin-switch').should('be.visible').wait(500).click();
+    }
 }
 
 export const onSettingsDevicePage = new SettingsDevicePage();

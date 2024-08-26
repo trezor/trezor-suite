@@ -3,19 +3,16 @@
 
 describe('unacquired device', () => {
     beforeEach(() => {
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport(1920, 1080).resetDb();
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { passphrase_protection: true, pin_protection: false });
         cy.task('startBridge');
-    });
-
-    it.skip('someone steals session, device status turns inactive', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        // cy.getTestElement('@deviceStatus-connected').click();
-        // cy.getTestElement('@passphrase-type/standard').click();
-        // cy.discoveryShouldFinish();
+        cy.discoveryShouldFinish();
+    });
 
+    it('someone steals session, device status turns inactive', () => {
         // simulate stolen session from another window. device receives indicative button
         cy.task('stealBridgeSession');
         cy.getTestElement('@menu/switch-device').click();
@@ -27,9 +24,8 @@ describe('unacquired device', () => {
         cy.task('stealBridgeSession');
         cy.getTestElement('@switch-device/1/solve-issue-button');
         cy.reload();
-        cy.getTestElement('@device-acquire').click();
-        cy.getTestElement('@passphrase-type/standard').click();
-        cy.discoveryShouldFinish();
+        cy.getTestElement('@menu/switch-device').click();
+        cy.getTestElement('@switch-device/1/solve-issue-button').click();
     });
 
     // todo:

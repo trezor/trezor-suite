@@ -30,7 +30,7 @@ describe('Send form for bitcoin', () => {
         cy.wait(100); // wait until is the form interactive
     });
 
-    it.skip('add and remove output in send form, toggle form options, input data', () => {
+    it('add and remove output in send form, toggle form options, input data', () => {
         // test adding and removing outputs
         cy.getTestElement('outputs.0.amount').type('0.3');
         cy.getTestElement('add-output').click();
@@ -46,7 +46,7 @@ describe('Send form for bitcoin', () => {
         // add locktime
         cy.getTestElement('add-locktime-button').click();
 
-        cy.getTestElement('locktime-input').type('100');
+        cy.getTestElement('locktime-input').type('1000');
 
         // assert final state of form using screenshot
         cy.getTestElement('@wallet/send/outputs-and-options').matchImageSnapshot('bitcoin-send');
@@ -57,7 +57,7 @@ describe('Send form for bitcoin', () => {
         cy.task('pressYes');
         cy.task('pressYes');
 
-        // broadcast is off due to locktime, so we do not see '@modal/send'
+        // broadcast is off due to locktime, so we do not see '@modal/send', this is also affected by the current number of mined blocks thus I increased locktime number to 1000
         cy.getTestElement('@send/copy-raw-transaction');
     });
 

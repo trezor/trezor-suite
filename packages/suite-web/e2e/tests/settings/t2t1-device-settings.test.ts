@@ -5,7 +5,7 @@ import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 describe('T2T1 - Device settings', () => {
     beforeEach(() => {
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport(1920, 1080).resetDb();
         cy.task('startBridge');
     });
     // TODO: cypress open: seems like entering urls (/settings/device) directly does not work anymore?
@@ -60,9 +60,7 @@ describe('T2T1 - Device settings', () => {
 
         // change display rotation
         cy.log('change display rotation');
-        cy.getTestElement('@settings/device/rotation-button/90')
-            .click()
-            .getConfirmActionOnDeviceModal();
+        cy.getTestElement('select-bar/90').click().getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
     });
@@ -88,6 +86,10 @@ describe('T2T1 - Device settings', () => {
         cy.task('setupEmu');
 
         cy.prefixedVisit('/');
+
+        // TODO: compromised device workaround, refactor into more stable solution
+        cy.contains('Back').click();
+
         cy.passThroughInitialRun();
         onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
@@ -99,7 +101,7 @@ describe('T2T1 - Device settings', () => {
         cy.get('#original_t2t1').should('exist');
     });
 
-    it.only('backup in settings', () => {
+    it('backup in settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: false });
 

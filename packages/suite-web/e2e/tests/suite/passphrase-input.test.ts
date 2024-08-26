@@ -9,13 +9,20 @@ describe('Passphrase', () => {
         cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
         cy.task('startBridge');
 
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport(1980, 1080).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
     });
 
     // TODO: there is a problem with clearing our password input element -> cypress deletes only last char with {selectAll}{backspace} and totally ignores .clear() command
-    it.skip('just test passphrase input', () => {
+    it('just test passphrase input', () => {
+        // enable passphrase on device
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
+        cy.getTestElement('@settings/device/passphrase-switch').click();
+        cy.task('pressYes');
+
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.task('pressYes');
@@ -37,9 +44,9 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').should('have.value', 'ab12ef');
 
         // toggle hidden/visible keeps caret position
-        // cy.getTestElement('@passphrase/input').clear();
-        cy.getTestElement('@passphrase/input').type('{selectall}');
-        cy.getTestElement('@passphrase/input').type('1');
+        cy.getTestElement('@passphrase/input').click();
+        cy.clearInput('@passphrase/input');
+        cy.getTestElement('@passphrase/input').should('be.empty').type('1');
         cy.getTestElement('@passphrase/input').type('{backspace}');
         cy.getTestElement('@passphrase/input').type('123{leftarrow}');
         cy.getTestElement('@passphrase/show-toggle').click();
@@ -52,18 +59,19 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').should('have.value', '12abc3xyz');
 
         // when selectionStart===0 (looking at you nullish coalescing)
-        cy.getTestElement('@passphrase/input')
-            .clear()
-            .type('123{leftarrow}{leftarrow}{leftarrow}abc');
+        cy.clearInput('@passphrase/input');
+        cy.getTestElement('@passphrase/input').type('123{leftarrow}{leftarrow}{leftarrow}abc');
         cy.getTestElement('@passphrase/input').should('have.value', 'abc123');
-        cy.getTestElement('@passphrase/input')
-            .clear()
-            .type('123{leftarrow}{leftarrow}{leftarrow}{backspace}{del}');
+        cy.clearInput('@passphrase/input');
+        cy.getTestElement('@passphrase/input').type(
+            '123{leftarrow}{leftarrow}{leftarrow}{backspace}{del}',
+        );
         cy.getTestElement('@passphrase/input').should('have.value', '23');
 
         // todo: make sure that setting caret position via mouse click works as well could not make it, click does not move caret using cypress?
-        // cy.getTestElement('@passphrase/input').clear().type('123456');
-        // cy.getTestElement('@passphrase/input').trigger('click', 40, 25);
+        cy.clearInput('@passphrase/input');
+        cy.getTestElement('@passphrase/input').type('123456');
+        cy.getTestElement('@passphrase/input').trigger('click', 40, 25);
 
         // todo: select part of test + copy/paste
     });

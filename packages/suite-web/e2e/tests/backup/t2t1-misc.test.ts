@@ -7,9 +7,10 @@ describe('Backup misc', () => {
         cy.task('setupEmu', { needs_backup: true });
         cy.task('startBridge');
 
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport(1920, 1080).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
     });
 
     it('Backup should reset if modal is closed', () => {
@@ -37,10 +38,13 @@ describe('Backup misc', () => {
         cy.getTestElement('@backup/check-item/has-enough-time').click();
         cy.task('stopEmu');
         cy.getTestElement('@backup/no-device', { timeout: 20000 });
-        cy.task('stopBridge');
+
+        cy.wait(2000);
+
         // latest (2.3.1 at the time of writing this) has default behavior needs_backup false
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { wipe: true, model: 'T2T1' });
         cy.task('setupEmu');
+
         // noticed that it failed here times: 1
         cy.getTestElement('@backup/already-finished-message');
     });
