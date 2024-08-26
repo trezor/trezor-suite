@@ -11,9 +11,9 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
+import { ConfirmOnTrezorImage } from '@suite-native/device';
 
 import { useAccountReceiveAddress } from '../hooks/useAccountReceiveAddress';
-import { ConfirmOnTrezorImage } from './ConfirmOnTrezorImage';
 import { ReceiveAddressCard } from './ReceiveAddressCard';
 import { ReceiveAccountDetailsCard } from './ReceiveAccountDetailsCard';
 import { hasReceiveAddressButtonRequest } from '../hooks/receiveSelectors';

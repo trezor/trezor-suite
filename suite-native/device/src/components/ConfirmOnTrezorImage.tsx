@@ -17,7 +17,7 @@ export const ConfirmOnTrezorImage = () => {
     const [isBottomSheetOpened, setIsBottomSheetOpened] = useState(false);
     const { applyStyle } = useNativeStyles();
 
-    const imageSource = useMemo(() => require('../../assets/confirmOnTrezor.png'), []);
+    const imageSource = useMemo(() => require('../assets/confirmOnTrezor.png'), []);
 
     const handleImagePress = () => {
         setIsBottomSheetOpened(true);
