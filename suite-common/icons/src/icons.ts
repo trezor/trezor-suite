@@ -55,6 +55,7 @@ export const icons = {
     ghost: require('../assets/icons/ghost.svg'),
     github: require('../assets/icons/github.svg'),
     hiddenWallet: require('../assets/icons/hiddenWallet.svg'),
+    hide: require('../assets/icons/hide.svg'),
     home: require('../assets/icons/home.svg'),
     info: require('../assets/icons/info.svg'),
     infoLight: require('../assets/icons/infoLight.svg'),

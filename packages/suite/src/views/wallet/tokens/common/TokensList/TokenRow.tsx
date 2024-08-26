@@ -280,7 +280,7 @@ export const TokenRow = ({
                                                 }
                                             />
                                         ),
-                                        icon: 'EYE_CLOSED',
+                                        icon: 'HIDE',
                                         onClick: () =>
                                             dispatch(
                                                 tokenDefinitionsActions.setTokenStatus({
@@ -379,7 +379,7 @@ export const TokenRow = ({
                 {!isMobileLayout &&
                     (tokenStatusType === TokenManagementAction.SHOW ? (
                         <Button
-                            icon="EYE_SLASH"
+                            icon="SHOW"
                             onClick={() =>
                                 isUnverifiedTable && shouldShowUnhideTokenModal
                                     ? dispatch(

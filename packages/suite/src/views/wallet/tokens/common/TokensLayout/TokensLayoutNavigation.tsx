@@ -147,7 +147,7 @@ export const TokensLayoutNavigation = ({
                 <Item
                     route="wallet-tokens-hidden"
                     title="TR_HIDDEN"
-                    icon="eyeClosed"
+                    icon="hide"
                     count={tokens.hiddenWithBalance.length}
                     currentRoute={routeName}
                 />
