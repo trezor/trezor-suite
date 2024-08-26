@@ -53,7 +53,7 @@ export function generate(code: string) {
         );
     });
     // Add import of lib
-    output = `import { Type, Static, TypeClone } from '@trezor/schema-utils';\n\n${output}`;
+    output = `import { Type, Static, CloneType } from '@trezor/schema-utils';\n\n${output}`;
     // Add eslint ignore for camelcase, since some type names use underscores
     output = `/* eslint-disable camelcase */\n${output}`;
     // Add types for message schema
