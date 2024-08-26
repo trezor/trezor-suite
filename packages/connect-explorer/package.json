@@ -30,7 +30,7 @@
         "codemirror-json-schema": "^0.7.0",
         "codemirror-json5": "^1.0.3",
         "json5": "^2.2.3",
-        "next": "^14.1.1",
+        "next": "^14.2.6",
         "next-themes": "^0.2.1",
         "nextra": "^2.13.4",
         "nextra-theme-docs": "^2.13.4",
