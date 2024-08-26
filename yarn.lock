@@ -10598,14 +10598,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/counter@npm:^0.1.1":
-  version: 0.1.2
-  resolution: "@swc/counter@npm:0.1.2"
-  checksum: 10/8427c594f1f0cf44b83885e9c8fe1e370c9db44ae96e07a37c117a6260ee97797d0709483efbcc244e77bac578690215f45b23254c4cd8a70fb25ddbb50bf33e
-  languageName: node
-  linkType: hard
-
-"@swc/counter@npm:^0.1.3":
+"@swc/counter@npm:^0.1.1, @swc/counter@npm:^0.1.3":
   version: 0.1.3
   resolution: "@swc/counter@npm:0.1.3"
   checksum: 10/df8f9cfba9904d3d60f511664c70d23bb323b3a0803ec9890f60133954173047ba9bdeabce28cd70ba89ccd3fd6c71c7b0bd58be85f611e1ffbe5d5c18616598
@@ -10992,7 +10985,7 @@ __metadata:
     match-sorter: "npm:^6.3.1"
     next: "npm:^14.2.6"
     next-seo: "npm:^6.0.0"
-    next-themes: "npm:^0.2.1"
+    next-themes: "npm:^0.3.0"
     nextra: "npm:^2.13.4"
     postcss: "npm:^8.4.41"
     postcss-cli: "npm:^10.1.0"
@@ -11040,7 +11033,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.6.0"
     json5: "npm:^2.2.3"
     next: "npm:^14.2.6"
-    next-themes: "npm:^0.2.1"
+    next-themes: "npm:^0.3.0"
     nextra: "npm:^2.13.4"
     nextra-theme-docs: "npm:^2.13.4"
     react: "npm:^18.2.0"
@@ -31820,6 +31813,16 @@ __metadata:
     react: "*"
     react-dom: "*"
   checksum: 10/6c955c114b7aa920fc14edd3832d0ea95be245ad33f79f397f613696a7c16c7f4112d6e61893d4977255b270f920811741eafdf8be49bd99cecafabf09e8a499
+  languageName: node
+  linkType: hard
+
+"next-themes@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "next-themes@npm:0.3.0"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18
+    react-dom: ^16.8 || ^17 || ^18
+  checksum: 10/4285c4969eac517ad7addd773bcb71e7d14bc6c6e3b24eb97b80a6e06ac03fb6cb345e75dfb448156d14430d06289948eb8cfdeb52402ca7ce786093d01d2878
   languageName: node
   linkType: hard
 
