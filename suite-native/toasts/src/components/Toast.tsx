@@ -23,13 +23,22 @@ type ToastStyle = {
     iconColor: Color;
 };
 
-const ToastContainerStyle = prepareNativeStyle<{ backgroundColor: Color }>(
-    (utils, { backgroundColor }) => ({
+const ToastContainerStyle = prepareNativeStyle<{ backgroundColor: Color; hasIcon: boolean }>(
+    (utils, { backgroundColor, hasIcon }) => ({
         backgroundColor: utils.colors[backgroundColor],
         paddingVertical: utils.spacings.extraSmall,
         paddingLeft: utils.spacings.extraSmall,
         paddingRight: utils.spacings.medium,
         borderRadius: utils.borders.radii.round,
+        extend: [
+            {
+                condition: !hasIcon,
+                style: {
+                    paddingLeft: utils.spacings.medium,
+                    paddingVertical: 14,
+                },
+            },
+        ],
     }),
 );
 
@@ -37,7 +46,7 @@ const IconContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
     isDefaultVariant: boolean;
 }>((utils, { backgroundColor, isDefaultVariant }) => ({
-    padding: utils.spacings.small * 1.5,
+    padding: 12,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.transparentize(
         isDefaultVariant ? 0.75 : 0,
@@ -95,18 +104,22 @@ export const Toast = ({ toast }: ToastProps) => {
         <Animated.View
             entering={FadeIn.duration(TOAST_ANIMATION_DURATION)}
             exiting={FadeOut.duration(TOAST_ANIMATION_DURATION)}
-            style={applyStyle(ToastContainerStyle, { backgroundColor })}
+            style={applyStyle(ToastContainerStyle, { backgroundColor, hasIcon: !!icon })}
         >
             <HStack spacing={12} alignItems="center">
-                <Box
-                    style={applyStyle(IconContainerStyle, {
-                        backgroundColor: iconBackgroundColor,
-                        isDefaultVariant: variant === 'default',
-                    })}
-                >
-                    <Icon name={icon} color={iconColor} size="medium" />
-                </Box>
-                <Text color={textColor}>{message}</Text>
+                {icon && (
+                    <Box
+                        style={applyStyle(IconContainerStyle, {
+                            backgroundColor: iconBackgroundColor,
+                            isDefaultVariant: variant === 'default',
+                        })}
+                    >
+                        <Icon name={icon} color={iconColor} size="medium" />
+                    </Box>
+                )}
+                <Text color={textColor} variant="hint">
+                    {message}
+                </Text>
             </HStack>
         </Animated.View>
     );
