@@ -11,7 +11,7 @@ import { Card, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 
-import { accountTypeTranslationKeys, useAddCoinAccount } from '../hooks/useAddCoinAccount';
+import { useAddCoinAccount } from '../hooks/useAddCoinAccount';
 import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';
 
 export const AddCoinAccountScreen = ({
@@ -24,25 +24,14 @@ export const AddCoinAccountScreen = ({
         onSelectedNetworkItem,
         networkSymbolWithTypeToBeAdded,
         clearNetworkWithTypeToBeAdded,
-        navigateToAccountTypeSelectionScreen,
+        handleAccountTypeSelection,
         addCoinAccount,
+        getAccountTypeToBeAddedName,
     } = useAddCoinAccount();
 
     const { flowType } = route.params;
 
-    const accountTypeName = networkSymbolWithTypeToBeAdded
-        ? translate(accountTypeTranslationKeys[networkSymbolWithTypeToBeAdded[1]].titleKey)
-        : '';
-
-    const handleTypeSelectionTap = () => {
-        if (networkSymbolWithTypeToBeAdded) {
-            navigateToAccountTypeSelectionScreen(
-                networkSymbolWithTypeToBeAdded[0],
-                flowType,
-                networkSymbolWithTypeToBeAdded[1],
-            );
-        }
-    };
+    const handleTypeSelectionTap = () => handleAccountTypeSelection(flowType);
 
     const handleConfirmTap = () => {
         if (networkSymbolWithTypeToBeAdded) {
@@ -88,7 +77,7 @@ export const AddCoinAccountScreen = ({
                         ? networkSymbolWithTypeToBeAdded[0]
                         : ''
                 }
-                typeName={accountTypeName}
+                typeName={getAccountTypeToBeAddedName()}
                 isVisible={G.isNotNullable(networkSymbolWithTypeToBeAdded)}
                 onClose={clearNetworkWithTypeToBeAdded}
                 onTypeSelectionTap={handleTypeSelectionTap}

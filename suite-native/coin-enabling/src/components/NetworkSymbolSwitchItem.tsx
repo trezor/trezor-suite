@@ -4,14 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CryptoIcon } from '@suite-common/icons';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Text, Switch } from '@suite-native/atoms';
-import { toggleEnabledDiscoveryNetworkSymbol } from '@suite-native/discovery';
+import {
+    selectEnabledDiscoveryNetworkSymbols,
+    toggleEnabledDiscoveryNetworkSymbol,
+} from '@suite-native/discovery';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
 import { useAlert } from '@suite-native/alerts';
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
-
-import { useCoinEnabling } from '../hooks/useCoinEnabling';
 
 type NetworkSymbolProps = {
     networkSymbol: NetworkSymbol;
@@ -48,9 +49,9 @@ export const NetworkSymbolSwitchItem = ({
 }: NetworkSymbolProps) => {
     const dispatch = useDispatch();
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
     const { applyStyle } = useNativeStyles();
     const { showToast } = useToast();
-    const { enabledNetworkSymbols } = useCoinEnabling();
     const { showAlert } = useAlert();
     const { name } = networks[networkSymbol];
 

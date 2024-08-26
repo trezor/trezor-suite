@@ -80,6 +80,8 @@ export enum SendStackRoutes {
 export enum AddCoinAccountStackRoutes {
     AddCoinAccount = 'AddCoinAccount',
     SelectAccountType = 'SelectAccountType',
+    AddCoinDiscoveryFinished = 'AddCoinDiscoveryFinished',
+    AddCoinDiscoveryRunning = 'AddCoinDiscoveryRunning',
 }
 
 export enum SettingsStackRoutes {

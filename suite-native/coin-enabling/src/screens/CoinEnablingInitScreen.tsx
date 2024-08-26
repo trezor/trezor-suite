@@ -1,5 +1,5 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useCallback } from 'react';
 
@@ -8,12 +8,14 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { Screen } from '@suite-native/navigation';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
-import { setIsCoinEnablingInitFinished } from '@suite-native/discovery';
+import {
+    selectEnabledDiscoveryNetworkSymbols,
+    setIsCoinEnablingInitFinished,
+} from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
-import { useCoinEnabling } from '../hooks/useCoinEnabling';
 
 const buttonStyle = prepareNativeStyle<{ bottomInset: number }>((utils, { bottomInset }) => ({
     bottom: bottomInset,
@@ -28,7 +30,7 @@ export const CoinEnablingInitScreen = () => {
 
     const { applyStyle } = useNativeStyles();
     const { bottom: bottomInset } = useSafeAreaInsets();
-    const { enabledNetworkSymbols } = useCoinEnabling();
+    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
 
     const handleSave = () => {
         dispatch(setIsCoinEnablingInitFinished(true));

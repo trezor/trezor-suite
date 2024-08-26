@@ -16,6 +16,7 @@ import {
     LIMIT,
     selectDeviceAccountsForNetworkSymbolAndAccountType,
     selectDeviceState,
+    disableAccountsThunk,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
@@ -686,5 +687,15 @@ export const discoveryCheckThunk = createThunk(
         if (canRunDiscoveryForDevice && shouldRunDiscoveryForDevice) {
             dispatch(startDescriptorPreloadedDiscoveryThunk({}));
         }
+    },
+);
+
+// Called when there are changes in enabled/disabled networks
+// It removes accounts for disabled networks and checks whether to start discovery and start if needed
+export const applyDiscoveryChangesThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/applyDiscoveryChangesThunk`,
+    (_, { dispatch }) => {
+        dispatch(disableAccountsThunk());
+        dispatch(discoveryCheckThunk());
     },
 );

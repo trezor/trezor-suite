@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CommonActions, useNavigation } from '@react-navigation/native';
 import { A, pipe } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 
 import { AccountType, NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -16,14 +16,14 @@ import {
     selectIsDeviceInViewOnlyMode,
     accountsActions,
 } from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
 import {
     addAndDiscoverNetworkAccountThunk,
     selectDiscoverySupportedNetworks,
     NORMAL_ACCOUNT_TYPE,
+    selectEnabledDiscoveryNetworkSymbols,
+    selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
 import {
     RootStackParamList,
     AddCoinAccountStackRoutes,
@@ -35,7 +35,9 @@ import {
 } from '@suite-native/navigation';
 import { useAccountAlerts } from '@suite-native/accounts';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
+import { useAddCoinAccountAlerts } from './useAddCoinAccountAlerts';
+
+export type AddCoinAccountNavigationProps = StackToStackCompositeNavigationProps<
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes.AddCoinAccount,
     RootStackParamList
@@ -70,26 +72,29 @@ export const accountTypeTranslationKeys: Record<
 export const useAddCoinAccount = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
-    const openLink = useOpenLink();
 
     const supportedNetworks = useSelector(selectDiscoverySupportedNetworks);
+    const supportedNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccounts(state),
     );
     const device = useSelector(selectDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
-    const { showAlert, hideAlert } = useAlert();
+    const enabledDiscoveryNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
+
+    const navigation = useNavigation<AddCoinAccountNavigationProps>();
+
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();
-    const navigation = useNavigation<NavigationProps>();
+    const {
+        showTooManyAccountsAlert,
+        showAnotherEmptyAccountAlert,
+        showGeneralErrorAlert,
+        showPassphraseAuthAlert,
+    } = useAddCoinAccountAlerts();
+
     const [networkSymbolWithTypeToBeAdded, setNetworkSymbolWithTypeToBeAdded] = useState<
         [NetworkSymbol, AccountType] | null
     >(null);
-
-    const supportedNetworkSymbols = pipe(
-        supportedNetworks,
-        A.map(n => n.symbol),
-        A.uniq,
-    );
 
     const availableNetworkAccountTypes = useMemo(() => {
         // first account type for every network is set to normal and represents default type
@@ -103,7 +108,8 @@ export const useAddCoinAccount = () => {
 
             availableTypes.set(symbol as NetworkSymbol, [
                 NORMAL_ACCOUNT_TYPE,
-                ...(['ada', 'eth'].includes(symbol) ? [] : types),
+                // For Cardano and EVMs allow only normal account type
+                ...(['ada', 'eth', 'matic', 'bnb'].includes(symbol) ? [] : types),
             ]);
         });
 
@@ -134,93 +140,14 @@ export const useAddCoinAccount = () => {
         )[0];
     };
 
-    const showTooManyAccountsAlert = () =>
-        showAlert({
-            title: translate('moduleAddAccounts.alerts.tooManyAccounts.title'),
-            description: translate('moduleAddAccounts.alerts.tooManyAccounts.description'),
-            icon: 'warningCircleLight',
-            pictogramVariant: 'red',
-            primaryButtonTitle: translate('moduleAddAccounts.alerts.tooManyAccounts.actionPrimary'),
-            onPressPrimaryButton: hideAlert,
-        });
-
-    const showAnotherEmptyAccountAlert = () =>
-        showAlert({
-            title: translate('moduleAddAccounts.alerts.anotherEmptyAccount.title'),
-            description: translate('moduleAddAccounts.alerts.anotherEmptyAccount.description'),
-            icon: 'warningCircleLight',
-            pictogramVariant: 'red',
-            primaryButtonTitle: translate(
-                'moduleAddAccounts.alerts.anotherEmptyAccount.actionPrimary',
-            ),
-            onPressPrimaryButton: hideAlert,
-            secondaryButtonTitle: translate(
-                'moduleAddAccounts.alerts.anotherEmptyAccount.actionSecondary',
-            ),
-            onPressSecondaryButton: () => {
-                openLink(
-                    translate('moduleAddAccounts.alerts.anotherEmptyAccount.actionSecondaryUrl'),
-                );
-                hideAlert();
-            },
-        });
-
-    const showGeneralErrorAlert = () =>
-        showAlert({
-            title: translate('moduleAddAccounts.alerts.generalError.title'),
-            description: translate('moduleAddAccounts.alerts.generalError.description'),
-            icon: 'warningCircleLight',
-            pictogramVariant: 'red',
-            primaryButtonTitle: translate('moduleAddAccounts.alerts.generalError.actionPrimary'),
-            onPressPrimaryButton: hideAlert,
-        });
+    const getAccountTypeToBeAddedName = () =>
+        networkSymbolWithTypeToBeAdded
+            ? translate(accountTypeTranslationKeys[networkSymbolWithTypeToBeAdded[1]].titleKey)
+            : '';
 
     const setDefaultAccountToBeAdded = (networkSymbol: NetworkSymbol) => {
         const defaultType = getAvailableAccountTypesForNetworkSymbol({ networkSymbol })[0];
         setNetworkSymbolWithTypeToBeAdded([networkSymbol, defaultType]);
-    };
-
-    const clearNetworkWithTypeToBeAdded = () => {
-        setNetworkSymbolWithTypeToBeAdded(null);
-    };
-
-    const checkCanAddAccount = (accounts: Account[]) => {
-        if (isDeviceInViewOnlyMode) {
-            showViewOnlyAddAccountAlert();
-
-            return false;
-        }
-
-        // Do not allow adding more than 10 accounts of the same type
-        if (accounts.filter(account => account.visible).length >= LIMIT) {
-            showTooManyAccountsAlert();
-
-            return false;
-        }
-
-        // Do not allow showing another empty account if there is already one
-        const hasVisibleEmptyAccount = accounts.some(account => account.empty && account.visible);
-
-        if (hasVisibleEmptyAccount) {
-            showAnotherEmptyAccountAlert();
-
-            return false;
-        }
-
-        return true;
-    };
-
-    const navigateToAccountTypeSelectionScreen = (
-        networkSymbol: NetworkSymbol,
-        flowType: AddCoinFlowType,
-        accountType?: AccountType,
-    ) => {
-        clearNetworkWithTypeToBeAdded();
-        navigation.navigate(AddCoinAccountStackRoutes.SelectAccountType, {
-            accountType: accountType ?? NORMAL_ACCOUNT_TYPE,
-            networkSymbol,
-            flowType,
-        });
     };
 
     const navigateToSuccessorScreen = ({
@@ -254,6 +181,47 @@ export const useAddCoinAccount = () => {
                 });
 
                 break;
+        }
+    };
+
+    const clearNetworkWithTypeToBeAdded = () => {
+        setNetworkSymbolWithTypeToBeAdded(null);
+    };
+
+    const checkCanAddAccount = (accounts: Account[]) => {
+        if (isDeviceInViewOnlyMode) {
+            showViewOnlyAddAccountAlert();
+
+            return false;
+        }
+
+        // Do not allow adding more than 10 accounts of the same type
+        if (accounts.filter(account => account.visible).length >= LIMIT) {
+            showTooManyAccountsAlert();
+
+            return false;
+        }
+
+        // Do not allow showing another empty account if there is already one
+        const hasVisibleEmptyAccount = accounts.some(account => account.empty && account.visible);
+
+        if (hasVisibleEmptyAccount) {
+            showAnotherEmptyAccountAlert();
+
+            return false;
+        }
+
+        return true;
+    };
+
+    const handleAccountTypeSelection = flowType => {
+        if (networkSymbolWithTypeToBeAdded) {
+            clearNetworkWithTypeToBeAdded();
+            navigation.navigate(AddCoinAccountStackRoutes.SelectAccountType, {
+                accountType: networkSymbolWithTypeToBeAdded[1] ?? NORMAL_ACCOUNT_TYPE,
+                networkSymbol: networkSymbolWithTypeToBeAdded[0],
+                flowType,
+            });
         }
     };
 
@@ -323,12 +291,7 @@ export const useAddCoinAccount = () => {
             }
 
             if (newAccountResult.payload === 'Passphrase is incorrect') {
-                showAlert({
-                    title: translate('modulePassphrase.featureAuthorizationError'),
-                    pictogramVariant: 'red',
-                    primaryButtonTitle: translate('generic.buttons.close'),
-                    primaryButtonVariant: 'redBold',
-                });
+                showPassphraseAuthAlert();
             } else {
                 showGeneralErrorAlert();
             }
@@ -361,6 +324,16 @@ export const useAddCoinAccount = () => {
             return;
         }
 
+        if (!enabledDiscoveryNetworkSymbols.includes(networkSymbol)) {
+            clearNetworkWithTypeToBeAdded();
+            navigation.replace(AddCoinAccountStackRoutes.AddCoinDiscoveryRunning, {
+                networkSymbol,
+                flowType,
+            });
+
+            return;
+        }
+
         const types = getAvailableAccountTypesForNetworkSymbol({ networkSymbol });
 
         if (types.length > 1) {
@@ -375,8 +348,10 @@ export const useAddCoinAccount = () => {
         onSelectedNetworkItem,
         getAvailableAccountTypesForNetworkSymbol,
         addCoinAccount,
-        navigateToAccountTypeSelectionScreen,
+        navigateToSuccessorScreen,
         networkSymbolWithTypeToBeAdded,
         clearNetworkWithTypeToBeAdded,
+        getAccountTypeToBeAddedName,
+        handleAccountTypeSelection,
     };
 };

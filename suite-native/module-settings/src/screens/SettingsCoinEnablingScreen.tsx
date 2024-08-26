@@ -5,20 +5,21 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    BtcOnlyCoinEnablingContent,
-    DiscoveryCoinsFilter,
-    useCoinEnabling,
-} from '@suite-native/coin-enabling';
+import { BtcOnlyCoinEnablingContent, DiscoveryCoinsFilter } from '@suite-native/coin-enabling';
 import { Box, Text } from '@suite-native/atoms';
 import { selectIsBitcoinOnlyDevice } from '@suite-common/wallet-core';
-import { setIsCoinEnablingInitFinished } from '@suite-native/discovery';
+import {
+    selectDiscoverySupportedNetworks,
+    selectEnabledDiscoveryNetworkSymbols,
+    setIsCoinEnablingInitFinished,
+} from '@suite-native/discovery';
 
 export const SettingsCoinEnablingScreen = () => {
     const dispatch = useDispatch();
 
     const { translate } = useTranslate();
-    const { availableNetworks, enabledNetworkSymbols } = useCoinEnabling();
+    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
+    const availableNetworks = useSelector(selectDiscoverySupportedNetworks);
     const isBitcoinOnlyDevice = useSelector(selectIsBitcoinOnlyDevice);
 
     const showBtcOnly = availableNetworks.length === 1 && isBitcoinOnlyDevice;
