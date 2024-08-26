@@ -92,7 +92,6 @@ export const NetworkSymbolSwitchItem = ({
                         values={{ coin: _ => name }}
                     />
                 ),
-                icon: 'check',
             });
         }
         dispatch(toggleEnabledDiscoveryNetworkSymbol(networkSymbol));

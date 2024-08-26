@@ -9,7 +9,7 @@ export type ToastVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
 
 export type Toast = {
     id: number;
-    icon: IconName;
+    icon?: IconName;
     variant: ToastVariant;
     message: ReactNode;
 };
