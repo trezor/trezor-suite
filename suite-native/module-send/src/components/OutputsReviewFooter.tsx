@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import Animated, { SlideInDown } from 'react-native-reanimated';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
@@ -8,11 +9,13 @@ import {
     selectAccountByKey,
     selectSendSignedTx,
 } from '@suite-common/wallet-core';
-import { Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import { VStack, Button } from '@suite-native/atoms';
+import { Button } from '@suite-native/atoms';
 import { RootStackRoutes, AppTabsRoutes } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
+import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { ConfirmOnTrezorImage } from '@suite-native/device';
 
 import { sendTransactionAndCleanupSendFormThunk } from '../sendFormThunks';
 
@@ -36,22 +39,31 @@ const navigateToAccountDetail = ({ accountKey }: { accountKey: AccountKey }) =>
         ],
     });
 
-export const SendTransactionButton = ({ accountKey }: { accountKey: AccountKey }) => {
+const footerStyle = prepareNativeStyle(utils => ({
+    width: '100%',
+    paddingHorizontal: utils.spacings.medium,
+}));
+
+export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) => {
     const dispatch = useDispatch();
     const { showToast } = useToast();
     const navigation = useNavigation();
+    const { applyStyle } = useNativeStyles();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
     const signedTransaction = useSelector(selectSendSignedTx);
 
-    if (!signedTransaction || !account) return null;
+    {
+        /* TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965 */
+    }
+    if (!signedTransaction || !account) return <ConfirmOnTrezorImage />;
 
     const handleSendTransaction = async () => {
         const sendResponse = await dispatch(
             sendTransactionAndCleanupSendFormThunk({ account, signedTransaction }),
-        ).unwrap();
+        );
 
         if (isRejected(sendResponse)) {
             // TODO: set error state
@@ -63,16 +75,15 @@ export const SendTransactionButton = ({ accountKey }: { accountKey: AccountKey }
     };
 
     return (
-        <VStack>
-            <Text color="borderSecondary">Transaction was signed by the Trezor device.</Text>
+        <Animated.View style={applyStyle(footerStyle)} entering={SlideInDown}>
             <Button
                 accessibilityRole="button"
                 accessibilityLabel="validate send form"
                 testID="@send/send-transaction-button"
                 onPress={handleSendTransaction}
             >
-                Send transaction
+                <Translation id="moduleSend.review.outputs.submitButton" />
             </Button>
-        </VStack>
+        </Animated.View>
     );
 };

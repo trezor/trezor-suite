@@ -853,6 +853,49 @@ export const en = {
             totalAmount: 'Total amount',
             submitButton: 'Review and sign',
         },
+        review: {
+            address: {
+                title: 'Check the address on your Trezor against the original to make sure it’s correct.',
+                step1: 'Go to the app or place where you originally got the address.',
+                step2: 'Compare that address with what’s on your Trezor and confirm.',
+                step3: 'Come back to Trezor Suite Lite',
+
+                originBottomSheet: {
+                    title: 'What’s the place of origin?',
+                    subtitle: 'Think of how you’ve initially retrieved the address.',
+                    exchange: {
+                        header: 'Online exchange',
+                        body: 'The original address can be found in the “receive” or “deposit” section of your online exchange.',
+                    },
+                    person: {
+                        header: 'Person or a friend',
+                        body: 'If you got it from a friend or a person, they’ve likely sent it to you through some messaging platform.',
+                    },
+                },
+                compareBottomSheet: {
+                    why: {
+                        header: 'Why compare?',
+                        body: 'Checking your Trezor against the original address is the only truly secure way of checking for any mistake or breach.',
+                    },
+                    how: {
+                        header: 'How to compare?',
+                        body: 'Always check both addresses against each other. Character for character, end to end.',
+                    },
+                },
+            },
+            outputs: {
+                title: 'Review with Trezor',
+                addressLabel: 'Recipient address',
+                amountLabel: 'Amount',
+                total: {
+                    label: 'Total including fee',
+                    amount: 'Total amount',
+                    fee: 'incl. Transaction fee',
+                },
+                successMessage: 'Everything is ready, you can send the transaction now.',
+                submitButton: 'Send transaction',
+            },
+        },
     },
 };
 

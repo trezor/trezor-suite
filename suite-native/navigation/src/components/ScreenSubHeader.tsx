@@ -1,15 +1,22 @@
 import { ReactNode } from 'react';
 
+import { RequireOneOrNone } from 'type-fest';
+
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { GoBackIcon } from './GoBackIcon';
+import { CloseActionType } from '../navigators';
 
-type ScreenSubHeaderProps = {
-    content?: ReactNode;
-    rightIcon?: ReactNode;
-    leftIcon?: ReactNode;
-};
+type ScreenSubHeaderProps = RequireOneOrNone<
+    {
+        content?: ReactNode;
+        rightIcon?: ReactNode;
+        leftIcon?: ReactNode;
+        closeActionType?: CloseActionType;
+    },
+    'leftIcon' | 'closeActionType'
+>;
 
 const ICON_SIZE = 48;
 
@@ -31,12 +38,19 @@ const iconWrapperStyle = prepareNativeStyle(() => ({
     height: ICON_SIZE,
 }));
 
-export const ScreenSubHeader = ({ content, rightIcon, leftIcon }: ScreenSubHeaderProps) => {
+export const ScreenSubHeader = ({
+    content,
+    rightIcon,
+    leftIcon,
+    closeActionType,
+}: ScreenSubHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Box style={applyStyle(headerStyle)}>
-            <Box style={applyStyle(iconWrapperStyle)}>{leftIcon || <GoBackIcon />}</Box>
+            <Box style={applyStyle(iconWrapperStyle)}>
+                {leftIcon || <GoBackIcon closeActionType={closeActionType} />}
+            </Box>
             <Box alignItems="center">
                 {typeof content === 'string' ? (
                     <Text

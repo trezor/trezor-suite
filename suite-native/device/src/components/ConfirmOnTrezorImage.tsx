@@ -8,7 +8,7 @@ import { ConfirmOnTrezorBottomSheet } from './ConfirmOnTrezorBottomSheet';
 
 const imageContainerStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
-    bottom: -utils.spacings.medium, // Hides a part of the image under bottom screen edge.
+    bottom: -utils.spacings.extraSmall, // Hides a part of the image under bottom screen edge.
     width: '100%',
     alignItems: 'center',
 }));

@@ -1,8 +1,7 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useWatch } from 'react-hook-form';
 
-import { isRejected } from '@reduxjs/toolkit';
 import { useNavigation } from '@react-navigation/native';
 
 import { VStack, Text, Box } from '@suite-native/atoms';
@@ -18,10 +17,8 @@ import {
     SendStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
 
-import { signTransactionFeeLevelSigningThunk } from '../sendFormThunks';
 import { SendFeesFormValues, sendFeesFormValidationSchema } from '../sendFeesFormSchema';
 import { FeesFooter } from './FeesFooter';
 import { FeeOptionsList } from './FeeOptionsList';
@@ -31,13 +28,11 @@ type SendFormProps = {
     feeLevels: GeneralPrecomposedLevels;
 };
 
-type SendFeesNavigationProps = StackNavigationProps<SendStackParamList, SendStackRoutes.SendReview>;
+type SendFeesNavigationProps = StackNavigationProps<SendStackParamList, SendStackRoutes.SendFees>;
 
 const DEFAULT_FEE = 'normal';
 
 export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
-    const dispatch = useDispatch();
-    const { showToast } = useToast();
     const navigation = useNavigation<SendFeesNavigationProps>();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -57,21 +52,11 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
 
     if (!account) return;
 
-    const handleNavigateToReviewScreen = handleSubmit(async () => {
-        navigation.navigate(SendStackRoutes.SendReview, { accountKey });
-        const response = await dispatch(
-            signTransactionFeeLevelSigningThunk({
-                accountKey,
-                feeLevel: feeLevelTransaction,
-            }),
-        );
-
-        if (isRejected(response)) {
-            // TODO: display error message based on the error code
-            showToast({ variant: 'error', message: 'Something went wrong', icon: 'closeCircle' });
-
-            navigation.navigate(SendStackRoutes.SendAccounts);
-        }
+    const handleNavigateToReviewScreen = handleSubmit(() => {
+        navigation.navigate(SendStackRoutes.SendAddressReview, {
+            accountKey,
+            transaction: feeLevelTransaction,
+        });
     });
 
     return (

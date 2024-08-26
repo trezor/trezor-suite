@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
@@ -9,7 +10,7 @@ import {
     SendStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
-import { IconButton, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles';
@@ -28,44 +29,36 @@ export const SendOutputsReviewScreen = ({
     const { translate } = useTranslate();
     const dispatch = useDispatch();
 
-    const handleGoBack = async () => {
-        const response = await dispatch(cancelSignSendFormTransactionThunk());
-        if (isFulfilled(response)) {
-            // If success navigation is handled by signTransactionThunk call on SendAddressReviewScreen.
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', async e => {
+            if (e.data.action.type === 'GO_BACK') {
+                e.preventDefault();
+            }
+            const response = await dispatch(cancelSignSendFormTransactionThunk());
+            if (isFulfilled(response)) {
+                // If success navigation is handled by signTransactionThunk call on SendAddressReviewScreen.
 
-            return;
-        }
+                return;
+            }
+            dispatch(cleanupSendFormThunk({ accountKey }));
+            navigation.popToTop();
+        });
 
-        dispatch(cleanupSendFormThunk({ accountKey }));
-        navigation.navigate(SendStackRoutes.SendAccounts);
-    };
+        return unsubscribe;
+    });
 
     return (
         <Screen
             customHorizontalPadding={utils.spacings.small}
-            subheader={
+            screenHeader={
                 <ScreenSubHeader
                     content={translate('moduleSend.review.outputs.title')}
-                    leftIcon={
-                        <IconButton
-                            iconName="close"
-                            size="medium"
-                            colorScheme="tertiaryElevation0"
-                            onPress={handleGoBack}
-                            accessibilityRole="button"
-                            accessibilityLabel="Cancel"
-                        />
-                    }
+                    closeActionType="close"
                 />
             }
             footer={<OutputsReviewFooter accountKey={accountKey} />}
         >
-            <VStack
-                flex={1}
-                spacing="extraLarge"
-                justifyContent="space-between"
-                paddingBottom="xxl"
-            >
+            <VStack flex={1} spacing="extraLarge" justifyContent="space-between">
                 <ReviewOutputItemList accountKey={accountKey} />
                 <SignSuccessMessage />
             </VStack>

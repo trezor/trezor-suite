@@ -69,7 +69,7 @@ export const SendOutputsForm = ({ accountKey }: SendFormProps) => {
     const debounce = useDebounce();
     const { showToast } = useToast();
     const navigation =
-        useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendReview>>();
+        useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
 
     const device = useSelector(selectDevice);
 

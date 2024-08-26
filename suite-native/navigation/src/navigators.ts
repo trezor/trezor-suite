@@ -4,6 +4,7 @@ import { RequireAllOrNone } from 'type-fest';
 import {
     AccountKey,
     GeneralPrecomposedLevels,
+    GeneralPrecomposedTransactionFinal,
     TokenAddress,
     XpubAddress,
 } from '@suite-common/wallet-types';
@@ -75,7 +76,11 @@ export type SendStackParamList = {
         feeLevels: GeneralPrecomposedLevels;
         accountKey: AccountKey;
     };
-    [SendStackRoutes.SendReview]: {
+    [SendStackRoutes.SendAddressReview]: {
+        transaction: GeneralPrecomposedTransactionFinal;
+        accountKey: AccountKey;
+    };
+    [SendStackRoutes.SendOutputsReview]: {
         accountKey: AccountKey;
     };
 };
