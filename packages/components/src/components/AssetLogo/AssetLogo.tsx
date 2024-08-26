@@ -24,14 +24,13 @@ export type AssetLogoProps = AllowedFrameProps & {
     'data-testid'?: string;
 };
 
-const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number }>(
-    ({ $size }) => `
+const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number }>`
+    ${({ $size }) => `
         width: ${$size}px;
         height: ${$size}px;
-
-        ${withFrameProps}
-    `,
-);
+    `}
+    ${withFrameProps}
+`;
 
 const Logo = styled.img<{ $size: number; $isVisible: boolean }>(
     ({ $size, $isVisible }) => `
@@ -42,6 +41,42 @@ const Logo = styled.img<{ $size: number; $isVisible: boolean }>(
     `,
 );
 
+const useAssetLogo = (logoUrl: string, shouldTryToFetch: boolean) => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLogoRendered, setIsLogoRendered] = useState<boolean | null>(null);
+
+    const isImageOnUrlExist = useCallback((url: string): Promise<boolean> => {
+        return new Promise(resolve => {
+            const img = new Image();
+            img.src = url;
+
+            if (img.complete) {
+                resolve(true);
+            } else {
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        const checkLogoExistence = async () => {
+            const logoExists = await isImageOnUrlExist(logoUrl);
+            setIsLogoRendered(logoExists);
+            setIsLoading(false);
+        };
+
+        if (shouldTryToFetch) {
+            checkLogoExistence();
+        } else {
+            setIsLogoRendered(false);
+            setIsLoading(false);
+        }
+    }, [shouldTryToFetch, logoUrl, isImageOnUrlExist]);
+
+    return { isLoading, isLogoRendered, setIsLoading };
+};
+
 export const AssetLogo = ({
     size,
     coingeckoId,
@@ -51,9 +86,6 @@ export const AssetLogo = ({
     margin,
     'data-testid': dataTest,
 }: AssetLogoProps) => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [isLogoRendered, setIsLogoRendered] = useState<boolean | null>(null);
-
     const fileName = contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
     const getAssetLogoUrl = useCallback(
         (quality?: '@2x') =>
@@ -62,72 +94,31 @@ export const AssetLogo = ({
     );
     const logoUrl = getAssetLogoUrl();
 
-    const isImageOnUrlExist = (url: string): Promise<boolean> => {
-        return new Promise(resolve => {
-            const img = new Image();
-            img.src = url;
-
-            if (img.complete) {
-                resolve(true);
-            } else {
-                img.onload = () => {
-                    resolve(true);
-                };
-
-                img.onerror = () => {
-                    resolve(false);
-                };
-            }
-        });
-    };
-
-    const hideLoading = () => {
-        setIsLoading(false);
-    };
+    const { isLoading, setIsLoading, isLogoRendered } = useAssetLogo(logoUrl, shouldTryToFetch);
 
     const frameProps = {
         margin,
     };
 
-    useEffect(() => {
-        const checkLogoExistence = async () => {
-            const logoExists = await isImageOnUrlExist(logoUrl);
-            setIsLogoRendered(logoExists);
-        };
-
-        if (shouldTryToFetch) {
-            checkLogoExistence();
-        } else {
-            setIsLogoRendered(false);
-        }
-    }, [shouldTryToFetch, logoUrl, isLogoRendered]);
-
-    const ContainerWithFrame = ({ children }: { children: React.ReactNode }) => (
-        <Container $size={size} {...makePropsTransient(frameProps)}>
-            {children}
-        </Container>
-    );
-
     return (
-        <ContainerWithFrame>
+        <Container $size={size} {...makePropsTransient(frameProps)}>
             {isLoading && <SkeletonCircle size={size} />}
-
-            {!isLoading && !isLogoRendered && (
+            {!isLoading && isLogoRendered === false && (
                 <AssetInitials size={size}>{placeholder}</AssetInitials>
             )}
-
-            {isLogoRendered && (
+            {isLogoRendered === true && (
                 <Logo
                     src={logoUrl}
                     srcSet={`${logoUrl} 1x, ${getAssetLogoUrl('@2x')} 2x`}
                     $size={size}
-                    onLoad={hideLoading}
-                    onError={hideLoading}
-                    $isVisible={isLoading === false}
+                    onLoad={() => setIsLoading(false)}
+                    onError={() => setIsLoading(false)}
+                    $isVisible={!isLoading}
                     data-testid={dataTest}
                     alt={placeholder}
+                    loading="lazy"
                 />
             )}
-        </ContainerWithFrame>
+        </Container>
     );
 };
