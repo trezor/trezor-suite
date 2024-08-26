@@ -31,4 +31,4 @@ if ! contains "$1" "${valid_argument_values[@]}"; then
 fi
 
 # Run yarn outdated on target dependencies
-yarn outdated $(tr '\n' ' ' < "$(dirname "${BASH_SOURCE[0]}")/$1-dependencies.txt")
+tr '\n' ' ' < "$(dirname "${BASH_SOURCE[0]}")/$1-dependencies.txt" | xargs yarn outdated
