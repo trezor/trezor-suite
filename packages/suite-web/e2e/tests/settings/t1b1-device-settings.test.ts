@@ -1,24 +1,32 @@
 // @group_settings
 // @retry=2
 
+import { onSettingsDevicePage } from '../../support/pageObjects/settingsDeviceObject';
+import { onSettingsMenu } from '../../support/pageObjects/settingsMenuObject';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 // TODO: t1 tests are flaky in CI. I suspect it is something in bridge/udp layer. So next step is implementing
 // udp transport in suite and trying to enable this test again.
-describe.skip('T1B1 - Device settings', () => {
+describe('T1B1 - Device settings', () => {
     beforeEach(() => {
         cy.task('startEmu', { model: 'T1B1', version: '1-latest', wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
+        cy.viewport(1440, 2560).resetDb();
+        cy.prefixedVisit('/');
+        // TODO: Remove this compromised device workaround
+        cy.contains('Back').click();
+        cy.passThroughInitialRun();
     });
     afterEach(() => {
         cy.task('stopEmu');
     });
 
     it('enable pin', () => {
-        cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/device');
-        cy.passThroughInitialRun();
+        onNavBar.openSettings();
+        onSettingsMenu.openDeviceSettings();
+        onSettingsDevicePage.togglePinSwitch();
 
-        cy.getTestElement('@settings/device/pin-switch').click({ force: true });
         cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
 
@@ -32,11 +40,10 @@ describe.skip('T1B1 - Device settings', () => {
     });
 
     it('pin mismatch', () => {
-        cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/device');
-        cy.passThroughInitialRun();
+        onNavBar.openSettings();
+        onSettingsMenu.openDeviceSettings();
+        onSettingsDevicePage.togglePinSwitch();
 
-        cy.getTestElement('@settings/device/pin-switch').click({ force: true });
         cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
         cy.getTestElement('@pin/input/1').click();
@@ -66,8 +73,9 @@ describe.skip('T1B1 - Device settings', () => {
         //
 
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/device');
+        cy.visit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
 
         cy.getTestElement('@settings/device/homescreen').scrollIntoView();
         cy.getTestElement('@settings/device/homescreen-gallery').click();

@@ -111,7 +111,7 @@ describe('Account types suite', () => {
      * 7. Get the number of accounts again
      * 8. Verify that the current number is equal to previous number + 1
      */
-    it.skip('Add-account-types-non-BTC-coins', () => {
+    it('Add-account-types-non-BTC-coins', () => {
         //
         // Test execution
         //
@@ -128,30 +128,29 @@ describe('Account types suite', () => {
         onNavBar.openDefaultAcccount();
         cy.discoveryShouldFinish();
         // cardano
-
         coins.forEach((coin: NetworkSymbol) => {
             onAccountsPage.applyCoinFilter(coin);
             // get the element containing all accounts
-            cy.get(`[type="normal"] [data-testid*="@account-menu/${coin}/normal"]`).then(
-                currentAccounts => {
-                    const numberOfAccounts1 = currentAccounts.length;
+            cy.get(
+                `[data-testid="@account-menu/normal/group"] > [data-testid*="@account-menu/${coin}/normal"]`,
+            ).then(currentAccounts => {
+                const numberOfAccounts1 = currentAccounts.length;
 
-                    cy.getTestElement('@account-menu/add-account').should('be.visible').click();
-                    cy.getTestElement('@modal').should('be.visible');
-                    cy.get(`[data-testid="@settings/wallet/network/${coin}"]`)
-                        .should('be.visible')
-                        .click();
-                    cy.getTestElement('@add-account').click();
-                    cy.discoveryShouldFinish();
+                cy.getTestElement('@account-menu/add-account').should('be.visible').click();
+                cy.getTestElement('@modal').should('be.visible');
+                cy.get(`[data-testid="@settings/wallet/network/${coin}"]`)
+                    .should('be.visible')
+                    .click();
+                cy.getTestElement('@add-account').click();
+                cy.discoveryShouldFinish();
 
-                    cy.get(`[type="normal"] [data-testid*="@account-menu/${coin}/normal"]`).then(
-                        newAccounts => {
-                            const numberOfAccounts2 = newAccounts.length;
-                            expect(numberOfAccounts2).to.be.equal(numberOfAccounts1 + 1);
-                        },
-                    );
-                },
-            );
+                cy.get(
+                    `[data-testid="@account-menu/normal/group"] > [data-testid*="@account-menu/${coin}/normal"]`,
+                ).then(newAccounts => {
+                    const numberOfAccounts2 = newAccounts.length;
+                    expect(numberOfAccounts2).to.be.equal(numberOfAccounts1 + 1);
+                });
+            });
         });
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.AccountsNewAccount>>(

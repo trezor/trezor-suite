@@ -8,9 +8,10 @@ describe('Install custom firmware', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
-        cy.viewport(1440, 2560).resetDb();
+        cy.viewport(1920, 1080).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
     });
 
     /*
@@ -19,7 +20,8 @@ describe('Install custom firmware', () => {
      * 3. Select the custom firmware
      * 4. Complete the FW instalation on the device
      */
-    it.skip('go to device settings and check if custom FW modal appears', () => {
+    //TODO: skipped due to #13926
+    it('go to device settings and check if custom FW modal appears', () => {
         //
         // Test preparation
         //

@@ -5,6 +5,7 @@
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType, Requests } from '../../support/types';
 import { onNavBar } from '../../support/pageObjects/topBarObject';
+import { forceLightMode } from '../../support/utils/shortcuts';
 
 let requests: Requests;
 
@@ -85,7 +86,7 @@ describe('Analytics Events', () => {
         cy.wrap(requests).its(3).should('have.property', 'c_type', EventType.DeviceDisconnect);
     });
 
-    it.only('reports suite-ready after enabling analytics on app initial run', () => {
+    it('reports suite-ready after enabling analytics on app initial run', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: false,
@@ -94,7 +95,7 @@ describe('Analytics Events', () => {
 
         cy.interceptDataTrezorIo(requests);
 
-        cy.prefixedVisit('/');
+        cy.prefixedVisit('/', forceLightMode);
 
         // change few settings to see if it is different from default values in suite-ready
         onNavBar.openSettings();
