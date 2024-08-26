@@ -9,7 +9,7 @@ export const useAccountAlerts = () => {
         showAlert({
             title: translate('moduleAccounts.viewOnlyAddAccountAlert.title'),
             description: translate('moduleAccounts.viewOnlyAddAccountAlert.description'),
-            primaryButtonTitle: translate('moduleAccounts.viewOnlyAddAccountAlert.actionPrimary'),
+            primaryButtonTitle: translate('generic.buttons.gotIt'),
             onPressPrimaryButton: hideAlert,
         });
 
