@@ -1,4 +1,4 @@
-import { TypeRegistry, Kind, TSchema, JavaScriptTypeBuilder } from '@sinclair/typebox';
+import { TypeRegistry, Kind, TSchema, JavaScriptTypeBuilder, CreateType } from '@sinclair/typebox';
 
 export interface TBuffer extends TSchema {
     [Kind]: 'Buffer';
@@ -9,6 +9,6 @@ TypeRegistry.Set('Buffer', (_: TBuffer, value: unknown) => value instanceof Buff
 
 export class BufferBuilder extends JavaScriptTypeBuilder {
     Buffer(options?: TSchema): TBuffer {
-        return this.Create({ ...options, [Kind]: 'Buffer', type: 'Buffer' });
+        return CreateType({ [Kind]: 'Buffer', type: 'Buffer' }, options) as never;
     }
 }

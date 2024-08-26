@@ -1,4 +1,4 @@
-import { Optional, Kind, TSchema } from '@sinclair/typebox';
+import { TSchema, Kind, OptionalKind } from '@sinclair/typebox';
 
 import type TrezorConnect from '@trezor/connect-web';
 
@@ -32,7 +32,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                 const output = {
                     ...field,
                     name: [key, field.name].filter(v => v).join('.'),
-                    optional: field.optional || schema[Optional] === 'Optional',
+                    optional: field.optional || schema[OptionalKind] === 'Optional',
                 };
                 // If the array is optional, set the items to an empty array by default
                 if (output.type === 'array') {
@@ -57,7 +57,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                         fields,
                     },
                 ],
-                items: schema[Optional] === 'Optional' ? [] : [fields],
+                items: schema[OptionalKind] === 'Optional' ? [] : [fields],
             },
         ];
     } else if (schema[Kind] === 'Intersect') {
@@ -75,7 +75,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                     name: '',
                     type: 'select',
                     value: schema.default,
-                    optional: schema[Optional] === 'Optional',
+                    optional: schema[OptionalKind] === 'Optional',
                     data: options.map((s: TSchema) => ({ label: s.const, value: s.const })),
                 },
             ];
@@ -84,7 +84,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
         if (schema.$id === 'DerivationPath' || schema.anyOf?.length == 1) {
             return schemaToFields(schema.anyOf[0]).map(field => ({
                 ...field,
-                optional: field.optional || schema[Optional] === 'Optional',
+                optional: field.optional || schema[OptionalKind] === 'Optional',
                 value: !isFieldBasic(field) ? undefined : field.value ?? schema.default,
             }));
         } else if (schema.anyOf?.length > 1) {
@@ -99,12 +99,12 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                             field.value = field.value ?? schema.default;
                         }
                         if (array.length === 1) {
-                            field.optional = schema[Optional] === 'Optional';
+                            field.optional = schema[OptionalKind] === 'Optional';
                         }
 
                         return field;
                     }),
-                    optional: schema[Optional] === 'Optional',
+                    optional: schema[OptionalKind] === 'Optional',
                 },
             ];
         } else {
@@ -119,7 +119,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                 name: '',
                 type: 'select',
                 value: 'btc',
-                optional: schema[Optional] === 'Optional',
+                optional: schema[OptionalKind] === 'Optional',
                 affect: 'path',
                 data: coinsSelect.map(v => ({
                     ...v,
@@ -142,7 +142,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
             name: '',
             type: typeMap[schema[Kind]] ?? 'input',
             value: schema.default,
-            optional: schema[Optional] === 'Optional',
+            optional: schema[OptionalKind] === 'Optional',
         },
     ];
 };
