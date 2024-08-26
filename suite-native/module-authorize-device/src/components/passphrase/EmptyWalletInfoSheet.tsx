@@ -102,7 +102,7 @@ export const EmptyWalletInfoSheet = ({ onClose, isVisible }: EmptyWalletInfoShee
                 />
                 <Box style={applyStyle(buttonWrapperStyle)}>
                     <Button onPress={handleOpenEmptyWallet}>
-                        <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.button" />
+                        <Translation id="generic.buttons.gotIt" />
                     </Button>
                 </Box>
             </VStack>

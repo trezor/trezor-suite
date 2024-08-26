@@ -60,7 +60,7 @@ export const AboutViewOnlyBottomSheet = ({ isVisible, onClose }: AboutViewOnlyBo
                     testID="about-view-only-bottom-sheet-button"
                     onPress={onClose}
                 >
-                    <Translation id="moduleSettings.viewOnly.about.button" />
+                    <Translation id="generic.buttons.gotIt" />
                 </Button>
             </VStack>
         </BottomSheet>

@@ -15,6 +15,7 @@ export const en = {
             dismiss: 'Dismiss',
             eject: 'Eject',
             cancel: 'Cancel',
+            gotIt: 'Got it',
         },
         unknownError: 'Something went wrong',
         default: 'Default',
@@ -140,7 +141,6 @@ export const en = {
                         'To view the receive address of your account, open the Trezor Suite desktop app, plugin your Trezor device, select <emphasized>Accounts</emphasized>, choose <emphasized>Receive</emphasized>, and click on <emphasized>Show full address</emphasized>.',
                 },
             },
-            confirmButton: 'Got it',
         },
     },
     moduleAddAccounts: {
@@ -541,7 +541,6 @@ export const en = {
             oneNetworkSymbolAlert: {
                 title: 'You need to keep at least 1 coin enabled at all times.',
                 description: 'Otherwise the app won’t show you anything.',
-                action: 'Got it',
             },
         },
         viewOnly: {
@@ -556,7 +555,6 @@ export const en = {
                 contentTitle: 'How it works',
                 content:
                     '<li>Enable view-only to keep balances visible when your Trezor device is disconnected.</li><li>Your funds remain secure.</li><li>Your data remains private.</li><li>Stay updated on all transactions.</li><li>Create a new receive address.</li><li>To verify your receive address, simply reconnect your device.</li><li>Save time when assets are loading.</li>',
-                button: 'Got it',
             },
             toast: {
                 disabled: 'View-only disabled',
@@ -664,7 +662,6 @@ export const en = {
             title: 'To add new coin or account, reconnect your Trezor device.',
             description:
                 'We’re unable to add any new coins or accounts to your device when it’s disconnected.',
-            actionPrimary: 'Got it',
         },
     },
     transactions: {
@@ -796,7 +793,6 @@ export const en = {
                     store: 'Store it in a secure location, separate from both your wallet backup and Trezor device.',
                     neverShare: 'Never share it with anyone, not even with Trezor Support.',
                 },
-                button: 'Got it',
                 alertTitle: 'No one can recover your passphrase, not even Trezor support',
             },
             verifyEmptyWallet: {

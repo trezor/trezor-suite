@@ -54,7 +54,7 @@ export const XpubHintBottomSheet = ({
                         data-testID="@accounts-import/xpub-help-modal/confirm-btn"
                         onPress={handleClose}
                     >
-                        <Translation id="moduleAccountImport.xpubScanScreen.confirmButton" />
+                        <Translation id="generic.buttons.gotIt" />
                     </Button>
                 </Box>
             </Box>

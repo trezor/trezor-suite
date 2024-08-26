@@ -102,9 +102,7 @@ export const XpubScanScreen = ({
                 ),
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: (
-                    <Translation id="moduleAccountImport.xpubScanScreen.confirmButton" />
-                ),
+                primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
                 onPressPrimaryButton: () => null,
             });
 
@@ -124,9 +122,7 @@ export const XpubScanScreen = ({
                 ),
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: (
-                    <Translation id="moduleAccountImport.xpubScanScreen.confirmButton" />
-                ),
+                primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
                 onPressPrimaryButton: () => null,
                 secondaryButtonTitle: (
                     <Translation id="moduleAccountImport.xpubScanScreen.alert.address.hintButton" />
