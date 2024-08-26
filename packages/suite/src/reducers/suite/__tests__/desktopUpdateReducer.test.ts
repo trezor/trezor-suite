@@ -11,11 +11,12 @@ const fixtures: [Action, Partial<State>][] = [
     [
         {
             type: SUITE.DESKTOP_HANDSHAKE,
-            // @ts-expect-error
             payload: {
                 desktopUpdate: {
                     allowPrerelease: true,
                 },
+                paths: { userDir: '', binDir: '' },
+                urls: { httpReceiver: '' },
             },
         },
         { enabled: true, allowPrerelease: true },
