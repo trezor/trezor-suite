@@ -82,7 +82,7 @@
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "@types/web": "^0.0.138",
+        "@types/web": "^0.0.157",
         "events": "^3.3.0",
         "ripple-lib": "^1.10.1",
         "socks-proxy-agent": "6.1.1",
