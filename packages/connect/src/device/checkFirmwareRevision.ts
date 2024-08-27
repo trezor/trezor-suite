@@ -2,7 +2,7 @@ import { isEqual } from '@trezor/utils/src/versionUtils';
 import { PROTO } from '../constants';
 import { downloadReleasesMetadata } from '../data/downloadReleasesMetadata';
 import { FirmwareRelease, VersionArray } from '../types';
-import { DeviceModelInternal, FirmwareRevisionCheckResult } from '../types/device';
+import { FirmwareRevisionCheckResult } from '../types/device';
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
 
 type GetOnlineReleaseMetadataParams = {
@@ -59,10 +59,6 @@ export const checkFirmwareRevision = async ({
     deviceRevision,
     expectedRevision,
 }: CheckFirmwareRevisionParams): Promise<FirmwareRevisionCheckResult> => {
-    if (internalModel !== DeviceModelInternal.T2T1 && internalModel !== DeviceModelInternal.T1B1) {
-        return { success: true }; // For newer devices we are covered by secure element anyway
-    }
-
     if (expectedRevision === undefined) {
         if (firmwareVersion.length !== 3) {
             return failFirmwareRevisionCheck('firmware-version-unknown');

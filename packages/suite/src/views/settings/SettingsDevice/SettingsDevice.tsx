@@ -89,7 +89,6 @@ export const SettingsDevice = () => {
     const deviceModelInternal = device.features.internal_model;
 
     const supportsDeviceAuthentication = SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModelInternal];
-    const supportsFirmwareRevisionCheck = !supportsDeviceAuthentication; // Older devices with no secure element
 
     return (
         <SettingsLayout>
@@ -179,7 +178,7 @@ export const SettingsDevice = () => {
                 {isNormalMode && <WipeCode isDeviceLocked={isDeviceLocked} />}
                 <CustomFirmware />
                 {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
-                {supportsFirmwareRevisionCheck && <FirmwareRevisionCheck />}
+                <FirmwareRevisionCheck />
             </SettingsSection>
         </SettingsLayout>
     );

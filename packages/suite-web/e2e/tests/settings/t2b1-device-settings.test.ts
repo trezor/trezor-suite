@@ -9,7 +9,7 @@
 
 describe('T2B1 - Device settings', () => {
     const startEmuOpts = {
-        version: '2-main',
+        version: '2-latest',
         model: 'T2B1',
         wipe: true,
     };
