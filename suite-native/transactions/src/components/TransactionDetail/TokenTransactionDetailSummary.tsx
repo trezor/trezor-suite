@@ -3,12 +3,10 @@ import { EthereumTokenTransfer } from '@suite-native/tokens';
 import { VStack } from '@suite-native/atoms';
 
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
-import { TransactionDetailStatusSection } from './TransactionDetailStatusSection';
 import { VinVoutAddress } from '../../types';
+import { VerticalSeparator } from './NetworkTransactionDetailSummary';
 
 export const TokenTransactionDetailSummary = ({
-    accountKey,
-    txid,
     tokenTransfer,
     onShowMore,
 }: {
@@ -33,12 +31,12 @@ export const TokenTransactionDetailSummary = ({
                 icon={tokenTransfer.contract}
                 onShowMore={onShowMore}
             />
-            <TransactionDetailStatusSection txid={txid} accountKey={accountKey} />
             <TransactionDetailAddressesSection
                 addressesType="outputs"
                 addresses={outputAddresses}
                 onShowMore={onShowMore}
             />
+            <VerticalSeparator isMultiInputTransaction={inputAddresses.length > 2} />
         </VStack>
     );
 };

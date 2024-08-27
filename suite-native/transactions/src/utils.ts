@@ -1,6 +1,8 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { EnhancedVinVout, Target } from '@trezor/blockchain-link-types';
+import { SignValue } from '@suite-common/suite-types';
+import { TransactionType } from '@suite-common/wallet-types';
 
 import { VinVoutAddress, AddressesType } from './types';
 
@@ -42,3 +44,18 @@ export const sortTargetAddressesToBeginning = (
         A.intersection(addresses, targetAddresses),
         A.difference(addresses, targetAddresses),
     ) as VinVoutAddress[];
+
+// describes if '+' or '-' sign should be shown as part of the transaction amount.
+const transactionTypeToSignValueMap = {
+    recv: 'positive',
+    sent: 'negative',
+    self: undefined,
+    joint: undefined,
+    contract: undefined,
+    failed: undefined,
+    unknown: undefined,
+} as const satisfies Record<TransactionType, SignValue | undefined>;
+
+export const getTransactionValueSign = (transactionType: TransactionType) => {
+    return transactionTypeToSignValueMap[transactionType];
+};

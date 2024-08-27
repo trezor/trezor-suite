@@ -11,6 +11,7 @@ import {
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { FeeFormatter, TransactionIdFormatter } from '@suite-native/formatters';
 import { networks, NetworkType } from '@suite-common/wallet-config';
+import { useTranslate } from '@suite-native/intl';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -72,6 +73,7 @@ export const TransactionDetailParametersSheet = ({
     accountKey,
 }: TransactionDetailParametersSheetProps) => {
     const copyToClipboard = useCopyToClipboard();
+    const { translate } = useTranslate();
 
     const { networkType } = networks[transaction.symbol];
     const displayedParameters = networkTypeToDisplayedParametersMap[networkType];
@@ -83,8 +85,8 @@ export const TransactionDetailParametersSheet = ({
         <TransactionDetailSheet
             isVisible={isVisible}
             onVisibilityChange={onSheetVisibilityChange}
-            title="Parameters"
-            iconName="warningCircle"
+            title={translate('transactions.detail.sheet.parameters')}
+            iconName="infoMedium"
             transactionId={transaction.txid}
         >
             <VStack>

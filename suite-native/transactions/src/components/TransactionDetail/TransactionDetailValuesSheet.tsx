@@ -17,6 +17,7 @@ import {
     CryptoToFiatAmountFormatter,
     PercentageDifferenceFormatter,
 } from '@suite-native/formatters';
+import { useTranslate } from '@suite-native/intl';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 
@@ -75,6 +76,8 @@ export const TransactionDetailValuesSheet = ({
     onSheetVisibilityChange,
     transaction,
 }: TransactionDetailValuesSheetProps) => {
+    const { translate } = useTranslate();
+
     // Fallback to transaction.amount if totalInput is 0, which is the case for XRP transactions
     const totalInput =
         transaction.details.totalInput === '0'
@@ -91,7 +94,7 @@ export const TransactionDetailValuesSheet = ({
         <TransactionDetailSheet
             isVisible={isVisible}
             onVisibilityChange={onSheetVisibilityChange}
-            title="Compare values"
+            title={translate('transactions.detail.sheet.values')}
             iconName="clockClockwise"
             transactionId={transaction.txid}
         >

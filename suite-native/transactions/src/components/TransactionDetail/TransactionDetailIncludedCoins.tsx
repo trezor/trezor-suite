@@ -26,7 +26,7 @@ const isZeroAmountTransaction = (transaction: WalletAccountTransaction) =>
     transaction.amount.length === 0 || transaction.amount === '0';
 
 const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress: () => void }) => (
-    <Card>
+    <Card borderColor="borderElevation1">
         <TouchableOpacity onPress={onPress}>
             <Box flexDirection="row" alignItems="center" justifyContent="space-between">
                 <Box flexDirection="row" alignItems="center">

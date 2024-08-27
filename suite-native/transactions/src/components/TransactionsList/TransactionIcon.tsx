@@ -1,19 +1,24 @@
 import { Box, RoundedIcon } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TransactionType } from '@suite-common/wallet-types';
-import { CoinSymbol, CryptoIcon, IconName } from '@suite-common/icons-deprecated';
+import { CoinSymbol, CryptoIcon, IconName, IconSize } from '@suite-common/icons-deprecated';
 import { Color } from '@trezor/theme';
 
 import { TransactionIconSpinner } from './TransactionIconSpinner';
 
 type TransactionIconProps = {
-    symbol: CoinSymbol;
     transactionType: TransactionType;
+    symbol?: CoinSymbol;
     isAnimated?: boolean;
     iconColor?: Color;
+    spinnerColor?: Color;
+    spinnerWidth?: number;
+    backgroundColor?: Color;
+    containerSize?: number;
+    iconSize?: IconSize;
 };
 
-const SPINNER_RADIUS = 24;
+const DEFAULT_CONTAINER_SIZE = 48;
 
 const transactionIconMap: Record<TransactionType, IconName> = {
     recv: 'receive',
@@ -37,6 +42,11 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
 export const TransactionIcon = ({
     symbol,
     transactionType,
+    backgroundColor,
+    spinnerColor,
+    spinnerWidth,
+    containerSize = DEFAULT_CONTAINER_SIZE,
+    iconSize = 'mediumLarge',
     isAnimated = false,
     iconColor = 'iconSubdued',
 }: TransactionIconProps) => {
@@ -47,12 +57,22 @@ export const TransactionIcon = ({
             <RoundedIcon
                 name={transactionIconMap[transactionType]}
                 color={iconColor}
-                iconSize="mediumLarge"
+                iconSize={iconSize}
+                backgroundColor={backgroundColor}
+                containerSize={containerSize}
             />
-            {isAnimated && <TransactionIconSpinner radius={SPINNER_RADIUS} color={iconColor} />}
-            <Box style={applyStyle(cryptoIconStyle)}>
-                <CryptoIcon symbol={symbol} size="extraSmall" />
-            </Box>
+            {isAnimated && (
+                <TransactionIconSpinner
+                    size={containerSize}
+                    color={spinnerColor ?? iconColor}
+                    width={spinnerWidth}
+                />
+            )}
+            {symbol && (
+                <Box style={applyStyle(cryptoIconStyle)}>
+                    <CryptoIcon symbol={symbol} size="extraSmall" />
+                </Box>
+            )}
         </Box>
     );
 };

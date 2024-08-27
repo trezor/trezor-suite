@@ -10,25 +10,29 @@ import Animated, {
 
 import { Canvas, Circle, vec, SweepGradient } from '@shopify/react-native-skia';
 
-import { Box } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+import { ENDLESS_ANIMATION_VALUE } from '@suite-native/helpers';
 
 type TransactionIconSpinnerProps = {
-    radius: number;
+    size: number;
     color: Color;
+    width?: number;
 };
 
 const FULL_CIRCLE_TURN = 360;
 const ROTATION_DURATION = 2500;
-const WITH_REPEAT_INFINITE = -1;
-const STROKE_WIDTH = 8;
+const DEFAULT_STROKE_WIDTH = 8;
 
 const ContainerStyle = prepareNativeStyle(_ => ({
     position: 'absolute',
 }));
 
-export const TransactionIconSpinner = ({ radius, color }: TransactionIconSpinnerProps) => {
+export const TransactionIconSpinner = ({
+    size,
+    color,
+    width = DEFAULT_STROKE_WIDTH,
+}: TransactionIconSpinnerProps) => {
     const { applyStyle, utils } = useNativeStyles();
 
     const rotation = useSharedValue(0);
@@ -49,32 +53,32 @@ export const TransactionIconSpinner = ({ radius, color }: TransactionIconSpinner
                 duration: ROTATION_DURATION,
                 easing: Easing.linear,
             }),
-            WITH_REPEAT_INFINITE,
+            ENDLESS_ANIMATION_VALUE,
         );
 
         return () => cancelAnimation(rotation);
     }, [rotation]);
 
+    const radius = size / 2;
+
     return (
-        <Box style={applyStyle(ContainerStyle)}>
-            <Animated.View style={animatedStyles}>
-                <Canvas style={{ height: radius * 2, width: radius * 2 }}>
-                    <Circle
-                        opacity={0.75}
-                        cx={radius}
-                        cy={radius}
-                        r={radius - STROKE_WIDTH / 2}
-                        style="stroke"
-                        strokeWidth={STROKE_WIDTH}
-                    >
-                        <SweepGradient
-                            c={vec(radius, radius)}
-                            colors={[utils.colors.backgroundSurfaceElevation1, utils.colors[color]]}
-                            origin={{ x: radius, y: radius }}
-                        />
-                    </Circle>
-                </Canvas>
-            </Animated.View>
-        </Box>
+        <Animated.View style={[animatedStyles, applyStyle(ContainerStyle)]}>
+            <Canvas style={{ height: size, width: size }}>
+                <Circle
+                    opacity={0.75}
+                    cx={radius}
+                    cy={radius}
+                    r={radius - width / 2}
+                    style="stroke"
+                    strokeWidth={width}
+                >
+                    <SweepGradient
+                        c={vec(radius, radius)}
+                        colors={[utils.colors.backgroundSurfaceElevation1, utils.colors[color]]}
+                        origin={{ x: radius, y: radius }}
+                    />
+                </Circle>
+            </Canvas>
+        </Animated.View>
     );
 };

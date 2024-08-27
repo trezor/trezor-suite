@@ -10,11 +10,10 @@ type TransactionDetailRowProps = {
     children: ReactNode;
 };
 
-const rowStyle = prepareNativeStyle(utils => ({
+const rowStyle = prepareNativeStyle(() => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: utils.spacings.small,
 }));
 
 const valueContainerStyle = prepareNativeStyle(_ => ({
@@ -26,7 +25,9 @@ export const TransactionDetailRow = ({ title, children }: TransactionDetailRowPr
 
     return (
         <Box style={applyStyle(rowStyle)}>
-            <Text color="textSubdued">{title}</Text>
+            <Text variant="hint" color="textSubdued">
+                {title}
+            </Text>
             <Box
                 flexDirection="row"
                 justifyContent="flex-end"

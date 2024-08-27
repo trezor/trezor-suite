@@ -8,6 +8,7 @@ import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/t
 import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { signValueMap } from '../TransactionDetail/TransactionDetailHeader';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
+import { getTransactionValueSign } from '../../utils';
 
 type TokenTransferListItemProps = {
     txid: string;
@@ -40,7 +41,7 @@ export const TokenTransferListItemValues = ({
                 value={tokenTransfer.amount}
                 contract={tokenTransfer.contract}
                 decimals={tokenTransfer.decimals}
-                signValue={signValueMap[tokenTransfer.type]}
+                signValue={getTransactionValueSign(tokenTransfer.type)}
                 numberOfLines={1}
                 ellipsizeMode="tail"
                 historicRate={historicRate}

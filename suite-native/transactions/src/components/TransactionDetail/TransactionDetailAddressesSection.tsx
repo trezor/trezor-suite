@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { Box, Divider, Text } from '@suite-native/atoms';
+import { Box, CardDivider, Text, VStack } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CoinSymbol, CryptoIcon } from '@suite-common/icons-deprecated';
+import { Translation } from '@suite-native/intl';
 
-import { SummaryRow } from './TransactionDetailStatusSection';
+import { SummaryRow } from './TransactionSummaryRow';
 import { formatAddressLabel } from './TransactionDetailAddressesSheet';
 import { VinVoutAddress } from '../../types';
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
@@ -18,11 +19,9 @@ type TransactionDetailAddressesSectionProps = {
     icon?: CoinSymbol;
 };
 
-const SHOW_MORE_BUTTON_MARGIN_LEFT = 52;
-
-const showMoreButtonContainerStyle = prepareNativeStyle(_ => ({
+const showMoreButtonContainerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
-    marginLeft: SHOW_MORE_BUTTON_MARGIN_LEFT,
+    marginLeft: utils.spacings.extraLarge,
 }));
 const showMoreButtonStyle = prepareNativeStyle(_ => ({ flexDirection: 'row' }));
 
@@ -42,7 +41,7 @@ const addressTextStyle = prepareNativeStyle(_ => ({
 const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: utils.spacings.small,
+    marginTop: 12,
     backgroundColor: utils.colors.backgroundSurfaceElevation2,
     width: utils.spacings.medium,
     height: utils.spacings.medium,
@@ -96,7 +95,7 @@ export const TransactionDetailAddressesSection = ({
     const areChangeAddressesVisible = changeAddresses.length > 0;
 
     return (
-        <>
+        <VStack>
             <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
                 <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                     <Box>
@@ -119,9 +118,24 @@ export const TransactionDetailAddressesSection = ({
                 </Box>
             </SummaryRow>
 
+            {isShowMoreButtonVisible && (
+                <Box style={applyStyle(showMoreButtonContainerStyle)}>
+                    <TouchableOpacity onPress={onShowMore} style={applyStyle(showMoreButtonStyle)}>
+                        <Text color="textPrimaryDefault">
+                            <Translation id="transactions.detail.showMoreButton" />
+                        </Text>
+                        <Box style={applyStyle(hiddenTransactionsCountStyle)}>
+                            <Text variant="label" color="textSubdued">
+                                {hiddenAddressesCount}
+                            </Text>
+                        </Box>
+                    </TouchableOpacity>
+                </Box>
+            )}
+
             {areChangeAddressesVisible && (
                 <>
-                    <Divider />
+                    <CardDivider horizontalPadding="medium" />
                     <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
                         <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                             <Box>
@@ -138,18 +152,6 @@ export const TransactionDetailAddressesSection = ({
                     </SummaryRow>
                 </>
             )}
-            {isShowMoreButtonVisible && (
-                <Box style={applyStyle(showMoreButtonContainerStyle)}>
-                    <TouchableOpacity onPress={onShowMore} style={applyStyle(showMoreButtonStyle)}>
-                        <Text color="textPrimaryDefault">Show more</Text>
-                        <Box style={applyStyle(hiddenTransactionsCountStyle)}>
-                            <Text variant="label" color="textSubdued">
-                                {hiddenAddressesCount}
-                            </Text>
-                        </Box>
-                    </TouchableOpacity>
-                </Box>
-            )}
-        </>
+        </VStack>
     );
 };

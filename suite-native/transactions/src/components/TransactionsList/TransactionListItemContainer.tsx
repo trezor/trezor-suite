@@ -175,14 +175,12 @@ export const TransactionListItemContainer = ({
             style={applyStyle(transactionListItemContainerStyle, { isFirst, isLast })}
         >
             <Box style={applyStyle(descriptionBoxStyle)}>
-                {coinSymbol && (
-                    <TransactionIcon
-                        symbol={coinSymbol}
-                        transactionType={transactionType}
-                        isAnimated={isTransactionPending}
-                        iconColor={iconColor}
-                    />
-                )}
+                <TransactionIcon
+                    symbol={coinSymbol}
+                    transactionType={transactionType}
+                    isAnimated={isTransactionPending}
+                    iconColor={iconColor}
+                />
                 <Box marginLeft="medium" flex={1}>
                     <HStack flexDirection="row" alignItems="center" spacing="extraSmall">
                         <Box style={applyStyle(titleStyle)}>

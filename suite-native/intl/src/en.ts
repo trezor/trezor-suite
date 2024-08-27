@@ -678,6 +678,7 @@ export const en = {
     transactions: {
         title: 'Transactions',
         receive: 'Receive',
+        status: { pending: 'Pending', confirmed: 'Confirmed' },
         phishing: {
             badge: 'Caution!',
             warning:
@@ -687,6 +688,18 @@ export const en = {
             title: 'No transactions',
             subtitle: 'Get started by receiving coins',
             button: 'Receive',
+        },
+        detail: {
+            header: '<transactionType></transactionType> transaction',
+            exploreButton: 'Explore in blockchain',
+            feeLabel: 'Fee',
+            dateLabel: 'Date',
+            showMoreButton: 'Show more',
+            sheet: {
+                parameters: 'Parameters',
+                values: 'Compare values',
+                inputs: 'Inputs & Outputs',
+            },
         },
     },
     deviceManager: {
