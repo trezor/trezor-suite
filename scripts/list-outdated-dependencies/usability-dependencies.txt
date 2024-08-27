@@ -43,11 +43,11 @@ zxcvbn
 date-fns
 @types/zxcvbn
 react-focus-lock
-@formatjs/cli // je potřeba?
-@formatjs/intl // je potřeba?
+@formatjs/cli
+@formatjs/intl
 @types/pako
 pako
-polished // je potřeba?
+polished
 svgo
 sharp
 @types/pdfmake

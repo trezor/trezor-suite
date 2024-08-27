@@ -90,3 +90,4 @@ stream-browserify
 events
 @types/web
 jssha
+wait-on

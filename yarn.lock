@@ -11694,13 +11694,11 @@ __metadata:
     "@trezor/transport": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/chrome-remote-interface": "npm:^0.31.14"
     "@types/cypress-image-snapshot": "npm:^3.1.8"
     "@types/react": "npm:18.2.79"
     "@types/react-dom": "npm:18.2.19"
     "@types/react-router": "npm:^5.1.20"
     "@types/react-router-dom": "npm:^5.1.7"
-    chrome-remote-interface: "npm:^0.33.0"
     cypress: "npm:^13.6.4"
     cypress-file-upload: "npm:^5.0.8"
     cypress-image-snapshot: "npm:^4.0.1"
@@ -12224,15 +12222,6 @@ __metadata:
   version: 4.3.12
   resolution: "@types/chai@npm:4.3.12"
   checksum: 10/cf465151048f438b11e562ac431842f440b50817e74516f1fb349860a0db4fcdd665197f9fbee4387250d8d077496a1167fe2c75af88372bac6d8f093ee07b3a
-  languageName: node
-  linkType: hard
-
-"@types/chrome-remote-interface@npm:^0.31.14":
-  version: 0.31.14
-  resolution: "@types/chrome-remote-interface@npm:0.31.14"
-  dependencies:
-    devtools-protocol: "npm:0.0.927104"
-  checksum: 10/86e2c13c7451e56a3b59e3c4f74b7dc15669e5ced0681d97454ed197c057b0d50450c468249472eb78ecadaf8ef9d9a83a7ce48f9e94f318d5a6b0b5ffe6e03b
   languageName: node
   linkType: hard
 
@@ -17055,18 +17044,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chrome-remote-interface@npm:^0.33.0":
-  version: 0.33.0
-  resolution: "chrome-remote-interface@npm:0.33.0"
-  dependencies:
-    commander: "npm:2.11.x"
-    ws: "npm:^7.2.0"
-  bin:
-    chrome-remote-interface: bin/client.js
-  checksum: 10/17165692cfe7766853867b27c663bf8a994058e05f64e7503746dd22a352dc3dd403573212a47ba71a3dff58d83e1c1d6aecb349bab3265d30e647da0e14fbf0
-  languageName: node
-  linkType: hard
-
 "chrome-trace-event@npm:^1.0.2":
   version: 1.0.3
   resolution: "chrome-trace-event@npm:1.0.3"
@@ -17533,13 +17510,6 @@ __metadata:
     lodash.camelcase: "npm:^4.3.0"
     typical: "npm:^4.0.0"
   checksum: 10/e6a42652ae8843fbb56e2fba1e85da00a16a0482896bb1849092e1bc70b8bf353d945e69732bf4ae98370ff84e8910ff4933af8f2f747806a6b2cb5074799fdb
-  languageName: node
-  linkType: hard
-
-"commander@npm:2.11.x":
-  version: 2.11.0
-  resolution: "commander@npm:2.11.0"
-  checksum: 10/d8940de4ce2886aa32ae27a1533d10ce46da8c6dcd965075462a6b8d17b01f596ec329e1430f84a123e52675403f0c2b11a6a5d144eb46146da9ae974edbc2c0
   languageName: node
   linkType: hard
 
@@ -19694,13 +19664,6 @@ __metadata:
   dependencies:
     dequal: "npm:^2.0.0"
   checksum: 10/3cc5f903d02d279d6dc4aa71ab6ed9898b9f4d1f861cc5421ce7357893c21b9520de78afb203c92bd650a6977ad0ca98195453a0707a39958cf5fea3b0a8ddd8
-  languageName: node
-  linkType: hard
-
-"devtools-protocol@npm:0.0.927104":
-  version: 0.0.927104
-  resolution: "devtools-protocol@npm:0.0.927104"
-  checksum: 10/2f645d5d8f8df8d520c7162264ad37caed40de6c57456febb42e22cc54d527a349d05ab16f4d9f9bbd715ce425b00232b6baa66ad339bb3caa077528684ce8ca
   languageName: node
   linkType: hard
 
