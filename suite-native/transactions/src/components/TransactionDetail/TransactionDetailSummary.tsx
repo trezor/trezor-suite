@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Card } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
 import { EthereumTokenTransfer } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailAddressesSheet } from './TransactionDetailAddressesSheet';
 import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';
@@ -14,11 +15,16 @@ type TransactionDetailSummaryProps = {
     tokenTransfer?: EthereumTokenTransfer;
 };
 
+const cardStyle = prepareNativeStyle(() => ({
+    paddingBottom: 12,
+}));
+
 export const TransactionDetailSummary = ({
     txid,
     accountKey,
     tokenTransfer,
 }: TransactionDetailSummaryProps) => {
+    const { applyStyle } = useNativeStyles();
     const [isAddressesSheetVisible, setIsAddressesSheetVisible] = useState(false);
 
     const toggleAddressesSheet = () => setIsAddressesSheetVisible(prev => !prev);
@@ -26,7 +32,7 @@ export const TransactionDetailSummary = ({
     const isTokenTransferDetail = !!tokenTransfer;
 
     return (
-        <Card>
+        <Card style={applyStyle(cardStyle)} borderColor="borderElevation1">
             {isTokenTransferDetail ? (
                 <TokenTransactionDetailSummary
                     accountKey={accountKey}
@@ -35,13 +41,11 @@ export const TransactionDetailSummary = ({
                     onShowMore={toggleAddressesSheet}
                 />
             ) : (
-                <>
-                    <NetworkTransactionDetailSummary
-                        accountKey={accountKey}
-                        txid={txid}
-                        onShowMore={toggleAddressesSheet}
-                    />
-                </>
+                <NetworkTransactionDetailSummary
+                    accountKey={accountKey}
+                    txid={txid}
+                    onShowMore={toggleAddressesSheet}
+                />
             )}
             <TransactionDetailAddressesSheet
                 isVisible={isAddressesSheetVisible}

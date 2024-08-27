@@ -4,6 +4,7 @@ import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types
 import { Card, VStack } from '@suite-native/atoms';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@suite-native/analytics';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailParametersSheet } from './TransactionDetailParametersSheet';
 import { TransactionDetailValuesSheet } from './TransactionDetailValuesSheet';
@@ -27,11 +28,14 @@ const sheetToAnalyticsEventMap: Record<SheetType, TransactionSheetAnalyticsEvent
     inputs: EventType.TransactionDetailInputOutput,
 };
 
+const cardStyle = prepareNativeStyle(() => ({ paddingVertical: 12, paddingRight: 12 }));
+
 export const TransactionDetailSheets = ({
     transaction,
     isTokenTransaction = false,
     accountKey,
 }: TransactionDetailSheetsProps) => {
+    const { applyStyle } = useNativeStyles();
     const [expandedSheet, setExpandedSheet] = useState<SheetType | null>(null);
 
     const toggleSheet = (sheetName: SheetType) => {
@@ -44,8 +48,8 @@ export const TransactionDetailSheets = ({
     const isValuesSheetVisible = !isTestnet(transaction.symbol) && !isTokenTransaction;
 
     return (
-        <Card>
-            <VStack spacing="small">
+        <Card style={applyStyle(cardStyle)} borderColor="borderElevation1">
+            <VStack spacing="large">
                 <TransactionDetailParametersSheet
                     isVisible={expandedSheet === 'parameters'}
                     transaction={transaction}

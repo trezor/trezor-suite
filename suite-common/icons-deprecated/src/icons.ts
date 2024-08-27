@@ -108,6 +108,7 @@ export const icons = {
     home: require('../assets/icons/home.svg'),
     info: require('../assets/icons/info.svg'),
     infoLight: require('../assets/icons/infoLight.svg'),
+    infoMedium: require('../assets/icons/infoMedium.svg'),
     key: require('../assets/icons/key.svg'),
     label: require('../assets/icons/label.svg'),
     lifebuoy: require('../assets/icons/lifebuoy.svg'),

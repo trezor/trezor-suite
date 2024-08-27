@@ -7,6 +7,9 @@ import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { TransactionsRootState } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Text, VStack } from '@suite-native/atoms';
+import { FiatRatesRootState, TransactionsRootState } from '@suite-common/wallet-core';
+import { SettingsSliceRootState } from '@suite-native/settings';
+import { useTranslate } from '@suite-native/intl';
 
 import { selectTransactionInputAndOutputTransfers, TransactionTranfer } from '../../selectors';
 import { TransactionDetailInputsSheetSection } from './TransactionDetailInputsSheetSection';
@@ -63,6 +66,7 @@ export const TransactionDetailInputsSheet = ({
     txid,
     accountKey,
 }: TransactionDetailInputsSheetProps) => {
+    const { translate } = useTranslate();
     const transactionTransfers = useSelector(
         (state: TransactionsRootState & TokenDefinitionsRootState) =>
             selectTransactionInputAndOutputTransfers(state, txid, accountKey),
@@ -76,7 +80,7 @@ export const TransactionDetailInputsSheet = ({
         <TransactionDetailSheet
             isVisible={isVisible}
             onVisibilityChange={onSheetVisibilityChange}
-            title="Inputs & Outputs"
+            title={translate('transactions.detail.sheet.inputs')}
             iconName="swap"
             transactionId={txid}
         >

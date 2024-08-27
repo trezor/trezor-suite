@@ -7,11 +7,37 @@ import {
     selectTransactionByTxidAndAccountKey,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { ErrorMessage, VStack } from '@suite-native/atoms';
+import { Box, ErrorMessage, VStack } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { selectTransactionAddresses } from '../../selectors';
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
-import { TransactionDetailStatusSection } from './TransactionDetailStatusSection';
+
+type VerticalSeparatorProps = { isMultiInputTransaction: boolean };
+
+const SEPARATOR_TOP_OFFSET = 37;
+const SEPARATOR_LEFT_OFFSET = 7.5;
+const SINGLE_INPUT_SEPARATOR_HEIGHT = 34;
+const MULTIPLE_INPUT_SEPARATOR_HEIGHT = 90;
+
+const separatorStyle = prepareNativeStyle<VerticalSeparatorProps>(
+    (utils, { isMultiInputTransaction }) => ({
+        position: 'absolute',
+        left: SEPARATOR_LEFT_OFFSET,
+        top: SEPARATOR_TOP_OFFSET,
+        width: utils.borders.widths.small,
+        height: isMultiInputTransaction
+            ? MULTIPLE_INPUT_SEPARATOR_HEIGHT
+            : SINGLE_INPUT_SEPARATOR_HEIGHT,
+        backgroundColor: utils.colors.backgroundNeutralSubdued,
+    }),
+);
+
+export const VerticalSeparator = ({ isMultiInputTransaction }: VerticalSeparatorProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    return <Box style={applyStyle(separatorStyle, { isMultiInputTransaction })} />;
+};
 
 export const NetworkTransactionDetailSummary = ({
     accountKey,
@@ -37,7 +63,7 @@ export const NetworkTransactionDetailSummary = ({
     }
 
     return (
-        <VStack>
+        <VStack spacing="large">
             {A.isNotEmpty(transactionInputAddresses) && (
                 <TransactionDetailAddressesSection
                     addressesType="inputs"
@@ -46,7 +72,6 @@ export const NetworkTransactionDetailSummary = ({
                     icon={transaction.symbol}
                 />
             )}
-            <TransactionDetailStatusSection txid={txid} accountKey={accountKey} />
             {A.isNotEmpty(transactionOutputAddresses) && (
                 <TransactionDetailAddressesSection
                     addressesType="outputs"
@@ -54,6 +79,7 @@ export const NetworkTransactionDetailSummary = ({
                     onShowMore={onShowMore}
                 />
             )}
+            <VerticalSeparator isMultiInputTransaction={transactionInputAddresses.length > 1} />
         </VStack>
     );
 };

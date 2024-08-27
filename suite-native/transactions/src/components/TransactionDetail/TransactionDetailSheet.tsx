@@ -14,10 +14,10 @@ type TransactionDetailSheetProps = {
     children: ReactNode;
 };
 
-const triggerStyle = prepareNativeStyle(utils => ({
+const triggerStyle = prepareNativeStyle(() => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: utils.spacings.small,
+    alignItems: 'center',
 }));
 
 const BottomSheetTrigger = ({
@@ -33,13 +33,13 @@ const BottomSheetTrigger = ({
 
     return (
         <TouchableOpacity style={applyStyle(triggerStyle)} onPress={onPress}>
-            <Box flexDirection="row">
+            <Box flexDirection="row" alignItems="center">
                 <Box marginRight="medium">
-                    <Icon name={iconName} color="iconPrimaryDefault" />
+                    <Icon name={iconName} color="iconDefault" size="mediumLarge" />
                 </Box>
                 <Text>{title}</Text>
             </Box>
-            <Icon name="circleRight" color="iconPrimaryDefault" />
+            <Icon name="chevronRight" color="iconSubdued" size="mediumLarge" />
         </TouchableOpacity>
     );
 };
