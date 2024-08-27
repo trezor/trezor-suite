@@ -19,42 +19,39 @@ const ONLINE_RELEASES_JSON_MOCK: FirmwareRelease[] = [
     },
 ];
 
-const createDevicePrams = (
-    params: Partial<CheckFirmwareRevisionParams>,
-): CheckFirmwareRevisionParams => ({
+const DeviceNames = Object.values(DeviceModelInternal);
+
+type CreateDeviceParams = Omit<CheckFirmwareRevisionParams, 'internalModel'>;
+
+const createDeviceParams = (params: Partial<CreateDeviceParams>): CreateDeviceParams => ({
     deviceRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
     firmwareVersion: [2, 7, 2],
     expectedRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
-    internalModel: DeviceModelInternal.T1B1,
     ...params,
 });
 
-describe(checkFirmwareRevision.name, () => {
+describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, internalModel => {
     it.each<{
         it: string;
         httpRequestMock?: () => Promise<FirmwareRelease[]>;
-        params: CheckFirmwareRevisionParams;
+        params: CreateDeviceParams;
         expected: FirmwareRevisionCheckResult;
     }>([
         {
             it: 'passes when firmware revision is same as in static file',
-            params: createDevicePrams({
-                deviceRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
-                expectedRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
-            }),
+            params: createDeviceParams({}),
             expected: { success: true },
         },
         {
             it: 'fails when firmware revision is NOT same as in static file',
-            params: createDevicePrams({
-                deviceRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
+            params: createDeviceParams({
                 expectedRevision: 'cde8f31ec2ddcb7d35e36edbcf8a71dda983a9ea',
             }),
             expected: { success: false, error: 'revision-mismatch' },
         },
         {
             it: 'fails when firmware revision is not provided',
-            params: createDevicePrams({
+            params: createDeviceParams({
                 deviceRevision: undefined,
                 expectedRevision: 'cde8f31ec2ddcb7d35e36edbcf8a71dda983a9ea',
             }),
@@ -63,8 +60,7 @@ describe(checkFirmwareRevision.name, () => {
         {
             it: 'passes when firmware version is not found locally, but found in the online release',
             httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_MOCK),
-            params: createDevicePrams({
-                deviceRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
+            params: createDeviceParams({
                 expectedRevision: undefined, // firmware not known by local releases.json file
             }),
             expected: { success: true },
@@ -72,7 +68,7 @@ describe(checkFirmwareRevision.name, () => {
         {
             it: 'fails when firmware version is not found locally, found in the online release, but does NOT match',
             httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_MOCK),
-            params: createDevicePrams({
+            params: createDeviceParams({
                 deviceRevision: '1234567890987654321',
                 expectedRevision: undefined, // firmware not known by local releases.json file
             }),
@@ -81,7 +77,7 @@ describe(checkFirmwareRevision.name, () => {
         {
             it: 'fails when firmware version is not found locally, and also not in the online release',
             httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_MOCK),
-            params: createDevicePrams({
+            params: createDeviceParams({
                 deviceRevision: '1234567890987654321',
                 firmwareVersion: [2, 9, 9], // completely unrecognized version
                 expectedRevision: undefined,
@@ -95,31 +91,17 @@ describe(checkFirmwareRevision.name, () => {
             httpRequestMock: () => {
                 throw new Error('You are offline!');
             },
-            params: createDevicePrams({
-                deviceRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
+            params: createDeviceParams({
                 expectedRevision: undefined, // firmware not known by local releases.json file
             }),
             expected: { success: false, error: 'cannot-perform-check-offline' },
-        },
-        {
-            it: 'passes also for a different device',
-            params: createDevicePrams({ internalModel: DeviceModelInternal.T3T1 }),
-            expected: { success: true },
-        },
-        {
-            it: 'fails also for a different device',
-            params: createDevicePrams({
-                internalModel: DeviceModelInternal.T3T1,
-                expectedRevision: '1234567890987654321',
-            }),
-            expected: { success: false, error: 'revision-mismatch' },
         },
     ])(`$it`, async ({ params, expected, httpRequestMock }) => {
         if (httpRequestMock !== undefined) {
             jest.spyOn(utilsAssets, 'httpRequest').mockImplementation(httpRequestMock);
         }
 
-        const result = await checkFirmwareRevision(params);
+        const result = await checkFirmwareRevision({ ...params, internalModel });
 
         expect(result).toStrictEqual(expected);
     });
