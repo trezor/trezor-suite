@@ -108,6 +108,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
                 return;
             }
 
+            console.log(coinmarketFiatValues);
             const cryptoAmount = fromFiatCurrency(
                 fiatAmount,
                 networkDecimals,
@@ -117,8 +118,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
             const formattedCryptoAmount =
                 cryptoAmount && shouldSendInSats
                     ? amountToSatoshi(cryptoAmount, networkDecimals)
-                    : cryptoAmount || '';
-
+                    : cryptoAmount ?? '';
             setValue(FORM_OUTPUT_AMOUNT, formattedCryptoAmount, { shouldValidate: true });
         },
         [getValues, coinmarketFiatValues, networkDecimals, shouldSendInSats, setValue],

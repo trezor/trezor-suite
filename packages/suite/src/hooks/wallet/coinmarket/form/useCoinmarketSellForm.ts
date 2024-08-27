@@ -354,11 +354,13 @@ export const useCoinmarketSellForm = ({
                 cryptoValue,
             );
 
+            // this will also update crypto amount
             if (fiatChanged) {
                 helpers.calculateCryptoAmountFromFiat(fiatValue);
             }
 
-            if (fiatChanged || cryptoChanged) {
+            // calculateCryptoAmountFromFiat will update crypto amount - avoiding double request
+            if (cryptoChanged) {
                 handleSubmit(() => {
                     handleChange();
                 })();

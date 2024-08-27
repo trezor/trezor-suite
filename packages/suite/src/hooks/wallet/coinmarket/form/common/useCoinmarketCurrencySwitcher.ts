@@ -58,7 +58,7 @@ export const useCoinmarketCurrencySwitcher = <T extends CoinmarketAllFormProps>(
                 ? amountToSatoshi(quoteCryptoAmount ?? '', networkDecimals)
                 : quoteCryptoAmount;
 
-            setValue(inputNames.cryptoInput, amount);
+            setValue(inputNames.cryptoInput, amount === '-1' ? '' : amount);
         } else {
             setValue(inputNames.fiatInput, coinmarketGetRoundedFiatAmount(quoteFiatAmount));
         }

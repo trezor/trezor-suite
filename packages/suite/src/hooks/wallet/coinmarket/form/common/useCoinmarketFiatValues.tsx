@@ -8,6 +8,7 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { CryptoSymbol, FiatCurrencyCode } from 'invity-api';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
@@ -59,6 +60,35 @@ export const useCoinmarketFiatValues = ({
     const network = getNetwork(networkSymbol);
     const { shouldSendInSats } = useBitcoinAmountUnit(networkSymbol);
 
+    const fiatRatesUpdater = useCallback(
+        async (value: FiatCurrencyCode | undefined): Promise<FiatRatesResult | null> => {
+            if (!value) return null;
+
+            const updateFiatRatesResult = await dispatch(
+                updateFiatRatesThunk({
+                    ticker: {
+                        symbol: networkSymbol,
+                        tokenAddress: tokenAddressTyped,
+                    },
+                    localCurrency: value,
+                    rateType: 'current',
+                    fetchAttemptTimestamp: Date.now() as Timestamp,
+                }),
+            );
+
+            if (updateFiatRatesResult.meta.requestStatus !== 'fulfilled') return null;
+
+            return updateFiatRatesResult.payload as FiatRatesResult;
+        },
+        [dispatch, networkSymbol, tokenAddressTyped],
+    );
+
+    // update rates on mount
+    useEffect(() => {
+        fiatRatesUpdater(fiatCurrency);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     if (!network || !accountBalance || !fiatCurrency) return null;
 
     const decimals = getNetworkDecimals(network?.decimals);
@@ -66,28 +96,6 @@ export const useCoinmarketFiatValues = ({
         ? amountToSatoshi(accountBalance, decimals)
         : accountBalance;
     const fiatValue = toFiatCurrency(accountBalance, fiatRate?.rate, 2);
-
-    const fiatRatesUpdater = async (
-        value: FiatCurrencyCode | undefined,
-    ): Promise<FiatRatesResult | null> => {
-        if (!value) return null;
-
-        const updateFiatRatesResult = await dispatch(
-            updateFiatRatesThunk({
-                ticker: {
-                    symbol: networkSymbol,
-                    tokenAddress: tokenAddressTyped,
-                },
-                localCurrency: value,
-                rateType: 'current',
-                fetchAttemptTimestamp: Date.now() as Timestamp,
-            }),
-        );
-
-        if (updateFiatRatesResult.meta.requestStatus !== 'fulfilled') return null;
-
-        return updateFiatRatesResult.payload as FiatRatesResult;
-    };
 
     return {
         fiatValue,
