@@ -1,4 +1,4 @@
-import { IconLegacy } from '@trezor/components';
+import { Icon } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Fragment } from 'react';
 import { Translation } from 'src/components/suite';
@@ -61,7 +61,7 @@ const CoinmarketSelectedOfferStepper = ({ steps }: CoinmarketSelectedOfferSteppe
                     </StepWrap>
                     {index < steps.length - 1 && (
                         <Arrow>
-                            <IconLegacy icon="ARROW_RIGHT" color={theme.iconSubdued} />
+                            <Icon name="chevronRight" color={theme.iconSubdued} />
                         </Arrow>
                     )}
                 </Fragment>

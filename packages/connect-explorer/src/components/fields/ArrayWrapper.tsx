@@ -2,9 +2,8 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { IconLegacy } from '@trezor/components';
-
 import type { FieldWithBundle } from '../../types';
+import { Icon } from '@trezor/components';
 
 interface AddButtonProps {
     field: FieldWithBundle<any>;
@@ -26,7 +25,7 @@ const AddButton = ({ field, onAdd, label }: AddButtonProps) => {
 
     return (
         <AddBatchButton title="Add batch" onClick={onAdd}>
-            <IconLegacy icon="PLUS" onClick={() => {}} /> {label}
+            <Icon name="plus" onClick={() => {}} /> {label}
         </AddBatchButton>
     );
 };

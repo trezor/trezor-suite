@@ -1,15 +1,7 @@
 import { useState, ChangeEvent, MouseEventHandler } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
-import {
-    Button,
-    IconLegacy,
-    Input,
-    Paragraph,
-    SelectBar,
-    Tooltip,
-    variables,
-} from '@trezor/components';
+import { Button, Icon, Input, Paragraph, SelectBar, Tooltip, variables } from '@trezor/components';
 import useDebounce from 'react-use/lib/useDebounce';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FieldError } from 'react-hook-form';
@@ -282,8 +274,8 @@ const SendSwapTransactionComponent = () => {
                     <RightColumn>
                         <SlippageAmount>{selectedQuote.swapSlippage}%</SlippageAmount>
                         <SlippageSettingsButton type="button" onClick={toggleSlippage}>
-                            <IconLegacy
-                                icon={slippageSettings ? 'ARROW_UP' : 'ARROW_DOWN'}
+                            <Icon
+                                name={slippageSettings ? 'chevronUp' : 'chevronDown'}
                                 color={theme.legacy.TYPE_DARK_GREY}
                                 size={14}
                             />

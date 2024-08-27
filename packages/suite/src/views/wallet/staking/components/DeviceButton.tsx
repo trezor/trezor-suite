@@ -25,7 +25,7 @@ export const DeviceButton = ({
             isDisabled={isDisabled}
             isLoading={isLoading}
             onClick={onClick}
-            icon={`TREZOR_${deviceModelInternal}`}
+            icon={`trezor${deviceModelInternal}`}
         >
             {children}
         </Button>

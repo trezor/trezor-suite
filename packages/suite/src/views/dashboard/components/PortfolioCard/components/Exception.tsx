@@ -8,7 +8,7 @@ import {
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
 import * as accountUtils from '@suite-common/wallet-utils';
-import { variables, Button, IconLegacyProps, H3, Image } from '@trezor/components';
+import { variables, Button, H3, Image, IconName } from '@trezor/components';
 import { Discovery } from '@suite-common/wallet-types';
 
 import { Translation } from 'src/components/suite';
@@ -52,7 +52,7 @@ interface CTA {
     label?: TranslationKey;
     variant?: ComponentProps<typeof Button>['variant'];
     action: () => void;
-    icon?: IconLegacyProps['icon'];
+    icon?: IconName;
 }
 
 interface ContainerProps {
@@ -87,7 +87,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
                     <Button
                         key={a.label || 'TR_RETRY'}
                         variant={a.variant || 'primary'}
-                        icon={a.icon || 'PLUS'}
+                        icon={a.icon || 'plus'}
                         isLoading={isLocked()}
                         onClick={a.action}
                         data-testid={`@exception/${dataTestBase}/${a.variant || 'primary'}-button`}
@@ -156,7 +156,7 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                     cta={[
                         {
                             action: () => dispatch(goto('settings-coins')),
-                            icon: 'SETTINGS',
+                            icon: 'settings',
                             label: 'TR_COIN_SETTINGS',
                         },
                     ]}
@@ -173,7 +173,7 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                             values={{ details: discoveryFailedMessage(discovery) }}
                         />
                     }
-                    cta={{ action: () => dispatch(restartDiscovery()), icon: 'REFRESH' }}
+                    cta={{ action: () => dispatch(restartDiscovery()), icon: 'refresh' }}
                     dataTestBase={exception.type}
                 />
             );

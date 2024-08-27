@@ -1,16 +1,16 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { IconLegacy } from '../../Icon/IconLegacy';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button, ButtonProps } from '../Button/Button';
 import { spacingsPx } from '@trezor/theme';
+import { Icon } from '../../Icon/Icon';
 
 const StyledButton = styled(Button)`
     position: relative;
     padding-inline: ${spacingsPx.xxl};
 `;
 
-const InfoIcon = styled(IconLegacy)`
+const InfoIcon = styled(Icon)`
     position: absolute;
     top: ${spacingsPx.xxs};
     right: ${spacingsPx.xxs};
@@ -33,7 +33,7 @@ export const TooltipButton = ({
             <StyledButton isDisabled={isDisabled} {...buttonProps}>
                 {tooltipContent && (
                     <InfoIcon
-                        icon="INFO"
+                        name="info"
                         size={12}
                         color={isDisabled ? theme.legacy.TYPE_LIGHT_GREY : theme.legacy.BG_WHITE}
                     />

@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
-import { IconLegacy, IconType } from '../Icon/IconLegacy';
 import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
 import { Row, Column, TransientProps, useElevation } from '../..';
@@ -17,6 +16,7 @@ import {
     mapVariantToIconColor,
     mapVariantToTextColor,
 } from './utils';
+import { Icon, IconName } from '../Icon/Icon';
 
 export const allowedWarningFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedWarningFrameProps)[number]>;
@@ -26,7 +26,7 @@ export type WarningProps = AllowedFrameProps & {
     className?: string;
     variant?: WarningVariant;
     rightContent?: ReactNode;
-    icon?: IconType | true;
+    icon?: IconName | true;
     filled?: boolean;
     'data-testid'?: string;
 };
@@ -89,9 +89,10 @@ export const Warning = ({
             data-testid={dataTest}
         >
             {withIcon && (
-                <IconLegacy
+                <Icon
                     size={20}
-                    icon={icon === true ? mapVariantToIcon({ $variant: variant }) : icon}
+                    name={icon === true ? mapVariantToIcon({ $variant: variant }) : icon}
+                    // Todo: unify variants
                     color={mapVariantToIconColor({
                         $variant: variant,
                         theme,

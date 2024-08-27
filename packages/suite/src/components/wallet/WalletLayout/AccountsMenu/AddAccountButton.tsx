@@ -63,7 +63,7 @@ export const AddAccountButton = ({
     const ButtonComponent = isFullWidth ? (
         <Button
             onClick={device ? handleOnClick : undefined}
-            icon="PLUS"
+            icon="plus"
             isDisabled={addAccountDisabled || isDisabled}
             size="small"
             variant="tertiary"
@@ -75,7 +75,7 @@ export const AddAccountButton = ({
     ) : (
         <IconButton
             onClick={device ? handleOnClick : undefined}
-            icon="PLUS"
+            icon="plus"
             isDisabled={addAccountDisabled || isDisabled}
             size="small"
             variant="tertiary"

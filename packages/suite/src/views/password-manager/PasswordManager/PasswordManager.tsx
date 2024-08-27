@@ -108,7 +108,7 @@ export const PasswordManager = () => {
                                     onClick={() => setFormActive(0)}
                                     type="button"
                                     variant="tertiary"
-                                    icon="PENCIL"
+                                    icon="pencil"
                                 >
                                     Add the first one!
                                 </Button>

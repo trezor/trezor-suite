@@ -41,7 +41,7 @@ export const RippleOptions = () => {
                         <StyledButton
                             variant="tertiary"
                             size="small"
-                            icon="DATA"
+                            icon="database"
                             onClick={() => {
                                 // open additional form
                                 toggleOption('rippleDestinationTag');
@@ -57,7 +57,7 @@ export const RippleOptions = () => {
                     <StyledButton
                         variant="tertiary"
                         size="small"
-                        icon="BROADCAST"
+                        icon="broadcast"
                         onClick={() => {
                             toggleOption('broadcast');
                             composeTransaction();

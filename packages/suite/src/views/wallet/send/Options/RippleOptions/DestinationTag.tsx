@@ -1,5 +1,5 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Input, IconLegacy } from '@trezor/components';
+import { Input, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
@@ -45,7 +45,7 @@ export const DestinationTag = ({ close }: DestinationTagProps) => {
             defaultValue={inputValue}
             maxLength={formInputsMaxLength.xrpDestinationTag}
             label={<Translation id="DESTINATION_TAG" />}
-            labelRight={<IconLegacy size={20} icon="CROSS" useCursorPointer onClick={close} />}
+            labelRight={<Icon size={20} name="close" useCursorPointer onClick={close} />}
             bottomText={error?.message || null}
             innerRef={inputRef}
             {...inputField}

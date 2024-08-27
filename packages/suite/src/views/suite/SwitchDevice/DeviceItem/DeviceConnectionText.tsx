@@ -1,4 +1,4 @@
-import { IconLegacy, IconType, IconVariant, Text } from '@trezor/components';
+import { Icon, IconName, IconVariant, Text } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import styled, { css } from 'styled-components';
 import { ReactNode } from 'react';
@@ -24,7 +24,7 @@ type DeviceConnectionTextProps = {
     onClick?: () => void;
     variant: IconVariant;
     'data-testid'?: string;
-    icon: IconType;
+    icon: IconName;
     children: ReactNode;
     isAction?: boolean;
 };
@@ -39,7 +39,7 @@ export const DeviceConnectionText = ({
 }: DeviceConnectionTextProps) => (
     <Container $isAction={isAction} onClick={onClick} data-testid={dataTest}>
         <TextRow>
-            <IconLegacy icon={icon} size={12} variant={variant} />
+            <Icon name={icon} size={12} variant={variant} />
             <Text variant={variant}>{children} </Text>
         </TextRow>
     </Container>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
-import { variables, CoinLogo, Select, IconLegacy } from '@trezor/components';
+import { variables, CoinLogo, Select, Icon } from '@trezor/components';
 import {
     FiatValue,
     Translation,
@@ -186,8 +186,8 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
                             return (
                                 <Option>
                                     <LogoWrapper>
-                                        <IconLegacy
-                                            icon="PLUS"
+                                        <Icon
+                                            name="plus"
                                             size={25}
                                             color={theme.legacy.TYPE_DARK_GREY}
                                         />
@@ -206,8 +206,8 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
                             return (
                                 <Option>
                                     <LogoWrapper>
-                                        <IconLegacy
-                                            icon="NON_SUITE"
+                                        <Icon
+                                            name="nonSuite"
                                             size={25}
                                             color={theme.legacy.TYPE_DARK_GREY}
                                         />

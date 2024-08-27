@@ -41,7 +41,7 @@ export const AllTextButtons: StoryFn = () => (
 
             <TextButton
                 data-testid="text-button-icon"
-                icon="GHOST"
+                icon="ghost"
                 onClick={() => {
                     console.log('click');
                 }}
@@ -49,12 +49,12 @@ export const AllTextButtons: StoryFn = () => (
                 Text Button Icon
             </TextButton>
 
-            <TextButton icon="GHOST" data-testid="text-button-loading" isLoading>
+            <TextButton icon="ghost" data-testid="text-button-loading" isLoading>
                 Text Button loading
             </TextButton>
 
             <TextButton
-                icon="GHOST"
+                icon="ghost"
                 isDisabled
                 data-testid="text-button-disabled"
                 onClick={() => {

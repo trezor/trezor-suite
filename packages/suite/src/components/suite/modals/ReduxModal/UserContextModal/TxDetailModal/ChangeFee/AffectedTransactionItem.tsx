@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { IconLegacy, variables } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { FormattedDate } from 'src/components/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
@@ -52,16 +52,16 @@ export const AffectedTransactionItem = ({
     const theme = useTheme();
     const { isMobileLayout } = useLayoutSize();
     const shownTxidChars = isMobileLayout ? 4 : 8;
-    const iconType = tx.type === 'recv' ? 'RECEIVE' : 'SEND';
+    const iconType = tx.type === 'recv' ? 'receive' : 'send';
 
     return (
         <TxRow className={className}>
             {!isMobileLayout && (
                 <IconWrapper>
-                    <IconLegacy
+                    <Icon
                         size={16}
                         color={theme.legacy.TYPE_LIGHT_GREY}
-                        icon={isAccountOwned ? iconType : 'CLOCK'}
+                        name={isAccountOwned ? iconType : 'clock'}
                     />
                 </IconWrapper>
             )}

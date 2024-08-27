@@ -2,7 +2,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled from 'styled-components';
 import { NumberInput, Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { Card, IconLegacy, IconButton } from '@trezor/components';
+import { Card, Icon, IconButton } from '@trezor/components';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { spacingsPx } from '@trezor/theme';
@@ -86,12 +86,12 @@ export const Locktime = ({ close }: LocktimeProps) => {
                 rules={rules}
                 label={
                     <Label>
-                        <IconLegacy size={16} icon="CALENDAR" />
+                        <Icon size={16} name="calendar" />
                         <Translation id="LOCKTIME_SCHEDULE_SEND" />
                     </Label>
                 }
                 labelRight={
-                    <IconButton icon="CROSS" size="tiny" variant="tertiary" onClick={close} />
+                    <IconButton icon="close" size="tiny" variant="tertiary" onClick={close} />
                 }
                 bottomText={error?.message || null}
                 data-testid="locktime-input"

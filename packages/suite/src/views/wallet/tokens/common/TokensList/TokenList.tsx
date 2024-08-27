@@ -1,5 +1,5 @@
 import styled, { css, useTheme } from 'styled-components';
-import { Card, IconLegacy } from '@trezor/components';
+import { Card, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
@@ -32,7 +32,7 @@ const NoResults = styled.div`
     text-align: center;
 `;
 
-const ChevronIcon = styled(IconLegacy)<{ $isActive: boolean }>`
+const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
     padding: ${spacingsPx.sm};
     border-radius: 50%;
     transition:
@@ -132,7 +132,7 @@ export const TokenList = ({
                                 $isActive={isZeroBalanceOpen}
                                 size={18}
                                 color={theme.iconSubdued}
-                                icon="ARROW_DOWN"
+                                icon="chevronDown"
                             />
                         </ChevronContainer>
                         <Translation id="ZERO_BALANCE_TOKENS" />

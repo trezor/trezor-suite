@@ -1,7 +1,7 @@
 import { ReactNode, MouseEvent } from 'react';
-import styled, { css, useTheme } from 'styled-components';
-import { IconLegacy, IconLegacyProps } from '../../Icon/IconLegacy';
+import styled, { css } from 'styled-components';
 import { TypographyStyle, spacingsPx, typography, typographyStylesBase } from '@trezor/theme';
+import { Icon, IconName } from '../../Icon/Icon';
 
 type AProps = {
     $type?: TypographyStyle;
@@ -52,8 +52,7 @@ interface LinkProps {
     children?: ReactNode;
     className?: string;
     variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
-    icon?: IconLegacyProps['icon'];
-    iconProps?: IconLegacyProps;
+    icon?: IconName;
     'data-testid'?: string;
 }
 
@@ -61,7 +60,6 @@ const Link = ({
     href,
     target,
     icon,
-    iconProps,
     type,
     onClick,
     'data-testid': dataTest,
@@ -69,15 +67,7 @@ const Link = ({
     className,
     variant,
 }: LinkProps) => {
-    const theme = useTheme();
-
     const iconSize = typographyStylesBase[type || 'body'].fontSize;
-
-    const {
-        variant: iconVariant,
-        color: iconColor,
-        ...restIconVariant
-    } = iconProps ?? { variant: undefined };
 
     return (
         <A
@@ -94,16 +84,7 @@ const Link = ({
             className={className}
         >
             {children}
-            {icon && (
-                <IconLegacy
-                    size={iconSize}
-                    icon={icon}
-                    {...(variant !== undefined
-                        ? { variant: iconVariant }
-                        : { color: iconColor ?? theme.iconSubdued })}
-                    {...restIconVariant}
-                />
-            )}
+            {icon && <Icon size={iconSize} name={icon} />}
         </A>
     );
 };

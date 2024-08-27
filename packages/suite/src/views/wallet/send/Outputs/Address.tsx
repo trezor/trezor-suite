@@ -284,7 +284,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                                 <Link
                                     href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}
                                     variant="nostyle"
-                                    icon="EXTERNAL_LINK"
+                                    icon="externalLink"
                                     type="label"
                                 >
                                     {chunks}
@@ -360,7 +360,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     </Text>
                 }
                 labelHoverRight={
-                    <Button variant="tertiary" size="tiny" icon="QR" onClick={handleQrClick}>
+                    <Button variant="tertiary" size="tiny" icon="qrCode" onClick={handleQrClick}>
                         <Translation id="RECIPIENT_SCAN" />
                     </Button>
                 }
@@ -379,7 +379,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 labelRight={
                     outputsCount > 1 ? (
                         <IconButton
-                            icon="CROSS"
+                            icon="close"
                             size="tiny"
                             variant="tertiary"
                             data-testid={`outputs.${outputId}.remove`}

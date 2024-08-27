@@ -2,12 +2,12 @@ import styled, { useTheme } from 'styled-components';
 
 import {
     variables,
-    IconLegacy,
     Button,
     motionEasing,
     LottieAnimation,
     useElevation,
     ElevationUp,
+    Icon,
 } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
@@ -112,11 +112,11 @@ const ConnectImage = ({
 
             <Checkmark>
                 {connected && !showWarning && (
-                    <IconLegacy icon="CHECK_ACTIVE" size={24} color={theme.legacy.TYPE_GREEN} />
+                    <Icon name="checkActive" size={24} color={theme.legacy.TYPE_GREEN} />
                 )}
 
                 {showWarning && (
-                    <IconLegacy icon="WARNING" size={24} color={theme.legacy.TYPE_ORANGE} />
+                    <Icon name="warningTriangle" size={24} color={theme.legacy.TYPE_ORANGE} />
                 )}
             </Checkmark>
         </ImageWrapper>

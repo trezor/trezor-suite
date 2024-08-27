@@ -131,7 +131,7 @@ const ButtonLikeLabel = ({
             <EditableButton
                 // @ts-expect-error todo: hm this needs some clever generic
                 variant="tertiary"
-                icon="TAG"
+                icon="tag"
                 data-testid={dataTest}
                 originalValue={payload.value ?? defaultEditableValue}
                 onSubmit={onSubmit}
@@ -143,7 +143,7 @@ const ButtonLikeLabel = ({
 
     if (payload.value) {
         return (
-            <LabelButton variant="tertiary" icon="TAG" data-testid={dataTest} size="tiny">
+            <LabelButton variant="tertiary" icon="tag" data-testid={dataTest} size="tiny">
                 <Inline>
                     <LabelValue>{payload.value} </LabelValue>
                     {/* This is the defaultVisibleValue which shows up after you hover over the label name: */}
@@ -406,7 +406,7 @@ export const MetadataLabeling = ({
                         <ActionButton
                             data-testid={`${dataTestBase}/add-label-button`}
                             variant="tertiary"
-                            icon={!actionButtonsDisabled ? 'TAG' : undefined}
+                            icon={!actionButtonsDisabled ? 'tag' : undefined}
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
                             $isVisible={isVisible}
@@ -445,7 +445,7 @@ export const MetadataLabeling = ({
                                     : `${dataTestBase}/add-label-button`
                             }
                             variant="tertiary"
-                            icon={!actionButtonsDisabled ? 'TAG' : undefined}
+                            icon={!actionButtonsDisabled ? 'tag' : undefined}
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
                             $isVisible={isVisible}
@@ -465,7 +465,7 @@ export const MetadataLabeling = ({
                 <SuccessButton
                     variant="tertiary"
                     data-testid={`${dataTestBase}/success`}
-                    icon="CHECK"
+                    icon="check"
                     size="tiny"
                 >
                     {l10nLabelling.edited}

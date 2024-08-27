@@ -66,7 +66,7 @@ export const InstantStakeBanner = ({
     return (
         <Warning
             variant="info"
-            icon="LIGHTNING"
+            icon="lightning"
             margin={{ bottom: spacings.sm }}
             rightContent={
                 <Warning.Button onClick={closeBanner}>

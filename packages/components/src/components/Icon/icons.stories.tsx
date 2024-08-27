@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { Meta } from '@storybook/react';
-import { IconName, icons } from './Icon';
-import { Icon } from '@suite-common/icons/src/webComponents';
+import { Meta, StoryObj } from '@storybook/react';
+import { IconName, icons, Icon, IconProps, allowedIconFrameProps, iconVariants } from './Icon';
+import { getFramePropsStory } from '../../utils/frameProps';
 
 const Wrapper = styled.div`
     display: grid;
@@ -32,15 +32,30 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const AllIcons = () => (
-    <Wrapper>
-        {Object.keys(icons).map(iconKey => {
-            return (
-                <IconWrapper key={iconKey}>
-                    <IconText>{iconKey}</IconText>
-                    <Icon name={iconKey as IconName} color="iconDefault" />
-                </IconWrapper>
-            );
-        })}
-    </Wrapper>
-);
+export const AllIcons: StoryObj<IconProps> = {
+    render: (props: IconProps) => (
+        <Wrapper>
+            {Object.keys(icons).map(iconKey => {
+                return (
+                    <IconWrapper key={iconKey}>
+                        <IconText>{iconKey}</IconText>
+                        <Icon {...props} name={iconKey as IconName} />
+                    </IconWrapper>
+                );
+            })}
+        </Wrapper>
+    ),
+    args: {
+        color: undefined,
+        ...getFramePropsStory(allowedIconFrameProps).args,
+    },
+    argTypes: {
+        variant: {
+            options: iconVariants,
+            control: {
+                type: 'select',
+            },
+        },
+        ...getFramePropsStory(allowedIconFrameProps).argTypes,
+    },
+};

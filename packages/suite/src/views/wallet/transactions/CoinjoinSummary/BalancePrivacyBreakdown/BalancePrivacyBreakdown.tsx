@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { IconLegacy } from '@trezor/components';
+import { Icon } from '@trezor/components';
 import { isZero } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
@@ -30,7 +30,7 @@ const PrivateBalanceHeading = styled.span`
 `;
 
 // svg padding offset
-const CheckIcon = styled(IconLegacy)`
+const CheckIcon = styled(Icon)`
     width: 15px;
     height: 15px;
 `;
@@ -59,13 +59,13 @@ export const BalancePrivacyBreakdown = () => {
     const getBalanceIcon = () => {
         if (hasSession) {
             if (currentSession.paused) {
-                return <IconLegacy icon="PAUSE" size={12} />;
+                return <Icon name="pause" size={12} />;
             }
 
-            return <IconLegacy icon="SHUFFLE" size={15} />;
+            return <Icon name="shuffle" size={15} />;
         }
 
-        return <IconLegacy icon="CROSS" size={15} />;
+        return <Icon name="close" size={15} />;
     };
 
     if (!currentAccount) {
@@ -88,7 +88,7 @@ export const BalancePrivacyBreakdown = () => {
                         <Translation id="TR_PRIVATE" />
                     </PrivateBalanceHeading>
                 }
-                headerIcon={<CheckIcon icon="CHECK" size={19} color={theme.legacy.TYPE_GREEN} />}
+                headerIcon={<CheckIcon name="check" size={19} color={theme.legacy.TYPE_GREEN} />}
                 value={anonymized}
                 symbol={currentAccount?.symbol}
                 color={

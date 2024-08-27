@@ -5,7 +5,7 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import {
     CoinLogo,
-    IconLegacy,
+    Icon,
     SkeletonRectangle,
     SkeletonStack,
     TOOLTIP_DELAY_LONG,
@@ -59,7 +59,7 @@ const StyledCoinLogo = styled(CoinLogo)`
     z-index: 20;
 `;
 
-const StyledIcon = styled(IconLegacy)`
+const StyledIcon = styled(Icon)`
     z-index: 20;
 `;
 
@@ -205,7 +205,7 @@ export const AccountItem = forwardRef(
                         </>
                     );
                 case 'staking':
-                    return <StyledIcon icon="PIGGY_BANK_FILLED" color={theme.iconSubdued} />;
+                    return <StyledIcon name="piggyBankFilled" color={theme.iconSubdued} />;
                 case 'tokens':
                     return <TokensBadge>{tokens?.length}</TokensBadge>;
             }

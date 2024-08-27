@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Network } from 'src/types/wallet';
-import { IconLegacy, variables, SkeletonRectangle } from '@trezor/components';
+import { Icon, variables, SkeletonRectangle } from '@trezor/components';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
@@ -119,6 +119,11 @@ const SkeletonRectangleLast = styled(SkeletonRectangle)`
     margin-right: ${spacingsPx.md};
 `;
 
+const StyledIcon = styled(Icon)`
+    padding-left: 4px;
+    padding-bottom: 2px;
+`;
+
 interface AssetTableProps {
     network: Network;
     failed: boolean;
@@ -181,9 +186,8 @@ export const AssetRow = memo(
                     <FailedCol $isLastRow={isLastRow}>
                         <Translation id="TR_DASHBOARD_ASSET_FAILED" />
 
-                        <IconLegacy
-                            style={{ paddingLeft: '4px', paddingBottom: '2px' }}
-                            icon="WARNING"
+                        <StyledIcon
+                            name="warningTriangle"
                             color={theme.legacy.TYPE_RED}
                             size={14}
                         />
@@ -202,7 +206,7 @@ export const AssetRow = memo(
                             data-testid={`@dashboard/assets/table/${symbol}/buy-button`}
                         />
                     )}
-                    <StyledArrowIcon size={16} icon="ARROW_RIGHT_LONG" color={theme.iconSubdued} />
+                    <StyledArrowIcon size={16} name="arrowRight" color={theme.iconSubdued} />
                 </BuyButtonWrapper>
             </AssetTableRowGrid>
         );

@@ -113,7 +113,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                     <GraphWrapper>
                         <ErrorMessage>
                             <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                            <Button onClick={onRefresh} icon="REFRESH" variant="tertiary">
+                            <Button onClick={onRefresh} icon="refresh" variant="tertiary">
                                 <Translation id="TR_RETRY" />
                             </Button>
                         </ErrorMessage>

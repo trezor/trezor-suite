@@ -8,7 +8,7 @@ import {
     selectDeviceAuthenticity,
     selectDevices,
 } from '@suite-common/wallet-core';
-import { IconLegacy, Tooltip, variables, H2, useElevation } from '@trezor/components';
+import { Icon, Tooltip, variables, H2, useElevation } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { TREZOR_RESELLERS_URL, TREZOR_URL } from '@trezor/urls';
 
@@ -292,11 +292,7 @@ const SecurityCheckContent = ({
                         <Translation id={primaryButtonTopText} />
                         <TimeEstimateWrapper>
                             <IconWrapper>
-                                <IconLegacy
-                                    size={12}
-                                    icon="CLOCK_ACTIVE"
-                                    color={theme.iconOnPrimary}
-                                />
+                                <Icon size={12} name="clock" color={theme.iconOnPrimary} />
                             </IconWrapper>
                             <Translation id="TR_TAKES_N_MINUTES" />
                         </TimeEstimateWrapper>

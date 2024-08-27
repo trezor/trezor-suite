@@ -1,4 +1,4 @@
-import { IconLegacy, Text } from '@trezor/components';
+import { Icon, Text } from '@trezor/components';
 import { PassphraseList, PassphraseItem } from './PassphraseList';
 import { Translation } from 'src/components/suite/Translation';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
@@ -7,7 +7,7 @@ import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 export const PassphraseDescription = () => (
     <PassphraseList $gap="small">
         <PassphraseItem>
-            <IconLegacy icon="INFO" size={16} />
+            <Icon name="info" size={16} />
             <Text>
                 <Translation
                     id="TR_PASSPHRASE_DESCRIPTION_ITEM1"
@@ -26,13 +26,13 @@ export const PassphraseDescription = () => (
             </Text>
         </PassphraseItem>
         <PassphraseItem>
-            <IconLegacy icon="ASTERISK" size={16} />
+            <Icon name="asterisk" size={16} />
             <Text>
                 <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM2" />
             </Text>
         </PassphraseItem>
         <PassphraseItem>
-            <IconLegacy icon="WARNING" size={16} />
+            <Icon name="warningTriangle" size={16} />
             <Text>
                 <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
             </Text>

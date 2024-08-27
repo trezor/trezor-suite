@@ -1,4 +1,4 @@
-import { IconLegacy, ProgressBar, variables } from '@trezor/components';
+import { Icon, ProgressBar, variables } from '@trezor/components';
 import styled, { useTheme } from 'styled-components';
 import { borders, spacingsPx } from '@trezor/theme';
 import { useFirmware } from 'src/hooks/suite';
@@ -57,7 +57,7 @@ export const FirmwareProgressBar = () => {
             <StyledProgressBar value={progress} />
             <Percentage>
                 {isDone ? (
-                    <IconLegacy icon="CHECK" color={theme.legacy.TYPE_GREEN} size={24} />
+                    <Icon name="check" color={theme.legacy.TYPE_GREEN} size={24} />
                 ) : (
                     `${progress} %`
                 )}

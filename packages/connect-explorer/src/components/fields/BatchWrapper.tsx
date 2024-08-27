@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { IconLegacy, Card } from '@trezor/components';
+import { Card, Icon } from '@trezor/components';
 
 interface BatchWrapperProps {
     children: ReactNode;
@@ -23,7 +23,7 @@ const Fields = styled.div`
 
 export const BatchWrapper = ({ children, onRemove }: BatchWrapperProps) => (
     <Wrapper paddingType="small">
-        <IconLegacy icon="CROSS" onClick={() => onRemove()} size={20} />
+        <Icon name="close" onClick={() => onRemove()} size={20} />
         <Fields>{children}</Fields>
     </Wrapper>
 );

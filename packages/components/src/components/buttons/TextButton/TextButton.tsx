@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { ButtonProps } from '../Button/Button';
 import { ButtonSize, getIconSize, IconAlignment } from '../buttonStyleUtils';
-import { IconLegacy } from '../../Icon/IconLegacy';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
+import { Icon } from '../../Icon/Icon';
 
 const TextButtonContainer = styled.button<{
     $size: ButtonSize;
@@ -68,7 +68,7 @@ export const TextButton = ({
     children,
     ...rest
 }: TextButtonProps) => {
-    const IconComponent = icon ? <IconLegacy icon={icon} size={getIconSize(size)} /> : null;
+    const IconComponent = icon ? <Icon name={icon} size={getIconSize(size)} /> : null;
 
     const Loader = <Spinner size={getIconSize(size)} />;
 

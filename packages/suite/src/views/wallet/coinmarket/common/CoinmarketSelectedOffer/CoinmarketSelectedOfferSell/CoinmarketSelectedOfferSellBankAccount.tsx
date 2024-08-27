@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { QuestionTooltip, Translation } from 'src/components/suite';
-import { Button, Select, IconLegacy } from '@trezor/components';
+import { Button, Select, Icon } from '@trezor/components';
 import { BankAccount } from 'invity-api';
 import { formatIban } from 'src/utils/wallet/coinmarket/sellUtils';
 import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
@@ -120,7 +120,7 @@ const StyledButton = styled(Button)`
     min-width: 200px;
 `;
 
-const StyledIcon = styled(IconLegacy)`
+const StyledIcon = styled(Icon)`
     margin-right: ${spacingsPx.xxxs};
 `;
 
@@ -151,7 +151,7 @@ const CoinmarketSelectedOfferSellBankAccount = () => {
                     <Right>
                         <RegisterAnother
                             variant="tertiary"
-                            icon="PLUS"
+                            icon="plus"
                             data-testid="add-output"
                             onClick={addBankAccount}
                         >
@@ -182,7 +182,7 @@ const CoinmarketSelectedOfferSellBankAccount = () => {
                                             <StyledIcon
                                                 color={theme.legacy.TYPE_GREEN}
                                                 size={15}
-                                                icon="CHECK"
+                                                name="check"
                                             />
                                             <Translation id="TR_SELL_BANK_ACCOUNT_VERIFIED" />
                                         </AccountVerified>

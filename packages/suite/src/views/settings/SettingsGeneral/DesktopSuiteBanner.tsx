@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
-import { Button, H2, IconLegacy, Image, Paragraph, motionEasing } from '@trezor/components';
+import { Button, H2, Icon, Image, Paragraph, motionEasing } from '@trezor/components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { SUITE_URL } from '@trezor/urls';
 
@@ -22,7 +22,7 @@ const Container = styled(motion.div)`
     overflow: hidden;
 `;
 
-const CloseButton = styled(IconLegacy)`
+const CloseButton = styled(Icon)`
     position: absolute;
     right: 16px;
     top: 16px;
@@ -133,7 +133,7 @@ export const DesktopSuiteBanner = () => {
                 >
                     <CloseButton
                         size={18}
-                        icon="CROSS"
+                        name="close"
                         onClick={handleClose}
                         data-testid="@banner/install-desktop-suite/close-button"
                     />
@@ -165,9 +165,9 @@ export const DesktopSuiteBanner = () => {
                         </TrezorLink>
 
                         <OSIcons>
-                            <IconLegacy icon="OS_MAC" />
-                            <IconLegacy icon="OS_LINUX" />
-                            <IconLegacy icon="OS_WINDOWS" size={20} />
+                            <Icon name="osMac" />
+                            <Icon name="osLinux" />
+                            <Icon name="osWindows" size={20} />
                         </OSIcons>
                     </Content>
                 </Container>

@@ -70,7 +70,7 @@ export const CoinmarketSkeleton = () => {
                     <StyledSkeletonRectangle height="48px" width="100%" animate={shouldAnimate} />
                 </Left>
                 <Middle $responsiveSize="LG">
-                    <StyledIcon $responsiveSize="LG" icon="TRANSFER" size={16} />
+                    <StyledIcon $responsiveSize="LG" name="transfer" size={16} />
                 </Middle>
                 <Right>
                     <StyledSkeletonRectangle height="48px" width="100%" animate={shouldAnimate} />

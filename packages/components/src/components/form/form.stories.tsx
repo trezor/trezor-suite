@@ -97,7 +97,7 @@ export const AllForms: StoryObj = {
                     data-testid="input-warning-label"
                     bottomText="bottom text"
                     labelHoverRight={
-                        <Button variant="tertiary" icon="QR" onClick={() => {}}>
+                        <Button variant="tertiary" icon="qrCode" onClick={() => {}}>
                             Scan QR code
                         </Button>
                     }

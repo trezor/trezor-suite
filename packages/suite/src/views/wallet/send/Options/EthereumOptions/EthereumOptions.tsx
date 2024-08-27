@@ -50,7 +50,7 @@ export const EthereumOptions = () => {
                         <StyledButton
                             variant="tertiary"
                             size="small"
-                            icon="DATA"
+                            icon="database"
                             data-testid="send/open-ethereum-data"
                             onClick={toggleData}
                         >
@@ -63,7 +63,7 @@ export const EthereumOptions = () => {
                     <StyledButton
                         variant="tertiary"
                         size="small"
-                        icon="BROADCAST"
+                        icon="broadcast"
                         data-testid="send/broadcast"
                         onClick={toggleBroadcast}
                     >

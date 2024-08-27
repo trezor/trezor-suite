@@ -114,7 +114,7 @@ export const BitcoinOptions = () => {
                             <StyledButton
                                 variant="tertiary"
                                 size="small"
-                                icon="CALENDAR"
+                                icon="calendar"
                                 onClick={() => {
                                     // open additional form
                                     toggleOption('bitcoinLockTime');
@@ -140,7 +140,7 @@ export const BitcoinOptions = () => {
                         <StyledButton
                             variant="tertiary"
                             size="small"
-                            icon="BROADCAST"
+                            icon="broadcast"
                             onClick={() => {
                                 toggleOption('broadcast');
                                 composeTransaction();
@@ -166,7 +166,7 @@ export const BitcoinOptions = () => {
                             <StyledButton
                                 variant="tertiary"
                                 size="small"
-                                icon="COIN_CONTROL"
+                                icon="coinControl"
                                 onClick={toggleUtxoSelection}
                                 data-testid="coin-control-button"
                             >
@@ -183,7 +183,7 @@ export const BitcoinOptions = () => {
                     <AddRecipientButton
                         variant="tertiary"
                         size="small"
-                        icon="PLUS"
+                        icon="plus"
                         data-testid="add-output"
                         onClick={addOutput}
                         isFullWidth

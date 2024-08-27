@@ -57,7 +57,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
             <TabSelection selectedTab={mode} setSelectedTab={setMode} />
             {mode === 'form' && <InputCSV onSubmit={onCsvResult} />}
             {mode === 'upload' && (
-                <DropZone accept=".csv,.txt,text/csv" icon="CSV" onSelect={onCsvSelect} />
+                <DropZone accept=".csv,.txt,text/csv" icon="csv" onSelect={onCsvSelect} />
             )}
             <DelimiterForm value={delimiter} onChange={setDelimiter} />
         </StyledModal>

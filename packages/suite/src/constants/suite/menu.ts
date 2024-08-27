@@ -1,13 +1,13 @@
 export const MAIN_MENU_ITEMS = [
     {
         translationId: 'TR_DASHBOARD',
-        icon: 'DASHBOARD',
+        icon: 'dashboard',
         route: 'suite-index',
         isDisabled: false,
     },
     {
         translationId: 'TR_WALLET',
-        icon: 'WALLET',
+        icon: 'standardWallet',
         route: 'wallet-index',
         isDisabled: false,
     },

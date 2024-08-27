@@ -1,4 +1,4 @@
-import { Button, IconLegacy } from '@trezor/components';
+import { Button, Icon } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import type { Deferred } from '@trezor/utils';
@@ -13,7 +13,7 @@ const TermsText = styled.div`
     padding-bottom: 20px;
 `;
 
-const StyledIcon = styled(IconLegacy)`
+const StyledIcon = styled(Icon)`
     border-radius: 50%;
     padding: 20px;
     display: flex;
@@ -126,7 +126,7 @@ export const CoinmarketTermsModal = ({
             }
         >
             <Flex>
-                <SecurityStyledIcon size={24} icon={`TREZOR_${device.features.internal_model}`} />
+                <SecurityStyledIcon size={24} name={`trezor${device.features.internal_model}`} />
 
                 <ContentWrapper>
                     <TermsHeader>
@@ -147,7 +147,7 @@ export const CoinmarketTermsModal = ({
                 </ContentWrapper>
             </Flex>
             <Flex>
-                <VerifiedPartnersStyledIcon size={24} icon="CHECK_ACTIVE" />
+                <VerifiedPartnersStyledIcon size={24} name="checkActive" />
 
                 <ContentWrapper>
                     <TermsHeader>
@@ -162,7 +162,7 @@ export const CoinmarketTermsModal = ({
                 </ContentWrapper>
             </Flex>
             <Flex>
-                <LegalStyledIcon size={24} icon="PENCIL" />
+                <LegalStyledIcon size={24} name="pencil" />
 
                 <ContentWrapper>
                     <TermsHeader>

@@ -200,7 +200,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     {isPendingTransaction && (
                         <UtxoTag
                             tooltipMessage={<Translation id="TR_IN_PENDING_TRANSACTION" />}
-                            icon="CLOCK"
+                            icon="clock"
                             iconColor={utxoTagIconColor}
                         />
                     )}
@@ -208,7 +208,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     {coinjoinUnavailableMessage && (
                         <UtxoTag
                             tooltipMessage={coinjoinUnavailableMessage}
-                            icon="BLOCKED"
+                            icon="blocked"
                             iconColor={utxoTagIconColor}
                         />
                     )}

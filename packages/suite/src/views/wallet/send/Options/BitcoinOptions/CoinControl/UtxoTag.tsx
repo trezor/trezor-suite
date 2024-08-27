@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
-import { IconLegacy, Tooltip, IconType } from '@trezor/components';
+import { Icon, Tooltip, IconName } from '@trezor/components';
 
 interface UtxoTagProps {
-    icon: IconType;
+    icon: IconName;
     iconColor: string;
     tooltipMessage: ReactNode;
 }
 
 export const UtxoTag = ({ icon, iconColor, tooltipMessage }: UtxoTagProps) => (
     <Tooltip content={tooltipMessage}>
-        <IconLegacy icon={icon} color={iconColor} size={16} />
+        <Icon name={icon} color={iconColor} size={16} />
     </Tooltip>
 );

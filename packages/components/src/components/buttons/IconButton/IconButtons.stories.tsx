@@ -17,7 +17,7 @@ export const IconButtons: StoryObj = {
             {variants.map(variant => (
                 <StoryColumn key={variant} minWidth={350} maxWidth={420}>
                     <IconButton
-                        icon="PALETTE"
+                        icon="palette"
                         variant={variant}
                         data-testid={`button-${variant}`}
                         onClick={() => {
@@ -25,7 +25,7 @@ export const IconButtons: StoryObj = {
                         }}
                     />
                     <IconButton
-                        icon="PALETTE"
+                        icon="palette"
                         variant={variant}
                         size="medium"
                         data-testid={`button-${variant}`}
@@ -35,7 +35,7 @@ export const IconButtons: StoryObj = {
                     />
 
                     <IconButton
-                        icon="PALETTE"
+                        icon="palette"
                         variant={variant}
                         size="small"
                         data-testid={`button-${variant}`}
@@ -47,7 +47,7 @@ export const IconButtons: StoryObj = {
                     <IconButton
                         variant={variant}
                         data-testid={`button-${variant}-icon`}
-                        icon="PALETTE"
+                        icon="palette"
                         label={<span>Label</span>}
                         onClick={() => {
                             console.log('click');
@@ -55,14 +55,14 @@ export const IconButtons: StoryObj = {
                     />
 
                     <IconButton
-                        icon="PALETTE"
+                        icon="palette"
                         variant={variant}
                         data-testid={`button-${variant}-loading`}
                         isLoading
                     />
 
                     <IconButton
-                        icon="PALETTE"
+                        icon="palette"
                         variant={variant}
                         isDisabled
                         data-testid={`button-${variant}-disabled`}
@@ -71,7 +71,7 @@ export const IconButtons: StoryObj = {
                         }}
                     />
                     <IconButton
-                        icon="PALETTE"
+                        icon="palette"
                         bottomLabel={<span>Bottom Label</span>}
                         variant={variant}
                         isDisabled

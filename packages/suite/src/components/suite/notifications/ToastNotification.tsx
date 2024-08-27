@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { Button, IconLegacy, variables } from '@trezor/components';
+import { Button, Icon, variables } from '@trezor/components';
 import { NotificationRenderer, NotificationViewProps, Translation } from 'src/components/suite';
 import { notificationsActions, NotificationEntry } from '@suite-common/toast-notifications';
 import { useDispatch } from 'src/hooks/suite';
@@ -44,7 +44,7 @@ const StyledButton = styled(Button)<{ $action: NotificationViewProps['action'] }
         `};
 `;
 
-const StyledCancelIcon = styled(IconLegacy)`
+const StyledCancelIcon = styled(Icon)`
     margin-left: 18px;
 `;
 
@@ -100,7 +100,7 @@ const ToastNotification = ({
     return (
         <Wrapper data-testid={dataTestBase} $variant={variant} $isTall={isTall} ref={wrapperRef}>
             {defaultIcon && typeof defaultIcon === 'string' ? (
-                <IconLegacy icon={defaultIcon} size={24} color={getVariantColor(variant)} />
+                <Icon name={defaultIcon} size={24} color={getVariantColor(variant)} />
             ) : (
                 defaultIcon
             )}
@@ -117,7 +117,7 @@ const ToastNotification = ({
             {cancelable && (
                 <StyledCancelIcon
                     size={16}
-                    icon="CROSS"
+                    name="close"
                     hoverColor={theme.legacy.TYPE_LIGHTER_GREY}
                     onClick={handleCancelClick}
                     data-testid={`${dataTestBase}/close`}

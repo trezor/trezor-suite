@@ -8,7 +8,7 @@ import { TokenList } from '../../common/TokensList/TokenList';
 import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { H3, IconLegacy } from '@trezor/components';
+import { H3, Icon } from '@trezor/components';
 import { Text, Row } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
 
@@ -77,7 +77,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                             gap={spacings.xxs}
                             margin={{ bottom: spacings.xl, top: spacings.xxs }}
                         >
-                            <IconLegacy variant="tertiary" size={16} icon="WARNING" />
+                            <Icon variant="tertiary" size={16} name="warningTriangle" />
                             <Text variant="tertiary" typographyStyle="hint">
                                 <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />
                             </Text>

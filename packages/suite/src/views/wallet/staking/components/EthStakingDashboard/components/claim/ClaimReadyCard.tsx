@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { Button, IconLegacy, Paragraph, Tooltip, variables } from '@trezor/components';
+import { Button, Icon, Paragraph, Tooltip, variables } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -22,7 +22,7 @@ const StyledCard = styled.div`
     overflow: hidden;
 `;
 
-const StyledIcon = styled(IconLegacy)`
+const StyledIcon = styled(Icon)`
     transform: rotate(20deg);
 `;
 
@@ -84,23 +84,23 @@ export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
     return (
         <StyledCard>
             <BgImgWrapper $top={30} $left={-16}>
-                <StyledIcon icon="PIGGY_BANK_FILLED" size={31} color={theme.iconPrimaryDefault} />
+                <StyledIcon name="piggyBankFilled" size={31} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
             <BgImgWrapper $top={103} $left={126}>
-                <IconLegacy icon="CURRENCY_ETH" size={29} color={theme.iconPrimaryDefault} />
+                <Icon name="currencyEth" size={29} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
             <BgImgWrapper $top={103} $left={273}>
-                <IconLegacy icon="MONEY" size={25} color={theme.iconPrimaryDefault} />
+                <Icon name="money" size={25} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
             <BgImgWrapper $top={-3} $left={340}>
-                <IconLegacy icon="COIN_FILLED" size={31} color={theme.iconPrimaryDefault} />
+                <Icon name="coinFilled" size={31} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
 
             <Flex>
                 <InfoWrapper>
                     <div>
                         <InfoHeading>
-                            <IconLegacy icon="CHECKS" size={16} />
+                            <Icon name="confirmation" size={16} />
                             <Translation id="TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM" />
                         </InfoHeading>
 
@@ -118,7 +118,7 @@ export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
                     </div>
                     <div>
                         <InfoHeading>
-                            <IconLegacy icon="LIGHTNING" size={16} />
+                            <Icon name="lightning" size={16} />
                             <Translation id="TR_STAKE_TIME_TO_CLAIM" />
                         </InfoHeading>
 
@@ -132,7 +132,7 @@ export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
                     <Button
                         onClick={openClaimModal}
                         isDisabled={isClaimingDisabled}
-                        icon={isClaimingDisabled ? 'INFO' : undefined}
+                        icon={isClaimingDisabled ? 'info' : undefined}
                     >
                         <Translation id="TR_STAKE_CLAIM" />
                     </Button>

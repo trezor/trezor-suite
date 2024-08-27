@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { IconLegacy } from '@trezor/components';
+import { Icon } from '@trezor/components';
 
 const IndicatorWrapper = styled.div`
     width: 25px;
@@ -31,9 +31,7 @@ export const TransactionReviewStepIndicator = ({
     return (
         <IndicatorWrapper>
             {!state && <Dot $color={theme.legacy.STROKE_GREY} />}
-            {state === 'success' && (
-                <IconLegacy color={theme.legacy.BG_GREEN} icon="CHECK" size={size} />
-            )}
+            {state === 'success' && <Icon color={theme.legacy.BG_GREEN} icon="check" size={size} />}
             {state === 'active' && <Dot $color={theme.legacy.TYPE_ORANGE} />}
         </IndicatorWrapper>
     );

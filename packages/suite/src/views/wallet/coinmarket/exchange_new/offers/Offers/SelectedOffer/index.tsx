@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Card, IconLegacy, variables, colors } from '@trezor/components';
+import { Card, Icon, variables, colors } from '@trezor/components';
 import VerifyAddress from './components/VerifyAddress';
 import SendTransaction from './components/SendTransaction';
 import { Translation } from 'src/components/suite';
@@ -93,10 +93,7 @@ const SelectedOffer = () => {
                     {selectedQuote.isDex ? (
                         <>
                             <MiddleNarrow>
-                                <IconLegacy
-                                    icon="ARROW_RIGHT"
-                                    color={colors.legacy.TYPE_LIGHT_GREY}
-                                />
+                                <Icon name="chevronRight" color={colors.legacy.TYPE_LIGHT_GREY} />
                             </MiddleNarrow>
                             <Left>
                                 <Step active={exchangeStep === 'SEND_APPROVAL_TRANSACTION'}>
@@ -104,15 +101,12 @@ const SelectedOffer = () => {
                                 </Step>
                             </Left>
                             <MiddleNarrow>
-                                <IconLegacy
-                                    icon="ARROW_RIGHT"
-                                    color={colors.legacy.TYPE_LIGHT_GREY}
-                                />
+                                <Icon name="chevronRight" color={colors.legacy.TYPE_LIGHT_GREY} />
                             </MiddleNarrow>
                         </>
                     ) : (
                         <Middle>
-                            <IconLegacy icon="ARROW_RIGHT" color={colors.legacy.TYPE_LIGHT_GREY} />
+                            <Icon name="chevronRight" color={colors.legacy.TYPE_LIGHT_GREY} />
                         </Middle>
                     )}
                     <Right>

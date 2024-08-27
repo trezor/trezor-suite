@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
-import { IconLegacy, variables } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openNode } from 'src/actions/suite/guideActions';
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
@@ -34,7 +34,7 @@ const PageNodeButton = styled(NodeButton)`
     text-align: left;
 `;
 
-const PageNodeButtonIcon = styled(IconLegacy)`
+const PageNodeButtonIcon = styled(Icon)`
     margin: 0 18px 0 0;
 `;
 
@@ -97,7 +97,7 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
     if (node.type === 'page') {
         return (
             <PageNodeButton data-testid={`@guide/node${node.id}`} onClick={navigateToNode}>
-                <PageNodeButtonIcon icon="ARTICLE" size={20} color={theme.legacy.TYPE_LIGHT_GREY} />
+                <PageNodeButtonIcon name="article" size={20} color={theme.legacy.TYPE_LIGHT_GREY} />
                 {label}
             </PageNodeButton>
         );

@@ -42,7 +42,7 @@ export const WebUsbIconButton = ({
         <Tooltip content={<Translation id={translationId} />}>
             <IconButton
                 {...rest}
-                icon="SEARCH"
+                icon="search"
                 variant={variant}
                 size={size}
                 onClick={handleClick}

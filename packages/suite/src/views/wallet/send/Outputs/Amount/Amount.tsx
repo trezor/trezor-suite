@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled, { useTheme } from 'styled-components';
 
-import { IconLegacy, Warning, variables } from '@trezor/components';
+import { Icon, Warning, variables } from '@trezor/components';
 import { breakpointMediaQueries } from '@trezor/styles';
 import { spacingsPx } from '@trezor/theme';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
@@ -72,7 +72,7 @@ const TokenBalanceValue = styled.span`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const StyledTransferIcon = styled(IconLegacy)`
+const StyledTransferIcon = styled(Icon)`
     margin: 0 20px 46px;
     align-self: end;
 
@@ -290,7 +290,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                             rate && (
                                 <>
                                     <StyledTransferIcon
-                                        icon="TRANSFER"
+                                        name="transfer"
                                         size={16}
                                         color={theme.legacy.TYPE_LIGHT_GREY}
                                     />

@@ -34,7 +34,7 @@ const DeviceStatusVisible = ({ device, connected, forceConnectionInfo }: DeviceS
     return (
         <DeviceConnectionText
             variant={connected ? 'primary' : 'tertiary'}
-            icon={connected ? 'LINK' : 'UNLINK'}
+            icon={connected ? 'link' : 'unlink'}
             data-testid={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
         >
             {walletText && !forceConnectionInfo ? (
@@ -61,7 +61,7 @@ export const DeviceStatusText = ({
         return (
             <DeviceConnectionText
                 variant="warning"
-                icon="REFRESH"
+                icon="refresh"
                 data-testid={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
                 isAction
             >

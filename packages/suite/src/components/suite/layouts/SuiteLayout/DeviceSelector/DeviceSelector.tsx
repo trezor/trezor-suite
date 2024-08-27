@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import { IconLegacy } from '@trezor/components';
 import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
 import type { Timeout } from '@trezor/type-utils';
 import { SHAKE } from 'src/support/suite/styles/animations';
@@ -10,6 +9,7 @@ import { borders, spacingsPx } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
+import { Icon } from '@trezor/components';
 
 const CaretContainer = styled.div`
     background: transparent;
@@ -114,7 +114,7 @@ export const DeviceSelector = () => {
 
                     {selectedDevice && selectedDevice.state && (
                         <CaretContainer>
-                            <IconLegacy size={20} icon="CARET_CIRCLE_DOWN" />
+                            <Icon size={20} name="caretCircleDown" />
                         </CaretContainer>
                     )}
                 </InnerContainer>

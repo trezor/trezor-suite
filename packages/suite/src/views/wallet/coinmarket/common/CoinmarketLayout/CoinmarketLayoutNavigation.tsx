@@ -5,8 +5,7 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { NavigationItem } from '../../../../../components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
-import { IconName } from '@suite-common/icons';
-import { variables } from '@trezor/components';
+import { variables, IconName } from '@trezor/components';
 
 const List = styled.div`
     display: flex;

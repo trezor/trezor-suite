@@ -4,13 +4,13 @@ import styled, { css, useTheme } from 'styled-components';
 import { useEvent } from 'react-use';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { IconLegacy, IconType } from '../../Icon/IconLegacy';
 import { Stepper } from '../../loaders/Stepper/Stepper';
 import { IconButton } from '../../buttons/IconButton/IconButton';
 import { H3 } from '../../typography/Heading/Heading';
 import { ButtonSize } from '../../buttons/buttonStyleUtils';
 import { ElevationContext } from '../../ElevationContext/ElevationContext';
 import { useScrollShadow } from '../../../utils/useScrollShadow';
+import { Icon, IconName } from '../../Icon/Icon';
 
 const CLOSE_ICON_SIZE = spacings.xxl;
 const CLOSE_ICON_MARGIN = 16;
@@ -54,7 +54,7 @@ const Header = styled.header<HeaderProps>`
 `;
 
 const BACK_ICON_WIDTH = spacingsPx.xxxl;
-const BackIcon = styled(IconLegacy)`
+const BackIcon = styled(Icon)`
     position: relative;
     width: ${BACK_ICON_WIDTH};
     padding-right: ${spacingsPx.lg};
@@ -181,7 +181,7 @@ interface ModalProps {
     preheading?: ReactNode;
     subheading?: ReactNode;
     modalPrompt?: ReactNode;
-    headerIcon?: IconType;
+    headerIcon?: IconName;
     headingSize?: HeadingSize;
     isHeadingCentered?: boolean;
     description?: ReactNode;
@@ -260,7 +260,7 @@ const Modal = ({
                     <Header $isBottomBorderShown={!!heading}>
                         {onBackClick && (
                             <BackIcon
-                                icon="ARROW_LEFT"
+                                name="chevronLeft"
                                 size={24}
                                 color={theme.iconSubdued}
                                 hoverColor={theme.iconOnTertiary}
@@ -282,8 +282,8 @@ const Modal = ({
 
                                 <Heading $headingSize={headingSize} $isWithIcon={!!headerIcon}>
                                     {headerIcon && (
-                                        <IconLegacy
-                                            icon={headerIcon}
+                                        <Icon
+                                            name={headerIcon}
                                             size={16}
                                             color={theme.iconDefault}
                                         />
@@ -306,7 +306,7 @@ const Modal = ({
                                 {isCancelable && (
                                     <IconButton
                                         variant="tertiary"
-                                        icon="CROSS"
+                                        icon="close"
                                         data-testid="@modal/close-button"
                                         onClick={onCancel}
                                         size={HEADING_SIZES[headingSize].buttonSize}

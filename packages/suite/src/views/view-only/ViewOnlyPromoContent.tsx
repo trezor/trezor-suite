@@ -2,7 +2,7 @@ import {
     Button,
     Card,
     ElevationContext,
-    IconLegacy,
+    Icon,
     Image,
     Text,
     useElevation,
@@ -171,7 +171,7 @@ const Top = () => {
                             />
 
                             <DeviceDetail label="My Trezor">
-                                <DeviceConnectionText icon="LINK" variant="primary">
+                                <DeviceConnectionText icon="link" variant="primary">
                                     <Translation id="TR_CONNECTED" />
                                 </DeviceConnectionText>
                             </DeviceDetail>
@@ -280,7 +280,7 @@ export const ViewOnlyPromoContent = () => {
 
                 <Callout>
                     <Circle>
-                        <IconLegacy icon="LINK" size={spacings.xl} />
+                        <Icon name="link" size={spacings.xl} />
                     </Circle>
                     <Text variant="tertiary">
                         <Translation

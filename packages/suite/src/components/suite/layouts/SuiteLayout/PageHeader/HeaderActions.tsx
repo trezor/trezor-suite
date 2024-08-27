@@ -6,7 +6,7 @@ import {
     Dropdown,
     DropdownMenuItemProps,
     IconButton,
-    IconLegacyProps,
+    IconName,
 } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -25,7 +25,7 @@ const Container = styled.div`
 
 type ActionItem = {
     id: string;
-    icon?: IconLegacyProps['icon'];
+    icon?: IconName;
     callback: () => void;
     title: JSX.Element;
     'data-testid'?: string;
@@ -61,7 +61,7 @@ export const HeaderActions = () => {
                 goToWithAnalytics('wallet-sign-verify', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
-            icon: 'SIGNATURE',
+            icon: 'pencilUnderscored',
             // show dots when acc missing as they are hidden only in case of XRP
             isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
         },
@@ -103,7 +103,7 @@ export const HeaderActions = () => {
             {isCoinmarketAvailable && (
                 <AppNavigationTooltip>
                     <ButtonComponent
-                        icon="REFRESH"
+                        icon="refresh"
                         onClick={() => {
                             goToWithAnalytics('wallet-coinmarket-buy', { preserveParams: true });
                         }}
@@ -121,7 +121,7 @@ export const HeaderActions = () => {
                 <ButtonGroup size="small" isDisabled={isAccountLoading}>
                     <ButtonComponent
                         key="wallet-send"
-                        icon="SEND"
+                        icon="send"
                         onClick={() => {
                             goToWithAnalytics('wallet-send', { preserveParams: true });
                         }}
@@ -133,7 +133,7 @@ export const HeaderActions = () => {
 
                     <ButtonComponent
                         key="wallet-receive"
-                        icon="RECEIVE"
+                        icon="receive"
                         onClick={() => {
                             goToWithAnalytics('wallet-receive', { preserveParams: true });
                         }}

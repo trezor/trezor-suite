@@ -69,11 +69,11 @@ export const Warning: StoryObj<WarningProps> = {
                         <WarningComponent.Button isSubtle>Button 2</WarningComponent.Button>
                     </Row>
                 ),
-                iconButton: <WarningComponent.IconButton icon="CROSS" />,
+                iconButton: <WarningComponent.IconButton icon="close" />,
                 iconButtons: (
                     <Row gap={8}>
-                        <WarningComponent.IconButton icon="CROSS" />
-                        <WarningComponent.IconButton icon="ASTERISK" isSubtle />
+                        <WarningComponent.IconButton icon="close" />
+                        <WarningComponent.IconButton icon="asterisk" isSubtle />
                     </Row>
                 ),
             },

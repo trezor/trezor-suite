@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { darken } from 'polished';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
-import { Button, IconLegacy, variables, Warning } from '@trezor/components';
+import { Button, Icon, variables, Warning } from '@trezor/components';
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -10,7 +10,7 @@ const Container = styled.div`
     margin-bottom: 16px;
 `;
 
-const InfoIcon = styled(IconLegacy)`
+const InfoIcon = styled(Icon)`
     width: 18px;
     height: 18px;
     margin-right: 6px;
@@ -76,7 +76,7 @@ export const CoinjoinReceiveWarning = () => {
             >
                 <Text>
                     <Heading>
-                        <InfoIcon icon="INFO" size={14} color={theme.legacy.TYPE_DARK_ORANGE} />
+                        <InfoIcon name="info" size={14} color={theme.legacy.TYPE_DARK_ORANGE} />
                         <Translation id="TR_COINJOIN_RECEIVE_WARNING_TITLE" />
                     </Heading>
 

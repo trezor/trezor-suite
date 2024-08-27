@@ -36,10 +36,10 @@ export const AllButtons: StoryFn = () => (
                     <Button {...commonProps} size="small">
                         {capitalizeFirstLetter(variant)} small
                     </Button>
-                    <Button {...commonProps} icon="PALETTE">
+                    <Button {...commonProps} icon="palette">
                         {capitalizeFirstLetter(variant)} icon
                     </Button>
-                    <Button {...commonProps} iconAlignment="right" icon="PLUS">
+                    <Button {...commonProps} iconAlignment="right" icon="plus">
                         {capitalizeFirstLetter(variant)} icon right
                     </Button>
                     <Button {...commonProps} isLoading>
@@ -48,7 +48,7 @@ export const AllButtons: StoryFn = () => (
                     <Button {...commonProps} isFullWidth>
                         {capitalizeFirstLetter(variant)} full width
                     </Button>
-                    <Button {...commonProps} isSubtle icon="PALETTE">
+                    <Button {...commonProps} isSubtle icon="palette">
                         {capitalizeFirstLetter(variant)} subtle
                     </Button>
                     <Button {...commonProps} isDisabled>

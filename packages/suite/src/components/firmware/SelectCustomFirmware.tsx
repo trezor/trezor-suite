@@ -70,7 +70,7 @@ export const SelectCustomFirmware = ({
                     <Button
                         size="tiny"
                         variant="tertiary"
-                        icon="EXTERNAL_LINK"
+                        icon="externalLink"
                         iconAlignment="right"
                     >
                         github.com
@@ -82,7 +82,7 @@ export const SelectCustomFirmware = ({
                 number="2"
                 title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_UPLOAD" />}
             >
-                <StyledDropZone accept=".bin" icon="BINARY" onSelect={onFirmwareUpload} />
+                <StyledDropZone accept=".bin" icon="binary" onSelect={onFirmwareUpload} />
             </InstructionStep>
 
             <InstallButton variant="primary" isDisabled={!isUploaded} onClick={install}>

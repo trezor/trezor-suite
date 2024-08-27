@@ -2,8 +2,7 @@ import { useState, Ref, ReactNode, ReactElement, InputHTMLAttributes } from 'rea
 import styled, { useTheme } from 'styled-components';
 import { useMeasure } from 'react-use';
 import { spacingsPx, spacings, typography } from '@trezor/theme';
-
-import { IconLegacy } from '../../Icon/IconLegacy';
+import { Icon, IconName } from '../../Icon/Icon';
 import {
     baseInputStyle,
     INPUT_HEIGHTS,
@@ -166,12 +165,12 @@ const Input = ({
                         {!hasShowClearButton && innerAddon}
 
                         {hasShowClearButton && (
-                            <IconLegacy
-                                icon="CANCEL"
+                            <Icon
+                                name="cancel"
                                 size={16}
                                 onClick={onClear}
                                 color={theme.legacy.TYPE_DARK_GREY}
-                                useCursorPointer
+                                cursorPointer
                             />
                         )}
                     </InputAddon>

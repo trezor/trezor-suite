@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { variables, IconLegacy } from '@trezor/components';
+import { variables, Icon } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import {
     FormattedCryptoAmount,
@@ -151,7 +151,7 @@ export const TransactionHeading = ({
                                         a: chunks => (
                                             <HelpLink
                                                 href={HELP_CENTER_ZERO_VALUE_ATTACKS}
-                                                icon="EXTERNAL_LINK"
+                                                name="externalLink"
                                                 type="hint"
                                             >
                                                 {chunks}
@@ -160,7 +160,7 @@ export const TransactionHeading = ({
                                     }}
                                 />
                             }
-                            icon="WARNING"
+                            icon="warning"
                         />
                     )}
                     <BlurWrapper $isBlurred={isPhishingTransaction}>
@@ -177,10 +177,10 @@ export const TransactionHeading = ({
                     $show={txItemIsHovered}
                     $animate={nestedItemIsHovered || headingIsHovered}
                 >
-                    <IconLegacy
+                    <Icon
                         size={nestedItemIsHovered || headingIsHovered ? 18 : 16}
                         color={theme.legacy.TYPE_DARK_GREY}
-                        icon="ARROW_RIGHT"
+                        name="chevronRight"
                     />
                 </ChevronIconWrapper>
             </Wrapper>

@@ -1,19 +1,19 @@
 import styled from 'styled-components';
 
-import { IconLegacy } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 
 import { ResultRow, parseTextToPagesAndLines } from './parseTextToPagesAndLines';
 import { DeviceDisplayText } from './DeviceDisplayText';
 import { DisplayPageSeparator } from './DisplayPageSeparator';
 import { handleOnCopy } from 'src/utils/suite/deviceDisplay';
+import { Icon, IconName } from '@trezor/components';
 
-const StyledNextIcon = styled(IconLegacy)<{ $isPixelType: boolean }>`
+const StyledNextIcon = styled(Icon)<{ $isPixelType: boolean }>`
     display: inline-block;
     margin-left: ${({ $isPixelType }) => ($isPixelType ? '12px' : '24px')};
 `;
 
-const StyledContinuesIcon = styled(IconLegacy)<{ $isPixelType: boolean }>`
+const StyledContinuesIcon = styled(Icon)<{ $isPixelType: boolean }>`
     display: inline-block;
     margin-right: ${({ $isPixelType }) => ($isPixelType ? '12px' : '24px')};
 `;
@@ -50,8 +50,9 @@ const Row = ({
     isPrevPageIconOnDevice,
     row,
 }: PageProps) => {
-    const iconNextName = isPixelType ? 'ADDRESS_PIXEL_NEXT' : 'ADDRESS_NEXT';
-    const iconContinuesName = isPixelType ? 'ADDRESS_PIXEL_CONTINUES' : 'ADDRESS_CONTINUES';
+    const iconNextName: IconName = isPixelType ? 'addressPixelNext' : 'addressNext';
+    const iconContinuesName: IconName = isPixelType ? 'addressPixelContinues' : 'addressContinues';
+
     const iconConfig = {
         size: isPixelType ? 10 : 20,
         color: isPixelType ? '#ffffff' : '#959596',
@@ -66,12 +67,12 @@ const Row = ({
                 <StyledContinuesIcon
                     {...iconConfig}
                     $isPixelType={isPixelType}
-                    icon={iconContinuesName}
+                    name={iconContinuesName}
                 />
             )}
             <DeviceDisplayText $isPixelType={isPixelType}>{row.text}</DeviceDisplayText>
             {showNextPageArrow && (
-                <StyledNextIcon {...iconConfig} $isPixelType={isPixelType} icon={iconNextName} />
+                <StyledNextIcon {...iconConfig} $isPixelType={isPixelType} name={iconNextName} />
             )}
         </RowContainer>
     );

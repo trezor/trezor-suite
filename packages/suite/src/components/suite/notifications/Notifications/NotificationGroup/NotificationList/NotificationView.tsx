@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import type { NotificationEntry } from '@suite-common/toast-notifications';
-import { Button, IconLegacy, ButtonProps, IconLegacyProps, Paragraph } from '@trezor/components';
+import { Button, Icon, ButtonProps, Paragraph, IconName } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { getNotificationIcon } from 'src/utils/suite/notification';
 import { useLayoutSize } from 'src/hooks/suite';
@@ -39,14 +39,14 @@ const ActionButton = styled(Button)`
 `;
 
 const SeenWrapper = styled.span<{ $seen?: boolean }>`
-    margin-bottom: '4px';
+    margin-bottom: 4px;
     opacity: ${({ $seen }) => ($seen ? 0.7 : 1)};
 `;
 
 export interface NotificationViewProps {
     notification: NotificationEntry;
     variant: ToastNotificationVariant;
-    icon?: IconLegacyProps['icon'] | JSX.Element;
+    icon?: IconName | JSX.Element;
     message: ExtendedMessageDescriptor['id'];
     messageValues: ExtendedMessageDescriptor['values'];
     action?: {
@@ -74,7 +74,7 @@ export const NotificationView = ({
             {defaultIcon && (
                 <SeenWrapper $seen={seen}>
                     {typeof defaultIcon === 'string' ? (
-                        <IconLegacy size={20} icon={defaultIcon} />
+                        <Icon size={20} name={defaultIcon} />
                     ) : (
                         defaultIcon
                     )}
@@ -91,7 +91,7 @@ export const NotificationView = ({
 
             {action?.onClick &&
                 (isMobileLayout ? (
-                    <IconLegacy icon="ARROW_RIGHT" onClick={action.onClick} size={18} />
+                    <Icon name="chevronRight" onClick={action.onClick} size={18} />
                 ) : (
                     <ActionButton variant="tertiary" size="tiny" onClick={action.onClick}>
                         <Translation id={action.label} />

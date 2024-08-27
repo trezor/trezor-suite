@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { QuestionTooltip, Translation } from 'src/components/suite';
-import { variables, Button, Select, IconLegacy } from '@trezor/components';
+import { variables, Button, Select, Icon } from '@trezor/components';
 import { BankAccount } from 'invity-api';
 import { formatIban } from 'src/utils/wallet/coinmarket/sellUtils';
 import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
@@ -105,10 +105,6 @@ const StyledButton = styled(Button)`
     min-width: 200px;
 `;
 
-const StyledIcon = styled(IconLegacy)`
-    margin-right: 3px;
-`;
-
 export const SelectBankAccount = () => {
     const theme = useTheme();
     const { callInProgress, confirmTrade, addBankAccount, selectedQuote } =
@@ -135,7 +131,7 @@ export const SelectBankAccount = () => {
                     <Right>
                         <RegisterAnother
                             variant="tertiary"
-                            icon="PLUS"
+                            icon="plus"
                             data-testid="add-output"
                             onClick={addBankAccount}
                         >
@@ -160,10 +156,11 @@ export const SelectBankAccount = () => {
                                 </AccountInfo>
                                 {option.verified ? (
                                     <AccountVerified>
-                                        <StyledIcon
+                                        <Icon
                                             color={theme.legacy.TYPE_GREEN}
                                             size={15}
-                                            icon="CHECK"
+                                            name="check"
+                                            margin={{ right: 4 }}
                                         />
                                         <Translation id="TR_SELL_BANK_ACCOUNT_VERIFIED" />
                                     </AccountVerified>

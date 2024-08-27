@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { Card, Textarea, Button, Tooltip, H3, IconButton } from '@trezor/components';
+import { Card, Textarea, Button, Tooltip, H3, Icon } from '@trezor/components';
 import { sendFormActions, pushSendFormRawTransactionThunk } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
@@ -15,7 +15,7 @@ const StyledCard = styled(Card)`
     position: relative;
 `;
 
-const CloseIcon = styled(IconButton)`
+const CloseIcon = styled(Icon)`
     position: absolute;
     right: ${spacingsPx.md};
     top: ${spacingsPx.md};
@@ -106,7 +106,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
                 </Tooltip>
             </H3>
 
-            <CloseIcon variant="tertiary" size="small" icon="CROSS" onClick={cancel} />
+            <CloseIcon variant="tertiary" size="small" name="close" onClick={cancel} />
 
             <StyledTextarea
                 inputState={inputState}

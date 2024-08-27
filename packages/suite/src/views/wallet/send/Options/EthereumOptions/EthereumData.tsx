@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { Textarea, IconLegacy } from '@trezor/components';
+import { Textarea, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
@@ -119,9 +119,9 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
                 maxLength={formInputsMaxLength.ethData}
                 bottomText={hexError?.message || null}
                 labelRight={
-                    <IconLegacy
+                    <Icon
                         size={20}
-                        icon="CROSS"
+                        icon="close"
                         data-testid="send/close-ethereum-data"
                         onClick={handleClose}
                     />

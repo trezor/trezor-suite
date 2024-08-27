@@ -1,5 +1,5 @@
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { IconLegacy, Link } from '@trezor/components';
+import { Icon, Link } from '@trezor/components';
 import { useState } from 'react';
 import { copyToClipboard } from '@trezor/dom-utils';
 import styled, { css, useTheme } from 'styled-components';
@@ -111,8 +111,8 @@ export const IOAddress = ({
                 )}
                 {shouldAllowCopy ? (
                     <IconWrapper onClick={copy}>
-                        <IconLegacy
-                            icon={isClicked ? 'CHECK' : 'COPY'}
+                        <Icon
+                            name={isClicked ? 'check' : 'copy'}
                             size={12}
                             color={theme.iconOnPrimary}
                         />
@@ -125,11 +125,7 @@ export const IOAddress = ({
                             variant="nostyle"
                             href={`${explorerUrl}${txAddress}${explorerUrlQueryString}`}
                         >
-                            <IconLegacy
-                                icon="EXTERNAL_LINK"
-                                size={12}
-                                color={theme.iconOnPrimary}
-                            />
+                            <Icon name="externalLink" size={12} color={theme.iconOnPrimary} />
                         </Link>
                     </IconWrapper>
                 ) : null}

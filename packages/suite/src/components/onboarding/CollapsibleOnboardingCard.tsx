@@ -5,7 +5,7 @@ import { Elevation, borders, mapElevationToBackground, zIndices } from '@trezor/
 import {
     ElevationUp,
     H2,
-    IconLegacy,
+    Icon,
     Image,
     ImageType,
     Text,
@@ -167,7 +167,7 @@ const Tag = styled.div`
     letter-spacing: 0.2px;
 `;
 
-const CloseIcon = styled(IconLegacy)`
+const CloseIcon = styled(Icon)`
     position: absolute;
     top: 24px;
     right: 24px;
@@ -243,7 +243,7 @@ export const CollapsibleOnboardingCard = ({
                             transition={{ duration: 0.4, ease: motionEasing.transition }}
                         >
                             {expandable && expanded && (
-                                <CloseIcon icon="CROSS" size={22} onClick={onToggle} />
+                                <CloseIcon name="close" size={22} onClick={onToggle} />
                             )}
 
                             {heading && (
