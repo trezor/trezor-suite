@@ -37,7 +37,9 @@ export const disableAccountsThunk = createThunk(
             .filter(n => !enabledNetworks.includes(n.symbol) || n.isHidden)
             .map(n => n.symbol);
         // find accounts for disabled networks
-        const accountsToRemove = accounts.filter(a => disabledNetworks.includes(a.symbol));
+        const accountsToRemove = accounts.filter(
+            a => disabledNetworks.includes(a.symbol) && !a.imported,
+        );
 
         if (accountsToRemove.length) {
             dispatch(accountsActions.removeAccount(accountsToRemove));
