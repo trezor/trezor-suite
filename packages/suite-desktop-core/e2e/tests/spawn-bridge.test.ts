@@ -3,41 +3,78 @@ import { test as testPlaywright, expect as expectPlaywright } from '@playwright/
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { launchSuite, waitForDataTestSelector } from '../support/common';
+import { onDashboardPage } from '../support/pageActions/dashboardActions';
 
 testPlaywright.describe.serial('Bridge', () => {
-    testPlaywright.beforeAll(async () => {
-        // We make sure that bridge from trezor-user-env is stopped.
-        // So we properly test the electron app starting node-bridge module.
-        await TrezorUserEnvLink.connect();
-        await TrezorUserEnvLink.stopBridge();
-    });
+    const expectedBridgeVersion = '2.0.33';
 
-    testPlaywright('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
-        const suite = await launchSuite();
-        const title = await suite.window.title();
-        expectPlaywright(title).toContain('Trezor Suite');
+    // note: this test won't work locally on mac - you are likely to have tenv running occupying the bridge port
+    testPlaywright(
+        `App spawns bundled bridge version ${expectedBridgeVersion} and stops it after app quit`,
+        async ({ request }) => {
+            const isBridgeRunning = async (expected: boolean) => {
+                return request
+                    .post('http://127.0.0.1:21325/', {
+                        headers: {
+                            Origin: 'https://wallet.trezor.io',
+                        },
+                    })
+                    .then(res => {
+                        if (!expected) {
+                            throw new Error('Bridge is running but is should not');
+                        }
 
-        // We wait for `@welcome/title` or `@dashboard/graph` since
-        // one or the other will be display depending on the state of the app
-        // due to previously run tests. And both means the same for the porpoise of this test.
-        // Bridge should be ready to check `/status` endpoint.
-        await Promise.race([
-            waitForDataTestSelector(suite.window, '@welcome/title'),
-            waitForDataTestSelector(suite.window, '@dashboard/graph'),
-        ]);
+                        return res.json();
+                    })
+                    .then(json => {
+                        const { version } = json;
+                        expectPlaywright(version).toEqual(expectedBridgeVersion);
+                    })
+                    .catch(() => {
+                        if (expected) {
+                            throw new Error('Bridge should be running, but is not');
+                        }
+                    });
+            };
 
-        // bridge is running
-        const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
-        await expectPlaywright(bridgeRes1).toBeOK();
+            await TrezorUserEnvLink.stopBridge();
+            const suite = await launchSuite({ startExternalBridge: false });
+            await suite.window.title();
 
-        await suite.electronApp.close();
+            await waitForDataTestSelector(suite.window, '@welcome/title');
 
-        // bridge is not running
-        try {
-            await request.get('http://127.0.0.1:21325/status/');
-            throw new Error('should have thrown!');
-        } catch (err) {
-            // ok
-        }
-    });
+            // bridge is running
+            await isBridgeRunning(true);
+
+            // bridge is running after renderer window is refreshed
+            await suite.window.reload();
+            await suite.window.title();
+            await isBridgeRunning(true);
+
+            // bridge is not running after app is closed
+            await suite.electronApp.close();
+            await isBridgeRunning(false);
+        },
+    );
+
+    testPlaywright(
+        'App acquired device, EXTERNAL bridge is restarted, app reconnects',
+        async () => {
+            await TrezorUserEnvLink.startEmu({ wipe: true, version: '2-latest', model: 'T2T1' });
+            await TrezorUserEnvLink.setupEmu({});
+            const suite = await launchSuite({ startExternalBridge: true });
+            await suite.window.title();
+            await waitForDataTestSelector(suite.window, '@welcome/title');
+            await onDashboardPage.passThroughInitialRun(suite.window);
+
+            await TrezorUserEnvLink.stopBridge();
+
+            await waitForDataTestSelector(suite.window, '@connect-device-prompt');
+
+            await TrezorUserEnvLink.startBridge();
+            await waitForDataTestSelector(suite.window, '@dashboard/index');
+        },
+    );
+
+    // todo: add test case when INTERNAL bridge is killed and auto-restarted
 });
