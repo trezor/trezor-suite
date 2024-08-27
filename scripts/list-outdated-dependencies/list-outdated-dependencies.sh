@@ -1,7 +1,12 @@
 #!/bin/bash
 
-valid_argument_values=("common" "connect" "mission" "mobile" "qa" "trends" "usability")
-valid_arguments_hint="Valid values are: ${valid_argument_values[*]}."
+script_directory="$(dirname "${BASH_SOURCE[0]}")"
+
+# shellcheck disable=SC1091
+source "$script_directory/config.sh"
+
+DOMAINS=("common" "connect" "mission" "mobile" "qa" "trends" "usability")
+valid_arguments_hint="Valid values are: ${DOMAINS[*]}."
 
 # Check if an argument was provided
 if [ "$#" -ne 1 ]; then
@@ -24,11 +29,11 @@ contains() {
 }
 
 # Check if the provided argument is valid
-if ! contains "$1" "${valid_argument_values[@]}"; then
+if ! contains "$1" "${DOMAINS[@]}"; then
   echo "Invalid argument '$1'."
   echo "$valid_arguments_hint"
   exit 1
 fi
 
 # Run yarn outdated on target dependencies
-tr '\n' ' ' < "$(dirname "${BASH_SOURCE[0]}")/$1-dependencies.txt" | xargs yarn outdated
+tr '\n' ' ' < "$script_directory/$1-dependencies.txt" | xargs yarn outdated
