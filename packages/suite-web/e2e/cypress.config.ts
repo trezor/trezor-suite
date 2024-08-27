@@ -1,6 +1,5 @@
 import { defineConfig } from 'cypress';
 
-// import CDP from 'chrome-remote-interface';
 import fs from 'fs';
 import path from 'path';
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
