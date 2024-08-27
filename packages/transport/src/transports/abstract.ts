@@ -333,7 +333,18 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * Stop transport = remove all listeners + try to release session + cancel all requests
      */
-    abstract stop(): void;
+    stop() {
+        this.removeAllListeners();
+        this.stopped = true;
+        this.listening = false;
+        this.abortController.abort();
+        this.abortController = new AbortController();
+        this.descriptors = [];
+        this.acquiredUnconfirmed = {};
+        this.listenPromise = {};
+        this.releaseUnconfirmed = {};
+        this.releasePromise = undefined;
+    }
 
     private getDiff(nextDescriptors: Descriptor[]): DeviceDescriptorDiff {
         const connected = nextDescriptors.filter(

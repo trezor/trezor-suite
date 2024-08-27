@@ -332,10 +332,9 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     }
 
     stop() {
+        super.stop();
         this.api.on('transport-interface-change', () => {
             this.logger?.debug('device connected after transport stopped');
         });
-        this.stopped = true;
-        this.abortController.abort();
     }
 }
