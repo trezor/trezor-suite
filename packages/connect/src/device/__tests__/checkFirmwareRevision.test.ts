@@ -102,13 +102,17 @@ describe(checkFirmwareRevision.name, () => {
             expected: { success: false, error: 'cannot-perform-check-offline' },
         },
         {
-            it: "doesn't check anything for new versions with security chip (not implemented yet)",
-            params: createDevicePrams({
-                deviceRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
-                expectedRevision: 'cde8f31ec2ddcb7d35e36edbcf8a71dda983a9ea',
-                internalModel: DeviceModelInternal.T3B1,
-            }),
+            it: 'passes also for a different device',
+            params: createDevicePrams({ internalModel: DeviceModelInternal.T3T1 }),
             expected: { success: true },
+        },
+        {
+            it: 'fails also for a different device',
+            params: createDevicePrams({
+                internalModel: DeviceModelInternal.T3T1,
+                expectedRevision: '1234567890987654321',
+            }),
+            expected: { success: false, error: 'revision-mismatch' },
         },
     ])(`$it`, async ({ params, expected, httpRequestMock }) => {
         if (httpRequestMock !== undefined) {
