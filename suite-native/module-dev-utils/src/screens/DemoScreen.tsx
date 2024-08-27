@@ -84,7 +84,14 @@ export const DemoScreen = () => {
     ] satisfies ButtonColorScheme[];
 
     const textButtonVariants = ['primary', 'tertiary'] satisfies TextButtonVariant[];
-    const badgeVariants = ['neutral', 'green', 'red', 'bold'] satisfies BadgeVariant[];
+    const badgeVariants = [
+        'neutral',
+        'green',
+        'greenSubtle',
+        'yellow',
+        'red',
+        'bold',
+    ] satisfies BadgeVariant[];
 
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());

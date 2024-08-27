@@ -4,7 +4,7 @@ import { SignValue } from '@suite-common/suite-types';
 
 import { FormatterProps } from '../types';
 
-type SignValueFormatterProps = FormatterProps<SignValue | undefined> & Omit<TextProps, 'color'>;
+type SignValueFormatterProps = FormatterProps<SignValue | undefined> & TextProps;
 
 export const SignValueFormatter = ({ value, ...textProps }: SignValueFormatterProps) => {
     const { SignValueFormatter: Formatter } = useFormatters();
@@ -14,7 +14,7 @@ export const SignValueFormatter = ({ value, ...textProps }: SignValueFormatterPr
     const signColor = isSignValuePositive(value) ? 'textSecondaryHighlight' : 'textAlertRed';
 
     return (
-        <Text {...textProps} color={signColor}>
+        <Text color={signColor} {...textProps}>
             {/* Trailing whitespace to offset a following value. */}
             <Formatter value={value} />{' '}
         </Text>

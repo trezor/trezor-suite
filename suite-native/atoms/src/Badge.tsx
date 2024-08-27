@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
 
+import { G } from '@mobily/ts-belt';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     Icon,
@@ -16,7 +18,7 @@ import { HStack } from './Stack';
 import { SurfaceElevation } from './types';
 import { BoxProps } from './Box';
 
-export type BadgeVariant = 'neutral' | 'green' | 'red' | 'bold';
+export type BadgeVariant = 'neutral' | 'green' | 'greenSubtle' | 'yellow' | 'red' | 'bold';
 export type BadgeSize = 'small' | 'medium';
 type BadgeProps = {
     label: ReactNode;
@@ -34,19 +36,20 @@ type BadgeStyle = {
     backgroundColorElevation1: Color;
     activeTextColor: Color;
     activeIconColor: Color;
+    borderColor?: Color;
 };
 
 type BadgeStyleProps = {
     backgroundColor: Color;
     isDisabled: boolean;
     size?: BadgeSize;
+    borderColor?: Color;
 };
 
 const badgeStyle = prepareNativeStyle<BadgeStyleProps>(
-    (utils, { backgroundColor, isDisabled, size }) => ({
+    (utils, { backgroundColor, isDisabled, size, borderColor }) => ({
         alignItems: 'center',
         justifyContent: 'center',
-        alignSelf: 'flex-start',
         backgroundColor: utils.colors[backgroundColor],
         paddingHorizontal: utils.spacings.small - (size === 'medium' ? 0 : 2),
         paddingVertical: utils.spacings.small / 4,
@@ -56,6 +59,13 @@ const badgeStyle = prepareNativeStyle<BadgeStyleProps>(
                 condition: isDisabled,
                 style: {
                     backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
+                },
+            },
+            {
+                condition: G.isNotNullable(borderColor),
+                style: {
+                    borderColor: utils.colors[borderColor!],
+                    borderWidth: utils.borders.widths.small,
                 },
             },
         ],
@@ -68,24 +78,42 @@ const badgeVariantToStylePropsMap = {
         backgroundColorElevation1: 'backgroundNeutralSubtleOnElevation1',
         activeTextColor: 'textSubdued',
         activeIconColor: 'iconSubdued',
+        borderColor: undefined,
     },
     green: {
+        backgroundColorElevation0: 'backgroundPrimaryDefault',
+        backgroundColorElevation1: 'backgroundPrimaryDefault',
+        activeTextColor: 'textOnPrimary',
+        activeIconColor: 'iconOnPrimary',
+        borderColor: undefined,
+    },
+    greenSubtle: {
         backgroundColorElevation0: 'backgroundPrimarySubtleOnElevation0',
         backgroundColorElevation1: 'backgroundPrimarySubtleOnElevation1',
         activeTextColor: 'textPrimaryDefault',
         activeIconColor: 'iconPrimaryDefault',
+        borderColor: undefined,
+    },
+    yellow: {
+        backgroundColorElevation0: 'backgroundAlertYellowSubtleOnElevation0',
+        backgroundColorElevation1: 'backgroundAlertYellowSubtleOnElevation1',
+        activeTextColor: 'textAlertYellow',
+        activeIconColor: 'iconAlertYellow',
+        borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
     },
     red: {
         backgroundColorElevation0: 'backgroundAlertRedSubtleOnElevation0',
         backgroundColorElevation1: 'backgroundAlertRedSubtleOnElevation1',
         activeTextColor: 'textAlertRed',
         activeIconColor: 'iconAlertRed',
+        borderColor: undefined,
     },
     bold: {
         backgroundColorElevation0: 'backgroundNeutralBold',
         backgroundColorElevation1: 'backgroundNeutralBold',
         activeTextColor: 'textOnPrimary',
         activeIconColor: 'iconOnPrimary',
+        borderColor: undefined,
     },
 } as const satisfies Record<BadgeVariant, BadgeStyle>;
 
@@ -105,6 +133,7 @@ export const Badge = ({
         backgroundColorElevation1,
         activeTextColor,
         activeIconColor,
+        borderColor,
     } = badgeVariantToStylePropsMap[variant];
 
     const textVariant = size === 'medium' ? 'hint' : 'label';
@@ -130,6 +159,7 @@ export const Badge = ({
                     backgroundColor,
                     isDisabled,
                     size,
+                    borderColor,
                 }),
                 style,
             ]}

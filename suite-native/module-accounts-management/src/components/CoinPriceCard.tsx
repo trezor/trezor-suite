@@ -46,7 +46,7 @@ const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorPro
     const priceHasIncreased = percentageChange >= 0;
 
     const icon = priceHasIncreased ? 'arrowUp' : 'arrowDown';
-    const badgeVariant = priceHasIncreased ? 'green' : 'red';
+    const badgeVariant = priceHasIncreased ? 'greenSubtle' : 'red';
     const formattedPercentage = `${percentageChange.toPrecision(3)} %`;
 
     return (

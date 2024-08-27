@@ -81,7 +81,7 @@ export const SelectableItem = ({
                         <View style={applyStyle(badgeWrapperStyle)}>
                             <Badge
                                 key="defaultType"
-                                variant="green"
+                                variant="greenSubtle"
                                 label={<Translation id="generic.default" />}
                                 icon="checkCircleSolid"
                             />
