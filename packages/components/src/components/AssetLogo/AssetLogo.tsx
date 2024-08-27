@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { borders } from '@trezor/theme';
 import { AssetInitials } from './AssetInitials';
-import { useEffect } from 'react';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 
 const ICONS_URL_BASE = 'https://data.trezor.io/suite/icons/coins/';
@@ -40,42 +39,6 @@ const Logo = styled.img<{ $size: number; $isVisible: boolean }>(
     `,
 );
 
-const useAssetLogo = (logoUrl: string, shouldTryToFetch: boolean) => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [isPlaceholder, setIsPlaceholder] = useState<boolean | null>(null);
-
-    const isImageOnUrlExist = useCallback((url: string): Promise<boolean> => {
-        return new Promise(resolve => {
-            const img = new Image();
-            img.src = url;
-
-            if (img.complete) {
-                resolve(true);
-            } else {
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-            }
-        });
-    }, []);
-
-    useEffect(() => {
-        const checkLogoExistence = async () => {
-            const logoExists = await isImageOnUrlExist(logoUrl);
-            setIsPlaceholder(!logoExists);
-            setIsLoading(false);
-        };
-
-        if (shouldTryToFetch) {
-            checkLogoExistence();
-        } else {
-            setIsPlaceholder(true);
-            setIsLoading(false);
-        }
-    }, [shouldTryToFetch, logoUrl, isImageOnUrlExist]);
-
-    return { isLoading, isPlaceholder, setIsLoading };
-};
-
 const getAssetLogoUrl = (fileName: string, quality?: '@2x') =>
     `${ICONS_URL_BASE}${fileName}${quality === undefined ? '' : quality}.webp`;
 
@@ -88,10 +51,10 @@ export const AssetLogo = ({
     margin,
     'data-testid': dataTest,
 }: AssetLogoProps) => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [isPlaceholder, setIsPlaceholder] = useState(false);
     const fileName = contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
     const logoUrl = getAssetLogoUrl(fileName);
-
-    const { isLoading, setIsLoading, isPlaceholder } = useAssetLogo(logoUrl, shouldTryToFetch);
 
     const frameProps = {
         margin,
@@ -101,15 +64,17 @@ export const AssetLogo = ({
         setIsLoading(false);
     };
     const handleError = () => {
-        setIsLoading(false);
+        setIsPlaceholder(true);
     };
+
+    useEffect(() => {
+        setIsPlaceholder(!shouldTryToFetch);
+    }, [shouldTryToFetch]);
 
     return (
         <Container $size={size} {...makePropsTransient(frameProps)}>
-            {(isLoading || isPlaceholder) && (
-                <AssetInitials size={size}>{placeholder}</AssetInitials>
-            )}
-            {!isLoading && !isPlaceholder && (
+            {isPlaceholder && <AssetInitials size={size}>{placeholder}</AssetInitials>}
+            {!isPlaceholder && (
                 <Logo
                     src={logoUrl}
                     srcSet={`${logoUrl} 1x, ${getAssetLogoUrl(fileName, '@2x')} 2x`}
