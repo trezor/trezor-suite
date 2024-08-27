@@ -1,11 +1,12 @@
 import styled from 'styled-components';
-import { Badge, Button, Card } from '@trezor/components';
+import { Badge, Button, Card, Row } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import CoinmarketUtilsPrice from '../CoinmarketUtils/CoinmarketUtilsPrice';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
+    isCoinmarketExchangeOffers,
     isCoinmarketSellOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
@@ -17,6 +18,7 @@ import {
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { SellFiatTrade } from 'invity-api';
+import { CoinmarketUtilsKyc } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsKyc';
 
 const OfferWrap = styled.div``;
 

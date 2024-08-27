@@ -19,7 +19,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://changenow.io/exchange/txs/{{orderId}}',
             kycUrl: 'https://changenow.io/faq#kyc',
             supportUrl: 'https://support.changenow.io',
-            kycPolicy: 'Changenow enforces KYC on suspicious transactions. Refunds without KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC not required for refunds. 🤝',
+            kycPolicyType: 'KYC-yesrefund',
             isRefundRequired: false,
         },
         {
@@ -38,7 +39,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://changenow.io/exchange/txs/{{orderId}}',
             kycUrl: 'https://changenow.io/faq#kyc',
             supportUrl: 'https://support.changenow.io',
-            kycPolicy: 'Changenow enforces KYC on suspicious transactions. Refunds without KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC not required for refunds. 🤝',
+            kycPolicyType: 'KYC-yesrefund',
             isRefundRequired: false,
         },
         {
@@ -57,8 +59,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: '',
             kycUrl: 'https://changelly.com/aml-kyc',
             supportUrl: 'https://support.changelly.com',
-            kycPolicy:
-                'Changelly enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+            kycPolicyType: 'KYC-norefund',
             isRefundRequired: false,
         },
         {
@@ -77,8 +79,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: '',
             kycUrl: 'https://changelly.com/aml-kyc',
             supportUrl: 'https://support.changelly.com',
-            kycPolicy:
-                'Changelly enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+            kycPolicyType: 'KYC-norefund',
             isRefundRequired: true,
         },
         {
@@ -97,7 +99,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: '',
             kycUrl: 'https://changehero.io/aml-kyc',
             supportUrl: 'https://support.changehero.io',
-            kycPolicy: 'Changehero enforces KYC on suspicious transactions. Refunds without KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+            kycPolicyType: 'KYC-norefund',
             isRefundRequired: false,
         },
         {
@@ -116,7 +119,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: '',
             kycUrl: 'https://changehero.io/aml-kyc',
             supportUrl: 'https://support.changehero.io',
-            kycPolicy: 'Changehero enforces KYC on suspicious transactions. Refunds without KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+            kycPolicyType: 'KYC-norefund',
             isRefundRequired: true,
         },
         {
@@ -135,8 +139,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://fox.exchange/tx/{{orderId}}',
             kycUrl: 'https://fox.exchange',
             supportUrl: 'https://fox.exchange',
-            kycPolicy:
-                'Foxexchange enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
+            kycPolicy: 'KYC never required. Exceptional cases automatically refunded. 👍',
+            kycPolicyType: 'noKYC',
             isRefundRequired: false,
         },
         {
@@ -155,26 +159,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://fox.exchange/tx/{{orderId}}',
             kycUrl: 'https://fox.exchange',
             supportUrl: 'https://fox.exchange',
-            kycPolicy:
-                'Foxexchange enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
-            isRefundRequired: false,
-        },
-        {
-            name: 'morphtoken',
-            companyName: 'MorphToken',
-            logo: 'morphtoken-icon.jpg',
-            isActive: true,
-            isFixedRate: false,
-            isDex: false,
-            buyTickers: ['BTC', 'ETH', 'XMR'],
-            sellTickers: ['BTC', 'ETH', 'XMR'],
-            addressFormats: {
-                BCH: 'cashaddr',
-                LTC: 'type3',
-            },
-            statusUrl: '',
-            kycUrl: 'https://morphtoken.com',
-            supportUrl: 'https://morphtoken.com',
+            kycPolicy: 'KYC never required. Exceptional cases automatically refunded. 👍',
+            kycPolicyType: 'noKYC',
             isRefundRequired: false,
         },
         {
@@ -193,8 +179,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://coinswitch.co/app/exchange/transaction/{{orderId}}',
             kycUrl: 'https://coinswitch.co',
             supportUrl: 'https://coinswitch.co',
-            kycPolicy:
-                'Coinswitch enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
+            kycPolicy: 'KYC never required. Exceptional cases automatically refunded. 👍',
+            kycPolicyType: 'noKYC',
             isRefundRequired: false,
         },
         {
@@ -213,8 +199,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://coinswitch.co/app/exchange/transaction/{{orderId}}',
             kycUrl: 'https://coinswitch.co',
             supportUrl: 'https://coinswitch.co',
-            kycPolicy:
-                'Coinswitch enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
+            kycPolicy: 'KYC never required. Exceptional cases automatically refunded. 👍',
+            kycPolicyType: 'noKYC',
             isRefundRequired: true,
         },
         {
@@ -230,6 +216,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://help.1inch.io/',
             supportUrl: 'https://help.1inch.io/',
             kycPolicy: 'KYC never required. DEX swaps either succeed or fail. 👍',
+            kycPolicyType: 'DEX',
             isRefundRequired: false,
         },
     ],
@@ -250,7 +237,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://changenow.io/exchange/txs/{{orderId}}',
             kycUrl: 'https://changenow.io/faq#kyc',
             supportUrl: 'https://support.changenow.io',
-            kycPolicy: 'Changenow enforces KYC on suspicious transactions. Refunds without KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC not required for refunds. 🤝',
+            kycPolicyType: 'KYC-yesrefund',
             isRefundRequired: false,
         },
         changenowfr: {
@@ -269,7 +257,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://changenow.io/exchange/txs/{{orderId}}',
             kycUrl: 'https://changenow.io/faq#kyc',
             supportUrl: 'https://support.changenow.io',
-            kycPolicy: 'Changenow enforces KYC on suspicious transactions. Refunds without KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC not required for refunds. 🤝',
+            kycPolicyType: 'KYC-yesrefund',
             isRefundRequired: false,
         },
         changelly: {
@@ -288,8 +277,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: '',
             kycUrl: 'https://changelly.com/aml-kyc',
             supportUrl: 'https://support.changelly.com',
-            kycPolicy:
-                'Changelly enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+            kycPolicyType: 'KYC-norefund',
             isRefundRequired: false,
         },
         changellyfr: {
@@ -308,8 +297,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: '',
             kycUrl: 'https://changelly.com/aml-kyc',
             supportUrl: 'https://support.changelly.com',
-            kycPolicy:
-                'Changelly enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+            kycPolicyType: 'KYC-norefund',
             isRefundRequired: true,
         },
         changehero: {
@@ -328,7 +317,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: '',
             kycUrl: 'https://changehero.io/aml-kyc',
             supportUrl: 'https://support.changehero.io',
-            kycPolicy: 'Changehero enforces KYC on suspicious transactions. Refunds without KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+            kycPolicyType: 'KYC-norefund',
             isRefundRequired: false,
         },
         changeherofr: {
@@ -347,7 +337,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: '',
             kycUrl: 'https://changehero.io/aml-kyc',
             supportUrl: 'https://support.changehero.io',
-            kycPolicy: 'Changehero enforces KYC on suspicious transactions. Refunds without KYC.',
+            kycPolicy: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+            kycPolicyType: 'KYC-norefund',
             isRefundRequired: true,
         },
         foxexchange: {
@@ -366,8 +357,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://fox.exchange/tx/{{orderId}}',
             kycUrl: 'https://fox.exchange',
             supportUrl: 'https://fox.exchange',
-            kycPolicy:
-                'Foxexchange enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
+            kycPolicy: 'KYC never required. Exceptional cases automatically refunded. 👍',
+            kycPolicyType: 'noKYC',
             isRefundRequired: false,
         },
         foxexchangefr: {
@@ -386,26 +377,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://fox.exchange/tx/{{orderId}}',
             kycUrl: 'https://fox.exchange',
             supportUrl: 'https://fox.exchange',
-            kycPolicy:
-                'Foxexchange enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
-            isRefundRequired: false,
-        },
-        morphtoken: {
-            name: 'morphtoken',
-            companyName: 'MorphToken',
-            logo: 'morphtoken-icon.jpg',
-            isActive: true,
-            isFixedRate: false,
-            isDex: false,
-            buyTickers: ['BTC', 'ETH', 'XMR'],
-            sellTickers: ['BTC', 'ETH', 'XMR'],
-            addressFormats: {
-                BCH: 'cashaddr',
-                LTC: 'type3',
-            },
-            statusUrl: '',
-            kycUrl: 'https://morphtoken.com',
-            supportUrl: 'https://morphtoken.com',
+            kycPolicy: 'KYC never required. Exceptional cases automatically refunded. 👍',
+            kycPolicyType: 'noKYC',
             isRefundRequired: false,
         },
         coinswitch: {
@@ -424,8 +397,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://coinswitch.co/app/exchange/transaction/{{orderId}}',
             kycUrl: 'https://coinswitch.co',
             supportUrl: 'https://coinswitch.co',
-            kycPolicy:
-                'Coinswitch enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
+            kycPolicy: 'KYC never required. Exceptional cases automatically refunded. 👍',
+            kycPolicyType: 'noKYC',
             isRefundRequired: false,
         },
         coinswitchfr: {
@@ -444,8 +417,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://coinswitch.co/app/exchange/transaction/{{orderId}}',
             kycUrl: 'https://coinswitch.co',
             supportUrl: 'https://coinswitch.co',
-            kycPolicy:
-                'Coinswitch enforces KYC on suspicious transactions. In such cases, even refunds are with KYC.',
+            kycPolicy: 'KYC never required. Exceptional cases automatically refunded. 👍',
+            kycPolicyType: 'noKYC',
             isRefundRequired: true,
         },
         '1inch': {
@@ -461,6 +434,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             statusUrl: 'https://help.1inch.io/',
             supportUrl: 'https://help.1inch.io/',
             kycPolicy: 'KYC never required. DEX swaps either succeed or fail. 👍',
+            kycPolicyType: 'DEX',
             isRefundRequired: false,
         },
     },

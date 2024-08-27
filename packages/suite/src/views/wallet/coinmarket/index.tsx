@@ -10,6 +10,7 @@ import {
     Spinner,
 } from '@trezor/components';
 import {
+    borders,
     Elevation,
     mapElevationToBackground,
     nativeTypography,
@@ -291,4 +292,60 @@ export const CoinmarketFormOfferSpinnerText = styled.div<{ $withoutSpinner?: boo
 export const CoinmarketSpinnerWrapper = styled(Spinner)`
     flex: none;
     margin: 0 ${spacingsPx.xs};
+`;
+
+export const TooltipWrap = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: ${spacingsPx.xxs};
+    padding-bottom: ${spacingsPx.xxxs};
+
+    &:hover {
+        div {
+            color: ${({ theme }) => theme.textDefault};
+
+            &::after {
+                background: ${({ theme }) => theme.textDefault};
+            }
+        }
+
+        path[fill] {
+            fill: ${({ theme }) => theme.textDefault};
+        }
+
+        path[stroke] {
+            stroke: ${({ theme }) => theme.textDefault};
+        }
+    }
+`;
+
+export const TooltipIcon = styled.div`
+    margin-top: 1px;
+    margin-right: ${spacingsPx.xs};
+`;
+
+export const TooltipText = styled.div<{ $isYellow?: boolean }>`
+    position: relative;
+    ${typography.hint}
+    color: ${({ $isYellow, theme }) => ($isYellow ? theme.textAlertYellow : theme.textDefault)};
+    transition: color 0.15s;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: ${({ $isYellow, theme }) =>
+            $isYellow ? theme.textAlertYellow : theme.textDefault};
+        transition: background 0.15s;
+    }
+`;
+
+export const CoinmarketWarning = styled.div`
+    padding: ${spacingsPx.sm};
+    border: 1px solid ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevationNegative};
+    border-radius: ${borders.radii.sm};
+    background-color: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation1};
 `;

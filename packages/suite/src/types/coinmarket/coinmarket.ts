@@ -254,6 +254,10 @@ export type CoinmarketGetProvidersInfoProps =
       }
     | undefined;
 
+export type CoinmarketExchangeProvidersInfoProps = {
+    [key: string]: ExchangeProviderInfo;
+};
+
 export interface CoinmarketGetFiatCurrenciesProps {
     supportedFiatCurrencies: Set<string> | undefined;
     defaultAmountsOfFiatCurrencies?: Map<FiatCurrencyCode, string>;

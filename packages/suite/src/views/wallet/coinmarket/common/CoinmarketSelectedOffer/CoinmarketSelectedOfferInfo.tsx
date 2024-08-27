@@ -11,6 +11,8 @@ import { spacings } from '@trezor/theme';
 import { CoinmarketBorder } from 'src/views/wallet/coinmarket';
 import { CoinmarketInfoExchangeType } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoExchangeType';
 import { CoinmarketSelectedOfferInfoProps } from 'src/types/coinmarket/coinmarketForm';
+import { CoinmarketUtilsKyc } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsKyc';
+import { CoinmarketExchangeProvidersInfoProps } from 'src/types/coinmarket/coinmarket';
 
 export const CoinmarketSelectedOfferInfo = ({
     account,
@@ -71,6 +73,14 @@ export const CoinmarketSelectedOfferInfo = ({
                     paymentMethod={paymentMethod}
                     paymentMethodName={paymentMethodName}
                 />
+            )}
+            {type === 'exchange' && (
+                <>
+                    <CoinmarketUtilsKyc
+                        exchange={exchange}
+                        providers={providers as CoinmarketExchangeProvidersInfoProps}
+                    />
+                </>
             )}
             {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
         </Column>

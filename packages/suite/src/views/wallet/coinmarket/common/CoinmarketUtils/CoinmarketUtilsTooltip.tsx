@@ -1,33 +1,11 @@
-import { Icon, Tooltip } from '@trezor/components';
+import { Tooltip } from '@trezor/components';
 import { CoinmarketOffersItemProps } from '../CoinmarketOffers/CoinmarketOffersItem';
-import styled, { useTheme } from 'styled-components';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { useTheme } from 'styled-components';
 import CoinmarketUtilsTooltipFee from './CoinmarketUtilsTooltipFee';
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
-
-const TooltipWrap = styled.div`
-    display: flex;
-    align-items: center;
-    margin-top: ${spacingsPx.xxxs};
-`;
-
-const TooltipText = styled.div<{ $isYellow?: boolean }>`
-    position: relative;
-    ${typography.hint}
-    color: ${({ $isYellow, theme }) => ($isYellow ? theme.textAlertYellow : theme.textSubdued)};
-
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background: ${({ $isYellow, theme }) =>
-            $isYellow ? theme.textAlertYellow : theme.textSubdued};
-    }
-`;
+import { TooltipIcon, TooltipText, TooltipWrap } from 'src/views/wallet/coinmarket';
+import { Icon } from '@suite-common/icons/src/webComponents';
 
 // IN TESTING MODE
 const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quote'>) => {
@@ -40,12 +18,9 @@ const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quot
         return (
             <Tooltip content={<CoinmarketUtilsTooltipFee quote={quote} />} placement="bottom">
                 <TooltipWrap>
-                    <Icon
-                        name="info"
-                        margin={{ right: spacings.xs }}
-                        size={16}
-                        color={theme.textSubdued}
-                    />
+                    <TooltipIcon>
+                        <Icon name="info" size="small" color={theme.textDefault} />
+                    </TooltipIcon>
                     <TooltipText>
                         <Translation id="TR_COINMARKET_FEES_INCLUDED" />
                     </TooltipText>
@@ -57,12 +32,9 @@ const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quot
     return (
         <Tooltip content={notIncludedContent} placement="bottom">
             <TooltipWrap>
-                <Icon
-                    name="info"
-                    margin={{ right: spacings.xs }}
-                    size={16}
-                    color={theme.textAlertYellow}
-                />
+                <TooltipIcon>
+                    <Icon name="info" size="small" color={theme.textAlertYellow} />
+                </TooltipIcon>
                 <TooltipText $isYellow>
                     <Translation id="TR_COINMARKET_FEES_NOT_INCLUDED" />
                 </TooltipText>
