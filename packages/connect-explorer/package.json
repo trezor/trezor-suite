@@ -27,7 +27,7 @@
         "@trezor/theme": "workspace:^",
         "@trezor/utils": "workspace:^",
         "@uiw/react-codemirror": "^4.21.25",
-        "codemirror-json-schema": "^0.7.0",
+        "codemirror-json-schema": "^0.7.8",
         "codemirror-json5": "^1.0.3",
         "json5": "^2.2.3",
         "next": "^14.1.1",

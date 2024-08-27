@@ -1939,6 +1939,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@codemirror/autocomplete@npm:^6.16.2":
+  version: 6.18.0
+  resolution: "@codemirror/autocomplete@npm:6.18.0"
+  dependencies:
+    "@codemirror/language": "npm:^6.0.0"
+    "@codemirror/state": "npm:^6.0.0"
+    "@codemirror/view": "npm:^6.17.0"
+    "@lezer/common": "npm:^1.0.0"
+  peerDependencies:
+    "@codemirror/language": ^6.0.0
+    "@codemirror/state": ^6.0.0
+    "@codemirror/view": ^6.0.0
+    "@lezer/common": ^1.0.0
+  checksum: 10/29cf0857bc81ef1d7de963863b96d9597cbd90d992578a8d91943b5ca2b97f6e0c7c5f868ee9c2f844c1466f11b40799502e0237ee4c45394335c47af3b4765f
+  languageName: node
+  linkType: hard
+
 "@codemirror/commands@npm:^6.0.0, @codemirror/commands@npm:^6.1.0":
   version: 6.5.0
   resolution: "@codemirror/commands@npm:6.5.0"
@@ -1961,7 +1978,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-yaml@npm:^6.0.0":
+"@codemirror/lang-yaml@npm:^6.1.1":
   version: 6.1.1
   resolution: "@codemirror/lang-yaml@npm:6.1.1"
   dependencies:
@@ -7944,6 +7961,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@shikijs/core@npm:1.14.1":
+  version: 1.14.1
+  resolution: "@shikijs/core@npm:1.14.1"
+  dependencies:
+    "@types/hast": "npm:^3.0.4"
+  checksum: 10/04cab2907ae61408f10c2133fcd473fe4feef4121acae2e1283a22b3cb09e8b8b426dd2eb75406df6a8f5688d084534623920325b71252d770a2d3d38c37b200
+  languageName: node
+  linkType: hard
+
+"@shikijs/markdown-it@npm:^1.1.7":
+  version: 1.14.1
+  resolution: "@shikijs/markdown-it@npm:1.14.1"
+  dependencies:
+    "@shikijs/transformers": "npm:1.14.1"
+    markdown-it: "npm:^14.1.0"
+    shiki: "npm:1.14.1"
+  checksum: 10/1dc551b1a5e8855912385987b8e14346108dbfd8ac2ba21ec38a788ba3f75972c8ada04cfc7f99145b59be916d322d0e02c81e150fadb8fb0b5f5184cec31dde
+  languageName: node
+  linkType: hard
+
+"@shikijs/transformers@npm:1.14.1":
+  version: 1.14.1
+  resolution: "@shikijs/transformers@npm:1.14.1"
+  dependencies:
+    shiki: "npm:1.14.1"
+  checksum: 10/c6b1da08987b6b9579f42680286ff0e58297332ff811b0bb9ea907e1f30fd1816d73d52d2e431fc20b8557717e8dd569dd2bf67a6ee45b20fb77ff96779bb13f
+  languageName: node
+  linkType: hard
+
 "@shopify/flash-list@npm:1.6.4":
   version: 1.6.4
   resolution: "@shopify/flash-list@npm:1.6.4"
@@ -10995,7 +11041,7 @@ __metadata:
     "@types/redux-logger": "npm:^3.0.11"
     "@uiw/react-codemirror": "npm:^4.21.25"
     babel-plugin-styled-components: "npm:^2.1.4"
-    codemirror-json-schema: "npm:^0.7.0"
+    codemirror-json-schema: "npm:^0.7.8"
     codemirror-json5: "npm:^1.0.3"
     concurrently: "npm:^8.2.2"
     copy-webpack-plugin: "npm:^12.0.2"
@@ -12633,6 +12679,15 @@ __metadata:
   dependencies:
     "@types/unist": "npm:*"
   checksum: 10/9f98418c2dcd769cc30d6551c1f7db801ce22552f9900db321d470309d55076f690fca80e8e133ae193988e6aa86558b362e3a1c4e187c95e0038cbb61bdca34
+  languageName: node
+  linkType: hard
+
+"@types/hast@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "@types/hast@npm:3.0.4"
+  dependencies:
+    "@types/unist": "npm:*"
+  checksum: 10/732920d81bb7605895776841b7658b4d8cc74a43a8fa176017cc0fb0ecc1a4c82a2b75a4fe6b71aa262b649d3fb62858c6789efa3793ea1d40269953af96ecb5
   languageName: node
   linkType: hard
 
@@ -17296,36 +17351,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror-json-schema@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "codemirror-json-schema@npm:0.7.0"
+"codemirror-json-schema@npm:^0.7.8":
+  version: 0.7.8
+  resolution: "codemirror-json-schema@npm:0.7.8"
   dependencies:
     "@changesets/changelog-github": "npm:^0.4.8"
+    "@codemirror/autocomplete": "npm:^6.16.2"
     "@codemirror/lang-json": "npm:^6.0.1"
-    "@codemirror/lang-yaml": "npm:^6.0.0"
+    "@codemirror/lang-yaml": "npm:^6.1.1"
     "@sagold/json-pointer": "npm:^5.1.1"
+    "@shikijs/markdown-it": "npm:^1.1.7"
     "@types/json-schema": "npm:^7.0.12"
     "@types/node": "npm:^20.4.2"
     codemirror-json5: "npm:^1.0.3"
     json-schema: "npm:^0.4.0"
-    json-schema-library: "npm:^9.1.2"
+    json-schema-library: "npm:^9.3.5"
     json5: "npm:^2.2.3"
     markdown-it: "npm:^14.0.0"
+    vite-tsconfig-paths: "npm:^4.3.1"
     yaml: "npm:^2.3.4"
   peerDependencies:
-    "@codemirror/language": ^6.8.0
-    "@codemirror/lint": ^6.4.0
-    "@codemirror/state": ^6.2.1
-    "@codemirror/view": ^6.14.1
-    "@lezer/common": ^1.0.3
+    "@codemirror/language": ^6.10.2
+    "@codemirror/lint": ^6.8.0
+    "@codemirror/state": ^6.4.1
+    "@codemirror/view": ^6.27.0
+    "@lezer/common": ^1.2.1
   dependenciesMeta:
+    "@codemirror/autocomplete":
+      optional: true
     "@codemirror/lang-json":
+      optional: true
+    "@codemirror/lang-yaml":
       optional: true
     codemirror-json5:
       optional: true
     json5:
       optional: true
-  checksum: 10/6d08d626a9b37064f1188cf3370778a5038964c8abd37828ceaf2bd40c2a134ce9fe5536afe09fd0a79ea8070e5f7719a620d2aeadb578540c0c187525a2486b
+  checksum: 10/35a87ccea506e653a7be03e7c3991c19f1c14c497b970484d13e8c57c36fab413ffd4252a573976fb13dfbb0303cd9c6c0f3cb9c756a401ce025f2661879aa5b
   languageName: node
   linkType: hard
 
@@ -24056,6 +24118,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"globrex@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "globrex@npm:0.1.2"
+  checksum: 10/81ce62ee6f800d823d6b7da7687f841676d60ee8f51f934ddd862e4057316d26665c4edc0358d4340a923ac00a514f8b67c787e28fe693aae16350f4e60d55e9
+  languageName: node
+  linkType: hard
+
 "glur@npm:^1.1.2":
   version: 1.1.2
   resolution: "glur@npm:1.1.2"
@@ -27516,9 +27585,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-schema-library@npm:^9.1.2":
-  version: 9.3.4
-  resolution: "json-schema-library@npm:9.3.4"
+"json-schema-library@npm:^9.3.5":
+  version: 9.3.5
+  resolution: "json-schema-library@npm:9.3.5"
   dependencies:
     "@sagold/json-pointer": "npm:^5.1.2"
     "@sagold/json-query": "npm:^6.1.3"
@@ -27527,7 +27596,7 @@ __metadata:
     fast-deep-equal: "npm:^3.1.3"
     smtp-address-parser: "npm:1.0.10"
     valid-url: "npm:^1.0.9"
-  checksum: 10/630234abd17b1709ff7d73a1e65159549ef48102885a67b04f24e6be2a54f0393aab4ab1e49a752c272c9c4554997658146e9d591f9b832b5558fd79065b48d5
+  checksum: 10/c78e0fb2a925767ff900081e3ff604b070d0a214be2388f241d43737b613af64ecddf0476f0752a10c10c3b56644e5062f3dac34507c6a17b4d8ae9fbf6fa823
   languageName: node
   linkType: hard
 
@@ -37692,6 +37761,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"shiki@npm:1.14.1":
+  version: 1.14.1
+  resolution: "shiki@npm:1.14.1"
+  dependencies:
+    "@shikijs/core": "npm:1.14.1"
+    "@types/hast": "npm:^3.0.4"
+  checksum: 10/8b610829ba5a25f5ab078c603b166ecd8171f9b0d3d88f90bf0ef01ee48f2f819e58546b3022c2f04632166e017cf682d867b002b0a5c4bd918abd07da3f3237
+  languageName: node
+  linkType: hard
+
 "shiki@npm:^0.14.3":
   version: 0.14.7
   resolution: "shiki@npm:0.14.7"
@@ -40204,6 +40283,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsconfck@npm:^3.0.3":
+  version: 3.1.1
+  resolution: "tsconfck@npm:3.1.1"
+  peerDependencies:
+    typescript: ^5.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  bin:
+    tsconfck: bin/tsconfck.js
+  checksum: 10/a4456577f540212516d7eb530005893739aadd6da00787914a8ed9aa19c3f2f306b8912920aa440b9b8978f10c9dadbd062b8c2a2f0ff1f6c2d4272b5be2ef34
+  languageName: node
+  linkType: hard
+
 "tsconfig-paths@npm:^3.15.0":
   version: 3.15.0
   resolution: "tsconfig-paths@npm:3.15.0"
@@ -41580,6 +41673,22 @@ __metadata:
   bin:
     vite-node: vite-node.mjs
   checksum: 10/ae49fd24874162196dd41477afe51dd8dc0bd1e8cb4ae885455d1d5569e14f628941f9867044bff263620536446e17d7e2c0828c9ea84b6308b9eb5711e80991
+  languageName: node
+  linkType: hard
+
+"vite-tsconfig-paths@npm:^4.3.1":
+  version: 4.3.2
+  resolution: "vite-tsconfig-paths@npm:4.3.2"
+  dependencies:
+    debug: "npm:^4.1.1"
+    globrex: "npm:^0.1.2"
+    tsconfck: "npm:^3.0.3"
+  peerDependencies:
+    vite: "*"
+  peerDependenciesMeta:
+    vite:
+      optional: true
+  checksum: 10/c12e2087fd01ac8a694850c649b79d5b9798cdba0ef9ab4116f669d8ffa1a9a3195c5a14410d3d9a12d2f08cd35ddd74f03d9c7b13a2d590d002055cdaab45c0
   languageName: node
   linkType: hard
 
