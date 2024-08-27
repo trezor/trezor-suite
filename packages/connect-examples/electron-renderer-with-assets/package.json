@@ -65,7 +65,7 @@
         "html-webpack-plugin": "^5.6.0",
         "terser-webpack-plugin": "^5.3.9",
         "wait-on": "^7.0.1",
-        "webpack": "^5.93.0",
+        "webpack": "^5.94.0",
         "webpack-cli": "^5.1.4",
         "webpack-dev-server": "^5.0.4",
         "worker-loader": "^3.0.8"
