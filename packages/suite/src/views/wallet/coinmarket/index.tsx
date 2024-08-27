@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import {
-    IconLegacy,
     variables,
     SelectBar,
     Paragraph,
@@ -8,6 +7,7 @@ import {
     H2,
     Card,
     Spinner,
+    Icon,
 } from '@trezor/components';
 import {
     borders,

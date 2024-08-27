@@ -4,7 +4,6 @@ import { CoinmarketFiatAmount } from '../CoinmarketFiatAmount';
 import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { IconLegacy } from '@trezor/components';
 import { CoinmarketTradeDetailType } from 'src/types/coinmarket/coinmarket';
 import { spacingsPx } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -13,6 +12,7 @@ import {
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CryptoSymbol } from 'invity-api';
+import { Icon } from '@trezor/components';
 
 const Arrow = styled.div`
     display: flex;
@@ -45,7 +45,7 @@ const CoinmarketFeaturedOffersAmount = ({
         <AmountsWrapper>
             {fromAmount}
             <Arrow>
-                <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={20} name="arrowRightLong" />
+                <Icon color={theme.iconSubdued} size={20} name="arrowRightLong" />
             </Arrow>
             {toAmount}
         </AmountsWrapper>

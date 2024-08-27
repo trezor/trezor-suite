@@ -1,5 +1,5 @@
 import { Controller } from 'react-hook-form';
-import { Select } from '@trezor/components';
+import { Row, Select } from '@trezor/components';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
@@ -19,8 +19,9 @@ import { CoinmarketFormInputAccountOption } from 'src/views/wallet/coinmarket/co
 import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
 import styled from 'styled-components';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { FiatCurrencyCode } from 'invity-api';
+import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 
 const CoinmarketBalanceWrapper = styled.div`
     padding: ${spacingsPx.xs} ${spacingsPx.sm} 0;
@@ -71,7 +72,13 @@ export const CoinmarketFormInputAccount = <
                         })}
                         formatGroupLabel={group => (
                             <CoinmarketFormOptionGroupLabel>
-                                {group.label}
+                                <Row gap={spacings.xs}>
+                                    {group.label}
+                                    <AccountTypeBadge
+                                        accountType={group.options[0].accountType}
+                                        size="small"
+                                    />
+                                </Row>
                             </CoinmarketFormOptionGroupLabel>
                         )}
                         formatOptionLabel={(

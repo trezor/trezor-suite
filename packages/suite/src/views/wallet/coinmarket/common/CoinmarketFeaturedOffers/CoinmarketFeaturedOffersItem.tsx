@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { Badge, Button, Card, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
@@ -109,85 +109,51 @@ export const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffer
     if (!cryptoAmountProps) return null;
 
     return (
-        <OfferWrap>
-            <Card>
-                <Offer>
-                    <OfferColumn1>
-                        <OfferBadgeWrap>
-                            {tag && <Badge variant="tertiary">{tag}</Badge>}
-                            {infoNote && (
-                                <Text typographyStyle="label" color={theme.textSubdued}>
-                                    {infoNote}
-                                </Text>
-                            )}
-                        </OfferBadgeWrap>
-                        <CoinmarketFeaturedOffersAmounts quote={quote} />
-                    </OfferColumn1>
-                    <OfferColumn2>
-                        <CoinmarketUtilsProvider exchange={quote.exchange} providers={providers} />
-                        {!isCoinmarketExchangeOffers(context) && (
-                            <CoinmarketFeaturedOffersPaymentInfo
-                                quote={quote as CoinmarketTradeDetailBuySellType}
-                                type={type}
-                            />
-                        )}
-                    </OfferColumn2>
-                    <OfferColumn3>
-                        <ButtonWrapper>
-                            {quote.status === 'LOGIN_REQUEST' ? (
-                                <Button
-                                    variant="tertiary"
-                                    isFullWidth
-                                    onClick={() => selectQuote(quote)}
-                                >
-                                    <Translation id="TR_LOGIN_PROCEED" />
-                                </Button>
-                            ) : (
-                                <Button
-                                    variant="tertiary"
-                                    isFullWidth
-                                    isLoading={callInProgress}
-                                    isDisabled={!!quote.error || callInProgress}
-                                    onClick={() => selectQuote(quote)}
-                                    data-testid="@coinmarket/featured-offers/get-this-deal-button"
-                                >
-                                    {actionButtonText(context, quote)}
-                                </Button>
-                            )}
-                        </ButtonWrapper>
-                    </OfferColumn3>
-                </Offer>
-            </Card>
-        </OfferWrap>
         <Card margin={{ top: spacings.md }} minHeight={100}>
             <Offer>
                 <OfferColumn1>
                     <OfferBadgeWrap>
-                        {tag && <OfferBadge variant="tertiary">{tag}</OfferBadge>}
-                        {infoNote && <OfferBadgeInfo>{infoNote}</OfferBadgeInfo>}
+                        {tag && <Badge variant="tertiary">{tag}</Badge>}
+                        {infoNote && (
+                            <Text typographyStyle="label" color={theme.textSubdued}>
+                                {infoNote}
+                            </Text>
+                        )}
                     </OfferBadgeWrap>
                     <CoinmarketFeaturedOffersAmounts quote={quote} />
                 </OfferColumn1>
                 <OfferColumn2>
                     <CoinmarketUtilsProvider exchange={quote.exchange} providers={providers} />
-                    <CoinmarketFeaturedOffersPaymentInfo quote={quote} type={type} />
+                    {!isCoinmarketExchangeOffers(context) && (
+                        <CoinmarketFeaturedOffersPaymentInfo
+                            quote={quote as CoinmarketTradeDetailBuySellType}
+                            type={type}
+                        />
+                    )}
                 </OfferColumn2>
                 <OfferColumn3>
-                    {quote.status === 'LOGIN_REQUEST' ? (
-                        <StyledButton variant="tertiary" onClick={() => selectQuote(quote)}>
-                            <Translation id="TR_LOGIN_PROCEED" />
-                        </StyledButton>
-                    ) : (
-                        <StyledButton
-                            variant="tertiary"
-                            isLoading={callInProgress}
-                            isDisabled={!!quote.error || callInProgress}
-                            onClick={() => selectQuote(quote)}
-                            data-testid="@coinmarket/featured-offers/get-this-deal-button"
-                        >
-                            {actionButtonText(context, quote)}
-                        </StyledButton>
-                    )}
+                    <ButtonWrapper>
+                        {quote.status === 'LOGIN_REQUEST' ? (
+                            <Button
+                                variant="tertiary"
+                                isFullWidth
+                                onClick={() => selectQuote(quote)}
+                            >
+                                <Translation id="TR_LOGIN_PROCEED" />
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="tertiary"
+                                isFullWidth
+                                isLoading={callInProgress}
+                                isDisabled={!!quote.error || callInProgress}
+                                onClick={() => selectQuote(quote)}
+                                data-testid="@coinmarket/featured-offers/get-this-deal-button"
+                            >
+                                {actionButtonText(context, quote)}
+                            </Button>
+                        )}
+                    </ButtonWrapper>
                 </OfferColumn3>
             </Offer>
         </Card>

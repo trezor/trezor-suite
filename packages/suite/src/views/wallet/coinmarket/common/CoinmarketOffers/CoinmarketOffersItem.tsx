@@ -145,7 +145,16 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                         />
                     </OfferColumn1>
                     <OfferColumn2>
-                        <CoinmarketUtilsPrice {...cryptoAmountProps} />
+                        <Row alignItems="flex-end">
+                            <CoinmarketUtilsPrice {...cryptoAmountProps} />
+                            {isCoinmarketExchangeOffers(context) && (
+                                <CoinmarketUtilsKyc
+                                    exchange={exchange}
+                                    providers={context.exchangeInfo?.providerInfos}
+                                    isForComparator
+                                />
+                            )}
+                        </Row>
                     </OfferColumn2>
                     <OfferColumn3>
                         {quote.status === 'LOGIN_REQUEST' ? (

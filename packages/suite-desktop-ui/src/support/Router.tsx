@@ -24,7 +24,7 @@ import WalletCoinmarketSellDetail from 'src/views/wallet/coinmarket/sell_new/det
 import { CoinmarketSellOffers } from 'src/views/wallet/coinmarket/sell_new/CoinmarketSellOffers';
 import { CoinmarketSellConfirm } from 'src/views/wallet/coinmarket/sell_new/CoinmarketSellConfirm';
 import { CoinmarketExchangeForm } from 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeForm';
-import WalletCoinmarketExchangeDetail from 'src/views/wallet/coinmarket/exchange/detail';
+import WalletCoinmarketExchangeDetail from 'src/views/wallet/coinmarket/exchange_new/detail';
 import { CoinmarketExchangeOffers } from 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeOffers';
 import { CoinmarketExchangeConfirm } from 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeConfirm';
 import WalletCoinmarketRedirect from 'src/views/wallet/coinmarket/redirect';
