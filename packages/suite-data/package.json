@@ -40,7 +40,7 @@
         "simple-git": "^3.25.0",
         "style-loader": "^3.3.4",
         "tsx": "^4.16.3",
-        "webpack": "^5.93.0",
+        "webpack": "^5.94.0",
         "webpack-cli": "^5.1.4"
     },
     "nx": {
