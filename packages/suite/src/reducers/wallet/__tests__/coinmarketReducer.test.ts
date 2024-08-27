@@ -43,7 +43,7 @@ describe('settings reducer', () => {
         expect(
             reducer(undefined, {
                 type: COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY,
-                modalCryptoSymbol: 'ANKR@ETH',
+                modalCryptoId: 'ANKR@ETH',
             }),
         ).toEqual({
             ...initialState,
@@ -53,7 +53,7 @@ describe('settings reducer', () => {
         expect(
             reducer(undefined, {
                 type: COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY,
-                modalCryptoSymbol: undefined,
+                modalCryptoId: undefined,
             }),
         ).toEqual({
             ...initialState,
@@ -76,8 +76,8 @@ describe('settings reducer', () => {
         ];
         expect(
             reducer(undefined, {
-                type: COINMARKET_INFO.SAVE_SYMBOLS_INFO,
-                symbolsInfo,
+                type: COINMARKET_INFO.SAVE_INFO,
+                coins: symbolsInfo,
             }),
         ).toEqual({ ...initialState, info: { ...initialState.info, symbolsInfo } });
     });

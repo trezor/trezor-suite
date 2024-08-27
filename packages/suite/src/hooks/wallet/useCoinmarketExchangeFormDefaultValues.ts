@@ -1,11 +1,14 @@
 import { useMemo } from 'react';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { buildCryptoOption, buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
 import { ExchangeFormState } from 'src/types/wallet/coinmarketExchangeForm';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { defaultCryptoCurrency } from 'src/constants/wallet/coinmarket/cryptoCurrencies';
+import { getCoingeckoId } from '@suite-common/wallet-config';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { CryptoId } from 'invity-api';
 
 export const useCoinmarketExchangeFormDefaultValues = (
     symbol: Account['symbol'],
@@ -13,6 +16,9 @@ export const useCoinmarketExchangeFormDefaultValues = (
     exchangeInfo?: ExchangeInfo,
     defaultAddress?: string,
 ) => {
+    const { buildDefaultCryptoOption } = useCoinmarketInfo();
+    const cryptoId = getCoingeckoId(symbol) as CryptoId;
+
     const defaultCurrency = useMemo(() => buildFiatOption(localCurrency), [localCurrency]);
     const defaultValues = useMemo(
         () =>
@@ -25,9 +31,7 @@ export const useCoinmarketExchangeFormDefaultValues = (
                       fiatInput: '',
                       cryptoInput: '',
                       receiveCryptoSelect: null,
-                      sendCryptoSelect: buildCryptoOption(
-                          networkToCryptoSymbol(symbol) ?? defaultCryptoCurrency,
-                      ),
+                      sendCryptoSelect: buildDefaultCryptoOption(cryptoId),
                       options: ['broadcast'],
                       outputs: [
                           {
@@ -40,7 +44,7 @@ export const useCoinmarketExchangeFormDefaultValues = (
                       // TODO: remove type casting (options string[])
                   } as ExchangeFormState)
                 : undefined,
-        [exchangeInfo, symbol, defaultAddress, defaultCurrency],
+        [exchangeInfo, buildDefaultCryptoOption, cryptoId, defaultAddress, defaultCurrency],
     );
 
     return { defaultCurrency, defaultValues };

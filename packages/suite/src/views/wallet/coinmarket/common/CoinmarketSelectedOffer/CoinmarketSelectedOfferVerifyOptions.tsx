@@ -1,3 +1,4 @@
+import { CryptoId } from 'invity-api';
 import styled from 'styled-components';
 import { Select } from '@trezor/components';
 import { Translation } from 'src/components/suite';
@@ -6,6 +7,7 @@ import {
     CoinmarketVerifyFormAccountOptionProps,
 } from 'src/types/coinmarket/coinmarketVerify';
 import CoinmarketSelectedOfferVerifyOptionsItem from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferVerifyOptionsItem';
+import { useCoinmarketInfo } from '../../../../../hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const SelectWrapper = styled.div`
     position: relative;
@@ -19,6 +21,8 @@ const CoinmarketSelectedOfferVerifyOptions = ({
     isMenuOpen,
     onChangeAccount,
 }: CoinmarketSelectedOfferVerifyOptionsProps) => {
+    const { getNetworkSymbol } = useCoinmarketInfo();
+
     return (
         <SelectWrapper>
             <Select
@@ -40,7 +44,8 @@ const CoinmarketSelectedOfferVerifyOptions = ({
                 placeholder={
                     <Translation
                         id="TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT"
-                        values={{ symbol: receiveNetwork?.toUpperCase() }}
+                        // TODO: Why is it optional?
+                        values={{ symbol: getNetworkSymbol(receiveNetwork as CryptoId) }}
                     />
                 }
             />

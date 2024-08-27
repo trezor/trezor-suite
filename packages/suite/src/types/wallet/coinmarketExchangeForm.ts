@@ -31,6 +31,7 @@ export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormSta
     isComposing: boolean;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     exchangeInfo?: ExchangeInfo;
+    // TODO: Obsolete, remove!
     symbolsInfo?: CryptoSymbolInfo[];
     defaultCurrency: Option;
     composeRequest: SendContextValues['composeTransaction'];

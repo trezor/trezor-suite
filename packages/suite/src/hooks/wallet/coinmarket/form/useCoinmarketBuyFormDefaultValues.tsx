@@ -1,29 +1,27 @@
 import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { useMemo } from 'react';
 import { Account } from 'src/types/wallet';
-import {
-    buildCryptoOption,
-    buildFiatOption,
-    getDefaultCountry,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { buildFiatOption, getDefaultCountry } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketBuyFormDefaultValuesProps } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
-import { FiatCurrencyCode } from 'invity-api';
+import { FiatCurrencyCode, CryptoId } from 'invity-api';
 import { formDefaultCurrency } from 'src/constants/wallet/coinmarket/formDefaults';
-import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { defaultCryptoCurrency } from 'src/constants/wallet/coinmarket/cryptoCurrencies';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { getCoingeckoId } from '@suite-common/wallet-config';
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
     buyInfo: BuyInfo | undefined,
     paymentMethods: CoinmarketPaymentMethodListProps[],
 ): CoinmarketBuyFormDefaultValuesProps => {
+    const { buildDefaultCryptoOption } = useCoinmarketInfo();
+    const cryptoId = getCoingeckoId(accountSymbol) as CryptoId;
+
     const country = buyInfo?.buyInfo?.country;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
-    // set defaultCryptoCurrency (BTC), when accountSymbol is not in the list of supported currencies (e.g. VTC)
     const defaultCrypto = useMemo(
-        () => buildCryptoOption(networkToCryptoSymbol(accountSymbol) ?? defaultCryptoCurrency),
-        [accountSymbol],
+        () => buildDefaultCryptoOption(cryptoId),
+        [buildDefaultCryptoOption, cryptoId],
     );
     const defaultPaymentMethod: CoinmarketPaymentMethodListProps = useMemo(
         () =>

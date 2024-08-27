@@ -15,6 +15,7 @@ import {
     CoinmarketFormOptionGroupLabel,
     CoinmarketFormOptionLabel,
     CoinmarketFormOptionLabelLong,
+    CoinmarketFormOptionLogo,
     CoinmarketFormOptionNetwork,
 } from 'src/views/wallet/coinmarket';
 import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
@@ -24,7 +25,6 @@ import {
 } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormDefaultValues';
-import { CoinmarketFormOptionIcon } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 import { HiddenPlaceholder } from 'src/components/suite';
 import { createFilter } from 'react-select';
 
@@ -66,7 +66,7 @@ const CoinmarketFormInputAccountActive = ({ label }: CoinmarketFormInputDefaultP
 
                             return (
                                 <CoinmarketFormOption>
-                                    <CoinmarketFormOptionIcon symbol={option.label} />
+                                    <CoinmarketFormOptionLogo cryptoId={option.value} size={20} />
                                     <CoinmarketFormOptionLabel>
                                         {option.label}
                                     </CoinmarketFormOptionLabel>

@@ -188,7 +188,7 @@ const VerifyAddressComponent = () => {
                                     account={selectedAccountOption?.account}
                                     address={address}
                                     control={control}
-                                    receiveSymbol={receiveSymbol}
+                                    receiveCryptoId={receiveSymbol}
                                     setValue={setValue}
                                 />
                             </>

@@ -28,7 +28,6 @@ export const useCoinmarketBuildAccountGroups = (
     const accountLabels = useSelector(selectAccountLabels);
     const device = useSelector(selectDevice);
     const { defaultAccountLabelString } = useAccountLabel();
-    const { symbolsInfo } = useSelector(state => state.wallet.coinmarket.info);
     const { tokenDefinitions } = useSelector(state => state);
     const supportedSymbols = useSelector(state =>
         type === 'sell'
@@ -41,14 +40,12 @@ export const useCoinmarketBuildAccountGroups = (
             coinmarketBuildAccountOptions({
                 accounts,
                 deviceState: device?.state,
-                symbolsInfo,
                 accountLabels,
                 tokenDefinitions,
-                supportedSymbols,
+                supportedCryptoIds: supportedSymbols,
                 defaultAccountLabelString,
             }),
         [
-            symbolsInfo,
             accounts,
             supportedSymbols,
             accountLabels,

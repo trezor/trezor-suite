@@ -9,6 +9,7 @@ import {
     typography,
 } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { CoinmarketCoinLogo } from './common/CoinmarketCoinLogo';
 
 interface ResponsiveSize {
     $responsiveSize: keyof typeof variables.SCREEN_SIZE;
@@ -126,6 +127,12 @@ export const CoinmarketFormOptionGroupLabel = styled.div`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
+export const CoinmarketFormOptionLogo = styled(CoinmarketCoinLogo)`
+    display: flex;
+    align-items: center;
+    margin-right: ${spacingsPx.xs};
+`;
+
 export const CoinmarketFormOptionLabel = styled.div<{ $isDark?: boolean }>`
     color: ${({ theme, $isDark }) => ($isDark ? theme.textDefault : theme.textSubdued)};
 `;
@@ -165,6 +172,8 @@ export const CoinmarketAmountWrapper = styled(H2)`
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    gap: ${spacingsPx.xs};
+    line-height: unset;
 
     ${SCREEN_QUERY.BELOW_DESKTOP} {
         font-size: 28px;

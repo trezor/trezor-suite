@@ -6,11 +6,11 @@ import {
     CoinmarketSellFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import CoinmarketFormSwitcherCryptoFiat from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormSwitcherCryptoFiat';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import CoinmarketFormInputFiat from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiat';
 import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
 import CoinmarketFormInputCrypto from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputCrypto';
 import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const CoinmarketFormInputFiatCrypto = <
     TFieldValues extends
@@ -21,13 +21,13 @@ const CoinmarketFormInputFiatCrypto = <
     showLabel = true,
     ...formProps
 }: CoinmarketFormInputFiatCryptoWrapProps<TFieldValues>) => {
-    const context = useCoinmarketFormContext();
+    const { getNetworkSymbol } = useCoinmarketInfo();
     const {
         type,
         form: {
             state: { isFormLoading, toggleAmountInCrypto },
         },
-    } = context;
+    } = useCoinmarketFormContext();
 
     const { amountInCrypto, cryptoSelect } = formProps.methods.getValues();
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto });
@@ -39,7 +39,7 @@ const CoinmarketFormInputFiatCrypto = <
                     <CoinmarketFormSwitcherCryptoFiat
                         symbol={
                             !amountInCrypto && cryptoSelect?.value
-                                ? cryptoToCoinSymbol(cryptoSelect.value)
+                                ? getNetworkSymbol(cryptoSelect?.value)
                                 : formProps.currencySelectLabel ?? ''
                         }
                         isDisabled={isFormLoading}

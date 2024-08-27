@@ -24,7 +24,7 @@ import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '../constants';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import { CryptoSymbol } from 'invity-api';
+import { CryptoId } from 'invity-api';
 
 export type CoinmarketCommonAction =
     | {
@@ -41,7 +41,7 @@ export type CoinmarketCommonAction =
       }
     | {
           type: typeof COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY;
-          modalCryptoSymbol: CryptoSymbol | undefined;
+          modalCryptoId: CryptoId | undefined;
       };
 
 type FormState = {

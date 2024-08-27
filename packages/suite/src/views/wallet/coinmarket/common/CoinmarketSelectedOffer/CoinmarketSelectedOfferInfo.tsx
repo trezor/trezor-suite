@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BuyTrade, SellFiatTrade } from 'invity-api';
+import { BuyTrade, SellFiatTrade, CryptoId } from 'invity-api';
 import { variables } from '@trezor/components';
 import {
     CoinmarketPaymentType,
@@ -10,17 +10,16 @@ import { Translation } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import {
-    cryptoToCoinSymbol,
-    cryptoToNetworkSymbol,
-    isCryptoSymbolToken,
-} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+    coinmarketGetAmountLabels,
+    parseCryptoId,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     CoinmarketGetCryptoQuoteAmountProps,
     CoinmarketGetProvidersInfoProps,
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketCoinImage } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 
 const Wrapper = styled.div`
     display: flex;
@@ -123,34 +122,31 @@ export const CoinmarketSelectedOfferInfo = ({
     quoteAmounts,
     type,
 }: CoinmarketSelectedOfferInfoProps) => {
+    const { getNetworkName, getNetworkSymbol } = useCoinmarketInfo();
     const { exchange, paymentMethod, paymentMethodName, fiatCurrency, fiatStringAmount } =
         selectedQuote;
 
-    const currency = quoteAmounts?.receiveCurrency
-        ? cryptoToCoinSymbol(quoteAmounts.receiveCurrency)
-        : undefined;
-    const network =
-        quoteAmounts?.receiveCurrency && isCryptoSymbolToken(quoteAmounts.receiveCurrency)
-            ? cryptoToNetworkSymbol(quoteAmounts.receiveCurrency)?.toUpperCase()
-            : null;
+    // TODO: Why is receiveCurrency optional???
+    const cryptoId = quoteAmounts?.receiveCurrency as CryptoId;
+    const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto: true });
 
     return (
         <Wrapper data-testid="@coinmarket/offer/info">
             <Info>
                 <Header>
-                    <CoinmarketCoinImage symbol={currency} size="large" />
+                    <CoinmarketCoinLogo cryptoId={cryptoId} />
                     <AccountText>
-                        {network ? (
+                        {contractAddress ? (
                             <Translation
                                 id="TR_COINMARKET_TOKEN_NETWORK"
                                 values={{
-                                    tokenName: currency,
-                                    networkName: network,
+                                    tokenName: cryptoId,
+                                    networkName: getNetworkName(networkId),
                                 }}
                             />
                         ) : (
-                            currency
+                            getNetworkSymbol(cryptoId)
                         )}
                     </AccountText>
                 </Header>
@@ -173,11 +169,11 @@ export const CoinmarketSelectedOfferInfo = ({
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <CoinmarketCoinImage symbol={currency} />
+                            <CoinmarketCoinLogo cryptoId={cryptoId} size={20} />
                             <Amount>
                                 <CoinmarketCryptoAmount
                                     amount={quoteAmounts?.receiveAmount}
-                                    symbol={currency}
+                                    cryptoId={cryptoId}
                                 />
                             </Amount>
                         </Dark>

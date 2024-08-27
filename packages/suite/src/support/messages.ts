@@ -1418,25 +1418,17 @@ export default defineMessages({
         defaultMessage: 'Select',
         id: 'TR_COINMARKET_OFFERS_SELECT',
     },
-    TR_COINMARKET_CRYPTO_CATEGORY_A: {
+    TR_COINMARKET_POPULAR_CURRENCIES: {
         defaultMessage: 'Popular currencies',
-        id: 'TR_COINMARKET_CRYPTO_CATEGORY_A',
+        id: 'TR_COINMARKET_POPULAR_CURRENCIES',
     },
-    TR_COINMARKET_CRYPTO_CATEGORY_B: {
-        defaultMessage: 'Ethereum ERC-20 tokens',
-        id: 'TR_COINMARKET_CRYPTO_CATEGORY_B',
-    },
-    TR_COINMARKET_CRYPTO_CATEGORY_C: {
-        defaultMessage: 'Solana tokens',
-        id: 'TR_COINMARKET_CRYPTO_CATEGORY_C',
-    },
-    TR_COINMARKET_CRYPTO_CATEGORY_D: {
-        defaultMessage: 'Polygon ERC-20 tokens',
-        id: 'TR_COINMARKET_CRYPTO_CATEGORY_D',
-    },
-    TR_COINMARKET_CRYPTO_CATEGORY_E: {
+    TR_COINMARKET_OTHER_CURRENCIES: {
         defaultMessage: 'Other currencies',
-        id: 'TR_COINMARKET_CRYPTO_CATEGORY_E',
+        id: 'TR_COINMARKET_OTHER_CURRENCIES',
+    },
+    TR_COINMARKET_NETWORK_TOKENS: {
+        defaultMessage: '{networkName} tokens',
+        id: 'TR_COINMARKET_NETWORK_TOKENS',
     },
     TR_COINMARKET_TOKEN_NETWORK: {
         defaultMessage: '{tokenName} on {networkName} network',

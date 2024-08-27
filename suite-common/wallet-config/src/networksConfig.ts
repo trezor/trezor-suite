@@ -636,6 +636,9 @@ export const getTestnets = (debug = false) =>
         n => !n.accountType && n.testnet === true && (!n.isDebugOnlyNetwork || debug),
     );
 
+export const getNetworkByCoingeckoId = (coingeckoId: string) =>
+    networksCompatibility.find(n => n.coingeckoId === coingeckoId);
+
 export const getAllNetworkSymbols = () => networksCompatibility.map(n => n.symbol);
 
 export const getEthereumTypeNetworkSymbols = () =>

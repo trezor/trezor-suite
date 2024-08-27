@@ -91,7 +91,6 @@ export const useCoinmarketExchangeForm = ({
 
     const accounts = useSelector(state => state.wallet.accounts);
     const { exchangeInfo, quotesRequest } = useSelector(state => state.wallet.coinmarket.exchange);
-    const { symbolsInfo } = useSelector(state => state.wallet.coinmarket.info);
     const device = useSelector(selectDevice);
     const localCurrency = useSelector(selectLocalCurrency);
     const fees = useSelector(state => state.wallet.fees);
@@ -399,7 +398,6 @@ export const useCoinmarketExchangeForm = ({
         updateFiatValue,
         register,
         exchangeInfo,
-        symbolsInfo,
         changeFeeLevel,
         quotesRequest,
         composedLevels,

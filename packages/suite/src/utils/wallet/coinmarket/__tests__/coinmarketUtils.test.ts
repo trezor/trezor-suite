@@ -1,15 +1,12 @@
 import { Account } from 'src/types/wallet';
 import {
     buildFiatOption,
-    symbolToInvityApiSymbol,
     getUnusedAddressFromAccount,
     getCountryLabelParts,
     mapTestnetSymbol,
     getSendCryptoOptions,
     getTagAndInfoNote,
-    buildCryptoOption,
     getBestRatedQuote,
-    coinmarketBuildCryptoOptions,
     addIdsToQuotes,
     filterQuotesAccordingTags,
     coinmarketGetSortedAccounts,
@@ -27,14 +24,7 @@ import {
 import * as BUY_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/buyUtils';
 import * as SELL_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/sellUtils';
 import * as EXCHANGE_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';
-import { CryptoSymbol, CryptoSymbolInfo } from 'invity-api';
-import {
-    CryptoCategoryA,
-    CryptoCategoryB,
-    CryptoCategoryC,
-    CryptoCategoryD,
-    CryptoCategoryE,
-} from 'src/constants/wallet/coinmarket/cryptoCategories';
+import { CryptoId, CryptoSymbolInfo } from 'invity-api';
 import { useAccountLabel } from 'src/components/suite/AccountLabel';
 
 jest.mock('src/components/suite/AccountLabel', () => ({
@@ -45,29 +35,6 @@ jest.mock('src/components/suite/AccountLabel', () => ({
 describe('coinmarket utils', () => {
     it('buildFiatOption', () => {
         expect(buildFiatOption('czk')).toStrictEqual({ value: 'czk', label: 'CZK' });
-    });
-
-    it('buildCryptoOption', () => {
-        expect(buildCryptoOption('BTC')).toStrictEqual({
-            value: 'BTC',
-            label: 'BTC',
-            cryptoName: 'Bitcoin',
-        });
-        expect(buildCryptoOption('ETH')).toStrictEqual({
-            value: 'ETH',
-            label: 'ETH',
-            cryptoName: 'Ethereum',
-        });
-        expect(buildCryptoOption('USDT@ETH')).toStrictEqual({
-            value: 'USDT@ETH',
-            label: 'USDT',
-            cryptoName: 'Ethereum',
-        });
-    });
-
-    it('symbolToInvityApiSymbol', () => {
-        expect(symbolToInvityApiSymbol('btc')).toStrictEqual('btc');
-        expect(symbolToInvityApiSymbol('usdt')).toStrictEqual('usdt');
     });
 
     it('getUnusedAddressFromAccount', () => {
@@ -245,101 +212,6 @@ describe('coinmarket utils', () => {
         });
     });
 
-    it('function coinmarketBuildCryptoOptions', () => {
-        const symbolsInfo: CryptoSymbolInfo[] = [
-            {
-                symbol: 'BTC',
-                name: 'Bitcoin',
-                category: 'Popular currencies',
-            },
-            {
-                symbol: 'ETH',
-                name: 'Ethereum',
-                category: 'Popular currencies',
-            },
-            {
-                symbol: 'USDT@ETH',
-                name: 'Tether',
-                category: 'Ethereum ERC20 tokens',
-            },
-            {
-                symbol: 'USDT@MATIC',
-                name: 'Tether',
-                category: 'Polygon ERC20 tokens',
-            },
-        ];
-        const cryptoCurrencies: Set<CryptoSymbol> = new Set([
-            'BTC',
-            'ETH',
-            'USDT@ETH',
-            'USDT@MATIC',
-            'VEN',
-            'STEEM',
-        ]);
-
-        expect(
-            coinmarketBuildCryptoOptions({
-                symbolsInfo,
-                cryptoCurrencies,
-            }),
-        ).toStrictEqual([
-            {
-                label: CryptoCategoryA,
-                options: [
-                    {
-                        value: 'BTC',
-                        label: 'BTC',
-                        cryptoName: 'Bitcoin',
-                    },
-                    {
-                        value: 'ETH',
-                        label: 'ETH',
-                        cryptoName: 'Ethereum',
-                    },
-                ],
-            },
-            {
-                label: CryptoCategoryB,
-                options: [
-                    {
-                        value: 'USDT@ETH',
-                        label: 'USDT',
-                        cryptoName: 'Tether',
-                    },
-                ],
-            },
-            {
-                label: CryptoCategoryC,
-                options: [],
-            },
-            {
-                label: CryptoCategoryD,
-                options: [
-                    {
-                        value: 'USDT@MATIC',
-                        label: 'USDT',
-                        cryptoName: 'Tether',
-                    },
-                ],
-            },
-            {
-                label: CryptoCategoryE,
-                options: [
-                    {
-                        value: 'VEN',
-                        label: 'VEN',
-                        cryptoName: null,
-                    },
-                    {
-                        value: 'STEEM',
-                        label: 'STEEM',
-                        cryptoName: null,
-                    },
-                ],
-            },
-        ]);
-    });
-
     it('coinmarketGetSortedAccounts', () => {
         const sortedAccounts = coinmarketGetSortedAccounts({
             accounts: FIXTURE_ACCOUNTS as Account[],
@@ -389,7 +261,7 @@ describe('coinmarket utils', () => {
             defaultAccountLabelString,
             symbolsInfo,
             tokenDefinitions: { eth: { coin: coinDefinitions } },
-            supportedSymbols: new Set(['BTC', 'LTC', 'ETH', 'USDC@ETH', 'MATIC', 'VEE@ETH']),
+            supportedCryptoIds: new Set(['BTC', 'LTC', 'ETH', 'USDC@ETH', 'MATIC', 'VEE@ETH']),
         });
 
         expect(sortedAccounts).toStrictEqual([

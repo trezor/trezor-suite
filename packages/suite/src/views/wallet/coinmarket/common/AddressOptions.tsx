@@ -1,3 +1,5 @@
+import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
+import { CryptoId } from 'invity-api';
 import { useEffect, ReactElement } from 'react';
 import { UseFormReturn, Control, Controller } from 'react-hook-form';
 import type { MenuPlacement } from 'react-select';
@@ -12,6 +14,7 @@ import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
 import { CoinmarketBuyAddressOptionsType } from 'src/types/coinmarket/coinmarketOffers';
+import { useCoinmarketInfo } from '../../../../hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const AddressWrapper = styled.div`
     display: flex;
@@ -71,18 +74,20 @@ const buildOptions = (addresses: Account['addresses']) => {
 interface AddressOptionsProps<TFieldValues extends CoinmarketBuyAddressOptionsType>
     extends Pick<UseFormReturn<TFieldValues>, 'setValue'> {
     control: Control<TFieldValues>;
-    receiveSymbol?: string;
+    receiveCryptoId?: CryptoId;
     account?: Account;
     address?: string;
     menuPlacement?: MenuPlacement;
 }
 export const AddressOptions = <TFieldValues extends CoinmarketBuyAddressOptionsType>({
-    receiveSymbol,
+    receiveCryptoId,
     address,
     account,
     menuPlacement,
     ...props
 }: AddressOptionsProps<TFieldValues>) => {
+    const { getNetworkSymbol } = useCoinmarketInfo();
+
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { control, setValue } =
         props as unknown as UseFormReturn<CoinmarketBuyAddressOptionsType>;
@@ -93,6 +98,8 @@ export const AddressOptions = <TFieldValues extends CoinmarketBuyAddressOptionsT
     const accountMetadata = useSelector(state =>
         selectLabelingDataForAccount(state, account?.key || ''),
     );
+    // TODO: How do we handle unsupported shitcoins?
+    const symbol = getNetworkByCoingeckoId(receiveCryptoId as string)?.symbol || 'btc';
 
     useEffect(() => {
         if (!address && addresses) {
@@ -116,7 +123,7 @@ export const AddressOptions = <TFieldValues extends CoinmarketBuyAddressOptionsT
                         if (!accountAddress) return null;
                         const formattedCryptoAmount = formatNetworkAmount(
                             accountAddress.balance || '0',
-                            receiveSymbol as Account['symbol'],
+                            symbol,
                         );
 
                         return (
@@ -130,14 +137,16 @@ export const AddressOptions = <TFieldValues extends CoinmarketBuyAddressOptionsT
                                         <CryptoWrapper>
                                             <FormattedCryptoAmount
                                                 value={formattedCryptoAmount}
-                                                symbol={receiveSymbol}
+                                                symbol={getNetworkSymbol(
+                                                    receiveCryptoId as CryptoId,
+                                                )}
                                             />
                                         </CryptoWrapper>
                                         • <PathWrapper>{accountAddress.path}</PathWrapper> •
                                         <FiatWrapper>
                                             <FiatValue
                                                 amount={formattedCryptoAmount}
-                                                symbol={receiveSymbol || ''}
+                                                symbol={symbol}
                                             />
                                         </FiatWrapper>
                                     </Amount>

@@ -1,7 +1,6 @@
 import { H2, IconLegacy, Row, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { CoinmarketCryptoAmount, CoinmarketFiatAmount } from '..';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarketOffers';
@@ -10,7 +9,7 @@ import {
     isCoinmarketSellOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { CryptoSymbol } from 'invity-api';
+import { CryptoId } from 'invity-api';
 
 const SummaryWrap = styled.div`
     ${SCREEN_QUERY.BELOW_TABLET} {
@@ -47,8 +46,8 @@ const CoinmarketHeaderSummary = ({
                         {receiveCurrency && (
                             <TextWrap>
                                 <CoinmarketCryptoAmount
-                                    amount={receiveAmount ?? ''}
-                                    symbol={cryptoToCoinSymbol(receiveCurrency)}
+                                    amount={receiveAmount}
+                                    cryptoId={receiveCurrency}
                                     displayLogo
                                 />
                             </TextWrap>
@@ -65,8 +64,8 @@ const CoinmarketHeaderSummary = ({
                         {sendCurrency && (
                             <TextWrap>
                                 <CoinmarketCryptoAmount
-                                    amount={sendAmount ?? ''}
-                                    symbol={cryptoToCoinSymbol(sendCurrency as CryptoSymbol)}
+                                    amount={sendAmount}
+                                    cryptoId={sendCurrency as CryptoId}
                                     displayLogo
                                 />
                             </TextWrap>
@@ -74,11 +73,7 @@ const CoinmarketHeaderSummary = ({
                         <StyledIcon icon="ARROW_RIGHT_LONG" />
                         {receiveCurrency && (
                             <TextWrap>
-                                <CoinmarketCryptoAmount
-                                    amount=""
-                                    symbol={cryptoToCoinSymbol(receiveCurrency)}
-                                    displayLogo
-                                />
+                                <CoinmarketCryptoAmount cryptoId={receiveCurrency} displayLogo />
                             </TextWrap>
                         )}
                     </>

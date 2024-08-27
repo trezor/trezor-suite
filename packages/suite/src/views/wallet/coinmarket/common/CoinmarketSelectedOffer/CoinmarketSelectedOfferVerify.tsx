@@ -5,11 +5,11 @@ import { Input, variables, Button } from '@trezor/components';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import useCoinmarketVerifyAccount from 'src/hooks/wallet/coinmarket/form/useCoinmarketVerifyAccount';
 import CoinmarketSelectedOfferVerifyOptions from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferVerifyOptions';
+import { useCoinmarketInfo } from '../../../../../hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const Wrapper = styled.div`
     display: flex;
@@ -60,6 +60,7 @@ const Row = styled.div`
 // TODO: refactor with exchange redesign
 const CoinmarketSelectedOfferVerify = () => {
     const { translationString } = useTranslation();
+    const { getNetworkSymbol } = useCoinmarketInfo();
     const { callInProgress, device, verifyAddress, selectedQuote, addressVerified, goToPayment } =
         useCoinmarketFormContext<CoinmarketTradeBuyType>();
     const currency = selectedQuote?.receiveCurrency;
@@ -99,7 +100,7 @@ const CoinmarketSelectedOfferVerify = () => {
             <Heading>
                 <Translation
                     id="TR_EXCHANGE_RECEIVING_ADDRESS_INFO"
-                    values={{ symbol: cryptoToCoinSymbol(currency) }}
+                    values={{ symbol: getNetworkSymbol(currency) }}
                 />
             </Heading>
             <CardContent>
@@ -111,7 +112,7 @@ const CoinmarketSelectedOfferVerify = () => {
                         />
                     </CustomLabel>
                     <CoinmarketSelectedOfferVerifyOptions
-                        receiveNetwork={receiveNetwork ?? currency}
+                        receiveNetwork={receiveNetwork}
                         selectedAccountOption={selectedAccountOption}
                         selectAccountOptions={selectAccountOptions}
                         isMenuOpen={isMenuOpen}
@@ -132,7 +133,7 @@ const CoinmarketSelectedOfferVerify = () => {
                                     account={selectedAccountOption?.account}
                                     address={address}
                                     control={form.control}
-                                    receiveSymbol={selectedQuote.receiveCurrency}
+                                    receiveCryptoId={selectedQuote.receiveCurrency}
                                     setValue={form.setValue}
                                 />
                             </>

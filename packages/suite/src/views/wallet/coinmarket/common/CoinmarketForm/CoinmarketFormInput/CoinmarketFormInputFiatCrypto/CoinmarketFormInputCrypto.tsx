@@ -13,11 +13,11 @@ import { useFormatters } from '@suite-common/formatters';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useEffect } from 'react';
 import { CoinmarketFormInputFiatCryptoProps } from 'src/types/coinmarket/coinmarketForm';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
 import { FieldError, FieldValues } from 'react-hook-form';
 import { coinmarketGetAccountLabel } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { isCoinmarketSellOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const CoinmarketFormInputCrypto = <TFieldValues extends FieldValues>({
     cryptoInputName,
@@ -36,9 +36,11 @@ const CoinmarketFormInputCrypto = <TFieldValues extends FieldValues>({
         trigger,
         clearErrors,
     } = methods;
+    const { getNetworkSymbol } = useCoinmarketInfo();
     const { cryptoSelect } = getValues();
     const cryptoInputError = errors[cryptoInputName] as FieldError;
 
+    const accountSymbol = getNetworkSymbol(cryptoSelect?.value) ?? '';
     const cryptoInputRules = {
         validate: {
             min: validateMin(translationString),
@@ -76,10 +78,7 @@ const CoinmarketFormInputCrypto = <TFieldValues extends FieldValues>({
             hasBottomPadding={false}
             innerAddon={
                 <CoinmarketFormOptionLabel>
-                    {coinmarketGetAccountLabel(
-                        cryptoSelect?.value ? cryptoToCoinSymbol(cryptoSelect.value) : '',
-                        shouldSendInSats,
-                    )}
+                    {coinmarketGetAccountLabel(accountSymbol, shouldSendInSats)}
                 </CoinmarketFormOptionLabel>
             }
             data-testid="@coinmarket/form/crypto-input"

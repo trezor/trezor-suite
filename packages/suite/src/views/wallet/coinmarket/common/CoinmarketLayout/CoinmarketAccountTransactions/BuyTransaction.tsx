@@ -24,13 +24,13 @@ import { TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const Wrapper = styled.div`
     display: flex;
@@ -136,6 +136,7 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
     const dispatch = useDispatch();
     const theme = useTheme();
     const { navigateToBuyOffers, navigateToBuyDetail } = useCoinmarketNavigation(account);
+    const { getNetworkSymbol } = useCoinmarketInfo();
     const country = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.buyInfo?.country);
 
     useCoinmarketWatchTrade({
@@ -203,7 +204,7 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
                     </Arrow>
                     <FormattedCryptoAmount
                         value={receiveStringAmount}
-                        symbol={cryptoToCoinSymbol(receiveCurrency!)}
+                        symbol={getNetworkSymbol(receiveCurrency!)}
                     />
                     {/* TODO FIX THIS LOGO */}
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}

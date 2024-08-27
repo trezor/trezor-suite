@@ -15,6 +15,7 @@ import type { FieldValues, UseFormReturn, FieldPath } from 'react-hook-form';
 import type {
     BankAccount,
     BuyTrade,
+    CryptoId,
     CryptoSymbol,
     CryptoSymbolInfo,
     ExchangeTrade,
@@ -259,7 +260,7 @@ export type CoinmarketFormStateMapProps = {
 export interface CoinmarketFormInputAccountProps<TFieldValues extends FieldValues>
     extends CoinmarketFormInputDefaultProps {
     cryptoSelectName: FieldPath<TFieldValues>;
-    supportedCryptoCurrencies: Set<CryptoSymbol> | undefined;
+    supportedCryptoCurrencies: Set<CryptoId> | undefined;
     methods: UseFormReturn<TFieldValues>;
 }
 

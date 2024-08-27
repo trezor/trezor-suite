@@ -3,7 +3,7 @@ import { AppState } from '../suite';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import {
     BankAccount,
-    CryptoSymbol,
+    CryptoId,
     ExchangeTrade,
     P2pProviderInfo,
     P2pQuote,
@@ -108,8 +108,8 @@ export type CoinmarketOffersContextValues<T extends CoinmarketTradeType> =
 export interface CoinmarketCryptoAmountProps {
     amountInCrypto: boolean | undefined;
     sendAmount: string | number | undefined;
-    sendCurrency: string | undefined;
+    sendCurrency: CryptoId | string | undefined; // TODO: ???
     receiveAmount: string | number | undefined;
-    receiveCurrency: CryptoSymbol | undefined;
+    receiveCurrency: CryptoId | undefined;
     className?: string;
 }

@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
-import type { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
+import type { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 import { isChanged } from '@suite-common/suite-utils';
 import { formatAmount, getNetwork } from '@suite-common/wallet-utils';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
@@ -39,9 +39,9 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketSatsSwitcher } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSatsSwitcher';
-import { Network } from '@suite-common/wallet-config';
-import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
@@ -52,6 +52,7 @@ const useCoinmarketBuyForm = ({
     const dispatch = useDispatch();
     const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest, selectedQuote } =
         useSelector(state => state.wallet.coinmarket.buy);
+    const { getNetworkSymbol } = useCoinmarketInfo();
     const { callInProgress, account, timer, device, setCallInProgress, checkQuotesTimer } =
         useCoinmarketCommonOffers<CoinmarketTradeBuyType>({ selectedAccount, type });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
@@ -147,9 +148,9 @@ const useCoinmarketBuyForm = ({
         values?.paymentMethod?.value ?? '',
     );
     // based on selected cryptoSymbol, because of using for validation cryptoInput
-    const network = getNetwork(
-        cryptoToNetworkSymbol(values.cryptoSelect?.value ?? 'BTC') ?? 'btc',
-    ) as Network;
+    // TODO: This is most likely not right. Almost any shitcoin will use the BTC network.
+    const network =
+        getNetworkByCoingeckoId(values.cryptoSelect?.value as CryptoId) ?? getNetwork('btc')!;
     const { toggleAmountInCrypto } = useCoinmarketSatsSwitcher({
         account,
         methods,
@@ -298,7 +299,7 @@ const useCoinmarketBuyForm = ({
         if (quotesRequest) {
             const result = await openCoinmarketBuyConfirmModal(
                 provider?.companyName,
-                quote.receiveCurrency,
+                getNetworkSymbol(quote.receiveCurrency!),
             );
             if (result) {
                 // empty quoteId means the partner requests login first, requestTrade to get login screen
@@ -324,7 +325,7 @@ const useCoinmarketBuyForm = ({
                     saveSelectedQuote(quote);
                     dispatch({
                         type: SET_MODAL_CRYPTO_CURRENCY,
-                        modalCryptoSymbol: quote.receiveCurrency,
+                        modalCryptoId: quote.receiveCurrency,
                     });
                     timer.stop();
 
