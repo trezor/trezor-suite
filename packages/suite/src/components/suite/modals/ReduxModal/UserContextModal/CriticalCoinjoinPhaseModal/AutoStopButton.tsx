@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { IconLegacy, IconType } from '@trezor/components';
+import { IconLegacy, IconLegacyType } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -98,7 +98,7 @@ const getButtonConfig = (
     isActivated: boolean,
     isHovered: boolean,
 ): {
-    icon: IconType;
+    icon: IconLegacyType;
     iconSize: number;
     text: TranslationKey;
 } => {

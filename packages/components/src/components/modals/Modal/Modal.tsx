@@ -4,7 +4,7 @@ import styled, { css, useTheme } from 'styled-components';
 import { useEvent } from 'react-use';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { IconLegacy, IconType } from '../../Icon/IconLegacy';
+import { IconLegacy, IconLegacyType } from '../../Icon/IconLegacy';
 import { Stepper } from '../../loaders/Stepper/Stepper';
 import { IconButton } from '../../buttons/IconButton/IconButton';
 import { H3 } from '../../typography/Heading/Heading';
@@ -181,7 +181,7 @@ interface ModalProps {
     preheading?: ReactNode;
     subheading?: ReactNode;
     modalPrompt?: ReactNode;
-    headerIcon?: IconType;
+    headerIcon?: IconLegacyType;
     headingSize?: HeadingSize;
     isHeadingCentered?: boolean;
     description?: ReactNode;

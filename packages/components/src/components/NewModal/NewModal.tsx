@@ -19,7 +19,7 @@ import { NewModalContext } from './NewModalContext';
 import { NewModalBackdrop } from './NewModalBackdrop';
 import { NewModalProvider } from './NewModalProvider';
 import type { NewModalVariant, NewModalSize, NewModalAlignment } from './types';
-import { IconLegacy, IconType } from '../Icon/IconLegacy';
+import { IconLegacy, IconLegacyType } from '../Icon/IconLegacy';
 import {
     mapVariantToIconBackground,
     mapVariantToIconBorderColor,
@@ -109,7 +109,7 @@ interface NewModalProps {
     bottomContent?: ReactNode;
     onBackClick?: () => void;
     onCancel?: () => void;
-    icon?: IconType;
+    icon?: IconLegacyType;
     alignment?: NewModalAlignment;
     size?: NewModalSize;
     'data-test'?: string;

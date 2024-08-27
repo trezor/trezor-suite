@@ -1,6 +1,6 @@
 import { useRef, useCallback, useMemo, useState, MouseEvent, DragEvent, ChangeEvent } from 'react';
 import styled from 'styled-components';
-import { IconLegacy, IconType, Paragraph } from '@trezor/components';
+import { IconLegacy, IconLegacyType, Paragraph } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { borders } from '@trezor/theme';
@@ -9,7 +9,7 @@ interface DropZoneProps {
     // 'accept' attribute for underlying HTML file input
     accept?: string;
     // icon displayed inside Dropzone
-    icon?: IconType;
+    icon?: IconLegacyType;
     // function which is called after the file is selected
     onSelect: (data: File, setError: (msg: ExtendedMessageDescriptor) => void) => void;
     className?: string;

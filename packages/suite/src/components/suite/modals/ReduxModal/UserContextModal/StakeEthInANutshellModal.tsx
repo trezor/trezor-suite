@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Button, IconLegacy, IconType, Paragraph } from '@trezor/components';
+import { Button, IconLegacy, IconLegacyType, Paragraph } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -37,7 +37,7 @@ const GreyP = styled(Paragraph)`
 
 interface StakingDetails {
     id: number;
-    icon: IconType;
+    icon: IconLegacyType;
     translationId: TranslationKey;
 }
 

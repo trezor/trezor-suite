@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { transparentize } from 'polished';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { IconLegacy, variables, IconType } from '@trezor/components';
+import { IconLegacy, variables, IconLegacyType } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import type { AccountUtxo } from '@trezor/connect';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -44,7 +44,7 @@ const StyledIcon = styled(IconLegacy)<{ $backgroundColor?: string }>`
 interface UtxoSelectionListProps {
     description: ReactNode;
     heading: ReactNode;
-    icon: IconType;
+    icon: IconLegacyType;
     iconColor?: string;
     utxos: AccountUtxo[];
     withHeader: boolean;

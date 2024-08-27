@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
-import { IconLegacy, IconType } from '../../Icon/IconLegacy';
+import { IconLegacy, IconLegacyType } from '../../Icon/IconLegacy';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,
@@ -93,7 +93,7 @@ export type ButtonProps = SelectedHTMLButtonProps &
         isDisabled?: boolean;
         isLoading?: boolean;
         isFullWidth?: boolean;
-        icon?: IconType;
+        icon?: IconLegacyType;
         iconSize?: number;
         iconAlignment?: IconAlignment;
         children: React.ReactNode;

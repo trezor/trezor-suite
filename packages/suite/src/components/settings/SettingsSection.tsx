@@ -1,6 +1,6 @@
 import { ReactNode, ReactElement } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Paragraph, IconLegacy, IconType, H3, Card } from '@trezor/components';
+import { Paragraph, IconLegacy, IconLegacyType, H3, Card } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
 
@@ -53,7 +53,7 @@ const Content = styled.div`
 interface SettingsSectionProps {
     customHeader?: ReactNode;
     title?: string | ReactElement;
-    icon?: IconType;
+    icon?: IconLegacyType;
     description?: string | ReactElement;
     className?: string;
     children?: ReactNode;

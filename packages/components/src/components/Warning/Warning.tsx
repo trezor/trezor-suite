@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
-import { IconLegacy, IconType } from '../Icon/IconLegacy';
+import { IconLegacy, IconLegacyType } from '../Icon/IconLegacy';
 import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
 import { Row, Column, TransientProps, useElevation } from '../..';
@@ -26,7 +26,7 @@ export type WarningProps = AllowedFrameProps & {
     className?: string;
     variant?: WarningVariant;
     rightContent?: ReactNode;
-    icon?: IconType | true;
+    icon?: IconLegacyType | true;
     filled?: boolean;
     'data-testid'?: string;
 };

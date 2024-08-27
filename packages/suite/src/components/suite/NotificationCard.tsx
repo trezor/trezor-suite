@@ -8,7 +8,7 @@ import {
     variables,
     ButtonProps,
     useElevation,
-    IconType,
+    IconLegacyType,
     ElevationUp,
 } from '@trezor/components';
 import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
@@ -28,10 +28,10 @@ interface NotificationCardProps {
     button?: ButtonType;
     className?: string;
     ['data-testid']?: string;
-    icon?: IconType;
+    icon?: IconLegacyType;
 }
 
-const getIcon = (variant: NotificationCardVariant): IconType | null => {
+const getIcon = (variant: NotificationCardVariant): IconLegacyType | null => {
     switch (variant) {
         case 'info':
             return 'INFO';

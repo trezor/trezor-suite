@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { IconLegacy, IconType } from '../../Icon/IconLegacy';
+import { IconLegacy, IconLegacyType } from '../../Icon/IconLegacy';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { ButtonContainer, ButtonProps } from '../Button/Button';
 import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
@@ -24,7 +24,7 @@ export interface IconButtonProps
         ButtonProps,
         'isFullWidth' | 'iconAlignment' | 'iconSize' | 'variant' | 'children'
     > {
-    icon: IconType;
+    icon: IconLegacyType;
     label?: React.ReactNode;
     iconSize?: number;
     variant?: ButtonVariant;

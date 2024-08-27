@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Meta } from '@storybook/react';
-import { IconLegacy, variables, IconType } from '../../index';
+import { IconLegacy, variables, IconLegacyType } from '../../index';
 
 const Wrapper = styled.div`
     display: grid;
@@ -33,7 +33,7 @@ export default meta;
 
 export const LegacyIconsAll = () => (
     <Wrapper>
-        {variables.ICONS.map((icon: IconType) => (
+        {variables.ICONS.map((icon: IconLegacyType) => (
             <IconWrapper key={icon}>
                 <IconText>{icon}</IconText>
                 <IconLegacy

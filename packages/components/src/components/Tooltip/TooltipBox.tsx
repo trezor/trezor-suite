@@ -1,4 +1,4 @@
-import { IconLegacy, IconType } from '../Icon/IconLegacy';
+import { IconLegacy, IconLegacyType } from '../Icon/IconLegacy';
 import { ReactElement, ReactNode } from 'react';
 import { borders, palette, spacings, spacingsPx, typography } from '@trezor/theme';
 import styled from 'styled-components';
@@ -66,7 +66,7 @@ export type TooltipBoxProps = {
      */
     isLarge?: boolean;
     addon?: ReactNode;
-    headerIcon?: IconType;
+    headerIcon?: IconLegacyType;
     title?: ReactElement;
 };
 

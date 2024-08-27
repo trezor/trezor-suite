@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
-import { Card, IconType, motionAnimation, useElevation } from '@trezor/components';
+import { Card, IconLegacyType, motionAnimation, useElevation } from '@trezor/components';
 import * as deviceUtils from '@suite-common/suite-utils';
 
 import type { TrezorDevice, ForegroundAppProps } from 'src/types/suite';
@@ -44,7 +44,7 @@ interface CardWithDeviceProps {
     isFullHeaderVisible?: boolean;
     isFindTrezorVisible?: boolean;
     onBackButtonClick?: () => void;
-    icon?: IconType;
+    icon?: IconLegacyType;
 }
 
 export const CardWithDevice = ({

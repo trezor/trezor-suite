@@ -42,7 +42,7 @@ const getColorForIconVariant = ({
     return $variant === undefined ? theme.iconDefault : theme[variantColorMap[$variant]];
 };
 
-export type IconType = keyof typeof IconsLegacy;
+export type IconLegacyType = keyof typeof IconsLegacy;
 
 type SvgWrapperProps = {
     $hoverColor: WrapperProps['hoverColor'];
@@ -93,7 +93,7 @@ type WrapperProps = Omit<IconLegacyProps, 'icon'>;
 
 export type IconLegacyProps = SVGAttributes<HTMLDivElement> & {
     className?: string;
-    icon: IconType;
+    icon: IconLegacyType;
     size?: number;
     hoverColor?: string;
     useCursorPointer?: boolean;

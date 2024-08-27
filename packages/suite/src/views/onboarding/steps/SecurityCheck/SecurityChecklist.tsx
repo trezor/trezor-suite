@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { IconLegacy, IconType, variables } from '@trezor/components';
+import { IconLegacy, IconLegacyType, variables } from '@trezor/components';
 
 const Items = styled.div`
     display: flex;
@@ -24,7 +24,7 @@ const Text = styled.div`
 `;
 
 interface Item {
-    icon: IconType;
+    icon: IconLegacyType;
     content: ReactNode;
 }
 

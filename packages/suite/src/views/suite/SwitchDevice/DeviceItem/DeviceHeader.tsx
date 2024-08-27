@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IconButton, IconType, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
+import { IconButton, IconLegacyType, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { Translation, WebUsbButton } from 'src/components/suite';
@@ -31,7 +31,7 @@ interface DeviceHeaderProps {
     onBackButtonClick?: () => void;
     isFindTrezorVisible?: boolean;
     forceConnectionInfo: boolean;
-    icon?: IconType;
+    icon?: IconLegacyType;
 }
 
 export const DeviceHeader = ({
