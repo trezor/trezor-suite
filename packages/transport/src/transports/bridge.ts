@@ -315,9 +315,8 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     public stop() {
-        this.stopped = true;
-        this.listening = false;
-        this.abortController.abort();
+        super.stop();
+        this.acquirePromise = undefined;
     }
 
     /**
