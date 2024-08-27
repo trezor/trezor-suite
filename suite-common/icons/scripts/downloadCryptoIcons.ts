@@ -75,12 +75,12 @@ const updateIcon = async (coin: CoinListData) => {
 
                     fs.writeFileSync(destinationFile, Buffer.from(finalImageBuffer));
                 });
-            } else {
-                const fileName = `${encodeURIComponent(coinData.id)}${size !== '1x' ? `@${size}` : ''}.webp`;
-                const destinationFile = join(FILES_CRYPTOICONS_PATH, fileName);
-
-                fs.writeFileSync(destinationFile, Buffer.from(finalImageBuffer));
             }
+
+            const fileName = `${encodeURIComponent(coinData.id)}${size !== '1x' ? `@${size}` : ''}.webp`;
+            const destinationFile = join(FILES_CRYPTOICONS_PATH, fileName);
+
+            fs.writeFileSync(destinationFile, Buffer.from(finalImageBuffer));
         }
     } catch (error) {
         console.error('Error:', error);
