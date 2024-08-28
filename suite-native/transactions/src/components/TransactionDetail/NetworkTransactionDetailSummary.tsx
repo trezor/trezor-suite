@@ -13,30 +13,43 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectTransactionAddresses } from '../../selectors';
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
 
-type VerticalSeparatorProps = { isMultiInputTransaction: boolean };
+type VerticalSeparatorProps = { inputsCount: number };
 
 const SEPARATOR_TOP_OFFSET = 37;
 const SEPARATOR_LEFT_OFFSET = 7.5;
 const SINGLE_INPUT_SEPARATOR_HEIGHT = 34;
+const TWO_INPUTS_SEPARATOR_HEIGHT = 60;
 const MULTIPLE_INPUT_SEPARATOR_HEIGHT = 90;
 
-const separatorStyle = prepareNativeStyle<VerticalSeparatorProps>(
-    (utils, { isMultiInputTransaction }) => ({
-        position: 'absolute',
-        left: SEPARATOR_LEFT_OFFSET,
-        top: SEPARATOR_TOP_OFFSET,
-        width: utils.borders.widths.small,
-        height: isMultiInputTransaction
-            ? MULTIPLE_INPUT_SEPARATOR_HEIGHT
-            : SINGLE_INPUT_SEPARATOR_HEIGHT,
-        backgroundColor: utils.colors.backgroundNeutralSubdued,
-    }),
-);
+const separatorStyle = prepareNativeStyle<VerticalSeparatorProps>((utils, { inputsCount }) => ({
+    position: 'absolute',
+    left: SEPARATOR_LEFT_OFFSET,
+    top: SEPARATOR_TOP_OFFSET,
+    width: utils.borders.widths.small,
+    height: SINGLE_INPUT_SEPARATOR_HEIGHT,
+    backgroundColor: utils.colors.backgroundNeutralSubdued,
 
-export const VerticalSeparator = ({ isMultiInputTransaction }: VerticalSeparatorProps) => {
+    extend: [
+        {
+            condition: inputsCount === 2,
+            style: {
+                height: TWO_INPUTS_SEPARATOR_HEIGHT,
+            },
+        },
+        {
+            // Two addresses are displayed at maximum, other is hidden behind `Show more` button.
+            condition: inputsCount > 2,
+            style: {
+                height: MULTIPLE_INPUT_SEPARATOR_HEIGHT,
+            },
+        },
+    ],
+}));
+
+export const VerticalSeparator = ({ inputsCount }: VerticalSeparatorProps) => {
     const { applyStyle } = useNativeStyles();
 
-    return <Box style={applyStyle(separatorStyle, { isMultiInputTransaction })} />;
+    return <Box style={applyStyle(separatorStyle, { inputsCount })} />;
 };
 
 export const NetworkTransactionDetailSummary = ({
@@ -79,7 +92,7 @@ export const NetworkTransactionDetailSummary = ({
                     onShowMore={onShowMore}
                 />
             )}
-            <VerticalSeparator isMultiInputTransaction={transactionInputAddresses.length > 1} />
+            <VerticalSeparator inputsCount={transactionInputAddresses.length} />
         </VStack>
     );
 };

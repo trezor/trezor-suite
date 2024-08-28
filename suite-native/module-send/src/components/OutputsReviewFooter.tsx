@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Animated, { SlideInDown } from 'react-native-reanimated';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
-import { isRejected } from '@reduxjs/toolkit';
+import { isFulfilled } from '@reduxjs/toolkit';
 
 import {
     AccountsRootState,
@@ -11,15 +11,18 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
-import { RootStackRoutes, AppTabsRoutes } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
+import { RootStackRoutes, AppTabsRoutes, RootStackParamList } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ConfirmOnTrezorImage } from '@suite-native/device';
 
 import { sendTransactionAndCleanupSendFormThunk } from '../sendFormThunks';
 
-const navigateToAccountDetail = ({ accountKey }: { accountKey: AccountKey }) =>
+const navigateToAccountDetail = ({
+    accountKey,
+    txid,
+    closeActionType,
+}: RootStackParamList[RootStackRoutes.TransactionDetail]) =>
     // Reset navigation stack to the account detail screen with HomeStack as a previous step, so the user can navigate back there.
     CommonActions.reset({
         index: 1,
@@ -31,9 +34,11 @@ const navigateToAccountDetail = ({ accountKey }: { accountKey: AccountKey }) =>
                 },
             },
             {
-                name: RootStackRoutes.AccountDetail,
+                name: RootStackRoutes.TransactionDetail,
                 params: {
                     accountKey,
+                    txid,
+                    closeActionType,
                 },
             },
         ],
@@ -46,7 +51,6 @@ const footerStyle = prepareNativeStyle(utils => ({
 
 export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) => {
     const dispatch = useDispatch();
-    const { showToast } = useToast();
     const navigation = useNavigation();
     const { applyStyle } = useNativeStyles();
 
@@ -61,17 +65,14 @@ export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) 
     if (!signedTransaction || !account) return <ConfirmOnTrezorImage />;
 
     const handleSendTransaction = async () => {
-        const sendResponse = await dispatch(
-            sendTransactionAndCleanupSendFormThunk({ account, signedTransaction }),
-        );
+        const sendResponse = await dispatch(sendTransactionAndCleanupSendFormThunk({ account }));
 
-        if (isRejected(sendResponse)) {
-            // TODO: set error state
+        if (isFulfilled(sendResponse)) {
+            const { txid } = sendResponse.payload;
+            navigation.dispatch(
+                navigateToAccountDetail({ accountKey, txid, closeActionType: 'close' }),
+            );
         }
-
-        showToast({ variant: 'success', message: 'Transaction sent', icon: 'check' });
-
-        navigation.dispatch(navigateToAccountDetail({ accountKey }));
     };
 
     return (

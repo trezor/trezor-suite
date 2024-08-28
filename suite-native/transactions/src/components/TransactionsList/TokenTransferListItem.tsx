@@ -6,7 +6,6 @@ import {
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 
 import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
-import { signValueMap } from '../TransactionDetail/TransactionDetailHeader';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 import { getTransactionValueSign } from '../../utils';
 

@@ -1,20 +1,13 @@
 import { useSelector } from 'react-redux';
-import { AccountKey, Timestamp, TransactionType } from '@suite-common/wallet-types';
-import { SignValue } from '@suite-common/suite-types';
+
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     SignValueFormatter,
 } from '@suite-native/formatters';
-
 import { Box } from '@suite-native/atoms';
-import {
-    AccountsRootState,
-    FiatRatesRootState,
-    selectHistoricFiatRatesByTimestamp,
-    selectIsTestnetAccount,
-} from '@suite-common/wallet-core';
-import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { AccountsRootState, selectIsTestnetAccount } from '@suite-common/wallet-core';
 import { EmptyAmountText } from '@suite-native/formatters/src/components/EmptyAmountText';
 import { WalletAccountTransaction } from '@suite-native/tokens';
 

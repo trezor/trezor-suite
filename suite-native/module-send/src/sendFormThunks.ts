@@ -3,6 +3,7 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    PushTransactionError,
     deviceActions,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
@@ -18,7 +19,6 @@ import {
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import { SignedTransaction } from '@trezor/connect';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
 
@@ -87,14 +87,13 @@ export const cleanupSendFormThunk = createThunk(
     },
 );
 
-export const sendTransactionAndCleanupSendFormThunk = createThunk(
+export const sendTransactionAndCleanupSendFormThunk = createThunk<
+    { txid: string },
+    { account: Account },
+    { rejectValue: PushTransactionError }
+>(
     `${SEND_MODULE_PREFIX}/sendTransactionAndCleanupSendFormThunk`,
-    async (
-        {
-            account,
-        }: { account: Account; signedTransaction: SignedTransaction['signedTransaction'] },
-        { dispatch, rejectWithValue },
-    ) => {
+    async ({ account }, { dispatch, rejectWithValue }) => {
         const response = await dispatch(
             pushSendFormTransactionThunk({
                 selectedAccount: account,
@@ -102,11 +101,11 @@ export const sendTransactionAndCleanupSendFormThunk = createThunk(
         );
 
         if (isRejected(response)) {
-            return rejectWithValue(response.error);
+            return rejectWithValue(response.payload!);
         }
 
         dispatch(cleanupSendFormThunk({ accountKey: account.key }));
 
-        return response.payload;
+        return response.payload.payload;
     },
 );

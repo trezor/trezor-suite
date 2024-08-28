@@ -1,12 +1,6 @@
-import { useSelector } from 'react-redux';
-
 import { Badge, Box, DiscreetTextTrigger, Text, VStack } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-common/icons-deprecated';
-import { FiatRatesRootState, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
-import { getFiatRateKey, isPending } from '@suite-common/wallet-utils';
-import { Timestamp } from '@suite-common/wallet-types';
-import { SignValue } from '@suite-common/suite-types';
-import { AccountKey, TransactionType } from '@suite-common/wallet-types';
+import { isPending } from '@suite-common/wallet-utils';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
@@ -15,7 +9,6 @@ import {
     SignValueFormatter,
 } from '@suite-native/formatters';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 
