@@ -43,6 +43,10 @@ Continuation packet format (chunks):
 | continuation_packet  | channel | channel | payload_chunk |
 ```
 
+## protocol-thp (TrezorHostProtocol)
+
+decode/encode the payload of `protocol-v2`
+
 ## protocol-trzd
 
 Decode loaded `@trezor/protobuf` messages

@@ -97,3 +97,16 @@ export type ThpMessageResponse<T extends ThpMessageKey = ThpMessageKey> = T exte
           message: ThpMessagePayload<T>;
       }
     : never;
+
+export type ThpTypedCall = {
+    <T extends ThpMessageKey, R extends ThpMessageKey[]>(
+        type: T,
+        resType: R,
+        message?: ThpMessagePayload<T>,
+    ): Promise<ThpMessageResponse<R[number]>>;
+    <T extends ThpMessageKey, R extends ThpMessageKey>(
+        type: T,
+        resType: R,
+        message?: ThpMessagePayload<T>,
+    ): Promise<ThpMessageResponse<R>>;
+};

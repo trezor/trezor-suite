@@ -1,5 +1,6 @@
 import * as ERRORS from '../errors';
 import { HEADER_SIZE, MESSAGE_LEN_SIZE, MESSAGE_TYPE } from './constants';
+import { THP_CONTINUATION_PACKET } from '../protocol-thp/constants';
 import { TransportProtocol } from '../types';
 
 const getChunkHeader = (data: Buffer) => {
@@ -9,7 +10,7 @@ const getChunkHeader = (data: Buffer) => {
     }
 
     const channel = data.subarray(1, HEADER_SIZE);
-    const header = Buffer.concat([Buffer.from([0x80]), channel]); // THP_CONTINUATION_PACKET
+    const header = Buffer.concat([Buffer.from([THP_CONTINUATION_PACKET]), channel]);
 
     return header;
 };
