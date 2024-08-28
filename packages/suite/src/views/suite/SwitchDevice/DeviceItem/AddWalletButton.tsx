@@ -54,7 +54,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                 cursor="pointer"
                 placement="bottom"
             >
-                <Column flex={1} gap={spacings.xs}>
+                <Column flex="1" gap={spacings.xs}>
                     {!emptyPassphraseWalletExists && (
                         <Button
                             data-testid="@switch-device/add-wallet-button"

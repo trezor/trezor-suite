@@ -9,7 +9,7 @@ export const Body = ({ children }: { children: ReactNode }) => (
 );
 
 export const Section = ({ children }: { children: ReactNode }) => (
-    <Column gap={spacings.xs} alignItems="start" flex={1}>
+    <Column gap={spacings.xs} alignItems="start" flex="1">
         {children}
     </Column>
 );

@@ -41,7 +41,14 @@ export const flexAlignItems = [
 export type FlexDirection = (typeof flexDirection)[number];
 export type FlexJustifyContent = (typeof flexJustifyContent)[number];
 export type FlexAlignItems = (typeof flexAlignItems)[number];
-export type Flex = string | number;
+export type Flex =
+    | 'none'
+    | 'auto'
+    | 'initial'
+    | 'inherit'
+    | `${number}`
+    | `${number} ${number}`
+    | `${number} ${number} ${string}`;
 export type FlexWrap = (typeof flexWrap)[number];
 
 const Container = styled.div<

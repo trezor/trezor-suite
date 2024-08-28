@@ -101,7 +101,7 @@ export const Warning = ({
                 />
             )}
 
-            <Row justifyContent="space-between" gap={spacings.lg} flex={1}>
+            <Row justifyContent="space-between" gap={spacings.lg} flex="1">
                 <Column alignItems="flex-start">{children}</Column>
                 {rightContent && (
                     <WarningContext.Provider value={{ variant }}>

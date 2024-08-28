@@ -57,7 +57,7 @@ export const DeviceHeader = ({
 
     return (
         <Container onClick={onHeaderClick} $isFullHeaderVisible={isFullHeaderVisible}>
-            <Row gap={spacings.xs} flex={1}>
+            <Row gap={spacings.xs} flex="1">
                 {onBackButtonClick && (
                     <IconButton
                         icon="chevronLeft"

@@ -19,7 +19,7 @@ export const CloseableBanner = ({ onClose, variant, title, children }: Props) =>
             </Warning.Button>
         }
     >
-        <Column flex={1} alignItems="flex-start">
+        <Column flex="1" alignItems="flex-start">
             <H3>{title}</H3>
             <Divider margin={{ top: spacings.xs, bottom: spacings.md }} />
             {children}
