@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "6.1.17",
+        "@react-navigation/native": "6.1.18",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/validators": "workspace:*",
@@ -35,8 +35,8 @@
         "jotai": "1.9.1",
         "proxy-memoize": "2.0.2",
         "react": "18.2.0",
-        "react-native": "0.74.1",
-        "react-native-reanimated": "3.11.0",
+        "react-native": "0.75.2",
+        "react-native-reanimated": "3.15.0",
         "react-redux": "8.0.7"
     }
 }

@@ -12,12 +12,12 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "1.3.10",
+        "@shopify/react-native-skia": "1.3.11",
         "@suite-common/suite-utils": "workspace:*",
         "@types/react": "18.2.79",
         "react": "18.2.0",
-        "react-native": "0.74.1",
-        "react-native-gesture-handler": "2.16.2",
-        "react-native-reanimated": "3.11.0"
+        "react-native": "0.75.2",
+        "react-native-gesture-handler": "2.18.1",
+        "react-native-reanimated": "3.15.0"
     }
 }

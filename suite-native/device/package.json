@@ -12,9 +12,9 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "6.1.17",
+        "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "1.9.5",
-        "@sentry/react-native": "5.22.3",
+        "@sentry/react-native": "5.31.1",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
@@ -35,7 +35,7 @@
         "lottie-react-native": "6.7.2",
         "proxy-memoize": "2.0.2",
         "react": "18.2.0",
-        "react-native": "0.74.1",
+        "react-native": "0.75.2",
         "react-redux": "8.0.7",
         "semver": "^7.6.3"
     }
