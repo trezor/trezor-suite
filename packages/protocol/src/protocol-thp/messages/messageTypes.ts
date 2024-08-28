@@ -37,14 +37,9 @@ export type ThpHandshakeInitRequest = {
 };
 
 export type ThpHandshakeInitResponse = {
-    handshakeHash: Buffer;
     trezorEphemeralPubkey: Buffer;
     trezorEncryptedStaticPubkey: Buffer;
-    trezorMaskedStaticPubkey: Buffer;
     tag: Buffer;
-    hostEncryptedStaticPubkey: Buffer;
-    hostKey: Buffer;
-    trezorKey: Buffer;
 };
 
 export type ThpHandshakeCompletionRequest = {
@@ -54,7 +49,6 @@ export type ThpHandshakeCompletionRequest = {
 
 export type ThpHandshakeCompletionResponse = {
     state: 0 | 1;
-    tag: Buffer;
 };
 
 export type ThpMessageType = ThpProtobufMessageType & {
