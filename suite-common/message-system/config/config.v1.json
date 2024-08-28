@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-08-015T00:00:00+00:00",
-    "sequence": 61,
+    "timestamp": "2024-08-028T00:00:00+00:00",
+    "sequence": 62,
     "actions": [
         {
             "conditions": [
@@ -88,6 +88,63 @@
                     "uk": "Для найкращого досвіду стейкінгу, будь ласка, оновіть до останньої версії Trezor Suite."
                 },
                 "context": { "domain": "accounts.eth.staking" }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "matic": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c8ca8958-7868-467f-9278-f072edc234ac",
+                "priority": 93,
+                "dismissible": true,
+                "variant": "info",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Polygon PoS will migrate from MATIC to POL on September 4, no action is required. Your balance will appear as MATIC until an update is available.",
+                    "en": "Polygon PoS will migrate from MATIC to POL on September 4, no action is required. Your balance will appear as MATIC until an update is available.",
+                    "es": "Polygon PoS migrará de MATIC a POL el 4 de septiembre. No es necesario realizar ninguna acción. Su saldo aparecerá como MATIC hasta que haya una actualización disponible.",
+                    "cs": "Polygon PoS přejde 4. září z MATIC na POL, není nutné podnikat žádné kroky. Váš zůstatek bude nadále zobrazen jako MATIC, dokud nebude k dispozici aktualizace.",
+                    "ru": "Polygon PoS перейдет с MATIC на POL 4 сентября. Никаких действий не требуется. Ваш баланс будет отображаться как MATIC до тех пор, пока не будет доступно обновление.",
+                    "ja": "Polygon PoSは9月4日にMATICからPOLに移行します。何もする必要はありません。アップデートが利用可能になるまで、残高はMATICとして表示されます。",
+                    "hu": "A Polygon PoS szeptember 4-én áttér a MATIC-ról a POL-ra. Nincs szükség semmilyen intézkedésre. Az egyenlege addig MATIC-ként fog megjelenni, amíg elérhetővé válik egy frissítés.",
+                    "it": "Polygon PoS passerà da MATIC a POL il 4 settembre. Non è richiesta alcuna azione. Il saldo verrà visualizzato come MATIC fino a quando non sarà disponibile un aggiornamento.",
+                    "fr": "Polygon PoS migrera de MATIC à POL le 4 septembre. Aucune action n'est requise. Votre solde apparaîtra comme MATIC jusqu'à ce qu'une mise à jour soit disponible.",
+                    "de": "Polygon PoS wird am 4. September von MATIC auf POL migrieren. Es ist keine Aktion erforderlich. Ihr Guthaben wird als MATIC angezeigt, bis ein Update verfügbar ist.",
+                    "tr": "Polygon PoS, 4 Eylül'de MATIC'ten POL'a geçecek. Herhangi bir işlem gerekmiyor. Bir güncelleme mevcut olana kadar bakiyeniz MATIC olarak görünecek.",
+                    "pt": "O Polygon PoS migrará de MATIC para POL em 4 de setembro. Nenhuma ação é necessária. Seu saldo aparecerá como MATIC até que uma atualização esteja disponível.",
+                    "uk": "Polygon PoS перейде з MATIC на POL 4 вересня. Ніяких дій не потрібно. Ваш баланс буде відображатися як MATIC до тих пір, поки не буде доступне оновлення."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/learn/a/polygon-matic-in-trezor-suite",
+                    "label": {
+                        "en-GB": "Learn More",
+                        "en": "Learn More",
+                        "es": "Más Información",
+                        "cs": "Více Informací",
+                        "ru": "Подробнее",
+                        "ja": "詳細はこちら",
+                        "hu": "További Információ",
+                        "it": "Scopri di Più",
+                        "fr": "En Savoir Plus",
+                        "de": "Mehr Erfahren",
+                        "tr": "Daha Fazla Bilgi",
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
+                    }
+                }
             }
         },
         {
