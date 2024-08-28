@@ -1,13 +1,21 @@
 import { ThpState } from './ThpState';
 import {
     CRC_LENGTH,
+    TAG_LENGTH,
+    THP_CONTROL_BYTE_DECRYPTED,
+    THP_CONTROL_BYTE_ENCRYPTED,
     THP_CREATE_CHANNEL_RESPONSE,
     THP_ERROR_HEADER_BYTE,
+    THP_HANDSHAKE_COMPLETION_RESPONSE,
+    THP_HANDSHAKE_INIT_RESPONSE,
     THP_READ_ACK_HEADER_BYTE,
 } from './constants';
+import { aesgcm } from './crypto';
 import { TransportProtocolDecode } from '../types';
 import { crc32 } from './crypto/crc32';
-import { ThpError, ThpMessageResponse } from './messages';
+import { getHandshakeHash, getTrezorState } from './crypto/pairing';
+import { getIvFromNonce } from './crypto/tools';
+import { ThpDeviceProperties, ThpError, ThpMessageResponse } from './messages';
 import { clearControlBit, readThpHeader } from './utils';
 
 type ThpMessage = ReturnType<TransportProtocolDecode> & {
@@ -26,6 +34,14 @@ type ProtobufDecoder = (
 
 type MessageV2 = ReturnType<TransportProtocolDecode>;
 
+const decipherMessage = (key: Buffer, recvNonce: number, payload: Buffer, tag: Buffer) => {
+    const aes = aesgcm(key, getIvFromNonce(recvNonce));
+    aes.auth(Buffer.alloc(0));
+    const trezorMaskedStaticPubkey = aes.decrypt(payload, tag);
+
+    return trezorMaskedStaticPubkey.subarray(1); // NOTE: remove session_id (first byte)
+};
+
 // TODO: link-to-public-docs
 // https://www.notion.so/satoshilabs/THP-Specification-2-0-18fdc5260606806ab573d0a7cba1897a
 // example: 41ffff0020639ba57ff4e0c2343c830a0454335731180220002802280328042801c0171551
@@ -35,13 +51,12 @@ type MessageV2 = ReturnType<TransportProtocolDecode>;
 const createChannelResponse = (
     { payload }: ThpMessage,
     protobufDecoder: ProtobufDecoder,
-): ThpMessageResponse => {
+): ThpMessageResponse<'ThpCreateChannelResponse'> => {
     const nonce = payload.subarray(0, 8);
     const channel = payload.subarray(8, 10);
     const props = payload.subarray(10, payload.length - CRC_LENGTH);
-    const properties = protobufDecoder('ThpDeviceProperties', props).message;
-    // TODO: add-crypto
-    // const handshakeHash = handleCreateChannelResponse(props);
+    const properties = protobufDecoder('ThpDeviceProperties', props).message as ThpDeviceProperties;
+    const handshakeHash = getHandshakeHash(props);
 
     return {
         type: 'ThpCreateChannelResponse',
@@ -49,10 +64,60 @@ const createChannelResponse = (
             nonce,
             channel,
             properties,
-            // TODO: add-crypto
-            // handshakeHash,
+            handshakeHash,
         },
-    } as any;
+    };
+};
+
+const readHandshakeInitResponse = ({
+    payload,
+}: ThpMessage): ThpMessageResponse<'ThpHandshakeInitResponse'> => {
+    const trezorEphemeralPubkey = payload.subarray(0, 32);
+    const trezorEncryptedStaticPubkey = payload.subarray(32, 32 + 48);
+    const tag = payload.subarray(32 + 48, 32 + 48 + TAG_LENGTH);
+
+    return {
+        type: 'ThpHandshakeInitResponse',
+        message: {
+            trezorEphemeralPubkey,
+            trezorEncryptedStaticPubkey,
+            tag,
+        },
+    };
+};
+
+const readHandshakeCompletionResponse = ({
+    payload,
+    thpState,
+}: ThpMessage): ThpMessageResponse<'ThpHandshakeCompletionResponse'> => {
+    const state = getTrezorState(thpState.handshakeCredentials!, payload);
+
+    return {
+        type: 'ThpHandshakeCompletionResponse',
+        message: {
+            state,
+        },
+    };
+};
+
+const readProtobufMessage = (
+    { payload, thpState }: ThpMessage,
+    protobufDecoder: ProtobufDecoder,
+): ThpMessageResponse => {
+    const tagPos = payload.length - TAG_LENGTH - CRC_LENGTH;
+    const cipheredMessage = payload.subarray(0, tagPos);
+    const tag = payload.subarray(tagPos, payload.length - CRC_LENGTH);
+    const decipheredMessage = decipherMessage(
+        thpState.handshakeCredentials!.trezorKey,
+        thpState.recvNonce,
+        cipheredMessage,
+        tag,
+    );
+
+    const messageType = decipheredMessage.readUInt16BE(0);
+    const messagePayload = decipheredMessage.subarray(2);
+
+    return protobufDecoder(messageType, messagePayload) as ThpMessageResponse;
 };
 
 const decodeReadAck = (): ThpMessageResponse => ({
@@ -144,7 +209,7 @@ export const decode = (
     thpState?: ThpState,
 ): ThpMessageResponse => {
     if (!thpState) {
-        throw new Error('Cannot decode THP message without ThpState');
+        throw new Error('ThpStateMissing');
     }
 
     validateCrc(decodedMessage);
@@ -167,6 +232,23 @@ export const decode = (
 
     if (magic === THP_CREATE_CHANNEL_RESPONSE) {
         return createChannelResponse(message, protobufDecoder);
+    }
+
+    if (magic === THP_HANDSHAKE_INIT_RESPONSE) {
+        return readHandshakeInitResponse(message);
+    }
+
+    if (magic === THP_HANDSHAKE_COMPLETION_RESPONSE) {
+        return readHandshakeCompletionResponse(message);
+    }
+
+    if (magic === THP_CONTROL_BYTE_ENCRYPTED) {
+        return readProtobufMessage(message, protobufDecoder);
+    }
+
+    // TODO: decrypted message decoding (not implemented in FW)
+    if (magic === THP_CONTROL_BYTE_DECRYPTED) {
+        return readProtobufMessage(message, protobufDecoder);
     }
 
     throw new Error('Unknown message type: ' + magic);

@@ -51,9 +51,11 @@ describe('protocol-thp', () => {
         expect(decoded.message).toMatchObject({
             channel: Buffer.from('3c83', 'hex'),
             nonce,
+            handshakeHash: Buffer.from(
+                'a1615c6dc1c2a2df8155ea5b54d0f39c320d4908e4b1eaf8d24ab5c4b466e947',
+                'hex',
+            ),
             // properties asserted below
-            // TODO: add-crypto
-            // handshakeHash
         });
 
         // @ts-expect-error
