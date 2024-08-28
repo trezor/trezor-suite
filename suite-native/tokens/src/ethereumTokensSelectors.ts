@@ -1,5 +1,5 @@
 import { A, G, pipe } from '@mobily/ts-belt';
-import { memoizeWithArgs } from 'proxy-memoize';
+import { memoizeWithArgs, memoize } from 'proxy-memoize';
 
 import {
     AccountsRootState,
@@ -206,16 +206,16 @@ export const selectIsEthereumAccountWithTokensWithFiatRates = (
     return selectNumberOfEthereumAccountTokensWithFiatRates(state, ethereumAccountKey) > 0;
 };
 
-export const selectNumberOfUniqueEthereumTokensPerDevice = (
-    state: AccountsRootState & DeviceRootState & FiatRatesRootState & SettingsSliceRootState,
-) => {
-    const accounts = selectVisibleDeviceAccounts(state);
+export const selectNumberOfUniqueEthereumTokensPerDevice = memoize(
+    (state: AccountsRootState & DeviceRootState & FiatRatesRootState & SettingsSliceRootState) => {
+        const accounts = selectVisibleDeviceAccounts(state);
 
-    return pipe(
-        accounts,
-        A.map(account => selectEthereumAccountsTokensWithFiatRates(state, account.key)),
-        A.flat,
-        A.uniqBy(token => token.contract),
-        A.length,
-    );
-};
+        return pipe(
+            accounts,
+            A.map(account => selectEthereumAccountsTokensWithFiatRates(state, account.key)),
+            A.flat,
+            A.uniqBy(token => token.contract),
+            A.length,
+        );
+    },
+);
