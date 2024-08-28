@@ -27,6 +27,10 @@ const Wrapper = styled.div<{ $alignment: NewModalAlignment; $padding: number }>`
     background: rgb(0 0 0 / 30%);
     align-items: ${({ $alignment }) => mapAlignmentToAlignItems($alignment)};
     justify-content: ${({ $alignment }) => mapAlignmentToJustifyContent($alignment)};
+
+    > * + * {
+        margin-top: ${spacings.md}px;
+    }
 `;
 
 export const NewModalBackdrop = ({

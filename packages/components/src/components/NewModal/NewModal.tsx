@@ -115,7 +115,7 @@ interface NewModalProps {
     'data-test'?: string;
 }
 
-const NewModal = ({
+const NewModalBase = ({
     children,
     variant = 'primary',
     size = 'medium',
@@ -123,7 +123,6 @@ const NewModal = ({
     description,
     bottomContent,
     icon,
-    alignment,
     onBackClick,
     onCancel,
     'data-test': dataTest = '@modal',
@@ -139,63 +138,75 @@ const NewModal = ({
     });
 
     return (
-        <NewModalBackdrop onClick={onCancel} alignment={alignment}>
-            <ElevationContext baseElevation={MODAL_ELEVATION}>
-                <NewModalContext.Provider value={{ variant }}>
-                    <Container
-                        $elevation={MODAL_ELEVATION}
-                        $size={size}
-                        onClick={e => e.stopPropagation()}
-                        data-testid={dataTest}
-                    >
-                        <Header>
-                            {onBackClick && (
-                                <IconButton
-                                    variant="tertiary"
-                                    icon="chevronLeft"
-                                    data-testid="@modal/back-button"
-                                    onClick={onBackClick}
-                                    size="small"
-                                />
-                            )}
+        <ElevationContext baseElevation={MODAL_ELEVATION}>
+            <NewModalContext.Provider value={{ variant }}>
+                <Container
+                    $elevation={MODAL_ELEVATION}
+                    $size={size}
+                    onClick={e => e.stopPropagation()}
+                    data-testid={dataTest}
+                >
+                    <Header>
+                        {onBackClick && (
+                            <IconButton
+                                variant="tertiary"
+                                icon="chevronLeft"
+                                data-testid="@modal/back-button"
+                                onClick={onBackClick}
+                                size="small"
+                            />
+                        )}
 
-                            <HeadingContainer>
-                                {heading && <Heading>{heading}</Heading>}
-                                {description && (
-                                    <Text variant="tertiary" typographyStyle="hint">
-                                        {description}
-                                    </Text>
+                        <HeadingContainer>
+                            {heading && <Heading>{heading}</Heading>}
+                            {description && (
+                                <Text variant="tertiary" typographyStyle="hint">
+                                    {description}
+                                </Text>
+                            )}
+                        </HeadingContainer>
+
+                        {onCancel && (
+                            <IconButton
+                                variant="tertiary"
+                                icon="close"
+                                data-testid="@modal/close-button"
+                                onClick={onCancel}
+                                size="small"
+                            />
+                        )}
+                    </Header>
+                    <ShadowContainer>
+                        <ShadowTop backgroundColor={modalBackgroundColor} />
+                        <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
+                            <Body id={NEW_MODAL_CONTENT_ID}>
+                                {icon && (
+                                    <IconWrapper $variant={variant} $size={ICON_SIZE}>
+                                        <IconLegacy
+                                            icon={icon}
+                                            size={ICON_SIZE}
+                                            variant={variant}
+                                        />
+                                    </IconWrapper>
                                 )}
-                            </HeadingContainer>
+                                {children}
+                            </Body>
+                        </ScrollContainer>
+                        <ShadowBottom backgroundColor={modalBackgroundColor} />
+                    </ShadowContainer>
+                    {bottomContent && <Footer>{bottomContent}</Footer>}
+                </Container>
+            </NewModalContext.Provider>
+        </ElevationContext>
+    );
+};
 
-                            {onCancel && (
-                                <IconButton
-                                    variant="tertiary"
-                                    icon="close"
-                                    data-testid="@modal/close-button"
-                                    onClick={onCancel}
-                                    size="small"
-                                />
-                            )}
-                        </Header>
-                        <ShadowContainer>
-                            <ShadowTop backgroundColor={modalBackgroundColor} />
-                            <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                                <Body id={NEW_MODAL_CONTENT_ID}>
-                                    {icon && (
-                                        <IconWrapper $variant={variant} $size={ICON_SIZE}>
-                                            <Icon name={icon} size={ICON_SIZE} variant={variant} />
-                                        </IconWrapper>
-                                    )}
-                                    {children}
-                                </Body>
-                            </ScrollContainer>
-                            <ShadowBottom backgroundColor={modalBackgroundColor} />
-                        </ShadowContainer>
-                        {bottomContent && <Footer>{bottomContent}</Footer>}
-                    </Container>
-                </NewModalContext.Provider>
-            </ElevationContext>
+const NewModal = (props: NewModalProps) => {
+    const { alignment, onCancel } = props;
+
+    return (
+        <NewModalBackdrop onClick={onCancel} alignment={alignment}>
+            <NewModalBase {...props} />
         </NewModalBackdrop>
     );
 };
@@ -203,6 +214,7 @@ const NewModal = ({
 NewModal.Button = NewModalButton;
 NewModal.Backdrop = NewModalBackdrop;
 NewModal.Provider = NewModalProvider;
+NewModal.ModalBase = NewModalBase;
 
 export { NewModal, NEW_MODAL_CONTENT_ID };
 export type { NewModalProps, NewModalSize };
