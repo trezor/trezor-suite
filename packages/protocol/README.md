@@ -45,6 +45,10 @@ Continuation packet format (chunks):
 | magic  | channel | channel | thpMessagePayloadChunk |
 ```
 
+## protocol-thp (TrezorHostProtocol)
+
+decode/encode the payload of `protocol-v2`
+
 ## protocol-trzd
 
 decode dynamically loaded `@trezor/protobuf` messages
