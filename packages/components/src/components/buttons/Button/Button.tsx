@@ -26,6 +26,7 @@ type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
     $hasIcon?: boolean;
     $isFullWidth?: boolean;
     $isSubtle: boolean;
+    $borderRadius?: typeof borders.radii.sm | typeof borders.radii.full; // Do not allow all, we want consistency
 };
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
@@ -36,7 +37,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     gap: ${({ $hasIcon }) => $hasIcon && spacingsPx.xs};
     padding: ${({ $size }) => getPadding($size, true)};
     width: ${({ $isFullWidth }) => $isFullWidth && '100%'};
-    border-radius: ${borders.radii.full};
+    border-radius: ${({ $borderRadius }) => $borderRadius ?? borders.radii.full};
     transition:
         ${focusStyleTransition},
         background 0.1s ease-out;

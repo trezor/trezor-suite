@@ -19,6 +19,7 @@ export * from './components/buttons/Button/Button';
 export * from './components/buttons/ButtonGroup/ButtonGroup';
 export * from './components/buttons/IconButton/IconButton';
 export * from './components/Icon/Icon';
+export { ComponentWithSubIcon } from './components/ComponentWithSubIcon/ComponentWithSubIcon';
 export * from './components/buttons/PinButton/PinButton';
 export * from './components/buttons/TextButton/TextButton';
 export { Card, type CardProps } from './components/Card/Card';

@@ -14,10 +14,18 @@ import { CSSColor, Color } from '@trezor/theme';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 
-export const iconVariants = ['primary', 'tertiary', 'info', 'warning', 'destructive'] as const;
-export type IconVariant = Extract<UIVariant, (typeof iconVariants)[number]>;
+export const iconVariants = [
+    'primary',
+    'tertiary',
+    'info',
+    'warning',
+    'destructive',
+    'purple',
+] as const;
 
-type ExclusiveColorOrVariant =
+export type IconVariant = Extract<UIVariant, (typeof iconVariants)[number]> | 'purple';
+
+export type ExclusiveColorOrVariant =
     | { variant?: IconVariant; color?: undefined }
     | {
           variant?: undefined;
@@ -34,9 +42,10 @@ const variantColorMap: Record<IconVariant, Color> = {
     info: 'iconAlertBlue',
     warning: 'iconAlertYellow',
     destructive: 'iconAlertRed',
+    purple: 'iconAlertPurple',
 };
 
-const getColorForIconVariant = ({
+export const getColorForIconVariant = ({
     variant,
     theme,
     color,
@@ -190,4 +199,10 @@ export const Icon = forwardRef(
     },
 );
 
-export { type IconName, icons, type IconSize } from '@suite-common/icons/src/webComponents';
+export {
+    type IconName,
+    icons,
+    type IconSize,
+    iconSizes,
+    getIconSize,
+} from '@suite-common/icons/src/webComponents';
