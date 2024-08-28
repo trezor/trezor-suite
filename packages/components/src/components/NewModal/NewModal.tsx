@@ -182,11 +182,7 @@ const NewModalBase = ({
                             <Body id={NEW_MODAL_CONTENT_ID}>
                                 {icon && (
                                     <IconWrapper $variant={variant} $size={ICON_SIZE}>
-                                        <IconLegacy
-                                            icon={icon}
-                                            size={ICON_SIZE}
-                                            variant={variant}
-                                        />
+                                        <Icon name={icon} size={ICON_SIZE} variant={variant} />
                                     </IconWrapper>
                                 )}
                                 {children}
