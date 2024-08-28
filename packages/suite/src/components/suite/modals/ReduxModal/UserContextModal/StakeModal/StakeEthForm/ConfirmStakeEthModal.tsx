@@ -1,61 +1,13 @@
 import { useState } from 'react';
-import styled, { useTheme } from 'styled-components';
-import { Button, Checkbox, H2, Divider, Icon } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
-import { Modal, Translation, TrezorLink } from 'src/components/suite';
+import { Checkbox, NewModal, Column, Warning, Card } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
 import { getDaysToAddToPoolInitial } from 'src/utils/suite/stake';
-
-const StyledModal = styled(Modal)`
-    width: 500px;
-    text-align: left;
-`;
-
-const VStack = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.lg};
-    margin-top: ${spacingsPx.xl};
-`;
-
-const Flex = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.md};
-`;
-
-const DividerWrapper = styled.div`
-    & > div {
-        background: ${({ theme }) => theme.borderElevation2};
-        margin: ${spacingsPx.lg} 0 ${spacingsPx.md} auto;
-        max-width: 428px;
-        width: 100%;
-    }
-`;
-
-const StyledCheckbox = styled(Checkbox)`
-    & > div:nth-child(3) {
-        color: ${({ theme }) => theme.textSubdued};
-        margin-left: ${spacingsPx.xs};
-    }
-`;
-
-const ButtonsWrapper = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: ${spacingsPx.xxs};
-    width: 100%;
-    margin-top: ${spacingsPx.lg};
-
-    & > button {
-        padding: 9px 22px;
-        flex: 1 0 164px;
-    }
-`;
 
 interface ConfirmStakeEthModalProps {
     isLoading: boolean;
@@ -68,7 +20,6 @@ export const ConfirmStakeEthModal = ({
     onConfirm,
     onCancel,
 }: ConfirmStakeEthModalProps) => {
-    const theme = useTheme();
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
@@ -88,14 +39,28 @@ export const ConfirmStakeEthModal = ({
     };
 
     return (
-        <StyledModal onCancel={handleOnCancel}>
-            <H2>
-                <Translation id="TR_STAKE_CONFIRM_ENTRY_PERIOD" />
-            </H2>
-
-            <VStack>
-                <Flex>
-                    <Icon name="clock" size={24} color={theme.iconAlertYellow} />
+        <NewModal
+            heading={<Translation id="TR_STAKE_CONFIRM_ENTRY_PERIOD" />}
+            onCancel={handleOnCancel}
+            size="small"
+            variant="warning"
+            bottomContent={
+                <>
+                    <NewModal.Button isDisabled={isDisabled} onClick={onClick}>
+                        <Translation id="TR_STAKE_CONFIRM_AND_STAKE" />
+                    </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={handleOnCancel}>
+                        <Translation id="TR_CANCEL" />
+                    </NewModal.Button>
+                </>
+            }
+        >
+            <Column
+                gap={spacings.sm}
+                margin={{ top: spacings.xxs, bottom: spacings.lg }}
+                alignItems="stretch"
+            >
+                <Warning icon="clock">
                     <Translation
                         id="TR_STAKE_ENTERING_POOL_MAY_TAKE"
                         values={{
@@ -103,9 +68,8 @@ export const ConfirmStakeEthModal = ({
                                 daysToAddToPoolInitial === undefined ? 30 : daysToAddToPoolInitial,
                         }}
                     />
-                </Flex>
-                <Flex>
-                    <Icon name="hand" size={24} color={theme.iconAlertYellow} />
+                </Warning>
+                <Warning icon="hand">
                     <Translation
                         id="TR_STAKE_ETH_WILL_BE_BLOCKED"
                         values={{
@@ -121,25 +85,14 @@ export const ConfirmStakeEthModal = ({
                             symbol: account?.symbol.toUpperCase(),
                         }}
                     />
-                </Flex>
-            </VStack>
+                </Warning>
+            </Column>
 
-            <DividerWrapper>
-                <Divider />
-            </DividerWrapper>
-
-            <StyledCheckbox onClick={() => setHasAgreed(!hasAgreed)} isChecked={hasAgreed}>
-                <Translation id="TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD" />
-            </StyledCheckbox>
-
-            <ButtonsWrapper>
-                <Button variant="tertiary" onClick={handleOnCancel}>
-                    <Translation id="TR_CANCEL" />
-                </Button>
-                <Button isDisabled={isDisabled} onClick={onClick}>
-                    <Translation id="TR_STAKE_CONFIRM_AND_STAKE" />
-                </Button>
-            </ButtonsWrapper>
-        </StyledModal>
+            <Card>
+                <Checkbox onClick={() => setHasAgreed(!hasAgreed)} isChecked={hasAgreed}>
+                    <Translation id="TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD" />
+                </Checkbox>
+            </Card>
+        </NewModal>
     );
 };

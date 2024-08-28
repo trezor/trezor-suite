@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Icon, Warning } from '@trezor/components';
+import { Icon, Warning, Column, Text } from '@trezor/components';
 import { getInputState } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -14,21 +14,11 @@ import {
 } from 'src/utils/suite/validation';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
-import { spacings } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
-const VStack = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-
-const StyledIcon = styled(Icon)`
+const IconWrapper = styled.div`
     transform: rotate(90deg);
-`;
-
-const InputAddon = styled.span`
-    text-transform: uppercase;
-    color: ${({ theme }) => theme.textSubdued};
+    margin-bottom: ${spacingsPx.xl};
 `;
 
 export const Inputs = () => {
@@ -75,13 +65,13 @@ export const Inputs = () => {
     };
 
     return (
-        <VStack>
+        <Column>
             <NumberInput
                 name={CRYPTO_INPUT}
                 control={control}
                 rules={cryptoInputRules}
                 maxLength={formInputsMaxLength.amount}
-                innerAddon={<InputAddon>{account.symbol}</InputAddon>}
+                innerAddon={<Text variant="tertiary">{account.symbol.toUpperCase()}</Text>}
                 bottomText={errors[CRYPTO_INPUT]?.message ?? null}
                 inputState={getInputState(cryptoError || fiatError)}
                 onChange={value => {
@@ -91,14 +81,16 @@ export const Inputs = () => {
 
             {currentRate?.rate && (
                 <>
-                    <StyledIcon name="transfer" size={16} margin={{ bottom: spacings.xl }} />
+                    <IconWrapper>
+                        <Icon name="transfer" size={16} />
+                    </IconWrapper>
 
                     <NumberInput
                         name={FIAT_INPUT}
                         control={control}
                         rules={fiatInputRules}
                         maxLength={formInputsMaxLength.fiat}
-                        innerAddon={<InputAddon>{localCurrency}</InputAddon>}
+                        innerAddon={<Text variant="tertiary">{localCurrency.toUpperCase()}</Text>}
                         bottomText={errors[FIAT_INPUT]?.message ?? null}
                         inputState={getInputState(fiatError || cryptoError)}
                         onChange={value => {
@@ -109,7 +101,7 @@ export const Inputs = () => {
             )}
 
             {isAmountForWithdrawalWarningShown && (
-                <Warning variant="info" margin={{ top: spacings.sm }}>
+                <Warning variant="info" margin={{ top: spacings.md }}>
                     <Translation
                         id="TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL"
                         values={{
@@ -120,7 +112,7 @@ export const Inputs = () => {
                 </Warning>
             )}
             {isAdviceForWithdrawalWarningShown && (
-                <Warning variant="info" margin={{ top: spacings.sm }}>
+                <Warning variant="info" margin={{ top: spacings.md }}>
                     <Translation
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
@@ -130,6 +122,6 @@ export const Inputs = () => {
                     />
                 </Warning>
             )}
-        </VStack>
+        </Column>
     );
 };

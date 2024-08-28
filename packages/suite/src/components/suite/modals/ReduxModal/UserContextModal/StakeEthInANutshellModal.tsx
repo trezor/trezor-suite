@@ -1,39 +1,12 @@
-import styled, { useTheme } from 'styled-components';
-import { Button, Icon, IconName, Paragraph } from '@trezor/components';
-import { Modal, Translation } from 'src/components/suite';
+import { Icon, IconName, Paragraph, NewModal, Row, Column } from '@trezor/components';
+import { Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-
-const StyledModal = styled(Modal)`
-    width: 380px;
-`;
-
-const HeadingContent = styled.span`
-    color: ${({ theme }) => theme.textPrimaryDefault};
-`;
-
-const VStack = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xl};
-    text-align: left;
-    margin-bottom: ${spacingsPx.xxl};
-`;
-
-const Flex = styled.div`
-    display: flex;
-    gap: ${spacingsPx.md};
-    align-items: center;
-`;
-
-const GreyP = styled(Paragraph)`
-    color: ${({ theme }) => theme.textSubdued};
-`;
 
 interface StakingDetails {
     id: number;
@@ -64,7 +37,6 @@ interface StakeEthInANutshellModalProps {
 }
 
 export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalProps) => {
-    const theme = useTheme();
     const account = useSelector(selectSelectedAccount);
     const { validatorWithdrawTime } = useSelector(state =>
         selectValidatorsQueueData(state, account?.symbol),
@@ -79,21 +51,21 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
     };
 
     return (
-        <StyledModal
-            isCancelable
-            heading={
-                <HeadingContent>
-                    <Translation id="TR_STAKE_STAKING_IN_A_NUTSHELL" />
-                </HeadingContent>
-            }
+        <NewModal
+            size="tiny"
+            heading={<Translation id="TR_STAKE_STAKING_IN_A_NUTSHELL" />}
             onCancel={onCancel}
+            bottomContent={
+                <NewModal.Button isFullWidth onClick={proceedToEverstakeModal}>
+                    <Translation id="TR_GOT_IT" />
+                </NewModal.Button>
+            }
         >
-            <VStack>
+            <Column gap={spacings.xl} margin={{ top: spacings.sm, bottom: spacings.md }}>
                 {STAKING_DETAILS.map(({ id, icon, translationId }) => (
-                    <Flex key={id}>
-                        <Icon name={icon} color={theme.iconPrimaryDefault} />
-
-                        <GreyP>
+                    <Row key={id} gap={spacings.md}>
+                        <Icon name={icon} variant="primary" />
+                        <Paragraph>
                             <Translation
                                 id={translationId}
                                 values={{
@@ -101,13 +73,10 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                                     count: unstakingPeriod,
                                 }}
                             />
-                        </GreyP>
-                    </Flex>
+                        </Paragraph>
+                    </Row>
                 ))}
-            </VStack>
-            <Button isFullWidth onClick={proceedToEverstakeModal}>
-                <Translation id="TR_GOT_IT" />
-            </Button>
-        </StyledModal>
+            </Column>
+        </NewModal>
     );
 };

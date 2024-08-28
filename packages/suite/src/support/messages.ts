@@ -8739,7 +8739,7 @@ export default defineMessages({
     },
     TR_STAKE_YOUR_FUNDS_MAINTAINED: {
         id: 'TR_STAKE_YOUR_FUNDS_MAINTAINED',
-        defaultMessage: 'Your staked funds are <h>maintained by Everstake</h>',
+        defaultMessage: 'Your staked funds are maintained by Everstake',
     },
     TR_STAKE_POWERED_BY: {
         id: 'TR_STAKE_POWERED_BY',
@@ -8748,12 +8748,12 @@ export default defineMessages({
     TR_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_STAKE_EVERSTAKE_MANAGES',
         defaultMessage:
-            'Everstake maintains and protects your staked {symbol} <t>with their smart contracts, infrastructure, and technology.</t>',
+            'Everstake maintains and protects your staked {symbol} with their smart contracts, infrastructure, and technology.',
     },
     TR_STAKE_TREZOR_NO_LIABILITY: {
         id: 'TR_STAKE_TREZOR_NO_LIABILITY',
         defaultMessage:
-            "<t>When staking, the responsibility for</t> your funds' security transitions from your Trezor to Everstake.",
+            "When staking, the responsibility for your funds' security transitions from your Trezor to Everstake.",
     },
     TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE: {
         id: 'TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE',
