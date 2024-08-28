@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { captureException } from '@sentry/react-native';
+import { A } from '@mobily/ts-belt';
 
 import {
     AccountItem,
@@ -29,7 +30,6 @@ import {
     setAccountGraphTimeframe,
     setPortfolioGraphTimeframe,
 } from './slice';
-import { A } from '@mobily/ts-belt';
 
 const useWatchTimeframeChangeForAnalytics = (
     timeframeHours: TimeframeHoursValue,

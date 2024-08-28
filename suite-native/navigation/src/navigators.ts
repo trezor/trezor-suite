@@ -165,6 +165,7 @@ export type RootStackParamList = {
     [RootStackRoutes.TransactionDetail]: {
         txid: string;
         accountKey: AccountKey;
+        closeActionType?: CloseActionType;
         tokenTransfer?: TokenTransfer;
     };
     [RootStackRoutes.DevUtilsStack]: undefined;

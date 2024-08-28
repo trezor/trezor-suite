@@ -41,7 +41,6 @@
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../toasts" },
-        { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

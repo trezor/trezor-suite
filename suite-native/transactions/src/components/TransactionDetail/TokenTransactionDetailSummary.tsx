@@ -36,7 +36,7 @@ export const TokenTransactionDetailSummary = ({
                 addresses={outputAddresses}
                 onShowMore={onShowMore}
             />
-            <VerticalSeparator isMultiInputTransaction={inputAddresses.length > 2} />
+            <VerticalSeparator inputsCount={inputAddresses.length} />
         </VStack>
     );
 };
