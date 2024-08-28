@@ -53,15 +53,17 @@ export class UsbApi extends AbstractApi {
         this.usbInterface.onconnect = event => {
             this.logger?.debug(`usb: onconnect: ${this.formatDeviceForLog(event.device)}`);
 
-            this.createDevices([event.device], this.abortController.signal)
-                .then(newDevices => {
-                    this.devices = [...this.devices, ...newDevices];
-                    this.emit('transport-interface-change', this.devicesToDescriptors());
-                })
-                .catch(err => {
-                    // empty
-                    this.logger?.error(`usb: createDevices error: ${err.message}`);
-                });
+            this.synchronize(() => {
+                this.createDevices([event.device], this.abortController.signal)
+                    .then(newDevices => {
+                        this.devices = [...this.devices, ...newDevices];
+                        this.emit('transport-interface-change', this.devicesToDescriptors());
+                    })
+                    .catch(err => {
+                        // empty
+                        this.logger?.error(`usb: createDevices error: ${err.message}`);
+                    });
+            });
         };
 
         this.usbInterface.ondisconnect = event => {
@@ -163,20 +165,22 @@ export class UsbApi extends AbstractApi {
             });
     }
 
-    public async enumerate(signal?: AbortSignal) {
-        try {
-            this.logger?.debug('usb: enumerate');
-            const devices = await this.abortableMethod(() => this.usbInterface.getDevices(), {
-                signal,
-            });
+    public enumerate(signal?: AbortSignal) {
+        return this.synchronize(async () => {
+            try {
+                this.logger?.debug('usb: enumerate');
+                const devices = await this.abortableMethod(() => this.usbInterface.getDevices(), {
+                    signal,
+                });
 
-            this.devices = await this.createDevices(devices, signal);
+                this.devices = await this.createDevices(devices, signal);
 
-            return this.success(this.devicesToDescriptors());
-        } catch (err) {
-            // this shouldn't throw
-            return this.unknownError(err, []);
-        }
+                return this.success(this.devicesToDescriptors());
+            } catch (err) {
+                // this shouldn't throw
+                return this.unknownError(err, []);
+            }
+        });
     }
 
     public async read(path: string, signal?: AbortSignal) {

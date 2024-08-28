@@ -1,4 +1,4 @@
-import { TypedEmitter } from '@trezor/utils';
+import { TypedEmitter, getSynchronize } from '@trezor/utils';
 import type {
     AnyError,
     AsyncResultWithTypedError,
@@ -24,19 +24,27 @@ export enum DEVICE_TYPE {
     TypeEmulator = 5,
 }
 
+type AccessLock = {
+    read: boolean;
+    write: boolean;
+};
 /**
  * This class defines unifying shape for native communication interfaces such as
  * - navigator.bluetooth
  * - navigator.usb
  * This is not public API. Only a building block which is used in src/transports
  */
+
 export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': DescriptorApiLevel[];
     'transport-interface-error': typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.DEVICE_UNREADABLE;
 }> {
     protected logger?: Logger;
     protected listening: boolean = false;
-
+    protected lock: AccessLock = {
+        read: false,
+        write: false,
+    };
     constructor({ logger }: AbstractApiConstructorParams) {
         super();
 
@@ -141,6 +149,52 @@ export abstract class AbstractApi extends TypedEmitter<{
 
         return unknownError(err, expectedErrors);
     }
+
+    protected synchronize = getSynchronize();
+
+    /**
+     * call this to ensure single access to transport api.
+     */
+    private requestAccess(lock: AccessLock) {
+        // check already existing lock
+        if ((this.lock.read && lock.read) || (this.lock.write && lock.write)) {
+            return this.error({ error: ERRORS.OTHER_CALL_IN_PROGRESS });
+        }
+        // add to the current lock
+        this.lock = {
+            read: this.lock.read || lock.read,
+            write: this.lock.write || lock.write,
+        };
+
+        return this.success(undefined);
+    }
+
+    /**
+     * 1. merges lock with current lock
+     * 2. runs provided function
+     * 3. clears its own lock
+     */
+    public runInIsolation = async <T extends () => ReturnType<T>>(lock: AccessLock, fn: T) => {
+        const accessRes = this.requestAccess(lock);
+        if (!accessRes.success) {
+            return accessRes;
+        }
+
+        try {
+            // note: await is needed here
+            return await this.synchronize(fn);
+        } catch (err) {
+            // this should never happen, incorrectly handled error on api level. fn should not throw.
+            this.logger?.error('transport: abstract api: runInIsolation error', err);
+
+            return this.unknownError(err, []);
+        } finally {
+            this.lock = {
+                read: lock.read ? false : this.lock.read,
+                write: lock.write ? false : this.lock.write,
+            };
+        }
+    };
 }
 
 export type AbstractApiAwaitedResult<K extends keyof AbstractApi> = AbstractApi[K] extends (
