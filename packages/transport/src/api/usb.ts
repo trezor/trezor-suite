@@ -124,10 +124,9 @@ export class UsbApi extends AbstractApi {
             product: d.device.productId,
         }));
     }
-
     private abortableMethod<R>(
         method: () => R,
-        { signal, onAbort }: { signal?: AbortSignal; onAbort?: () => void },
+        { signal, onAbort }: { signal?: AbortSignal; onAbort?: () => Promise<void> | void },
     ) {
         if (!signal) {
             return method();
@@ -136,10 +135,17 @@ export class UsbApi extends AbstractApi {
             return Promise.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         }
 
+        const abortTimeoutDfd = createDeferred<void>();
+        const abortTimeoutPromise = Promise.race([
+            createTimeoutPromise(500),
+            abortTimeoutDfd.promise,
+        ]);
         const abort = () => {
             if (!onAbort) return;
             try {
-                onAbort();
+                onAbort()?.finally(() => {
+                    abortTimeoutDfd.resolve();
+                });
             } catch (err) {
                 this.logger?.error(`usb: onAbort error: ${err}`);
             }
@@ -155,8 +161,11 @@ export class UsbApi extends AbstractApi {
         return Promise.race([method(), dfd.promise])
             .then(r => {
                 dfd.resolve(r);
-
                 return r;
+            })
+            .catch(async err => {
+                await abortTimeoutPromise;
+                throw err;
             })
             .finally(() => {
                 signal?.removeEventListener('abort', abortListener);
