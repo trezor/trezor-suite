@@ -35,6 +35,8 @@ export class ThpState {
     private _expectedResponses: number[] = [];
     private _selectedMethod?: ThpPairingMethod;
     private _nfcSecret?: Buffer;
+    private _sessionId: Buffer = Buffer.alloc(1);
+    private _sessionIdCounter: number = 0;
 
     get pairingTagPromise() {
         return this._pairingTagPromise;
@@ -207,6 +209,28 @@ export class ThpState {
         };
     }
 
+    get sessionId() {
+        return this._sessionId;
+    }
+
+    createNewSessionId() {
+        this._sessionIdCounter++;
+        if (this._sessionIdCounter > 255) {
+            this._sessionIdCounter = 1;
+        }
+
+        const sessionId = Buffer.alloc(1);
+        sessionId.writeUint8(this._sessionIdCounter, 0);
+
+        this.setSessionId(sessionId);
+
+        return sessionId;
+    }
+
+    setSessionId(sessionId: Buffer) {
+        this._sessionId = sessionId;
+    }
+
     serialize(): ThpStateSerialized {
         return {
             properties: this._properties,
@@ -276,6 +300,8 @@ export class ThpState {
         this._pairingCredentials = [];
         this._selectedMethod = undefined;
         this._nfcSecret = undefined;
+        this._sessionId = Buffer.alloc(1);
+        this._sessionIdCounter = 0;
     }
 
     toString() {
