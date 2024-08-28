@@ -1,3 +1,15 @@
+import type { ThpProtocolState } from './protocol-thp/ThpProtocolState';
+
+export type { ThpProtocolState } from './protocol-thp/ThpProtocolState';
+
+export type {
+    ThpDeviceProperties,
+    ThpPairingMethod,
+    ThpMessageType,
+} from './protocol-thp/messages';
+
+export type TransportProtocolState = ThpProtocolState;
+
 export type TransportProtocolDecode = (bytes: Buffer) => {
     header: Buffer;
     length: number;
