@@ -1,13 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { ReactNode, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Dropdown, DropdownRef, CoinLogo } from '@trezor/components';
 import { Translation, StatusLight } from 'src/components/suite';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { BlockchainState } from '@suite-common/wallet-core';
 import type { CustomBackend } from 'src/types/wallet';
-import { ActionButton } from './ActionButton';
 import { openModal } from 'src/actions/suite/modalActions';
 import { spacingsPx, typography } from '@trezor/theme';
 
@@ -78,14 +77,14 @@ const DefaultBackendsLabel = styled.div`
 
 type NavBackendsProps = {
     customBackends: CustomBackend[];
+    children: ReactNode;
 };
 
-export const NavBackends = ({ customBackends }: NavBackendsProps) => {
+export const NavBackends = ({ customBackends, children }: NavBackendsProps) => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
     const blockchain = useSelector(state => state.wallet.blockchain);
     const dispatch = useDispatch();
-    const { translationString } = useTranslation();
 
     const goToCoinsSettings = () => dispatch(goto('settings-coins'));
     const items = [
@@ -133,12 +132,8 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
             }}
             items={items}
         >
-            <ActionButton
-                title={translationString('TR_CUSTOM_BACKEND')}
-                icon="backend"
-                size="small"
-                variant="tertiary"
-            />
+            {/* The must be div so Dropdown works. Its mess, Dropdown shall be reworked.*/}
+            <div>{children}</div>
         </StyledDropdown>
     );
 };

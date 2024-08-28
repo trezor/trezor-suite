@@ -360,6 +360,7 @@ export const selectTorState = (state: SuiteRootState) => {
     const { torStatus, torBootstrap } = state.suite;
 
     return {
+        torStatus,
         isTorEnabled: getIsTorEnabled(torStatus),
         isTorLoading: getIsTorLoading(torStatus),
         isTorError: torStatus === TorStatus.Error,
