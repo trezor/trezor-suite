@@ -4,6 +4,7 @@ import { thpPairing } from './pairing';
 
 export { abortThpWorkflow } from './thpCall';
 export { getThpCredentials } from './pairing';
+export { createThpSession } from './session';
 
 export const getThpChannel = async (device: Device, withInteraction?: boolean) => {
     const thpState = device.getThpState();
