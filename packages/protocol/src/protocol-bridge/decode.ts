@@ -17,6 +17,7 @@ export const decode: TransportProtocolDecode = bytes => {
     const { messageType, length } = readHeader(bytes);
 
     return {
+        header: Buffer.alloc(0), // bridge doesn't return header
         messageType,
         length,
         payload: bytes.subarray(HEADER_SIZE),
