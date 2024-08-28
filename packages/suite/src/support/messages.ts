@@ -4356,6 +4356,10 @@ export default defineMessages({
         defaultMessage:
             'To create additional addresses for a coinjoin account, you must ensure that you have already received bitcoin at the initial address.',
     },
+    TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED: {
+        id: 'TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED',
+        defaultMessage: 'Your device may have been compromised. Do not send funds to it.',
+    },
     RECEIVE_ADDRESS_LIMIT_REACHED: {
         id: 'RECEIVE_ADDRESS_LIMIT_REACHED',
         defaultMessage: "You've reached the maximum limit of 21 fresh, unused addresses",
@@ -6982,6 +6986,10 @@ export default defineMessages({
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3',
         defaultMessage:
             'Trezor Support will never ask you to turn off the firmware revision check. This feature is designed to protect your security.',
+    },
+    TR_FIRMWARE_REVISION_CHECK_FAILED: {
+        id: 'TR_FIRMWARE_REVISION_CHECK_FAILED',
+        defaultMessage: 'Firmware revision check failed. Your Trezor may be counterfeit.',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_UNABLE_TO_PERFORM',

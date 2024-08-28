@@ -1,12 +1,16 @@
-import { WelcomeLayout } from 'src/components/suite';
-import { SecurityCheckFail } from '../SecurityCheck/SecurityCheckFail';
-import { Card } from '@trezor/components';
 import { useEffect } from 'react';
-import { captureSentryMessage, withSentryScope } from '../../../utils/suite/sentry';
-import { useDevice } from '../../../hooks/suite';
+
+import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
+import { WelcomeLayout } from 'src/components/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
+import { SecurityCheckFail } from '../SecurityCheck/SecurityCheckFail';
+import { deviceActions } from '@suite-common/wallet-core';
+
 export const DeviceCompromised = () => {
+    const dispatch = useDispatch();
     const { device } = useDevice();
 
     const revision = device?.features?.revision;
@@ -15,6 +19,13 @@ export const DeviceCompromised = () => {
         device?.features && device.authenticityChecks?.firmwareRevision?.success === false
             ? device.authenticityChecks.firmwareRevision?.error
             : undefined;
+
+    const goToSuite = () => {
+        // Condition to satisfy TypeScript, device.id is always defined at this point.
+        if (device?.id) {
+            dispatch(deviceActions.dismissFirmwareRevisionCheck(device.id));
+        }
+    };
 
     useEffect(() => {
         const contextData = { revision, version, authenticityError };
@@ -32,7 +43,7 @@ export const DeviceCompromised = () => {
     return (
         <WelcomeLayout>
             <Card data-testid="@device-compromised">
-                <SecurityCheckFail />
+                <SecurityCheckFail goBack={goToSuite} />
             </Card>
         </WelcomeLayout>
     );

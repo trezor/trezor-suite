@@ -78,12 +78,17 @@ const supportChatUrl = `${TREZOR_SUPPORT_URL}#open-chat`;
 
 interface SecurityCheckFailProps {
     goBack?: () => void;
+    useSoftMessaging?: boolean;
 }
 
-export const SecurityCheckFail = ({ goBack }: SecurityCheckFailProps) => {
-    const heading = goBack ? 'TR_DEVICE_COMPROMISED_HEADING_SOFT' : 'TR_DEVICE_COMPROMISED_HEADING';
-    const text = goBack ? 'TR_DEVICE_COMPROMISED_TEXT_SOFT' : 'TR_DEVICE_COMPROMISED_TEXT';
-    const items = goBack ? softChecklistItems : checklistItems;
+export const SecurityCheckFail = ({ goBack, useSoftMessaging }: SecurityCheckFailProps) => {
+    const heading = useSoftMessaging
+        ? 'TR_DEVICE_COMPROMISED_HEADING_SOFT'
+        : 'TR_DEVICE_COMPROMISED_HEADING';
+    const text = useSoftMessaging
+        ? 'TR_DEVICE_COMPROMISED_TEXT_SOFT'
+        : 'TR_DEVICE_COMPROMISED_TEXT';
+    const items = useSoftMessaging ? softChecklistItems : checklistItems;
 
     return (
         <SecurityCheckLayout isFailed>
