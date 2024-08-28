@@ -132,7 +132,7 @@ export const TokenList = ({
                                 $isActive={isZeroBalanceOpen}
                                 size={18}
                                 color={theme.iconSubdued}
-                                icon="chevronDown"
+                                name="chevronDown"
                             />
                         </ChevronContainer>
                         <Translation id="ZERO_BALANCE_TOKENS" />

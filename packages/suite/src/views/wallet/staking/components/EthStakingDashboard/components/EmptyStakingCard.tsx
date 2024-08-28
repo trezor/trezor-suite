@@ -140,7 +140,7 @@ export const EmptyStakingCard = () => {
                         <Button
                             onClick={openStakingEthInANutshellModal}
                             isDisabled={isStakingDisabled}
-                            icon={isStakingDisabled ? 'INFO' : undefined}
+                            icon={isStakingDisabled ? 'info' : undefined}
                         >
                             <Translation id="TR_STAKE_START_STAKING" />
                         </Button>

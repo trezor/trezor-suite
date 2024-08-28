@@ -53,7 +53,7 @@ const CoinmarketHeaderSummary = ({
                                 />
                             </TextWrap>
                         )}
-                        <StyledIcon icon="arrowRightLong" />
+                        <StyledIcon name="arrowRightLong" />
                         <TextWrap>
                             <CoinmarketFiatAmount currency={sendCurrency} />
                         </TextWrap>

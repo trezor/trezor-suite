@@ -12,7 +12,7 @@ export const Tag = ({ isSelected, onClick, title }: TagProps) => (
     <Button
         variant="tertiary"
         size="tiny"
-        icon={isSelected ? 'CHECK_ACTIVE' : undefined}
+        icon={isSelected ? 'checkActive' : undefined}
         onClick={onClick}
     >
         {title}

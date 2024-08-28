@@ -126,7 +126,7 @@ const PortfolioCard = memo(() => {
                                         shouldCloseOnClick: false,
                                     },
                                     {
-                                        icon: dashboardGraphHidden ? 'SHOW' : 'HIDE',
+                                        icon: dashboardGraphHidden ? 'show' : 'hide',
                                         label: dashboardGraphHidden ? (
                                             <Translation id="TR_SHOW_GRAPH" />
                                         ) : (

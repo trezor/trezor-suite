@@ -218,7 +218,7 @@ export const AssetsView = () => {
                     />
                     {isError && (
                         <InfoMessage>
-                            <Icon icon="warningTriangle" color={theme.iconAlertRed} size={14} />
+                            <Icon name="warningTriangle" color={theme.iconAlertRed} size={14} />
                             <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                         </InfoMessage>
                     )}

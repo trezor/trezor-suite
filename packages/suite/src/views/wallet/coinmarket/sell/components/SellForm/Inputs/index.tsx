@@ -102,7 +102,7 @@ const Inputs = () => {
                         onAllClick={setAllAmount}
                     />
                 )}
-                <StyledIcon $responsiveSize="LG" icon="transfer" size={16} />
+                <StyledIcon $responsiveSize="LG" name="transfer" size={16} />
                 {!isLargeLayoutSize && <EmptyDiv />}
             </Middle>
             <Right>

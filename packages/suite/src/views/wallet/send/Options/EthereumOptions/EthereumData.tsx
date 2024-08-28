@@ -121,7 +121,7 @@ export const EthereumData = ({ close }: EthereumDataProps) => {
                 labelRight={
                     <Icon
                         size={20}
-                        icon="close"
+                        name="close"
                         data-testid="send/close-ethereum-data"
                         onClick={handleClose}
                     />

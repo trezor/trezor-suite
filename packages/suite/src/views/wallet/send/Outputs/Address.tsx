@@ -2,8 +2,14 @@ import { useCallback, useState } from 'react';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import styled, { useTheme } from 'styled-components';
 
-import { Input, Button, IconButton, CoinLogo, getInputStateTextColor } from '@trezor/components';
-import { Icon } from '@suite-common/icons/src/webComponents';
+import {
+    Input,
+    Button,
+    IconButton,
+    CoinLogo,
+    getInputStateTextColor,
+    Icon,
+} from '@trezor/components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import * as URLS from '@trezor/urls';
 import { notificationsActions } from '@suite-common/toast-notifications';

@@ -132,7 +132,7 @@ export const CoinjoinProgressContent = ({
         if (isRunningAndBlocked) {
             return (
                 <>
-                    <StyledIcon icon="pause" {...iconConfig} />
+                    <StyledIcon name="pause" {...iconConfig} />
                     <Translation id="TR_PAUSED" />
                 </>
             );
@@ -166,7 +166,7 @@ export const CoinjoinProgressContent = ({
                         content={<Translation id="TR_AUTO_STOP_TOOLTIP" />}
                     >
                         <TooltipChildren>
-                            <StyledIcon name="STOP" {...iconConfig} />
+                            <StyledIcon name="stop" {...iconConfig} />
                             <Translation id="TR_STOP" />
                         </TooltipChildren>
                     </Tooltip>
@@ -175,7 +175,7 @@ export const CoinjoinProgressContent = ({
 
             return (
                 <>
-                    <StyledIcon name="STOP" {...iconConfig} />
+                    <StyledIcon name="stop" {...iconConfig} />
                     <Translation id="TR_STOP" />
                 </>
             );
@@ -201,7 +201,7 @@ export const CoinjoinProgressContent = ({
 
         return (
             <>
-                <PlayIcon name="PLAY" {...iconConfig} color={theme.iconPrimaryDefault} />
+                <PlayIcon name="play" {...iconConfig} color={theme.iconPrimaryDefault} />
                 <Translation id="TR_START" />
             </>
         );

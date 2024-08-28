@@ -2,7 +2,7 @@ import { useState, Ref, ReactNode, ReactElement, InputHTMLAttributes } from 'rea
 import styled, { useTheme } from 'styled-components';
 import { useMeasure } from 'react-use';
 import { spacingsPx, spacings, typography } from '@trezor/theme';
-import { Icon, IconName } from '../../Icon/Icon';
+import { Icon } from '../../Icon/Icon';
 import {
     baseInputStyle,
     INPUT_HEIGHTS,

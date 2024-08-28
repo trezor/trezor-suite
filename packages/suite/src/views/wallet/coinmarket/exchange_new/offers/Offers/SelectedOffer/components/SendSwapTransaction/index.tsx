@@ -10,7 +10,6 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { spacingsPx } from '@trezor/theme';
 import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
-import { Icon } from '@suite-common/icons/src/webComponents';
 import { getInputStateTextColor } from '@trezor/components';
 
 const Wrapper = styled.div`
