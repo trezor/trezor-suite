@@ -128,8 +128,8 @@ export class UsbApi extends AbstractApi {
     }
 
     private abortableMethod<R>(
-        method: () => R,
-        { signal, onAbort }: { signal?: AbortSignal; onAbort?: () => void },
+        method: () => Promise<R>,
+        { signal, onAbort }: { signal?: AbortSignal; onAbort?: () => Promise<void> | void },
     ) {
         if (!signal) {
             return method();
@@ -138,23 +138,29 @@ export class UsbApi extends AbstractApi {
             return Promise.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         }
 
-        const abort = () => {
-            if (!onAbort) return;
-            try {
-                onAbort();
-            } catch (err) {
-                this.logger?.error(`usb: onAbort error: ${err}`);
-            }
-        };
-
         const dfd = createDeferred<R>();
-        const abortListener = () => {
-            abort();
+        const abortListener = async () => {
+            this.logger?.debug('usb: abortableMethod onAbort start');
+            try {
+                await onAbort?.();
+            } catch {}
+            this.logger?.debug('usb: abortableMethod onAbort done');
             dfd.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         };
         signal?.addEventListener('abort', abortListener);
 
-        return Promise.race([method(), dfd.promise])
+        const methodPromise = method().catch(error => {
+            // NOTE: race condition
+            // method() rejects error triggered by signal (device.reset) before dfd.promise (before onAbort finish)
+            this.logger?.debug(`usb: abortableMethod method() aborted: ${signal.aborted} ${error}`);
+            if (signal.aborted) {
+                return dfd.promise;
+            }
+            dfd.reject(error);
+            throw error;
+        });
+
+        return Promise.race([methodPromise, dfd.promise])
             .then(r => {
                 dfd.resolve(r);
 
@@ -360,6 +366,10 @@ export class UsbApi extends AbstractApi {
             try {
                 const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
                 this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
+                if (!this.debugLink) {
+                    // NOTE: `device.reset()` interrupts transfers for all interfaces (debugLink and normal)
+                    await device.reset();
+                }
                 await device.releaseInterface(interfaceId);
                 this.logger?.debug(
                     `usb: device.releaseInterface done: ${interfaceId}. device: ${this.formatDeviceForLog(device)}`,
