@@ -109,7 +109,6 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     };
 
     const enumerate = async ({ signal }: { signal: AbortSignal }) => {
-        await sessionsClient.enumerateIntent();
         const enumerateResult = await api.enumerate(signal);
 
         if (!enumerateResult.success) {
@@ -178,7 +177,6 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         signal: AbortSignal;
     }) => {
         logger?.debug(`core: call: session: ${session}`);
-
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -190,25 +188,27 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         const { path } = sessionsResult.payload;
         logger?.debug(`core: call: retrieved path ${path} for session ${session}`);
 
-        const openResult = await api.openDevice(path, false, signal);
+        return api.runInIsolation({ read: true, write: true }, async () => {
+            const openResult = await api.openDevice(path, false, signal);
 
-        if (!openResult.success) {
-            logger?.error(`core: call: api.openDevice error: ${openResult.error}`);
+            if (!openResult.success) {
+                logger?.error(`core: call: api.openDevice error: ${openResult.error}`);
 
-            return openResult;
-        }
-        logger?.debug(`core: call: api.openDevice done`);
+                return openResult;
+            }
+            logger?.debug(`core: call: api.openDevice done`);
 
-        logger?.debug('core: call: writeUtil');
-        const writeResult = await writeUtil({ path, data, signal });
-        if (!writeResult.success) {
-            logger?.error(`core: call: writeUtil ${writeResult.error}`);
+            logger?.debug('core: call: writeUtil');
+            const writeResult = await writeUtil({ path, data, signal });
+            if (!writeResult.success) {
+                logger?.error(`core: call: writeUtil ${writeResult.error}`);
 
-            return writeResult;
-        }
-        logger?.debug('core: call: readUtil');
+                return writeResult;
+            }
+            logger?.debug('core: call: readUtil');
 
-        return readUtil({ path, signal });
+            return readUtil({ path, signal });
+        });
     };
 
     const send = async ({
@@ -247,12 +247,14 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         }
         const { path } = sessionsResult.payload;
 
-        const openResult = await api.openDevice(path, false, signal);
-        if (!openResult.success) {
-            return openResult;
-        }
+        return api.runInIsolation({ read: true, write: false }, async () => {
+            const openResult = await api.openDevice(path, false, signal);
+            if (!openResult.success) {
+                return openResult;
+            }
 
-        return readUtil({ path, signal });
+            return readUtil({ path, signal });
+        });
     };
 
     const dispose = () => {

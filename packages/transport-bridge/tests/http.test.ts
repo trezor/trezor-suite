@@ -4,6 +4,7 @@ import { getFreePort } from '@trezor/node-utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 import { bridgeApiCall } from '@trezor/transport/src/utils/bridgeApiCall';
 import { createTimeoutPromise } from '@trezor/utils';
+import { UdpApi } from '@trezor/transport/src/api/udp';
 
 import { TrezordNode } from '../src/http';
 
@@ -33,8 +34,11 @@ const waitForNthEventOfType = (
 };
 
 // todo: Szymon is about to re-use this from a single file
-const createTransportApi = (override = {}) =>
-    ({
+const createTransportApi = (override = {}) => {
+    const api = new UdpApi({ logger: muteLogger });
+
+    return {
+        ...api,
         chunkSize: 0,
         enumerate: () => {
             return Promise.resolve({ success: true, payload: [{ path: '1' }] });
@@ -59,8 +63,10 @@ const createTransportApi = (override = {}) =>
         },
         dispose: () => {},
         listen: () => {},
+
         ...override,
-    }) as unknown as AbstractApi;
+    } as unknown as AbstractApi;
+};
 
 const createTrezordNode = (
     constructorParams?: Partial<ConstructorParameters<typeof TrezordNode>[0]>,
