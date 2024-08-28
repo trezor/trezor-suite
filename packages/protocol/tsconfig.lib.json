@@ -1,7 +1,9 @@
 {
     "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
-        "outDir": "lib"
+        "outDir": "lib",
+        "target": "es2020",
+        "lib": ["es2020", "esnext"]
     },
     "include": ["./src"],
     "references": []
