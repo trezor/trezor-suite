@@ -20,6 +20,10 @@ import {
     isNftTokenTransfer,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
+import {
+    TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
 
 import {
     AccountsRootState,
@@ -92,7 +96,9 @@ export const selectShouldUpdateFiatRate = (
     return currentTimestamp - lastSuccessfulFetchTimestamp > MAX_AGE[rateType];
 };
 
-export const selectTickerFromAccounts = (state: FiatRatesRootState): TickerId[] => {
+export const selectTickerFromAccounts = (
+    state: FiatRatesRootState & TokenDefinitionsRootState,
+): TickerId[] => {
     const accounts = selectDeviceAccounts(state as any);
 
     return pipe(
@@ -110,12 +116,17 @@ export const selectTickerFromAccounts = (state: FiatRatesRootState): TickerId[] 
             ),
         ]),
         A.flat,
+        A.filter(
+            ticker =>
+                !ticker.tokenAddress ||
+                selectIsSpecificCoinDefinitionKnown(state, ticker.symbol, ticker.tokenAddress),
+        ),
         F.toMutable,
     );
 };
 
 export const selectTickersToBeUpdated = (
-    state: FiatRatesRootState,
+    state: FiatRatesRootState & TokenDefinitionsRootState,
     currentTimestamp: UnixTimestamp,
     fiatCurrency: FiatCurrencyCode,
     rateType: RateTypeWithoutHistoric,
