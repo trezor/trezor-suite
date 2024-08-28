@@ -12,7 +12,7 @@ interface Process {
 }
 
 // note that this variable is duplicated with suite-desktop-core
-const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.2;
+const NEW_BRIDGE_ROLLOUT_THRESHOLD = 1;
 
 export const TransportBackends = () => {
     const [bridgeProcess, setBridgeProcess] = useState<Process>({ service: false, process: false });
@@ -110,7 +110,7 @@ export const TransportBackends = () => {
                 <SectionItem data-testid="@settings/debug/processes/newBridgeRollout">
                     <TextColumn
                         title="New bridge rollout"
-                        description={`New bridge is being rolled out to only ${NEW_BRIDGE_ROLLOUT_THRESHOLD * 100}% of Trezor Suite instances that have applied for the Early access program. Your rollout score is ${((bridgeSettings.newBridgeRollout ?? 0) * 100).toFixed()}%`}
+                        description={`New bridge is being rolled out to ${NEW_BRIDGE_ROLLOUT_THRESHOLD * 100}% of Trezor Suite instances that have applied for the Early access program.`}
                     />
                 </SectionItem>
             )}
