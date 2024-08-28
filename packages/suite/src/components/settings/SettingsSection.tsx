@@ -83,7 +83,7 @@ export const SettingsSection = ({
 
             <Content>
                 <Card className={className}>
-                    <Column gap={spacings.xxl} flex={1} alignItems="normal">
+                    <Column gap={spacings.xxl} flex="1" alignItems="normal">
                         {children}
                     </Column>
                 </Card>

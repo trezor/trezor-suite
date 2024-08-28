@@ -57,7 +57,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
                 </Row>
             }
         >
-            <Column gap={4} alignItems="flex-start" flex={1} margin={{ left: spacings.xs }}>
+            <Column gap={4} alignItems="flex-start" flex="1" margin={{ left: spacings.xs }}>
                 <Text color={theme.textSubdued} typographyStyle="callout">
                     <Translation id="TR_STAKE_ETH_EARN_REPEAT" />
                 </Text>

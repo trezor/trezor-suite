@@ -73,7 +73,7 @@ export const DashboardPassphraseBanner = () => {
                             </Row>
                         }
                     >
-                        <Column gap={4} alignItems="flex-start" flex={1}>
+                        <Column gap={4} alignItems="flex-start" flex="1">
                             <H3 color="textDefault">
                                 <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE" />
                             </H3>
