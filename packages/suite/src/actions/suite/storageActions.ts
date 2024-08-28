@@ -325,7 +325,11 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
     db.addItem(
         'suiteSettings',
         {
-            settings: suite.settings,
+            settings: {
+                ...suite.settings,
+                // Temporary measure to always start Suite with password manager off
+                experimental: suite.settings.experimental?.filter(e => e !== 'password-manager'),
+            },
             flags: suite.flags,
             evmSettings: suite.evmSettings,
         },
