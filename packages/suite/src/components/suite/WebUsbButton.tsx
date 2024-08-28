@@ -14,7 +14,7 @@ const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 
 export const WebUsbButton = ({
     translationId = 'TR_CHECK_FOR_DEVICES',
-    icon = 'SEARCH',
+    icon = 'search',
     size = 'tiny',
     variant = 'primary',
     ...rest

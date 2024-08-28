@@ -407,7 +407,7 @@ const IOSectionColumn = ({ tx, inputs, outputs, isPhishingTransaction }: IOSecti
                     </div>
                 )}
                 <IconWrapper>
-                    <Icon icon="chevronRight" size={17} color={theme.legacy.TYPE_LIGHT_GREY} />
+                    <Icon name="chevronRight" size={17} color={theme.legacy.TYPE_LIGHT_GREY} />
                 </IconWrapper>
                 {hasOutputs && (
                     <div>

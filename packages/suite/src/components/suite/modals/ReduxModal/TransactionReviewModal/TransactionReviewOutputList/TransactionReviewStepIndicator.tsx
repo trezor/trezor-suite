@@ -31,7 +31,7 @@ export const TransactionReviewStepIndicator = ({
     return (
         <IndicatorWrapper>
             {!state && <Dot $color={theme.legacy.STROKE_GREY} />}
-            {state === 'success' && <Icon color={theme.legacy.BG_GREEN} icon="check" size={size} />}
+            {state === 'success' && <Icon color={theme.legacy.BG_GREEN} name="check" size={size} />}
             {state === 'active' && <Dot $color={theme.legacy.TYPE_ORANGE} />}
         </IndicatorWrapper>
     );

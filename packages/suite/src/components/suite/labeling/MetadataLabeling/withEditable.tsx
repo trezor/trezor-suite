@@ -115,10 +115,10 @@ export const withEditable =
                 <IconListWrapper>
                     <IconWrapper $bgColor={theme.legacy.BG_LIGHT_GREEN}>
                         <Icon
-                            useCursorPointer
+                            cursorPointer
                             size={14}
                             data-testid="@metadata/submit"
-                            icon="check"
+                            name="check"
                             onClick={e => {
                                 e.stopPropagation();
                                 submit(value);
@@ -129,10 +129,10 @@ export const withEditable =
 
                     <IconWrapper $bgColor={theme.legacy.BG_GREY}>
                         <Icon
-                            useCursorPointer
+                            cursorPointer
                             size={14}
                             data-testid="@metadata/cancel"
-                            icon="close"
+                            name="close"
                             onClick={e => {
                                 e.stopPropagation();
                                 onBlur();

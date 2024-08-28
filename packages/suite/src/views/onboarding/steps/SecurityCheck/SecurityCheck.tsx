@@ -119,7 +119,7 @@ const StyledTooltip = styled(Tooltip)`
 
 const firmwareInstalledChecklist = [
     {
-        icon: 'INFO',
+        icon: 'info',
         content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_4" />,
     },
 ] as const;
@@ -135,7 +135,7 @@ const isAuthenticationSupportedMap: Record<DeviceModelInternal, boolean> = {
 const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
     [
         {
-            icon: 'VERIFIED',
+            icon: 'verified',
             content: (
                 <Translation
                     id="TR_ONBOARDING_DEVICE_CHECK_2"
@@ -155,7 +155,7 @@ const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
             ),
         },
         {
-            icon: 'HOLOGRAM',
+            icon: 'hologram',
             content: (
                 <Translation
                     id="TR_ONBOARDING_DEVICE_CHECK_1"
@@ -174,7 +174,7 @@ const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
             ),
         },
         {
-            icon: 'PACKAGE',
+            icon: 'package',
             content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />,
         },
     ] as const;

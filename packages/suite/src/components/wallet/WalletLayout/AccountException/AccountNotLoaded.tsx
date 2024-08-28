@@ -24,7 +24,7 @@ export const AccountNotLoaded = () => {
             actions={[
                 {
                     key: '1',
-                    icon: 'REFRESH',
+                    icon: 'refresh',
                     isLoading: isLocked(),
                     onClick: handleClick,
                     children: <Translation id="TR_RETRY" />,

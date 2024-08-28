@@ -151,7 +151,7 @@ export const TransactionHeading = ({
                                         a: chunks => (
                                             <HelpLink
                                                 href={HELP_CENTER_ZERO_VALUE_ATTACKS}
-                                                name="externalLink"
+                                                icon="externalLink"
                                                 type="hint"
                                             >
                                                 {chunks}
@@ -160,7 +160,7 @@ export const TransactionHeading = ({
                                     }}
                                 />
                             }
-                            icon="warning"
+                            icon="warningTriangle"
                         />
                     )}
                     <BlurWrapper $isBlurred={isPhishingTransaction}>

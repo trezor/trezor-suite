@@ -120,7 +120,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                                 <Translation id="TR_LEARN_ADVANCED_RECOVERY" />
                             </TrezorLink>
                         ),
-                        icon: 'INFO',
+                        icon: 'info',
                     },
                 ]}
             />

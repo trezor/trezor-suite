@@ -216,7 +216,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     {isChangeAddress && (
                         <UtxoTag
                             tooltipMessage={<Translation id="TR_CHANGE_ADDRESS_TOOLTIP" />}
-                            icon="CHANGE_ADDRESS"
+                            icon="change"
                             iconColor={utxoTagIconColor}
                         />
                     )}

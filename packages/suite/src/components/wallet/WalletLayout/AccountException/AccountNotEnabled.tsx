@@ -29,7 +29,7 @@ export const AccountNotEnabled = ({ network }: AccountNotEnabledProps) => {
             image="CLOUDY"
             actions={[
                 {
-                    icon: 'PLUS',
+                    icon: 'plus',
                     key: '1',
                     isLoading: isLocked(),
                     onClick: handleClick,

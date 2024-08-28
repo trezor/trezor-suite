@@ -95,7 +95,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                         isLoading={isLoading === 'dropbox'}
                         isDisabled={!!isLoading}
                         data-testid="@modal/metadata-provider/dropbox-button"
-                        icon="DROPBOX"
+                        icon="dropbox"
                     >
                         <Translation id="TR_DROPBOX" />
                     </StyledButton>
@@ -107,7 +107,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                             isLoading={isLoading === 'google'}
                             isDisabled={!!isLoading}
                             data-testid="@modal/metadata-provider/google-button"
-                            icon="GOOGLE_DRIVE"
+                            icon="googleDrive"
                         >
                             <Translation id="TR_GOOGLE_DRIVE" />
                         </StyledButton>

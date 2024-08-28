@@ -96,11 +96,11 @@ export const Notifications = (props: NotificationsProps) => {
                 {props.onCancel && (
                     <CloseButtonWrapper>
                         <Icon
-                            icon="close"
+                            name="close"
                             size={20}
                             color={theme.legacy.TYPE_LIGHT_GREY}
                             hoverColor={theme.legacy.TYPE_LIGHTER_GREY}
-                            useCursorPointer
+                            cursorPointer
                             onClick={onCancel}
                         />
                     </CloseButtonWrapper>

@@ -1,5 +1,5 @@
 import { ReactSVG } from 'react-svg';
-import { MouseEvent } from 'react';
+import { forwardRef, MouseEvent, Ref } from 'react';
 
 import styled, { css, DefaultTheme } from 'styled-components';
 import {
@@ -111,7 +111,7 @@ const SVG = styled(ReactSVG)`
 
 export type IconProps = AllowedFrameProps &
     Omit<IconCommonProps, 'color'> & {
-        onClick?: () => void;
+        onClick?: (e: any) => void;
         className?: string;
         'data-testid'?: string;
 
@@ -124,58 +124,64 @@ export type IconProps = AllowedFrameProps &
         hoverColor?: string;
     } & ExclusiveColorOrVariant;
 
-export const Icon = ({
-    name,
-    size = 'large',
-    color,
-    variant,
-    onClick,
-    className,
-    'data-testid': dataTest,
-    cursorPointer,
-    hoverColor,
-    margin,
-}: IconProps) => {
-    const iconSize = getIconSize(size);
+export const Icon = forwardRef(
+    (
+        {
+            name,
+            size = 'large',
+            color,
+            variant,
+            onClick,
+            className,
+            'data-testid': dataTest,
+            cursorPointer,
+            hoverColor,
+            margin,
+        }: IconProps,
+        ref?: Ref<HTMLDivElement>,
+    ) => {
+        const iconSize = getIconSize(size);
 
-    const handleOnKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            onClick?.();
-        }
-    };
+        const handleOnKeyDown = (e: React.KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                onClick?.(e);
+            }
+        };
 
-    const handleInjection = (svg: SVGSVGElement) => {
-        svg.setAttribute('width', `${iconSize}px`);
-        svg.setAttribute('height', `${iconSize}px`);
-    };
+        const handleInjection = (svg: SVGSVGElement) => {
+            svg.setAttribute('width', `${iconSize}px`);
+            svg.setAttribute('height', `${iconSize}px`);
+        };
 
-    const handleClick = (e: MouseEvent<any>) => {
-        onClick?.();
+        const handleClick = (e: MouseEvent<any>) => {
+            onClick?.(e);
 
-        // We need to stop default/propagation in case the icon is rendered in popup/modal so it won't close it.
-        e.preventDefault();
-        e.stopPropagation();
-    };
+            // We need to stop default/propagation in case the icon is rendered in popup/modal so it won't close it.
+            e.preventDefault();
+            e.stopPropagation();
+        };
 
-    return (
-        <SvgWrapper
-            $cursorPointer={cursorPointer}
-            $hoverColor={hoverColor}
-            $margin={margin}
-            $color={color}
-            $variant={variant}
-        >
-            <SVG
-                onClick={onClick ? handleClick : undefined}
-                tabIndex={onClick ? 0 : undefined}
-                onKeyDown={handleOnKeyDown}
-                src={icons[name]}
-                beforeInjection={handleInjection}
-                className={className}
+        return (
+            <SvgWrapper
+                $cursorPointer={cursorPointer}
+                $hoverColor={hoverColor}
+                $margin={margin}
+                $color={color}
+                $variant={variant}
                 data-testid={dataTest}
-            />
-        </SvgWrapper>
-    );
-};
+                onClick={onClick ? handleClick : undefined}
+                className={className}
+                ref={ref}
+            >
+                <SVG
+                    tabIndex={onClick ? 0 : undefined}
+                    onKeyDown={handleOnKeyDown}
+                    src={icons[name]}
+                    beforeInjection={handleInjection}
+                />
+            </SvgWrapper>
+        );
+    },
+);
 
 export { type IconName, icons, type IconSize } from '@suite-common/icons/src/webComponents';
