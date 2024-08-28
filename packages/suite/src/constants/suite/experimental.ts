@@ -23,7 +23,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     'password-manager': {
         title: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
         description: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION',
-        isDisabled: ({ isDebug }) => !isDebug,
         knowledgeBaseUrl: EXPERIMENTAL_PASSWORD_MANAGER_KB_URL,
     },
     'automatic-update': {
