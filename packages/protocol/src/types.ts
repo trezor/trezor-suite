@@ -1,6 +1,7 @@
 export type {
     ThpDeviceProperties,
     ThpPairingMethod,
+    ThpMessageType,
     ThpCredentials,
 } from './protocol-thp/messages';
 export type { ThpState, ThpStateSerialized } from './protocol-thp/ThpState';

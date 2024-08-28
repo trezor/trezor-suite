@@ -77,3 +77,30 @@ export type ThpHandshakeCredentials = {
 };
 
 export type ThpCredentials = ThpCredentialResponse & { autoconnect?: boolean };
+
+export type ThpMessageSyncBit = 0 | 1;
+
+// same as @trezor/protobuf Messages
+export type MessageKey = keyof ThpMessageType;
+
+export type MessagePayload<T extends MessageKey = MessageKey> = ThpMessageType[T];
+
+export type MessageResponse<T extends MessageKey = MessageKey> = T extends any
+    ? {
+          type: T;
+          message: MessagePayload<T>;
+      }
+    : never;
+
+export type TypedCall = {
+    <T extends MessageKey, R extends MessageKey[]>(
+        type: T,
+        resType: R,
+        message?: MessagePayload<T>,
+    ): Promise<MessageResponse<R[number]>>;
+    <T extends MessageKey, R extends MessageKey>(
+        type: T,
+        resType: R,
+        message?: MessagePayload<T>,
+    ): Promise<MessageResponse<R>>;
+};
