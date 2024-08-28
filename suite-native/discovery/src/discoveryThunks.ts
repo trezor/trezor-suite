@@ -290,7 +290,13 @@ const discoverAccountsByDescriptorThunk = createThunk(
                 ...getAccountInfoDetailsLevel(bundleItem.coin),
             });
 
-            if (success) {
+            const isAccountAlreadyDiscovered = selectIsAccountAlreadyDiscovered(getState(), {
+                deviceState,
+                networkSymbol: bundleItem.coin,
+                path: bundleItem.path,
+            });
+
+            if (success && !isAccountAlreadyDiscovered) {
                 if (accountInfo.empty) {
                     isFinalRound = true;
                 }
@@ -440,7 +446,12 @@ const discoverNetworkBatchThunk = createThunk(
         const chunkBundle: Array<DiscoveryItem> = [];
 
         A.makeWithIndex(batchSize, batchIndex => {
-            const index = lastDiscoveredAccountIndex + batchIndex;
+            const isEvmLedgerDerivationPath =
+                network.networkType === 'ethereum' && network.accountType === 'ledger';
+            // first Ledger derivation path for EVM networks is the same as trezor, so we need to skip it (consistent with desktop)
+            const index =
+                lastDiscoveredAccountIndex + batchIndex + (isEvmLedgerDerivationPath ? 1 : 0);
+
             const accountPath = network.bip43Path.replace('i', index.toString());
 
             const isAccountAlreadyDiscovered = selectIsAccountAlreadyDiscovered(getState(), {
