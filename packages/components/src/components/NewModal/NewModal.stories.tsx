@@ -60,7 +60,7 @@ export const NewModal: StoryObj<NewModalProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['small', 'medium', 'large'],
+            options: ['tiny', 'small', 'medium', 'large'],
         },
         heading: {
             control: 'text',
