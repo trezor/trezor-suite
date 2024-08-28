@@ -8,7 +8,11 @@ import { useDispatch, useSelector } from 'src/hooks/suite/';
 
 import { Button, Card, variables, H2, Tooltip, GradientOverlay } from '@trezor/components';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
-import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectFailedSecurityChecks,
+    selectIsAccountUtxoBased,
+} from '@suite-common/wallet-core';
 import { networks } from '@suite-common/wallet-config';
 import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -126,6 +130,7 @@ export const FreshAddress = ({
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account?.key ?? ''),
     );
+    const hasFailedSecurityChecks = useSelector(selectFailedSecurityChecks).length > 0;
     const dispatch = useDispatch();
 
     const firstFreshAddress = useMemo(() => {
@@ -157,6 +162,9 @@ export const FreshAddress = ({
         if (!firstFreshAddress) {
             return <Translation id="RECEIVE_ADDRESS_LIMIT_REACHED" />;
         }
+        if (hasFailedSecurityChecks) {
+            return <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />;
+        }
 
         return null;
     };
@@ -164,7 +172,12 @@ export const FreshAddress = ({
     const buttonRevealAddressProps = {
         'data-testid': '@wallet/receive/reveal-address-button',
         onClick: handleAddressReveal,
-        isDisabled: disabled || locked || coinjoinDisallowReveal || !firstFreshAddress,
+        isDisabled:
+            disabled ||
+            locked ||
+            coinjoinDisallowReveal ||
+            !firstFreshAddress ||
+            hasFailedSecurityChecks,
         isLoading: locked,
     };
 

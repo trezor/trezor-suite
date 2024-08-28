@@ -2,17 +2,18 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { AccountAddress } from '@trezor/connect';
-import { Card, Button, GradientOverlay, Column } from '@trezor/components';
-import { Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { Card, Button, Column, GradientOverlay, Tooltip } from '@trezor/components';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { NetworkCompatible } from '@suite-common/wallet-config';
+import { selectFailedSecurityChecks } from '@suite-common/wallet-core';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
+
+import { Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { AppState } from 'src/types/suite';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { useDispatch } from 'src/hooks/suite/';
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 const GridTable = styled.div`
     display: grid;
@@ -103,14 +104,16 @@ interface ItemProps {
 }
 
 const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
-    // Currently used addresses are always partially hidden
-    // The only place where full address is shown is confirm-addr modal
-
+    const hasFailedSecurityChecks = useSelector(selectFailedSecurityChecks).length > 0;
     const [isHovered, setIsHovered] = useState(false);
 
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
     const address = addr.address.substring(0, 20);
+    const isDisabled = locked || hasFailedSecurityChecks;
+    const tooltipContent = isDisabled ? (
+        <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />
+    ) : null;
 
     return (
         <>
@@ -138,16 +141,18 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                 onMouseLeave={() => setIsHovered(false)}
             >
                 <AddressActions $isVisible={isHovered}>
-                    <Button
-                        data-testid={`@wallet/receive/reveal-address-button/${index}`}
-                        variant="tertiary"
-                        isDisabled={locked}
-                        isLoading={locked}
-                        onClick={onClick}
-                        size="tiny"
-                    >
-                        <Translation id="TR_REVEAL_ADDRESS" />
-                    </Button>
+                    <Tooltip content={tooltipContent}>
+                        <Button
+                            data-testid={`@wallet/receive/reveal-address-button/${index}`}
+                            variant="tertiary"
+                            isDisabled={isDisabled}
+                            isLoading={locked}
+                            onClick={onClick}
+                            size="tiny"
+                        >
+                            <Translation id="TR_REVEAL_ADDRESS" />
+                        </Button>
+                    </Tooltip>
                 </AddressActions>
             </GridItemRevealAddress>
 

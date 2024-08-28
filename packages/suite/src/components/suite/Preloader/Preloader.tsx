@@ -19,7 +19,11 @@ import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
-import { selectDevice } from '@suite-common/wallet-core';
+import {
+    selectDevice,
+    selectFailedSecurityChecks,
+    selectIsFirmwareRevisionCheckDismissed,
+} from '@suite-common/wallet-core';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
@@ -56,10 +60,12 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const isLoggedOut = useSelector(selectIsLoggedOut);
     const selectedDevice = useSelector(selectDevice);
     const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
+    const hasFailedSecurityChecks = useSelector(selectFailedSecurityChecks).length > 0;
     const { isFirmwareRevisionCheckDisabled } = useSelector(state => state.suite.settings);
     const isFirmwareRevisionCheckDisabledByMessageSystem = useSelector(state =>
         selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck),
     );
+    const isFirmwareRevisionCheckDismissed = useSelector(selectIsFirmwareRevisionCheckDismissed);
 
     const dispatch = useDispatch();
 
@@ -89,22 +95,11 @@ export const Preloader = ({ children }: PreloaderProps) => {
         selectedDevice?.features &&
         selectedDevice.connected === true &&
         !isFirmwareRevisionCheckDisabled &&
-        !isFirmwareRevisionCheckDisabledByMessageSystem
+        !isFirmwareRevisionCheckDisabledByMessageSystem &&
+        !isFirmwareRevisionCheckDismissed &&
+        hasFailedSecurityChecks
     ) {
-        const failedChecks =
-            selectedDevice.authenticityChecks !== undefined
-                ? Object.values(selectedDevice.authenticityChecks).filter(
-                      // If `check` is null, it means that it was not performed yet.
-                      // If Suite is offline and we cannot perform check, the error banner shows to urge user to go online.
-                      check =>
-                          check?.success === false &&
-                          check?.error !== 'cannot-perform-check-offline',
-                  )
-                : [];
-
-        if (failedChecks.length > 0) {
-            return <DeviceCompromised />;
-        }
+        return <DeviceCompromised />;
     }
 
     if (

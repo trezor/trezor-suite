@@ -90,6 +90,8 @@ export const HELP_CENTER_TRANSACTION_FEES_URL =
     'https://trezor.io/learn/a/transaction-fees-in-trezor-suite';
 export const HELP_CENTER_EVM_ADDRESS_CHECKSUM =
     'https://trezor.io/learn/a/evm-address-checksum-in-trezor-suite';
+export const HELP_CENTER_FIRMWARE_REVISION_CHECK =
+    'https://trezor.io/learn/a/trezor-firmware-revision-check';
 
 export const INVITY_URL = 'https://invity.io/';
 export const INVITY_SCHEDULE_OF_FEES = 'https://blog.invity.io/schedule-of-fees';

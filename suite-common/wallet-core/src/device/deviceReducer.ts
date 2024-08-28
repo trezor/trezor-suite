@@ -3,7 +3,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInstances, getStatus } from '@suite-common/suite-utils';
-import { Device, Features, UI } from '@trezor/connect';
+import { Device, Features, FirmwareRevisionCheckResult, UI } from '@trezor/connect';
 import {
     getFirmwareVersion,
     getFirmwareVersionArray,
@@ -31,16 +31,15 @@ export type State = {
     devices: TrezorDevice[];
     selectedDevice?: TrezorDevice;
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
+    dismissedSecurityChecks?: {
+        firmwareRevision?: string[];
+    };
 };
 
 const initialState: State = { devices: [], selectedDevice: undefined };
 
 export type DeviceRootState = {
-    device: {
-        devices: TrezorDevice[];
-        selectedDevice?: TrezorDevice;
-        deviceAuthenticity?: State['deviceAuthenticity'];
-    };
+    device: State;
 };
 
 // Use the negated form as it better fits the call sites.
@@ -586,6 +585,18 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceAuthenticityActions.result, (state, { payload }) => {
             setDeviceAuthenticity(state, payload.device, payload.result);
         })
+        .addCase(deviceActions.dismissFirmwareRevisionCheck, (state, { payload }) => {
+            if (!state.dismissedSecurityChecks) {
+                state.dismissedSecurityChecks = {};
+            }
+            if (!state.dismissedSecurityChecks.firmwareRevision) {
+                state.dismissedSecurityChecks.firmwareRevision = [];
+            }
+            state.dismissedSecurityChecks.firmwareRevision = [
+                payload,
+                ...state.dismissedSecurityChecks.firmwareRevision,
+            ];
+        })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
         .addCase(
             extra.actionTypes.setDeviceMetadataPasswords,
@@ -770,6 +781,27 @@ export const selectSelectedDeviceAuthenticity = (state: DeviceRootState) => {
     const deviceAuthenticity = selectDeviceAuthenticity(state);
 
     return device?.id ? deviceAuthenticity?.[device.id] : undefined;
+};
+
+export const selectFailedSecurityChecks = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return device && 'authenticityChecks' in device && device.authenticityChecks !== undefined
+        ? Object.values(device.authenticityChecks).filter(
+              // If `check` is null, it means that it was not performed yet.
+              // If Suite is offline and we cannot perform check, the error banner shows to urge user to go online.
+              (check): check is FirmwareRevisionCheckResult =>
+                  check?.success === false && check?.error !== 'cannot-perform-check-offline',
+          )
+        : [];
+};
+
+export const selectIsFirmwareRevisionCheckDismissed = (state: DeviceRootState): boolean => {
+    const device = selectDevice(state);
+
+    return !!(
+        device?.id && state.device.dismissedSecurityChecks?.firmwareRevision?.includes(device.id)
+    );
 };
 
 export const selectIsPortfolioTrackerDevice = (state: DeviceRootState) => {

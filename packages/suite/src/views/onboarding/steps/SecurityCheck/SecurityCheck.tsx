@@ -257,7 +257,7 @@ const SecurityCheckContent = ({
     }, [initialized, isRecoveryInProgress, updateAnalytics]);
 
     return isFailed ? (
-        <SecurityCheckFail goBack={toggleView} />
+        <SecurityCheckFail useSoftMessaging goBack={toggleView} />
     ) : (
         <SecurityCheckLayout>
             <Content>
