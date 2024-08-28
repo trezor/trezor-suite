@@ -37,7 +37,7 @@ const Wrapper = styled.div<{ $animation?: AnimationDirection }>`
     height: 62px;
     padding: 0 ${spacingsPx.md} 0 ${spacingsPx.xxl};
     border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     box-shadow: ${({ theme }) => theme.boxShadowBase};
     align-items: center;
 
@@ -69,6 +69,7 @@ export const ConfirmOnDevice = ({ isConfirmed, ...rest }: ConfirmOnDeviceProps) 
     <Wrapper
         $animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
         data-testid="@prompts/confirm-on-device"
+        onClick={e => e.stopPropagation()}
     >
         <ElevationUp>
             <ConfirmOnDeviceContent {...rest} />
