@@ -10,10 +10,9 @@ type TextWrap = 'balance' | 'break-word';
 export const allowedTextFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextFrameProps)[number]>;
 
-export type TextVariant = Extract<
-    UIVariant,
-    'primary' | 'secondary' | 'tertiary' | 'info' | 'warning' | 'destructive'
->;
+export type TextVariant =
+    | Extract<UIVariant, 'primary' | 'secondary' | 'tertiary' | 'info' | 'warning' | 'destructive'>
+    | 'purple';
 
 type ExclusiveColorOrVariant =
     | { variant?: TextVariant; color?: undefined }
@@ -30,6 +29,7 @@ const variantColorMap: Record<TextVariant, Color> = {
     info: 'textAlertBlue',
     warning: 'textAlertYellow',
     destructive: 'textAlertRed',
+    purple: 'textAlertPurple',
 };
 
 type ColorProps = {

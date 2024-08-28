@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { IconName, icons, Icon, IconProps, allowedIconFrameProps, iconVariants } from './Icon';
+import {
+    IconName,
+    icons,
+    Icon,
+    IconProps,
+    allowedIconFrameProps,
+    iconVariants,
+    iconSizes,
+} from './Icon';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Input } from '../form/Input/Input';
 import { typography } from '@trezor/theme';
-import { iconSizes } from '@suite-common/icons/src/webComponents';
 
 const CopiedText = styled.div`
     display: flex;

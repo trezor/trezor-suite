@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { Navigation } from './Navigation';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
-import { QuickActions } from './QuickActions';
+import { QuickActions } from './QuickActions/QuickActions';
 import { ElevationUp, ResizableBox, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } from '@trezor/theme';
 import { useActions, useSelector } from 'src/hooks/suite';
