@@ -17,7 +17,7 @@ export const ConnectLabelingProvider = () => {
             />
             <ActionColumn>
                 <ActionButton
-                    variant="secondary"
+                    variant="tertiary"
                     onClick={handleClick}
                     data-testid="@settings/metadata/connect-provider-button"
                 >

@@ -5,14 +5,7 @@ import { StoryColumn } from '../../../support/Story';
 import { ButtonVariant } from '../buttonStyleUtils';
 import { action } from '@storybook/addon-actions';
 
-const variants: Array<ButtonVariant> = [
-    'primary',
-    'secondary',
-    'tertiary',
-    'info',
-    'warning',
-    'destructive',
-];
+const variants: Array<ButtonVariant> = ['primary', 'tertiary', 'info', 'warning', 'destructive'];
 
 const meta: Meta<typeof Button> = {
     title: 'Buttons',

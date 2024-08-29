@@ -12,7 +12,6 @@ type MapArgs = {
 export const mapVariantToBackgroundColor = ({ $variant, theme, $elevation }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'backgroundPrimarySubtleOnElevation0',
-        secondary: 'backgroundNeutralBold',
         info: 'backgroundAlertBlueSubtleOnElevation0',
         warning: 'backgroundAlertYellowSubtleOnElevation0',
         destructive: 'backgroundAlertRedSubtleOnElevation0',
@@ -25,7 +24,6 @@ export const mapVariantToBackgroundColor = ({ $variant, theme, $elevation }: Map
 export const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'textPrimaryDefault',
-        secondary: 'textDefaultInverted',
         info: 'textAlertBlue',
         warning: 'textAlertYellow',
         destructive: 'textAlertRed',
@@ -37,7 +35,6 @@ export const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor =>
 export const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'iconPrimaryDefault',
-        secondary: 'iconDefaultInverted',
         info: 'iconAlertBlue',
         warning: 'iconAlertYellow',
         destructive: 'iconAlertRed',
@@ -50,7 +47,6 @@ export const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor =>
 export const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconName => {
     const iconMap: Record<WarningVariant, IconName> = {
         primary: 'lightbulb',
-        secondary: 'info',
         info: 'info',
         warning: 'warningTriangle',
         destructive: 'warningTriangle',

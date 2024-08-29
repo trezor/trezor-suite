@@ -85,7 +85,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
             {!bitcoinOnlyDevice && (
                 <ActionColumn>
                     <ActionButton
-                        variant="secondary"
+                        variant="tertiary"
                         onClick={handleAction}
                         data-testid="@settings/device/switch-fw-type-button"
                         isDisabled={isDeviceLocked}

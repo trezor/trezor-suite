@@ -139,7 +139,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             <Button
                                 onClick={() => fileInputElement?.current?.click()}
                                 isDisabled={isDeviceLocked || !isSupportedHomescreen}
-                                variant="secondary"
+                                variant="tertiary"
                                 data-testid="@settings/device/homescreen-upload"
                                 key="@settings/device/homescreen-upload"
                             >
@@ -150,7 +150,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                 isDisabled={isDeviceLocked || !isSupportedHomescreen}
                                 data-testid="@settings/device/homescreen-gallery"
                                 key="@settings/device/homescreen-gallery"
-                                variant="secondary"
+                                variant="tertiary"
                             >
                                 <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
                             </Button>
@@ -174,7 +174,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             <Translation id="TR_CHANGE_HOMESCREEN" />
                         </ActionButton>
                         <ActionButton
-                            variant="secondary"
+                            variant="tertiary"
                             onClick={resetUpload}
                             isDisabled={isDeviceLocked}
                         >
@@ -215,7 +215,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     )}
                     <ActionColumn>
                         <ActionButton
-                            variant="secondary"
+                            variant="tertiary"
                             onClick={resetUpload}
                             isDisabled={isDeviceLocked}
                         >

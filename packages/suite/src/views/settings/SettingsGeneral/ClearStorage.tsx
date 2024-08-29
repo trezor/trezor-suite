@@ -33,7 +33,7 @@ export const ClearStorage = () => {
             <ActionColumn>
                 <ActionButton
                     onClick={handleClick}
-                    variant="secondary"
+                    variant="tertiary"
                     data-testid="@settings/reset-app-button"
                 >
                     <Translation id="TR_CLEAR_STORAGE" />

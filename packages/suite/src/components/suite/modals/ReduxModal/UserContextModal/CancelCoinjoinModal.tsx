@@ -43,7 +43,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
             heading={<Translation id="TR_CANCEL_COINJOIN" />}
             bottomBarComponents={
                 <>
-                    <CancelButton variant="secondary" onClick={onClose}>
+                    <CancelButton variant="primary" onClick={onClose}>
                         <Translation id="TR_CANCEL_COINJOIN_NO" />
                     </CancelButton>
                     <StyledButton

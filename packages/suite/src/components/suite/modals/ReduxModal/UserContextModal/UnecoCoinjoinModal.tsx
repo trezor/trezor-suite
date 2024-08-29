@@ -71,7 +71,7 @@ export const UnecoCoinjoinModal = () => {
             heading={<Translation id="TR_UNECO_COINJOIN_TITLE" />}
             bottomBarComponents={
                 <>
-                    <Button variant="secondary" onClick={() => dispatch(onCancel())}>
+                    <Button variant="tertiary" onClick={() => dispatch(onCancel())}>
                         <Translation id="TR_CANCEL" />
                     </Button>
 

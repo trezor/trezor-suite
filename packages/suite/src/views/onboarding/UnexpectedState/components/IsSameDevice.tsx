@@ -23,7 +23,7 @@ const IsSameDevice = () => {
                         resetOnboarding();
                         enableOnboardingReducer(true);
                     }}
-                    variant="secondary"
+                    variant="tertiary"
                     data-testid="@onboarding/unexpected-state/is-same/start-over-button"
                 >
                     <Translation id="TR_START_AGAIN" />

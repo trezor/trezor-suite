@@ -77,7 +77,7 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
             description={<Translation id="LOG_DESCRIPTION" />}
             data-testid="@modal/application-log"
             bottomBarComponents={
-                <Button variant="secondary" onClick={download} data-testid="@log/export-button">
+                <Button variant="primary" onClick={download} data-testid="@log/export-button">
                     <Translation id="TR_EXPORT_TO_FILE" />
                 </Button>
             }

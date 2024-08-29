@@ -19,7 +19,7 @@ export const ShowApplicationLog = () => {
             <ActionColumn>
                 <ActionButton
                     onClick={handleClick}
-                    variant="secondary"
+                    variant="tertiary"
                     data-testid="@settings/show-log-button"
                 >
                     <Translation id="TR_SHOW_LOG" />

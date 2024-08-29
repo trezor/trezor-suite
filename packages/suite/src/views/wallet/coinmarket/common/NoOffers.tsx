@@ -79,10 +79,7 @@ export const NoOffers = ({
             </CoinmarketRefreshTimeWrapper>
         )}
         <ButtonsWrapper>
-            <Button
-                variant={hasLoadingFailed ? 'secondary' : 'primary'}
-                onClick={onBackButtonClick}
-            >
+            <Button variant={hasLoadingFailed ? 'tertiary' : 'primary'} onClick={onBackButtonClick}>
                 <Translation id="TR_COINMARKET_NO_OFFERS_BACK_BUTTON" />
             </Button>
             {hasLoadingFailed && (
