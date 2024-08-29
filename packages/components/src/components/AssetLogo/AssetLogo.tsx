@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import {
     FrameProps,
     FramePropsKeys,
@@ -6,7 +5,9 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { borders } from '@trezor/theme';
+
 import { AssetInitials } from './AssetInitials';
 import { TransientProps } from '../../utils/transientProps';
 

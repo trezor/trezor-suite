@@ -9,7 +9,7 @@ export { Checkbox, type CheckboxProps } from './components/form/Checkbox/Checkbo
 export * from './components/animations/DeviceAnimation';
 export * from './components/animations/LottieAnimation';
 export * from './components/AssetShareIndicator/AssetShareIndicator';
-export * from './components/AssetLogo/AssetLogo';
+export { AssetLogo } from './components/AssetLogo/AssetLogo';
 export * from './components/CoinLogo/CoinLogo';
 export * from './components/Flag/Flag';
 export * from './components/TrezorLogo/TrezorLogo';
