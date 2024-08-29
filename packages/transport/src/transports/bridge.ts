@@ -294,24 +294,27 @@ export class BridgeTransport extends AbstractTransport {
         session,
         protocol: customProtocol,
     }: AbstractTransportMethodParams<'receive'>) {
-        return this.scheduleAction(async signal => {
-            const response = await this.post('/read', {
-                params: session,
-                signal,
-            });
+        return this.scheduleAction(
+            async signal => {
+                const response = await this.post('/read', {
+                    params: session,
+                    signal,
+                });
 
-            if (!response.success) {
-                return response;
-            }
-            const protocol = customProtocol || bridgeProtocol;
-            const message = await receiveAndParse(
-                this.messages,
-                () => Promise.resolve(Buffer.from(response.payload, 'hex')),
-                protocol,
-            );
+                if (!response.success) {
+                    return response;
+                }
+                const protocol = customProtocol || bridgeProtocol;
+                const message = await receiveAndParse(
+                    this.messages,
+                    () => Promise.resolve(Buffer.from(response.payload, 'hex')),
+                    protocol,
+                );
 
-            return this.success(message);
-        });
+                return this.success(message);
+            },
+            { timeout: undefined },
+        );
     }
 
     public stop() {
