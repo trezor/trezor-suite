@@ -49,9 +49,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             },
             "taproot": true,
             "timestamp": false,
@@ -99,9 +97,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.1",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             },
             "taproot": true,
             "timestamp": false,
@@ -152,9 +148,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             },
             "taproot": true,
             "timestamp": false,
@@ -202,9 +196,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.10",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -252,9 +244,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.11",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -311,9 +301,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -361,9 +349,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -420,9 +406,7 @@
                 "T2B1": false,
                 "T2T1": "2.0.7",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": true
+                "T3T1": false
             },
             "taproot": false,
             "timestamp": false,
@@ -473,9 +457,7 @@
                 "T2B1": false,
                 "T2T1": "2.0.8",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": false
+                "T3T1": false
             },
             "taproot": false,
             "timestamp": false,
@@ -523,9 +505,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -573,9 +553,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -585,6 +563,105 @@
             "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
+        },
+        {
+            "address_type": 28,
+            "address_type_p2sh": 30,
+            "bech32_prefix": "cpu",
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://blockbook.cpuchain.org"]
+            },
+            "blocktime_seconds": 60,
+            "cashaddr_prefix": null,
+            "coin_label": "CPUchain",
+            "coin_name": "CPUchain",
+            "coin_shortcut": "CPU",
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Normal": 20
+            },
+            "dust_limit": 546,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "000024d8766043ea0e1c9ad42e7ea4b5fdb459887bd80b8f9756f3d87e128f12",
+            "is_testnet": false,
+            "max_address_length": 34,
+            "maxfee_kb": 8700000000000,
+            "min_address_length": 27,
+            "minfee_kb": 1000,
+            "name": "CPUchain",
+            "overwintered": false,
+            "segwit": true,
+            "shortcut": "CPU",
+            "signed_message_header": "CPUchain Signed Message:\n",
+            "slip44": 363,
+            "support": {
+                "T1B1": "1.8.3",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.4",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 76066276,
+            "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
+            "xpub_magic_segwit_native": 78792518,
+            "xpub_magic_segwit_p2sh": 77429938
+        },
+        {
+            "address_type": 95495,
+            "address_type_p2sh": 95473,
+            "bech32_prefix": null,
+            "blockchain_link": null,
+            "blocktime_seconds": 60,
+            "cashaddr_prefix": null,
+            "coin_label": "Crown",
+            "coin_name": "Crown",
+            "coin_shortcut": "CRW",
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Normal": 10
+            },
+            "dust_limit": 546,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "0000000085370d5e122f64f4ab19c68614ff3df78c8d13cb814fd7e69a1dc6da",
+            "is_testnet": false,
+            "max_address_length": 40,
+            "maxfee_kb": 52000000000,
+            "min_address_length": 36,
+            "minfee_kb": 1000,
+            "name": "Crown",
+            "overwintered": false,
+            "segwit": false,
+            "shortcut": "CRW",
+            "signed_message_header": "Crown Signed Message:\n",
+            "slip44": 72,
+            "support": {
+                "T1B1": "1.8.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.7",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 76066276,
+            "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
+            "xpub_magic_segwit_native": null,
+            "xpub_magic_segwit_p2sh": null
         },
         {
             "address_type": 76,
@@ -632,9 +709,7 @@
                 "T2B1": false,
                 "T2T1": "2.0.5",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": true
+                "T3T1": false
             },
             "taproot": false,
             "timestamp": false,
@@ -682,9 +757,7 @@
                 "T2B1": false,
                 "T2T1": "2.0.8",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": false
+                "T3T1": false
             },
             "taproot": false,
             "timestamp": false,
@@ -732,9 +805,7 @@
                 "T2B1": false,
                 "T2T1": "2.0.8",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": false
+                "T3T1": false
             },
             "taproot": false,
             "timestamp": false,
@@ -782,9 +853,7 @@
                 "T2B1": false,
                 "T2T1": "2.0.8",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": false
+                "T3T1": false
             },
             "taproot": false,
             "timestamp": false,
@@ -835,9 +904,7 @@
                 "T2B1": false,
                 "T2T1": "2.0.7",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": true
+                "T3T1": false
             },
             "taproot": false,
             "timestamp": false,
@@ -894,9 +961,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -906,6 +971,54 @@
             "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
+        },
+        {
+            "address_type": 235,
+            "address_type_p2sh": 75,
+            "bech32_prefix": "ert",
+            "blockchain_link": null,
+            "blocktime_seconds": 600,
+            "cashaddr_prefix": null,
+            "coin_label": "Elements",
+            "coin_name": "Elements",
+            "coin_shortcut": "ELEMENTS",
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Normal": 10
+            },
+            "dust_limit": 546,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "209577bda6bf4b5804bd46f8621580dd6d4e8bfa2d190e1c50e932492baca07d",
+            "is_testnet": false,
+            "max_address_length": 34,
+            "maxfee_kb": 10000000,
+            "min_address_length": 27,
+            "minfee_kb": 1000,
+            "name": "Elements",
+            "overwintered": false,
+            "segwit": true,
+            "shortcut": "ELEMENTS",
+            "signed_message_header": "Bitcoin Signed Message:\n",
+            "slip44": 1,
+            "support": {
+                "T1B1": "1.8.3",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.4",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 70615956,
+            "xpub_magic": 70617039,
+            "xpub_magic_multisig_segwit_native": 70617039,
+            "xpub_magic_multisig_segwit_p2sh": 70617039,
+            "xpub_magic_segwit_native": 73342198,
+            "xpub_magic_segwit_p2sh": 71979618
         },
         {
             "address_type": 14,
@@ -944,9 +1057,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -997,9 +1108,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1050,9 +1159,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1100,9 +1207,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.11",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1156,9 +1261,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": true,
             "timestamp": false,
@@ -1168,6 +1271,108 @@
             "xpub_magic_multisig_segwit_p2sh": 43365439,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
+        },
+        {
+            "address_type": 36,
+            "address_type_p2sh": 5,
+            "bech32_prefix": "grs",
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://blockbook.groestlcoin.org"]
+            },
+            "blocktime_seconds": 60,
+            "cashaddr_prefix": null,
+            "coin_label": "Groestlcoin",
+            "coin_name": "Groestlcoin",
+            "coin_shortcut": "GRS",
+            "curve_name": "secp256k1_groestl",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Normal": 10
+            },
+            "dust_limit": 546,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "00000ac5927c594d49cc0bdb81759d0da8297eb614683d3acb62f0703b639023",
+            "is_testnet": false,
+            "max_address_length": 34,
+            "maxfee_kb": 16000000000,
+            "min_address_length": 27,
+            "minfee_kb": 1000,
+            "name": "Groestlcoin",
+            "overwintered": false,
+            "segwit": true,
+            "shortcut": "GRS",
+            "signed_message_header": "GroestlCoin Signed Message:\n",
+            "slip44": 17,
+            "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": true,
+            "timestamp": false,
+            "xprv_magic": 76066276,
+            "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
+            "xpub_magic_segwit_native": 78792518,
+            "xpub_magic_segwit_p2sh": 77429938
+        },
+        {
+            "address_type": 111,
+            "address_type_p2sh": 196,
+            "bech32_prefix": "tgrs",
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://blockbook-test.groestlcoin.org"]
+            },
+            "blocktime_seconds": 60,
+            "cashaddr_prefix": null,
+            "coin_label": "Groestlcoin Testnet",
+            "coin_name": "Groestlcoin Testnet",
+            "coin_shortcut": "tGRS",
+            "curve_name": "secp256k1_groestl",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Normal": 10
+            },
+            "dust_limit": 546,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "000000ffbb50fc9898cdd36ec163e6ba23230164c0052a28876255b7dcf2cd36",
+            "is_testnet": true,
+            "max_address_length": 34,
+            "maxfee_kb": 100000,
+            "min_address_length": 27,
+            "minfee_kb": 1000,
+            "name": "Groestlcoin Testnet",
+            "overwintered": false,
+            "segwit": true,
+            "shortcut": "tGRS",
+            "signed_message_header": "GroestlCoin Signed Message:\n",
+            "slip44": 1,
+            "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": true,
+            "timestamp": false,
+            "xprv_magic": 70615956,
+            "xpub_magic": 70617039,
+            "xpub_magic_multisig_segwit_native": 70617039,
+            "xpub_magic_multisig_segwit_p2sh": 70617039,
+            "xpub_magic_segwit_native": 73342198,
+            "xpub_magic_segwit_p2sh": 71979618
         },
         {
             "address_type": 60,
@@ -1206,9 +1411,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.11",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1256,9 +1459,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1315,9 +1516,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1365,9 +1564,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1418,9 +1615,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1471,9 +1666,7 @@
                 "T2B1": false,
                 "T2T1": "2.0.5",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": true
+                "T3T1": false
             },
             "taproot": false,
             "timestamp": false,
@@ -1483,6 +1676,105 @@
             "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
+        },
+        {
+            "address_type": 56,
+            "address_type_p2sh": 60,
+            "bech32_prefix": "bc",
+            "blockchain_link": null,
+            "blocktime_seconds": 600,
+            "cashaddr_prefix": null,
+            "coin_label": "Particl",
+            "coin_name": "Particl",
+            "coin_shortcut": "PART",
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Economy": 70,
+                "High": 200,
+                "Low": 10,
+                "Normal": 140
+            },
+            "dust_limit": 546,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "0000ee0784c195317ac95623e22fddb8c7b8825dc3998e0bb924d66866eccf4c",
+            "is_testnet": false,
+            "max_address_length": 34,
+            "maxfee_kb": 5300000000,
+            "min_address_length": 27,
+            "minfee_kb": 1000,
+            "name": "Particl",
+            "overwintered": false,
+            "segwit": true,
+            "shortcut": "PART",
+            "signed_message_header": "Bitcoin Signed Message:\n",
+            "slip44": 44,
+            "support": {
+                "T1B1": false,
+                "T2B1": false,
+                "T2T1": false,
+                "T3B1": false,
+                "T3T1": false
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 1768850129,
+            "xpub_magic": 2401087160,
+            "xpub_magic_multisig_segwit_native": 2401087160,
+            "xpub_magic_multisig_segwit_p2sh": 2401087160,
+            "xpub_magic_segwit_native": 78792518,
+            "xpub_magic_segwit_p2sh": 28471030
+        },
+        {
+            "address_type": 118,
+            "address_type_p2sh": 122,
+            "bech32_prefix": "tb",
+            "blockchain_link": null,
+            "blocktime_seconds": 600,
+            "cashaddr_prefix": null,
+            "coin_label": "Particl Testnet",
+            "coin_name": "Particl Testnet",
+            "coin_shortcut": "tPART",
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Normal": 10
+            },
+            "dust_limit": 546,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "0000594ada5310b367443ee0afd4fa3d0bbd5850ea4e33cdc7d6a904a7ec7c90",
+            "is_testnet": true,
+            "max_address_length": 34,
+            "maxfee_kb": 10000000,
+            "min_address_length": 27,
+            "minfee_kb": 1000,
+            "name": "Particl Testnet",
+            "overwintered": false,
+            "segwit": true,
+            "shortcut": "tPART",
+            "signed_message_header": "Bitcoin Signed Message:\n",
+            "slip44": 1,
+            "support": {
+                "T1B1": false,
+                "T2B1": false,
+                "T2T1": false,
+                "T3B1": false,
+                "T3T1": false
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 3779229696,
+            "xpub_magic": 76059768,
+            "xpub_magic_multisig_segwit_native": 76059768,
+            "xpub_magic_multisig_segwit_p2sh": 76059768,
+            "xpub_magic_segwit_native": 73342198,
+            "xpub_magic_segwit_p2sh": 71979618
         },
         {
             "address_type": 55,
@@ -1524,9 +1816,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.9",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": true,
@@ -1577,9 +1867,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.9",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": true,
@@ -1627,9 +1915,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.11",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1639,6 +1925,108 @@
             "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
+        },
+        {
+            "address_type": 58,
+            "address_type_p2sh": 50,
+            "bech32_prefix": "qc",
+            "blockchain_link": null,
+            "blocktime_seconds": 128,
+            "cashaddr_prefix": null,
+            "coin_label": "Qtum",
+            "coin_name": "Qtum",
+            "coin_shortcut": "QTUM",
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Economy": 500,
+                "High": 2000,
+                "Low": 410,
+                "Normal": 600
+            },
+            "dust_limit": 218400,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "000075aef83cf2853580f8ae8ce6f8c3096cfa21d98334d6e3f95e5582ed986c",
+            "is_testnet": false,
+            "max_address_length": 34,
+            "maxfee_kb": 1000000000,
+            "min_address_length": 27,
+            "minfee_kb": 400000,
+            "name": "Qtum",
+            "overwintered": false,
+            "segwit": true,
+            "shortcut": "QTUM",
+            "signed_message_header": "Qtum Signed Message:\n",
+            "slip44": 2301,
+            "support": {
+                "T1B1": "1.8.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.1",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 76066276,
+            "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
+            "xpub_magic_segwit_native": 78792518,
+            "xpub_magic_segwit_p2sh": 77429938
+        },
+        {
+            "address_type": 120,
+            "address_type_p2sh": 110,
+            "bech32_prefix": "tq",
+            "blockchain_link": null,
+            "blocktime_seconds": 128,
+            "cashaddr_prefix": null,
+            "coin_label": "Qtum Testnet",
+            "coin_name": "Qtum Testnet",
+            "coin_shortcut": "tQTUM",
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Economy": 500,
+                "High": 2000,
+                "Low": 410,
+                "Normal": 600
+            },
+            "dust_limit": 218400,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "0000e803ee215c0684ca0d2f9220594d3f828617972aad66feb2ba51f5e14222",
+            "is_testnet": true,
+            "max_address_length": 34,
+            "maxfee_kb": 40000000,
+            "min_address_length": 27,
+            "minfee_kb": 400000,
+            "name": "Qtum Testnet",
+            "overwintered": false,
+            "segwit": true,
+            "shortcut": "tQTUM",
+            "signed_message_header": "Qtum Signed Message:\n",
+            "slip44": 1,
+            "support": {
+                "T1B1": "1.8.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.1",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 70615956,
+            "xpub_magic": 70617039,
+            "xpub_magic_multisig_segwit_native": 70617039,
+            "xpub_magic_multisig_segwit_p2sh": 70617039,
+            "xpub_magic_segwit_native": 73342198,
+            "xpub_magic_segwit_p2sh": 71979618
         },
         {
             "address_type": 60,
@@ -1680,14 +2068,60 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.10",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
+            "xpub_magic_segwit_native": null,
+            "xpub_magic_segwit_p2sh": null
+        },
+        {
+            "address_type": 111,
+            "address_type_p2sh": 196,
+            "bech32_prefix": null,
+            "blockchain_link": null,
+            "blocktime_seconds": 60,
+            "cashaddr_prefix": null,
+            "coin_label": "Ravencoin Testnet",
+            "coin_name": "Ravencoin Testnet",
+            "coin_shortcut": "tRVN",
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Low": 10
+            },
+            "dust_limit": 546,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "000000ecfc5e6324a079542221d00e10362bdc894d56500c414060eea8a3ad5a",
+            "is_testnet": true,
+            "max_address_length": 34,
+            "maxfee_kb": 170000000000,
+            "min_address_length": 27,
+            "minfee_kb": 1000,
+            "name": "Ravencoin Testnet",
+            "overwintered": false,
+            "segwit": false,
+            "shortcut": "tRVN",
+            "signed_message_header": "Raven Signed Message:\n",
+            "slip44": 1,
+            "support": {
+                "T1B1": "1.10.0",
+                "T2B1": "2.6.1",
+                "T2T1": "2.4.0",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 70615956,
+            "xpub_magic": 70617039,
             "xpub_magic_multisig_segwit_native": null,
             "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
@@ -1733,14 +2167,114 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.1",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
             "xprv_magic": 87326380,
             "xpub_magic": 87353290,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
+            "xpub_magic_segwit_native": null,
+            "xpub_magic_segwit_p2sh": null
+        },
+        {
+            "address_type": 63,
+            "address_type_p2sh": 18,
+            "bech32_prefix": null,
+            "blockchain_link": null,
+            "blocktime_seconds": 55,
+            "cashaddr_prefix": null,
+            "coin_label": "SmartCash",
+            "coin_name": "SmartCash",
+            "coin_shortcut": "SMART",
+            "curve_name": "secp256k1_smart",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Economy": 10,
+                "High": 200,
+                "Low": 1,
+                "Normal": 100
+            },
+            "dust_limit": 546,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "000007acc6970b812948d14ea5a0a13db0fdd07d5047c7e69101fa8b361e05a4",
+            "is_testnet": false,
+            "max_address_length": 34,
+            "maxfee_kb": 780000000000,
+            "min_address_length": 27,
+            "minfee_kb": 0,
+            "name": "SmartCash",
+            "overwintered": false,
+            "segwit": false,
+            "shortcut": "SMART",
+            "signed_message_header": "SmartCash Signed Message:\n",
+            "slip44": 224,
+            "support": {
+                "T1B1": "1.7.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 76066276,
+            "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
+            "xpub_magic_segwit_native": null,
+            "xpub_magic_segwit_p2sh": null
+        },
+        {
+            "address_type": 65,
+            "address_type_p2sh": 21,
+            "bech32_prefix": null,
+            "blockchain_link": null,
+            "blocktime_seconds": 55,
+            "cashaddr_prefix": null,
+            "coin_label": "SmartCash Testnet",
+            "coin_name": "SmartCash Testnet",
+            "coin_shortcut": "tSMART",
+            "curve_name": "secp256k1_smart",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Economy": 10,
+                "High": 200,
+                "Low": 1,
+                "Normal": 100
+            },
+            "dust_limit": 546,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "0000027235b5679bcd28c90d03d4bf1a9ba4c07c4efcc1c87d6c68cce25e6e5d",
+            "is_testnet": true,
+            "max_address_length": 35,
+            "maxfee_kb": 1000000,
+            "min_address_length": 27,
+            "minfee_kb": 0,
+            "name": "SmartCash Testnet",
+            "overwintered": false,
+            "segwit": false,
+            "shortcut": "tSMART",
+            "signed_message_header": "SmartCash Signed Message:\n",
+            "slip44": 1,
+            "support": {
+                "T1B1": "1.7.1",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 70615956,
+            "xpub_magic": 70617039,
             "xpub_magic_multisig_segwit_native": null,
             "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
@@ -1786,9 +2320,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.11",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1842,9 +2374,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.8",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1854,6 +2384,54 @@
             "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
+        },
+        {
+            "address_type": 0,
+            "address_type_p2sh": 5,
+            "bech32_prefix": null,
+            "blockchain_link": null,
+            "blocktime_seconds": 120,
+            "cashaddr_prefix": null,
+            "coin_label": "Terracoin",
+            "coin_name": "Terracoin",
+            "coin_shortcut": "TRC",
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Normal": 10
+            },
+            "dust_limit": 5460,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "00000000804bbc6a621a9dbb564ce469f492e1ccf2d70f8a6b241e26a277afa2",
+            "is_testnet": false,
+            "max_address_length": 34,
+            "maxfee_kb": 69000000000,
+            "min_address_length": 27,
+            "minfee_kb": 10000,
+            "name": "Terracoin",
+            "overwintered": false,
+            "segwit": false,
+            "shortcut": "TRC",
+            "signed_message_header": "DarkCoin Signed Message:\n",
+            "slip44": 83,
+            "support": {
+                "T1B1": false,
+                "T2B1": false,
+                "T2T1": false,
+                "T3B1": false,
+                "T3T1": false
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 76066276,
+            "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
+            "xpub_magic_segwit_native": null,
+            "xpub_magic_segwit_p2sh": null
         },
         {
             "address_type": 130,
@@ -1895,9 +2473,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.6",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -1907,6 +2483,60 @@
             "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
+        },
+        {
+            "address_type": 70,
+            "address_type_p2sh": 50,
+            "bech32_prefix": "vips",
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://vips.blockbook.japanesecoin-pool.work"]
+            },
+            "blocktime_seconds": 120,
+            "cashaddr_prefix": null,
+            "coin_label": "VIPSTARCOIN",
+            "coin_name": "VIPSTARCOIN",
+            "coin_shortcut": "VIPS",
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Economy": 500,
+                "High": 2000,
+                "Low": 410,
+                "Normal": 600
+            },
+            "dust_limit": 218400,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "0000d068e1d30f79fb64446137106be9c6ee69a6a722295c131506b1ee09b77c",
+            "is_testnet": false,
+            "max_address_length": 36,
+            "maxfee_kb": 140000000000000,
+            "min_address_length": 27,
+            "minfee_kb": 400000,
+            "name": "VIPSTARCOIN",
+            "overwintered": false,
+            "segwit": true,
+            "shortcut": "VIPS",
+            "signed_message_header": "VIPSTARCOIN Signed Message:\n",
+            "slip44": 1919,
+            "support": {
+                "T1B1": "1.8.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.1",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            },
+            "taproot": false,
+            "timestamp": false,
+            "xprv_magic": 76066276,
+            "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
+            "xpub_magic_segwit_native": 78792518,
+            "xpub_magic_segwit_p2sh": 77429938
         },
         {
             "address_type": 30,
@@ -1945,9 +2575,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.3.3",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": true,
@@ -2004,9 +2632,7 @@
                 "T2B1": false,
                 "T2T1": "2.0.5",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": true
+                "T3T1": false
             },
             "taproot": false,
             "timestamp": false,
@@ -2057,9 +2683,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -2107,9 +2731,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.7",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -2166,9 +2788,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.1",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -2216,9 +2836,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.1",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -2269,9 +2887,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.1",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             },
             "taproot": false,
             "timestamp": false,
@@ -2300,9 +2916,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -2318,9 +2932,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.5",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -2339,9 +2951,7 @@
                 "T2B1": "2.6.4",
                 "T2T1": "2.6.4",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.4",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.4"
             }
         },
         {
@@ -2357,9 +2967,55 @@
                 "T2B1": false,
                 "T2T1": "2.1.1",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": false
+                "T3T1": false
+            }
+        },
+        {
+            "blockchain_link": null,
+            "curve": "ed25519",
+            "decimals": 8,
+            "is_testnet": false,
+            "name": "Lisk",
+            "shortcut": "LSK",
+            "slip44": 134,
+            "support": {
+                "T1B1": false,
+                "T2B1": false,
+                "T2T1": false,
+                "T3B1": false,
+                "T3T1": false
+            }
+        },
+        {
+            "blockchain_link": null,
+            "curve": "secp256k1",
+            "decimals": 8,
+            "is_testnet": false,
+            "name": "MaidSafeCoin",
+            "shortcut": "MAID",
+            "slip44": 0,
+            "support": {
+                "T1B1": "1.7.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.10",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
+            }
+        },
+        {
+            "blockchain_link": null,
+            "curve": "secp256k1",
+            "decimals": 2,
+            "is_testnet": false,
+            "name": "Omni",
+            "shortcut": "OMNI",
+            "slip44": 0,
+            "support": {
+                "T1B1": "1.7.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.10",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -2383,9 +3039,7 @@
                 "T2B1": "2.6.4",
                 "T2T1": "2.6.4",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.4",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.4"
             }
         },
         {
@@ -2404,9 +3058,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -2425,9 +3077,23 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
+            }
+        },
+        {
+            "blockchain_link": null,
+            "curve": "secp256k1",
+            "decimals": 2,
+            "is_testnet": false,
+            "name": "Tether",
+            "shortcut": "USDT",
+            "slip44": 0,
+            "support": {
+                "T1B1": "1.7.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.10",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -2443,9 +3109,23 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
+            }
+        },
+        {
+            "blockchain_link": null,
+            "curve": "ed25519",
+            "decimals": 12,
+            "is_testnet": false,
+            "name": "Monero",
+            "shortcut": "XMR",
+            "slip44": 128,
+            "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -2464,9 +3144,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -2482,9 +3160,7 @@
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3T1": "2.6.1"
             }
         }
     ],
@@ -2502,9 +3178,7 @@
                 "T2B1": false,
                 "T2T1": "2.0.7",
                 "T3B1": false,
-                "T3T1": false,
-                "connect": true,
-                "suite": false
+                "T3T1": false
             },
             "ticker": "XEM"
         },
@@ -2523,12 +3197,10 @@
             "shortcut": "DIM",
             "support": {
                 "T1B1": "1.6.2",
-                "T2B1": "2.6.1",
+                "T2B1": false,
                 "T2T1": "2.0.7",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3B1": false,
+                "T3T1": false
             },
             "ticker": "DIM"
         },
@@ -2543,12 +3215,10 @@
             "shortcut": "DIMTOK",
             "support": {
                 "T1B1": "1.6.2",
-                "T2B1": "2.6.1",
+                "T2B1": false,
                 "T2T1": "2.0.7",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3B1": false,
+                "T3T1": false
             },
             "ticker": "DIMTOK"
         },
@@ -2563,12 +3233,10 @@
             "shortcut": "BREEZE",
             "support": {
                 "T1B1": "1.6.2",
-                "T2B1": "2.6.1",
+                "T2B1": false,
                 "T2T1": "2.0.7",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3B1": false,
+                "T3T1": false
             },
             "ticker": "BREEZE"
         },
@@ -2583,12 +3251,10 @@
             "shortcut": "PAC:HRT",
             "support": {
                 "T1B1": "1.6.2",
-                "T2B1": "2.6.1",
+                "T2B1": false,
                 "T2T1": "2.0.7",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3B1": false,
+                "T3T1": false
             },
             "ticker": "PAC:HRT"
         },
@@ -2607,12 +3273,10 @@
             "shortcut": "PAC:CHS",
             "support": {
                 "T1B1": "1.6.2",
-                "T2B1": "2.6.1",
+                "T2B1": false,
                 "T2T1": "2.0.7",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": false
+                "T3B1": false,
+                "T3T1": false
             },
             "ticker": "PAC:CHS"
         }

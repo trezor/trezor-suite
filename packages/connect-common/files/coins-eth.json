@@ -13,13 +13,11 @@
             "shortcut": "ETH",
             "slip44": 60,
             "support": {
-                "T1B1": "1.11.3",
+                "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
-                "T2T1": "2.5.3",
+                "T2T1": "2.0.7",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -27,7 +25,7 @@
                 "type": "blockbook",
                 "url": ["https://bsc1.trezor.io"]
             },
-            "chain": "bnb",
+            "chain": "bsc",
             "chain_id": 56,
             "coingecko_id": "binance-smart-chain",
             "is_testnet": false,
@@ -35,13 +33,11 @@
             "shortcut": "BNB",
             "slip44": 714,
             "support": {
-                "T1B1": "1.11.3",
+                "T1B1": "1.9.4",
                 "T2B1": "2.6.1",
-                "T2T1": "2.5.3",
+                "T2T1": "2.3.5",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -57,13 +53,11 @@
             "shortcut": "ETC",
             "slip44": 61,
             "support": {
-                "T1B1": "1.11.3",
+                "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
-                "T2T1": "2.5.3",
+                "T2T1": "2.0.7",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -79,13 +73,11 @@
             "shortcut": "MATIC",
             "slip44": 966,
             "support": {
-                "T1B1": "1.11.3",
+                "T1B1": "1.9.4",
                 "T2B1": "2.6.1",
-                "T2T1": "2.5.3",
+                "T2T1": "2.3.5",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -102,11 +94,9 @@
             "support": {
                 "T1B1": "1.11.3",
                 "T2B1": "2.6.4",
-                "T2T1": "2.6.4",
+                "T2T1": "2.5.4",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             }
         },
         {
@@ -123,11 +113,9 @@
             "support": {
                 "T1B1": "1.11.3",
                 "T2B1": "2.6.4",
-                "T2T1": "2.6.4",
+                "T2T1": "2.5.4",
                 "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "connect": true,
-                "suite": true
+                "T3T1": "2.6.1"
             }
         }
     ]
