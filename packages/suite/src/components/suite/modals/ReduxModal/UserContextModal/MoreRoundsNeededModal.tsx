@@ -8,16 +8,15 @@ const StyledModal = styled(Modal)`
     width: 435px;
 `;
 
-const StyledButton = styled(Button)`
-    flex: 1;
-`;
-
-const StyledIcon = styled(Icon)`
+const IconWrapper = styled.div`
     width: 84px;
     height: 84px;
     margin: 12px auto 32px;
     border-radius: 50%;
     background: ${({ theme }) => theme.legacy.BG_GREY};
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const Text = styled.p`
@@ -41,12 +40,14 @@ export const MoreRoundsNeededModal = () => {
     return (
         <StyledModal
             bottomBarComponents={
-                <StyledButton variant="secondary" onClick={close}>
+                <Button variant="secondary" onClick={close} isFullWidth>
                     <Translation id="TR_OK" />
-                </StyledButton>
+                </Button>
             }
         >
-            <StyledIcon name="confetti" size={32} color={theme.legacy.TYPE_DARK_GREY} />
+            <IconWrapper>
+                <Icon name="confetti" size={32} color={theme.iconSubdued} />
+            </IconWrapper>
             <Text>
                 <Translation id="TR_COINJOIN_ENDED" />
             </Text>

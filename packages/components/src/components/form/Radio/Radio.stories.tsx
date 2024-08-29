@@ -4,6 +4,8 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { Radio as RadioComponent, RadioProps, radioVariants } from './Radio';
 import { H2 } from '../../typography/Heading/Heading';
+import { getFramePropsStory } from '../../../utils/frameProps';
+import { allowedCheckboxFrameProps } from '../Checkbox/Checkbox';
 
 const Wrapper = styled.div`
     display: flex;
@@ -39,6 +41,7 @@ export const RadioButton: StoryObj<RadioProps> = {
         isDisabled: false,
         labelAlignment: 'right',
         verticalAlignment: 'top',
+        ...getFramePropsStory(allowedCheckboxFrameProps).args,
     },
     argTypes: {
         variant: {
@@ -59,6 +62,7 @@ export const RadioButton: StoryObj<RadioProps> = {
             },
             options: ['top', 'center'],
         },
+        ...getFramePropsStory(allowedCheckboxFrameProps).argTypes,
     },
 };
 

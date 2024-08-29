@@ -11,10 +11,6 @@ import { MouseEvent } from 'react';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { Icon, IconName, IconSize, useElevation } from '@trezor/components';
 
-const StyledIcon = styled(Icon)`
-    pointer-events: none;
-`;
-
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,
 }))`
@@ -114,7 +110,7 @@ export const NavigationItem = ({
             tabIndex={0}
             $elevation={elevation}
         >
-            <StyledIcon name={icon} size={iconSize} color={theme.iconSubdued} />
+            <Icon name={icon} size={iconSize} color={theme.iconSubdued} pointerEvents="none" />
             <Translation id={nameId} values={values} />
             {itemsCount && <Count>{itemsCount}</Count>}
         </Container>

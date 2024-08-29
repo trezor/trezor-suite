@@ -85,10 +85,6 @@ const Divider = styled.div`
     }
 `;
 
-const ConfettiIcon = styled(Icon)`
-    margin-left: 1px;
-`;
-
 interface OnboardingProgressBarProps {
     steps: {
         key: string;
@@ -120,7 +116,7 @@ export const OnboardingProgressBar = ({
                                 ) : (
                                     <>
                                         {index === steps.length - 1 ? (
-                                            <ConfettiIcon
+                                            <Icon
                                                 name="confetti"
                                                 size={20}
                                                 color={

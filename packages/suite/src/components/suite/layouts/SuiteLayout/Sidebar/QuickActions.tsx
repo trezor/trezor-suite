@@ -45,12 +45,15 @@ const Label = styled.span`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const StyledCheckIcon = styled(Icon)`
+const IconWrapper = styled.div`
     position: absolute;
     bottom: 50%;
     left: 50%;
     background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
     border-radius: ${borders.radii.full};
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const TorToggleContainer = styled.div`
@@ -59,7 +62,7 @@ const TorToggleContainer = styled.div`
 
     &:hover,
     &:focus-within {
-        ${StyledCheckIcon} {
+        ${IconWrapper} {
             background-color: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
         }
     }
@@ -78,7 +81,9 @@ export const QuickActions = () => {
     const isTorIconVisible = isDesktop();
 
     const CheckIcon = () => (
-        <StyledCheckIcon name="checkActive" size={12} color={theme.iconPrimaryDefault} />
+        <IconWrapper>
+            <Icon name="checkActive" size={12} color={theme.iconPrimaryDefault} />
+        </IconWrapper>
     );
 
     return (

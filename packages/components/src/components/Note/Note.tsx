@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Paragraph } from '../typography/Paragraph/Paragraph';
 import { Icon } from '../Icon/Icon';
@@ -9,10 +9,6 @@ import { Icon } from '../Icon/Icon';
 const Row = styled.div`
     display: flex;
     gap: ${spacingsPx.xs};
-`;
-
-const InfoIcon = styled(Icon)`
-    margin-top: 2px;
 `;
 
 const StyledParagraph = styled(Paragraph)<{ $color?: string }>`
@@ -29,7 +25,7 @@ export const Note = ({ children, className }: NoteProps) => {
 
     return (
         <Row className={className}>
-            <InfoIcon name="info" size={14} color={theme.textSubdued} />
+            <Icon name="info" size={14} color={theme.textSubdued} margin={{ top: spacings.xxxs }} />
             <StyledParagraph typographyStyle="hint" $color={theme.textSubdued}>
                 {children}
             </StyledParagraph>

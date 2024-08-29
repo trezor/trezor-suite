@@ -9,12 +9,12 @@ const BodyHeading = styled.div`
     ${typography.titleMedium}
 `;
 
-const StyledIcon = styled(Icon)<{ iconVariant: 'success' | 'warning' }>`
+const IconWrapper = styled.div<{ $iconVariant: 'success' | 'warning' }>`
     width: 80px;
     height: 80px;
     margin-bottom: ${spacingsPx.md};
-    background: ${({ theme, iconVariant }) => {
-        switch (iconVariant) {
+    background: ${({ theme, $iconVariant }) => {
+        switch ($iconVariant) {
             case 'warning':
                 return theme.backgroundAlertYellowSubtleOnElevation1;
             case 'success':
@@ -23,6 +23,9 @@ const StyledIcon = styled(Icon)<{ iconVariant: 'success' | 'warning' }>`
         }
     }};
     border-radius: ${borders.radii.full};
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 const Body = styled.p`
@@ -61,7 +64,11 @@ export const DialogModal = ({
     ...rest
 }: DialogModalProps) => (
     <Modal heading={headerHeading} {...rest}>
-        {icon && <StyledIcon name={icon} size="extraLarge" iconVariant={iconVariant} />}
+        {icon && (
+            <IconWrapper $iconVariant={iconVariant}>
+                <Icon name={icon} size="extraLarge" />
+            </IconWrapper>
+        )}
         {bodyHeading && <BodyHeading>{bodyHeading}</BodyHeading>}
         <Body>{body}</Body>
     </Modal>
