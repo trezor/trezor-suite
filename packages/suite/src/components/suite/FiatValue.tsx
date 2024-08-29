@@ -8,8 +8,11 @@ import {
     useFiatFromCryptoValueParams,
 } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { HiddenPlaceholderProps } from './HiddenPlaceholder';
-import { useLoadingSkeleton } from 'src/hooks/suite';
+import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { SkeletonRectangle } from '@trezor/components';
+import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 const StyledHiddenPlaceholder = styled((props: HiddenPlaceholderProps) => (
     <HiddenPlaceholder {...props} />
@@ -82,10 +85,19 @@ export const FiatValue = ({
 
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
 
+    const isTokenKnown = useSelector(state =>
+        selectIsSpecificCoinDefinitionKnown(
+            state,
+            symbol as NetworkSymbol,
+            tokenAddress || ('' as TokenAddress),
+        ),
+    );
+
     if (
         (!rate || !value || !currentRate?.lastTickerTimestamp || isLoading) &&
         showLoadingSkeleton &&
-        !currentRate?.error
+        !currentRate?.error &&
+        isTokenKnown
     ) {
         return <SkeletonRectangle animate={shouldAnimate} />;
     }
