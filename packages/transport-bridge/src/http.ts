@@ -163,7 +163,7 @@ export class TrezordNode {
             });
         });
 
-        return new Promise<void>(resolve => {
+        return new Promise<void>((resolve, reject) => {
             this.logger.info('Starting Trezor Bridge HTTP server');
             const app = new HttpServer({
                 port: this.port,
@@ -428,10 +428,12 @@ export class TrezordNode {
 
             app.post('/configure', [this.handleInfo.bind(this)]);
 
-            app.start().then(() => {
-                this.server = app;
-                resolve();
-            });
+            app.start()
+                .then(() => {
+                    this.server = app;
+                    resolve();
+                })
+                .catch(reject);
         });
     }
 
