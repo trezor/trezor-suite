@@ -20,7 +20,6 @@ export * from './components/buttons/IconButton/IconButton';
 export * from './components/Icon/Icon';
 export * from './components/buttons/PinButton/PinButton';
 export * from './components/buttons/TextButton/TextButton';
-export * from './components/buttons/TooltipButton/TooltipButton';
 export { Card, type CardProps } from './components/Card/Card';
 export {
     CollapsibleBox,
