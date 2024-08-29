@@ -39,7 +39,7 @@ import {
     CryptoCategoryD,
     CryptoCategoryE,
 } from 'src/constants/wallet/coinmarket/cryptoCategories';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import { Timer } from '@trezor/react-utils';
 import { AccountsState } from '@suite-common/wallet-core';
@@ -214,6 +214,7 @@ export interface CoinmarketAccountOptionsGroupOptionProps extends CoinmarketCryp
     balance: string;
     descriptor: string;
     contractAddress?: string;
+    accountType?: AccountType;
 }
 
 export interface CoinmarketAccountsOptionsGroupProps {
