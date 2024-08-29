@@ -5,6 +5,8 @@ import { ReactNode } from 'react';
 import { TransientProps } from '../../../utils/transientProps';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
 
+type TextWrap = 'balance' | 'break-word';
+
 export const allowedTextFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextFrameProps)[number]>;
 
@@ -44,12 +46,14 @@ const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSCol
 
 type StyledTextProps = {
     $typographyStyle?: TypographyStyle;
+    $textWrap?: TextWrap;
 } & ExclusiveColorOrVariant &
     TransientProps<AllowedFrameProps>;
 
 const StyledText = styled.span<StyledTextProps>`
     color: ${getColorForTextVariant};
     ${({ $typographyStyle }) => ($typographyStyle ? typography[$typographyStyle] : '')}
+    ${({ $textWrap }) => ($textWrap ? `text-wrap: ${$textWrap}` : '')}
 
     ${withFrameProps}
 `;
@@ -58,6 +62,7 @@ type TextProps = {
     children: ReactNode;
     className?: string;
     typographyStyle?: TypographyStyle;
+    textWrap?: TextWrap;
 } & ExclusiveColorOrVariant &
     AllowedFrameProps;
 
@@ -68,6 +73,7 @@ export const Text = ({
     className,
     typographyStyle,
     margin,
+    textWrap,
 }: TextProps) => {
     return (
         <StyledText
@@ -75,6 +81,7 @@ export const Text = ({
             className={className}
             $typographyStyle={typographyStyle}
             $margin={margin}
+            $textWrap={textWrap}
         >
             {children}
         </StyledText>
