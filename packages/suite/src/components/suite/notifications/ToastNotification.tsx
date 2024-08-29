@@ -6,6 +6,7 @@ import { notificationsActions, NotificationEntry } from '@suite-common/toast-not
 import { useDispatch } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notification';
 import { ToastNotificationVariant } from '../../../types/suite';
+import { spacings } from '@trezor/theme';
 
 const Wrapper = styled.div<{ $variant: ToastNotificationVariant; $isTall: boolean }>`
     display: flex;
@@ -42,10 +43,6 @@ const StyledButton = styled(Button)<{ $action: NotificationViewProps['action'] }
             margin-top: 12px;
             height: 32px;
         `};
-`;
-
-const StyledCancelIcon = styled(Icon)`
-    margin-left: 18px;
 `;
 
 interface ToastNotificationProps extends NotificationViewProps {
@@ -115,12 +112,13 @@ const ToastNotification = ({
             {(action?.position === 'right' || !action?.position) && actionButton}
 
             {cancelable && (
-                <StyledCancelIcon
+                <Icon
                     size={16}
                     name="close"
                     hoverColor={theme.legacy.TYPE_LIGHTER_GREY}
                     onClick={handleCancelClick}
                     data-testid={`${dataTestBase}/close`}
+                    margin={{ left: spacings.md }}
                 />
             )}
         </Wrapper>

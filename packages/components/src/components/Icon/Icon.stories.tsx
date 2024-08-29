@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { allowedIconFrameProps, Icon as IconComponent, IconProps, iconVariants } from './Icon';
 import { IconName, icons } from '@suite-common/icons/src/icons';
 import { getFramePropsStory } from '../../utils/frameProps';
-import { iconSizes } from '@suite-common/icons/libDev/src';
+import { iconSizes } from '@suite-common/icons';
 const meta: Meta = {
     title: 'Icons',
     component: IconComponent,

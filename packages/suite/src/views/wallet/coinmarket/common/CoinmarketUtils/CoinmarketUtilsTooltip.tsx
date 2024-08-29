@@ -1,7 +1,7 @@
 import { Icon, Tooltip } from '@trezor/components';
 import { CoinmarketOffersItemProps } from '../CoinmarketOffers/CoinmarketOffersItem';
 import styled, { useTheme } from 'styled-components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import CoinmarketUtilsTooltipFee from './CoinmarketUtilsTooltipFee';
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
@@ -10,11 +10,6 @@ const TooltipWrap = styled.div`
     display: flex;
     align-items: center;
     margin-top: ${spacingsPx.xxxs};
-`;
-
-const TooltipIcon = styled(Icon)`
-    margin-top: 1px;
-    margin-right: ${spacingsPx.xs};
 `;
 
 const TooltipText = styled.div<{ $isYellow?: boolean }>`
@@ -45,7 +40,12 @@ const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quot
         return (
             <Tooltip content={<CoinmarketUtilsTooltipFee quote={quote} />} placement="bottom">
                 <TooltipWrap>
-                    <TooltipIcon name="info" size={16} color={theme.textSubdued} />
+                    <Icon
+                        name="info"
+                        margin={{ right: spacings.xs }}
+                        size={16}
+                        color={theme.textSubdued}
+                    />
                     <TooltipText>
                         <Translation id="TR_COINMARKET_FEES_INCLUDED" />
                     </TooltipText>
@@ -57,7 +57,12 @@ const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quot
     return (
         <Tooltip content={notIncludedContent} placement="bottom">
             <TooltipWrap>
-                <TooltipIcon name="info" size={16} color={theme.textAlertYellow} />
+                <Icon
+                    name="info"
+                    margin={{ right: spacings.xs }}
+                    size={16}
+                    color={theme.textAlertYellow}
+                />
                 <TooltipText $isYellow>
                     <Translation id="TR_COINMARKET_FEES_NOT_INCLUDED" />
                 </TooltipText>
