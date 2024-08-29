@@ -20,6 +20,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/connection-status": "workspace:*",
+        "@suite-native/discovery": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@trezor/styles": "workspace:*",
