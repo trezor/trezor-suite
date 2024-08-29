@@ -3,7 +3,7 @@ import {
     isCryptoSymbolToken,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { Control, Controller } from 'react-hook-form';
-import { Select, useElevation } from '@trezor/components';
+import { Row, Select, useElevation } from '@trezor/components';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
@@ -27,6 +27,8 @@ import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/for
 import { CoinmarketFormOptionIcon } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 import { HiddenPlaceholder } from 'src/components/suite';
 import { createFilter } from 'react-select';
+import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
+import { spacings } from '@trezor/theme';
 
 const CoinmarketFormInputAccountActive = ({ label }: CoinmarketFormInputDefaultProps) => {
     const {
@@ -58,7 +60,13 @@ const CoinmarketFormInputAccountActive = ({ label }: CoinmarketFormInputDefaultP
                         })}
                         formatGroupLabel={group => (
                             <CoinmarketFormOptionGroupLabel>
-                                {group.label}
+                                <Row gap={spacings.xs}>
+                                    {group.label}
+                                    <AccountTypeBadge
+                                        accountType={group.options[0].accountType}
+                                        size="small"
+                                    />
+                                </Row>
                             </CoinmarketFormOptionGroupLabel>
                         )}
                         formatOptionLabel={(option: CoinmarketAccountOptionsGroupOptionProps) => {
