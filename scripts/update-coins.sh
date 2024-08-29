@@ -11,9 +11,9 @@ DIST='./packages/connect-common/files'
 #         SRC='../trezor-firmware/common/tools'
 # fi
 
-# BUID coins.json using tezor-common cointool
+# BUILD coins.json using trezor-common cointool
 # exlude unused fields
-$SRC/cointool.py dump -p -d connect -o $DIST/coins.json \
+$SRC/cointool.py dump -p -o $DIST/coins.json \
     -e blockbook \
     -e icon \
     -e cooldown \
@@ -34,7 +34,7 @@ $SRC/cointool.py dump -p -d connect -o $DIST/coins.json \
 
 yarn prettier --write $DIST/coins.json
 
-$SRC/cointool.py dump -p -d connect -o $DIST/coins-eth.json \
+$SRC/cointool.py dump -p -o $DIST/coins-eth.json \
     -e blockbook \
     -e icon \
     -e cooldown \
