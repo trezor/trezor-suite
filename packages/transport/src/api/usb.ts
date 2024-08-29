@@ -124,6 +124,7 @@ export class UsbApi extends AbstractApi {
             product: d.device.productId,
         }));
     }
+
     private abortableMethod<R>(
         method: () => R,
         { signal, onAbort }: { signal?: AbortSignal; onAbort?: () => Promise<void> | void },
@@ -135,25 +136,17 @@ export class UsbApi extends AbstractApi {
             return Promise.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         }
 
-        const abortTimeoutDfd = createDeferred<void>();
-        const abortTimeoutPromise = Promise.race([
-            createTimeoutPromise(500),
-            abortTimeoutDfd.promise,
-        ]);
         const abort = () => {
-            if (!onAbort) return;
-            try {
-                onAbort()?.finally(() => {
-                    abortTimeoutDfd.resolve();
-                });
-            } catch (err) {
-                this.logger?.error(`usb: onAbort error: ${err}`);
-            }
+            if (!onAbort) return Promise.resolve();
+
+            return onAbort();
         };
 
         const dfd = createDeferred<R>();
-        const abortListener = () => {
-            abort();
+        const abortListener = async () => {
+            this.logger?.log('abortableMethod abort start');
+            await abort();
+            this.logger?.log('abortableMethod abort done');
             dfd.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         };
         signal?.addEventListener('abort', abortListener);
@@ -161,11 +154,8 @@ export class UsbApi extends AbstractApi {
         return Promise.race([method(), dfd.promise])
             .then(r => {
                 dfd.resolve(r);
+
                 return r;
-            })
-            .catch(async err => {
-                await abortTimeoutPromise;
-                throw err;
             })
             .finally(() => {
                 signal?.removeEventListener('abort', abortListener);
@@ -365,6 +355,7 @@ export class UsbApi extends AbstractApi {
             try {
                 const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
                 this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
+                await device.reset();
                 await device.releaseInterface(interfaceId);
                 this.logger?.debug(
                     `usb: device.releaseInterface done: ${interfaceId}. device: ${this.formatDeviceForLog(device)}`,
