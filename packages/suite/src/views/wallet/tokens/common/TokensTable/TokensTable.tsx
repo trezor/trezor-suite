@@ -4,7 +4,7 @@ import styled, { css, useTheme } from 'styled-components';
 import { Account } from '@suite-common/wallet-types';
 import { NetworkCompatible } from '@suite-common/wallet-config';
 import { EnhancedTokenInfo, TokenManagementAction } from '@suite-common/token-definitions';
-import { Elevation, mapElevationToBorder, spacingsPx, typography } from '@trezor/theme';
+import { Elevation, mapElevationToBorder, spacings, spacingsPx, typography } from '@trezor/theme';
 import { Icon, Table, useElevation } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
@@ -83,7 +83,7 @@ export const TokensTable = ({
                 </Table.HeaderCell>
                 {!hideRates && (
                     <>
-                        <Table.HeaderCell>
+                        <Table.HeaderCell align="right" margin={{ right: spacings.xl }}>
                             <Translation id="TR_EXCHANGE_RATE" />
                         </Table.HeaderCell>
                         <Table.HeaderCell>

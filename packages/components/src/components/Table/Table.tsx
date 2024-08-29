@@ -24,7 +24,7 @@ Table.Row = TableRow;
 Table.Cell = TableCell;
 Table.HeaderRow = TableHeader;
 Table.HeaderCell = (props: TableCellProps) => (
-    <TableCell $isHeader {...props}>
+    <TableCell isHeader {...props}>
         {props.children}
     </TableCell>
 );

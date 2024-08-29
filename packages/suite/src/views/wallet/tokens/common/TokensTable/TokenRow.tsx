@@ -23,7 +23,7 @@ import {
     GroupedMenuItems,
     AssetLogo,
 } from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import {
@@ -211,7 +211,7 @@ export const TokenRow = ({
             </Table.Cell>
             {!hideRates && (
                 <>
-                    <Table.Cell>
+                    <Table.Cell align="right" margin={{ right: spacings.xl }}>
                         <PriceTickerWrapper>
                             <PriceTicker
                                 symbol={network.symbol}
@@ -229,7 +229,7 @@ export const TokenRow = ({
                     </Table.Cell>
                 </>
             )}
-            <Table.Cell $alignRight>
+            <Table.Cell align="right">
                 <Dropdown
                     alignMenu="bottom-right"
                     items={
