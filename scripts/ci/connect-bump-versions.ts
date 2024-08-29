@@ -19,8 +19,8 @@ const [semver] = args;
 
 /**
  *   The release version or type.  Can be one of the following:
-   - minor: Increase minor version (if version 9.4.1 --> 9.5.0)
-   - patch: Increase patch version (if version 9.4.1 --> 9.4.2)
+   - minor: Increase minor version (if version 9.5.0-beta.3 --> 9.5.0)
+   - patch: Increase patch version (if version 9.4.2-beta.3 --> 9.4.2)
    - preminor: Increase preminor version, pre-release (if version 9.4.1 --> 9.5.0-beta.1)
    - prepatch: Increase prepatch version, pre-release (if version 9.4.1 --> 9.4.2-beta.1)
    - prerelease: Increase prerelease version (if version 9.4.1-beta.1 --> 9.4.1-beta.2)
