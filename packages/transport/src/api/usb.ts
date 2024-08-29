@@ -136,16 +136,10 @@ export class UsbApi extends AbstractApi {
             return Promise.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         }
 
-        const abort = () => {
-            if (!onAbort) return Promise.resolve();
-
-            return onAbort();
-        };
-
         const dfd = createDeferred<R>();
         const abortListener = async () => {
             this.logger?.log('abortableMethod abort start');
-            await abort();
+            await onAbort?.();
             this.logger?.log('abortableMethod abort done');
             dfd.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         };
