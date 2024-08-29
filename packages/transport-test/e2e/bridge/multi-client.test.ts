@@ -1,8 +1,8 @@
 import * as messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport, Descriptor } from '@trezor/transport';
 
-import { controller as TrezorUserEnvLink } from './controller';
-import { descriptor as fixtureDescriptor } from './expect';
+import { controller as TrezorUserEnvLink, env } from './controller';
+import { descriptor as fixtureDescriptor, errorCase1 } from './expect';
 
 const wait = (ms = 1000) =>
     new Promise(resolve => {
@@ -227,6 +227,56 @@ describe('bridge', () => {
             releasedElsewhere: [],
         });
     });
+
+    // todo: udp not implemented correctly yet in new bridge
+    if (!env.USE_NODE_BRIDGE || env.USE_HW) {
+        test('client 1 (acquire - read), client 2 (acquire - send - read)', async () => {
+            await enumerateAndListen();
+
+            const { path } = descriptors[0];
+            const session1 = await bridge1.acquire({
+                input: { previous: null, path },
+            }).promise;
+
+            expect(session1).toEqual({ success: true, payload: '1' });
+            if (!session1.success) {
+                throw new Error("session1 wasn't acquired");
+            }
+
+            const receive1res = bridge1.receive({ session: session1.payload }).promise;
+
+            await wait();
+
+            // bridge 2 steals session
+            const session2 = await bridge2.acquire({
+                input: { previous: session1.payload, path },
+            }).promise;
+
+            expect(receive1res).resolves.toMatchObject({
+                success: false,
+                // todo: this error is expected, fix errors. also emu error is weird
+                error: errorCase1,
+            });
+
+            if (!session2.success) {
+                throw new Error("session2 wasn't acquired");
+            }
+            expect(session2).toEqual({ success: true, payload: '2' });
+
+            // send ping
+            await bridge2.send({ session: session2.payload, name: 'GetFeatures', data: {} })
+                .promise;
+            // receive success
+            const receive2Res = await bridge2.receive({ session: session2.payload }).promise;
+
+            expect(receive2Res).toMatchObject({
+                success: true,
+                payload: {
+                    type: 'Features',
+                },
+            });
+        });
+    }
 
     test('2 clients enumerate at the same time', async () => {
         const promise1 = bridge1.enumerate().promise;
