@@ -443,6 +443,7 @@ export const coinmarketBuildAccountOptions = ({
                 cryptoName: foundSymbolInfo?.name ?? null,
                 descriptor,
                 balance: formattedBalance ?? '',
+                accountType: account.accountType,
             },
         ];
         // add crypto tokens to options
@@ -488,6 +489,7 @@ export const coinmarketBuildAccountOptions = ({
                     cryptoName: tokenSymbolInfo?.name ?? null,
                     contractAddress: contract,
                     descriptor,
+                    accountType,
                     balance: balance ?? '',
                 });
             });
