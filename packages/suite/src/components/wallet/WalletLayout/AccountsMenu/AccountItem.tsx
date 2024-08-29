@@ -55,11 +55,7 @@ export const Left = styled.div`
     align-items: center;
 `;
 
-const StyledCoinLogo = styled(CoinLogo)`
-    z-index: 20;
-`;
-
-const StyledIcon = styled(Icon)`
+const ZIndexContainer = styled.div`
     z-index: 20;
 `;
 
@@ -198,14 +194,20 @@ export const AccountItem = forwardRef(
                 case 'coin':
                     return (
                         <>
-                            <StyledCoinLogo size={24} symbol={symbol} />
+                            <ZIndexContainer>
+                                <CoinLogo size={24} symbol={symbol} />
+                            </ZIndexContainer>
                             {isTokensCountShown && type === 'coin' && (
                                 <TokensCount>{tokens?.length}</TokensCount>
                             )}
                         </>
                     );
                 case 'staking':
-                    return <StyledIcon name="piggyBankFilled" color={theme.iconSubdued} />;
+                    return (
+                        <ZIndexContainer>
+                            <Icon name="piggyBankFilled" color={theme.iconSubdued} />
+                        </ZIndexContainer>
+                    );
                 case 'tokens':
                     return <TokensBadge>{tokens?.length}</TokensBadge>;
             }

@@ -12,7 +12,7 @@ const Container = styled.div`
     position: relative;
 `;
 
-const CloseIcon = styled(Icon)`
+const IconWrapper = styled.div`
     position: absolute;
     right: 0;
     top: 0;
@@ -102,7 +102,9 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                 <Translation id="OP_RETURN_ADD" />
             </Tooltip>
 
-            <CloseIcon size={20} name="close" onClick={() => removeOpReturn(outputId)} />
+            <IconWrapper>
+                <Icon size={20} name="close" onClick={() => removeOpReturn(outputId)} />
+            </IconWrapper>
 
             <Inputs>
                 <StyledTextarea

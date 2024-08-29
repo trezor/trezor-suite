@@ -14,7 +14,7 @@ import {
 } from 'src/utils/suite/validation';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 const VStack = styled.div`
     display: flex;
@@ -29,10 +29,6 @@ const StyledIcon = styled(Icon)`
 const InputAddon = styled.span`
     text-transform: uppercase;
     color: ${({ theme }) => theme.textSubdued};
-`;
-
-const StyledWarning = styled(Warning)`
-    margin-top: ${spacingsPx.sm};
 `;
 
 export const Inputs = () => {
@@ -113,7 +109,7 @@ export const Inputs = () => {
             )}
 
             {isAmountForWithdrawalWarningShown && (
-                <StyledWarning variant="info">
+                <Warning variant="info" margin={{ top: spacings.sm }}>
                     <Translation
                         id="TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL"
                         values={{
@@ -121,10 +117,10 @@ export const Inputs = () => {
                             symbol: account.symbol.toUpperCase(),
                         }}
                     />
-                </StyledWarning>
+                </Warning>
             )}
             {isAdviceForWithdrawalWarningShown && (
-                <StyledWarning variant="info">
+                <Warning variant="info" margin={{ top: spacings.sm }}>
                     <Translation
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
@@ -132,7 +128,7 @@ export const Inputs = () => {
                             symbol: account.symbol.toUpperCase(),
                         }}
                     />
-                </StyledWarning>
+                </Warning>
             )}
         </VStack>
     );

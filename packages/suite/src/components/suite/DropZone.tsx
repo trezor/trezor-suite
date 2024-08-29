@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Icon, IconName, Paragraph } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
-import { borders } from '@trezor/theme';
+import { borders, spacings } from '@trezor/theme';
 
 interface DropZoneProps {
     // 'accept' attribute for underlying HTML file input
@@ -166,10 +166,6 @@ const StyledInput = styled.input`
     display: none;
 `;
 
-const StyledIcon = styled(Icon)`
-    margin-right: 10px;
-`;
-
 const Label = styled.div`
     display: flex;
     align-items: center;
@@ -182,7 +178,7 @@ export const DropZone = (props: DropZoneProps) => {
         <Wrapper {...getWrapperProps()}>
             <StyledInput {...getInputProps()} />
             <Label>
-                <StyledIcon name={props.icon || 'binary'} />
+                <Icon name={props.icon || 'binary'} margin={{ right: spacings.xs }} />
                 {filename || <Translation id="TR_DROPZONE" />}
             </Label>
             {error && (
