@@ -17,12 +17,23 @@ if (args.length < 1) {
 }
 const [semver] = args;
 
-const allowedSemvers = ['patch', 'minor', 'prerelease'];
+/**
+ *   The release version or type.  Can be one of the following:
+   - minor: Increase minor version (if version 9.4.1 --> 9.5.0)
+   - patch: Increase patch version (if version 9.4.1 --> 9.4.2)
+   - preminor: Increase preminor version, pre-release (if version 9.4.1 --> 9.5.0-beta.1)
+   - prepatch: Increase prepatch version, pre-release (if version 9.4.1 --> 9.4.2-beta.1)
+   - prerelease: Increase prerelease version (if version 9.4.1-beta.1 --> 9.4.1-beta.2)
+
+ */
+const allowedSemvers = ['patch', 'prepatch', 'minor', 'preminor', 'prerelease'];
 if (!allowedSemvers.includes(semver)) {
     throw new Error(`provided semver: ${semver} must be one of ${allowedSemvers.join(', ')}`);
 }
 
-const deploymentType = semver === 'prerelease' ? 'canary' : 'stable';
+const deploymentType = ['prepatch', 'preminor', 'prerelease'].includes(semver)
+    ? 'canary'
+    : 'stable';
 
 const ROOT = path.join(__dirname, '..', '..');
 
@@ -135,7 +146,7 @@ const bumpConnect = async () => {
 
                 // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
                 // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
-                if (newCommits.length && semver !== 'prerelease') {
+                if (newCommits.length && deploymentType === 'stable') {
                     const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
                     if (!(await existsDirectory(CHANGELOG_PATH))) {
                         await writeFile(CHANGELOG_PATH, '');
@@ -152,7 +163,7 @@ const bumpConnect = async () => {
                 commit({
                     path: PACKAGE_PATH,
                     // We only use `npm-release` when doing stable release, so the part of the script above can check commits to include in CHANGELOG.
-                    message: `npm-${semver === 'prerelease' ? 'prerelease' : 'release'}: @trezor/${packageName} ${version}`,
+                    message: `npm-${deploymentType === 'canary' ? 'prerelease' : 'release'}: @trezor/${packageName} ${version}`,
                 });
             }
         }
@@ -165,6 +176,7 @@ const bumpConnect = async () => {
         const preBumpPackageJSON = JSON.parse(preBumpRawPackageJSON);
         const { version: preBumpVersion } = preBumpPackageJSON;
 
+        // Uses script packages/connect/script/bump-version.ts to increase version in multiple files.
         await exec('yarn', ['workspace', '@trezor/connect', `version:${semver}`]);
 
         const rawPackageJSON = await readFile(CONNECT_PACKAGE_JSON_PATH, 'utf-8');

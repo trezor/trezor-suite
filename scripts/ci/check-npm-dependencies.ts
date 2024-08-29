@@ -19,14 +19,16 @@ if (args.length < 2)
     throw new Error('Usage: yarn tsx check-npm-dependencies.ts <packageName> <semanticVersion>');
 
 const [packageName, semanticVersion] = args;
-const allowedSemvers = ['patch', 'minor', 'prerelease'];
+const allowedSemvers = ['patch', 'prepatch', 'minor', 'preminor', 'prerelease'];
 if (!allowedSemvers.includes(semanticVersion)) {
     throw new Error(
         `Provided semanticVersion '${semanticVersion}' must be one of ${allowedSemvers.join(', ')}`,
     );
 }
 
-const currentDeploymentType = semanticVersion === 'prerelease' ? 'canary' : 'stable';
+const currentDeploymentType = ['prepatch', 'preminor', 'prerelease'].includes(semver)
+    ? 'canary'
+    : 'stable';
 
 (async () => {
     const packages = await readdir(packagesPath, {
