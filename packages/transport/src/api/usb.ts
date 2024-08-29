@@ -138,11 +138,11 @@ export class UsbApi extends AbstractApi {
 
         const dfd = createDeferred<R>();
         const abortListener = async () => {
-            this.logger?.log('abortableMethod abort start');
+            this.logger?.debug('usb: abortableMethod onAbort start');
             try {
                 await onAbort?.();
             } catch {}
-            this.logger?.log('abortableMethod abort done');
+            this.logger?.debug('usb: abortableMethod onAbort done');
             dfd.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
         };
         signal?.addEventListener('abort', abortListener);
@@ -150,6 +150,7 @@ export class UsbApi extends AbstractApi {
         const methodPromise = method().catch(error => {
             // NOTE: race condition
             // method() rejects error triggered by signal (device.reset) before dfd.promise (before onAbort finish)
+            this.logger?.debug(`usb: abortableMethod method() aborted: ${signal.aborted} ${error}`);
             if (signal.aborted) {
                 return dfd.promise;
             }

@@ -1,6 +1,6 @@
 import { UsbApi } from '@trezor/transport/src/api/usb';
 
-import { buildMessage, assertMessage, assertSuccess, assertEquals } from './utils';
+import { buildMessage, assertMessage, assertSuccess, assertFailure, assertEquals } from './utils';
 import { sharedTest, success, info, debug, error } from './shared';
 
 /**
@@ -114,8 +114,11 @@ const runTests = async () => {
             const readPromise = api.read(path, abortController.signal);
             debug('trigger abort');
             abortController.abort();
-            await readPromise;
-            debug('write PING');
+            const abortedResponse = await readPromise;
+            assertFailure(abortedResponse);
+            assertEquals(abortedResponse.error, 'Aborted by signal');
+
+            debug('write PING', readPromise);
             await api.write(path, buildMessage('PING'));
             debug('read and expect SUCCESS');
             const readResponse = await api.read(path);
