@@ -13,11 +13,10 @@ if (args.length !== 1) {
 
 const [semver] = args;
 
-const allowedSemver = ['prerelease', 'patch', 'minor', 'major'];
-
-if (!allowedSemver.includes(semver)) {
+const allowedSemvers = ['patch', 'prepatch', 'minor', 'preminor', 'prerelease'];
+if (!allowedSemvers.includes(semver)) {
     throw new Error(
-        `semver arg "${semver} is invalid. Must be one of [${allowedSemver.join(', ')}]`,
+        `semver arg "${semver} is invalid. Must be one of [${allowedSemvers.join(', ')}]`,
     );
 }
 
