@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { variables, H3, Icon, Card } from '@trezor/components';
+import { variables, H3, Icon, Card, Column } from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation, StakingFeature, Divider } from 'src/components/suite';
 import { Footer } from './components/Footer';
@@ -30,10 +30,6 @@ const Badge = styled.span`
     text-transform: uppercase;
     line-height: 16px;
     max-height: 32px;
-`;
-
-const StyledCard = styled(Card)`
-    flex-direction: column;
 `;
 
 const Body = styled.div`
@@ -143,38 +139,40 @@ export const StakeEthCard = () => {
                     </Flex>
                 }
             >
-                <StyledCard paddingType="none">
-                    <Body>
-                        <CardTitle>
-                            <Translation
-                                id="TR_STAKE_ETH_CARD_TITLE"
-                                values={{ symbol: bannerSymbol.toUpperCase() }}
-                            />
-                            <br />
-                            <Translation id="TR_STAKE_ETH_EARN_REPEAT" />
-                        </CardTitle>
+                <Card paddingType="none">
+                    <Column alignItems="normal">
+                        <Body>
+                            <CardTitle>
+                                <Translation
+                                    id="TR_STAKE_ETH_CARD_TITLE"
+                                    values={{ symbol: bannerSymbol.toUpperCase() }}
+                                />
+                                <br />
+                                <Translation id="TR_STAKE_ETH_EARN_REPEAT" />
+                            </CardTitle>
 
-                        <FlexRow>
-                            {stakeEthFeatures.map(
-                                ({ id, icon, title, description, extraDescription }) => (
-                                    <FlexRowChild key={id}>
-                                        <StakingFeature
-                                            icon={icon}
-                                            title={title}
-                                            description={description}
-                                            extraDescription={extraDescription}
-                                        />
-                                    </FlexRowChild>
-                                ),
-                            )}
-                        </FlexRow>
-                    </Body>
+                            <FlexRow>
+                                {stakeEthFeatures.map(
+                                    ({ id, icon, title, description, extraDescription }) => (
+                                        <FlexRowChild key={id}>
+                                            <StakingFeature
+                                                icon={icon}
+                                                title={title}
+                                                description={description}
+                                                extraDescription={extraDescription}
+                                            />
+                                        </FlexRowChild>
+                                    ),
+                                )}
+                            </FlexRow>
+                        </Body>
 
-                    <Footer
-                        accountIndex={ethAccountWithSufficientBalanceForStaking?.index}
-                        hideSection={closeBanner}
-                    />
-                </StyledCard>
+                        <Footer
+                            accountIndex={ethAccountWithSufficientBalanceForStaking?.index}
+                            hideSection={closeBanner}
+                        />
+                    </Column>
+                </Card>
             </DashboardSection>
 
             <Divider />

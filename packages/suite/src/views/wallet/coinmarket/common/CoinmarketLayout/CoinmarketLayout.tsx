@@ -26,7 +26,7 @@ const CoinmarketWrapper = styled.div`
     }
 `;
 
-const StyledCard = styled(Card)`
+const CardWrapper = styled.div`
     flex: 1;
     align-self: flex-start;
 `;
@@ -77,9 +77,11 @@ export const CoinmarketLayout = ({
             <CoinmarketLayoutNavigation />
 
             <Layout>
-                <StyledCard paddingType="none">
-                    <Content>{children}</Content>
-                </StyledCard>
+                <CardWrapper>
+                    <Card paddingType="none">
+                        <Content>{children}</Content>
+                    </Card>
+                </CardWrapper>
             </Layout>
 
             <BottomContent>

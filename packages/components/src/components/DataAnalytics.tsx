@@ -9,11 +9,6 @@ import { Card } from './Card/Card';
 import { Switch } from './form/Switch/Switch';
 import { spacingsPx } from '@trezor/theme';
 
-const StyledCard = styled(Card)`
-    max-width: 550px;
-    padding: ${spacingsPx.lg} ${spacingsPx.xxl};
-`;
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -127,7 +122,12 @@ export const DataAnalytics = ({
     const [trackingEnabled, setTrackingEnabled] = useState<boolean>(isInitialTrackingEnabled);
 
     return (
-        <StyledCard data-testid="@analytics/consent" className={className}>
+        <Card
+            data-testid="@analytics/consent"
+            className={className}
+            paddingType="large"
+            maxWidth={550}
+        >
             <Wrapper>
                 <ContentWrapper>
                     <Heading>
@@ -191,6 +191,6 @@ export const DataAnalytics = ({
                     </StyledButton>
                 </ButtonWrapper>
             </Wrapper>
-        </StyledCard>
+        </Card>
     );
 };

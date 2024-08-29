@@ -25,9 +25,8 @@ const Wrapper = styled.div`
     }
 `;
 
-const StyledCard = styled(Card)`
+const Flex = styled.div`
     flex: 1;
-    padding: 0;
 `;
 
 export const CoinmarketSelectedOffer = () => {
@@ -42,14 +41,18 @@ export const CoinmarketSelectedOffer = () => {
     return (
         <Wrapper>
             {isCoinmarketBuyOffers(context) && (
-                <StyledCard>
-                    <CoinmarketSelectedOfferVerify />
-                </StyledCard>
+                <Flex>
+                    <Card paddingType="none">
+                        <CoinmarketSelectedOfferVerify />
+                    </Card>
+                </Flex>
             )}
             {isCoinmarketSellOffers(context) && (
-                <StyledCard>
-                    <CoinmarketSelectedOfferSell />
-                </StyledCard>
+                <Flex>
+                    <Card paddingType="none">
+                        <CoinmarketSelectedOfferSell />
+                    </Card>
+                </Flex>
             )}
             <CoinmarketSelectedOfferInfo
                 selectedQuote={selectedQuote as BuyTrade | SellFiatTrade} // TODO: exchange

@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { useTheme } from 'styled-components';
-import { Icon } from '@trezor/components';
+import { Card, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { AccentP, CardBottomContent, GreyP, StyledCard } from './styled';
+import { AccentP, CardBottomContent, GreyP } from './styled';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from 'src/hooks/suite';
 import { BACKUP_REWARD_PAYOUT_DAYS } from 'src/constants/suite/ethStaking';
@@ -37,7 +37,7 @@ export const PayoutCard = ({
     }, [autocompoundBalance, daysToAddToPool, nextRewardPayout, validatorWithdrawTime]);
 
     return (
-        <StyledCard>
+        <Card paddingType="small">
             <Icon name="calendar" color={theme.iconSubdued} />
 
             <CardBottomContent>
@@ -55,6 +55,6 @@ export const PayoutCard = ({
                     <Translation id="TR_STAKE_NEXT_PAYOUT" />
                 </GreyP>
             </CardBottomContent>
-        </StyledCard>
+        </Card>
     );
 };

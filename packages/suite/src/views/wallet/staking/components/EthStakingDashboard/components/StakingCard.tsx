@@ -15,10 +15,6 @@ import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { TrimmedCryptoAmount } from './TrimmedCryptoAmount';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
-const StyledCard = styled(Card)`
-    padding: ${spacingsPx.md};
-`;
-
 const AmountsWrapper = styled.div<{ $isStakeOrUnstakePending: boolean }>`
     display: flex;
     gap: ${spacingsPx.sm} ${spacingsPx.xs};
@@ -139,7 +135,7 @@ export const StakingCard = ({
     }
 
     return (
-        <StyledCard>
+        <Card>
             {(isStakeConfirming || isTxStatusShown) && (
                 <InfoBox>
                     <ProgressLabels labels={progressLabelsData} />
@@ -300,6 +296,6 @@ export const StakingCard = ({
                     </StyledButton>
                 </Tooltip>
             </ButtonsWrapper>
-        </StyledCard>
+        </Card>
     );
 };

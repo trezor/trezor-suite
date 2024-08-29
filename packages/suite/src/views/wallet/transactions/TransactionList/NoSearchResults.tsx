@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Card, variables } from '@trezor/components';
+import { Card, Column, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { getRandomNumberInRange } from '@trezor/utils';
+import { typography } from '@trezor/theme';
 
-const NoResults = styled(Card)`
-    display: flex;
+const NoResults = styled.div`
     text-align: center;
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.hint}
 `;
 
 const Examples = styled.div`
@@ -50,18 +49,22 @@ export const NoSearchResults = () => {
     const [tip] = useState(getRandomNumberInRange(1, 10));
 
     return (
-        <NoResults>
-            <Translation id="TR_NO_SEARCH_RESULTS" />
+        <Card>
+            <NoResults>
+                <Column>
+                    <Translation id="TR_NO_SEARCH_RESULTS" />
 
-            <Examples>
-                <Translation
-                    id={getTip(tip)}
-                    values={{
-                        strong: chunks => <strong>{chunks}</strong>, // search string is wrapped in strong tag for additional styling
-                        lastYear: new Date().getFullYear() - 1,
-                    }}
-                />
-            </Examples>
-        </NoResults>
+                    <Examples>
+                        <Translation
+                            id={getTip(tip)}
+                            values={{
+                                strong: chunks => <strong>{chunks}</strong>, // search string is wrapped in strong tag for additional styling
+                                lastYear: new Date().getFullYear() - 1,
+                            }}
+                        />
+                    </Examples>
+                </Column>
+            </NoResults>
+        </Card>
     );
 };

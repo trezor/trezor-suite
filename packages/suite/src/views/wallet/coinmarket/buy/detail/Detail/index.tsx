@@ -22,9 +22,8 @@ const Wrapper = styled.div`
     }
 `;
 
-const StyledCard = styled(Card)`
+const Flex = styled.div`
     flex: 1;
-    padding: 0;
 `;
 
 const CoinmarketDetail = () => {
@@ -68,18 +67,20 @@ const CoinmarketDetail = () => {
 
     return (
         <Wrapper>
-            <StyledCard>
-                {showError && <PaymentFailed account={account} supportUrl={supportUrl} />}
-                {showProcessing && <PaymentProcessing />}
-                {showWaiting && (
-                    <WaitingForUser
-                        trade={trade.data}
-                        account={account}
-                        providerName={provider?.brandName || provider?.companyName}
-                    />
-                )}
-                {showSuccess && <PaymentSuccessful account={account} />}
-            </StyledCard>
+            <Flex>
+                <Card paddingType="none">
+                    {showError && <PaymentFailed account={account} supportUrl={supportUrl} />}
+                    {showProcessing && <PaymentProcessing />}
+                    {showWaiting && (
+                        <WaitingForUser
+                            trade={trade.data}
+                            account={account}
+                            providerName={provider?.brandName || provider?.companyName}
+                        />
+                    )}
+                    {showSuccess && <PaymentSuccessful account={account} />}
+                </Card>
+            </Flex>
             <CoinmarketSelectedOfferInfo
                 selectedQuote={trade.data}
                 transactionId={trade.key}

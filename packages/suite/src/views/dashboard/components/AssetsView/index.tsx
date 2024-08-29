@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Icon, Button, LoadingContent, Card } from '@trezor/components';
+import { Icon, Button, LoadingContent, Card, Column } from '@trezor/components';
 import { selectCurrentFiatRates, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 import { DashboardSection } from 'src/components/dashboard';
@@ -21,11 +21,6 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { AssetTable, AssetTableRowType } from './components/AssetTable';
 import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
 
-const StyledCard = styled(Card)`
-    flex-direction: column;
-    padding: 0;
-`;
-
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
     display: flex;
@@ -43,10 +38,6 @@ const GridWrapper = styled.div`
     display: grid;
     grid-gap: 10px;
     grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
-`;
-
-const ErrorCard = styled(Card)`
-    width: 100%;
 `;
 
 const useAssetsFiatBalances = (
@@ -196,33 +187,35 @@ export const AssetsView = () => {
                         {discoveryInProgress && <AssetCardSkeleton />}
                     </GridWrapper>
                     {isError && (
-                        <ErrorCard>
+                        <Card width="100%">
                             <InfoMessage>
                                 <Icon
-                                    margin={{ right: spacings.xxs }}
                                     name="warningTriangle"
                                     color={theme.iconAlertRed}
                                     size={14}
+                                    margin={{ right: spacings.xxs }}
                                 />
                                 <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                             </InfoMessage>
-                        </ErrorCard>
+                        </Card>
                     )}
                 </>
             ) : (
-                <StyledCard>
-                    <AssetTable
-                        assetsData={assetsData}
-                        assetsFiatBalances={assetsFiatBalances}
-                        discoveryInProgress={discoveryInProgress}
-                    />
-                    {isError && (
-                        <InfoMessage>
-                            <Icon name="warningTriangle" color={theme.iconAlertRed} size={14} />
-                            <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
-                        </InfoMessage>
-                    )}
-                </StyledCard>
+                <Card paddingType="none">
+                    <Column>
+                        <AssetTable
+                            assetsData={assetsData}
+                            assetsFiatBalances={assetsFiatBalances}
+                            discoveryInProgress={discoveryInProgress}
+                        />
+                        {isError && (
+                            <InfoMessage>
+                                <Icon name="warningTriangle" color={theme.iconAlertRed} size={14} />
+                                <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
+                            </InfoMessage>
+                        )}
+                    </Column>
+                </Card>
             )}
         </DashboardSection>
     );

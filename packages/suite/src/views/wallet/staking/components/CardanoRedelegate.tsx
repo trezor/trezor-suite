@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 
-import { Icon } from '@trezor/components';
+import { Card, Column, Icon } from '@trezor/components';
 
 import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Translation } from 'src/components/suite/Translation';
-import { Actions, Title, Heading, Text, StyledCard } from './CardanoPrimitives';
+import { Actions, Title, Heading, Text } from './CardanoPrimitives';
 
 import { DeviceButton } from './DeviceButton';
 import { DeviceModelInternal } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
 interface CardanoRedelegateProps {
     deviceModel: DeviceModelInternal;
@@ -36,47 +37,49 @@ export const CardanoRedelegate = ({ deviceModel }: CardanoRedelegateProps) => {
         !delegatingAvailable.status || !deviceAvailable.status || !!pendingStakeTx;
 
     return (
-        <StyledCard>
-            <Title>
-                <Icon name="info" size={18} />
-                <Heading>
+        <Card>
+            <Column gap={spacings.xs}>
+                <Title>
+                    <Icon name="info" size={18} />
+                    <Heading>
+                        <Translation
+                            id={
+                                isCurrentPoolOversaturated
+                                    ? 'TR_STAKING_POOL_OVERSATURATED_TITLE'
+                                    : 'TR_STAKING_ON_3RD_PARTY_TITLE'
+                            }
+                        />
+                    </Heading>
+                </Title>
+                <Text>
                     <Translation
                         id={
                             isCurrentPoolOversaturated
-                                ? 'TR_STAKING_POOL_OVERSATURATED_TITLE'
-                                : 'TR_STAKING_ON_3RD_PARTY_TITLE'
+                                ? 'TR_STAKING_POOL_OVERSATURATED_DESCRIPTION'
+                                : 'TR_STAKING_ON_3RD_PARTY_DESCRIPTION'
                         }
                     />
-                </Heading>
-            </Title>
-            <Text>
-                <Translation
-                    id={
-                        isCurrentPoolOversaturated
-                            ? 'TR_STAKING_POOL_OVERSATURATED_DESCRIPTION'
-                            : 'TR_STAKING_ON_3RD_PARTY_DESCRIPTION'
-                    }
-                />
-            </Text>
+                </Text>
 
-            <Actions>
-                <DeviceButton
-                    isLoading={loading}
-                    isDisabled={isRedelegatingDisabled}
-                    deviceModelInternal={deviceModel}
-                    onClick={delegate}
-                    tooltipContent={
-                        !reasonMessageId ||
-                        (deviceAvailable.status &&
-                            delegatingAvailable.status &&
-                            !isFetchError) ? undefined : (
-                            <Translation id={reasonMessageId} />
-                        )
-                    }
-                >
-                    <Translation id="TR_STAKING_REDELEGATE" />
-                </DeviceButton>
-            </Actions>
-        </StyledCard>
+                <Actions>
+                    <DeviceButton
+                        isLoading={loading}
+                        isDisabled={isRedelegatingDisabled}
+                        deviceModelInternal={deviceModel}
+                        onClick={delegate}
+                        tooltipContent={
+                            !reasonMessageId ||
+                            (deviceAvailable.status &&
+                                delegatingAvailable.status &&
+                                !isFetchError) ? undefined : (
+                                <Translation id={reasonMessageId} />
+                            )
+                        }
+                    >
+                        <Translation id="TR_STAKING_REDELEGATE" />
+                    </DeviceButton>
+                </Actions>
+            </Column>
+        </Card>
     );
 };

@@ -7,7 +7,7 @@ import { mediaQueries } from '@trezor/styles';
 
 import { Translation } from 'src/components/suite';
 import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcessStep';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 const Container = styled(Card)`
@@ -89,7 +89,7 @@ const STEPS: Array<Omit<CoinjoinProcessStepProps, 'number'>> = [
 export const CoinjoinExplanation = () => (
     <Container>
         <Heading>
-            <Icon name="question" margin={{ right: 4 }} size={15} />
+            <Icon name="question" margin={{ right: spacings.xxs }} size={15} />
             <Translation id="TR_COINJOIN_EXPLANATION_TITLE" />
         </Heading>
 

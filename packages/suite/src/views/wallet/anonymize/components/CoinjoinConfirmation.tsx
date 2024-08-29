@@ -26,10 +26,6 @@ import {
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { Tile, TileProps } from './Tile';
 
-const StyledCard = styled(Card)`
-    padding: 24px;
-`;
-
 const TopRow = styled(H3)`
     display: flex;
     justify-content: space-between;
@@ -150,7 +146,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
 
     return (
         <>
-            <StyledCard>
+            <Card>
                 <TopRow>
                     <Translation id="TR_COINJOIN_SETUP" />
                 </TopRow>
@@ -193,7 +189,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                         }}
                     />
                 </StyledCheckbox>
-            </StyledCard>
+            </Card>
 
             <Tooltip content={getButtonTooltipMessage()}>
                 <StyledButton onClick={anonymize} isDisabled={isDisabled} isLoading={isLoading}>

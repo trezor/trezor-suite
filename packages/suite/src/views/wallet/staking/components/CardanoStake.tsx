@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Icon, Warning } from '@trezor/components';
+import { Card, Column, Icon, Warning } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -14,15 +14,15 @@ import { DeviceButton } from './DeviceButton';
 import {
     Title,
     Row,
-    Column,
+    Column as CardanoColumn,
     Actions,
     Heading,
     Value,
     Text,
     Content,
     StyledH2,
-    StyledCard,
 } from './CardanoPrimitives';
+import { spacings } from '@trezor/theme';
 
 interface CardanoStakeProps {
     account: Account;
@@ -54,97 +54,99 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
         !!pendingStakeTx;
 
     return (
-        <StyledCard>
-            <StyledH2>
-                <Icon name="close" size={25} />
-                <Heading>
-                    <Translation id="TR_STAKING_STAKE_TITLE" />
-                </Heading>
-            </StyledH2>
-            <Text>
-                <Translation id="TR_STAKING_STAKE_DESCRIPTION" values={{ br: <br /> }} />
-            </Text>
-            <Row>
-                <Content>
-                    <Column>
-                        <Title>
-                            <Translation id="TR_STAKING_STAKE_ADDRESS" />
-                        </Title>
-                        <HiddenPlaceholder>
-                            <Value>{address}</Value>
-                        </HiddenPlaceholder>
-                    </Column>
-                </Content>
-            </Row>
-            {delegatingAvailable.status && !pendingStakeTx ? (
-                // delegation is allowed
-                <>
-                    <Row>
-                        <Column>
+        <Card>
+            <Column gap={spacings.xs}>
+                <StyledH2>
+                    <Icon name="close" size={25} />
+                    <Heading>
+                        <Translation id="TR_STAKING_STAKE_TITLE" />
+                    </Heading>
+                </StyledH2>
+                <Text>
+                    <Translation id="TR_STAKING_STAKE_DESCRIPTION" values={{ br: <br /> }} />
+                </Text>
+                <Row>
+                    <Content>
+                        <CardanoColumn>
                             <Title>
-                                <Translation id="TR_STAKING_DEPOSIT" />
+                                <Translation id="TR_STAKING_STAKE_ADDRESS" />
                             </Title>
-                            <Value>
-                                {formatNetworkAmount(deposit || '0', account.symbol)}{' '}
-                                {account.symbol.toUpperCase()}
-                            </Value>
-                        </Column>
-                    </Row>
-                    <Row>
-                        <Column>
-                            <Title>
-                                <Translation id="TR_STAKING_FEE" />
-                            </Title>
-                            <Value>
-                                {formatNetworkAmount(fee || '0', account.symbol)}{' '}
-                                {account.symbol.toUpperCase()}
-                            </Value>
-                        </Column>
-                    </Row>
-                </>
-            ) : (
-                // If building a transaction fails we don't have the information about used deposit and fee required
-                <>
-                    {!delegatingAvailable.status &&
-                        delegatingAvailable.reason === 'UTXO_BALANCE_INSUFFICIENT' && (
+                            <HiddenPlaceholder>
+                                <Value>{address}</Value>
+                            </HiddenPlaceholder>
+                        </CardanoColumn>
+                    </Content>
+                </Row>
+                {delegatingAvailable.status && !pendingStakeTx ? (
+                    // delegation is allowed
+                    <>
+                        <Row>
+                            <CardanoColumn>
+                                <Title>
+                                    <Translation id="TR_STAKING_DEPOSIT" />
+                                </Title>
+                                <Value>
+                                    {formatNetworkAmount(deposit || '0', account.symbol)}{' '}
+                                    {account.symbol.toUpperCase()}
+                                </Value>
+                            </CardanoColumn>
+                        </Row>
+                        <Row>
+                            <CardanoColumn>
+                                <Title>
+                                    <Translation id="TR_STAKING_FEE" />
+                                </Title>
+                                <Value>
+                                    {formatNetworkAmount(fee || '0', account.symbol)}{' '}
+                                    {account.symbol.toUpperCase()}
+                                </Value>
+                            </CardanoColumn>
+                        </Row>
+                    </>
+                ) : (
+                    // If building a transaction fails we don't have the information about used deposit and fee required
+                    <>
+                        {!delegatingAvailable.status &&
+                            delegatingAvailable.reason === 'UTXO_BALANCE_INSUFFICIENT' && (
+                                <Row>
+                                    <CardanoColumn>
+                                        <Warning variant="info">
+                                            <div>
+                                                <Translation id="TR_STAKING_NOT_ENOUGH_FUNDS" />
+                                                <br />
+                                                <Translation
+                                                    id="TR_STAKING_DEPOSIT_FEE_DECRIPTION"
+                                                    values={{ feeAmount: 2 }}
+                                                />
+                                            </div>
+                                        </Warning>
+                                    </CardanoColumn>
+                                </Row>
+                            )}
+                        {pendingStakeTx && (
                             <Row>
-                                <Column>
-                                    <Warning variant="info">
-                                        <div>
-                                            <Translation id="TR_STAKING_NOT_ENOUGH_FUNDS" />
-                                            <br />
-                                            <Translation
-                                                id="TR_STAKING_DEPOSIT_FEE_DECRIPTION"
-                                                values={{ feeAmount: 2 }}
-                                            />
-                                        </div>
-                                    </Warning>
-                                </Column>
+                                <CardanoActionPending />
                             </Row>
                         )}
-                    {pendingStakeTx && (
-                        <Row>
-                            <CardanoActionPending />
-                        </Row>
-                    )}
-                </>
-            )}
-            <Actions>
-                <DeviceButton
-                    isDisabled={isStakingDisabled}
-                    isLoading={loading}
-                    onClick={delegate}
-                    deviceModelInternal={deviceModel}
-                    tooltipContent={
-                        !reasonMessageId ||
-                        (deviceAvailable.status && delegatingAvailable.status) ? undefined : (
-                            <Translation id={reasonMessageId} />
-                        )
-                    }
-                >
-                    <Translation id="TR_STAKING_DELEGATE" />
-                </DeviceButton>
-            </Actions>
-        </StyledCard>
+                    </>
+                )}
+                <Actions>
+                    <DeviceButton
+                        isDisabled={isStakingDisabled}
+                        isLoading={loading}
+                        onClick={delegate}
+                        deviceModelInternal={deviceModel}
+                        tooltipContent={
+                            !reasonMessageId ||
+                            (deviceAvailable.status && delegatingAvailable.status) ? undefined : (
+                                <Translation id={reasonMessageId} />
+                            )
+                        }
+                    >
+                        <Translation id="TR_STAKING_DELEGATE" />
+                    </DeviceButton>
+                </Actions>
+            </Column>
+        </Card>
     );
 };

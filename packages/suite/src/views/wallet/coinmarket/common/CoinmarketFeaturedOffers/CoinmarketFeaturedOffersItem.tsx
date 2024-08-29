@@ -22,10 +22,6 @@ import {
 import CoinmarketFeaturedOffersAmounts from './CoinmarketFeaturedOffersAmounts';
 import CoinmarketFeaturedOffersPaymentInfo from './CoinmarketFeaturedOffersPaymentInfo';
 
-const OfferWrap = styled(Card)`
-    min-height: 100px;
-`;
-
 const Offer = styled.div`
     display: flex;
     min-height: 100px;
@@ -123,7 +119,7 @@ const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffersItemPr
     if (!cryptoAmountProps) return null;
 
     return (
-        <OfferWrap margin={{ top: spacings.md }}>
+        <Card margin={{ top: spacings.md }} minHeight={100}>
             <Offer>
                 <OfferColumn1>
                     <OfferBadgeWrap>
@@ -154,7 +150,7 @@ const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffersItemPr
                     )}
                 </OfferColumn3>
             </Offer>
-        </OfferWrap>
+        </Card>
     );
 };
 

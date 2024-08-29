@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
-import { Button, Card, Icon, Paragraph, variables, IconButton } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Button, Card, Icon, Paragraph, IconButton } from '@trezor/components';
+import { spacingsPx, typography } from '@trezor/theme';
 import { Translation, IconBorderedWrapper } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -10,11 +10,6 @@ import { Account } from '@suite-common/wallet-types';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
-
-const StyledCard = styled(Card)`
-    padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};
-    flex-direction: column;
-`;
 
 const Flex = styled.div`
     display: flex;
@@ -39,8 +34,7 @@ const Right = styled.div`
 
 const Title = styled.h4`
     color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.callout}
     margin-bottom: 4px;
 `;
 
@@ -78,7 +72,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
     }
 
     return (
-        <StyledCard>
+        <Card>
             <Flex>
                 <Left>
                     <IconBorderedWrapper>
@@ -114,6 +108,6 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
                     />
                 </Right>
             </Flex>
-        </StyledCard>
+        </Card>
     );
 };

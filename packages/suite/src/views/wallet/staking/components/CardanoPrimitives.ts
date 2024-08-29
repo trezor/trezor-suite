@@ -1,5 +1,5 @@
-import { variables, H2, Card } from '@trezor/components';
-import { borders } from '@trezor/theme';
+import { H2 } from '@trezor/components';
+import { borders, typography } from '@trezor/theme';
 import styled from 'styled-components';
 
 export const Heading = styled.div`
@@ -29,8 +29,7 @@ export const Column = styled.div`
 export const Title = styled.div`
     display: flex;
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    ${typography.highlight}
     align-items: center;
     margin-bottom: 16px;
 `;
@@ -47,8 +46,7 @@ export const Text = styled.div`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     margin-bottom: 8px;
     margin-top: 8px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.hint}
 `;
 
 export const Content = styled.div`
@@ -60,9 +58,8 @@ export const Content = styled.div`
 `;
 
 export const Value = styled.div`
-    font-size: ${variables.FONT_SIZE.NORMAL};
+    ${typography.hint}
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-variant-numeric: tabular-nums slashed-zero;
     width: fit-content;
     background: ${({ theme }) => theme.legacy.BG_LIGHT_GREY};
@@ -70,10 +67,4 @@ export const Value = styled.div`
     border-radius: ${borders.radii.xs};
     word-break: break-all;
     padding: 10px;
-`;
-
-export const StyledCard = styled(Card)`
-    & + & {
-        margin-top: 8px;
-    }
 `;
