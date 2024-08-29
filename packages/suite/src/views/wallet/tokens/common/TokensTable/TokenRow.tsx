@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { selectDevice } from '@suite-common/wallet-core';
 import { Account, AddressType, TokenAddress } from '@suite-common/wallet-types';
@@ -11,7 +11,15 @@ import {
 } from '@suite-common/token-definitions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { Dropdown, IconButton, ButtonGroup, Button, Icon } from '@trezor/components';
+import {
+    Dropdown,
+    IconButton,
+    ButtonGroup,
+    Button,
+    Icon,
+    Table,
+    GroupedMenuItems,
+} from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -39,38 +47,7 @@ import {
     selectIsCopyAddressModalShown,
     selectIsUnhideTokenModalShown,
 } from 'src/reducers/suite/suiteReducer';
-import { GroupedMenuItems } from '@trezor/components/src/components/Dropdown/Menu';
 import { SUITE } from 'src/actions/suite/constants';
-
-const Cell = styled.div<{ $isActions?: boolean; $isBigger?: boolean }>`
-    ${typography.hint}
-    align-items: center;
-    padding: 10px ${spacingsPx.sm} 10px 0;
-    width: ${({ $isBigger }) => ($isBigger ? `60%` : '20%')};
-    gap: ${spacingsPx.xxs};
-
-    ${({ $isActions }) =>
-        $isActions &&
-        css`
-            display: flex;
-            justify-content: flex-end;
-            text-align: right;
-            width: 20%;
-        `}
-`;
-
-const Token = styled.div`
-    display: flex;
-    align-items: center;
-    padding: ${spacingsPx.xs} 0;
-    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
-    margin: 0 ${spacingsPx.lg};
-    min-height: 81px;
-
-    &:last-child {
-        border-bottom: none;
-    }
-`;
 
 const TokenName = styled.span`
     ${typography.body}
@@ -192,13 +169,13 @@ export const TokenRow = ({
     const isReceiveButtonDisabled = isDeviceLocked || !!device.authConfirm;
 
     return (
-        <Token key={token.contract}>
-            <Cell>
+        <Table.Row>
+            <Table.Cell>
                 <TokenName>
                     <BlurUrls text={token.name} />
                 </TokenName>
-            </Cell>
-            <Cell $isBigger={hideRates}>
+            </Table.Cell>
+            <Table.Cell>
                 <Amount>
                     {!hideRates && (
                         <StyledFiatValue
@@ -214,10 +191,10 @@ export const TokenRow = ({
                         isBalance
                     />
                 </Amount>
-            </Cell>
+            </Table.Cell>
             {!hideRates && (
                 <>
-                    <Cell>
+                    <Table.Cell>
                         <PriceTickerWrapper>
                             <PriceTicker
                                 symbol={network.symbol}
@@ -225,17 +202,17 @@ export const TokenRow = ({
                                 noEmptyStateTooltip
                             />
                         </PriceTickerWrapper>
-                    </Cell>
-                    <Cell>
+                    </Table.Cell>
+                    <Table.Cell>
                         <TrendTicker
                             symbol={network.symbol}
                             contractAddress={token.contract as TokenAddress}
                             noEmptyStateTooltip
                         />
-                    </Cell>
+                    </Table.Cell>
                 </>
             )}
-            <Cell $isActions>
+            <Table.Cell $alignRight>
                 <Dropdown
                     alignMenu="bottom-right"
                     items={
@@ -435,7 +412,7 @@ export const TokenRow = ({
                             />
                         </ButtonGroup>
                     ))}
-            </Cell>
-        </Token>
+            </Table.Cell>
+        </Table.Row>
     );
 };

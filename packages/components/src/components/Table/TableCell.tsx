@@ -1,9 +1,10 @@
-import { spacingsPx, typography } from '@trezor/theme';
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
+import { typography } from '@trezor/theme';
+
 export interface TableCellProps {
-    children: ReactNode;
+    children?: ReactNode;
     $alignRight?: boolean;
     $isHeader?: boolean;
 }
@@ -21,6 +22,5 @@ export const TableCell = styled(({ $isHeader, $alignRight, ...props }: TableCell
         $alignRight &&
         css`
             justify-self: right;
-            padding-right: ${spacingsPx.xxxl};
         `}
 `;

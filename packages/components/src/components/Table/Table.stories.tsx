@@ -22,13 +22,15 @@ export const Table: StoryObj = {
                 <TableComponent.HeaderCell $alignRight>Balance</TableComponent.HeaderCell>
                 <TableComponent.HeaderCell>Price</TableComponent.HeaderCell>
             </TableComponent.HeaderRow>
-            {EXAMPLE_TOKENS.map((token, i) => (
-                <TableComponent.Row key={i}>
-                    <TableComponent.Cell>{token.name}</TableComponent.Cell>
-                    <TableComponent.Cell $alignRight>{token.balance}</TableComponent.Cell>
-                    <TableComponent.Cell>{token.price}</TableComponent.Cell>
-                </TableComponent.Row>
-            ))}
+            <TableComponent.Body>
+                {EXAMPLE_TOKENS.map((token, i) => (
+                    <TableComponent.Row key={i}>
+                        <TableComponent.Cell>{token.name}</TableComponent.Cell>
+                        <TableComponent.Cell>{token.balance}</TableComponent.Cell>
+                        <TableComponent.Cell>{token.price}</TableComponent.Cell>
+                    </TableComponent.Row>
+                ))}
+            </TableComponent.Body>
         </TableComponent>
     ),
     args: {

@@ -31,6 +31,7 @@ export * from './components/RotateDeviceImage/RotateDeviceImage';
 export * from './components/DataAnalytics';
 export * from './components/Divider/Divider';
 export * from './components/Dropdown/Dropdown';
+export type { GroupedMenuItems } from './components/Dropdown/Menu';
 export * from './components/ElevationContext/ElevationContext';
 export * from './components/Flex/Flex';
 export * from './components/form/Input/Input';
@@ -74,6 +75,7 @@ export * from './components/typography/Paragraph/Paragraph';
 export * from './components/typography/Text/Text';
 export * from './components/typography/TruncateWithTooltip/TruncateWithTooltip';
 export * from './components/Banner/Banner';
+export { Table } from './components/Table/Table';
 export { StoryColumn, StoryWrapper } from './support/Story';
 
 export * from './constants/keyboardEvents';

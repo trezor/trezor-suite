@@ -11,7 +11,7 @@ import {
 } from 'src/utils/wallet/tokenUtils';
 import { useSelector } from 'src/hooks/suite';
 import { NoTokens } from '../../common/NoTokens';
-import { TokenList } from '../../common/TokensList/TokenList';
+import { TokensTable } from '../../common/TokensTable/TokensTable';
 import { Translation } from 'src/components/suite';
 
 interface CoinsTableProps {
@@ -45,7 +45,7 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
     return tokens.shownWithBalance.length > 0 ||
         tokens.shownWithoutBalance.length > 0 ||
         searchQuery ? (
-        <TokenList
+        <TokensTable
             account={account}
             hideRates={isTestnet(account.symbol)}
             tokenStatusType={TokenManagementAction.HIDE}

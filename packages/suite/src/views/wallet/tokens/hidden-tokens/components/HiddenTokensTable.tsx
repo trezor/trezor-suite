@@ -4,7 +4,7 @@ import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/toke
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 import { useSelector } from 'src/hooks/suite';
 import { NoTokens } from '../../common/NoTokens';
-import { TokenList } from '../../common/TokensList/TokenList';
+import { TokensTable } from '../../common/TokensTable/TokensTable';
 import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -56,7 +56,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                 <NoTokens title={<Translation id="TR_HIDDEN_TOKENS_EMPTY" />} />
             )}
             {hiddenTokensCount > 0 && (
-                <TokenList
+                <TokensTable
                     hideRates={isTestnet(account.symbol)}
                     account={account}
                     tokenStatusType={TokenManagementAction.SHOW}
@@ -83,7 +83,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                             </Text>
                         </Row>
                     </UnrecognizedTokensWrapper>
-                    <TokenList
+                    <TokensTable
                         account={account}
                         hideRates
                         tokenStatusType={TokenManagementAction.SHOW}
