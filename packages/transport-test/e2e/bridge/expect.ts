@@ -24,3 +24,10 @@ const type =
 export const pathLength = USE_HW && USE_NODE_BRIDGE ? 24 : !USE_HW && USE_NODE_BRIDGE ? 15 : 1;
 
 export const descriptor = { debug, debugSession, path, product, vendor, type };
+
+export const errorCase1 =
+    (USE_NODE_BRIDGE && USE_HW) || (!USE_NODE_BRIDGE && !USE_HW)
+        ? 'unexpected error'
+        : USE_HW
+          ? 'device disconnected during action'
+          : 'Network request failed';
