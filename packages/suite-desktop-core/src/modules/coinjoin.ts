@@ -72,11 +72,11 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
             await backend.run({ ...settings, torSettings: store.getTorSettings() });
             backends.push(backend);
 
-            backend.on('interceptor', (event: InterceptedEvent) =>
+            backend.subscribe('interceptor', (event: InterceptedEvent) =>
                 mainThreadEmitter.emit('module/request-interceptor', event),
             );
 
-            backend.on('log', ({ level, payload }) => {
+            backend.subscribe('log', ({ level, payload }) => {
                 if (level === 'error') {
                     sentryError(settings.network, payload);
                 }
@@ -87,7 +87,7 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                 backend.request('setTorSettings', [torSettings]),
             );
 
-            backend.on('disposed', unsubscribeTorSettingsChange);
+            backend.watch('disposed', unsubscribeTorSettingsChange);
 
             return {
                 onRequest: (method, params) => {
@@ -104,12 +104,12 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
                 onAddListener: (eventName, listener) => {
                     logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} add listener ${eventName}`);
 
-                    return backend.on(eventName, listener);
+                    return backend.subscribe(eventName, listener);
                 },
                 onRemoveListener: (eventName: any) => {
                     logger.debug(SERVICE_NAME, `${BACKEND_CHANNEL} remove listener ${eventName}`);
 
-                    return backend.removeAllListeners(eventName) as any;
+                    return backend.unsubscribe(eventName) as any;
                 },
             };
         },
