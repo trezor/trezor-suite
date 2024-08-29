@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { Text as TextComponent } from './Text';
+import { allowedTextFrameProps, Text as TextComponent } from './Text';
+import { getFramePropsStory } from '../../../utils/frameProps';
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,4 +51,10 @@ export const Text: StoryObj = {
             </Block>
         </Wrapper>
     ),
+    args: {
+        ...getFramePropsStory(allowedTextFrameProps).args,
+    },
+    argTypes: {
+        ...getFramePropsStory(allowedTextFrameProps).argTypes,
+    },
 };
