@@ -1,14 +1,20 @@
 import { ReactNode } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { typography } from '@trezor/theme';
 
-export interface TableCellProps {
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import { makePropsTransient, TransientProps } from '../../utils/transientProps';
+
+export const allowedTableCellFrameProps: FramePropsKeys[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableCellFrameProps)[number]>;
+
+export type TableCellProps = AllowedFrameProps & {
     children?: ReactNode;
     align?: 'left' | 'right';
     isHeader?: boolean;
     isSmaller?: boolean;
-}
+};
 
 type TableCellContainerProps = {
     $align?: 'left' | 'right';
@@ -24,11 +30,7 @@ const TableCellContainer = styled.div<TableCellContainerProps>`
     justify-self: ${({ $align }) => ($align === 'right' ? 'right' : 'left')};
     grid-column: ${({ $isSmaller }) => ($isSmaller ? 'span 1' : 'span 3')};
 
-    ${({ $alignRight }) =>
-        $alignRight &&
-        css`
-            justify-self: right;
-        `}
+    ${withFrameProps}
 `;
 
 export const TableCell = ({
