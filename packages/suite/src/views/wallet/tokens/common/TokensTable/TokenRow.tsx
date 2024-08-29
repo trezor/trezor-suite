@@ -2,11 +2,13 @@ import styled from 'styled-components';
 
 import { selectDevice } from '@suite-common/wallet-core';
 import { Account, AddressType, TokenAddress } from '@suite-common/wallet-types';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkCompatible, getCoingeckoId } from '@suite-common/wallet-config';
 import {
     DefinitionType,
     EnhancedTokenInfo,
     TokenManagementAction,
+    getContractAddressForNetwork,
+    selectIsSpecificCoinDefinitionKnown,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -124,8 +126,13 @@ export const TokenRow = ({
     const { isLocked } = useDevice();
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
     const shouldShowUnhideTokenModal = useSelector(selectIsUnhideTokenModalShown);
-
+    const isTokenKnown = useSelector(state =>
+        selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
+    );
     const isDeviceLocked = isLocked(true);
+    const networkContractAddress = getContractAddressForNetwork(account.symbol, token.contract);
+
+    const coingeckoId = getCoingeckoId(account.symbol);
 
     if (!unusedAddress || !device) return null;
 
@@ -170,6 +177,15 @@ export const TokenRow = ({
 
     return (
         <Table.Row>
+            <Table.Cell>
+                <AssetLogo
+                    coingeckoId={coingeckoId || ''}
+                    placeholder={token.name || token.symbol || 'token'}
+                    contractAddress={networkContractAddress as TokenAddress}
+                    size={24}
+                    shouldTryToFetch={isTokenKnown}
+                />
+            </Table.Cell>
             <Table.Cell>
                 <TokenName>
                     <BlurUrls text={token.name} />
