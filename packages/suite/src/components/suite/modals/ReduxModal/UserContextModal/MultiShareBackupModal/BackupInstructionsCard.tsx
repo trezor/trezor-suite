@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Card, IconLegacy, IconType } from '@trezor/components';
+import { Card, Icon, IconName } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 const StyledCard = styled(Card)<{ $isHorizontal: boolean }>`
@@ -18,7 +18,7 @@ const StyledCard = styled(Card)<{ $isHorizontal: boolean }>`
               `}
 `;
 
-const StyledIcon = styled(IconLegacy)<{ $isCircled: boolean }>`
+const StyledIcon = styled(Icon)<{ $isCircled: boolean }>`
     ${({ $isCircled }) =>
         $isCircled &&
         css`
@@ -30,7 +30,7 @@ const StyledIcon = styled(IconLegacy)<{ $isCircled: boolean }>`
 
 interface BackupInstructionsCardProps {
     children: ReactNode;
-    icon: IconType;
+    icon: IconName;
     isHorizontal?: boolean;
 }
 
@@ -40,7 +40,7 @@ export const BackupInstructionsCard = ({
     isHorizontal,
 }: BackupInstructionsCardProps) => (
     <StyledCard $isHorizontal={!!isHorizontal}>
-        <StyledIcon icon={icon} size={32} $isCircled={!isHorizontal} />
+        <StyledIcon name={icon} size={32} $isCircled={!isHorizontal} />
         {children}
     </StyledCard>
 );

@@ -58,6 +58,7 @@ const optimizeSvgAssets = assetsDirname => {
             fileName,
             content: fs.readFileSync(path.resolve(assetsDir, fileName)).toString(),
         }))
+
         .map(({ fileName, content }) => ({
             fileName,
             content: optimize(content, svgoConfig).data,

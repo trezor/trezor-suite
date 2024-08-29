@@ -35,10 +35,10 @@ export const verifyTrezorOwnershipInstruction: InstructionBaseConfig = {
     description: 'TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION',
     children: (
         <Row gap={spacings.sm}>
-            <BackupInstructionsCard isHorizontal icon="BACKUP_2">
+            <BackupInstructionsCard isHorizontal icon="backup2">
                 <Translation id="TR_VERIFY_TREZOR_OWNERSHIP_CARD_1" />
             </BackupInstructionsCard>
-            <BackupInstructionsCard isHorizontal icon="CAMERA_SLASH">
+            <BackupInstructionsCard isHorizontal icon="cameraSlash">
                 <Translation id="TR_VERIFY_TREZOR_OWNERSHIP_CARD_2" />
             </BackupInstructionsCard>
         </Row>
@@ -58,7 +58,7 @@ export const createSharesInstruction: InstructionBaseConfig = {
                 </Text>
             </Illustration>
             <CardWrapper>
-                <BackupInstructionsCard icon="PENCIL">
+                <BackupInstructionsCard icon="pencil">
                     <Translation
                         id="TR_CREATE_SHARES_CARD_1"
                         values={{
@@ -78,10 +78,10 @@ export const createSharesInstruction: InstructionBaseConfig = {
                         }}
                     />
                 </BackupInstructionsCard>
-                <BackupInstructionsCard icon="CAMERA_SLASH">
+                <BackupInstructionsCard icon="cameraSlash">
                     <Translation id="TR_CREATE_SHARES_CARD_2" />
                 </BackupInstructionsCard>
-                <BackupInstructionsCard icon="EYE_SLASH">
+                <BackupInstructionsCard icon="eyeSlash">
                     <Translation id="TR_CREATE_SHARES_CARD_3" />
                 </BackupInstructionsCard>
             </CardWrapper>

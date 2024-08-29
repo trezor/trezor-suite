@@ -270,7 +270,7 @@ export const T3T1PromoBanner = () => {
                             <Translation id="TR_ORDER_NOW" />
                         </ButtonShopNow>
                     </LinkButtonShopNow>
-                    <ButtonClose icon="CROSS_LIGHT" variant="secondary" onClick={onCloseBanner} />
+                    <ButtonClose icon="close" variant="secondary" onClick={onCloseBanner} />
                 </BannerWrapper>
             )}
         </AnimatePresence>

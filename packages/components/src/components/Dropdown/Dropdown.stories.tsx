@@ -58,7 +58,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                 console.log('navigate somewhere');
             },
             label: 'some link',
-            icon: 'ARROW_RIGHT_LONG',
+            icon: 'arrowRightLong',
         },
         alignMenu: 'right-top',
         items: [
@@ -95,7 +95,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                         onClick: () => {
                             console.log('item 2 clicked - disabled');
                         },
-                        icon: 'LIGHTBULB',
+                        icon: 'lightbulb',
                         isDisabled: true,
                     },
                     {
@@ -103,7 +103,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                         onClick: () => {
                             console.log('item 3 clicked - disabled');
                         },
-                        iconRight: 'ARROW_RIGHT',
+                        iconRight: 'chevronRight',
                         isDisabled: true,
                     },
                     {
@@ -117,7 +117,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                         onClick: () => {
                             console.log('item 5 clicked');
                         },
-                        iconRight: 'ARROW_RIGHT',
+                        iconRight: 'chevronRight',
                         separatorBefore: true,
                     },
                 ],

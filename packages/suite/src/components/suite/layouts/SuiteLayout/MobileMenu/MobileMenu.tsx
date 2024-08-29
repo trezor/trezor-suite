@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
-import { IconLegacy, variables } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { MobileNavigation } from './MobileNavigation';
 import { MobileMenuActions } from './MobileMenuActions';
@@ -66,9 +66,9 @@ export const MobileMenu = () => {
                     <Wrapper>
                         <DeviceSelector />
                         <HamburgerWrapper>
-                            <IconLegacy
+                            <Icon
                                 onClick={() => setOpened(!opened)}
-                                icon={opened ? 'CROSS' : 'MENU'}
+                                name={opened ? 'close' : 'menu'}
                                 size={24}
                                 color={theme.legacy.TYPE_DARK_GREY}
                             />

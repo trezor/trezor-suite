@@ -1,7 +1,7 @@
 import { useState, forwardRef, useRef, Ref, ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
-import { IconLegacy } from '@trezor/components';
+import { Icon } from '@trezor/components';
 import { Account } from 'src/types/wallet';
 import { AnimationWrapper } from '../../AnimationWrapper';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -23,7 +23,7 @@ const ChevronContainer = styled.div`
     width: ${spacingsPx.xxxl};
 `;
 
-const ChevronIcon = styled(IconLegacy)<{ $isActive: boolean }>`
+const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
     padding: ${spacingsPx.sm};
     border-radius: 50%;
     transition:
@@ -125,7 +125,7 @@ export const AccountGroup = forwardRef(
                                         $isActive={isOpen}
                                         size={18}
                                         color={theme.iconSubdued}
-                                        icon="ARROW_DOWN"
+                                        name="chevronDown"
                                     />
                                 )}
                             </ChevronContainer>

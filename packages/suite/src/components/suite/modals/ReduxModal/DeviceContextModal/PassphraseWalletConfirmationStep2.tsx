@@ -1,4 +1,4 @@
-import { Button, Text, IconLegacy, Warning, Card } from '@trezor/components';
+import { Button, Text, Warning, Card, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { PassphraseHeading } from './PassphraseHeading';
 import { PassphraseList, PassphraseItem } from './PassphraseList';
@@ -19,19 +19,19 @@ export const PassphraseWalletConfirmationStep2 = ({
         <Card paddingType="small">
             <PassphraseList>
                 <PassphraseItem>
-                    <IconLegacy icon="NEWSPAPER" size={16} />
+                    <Icon name="newspaper" size={16} />
                     <Text>
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION" />
                     </Text>
                 </PassphraseItem>
                 <PassphraseItem>
-                    <IconLegacy icon="COPY" size={16} />
+                    <Icon name="copy" size={16} />
                     <Text>
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION" />
                     </Text>
                 </PassphraseItem>
                 <PassphraseItem>
-                    <IconLegacy icon="HIDE" size={16} />
+                    <Icon name="hide" size={16} />
                     <Text>
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM3_DESCRIPTION" />
                     </Text>

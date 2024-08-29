@@ -3,11 +3,10 @@ import styled, { css } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
-import { IconName } from '@suite-common/icons';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Elevation, borders, spacingsPx, mapElevationToBorder, typography } from '@trezor/theme';
-import { IconButton, useElevation, variables } from '@trezor/components';
+import { IconButton, IconName, useElevation, variables } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -165,7 +164,7 @@ export const TokensLayoutNavigation = ({
                 />
                 {showAddToken && (
                     <IconButton
-                        icon="PLUS"
+                        icon="plus"
                         size="small"
                         variant="tertiary"
                         onClick={handleAddToken}

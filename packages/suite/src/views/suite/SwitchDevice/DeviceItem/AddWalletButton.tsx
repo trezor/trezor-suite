@@ -60,7 +60,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                             data-testid="@switch-device/add-wallet-button"
                             variant="tertiary"
                             isFullWidth
-                            icon="PLUS"
+                            icon="plus"
                             isDisabled={isLocked}
                             onClick={() => onAddWallet({ walletType: WalletType.STANDARD })}
                         >
@@ -73,7 +73,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                             data-testid="@switch-device/add-hidden-wallet-button"
                             variant="tertiary"
                             isFullWidth
-                            icon="PLUS"
+                            icon="plus"
                             isDisabled={isLocked}
                             onClick={() => onAddWallet({ walletType: WalletType.PASSPHRASE })}
                         >

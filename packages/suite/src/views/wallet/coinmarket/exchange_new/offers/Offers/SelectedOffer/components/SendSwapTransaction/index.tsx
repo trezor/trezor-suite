@@ -1,15 +1,7 @@
 import { useState, ChangeEvent, MouseEventHandler } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
-import {
-    Button,
-    IconLegacy,
-    Input,
-    Paragraph,
-    SelectBar,
-    Tooltip,
-    variables,
-} from '@trezor/components';
+import { Button, Icon, Input, Paragraph, SelectBar, Tooltip, variables } from '@trezor/components';
 import useDebounce from 'react-use/lib/useDebounce';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FieldError } from 'react-hook-form';
@@ -18,7 +10,6 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { spacingsPx } from '@trezor/theme';
 import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
-import { Icon } from '@suite-common/icons/src/webComponents';
 import { getInputStateTextColor } from '@trezor/components';
 
 const Wrapper = styled.div`
@@ -282,8 +273,8 @@ const SendSwapTransactionComponent = () => {
                     <RightColumn>
                         <SlippageAmount>{selectedQuote.swapSlippage}%</SlippageAmount>
                         <SlippageSettingsButton type="button" onClick={toggleSlippage}>
-                            <IconLegacy
-                                icon={slippageSettings ? 'ARROW_UP' : 'ARROW_DOWN'}
+                            <Icon
+                                name={slippageSettings ? 'chevronUp' : 'chevronDown'}
                                 color={theme.legacy.TYPE_DARK_GREY}
                                 size={14}
                             />

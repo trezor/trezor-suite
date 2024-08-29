@@ -76,21 +76,21 @@ export const NotificationRenderer = ({
         case 'backup-failed':
             return error(render, notification, 'TOAST_BACKUP_FAILED');
         case 'backup-success':
-            return success(render, notification, 'TOAST_BACKUP_SUCCESS', 'SETTINGS');
+            return success(render, notification, 'TOAST_BACKUP_SUCCESS', 'settings');
         case 'settings-applied':
-            return success(render, notification, 'TOAST_SETTINGS_APPLIED', 'SETTINGS');
+            return success(render, notification, 'TOAST_SETTINGS_APPLIED', 'settings');
         case 'pin-changed':
-            return success(render, notification, 'TOAST_PIN_CHANGED', 'SETTINGS');
+            return success(render, notification, 'TOAST_PIN_CHANGED', 'settings');
         case 'wipe-code-changed':
-            return success(render, notification, 'TOAST_WIPE_CODE_CHANGED', 'SETTINGS');
+            return success(render, notification, 'TOAST_WIPE_CODE_CHANGED', 'settings');
         case 'wipe-code-removed':
-            return success(render, notification, 'TOAST_WIPE_CODE_REMOVED', 'SETTINGS');
+            return success(render, notification, 'TOAST_WIPE_CODE_REMOVED', 'settings');
         case 'device-wiped':
-            return success(render, notification, 'TOAST_DEVICE_WIPED', 'SETTINGS');
+            return success(render, notification, 'TOAST_DEVICE_WIPED', 'settings');
         case 'copy-to-clipboard':
             return success(render, notification, 'TOAST_COPY_TO_CLIPBOARD');
         case 'raw-tx-sent':
-            return success(render, notification, 'TOAST_RAW_TX_SENT', 'SEND', {
+            return success(render, notification, 'TOAST_RAW_TX_SENT', 'send', {
                 txid: notification.txid,
             });
         case 'cardano-delegate-error':
@@ -165,7 +165,7 @@ export const NotificationRenderer = ({
                 notification,
                 'TR_TOR_IS_SLOW_MESSAGE',
                 { br: () => <br /> },
-                'TOR',
+                'tor',
             );
         case 'coin-scheme-protocol':
             return <CoinProtocolRenderer render={render} notification={notification} />;
@@ -174,7 +174,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="RECEIVE"
+                    icon="receive"
                     variant="info"
                     message="TOAST_TX_RECEIVED"
                     messageValues={{
@@ -188,7 +188,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="SEND"
+                    icon="send"
                     variant="success"
                     message="TOAST_TX_SENT"
                     messageValues={{
@@ -244,7 +244,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="SEND"
+                    icon="send"
                     variant="success"
                     message="TOAST_TX_STAKED"
                     messageValues={{
@@ -258,7 +258,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="SEND"
+                    icon="send"
                     variant="success"
                     message="TOAST_TX_UNSTAKED"
                     messageValues={{
@@ -271,7 +271,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="SEND"
+                    icon="send"
                     variant="success"
                     message="TOAST_TX_CLAIMED"
                     messageValues={{
@@ -280,7 +280,7 @@ export const NotificationRenderer = ({
                 />
             );
         case 'successful-claim':
-            return success(render, notification, 'TOAST_SUCCESSFUL_CLAIM', 'CHECK', {
+            return success(render, notification, 'TOAST_SUCCESSFUL_CLAIM', 'check', {
                 symbol: notification.symbol,
             });
         case 'firmware-language-changed':

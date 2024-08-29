@@ -45,30 +45,30 @@ const StyledSecurityCheckButton = styled(SecurityCheckButton)`
 
 const checklistItems = [
     {
-        icon: 'PLUGS',
+        icon: 'plugs',
         content: <Translation id="TR_DISCONNECT_DEVICE" />,
     },
     {
-        icon: 'HAND',
+        icon: 'hand',
         content: <Translation id="TR_AVOID_USING_DEVICE" />,
     },
     {
-        icon: 'CHAT',
+        icon: 'chat',
         content: <Translation id="TR_USE_CHAT" values={{ b: chunks => <b>{chunks}</b> }} />,
     },
 ] as const;
 
 const softChecklistItems = [
     {
-        icon: 'PLUGS',
+        icon: 'plugs',
         content: <Translation id="TR_DISCONNECT_DEVICE_SOFT" />,
     },
     {
-        icon: 'HAND',
+        icon: 'hand',
         content: <Translation id="TR_AVOID_USING_DEVICE_SOFT" />,
     },
     {
-        icon: 'CHAT',
+        icon: 'chat',
         content: <Translation id="TR_USE_CHAT_SOFT" values={{ b: chunks => <b>{chunks}</b> }} />,
     },
 ] as const;

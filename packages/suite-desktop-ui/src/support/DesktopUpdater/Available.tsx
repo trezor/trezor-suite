@@ -108,7 +108,7 @@ export const Available = ({ hideWindow, isCancelable, latest }: AvailableProps) 
                 )}
             </ChangelogWrapper>
             <StyledLink variant="nostyle" href={getReleaseUrl(latest?.version ?? '')}>
-                <Button variant="tertiary" icon="GITHUB">
+                <Button variant="tertiary" icon="github">
                     <Translation id="TR_CHANGELOG_ON_GITHUB" />
                 </Button>
             </StyledLink>

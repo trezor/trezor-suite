@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { IconLegacy, variables, Radio, motionAnimation } from '@trezor/components';
+import { Icon, variables, Radio, motionAnimation } from '@trezor/components';
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -51,7 +51,7 @@ const ReducedAmount = styled.span`
     align-items: center;
 `;
 
-const ArrowIcon = styled(IconLegacy)`
+const ArrowIcon = styled(Icon)`
     margin: 0 8px;
 
     & svg {
@@ -86,7 +86,7 @@ export const DecreasedOutputs = () => {
         if (precomposedTx.type === 'final') {
             reducedAmount = (
                 <ReducedAmount>
-                    <ArrowIcon icon="ARROW_RIGHT_LONG" />
+                    <ArrowIcon name="arrowRightLong" />
                     <FormattedCryptoAmount
                         value={formatNetworkAmount(
                             precomposedTx.outputs[setMaxOutputId].amount.toString(),

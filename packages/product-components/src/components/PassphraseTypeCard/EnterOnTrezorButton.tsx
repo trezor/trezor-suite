@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 import styled, { useTheme } from 'styled-components';
-import { Image, Card, IconLegacy, Text, Row } from '@trezor/components';
+import { Image, Card, Text, Row, Icon } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
@@ -33,7 +33,7 @@ export const EnterOnTrezorButton = ({ submit, value, deviceModel }: EnterOnTrezo
                         />
                     </Text>
                 </Flex>
-                <IconLegacy icon="ARROW_RIGHT" color={theme.iconSubdued} />
+                <Icon name="chevronLeft" color={theme.iconSubdued} />
             </Row>
         </Card>
     );

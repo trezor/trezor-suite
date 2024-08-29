@@ -64,7 +64,7 @@ const EjectConfirmationContainer = ({
             <Buttons>
                 <Button
                     size="small"
-                    icon="EJECT"
+                    icon="eject"
                     iconSize={spacings.lg}
                     onClick={handleEject}
                     variant="primary"

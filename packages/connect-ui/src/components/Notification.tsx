@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { IconLegacy, Button } from '@trezor/components';
+import { Button, Icon } from '@trezor/components';
 import { SUITE_FIRMWARE_URL, SUITE_URL, SUITE_BACKUP_URL } from '@trezor/urls';
 
 const NotificationBox = styled.div`
@@ -82,12 +82,12 @@ const Notification = ({ header, body, cta, variant }: NotificationProps) => {
     return (
         <NotificationBox color={color}>
             <NotificationLeftCol>
-                <IconLegacy icon="INFO" color="#eb8a00" size={20} />
+                <Icon name="info" color="#eb8a00" size={20} />
             </NotificationLeftCol>
             <NotificationRightCol>
                 <NotificationHeader>
                     {header}
-                    <IconLegacy icon="CROSS" color="#eb8a00" onClick={() => setHidden(true)} />
+                    <Icon name="close" color="#eb8a00" onClick={() => setHidden(true)} />
                 </NotificationHeader>
                 <NotificationBody>
                     <div>{body}</div>

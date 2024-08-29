@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { IconLegacy } from '@trezor/components';
+import { Icon } from '@trezor/components';
 
 import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Translation } from 'src/components/suite/Translation';
@@ -55,7 +55,7 @@ export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) =>
     return (
         <StyledCard>
             <StyledH2>
-                <IconLegacy icon="CHECK" size={25} />
+                <Icon name="check" size={25} />
                 <Heading>
                     <Translation id="TR_STAKING_REWARDS_TITLE" />
                 </Heading>

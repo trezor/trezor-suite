@@ -277,7 +277,7 @@ const SignVerify = () => {
                                         type="button"
                                         variant="tertiary"
                                         onClick={copy}
-                                        icon="COPY"
+                                        icon="copy"
                                     >
                                         <Translation id="TR_COPY_SIGNED_MESSAGE" />
                                     </CopyButton>

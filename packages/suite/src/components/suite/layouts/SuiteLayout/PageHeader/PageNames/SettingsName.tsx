@@ -53,7 +53,7 @@ export const SettingsName = () => {
         <Container>
             {isLoggedOut && (
                 <IconButton
-                    icon="ARROW_LEFT"
+                    icon="chevronLeft"
                     variant="tertiary"
                     size="medium"
                     onClick={handleBackClick}

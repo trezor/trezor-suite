@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { variables, IconLegacy, Input } from '@trezor/components';
+import { variables, Icon, Input } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 const StyledInput = styled(Input)`
@@ -30,10 +30,10 @@ export const InputPin = ({ value, onDeleteClick }: InputPinProps) => {
             isDisabled
             value={value.replace(/[0-9]/g, '●')}
             innerAddon={
-                <IconLegacy
+                <Icon
                     onClick={onDeleteClick}
                     color={!value ? theme.legacy.TYPE_LIGHT_GREY : theme.legacy.TYPE_DARK_GREY}
-                    icon="BACK"
+                    name="backspace"
                 />
             }
         />

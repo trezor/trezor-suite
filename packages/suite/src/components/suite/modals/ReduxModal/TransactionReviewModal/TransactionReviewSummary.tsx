@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getFeeUnits, formatNetworkAmount, formatAmount, getFee } from '@suite-common/wallet-utils';
-import { IconLegacy, CoinLogo, variables } from '@trezor/components';
+import { Icon, CoinLogo, variables } from '@trezor/components';
 import { formatDuration } from '@suite-common/suite-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
@@ -248,7 +248,7 @@ export const TransactionReviewSummary = ({
                 <IconWrapper>
                     <CoinLogo size={48} symbol={symbol} />
                     <NestedIconWrapper>
-                        <IconLegacy size={12} color={theme.iconSubdued} icon="SEND" />
+                        <Icon size={12} color={theme.iconSubdued} name="send" />
                     </NestedIconWrapper>
                 </IconWrapper>
 
@@ -264,7 +264,7 @@ export const TransactionReviewSummary = ({
                 </Headline>
 
                 <AccountWrapper>
-                    <IconLegacy size={12} color={theme.iconSubdued} icon="WALLET" />
+                    <Icon size={12} color={theme.iconSubdued} name="standardWallet" />
                     <AccountLabel
                         accountLabel={accountLabel}
                         accountType={accountType}
@@ -280,7 +280,7 @@ export const TransactionReviewSummary = ({
                 {estimateTime !== undefined && (
                     <LeftDetailsRow>
                         <ReviewLeftDetailsLineLeft>
-                            <IconLegacy size={12} color={theme.iconSubdued} icon="CALENDAR" />
+                            <Icon size={12} color={theme.iconSubdued} name="calendar" />
                             <Translation id="TR_DELIVERY" />
                         </ReviewLeftDetailsLineLeft>
 
@@ -292,7 +292,7 @@ export const TransactionReviewSummary = ({
                 {!!tx.feeLimit && network.networkType !== 'solana' && (
                     <LeftDetailsRow>
                         <ReviewLeftDetailsLineLeft>
-                            <IconLegacy size={12} color={theme.iconSubdued} icon="GAS" />
+                            <Icon size={12} color={theme.iconSubdued} name="gas" />
                             <Translation id="TR_GAS_LIMIT" />
                         </ReviewLeftDetailsLineLeft>
 
@@ -303,7 +303,7 @@ export const TransactionReviewSummary = ({
                 )}
                 <LeftDetailsRow>
                     <ReviewLeftDetailsLineLeft>
-                        <IconLegacy size={12} color={theme.iconSubdued} icon="GAS" />
+                        <Icon size={12} color={theme.iconSubdued} name="gas" />
                         <Translation
                             id={feeLabelTranslationIdByNetworkTypeMap[network.networkType]}
                         />
@@ -324,7 +324,7 @@ export const TransactionReviewSummary = ({
                 {!ethereumStakeType && (
                     <LeftDetailsRow>
                         <ReviewLeftDetailsLineLeft>
-                            <IconLegacy size={12} color={theme.iconSubdued} icon="BROADCAST" />
+                            <Icon size={12} color={theme.iconSubdued} name="broadcast" />
                             <Translation id="BROADCAST" />
                         </ReviewLeftDetailsLineLeft>
 
@@ -347,10 +347,10 @@ export const TransactionReviewSummary = ({
                                 onClick={() => onDetailsClick()}
                             >
                                 <Translation id="TR_TRANSACTION_DETAILS" />
-                                <IconLegacy
+                                <Icon
                                     size={12}
                                     color={theme.iconSubdued}
-                                    icon={detailsOpen ? 'CROSS' : 'ARROW_RIGHT'}
+                                    name={detailsOpen ? 'close' : 'chevronRight'}
                                 />
                             </TxDetailsButton>
                         </LeftDetailsRow>

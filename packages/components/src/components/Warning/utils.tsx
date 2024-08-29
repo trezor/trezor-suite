@@ -1,7 +1,7 @@
 import { Color, CSSColor, Elevation, mapElevationToBackgroundToken } from '@trezor/theme';
 import { WarningVariant } from './types';
-import { IconType } from '../Icon/IconLegacy';
 import { DefaultTheme } from 'styled-components';
+import { IconName } from '../Icon/Icon';
 
 type MapArgs = {
     $variant: WarningVariant;
@@ -47,14 +47,14 @@ export const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor =>
     return theme[colorMap[$variant]];
 };
 
-export const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconType => {
-    const iconMap: Record<WarningVariant, IconType> = {
-        primary: 'LIGHTBULB',
-        secondary: 'INFO',
-        info: 'INFO',
-        warning: 'WARNING',
-        destructive: 'WARNING',
-        tertiary: 'INFO',
+export const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconName => {
+    const iconMap: Record<WarningVariant, IconName> = {
+        primary: 'lightbulb',
+        secondary: 'info',
+        info: 'info',
+        warning: 'warningTriangle',
+        destructive: 'warningTriangle',
+        tertiary: 'info',
     };
 
     return iconMap[$variant];

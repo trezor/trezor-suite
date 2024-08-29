@@ -1,6 +1,6 @@
 import styled, { css, useTheme } from 'styled-components';
 
-import { IconLegacy, variables } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { Translation } from '..';
@@ -58,7 +58,7 @@ const AbortContainer = styled.div`
     }
 `;
 
-const CloseIcon = styled(IconLegacy)`
+const CloseIcon = styled(Icon)`
     position: absolute;
     left: 0;
     top: 0;
@@ -90,7 +90,7 @@ export const AbortButton = ({ onAbort, className }: AbortButtonProps) => {
             className={className}
         >
             <Translation id="TR_ABORT" />
-            <CloseIcon size={18} color={theme.iconSubdued} icon="CROSS" />
+            <CloseIcon size={18} color={theme.iconSubdued} name="close" />
         </AbortContainer>
     );
 };

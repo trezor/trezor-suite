@@ -51,7 +51,7 @@ const CloseButton = ({ onClick, variant }: CloseButtonProps) => (
         onClick={onClick}
         data-testid="@backup/close-button"
         variant="tertiary"
-        icon="CROSS"
+        icon="close"
     >
         <Translation id={variant} />
     </StyledButton>
@@ -127,7 +127,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                         <StyledImage image="UNI_ERROR" />
                         <StyledP data-testid="@backup/already-failed-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
-                            <TrezorLink icon="EXTERNAL_LINK" href={HELP_CENTER_RECOVERY_ISSUES_URL}>
+                            <TrezorLink icon="externalLink" href={HELP_CENTER_RECOVERY_ISSUES_URL}>
                                 <Translation id="TR_LEARN_MORE" />
                             </TrezorLink>
                         </StyledP>

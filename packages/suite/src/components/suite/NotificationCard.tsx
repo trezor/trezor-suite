@@ -2,14 +2,14 @@ import { ReactNode } from 'react';
 import styled, { DefaultTheme, useTheme } from 'styled-components';
 
 import {
-    IconLegacy,
     Button,
     Spinner,
     variables,
     ButtonProps,
     useElevation,
-    IconType,
     ElevationUp,
+    IconName,
+    Icon,
 } from '@trezor/components';
 import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
 import { TrezorLink } from './TrezorLink';
@@ -28,17 +28,17 @@ interface NotificationCardProps {
     button?: ButtonType;
     className?: string;
     ['data-testid']?: string;
-    icon?: IconType;
+    icon?: IconName;
 }
 
-const getIcon = (variant: NotificationCardVariant): IconType | null => {
+const getIcon = (variant: NotificationCardVariant): IconName | null => {
     switch (variant) {
         case 'info':
-            return 'INFO';
+            return 'info';
         case 'warning':
-            return 'WARNING';
+            return 'warningTriangle';
         case 'destructive':
-            return 'WARNING';
+            return 'warningTriangle';
         default:
             return null;
     }
@@ -156,8 +156,8 @@ export const NotificationCard = ({
                         <Spinner size={22} />
                     ) : (
                         iconElement && (
-                            <IconLegacy
-                                icon={iconElement}
+                            <Icon
+                                name={iconElement}
                                 size={22}
                                 color={getMainColor(variant, theme)}
                             />

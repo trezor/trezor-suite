@@ -11,7 +11,7 @@ import {
 } from '@suite-common/token-definitions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { Dropdown, IconButton, ButtonGroup, Button, IconLegacy } from '@trezor/components';
+import { Dropdown, IconButton, ButtonGroup, Button, Icon } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -105,7 +105,7 @@ const ContractAddress = styled.div`
     white-space: wrap;
 `;
 
-const StyledIcon = styled(IconLegacy)`
+const StyledIcon = styled(Icon)`
     display: inline-block;
     margin-left: ${spacingsPx.xxs};
 `;
@@ -331,7 +331,7 @@ export const TokenRow = ({
                                         label: (
                                             <ContractAddress>
                                                 {token.contract}
-                                                <StyledIcon icon="COPY" size={14} />
+                                                <StyledIcon name="copy" size={14} />
                                             </ContractAddress>
                                         ),
                                         onClick: () => onCopyAddress(token.contract, 'contract'),
@@ -346,7 +346,7 @@ export const TokenRow = ({
                                         label: (
                                             <ContractAddress>
                                                 {token.fingerprint}
-                                                <StyledIcon icon="COPY" size={14} />
+                                                <StyledIcon name="copy" size={14} />
                                             </ContractAddress>
                                         ),
                                         onClick: () =>
@@ -365,7 +365,7 @@ export const TokenRow = ({
                                         label: (
                                             <ContractAddress>
                                                 {token.policyId}
-                                                <StyledIcon icon="COPY" size={14} />
+                                                <StyledIcon name="copy" size={14} />
                                             </ContractAddress>
                                         ),
                                         onClick: () =>
@@ -379,7 +379,7 @@ export const TokenRow = ({
                 {!isMobileLayout &&
                     (tokenStatusType === TokenManagementAction.SHOW ? (
                         <Button
-                            icon="SHOW"
+                            icon="show"
                             onClick={() =>
                                 isUnverifiedTable && shouldShowUnhideTokenModal
                                     ? dispatch(
@@ -409,7 +409,7 @@ export const TokenRow = ({
                                 isDisabled={token.balance === '0'}
                                 key="token-send"
                                 variant="tertiary"
-                                icon="SEND"
+                                icon="send"
                                 onClick={() => {
                                     dispatch({
                                         type: SUITE.SET_SEND_FORM_PREFILL,
@@ -428,7 +428,7 @@ export const TokenRow = ({
                                 label={<Translation id="TR_NAV_RECEIVE" />}
                                 key="token-receive"
                                 variant="tertiary"
-                                icon="RECEIVE"
+                                icon="receive"
                                 isDisabled={isReceiveButtonDisabled}
                                 onClick={onReceive}
                             />

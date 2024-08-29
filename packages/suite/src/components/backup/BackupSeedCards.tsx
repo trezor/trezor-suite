@@ -47,17 +47,17 @@ const items = [
     {
         key: 'wrote-seed-properly',
         label: <Translation id="TR_BACKUP_CHECKBOX_1_TITLE" />,
-        icon: 'KEY',
+        icon: 'key',
     },
     {
         key: 'made-no-digital-copy',
         label: <Translation id="TR_BACKUP_CHECKBOX_2_TITLE" />,
-        icon: 'PENCIL_LINE',
+        icon: 'pencilUnderscored',
     },
     {
         key: 'will-hide-seed',
         label: <Translation id="TR_BACKUP_CHECKBOX_3_TITLE" />,
-        icon: 'ANCHOR',
+        icon: 'anchor',
     },
 ] as const;
 

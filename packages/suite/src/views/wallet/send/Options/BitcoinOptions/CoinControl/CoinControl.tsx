@@ -9,7 +9,7 @@ import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Pagination } from 'src/components/wallet';
-import { Card, Checkbox, IconLegacy, Switch, variables } from '@trezor/components';
+import { Card, Checkbox, Icon, Switch, variables } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
@@ -196,7 +196,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
             <Row>
                 <Translation id="TR_COIN_CONTROL" />
                 <StyledSwitch isChecked={!!isCoinControlEnabled} onChange={toggleCoinControl} />
-                <IconLegacy size={24} icon="ARROW_UP" onClick={close} />
+                <Icon size={24} name="chevronUp" onClick={close} />
             </Row>
 
             <SecondRow>
@@ -236,7 +236,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     description={
                         <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                     }
-                    icon="SHIELD_CHECK"
+                    icon="shieldCheck"
                     iconColor={theme.legacy.BG_GREEN}
                     utxos={spendableUtxosOnPage}
                 />
@@ -248,7 +248,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     description={
                         <Translation id="TR_NOT_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                     }
-                    icon="SHIELD_CROSS"
+                    icon="shieldCross"
                     iconColor={theme.legacy.TYPE_DARK_ORANGE}
                     utxos={lowAnonymityUtxosOnPage}
                 />
@@ -263,7 +263,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     withHeader
                     heading={<Translation id="TR_DUST" />}
                     description={<Translation id="TR_DUST_DESCRIPTION" />}
-                    icon="INFO"
+                    icon="info"
                     iconColor={theme.legacy.TYPE_LIGHT_GREY}
                     utxos={dustUtxosOnPage}
                 />

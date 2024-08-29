@@ -1,7 +1,6 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
-import { IconLegacy, IconType } from '../../Icon/IconLegacy';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,
@@ -15,6 +14,7 @@ import {
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
+import { Icon, IconName } from '../../Icon/Icon';
 
 export const allowedButtonFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
@@ -93,7 +93,7 @@ export type ButtonProps = SelectedHTMLButtonProps &
         isDisabled?: boolean;
         isLoading?: boolean;
         isFullWidth?: boolean;
-        icon?: IconType;
+        icon?: IconName;
         iconSize?: number;
         iconAlignment?: IconAlignment;
         children: React.ReactNode;
@@ -124,8 +124,8 @@ export const Button = ({
     const theme = useTheme();
 
     const IconComponent = icon ? (
-        <IconLegacy
-            icon={icon}
+        <Icon
+            name={icon}
             size={iconSize || getIconSize(size)}
             color={getIconColor({ variant, isDisabled, theme, isSubtle })}
         />

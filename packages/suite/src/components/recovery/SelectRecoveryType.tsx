@@ -9,7 +9,7 @@ export const SelectRecoveryType = ({ onSelect }: SelectRecoveryTypeProps) => (
     <OptionsWrapper>
         <OnboardingOption
             onClick={() => onSelect('standard')}
-            icon="SEED_SINGLE"
+            icon="seedSingle"
             heading={<Translation id="TR_BASIC_RECOVERY" />}
             description={<Translation id="TR_BASIC_RECOVERY_OPTION" />}
             data-testid="@recover/select-type/basic"
@@ -17,7 +17,7 @@ export const SelectRecoveryType = ({ onSelect }: SelectRecoveryTypeProps) => (
         <OptionsDivider />
         <OnboardingOption
             onClick={() => onSelect('advanced')}
-            icon="SEED_SHAMIR"
+            icon="seedShamir"
             heading={<Translation id="TR_ADVANCED_RECOVERY" />}
             description={<Translation id="TR_ADVANCED_RECOVERY_OPTION" />}
             data-testid="@recover/select-type/advanced"

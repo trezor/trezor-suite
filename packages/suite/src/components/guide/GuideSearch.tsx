@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { IconLegacy, Input, Spinner, variables } from '@trezor/components';
+import { Icon, Input, Spinner, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { GuideNode } from 'src/components/guide';
@@ -80,9 +80,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 innerAddonAlign="left"
                 showClearButton="always"
                 onClear={() => setQuery('')}
-                innerAddon={
-                    loading ? <Spinner size={24} /> : <IconLegacy icon="SEARCH" size={24} />
-                }
+                innerAddon={loading ? <Spinner size={24} /> : <Icon name="search" size={24} />}
                 data-testid="@guide/search"
             />
 

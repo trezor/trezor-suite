@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { IconLegacy, variables, CoinLogo, H3, useElevation } from '@trezor/components';
+import { Icon, variables, CoinLogo, H3, useElevation } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { WalletAccountTransaction, Network } from 'src/types/wallet';
 import { getTxIcon, isPending, getFeeUnits, getFeeRate } from '@suite-common/wallet-utils';
@@ -13,6 +13,7 @@ import {
     mapElevationToBorder,
     spacingsPx,
     typography,
+    spacings,
 } from '@trezor/theme';
 
 const Wrapper = styled.div<{ $elevation: Elevation }>`
@@ -148,10 +149,6 @@ const Timestamp = styled.span`
     white-space: nowrap;
 `;
 
-const StyledIcon = styled(IconLegacy)`
-    margin-right: ${spacingsPx.xs};
-`;
-
 const IconPlaceholder = styled.span`
     min-width: 10px;
     margin-right: ${spacingsPx.xs};
@@ -185,10 +182,10 @@ export const BasicTxDetails = ({
                     <CoinLogo symbol={tx.symbol} size={48} />
 
                     <NestedIconWrapper $elevation={elevation}>
-                        <IconLegacy
+                        <Icon
                             size={14}
                             color={tx.type === 'failed' ? theme.iconAlertRed : theme.iconDefault}
-                            icon={getTxIcon(tx.type)}
+                            name={getTxIcon(tx.type)}
                         />
                     </NestedIconWrapper>
                 </MainIconWrapper>
@@ -229,7 +226,7 @@ export const BasicTxDetails = ({
             <Grid>
                 {/* MINED TIME */}
                 <Title>
-                    <StyledIcon icon="CALENDAR" size={10} />
+                    <Icon name="calendar" size={10} />
                     {isConfirmed ? (
                         <Translation id="TR_MINED_TIME" />
                     ) : (
@@ -252,7 +249,7 @@ export const BasicTxDetails = ({
 
                 {/* TX ID */}
                 <Title>
-                    <StyledIcon icon="FINGERPRINT" size={10} />
+                    <Icon name="biometric" size={10} />
                     <Translation id="TR_TXID" />
                 </Title>
 
@@ -268,7 +265,7 @@ export const BasicTxDetails = ({
                     <>
                         {/* Fee level */}
                         <Title>
-                            <StyledIcon icon="GAS" size={10} />
+                            <Icon margin={{ right: spacings.xs }} name="gas" size={10} />
                             <Translation id="TR_FEE_RATE" />
                         </Title>
 
@@ -287,13 +284,13 @@ export const BasicTxDetails = ({
                 {tx.ethereumSpecific && (
                     <>
                         <Title>
-                            <StyledIcon icon="GAS" size={10} />
+                            <Icon name="gas" size={10} />
                             <Translation id="TR_GAS_LIMIT" />
                         </Title>
                         <Value>{tx.ethereumSpecific.gasLimit}</Value>
 
                         <Title>
-                            <StyledIcon icon="GAS" size={10} />
+                            <Icon name="gas" size={10} />
                             <Translation id="TR_GAS_USED" />
                         </Title>
                         <Value>
@@ -305,7 +302,7 @@ export const BasicTxDetails = ({
                         </Value>
 
                         <Title>
-                            <StyledIcon icon="GAS" size={10} />
+                            <Icon name="gas" size={10} />
                             <Translation id="TR_GAS_PRICE" />
                         </Title>
                         <Value>{`${fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei')} ${getFeeUnits(

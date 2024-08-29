@@ -166,7 +166,7 @@ export const PasswordEntry = ({
                                         onClick={() => setFormActive(index)}
                                         type="button"
                                         variant="tertiary"
-                                        icon="PENCIL"
+                                        icon="pencil"
                                     >
                                         Edit
                                     </Button>

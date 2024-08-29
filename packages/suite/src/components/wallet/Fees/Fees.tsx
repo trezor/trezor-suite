@@ -8,14 +8,7 @@ import {
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
-import {
-    IconLegacy,
-    Paragraph,
-    SelectBar,
-    Tooltip,
-    motionEasing,
-    variables,
-} from '@trezor/components';
+import { Icon, Paragraph, SelectBar, Tooltip, motionEasing, variables } from '@trezor/components';
 import { FormState } from '@suite-common/wallet-types';
 import { spacingsPx, typography } from '@trezor/theme';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -162,7 +155,7 @@ export const Fees = <TFieldValues extends FormState>({
                                 content={<Translation id="TR_STAKE_MAX_FEE_DESC" />}
                             >
                                 {/* TODO: Add new info icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                                <IconLegacy icon="INFO" size={14} />
+                                <Icon name="info" size={14} />
                             </Tooltip>
                         )}
                     </HeadingWrapper>

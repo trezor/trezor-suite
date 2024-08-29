@@ -152,7 +152,7 @@ export const FinalStep = () => {
                             <Button
                                 variant="tertiary"
                                 size="small"
-                                icon="PENCIL"
+                                icon="pencil"
                                 onClick={() => setState('rename')}
                                 isDisabled={isWaitingForConfirm}
                             >
@@ -185,7 +185,7 @@ export const FinalStep = () => {
                                         variant="tertiary"
                                         size="small"
                                         onClick={() => setState(null)}
-                                        icon="DASHBOARD"
+                                        icon="dashboard"
                                     >
                                         <Translation id="TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN" />
                                     </Button>
@@ -222,7 +222,7 @@ export const FinalStep = () => {
                                 payload,
                             });
                         }}
-                        icon="ARROW_RIGHT_LONG"
+                        icon="arrowRightLong"
                         iconAlignment="right"
                         isDisabled={isWaitingForConfirm}
                         size="large"

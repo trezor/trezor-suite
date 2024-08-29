@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Tooltip, IconLegacy, IconType } from '@trezor/components';
+import { Icon, IconName, Tooltip } from '@trezor/components';
 
 const InlineTooltip = styled(Tooltip)`
     display: inline-block;
@@ -9,19 +9,19 @@ const InlineTooltip = styled(Tooltip)`
 
 type TooltipSymbolProps = {
     content: ReactNode;
-    icon?: IconType;
+    icon?: IconName;
     iconColor?: string;
     className?: string;
 };
 
 const TooltipSymbol = ({
     content,
-    icon = 'QUESTION',
+    icon = 'question',
     iconColor,
     className,
 }: TooltipSymbolProps) => (
     <InlineTooltip content={content} maxWidth={250} className={className}>
-        <IconLegacy icon={icon} size={16} color={iconColor} />
+        <Icon name={icon} size={16} color={iconColor} />
     </InlineTooltip>
 );
 

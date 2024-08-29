@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { variables, H3, IconLegacy, Card } from '@trezor/components';
+import { variables, H3, Icon, Card } from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation, StakingFeature, Divider } from 'src/components/suite';
 import { Footer } from './components/Footer';
@@ -101,7 +101,7 @@ export const StakeEthCard = () => {
         () => [
             {
                 id: 0,
-                icon: <IconLegacy icon="PIGGY_BANK" size={32} color={theme.iconPrimaryDefault} />,
+                icon: <Icon name="piggyBank" size={32} color={theme.iconPrimaryDefault} />,
                 title: <Translation id="TR_STAKE_ETH_SEE_MONEY_DANCE" />,
                 description: (
                     <Translation
@@ -115,21 +115,13 @@ export const StakeEthCard = () => {
             },
             {
                 id: 1,
-                icon: (
-                    <IconLegacy
-                        icon="LOCK_LAMINATED_OPEN"
-                        size={32}
-                        color={theme.iconPrimaryDefault}
-                    />
-                ),
+                icon: <Icon name="lockLaminatedOpen" size={32} color={theme.iconPrimaryDefault} />,
                 title: <Translation id="TR_STAKE_ETH_LOCK_FUNDS" />,
                 description: <Translation id="TR_STAKE_ETH_LOCK_FUNDS_DESC" />,
             },
             {
                 id: 2,
-                icon: (
-                    <IconLegacy icon="TREND_UP_THIN" size={32} color={theme.iconPrimaryDefault} />
-                ),
+                icon: <Icon name="trendUpThin" size={32} color={theme.iconPrimaryDefault} />,
                 title: <Translation id="TR_STAKE_ETH_MAXIMIZE_REWARDS" />,
                 description: <Translation id="TR_STAKE_ETH_MAXIMIZE_REWARDS_DESC" />,
             },

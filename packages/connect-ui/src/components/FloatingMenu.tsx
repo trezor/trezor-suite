@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { IconLegacy, colors, animations } from '@trezor/components';
+import { colors, animations, Icon } from '@trezor/components';
 
 const IconWrapper = styled.div`
     width: 40px;
@@ -24,6 +24,6 @@ type FloatingMenuProps = { onShowAnalyticsConsent: () => void };
 
 export const FloatingMenu = ({ onShowAnalyticsConsent }: FloatingMenuProps) => (
     <IconWrapper onClick={onShowAnalyticsConsent} data-testid="@analytics/settings">
-        <IconLegacy icon="SETTINGS" size={22} color={colors.legacy.TYPE_DARK_GREY} />
+        <Icon name="settings" size={22} color={colors.legacy.TYPE_DARK_GREY} />
     </IconWrapper>
 );

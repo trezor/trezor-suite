@@ -1,4 +1,4 @@
-import { Button, Card, IconLegacy, IconLegacyProps, variables } from '@trezor/components';
+import { Button, Card, variables, Icon, IconName } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
@@ -70,7 +70,7 @@ const Line = styled.div`
 
 export type SecurityCardProps = {
     variant: 'primary' | 'secondary';
-    icon: IconLegacyProps['icon'];
+    icon: IconName;
     heading: ReactNode;
     description?: ReactNode;
     cta?: {
@@ -90,15 +90,11 @@ export const SecurityCard = ({ variant, icon, heading, description, cta }: Secur
         <Wrapper>
             <Card>
                 <Header>
-                    <IconLegacy icon={icon} size={32} color={theme.iconDefault} />
+                    <Icon name={icon} size={32} color={theme.iconDefault} />
                     <CheckIconContainer $isDone={isDone}>
                         {isDone && (
                             <CheckIconBackground>
-                                <IconLegacy
-                                    icon="CHECK"
-                                    color={theme.iconPrimaryDefault}
-                                    size={16}
-                                />
+                                <Icon name="check" color={theme.iconPrimaryDefault} size={16} />
                             </CheckIconBackground>
                         )}
                     </CheckIconContainer>
@@ -136,7 +132,7 @@ export const SecurityCard = ({ variant, icon, heading, description, cta }: Secur
                                     variant="primary"
                                     isDisabled={cta.isDisabled}
                                     onClick={cta.action}
-                                    icon="ARROW_RIGHT"
+                                    icon="chevronRight"
                                     iconAlignment="right"
                                     size="small"
                                     {...(cta.dataTest

@@ -27,7 +27,7 @@ export const LearnMoreButton = ({
         <Button
             variant="tertiary"
             size={size}
-            icon="EXTERNAL_LINK"
+            icon="externalLink"
             iconAlignment="right"
             {...buttonProps}
         >

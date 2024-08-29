@@ -9,7 +9,7 @@ import {
     mapElevationToBackground,
     mapElevationToBorder,
 } from '@trezor/theme';
-import { Icon } from '@suite-common/icons/src/webComponents';
+import { Icon } from '../Icon/Icon';
 import { motionEasing } from '../../config/motion';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';

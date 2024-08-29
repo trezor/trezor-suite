@@ -144,7 +144,7 @@ export const SettingsCoins = () => {
 
             {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
 
-            <StyledSettingsSection title={<Translation id="TR_COINS" />} icon="COIN">
+            <StyledSettingsSection title={<Translation id="TR_COINS" />} icon="coin">
                 <StyledSectionItem anchorId={SettingsAnchor.Crypto}>
                     <CoinGroup
                         networks={supportedNetworks}
@@ -163,7 +163,7 @@ export const SettingsCoins = () => {
                         />
                     </>
                 }
-                icon="COIN"
+                icon="coin"
             >
                 <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
                     <CoinGroup
@@ -184,7 +184,7 @@ export const SettingsCoins = () => {
                             />
                         </>
                     }
-                    icon="COIN"
+                    icon="coin"
                 >
                     <SettingsSectionItem anchorId={SettingsAnchor.UnsupportedCrypto}>
                         <CoinGroup

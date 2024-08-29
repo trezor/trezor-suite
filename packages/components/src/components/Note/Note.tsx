@@ -3,15 +3,15 @@ import styled, { useTheme } from 'styled-components';
 
 import { spacingsPx } from '@trezor/theme';
 
-import { IconLegacy } from '../Icon/IconLegacy';
 import { Paragraph } from '../typography/Paragraph/Paragraph';
+import { Icon } from '../Icon/Icon';
 
 const Row = styled.div`
     display: flex;
     gap: ${spacingsPx.xs};
 `;
 
-const InfoIcon = styled(IconLegacy)`
+const InfoIcon = styled(Icon)`
     margin-top: 2px;
 `;
 
@@ -29,7 +29,7 @@ export const Note = ({ children, className }: NoteProps) => {
 
     return (
         <Row className={className}>
-            <InfoIcon icon="INFO" size={14} color={theme.textSubdued} />
+            <InfoIcon name="info" size={14} color={theme.textSubdued} />
             <StyledParagraph typographyStyle="hint" $color={theme.textSubdued}>
                 {children}
             </StyledParagraph>

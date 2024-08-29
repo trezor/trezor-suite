@@ -36,11 +36,11 @@ export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBanne
     return (
         <NotificationCard
             variant="info"
-            icon="CUBE"
+            icon="cube"
             button={{
                 href: `${explorer?.tx}${txid}`,
                 children: <Translation id="TR_ANALYZE_IN_BLOCKBOOK_OPEN" />,
-                icon: 'EXTERNAL_LINK',
+                icon: 'externalLink',
                 iconAlignment: 'right',
                 size: 'small',
             }}

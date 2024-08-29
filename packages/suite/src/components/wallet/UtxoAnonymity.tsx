@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { IconLegacy, variables } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     align-items: center;
@@ -21,7 +21,7 @@ interface UtxoAnonymityProps {
 
 export const UtxoAnonymity = ({ anonymity }: UtxoAnonymityProps) => (
     <Wrapper>
-        <IconLegacy icon="USERS" size={20} />
+        <Icon name="users" size={20} />
         <AnonymityLevel>{Math.floor(anonymity)}</AnonymityLevel>
     </Wrapper>
 );

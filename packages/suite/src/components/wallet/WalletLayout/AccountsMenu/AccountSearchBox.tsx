@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { IconLegacy, Input } from '@trezor/components';
+import { Icon, Input } from '@trezor/components';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useSelector, useAccountSearch, useTranslation } from 'src/hooks/suite';
@@ -45,7 +45,7 @@ export const AccountSearchBox = () => {
                 onChange={e => {
                     setSearchString(e.target.value);
                 }}
-                innerAddon={<IconLegacy icon="SEARCH" size={16} color={theme.iconDefault} />}
+                innerAddon={<Icon name="search" size={16} color={theme.iconDefault} />}
                 innerAddonAlign="left"
                 size="small"
                 placeholder={translationString('TR_SEARCH')}

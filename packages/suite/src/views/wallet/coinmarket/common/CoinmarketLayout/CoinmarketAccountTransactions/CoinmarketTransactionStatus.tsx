@@ -3,7 +3,7 @@ import { Translation } from 'src/components/suite';
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/coinmarket/buyUtils';
 import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/coinmarket/sellUtils';
-import { variables, IconLegacy, SuiteThemeColors } from '@trezor/components';
+import { variables, Icon, SuiteThemeColors } from '@trezor/components';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
@@ -18,35 +18,31 @@ const Text = styled.div`
     padding-top: 1px;
 `;
 
-const StyledIcon = styled(IconLegacy)`
-    margin-right: 3px;
-`;
-
 const getBuyTradeData = (status: BuyTradeStatus, theme: SuiteThemeColors) => {
     const message = getBuyStatusMessage(status);
     switch (message) {
         case 'TR_BUY_STATUS_PENDING':
         case 'TR_BUY_STATUS_ACTION_REQUIRED':
             return {
-                icon: 'CLOCK_ACTIVE',
+                icon: 'clock',
                 color: theme.legacy.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
         case 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY':
             return {
-                icon: 'CLOCK_ACTIVE',
+                icon: 'clock',
                 color: theme.legacy.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
         case 'TR_BUY_STATUS_ERROR':
             return {
-                icon: 'CROSS',
+                icon: 'close',
                 color: theme.legacy.TYPE_RED,
                 statusMessageId: message,
             } as const;
         case 'TR_BUY_STATUS_SUCCESS':
             return {
-                icon: 'CHECK',
+                icon: 'check',
                 color: theme.legacy.TYPE_GREEN,
                 statusMessageId: message,
             } as const;
@@ -59,19 +55,19 @@ const getSellTradeData = (status: SellTradeStatus, theme: SuiteThemeColors) => {
     switch (message) {
         case 'TR_SELL_STATUS_PENDING':
             return {
-                icon: 'CLOCK_ACTIVE',
+                icon: 'clock',
                 color: theme.legacy.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
         case 'TR_SELL_STATUS_ERROR':
             return {
-                icon: 'CROSS',
+                icon: 'close',
                 color: theme.legacy.TYPE_RED,
                 statusMessageId: message,
             } as const;
         case 'TR_SELL_STATUS_SUCCESS':
             return {
-                icon: 'CHECK',
+                icon: 'check',
                 color: theme.legacy.TYPE_GREEN,
                 statusMessageId: message,
             } as const;
@@ -85,25 +81,25 @@ const getExchangeTradeData = (status: ExchangeTradeStatus, theme: SuiteThemeColo
         case 'TR_EXCHANGE_STATUS_CONFIRMING':
         case 'TR_EXCHANGE_STATUS_CONVERTING':
             return {
-                icon: 'CLOCK_ACTIVE',
+                icon: 'clock',
                 color: theme.legacy.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
         case 'TR_EXCHANGE_STATUS_KYC':
             return {
-                icon: 'WARNING',
+                icon: 'warningTriangle',
                 color: theme.legacy.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
         case 'TR_EXCHANGE_STATUS_ERROR':
             return {
-                icon: 'CROSS',
+                icon: 'close',
                 color: theme.legacy.TYPE_RED,
                 statusMessageId: message,
             } as const;
         case 'TR_EXCHANGE_STATUS_SUCCESS':
             return {
-                icon: 'CHECK',
+                icon: 'check',
                 color: theme.legacy.TYPE_GREEN,
                 statusMessageId: message,
             } as const;
@@ -140,7 +136,7 @@ export const CoinmarketTransactionStatus = ({ trade, className, tradeType }: Sta
 
     return (
         <Wrapper $color={data.color} className={className}>
-            <StyledIcon color={data.color} size={10} icon={data.icon} />
+            <Icon color={data.color} size={10} name={data.icon} margin={{ right: 4 }} />
             <Text>
                 <Translation id={data.statusMessageId} />
             </Text>

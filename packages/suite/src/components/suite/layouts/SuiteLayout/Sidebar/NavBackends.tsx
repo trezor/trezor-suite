@@ -128,13 +128,13 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
             addon={{
                 onClick: goToCoinsSettings,
                 label: <Translation id="TR_MANAGE" />,
-                icon: 'ARROW_RIGHT_LONG',
+                icon: 'arrowRightLong',
             }}
             items={items}
         >
             <ActionButton
                 title={translationString('TR_CUSTOM_BACKEND')}
-                icon="BACKEND"
+                icon="backend"
                 size="small"
                 variant="tertiary"
             />

@@ -108,7 +108,7 @@ export const ClaimEthForm = () => {
                     isDisabled={isDisabled || isClaimingDisabled}
                     isLoading={isComposing || isSubmitting}
                     onClick={handleSubmit(signTx)}
-                    icon={isClaimingDisabled ? 'INFO' : undefined}
+                    icon={isClaimingDisabled ? 'info' : undefined}
                 >
                     <Translation id="TR_STAKE_CLAIM" />
                 </Button>

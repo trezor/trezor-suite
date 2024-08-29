@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { Button, IconLegacy, Image, Tooltip, variables } from '@trezor/components';
+import { Button, Icon, Image, Tooltip, variables } from '@trezor/components';
 import { Translation, QrCode, TrezorLink } from 'src/components/suite';
 import { isWeb } from '@trezor/env-utils';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
@@ -211,9 +211,9 @@ export const PromoBanner = () => {
                         <Translation id="TR_DESKTOP_APP_PROMO_TEXT_FOOTER" />
 
                         <OSIcons>
-                            <IconLegacy icon="OS_MAC" size={14} />
-                            <IconLegacy icon="OS_LINUX" size={14} />
-                            <IconLegacy icon="OS_WINDOWS" size={12} />
+                            <Icon name="osMac" size={14} />
+                            <Icon name="osLinux" size={14} />
+                            <Icon name="osWindows" size={12} />
                         </OSIcons>
                     </div>
 

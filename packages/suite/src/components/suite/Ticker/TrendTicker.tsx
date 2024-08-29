@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
 import { spacingsPx, typography } from '@trezor/theme';
-import { IconLegacy } from '@trezor/components';
+import { Icon } from '@trezor/components';
 import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -67,8 +67,8 @@ export const TrendTicker = ({
             {({ rate, timestamp }) =>
                 rate && timestamp && percentageChange ? (
                     <PercentageWrapper $isRateGoingUp={isRateGoingUp}>
-                        <IconLegacy
-                            icon={isRateGoingUp ? 'TREND_UP' : 'TREND_DOWN'}
+                        <Icon
+                            name={isRateGoingUp ? 'trendUp' : 'trendDown'}
                             color={isRateGoingUp ? theme.iconPrimaryDefault : theme.iconAlertRed}
                             size={16}
                         />

@@ -1,8 +1,8 @@
 import { Card, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 import { useOpenLink } from '@suite-native/link';
+import { Icon } from '@suite-common/icons';
 
 const cardStyle = prepareNativeStyle<{ backgroundColor: Color }>((utils, { backgroundColor }) => ({
     paddingHorizontal: utils.spacings.large,

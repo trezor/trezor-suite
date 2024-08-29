@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { Card, H3, IconLegacy, LottieAnimation, ProgressBar, variables } from '@trezor/components';
+import { Card, H3, Icon, LottieAnimation, ProgressBar, variables } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Translation } from 'src/components/suite';
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
@@ -49,7 +49,7 @@ const FactHeading = styled.div`
     text-transform: uppercase;
 `;
 
-const SparksIcon = styled(IconLegacy)`
+const SparksIcon = styled(Icon)`
     margin-right: 4px;
     padding-bottom: 2px;
 `;
@@ -93,7 +93,7 @@ export const CoinjoinAccountDiscoveryProgress = () => {
             <DiscoveryProgress max={1.01} value={progress} />
 
             <FactHeading>
-                <SparksIcon icon="EXPERIMENTAL" size={13} color={theme.legacy.TYPE_ORANGE} />
+                <SparksIcon name="experimental" size={13} color={theme.legacy.TYPE_ORANGE} />
                 <Translation id="TR_LOADING_FACT_TITLE" />
             </FactHeading>
 

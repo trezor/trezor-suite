@@ -1,6 +1,6 @@
 import { ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
-import { Modal, ModalProps, IconLegacy, colors } from '@trezor/components';
+import { Modal, ModalProps, Icon, colors } from '@trezor/components';
 import { useGuide } from 'src/hooks/guide';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useModalTarget } from 'src/support/suite/ModalContext';
@@ -33,8 +33,8 @@ export const DefaultRenderer = ({
                     (isMobileLayout || headerComponent) && (
                         <>
                             {isMobileLayout && (
-                                <IconLegacy
-                                    icon="LIGHTBULB"
+                                <Icon
+                                    name="lightbulb"
                                     size={20}
                                     hoverColor={colors.legacy.TYPE_ORANGE}
                                     onClick={openGuide}

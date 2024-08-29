@@ -6,7 +6,7 @@ export const OnboardingButtonBack = (props: Omit<ButtonProps, 'children'>) => (
         data-testid="@onboarding/back-button"
         variant="tertiary"
         size="small"
-        icon="ARROW_LEFT"
+        icon="chevronLeft"
         {...props}
     >
         <Translation id="TR_BACK" />

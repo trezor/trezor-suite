@@ -1,8 +1,9 @@
 import styled, { css } from 'styled-components';
 
-import { IconLegacy, variables } from '@trezor/components';
+import { Icon, IconName, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
+import { TranslationKey } from '@suite-common/intl-types';
 
 const Item = styled.div`
     display: flex;
@@ -32,10 +33,10 @@ const Items = styled.div<{ $isHorizontal: DeviceAuthenticationExplainerProps['ho
         `}
 `;
 
-const items = [
-    { icon: 'SHIELD_CHECK', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
-    { icon: 'CHIP', text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },
-    { icon: 'CHECKLIST', text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
+const items: Array<{ icon: IconName; text: TranslationKey }> = [
+    { icon: 'shieldCheck', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
+    { icon: 'chip', text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },
+    { icon: 'checklist', text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
 ] as const;
 
 interface DeviceAuthenticationExplainerProps {
@@ -48,7 +49,7 @@ export const DeviceAuthenticationExplainer = ({
     <Items $isHorizontal={horizontal}>
         {items.map(({ icon, text }) => (
             <Item key={icon}>
-                <IconLegacy icon={icon} size={32} />
+                <Icon name={icon} size={32} />
                 <Translation id={text} />
             </Item>
         ))}

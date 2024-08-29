@@ -19,12 +19,12 @@ import { NewModalContext } from './NewModalContext';
 import { NewModalBackdrop } from './NewModalBackdrop';
 import { NewModalProvider } from './NewModalProvider';
 import type { NewModalVariant, NewModalSize, NewModalAlignment } from './types';
-import { IconLegacy, IconType } from '../Icon/IconLegacy';
 import {
     mapVariantToIconBackground,
     mapVariantToIconBorderColor,
     mapModalSizeToWidth,
 } from './utils';
+import { Icon, IconName } from '../Icon/Icon';
 
 const NEW_MODAL_CONTENT_ID = 'modal-content';
 const MODAL_ELEVATION = 0;
@@ -109,7 +109,7 @@ interface NewModalProps {
     bottomContent?: ReactNode;
     onBackClick?: () => void;
     onCancel?: () => void;
-    icon?: IconType;
+    icon?: IconName;
     alignment?: NewModalAlignment;
     size?: NewModalSize;
     'data-test'?: string;
@@ -152,7 +152,7 @@ const NewModal = ({
                             {onBackClick && (
                                 <IconButton
                                     variant="tertiary"
-                                    icon="ARROW_LEFT"
+                                    icon="chevronLeft"
                                     data-testid="@modal/back-button"
                                     onClick={onBackClick}
                                     size="small"
@@ -171,7 +171,7 @@ const NewModal = ({
                             {onCancel && (
                                 <IconButton
                                     variant="tertiary"
-                                    icon="CROSS"
+                                    icon="close"
                                     data-testid="@modal/close-button"
                                     onClick={onCancel}
                                     size="small"
@@ -184,11 +184,7 @@ const NewModal = ({
                                 <Body id={NEW_MODAL_CONTENT_ID}>
                                     {icon && (
                                         <IconWrapper $variant={variant} $size={ICON_SIZE}>
-                                            <IconLegacy
-                                                icon={icon}
-                                                size={ICON_SIZE}
-                                                variant={variant}
-                                            />
+                                            <Icon name={icon} size={ICON_SIZE} variant={variant} />
                                         </IconWrapper>
                                     )}
                                     {children}

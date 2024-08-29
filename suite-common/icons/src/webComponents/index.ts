@@ -1,1 +1,2 @@
-export * from './Icon.web';
+export * from '../icons';
+export * from '../config';

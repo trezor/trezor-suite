@@ -1,6 +1,5 @@
-import styled, { css } from 'styled-components';
-import { IconName, IconSize } from '@suite-common/icons';
-import { Icon } from '@suite-common/icons/src/webComponents';
+import styled, { css, useTheme } from 'styled-components';
+
 import { ExtendedMessageDescriptor, TranslationKey } from '@suite-common/intl-types';
 import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
@@ -10,7 +9,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { MouseEvent } from 'react';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { useElevation } from '@trezor/components';
+import { Icon, IconName, IconSize, useElevation } from '@trezor/components';
 
 const StyledIcon = styled(Icon)`
     pointer-events: none;
@@ -45,7 +44,7 @@ const Container = styled(NavigationItemBase)<{
                   color: ${theme.textDefault};
 
                   path {
-                      stroke: ${theme.iconDefault};
+                      fill: ${theme.iconDefault};
                   }
               `
             : css`
@@ -53,7 +52,7 @@ const Container = styled(NavigationItemBase)<{
                       color: ${theme.textDefault};
 
                       path {
-                          stroke: ${theme.iconDefault};
+                          fill: ${theme.iconDefault};
                       }
                   }
               `}
@@ -104,6 +103,8 @@ export const NavigationItem = ({
 
     const isActiveRoute = routes?.some(route => route === activeRoute);
 
+    const theme = useTheme();
+
     return (
         <Container
             $isActive={isActive || isActiveRoute}
@@ -113,7 +114,7 @@ export const NavigationItem = ({
             tabIndex={0}
             $elevation={elevation}
         >
-            <StyledIcon name={icon} size={iconSize} color="iconSubdued" />
+            <StyledIcon name={icon} size={iconSize} color={theme.iconSubdued} />
             <Translation id={nameId} values={values} />
             {itemsCount && <Count>{itemsCount}</Count>}
         </Container>

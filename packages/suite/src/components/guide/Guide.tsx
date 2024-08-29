@@ -5,7 +5,6 @@ import { spacingsPx, typography, zIndices } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { IconLegacy } from '@trezor/components';
 import {
     GuideHeader,
     GuideContent,
@@ -13,6 +12,7 @@ import {
     GuideCategories,
     GuideSearch,
 } from 'src/components/guide';
+import { Icon } from '@trezor/components';
 
 const FeedbackBorder = styled.div`
     height: 1px;
@@ -57,7 +57,7 @@ const FeedbackButtonLabel = styled.div`
     white-space: nowrap;
 `;
 
-const FeedbackButtonRightIcon = styled(IconLegacy)`
+const FeedbackButtonRightIcon = styled(Icon)`
     margin-top: -1px;
 `;
 
@@ -88,12 +88,12 @@ export const Guide = () => {
                     data-testid="@guide/button-feedback"
                     onClick={handleFeedbackButtonClick}
                 >
-                    <IconLegacy icon="USERS" size={24} color={theme.iconOnTertiary} />
+                    <Icon name="users" size={24} color={theme.iconOnTertiary} />
                     <FeedbackButtonLabel>
                         <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
                     </FeedbackButtonLabel>
                     <FeedbackButtonRightIcon
-                        icon="ARROW_RIGHT_CIRCLE"
+                        name="circleRight"
                         size={24}
                         color={theme.iconPrimaryDefault}
                     />

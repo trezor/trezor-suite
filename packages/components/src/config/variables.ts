@@ -1,7 +1,6 @@
 import { COINS as CoinsObject } from '../components/CoinLogo/coins';
-import { IconsLegacy as IconsObject } from '../components/Icon/iconsLegacy';
 import { CoinType } from '../components/CoinLogo/CoinLogo';
-import { IconType } from '../components/Icon/IconLegacy';
+import { icons } from '../components/Icon/Icon';
 
 export const SCREEN_SIZE = {
     UNAVAILABLE: '260px',
@@ -63,4 +62,4 @@ export const FONT_WEIGHT = {
 } as const;
 
 export const COINS = Object.keys(CoinsObject).sort() as CoinType[];
-export const ICONS = Object.keys(IconsObject).sort() as IconType[];
+export const ICONS = Object.keys(icons).sort();

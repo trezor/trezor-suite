@@ -1,4 +1,4 @@
-import { Radio, Row, variables, Text, IconLegacy, useElevation, Tooltip } from '@trezor/components';
+import { Radio, Row, variables, Text, Icon, useElevation, Tooltip } from '@trezor/components';
 import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 import { ReactNode, forwardRef } from 'react';
 import { Translation } from 'src/components/suite';
@@ -81,7 +81,7 @@ const ArrowDown = () => {
 
     return (
         <DownIconCircle $elevation={elevation}>
-            <IconLegacy icon="ARROW_DOWN" size={16} />
+            <Icon name="chevronDown" size={16} />
         </DownIconCircle>
     );
 };
@@ -133,7 +133,7 @@ export const SelectedOption = forwardRef<HTMLDivElement, SelectedOptionProps>(
         <SelectedOptionStyled $isDisabled={isDisabled}>
             <OptionStyled ref={ref} onClick={isDisabled ? undefined : onClick}>
                 <div>
-                    <IconLegacy icon="BACKUP" size={24} />
+                    <Icon name="backup2" size={24} />
                 </div>
                 {children}
                 <ArrowDown />

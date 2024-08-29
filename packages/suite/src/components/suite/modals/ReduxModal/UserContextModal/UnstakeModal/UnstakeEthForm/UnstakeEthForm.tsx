@@ -124,7 +124,7 @@ export const UnstakeEthForm = () => {
                     isDisabled={isDisabled || isUnstakingDisabled}
                     isLoading={isComposing || isSubmitting}
                     onClick={handleSubmit(signTx)}
-                    icon={isUnstakingDisabled ? 'INFO' : undefined}
+                    icon={isUnstakingDisabled ? 'info' : undefined}
                 >
                     <Translation id="TR_STAKE_UNSTAKE" />
                 </Button>

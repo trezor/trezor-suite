@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { useDispatch } from 'src/hooks/suite';
 import { transparentize } from 'polished';
 
-import { Button, IconLegacy, variables } from '@trezor/components';
+import { Button, Icon, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
 import { goto } from 'src/actions/suite/routerActions';
@@ -19,7 +19,7 @@ const StyledButton = styled(Button)`
     flex: 1;
 `;
 
-const StyledIcon = styled(IconLegacy)`
+const StyledIcon = styled(Icon)`
     width: 84px;
     height: 84px;
     margin: 12px auto 32px;
@@ -95,7 +95,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
                 </>
             }
         >
-            <StyledIcon icon="CONFETTI_SUCCESS" size={32} color={theme.legacy.TYPE_GREEN} />
+            <StyledIcon name="confetti" size={32} color={theme.legacy.TYPE_GREEN} />
 
             <Heading>
                 <Translation id="TR_COINJOIN_COMPLETED" />

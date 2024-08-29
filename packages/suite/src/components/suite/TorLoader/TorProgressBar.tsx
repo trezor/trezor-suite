@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button, ProgressBar, IconLegacy, variables } from '@trezor/components';
+import { Button, ProgressBar, Icon, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { borders } from '@trezor/theme';
@@ -112,7 +112,7 @@ export const TorProgressBar = ({
         <>
             <MessageWrapper>
                 <IconWrapper>
-                    <IconLegacy icon="TOR" size={80} />
+                    <Icon name="tor" size={80} />
                 </IconWrapper>
                 <Text>
                     <Translation id={message} />

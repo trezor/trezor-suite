@@ -1,7 +1,6 @@
-import { IconName } from '@suite-common/icons';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
-import { Button } from '@trezor/components';
+import { Button, IconName } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { typography, borders, spacingsPx } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';

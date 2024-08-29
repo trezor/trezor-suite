@@ -1,4 +1,4 @@
-import { IconLegacy, Tooltip } from '@trezor/components';
+import { Icon, Tooltip } from '@trezor/components';
 import { CoinmarketOffersItemProps } from '../CoinmarketOffers/CoinmarketOffersItem';
 import styled, { useTheme } from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -12,7 +12,7 @@ const TooltipWrap = styled.div`
     margin-top: ${spacingsPx.xxxs};
 `;
 
-const TooltipIcon = styled(IconLegacy)`
+const TooltipIcon = styled(Icon)`
     margin-top: 1px;
     margin-right: ${spacingsPx.xs};
 `;
@@ -45,7 +45,7 @@ const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quot
         return (
             <Tooltip content={<CoinmarketUtilsTooltipFee quote={quote} />} placement="bottom">
                 <TooltipWrap>
-                    <TooltipIcon icon="INFO" size={16} color={theme.textSubdued} />
+                    <TooltipIcon name="info" size={16} color={theme.textSubdued} />
                     <TooltipText>
                         <Translation id="TR_COINMARKET_FEES_INCLUDED" />
                     </TooltipText>
@@ -57,7 +57,7 @@ const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quot
     return (
         <Tooltip content={notIncludedContent} placement="bottom">
             <TooltipWrap>
-                <TooltipIcon icon="INFO" size={16} color={theme.textAlertYellow} />
+                <TooltipIcon name="info" size={16} color={theme.textAlertYellow} />
                 <TooltipText $isYellow>
                     <Translation id="TR_COINMARKET_FEES_NOT_INCLUDED" />
                 </TooltipText>

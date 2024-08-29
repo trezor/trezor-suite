@@ -56,14 +56,14 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 onClick={toggleDiscreetMode}
                 isActive={discreetMode}
                 label={<Translation id="TR_DISCREET" />}
-                icon={discreetMode ? 'HIDE' : 'SHOW'}
+                icon={discreetMode ? 'hide' : 'show'}
             />
 
             {!!enabledBackends.length && (
                 <MobileActionItem
                     onClick={() => action('settings-coins')}
                     label={<Translation id="TR_BACKENDS" />}
-                    icon="BACKEND"
+                    icon="backend"
                     indicator="check"
                 />
             )}
@@ -72,7 +72,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 <MobileActionItem
                     onClick={() => action('settings-index')}
                     label={<Translation id="TR_EARLY_ACCESS_MENU" />}
-                    icon="EXPERIMENTAL"
+                    icon="experimental"
                 />
             )}
 
@@ -81,7 +81,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 data-testid="@suite/menu/notifications-index"
                 onClick={() => action('notifications-index')}
                 isActive={getIfTabIsActive(['notifications-index'])}
-                icon="NOTIFICATION"
+                icon="notifications"
                 indicator={unseenNotifications ? 'alert' : undefined}
             />
 
@@ -89,7 +89,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />}
                 data-testid="@suite/menu/guide-index"
                 onClick={handleOpenGuide}
-                icon="LIGHTBULB"
+                icon="lightbulb"
             />
 
             <MobileActionItem
@@ -102,7 +102,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                     'settings-coins',
                     'settings-debug',
                 ])}
-                icon="SETTINGS"
+                icon="settings"
             />
         </MobileWrapper>
     );

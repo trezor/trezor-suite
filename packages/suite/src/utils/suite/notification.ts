@@ -6,13 +6,13 @@ import type { NotificationViewProps } from 'src/components/suite';
 export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     switch (variant) {
         case 'info':
-            return 'INFO';
+            return 'info';
         case 'warning':
-            return 'WARNING';
+            return 'warningTriangle';
         case 'error':
-            return 'WARNING';
+            return 'warningTriangle';
         case 'success':
-            return 'CHECK';
+            return 'check';
         // no default
     }
 };

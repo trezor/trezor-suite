@@ -1,11 +1,11 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { IconLegacy, IconType } from '../../Icon/IconLegacy';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { ButtonContainer, ButtonProps } from '../Button/Button';
 import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT } from '../../Tooltip/TooltipDelay';
 import { Tooltip } from '../../Tooltip/Tooltip';
+import { Icon, IconName } from '../../Icon/Icon';
 
 const IconButtonContainer = styled(ButtonContainer)`
     position: relative;
@@ -24,7 +24,7 @@ export interface IconButtonProps
         ButtonProps,
         'isFullWidth' | 'iconAlignment' | 'iconSize' | 'variant' | 'children'
     > {
-    icon: IconType;
+    icon: IconName;
     label?: React.ReactNode;
     iconSize?: number;
     variant?: ButtonVariant;
@@ -47,8 +47,8 @@ export const IconButton = ({
     const theme = useTheme();
 
     const IconComponent = (
-        <IconLegacy
-            icon={icon}
+        <Icon
+            name={icon}
             size={iconSize || getIconSize(size)}
             color={getIconColor({ variant, isDisabled, theme, isSubtle })}
         />

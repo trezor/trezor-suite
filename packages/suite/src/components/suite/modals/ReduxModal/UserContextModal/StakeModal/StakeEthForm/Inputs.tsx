@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IconLegacy, Warning } from '@trezor/components';
+import { Icon, Warning } from '@trezor/components';
 import { getInputState } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -22,7 +22,7 @@ const VStack = styled.div`
     align-items: center;
 `;
 
-const StyledIcon = styled(IconLegacy)`
+const StyledIcon = styled(Icon)`
     transform: rotate(90deg);
     margin-bottom: 26px;
 `;
@@ -97,7 +97,7 @@ export const Inputs = () => {
             {currentRate?.rate && (
                 <>
                     {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                    <StyledIcon icon="TRANSFER" size={16} />
+                    <StyledIcon name="transfer" size={16} />
 
                     <NumberInput
                         name={FIAT_INPUT}

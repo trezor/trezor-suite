@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { resolveStaticPath, isDevEnv } from '@suite-common/suite-utils';
-import { IconLegacy, Link, variables } from '@trezor/components';
+import { Icon, Link, variables } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { selectDevice } from '@suite-common/wallet-core';
@@ -72,7 +72,7 @@ const DetailItem = styled.div`
     align-items: center;
 `;
 
-const StyledIcon = styled(IconLegacy)`
+const StyledIcon = styled(Icon)`
     padding: 0 6px;
 `;
 
@@ -196,7 +196,7 @@ export const SupportFeedbackSelection = () => {
                             <Label>
                                 <LabelHeadline>
                                     <Translation id="TR_GUIDE_FORUM" />
-                                    <IconLegacy size={20} icon="EXTERNAL_LINK" />
+                                    <Icon size={20} name="externalLink" />
                                 </LabelHeadline>
                                 <LabelSubheadline>
                                     <Translation id="TR_GUIDE_FORUM_LABEL" />
@@ -210,7 +210,7 @@ export const SupportFeedbackSelection = () => {
                             <Label>
                                 <LabelHeadline>
                                     <Translation id="TR_GUIDE_SUPPORT" />
-                                    <IconLegacy size={20} icon="EXTERNAL_LINK" />
+                                    <Icon size={20} name="externalLink" />
                                 </LabelHeadline>
                             </Label>
                         </SectionButton>
@@ -223,7 +223,7 @@ export const SupportFeedbackSelection = () => {
                         :&nbsp;
                         {!isDevEnv && appUpToDate ? (
                             <>
-                                <StyledIcon icon="CHECK" size={10} />
+                                <StyledIcon name="check" size={10} />
                                 <Translation id="TR_UP_TO_DATE" />
                             </>
                         ) : (
@@ -238,7 +238,7 @@ export const SupportFeedbackSelection = () => {
                         :&nbsp;
                         {firmwareUpToDate ? (
                             <>
-                                <StyledIcon icon="CHECK" size={10} />
+                                <StyledIcon name="check" size={10} />
                                 <Translation id="TR_UP_TO_DATE" />
                             </>
                         ) : (

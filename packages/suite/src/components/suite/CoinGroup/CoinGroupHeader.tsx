@@ -1,6 +1,6 @@
 import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
-import { variables, IconLegacy } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
@@ -52,7 +52,7 @@ export const CoinGroupHeader = ({
     <Wrapper>
         {settingsMode && <Translation id="TR_SELECT_COIN_FOR_SETTINGS" />}
         <SettingsWrapper onClick={toggleSettingsMode} $disabled={!isAtLeastOneActive}>
-            <IconLegacy icon={settingsMode ? 'CROSS' : 'SETTINGS'} />
+            <Icon name={settingsMode ? 'close' : 'settings'} />
         </SettingsWrapper>
     </Wrapper>
 );

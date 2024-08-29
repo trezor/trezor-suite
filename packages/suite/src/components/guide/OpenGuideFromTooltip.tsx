@@ -2,10 +2,10 @@ import { MouseEvent } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { transparentize } from 'polished';
 
-import { IconLegacy } from '@trezor/components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useGuideOpenNode } from 'src/hooks/guide';
+import { Icon } from '@trezor/components';
 
 const OpenGuideLink = styled.span`
     display: flex;
@@ -44,7 +44,7 @@ export const OpenGuideFromTooltip = ({
                 openNodeById(id);
             }}
         >
-            <IconLegacy size={12} color={theme.iconAlertYellow} icon="LIGHTBULB" />
+            <Icon size={12} color={theme.iconAlertYellow} name="lightbulb" />
             <Translation id="TR_LEARN" />
         </OpenGuideLink>
     );

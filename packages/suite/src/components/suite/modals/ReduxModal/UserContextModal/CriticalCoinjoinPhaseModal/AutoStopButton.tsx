@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { IconLegacy, IconType } from '@trezor/components';
+import { Icon, IconName } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -11,7 +11,7 @@ import { borders, typography } from '@trezor/theme';
 
 const TRANSITION_CONFIG = '0.1s ease';
 
-const StyledIcon = styled(IconLegacy)<{ $isActivated: boolean }>`
+const StyledIcon = styled(Icon)<{ $isActivated: boolean }>`
     position: absolute;
     left: 6px;
     width: 15px;
@@ -98,28 +98,28 @@ const getButtonConfig = (
     isActivated: boolean,
     isHovered: boolean,
 ): {
-    icon: IconType;
+    icon: IconName;
     iconSize: number;
     text: TranslationKey;
 } => {
     if (isActivated) {
         if (isHovered) {
             return {
-                icon: 'CROSS',
+                icon: 'close',
                 iconSize: 9,
                 text: 'TR_DISABLE_AUTOSTOP_COINJOIN',
             };
         }
 
         return {
-            icon: 'CHECK',
+            icon: 'check',
             iconSize: 10,
             text: 'TR_AUTOSTOP_COINJOIN_ENABLED',
         };
     }
 
     return {
-        icon: 'STOP',
+        icon: 'stop',
         iconSize: 7,
         text: 'TR_ENABLE_AUTOSTOP_COINJOIN',
     };
@@ -153,7 +153,7 @@ export const AutoStopButton = ({ relatedAccountKey }: AutoStopButtonProps) => {
         >
             <StyledIcon
                 $isActivated={!!isActivated}
-                icon={icon}
+                name={icon}
                 size={iconSize}
                 color={isActivated ? theme.iconPrimaryDefault : undefined}
             />

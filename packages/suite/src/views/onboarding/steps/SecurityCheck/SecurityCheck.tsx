@@ -8,7 +8,7 @@ import {
     selectDeviceAuthenticity,
     selectDevices,
 } from '@suite-common/wallet-core';
-import { IconLegacy, Tooltip, variables, H2, useElevation } from '@trezor/components';
+import { Icon, Tooltip, variables, H2, useElevation } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { TREZOR_RESELLERS_URL, TREZOR_URL } from '@trezor/urls';
 
@@ -119,7 +119,7 @@ const StyledTooltip = styled(Tooltip)`
 
 const firmwareInstalledChecklist = [
     {
-        icon: 'INFO',
+        icon: 'info',
         content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_4" />,
     },
 ] as const;
@@ -135,7 +135,7 @@ const isAuthenticationSupportedMap: Record<DeviceModelInternal, boolean> = {
 const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
     [
         {
-            icon: 'VERIFIED',
+            icon: 'verified',
             content: (
                 <Translation
                     id="TR_ONBOARDING_DEVICE_CHECK_2"
@@ -155,7 +155,7 @@ const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
             ),
         },
         {
-            icon: 'HOLOGRAM',
+            icon: 'hologram',
             content: (
                 <Translation
                     id="TR_ONBOARDING_DEVICE_CHECK_1"
@@ -174,7 +174,7 @@ const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
             ),
         },
         {
-            icon: 'PACKAGE',
+            icon: 'package',
             content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />,
         },
     ] as const;
@@ -292,11 +292,7 @@ const SecurityCheckContent = ({
                         <Translation id={primaryButtonTopText} />
                         <TimeEstimateWrapper>
                             <IconWrapper>
-                                <IconLegacy
-                                    size={12}
-                                    icon="CLOCK_ACTIVE"
-                                    color={theme.iconOnPrimary}
-                                />
+                                <Icon size={12} name="clock" color={theme.iconOnPrimary} />
                             </IconWrapper>
                             <Translation id="TR_TAKES_N_MINUTES" />
                         </TimeEstimateWrapper>

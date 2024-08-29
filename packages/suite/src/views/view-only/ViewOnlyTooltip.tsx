@@ -1,4 +1,4 @@
-import { Button, IconLegacy, Text, Tooltip } from '@trezor/components';
+import { Button, Icon, Text, Tooltip } from '@trezor/components';
 import { borders, palette, spacingsPx, zIndices } from '@trezor/theme';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
@@ -68,14 +68,10 @@ export const ViewOnlyTooltip = ({ children }: ViewOnlyTooltipProps) => {
                     <Content>
                         <Icons>
                             <IconContainer>
-                                <IconLegacy
-                                    size={16}
-                                    icon="ASTERISK"
-                                    color={theme.defaultInverted}
-                                />
+                                <Icon size={16} name="asterisk" color={theme.defaultInverted} />
                             </IconContainer>
                             <IconContainer>
-                                <IconLegacy size={16} icon="LINK" color={theme.defaultInverted} />
+                                <Icon size={16} name="link" color={theme.defaultInverted} />
                             </IconContainer>
                         </Icons>
                         <Text>

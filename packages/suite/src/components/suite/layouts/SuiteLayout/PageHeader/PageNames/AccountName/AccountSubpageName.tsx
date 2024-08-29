@@ -38,7 +38,7 @@ export const AccountSubpageName = ({
     return (
         <Container>
             <IconButton
-                icon="ARROW_LEFT"
+                icon="chevronLeft"
                 variant="tertiary"
                 size="medium"
                 onClick={handleBackClick}

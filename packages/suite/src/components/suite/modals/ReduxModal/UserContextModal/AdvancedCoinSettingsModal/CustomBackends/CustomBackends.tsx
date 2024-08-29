@@ -161,7 +161,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                 {editable && (
                     <AddUrlButton
                         variant="tertiary"
-                        icon="PLUS"
+                        icon="plus"
                         data-testid="@settings/advance/button/add"
                         onClick={() => {
                             addUrl(value);

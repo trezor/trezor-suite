@@ -117,7 +117,7 @@ export const SettingsDevice = () => {
             )}
 
             {isNormalMode && (
-                <SettingsSection title={<Translation id="TR_BACKUP" />} icon="NEWSPAPER">
+                <SettingsSection title={<Translation id="TR_BACKUP" />} icon="newspaper">
                     {unfinishedBackup ? (
                         <BackupFailed />
                     ) : (
@@ -133,13 +133,13 @@ export const SettingsDevice = () => {
             {isPassphraseProtectionOn && (
                 <SettingsSection
                     title={<Translation id="TR_DEVICE_SETTINGS_WALLET_LOADING" />}
-                    icon="APP"
+                    icon="app"
                 >
                     <DefaultWalletLoading />
                 </SettingsSection>
             )}
 
-            <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="FIRMWARE">
+            <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="firmware">
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />
                 {(!bootloaderMode || bitcoinOnlyDevice) && (
                     <FirmwareTypeChange isDeviceLocked={isDeviceLocked} />
@@ -151,7 +151,7 @@ export const SettingsDevice = () => {
                 <>
                     <SettingsSection
                         title={<Translation id="TR_DEVICE_SECURITY" />}
-                        icon="SHIELD_CHECK"
+                        icon="shieldCheck"
                     >
                         <PinProtection isDeviceLocked={isDeviceLocked} />
                         {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
@@ -162,7 +162,7 @@ export const SettingsDevice = () => {
                         )}
                     </SettingsSection>
 
-                    <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="PALETTE">
+                    <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="palette">
                         <DeviceLabel isDeviceLocked={isDeviceLocked} />
                         <Homescreen isDeviceLocked={isDeviceLocked} />
                         <DisplayRotation isDeviceLocked={isDeviceLocked} />
@@ -173,7 +173,7 @@ export const SettingsDevice = () => {
                 </>
             )}
 
-            <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="GHOST">
+            <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="ghost">
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
                 {isNormalMode && <WipeCode isDeviceLocked={isDeviceLocked} />}
                 <CustomFirmware />

@@ -14,7 +14,7 @@ const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 
 export const WebUsbButton = ({
     translationId = 'TR_CHECK_FOR_DEVICES',
-    icon = 'SEARCH',
+    icon = 'search',
     size = 'tiny',
     variant = 'primary',
     ...rest
@@ -42,7 +42,7 @@ export const WebUsbIconButton = ({
         <Tooltip content={<Translation id={translationId} />}>
             <IconButton
                 {...rest}
-                icon="SEARCH"
+                icon="search"
                 variant={variant}
                 size={size}
                 onClick={handleClick}

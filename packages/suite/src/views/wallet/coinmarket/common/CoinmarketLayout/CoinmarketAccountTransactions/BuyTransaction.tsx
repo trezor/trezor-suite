@@ -10,7 +10,7 @@ import {
     saveQuotes,
     saveTransactionDetailId,
 } from 'src/actions/wallet/coinmarketBuyActions';
-import { variables, IconLegacy, Button } from '@trezor/components';
+import { variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common';
 import { Account } from 'src/types/wallet';
 import {
@@ -195,11 +195,7 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
                         </HiddenPlaceholder>
                     </Amount>
                     <Arrow>
-                        <IconLegacy
-                            color={theme.legacy.TYPE_LIGHT_GREY}
-                            size={13}
-                            icon="ARROW_RIGHT"
-                        />
+                        <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={13} name="chevronRight" />
                     </Arrow>
                     <FormattedCryptoAmount
                         value={receiveStringAmount}

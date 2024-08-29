@@ -102,7 +102,7 @@ export const StakeEthForm = () => {
                         isDisabled={isDisabled || isStakingDisabled}
                         isLoading={isComposing || isSubmitting}
                         onClick={handleSubmit(onSubmit)}
-                        icon={isStakingDisabled ? 'INFO' : undefined}
+                        icon={isStakingDisabled ? 'info' : undefined}
                     >
                         <Translation id="TR_CONTINUE" />
                     </Button>

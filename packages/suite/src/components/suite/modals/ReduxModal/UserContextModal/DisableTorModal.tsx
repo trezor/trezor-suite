@@ -63,7 +63,7 @@ const BackendRow = ({ coin, urls, onSettings }: BackendRowProps) => (
             </CoinTitle>
             <CoinUrls>{urls.join(', ')}</CoinUrls>
         </CoinDescription>
-        <Button variant="tertiary" onClick={onSettings} icon="SETTINGS">
+        <Button variant="tertiary" onClick={onSettings} icon="settings">
             <Translation id="TR_GO_TO_SETTINGS" />
         </Button>
     </BackendRowWrapper>

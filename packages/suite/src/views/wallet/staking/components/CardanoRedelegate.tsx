@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { IconLegacy } from '@trezor/components';
+import { Icon } from '@trezor/components';
 
 import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Translation } from 'src/components/suite/Translation';
@@ -38,7 +38,7 @@ export const CardanoRedelegate = ({ deviceModel }: CardanoRedelegateProps) => {
     return (
         <StyledCard>
             <Title>
-                <IconLegacy icon="INFO" size={18} />
+                <Icon name="info" size={18} />
                 <Heading>
                     <Translation
                         id={

@@ -22,7 +22,7 @@ export const DiscoveryFailed = () => {
             actions={[
                 {
                     key: '1',
-                    icon: 'REFRESH',
+                    icon: 'refresh',
                     onClick: handleClick,
                     children: <Translation id="TR_RETRY" />,
                 },

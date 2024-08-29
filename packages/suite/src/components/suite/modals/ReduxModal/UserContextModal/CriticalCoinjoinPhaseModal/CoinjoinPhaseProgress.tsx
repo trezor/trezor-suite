@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 import { CoinjoinSession, SessionPhase } from 'src/types/wallet/coinjoin';
-import { Spinner, IconLegacy } from '@trezor/components';
+import { Spinner, Icon } from '@trezor/components';
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
@@ -74,9 +74,7 @@ const Step = ({ phase, currentPhase }: StepProps) => {
 
             {isCurrent && <Spinner size={16} />}
 
-            {isComplete && (
-                <IconLegacy icon="CHECK" size={28} color={theme.legacy.TYPE_DARK_GREY} />
-            )}
+            {isComplete && <Icon name="check" size={28} color={theme.legacy.TYPE_DARK_GREY} />}
         </StepConiainer>
     );
 };

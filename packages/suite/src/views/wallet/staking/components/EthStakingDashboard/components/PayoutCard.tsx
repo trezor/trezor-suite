@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { useTheme } from 'styled-components';
-import { IconLegacy } from '@trezor/components';
+import { Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { AccentP, CardBottomContent, GreyP, StyledCard } from './styled';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -38,7 +38,7 @@ export const PayoutCard = ({
 
     return (
         <StyledCard>
-            <IconLegacy icon="CALENDAR_THIN" color={theme.iconSubdued} />
+            <Icon name="calendar" color={theme.iconSubdued} />
 
             <CardBottomContent>
                 <AccentP>

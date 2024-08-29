@@ -7,7 +7,7 @@ interface AddEntryButtonProps {
 }
 
 export const AddEntryButton = ({ onClick }: AddEntryButtonProps) => (
-    <Button variant="tertiary" size="small" icon="PLUS" onClick={onClick}>
+    <Button variant="tertiary" size="small" icon="plus" onClick={onClick}>
         Add Entry
     </Button>
 );

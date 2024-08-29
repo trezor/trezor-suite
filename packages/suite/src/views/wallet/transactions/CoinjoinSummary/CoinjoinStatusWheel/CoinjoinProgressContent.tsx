@@ -1,5 +1,5 @@
 import styled, { css, useTheme } from 'styled-components';
-import { Spinner, IconLegacy, Tooltip } from '@trezor/components';
+import { Spinner, Icon, Tooltip } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -64,12 +64,12 @@ const iconBase = css`
     margin-bottom: ${spacingsPx.xxs};
 `;
 
-const PlayIcon = styled(IconLegacy)`
-    ${iconBase}
+const PlayIcon = styled(Icon)`
+    ${iconBase};
     margin-left: ${spacingsPx.xxs};
 `;
 
-const StyledIcon = styled(IconLegacy)`
+const StyledIcon = styled(Icon)`
     ${iconBase};
 `;
 
@@ -111,7 +111,7 @@ export const CoinjoinProgressContent = ({
         const isRunningAndBlocked = isSessionActive && isCoinjoinSessionBlocked && isPaused;
 
         if (isAccountEmpty || coinjoinSessionBlocker === 'ANONYMITY_ERROR') {
-            return <PlayIcon icon="PLAY" {...iconConfig} />;
+            return <PlayIcon name="play" {...iconConfig} />;
         }
 
         if (isLoadingIndicatorShown) {
@@ -132,7 +132,7 @@ export const CoinjoinProgressContent = ({
         if (isRunningAndBlocked) {
             return (
                 <>
-                    <StyledIcon icon="PAUSE" {...iconConfig} />
+                    <StyledIcon name="pause" {...iconConfig} />
                     <Translation id="TR_PAUSED" />
                 </>
             );
@@ -142,7 +142,7 @@ export const CoinjoinProgressContent = ({
             if (isWheelHovered) {
                 return (
                     <>
-                        <StyledIcon icon="PLAY" {...iconConfig} />
+                        <StyledIcon name="play" {...iconConfig} />
                         <Translation id="TR_RESUME" />
                     </>
                 );
@@ -150,7 +150,7 @@ export const CoinjoinProgressContent = ({
 
             return (
                 <>
-                    <StyledIcon icon="STOP" {...iconConfig} />
+                    <StyledIcon name="stop" {...iconConfig} />
                     <Translation id="TR_STOPPING" />
                 </>
             );
@@ -166,7 +166,7 @@ export const CoinjoinProgressContent = ({
                         content={<Translation id="TR_AUTO_STOP_TOOLTIP" />}
                     >
                         <TooltipChildren>
-                            <StyledIcon icon="STOP" {...iconConfig} />
+                            <StyledIcon name="stop" {...iconConfig} />
                             <Translation id="TR_STOP" />
                         </TooltipChildren>
                     </Tooltip>
@@ -175,7 +175,7 @@ export const CoinjoinProgressContent = ({
 
             return (
                 <>
-                    <StyledIcon icon="STOP" {...iconConfig} />
+                    <StyledIcon name="stop" {...iconConfig} />
                     <Translation id="TR_STOP" />
                 </>
             );
@@ -201,7 +201,7 @@ export const CoinjoinProgressContent = ({
 
         return (
             <>
-                <PlayIcon icon="PLAY" {...iconConfig} color={theme.iconPrimaryDefault} />
+                <PlayIcon name="play" {...iconConfig} color={theme.iconPrimaryDefault} />
                 <Translation id="TR_START" />
             </>
         );

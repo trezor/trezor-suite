@@ -7,7 +7,7 @@ import {
     saveTransactionId,
     setIsFromRedirect,
 } from 'src/actions/wallet/coinmarketSellActions';
-import { variables, IconLegacy, Button } from '@trezor/components';
+import { variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common';
 import { Account } from 'src/types/wallet';
 import {
@@ -196,11 +196,7 @@ export const SellTransaction = ({ trade, providers, account }: SellTransactionPr
                         symbol={cryptoToCoinSymbol(cryptoCurrency!)}
                     />
                     <Arrow>
-                        <IconLegacy
-                            color={theme.legacy.TYPE_LIGHT_GREY}
-                            size={13}
-                            icon="ARROW_RIGHT"
-                        />
+                        <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={13} name="chevronRight" />
                     </Arrow>
                     <div>
                         <HiddenPlaceholder>

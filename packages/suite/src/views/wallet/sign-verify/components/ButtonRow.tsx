@@ -63,7 +63,7 @@ export const ButtonRow = ({
                 <>
                     <StyledButton
                         variant="secondary"
-                        icon="REFRESH"
+                        icon="refresh"
                         iconSize={20}
                         onClick={e => {
                             e.preventDefault();
@@ -76,7 +76,7 @@ export const ButtonRow = ({
                     {isSignPage ? (
                         <StyledButton
                             variant={isCompleteHovered ? 'primary' : 'secondary'}
-                            icon={isCompleteHovered ? undefined : 'CHECK'}
+                            icon={isCompleteHovered ? undefined : 'check'}
                             iconSize={20}
                             onClick={() => closeScreen(true)}
                             onMouseOver={() => {
@@ -93,7 +93,7 @@ export const ButtonRow = ({
                     ) : (
                         <StyledButton
                             variant={isCompleteHovered ? 'primary' : 'secondary'}
-                            icon={isCompleteHovered ? undefined : 'CHECK'}
+                            icon={isCompleteHovered ? undefined : 'check'}
                             iconSize={20}
                             onClick={() => closeScreen()}
                             onMouseOver={() => {

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Network } from '@suite-common/wallet-config';
 import { selectVisibleNonEmptyDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
-import { IconLegacy, SkeletonRectangle } from '@trezor/components';
+import { Icon, SkeletonRectangle } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
 
@@ -38,7 +38,7 @@ export const AssetCoinName = ({ network }: AssetCoinNameProps) => {
         <WalletContent>
             <CoinName>{name}</CoinName>
             <Wallets>
-                <IconLegacy icon="WALLET" size={16} />
+                <Icon name="standardWallet" size={16} />
                 <WalletNumber>{selectedAccounts.length}</WalletNumber>
             </Wallets>
         </WalletContent>

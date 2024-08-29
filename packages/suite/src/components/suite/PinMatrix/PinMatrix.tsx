@@ -77,7 +77,7 @@ export const PinMatrix = ({ device, hideExplanation, invalid }: PinMatrixProps) 
                             ? {
                                   key: 'invalid',
                                   title: <Translation id="TR_WRONG_PIN_ENTERED" />,
-                                  icon: 'WARNING',
+                                  icon: 'warningTriangleLight',
                                   iconSize: 40,
                                   iconColor: theme.legacy.TYPE_RED,
                               }
@@ -89,7 +89,7 @@ export const PinMatrix = ({ device, hideExplanation, invalid }: PinMatrixProps) 
                         {
                             key: 'maxlength',
                             title: <Translation id="TR_MAXIMUM_PIN_LENGTH" />,
-                            icon: 'ASTERISK',
+                            icon: 'asterisk',
                             iconSize: 20,
                         },
                         {
@@ -99,7 +99,7 @@ export const PinMatrix = ({ device, hideExplanation, invalid }: PinMatrixProps) 
                                     <Translation id="TR_HOW_PIN_WORKS" />
                                 </TrezorLink>
                             ),
-                            icon: 'PIN',
+                            icon: 'pin',
                         },
                     ]}
                 />

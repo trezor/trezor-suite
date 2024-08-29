@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Button, IconLegacy, IconType, Paragraph } from '@trezor/components';
+import { Button, Icon, IconName, Paragraph } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -37,24 +37,24 @@ const GreyP = styled(Paragraph)`
 
 interface StakingDetails {
     id: number;
-    icon: IconType;
+    icon: IconName;
     translationId: TranslationKey;
 }
 
 const STAKING_DETAILS: StakingDetails[] = [
     {
         id: 0,
-        icon: 'LOCK_SIMPLE',
+        icon: 'lock',
         translationId: 'TR_STAKE_STAKED_ETH_AMOUNT_LOCKED',
     },
     {
         id: 1,
-        icon: 'ARROW_BEND_DOUBLE_UP_LEFT',
+        icon: 'arrowBendDoubleUpLeft',
         translationId: 'TR_STAKE_UNSTAKING_TAKES',
     },
     {
         id: 2,
-        icon: 'HAND_COINS',
+        icon: 'handCoins',
         translationId: 'TR_STAKE_ETH_REWARDS_EARN',
     },
 ];
@@ -91,7 +91,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
             <VStack>
                 {STAKING_DETAILS.map(({ id, icon, translationId }) => (
                     <Flex key={id}>
-                        <IconLegacy icon={icon} color={theme.iconPrimaryDefault} />
+                        <Icon name={icon} color={theme.iconPrimaryDefault} />
 
                         <GreyP>
                             <Translation

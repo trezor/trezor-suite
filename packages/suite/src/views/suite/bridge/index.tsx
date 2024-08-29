@@ -67,7 +67,7 @@ export const BridgeUnavailable = () => {
                 <DownloadStandalone target={target} />
                 <Footer>
                     <StyledButton
-                        icon="ARROW_LEFT"
+                        icon="chevronLeft"
                         variant="tertiary"
                         onClick={goToWallet}
                         data-testid="@bridge/goto/wallet-index"

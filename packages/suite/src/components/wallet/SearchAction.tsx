@@ -1,6 +1,6 @@
 import { useCallback, useRef, Dispatch, SetStateAction, KeyboardEvent } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { Input, IconLegacy, KEYBOARD_CODE, motionEasing } from '@trezor/components';
+import { Input, Icon, KEYBOARD_CODE, motionEasing } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { useTranslation } from 'src/hooks/suite/useTranslation';
@@ -39,10 +39,6 @@ const StyledInput = styled(Input)<{ $isExpanded: boolean }>`
         height: ${INPUT_WIDTH};
         border: none;
     }
-`;
-
-const SearchIcon = styled(IconLegacy)`
-    cursor: pointer;
 `;
 
 export interface SearchProps {
@@ -105,8 +101,9 @@ export const SearchAction = ({
                 size="small"
                 innerRef={inputRef}
                 innerAddon={
-                    <SearchIcon
-                        icon="SEARCH"
+                    <Icon
+                        name="search"
+                        cursorPointer
                         size={16}
                         color={theme.iconDefault}
                         onClick={!isExpanded ? openAndSelect : undefined}

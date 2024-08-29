@@ -13,12 +13,12 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import {
     Button,
     Checkbox,
-    IconLegacy,
     Input,
     Tooltip,
     TooltipProps,
     PasswordStrengthIndicator,
     motionAnimation,
+    Icon,
 } from '@trezor/components';
 
 import { WalletType } from './types';
@@ -285,13 +285,13 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                     <Row>
                         <IconWrapper $type={props.type}>
                             {props.type === 'standard' ? (
-                                <IconLegacy
+                                <Icon
                                     size={24}
-                                    icon="WALLET"
+                                    name="standardWallet"
                                     color={theme.iconPrimaryDefault}
                                 />
                             ) : (
-                                <IconLegacy size={24} icon="LOCK" color={theme.iconSubdued} />
+                                <Icon size={24} name="lock" color={theme.iconSubdued} />
                             )}
                         </IconWrapper>
                         <Col>
@@ -329,7 +329,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                         </Col>
                         {props.type === 'standard' && (
                             <ArrowCol>
-                                <IconLegacy icon="ARROW_RIGHT" color={theme.iconSubdued} />
+                                <Icon name="chevronRight" color={theme.iconSubdued} />
                             </ArrowCol>
                         )}
                     </Row>
@@ -363,10 +363,10 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                                 inputState={isTooLong ? 'error' : undefined}
                                 autoFocus={!isAndroid()}
                                 innerAddon={
-                                    <IconLegacy
+                                    <Icon
                                         size={18}
                                         color={theme.iconSubdued}
-                                        icon={showPassword ? 'HIDE' : 'SHOW'}
+                                        name={showPassword ? 'hide' : 'show'}
                                         onClick={() => {
                                             if (typeof ref.current?.selectionStart === 'number') {
                                                 caretRef.current = ref.current.selectionStart;
