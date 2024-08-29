@@ -9,12 +9,11 @@ interface ActionButtonProps extends IconButtonProps {
 }
 
 export const Button = styled(IconButton)`
-    width: 100%;
     border-radius: ${borders.radii.sm};
 `;
 
 export const ActionButton = ({ className, title, ...props }: ActionButtonProps) => (
     <Tooltip content={title} cursor="pointer">
-        <Button className={className} {...props} />
+        <Button className={className} width="100%" {...props} />
     </Tooltip>
 );

@@ -28,7 +28,7 @@ const IconQuestionMarkWrapper = styled.div`
     margin-bottom: ${spacingsPx.xxxl};
 `;
 
-const IconQuestionMark = styled(Icon)`
+const IconQuestionWrapper = styled.div`
     position: absolute;
     top: -7px;
     left: 25px;
@@ -104,7 +104,9 @@ export const MultiShareBackupStep5Done = () => (
                     <GradientCalloutCard>
                         <IconQuestionMarkWrapper>
                             <Icon name="trezorT2T1" size={40} />
-                            <IconQuestionMark name="question" size={24} variant="primary" />
+                            <IconQuestionWrapper>
+                                <Icon name="question" size={24} variant="primary" />
+                            </IconQuestionWrapper>
                         </IconQuestionMarkWrapper>
 
                         <TextDiv variant="primary">
@@ -117,7 +119,9 @@ export const MultiShareBackupStep5Done = () => (
                     <GradientCalloutCard>
                         <IconQuestionMarkWrapper>
                             <Icon name="backup2" size={40} />
-                            <IconQuestionMark name="questionFilled" size={24} variant="warning" />
+                            <IconQuestionWrapper>
+                                <Icon name="questionFilled" size={24} variant="warning" />
+                            </IconQuestionWrapper>
                         </IconQuestionMarkWrapper>
 
                         <TextDiv variant="warning">

@@ -57,8 +57,9 @@ const FeedbackButtonLabel = styled.div`
     white-space: nowrap;
 `;
 
-const FeedbackButtonRightIcon = styled(Icon)`
-    margin-top: -1px;
+const FeedbackIconWrapper = styled.div`
+    position: relative;
+    top: -1px;
 `;
 
 export const Guide = () => {
@@ -92,11 +93,9 @@ export const Guide = () => {
                     <FeedbackButtonLabel>
                         <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
                     </FeedbackButtonLabel>
-                    <FeedbackButtonRightIcon
-                        name="circleRight"
-                        size={24}
-                        color={theme.iconPrimaryDefault}
-                    />
+                    <FeedbackIconWrapper>
+                        <Icon name="circleRight" size={24} color={theme.iconPrimaryDefault} />
+                    </FeedbackIconWrapper>
                 </FeedbackButton>
             </FeedbackLinkWrapper>
         </GuideViewWrapper>

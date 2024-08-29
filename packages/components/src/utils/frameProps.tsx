@@ -24,6 +24,9 @@ const overflows = [
 
 type Overflow = (typeof overflows)[number];
 
+const pointerEvents = ['auto', 'none', 'inherit', 'initial', 'unset'] as const;
+type PointerEvent = (typeof pointerEvents)[number];
+
 export type FrameProps = {
     margin?: Margin;
     width?: string | number;
@@ -33,6 +36,7 @@ export type FrameProps = {
     minHeight?: string | number;
     maxHeight?: string | number;
     overflow?: Overflow;
+    pointerEvents?: PointerEvent;
 };
 export type FramePropsKeys = keyof FrameProps;
 
@@ -48,6 +52,7 @@ export const withFrameProps = ({
     $width,
     $maxHeight,
     $overflow,
+    $pointerEvents,
 }: TransientFrameProps) => {
     return css`
         ${$margin &&
@@ -78,6 +83,10 @@ export const withFrameProps = ({
         css`
             overflow: ${$overflow};
         `};
+        ${$pointerEvents &&
+        css`
+            pointer-events: ${$pointerEvents};
+        `};
     `;
 };
 
@@ -101,6 +110,13 @@ const getStorybookType = (key: FramePropsKeys) => {
         case 'overflow':
             return {
                 options: overflows,
+                control: {
+                    type: 'select',
+                },
+            };
+        case 'pointerEvents':
+            return {
+                options: pointerEvents,
                 control: {
                     type: 'select',
                 },
@@ -145,6 +161,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('maxWidth') ? { maxWidth: undefined } : {}),
             ...(allowedFrameProps.includes('maxHeight') ? { maxHeight: undefined } : {}),
             ...(allowedFrameProps.includes('overflow') ? { overflow: undefined } : {}),
+            ...(allowedFrameProps.includes('pointerEvents') ? { pointerEvents: undefined } : {}),
         },
         argTypes,
     };

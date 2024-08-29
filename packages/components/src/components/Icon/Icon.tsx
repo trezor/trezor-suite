@@ -11,7 +11,7 @@ import { UIVariant } from '../../config/types';
 
 import { CSSColor, Color } from '@trezor/theme';
 
-import { TransientProps } from '../../utils/transientProps';
+import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 
 export const iconVariants = ['primary', 'tertiary', 'info', 'warning', 'destructive'] as const;
@@ -25,7 +25,7 @@ type ExclusiveColorOrVariant =
           color?: string;
       };
 
-export const allowedIconFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedIconFrameProps: FramePropsKeys[] = ['margin', 'pointerEvents'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconFrameProps)[number]>;
 
 const variantColorMap: Record<IconVariant, Color> = {
@@ -137,6 +137,7 @@ export const Icon = forwardRef(
             cursorPointer,
             hoverColor,
             margin,
+            pointerEvents,
         }: IconProps,
         ref?: Ref<HTMLDivElement>,
     ) => {
@@ -161,11 +162,16 @@ export const Icon = forwardRef(
             e.stopPropagation();
         };
 
+        const frameProps = {
+            margin,
+            pointerEvents,
+        };
+
         return (
             <SvgWrapper
                 $cursorPointer={cursorPointer}
                 $hoverColor={hoverColor}
-                $margin={margin}
+                {...makePropsTransient(frameProps)}
                 $color={color}
                 $variant={variant}
                 data-testid={dataTest}

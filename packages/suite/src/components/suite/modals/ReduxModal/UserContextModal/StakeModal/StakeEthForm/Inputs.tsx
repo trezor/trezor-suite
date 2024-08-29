@@ -14,7 +14,7 @@ import {
 } from 'src/utils/suite/validation';
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 const VStack = styled.div`
     display: flex;
@@ -24,7 +24,6 @@ const VStack = styled.div`
 
 const StyledIcon = styled(Icon)`
     transform: rotate(90deg);
-    margin-bottom: 26px;
 `;
 
 const InputAddon = styled.span`
@@ -96,8 +95,7 @@ export const Inputs = () => {
 
             {currentRate?.rate && (
                 <>
-                    {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                    <StyledIcon name="transfer" size={16} />
+                    <StyledIcon name="transfer" size={16} margin={{ bottom: spacings.xl }} />
 
                     <NumberInput
                         name={FIAT_INPUT}

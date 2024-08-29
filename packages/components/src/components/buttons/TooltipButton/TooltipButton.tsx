@@ -10,7 +10,7 @@ const StyledButton = styled(Button)`
     padding-inline: ${spacingsPx.xxl};
 `;
 
-const InfoIcon = styled(Icon)`
+const IconWrapper = styled.div`
     position: absolute;
     top: ${spacingsPx.xxs};
     right: ${spacingsPx.xxs};
@@ -32,11 +32,15 @@ export const TooltipButton = ({
         <Tooltip maxWidth={285} content={tooltipContent}>
             <StyledButton isDisabled={isDisabled} {...buttonProps}>
                 {tooltipContent && (
-                    <InfoIcon
-                        name="info"
-                        size={12}
-                        color={isDisabled ? theme.legacy.TYPE_LIGHT_GREY : theme.legacy.BG_WHITE}
-                    />
+                    <IconWrapper>
+                        <Icon
+                            name="info"
+                            size={12}
+                            color={
+                                isDisabled ? theme.legacy.TYPE_LIGHT_GREY : theme.legacy.BG_WHITE
+                            }
+                        />
+                    </IconWrapper>
                 )}
                 {children}
             </StyledButton>

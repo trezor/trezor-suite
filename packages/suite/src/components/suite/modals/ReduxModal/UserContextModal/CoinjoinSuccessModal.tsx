@@ -1,4 +1,4 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { useDispatch } from 'src/hooks/suite';
 import { transparentize } from 'polished';
 
@@ -15,16 +15,15 @@ const StyledModal = styled(Modal)`
     width: 435px;
 `;
 
-const StyledButton = styled(Button)`
-    flex: 1;
-`;
-
-const StyledIcon = styled(Icon)`
+const IconWrapper = styled.div`
     width: 84px;
     height: 84px;
     margin: 12px auto 32px;
     border-radius: 50%;
     background: ${({ theme }) => transparentize(0.9, theme.legacy.BG_GREEN)};
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const Heading = styled.h3`
@@ -48,7 +47,6 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
     const routerParams = useSelector(selectRouterParams);
     const relatedAccount = useSelector(state => selectAccountByKey(state, relatedAccountKey));
 
-    const theme = useTheme();
     const dispatch = useDispatch();
 
     if (!relatedAccount) {
@@ -84,18 +82,20 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
         <StyledModal
             bottomBarComponents={
                 <>
-                    <StyledButton variant="secondary" onClick={close}>
+                    <Button isFullWidth variant="secondary" onClick={close}>
                         <Translation id="TR_DISMISS" />
-                    </StyledButton>
+                    </Button>
                     {!isOnAccountPage && (
-                        <StyledButton onClick={navigateToRelatedAccount}>
+                        <Button isFullWidth onClick={navigateToRelatedAccount}>
                             <Translation id="TR_VIEW_ACCOUNT" />
-                        </StyledButton>
+                        </Button>
                     )}
                 </>
             }
         >
-            <StyledIcon name="confetti" size={32} color={theme.legacy.TYPE_GREEN} />
+            <IconWrapper>
+                <Icon name="confetti" size={32} variant="primary" />
+            </IconWrapper>
 
             <Heading>
                 <Translation id="TR_COINJOIN_COMPLETED" />

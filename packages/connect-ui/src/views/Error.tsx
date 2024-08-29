@@ -218,12 +218,15 @@ const TipsContainer = styled.div`
     margin-bottom: 20px;
 `;
 
-const StyledIcon = styled(Icon)`
+const IconWrapper = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 20px;
     background-color: #c4c4c4;
     margin-right: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 const Heading = styled.div`
@@ -262,7 +265,9 @@ export const ErrorView = (props: ErrorViewProps) => {
                             key={tip.title}
                             heading={
                                 <Heading>
-                                    <StyledIcon name={tip.icon} color="#000" />
+                                    <IconWrapper>
+                                        <Icon name={tip.icon} color="#000" />
+                                    </IconWrapper>
                                     <HeadingText>
                                         <HeadingH1>{tip.title}</HeadingH1>
                                     </HeadingText>

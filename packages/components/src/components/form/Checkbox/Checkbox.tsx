@@ -10,7 +10,10 @@ import { makePropsTransient, TransientProps } from '../../../utils/transientProp
 import { Icon } from '../../Icon/Icon';
 
 export const allowedCheckboxFrameProps: FramePropsKeys[] = ['margin'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedCheckboxFrameProps)[number]>;
+export type AllowedCheckboxFrameProps = Pick<
+    FrameProps,
+    (typeof allowedCheckboxFrameProps)[number]
+>;
 
 interface VariantStyles {
     background: Color;
@@ -64,7 +67,7 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
     },
 };
 
-type ContainerProps = TransientProps<AllowedFrameProps> & {
+type ContainerProps = TransientProps<AllowedCheckboxFrameProps> & {
     $isDisabled?: boolean;
     $labelAlignment?: LabelAlignment;
     $verticalAlignment?: VerticalAlignment;
@@ -159,7 +162,7 @@ export type CheckboxVariant = Extract<UIVariant, (typeof checkboxVariants)[numbe
 export type LabelAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 export type VerticalAlignment = Extract<UIVerticalAlignment, 'top' | 'center'>;
 
-export type CheckboxProps = AllowedFrameProps & {
+export type CheckboxProps = AllowedCheckboxFrameProps & {
     variant?: CheckboxVariant;
     isChecked?: boolean;
     isDisabled?: boolean;

@@ -167,11 +167,10 @@ const Tag = styled.div`
     letter-spacing: 0.2px;
 `;
 
-const CloseIcon = styled(Icon)`
+const IconWrapper = styled.div`
     position: absolute;
     top: 24px;
     right: 24px;
-    background: transparent;
 `;
 
 export interface CollapsibleOnboardingCardProps extends HTMLAttributes<HTMLDivElement> {
@@ -243,7 +242,9 @@ export const CollapsibleOnboardingCard = ({
                             transition={{ duration: 0.4, ease: motionEasing.transition }}
                         >
                             {expandable && expanded && (
-                                <CloseIcon name="close" size={22} onClick={onToggle} />
+                                <IconWrapper>
+                                    <Icon name="close" size={22} onClick={onToggle} />
+                                </IconWrapper>
                             )}
 
                             {heading && (
