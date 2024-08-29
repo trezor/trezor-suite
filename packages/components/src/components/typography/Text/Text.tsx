@@ -3,6 +3,10 @@ import { UIVariant } from '../../../config/types';
 import { CSSColor, Color, Colors, TypographyStyle, typography } from '@trezor/theme';
 import { ReactNode } from 'react';
 import { TransientProps } from '../../../utils/transientProps';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
+
+export const allowedTextFrameProps: FramePropsKeys[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextFrameProps)[number]>;
 
 export type TextVariant = Extract<
     UIVariant,
@@ -40,25 +44,37 @@ const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSCol
 
 type StyledTextProps = {
     $typographyStyle?: TypographyStyle;
-} & ExclusiveColorOrVariant;
+} & ExclusiveColorOrVariant &
+    TransientProps<AllowedFrameProps>;
 
 const StyledText = styled.span<StyledTextProps>`
     color: ${getColorForTextVariant};
     ${({ $typographyStyle }) => ($typographyStyle ? typography[$typographyStyle] : '')}
+
+    ${withFrameProps}
 `;
 
 type TextProps = {
     children: ReactNode;
     className?: string;
     typographyStyle?: TypographyStyle;
-} & ExclusiveColorOrVariant;
+} & ExclusiveColorOrVariant &
+    AllowedFrameProps;
 
-export const Text = ({ variant, color, children, className, typographyStyle }: TextProps) => {
+export const Text = ({
+    variant,
+    color,
+    children,
+    className,
+    typographyStyle,
+    margin,
+}: TextProps) => {
     return (
         <StyledText
             {...(variant !== undefined ? { $variant: variant } : { $color: color })}
             className={className}
             $typographyStyle={typographyStyle}
+            $margin={margin}
         >
             {children}
         </StyledText>

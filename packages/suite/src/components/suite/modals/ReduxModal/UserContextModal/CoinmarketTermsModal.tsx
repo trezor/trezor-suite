@@ -1,63 +1,26 @@
-import { Button, Icon } from '@trezor/components';
+import { Button, Column, Text, Icon, Row, Paragraph } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import type { Deferred } from '@trezor/utils';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { CryptoSymbol } from 'invity-api';
 import { useDevice } from 'src/hooks/suite';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 const ContentWrapper = styled.div`
     text-align: left;
 `;
-const TermsText = styled.div`
-    padding-bottom: 20px;
-`;
 
-const StyledIcon = styled(Icon)`
+const IconWrapper = styled.div<{ $backgroundColor: string }>`
     border-radius: 50%;
-    padding: 20px;
+    padding: ${spacingsPx.lg};
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 24px;
-`;
-const SecurityStyledIcon = styled(StyledIcon)`
-    fill: #00854d;
-    background-color: #e5f3ee;
-
-    path {
-        fill: #00854d;
-    }
+    margin-right: ${spacingsPx.xl};
+    background-color: ${({ $backgroundColor }) => $backgroundColor};
 `;
 
-const VerifiedPartnersStyledIcon = styled(StyledIcon)`
-    fill: #1d88c5;
-    background-color: #e8f3fa;
-
-    path {
-        fill: #1d88c5;
-    }
-`;
-const LegalStyledIcon = styled(StyledIcon)`
-    fill: #00854d;
-    background-color: #f9f4e6;
-
-    path {
-        fill: #c19009;
-    }
-`;
-
-const Flex = styled.div`
-    display: flex;
-
-    & + & {
-        padding-top: 20px;
-    }
-`;
-const TermsHeader = styled.h4`
-    padding-bottom: 10px;
-    font-weight: 600;
-`;
 const FooterContent = styled.div`
     display: flex;
     flex: 1;
@@ -89,6 +52,11 @@ export const CoinmarketTermsModal = ({
     if (!device?.features) {
         return null;
     }
+
+    type PProps = { children: React.ReactNode };
+    const P = ({ children }: PProps) => (
+        <Paragraph margin={{ top: spacings.sm }}>{children}</Paragraph>
+    );
 
     return (
         <Modal
@@ -125,57 +93,68 @@ export const CoinmarketTermsModal = ({
                 </FooterContent>
             }
         >
-            <Flex>
-                <SecurityStyledIcon size={24} name={`trezor${device.features.internal_model}`} />
-
-                <ContentWrapper>
-                    <TermsHeader>
-                        <Translation id={`TR_${type}_MODAL_SECURITY_HEADER`} />
-                    </TermsHeader>
-                    <TermsText>
-                        <Translation
-                            id={`TR_${type}_MODAL_TERMS_1`}
-                            values={{ provider: providerName }}
+            <Column gap={spacings.lg}>
+                <Row alignItems="center">
+                    <IconWrapper $backgroundColor="#e5f3ee">
+                        <Icon
+                            size={24}
+                            name={`trezor${device.features.internal_model}`}
+                            color="#00854d"
                         />
-                    </TermsText>
-                    <TermsText>
-                        <Translation id={`TR_${type}_MODAL_TERMS_2`} />
-                    </TermsText>
-                    <TermsText>
-                        <Translation id={`TR_${type}_MODAL_TERMS_3`} />
-                    </TermsText>
-                </ContentWrapper>
-            </Flex>
-            <Flex>
-                <VerifiedPartnersStyledIcon size={24} name="checkActive" />
+                    </IconWrapper>
 
-                <ContentWrapper>
-                    <TermsHeader>
-                        <Translation id={`TR_${type}_MODAL_VERIFIED_PARTNERS_HEADER`} />
-                    </TermsHeader>
-                    <TermsText>
-                        <Translation
-                            id={`TR_${type}_MODAL_TERMS_4`}
-                            values={{ provider: providerName }}
-                        />
-                    </TermsText>
-                </ContentWrapper>
-            </Flex>
-            <Flex>
-                <LegalStyledIcon size={24} name="pencil" />
+                    <ContentWrapper>
+                        <Text typographyStyle="highlight" margin={{ top: spacings.sm }}>
+                            <Translation id={`TR_${type}_MODAL_SECURITY_HEADER`} />
+                        </Text>
+                        <P>
+                            <Translation
+                                id={`TR_${type}_MODAL_TERMS_1`}
+                                values={{ provider: providerName }}
+                            />
+                        </P>
+                        <P>
+                            <Translation id={`TR_${type}_MODAL_TERMS_2`} />
+                        </P>
+                        <P>
+                            <Translation id={`TR_${type}_MODAL_TERMS_3`} />
+                        </P>
+                    </ContentWrapper>
+                </Row>
+                <Row alignItems="center">
+                    <IconWrapper $backgroundColor="#e8f3fa">
+                        <Icon size={24} name={`checkActive`} color="#1d88c5" />
+                    </IconWrapper>
 
-                <ContentWrapper>
-                    <TermsHeader>
-                        <Translation id={`TR_${type}_MODAL_LEGAL_HEADER`} />
-                    </TermsHeader>
-                    <TermsText>
-                        <Translation id={`TR_${type}_MODAL_TERMS_5`} />
-                    </TermsText>
-                    <TermsText>
-                        <Translation id={`TR_${type}_MODAL_TERMS_6`} />
-                    </TermsText>
-                </ContentWrapper>
-            </Flex>
+                    <ContentWrapper>
+                        <Text typographyStyle="highlight" margin={{ top: spacings.sm }}>
+                            <Translation id={`TR_${type}_MODAL_VERIFIED_PARTNERS_HEADER`} />
+                        </Text>
+                        <P>
+                            <Translation
+                                id={`TR_${type}_MODAL_TERMS_4`}
+                                values={{ provider: providerName }}
+                            />
+                        </P>
+                    </ContentWrapper>
+                </Row>
+                <Row alignItems="center">
+                    <IconWrapper $backgroundColor="#f9f4e6">
+                        <Icon size={24} name={`pencil`} color="#c19009" />
+                    </IconWrapper>
+                    <ContentWrapper>
+                        <Text typographyStyle="highlight">
+                            <Translation id={`TR_${type}_MODAL_LEGAL_HEADER`} />
+                        </Text>
+                        <P>
+                            <Translation id={`TR_${type}_MODAL_TERMS_5`} />
+                        </P>
+                        <P>
+                            <Translation id={`TR_${type}_MODAL_TERMS_6`} />
+                        </P>
+                    </ContentWrapper>
+                </Row>
+            </Column>
         </Modal>
     );
 };
