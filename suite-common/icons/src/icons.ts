@@ -206,6 +206,7 @@ export const icons = {
     userFocus: require('../assets/icons/userFocus.svg'),
     users: require('../assets/icons/users.svg'),
     verified: require('../assets/icons/verified.svg'),
+    warning: require('../assets/icons/warning.svg'),
     warningCircle: require('../assets/icons/warningCircle.svg'),
     warningCircleLight: require('../assets/icons/warningCircleLight.svg'),
     warningOctagon: require('../assets/icons/warningOctagon.svg'),
