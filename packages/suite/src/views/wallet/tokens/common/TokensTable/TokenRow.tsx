@@ -21,6 +21,7 @@ import {
     Icon,
     Table,
     GroupedMenuItems,
+    AssetLogo,
 } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -177,7 +178,7 @@ export const TokenRow = ({
 
     return (
         <Table.Row>
-            <Table.Cell>
+            <Table.Cell isSmaller>
                 <AssetLogo
                     coingeckoId={coingeckoId || ''}
                     placeholder={token.name || token.symbol || 'token'}
