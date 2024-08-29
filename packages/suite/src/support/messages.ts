@@ -1651,6 +1651,10 @@ export default defineMessages({
         defaultMessage: 'Connect',
         id: 'TR_CONNECT',
     },
+    TR_CONNECTION_LOST: {
+        defaultMessage: 'Connection lost',
+        id: 'TR_CONNECTION_LOST',
+    },
     TR_DISCONNECT: {
         defaultMessage: 'Disconnect',
         id: 'TR_DISCONNECT',

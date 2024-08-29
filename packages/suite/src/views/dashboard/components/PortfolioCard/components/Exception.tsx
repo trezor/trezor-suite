@@ -107,10 +107,19 @@ interface ExceptionProps {
     discovery?: Discovery;
 }
 
+const getAccountError = (accountError: string) => {
+    if (accountError === 'All backends are down') {
+        return <Translation id="TR_CONNECTION_LOST" />;
+    }
+
+    return accountError;
+};
+
 const discoveryFailedMessage = (discovery?: Discovery) => {
     if (!discovery) return '';
     if (discovery.error) return <div>{discovery.error}</div>;
-    // group all failed networks into array of errors
+
+    // Group all failed networks into array of errors.
     const networkError: string[] = [];
     const details = discovery.failed.reduce((value, account) => {
         const n = accountUtils.getNetwork(account.symbol)!;
@@ -119,7 +128,7 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
 
         return value.concat(
             <div key={account.symbol}>
-                {n.name}: {account.error}
+                {n.name}: {getAccountError(account.error)}
             </div>,
         );
     }, [] as JSX.Element[]);
