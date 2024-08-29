@@ -10,6 +10,7 @@ import {
     handleDeviceConnect,
     handleDeviceDisconnect,
     observeSelectedDevice,
+    restartDiscoveryThunk,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -104,6 +105,12 @@ const suite =
                 break;
             case SUITE.REQUEST_AUTH_CONFIRM:
                 api.dispatch(authConfirm());
+                break;
+            case SUITE.ONLINE_STATUS:
+                // Restart discovery to reconnect to backends when user goes offline -> online.
+                if (action.payload === true) {
+                    api.dispatch(restartDiscoveryThunk());
+                }
                 break;
             default:
                 break;
