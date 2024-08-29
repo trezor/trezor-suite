@@ -24,7 +24,7 @@
         "@trezor/styles": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.74.1",
+        "react-native": "0.75.2",
         "react-redux": "8.0.7",
         "web3-utils": "^4.3.1"
     }
