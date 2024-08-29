@@ -513,8 +513,9 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
 
     private lazyTokens = createLazy(() => solanaUtils.getTokenMetadata());
 
-    tryConnect(url: string): Promise<SolanaAPI> {
+    async tryConnect(url: string): Promise<SolanaAPI> {
         const api = new Connection(url, { wsEndpoint: url.replace('https', 'wss') });
+        await api.getLatestBlockhash('finalized');
         this.post({ id: -1, type: RESPONSES.CONNECTED });
 
         return Promise.resolve(api);
