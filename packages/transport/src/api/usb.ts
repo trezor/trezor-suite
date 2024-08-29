@@ -153,6 +153,7 @@ export class UsbApi extends AbstractApi {
             if (signal.aborted) {
                 return dfd.promise;
             }
+            dfd.reject(error);
             throw error;
         });
 
