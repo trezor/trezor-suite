@@ -13,12 +13,16 @@ type ThreadProxySettings = {
     keepAlive?: boolean;
 };
 
+type LifecycleEvent = 'started' | 'exited' | 'disposed';
+
 /**
  * Proxy class for communicating with proxied objects in Electron's utility processes
  * from the Electron's main process. Should be instantiated only in main process.
  */
-export class ThreadProxy<_Target extends object> extends EventEmitter {
+export class ThreadProxy<_Target extends object> {
     private readonly settings;
+    private readonly subscriptions;
+    private readonly lifecycle;
     private utility: UtilityProcess | undefined;
 
     get running() {
@@ -30,8 +34,9 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
      * @param settings.keepAlive if true, tries to respawn the process immediately when it unexpectedly exits
      */
     constructor(settings: ThreadProxySettings) {
-        super();
         this.settings = Object.freeze(settings);
+        this.subscriptions = new EventEmitter();
+        this.lifecycle = new EventEmitter();
     }
 
     /**
@@ -51,7 +56,7 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
             utility.once('spawn', resolve);
             utility.once('exit', reject);
         });
-        utility.once('exit', this.clean.bind(this));
+        utility.once('exit', this.onExit.bind(this));
         utility.on('message', this.onMessage.bind(this));
         // Process is considered running as long as `this.utility` is set, so `exit` event
         // should always trigger `clean()` which will unset it
@@ -60,33 +65,45 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
             await this.sendMessage('init', params);
             await promiseAllSequence(
                 // Resubscribe to formerly subscribed events (in case of reviving the process because of `keepAlive`)
-                this.eventNames().map(event => () => this.sendMessage('subscribe', { event })),
+                this.subscriptions
+                    .eventNames()
+                    .map(event => () => this.sendMessage('subscribe', { event })),
             );
             if (this.settings.keepAlive) {
                 // In case of `keepAlive`, replace the clean alone with clean + rerun as an exit handler
                 utility.removeAllListeners('exit');
                 utility.once('exit', () => {
-                    this.clean();
+                    this.onExit();
 
                     return this.run(params);
                 });
             }
+            this.lifecycle.emit('started');
 
             return true;
         } catch (e) {
-            // No need to unset `this.utility` because kill will trigger `clean()`
+            // No need to unset `this.utility` because kill will trigger `onExit()`
             this.utility.kill();
             throw e;
         }
     }
 
+    watch(event: LifecycleEvent, listener: () => void) {
+        this.lifecycle.on(event, listener);
+    }
+
+    unwatch(event: LifecycleEvent) {
+        this.lifecycle.removeAllListeners(event);
+    }
+
     /** Removes all the listeners and kills the process (ignoring possible `keepAlive`) */
     dispose() {
-        this.emit('disposed');
-        super.removeAllListeners();
+        this.lifecycle.emit('disposed');
+        this.lifecycle.removeAllListeners();
+        this.subscriptions.removeAllListeners();
         const { utility } = this;
         utility?.removeAllListeners();
-        this.clean();
+        this.onExit();
 
         return utility?.kill() ?? false;
     }
@@ -97,19 +114,15 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
     }
 
     /** Subscribe the `listener` to proxied object's `event` */
-    on(event: string | symbol, listener: (...args: any[]) => void) {
-        super.on(event, listener);
+    subscribe(event: string, listener: (...args: any[]) => void) {
+        this.subscriptions.on(event, listener);
         this.sendMessage('subscribe', { event });
-
-        return this;
     }
 
     /**  Unsubscribe all listeners from proxied object's `event` */
-    removeAllListeners(event?: string | symbol | undefined) {
-        super.removeAllListeners(event);
+    unsubscribe(event?: string) {
+        this.subscriptions.removeAllListeners(event);
         this.sendMessage('unsubscribe', { event });
-
-        return this;
     }
 
     private messageId = 0;
@@ -137,13 +150,16 @@ export class ThreadProxy<_Target extends object> extends EventEmitter {
                 }
             }
         } else if (isValidThreadEvent(message)) {
-            this.emit(message.event, message.payload);
+            this.subscriptions.emit(message.event, message.payload);
         }
     }
 
-    private clean() {
-        this.promises.forEach(({ reject }) => reject(new Error('Process exited')));
+    private onExit() {
+        this.promises.forEach(({ reject }) =>
+            reject(new Error(`Process '${this.settings.name}' exited`)),
+        );
         this.promises.clear();
         this.utility = undefined;
+        this.lifecycle.emit('exited');
     }
 }

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import type { EventEmitter } from 'events';
 
 export type ThreadRequestType = 'init' | 'call' | 'subscribe' | 'unsubscribe';
 
@@ -24,6 +24,9 @@ export type ThreadEvent = {
     event: string;
     payload?: any;
 };
+
+const isEventEmitter = (obj: any): obj is EventEmitter =>
+    'on' in obj && 'removeAllListeners' in obj && 'listenerCount' in obj;
 
 const isValidThreadRequest = (req: any): req is ThreadRequest =>
     typeof req === 'object' && typeof req?.id === 'number' && typeof req.type === 'string';
@@ -53,7 +56,9 @@ const fire = (event: string, payload: any) => process.parentPort.postMessage({ e
  * @param init 'Constructor' function which will create the object from parameters
  * received with `init` message
  */
-export const createThread = <P, T extends EventEmitter>(init: (params: P) => T | Promise<T>) => {
+export const createThread = <P, T extends NonNullable<object>>(
+    init: (params: P) => T | Promise<T>,
+) => {
     let obj: T;
 
     process.parentPort.on('message', async ({ data }) => {
@@ -66,11 +71,19 @@ export const createThread = <P, T extends EventEmitter>(init: (params: P) => T |
                     return respond(data.id);
                 case 'call': {
                     const { method, params } = data.payload;
+                    if (!(method in obj)) {
+                        return fail(data.id, `'${method}' missing in object`);
+                    }
+
                     const result = await (obj as any)[method](...params);
 
                     return respond(data.id, result);
                 }
                 case 'subscribe': {
+                    if (!isEventEmitter(obj)) {
+                        return fail(data.id, 'Object is not an event emitter');
+                    }
+
                     const { event } = data.payload;
                     if (!obj.listenerCount(event)) {
                         obj.on(event, payload => fire(event, payload));
@@ -79,6 +92,10 @@ export const createThread = <P, T extends EventEmitter>(init: (params: P) => T |
                     return respond(data.id);
                 }
                 case 'unsubscribe': {
+                    if (!isEventEmitter(obj)) {
+                        return fail(data.id, 'Object is not an event emitter');
+                    }
+
                     const { event } = data.payload;
                     obj.removeAllListeners(event);
 
