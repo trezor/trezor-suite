@@ -3,7 +3,7 @@ import { toWei } from 'web3-utils';
 import { isDesktop } from '@trezor/env-utils';
 import type { State } from 'src/reducers/wallet/settingsReducer';
 import type { CustomBackend, BlockbookUrl } from 'src/types/wallet/backend';
-import type { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 
 import type { BackendSettings } from '@suite-common/wallet-types';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
@@ -19,7 +19,7 @@ import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 type WalletWithBackends = {
     backends?: Partial<{
-        [coin in Network['symbol']]: Omit<CustomBackend, 'coin'>;
+        [coin in NetworkCompatible['symbol']]: Omit<CustomBackend, 'coin'>;
     }>;
 };
 
@@ -297,7 +297,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                             [type]: urls,
                         },
                     };
-                    backendSettings.add(settings, coin as Network['symbol']);
+                    backendSettings.add(settings, coin as NetworkCompatible['symbol']);
                 });
 
                 return rest;

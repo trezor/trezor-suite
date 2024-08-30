@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Button, motionEasing, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
-import type { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 
 import {
     DeviceBanner,
@@ -101,7 +101,7 @@ export const SettingsCoins = () => {
         deviceSupportedNetworkSymbols.includes(enabledNetwork),
     );
 
-    const getNetworks = (networks: Network[], getUnsupported = false) =>
+    const getNetworks = (networks: NetworkCompatible[], getUnsupported = false) =>
         networks.filter(
             ({ symbol }) => getUnsupported !== deviceSupportedNetworkSymbols.includes(symbol),
         );

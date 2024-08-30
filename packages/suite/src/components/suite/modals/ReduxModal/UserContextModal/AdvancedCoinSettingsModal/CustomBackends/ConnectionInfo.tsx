@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Paragraph } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite/Translation';
-import type { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 
 const Wrapper = styled(Paragraph)`
     display: flex;
@@ -11,7 +11,7 @@ const Wrapper = styled(Paragraph)`
 `;
 
 interface ConnectionInfoProps {
-    coin: Network['symbol'];
+    coin: NetworkCompatible['symbol'];
 }
 
 const ConnectionInfo = ({ coin }: ConnectionInfoProps) => {

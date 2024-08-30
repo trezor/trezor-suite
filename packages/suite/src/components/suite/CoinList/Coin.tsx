@@ -3,7 +3,7 @@ import { transparentize } from 'polished';
 import styled, { css, useTheme } from 'styled-components';
 import { variables, CoinLogo, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import type { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
 
@@ -152,8 +152,8 @@ const Check = styled.div<{ $visible: boolean }>`
 `;
 
 interface CoinProps {
-    symbol: Network['symbol'];
-    name: Network['name'];
+    symbol: NetworkCompatible['symbol'];
+    name: NetworkCompatible['name'];
     label?: TranslationKey;
     toggled: boolean;
     disabled?: boolean;

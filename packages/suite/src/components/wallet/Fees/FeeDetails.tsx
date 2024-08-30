@@ -4,7 +4,7 @@ import { FeeLevel } from '@trezor/connect';
 import { Translation } from 'src/components/suite';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { formatDuration } from '@suite-common/suite-utils';
-import { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 
 import { useState, useEffect } from 'react';
 import {
@@ -32,7 +32,7 @@ const FeeItem = styled.span`
 `;
 
 interface DetailsProps {
-    networkType: Network['networkType'];
+    networkType: NetworkCompatible['networkType'];
     selectedLevel: FeeLevel;
     // fields below are validated as false-positives, eslint claims that they are not used...
 

@@ -1,6 +1,6 @@
 import { useSelector, useActions } from 'src/hooks/suite';
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
-import type { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 
 import { getMainnets, getTestnets } from '@suite-common/wallet-config';
 import {
@@ -9,10 +9,10 @@ import {
 } from 'src/reducers/suite/suiteReducer';
 
 type EnabledNetworks = {
-    mainnets: Network[];
-    testnets: Network[];
-    enabledNetworks: Network['symbol'][];
-    setEnabled: (symbol: Network['symbol'], enabled: boolean) => void;
+    mainnets: NetworkCompatible[];
+    testnets: NetworkCompatible[];
+    enabledNetworks: NetworkCompatible['symbol'][];
+    setEnabled: (symbol: NetworkCompatible['symbol'], enabled: boolean) => void;
 };
 
 export const useEnabledNetworks = (): EnabledNetworks => {

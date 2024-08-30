@@ -1,4 +1,5 @@
-import { Account, Network } from 'src/types/wallet';
+import { Account } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
@@ -183,7 +184,7 @@ export const getCountryLabelParts = (label: string) => {
 
 export const getComposeAddressPlaceholder = async (
     account: Account,
-    network: Network,
+    network: NetworkCompatible,
     device?: TrezorDevice,
     accounts?: Account[],
     chunkify?: boolean,
@@ -241,7 +242,7 @@ export const getComposeAddressPlaceholder = async (
     }
 };
 
-export const mapTestnetSymbol = (symbol: Network['symbol']) => {
+export const mapTestnetSymbol = (symbol: NetworkCompatible['symbol']) => {
     if (symbol === 'test') return 'btc';
     if (symbol === 'tsep') return 'eth';
     if (symbol === 'thol') return 'eth';

@@ -4,7 +4,7 @@ import { selectDeviceUnavailableCapabilities } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useActions } from 'src/hooks/suite/useActions';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { NetworkSymbol } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { networksCompatibility } from '@suite-common/wallet-config';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {

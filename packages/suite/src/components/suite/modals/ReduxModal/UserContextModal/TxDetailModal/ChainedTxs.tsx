@@ -5,7 +5,7 @@ import { ChainedTransactions } from '@suite-common/wallet-types';
 
 import { TrezorLink, Translation } from 'src/components/suite';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
-import { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { AffectedTransactionItem } from './ChangeFee/AffectedTransactionItem';
 
 const Wrapper = styled.div`
@@ -52,7 +52,7 @@ const StyledAffectedTransactionItem = styled(AffectedTransactionItem)`
 
 interface ChainedTxsProps {
     txs: ChainedTransactions;
-    network: Network;
+    network: NetworkCompatible;
     explorerUrl: string;
 }
 

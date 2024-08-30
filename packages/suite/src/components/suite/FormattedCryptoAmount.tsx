@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
-import { NetworkSymbol } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 

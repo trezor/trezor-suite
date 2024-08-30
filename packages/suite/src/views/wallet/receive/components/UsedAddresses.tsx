@@ -5,7 +5,7 @@ import { AccountAddress } from '@trezor/connect';
 import { Card, Button, GradientOverlay, Column } from '@trezor/components';
 import { Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { AppState } from 'src/types/suite';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { showAddress } from 'src/actions/wallet/receiveActions';
@@ -96,7 +96,7 @@ interface ItemProps {
     index: number;
     addr: AccountAddress;
     locked: boolean;
-    symbol: Network['symbol'];
+    symbol: NetworkCompatible['symbol'];
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
 }

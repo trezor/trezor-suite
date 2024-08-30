@@ -8,7 +8,7 @@ import { spacings } from '@trezor/theme';
 import { selectDeviceSupportedNetworks, selectDeviceModel } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
 import { DeviceModelInternal } from '@trezor/connect';
-import type { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 
 const Separator = styled.hr`
     height: 1px;
@@ -24,7 +24,7 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const deviceModel = useSelector(selectDeviceModel);
 
-    const getNetworks = (networks: Network[], getUnsupported = false) =>
+    const getNetworks = (networks: NetworkCompatible[], getUnsupported = false) =>
         networks.filter(
             ({ symbol }) => getUnsupported !== deviceSupportedNetworkSymbols.includes(symbol),
         );

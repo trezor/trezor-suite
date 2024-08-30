@@ -3,7 +3,8 @@ import { useCallback } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { UnavailableCapability } from '@trezor/connect';
 import { selectDevice } from '@suite-common/wallet-core';
-import { Account, Network } from 'src/types/wallet';
+import { Account } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { Translation } from 'src/components/suite';
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
 import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';
@@ -51,7 +52,7 @@ const verifyAvailability = ({
 };
 
 interface AddAccountButtonProps {
-    network: Network;
+    network: NetworkCompatible;
     emptyAccounts: Account[];
     onEnableAccount: (account: Account) => void;
 }

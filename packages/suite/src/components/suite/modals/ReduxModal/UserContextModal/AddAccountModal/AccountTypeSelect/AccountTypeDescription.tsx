@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Paragraph } from '@trezor/components';
-import { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { Translation } from 'src/components/suite';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
 import { spacingsPx } from '@trezor/theme';
@@ -11,7 +11,7 @@ const Info = styled(Paragraph)`
 `;
 
 interface AccountTypeDescriptionProps {
-    bip43Path: Network['bip43Path'];
+    bip43Path: NetworkCompatible['bip43Path'];
     hasMultipleAccountTypes: boolean;
 }
 

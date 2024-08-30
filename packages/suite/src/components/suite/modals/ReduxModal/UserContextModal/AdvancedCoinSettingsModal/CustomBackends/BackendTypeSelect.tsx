@@ -5,14 +5,14 @@ import { Select } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { isDesktop } from '@trezor/env-utils';
 
-import type { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import type { BackendOption } from 'src/hooks/settings/backends';
 
 const Capitalize = styled.span`
     text-transform: capitalize;
 `;
 
-const useBackendOptions = (network: Network) =>
+const useBackendOptions = (network: NetworkCompatible) =>
     useMemo(
         () =>
             ['default', ...network.customBackends]
@@ -48,7 +48,7 @@ const useBackendOptions = (network: Network) =>
     );
 
 type BackendTypeSelectProps = {
-    network: Network;
+    network: NetworkCompatible;
     value: BackendOption;
     onChange: (type: BackendOption) => void;
 };

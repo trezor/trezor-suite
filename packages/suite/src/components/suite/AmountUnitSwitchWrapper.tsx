@@ -2,7 +2,7 @@ import { MouseEvent, ReactNode } from 'react';
 import styled from 'styled-components';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { NetworkSymbol } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Translation } from './Translation';
 import { mediaQueries } from '@trezor/styles';
 

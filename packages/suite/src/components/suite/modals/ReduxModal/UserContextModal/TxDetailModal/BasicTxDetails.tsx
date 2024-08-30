@@ -1,7 +1,8 @@
 import styled, { useTheme } from 'styled-components';
 import { Icon, variables, CoinLogo, H3, useElevation } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
-import { WalletAccountTransaction, Network } from 'src/types/wallet';
+import { WalletAccountTransaction } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { getTxIcon, isPending, getFeeUnits, getFeeRate } from '@suite-common/wallet-utils';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { fromWei } from 'web3-utils';
@@ -156,7 +157,7 @@ const IconPlaceholder = styled.span`
 
 interface BasicTxDetailsProps {
     tx: WalletAccountTransaction;
-    network: Network;
+    network: NetworkCompatible;
     confirmations: number;
     explorerUrl: string;
     explorerUrlQueryString?: string;

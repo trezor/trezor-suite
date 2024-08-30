@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { CoinLogo, variables } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
-import { NetworkSymbol } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { CustomBackends } from './CustomBackends/CustomBackends';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 import { useSelector } from 'src/hooks/suite';
