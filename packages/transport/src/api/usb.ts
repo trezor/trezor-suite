@@ -433,7 +433,12 @@ export class UsbApi extends AbstractApi {
             nonHidDevices.map(async device => {
                 this.logger?.debug(`usb: creating device ${this.formatDeviceForLog(device)}`);
 
-                if (this.forceReadSerialOnConnect) {
+                if (
+                    this.forceReadSerialOnConnect &&
+                    // device already has serialNumber or it is open - both cases mean that we already seen it before and don't need to bother
+                    !device.opened &&
+                    !device.serialNumber
+                ) {
                     // try to load serialNumber. if this doesn't succeed, we can still continue normally. the only problem is that multiple devices
                     // connected at the same time will not be properly distinguished.
                     await this.loadSerialNumber(device, signal);
