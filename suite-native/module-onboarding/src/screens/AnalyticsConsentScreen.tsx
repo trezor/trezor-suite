@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Platform } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -56,7 +57,10 @@ const cardStyle = prepareNativeStyle(utils => ({
     paddingTop: 60,
     paddingBottom: 20,
     borderRadius: 20,
-    backgroundColor: utils.colors.backGroundOnboardingCard,
+    borderWidth: utils.borders.widths.small,
+    borderColor: utils.colors.borderElevation1,
+    backgroundColor: utils.transparentize(0.3, utils.colors.backgroundSurfaceElevation1),
+    ...(Platform.OS === 'ios' ? utils.boxShadows.small : {}),
 }));
 
 const consentInfoStyle = prepareNativeStyle(utils => ({
@@ -191,6 +195,7 @@ export const AnalyticsConsentScreen = () => {
                                     <Link
                                         href="https://data.trezor.io/legal/privacy-policy.html"
                                         label={chunks}
+                                        textColor="textSecondaryHighlight"
                                     />
                                 ),
                             }}

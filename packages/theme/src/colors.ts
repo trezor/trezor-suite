@@ -28,11 +28,6 @@ export const mapElevationToBorder = ({
 const light = {
     transparent: '#00000000',
 
-    // Deprecated
-    gradientNeutralBottomFadeSurfaceElevation1Start: '#FFFFFF33', // Don't use it, use elevation colors
-    gradientNeutralBottomFadeSurfaceElevation1End: '#FFFFFF', // Don't use it, use elevation colors
-    backGroundOnboardingCard: '#FFFFFFBD',
-
     // Figma Colors
     backgroundAlertBlueBold: palette.lightAccentBlue600,
     backgroundAlertBlueBoldAlt: palette.lightAccentBlue700,
@@ -193,11 +188,6 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
 
     dark: {
         transparent: '#00000000',
-
-        // Deprecated
-        gradientNeutralBottomFadeSurfaceElevation1Start: '#00000033', // Don't use it, use elevation colors
-        gradientNeutralBottomFadeSurfaceElevation1End: '#000000', // Don't use it, use elevation colors
-        backGroundOnboardingCard: '#000000BD',
 
         // Figma Colors
         backgroundAlertBlueBold: palette.darkAccentBlue600,

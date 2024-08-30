@@ -580,10 +580,9 @@ export const en = {
     },
     moduleOnboarding: {
         welcomeScreen: {
-            welcome: 'Welcome to ',
-            subtitle: 'Securely track, manage & receive crypto on the go ',
+            welcome: 'Welcome to',
+            subtitle: 'Securely track, manage & receive\ncrypto on the go',
             trezorLink: 'Don’t have a Trezor? <trezorLink>Get one here.</trezorLink>',
-
             nextButton: 'Get started',
         },
         connectTrezorScreen: {

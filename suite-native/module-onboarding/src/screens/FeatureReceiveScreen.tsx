@@ -14,6 +14,7 @@ import { TxKeyPath, Translation } from '@suite-native/intl';
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
 import { CoinsSvg } from '../components/CoinsSvg';
+import { OnboardingScreenHeader } from '../components/OnboardingScreenHeader';
 
 type NavigationProps = StackNavigationProps<
     OnboardingStackParamList,
@@ -59,9 +60,13 @@ export const FeatureReceiveScreen = () => {
 
     return (
         <OnboardingScreen
-            title={<Translation id={content.title} />}
-            subtitle={<Translation id={content.subtitle} />}
-            activeStep={2}
+            header={
+                <OnboardingScreenHeader
+                    title={<Translation id={content.title} />}
+                    subtitle={<Translation id={content.subtitle} />}
+                    activeStep={2}
+                />
+            }
             footer={
                 <OnboardingFooter
                     redirectTarget={() => navigation.navigate(content.redirectTarget)}

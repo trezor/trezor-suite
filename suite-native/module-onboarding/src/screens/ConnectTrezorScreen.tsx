@@ -13,6 +13,7 @@ import { ConnectDeviceAnimation } from '@suite-native/device';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
+import { OnboardingScreenHeader } from '../components/OnboardingScreenHeader';
 
 const ANIMATION_SCALE = 0.35;
 const ANIMATION_HEIGHT = Dimensions.get('screen').height * ANIMATION_SCALE;
@@ -39,9 +40,13 @@ export const ConnectTrezorScreen = () => {
 
     return (
         <OnboardingScreen
-            title={<Translation id="moduleOnboarding.connectTrezorScreen.title" />}
-            subtitle={<Translation id="moduleOnboarding.connectTrezorScreen.subtitle" />}
-            activeStep={1}
+            header={
+                <OnboardingScreenHeader
+                    title={<Translation id="moduleOnboarding.connectTrezorScreen.title" />}
+                    subtitle={<Translation id="moduleOnboarding.connectTrezorScreen.subtitle" />}
+                    activeStep={1}
+                />
+            }
             footer={
                 <OnboardingFooter
                     backButtonTitle={<Translation id="generic.buttons.back" />}

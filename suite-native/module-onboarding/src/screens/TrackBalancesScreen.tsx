@@ -14,6 +14,7 @@ import { TxKeyPath, Translation } from '@suite-native/intl';
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
 import { GraphSvg } from '../components/GraphSvg';
+import { OnboardingScreenHeader } from '../components/OnboardingScreenHeader';
 
 type ScreenContent = {
     title: TxKeyPath;
@@ -62,9 +63,13 @@ export const TrackBalancesScreen = () => {
 
     return (
         <OnboardingScreen
-            title={<Translation id={content.title} />}
-            subtitle={<Translation id={content.subtitle} />}
-            activeStep={3}
+            header={
+                <OnboardingScreenHeader
+                    title={<Translation id={content.title} />}
+                    subtitle={<Translation id={content.subtitle} />}
+                    activeStep={isUsbDeviceConnectFeatureEnabled ? 3 : 1}
+                />
+            }
             footer={
                 <OnboardingFooter
                     redirectTarget={() => navigation.navigate(content.redirectTarget)}
