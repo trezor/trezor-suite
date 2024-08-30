@@ -3,7 +3,7 @@ import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     accountsActions,
@@ -550,7 +550,7 @@ const handleError = (error: string) => (dispatch: Dispatch) => {
 };
 
 export const createCoinjoinAccount =
-    (network: Network) => async (dispatch: Dispatch, getState: GetState) => {
+    (network: NetworkCompatible) => async (dispatch: Dispatch, getState: GetState) => {
         if (network.accountType !== 'coinjoin') {
             throw new Error('createCoinjoinAccount: invalid account type');
         }

@@ -15,7 +15,7 @@ import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
-import { Network } from '@suite-common/wallet-config';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
@@ -72,8 +72,10 @@ export interface Flags {
 }
 
 export interface EvmSettings {
-    confirmExplanationModalClosed: Partial<Record<Network['symbol'], Record<string, boolean>>>;
-    explanationBannerClosed: Partial<Record<Network['symbol'], boolean>>;
+    confirmExplanationModalClosed: Partial<
+        Record<NetworkCompatible['symbol'], Record<string, boolean>>
+    >;
+    explanationBannerClosed: Partial<Record<NetworkCompatible['symbol'], boolean>>;
 }
 
 export interface PrefillFields {

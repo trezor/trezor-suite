@@ -21,7 +21,7 @@ import { CoinmarketInfoAction } from 'src/actions/wallet/coinmarketInfoActions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 
 // reexport
-export type { Network, NetworkSymbol } from '@suite-common/wallet-config';
+export type { NetworkCompatible as Network, NetworkSymbol } from '@suite-common/wallet-config';
 export type { Icon } from './iconTypes';
 export type { BackendType, CustomBackend } from './backend';
 export type { TickerId } from 'src/types/wallet/fiatRates';

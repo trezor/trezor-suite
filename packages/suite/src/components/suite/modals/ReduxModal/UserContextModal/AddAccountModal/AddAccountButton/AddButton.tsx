@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 import { ButtonProps, Tooltip, NewModal } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { Network } from '@suite-common/wallet-config';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 
 interface AddButtonProps extends Omit<ButtonProps, 'children'> {
     disabledMessage: ReactNode;
-    networkName: Network['name'];
+    networkName: NetworkCompatible['name'];
 }
 
 export const AddButton = ({ disabledMessage, networkName, ...buttonProps }: AddButtonProps) => (

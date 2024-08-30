@@ -39,7 +39,7 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketSatsSwitcher } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSatsSwitcher';
-import { Network } from '@suite-common/wallet-config';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 
@@ -149,7 +149,7 @@ const useCoinmarketBuyForm = ({
     // based on selected cryptoSymbol, because of using for validation cryptoInput
     const network = getNetwork(
         cryptoToNetworkSymbol(values.cryptoSelect?.value ?? 'BTC') ?? 'btc',
-    ) as Network;
+    ) as NetworkCompatible;
     const { toggleAmountInCrypto } = useCoinmarketSatsSwitcher({
         account,
         methods,

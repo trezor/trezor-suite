@@ -55,7 +55,7 @@ import { CoinmarketSellStepType } from 'src/types/coinmarket/coinmarketOffers';
 import { useCoinmarketCommonFormState } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonFormState';
 import { useCoinmarketSellFormHelpers } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormHelpers';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Network } from '@suite-common/wallet-config';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { useCoinmarketSatsSwitcher } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSatsSwitcher';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 
@@ -132,7 +132,7 @@ export const useCoinmarketSellForm = ({
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
     const addressDisplayType = useSelector(selectAddressDisplayType);
-    const network = getNetwork(account.symbol) as Network;
+    const network = getNetwork(account.symbol) as NetworkCompatible;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;

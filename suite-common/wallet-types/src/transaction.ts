@@ -12,7 +12,7 @@ import {
     PrecomposedTransactionNonFinalCardano as PrecomposedTransactionCardanoConnectResponseNonFinal,
     PrecomposedTransactionFinalCardano as PrecomposedTransactionCardanoConnectResponseFinal,
 } from '@trezor/connect';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
 import { TranslationKey } from '@suite-common/intl-types';
 
 import { Account } from './account';
@@ -191,7 +191,7 @@ export interface SignTransactionData {
     account: Account;
     address: string;
     amount: string;
-    network: Network;
+    network: NetworkCompatible;
     destinationTag?: string;
     transactionInfo: PrecomposedTransactionFinal | null;
 }
@@ -202,7 +202,7 @@ export interface ComposeTransactionData {
     feeInfo: FeeInfo;
     feePerUnit: string;
     feeLimit: string;
-    network: Network;
+    network: NetworkCompatible;
     selectedFee: FeeLevel['label'];
     isMaxActive: boolean;
     address?: string;

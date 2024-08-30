@@ -1,4 +1,4 @@
-import { Network } from '@suite-common/wallet-config';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 
 import { Discovery } from './discovery';
 import { Account, WalletParams } from './account';
@@ -12,7 +12,7 @@ export interface SelectedAccountLoading {
         | 'auth' // Waiting for device.state
         | 'account-loading'; // Waiting for account
     account?: Account;
-    network?: Network;
+    network?: NetworkCompatible;
     discovery?: Discovery;
     params?: WalletParams;
 }
@@ -21,7 +21,7 @@ export interface SelectedAccountLoaded {
     status: 'loaded';
     loader?: undefined;
     account: Account;
-    network: Network;
+    network: NetworkCompatible;
     discovery: Discovery;
     params: WalletParams;
     // blockchain?: any; // TODO:
@@ -35,7 +35,7 @@ export type SelectedAccountException =
           status: 'exception';
           loader: 'auth-failed' | 'discovery-error' | 'discovery-empty'; // No network enabled in settings
           account?: undefined;
-          network?: Network;
+          network?: NetworkCompatible;
           discovery?: Discovery;
           params?: WalletParams;
       }
@@ -46,7 +46,7 @@ export type SelectedAccountException =
               | 'account-not-enabled' // Requested account network is not enabled in settings
               | 'account-not-exists'; // Requested account network is not listed in networksCompatibility
           account?: undefined;
-          network: Network;
+          network: NetworkCompatible;
           discovery: Discovery;
           params: WalletParams;
       };

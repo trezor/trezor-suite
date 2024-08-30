@@ -1,6 +1,6 @@
 import { A, F } from '@mobily/ts-belt';
 
-import { Network, AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkCompatible, AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
 const NORMAL_ACCOUNT_TYPE = 'normal';
@@ -9,7 +9,7 @@ const NORMAL_ACCOUNT_TYPE = 'normal';
 const normalizedAccountType = (accountType?: AccountType) => accountType ?? NORMAL_ACCOUNT_TYPE;
 
 export const getNetworksWithUnfinishedDiscovery = (
-    enabledNetworks: readonly Network[],
+    enabledNetworks: readonly NetworkCompatible[],
     accounts: Account[],
     accountsLimit: number,
 ) =>
@@ -29,7 +29,7 @@ export const getNetworksWithUnfinishedDiscovery = (
         );
     });
 
-export const getNetworkSymbols = (networks: readonly Network[]): NetworkSymbol[] =>
+export const getNetworkSymbols = (networks: readonly NetworkCompatible[]): NetworkSymbol[] =>
     F.toMutable(
         A.uniqBy(
             networks.map(n => n.symbol),

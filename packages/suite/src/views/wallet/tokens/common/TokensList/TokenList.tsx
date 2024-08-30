@@ -3,7 +3,7 @@ import { Card, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
-import { Network } from '@suite-common/wallet-config';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { EnhancedTokenInfo, TokenManagementAction } from '@suite-common/token-definitions';
 import { useState } from 'react';
 import { AnimationWrapper } from 'src/components/wallet/AnimationWrapper';
@@ -64,7 +64,7 @@ interface TokenListProps {
     account: Account;
     tokensWithBalance: EnhancedTokenInfo[];
     tokensWithoutBalance: EnhancedTokenInfo[];
-    network: Network;
+    network: NetworkCompatible;
     tokenStatusType: TokenManagementAction;
     hideRates?: boolean;
     searchQuery?: string;

@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 import { selectDevice } from '@suite-common/wallet-core';
 import { Account, AddressType, TokenAddress } from '@suite-common/wallet-types';
-import { Network } from '@suite-common/wallet-config';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import {
     DefinitionType,
     EnhancedTokenInfo,
@@ -110,7 +110,7 @@ const StyledIcon = styled(Icon)`
     margin-left: ${spacingsPx.xxs};
 `;
 
-const getTokenExplorerUrl = (network: Network, token: EnhancedTokenInfo) => {
+const getTokenExplorerUrl = (network: NetworkCompatible, token: EnhancedTokenInfo) => {
     const explorerUrl =
         network.networkType === 'cardano' ? network.explorer.token : network.explorer.account;
 
@@ -124,7 +124,7 @@ const getTokenExplorerUrl = (network: Network, token: EnhancedTokenInfo) => {
 interface TokenRowProps {
     account: Account;
     token: EnhancedTokenInfo;
-    network: Network;
+    network: NetworkCompatible;
     tokenStatusType: TokenManagementAction;
     hideRates?: boolean;
     isUnverifiedTable?: boolean;

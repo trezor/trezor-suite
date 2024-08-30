@@ -1,7 +1,7 @@
 import { AssetFiatBalance } from '@suite-common/assets';
 import { AssetRow, AssetRowSkeleton } from './AssetRow';
 import { AssetTableHeader } from './AssetTableHeader';
-import { Network } from '@suite-common/wallet-config';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
@@ -14,7 +14,7 @@ const Table = styled.div`
 
 export interface AssetTableRowType {
     symbol: string;
-    network: Network;
+    network: NetworkCompatible;
     assetBalance: BigNumber;
     assetFailed: boolean;
 }

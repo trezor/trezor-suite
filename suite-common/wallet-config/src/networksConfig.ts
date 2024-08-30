@@ -653,7 +653,10 @@ export const networks = {
 type InferredNetworks = typeof networks;
 type InferredNetwork = InferredNetworks[NetworkSymbol];
 
-export type Network = Without<InferredNetwork, 'accountTypes'> & {
+/**
+ * @deprecated Old network object interface for backwards copatibility.
+ */
+export type NetworkCompatible = Without<InferredNetwork, 'accountTypes'> & {
     symbol: NetworkSymbol;
     accountType?: AccountType;
     backendType?: BackendType;
@@ -673,7 +676,7 @@ export type Network = Without<InferredNetwork, 'accountTypes'> & {
 // Transforms the network object into the previously used format so we don't have to change
 // every occurence. We could gradually start to use the network object directly and in the end
 // this could be removed.
-export const networksCompatibility: Network[] = Object.entries(networks).flatMap(
+export const networksCompatibility: NetworkCompatible[] = Object.entries(networks).flatMap(
     ([symbol, { accountTypes, ...network }]) => [
         { symbol, ...network },
         ...Object.entries(accountTypes).map(([accountType, networkOverride]) => ({
@@ -719,7 +722,9 @@ export const isDebugOnlyAccountType = (
 
     if (!network) return false;
 
-    const accountTypeInfo = (network.accountTypes as Record<AccountType, Network>)[accountType];
+    const accountTypeInfo = (network.accountTypes as Record<AccountType, NetworkCompatible>)[
+        accountType
+    ];
 
     return !!accountTypeInfo?.isDebugOnlyAccountType;
 };
