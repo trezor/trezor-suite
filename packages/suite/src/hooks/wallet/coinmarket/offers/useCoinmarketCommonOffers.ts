@@ -1,7 +1,7 @@
 import { useTimer } from '@trezor/react-utils';
 import { useDevice } from 'src/hooks/suite';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import {
     CoinmarketTradeBuyType,
     CoinmarketTradeDetailMapProps,
@@ -15,8 +15,6 @@ import {
     CoinmarketOffersContextValues,
     CoinmarketOffersMapProps,
 } from 'src/types/coinmarket/coinmarketOffers';
-import { useDispatch } from 'react-redux';
-import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
 import { useServerEnvironment } from 'src/hooks/wallet/coinmarket/useServerEnviroment';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/coinmarket/form';
@@ -44,7 +42,6 @@ export const useCoinmarketCommonOffers = ({
     type,
     selectedAccount,
 }: UseCoinmarketCommonProps): UseCoinmarketCommonReturnProps => {
-    const dispatch = useDispatch();
     const timer = useTimer();
     const { account } = selectedAccount;
     const { isLocked, device } = useDevice();
@@ -65,16 +62,6 @@ export const useCoinmarketCommonOffers = ({
     };
 
     useServerEnvironment();
-
-    // after unmount set off CryptoSymbol for modals
-    useEffect(() => {
-        return () => {
-            dispatch({
-                type: SET_MODAL_CRYPTO_CURRENCY,
-                modalCryptoSymbol: undefined,
-            });
-        };
-    }, [dispatch]);
 
     return {
         callInProgress,

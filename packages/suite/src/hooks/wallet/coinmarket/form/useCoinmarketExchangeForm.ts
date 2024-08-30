@@ -347,10 +347,6 @@ export const useCoinmarketExchangeForm = ({
             );
             if (result) {
                 saveSelectedQuote(quote);
-                dispatch({
-                    type: SET_MODAL_CRYPTO_CURRENCY,
-                    modalCryptoSymbol: quote.receive,
-                });
 
                 navigateToExchangeConfirm();
                 timer.stop();
@@ -509,6 +505,7 @@ export const useCoinmarketExchangeForm = ({
     };
 
     useCoinmarketLoadData();
+    useCoinmarketModalCrypto({ receiveCurrency: values.receiveCryptoSelect?.value });
 
     useDebounce(
         () => {

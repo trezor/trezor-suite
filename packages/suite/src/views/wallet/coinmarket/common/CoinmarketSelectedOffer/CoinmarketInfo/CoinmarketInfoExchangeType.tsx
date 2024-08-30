@@ -32,7 +32,7 @@ export const CoinmarketInfoExchangeType = ({
         providers && exchangeQuote.exchange ? providers[exchangeQuote.exchange] : undefined;
 
     return (
-        <Row alignItems="center" justifyContent="center" flex={1}>
+        <Row alignItems="center" justifyContent="center" flex="auto">
             <Text>
                 {provider?.isFixedRate && !exchangeQuote.isDex && (
                     <>

@@ -132,28 +132,22 @@ export const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffer
                     )}
                 </OfferColumn2>
                 <OfferColumn3>
-                    <ButtonWrapper>
-                        {quote.status === 'LOGIN_REQUEST' ? (
-                            <Button
-                                variant="tertiary"
-                                isFullWidth
-                                onClick={() => selectQuote(quote)}
-                            >
-                                <Translation id="TR_LOGIN_PROCEED" />
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="tertiary"
-                                isFullWidth
-                                isLoading={callInProgress}
-                                isDisabled={!!quote.error || callInProgress}
-                                onClick={() => selectQuote(quote)}
-                                data-testid="@coinmarket/featured-offers/get-this-deal-button"
-                            >
-                                {actionButtonText(context, quote)}
-                            </Button>
-                        )}
-                    </ButtonWrapper>
+                    {quote.status === 'LOGIN_REQUEST' ? (
+                        <Button variant="tertiary" isFullWidth onClick={() => selectQuote(quote)}>
+                            <Translation id="TR_LOGIN_PROCEED" />
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="tertiary"
+                            isFullWidth
+                            isLoading={callInProgress}
+                            isDisabled={!!quote.error || callInProgress}
+                            onClick={() => selectQuote(quote)}
+                            data-testid="@coinmarket/featured-offers/get-this-deal-button"
+                        >
+                            {actionButtonText(context, quote)}
+                        </Button>
+                    )}
                 </OfferColumn3>
             </Offer>
         </Card>

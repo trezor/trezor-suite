@@ -33,7 +33,6 @@ import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
-import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
 import useCoinmarketPaymentMethod from 'src/hooks/wallet/coinmarket/form/useCoinmarketPaymentMethod';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
@@ -329,10 +328,7 @@ const useCoinmarketBuyForm = ({
                     }
                 } else {
                     saveSelectedQuote(quote);
-                    dispatch({
-                        type: SET_MODAL_CRYPTO_CURRENCY,
-                        modalCryptoSymbol: quote.receiveCurrency,
-                    });
+
                     timer.stop();
 
                     navigateToBuyConfirm();
@@ -376,6 +372,7 @@ const useCoinmarketBuyForm = ({
     };
 
     useCoinmarketLoadData();
+    useCoinmarketModalCrypto({ receiveCurrency: values.cryptoSelect?.value });
 
     // call change handler on every change of text inputs with debounce
     useDebounce(
