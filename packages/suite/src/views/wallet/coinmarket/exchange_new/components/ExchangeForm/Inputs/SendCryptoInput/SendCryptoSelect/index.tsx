@@ -1,7 +1,7 @@
 import { Select, CoinLogo } from '@trezor/components';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
-import { NetworkSymbol, getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
+import { NetworkSymbol, ethereumTypeNetworkSymbols } from '@suite-common/wallet-config';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from 'src/types/wallet/coinmarketExchangeForm';
 import {
@@ -47,7 +47,6 @@ const SendCryptoSelect = () => {
 
     const { outputs } = getValues();
     const currency = outputs?.[0]?.currency;
-    const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
 
     return (
         <Controller

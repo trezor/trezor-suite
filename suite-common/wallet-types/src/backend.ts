@@ -1,4 +1,4 @@
-import { Explorer, networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import { Explorer, NetworkSymbol, BackendType } from '@suite-common/wallet-config';
 import { Timeout } from '@trezor/type-utils';
 
 /**
@@ -10,10 +10,8 @@ export type BlockbookUrl = {
     tor?: boolean; // Added by TOR
 };
 
-export type BackendType = 'blockbook' | 'electrum' | 'ripple' | 'blockfrost' | 'solana';
-
 export type CustomBackend = {
-    coin: (typeof networksCompatibility)[number]['symbol'];
+    coin: NetworkSymbol;
     type: BackendType;
     urls: string[];
 };

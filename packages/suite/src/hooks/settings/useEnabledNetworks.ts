@@ -2,7 +2,7 @@ import { useSelector, useActions } from 'src/hooks/suite';
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { NetworkCompatible } from '@suite-common/wallet-config';
 
-import { getMainnets, getTestnets } from '@suite-common/wallet-config';
+import { getMainnetsCompatible, getTestnetsCompatible } from '@suite-common/wallet-config';
 import {
     selectHasExperimentalFeature,
     selectIsDebugModeActive,
@@ -20,9 +20,9 @@ export const useEnabledNetworks = (): EnabledNetworks => {
     const isDebug = useSelector(selectIsDebugModeActive);
     const bnbExperimentalFeature = useSelector(selectHasExperimentalFeature('bnb-smart-chain'));
 
-    const mainnets = getMainnets(isDebug, bnbExperimentalFeature);
+    const mainnets = getMainnetsCompatible(isDebug, bnbExperimentalFeature);
 
-    const testnets = getTestnets(isDebug);
+    const testnets = getTestnetsCompatible(isDebug);
 
     const { setEnabled } = useActions({
         setEnabled: changeCoinVisibility,

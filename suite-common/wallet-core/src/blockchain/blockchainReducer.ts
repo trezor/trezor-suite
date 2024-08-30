@@ -2,8 +2,8 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
-import { BackendType, Blockchain, BlockchainNetworks } from '@suite-common/wallet-types';
+import { BackendType, networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import { Blockchain, BlockchainNetworks } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
 import {
     BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,

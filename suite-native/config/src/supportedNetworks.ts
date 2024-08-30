@@ -4,8 +4,8 @@ import { isTestnet } from '@suite-common/wallet-utils';
 import {
     NetworkCompatible,
     NetworkSymbol,
-    getMainnets,
-    getTestnets,
+    getMainnetsCompatible,
+    getTestnetsCompatible,
 } from '@suite-common/wallet-config';
 import { AccountType } from '@suite-common/wallet-types';
 
@@ -69,14 +69,14 @@ export const filterBlacklistedNetworks = (networks: NetworkCompatible[]) =>
     networks.filter(network => !discoveryBlacklist.includes(network.symbol));
 
 export const portfolioTrackerMainnets = sortNetworks(
-    getMainnets()
+    getMainnetsCompatible()
         .filter(network => networkSymbolsWhitelistMap.mainnet.includes(network.symbol))
         .filter(network => !portfolioTrackerBlacklist.includes(network.symbol)),
 ).map(network => network.symbol);
 
 const getPortfolioTrackerTestnets = () => {
     return sortNetworks(
-        getTestnets().filter(network =>
+        getTestnetsCompatible().filter(network =>
             networkSymbolsWhitelistMap.testnet.includes(network.symbol),
         ),
     ).map(network => network.symbol);

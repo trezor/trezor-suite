@@ -22,7 +22,7 @@ import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tok
 
 // reexport
 export type { Icon } from './iconTypes';
-export type { BackendType, CustomBackend } from './backend';
+export type { CustomBackend } from './backend';
 export type { TickerId } from 'src/types/wallet/fiatRates';
 export type { Discovery } from '@suite-common/wallet-types';
 export type DiscoveryStatusType =

@@ -716,7 +716,7 @@ export const networksCompatibility: NetworkCompatible[] = Object.values(networks
     ],
 );
 
-export const getMainnets = (debug = false, bnb = false) =>
+export const getMainnetsCompatible = (debug = false, bnb = false) =>
     networksCompatibility.filter(
         n =>
             !n.accountType &&
@@ -725,15 +725,26 @@ export const getMainnets = (debug = false, bnb = false) =>
             (bnb || n.symbol !== 'bnb'),
     );
 
-export const getTestnets = (debug = false) =>
+export const getTestnetsCompatible = (debug = false) =>
     networksCompatibility.filter(
         n => !n.accountType && n.testnet === true && (!n.isDebugOnlyNetwork || debug),
     );
 
-export const getAllNetworkSymbols = () => networksCompatibility.map(n => n.symbol);
+const networksCollection: Network[] = Object.values(networks);
 
-export const getEthereumTypeNetworkSymbols = () =>
-    networksCompatibility.filter(n => n.networkType === 'ethereum').map(n => n.symbol);
+export const getMainnets = (debug = false, bnb = false) =>
+    networksCollection.filter(
+        n => !n.testnet && (!n.isDebugOnlyNetwork || debug) && (bnb || n.symbol !== 'bnb'),
+    );
+
+export const getTestnets = (debug = false) =>
+    networksCollection.filter(n => n.testnet === true && (!n.isDebugOnlyNetwork || debug));
+
+export const networkSymbols = networksCollection.map(n => n.symbol);
+
+export const ethereumTypeNetworkSymbols = networksCollection
+    .filter(n => n.networkType === 'ethereum')
+    .map(n => n.symbol);
 
 export const getTestnetSymbols = () => getTestnets().map(n => n.symbol);
 
@@ -746,13 +757,11 @@ export const isDebugOnlyAccountType = (
 ): boolean => {
     if (!symbol) return false;
 
-    const network = networks?.[symbol];
+    const network = (networks as Networks)?.[symbol];
 
     if (!network) return false;
 
-    const accountTypeInfo = (network.accountTypes as Record<AccountType, NetworkCompatible>)[
-        accountType
-    ];
+    const accountTypeInfo = network.accountTypes[accountType];
 
     return !!accountTypeInfo?.isDebugOnlyAccountType;
 };
