@@ -1,7 +1,6 @@
-import styled, { useTheme } from 'styled-components';
-import { Button, Card, Icon, Paragraph, IconButton } from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
-import { Translation, IconBorderedWrapper } from 'src/components/suite';
+import { Button, Text, IconButton, Row, Warning, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setFlag } from 'src/actions/suite/suiteActions';
@@ -10,49 +9,18 @@ import { Account } from '@suite-common/wallet-types';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
-
-const Flex = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: ${spacingsPx.md};
-    flex-wrap: wrap;
-`;
-
-const Left = styled.div`
-    display: flex;
-    gap: ${spacingsPx.sm};
-    align-items: center;
-    flex-wrap: wrap;
-`;
-
-const Right = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xs};
-`;
-
-const Title = styled.h4`
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.callout}
-    margin-bottom: 4px;
-`;
-
-const Text = styled.div`
-    max-width: 390px;
-    line-height: 24px;
-`;
+import { useTheme } from 'styled-components';
 
 interface StakeEthBannerProps {
     account: Account;
 }
 
 export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
-    const theme = useTheme();
     const dispatch = useDispatch();
     const { stakeEthBannerClosed } = useSelector(selectSuiteFlags);
     const { route } = useSelector(state => state.router);
     const ethApy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
+    const theme = useTheme();
 
     const closeBanner = () => {
         dispatch(setFlag('stakeEthBannerClosed', true));
@@ -72,42 +40,39 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
     }
 
     return (
-        <Card>
-            <Flex>
-                <Left>
-                    <IconBorderedWrapper>
-                        <Icon name="piggyBank" size={32} color={theme.iconPrimaryDefault} />
-                    </IconBorderedWrapper>
-
-                    <Text>
-                        <Title>
-                            <Translation id="TR_STAKE_ETH_EARN_REPEAT" />
-                        </Title>
-                        <Paragraph>
-                            <Translation
-                                id="TR_STAKE_ANY_AMOUNT_ETH"
-                                values={{
-                                    apyPercent: ethApy,
-                                    symbol: account?.symbol.toUpperCase(),
-                                    amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
-                                }}
-                            />
-                        </Paragraph>
-                    </Text>
-                </Left>
-
-                <Right>
-                    <Button onClick={goToEthStakingTab}>
+        <Warning
+            variant="tertiary"
+            icon="piggyBankFilled"
+            rightContent={
+                <Row gap={8}>
+                    <Button size="small" onClick={goToEthStakingTab} textWrap={false}>
                         <Translation id="TR_STAKE_LEARN_MORE" />
                     </Button>
                     <IconButton
+                        size="small"
                         variant="tertiary"
                         icon="close"
-                        iconSize={16}
                         onClick={closeBanner}
                     />
-                </Right>
-            </Flex>
-        </Card>
+                </Row>
+            }
+        >
+            <Column gap={4} alignItems="flex-start" flex={1} margin={{ left: spacings.xs }}>
+                <Text color={theme.textSubdued} typographyStyle="callout">
+                    <Translation id="TR_STAKE_ETH_EARN_REPEAT" />
+                </Text>
+
+                <Text typographyStyle="body" textWrap="balance">
+                    <Translation
+                        id="TR_STAKE_ANY_AMOUNT_ETH"
+                        values={{
+                            apyPercent: ethApy,
+                            symbol: account?.symbol.toUpperCase(),
+                            amount: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
+                        }}
+                    />
+                </Text>
+            </Column>
+        </Warning>
     );
 };
