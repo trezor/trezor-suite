@@ -12,7 +12,8 @@ import { useSelector, useDispatch } from 'src/hooks/suite';
 import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
-import { Account, Network, NetworkSymbol } from 'src/types/wallet';
+import { Account } from 'src/types/wallet';
+import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 import { AddButton } from './AddButton';
@@ -45,7 +46,7 @@ const verifyAvailability = ({
 };
 
 interface AddCoinjoinAccountProps {
-    network: Network;
+    network: NetworkCompatible;
 }
 
 export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) => {

@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from 'src/components/suite';
 import { AmountRow } from './AmountRow';
-import { NetworkSymbol, WalletAccountTransaction } from 'src/types/wallet';
+import { WalletAccountTransaction } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     formatAmount,
     formatCardanoDeposit,

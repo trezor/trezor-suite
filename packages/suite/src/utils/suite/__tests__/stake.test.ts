@@ -50,7 +50,7 @@ import {
 } from '@trezor/connect/src/types/api/blockchainEstimateFee';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { ValidatorsQueue } from '@suite-common/wallet-core';
-import { NetworkSymbol } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 describe('transformTx', () => {
     transformTxFixtures.forEach(test => {

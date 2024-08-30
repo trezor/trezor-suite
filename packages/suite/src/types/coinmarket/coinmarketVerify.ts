@@ -1,4 +1,5 @@
-import type { Account, NetworkSymbol } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { CryptoSymbol } from 'invity-api';
 import { UseFormReturn } from 'react-hook-form';
 import { AccountAddress } from '@trezor/connect';

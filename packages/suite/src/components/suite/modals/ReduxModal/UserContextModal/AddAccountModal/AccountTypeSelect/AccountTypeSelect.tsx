@@ -3,7 +3,7 @@ import { Select } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
 import { AccountTypeDescription } from './AccountTypeDescription';
-import { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { typography } from '@trezor/theme';
 
 const LabelWrapper = styled.div`
@@ -19,7 +19,7 @@ const TypeInfo = styled.div`
     ${typography.label}
 `;
 
-const buildAccountTypeOption = (network: Network) =>
+const buildAccountTypeOption = (network: NetworkCompatible) =>
     ({
         value: network,
         label: network.accountType || 'normal',
@@ -38,9 +38,9 @@ const formatLabel = (option: Option) => (
 );
 
 interface AccountTypeSelectProps {
-    network: Network;
-    accountTypes: Network[];
-    onSelectAccountType: (network: Network) => void;
+    network: NetworkCompatible;
+    accountTypes: NetworkCompatible[];
+    onSelectAccountType: (network: NetworkCompatible) => void;
 }
 
 export const AccountTypeSelect = ({

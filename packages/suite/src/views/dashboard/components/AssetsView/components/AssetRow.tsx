@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { Icon, variables, SkeletonRectangle } from '@trezor/components';
 import {
     AmountUnitSwitchWrapper,
@@ -125,7 +125,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 interface AssetTableProps {
-    network: Network;
+    network: NetworkCompatible;
     failed: boolean;
     cryptoValue: string;
     isLastRow?: boolean;

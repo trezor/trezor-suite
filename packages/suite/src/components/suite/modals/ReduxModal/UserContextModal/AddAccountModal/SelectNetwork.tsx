@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
 import { Paragraph } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { CoinList } from 'src/components/suite';
-import type { Network } from 'src/types/wallet';
 
 const Title = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
@@ -14,7 +13,7 @@ const Title = styled(Paragraph)`
 
 type SelectNetworkProps = {
     heading: React.ReactNode;
-    networks: Network[];
+    networks: NetworkCompatible[];
     selectedNetworks: NetworkSymbol[];
     handleNetworkSelection: (symbol?: NetworkSymbol) => void;
 };

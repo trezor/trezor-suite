@@ -10,7 +10,7 @@ import ConnectionInfo from './ConnectionInfo';
 import { BackendInput } from './BackendInput';
 import { BackendTypeSelect } from './BackendTypeSelect';
 import { TorModal, TorResult } from './TorModal';
-import type { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { spacings } from '@trezor/theme';
 
@@ -55,7 +55,7 @@ const TransparentCollapsibleBox = styled(CollapsibleBox)`
 `;
 
 interface CustomBackendsProps {
-    network: Network;
+    network: NetworkCompatible;
     onCancel: () => void;
 }
 

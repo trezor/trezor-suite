@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { FiatValue } from 'src/components/suite/FiatValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { NetworkSymbol } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 const Container = styled.div`

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { NetworkSymbol } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Formatters, useFormatters } from '@suite-common/formatters';
 

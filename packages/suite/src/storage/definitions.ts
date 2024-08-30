@@ -8,7 +8,8 @@ import type { MetadataState } from 'src/types/suite/metadata';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { MessageState } from '@suite-common/message-system';
 import type { MessageSystem } from '@suite-common/suite-types';
-import type { Account, Discovery, Network, WalletAccountTransaction } from 'src/types/wallet';
+import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
@@ -54,7 +55,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: WalletSettings;
     };
     backendSettings: {
-        key: Network['symbol'];
+        key: NetworkCompatible['symbol'];
         value: BackendSettings;
     };
     devices: {

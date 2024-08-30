@@ -7,12 +7,16 @@ import {
     selectDeviceModel,
 } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
-import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    networksCompatibility,
+    NetworkCompatible,
+    NetworkSymbol,
+} from '@suite-common/wallet-config';
 import { CollapsibleBox, NewModal } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation, CoinList, TooltipSymbol } from 'src/components/suite';
-import { Account, Network } from 'src/types/wallet';
+import { Account } from 'src/types/wallet';
 import { TrezorDevice } from 'src/types/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
@@ -49,7 +53,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
 
     const { mainnets, testnets, enabledNetworks: enabledNetworkSymbols } = useEnabledNetworks();
 
-    const getNetworks = (networks: Network[], getUnsupported = false) =>
+    const getNetworks = (networks: NetworkCompatible[], getUnsupported = false) =>
         networks.filter(
             ({ symbol }) => getUnsupported !== supportedNetworkSymbols.includes(symbol),
         );
@@ -74,7 +78,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
             ? bitcoinNetwork
             : undefined;
 
-    const [selectedNetwork, setSelectedNetwork] = useState<Network | undefined>(
+    const [selectedNetwork, setSelectedNetwork] = useState<NetworkCompatible | undefined>(
         preselectedNetwork || bitcoinOnlyDefaultNetworkSelection,
     );
 
@@ -120,7 +124,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
 
     const selectedNetworks = selectedNetwork ? [selectedNetwork.symbol] : [];
 
-    const selectNetwork = (symbol?: Network['symbol']) => {
+    const selectNetwork = (symbol?: NetworkCompatible['symbol']) => {
         if (symbol) {
             const networkToSelect = networksCompatibility.find(n => n.symbol === symbol);
 

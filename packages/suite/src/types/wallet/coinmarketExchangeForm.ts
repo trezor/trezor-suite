@@ -1,6 +1,7 @@
 import type { AppState } from 'src/types/suite';
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
-import type { Account, Network } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import type { FeeLevel } from '@trezor/connect';
 import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import type {
@@ -44,7 +45,7 @@ export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormSta
     isLoading: boolean;
     updateFiatValue: (amount: string) => void;
     noProviders: boolean;
-    network: Network;
+    network: NetworkCompatible;
     feeInfo: FeeInfo;
     removeDraft: (key: string) => void;
     formState: ReactHookFormState<ExchangeFormState>;

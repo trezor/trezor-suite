@@ -9,7 +9,7 @@ import { Modal, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
 import { useCustomBackends } from 'src/hooks/settings/backends';
-import type { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { AdvancedCoinSettingsModal } from 'src/components/suite/modals';
 
 const BackendRowWrapper = styled.div`
@@ -49,7 +49,7 @@ const CoinUrls = styled.span`
 `;
 
 interface BackendRowProps {
-    coin: Network['symbol'];
+    coin: NetworkCompatible['symbol'];
     urls: string[];
     onSettings: () => void;
 }
@@ -85,7 +85,7 @@ type DisableTorModalProps = Omit<Extract<UserContextPayload, { type: 'disable-to
 
 export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) => {
     const dispatch = useDispatch();
-    const [coin, setCoin] = useState<Network['symbol']>();
+    const [coin, setCoin] = useState<NetworkCompatible['symbol']>();
     const onionBackends = useCustomBackends().filter(({ urls }) => urls.every(isOnionUrl));
 
     const onDisableTor = () => {

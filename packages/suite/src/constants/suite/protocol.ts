@@ -1,4 +1,4 @@
-import type { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 
 export enum PROTOCOL_SCHEME {
     BITCOIN = 'bitcoin',
@@ -18,7 +18,9 @@ export enum PROTOCOL_SCHEME {
     CARDANO = 'cardano',
 }
 
-export const PROTOCOL_TO_NETWORK: Partial<{ [key in PROTOCOL_SCHEME]: Network['symbol'] }> = {
+export const PROTOCOL_TO_NETWORK: Partial<{
+    [key in PROTOCOL_SCHEME]: NetworkCompatible['symbol'];
+}> = {
     [PROTOCOL_SCHEME.BITCOIN]: 'btc',
     [PROTOCOL_SCHEME.LITECOIN]: 'ltc',
     [PROTOCOL_SCHEME.BITCOIN_CASH]: 'bch',

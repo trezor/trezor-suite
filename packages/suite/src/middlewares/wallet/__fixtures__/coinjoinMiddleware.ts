@@ -9,7 +9,8 @@ import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
 import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
 import { CoinjoinAccount, CoinjoinSession } from 'src/types/wallet/coinjoin';
-import { Account, NetworkSymbol } from 'src/types/wallet';
+import { Account } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 
 const DEVICE_A = {

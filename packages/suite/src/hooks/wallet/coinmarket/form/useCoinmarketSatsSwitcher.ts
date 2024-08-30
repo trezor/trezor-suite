@@ -3,7 +3,7 @@ import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 import { FORM_CRYPTO_INPUT, FORM_FIAT_INPUT } from 'src/constants/wallet/coinmarket/form';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { coinmarketGetRoundedFiatAmount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 interface UseCoinmarketSatsSwitcherProps {
@@ -11,7 +11,7 @@ interface UseCoinmarketSatsSwitcherProps {
     methods: any;
     quoteCryptoAmount: string | undefined;
     quoteFiatAmount: string | undefined;
-    network: Network | null;
+    network: NetworkCompatible | null;
 }
 
 /**

@@ -1,6 +1,7 @@
 import { useState, ReactNode } from 'react';
 import styled from 'styled-components';
-import { Network, WalletAccountTransaction } from 'src/types/wallet';
+import { WalletAccountTransaction } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { DayHeader } from './DayHeader';
 import {
     getFiatRateKey,
@@ -32,7 +33,7 @@ interface TransactionsGroupProps {
     dateKey: string;
     transactions: WalletAccountTransaction[];
     children?: ReactNode;
-    symbol: Network['symbol'];
+    symbol: NetworkCompatible['symbol'];
     localCurrency: FiatCurrencyCode;
     index: number;
     isPending: boolean;

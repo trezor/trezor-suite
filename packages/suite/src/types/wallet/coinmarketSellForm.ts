@@ -1,6 +1,7 @@
 import type { AppState } from 'src/types/suite';
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
-import type { Account, Network } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import type { FeeLevel } from '@trezor/connect';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type {
@@ -50,7 +51,7 @@ export type SellFormContextValues = UseFormReturn<SellFormState> & {
     quotesRequest: AppState['wallet']['coinmarket']['sell']['quotesRequest'];
     isLoading: boolean;
     noProviders: boolean;
-    network: Network;
+    network: NetworkCompatible;
     feeInfo: FeeInfo;
     onCryptoAmountChange: (amount: string) => void;
     onFiatAmountChange: (amount: string) => void;

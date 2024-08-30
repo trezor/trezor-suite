@@ -3,12 +3,12 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { useFormatters } from '@suite-common/formatters';
 import { isTestnet, parseTransactionDateKey } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { ColAmount, ColDate, ColFiat, HeaderWrapper } from './CommonComponents';
 
 interface DayHeaderProps {
     dateKey: string;
-    symbol: Network['symbol'];
+    symbol: NetworkCompatible['symbol'];
     totalAmount: BigNumber;
     totalFiatAmountPerDay: BigNumber;
     localCurrency: string;

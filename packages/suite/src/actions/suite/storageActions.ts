@@ -15,7 +15,8 @@ import {
     serializeCoinjoinAccount,
 } from 'src/utils/suite/storage';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
-import type { Account, Network } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
@@ -309,7 +310,7 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
 };
 
 export const saveBackend =
-    (coin: Network['symbol']) => async (_dispatch: Dispatch, getState: GetState) => {
+    (coin: NetworkCompatible['symbol']) => async (_dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return;
         await db.addItem(
             'backendSettings',

@@ -1,6 +1,6 @@
 import { useSelector } from 'src/hooks/suite';
 
-import { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
@@ -10,7 +10,7 @@ import { TokenTransfer } from '@trezor/blockchain-link-types';
 
 interface CommonOwnProps {
     amount: string;
-    symbol: Network['symbol'] | TokenTransfer['symbol'];
+    symbol: NetworkCompatible['symbol'] | TokenTransfer['symbol'];
     tokenAddress?: TokenAddress;
     fiatCurrency?: string;
 }

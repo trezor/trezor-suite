@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite';
 import { useElevation, variables } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction, ChainedTransactions } from '@suite-common/wallet-types';
-import { Network } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { AmountDetails } from './AmountDetails';
 import { IODetails } from './IODetails/IODetails';
 import { ChainedTxs } from '../ChainedTxs';
@@ -50,7 +50,7 @@ export type TabID = 'amount' | 'io' | 'chained';
 
 interface AdvancedTxDetailsProps {
     defaultTab?: TabID;
-    network: Network;
+    network: NetworkCompatible;
     tx: WalletAccountTransaction;
     chainedTxs?: ChainedTransactions;
     explorerUrl: string;

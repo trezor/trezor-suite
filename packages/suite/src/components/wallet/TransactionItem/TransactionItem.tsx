@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { formatNetworkAmount, isTestnet, isTxFeePaid } from '@suite-common/wallet-utils';
 import { AccountLabels } from 'src/types/suite/metadata';
-import { Network, WalletAccountTransaction } from 'src/types/wallet';
+import { WalletAccountTransaction } from 'src/types/wallet';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import { TransactionTypeIcon } from './TransactionTypeIcon';
 import { TransactionHeading } from './TransactionHeading';
 import {
@@ -82,7 +83,7 @@ interface TransactionItemProps {
     isActionDisabled?: boolean; // Used in "chained transactions" transaction detail modal
     accountMetadata?: AccountLabels;
     accountKey: string;
-    network: Network;
+    network: NetworkCompatible;
     className?: string;
     index: number;
 }

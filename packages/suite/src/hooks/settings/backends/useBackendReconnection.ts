@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { reconnectBlockchainThunk } from '@suite-common/wallet-core';
 
 import { useDispatch } from 'src/hooks/suite';
-import { NetworkSymbol } from 'src/types/wallet';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export const useBackendReconnection = (
     coin: NetworkSymbol,
