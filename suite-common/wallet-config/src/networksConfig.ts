@@ -77,6 +77,7 @@ export type NetworkAccountTypes = Partial<Record<AccountType, Account>>;
 export type NetworkDeviceSupport = Partial<Record<DeviceModelInternal, string>>;
 
 export type Network = {
+    symbol: NetworkSymbol;
     name: string;
     networkType: NetworkType;
     bip43Path: string;
@@ -86,8 +87,8 @@ export type Network = {
     accountTypes: NetworkAccountTypes;
     isHidden?: boolean; // not used here, but supported elsewhere
     chainId?: number;
-    features?: NetworkFeature[];
-    customBackends?: BackendType[];
+    features: NetworkFeature[];
+    customBackends: BackendType[];
     support?: NetworkDeviceSupport;
     isDebugOnlyNetwork?: boolean;
     coingeckoId?: string;
@@ -99,6 +100,7 @@ export type Networks = {
 
 export const networks = {
     btc: {
+        symbol: 'btc',
         name: 'Bitcoin',
         networkType: 'bitcoin',
         bip43Path: "m/84'/0'/i'",
@@ -131,6 +133,7 @@ export const networks = {
         coingeckoId: 'bitcoin',
     },
     ltc: {
+        symbol: 'ltc',
         name: 'Litecoin',
         networkType: 'bitcoin',
         bip43Path: "m/84'/2'/i'",
@@ -154,6 +157,7 @@ export const networks = {
         coingeckoId: 'litecoin',
     },
     eth: {
+        symbol: 'eth',
         name: 'Ethereum',
         networkType: 'ethereum',
         chainId: 1,
@@ -190,6 +194,7 @@ export const networks = {
         coingeckoId: 'ethereum',
     },
     etc: {
+        symbol: 'etc',
         name: 'Ethereum Classic',
         networkType: 'ethereum',
         chainId: 61,
@@ -209,6 +214,7 @@ export const networks = {
     },
     // Ripple
     xrp: {
+        symbol: 'xrp',
         name: 'XRP',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",
@@ -225,6 +231,7 @@ export const networks = {
         coingeckoId: 'ripple',
     },
     bch: {
+        symbol: 'bch',
         name: 'Bitcoin Cash',
         networkType: 'bitcoin',
         bip43Path: "m/44'/145'/i'",
@@ -241,6 +248,7 @@ export const networks = {
         coingeckoId: 'bitcoin-cash',
     },
     btg: {
+        symbol: 'btg',
         name: 'Bitcoin Gold',
         networkType: 'bitcoin',
         bip43Path: "m/49'/156'/i'",
@@ -261,6 +269,7 @@ export const networks = {
         coingeckoId: 'bitcoin-gold',
     },
     dash: {
+        symbol: 'dash',
         name: 'Dash',
         networkType: 'bitcoin',
         bip43Path: "m/44'/5'/i'",
@@ -277,6 +286,7 @@ export const networks = {
         coingeckoId: 'dash',
     },
     dgb: {
+        symbol: 'dgb',
         name: 'DigiByte',
         networkType: 'bitcoin',
         bip43Path: "m/49'/20'/i'",
@@ -297,6 +307,7 @@ export const networks = {
         coingeckoId: 'digibyte',
     },
     doge: {
+        symbol: 'doge',
         name: 'Dogecoin',
         networkType: 'bitcoin',
         bip43Path: "m/44'/3'/i'",
@@ -313,6 +324,7 @@ export const networks = {
         coingeckoId: 'dogecoin',
     },
     nmc: {
+        symbol: 'nmc',
         name: 'Namecoin',
         networkType: 'bitcoin',
         bip43Path: "m/44'/7'/i'",
@@ -329,6 +341,7 @@ export const networks = {
         coingeckoId: 'namecoin',
     },
     vtc: {
+        symbol: 'vtc',
         name: 'Vertcoin',
         networkType: 'bitcoin',
         bip43Path: "m/84'/28'/i'",
@@ -352,6 +365,7 @@ export const networks = {
         coingeckoId: 'vertcoin',
     },
     zec: {
+        symbol: 'zec',
         name: 'Zcash',
         networkType: 'bitcoin',
         bip43Path: "m/44'/133'/i'",
@@ -369,6 +383,7 @@ export const networks = {
     },
     ada: {
         // icarus derivation
+        symbol: 'ada',
         name: 'Cardano',
         networkType: 'cardano',
         bip43Path: "m/1852'/1815'/i'",
@@ -402,6 +417,7 @@ export const networks = {
         coingeckoId: 'cardano',
     },
     sol: {
+        symbol: 'sol',
         name: 'Solana',
         networkType: 'solana',
         bip43Path: "m/44'/501'/i'/0'", // phantom - bip44Change
@@ -429,6 +445,7 @@ export const networks = {
         coingeckoId: 'solana',
     },
     matic: {
+        symbol: 'matic',
         name: 'Polygon PoS',
         networkType: 'ethereum',
         chainId: 137,
@@ -453,6 +470,7 @@ export const networks = {
         coingeckoId: 'polygon-pos',
     },
     bnb: {
+        symbol: 'bnb',
         name: 'BNB Smart Chain',
         networkType: 'ethereum',
         chainId: 56,
@@ -478,6 +496,7 @@ export const networks = {
     },
     // testnets
     test: {
+        symbol: 'test',
         name: 'Bitcoin Testnet',
         networkType: 'bitcoin',
         bip43Path: "m/84'/1'/i'",
@@ -510,6 +529,7 @@ export const networks = {
         coingeckoId: undefined,
     },
     regtest: {
+        symbol: 'regtest',
         name: 'Bitcoin Regtest',
         networkType: 'bitcoin',
         bip43Path: "m/84'/1'/i'",
@@ -543,6 +563,7 @@ export const networks = {
         coingeckoId: undefined,
     },
     tsep: {
+        symbol: 'tsep',
         name: 'Ethereum Sepolia',
         networkType: 'ethereum',
         bip43Path: "m/44'/1'/0'/0/i",
@@ -561,6 +582,7 @@ export const networks = {
         coingeckoId: undefined,
     },
     thol: {
+        symbol: 'thol',
         name: 'Ethereum Holesky',
         networkType: 'ethereum',
         bip43Path: "m/44'/1'/0'/0/i",
@@ -579,6 +601,7 @@ export const networks = {
         coingeckoId: undefined,
     },
     txrp: {
+        symbol: 'txrp',
         name: 'XRP Testnet',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",
@@ -596,6 +619,7 @@ export const networks = {
     },
     tada: {
         // icarus derivation
+        symbol: 'tada',
         name: 'Cardano Testnet',
         networkType: 'cardano',
         bip43Path: "m/1852'/1815'/i'",
@@ -627,6 +651,7 @@ export const networks = {
         coingeckoId: undefined,
     },
     dsol: {
+        symbol: 'dsol',
         name: 'Solana Devnet',
         networkType: 'solana',
         bip43Path: "m/44'/501'/i'/0'",
@@ -673,11 +698,14 @@ export type NetworkCompatible = Without<InferredNetwork, 'accountTypes'> & {
     coingeckoId?: string;
 };
 
-// Transforms the network object into the previously used format so we don't have to change
-// every occurence. We could gradually start to use the network object directly and in the end
-// this could be removed.
-export const networksCompatibility: NetworkCompatible[] = Object.entries(networks).flatMap(
-    ([symbol, { accountTypes, ...network }]) => [
+/**
+ * @deprecated Please use `networks` instead.
+ * Transforms the network object into the previously used format so we don't have to change
+ * every occurence. We could gradually start to use the network object directly and in the end
+ * this could be removed.
+ */
+export const networksCompatibility: NetworkCompatible[] = Object.values(networks).flatMap(
+    ({ symbol, accountTypes, ...network }) => [
         { symbol, ...network },
         ...Object.entries(accountTypes).map(([accountType, networkOverride]) => ({
             symbol,
