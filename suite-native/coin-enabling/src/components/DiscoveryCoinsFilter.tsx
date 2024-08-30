@@ -17,10 +17,12 @@ import { NetworkSymbolSwitchItem } from './NetworkSymbolSwitchItem';
 
 type DiscoveryCoinsFilterProps = {
     allowDeselectLastCoin?: boolean; // If true, the last coin can be deselected
+    allowChangeAnalytics?: boolean; // If true, analytics will be sent
 };
 
 export const DiscoveryCoinsFilter = ({
     allowDeselectLastCoin = false,
+    allowChangeAnalytics = true,
 }: DiscoveryCoinsFilterProps) => {
     const dispatch = useDispatch();
     const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
@@ -43,6 +45,7 @@ export const DiscoveryCoinsFilter = ({
                     networkSymbol={networkSymbol}
                     isEnabled={enabledNetworkSymbols.includes(networkSymbol)}
                     allowDeselectLastCoin={allowDeselectLastCoin}
+                    allowChangeAnalytics={allowChangeAnalytics}
                 />
             ))}
             <VStack paddingTop="small" paddingBottom="extraLarge" alignItems="center">

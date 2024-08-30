@@ -37,6 +37,7 @@
         { "path": "../connection-status" },
         { "path": "../device" },
         { "path": "../device-authorization" },
+        { "path": "../discovery" },
         { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../message-system" },

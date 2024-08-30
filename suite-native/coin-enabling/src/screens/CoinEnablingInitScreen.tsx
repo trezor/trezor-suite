@@ -14,6 +14,7 @@ import {
 } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { analytics, EventType } from '@suite-native/analytics';
 
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 
@@ -44,8 +45,12 @@ export const CoinEnablingInitScreen = () => {
                 if (enabledNetworkSymbols.length > 0) {
                     dispatch(setIsCoinEnablingInitFinished(true));
                 }
+                analytics.report({
+                    type: EventType.CoinEnablingInitState,
+                    payload: { enabledNetworks: enabledNetworkSymbols },
+                });
             };
-        }, [dispatch, enabledNetworkSymbols.length]),
+        }, [dispatch, enabledNetworkSymbols]),
     );
 
     return (
@@ -61,7 +66,10 @@ export const CoinEnablingInitScreen = () => {
                         </Text>
                     </VStack>
                     <Box flex={1}>
-                        <DiscoveryCoinsFilter allowDeselectLastCoin={true} />
+                        <DiscoveryCoinsFilter
+                            allowDeselectLastCoin={true}
+                            allowChangeAnalytics={false}
+                        />
                     </Box>
                 </VStack>
             </Screen>

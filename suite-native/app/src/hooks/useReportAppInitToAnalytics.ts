@@ -17,6 +17,7 @@ import {
     selectRememberedStandardWalletsCount,
     selectRememberedHiddenWalletsCount,
 } from '@suite-common/wallet-core';
+import { selectEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 
 export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const [loadDuration, setLoadDuration] = useState<number | null>(null);
@@ -31,6 +32,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const rememberedStandardWallets = useSelector(selectRememberedStandardWalletsCount);
     const rememberedHiddenWallets = useSelector(selectRememberedHiddenWalletsCount);
+    const enabledNetworks = useSelector(selectEnabledDiscoveryNetworkSymbols);
 
     useEffect(() => {
         if (isConnectInitialized && !loadDuration) setLoadDuration(Date.now() - appLaunchTimestamp);
@@ -58,6 +60,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
                     isBiometricsEnabled: isBiometricsOptionEnabled,
                     rememberedStandardWallets,
                     rememberedHiddenWallets,
+                    enabledNetworks,
                 },
             });
         }
@@ -73,5 +76,6 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
         isBiometricsOptionEnabled,
         rememberedStandardWallets,
         rememberedHiddenWallets,
+        enabledNetworks,
     ]);
 };
