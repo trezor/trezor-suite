@@ -12,7 +12,7 @@ DIST='./packages/connect-common/files'
 # fi
 
 # BUILD coins.json using trezor-common cointool
-# exlude unused fields
+# exclude unused fields
 $SRC/cointool.py dump -p -o $DIST/coins.json \
     -e blockbook \
     -e icon \
@@ -31,6 +31,9 @@ $SRC/cointool.py dump -p -o $DIST/coins.json \
     -e negative_fee \
     -E eth \
     -E erc20 \
+
+# Exclude coins that are not supported by any device model
+yarn tsx "$(dirname "${BASH_SOURCE[0]}")"/filterCoins.ts
 
 yarn prettier --write $DIST/coins.json
 
