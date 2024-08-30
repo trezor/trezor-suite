@@ -26,5 +26,7 @@ export const init: Module = () => {
         return userData.open(directory);
     });
 
-    return () => userData.getInfo();
+    const onLoad = () => userData.getInfo();
+
+    return { onLoad };
 };

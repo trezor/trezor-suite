@@ -11,7 +11,7 @@ import { BridgeProcess } from '../libs/processes/BridgeProcess';
 import { b2t } from '../libs/utils';
 import { ThreadProxy } from '../libs/thread-proxy';
 
-import type { Module, Dependencies } from './index';
+import type { Dependencies } from './index';
 
 const bridgeLegacy = app.commandLine.hasSwitch('bridge-legacy');
 const bridgeLegacyDev = app.commandLine.hasSwitch('bridge-legacy-dev');
@@ -116,7 +116,7 @@ const shouldUseLegacyBridge = (store: Dependencies['store']) => {
     );
 };
 
-const load = async ({ store }: Dependencies) => {
+const load = async ({ store }: Pick<Dependencies, 'store'>) => {
     const { logger } = global;
     const bridge = shouldUseLegacyBridge(store) ? new BridgeProcess() : new TrezordNodeProcess();
 
@@ -200,10 +200,14 @@ const load = async ({ store }: Dependencies) => {
     }
 };
 
-export const init: Module = dependencies => {
+type BridgeModule = ({ store }: Pick<Dependencies, 'store'>) => {
+    onLoad: () => void;
+};
+
+export const init: BridgeModule = dependencies => {
     let loaded = false;
 
-    return () => {
+    const onLoad = () => {
         if (loaded) return;
         loaded = true;
 
@@ -212,4 +216,6 @@ export const init: Module = dependencies => {
             logger.error(SERVICE_NAME, `Failed to load: ${err.message}`);
         });
     };
+
+    return { onLoad };
 };

@@ -268,7 +268,7 @@ export const init: Module = ({ mainWindow, store }) => {
     });
 
     // Enable feature on FE once it's ready
-    return (): HandshakeElectron['desktopUpdate'] => {
+    const onLoad = (): HandshakeElectron['desktopUpdate'] => {
         // if there is savedCurrentVersion in store (it doesn't have to be there as it was added in later versions)
         // and if it does not match current application version it means that application got updated and the new version
         // is run for the first time.
@@ -295,4 +295,6 @@ export const init: Module = ({ mainWindow, store }) => {
                     : undefined,
         };
     };
+
+    return { onLoad };
 };

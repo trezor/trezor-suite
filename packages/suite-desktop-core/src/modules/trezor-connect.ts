@@ -53,8 +53,10 @@ export const init: Module = ({ store }) => {
         TrezorConnect.dispose();
     });
 
-    return () => {
+    const onLoad = () => {
         // reset previous instance, possible left over after renderer refresh (F5)
         TrezorConnect.dispose();
     };
+
+    return { onLoad };
 };

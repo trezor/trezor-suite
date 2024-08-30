@@ -85,7 +85,7 @@ export type Dependencies = {
 
 type ModuleLoad = (payload: HandshakeClient) => any | Promise<any>;
 
-type ModuleInit = (dependencies: Dependencies) => ModuleLoad | void;
+type ModuleInit = (dependencies: Dependencies) => { onLoad?: ModuleLoad } | void;
 
 export type Module = ModuleInit;
 
@@ -98,9 +98,9 @@ export const initModules = (dependencies: Dependencies) => {
         logger.debug('modules', `Initializing ${moduleToInit.SERVICE_NAME}`);
         try {
             const initModule: Module = moduleToInit.init;
-            const loadModule = initModule(dependencies);
-            if (loadModule) {
-                return [moduleToInit, loadModule] as const;
+            const { onLoad } = initModule(dependencies) ?? {};
+            if (onLoad) {
+                return [moduleToInit, onLoad] as const;
             }
         } catch (err) {
             logger.error(
@@ -115,15 +115,15 @@ export const initModules = (dependencies: Dependencies) => {
 
     const modulesToLoad = modules.filter(isNotUndefined);
 
-    return (handshake: HandshakeClient) => {
+    const loadModules = (handshake: HandshakeClient) => {
         let loaded = 0;
 
         return Promise.all(
-            modulesToLoad.map(async ([moduleToLoad, loadModule]) => {
+            modulesToLoad.map(async ([moduleToLoad, onLoad]) => {
                 const moduleName = moduleToLoad.SERVICE_NAME;
                 logger.debug('modules', `Loading ${moduleName}`);
                 try {
-                    const payload = await loadModule(handshake);
+                    const payload = await onLoad(handshake);
                     logger.debug('modules', `Loaded ${moduleName}`);
                     dependencies.mainWindow.webContents.send('handshake/event', {
                         type: 'progress',
@@ -163,4 +163,6 @@ export const initModules = (dependencies: Dependencies) => {
                 }),
             );
     };
+
+    return { loadModules };
 };

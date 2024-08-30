@@ -78,7 +78,7 @@ export const init: Module = ({ mainWindow }) => {
             logger.debug(SERVICE_NAME, 'App is launched via custom protocol (Linux, Windows)');
 
             if (isValidProtocol(argv[1], protocols)) {
-                return firstRunOnly(argv[1]);
+                return { onLoad: firstRunOnly(argv[1]) };
             }
         }
     }
@@ -86,7 +86,7 @@ export const init: Module = ({ mainWindow }) => {
     // App is launched via custom protocol (macOS)
     if (global.customProtocolUrl) {
         if (isValidProtocol(global.customProtocolUrl, protocols)) {
-            return firstRunOnly(global.customProtocolUrl);
+            return { onLoad: firstRunOnly(global.customProtocolUrl) };
         }
     }
 };
