@@ -60,7 +60,7 @@ import {
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRecomposeAndSign';
-import { Network, networksCompatibility } from '@suite-common/wallet-config';
+import { NetworkCompatible, networksCompatibility } from '@suite-common/wallet-config';
 import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
 import useCoinmarketExchangeFormHelpers from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeFormHelpers';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
@@ -135,7 +135,7 @@ export const useCoinmarketExchangeForm = ({
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
-    const network = getNetwork(account.symbol) as Network;
+    const network = getNetwork(account.symbol) as NetworkCompatible;
 
     const { getDraft, saveDraft, removeDraft } =
         useFormDraft<CoinmarketExchangeFormProps>('coinmarket-exchange');

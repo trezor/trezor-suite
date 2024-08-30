@@ -1,7 +1,12 @@
 import { A } from '@mobily/ts-belt';
 
 import { isTestnet } from '@suite-common/wallet-utils';
-import { Network, NetworkSymbol, getMainnets, getTestnets } from '@suite-common/wallet-config';
+import {
+    NetworkCompatible,
+    NetworkSymbol,
+    getMainnets,
+    getTestnets,
+} from '@suite-common/wallet-config';
 import { AccountType } from '@suite-common/wallet-types';
 
 export const orderedAccountTypes: AccountType[] = [
@@ -43,7 +48,7 @@ export const discoverySupportedNetworks = [
     ...networkSymbolsWhitelistMap.testnet,
 ];
 
-export const sortNetworks = (networks: Network[]) =>
+export const sortNetworks = (networks: NetworkCompatible[]) =>
     A.sort(networks, (a, b) => {
         const aOrder = discoverySupportedNetworks.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
         const bOrder = discoverySupportedNetworks.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
@@ -60,7 +65,7 @@ export const filterTestnetNetworks = (
     return networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol));
 };
 
-export const filterBlacklistedNetworks = (networks: Network[]) =>
+export const filterBlacklistedNetworks = (networks: NetworkCompatible[]) =>
     networks.filter(network => !discoveryBlacklist.includes(network.symbol));
 
 export const portfolioTrackerMainnets = sortNetworks(

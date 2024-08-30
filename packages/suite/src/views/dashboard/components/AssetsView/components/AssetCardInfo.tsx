@@ -1,4 +1,4 @@
-import { Network } from '@suite-common/wallet-config';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import React from 'react';
 import styled from 'styled-components';
 import { AssetFiatBalance } from '@suite-common/assets';
@@ -14,7 +14,7 @@ const Flex = styled.div`
 `;
 
 interface AssetInfoProps {
-    network: Network;
+    network: NetworkCompatible;
     assetsFiatBalances?: AssetFiatBalance[];
     index?: number;
 }

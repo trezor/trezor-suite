@@ -5,7 +5,7 @@ import { fromWei } from 'web3-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TokenDefinitions } from '@suite-common/token-definitions';
-import { Network } from '@suite-common/wallet-config';
+import { NetworkCompatible } from '@suite-common/wallet-config';
 import {
     ExportFileType,
     RatesByTimestamps,
@@ -32,7 +32,7 @@ type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & 
 };
 
 type Data = {
-    coin: Network['symbol'];
+    coin: NetworkCompatible['symbol'];
     accountName: string;
     type: ExportFileType;
     transactions: AccountTransactionForExports[];
@@ -73,11 +73,11 @@ const timeFormat = {
     timeZoneName: 'shortOffset',
 } as const;
 
-const formatIfDefined = (amount: string | undefined, symbol: Network['symbol']) =>
+const formatIfDefined = (amount: string | undefined, symbol: NetworkCompatible['symbol']) =>
     amount ? formatNetworkAmount(amount, symbol) : undefined;
 
 const formatAmounts =
-    (symbol: Network['symbol']) =>
+    (symbol: NetworkCompatible['symbol']) =>
     (tx: AccountTransactionForExports): AccountTransactionForExports => ({
         ...tx,
         tokens: tx.tokens.map(token => ({

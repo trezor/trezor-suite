@@ -1,6 +1,6 @@
 import { UseFormReturn, FormState as ReactHookFormState } from 'react-hook-form';
 
-import { Network, NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { NetworkCompatible, NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     Account,
     Rate,
@@ -79,7 +79,7 @@ export interface AmountLimitsString {
 
 export interface BaseStakeContextValues {
     account: Account;
-    network: Network;
+    network: NetworkCompatible;
     localCurrency: FiatCurrencyCode;
     composedLevels?: PrecomposedLevels;
     isComposing: boolean;

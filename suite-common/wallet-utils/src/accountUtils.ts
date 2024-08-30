@@ -12,7 +12,7 @@ import {
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
     networksCompatibility,
-    Network,
+    NetworkCompatible,
     NetworkFeature,
     NetworkSymbol,
     NetworkType,
@@ -418,7 +418,7 @@ export const getAllAccounts = (deviceState: string | typeof undefined, accounts:
     return accounts.filter(a => a.deviceState === deviceState && a.visible);
 };
 
-export const getNetwork = (symbol: string): Network | null =>
+export const getNetwork = (symbol: string): NetworkCompatible | null =>
     networksCompatibility.find(c => c.symbol === symbol) || null;
 
 export const getAccountNetwork = ({
@@ -725,7 +725,7 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
 // Used in accountActions and failed accounts
 export const getAccountSpecific = (
     accountInfo: Partial<AccountInfo>,
-    networkType: Network['networkType'],
+    networkType: NetworkCompatible['networkType'],
 ) => {
     const { misc } = accountInfo;
     if (networkType === 'ripple') {
