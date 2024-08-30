@@ -1,1 +1,1 @@
-export type { BlockbookUrl, BackendType, CustomBackend } from '@suite-common/wallet-types';
+export type { BlockbookUrl, CustomBackend } from '@suite-common/wallet-types';

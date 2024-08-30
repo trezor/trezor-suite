@@ -3,7 +3,7 @@ import { NumberInput } from 'src/components/suite';
 import { Select, CoinLogo } from '@trezor/components';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';
-import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
+import { ethereumTypeNetworkSymbols } from '@suite-common/wallet-config';
 import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
@@ -85,8 +85,6 @@ const CryptoInput = () => {
             }),
         },
     };
-
-    const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
 
     return (
         <NumberInput

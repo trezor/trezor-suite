@@ -7,8 +7,7 @@ import { isUrl } from '@trezor/utils';
 import { isOnionUrl } from 'src/utils/suite/tor';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { isElectrumUrl } from '@suite-common/wallet-utils';
-import type { BackendType } from 'src/types/wallet';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkCompatible, BackendType } from '@suite-common/wallet-config';
 import { BackendSettings } from '@suite-common/wallet-types';
 
 export type BackendOption = BackendType | 'default';
