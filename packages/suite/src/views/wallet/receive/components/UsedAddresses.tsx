@@ -16,7 +16,8 @@ import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 const GridTable = styled.div`
     display: grid;
-    grid-template-columns: auto 0.2fr 0.2fr;
+    grid-template-columns: auto 0.3fr 0.3fr;
+    width: 100%;
     ${typography.hint}
 `;
 
