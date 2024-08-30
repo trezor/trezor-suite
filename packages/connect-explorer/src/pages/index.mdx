@@ -160,6 +160,8 @@ export const ExampleHeading = styled.h3`
 
     <SdkContainer>
         <SdkDescription>
+            #### About
+
             In Node.js the core SDK is loaded as a JavaScript module without any specificities.
         </SdkDescription>
         <ExamplesAside>
@@ -253,6 +255,8 @@ export const ExampleHeading = styled.h3`
 
     <SdkContainer>
         <SdkDescription>
+            #### About
+
             `@trezor/connect-web` imports only a thin layer with API description into your 3rd party application. When initiated, it injects iframe containing core SDK logic from trezor.io
             into your app. User input, if needed, is served by popup.html page opened on trezor.io on behalf of your application. This way users input such as pin or passphrase is isolated from you and persistent connection between your app and core SDK is kept so events such as device connected/disconnected or blockchain subscriptions are available.
         </SdkDescription>
@@ -358,11 +362,28 @@ export const ExampleHeading = styled.h3`
 
     <SdkContainer>
         <SdkDescription>
+            #### About
             In case of `@trezor/connect-webextension`, TrezorConnect object is created in a service worker.
             In this env we can't inject iframe so in order to uphold the same security model as with
             `@trezor/connect-web` we open popup.html and load core SDK logic into it. This however does not
             build persistent connection between SDK and 3rd party application meaning that events cannot be
             used.
+
+            #### Learn step-by-step
+            Learn how to integrate the @trezor/connect-webextension package into a Chrome extension,
+            allowing secure connection to Trezor hardware wallets.
+            By the end, you'll have a fully functional web extension.
+
+            <Button
+                as={Link}
+                variant="tertiary"
+                className="nx-mt-4 nx-mb-8"
+                size="small"
+                icon="ARTICLE"
+                target="_self"
+                href="/guides/webextension-implementation-tutorial">
+                Open Tutorial  →
+            </Button>
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
