@@ -14,7 +14,7 @@ import { getBuildInfo, getComputerInfo } from './libs/info';
 import { restartApp, processStatePatch } from './libs/app-utils';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initSentry } from './libs/sentry';
-import { Dependencies, initModules, mainThreadEmitter } from './modules';
+import { initModules, mainThreadEmitter } from './modules';
 import { init as initTorModule } from './modules/tor';
 import { init as initBridgeModule } from './modules/bridge';
 import { createInterceptor } from './libs/request-interceptor';
@@ -131,10 +131,8 @@ const init = async () => {
         logger.info('main', 'App is hidden, starting bridge only');
         app.dock?.hide(); // hide dock icon on macOS
         app.releaseSingleInstanceLock(); // allow user to open new instance with UI
-        const loadBridgeModule = initBridgeModule({ store } as Dependencies); // bridge module only needs store
-        if (loadBridgeModule) {
-            loadBridgeModule(null);
-        }
+        const { onLoad: loadBridgeModule } = initBridgeModule({ store }); // bridge module only needs store
+        loadBridgeModule();
 
         return;
     }
@@ -165,7 +163,7 @@ const init = async () => {
 
     // init modules
     const interceptor = createInterceptor();
-    const loadModules = initModules({
+    const { loadModules } = initModules({
         mainWindow,
         store,
         interceptor,
@@ -193,7 +191,7 @@ const init = async () => {
 
     // Tor module initializes separated from general `initModules` because Tor is different
     // since it is allowed to fail and then the user decides whether to `try again` or `disable`.
-    const loadTorModule = initTorModule({
+    const { onLoad: loadTorModule } = initTorModule({
         mainWindow,
         store,
         interceptor,

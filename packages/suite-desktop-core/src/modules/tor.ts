@@ -239,12 +239,14 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
     }
 };
 
-type TorModule = (dependencies: Dependencies) => () => Promise<HandshakeTorModule>;
+type TorModule = (dependencies: Dependencies) => {
+    onLoad: () => Promise<HandshakeTorModule>;
+};
 
 export const init: TorModule = dependencies => {
     let loaded = false;
 
-    return async () => {
+    const onLoad = async () => {
         if (loaded) return { shouldRunTor: false };
 
         loaded = true;
@@ -255,4 +257,6 @@ export const init: TorModule = dependencies => {
             shouldRunTor: torSettings.running,
         };
     };
+
+    return { onLoad };
 };

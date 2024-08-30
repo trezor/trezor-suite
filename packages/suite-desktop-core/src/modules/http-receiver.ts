@@ -14,7 +14,7 @@ export const init: Module = ({ mainWindow }) => {
     const { logger } = global;
     let httpReceiver: ReturnType<typeof createHttpReceiver> | null = null;
 
-    return async () => {
+    const onLoad = async () => {
         if (httpReceiver) {
             return httpReceiver.getInfo();
         }
@@ -62,4 +62,6 @@ export const init: Module = ({ mainWindow }) => {
 
         return receiver.getInfo();
     };
+
+    return { onLoad };
 };

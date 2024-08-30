@@ -233,5 +233,5 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
     mainWindow.webContents.on('did-start-loading', dispose);
     ipcMain.once('app/restart', dispose);
 
-    return registerProxies;
+    return { onLoad: registerProxies };
 };
