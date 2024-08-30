@@ -13,11 +13,13 @@ import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
 import { useAlert } from '@suite-native/alerts';
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { analytics, EventType } from '@suite-native/analytics';
 
-type NetworkSymbolProps = {
+type NetworkSymbolSwitchItemProps = {
     networkSymbol: NetworkSymbol;
     isEnabled: boolean;
     allowDeselectLastCoin: boolean;
+    allowChangeAnalytics?: boolean;
 };
 
 const wrapperStyle = prepareNativeStyle<{ isEnabled: boolean }>((utils, { isEnabled }) => ({
@@ -46,7 +48,8 @@ export const NetworkSymbolSwitchItem = ({
     networkSymbol,
     isEnabled,
     allowDeselectLastCoin,
-}: NetworkSymbolProps) => {
+    allowChangeAnalytics,
+}: NetworkSymbolSwitchItemProps) => {
     const dispatch = useDispatch();
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
@@ -94,6 +97,16 @@ export const NetworkSymbolSwitchItem = ({
             });
         }
         dispatch(toggleEnabledDiscoveryNetworkSymbol(networkSymbol));
+
+        if (allowChangeAnalytics) {
+            analytics.report({
+                type: EventType.SettingsChangeCoinEnabled,
+                payload: {
+                    symbol: networkSymbol,
+                    value: isChecked,
+                },
+            });
+        }
     };
 
     return (

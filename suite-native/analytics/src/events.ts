@@ -26,6 +26,7 @@ export type SuiteNativeAnalyticsEvent =
               isBiometricsEnabled: boolean;
               rememberedStandardWallets: number;
               rememberedHiddenWallets: number;
+              enabledNetworks: NetworkSymbol[];
           };
       }
     | {
@@ -132,6 +133,13 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.SettingsDataPermission;
           payload: {
               analyticsPermission: boolean;
+          };
+      }
+    | {
+          type: EventType.SettingsChangeCoinEnabled;
+          payload: {
+              symbol: NetworkSymbol;
+              value: boolean;
           };
       }
     | {
@@ -244,4 +252,10 @@ export type SuiteNativeAnalyticsEvent =
       }
     | {
           type: EventType.PassphraseAddHiddenWallet;
+      }
+    | {
+          type: EventType.CoinEnablingInitState;
+          payload: {
+              enabledNetworks: NetworkSymbol[];
+          };
       };

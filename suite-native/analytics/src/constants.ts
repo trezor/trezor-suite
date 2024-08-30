@@ -18,6 +18,7 @@ export enum EventType {
     SettingsChangeTheme = 'settings/change_theme',
     SettingsChangeBtcUnit = 'settings/change_btc_unit',
     SettingsDiscreetToggle = 'settings/discreet_toggle',
+    SettingsChangeCoinEnabled = 'settings/change_coin_enabled',
     BiometricsChange = 'biometrics_change',
     SettingsDataPermission = 'settings/data_permission',
     EmptyDashboardClick = 'empty_dashboard/action',
@@ -40,4 +41,5 @@ export enum EventType {
     PassphraseFlowFinished = 'passphrase/flow_finished',
     PassphraseAddHiddenWallet = 'passphrase/add_hidden_wallet',
     PassphraseExit = 'passphrase/exit',
+    CoinEnablingInitState = 'coin-enabling/init_state',
 }
