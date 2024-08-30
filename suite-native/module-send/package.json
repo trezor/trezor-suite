@@ -46,7 +46,7 @@
         "react-hook-form": "^7.53.0",
         "react-native": "0.75.2",
         "react-native-reanimated": "3.15.0",
-        "react-native-svg": "15.3.0",
+        "react-native-svg": "15.6.0",
         "react-redux": "8.0.7"
     }
 }
