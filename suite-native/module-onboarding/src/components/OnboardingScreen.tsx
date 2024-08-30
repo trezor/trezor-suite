@@ -1,19 +1,15 @@
 import { ReactNode, useMemo } from 'react';
-import { Dimensions, ImageBackground } from 'react-native';
+import { Dimensions, ImageBackground, Platform } from 'react-native';
 
 import { Screen } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useActiveColorScheme } from '@suite-native/theme';
 
-import { OnboardingScreenHeader } from './OnboardingScreenHeader';
-
 type OnboardingScreenProps = {
     children: ReactNode;
+    header?: ReactNode;
     footer?: ReactNode;
-    title: ReactNode;
-    subtitle?: ReactNode;
-    activeStep: number;
     isScrollable?: boolean;
 };
 
@@ -28,7 +24,10 @@ const cardStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.medium,
     paddingTop: utils.spacings.large,
     borderRadius: 20,
-    backgroundColor: utils.colors.backGroundOnboardingCard,
+    borderWidth: utils.borders.widths.small,
+    borderColor: utils.colors.borderElevation1,
+    backgroundColor: utils.transparentize(0.3, utils.colors.backgroundSurfaceElevation1),
+    ...(Platform.OS === 'ios' ? utils.boxShadows.small : {}),
     width: Dimensions.get('window').width - 48,
 }));
 
@@ -42,10 +41,8 @@ const imageContainerStyle = prepareNativeStyle(() => ({
 
 export const OnboardingScreen = ({
     children,
+    header,
     footer,
-    title,
-    subtitle,
-    activeStep,
     isScrollable = true,
 }: OnboardingScreenProps) => {
     const { applyStyle } = useNativeStyles();
@@ -68,16 +65,12 @@ export const OnboardingScreen = ({
             />
             <Screen isScrollable={isScrollable} backgroundColor="transparent">
                 <Box
-                    alignItems="center"
                     flex={1}
+                    alignItems="center"
                     justifyContent="space-between"
                     style={applyStyle(cardStyle)}
                 >
-                    <OnboardingScreenHeader
-                        title={title}
-                        subtitle={subtitle}
-                        activeStep={activeStep}
-                    />
+                    {header}
                     {children}
                 </Box>
                 {footer && (

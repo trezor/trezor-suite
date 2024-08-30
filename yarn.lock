@@ -10214,7 +10214,6 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@trezor/styles": "workspace:*"
-    expo-linear-gradient: "npm:13.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-native-svg: "npm:15.6.0"

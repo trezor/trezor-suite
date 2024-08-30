@@ -1,8 +1,4 @@
-import { useMemo } from 'react';
-import { Dimensions, ImageBackground } from 'react-native';
-
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Link } from '@suite-native/link';
@@ -10,15 +6,14 @@ import { Box, Text, TrezorSuiteLiteHeader } from '@suite-native/atoms';
 import {
     OnboardingStackParamList,
     OnboardingStackRoutes,
-    Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useActiveColorScheme } from '@suite-native/theme';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
+import { OnboardingScreen } from '../components/OnboardingScreen';
 
 const titleStyle = prepareNativeStyle(_ => ({
     textAlign: 'center',
@@ -26,31 +21,9 @@ const titleStyle = prepareNativeStyle(_ => ({
     alignItems: 'center',
 }));
 
-const imageContainerStyle = prepareNativeStyle(() => ({
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    width: '100%',
-    aspectRatio: 390 / 296,
-}));
-
-const contentStyle = prepareNativeStyle(utils => ({
-    width: '100%',
-    height: '100%',
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    alignItems: 'center',
-}));
-
-const cardStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.medium,
-    padding: utils.spacings.large,
-    borderRadius: 20,
-    borderColor: utils.colors.borderSubtleInverted,
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: utils.borders.widths.small,
-    width: Dimensions.get('window').width - 48,
+const trezorLinkStyle = prepareNativeStyle(utils => ({
+    paddingBottom: utils.spacings.large,
+    justifyContent: 'flex-end',
 }));
 
 export const WelcomeScreen = () => {
@@ -61,9 +34,7 @@ export const WelcomeScreen = () => {
             StackNavigationProps<OnboardingStackParamList, OnboardingStackRoutes.Welcome>
         >();
 
-    const { applyStyle, utils } = useNativeStyles();
-
-    const colorScheme = useActiveColorScheme();
+    const { applyStyle } = useNativeStyles();
 
     const handleRedirect = () => {
         navigation.navigate(
@@ -73,70 +44,48 @@ export const WelcomeScreen = () => {
         );
     };
 
-    const isDarkMode = colorScheme === 'dark';
-
-    const getImageSource = useMemo(() => {
-        if (isDarkMode) {
-            return require('../assets/darkRectangles.png');
-        }
-
-        return require('../assets/rectangles.png');
-    }, [isDarkMode]);
-
     return (
-        <Box style={applyStyle(contentStyle)}>
-            <ImageBackground
-                source={getImageSource}
-                resizeMode="cover"
-                style={applyStyle(imageContainerStyle)}
-            />
-            <Screen backgroundColor="transparent">
-                <LinearGradient
-                    style={applyStyle(cardStyle)}
-                    colors={[
-                        utils.colors.gradientNeutralBottomFadeSurfaceElevation1Start,
-                        utils.colors.gradientNeutralBottomFadeSurfaceElevation1End,
-                    ]}
-                >
-                    <Box flex={1} />
-                    <Box alignItems="center" justifyContent="center">
-                        <Box alignItems="center">
-                            <Box marginBottom="large">
-                                <Icon size="extraLarge" name="trezor" color="iconDefault" />
-                            </Box>
-                            <Box style={applyStyle(titleStyle)}>
-                                <Text variant="titleMedium" textAlign="center">
-                                    <Translation id="moduleOnboarding.welcomeScreen.welcome" />
-                                </Text>
-                                <TrezorSuiteLiteHeader textVariant="titleMedium" />
-                            </Box>
-                        </Box>
-                        <Text color="textSubdued" textAlign="center">
-                            <Translation id="moduleOnboarding.welcomeScreen.subtitle" />
-                        </Text>
+        <OnboardingScreen
+            footer={
+                <OnboardingFooter
+                    redirectTarget={handleRedirect}
+                    nextButtonTitle={<Translation id="moduleOnboarding.welcomeScreen.nextButton" />}
+                />
+            }
+        >
+            <Box flex={1} />
+            <Box alignItems="center" justifyContent="center">
+                <Box alignItems="center">
+                    <Box marginBottom="large">
+                        <Icon size="extraLarge" name="trezor" color="iconDefault" />
                     </Box>
-                    <Box flex={1} justifyContent="flex-end">
-                        <Text variant="hint" textAlign="center">
-                            <Translation
-                                id="moduleOnboarding.welcomeScreen.trezorLink"
-                                values={{
-                                    trezorLink: chunks => (
-                                        <Link href="https://trezor.io" label={chunks} />
-                                    ),
-                                }}
-                            />
+                    <Box style={applyStyle(titleStyle)}>
+                        <Text variant="titleMedium" textAlign="center">
+                            <Translation id="moduleOnboarding.welcomeScreen.welcome" />
                         </Text>
+                        <TrezorSuiteLiteHeader textVariant="titleMedium" />
                     </Box>
-                </LinearGradient>
-                <Box alignItems="center" marginTop="large">
-                    <OnboardingFooter
-                        redirectTarget={handleRedirect}
-                        nextButtonTitle={
-                            <Translation id="moduleOnboarding.welcomeScreen.nextButton" />
-                        }
-                    />
                 </Box>
-            </Screen>
-        </Box>
+                <Text color="textSubdued" textAlign="center">
+                    <Translation id="moduleOnboarding.welcomeScreen.subtitle" />
+                </Text>
+            </Box>
+            <Box flex={1} style={applyStyle(trezorLinkStyle)}>
+                <Text variant="hint" color="textSubdued" textAlign="center">
+                    <Translation
+                        id="moduleOnboarding.welcomeScreen.trezorLink"
+                        values={{
+                            trezorLink: chunks => (
+                                <Link
+                                    href="https://trezor.io"
+                                    label={chunks}
+                                    textColor="textSecondaryHighlight"
+                                />
+                            ),
+                        }}
+                    />
+                </Text>
+            </Box>
+        </OnboardingScreen>
     );
 };
