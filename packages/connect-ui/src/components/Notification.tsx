@@ -43,6 +43,7 @@ const NotificationCta = styled.div`
     padding-top: 8px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     width: 100%;
     border: 1px solid #eb8a00;

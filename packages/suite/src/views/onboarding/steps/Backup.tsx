@@ -23,6 +23,7 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     flex: 1;
 `;

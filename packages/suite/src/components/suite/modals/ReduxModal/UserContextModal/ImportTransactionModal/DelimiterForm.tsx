@@ -18,6 +18,7 @@ const Label = styled.span`
     white-space: nowrap;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledInput = styled(Input)`
     width: 120px;
 `;

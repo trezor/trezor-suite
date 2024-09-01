@@ -15,6 +15,7 @@ const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLink = styled(Link)`
     margin-top: 50px;
 `;

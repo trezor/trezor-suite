@@ -74,6 +74,7 @@ const StyledLink = styled(TrezorLink)`
     margin-left: auto;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const DesktopLinkButton = styled(Button)`
     background: ${({ theme }) => theme.legacy.STROKE_GREY};
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
@@ -97,6 +98,7 @@ const BadgeContainer = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTooltip = styled(Tooltip)`
     display: flex;
 
@@ -106,6 +108,7 @@ const StyledTooltip = styled(Tooltip)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Badge = styled(Image)<{ $isHighlighted: boolean }>`
     max-width: unset;
     opacity: ${({ $isHighlighted }) => ($isHighlighted ? 1 : 0.6)};
@@ -113,6 +116,7 @@ const Badge = styled(Image)<{ $isHighlighted: boolean }>`
     cursor: pointer;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StoreTitle = styled(Image)<{ $isDark: boolean }>`
     display: block;
     margin: 2px auto 6px;

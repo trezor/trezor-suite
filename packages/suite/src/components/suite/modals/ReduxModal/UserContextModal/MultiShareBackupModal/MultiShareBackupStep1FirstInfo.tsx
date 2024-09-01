@@ -7,6 +7,7 @@ import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { Body, Section } from './multiShareModalLayout';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     margin-bottom: ${spacingsPx.md};
 `;

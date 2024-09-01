@@ -21,6 +21,7 @@ const AnimationWrapper = styled.div`
     margin: 8px 0;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledWarning = styled(Warning)`
     ${typography.hint}
 

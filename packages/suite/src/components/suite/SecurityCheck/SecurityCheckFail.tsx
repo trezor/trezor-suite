@@ -15,6 +15,7 @@ const TopSection = styled.div`
     width: 100%;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledH2 = styled(H2)`
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};

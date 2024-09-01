@@ -105,6 +105,7 @@ const ContractAddress = styled.div`
     white-space: wrap;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)`
     display: inline-block;
     margin-left: ${spacingsPx.xxs};

@@ -54,6 +54,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
         `}
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledProgressPie = styled(ProgressPie)`
     margin-right: ${SPACING}px;
 `;

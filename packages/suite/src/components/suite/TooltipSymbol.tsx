@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Icon, IconName, Tooltip } from '@trezor/components';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const InlineTooltip = styled(Tooltip)`
     display: inline-block;
     margin: 0 4px;

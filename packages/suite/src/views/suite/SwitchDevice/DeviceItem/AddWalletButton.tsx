@@ -16,6 +16,7 @@ const AddWallet = styled.div`
     margin-top: 10px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTooltip = styled(Tooltip)`
     width: 100%;
 `;

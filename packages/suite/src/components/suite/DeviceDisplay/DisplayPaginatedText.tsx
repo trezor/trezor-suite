@@ -8,11 +8,13 @@ import { DisplayPageSeparator } from './DisplayPageSeparator';
 import { handleOnCopy } from 'src/utils/suite/deviceDisplay';
 import { Icon, IconName } from '@trezor/components';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledNextIcon = styled(Icon)<{ $isPixelType: boolean }>`
     display: inline-block;
     margin-left: ${({ $isPixelType }) => ($isPixelType ? '12px' : '24px')};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledContinuesIcon = styled(Icon)<{ $isPixelType: boolean }>`
     display: inline-block;
     margin-right: ${({ $isPixelType }) => ($isPixelType ? '12px' : '24px')};

@@ -28,6 +28,7 @@ const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
     opacity: ${({ $isLowerOpacity }) => $isLowerOpacity && 0.4};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledRotateDeviceImage = styled(RotateDeviceImage)`
     width: 24px;
 

@@ -15,6 +15,7 @@ const Wrapper = styled.div`
     gap: ${spacingsPx.sm};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)<{ $isHideable: boolean }>`
     ${({ $isHideable }) =>
         $isHideable &&

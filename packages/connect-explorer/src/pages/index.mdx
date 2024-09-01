@@ -21,9 +21,9 @@ import IconWeb from '../components/icons/IconWeb';
 import IconExtension from '../components/icons/IconExtension';
 import ZoomableIllustration from '../components/ZoomableIllustration';
 
-export const SectionCard = styled(TrezorCard)`
-    margin-bottom: ${spacingsPx.xl};
-`;
+export const SectionCard = ({ children }) => (
+    <TrezorCard margin={{ bottom: spacings.xl }}>{children}</TrezorCard>
+);
 
 export const SdkHeading = styled.h2`
     display: flex;
@@ -137,19 +137,19 @@ export const ExampleHeading = styled.h3`
         <IconNode />
         <SdkName>Node.js</SdkName>
         <SdkTag></SdkTag>
-        <Button 
+        <Button
             as={Link}
-            variant="tertiary" 
-            size="small" 
-            icon="ARTICLE" 
+            variant="tertiary"
+            size="small"
+            icon="ARTICLE"
             href="/readme/connect">
             README
         </Button>
-        <Button 
-            as="a" 
-            variant="tertiary" 
-            size="small" 
-            icon="GITHUB" 
+        <Button
+            as="a"
+            variant="tertiary"
+            size="small"
+            icon="GITHUB"
             href="https://github.com/trezor/trezor-suite/tree/develop/packages/connect"
             target="_blank">
             View on Github
@@ -230,19 +230,19 @@ export const ExampleHeading = styled.h3`
         <IconWeb />
         <SdkName>Web</SdkName>
         <SdkTag>DOM required</SdkTag>
-        <Button 
+        <Button
             as={Link}
-            variant="tertiary" 
-            size="small" 
-            icon="ARTICLE" 
+            variant="tertiary"
+            size="small"
+            icon="ARTICLE"
             href="/readme/connect-web">
             README
         </Button>
-        <Button 
-            as="a" 
-            variant="tertiary" 
-            size="small" 
-            icon="GITHUB" 
+        <Button
+            as="a"
+            variant="tertiary"
+            size="small"
+            icon="GITHUB"
             href="https://github.com/trezor/trezor-suite/tree/develop/packages/connect-web"
             target="_blank">
             View on Github
@@ -335,19 +335,19 @@ export const ExampleHeading = styled.h3`
         <IconExtension />
         <SdkName>Web extension</SdkName>
         <SdkTag>Using service worker</SdkTag>
-        <Button 
+        <Button
             as={Link}
-            variant="tertiary" 
-            size="small" 
-            icon="ARTICLE" 
+            variant="tertiary"
+            size="small"
+            icon="ARTICLE"
             href="/readme/connect-webextension">
             README
         </Button>
-        <Button 
-            as="a" 
-            variant="tertiary" 
-            size="small" 
-            icon="GITHUB" 
+        <Button
+            as="a"
+            variant="tertiary"
+            size="small"
+            icon="GITHUB"
             href="https://github.com/trezor/trezor-suite/tree/develop/packages/connect-webextension"
             target="_blank">
             View on Github

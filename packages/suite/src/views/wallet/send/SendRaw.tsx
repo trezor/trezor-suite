@@ -11,16 +11,19 @@ import { Account } from 'src/types/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { spacingsPx } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCard = styled(Card)`
     position: relative;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const CloseIcon = styled(Icon)`
     position: absolute;
     right: ${spacingsPx.md};
     top: ${spacingsPx.md};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTextarea = styled(Textarea)`
     margin: ${spacingsPx.md} 0 ${spacingsPx.lg};
 
@@ -30,6 +33,7 @@ const StyledTextarea = styled(Textarea)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const SendButton = styled(Button)`
     margin: 0 auto;
     min-width: 120px;

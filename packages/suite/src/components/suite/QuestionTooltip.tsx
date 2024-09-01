@@ -8,6 +8,7 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Label = styled(H3)`
     margin-right: 4px;
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};

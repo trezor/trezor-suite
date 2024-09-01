@@ -13,6 +13,7 @@ import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
 `;
@@ -25,6 +26,7 @@ const DividerWrapper = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledWarning = styled(Warning)`
     justify-content: flex-start;
 `;

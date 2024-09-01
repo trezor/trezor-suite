@@ -22,6 +22,7 @@ const StyledCard = styled.div`
     overflow: hidden;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)`
     transform: rotate(20deg);
 `;
@@ -56,6 +57,7 @@ const InfoHeading = styled.div`
     margin-bottom: ${spacingsPx.sm};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledP = styled(Paragraph)`
     font-size: ${variables.FONT_SIZE.H2};
     line-height: 24px;

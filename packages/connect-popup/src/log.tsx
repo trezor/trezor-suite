@@ -30,6 +30,7 @@ const Layout = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledP = styled(Paragraph)`
     margin: 0 20%;
     color: #757575;

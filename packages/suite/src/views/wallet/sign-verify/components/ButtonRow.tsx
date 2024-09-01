@@ -29,6 +29,7 @@ export const Row = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     width: 170px;
 

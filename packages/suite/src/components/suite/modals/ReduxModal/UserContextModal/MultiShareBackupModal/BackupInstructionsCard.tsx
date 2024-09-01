@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import { Card, Icon, IconName } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCard = styled(Card)<{ $isHorizontal: boolean }>`
     align-items: center;
     gap: ${spacingsPx.md};
@@ -18,6 +19,7 @@ const StyledCard = styled(Card)<{ $isHorizontal: boolean }>`
               `}
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)<{ $isCircled: boolean }>`
     ${({ $isCircled }) =>
         $isCircled &&

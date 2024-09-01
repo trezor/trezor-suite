@@ -13,6 +13,7 @@ import { networks } from '@suite-common/wallet-config';
 import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
 import { spacingsPx, typography } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCard = styled(Card)`
     width: 100%;
     flex-flow: row wrap;
@@ -38,6 +39,7 @@ const AddressContainer = styled.div`
     flex: 1;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     min-width: 220px;
     margin-left: ${spacingsPx.lg};
@@ -50,6 +52,7 @@ const FreshAddressWrapper = styled.div`
     margin-top: ${spacingsPx.xs};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledFreshAddress = styled(H2)`
     color: ${({ theme }) => theme.textDefault};
 `;

@@ -32,6 +32,7 @@ const StyledModal = styled(Modal)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const WarningImage = styled(Image)`
     margin: 24px 0;
 `;

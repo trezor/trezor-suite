@@ -104,6 +104,7 @@ const ProductsImageWrapper = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ProductsImage = styled(Image)`
     position: absolute;
     max-width: none;
@@ -149,6 +150,7 @@ const LinkButtonShopNow = styled(TrezorLink)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ButtonShopNow = styled(Button)`
     background-color: #9be887;
     width: 100%;
@@ -162,6 +164,7 @@ const ButtonShopNow = styled(Button)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ButtonClose = styled(IconButton)`
     grid-column: 4;
     grid-row: 2;

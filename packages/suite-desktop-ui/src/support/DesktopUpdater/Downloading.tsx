@@ -28,11 +28,13 @@ const TotalData = styled.span`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Text = styled(H2)`
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledProgressBar = styled(ProgressBar)`
     margin-top: 16px;
 `;

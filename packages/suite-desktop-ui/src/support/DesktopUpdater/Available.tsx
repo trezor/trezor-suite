@@ -9,6 +9,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { getReleaseUrl } from 'src/services/github';
 import { download } from 'src/actions/suite/desktopUpdateActions';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const GreenH2 = styled(H2)`
     text-align: left;
     color: ${({ theme }) => theme.legacy.TYPE_GREEN};
@@ -23,6 +24,7 @@ const ChangelogWrapper = styled.div`
     padding: 16px 20px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLink = styled(Link)`
     align-self: start;
 `;

@@ -79,6 +79,7 @@ const StyledSelectBar = styled(SelectBar<FeeLevel['label']>)`
     margin-top: ${spacingsPx.lg};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const HelperTextWrapper = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.SMALL};

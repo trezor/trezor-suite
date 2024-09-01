@@ -12,6 +12,7 @@ export type RotateDeviceImageProps = {
     animationWidth?: string;
 };
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     /* do not apply the darkening filter in dark mode on device images */
     filter: none;

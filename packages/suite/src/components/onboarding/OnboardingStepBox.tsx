@@ -37,6 +37,7 @@ const OuterActions = styled.div<{ $smallMargin?: boolean }>`
     z-index: ${zIndices.onboardingForeground};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const StyledBackdrop = styled(Backdrop)<{ $show: boolean }>`
     transition: all 0.3s;
     opacity: ${({ $show }) => ($show ? '1' : '0')};

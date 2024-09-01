@@ -14,6 +14,7 @@ const StyledActionSelect = styled(ActionSelect)`
     min-width: 256px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     margin-left: 8px;
 `;

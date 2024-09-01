@@ -49,6 +49,7 @@ const Search = styled.div`
     background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Heading = styled(H2)<{ $isInline?: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
@@ -84,6 +85,7 @@ const ExpandedMobileWrapper = styled.div`
     padding-bottom: 16px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)<{ $isActive: boolean }>`
     transform: ${({ $isActive }) => ($isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
 `;

@@ -39,6 +39,7 @@ const ApiPlaygroundWrapper = styled.div`
     } */
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const CollapsibleBoxStyled = styled(CollapsibleBox)`
     margin: 0;
     border: 0;

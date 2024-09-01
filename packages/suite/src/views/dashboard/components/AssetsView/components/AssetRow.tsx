@@ -115,10 +115,12 @@ const StyledArrowIcon = styled(ArrowIcon)`
     margin: 0 ${spacingsPx.md};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const SkeletonRectangleLast = styled(SkeletonRectangle)`
     margin-right: ${spacingsPx.md};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)`
     padding-left: 4px;
     padding-bottom: 2px;

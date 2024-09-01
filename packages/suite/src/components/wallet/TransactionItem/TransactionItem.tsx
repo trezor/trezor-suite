@@ -36,6 +36,7 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { getInstantStakeType } from 'src/utils/suite/stake';
 import { isStakeTypeTx } from '@suite-common/suite-utils';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Wrapper = styled(Card)<{
     $isPending: boolean;
     $shouldHighlight: boolean;
@@ -65,6 +66,7 @@ const Body = styled.div`
     width: 100%;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ExpandButton = styled(Button)`
     justify-content: flex-start;
     align-self: flex-start;

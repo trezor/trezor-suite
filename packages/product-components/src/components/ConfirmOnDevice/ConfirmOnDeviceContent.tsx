@@ -84,6 +84,7 @@ const Step = styled.div<{ $isActive: boolean }>`
         `}
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledRotateDeviceImage = styled(RotateDeviceImage)`
     height: 34px;
 `;

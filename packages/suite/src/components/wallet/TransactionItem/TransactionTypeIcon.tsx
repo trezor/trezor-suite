@@ -9,6 +9,7 @@ const IconsWrapper = styled.div<{ $isJoint: boolean }>`
     transform: ${({ $isJoint }) => $isJoint && 'translate(2px, 0)'};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ClockIcon = styled(Icon)`
     position: absolute;
     top: -2px;

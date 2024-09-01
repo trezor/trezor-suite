@@ -16,6 +16,7 @@ const CoinmarketFormLayoutWrapper = styled.form`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const CoinmarketFormInputsWrapper = styled(Card)`
     padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.lg};
     width: 60%;
@@ -30,6 +31,8 @@ const CoinmarketFormInputsWrapper = styled(Card)`
         padding-bottom: ${spacingsPx.zero};
     }
 `;
+
+// eslint-disable-next-line local-rules/no-override-ds-component
 const CoinmarketFormOfferWrapper = styled(Card)`
     padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxxl};
     width: 37%;

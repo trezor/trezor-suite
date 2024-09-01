@@ -27,6 +27,7 @@ const Wrapper = styled.div`
     width: 100%;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Title = styled(H3)`
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
@@ -37,6 +38,7 @@ const Description = styled.div`
     text-align: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     margin: 24px 0;
 `;

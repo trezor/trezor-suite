@@ -5,6 +5,7 @@ import { Checkbox, variables } from '@trezor/components';
 
 const { FONT_SIZE } = variables;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCheckbox = styled(Checkbox)`
     padding-left: 0;
     align-items: flex-start;

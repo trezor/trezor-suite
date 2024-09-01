@@ -4,11 +4,13 @@ import { H3, Paragraph, variables } from '@trezor/components';
 import { IconBorderedWrapper } from 'src/components/suite';
 import { spacingsPx } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledH3 = styled(H3)<{ $size?: string }>`
     margin-top: ${spacingsPx.lg};
     font-size: ${({ $size }) => $size === 'small' && variables.FONT_SIZE.NORMAL};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
 `;

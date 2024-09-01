@@ -27,6 +27,7 @@ const GreenTxt = styled.span`
     color: ${({ theme }) => theme.textPrimaryDefault};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledWarning = styled(Warning)`
     margin: ${spacingsPx.sm} 0 ${spacingsPx.sm} 0;
     justify-content: flex-start;
@@ -40,6 +41,7 @@ const ClaimingPeriodWrapper = styled.div`
     border-top: 1px solid ${({ theme }) => theme.borderElevation2};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
 `;

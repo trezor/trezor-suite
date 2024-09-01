@@ -25,6 +25,7 @@ const StepNumber = styled.div<{ $subdued?: boolean; $isDone?: boolean }>`
     color: ${({ theme, $subdued }) => ($subdued === true ? theme.textSubdued : undefined)};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledParagraph = styled(Paragraph)`
     font-variant-numeric: tabular-nums;
     text-align: center;

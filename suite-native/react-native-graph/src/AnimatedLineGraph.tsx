@@ -30,6 +30,8 @@ import {
     Shadow,
 } from '@shopify/react-native-skia';
 
+import { hexToRgba } from '@suite-common/suite-utils';
+
 import type { AnimatedLineGraphProps, GraphEventWithCords } from './LineGraphProps';
 import { SelectionDot as DefaultSelectionDot } from './SelectionDot';
 import {
@@ -47,7 +49,6 @@ import { DefaultGraphEvent } from './DefaultGraphEvent';
 import { useEventTooltipProps } from './hooks/useEventTooltipProps';
 import { LoadingLine } from './LoadingLine';
 import { BlurOverlay } from './BlurOverlay';
-import { hexToRgba } from '@suite-common/suite-utils';
 
 const INDICATOR_RADIUS = 7;
 const INDICATOR_BORDER_MULTIPLIER = 1.3;

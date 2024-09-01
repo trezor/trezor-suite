@@ -24,6 +24,7 @@ const StyledModal = styled(Modal)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const LinkButton = styled(Button)`
     width: 100%;
 `;

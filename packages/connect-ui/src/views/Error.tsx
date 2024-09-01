@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Button, CollapsibleBox, colors, Icon, IconName, variables } from '@trezor/components';
 import { isFirefox } from '@trezor/env-utils';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const WhiteCollapsibleBox = styled(CollapsibleBox)`
     background: ${({ theme }) => theme.legacy.BG_WHITE};
     width: 500px;

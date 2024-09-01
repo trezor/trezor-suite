@@ -7,6 +7,7 @@ import { isWebUsb } from 'src/utils/suite/transport';
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
 import { spacings } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLottieAnimation = styled(LottieAnimation)`
     margin: 8px 16px 8px 0;
     min-width: 64px;
@@ -20,6 +21,7 @@ const Column = styled.div`
     width: 100%;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Title = styled(Paragraph)`
     display: flex;
     flex-direction: row;

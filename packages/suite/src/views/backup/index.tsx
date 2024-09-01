@@ -15,14 +15,17 @@ import type { ForegroundAppProps } from 'src/types/suite';
 import type { BackupStatus } from 'src/actions/backup/backupActions';
 import { selectBackup } from 'src/reducers/backup/backupReducer';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     width: 224px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledP = styled(Paragraph)`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     margin-bottom: 24px;
     align-self: center;

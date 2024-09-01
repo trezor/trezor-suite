@@ -65,6 +65,7 @@ const OfferBadgeWrap = styled.div`
     flex-wrap: wrap;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const OfferBadge = styled(Badge)`
     margin-right: ${spacingsPx.xs};
     margin-bottom: ${spacingsPx.xs};
@@ -77,6 +78,7 @@ const OfferBadgeInfo = styled.div`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     width: 168px;
 

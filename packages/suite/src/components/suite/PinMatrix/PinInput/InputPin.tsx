@@ -3,6 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { variables, Icon, Input } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledInput = styled(Input)`
     input {
         letter-spacing: ${spacingsPx.xs};

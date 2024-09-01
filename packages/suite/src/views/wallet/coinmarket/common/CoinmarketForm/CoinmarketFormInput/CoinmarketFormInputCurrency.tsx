@@ -14,6 +14,7 @@ import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormOption, CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
 import styled from 'styled-components';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const SelectWrapper = styled(Select)`
     /* stylelint-disable selector-class-pattern */
     .react-select__value-container {

@@ -17,7 +17,7 @@ import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadat
 
 const rotateIn = keyframes`
     from {
-        transform: translateY(100%); 
+        transform: translateY(100%);
         opacity: 0;
     }
     to {
@@ -52,6 +52,7 @@ const DetailsContainer = styled.div<{ $isBalanceShown: boolean; $shouldAnimate: 
         0.3s forwards;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const AccountHeading = styled(H2)<{ $isBalanceShown: boolean }>`
     display: flex;
     align-items: center;

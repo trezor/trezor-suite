@@ -22,6 +22,7 @@ const Container = styled(motion.div)`
     overflow: hidden;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const CloseButton = styled(Icon)`
     position: absolute;
     right: 16px;
@@ -49,6 +50,7 @@ const CloseButton = styled(Icon)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     margin-right: 24px;
 
@@ -71,6 +73,7 @@ const TextContainer = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     background: ${({ theme }) => theme.legacy.BG_WHITE};
     color: ${({ theme }) => theme.legacy.TYPE_GREEN};

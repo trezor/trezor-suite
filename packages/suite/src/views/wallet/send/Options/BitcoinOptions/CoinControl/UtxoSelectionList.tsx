@@ -33,6 +33,7 @@ const Description = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)<{ $backgroundColor?: string }>`
     background: ${({ $backgroundColor }) =>
         $backgroundColor && transparentize(0.9, $backgroundColor)};

@@ -14,6 +14,7 @@ const LevelContainer = styled.div`
     width: 64px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Level = styled(Input)`
     input {
         background: none;

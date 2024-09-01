@@ -50,6 +50,7 @@ const DeviceName = styled.div`
     margin-top: 12px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledH2 = styled(H2)`
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -113,6 +114,7 @@ const StyledTrezorLink = styled(TrezorLink)`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTooltip = styled(Tooltip)`
     display: inline-block;
 `;

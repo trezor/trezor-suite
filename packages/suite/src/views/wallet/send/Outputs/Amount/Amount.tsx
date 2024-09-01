@@ -72,6 +72,7 @@ const TokenBalanceValue = styled.span`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTransferIcon = styled(Icon)`
     margin: 0 20px 46px;
     align-self: end;

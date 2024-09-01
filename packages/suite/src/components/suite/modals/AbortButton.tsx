@@ -58,6 +58,7 @@ const AbortContainer = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const CloseIcon = styled(Icon)`
     position: absolute;
     left: 0;

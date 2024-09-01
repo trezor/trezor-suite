@@ -11,6 +11,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { spacingsPx } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCheckbox = styled(Checkbox)`
     margin: ${spacingsPx.md} 0;
 `;

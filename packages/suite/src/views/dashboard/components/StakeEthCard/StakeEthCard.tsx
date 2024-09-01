@@ -36,6 +36,7 @@ const Body = styled.div`
     padding: ${spacingsPx.xxl} ${spacingsPx.xxl} 0 ${spacingsPx.xxl};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const CardTitle = styled(H3)`
     color: ${({ theme }) => theme.textPrimaryDefault};
     line-height: 23px;

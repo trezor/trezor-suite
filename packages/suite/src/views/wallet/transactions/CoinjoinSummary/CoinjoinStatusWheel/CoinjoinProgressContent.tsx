@@ -44,6 +44,7 @@ const ProgressPercentage = styled.p`
     ${typography.titleMedium}
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLoader = styled(Spinner)`
     opacity: 0.4;
 `;

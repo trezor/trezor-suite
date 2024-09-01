@@ -10,6 +10,7 @@ const Container = styled.div`
     margin-bottom: 16px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const InfoIcon = styled(Icon)`
     width: 18px;
     height: 18px;
@@ -44,6 +45,7 @@ const WarningList = styled.ul`
     padding-left: 16px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     background: ${({ theme }) => theme.legacy.TYPE_DARK_ORANGE};
 

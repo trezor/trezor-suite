@@ -30,6 +30,7 @@ const ButtonWrapper = styled.div`
     align-self: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     min-width: 180px;
 `;

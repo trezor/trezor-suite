@@ -26,6 +26,7 @@ const Row = styled.div`
     justify-content: space-evenly;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Backspace = styled(Button)`
     margin: 8px;
 `;

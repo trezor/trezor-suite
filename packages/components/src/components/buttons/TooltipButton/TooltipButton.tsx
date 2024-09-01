@@ -5,6 +5,7 @@ import { Button, ButtonProps } from '../Button/Button';
 import { spacingsPx } from '@trezor/theme';
 import { Icon } from '../../Icon/Icon';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     position: relative;
     padding-inline: ${spacingsPx.xxl};

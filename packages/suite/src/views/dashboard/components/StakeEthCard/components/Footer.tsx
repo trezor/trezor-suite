@@ -16,6 +16,7 @@ const Wrapper = styled.div`
     gap: ${spacingsPx.xs};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledP = styled(Paragraph)`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${({ theme }) => theme.textSubdued};
@@ -32,6 +33,7 @@ const Right = styled.div`
     gap: ${spacingsPx.xs};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ButtonTertiary = styled(Button)`
     padding: 9px 22px;
     font-size: ${variables.FONT_SIZE.NORMAL};

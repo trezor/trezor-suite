@@ -69,11 +69,13 @@ const BackendRow = ({ coin, urls, onSettings }: BackendRowProps) => (
     </BackendRowWrapper>
 );
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Title = styled(H3)`
     text-align: left;
     margin-bottom: 12px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Description = styled(Paragraph)`
     text-align: left;
     margin-bottom: 16px;

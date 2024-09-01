@@ -56,6 +56,7 @@ const Text = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLottieAnimation = styled(LottieAnimation)<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};
 `;

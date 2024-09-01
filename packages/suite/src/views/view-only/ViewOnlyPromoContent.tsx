@@ -49,14 +49,17 @@ const Circle = ({ children }: { children: ReactNode }) => {
     return <StyledCircle $elevation={elevation}>{children}</StyledCircle>;
 };
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const DeviceImage = styled(Image)`
     object-fit: contain;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const SmallDeviceImage = styled(DeviceImage)`
     width: 18px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const LargeDeviceImage = styled(DeviceImage)`
     width: 93px;
 `;

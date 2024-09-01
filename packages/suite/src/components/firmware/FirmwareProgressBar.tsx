@@ -24,6 +24,8 @@ const Label = styled.div`
     margin-right: ${spacingsPx.lg};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
+
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledProgressBar = styled(ProgressBar)`
     display: flex;
     margin-right: ${spacingsPx.lg};

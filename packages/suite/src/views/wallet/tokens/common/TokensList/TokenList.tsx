@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { AnimationWrapper } from 'src/components/wallet/AnimationWrapper';
 import { TokenRow } from './TokenRow';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Table = styled(Card)`
     word-break: break-all;
 `;
@@ -32,6 +33,7 @@ const NoResults = styled.div`
     text-align: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
     padding: ${spacingsPx.sm};
     border-radius: 50%;

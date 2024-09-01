@@ -27,6 +27,7 @@ const Wrapper = styled.div`
     ${blurFix}
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCollapsibleBox = styled(CollapsibleBox)<{ $elevation: Elevation }>`
     overflow: auto;
 

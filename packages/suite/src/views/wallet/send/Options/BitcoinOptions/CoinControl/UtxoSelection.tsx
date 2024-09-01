@@ -48,6 +48,7 @@ const DetailPartVisibleOnHover = styled.div<{ $alwaysVisible?: boolean }>`
         `};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCheckbox = styled(Checkbox)`
     margin-top: ${spacingsPx.xxxs};
     margin-right: ${spacingsPx.xs};
@@ -117,6 +118,7 @@ const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     white-space: nowrap;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const TransactionDetailButton = styled(TextButton)`
     color: ${({ theme }) => theme.textSubdued};
 
@@ -126,6 +128,7 @@ const TransactionDetailButton = styled(TextButton)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledFluidSpinner = styled(Spinner)`
     margin-right: ${spacingsPx.xs};
 `;

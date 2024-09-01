@@ -49,6 +49,7 @@ const SectionButton = styled.button<{ $hasBackground?: boolean }>`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLink = styled(Link)`
     width: 100%;
 `;
@@ -72,6 +73,7 @@ const DetailItem = styled.div`
     align-items: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)`
     padding: 0 6px;
 `;

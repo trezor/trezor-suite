@@ -4,6 +4,7 @@ import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import styled, { css } from 'styled-components';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledSwitch = styled(Switch)<{
     $hideOnLargeScreens?: boolean;
     $hideOnSmallScreens?: boolean;

@@ -15,10 +15,12 @@ const StyledModal = styled(Modal)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     align-self: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     path {
         fill: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};

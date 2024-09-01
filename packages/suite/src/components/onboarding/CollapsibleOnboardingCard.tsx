@@ -130,6 +130,7 @@ const ChildrenWrapper = styled.div`
     align-items: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Heading = styled(H2)<{ $withDescription?: boolean }>`
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};

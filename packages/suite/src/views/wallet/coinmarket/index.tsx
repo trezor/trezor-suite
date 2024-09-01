@@ -54,6 +54,7 @@ export const Middle = styled.div<ResponsiveSize>`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const StyledIcon = styled(Icon)<ResponsiveSize>`
     @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.$responsiveSize]}) {
         transform: rotate(90deg);
@@ -81,6 +82,7 @@ export const FooterWrapper = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const StyledSelectBar = styled(SelectBar)`
     width: 100%;
 
@@ -89,6 +91,7 @@ export const StyledSelectBar = styled(SelectBar)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const CoinmarketParagraph = styled(Paragraph)`
     text-align: center;
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
@@ -146,6 +149,7 @@ export const CoinmarketFormOptionNetwork = styled.div<{ $elevation: Elevation }>
     border-radius: 4px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const CoinmarketTextButton = styled(TextButton)`
     position: relative;
     padding: 0;
@@ -161,6 +165,7 @@ export const CoinmarketAmountContainer = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const CoinmarketAmountWrapper = styled(H2)`
     display: flex;
     align-items: center;

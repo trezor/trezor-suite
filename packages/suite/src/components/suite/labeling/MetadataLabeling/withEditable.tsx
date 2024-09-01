@@ -28,6 +28,7 @@ const IconListWrapper = styled.div`
 
 // To inherit everything so the input looks like the text we want to edit
 // However, we need to reset some properties: for example margin and padding to not duplicate spacings
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Editable = styled(AutoScalingInput)`
     all: inherit;
     margin: 0;

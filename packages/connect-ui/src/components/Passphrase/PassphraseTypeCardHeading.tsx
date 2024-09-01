@@ -27,6 +27,7 @@ const Description = styled.div<{ $hasTopMargin?: boolean }>`
     ${typography.label}
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ArrowCol = styled(Column)`
     flex: 0 0 auto;
     height: 100%;

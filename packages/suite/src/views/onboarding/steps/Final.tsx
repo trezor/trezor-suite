@@ -69,6 +69,7 @@ const SetupActions = styled.div`
     flex-flow: row wrap;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const EnterSuiteButton = styled(Button)`
     height: 64px;
     min-width: 280px;

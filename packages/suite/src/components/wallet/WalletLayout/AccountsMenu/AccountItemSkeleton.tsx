@@ -10,6 +10,7 @@ const Wrapper = styled.div`
     flex: 1;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledSkeletonStack = styled(SkeletonStack)`
     > :last-child {
         margin-bottom: 0;

@@ -6,6 +6,7 @@ export const Heading = styled.div`
     padding-left: 5px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const StyledH2 = styled(H2)`
     display: flex;
     flex-direction: row;

@@ -123,7 +123,7 @@ export const CoinmarketTermsModal = ({
                 </Row>
                 <Row alignItems="center">
                     <IconWrapper $backgroundColor="#e8f3fa">
-                        <Icon size={24} name={`checkActive`} color="#1d88c5" />
+                        <Icon size={24} name="checkActive" color="#1d88c5" />
                     </IconWrapper>
 
                     <ContentWrapper>
@@ -140,7 +140,7 @@ export const CoinmarketTermsModal = ({
                 </Row>
                 <Row alignItems="center">
                     <IconWrapper $backgroundColor="#f9f4e6">
-                        <Icon size={24} name={`pencil`} color="#c19009" />
+                        <Icon size={24} name="pencil" color="#c19009" />
                     </IconWrapper>
                     <ContentWrapper>
                         <Text typographyStyle="highlight">

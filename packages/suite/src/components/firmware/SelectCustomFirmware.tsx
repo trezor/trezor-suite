@@ -24,6 +24,7 @@ const StyledDropZone = styled(DropZone)`
     min-height: 120px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const InstallButton = styled(Button)`
     margin: ${spacingsPx.xxl} auto 0;
 `;

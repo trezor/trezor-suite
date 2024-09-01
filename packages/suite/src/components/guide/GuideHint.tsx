@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Warning } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledWarning = styled(Warning)`
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     color: ${({ theme }) => theme.textDefault};

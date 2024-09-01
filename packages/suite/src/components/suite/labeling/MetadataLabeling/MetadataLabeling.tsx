@@ -51,10 +51,12 @@ const Label = styled.div`
     position: relative;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const LabelButton = styled(Button)`
     overflow: hidden;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ActionButton = styled(Button)<{ $isValueVisible?: boolean; $isVisible?: boolean }>`
     margin-left: ${({ $isValueVisible, $isVisible, isLoading }) =>
         $isValueVisible || !$isVisible || isLoading ? '12px' : '4px'};
@@ -62,6 +64,7 @@ const ActionButton = styled(Button)<{ $isValueVisible?: boolean; $isVisible?: bo
 `;
 
 // @TODO this shouldn't be Button
+// eslint-disable-next-line local-rules/no-override-ds-component
 const SuccessButton = styled(Button)`
     cursor: wait;
     margin-left: 12px;
@@ -98,6 +101,7 @@ const LabelContainer = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const RelativeButton = styled(Button)`
     padding-bottom: 4px;
     padding-top: 4px;

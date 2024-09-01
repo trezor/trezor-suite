@@ -295,7 +295,11 @@ module.exports = {
             'error',
             { blankLine: 'always', prev: '*', next: 'return' },
         ],
-        'local-rules/no-override-ds-component': ['warn', { packageName: '@trezor/components' }],
+        'local-rules/no-override-ds-component': ['error', { packageName: '@trezor/components' }],
+        'local-rules/no-override-ds-component': [
+            'error',
+            { packageName: '@trezor/product-components' },
+        ],
     },
     overrides: [
         {

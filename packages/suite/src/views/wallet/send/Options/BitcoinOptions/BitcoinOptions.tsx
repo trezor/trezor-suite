@@ -39,6 +39,7 @@ const Left = styled.div`
     flex-wrap: wrap;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const AddRecipientButton = styled(Button)`
     align-self: center;
 `;
@@ -47,6 +48,7 @@ const Right = styled.div`
     display: flex;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     margin: 4px 8px 4px 0;
 `;

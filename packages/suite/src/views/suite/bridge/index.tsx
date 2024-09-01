@@ -7,6 +7,7 @@ import { isWebUsb } from 'src/utils/suite/transport';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import { DATA_URL } from '@trezor/urls';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     path {
         fill: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};

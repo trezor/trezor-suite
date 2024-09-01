@@ -4,6 +4,7 @@ import { Elevation, mapElevationToBackground } from '@trezor/theme';
 import { HTMLAttributes, ReactNode, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const EvmExplanationBoxWrapper = styled(Card)<{ $caret?: boolean; $elevation: Elevation }>`
     position: relative;
     display: flex;
