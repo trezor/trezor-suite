@@ -2,13 +2,13 @@ import { fetchCurrentFiatRates, fetchLastWeekFiatRates } from '@suite-common/fia
 import { createThunk } from '@suite-common/redux-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
-    Account,
     TickerId,
     Timestamp,
     TokenAddress,
     WalletAccountTransaction,
     RateTypeWithoutHistoric,
     TickerResult,
+    AccountKey,
 } from '@suite-common/wallet-types';
 import {
     fetchTransactionsRates,
@@ -21,9 +21,10 @@ import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definit
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
 import { selectIsElectrumBackendSelected } from '../blockchain/blockchainSelectors';
+import { selectAccountByKey } from '../accounts/accountsReducer';
 
 type UpdateTxsFiatRatesThunkPayload = {
-    account: Account;
+    accountKey: AccountKey;
     txs: WalletAccountTransaction[];
     localCurrency: FiatCurrencyCode;
 };
@@ -31,8 +32,10 @@ type UpdateTxsFiatRatesThunkPayload = {
 // TODO: Refactor this to batch requests as much as possible
 export const updateTxsFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/updateTxsRates`,
-    async ({ account, txs, localCurrency }: UpdateTxsFiatRatesThunkPayload, { getState }) => {
-        if (txs?.length === 0 || isTestnet(account.symbol)) return { account, rates: [] };
+    async ({ accountKey, txs, localCurrency }: UpdateTxsFiatRatesThunkPayload, { getState }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account || txs?.length === 0 || isTestnet(account.symbol))
+            return { account, rates: [] };
 
         const isElectrumBackend = selectIsElectrumBackendSelected(getState(), account.symbol);
 
@@ -146,7 +149,7 @@ export const updateMissingTxFiatRatesThunk = createThunk(
         );
 
         transactionsWithMissingRates.forEach(({ account, txs }) => {
-            dispatch(updateTxsFiatRatesThunk({ account, txs, localCurrency }));
+            dispatch(updateTxsFiatRatesThunk({ accountKey: account.key, txs, localCurrency }));
         });
     },
 );
