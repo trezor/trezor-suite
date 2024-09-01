@@ -122,22 +122,23 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                         dispatch,
                     });
 
-                    let events;
-
                     // Process transaction events only for the single account detail graph.
                     if (!isPortfolioGraph) {
-                        events = await getAccountMovementEvents({
+                        await getAccountMovementEvents({
                             account: accounts[0],
                             startOfTimeFrameDate,
                             endOfTimeFrameDate,
                             dispatch,
+                        }).then(events => {
+                            normalizeExtremeGraphEvents(
+                                events,
+                                startOfTimeFrameDate ?? points[0].date,
+                                endOfTimeFrameDate,
+                            );
+                            // We need to set events after graph points, othewise it will mess up events randomly
+                            // because of strange useEffect in AnimatedLineGraph component
+                            setGraphEvents(events);
                         });
-
-                        normalizeExtremeGraphEvents(
-                            events,
-                            startOfTimeFrameDate ?? points[0].date,
-                            endOfTimeFrameDate,
-                        );
                     }
 
                     // If the fetch was interrupted by a new fetch, do not set the values.
@@ -145,8 +146,9 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
 
                     setError(null);
                     setGraphPoints(points);
-                    setGraphEvents(events);
                 } catch (err) {
+                    // rethrow error because we get stack trace in console
+                    console.error(err);
                     // If the fetch was interrupted by a new fetch, do not set error.
                     if (lastFetchTimestamp.current !== fetchTimestamp) return;
                     setError(err.message);

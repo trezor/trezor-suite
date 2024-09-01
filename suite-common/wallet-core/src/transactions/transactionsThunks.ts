@@ -1,3 +1,5 @@
+import { A } from '@mobily/ts-belt';
+
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import {
     Account,
@@ -5,6 +7,7 @@ import {
     PrecomposedTransactionCardanoFinal,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalRbf,
+    Timestamp,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
@@ -29,8 +32,10 @@ import { selectSendSignedTx } from '../send/sendFormReducer';
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {
     selectAccountTransactions,
-    selectAccountTransactionsWithNulls,
+    selectAccountTransactionsAfterTimestamp,
     selectAreAllAccountTransactionsLoaded,
+    selectAreAllAccountTransactionsLoadedTillTimestamp,
+    selectIsPageAlreadyFetched,
     selectTransactions,
 } from './transactionsReducer';
 
@@ -258,13 +263,13 @@ export const fetchTransactionsPageThunk = createThunk(
             throw new Error(`Unsupported backend type: ${account.backendType}`);
         }
 
-        const transactions = selectAccountTransactionsWithNulls(getState(), account.key); // get all transactions including "null" values because of pagination
-        const startIndex = (page - 1) * perPage;
-        const stopIndex = startIndex + perPage;
-        const txsForPage = transactions.slice(startIndex, stopIndex).filter(tx => !!tx.txid); // filter out "empty" values
-        // always fetch first page because there might be new transactions
         const isFirstPage = page === 1;
-        const isPageAlreadyFetched = txsForPage.length === perPage;
+        const isPageAlreadyFetched = selectIsPageAlreadyFetched(
+            getState(),
+            accountKey,
+            page,
+            perPage,
+        );
 
         if (isPageAlreadyFetched && !isFirstPage && !forceRefetch) {
             return 'ALREADY_FETCHED' as const;
@@ -392,5 +397,80 @@ export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk(
         }
 
         return selectAccountTransactions(getState(), accountKey);
+    },
+);
+
+export const fetchTransactionsUntilTimestamp = createSingleInstanceThunk(
+    `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsForAccount`,
+    async (
+        { accountKey, timestamp }: { accountKey: AccountKey; timestamp: Timestamp | null },
+        { dispatch, getState },
+    ) => {
+        if (!timestamp) {
+            return dispatch(fetchAllTransactionsForAccountThunk({ accountKey })).unwrap();
+        }
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account) {
+            throw new Error(`Account not found: ${accountKey}`);
+        }
+
+        const areTransactionsAlreadyFetched = selectAreAllAccountTransactionsLoadedTillTimestamp(
+            getState(),
+            accountKey,
+            timestamp,
+        );
+
+        if (areTransactionsAlreadyFetched) {
+            return selectAccountTransactionsAfterTimestamp(getState(), accountKey, timestamp);
+        }
+
+        let page = 1;
+        let marker: AccountInfo['marker'] | undefined;
+        let totalPages = 0;
+        let forceRefetch = false;
+        const perPage = 7;
+
+        while (true) {
+            const result = await dispatch(
+                fetchTransactionsPageThunk({
+                    accountKey,
+                    page,
+                    perPage,
+                    // Loading here MUST be always disabled, because loading is handled by this thunk a not by fetchTransactionsPageThunk
+                    noLoading: true,
+                    forceRefetch,
+                    ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
+                }),
+            ).unwrap();
+
+            const areNowTransactionsAlreadyFetched =
+                selectAreAllAccountTransactionsLoadedTillTimestamp(
+                    getState(),
+                    accountKey,
+                    timestamp,
+                );
+
+            if (areNowTransactionsAlreadyFetched) {
+                break;
+            }
+
+            if (result === 'ALREADY_FETCHED') {
+                page += 1;
+                continue;
+            }
+
+            totalPages = result.page?.total || totalPages;
+            const areThereMorePages = page < totalPages || !!result.marker;
+
+            if (!areThereMorePages) {
+                // This should never happen because of previous checks, but just it won't hurt to have it here as a safety net.
+                break;
+            }
+
+            marker = result.marker;
+            page += 1;
+        }
+
+        return selectAccountTransactionsAfterTimestamp(getState(), accountKey, timestamp);
     },
 );

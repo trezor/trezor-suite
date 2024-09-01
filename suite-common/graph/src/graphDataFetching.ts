@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 
-import { A, D, F, G, pipe } from '@mobily/ts-belt';
+import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
@@ -10,8 +10,8 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { fetchTransactionsUntilTimestamp } from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
 import { NUMBER_OF_POINTS, isLocalBalanceHistoryCoin } from './constants';
 import {
@@ -34,9 +34,17 @@ import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils
 export const addBalanceForAccountMovementHistory = (
     data: AccountMovementHistory[] | AccountHistoryMovementItem[],
     symbol: NetworkSymbol,
+    initialBalance = '0',
 ): AccountHistoryBalancePoint[] => {
-    let balance = new BigNumber('0');
-    const historyWithBalance = data.map(dataPoint => {
+    let balance = new BigNumber(initialBalance);
+
+    // // sort data from newest to oldest
+    const dataSorted = A.sort<AccountMovementHistory | AccountHistoryMovementItem>(
+        data,
+        (a, b) => b.time - a.time,
+    );
+
+    const historyWithBalance = dataSorted.map(dataPoint => {
         // subtract sentToSelf field as we don't want to include amounts received/sent to the same account
         const normalizedReceived = dataPoint.sentToSelf
             ? new BigNumber(dataPoint.received).minus(dataPoint.sentToSelf || 0)
@@ -45,13 +53,16 @@ export const addBalanceForAccountMovementHistory = (
             ? new BigNumber(dataPoint.sent).minus(dataPoint.sentToSelf || 0)
             : dataPoint.sent;
 
-        balance = new BigNumber(balance).plus(normalizedReceived).minus(normalizedSent);
+        balance = new BigNumber(balance).minus(normalizedReceived).plus(normalizedSent);
 
         return {
             time: dataPoint.time,
             cryptoBalance: formatNetworkAmount(balance.toFixed(), symbol),
         };
     });
+
+    // sort data from oldest to newest
+    historyWithBalance.sort((a, b) => a.time - b.time);
 
     return historyWithBalance;
 };
@@ -113,6 +124,7 @@ const accountBalanceHistoryCache: Record<string, AccountBalanceHistoryWithTokens
 const getAccountBalanceHistory = async ({
     accountItem,
     endOfTimeFrameDate,
+    startOfTimeFrameDate,
     forceRefetch,
     // We pass dispatch because we need to fetch all transactions using redux thunk. This is a workaround for now to keep things simple.
     // In future we should convert this to proper thunk so we can use dispatch and selectors from thunkAPI.
@@ -120,13 +132,16 @@ const getAccountBalanceHistory = async ({
 }: {
     accountItem: AccountItem;
     endOfTimeFrameDate: Date;
+    startOfTimeFrameDate: Date | null;
     forceRefetch?: boolean;
     dispatch: ReturnType<typeof useDispatch>;
 }): Promise<AccountBalanceHistoryWithTokens> => {
-    const { coin, identity, descriptor, accountKey } = accountItem;
+    const { coin, identity, descriptor, accountKey, tokensFilter } = accountItem;
     const endTimeFrameTimestamp = getUnixTime(endOfTimeFrameDate);
-    const cacheKey = `${JSON.stringify(accountItem)}-${endTimeFrameTimestamp}`;
-
+    const startOfTimeFrameDateTimestamp = startOfTimeFrameDate
+        ? (getUnixTime(startOfTimeFrameDate) as Timestamp)
+        : null;
+    const cacheKey = `${JSON.stringify(accountItem)}-${endTimeFrameTimestamp}-${startOfTimeFrameDateTimestamp}`;
     if (accountBalanceHistoryCache[cacheKey] && !forceRefetch) {
         return accountBalanceHistoryCache[cacheKey];
     }
@@ -134,21 +149,32 @@ const getAccountBalanceHistory = async ({
     const getBalanceHistory = async () => {
         if (isLocalBalanceHistoryCoin(coin)) {
             const allTransactions = await dispatch(
-                fetchAllTransactionsForAccountThunk({
+                fetchTransactionsUntilTimestamp({
                     accountKey,
+                    timestamp: startOfTimeFrameDateTimestamp,
                 }),
             ).unwrap();
 
-            return getAccountHistoryMovementFromTransactions({
+            const movements = getAccountHistoryMovementFromTransactions({
                 transactions: allTransactions,
                 coin,
             });
+
+            tokensFilter?.forEach(tokenAddress => {
+                // if there are no movements for this token, we need to add an empty array otherwise it will be skipped
+                if (!movements.tokens[tokenAddress]) {
+                    movements.tokens[tokenAddress] = [];
+                }
+            });
+
+            return movements;
         }
 
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,
             identity,
             descriptor,
+            from: startOfTimeFrameDateTimestamp ?? undefined,
             to: endTimeFrameTimestamp,
             groupBy: 1,
             // we don't need currencies at all here, this will just reduce transferred data size
@@ -182,22 +208,40 @@ const getAccountBalanceHistory = async ({
     const accountMovementHistoryWithBalance = addBalanceForAccountMovementHistory(
         accountMovementHistory.main,
         coin,
+        getBalanceFromAccountInfo({ accountInfo: latestAccountInfo, coin }),
     );
 
+    const tokens: Array<readonly [TokenAddress, AccountHistoryMovementItem[]]> = pipe(
+        latestAccountInfo.tokens ?? [],
+
+        A.map(
+            t =>
+                [
+                    t.contract as TokenAddress,
+                    accountMovementHistory.tokens?.[t.contract as TokenAddress] ?? [],
+                ] as const,
+        ),
+        A.filter(
+            ([contractId]) => !tokensFilter || tokensFilter.includes(contractId as TokenAddress),
+        ),
+        F.toMutable,
+    );
     const tokensMovementHistoryWithBalance = D.mapWithKey(
-        accountMovementHistory.tokens,
+        D.fromPairs(tokens),
         (contractId, tokenHistory) => {
-            const historyWithBalance = addBalanceForAccountMovementHistory(tokenHistory, coin);
+            const latestBalance = getBalanceFromAccountInfo({
+                accountInfo: latestAccountInfo,
+                coin,
+                contractId: contractId.toString(),
+            });
+            const historyWithBalance = addBalanceForAccountMovementHistory(
+                tokenHistory,
+                coin,
+                latestBalance,
+            );
             historyWithBalance.push({
                 time: endTimeFrameTimestamp,
-                cryptoBalance: formatNetworkAmount(
-                    getBalanceFromAccountInfo({
-                        accountInfo: latestAccountInfo,
-                        coin,
-                        contractId: contractId.toString(),
-                    }),
-                    coin,
-                ),
+                cryptoBalance: formatNetworkAmount(latestBalance, coin),
             });
 
             return historyWithBalance;
@@ -297,6 +341,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
 
             return getAccountBalanceHistory({
                 endOfTimeFrameDate,
+                startOfTimeFrameDate,
                 forceRefetch,
                 dispatch,
                 accountItem,
@@ -376,42 +421,51 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         contractId?: TokenAddress;
     }): CoinKey => `${coin}-${contractId ?? ''}`;
 
-    const coins = pipe(
-        accountsWithBalanceHistoryFlattened,
-        A.map(({ coin, contractId }) => ({ coin, contractId })),
-        A.uniqBy(getCoinKey),
+    // Using Set is faster than A.uniq because it's O(n) instead of O(n^2)
+    const coinsSet = new Set<CoinKey>();
+    accountsWithBalanceHistoryFlattened.forEach(({ coin, contractId }) => {
+        coinsSet.add(getCoinKey({ coin, contractId }));
+    });
+
+    let coins = Array.from(coinsSet).map(coin => {
+        const [coinSymbol, contractId] = coin.split('-');
+
+        return { coin: coinSymbol as NetworkSymbol, contractId: contractId as TokenAddress };
+    });
+
+    const pairs = await Promise.all(
+        coins.map(({ coin, contractId }) =>
+            getFiatRatesForNetworkInTimeFrame({
+                timestamps,
+                coin,
+                contractId,
+                fiatCurrency,
+                forceRefetch,
+                isElectrumBackend,
+            })
+                .then(res => {
+                    if (res === null)
+                        throw new Error(`Unable to fetch fiat rates for defined timestamps.`);
+
+                    return [getCoinKey({ coin, contractId }), res] as const;
+                })
+                .catch(error => {
+                    console.error(
+                        `Unable to fetch GRAPH fiat rates ${fiatCurrency} for ${coin} ${contractId}:`,
+                        error,
+                    );
+                    error.message = `${coin.toUpperCase()} (${fiatCurrency}): ${error.message}`;
+                    if (contractId) {
+                        error.message = `${error.message} - ${contractId}`;
+                    }
+                    throw error;
+                }),
+        ),
     );
 
     const coinsFiatRates: Record<CoinKey, FiatRatesItem[]> = D.fromPairs(
-        await Promise.all(
-            coins.map(({ coin, contractId }) =>
-                getFiatRatesForNetworkInTimeFrame({
-                    timestamps,
-                    coin,
-                    contractId,
-                    fiatCurrency,
-                    forceRefetch,
-                    isElectrumBackend,
-                })
-                    .then(res => {
-                        if (res === null)
-                            throw new Error(`Unable to fetch fiat rates for defined timestamps.`);
-
-                        return [getCoinKey({ coin, contractId }), res] as const;
-                    })
-                    .catch(error => {
-                        console.error(
-                            `Unable to fetch GRAPH fiat rates ${fiatCurrency} for ${coin} ${contractId}:`,
-                            error,
-                        );
-                        error.message = `${coin.toUpperCase()} (${fiatCurrency}): ${error.message}`;
-                        if (contractId) {
-                            error.message = `${error.message} - ${contractId}`;
-                        }
-                        throw error;
-                    }),
-            ),
-        ),
+        // Some coins might not have fiat rates, so we need to filter them out
+        pairs.filter(([, res]) => res?.[0].rates?.[fiatCurrency] !== -1),
     );
 
     if (A.length(accountsWithBalanceHistoryFlattened) === 1) {
@@ -427,20 +481,30 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         }) as FiatGraphPointWithCryptoBalance[];
     }
 
-    const accountsWithFiatBalanceHistory = A.map(
+    const accountsWithFiatBalanceHistory = A.filterMap(
         accountsWithBalanceHistoryFlattened,
         ({ coin, contractId, balanceHistory }) => {
             const coinKey = getCoinKey({ coin, contractId });
 
-            const coinFiatRates = coinsFiatRates[coinKey];
+            const coinFiatRates = coinsFiatRates?.[coinKey];
 
-            return mapCryptoBalanceMovementToFixedTimeFrame({
+            if (!coinFiatRates) {
+                return O.None;
+            }
+
+            const m = mapCryptoBalanceMovementToFixedTimeFrame({
                 fiatRates: coinFiatRates,
                 fiatCurrency,
                 balanceHistory,
             });
+
+            return O.Some(m);
         },
     );
 
-    return mergeMultipleFiatBalanceHistories(accountsWithFiatBalanceHistory) as FiatGraphPoint[];
+    const mergedHistories = mergeMultipleFiatBalanceHistories(
+        accountsWithFiatBalanceHistory,
+    ) as FiatGraphPoint[];
+
+    return mergedHistories;
 };

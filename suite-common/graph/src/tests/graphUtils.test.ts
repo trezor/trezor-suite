@@ -121,8 +121,8 @@ describe('Graph utils', () => {
             },
             {
                 date: fromUnixTime(5),
-                cryptoBalance: '3',
-                value: 6,
+                cryptoBalance: '5',
+                value: 10,
             },
             {
                 date: fromUnixTime(10),
@@ -153,7 +153,7 @@ describe('Graph utils', () => {
                 cryptoBalance: '30',
             },
             {
-                time: 3,
+                time: 5,
                 cryptoBalance: '3',
             },
             {
@@ -214,8 +214,8 @@ describe('Graph utils', () => {
         ).toStrictEqual([
             {
                 date: fromUnixTime(0),
-                cryptoBalance: '30',
-                value: 60,
+                cryptoBalance: '3',
+                value: 6,
             },
             {
                 date: fromUnixTime(5),
@@ -224,13 +224,13 @@ describe('Graph utils', () => {
             },
             {
                 date: fromUnixTime(10),
-                cryptoBalance: '3',
-                value: 9,
+                cryptoBalance: '7',
+                value: 21,
             },
             {
                 date: fromUnixTime(15),
-                cryptoBalance: '3',
-                value: 12,
+                cryptoBalance: '7',
+                value: 28,
             },
             {
                 date: fromUnixTime(20),

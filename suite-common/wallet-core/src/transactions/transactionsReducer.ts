@@ -24,6 +24,7 @@ import {
     fetchTransactionsPageThunk,
     fetchAllTransactionsForAccountThunk,
 } from './transactionsThunks';
+import { AccountsRootState, selectAccountByKey } from '../accounts/accountsReducer';
 
 export type AccountTransactionsFetchStatusDetail =
     | {
@@ -404,6 +405,55 @@ export const selectAccountTransactionsFetchStatus = (
 ) => state.wallet.transactions.fetchStatusDetail?.[accountKey];
 
 export const selectAreAllAccountTransactionsLoaded = (
+    state: TransactionsRootState & AccountsRootState,
+    accountKey: AccountKey,
+) => {
+    const areAllTransactionsLoaded =
+        !!state.wallet.transactions.fetchStatusDetail?.[accountKey]?.areAllTransactionsLoaded;
+    if (areAllTransactionsLoaded) return true;
+
+    const transactions = selectAccountTransactions(state, accountKey);
+    const accountTotalTransactions = selectAccountByKey(state, accountKey)?.history.total ?? 0;
+
+    return transactions.length >= accountTotalTransactions;
+};
+
+export const selectIsPageAlreadyFetched = (
     state: TransactionsRootState,
     accountKey: AccountKey,
-) => !!state.wallet.transactions.fetchStatusDetail?.[accountKey]?.areAllTransactionsLoaded;
+    page: number,
+    perPage: number,
+) => {
+    const transactions = selectAccountTransactionsWithNulls(state, accountKey); // get all transactions including "null" values because of pagination
+    const startIndex = (page - 1) * perPage;
+    const stopIndex = startIndex + perPage;
+    const txsForPage = transactions.slice(startIndex, stopIndex).filter(tx => !!tx?.txid); // filter out "empty" values
+
+    const isPageAlreadyFetched = txsForPage.length === perPage;
+
+    return isPageAlreadyFetched;
+};
+
+export const selectAreAllAccountTransactionsLoadedTillTimestamp = (
+    state: TransactionsRootState & AccountsRootState,
+    accountKey: AccountKey,
+    timestamp: number,
+) => {
+    const areAllTransactionsLoaded = selectAreAllAccountTransactionsLoaded(state, accountKey);
+    if (areAllTransactionsLoaded) return true;
+
+    const transactions = selectAccountTransactions(state, accountKey);
+    const lastTransaction = transactions[transactions.length - 1];
+
+    return lastTransaction?.blockTime && lastTransaction.blockTime < timestamp;
+};
+
+export const selectAccountTransactionsAfterTimestamp = (
+    state: TransactionsRootState & AccountsRootState,
+    accountKey: AccountKey,
+    timestamp: number,
+) => {
+    const transactions = selectAccountTransactions(state, accountKey);
+
+    return transactions.filter(tx => tx.blockTime && tx.blockTime >= timestamp);
+};
