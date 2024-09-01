@@ -1,5 +1,3 @@
-import { A } from '@mobily/ts-belt';
-
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import {
     Account,
