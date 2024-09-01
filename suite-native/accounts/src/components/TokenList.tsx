@@ -2,19 +2,19 @@ import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
-import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { SettingsSliceRootState } from '@suite-native/settings';
+import { Box, Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
     getEthereumTokenName,
     selectEthereumAccountsTokensWithFiatRates,
 } from '@suite-native/tokens';
-import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Text } from '@suite-native/atoms';
 
-import { TokenListItem } from './TokenListItem';
 import { OnSelectAccount } from '../types';
+import { TokenListItem } from './TokenListItem';
 
 type TokenListProps = {
     account: Account;
@@ -28,9 +28,8 @@ const titleContainerStyle = prepareNativeStyle(utils => ({
 
 export const TokenList = ({ account, onSelectAccount }: TokenListProps) => {
     const { applyStyle } = useNativeStyles();
-    const accountTokens = useSelector(
-        (state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState) =>
-            selectEthereumAccountsTokensWithFiatRates(state, account.key),
+    const accountTokens = useSelector((state: AccountsRootState & TokenDefinitionsRootState) =>
+        selectEthereumAccountsTokensWithFiatRates(state, account.key),
     );
 
     if (A.isEmpty(accountTokens)) return null;

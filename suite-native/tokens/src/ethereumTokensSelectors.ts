@@ -4,10 +4,8 @@ import { memoizeWithArgs, memoize } from 'proxy-memoize';
 import {
     AccountsRootState,
     DeviceRootState,
-    FiatRatesRootState,
     selectAccountByKey,
     selectAccountTransactions,
-    selectFiatRatesByFiatRateKey,
     selectVisibleDeviceAccounts,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
@@ -17,10 +15,15 @@ import {
     TokenInfoBranded,
     TokenSymbol,
 } from '@suite-common/wallet-types';
+import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
-import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
-import { getFiatRateKeyFromTicker, isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 
+import {
+    selectCoinDefinition,
+    selectFilterKnownTokens,
+    selectIsSpecificCoinDefinitionKnown,
+    TokenDefinitionsRootState,
+} from '@suite-common/token-definitions';
 import { EthereumTokenTransfer, WalletAccountTransaction } from './types';
 
 export const selectEthereumAccountTokenInfo = memoizeWithArgs(
@@ -84,28 +87,16 @@ export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
 );
 
 export const selectEthereumTokenHasFiatRates = (
-    state: FiatRatesRootState & SettingsSliceRootState,
+    state: TokenDefinitionsRootState,
     contract: TokenAddress,
-    tokenSymbol?: TokenSymbol,
 ) => {
-    if (!tokenSymbol) return false;
-    const fiatCurrencyCode = selectFiatCurrencyCode(state);
-    const fiatRateKey = getFiatRateKeyFromTicker(
-        {
-            symbol: 'eth',
-            tokenAddress: contract,
-        },
-        fiatCurrencyCode,
-    );
-    const rates = selectFiatRatesByFiatRateKey(state, fiatRateKey);
-
-    return !!rates?.rate;
+    return selectIsSpecificCoinDefinitionKnown(state, 'eth', contract);
 };
 
 export const selectAnyOfTokensHasFiatRates = (
-    state: FiatRatesRootState & SettingsSliceRootState,
+    state: TokenDefinitionsRootState,
     tokens: TokenInfoBranded[],
-) => A.any(tokens, token => selectEthereumTokenHasFiatRates(state, token.contract, token.symbol));
+) => A.any(tokens, token => selectEthereumTokenHasFiatRates(state, token.contract));
 
 const isNotZeroAmountTranfer = (tokenTranfer: TokenTransfer) =>
     tokenTranfer.amount !== '' && tokenTranfer.amount !== '0';
@@ -120,7 +111,7 @@ const isTransactionWithTokenTransfers = (transaction: WalletAccountTransaction) 
 
 const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
     (
-        state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
+        state: TransactionsRootState & TokenDefinitionsRootState,
         accountKey: AccountKey,
         areTokenOnlyTransactionsIncluded: boolean,
     ): WalletAccountTransaction[] =>
@@ -132,10 +123,10 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
                     transaction?.tokens ?? [],
                     A.filter(isNotZeroAmountTranfer),
                     A.filter(token =>
-                        selectEthereumTokenHasFiatRates(
+                        selectIsSpecificCoinDefinitionKnown(
                             state,
+                            transaction.symbol,
                             token.contract as TokenAddress,
-                            token.symbol as TokenSymbol,
                         ),
                     ),
                     A.map((tokenTransfer: TokenTransfer) => ({
@@ -155,7 +146,7 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
 );
 
 export const selectAccountOrTokenAccountTransactions = (
-    state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
+    state: TransactionsRootState & TokenDefinitionsRootState,
     accountKey: AccountKey,
     tokenAddress: TokenAddress | null,
     areTokenOnlyTransactionsIncluded: boolean,
@@ -171,27 +162,39 @@ export const selectAccountOrTokenAccountTransactions = (
     ) as WalletAccountTransaction[];
 };
 
+export const selectUniqueEtheruemTokens = (state: AccountsRootState & DeviceRootState) => {
+    const accounts = selectVisibleDeviceAccounts(state);
+
+    return pipe(
+        accounts,
+        A.filter(account => isEthereumAccountSymbol(account.symbol)),
+        A.map(account => account.tokens?.map(token => token.contract)),
+        A.flat,
+        // Don't use A.uniq(By) because it's slow for large arrays
+        t => Array.from(new Set(t)),
+        A.filter(tokenAddress => !!tokenAddress),
+    ) as TokenAddress[];
+};
+
 export const selectEthereumAccountsTokensWithFiatRates = memoizeWithArgs(
     (
-        state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState,
+        state: AccountsRootState & TokenDefinitionsRootState,
         ethereumAccountKey: AccountKey,
     ): TokenInfoBranded[] => {
         const account = selectAccountByKey(state, ethereumAccountKey);
         if (!account || !isEthereumAccountSymbol(account.symbol)) return [];
 
-        return A.filter(account.tokens ?? [], token =>
-            selectEthereumTokenHasFiatRates(
-                state,
-                token.contract as TokenAddress,
-                token.symbol as TokenSymbol,
-            ),
+        return selectFilterKnownTokens(
+            state,
+            account.symbol,
+            account.tokens ?? [],
         ) as TokenInfoBranded[];
     },
     { size: 50 },
 );
 
 export const selectNumberOfEthereumAccountTokensWithFiatRates = (
-    state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState,
+    state: TokenDefinitionsRootState & AccountsRootState,
     ethereumAccountKey: AccountKey,
 ): number => {
     const tokens = selectEthereumAccountsTokensWithFiatRates(state, ethereumAccountKey);
@@ -200,21 +203,17 @@ export const selectNumberOfEthereumAccountTokensWithFiatRates = (
 };
 
 export const selectIsEthereumAccountWithTokensWithFiatRates = (
-    state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState,
+    state: TokenDefinitionsRootState & AccountsRootState,
     ethereumAccountKey: AccountKey,
 ): boolean => {
     return selectNumberOfEthereumAccountTokensWithFiatRates(state, ethereumAccountKey) > 0;
 };
 
 export const selectNumberOfUniqueEthereumTokensPerDevice = memoize(
-    (state: AccountsRootState & DeviceRootState & FiatRatesRootState & SettingsSliceRootState) => {
-        const accounts = selectVisibleDeviceAccounts(state);
-
+    (state: AccountsRootState & DeviceRootState & TokenDefinitionsRootState) => {
         return pipe(
-            accounts,
-            A.map(account => selectEthereumAccountsTokensWithFiatRates(state, account.key)),
-            A.flat,
-            A.uniqBy(token => token.contract),
+            selectUniqueEtheruemTokens(state),
+            A.filter(tokenAddress => selectCoinDefinition(state, 'eth', tokenAddress)),
             A.length,
         );
     },

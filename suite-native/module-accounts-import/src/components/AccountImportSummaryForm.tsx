@@ -2,15 +2,20 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/core';
 
+import {
+    selectFilterKnownTokens,
+    TokenDefinitionsRootState,
+} from '@suite-common/token-definitions';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    selectAccountsByNetworkAndDeviceState,
     PORTFOLIO_TRACKER_DEVICE_STATE,
-    FiatRatesRootState,
+    selectAccountsByNetworkAndDeviceState,
 } from '@suite-common/wallet-core';
+import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
+import { AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
+import { analytics, EventType } from '@suite-native/analytics';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
-import { useAccountLabelForm, AccountFormValues } from '@suite-native/accounts';
 import { Form } from '@suite-native/forms';
 import {
     AccountsImportStackParamList,
@@ -20,21 +25,14 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { selectAnyOfTokensHasFiatRates } from '@suite-native/tokens';
 import { AccountInfo } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { analytics, EventType } from '@suite-native/analytics';
-import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
-import { selectAnyOfTokensHasFiatRates } from '@suite-native/tokens';
-import {
-    selectFilterKnownTokens,
-    TokenDefinitionsRootState,
-} from '@suite-common/token-definitions';
-import { SettingsSliceRootState } from '@suite-native/settings';
 
 import { importAccountThunk } from '../accountsImportThunks';
-import { AccountImportOverview } from './AccountImportOverview';
-import { AccountImportEthereumTokens } from './AccountImportEthereumTokens';
 import { useShowImportError } from '../useShowImportError';
+import { AccountImportEthereumTokens } from './AccountImportEthereumTokens';
+import { AccountImportOverview } from './AccountImportOverview';
 
 type AccountImportSummaryFormProps = {
     networkSymbol: NetworkSymbol;
@@ -60,7 +58,7 @@ export const AccountImportSummaryForm = ({
     const navigation = useNavigation<NavigationProp>();
     const showImportError = useShowImportError(networkSymbol, navigation);
 
-    const areTokensDisplayed = useSelector((state: SettingsSliceRootState & FiatRatesRootState) =>
+    const areTokensDisplayed = useSelector((state: TokenDefinitionsRootState) =>
         selectAnyOfTokensHasFiatRates(state, (accountInfo?.tokens as TokenInfoBranded[]) ?? []),
     );
 

@@ -1,14 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import { CryptoIcon } from '@suite-common/icons';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { selectEthereumTokenHasFiatRates } from '@suite-native/tokens';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { FiatRatesRootState } from '@suite-common/wallet-core';
-import { SettingsSliceRootState } from '@suite-native/settings';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
@@ -27,9 +26,8 @@ export const EthereumTokenInfo = ({
     decimals,
     contract,
 }: EthereumTokenInfoProps) => {
-    const ethereumSymbolHasFiatRates = useSelector(
-        (state: FiatRatesRootState & SettingsSliceRootState) =>
-            selectEthereumTokenHasFiatRates(state, contract, symbol),
+    const ethereumSymbolHasFiatRates = useSelector((state: TokenDefinitionsRootState) =>
+        selectEthereumTokenHasFiatRates(state, contract),
     );
 
     if (!symbol || !balance || !name || !ethereumSymbolHasFiatRates) return null;

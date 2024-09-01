@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 import { G } from '@mobily/ts-belt';
 
 import { Icon } from '@suite-common/icons';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { TransactionsRootState } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Text, VStack } from '@suite-native/atoms';
-import { FiatRatesRootState, TransactionsRootState } from '@suite-common/wallet-core';
-import { SettingsSliceRootState } from '@suite-native/settings';
 
-import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { selectTransactionInputAndOutputTransfers, TransactionTranfer } from '../../selectors';
 import { TransactionDetailInputsSheetSection } from './TransactionDetailInputsSheetSection';
+import { TransactionDetailSheet } from './TransactionDetailSheet';
 
 type TransactionDetailInputsSheetProps = {
     isVisible: boolean;
@@ -64,7 +64,7 @@ export const TransactionDetailInputsSheet = ({
     accountKey,
 }: TransactionDetailInputsSheetProps) => {
     const transactionTransfers = useSelector(
-        (state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState) =>
+        (state: TransactionsRootState & TokenDefinitionsRootState) =>
             selectTransactionInputAndOutputTransfers(state, txid, accountKey),
     );
 

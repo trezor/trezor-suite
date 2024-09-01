@@ -1,19 +1,18 @@
-import { memoizeWithArgs } from 'proxy-memoize';
 import { A, G, pipe } from '@mobily/ts-belt';
+import { memoizeWithArgs } from 'proxy-memoize';
 
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    FiatRatesRootState,
     selectTransactionByTxidAndAccountKey,
     selectTransactionTargets,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEthereumTokenHasFiatRates } from '@suite-native/tokens';
-import { SettingsSliceRootState } from '@suite-native/settings';
 
-import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';
 import { AddressesType, VinVoutAddress } from './types';
+import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';
 
 const selectTransactionTargetAddresses = memoizeWithArgs(
     (state: TransactionsRootState, txid: string, accountKey: AccountKey) => {
@@ -84,7 +83,7 @@ export type TransactionTranfer = {
 
 export const selectTransactionInputAndOutputTransfers = memoizeWithArgs(
     (
-        state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState,
+        state: TransactionsRootState & TokenDefinitionsRootState,
         txid: string,
         accountKey: AccountKey,
     ): {
@@ -136,12 +135,8 @@ export const selectTransactionInputAndOutputTransfers = memoizeWithArgs(
 
         const tokenTransfers: TransactionTranfer[] = pipe(
             tokens,
-            A.filter(({ symbol, contract }) =>
-                selectEthereumTokenHasFiatRates(
-                    state,
-                    contract as TokenAddress,
-                    symbol as TokenSymbol,
-                ),
+            A.filter(({ contract }) =>
+                selectEthereumTokenHasFiatRates(state, contract as TokenAddress),
             ),
             A.map(({ from, to, amount, symbol, decimals }) => ({
                 inputs: [{ address: from }],

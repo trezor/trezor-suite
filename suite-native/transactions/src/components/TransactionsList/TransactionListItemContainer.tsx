@@ -92,7 +92,6 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
 
 const titleStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
-    flex: 1,
     gap: utils.spacings.small,
 }));
 
