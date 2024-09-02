@@ -31,6 +31,10 @@ export type CoinmarketExchangeAction =
           type: typeof COINMARKET_EXCHANGE.SAVE_QUOTES;
           quotes: ExchangeTrade[];
       }
+    | {
+          type: typeof COINMARKET_EXCHANGE.SAVE_QUOTE;
+          quote: ExchangeTrade | undefined;
+      }
     | { type: typeof COINMARKET_EXCHANGE.CLEAR_QUOTES }
     | { type: typeof COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT; account: Account }
     | {
@@ -132,9 +136,19 @@ export const saveQuotes = (quotes: ExchangeTrade[]): CoinmarketExchangeAction =>
     quotes,
 });
 
+export const saveSelectedQuote = (quote: ExchangeTrade | undefined): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SAVE_QUOTE,
+    quote,
+});
+
 export const clearQuotes = (): CoinmarketExchangeAction => ({
     type: COINMARKET_EXCHANGE.CLEAR_QUOTES,
 });
 
 export const verifyAddress = (account: Account, address?: string, path?: string) =>
     verifyExchangeAddress(account, address, path, COINMARKET_EXCHANGE.VERIFY_ADDRESS);
+
+export const setCoinmarketExchangeAccount = (account: Account): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT,
+    account,
+});

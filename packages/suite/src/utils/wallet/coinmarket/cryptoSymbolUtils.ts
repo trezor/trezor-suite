@@ -58,3 +58,7 @@ export function tokenToCryptoSymbol(
 export const getNetworkName = (networkSymbol: NetworkSymbol) => {
     return networks[networkSymbol].name;
 };
+
+export const getNetworkDecimals = (networkDecimals: number | undefined) => {
+    return networkDecimals ?? 8;
+};

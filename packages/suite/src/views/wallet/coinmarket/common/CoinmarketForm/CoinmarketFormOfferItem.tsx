@@ -1,16 +1,17 @@
-import { Row, Spinner, useElevation } from '@trezor/components';
-import {
-    borders,
-    Elevation,
-    mapElevationToBackground,
-    spacingsPx,
-    typography,
-} from '@trezor/theme';
+import { Row, useElevation } from '@trezor/components';
+import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import styled from 'styled-components';
-import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import { Translation } from 'src/components/suite';
-import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketTradeDetailType,
+    CoinmarketUtilsProvidersProps,
+} from 'src/types/coinmarket/coinmarket';
 import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
+import {
+    CoinmarketFormOfferSpinnerText,
+    CoinmarketFormOfferSpinnerWrapper,
+    CoinmarketSpinnerWrapper,
+} from 'src/views/wallet/coinmarket';
 
 const CoinmarketFormOfferItemWrapper = styled.div<{ $elevation: Elevation }>`
     display: flex;
@@ -20,25 +21,8 @@ const CoinmarketFormOfferItemWrapper = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBackground};
 `;
 
-const CoinmarketFormOfferSpinnerWrapper = styled.div`
-    width: 100%;
-    padding: ${spacingsPx.sm} 0;
-`;
-const CoinmarketFormOfferSpinnerText = styled.div<{ $withoutSpinner?: boolean }>`
-    ${({ $withoutSpinner }) => ($withoutSpinner ? typography.label : typography.hint)}
-    color: ${({ theme, $withoutSpinner }) =>
-        $withoutSpinner ? theme.textDefault : theme.textSubdued};
-    text-align: center;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const CoinmarketSpinnerWrapper = styled(Spinner)`
-    flex: none;
-    margin: 0 ${spacingsPx.xs};
-`;
-
 interface CoinmarketFormOfferItemProps {
-    bestQuote: BuyTrade | SellFiatTrade | ExchangeTrade | undefined;
+    bestQuote: CoinmarketTradeDetailType | undefined;
     isFormLoading: boolean;
     isFormInvalid: boolean;
     providers: CoinmarketUtilsProvidersProps | undefined;

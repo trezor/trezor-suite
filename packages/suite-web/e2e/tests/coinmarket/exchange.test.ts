@@ -1,6 +1,5 @@
 // @group_coinmarket
 
-// TODO: rewrite
 describe.skip('Coinmarket exchange', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -29,13 +28,13 @@ describe.skip('Coinmarket exchange', () => {
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();
         cy.getTestElement('@settings/wallet/network/eth').click();
-        cy.getTestElement('@settings/menu/close').click();
+        // cy.getTestElement('@settings/menu/close').click();
 
         // Goes to Exchange
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@suite/menu/suite-index').click();
         cy.getTestElement('@account-menu/regtest/normal/0/label').click();
         cy.getTestElement('@wallet/menu/wallet-coinmarket-buy').click();
-        cy.getTestElement('@coinmarket/menu/wallet-coinmarket-exchange').click();
+        cy.getTestElement('@suite/menu/wallet-coinmarket-exchange').click();
     });
 
     /**

@@ -1,11 +1,12 @@
 import styled from 'styled-components';
-import { Badge, Button, Card } from '@trezor/components';
+import { Badge, Button, Card, Row } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import CoinmarketUtilsPrice from '../CoinmarketUtils/CoinmarketUtilsPrice';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
+    isCoinmarketExchangeOffers,
     isCoinmarketSellOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
@@ -17,8 +18,8 @@ import {
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { SellFiatTrade } from 'invity-api';
-
-const OfferWrap = styled.div``;
+import { CoinmarketUtilsKyc } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsKyc';
+import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 
 const Offer = styled.div`
     display: flex;
@@ -126,7 +127,7 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     if (!cryptoAmountProps) return null;
 
     return (
-        <OfferWrap>
+        <CoinmarketTestWrapper data-testid="@coinmarket/offers/quote">
             <Card margin={{ top: spacings.md }} minHeight={100}>
                 <Offer>
                     <OfferColumn1>
@@ -143,7 +144,16 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                         />
                     </OfferColumn1>
                     <OfferColumn2>
-                        <CoinmarketUtilsPrice {...cryptoAmountProps} />
+                        <Row alignItems="flex-end">
+                            <CoinmarketUtilsPrice {...cryptoAmountProps} />
+                            {isCoinmarketExchangeOffers(context) && (
+                                <CoinmarketUtilsKyc
+                                    exchange={exchange}
+                                    providers={context.exchangeInfo?.providerInfos}
+                                    isForComparator
+                                />
+                            )}
+                        </Row>
                     </OfferColumn2>
                     <OfferColumn3>
                         {quote.status === 'LOGIN_REQUEST' ? (
@@ -172,7 +182,7 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                     </OfferColumn3>
                 </Offer>
             </Card>
-        </OfferWrap>
+        </CoinmarketTestWrapper>
     );
 };
 

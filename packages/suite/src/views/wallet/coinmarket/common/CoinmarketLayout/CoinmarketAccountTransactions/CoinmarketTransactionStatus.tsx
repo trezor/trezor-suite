@@ -137,7 +137,7 @@ export const CoinmarketTransactionStatus = ({ trade, className, tradeType }: Sta
     return (
         <Wrapper $color={data.color} className={className}>
             <Icon color={data.color} size={10} name={data.icon} margin={{ right: 4 }} />
-            <Text>
+            <Text data-testid="@coinmarket/transaction/status">
                 <Translation id={data.statusMessageId} />
             </Text>
         </Wrapper>

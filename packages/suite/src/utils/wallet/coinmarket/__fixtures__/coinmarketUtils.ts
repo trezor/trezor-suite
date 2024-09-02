@@ -64,6 +64,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         tokens: [],
         descriptor: 'descriptor1',
         symbol: 'btc',
+        visible: true,
     },
     {
         deviceState: 'deviceState',
@@ -71,12 +72,14 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         tokens: [],
         descriptor: 'descriptor2',
         symbol: 'ltc',
+        visible: true,
     },
     {
         deviceState: 'deviceState',
         formattedBalance: '0',
         descriptor: 'descriptor3',
         symbol: 'eth',
+        visible: true,
         tokens: [
             // unsupported token
             {
@@ -113,11 +116,13 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         tokens: [],
         descriptor: 'descriptor4',
         symbol: 'btc',
+        visible: true,
     },
     {
         deviceState: 'no-deviceState',
         formattedBalance: '0.101213',
         symbol: 'matic',
+        visible: true,
         tokens: [
             {
                 balance: '2.76149',
@@ -134,6 +139,25 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         deviceState: 'deviceState',
         formattedBalance: '250',
         symbol: 'matic',
+        visible: true,
+        tokens: [
+            // unsupported token
+            {
+                balance: '2.76149',
+                contract: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                decimals: 6,
+                name: 'USDC',
+                symbol: 'usdc',
+                type: 'ERC20',
+            },
+        ],
+        descriptor: 'descriptor6',
+    },
+    {
+        deviceState: 'deviceState',
+        formattedBalance: '250',
+        symbol: 'matic',
+        visible: false,
         tokens: [
             // unsupported token
             {

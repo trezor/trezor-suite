@@ -1,6 +1,8 @@
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
+import { RateType } from 'src/types/coinmarket/coinmarketForm';
+import { FORM_RATE_FIXED, FORM_RATE_FLOATING } from 'src/constants/wallet/coinmarket/form';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message
 export const getAmountLimits = (quotes: ExchangeTrade[]): CryptoAmountLimits | undefined => {
@@ -52,28 +54,41 @@ export const isQuoteError = (quote: ExchangeTrade): boolean => {
     return false;
 };
 
-export const getSuccessQuotesOrdered = (
+export const fixedRateCexQuotes = (
     quotes: ExchangeTrade[],
     exchangeInfo: ExchangeInfo | undefined,
-): ExchangeTrade[] => {
-    const fixed =
-        quotes.filter(
-            q =>
-                exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
-                !q.isDex &&
-                !isQuoteError(q),
-        ) || [];
-    const float =
-        quotes.filter(
-            q =>
-                !exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
-                !q.isDex &&
-                !isQuoteError(q),
-        ) || [];
-    const dex = quotes.filter(q => q.isDex && !isQuoteError(q)) || [];
+) =>
+    quotes.filter(
+        q =>
+            exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
+            !q.isDex &&
+            !isQuoteError(q),
+    );
 
-    return [...dex, ...fixed, ...float];
+export const floatRateCexQuotes = (
+    quotes: ExchangeTrade[],
+    exchangeInfo: ExchangeInfo | undefined,
+) =>
+    quotes.filter(
+        q =>
+            !exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
+            !q.isDex &&
+            !isQuoteError(q),
+    );
+
+export const getCexQuotesByRateType = (
+    rateType: RateType,
+    quotes: ExchangeTrade[] | undefined,
+    exchangeInfo: ExchangeInfo | undefined,
+) => {
+    if (!quotes) return undefined;
+    if (rateType === FORM_RATE_FIXED) return fixedRateCexQuotes(quotes, exchangeInfo);
+    if (rateType === FORM_RATE_FLOATING) return floatRateCexQuotes(quotes, exchangeInfo);
+    else return quotes;
 };
+
+export const getSuccessQuotesOrdered = (quotes: ExchangeTrade[]): ExchangeTrade[] =>
+    quotes.filter(q => !isQuoteError(q));
 
 export const getStatusMessage = (status: ExchangeTradeStatus) => {
     switch (status) {

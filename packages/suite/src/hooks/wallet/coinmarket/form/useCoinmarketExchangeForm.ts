@@ -1,119 +1,110 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useEffect, useRef, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import type { CryptoSymbol, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
+import type { ExchangeTrade, ExchangeTradeQuoteRequest, FiatCurrencyCode } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 import {
     amountToSatoshi,
     formatAmount,
-    getFeeLevels,
-    getFiatRateKey,
     getNetwork,
+    toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { useDidUpdate } from '@trezor/react-utils';
-import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { isChanged } from '@suite-common/suite-utils';
-import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { useActions, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/coinmarketExchangeActions';
-import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
     addIdsToQuotes,
-    getComposeAddressPlaceholder,
     getUnusedAddressFromAccount,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     getAmountLimits,
+    getCexQuotesByRateType,
     getSuccessQuotesOrdered,
 } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { CryptoAmountLimits, Option } from 'src/types/wallet/coinmarketCommonTypes';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
-import { selectAddressDisplayType, selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
+import { Account } from '@suite-common/wallet-types';
 import {
     CoinmarketTradeExchangeType,
     UseCoinmarketFormProps,
 } from 'src/types/coinmarket/coinmarket';
-import { useFees } from 'src/hooks/wallet/form/useFees';
-import { useCompose } from 'src/hooks/wallet/form/useCompose';
 import {
     CoinmarketExchangeFormContextProps,
     CoinmarketExchangeFormProps,
-    CoinmarketUseCommonFormStateReturnProps,
 } from 'src/types/coinmarket/coinmarketForm';
-import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_CURRENCY } from 'src/constants/wallet/coinmarket/form';
+import {
+    FORM_EXCHANGE_CEX,
+    FORM_EXCHANGE_DEX,
+    FORM_OUTPUT_AMOUNT,
+    FORM_OUTPUT_FIAT,
+    FORM_EXCHANGE_TYPE,
+} from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketExchangeFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeFormDefaultValues';
-import { useCoinmarketCommonFormState } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonFormState';
 import {
     getFilteredSuccessQuotes,
     useCoinmarketCommonOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import {
-    CoinmarketExchangeStepType,
-    CoinmarketOffersContextValues,
-} from 'src/types/coinmarket/coinmarketOffers';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRecomposeAndSign';
-import { NetworkCompatible, networksCompatibility } from '@suite-common/wallet-config';
-import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
-import useCoinmarketExchangeFormHelpers from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeFormHelpers';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
+import { useCoinmarketComposeTransaction } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketComposeTransaction';
+import { useCoinmarketFormActions } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFormActions';
+import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketCurrencySwitcher';
+import { useCoinmarketFiatValues } from './common/useCoinmarketFiatValues';
+import { CoinmarketExchangeStepType } from 'src/types/coinmarket/coinmarketOffers';
+import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketModalCrypto';
+import { NetworkCompatible } from '@suite-common/wallet-config';
+import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 
 export const useCoinmarketExchangeForm = ({
     selectedAccount,
     pageType = 'form',
 }: UseCoinmarketFormProps): CoinmarketExchangeFormContextProps => {
     const type = 'exchange';
-    const isPageOffers = pageType === 'offers';
-    const { exchangeInfo, quotesRequest, quotes, coinmarketAccount } = useSelector(
-        state => state.wallet.coinmarket.exchange,
-    );
-    const account = coinmarketAccount ?? selectedAccount.account;
+    const isNotFormPage = pageType !== 'form';
     const {
-        callInProgress,
+        exchangeInfo,
+        quotesRequest,
+        quotes,
+        coinmarketAccount,
         selectedQuote,
-        timer,
-        device,
-        setCallInProgress,
-        setSelectedQuote,
-        checkQuotesTimer,
-    } = useCoinmarketCommonOffers<CoinmarketTradeExchangeType>({ selectedAccount, type });
+        addressVerified,
+    } = useSelector(state => state.wallet.coinmarket.exchange);
+    // selectedAccount is used as initial state if this is form page
+    // coinmarketAccount is used on offers page
+    const [account, setAccount] = useCoinmarketAccount({
+        coinmarketAccount,
+        selectedAccount,
+        isNotFormPage,
+    });
+    const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
+        useCoinmarketCommonOffers({ selectedAccount, type });
 
-    const accounts = useSelector(state => state.wallet.accounts);
     const { symbolsInfo } = useSelector(state => state.wallet.coinmarket.info);
-    const fees = useSelector(state => state.wallet.fees);
     const dispatch = useDispatch();
-    const addressDisplayType = useSelector(selectAddressDisplayType);
-    const { translationString } = useTranslation();
     const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
     const [amountLimits, setAmountLimits] = useState<CryptoAmountLimits | undefined>(undefined);
-    const [state, setState] = useState<
-        CoinmarketUseCommonFormStateReturnProps<CoinmarketExchangeFormProps> | undefined
-    >(undefined);
+
     const [innerQuotes, setInnerQuotes] = useState<ExchangeTrade[] | undefined>(
         getFilteredSuccessQuotes<CoinmarketTradeExchangeType>(quotes),
     );
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
-    const [suiteReceiveAccounts, setSuiteReceiveAccounts] =
-        useState<
-            CoinmarketOffersContextValues<CoinmarketTradeExchangeType>['suiteReceiveAccounts']
-        >();
+
     const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
 
     const [exchangeStep, setExchangeStep] =
         useState<CoinmarketExchangeStepType>('RECEIVING_ADDRESS');
-    const { navigateToExchangeForm, navigateToExchangeDetail, navigateToExchangeOffers } =
-        useCoinmarketNavigation(account);
-    const isDebug = useSelector(selectIsDebugModeActive);
-    const receiveNetwork = selectedQuote?.receive && cryptoToNetworkSymbol(selectedQuote?.receive);
+    const {
+        navigateToExchangeForm,
+        navigateToExchangeDetail,
+        navigateToExchangeOffers,
+        navigateToExchangeConfirm,
+    } = useCoinmarketNavigation(account);
 
     const {
         saveTrade,
@@ -121,6 +112,8 @@ export const useCoinmarketExchangeForm = ({
         saveTransactionId,
         addNotification,
         verifyAddress,
+        saveSelectedQuote,
+        setCoinmarketExchangeAccount,
     } = useActions({
         saveTrade: coinmarketExchangeActions.saveTrade,
         openCoinmarketExchangeConfirmModal:
@@ -128,95 +121,86 @@ export const useCoinmarketExchangeForm = ({
         saveTransactionId: coinmarketExchangeActions.saveTransactionId,
         addNotification: notificationsActions.addToast,
         verifyAddress: coinmarketExchangeActions.verifyAddress,
+        saveSelectedQuote: coinmarketExchangeActions.saveSelectedQuote,
+        setCoinmarketExchangeAccount: coinmarketExchangeActions.setCoinmarketExchangeAccount,
     });
 
-    const { symbol, networkType } = account;
+    const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const coinFees = fees[symbol];
-    const levels = getFeeLevels(networkType, coinFees);
-    const feeInfo = { ...coinFees, levels };
     const network = getNetwork(account.symbol) as NetworkCompatible;
 
+    const { defaultCurrency, defaultValues } = useCoinmarketExchangeFormDefaultValues(account);
+    const exchangeDraftKey = 'coinmarket-exchange';
     const { getDraft, saveDraft, removeDraft } =
-        useFormDraft<CoinmarketExchangeFormProps>('coinmarket-exchange');
-    const draft = getDraft(account.key);
+        useFormDraft<CoinmarketExchangeFormProps>(exchangeDraftKey);
+    const draft = getDraft(exchangeDraftKey);
     const isDraft = !!draft;
-    const draftUpdated: CoinmarketExchangeFormProps | null = draft ? draft : null;
-    const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
-    const { defaultCurrency, defaultValues } = useCoinmarketExchangeFormDefaultValues(
-        account,
-        state?.formValues?.outputs[0].address,
-    );
+    const getDraftUpdated = (): CoinmarketExchangeFormProps | null => {
+        if (!draft) return null;
+        if (isNotFormPage) return draft;
+
+        return {
+            ...defaultValues,
+            amountInCrypto: draft.amountInCrypto,
+            receiveCryptoSelect: draft.receiveCryptoSelect,
+            rateType: draft.rateType,
+            exchangeType: draft.exchangeType,
+        };
+    };
+    const draftUpdated = getDraftUpdated();
     const methods = useForm({
         mode: 'onChange',
-        defaultValues: isDraft ? draft : defaultValues,
+        defaultValues: draftUpdated ?? defaultValues,
     });
-    const {
-        reset,
-        register,
-        setValue,
-        getValues,
-        setError,
-        clearErrors,
-        handleSubmit,
-        formState,
-        control,
-    } = methods;
+    const { reset, register, getValues, setValue, formState, control } = methods;
     const values = useWatch<CoinmarketExchangeFormProps>({ control });
-    const previousValues = useRef<typeof values | null>(isPageOffers ? draftUpdated : null);
-    const { outputs } = getValues();
-    const token = outputs?.[0]?.token;
-    const currency: Option | undefined = getValues(FORM_OUTPUT_CURRENCY);
-    const fiatRateKey = getFiatRateKey(
-        symbol,
-        currency?.value as FiatCurrencyCode,
-        token as TokenAddress,
-    );
-    const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+    const { rateType, exchangeType } = getValues();
+    const output = values.outputs?.[0];
+    const fiatValues = useCoinmarketFiatValues({
+        accountBalance: account.formattedBalance,
+        cryptoSymbol: values?.sendCryptoSelect?.value,
+        tokenAddress: output?.token,
+        fiatCurrency: output?.currency?.value as FiatCurrencyCode,
+    });
+    const fiatOfBestScoredQuote = innerQuotes?.[0]?.sendStringAmount
+        ? toFiatCurrency(innerQuotes?.[0]?.sendStringAmount, fiatValues?.fiatRate?.rate, 2)
+        : null;
 
     const formIsValid = Object.keys(formState.errors).length === 0;
-    const hasValues =
-        (values.outputs?.[0]?.fiat || values.outputs?.[0]?.amount) && !!values.cryptoSelect?.value;
+    const hasValues = !!output?.amount;
     const isFirstRequest = innerQuotes === undefined;
     const noProviders = exchangeInfo?.exchangeList?.length === 0;
-    const isLoading = !exchangeInfo?.exchangeList || !state?.formValues?.outputs[0].address;
+    const isInitialDataLoading = !exchangeInfo?.exchangeList;
     const isFormLoading =
-        isLoading || formState.isSubmitting || isSubmittingHelper || isFirstRequest;
+        isInitialDataLoading || formState.isSubmitting || isSubmittingHelper || isFirstRequest;
+
     const isFormInvalid = !(formIsValid && hasValues);
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
-    const initState = useCoinmarketCommonFormState<CoinmarketExchangeFormProps>({
-        account,
-        network,
-        fees,
-        defaultValues,
-    });
-    const {
-        isLoading: isComposing,
-        composeRequest,
-        composedLevels,
-        onFeeLevelChange,
-    } = useCompose({
-        ...methods,
-        state,
-    });
+    const filteredCexQuotes = useMemo(
+        () => getCexQuotesByRateType(rateType, innerQuotes, exchangeInfo),
+        [rateType, innerQuotes, exchangeInfo],
+    );
+    const dexQuotes = useMemo(() => innerQuotes?.filter(q => q.isDex), [innerQuotes]);
 
-    // sub-hook, FeeLevels handler
-    const { changeFeeLevel, selectedFee } = useFees({
-        defaultValue: 'normal',
-        feeInfo,
-        onChange: onFeeLevelChange,
-        composeRequest,
-        ...methods,
-    });
+    const { isComposing, composedLevels, feeInfo, changeFeeLevel, composeRequest } =
+        useCoinmarketComposeTransaction<CoinmarketExchangeFormProps>({
+            account,
+            network,
+            values: values as CoinmarketExchangeFormProps,
+            methods,
+        });
 
-    const helpers = useCoinmarketExchangeFormHelpers({
+    const { toggleAmountInCrypto } = useCoinmarketCurrencySwitcher({
         account,
-        network,
         methods,
-        setAmountLimits,
-        changeFeeLevel,
-        composeRequest,
+        network,
+        quoteCryptoAmount: innerQuotes?.[0]?.sendStringAmount,
+        quoteFiatAmount: fiatOfBestScoredQuote ?? '',
+        inputNames: {
+            cryptoInput: FORM_OUTPUT_AMOUNT,
+            fiatInput: FORM_OUTPUT_FIAT,
+        },
     });
 
     const getQuotesRequest = useCallback(
@@ -225,42 +209,39 @@ export const useCoinmarketExchangeForm = ({
                 abortControllerRef.current.abort();
             }
 
-            if (!request.send || !request.receive || !request.sendStringAmount) {
-                timer.stop();
-
-                return;
-            }
-
             abortControllerRef.current = new AbortController();
             invityAPI.createInvityAPIKey(account.descriptor);
 
-            try {
-                const allQuotes = await invityAPI.getExchangeQuotes(
-                    request,
-                    abortControllerRef.current.signal,
-                );
+            const allQuotes = await invityAPI.getExchangeQuotes(
+                request,
+                abortControllerRef.current.signal,
+            );
 
-                return allQuotes;
-            } catch (error) {
-                console.log('Abort', error);
-            }
+            return allQuotes;
         },
-        [account.descriptor, timer],
+        [account.descriptor],
     );
 
     const getQuoteRequestData = useCallback((): ExchangeTradeQuoteRequest | null => {
-        const { outputs, cryptoSelect, sendCryptoSelect } = getValues();
-        const unformattedOutputAmount = outputs[0].amount || '';
+        const { outputs, receiveCryptoSelect, sendCryptoSelect } = getValues();
+        const unformattedOutputAmount = outputs[0].amount ?? '';
         const sendStringAmount =
             unformattedOutputAmount && shouldSendInSats
                 ? formatAmount(unformattedOutputAmount, network.decimals)
                 : unformattedOutputAmount;
 
-        if (!cryptoSelect?.value || !sendCryptoSelect?.value) return null;
+        if (
+            !receiveCryptoSelect?.value ||
+            !sendCryptoSelect?.value ||
+            !sendStringAmount ||
+            Number(sendStringAmount) === 0
+        ) {
+            return null;
+        }
 
         const request: ExchangeTradeQuoteRequest = {
-            receive: cryptoSelect.value as CryptoSymbol,
-            send: sendCryptoSelect.value as CryptoSymbol,
+            receive: receiveCryptoSelect.value,
+            send: sendCryptoSelect.value,
             sendStringAmount,
             dex: 'enable',
         };
@@ -275,30 +256,59 @@ export const useCoinmarketExchangeForm = ({
 
             const quotesRequest = getQuoteRequestData();
 
-            if (quotesRequest) {
-                const allQuotes = await getQuotesRequest(quotesRequest);
+            if (!quotesRequest) {
+                setInnerQuotes([]);
+                setIsSubmittingHelper(false);
+                timer.stop();
 
-                if (Array.isArray(allQuotes)) {
-                    const limits = getAmountLimits(allQuotes);
-                    const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
-                        getSuccessQuotesOrdered(allQuotes, exchangeInfo),
-                        'exchange',
-                    );
+                return;
+            }
 
-                    setAmountLimits(limits);
-                    setInnerQuotes(successQuotes);
-                    dispatch(saveQuotes(successQuotes));
-                    dispatch(saveQuoteRequest(quotesRequest));
-                } else {
-                    setInnerQuotes([]);
+            const allQuotes = await getQuotesRequest(quotesRequest);
+
+            if (Array.isArray(allQuotes)) {
+                const limits = getAmountLimits(allQuotes);
+                const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
+                    getSuccessQuotesOrdered(allQuotes),
+                    'exchange',
+                );
+
+                setAmountLimits(limits);
+                setInnerQuotes(successQuotes);
+                dispatch(saveQuotes(successQuotes));
+                dispatch(saveQuoteRequest(quotesRequest));
+
+                const { setMaxOutputId } = values;
+
+                // compose transaction only when is not computed from max balance
+                // max balance has to be computed before request
+                if (setMaxOutputId === undefined && !limits) {
+                    composeRequest(FORM_OUTPUT_AMOUNT);
                 }
             }
 
-            timer.reset();
             setIsSubmittingHelper(false);
+
+            timer.reset();
         },
-        [timer, getQuoteRequestData, getQuotesRequest, exchangeInfo, dispatch],
+        [timer, values, getQuoteRequestData, getQuotesRequest, dispatch, composeRequest],
     );
+
+    const helpers = useCoinmarketFormActions({
+        account,
+        methods,
+        isNotFormPage,
+        draftUpdated,
+        type,
+        handleChange,
+        setAmountLimits,
+        changeFeeLevel,
+        composeRequest,
+        setAccountOnChange: newAccount => {
+            dispatch(setCoinmarketExchangeAccount(newAccount));
+            setAccount(newAccount);
+        },
+    });
 
     const getQuotes = useCallback(async () => {
         if (!selectedQuote && quotesRequest) {
@@ -312,7 +322,7 @@ export const useCoinmarketExchangeForm = ({
                     return;
                 }
                 const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
-                    getSuccessQuotesOrdered(allQuotes, exchangeInfo),
+                    getSuccessQuotesOrdered(allQuotes),
                     'exchange',
                 );
                 setInnerQuotes(successQuotes);
@@ -321,7 +331,7 @@ export const useCoinmarketExchangeForm = ({
             }
             timer.reset();
         }
-    }, [account.descriptor, exchangeInfo, quotesRequest, selectedQuote, timer]);
+    }, [account.descriptor, quotesRequest, selectedQuote, timer]);
 
     const selectQuote = async (quote: ExchangeTrade) => {
         const provider =
@@ -336,11 +346,9 @@ export const useCoinmarketExchangeForm = ({
                 quote.receive,
             );
             if (result) {
-                setSelectedQuote(quote);
-                dispatch({
-                    type: SET_MODAL_CRYPTO_CURRENCY,
-                    modalCryptoSymbol: quote.receive,
-                });
+                saveSelectedQuote(quote);
+
+                navigateToExchangeConfirm();
                 timer.stop();
             }
         }
@@ -380,13 +388,13 @@ export const useCoinmarketExchangeForm = ({
                 type: 'error',
                 error: response.error || 'Error response from the server',
             });
-            setSelectedQuote(response);
+            saveSelectedQuote(response);
         } else if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
-            setSelectedQuote(response);
+            saveSelectedQuote(response);
             setExchangeStep('SEND_APPROVAL_TRANSACTION');
             ok = true;
         } else if (response.status === 'CONFIRM') {
-            setSelectedQuote(response);
+            saveSelectedQuote(response);
             if (response.isDex) {
                 if (exchangeStep === 'RECEIVING_ADDRESS' || trade.approvalType === 'ZERO') {
                     setExchangeStep('SEND_APPROVAL_TRANSACTION');
@@ -496,94 +504,8 @@ export const useCoinmarketExchangeForm = ({
         navigateToExchangeOffers();
     };
 
-    // call change handler on every change of text inputs with debounce
-    useDebounce(
-        () => {
-            const fiatValue = values?.outputs?.[0]?.fiat;
-            const cryptoInput = values?.outputs?.[0]?.amount;
-            const fiatChanged = isChanged(previousValues.current?.outputs?.[0]?.fiat, fiatValue);
-            const cryptoChanged = isChanged(
-                previousValues.current?.outputs?.[0]?.amount,
-                cryptoInput,
-            );
-
-            if (fiatChanged || cryptoChanged) {
-                if (cryptoChanged && cryptoInput) {
-                    helpers.onCryptoAmountChange(cryptoInput);
-                }
-
-                handleSubmit(() => {
-                    handleChange();
-                })();
-
-                previousValues.current = values;
-            }
-        },
-        500,
-        [previousValues, handleChange, handleSubmit],
-    );
-
-    // call change handler on every change of select inputs
-    useEffect(() => {
-        if (isChanged(previousValues.current?.cryptoSelect?.value, values?.cryptoSelect?.value)) {
-            handleSubmit(() => {
-                handleChange();
-            })();
-
-            previousValues.current = values;
-        }
-    }, [previousValues, values, handleChange, handleSubmit, isPageOffers]);
-
     useCoinmarketLoadData();
-
-    useEffect(() => {
-        if (!composedLevels) return;
-        const values = getValues();
-        const { setMaxOutputId } = values;
-        const selectedFeeLevel = selectedFee || 'normal';
-        const composed = composedLevels[selectedFeeLevel];
-        if (!composed) return;
-
-        if (composed.type === 'error' && composed.errorMessage) {
-            setError(FORM_OUTPUT_AMOUNT, {
-                type: COMPOSE_ERROR_TYPES.COMPOSE,
-                message: translationString(composed.errorMessage.id, composed.errorMessage.values),
-            });
-        }
-        // set calculated and formatted "max" value to `Amount` input
-        else if (composed.type === 'final') {
-            if (typeof setMaxOutputId === 'number' && composed.max) {
-                setValue(FORM_OUTPUT_AMOUNT, composed.max, { shouldValidate: true });
-                // TODO: updateFiatValue(composed.max);
-                clearErrors(FORM_OUTPUT_AMOUNT);
-            }
-            dispatch(saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed }));
-            setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
-        }
-    }, [
-        selectedFee,
-        composedLevels,
-        clearErrors,
-        dispatch,
-        getValues,
-        setError,
-        setValue,
-        translationString,
-    ]);
-
-    useDidUpdate(() => {
-        const cryptoInputValue = getValues(FORM_OUTPUT_AMOUNT) as string;
-        if (!cryptoInputValue) {
-            return;
-        }
-        const conversion = shouldSendInSats ? amountToSatoshi : formatAmount;
-        const cryptoAmount = conversion(cryptoInputValue, network.decimals);
-        setValue(FORM_OUTPUT_AMOUNT, cryptoAmount, {
-            shouldValidate: true,
-            shouldDirty: true,
-        });
-        // TODO: updateFiatValue(cryptoAmount);
-    }, [shouldSendInSats]);
+    useCoinmarketModalCrypto({ receiveCurrency: values.receiveCryptoSelect?.value });
 
     useDebounce(
         () => {
@@ -593,13 +515,12 @@ export const useCoinmarketExchangeForm = ({
                 Object.keys(formState.errors).length === 0 &&
                 !isComposing
             ) {
-                saveDraft(account.key, values as CoinmarketExchangeFormProps);
+                saveDraft(exchangeDraftKey, values as CoinmarketExchangeFormProps);
             }
         },
         200,
         [
             saveDraft,
-            account.key,
             values,
             formState.errors,
             formState.isDirty,
@@ -610,21 +531,21 @@ export const useCoinmarketExchangeForm = ({
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
-            removeDraft(account.key);
+            removeDraft(exchangeDraftKey);
 
             return;
         }
 
-        if (values.sendCryptoSelect && !values.sendCryptoSelect?.cryptoSymbol) {
-            removeDraft(account.key);
+        if (values.sendCryptoSelect && !values.sendCryptoSelect?.value) {
+            removeDraft(exchangeDraftKey);
 
             return;
         }
 
-        if (values.cryptoSelect && !values.cryptoSelect?.value) {
-            removeDraft(account.key);
+        if (values.receiveCryptoSelect && !values.receiveCryptoSelect?.value) {
+            removeDraft(exchangeDraftKey);
         }
-    }, [defaultValues, values, removeDraft, account.key]);
+    }, [defaultValues, values, removeDraft]);
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -640,59 +561,7 @@ export const useCoinmarketExchangeForm = ({
     }, [reset, isDraft, defaultValues]);
 
     useEffect(() => {
-        const setStateAsync = async (
-            initState: CoinmarketUseCommonFormStateReturnProps<CoinmarketExchangeFormProps>,
-        ) => {
-            const address = await getComposeAddressPlaceholder(
-                account,
-                network,
-                device,
-                accounts,
-                chunkify,
-            );
-            if (initState?.formValues && address) {
-                initState.formValues.outputs[0].address = address;
-
-                setState(initState);
-            }
-        };
-
-        if (!state && initState) {
-            setStateAsync(initState);
-        }
-    }, [state, initState, account, network, device, accounts, chunkify, exchangeInfo?.sellSymbols]);
-
-    useEffect(() => {
-        if (selectedQuote && exchangeStep === 'RECEIVING_ADDRESS') {
-            const unavailableCapabilities = device?.unavailableCapabilities ?? {};
-            // is the symbol supported by the suite and the device natively
-            const receiveNetworks = networksCompatibility.filter(
-                n =>
-                    n.symbol === receiveNetwork &&
-                    !unavailableCapabilities[n.symbol] &&
-                    ((n.isDebugOnlyNetwork && isDebug) || !n.isDebugOnlyNetwork),
-            );
-            if (receiveNetworks.length > 0) {
-                // get accounts of the current symbol belonging to the current device
-                setSuiteReceiveAccounts(
-                    accounts.filter(
-                        a =>
-                            a.deviceState === device?.state &&
-                            a.symbol === receiveNetwork &&
-                            (!a.empty ||
-                                a.visible ||
-                                (a.accountType === 'normal' && a.index === 0)),
-                    ),
-                );
-
-                return;
-            }
-        }
-        setSuiteReceiveAccounts(undefined);
-    }, [accounts, device, exchangeStep, isDebug, receiveNetwork, selectedQuote]);
-
-    useEffect(() => {
-        if (!quotesRequest) {
+        if (!quotesRequest && isNotFormPage) {
             navigateToExchangeForm();
 
             return;
@@ -709,6 +578,25 @@ export const useCoinmarketExchangeForm = ({
         };
     }, []);
 
+    // handle edge case when there are no longer quotes of selected exchange type
+    useEffect(() => {
+        if (exchangeType === FORM_EXCHANGE_DEX && !dexQuotes?.length && filteredCexQuotes?.length) {
+            setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_CEX);
+        } else if (
+            exchangeType === FORM_EXCHANGE_CEX &&
+            !filteredCexQuotes?.length &&
+            dexQuotes?.length
+        ) {
+            setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_DEX);
+        } else if (
+            exchangeType === FORM_EXCHANGE_DEX &&
+            !dexQuotes?.length &&
+            !filteredCexQuotes?.length
+        ) {
+            setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_CEX);
+        }
+    }, [dexQuotes, exchangeType, filteredCexQuotes, setValue]);
+
     return {
         type,
         ...methods,
@@ -720,7 +608,7 @@ export const useCoinmarketExchangeForm = ({
                 isFormInvalid,
                 isLoadingOrInvalid,
 
-                toggleAmountInCrypto: () => {},
+                toggleAmountInCrypto,
             },
             helpers,
         },
@@ -730,17 +618,18 @@ export const useCoinmarketExchangeForm = ({
         callInProgress,
         exchangeInfo,
         symbolsInfo,
-        quotes,
+        quotes: filteredCexQuotes,
+        dexQuotes,
         quotesRequest,
         composedLevels,
         defaultCurrency,
         feeInfo,
-        fiatRate,
         amountLimits,
         network,
         exchangeStep,
-        suiteReceiveAccounts,
         receiveAccount,
+        selectedQuote,
+        addressVerified,
         setReceiveAccount,
         composeRequest,
         changeFeeLevel,
@@ -751,7 +640,6 @@ export const useCoinmarketExchangeForm = ({
         sendTransaction,
         verifyAddress,
         selectQuote,
-        getQuotes,
         confirmTrade,
     };
 };

@@ -37,7 +37,7 @@ export const CoinmarketUtilsProvider = ({
     const provider = providers && exchange ? providers[exchange] : null;
 
     return (
-        <IconWrap className={className}>
+        <IconWrap className={className} data-testid="@coinmarket/offers/quote/provider">
             {provider ? (
                 <>
                     {provider.logo && (

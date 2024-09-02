@@ -55,7 +55,7 @@ const CoinmarketFormInputPaymentMethod = ({ label }: CoinmarketFormInputDefaultP
                             formatOptionLabel={(option: CoinmarketPaymentMethodListProps) => (
                                 <CoinmarketFormOption>
                                     <CoinmarketFormOptionLabel>
-                                        {option.value !== '' ? (
+                                        {option.value !== '' && quotes && quotes.length > 0 ? (
                                             <CoinmarketPaymentPlainType
                                                 method={option.value}
                                                 methodName={option.label}

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { typography } from '@trezor/theme';
 import { BuyCryptoPaymentMethod, SellCryptoPaymentMethod } from 'invity-api';
 import { Translation } from 'src/components/suite';
+import { FORM_DEFAULT_PAYMENT_METHOD } from 'src/constants/wallet/coinmarket/form';
 
 const Text = styled.div`
     display: flex;
@@ -28,10 +29,10 @@ export const CoinmarketPaymentPlainType = ({
     methodName,
 }: CoinmarketPaymentTypeProps) => (
     <div>
-        <Text>
+        <Text data-testid="@coinmarket/form/info/payment-method">
             {method ? (
                 <>
-                    {method === 'bankTransfer' || method === 'creditCard' ? (
+                    {method === 'bankTransfer' || method === FORM_DEFAULT_PAYMENT_METHOD ? (
                         <Translation id={getPaymentMethod(method)} />
                     ) : (
                         <Text>{methodName || method}</Text>

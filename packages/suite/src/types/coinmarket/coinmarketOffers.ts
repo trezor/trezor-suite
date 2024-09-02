@@ -106,7 +106,7 @@ export type CoinmarketOffersContextValues<T extends CoinmarketTradeType> =
     CoinmarketOffersMapProps[T];
 
 export interface CoinmarketCryptoAmountProps {
-    amountInCrypto: boolean | undefined;
+    amountInCrypto?: boolean | undefined;
     sendAmount: string | number | undefined;
     sendCurrency: string | undefined;
     receiveAmount: string | number | undefined;

@@ -1192,10 +1192,6 @@ export default defineMessages({
         defaultMessage: 'Buy',
         id: 'TR_BUY_BUY',
     },
-    TR_BUY_PAID_BY: {
-        defaultMessage: 'Payment method',
-        id: 'TR_BUY_PAID_BY',
-    },
     TR_BUY_PROVIDER: {
         defaultMessage: 'Provider',
         id: 'TR_BUY_PROVIDER',
@@ -1365,6 +1361,10 @@ export default defineMessages({
         defaultMessage: 'You get',
         id: 'TR_COINMARKET_YOU_GET',
     },
+    TR_COINMARKET_YOU_RECEIVE: {
+        defaultMessage: 'You receive',
+        id: 'TR_COINMARKET_YOU_RECEIVE',
+    },
     TR_COINMARKET_COUNTRY: {
         defaultMessage: 'Country of residence',
         id: 'TR_COINMARKET_COUNTRY',
@@ -1382,7 +1382,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_OFFER_LOOKING',
     },
     TR_COINMARKET_OFFER_NO_FOUND: {
-        defaultMessage: 'No offers available for your request. Change amount or currency.',
+        defaultMessage: 'No offers found for your request. Try a different amount or currency.',
         id: 'TR_COINMARKET_OFFER_NO_FOUND',
     },
     TR_COINMARKET_BEST_RATE: {
@@ -1464,11 +1464,21 @@ export default defineMessages({
     },
     TR_COINMARKET_FIX_RATE_DESCRIPTION: {
         id: 'TR_COINMARKET_FIX_RATE_DESCRIPTION',
-        defaultMessage: 'Lock in your rate for 15 minutes by paying a higher fee.',
+        defaultMessage: 'Guarantee your rate for 15 minutes with a higher fee.',
     },
     TR_COINMARKET_FLOATING_RATE_DESCRIPTION: {
         id: 'TR_COINMARKET_FLOATING_RATE_DESCRIPTION',
-        defaultMessage: 'Get an estimated rate that may adjust with real-time market changes.',
+        defaultMessage: 'Get an approximate rate subject to real-time market change.',
+    },
+    TR_COINMARKET_CEX_TOOLTIP: {
+        id: 'TR_COINMARKET_CEX_TOOLTIP',
+        defaultMessage: 'Centralized exchange',
+        dynamic: true,
+    },
+    TR_COINMARKET_DEX_TOOLTIP: {
+        id: 'TR_COINMARKET_DEX_TOOLTIP',
+        defaultMessage: 'Decentralized exchange',
+        dynamic: true,
     },
     TR_COINMARKET_NO_CEX_PROVIDER_FOUND: {
         id: 'TR_COINMARKET_NO_CEX_PROVIDER_FOUND',
@@ -1492,17 +1502,45 @@ export default defineMessages({
         id: 'TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL',
         dynamic: true,
     },
-    TR_COINMARKET_FEATURED_OFFER_BUY: {
-        defaultMessage: 'Buy',
-        id: 'TR_COINMARKET_FEATURED_OFFER_BUY',
-    },
-    TR_COINMARKET_FEATURED_OFFER_SELL: {
-        defaultMessage: 'Sell',
-        id: 'TR_COINMARKET_FEATURED_OFFER_SELL',
-    },
     TR_COINMARKET_NO_METHODS_AVAILABLE: {
         defaultMessage: 'No methods available',
         id: 'TR_COINMARKET_NO_METHODS_AVAILABLE',
+    },
+    TR_COINMARKET_EXCHANGE: {
+        defaultMessage: 'Exchange',
+        id: 'TR_COINMARKET_EXCHANGE',
+    },
+    TR_COINMARKET_EXCHANGE_AMOUNT: {
+        defaultMessage: 'Exchange amount',
+        id: 'TR_COINMARKET_EXCHANGE_AMOUNT',
+    },
+    TR_COINMARKET_ON_NETWORK_CHAIN: {
+        defaultMessage: 'On {networkName} chain',
+        id: 'TR_COINMARKET_ON_NETWORK_CHAIN',
+    },
+    TR_COINMARKET_KYC_POLICY: {
+        defaultMessage: 'KYC policy',
+        id: 'TR_COINMARKET_KYC_POLICY',
+    },
+    TR_COINMARKET_KYC_POLICY_NEVER_REQUIRED: {
+        defaultMessage: 'KYC never required',
+        id: 'TR_COINMARKET_KYC_POLICY_NEVER_REQUIRED',
+    },
+    TR_COINMARKET_KYC_NO_REFUND: {
+        defaultMessage: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+        id: 'TR_COINMARKET_KYC_NO_REFUND',
+    },
+    TR_COINMARKET_KYC_YES_REFUND: {
+        defaultMessage: 'KYC requested in exceptional cases. KYC not required for refunds. 🤝',
+        id: 'TR_COINMARKET_KYC_YES_REFUND',
+    },
+    TR_COINMARKET_KYC_NO_KYC: {
+        defaultMessage: 'KYC never required. Exceptional cases automatically refunded. 👍',
+        id: 'TR_COINMARKET_KYC_NO_KYC',
+    },
+    TR_COINMARKET_KYC_DEX: {
+        defaultMessage: 'KYC never required. DEX swaps either succeed or fail. 👍',
+        id: 'TR_COINMARKET_KYC_DEX',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',

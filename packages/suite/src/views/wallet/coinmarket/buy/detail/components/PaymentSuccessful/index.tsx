@@ -50,7 +50,7 @@ const PaymentSuccessful = ({ account }: PaymentSuccessfulProps) => {
     return (
         <Wrapper>
             <Image image="COINMARKET_SUCCESS" />
-            <Title>
+            <Title data-testid="@coinmarket/detail/success">
                 <Translation id="TR_BUY_DETAIL_SUCCESS_TITLE" />
             </Title>
             <Description>
