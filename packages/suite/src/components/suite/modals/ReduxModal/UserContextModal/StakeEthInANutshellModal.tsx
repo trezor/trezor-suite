@@ -56,7 +56,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
             heading={<Translation id="TR_STAKE_STAKING_IN_A_NUTSHELL" />}
             onCancel={onCancel}
             bottomContent={
-                <NewModal.Button isFullWidth onClick={proceedToEverstakeModal}>
+                <NewModal.Button onClick={proceedToEverstakeModal}>
                     <Translation id="TR_GOT_IT" />
                 </NewModal.Button>
             }
