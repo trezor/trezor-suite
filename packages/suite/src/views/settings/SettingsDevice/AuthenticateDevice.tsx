@@ -27,7 +27,7 @@ export const AuthenticateDevice = ({ isDeviceLocked }: AuthenticateDeviceProps) 
                 buttonLink={HELP_CENTER_DEVICE_AUTHENTICATION}
             />
             <ActionColumn>
-                <ActionButton variant="tertiary" onClick={handleClick} isDisabled={isDeviceLocked}>
+                <ActionButton variant="primary" onClick={handleClick} isDisabled={isDeviceLocked}>
                     <Translation id="TR_CHECK_ORIGIN" />
                 </ActionButton>
             </ActionColumn>

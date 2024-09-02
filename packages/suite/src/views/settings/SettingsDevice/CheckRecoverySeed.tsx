@@ -31,7 +31,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
                     data-testid="@settings/device/check-seed-button"
                     onClick={handleClick}
                     isDisabled={isDeviceLocked || needsBackup}
-                    variant="tertiary"
+                    variant="primary"
                 >
                     <Translation id="TR_CHECK_SEED" />
                 </ActionButton>

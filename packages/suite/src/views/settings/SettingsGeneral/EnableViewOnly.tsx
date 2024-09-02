@@ -32,7 +32,7 @@ export const EnableViewOnly = () => {
             <ActionColumn>
                 <ActionButton
                     onClick={handleSwitchDeviceClick}
-                    variant="tertiary"
+                    variant="primary"
                     isDisabled={!isDeviceConnected}
                 >
                     <Translation id="TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON" />
