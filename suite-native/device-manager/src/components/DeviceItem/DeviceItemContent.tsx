@@ -46,60 +46,64 @@ const itemStyle = prepareNativeStyle<{ isCompact: boolean }>((_, { isCompact }) 
     },
 }));
 
-export const DeviceItemContent = ({
-    deviceState,
-    headerTextVariant = 'body',
-    variant = 'simple',
-    isCompact = true,
-    isSubHeaderForceHidden = false,
-}: DeviceItemContentProps) => {
-    const { translate } = useTranslate();
-    const { applyStyle } = useNativeStyles();
+export const DeviceItemContent = React.memo(
+    ({
+        deviceState,
+        headerTextVariant = 'body',
+        variant = 'simple',
+        isCompact = true,
+        isSubHeaderForceHidden = false,
+    }: DeviceItemContentProps) => {
+        const { translate } = useTranslate();
+        const { applyStyle } = useNativeStyles();
 
-    const device = useSelector((state: DeviceRootState) => selectDeviceByState(state, deviceState));
-    const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
+        const device = useSelector((state: DeviceRootState) =>
+            selectDeviceByState(state, deviceState),
+        );
+        const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
 
-    const isPortfolioTrackerDevice = device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
+        const isPortfolioTrackerDevice = device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
 
-    const deviceHeader =
-        (isPortfolioTrackerDevice ? device?.name : device?.label) ??
-        translate('deviceManager.defaultHeader');
+        const deviceHeader =
+            (isPortfolioTrackerDevice ? device?.name : device?.label) ??
+            translate('deviceManager.defaultHeader');
 
-    const walletNameLabel = device?.useEmptyPassphrase ? (
-        <Translation id="deviceManager.wallet.standard" />
-    ) : (
-        <Translation
-            id="deviceManager.wallet.defaultPassphrase"
-            values={{ index: device?.walletNumber }}
-        />
-    );
+        const walletNameLabel = device?.useEmptyPassphrase ? (
+            <Translation id="deviceManager.wallet.standard" />
+        ) : (
+            <Translation
+                id="deviceManager.wallet.defaultPassphrase"
+                values={{ index: device?.walletNumber }}
+            />
+        );
 
-    if (!device) {
-        return null;
-    }
+        if (!device) {
+            return null;
+        }
 
-    return (
-        <HStack style={applyStyle(contentWrapperStyle, { height: isCompact ? 46 : 56 })}>
-            <DeviceItemIcon deviceId={hasOnlyEmptyPortfolioTracker ? undefined : device.id} />
-            <Box style={applyStyle(itemStyle, { isCompact })}>
-                {variant === 'simple' ? (
-                    <SimpleDeviceItemContent
-                        deviceState={deviceState}
-                        headerTextVariant={headerTextVariant}
-                        header={deviceHeader}
-                        isPortfolioTrackerDevice={isPortfolioTrackerDevice}
-                        isSubHeaderForceHidden={isSubHeaderForceHidden}
-                    />
-                ) : (
-                    <WalletDetailDeviceItemContent
-                        deviceState={deviceState}
-                        headerTextVariant={headerTextVariant}
-                        header={deviceHeader}
-                        subHeader={walletNameLabel}
-                        isPortfolioTrackerDevice={isPortfolioTrackerDevice}
-                    />
-                )}
-            </Box>
-        </HStack>
-    );
-};
+        return (
+            <HStack style={applyStyle(contentWrapperStyle, { height: isCompact ? 46 : 56 })}>
+                <DeviceItemIcon deviceId={hasOnlyEmptyPortfolioTracker ? undefined : device.id} />
+                <Box style={applyStyle(itemStyle, { isCompact })}>
+                    {variant === 'simple' ? (
+                        <SimpleDeviceItemContent
+                            deviceState={deviceState}
+                            headerTextVariant={headerTextVariant}
+                            header={deviceHeader}
+                            isPortfolioTrackerDevice={isPortfolioTrackerDevice}
+                            isSubHeaderForceHidden={isSubHeaderForceHidden}
+                        />
+                    ) : (
+                        <WalletDetailDeviceItemContent
+                            deviceState={deviceState}
+                            headerTextVariant={headerTextVariant}
+                            header={deviceHeader}
+                            subHeader={walletNameLabel}
+                            isPortfolioTrackerDevice={isPortfolioTrackerDevice}
+                        />
+                    )}
+                </Box>
+            </HStack>
+        );
+    },
+);

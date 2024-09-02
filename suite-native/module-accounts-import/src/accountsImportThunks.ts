@@ -11,6 +11,7 @@ import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectFilterKnownTokens } from '@suite-common/token-definitions';
 
 import { paymentTypeToAccountType } from './constants';
 
@@ -79,7 +80,10 @@ export const getAccountInfoThunk = createThunk<
     { rejectValue: string }
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
-    async ({ networkSymbol, fiatCurrency, xpubAddress }, { dispatch, rejectWithValue }) => {
+    async (
+        { networkSymbol, fiatCurrency, xpubAddress },
+        { dispatch, rejectWithValue, getState },
+    ) => {
         try {
             const [fetchedAccountInfo] = await Promise.all([
                 TrezorConnect.getAccountInfo({
@@ -104,8 +108,15 @@ export const getAccountInfoThunk = createThunk<
             ]);
 
             if (fetchedAccountInfo?.success) {
-                //fetch fiat rates for all tokens of newly discovered account
-                fetchedAccountInfo.payload.tokens?.forEach(token =>
+                // fetch fiat rates for all tokens of newly discovered account
+                // Even that there is check in updateFiatRatesThunk, it is better to do it here and do not dispatch thunk at all because it has some overhead and sometimes there could be lot of tokens
+                const knownToknes = selectFilterKnownTokens(
+                    getState(),
+                    networkSymbol,
+                    fetchedAccountInfo.payload.tokens ?? [],
+                );
+
+                knownToknes.forEach(token =>
                     dispatch(
                         updateFiatRatesThunk({
                             ticker: {
