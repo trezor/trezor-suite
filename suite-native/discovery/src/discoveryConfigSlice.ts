@@ -89,16 +89,18 @@ export const selectDiscoveryInfo = (state: DiscoveryConfigSliceRootState) =>
 
 export const selectDiscoverySupportedNetworks = memoizeWithArgs(
     (
-        state: DeviceRootState & DiscoveryConfigSliceRootState,
+        state: DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState,
         forcedAreTestnetsEnabled?: boolean,
     ) => {
         const areTestnetsEnabled = forcedAreTestnetsEnabled ?? selectAreTestnetsEnabled(state);
+        const isPolygonEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsPolygonEnabled);
 
         return pipe(
             selectDeviceSupportedNetworks(state),
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
             filterUnavailableNetworks,
-            filterBlacklistedNetworks,
+            availableNetworks =>
+                filterBlacklistedNetworks(availableNetworks, isPolygonEnabled ? ['matic'] : []),
             sortNetworks,
         );
     },
@@ -108,7 +110,7 @@ export const selectDiscoverySupportedNetworks = memoizeWithArgs(
 
 export const selectDiscoveryNetworkSymbols = memoizeWithArgs(
     (
-        state: DeviceRootState & DiscoveryConfigSliceRootState,
+        state: DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState,
         forcedAreTestnetsEnabled?: boolean,
     ) => {
         const supportedNetworks = selectDiscoverySupportedNetworks(state, forcedAreTestnetsEnabled);
