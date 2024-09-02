@@ -1,13 +1,17 @@
 import { isDebugOnlyAccountType, networksCompatibility } from '@suite-common/wallet-config';
 import { selectDevice } from '@suite-common/wallet-core';
+import { CryptoId } from 'invity-api';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { openModal } from 'src/actions/suite/modalActions';
 import { Account } from '@suite-common/wallet-types';
-import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    cryptoIdToNetworkSymbol,
+    getUnusedAddressFromAccount,
+    parseCryptoId,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     CoinmarketAccountType,
     CoinmarketGetSuiteReceiveAccountsProps,
@@ -124,7 +128,8 @@ const useCoinmarketVerifyAccount = ({
         CoinmarketVerifyFormAccountOptionProps | undefined
     >();
 
-    const receiveNetwork = currency && cryptoToNetworkSymbol(currency);
+    const { networkId } = parseCryptoId(currency as CryptoId);
+    const receiveNetwork = currency && cryptoIdToNetworkSymbol(currency);
     const suiteReceiveAccounts = useMemo(
         () =>
             getSuiteReceiveAccounts({
@@ -200,7 +205,7 @@ const useCoinmarketVerifyAccount = ({
             ...methods,
         },
         accountAddress,
-        receiveNetwork,
+        receiveNetwork: networkId,
         selectAccountOptions,
         selectedAccountOption,
         isMenuOpen,

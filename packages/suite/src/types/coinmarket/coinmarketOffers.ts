@@ -1,15 +1,7 @@
 import { Account } from '@suite-common/wallet-types';
 import { AppState } from '../suite';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
-import {
-    BankAccount,
-    CryptoSymbol,
-    ExchangeTrade,
-    P2pProviderInfo,
-    P2pQuote,
-    P2pQuotesRequest,
-    SellFiatTrade,
-} from 'invity-api';
+import { BankAccount, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import { Timer } from '@trezor/react-utils';
 import { TradeSell } from '../wallet/coinmarketCommonTypes';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
@@ -75,26 +67,6 @@ export type CoinmarketExchangeOffersContextProps = CoinmarketOffersContextProps 
     selectQuote: (quote: ExchangeTrade) => void;
 };
 
-export enum P2pStep {
-    GET_STARTED,
-    RECEIVING_ADDRESS,
-}
-
-export type CoinmarketP2pOffersContextProps = Omit<
-    CoinmarketOffersContextProps,
-    'getQuotes' | 'type'
-> & {
-    providers?: { [name: string]: P2pProviderInfo };
-    quotesRequest?: P2pQuotesRequest;
-    quotes?: P2pQuote[];
-    selectQuote: (quote: P2pQuote) => void;
-    selectedQuote?: P2pQuote;
-    p2pStep: P2pStep;
-    goToProvider: () => void;
-    providerVisited: boolean;
-    goToReceivingAddress: () => void;
-};
-
 // TODO: delete
 export type CoinmarketOffersMapProps = {
     buy: CoinmarketBuyFormContextProps; // temporary
@@ -108,8 +80,8 @@ export type CoinmarketOffersContextValues<T extends CoinmarketTradeType> =
 export interface CoinmarketCryptoAmountProps {
     amountInCrypto?: boolean | undefined;
     sendAmount: string | number | undefined;
-    sendCurrency: string | undefined;
+    sendCurrency: CryptoId | string | undefined;
     receiveAmount: string | number | undefined;
-    receiveCurrency: CryptoSymbol | undefined;
+    receiveCurrency: CryptoId | undefined;
     className?: string;
 }

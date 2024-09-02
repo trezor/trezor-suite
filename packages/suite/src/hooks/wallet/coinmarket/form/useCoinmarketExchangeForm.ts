@@ -1,6 +1,11 @@
 import { useCallback, useState, useEffect, useRef, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import type { ExchangeTrade, ExchangeTradeQuoteRequest, FiatCurrencyCode } from 'invity-api';
+import type {
+    CryptoId,
+    ExchangeTrade,
+    ExchangeTradeQuoteRequest,
+    FiatCurrencyCode,
+} from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 import {
     amountToSatoshi,
@@ -83,7 +88,6 @@ export const useCoinmarketExchangeForm = ({
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
         useCoinmarketCommonOffers({ selectedAccount, type });
 
-    const { symbolsInfo } = useSelector(state => state.wallet.coinmarket.info);
     const dispatch = useDispatch();
     const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
@@ -158,7 +162,7 @@ export const useCoinmarketExchangeForm = ({
     const output = values.outputs?.[0];
     const fiatValues = useCoinmarketFiatValues({
         accountBalance: account.formattedBalance,
-        cryptoSymbol: values?.sendCryptoSelect?.value,
+        cryptoSymbol: values?.sendCryptoSelect?.value as CryptoId,
         tokenAddress: output?.token,
         fiatCurrency: output?.currency?.value as FiatCurrencyCode,
     });
@@ -505,7 +509,9 @@ export const useCoinmarketExchangeForm = ({
     };
 
     useCoinmarketLoadData();
-    useCoinmarketModalCrypto({ receiveCurrency: values.receiveCryptoSelect?.value });
+    useCoinmarketModalCrypto({
+        receiveCurrency: values.receiveCryptoSelect?.value as CryptoId | undefined,
+    });
 
     useDebounce(
         () => {
@@ -617,7 +623,6 @@ export const useCoinmarketExchangeForm = ({
         timer,
         callInProgress,
         exchangeInfo,
-        symbolsInfo,
         quotes: filteredCexQuotes,
         dexQuotes,
         quotesRequest,

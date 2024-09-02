@@ -84,7 +84,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
             // unsupported token
             {
                 balance: '2.76149',
-                contract: '0x1234123412341234123412341234123412341236',
+                contract: '0x1234123412341234123412341234123412341234',
                 decimals: 6,
                 name: 'Tether USD',
                 symbol: 'usdt',

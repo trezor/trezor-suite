@@ -15,18 +15,15 @@ import {
     CountryInfo,
     SellListResponse,
     SellVoucherTradeQuoteRequest,
-    SellVoucherTradeQuoteResponse,
     SellVoucherTradeRequest,
-    SellVoucherTrade,
     SellFiatTradeQuoteRequest,
     SellFiatTrade,
     SellFiatTradeQuoteResponse,
     SellFiatTradeRequest,
     SellFiatTradeResponse,
-    CryptoSymbolsResponse,
-    SavingsPaymentMethod,
     SellCryptoPaymentMethod,
     BuyCryptoPaymentMethod,
+    InfoResponse,
 } from 'invity-api';
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
@@ -62,32 +59,29 @@ class InvityAPI {
     private serverEnvironment = 'production' as InvityServerEnvironment;
 
     // info service
+    private INFO = '/api/info';
     private DETECT_COUNTRY_INFO = '/api/info/country';
     private GET_COUNTRY_INFO = '/api/info/country/{{country}}';
-    private SYMBOLS_INFO = '/api/info/symbols';
 
     // exchange service
-    private EXCHANGE_LIST = '/api/v2/exchange/list';
-    private EXCHANGE_QUOTES = '/api/v2/exchange/quotes';
-    private EXCHANGE_DO_TRADE = '/api/v2/exchange/trade';
-    private EXCHANGE_WATCH_TRADE = '/api/v2/exchange/watch/{{counter}}';
+    private EXCHANGE_LIST = '/api/v3/exchange/list';
+    private EXCHANGE_QUOTES = '/api/v3/exchange/quotes';
+    private EXCHANGE_DO_TRADE = '/api/v3/exchange/trade';
+    private EXCHANGE_WATCH_TRADE = '/api/v3/exchange/watch/{{counter}}';
 
     // buy service
-    private BUY_LIST = '/api/v2/buy/list';
-    private BUY_QUOTES = '/api/v2/buy/quotes';
-    private BUY_DO_TRADE = '/api/v2/buy/trade';
-    private BUY_GET_TRADE_FORM = '/api/v2/buy/tradeform';
-    private BUY_WATCH_TRADE = '/api/v2/buy/watch/{{counter}}';
+    private BUY_LIST = '/api/v3/buy/list';
+    private BUY_QUOTES = '/api/v3/buy/quotes';
+    private BUY_DO_TRADE = '/api/v3/buy/trade';
+    private BUY_GET_TRADE_FORM = '/api/v3/buy/tradeform';
+    private BUY_WATCH_TRADE = '/api/v3/buy/watch/{{counter}}';
 
     // sell service
-    private SELL_LIST = '/api/v2/sell/list';
-    private VOUCHER_QUOTES = '/api/v2/sell/voucher/quotes';
-    private VOUCHER_REQUEST_TRADE = '/api/v2/sell/voucher/trade';
-    private VOUCHER_CONFIRM_TRADE = '/api/v2/sell/voucher/confirm';
-    private SELL_FIAT_QUOTES = '/api/v2/sell/fiat/quotes';
-    private SELL_FIAT_DO_TRADE = '/api/v2/sell/fiat/trade';
-    private SELL_FIAT_CONFIRM = '/api/v2/sell/fiat/confirm';
-    private SELL_FIAT_WATCH_TRADE = '/api/v2/sell/fiat/watch/{{counter}}';
+    private SELL_LIST = '/api/v3/sell/list';
+    private SELL_FIAT_QUOTES = '/api/v3/sell/fiat/quotes';
+    private SELL_FIAT_DO_TRADE = '/api/v3/sell/fiat/trade';
+    private SELL_FIAT_CONFIRM = '/api/v3/sell/fiat/confirm';
+    private SELL_FIAT_WATCH_TRADE = '/api/v3/sell/fiat/watch/{{counter}}';
 
     private static accountDescriptor: string;
     private static apiKey: string;
@@ -193,19 +187,17 @@ class InvityAPI {
         return { country: this.unknownCountry };
     };
 
-    getSymbolsInfo = async (): Promise<CryptoSymbolsResponse> => {
+    getInfo = async (): Promise<InfoResponse> => {
         try {
-            const response = await this.request(this.SYMBOLS_INFO, {}, 'GET');
-            if (!response || response.length === 0) {
-                return [];
+            const response = await this.request(this.INFO, {}, 'GET');
+            if (response) {
+                return response;
             }
-
-            return response;
         } catch (error) {
-            console.log('[getSymbolsInfo]', error);
+            console.log('[getInfo]', error);
         }
 
-        return [];
+        return { platforms: {}, coins: {} };
     };
 
     getExchangeList = async (): Promise<ExchangeListResponse | []> => {
@@ -271,7 +263,7 @@ class InvityAPI {
     getBuyQuotes = async (
         params: BuyTradeQuoteRequest,
         signal?: SignalType,
-    ): Promise<BuyTrade[] | undefined> => {
+    ): Promise<BuyTradeQuoteResponse | undefined> => {
         try {
             const response: BuyTradeQuoteResponse = await this.request(
                 this.BUY_QUOTES,
@@ -326,56 +318,6 @@ class InvityAPI {
             return response;
         } catch (error) {
             console.log('[getSellList]', error);
-        }
-    };
-
-    getVoucherQuotes = async (
-        params: SellVoucherTradeQuoteRequest,
-    ): Promise<SellVoucherTradeQuoteResponse | undefined> => {
-        try {
-            const response: SellVoucherTradeQuoteResponse = await this.request(
-                this.VOUCHER_QUOTES,
-                params,
-                'POST',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[getVoucherQuotes]', error);
-        }
-    };
-
-    requestVoucherTrade = async (
-        tradeRequest: SellVoucherTradeRequest,
-    ): Promise<SellVoucherTrade> => {
-        try {
-            const response: SellVoucherTrade = await this.request(
-                this.VOUCHER_REQUEST_TRADE,
-                tradeRequest,
-                'POST',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[doVoucherTrade]', error);
-
-            return { error: error.toString(), exchange: tradeRequest.exchange };
-        }
-    };
-
-    confirmVoucherTrade = async (trade: SellVoucherTrade): Promise<SellVoucherTrade> => {
-        try {
-            const response: SellVoucherTrade = await this.request(
-                this.VOUCHER_CONFIRM_TRADE,
-                trade,
-                'POST',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[confirmVoucherTrade]', error);
-
-            return { error: error.toString(), exchange: trade.exchange };
         }
     };
 
@@ -438,9 +380,7 @@ class InvityAPI {
         return `${this.getApiServerUrl()}/images/exchange/${logo}`;
     }
 
-    getPaymentMethodUrl(
-        paymentMethod: BuyCryptoPaymentMethod | SellCryptoPaymentMethod | SavingsPaymentMethod,
-    ): string {
+    getPaymentMethodUrl(paymentMethod: BuyCryptoPaymentMethod | SellCryptoPaymentMethod): string {
         return `${this.getApiServerUrl()}/images/paymentMethods/suite/${paymentMethod}.svg`;
     }
 

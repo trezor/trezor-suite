@@ -18,7 +18,6 @@ import {
     CoinmarketFormInputFiatCryptoProps,
     CoinmarketSellExchangeFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
 import { FieldErrors } from 'react-hook-form';
 import { coinmarketGetAccountLabel } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -34,6 +33,7 @@ import {
     CoinmarketCryptoListProps,
 } from 'src/types/coinmarket/coinmarket';
 import { FormState } from '@suite-common/wallet-types';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketAllFormProps>({
     cryptoInputName,
@@ -46,6 +46,7 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
     const context = useCoinmarketFormContext();
     const { amountLimits, account, network } = context;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const {
         control,
         formState: { errors },
@@ -55,11 +56,13 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
     } = methods;
     const cryptoSelect = getValues(cryptoSelectName) as
         | CoinmarketCryptoListProps
-        | CoinmarketAccountOptionsGroupOptionProps;
+        | CoinmarketAccountOptionsGroupOptionProps
+        | undefined;
     const cryptoInputError =
         cryptoInputName === FORM_OUTPUT_AMOUNT
             ? (errors as FieldErrors<CoinmarketSellExchangeFormProps>)?.outputs?.[0]?.amount
             : (errors as FieldErrors<CoinmarketBuyFormProps>).cryptoInput;
+    const networkSymbol = cryptoSelect?.value && cryptoIdToCoinSymbol(cryptoSelect?.value);
 
     const cryptoInputRules = {
         validate: {
@@ -112,7 +115,7 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             innerAddon={
                 <CoinmarketFormOptionLabel>
                     {coinmarketGetAccountLabel(
-                        cryptoSelect?.value ? cryptoToCoinSymbol(cryptoSelect.value) : '',
+                        cryptoSelect?.value && networkSymbol ? networkSymbol : '',
                         shouldSendInSats,
                     )}
                 </CoinmarketFormOptionLabel>

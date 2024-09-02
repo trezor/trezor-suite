@@ -21,8 +21,7 @@ import type {
     BankAccount,
     BuyCryptoPaymentMethod,
     BuyTrade,
-    CryptoSymbol,
-    CryptoSymbolInfo,
+    CryptoId,
     ExchangeTrade,
     ExchangeTradeQuoteRequest,
     FiatCurrencyCode,
@@ -216,7 +215,6 @@ export interface CoinmarketExchangeFormContextProps
     feeInfo: FeeInfo;
 
     exchangeInfo?: ExchangeInfo;
-    symbolsInfo?: CryptoSymbolInfo[];
     defaultCurrency: Option;
     amountLimits?: CryptoAmountLimits;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
@@ -276,8 +274,9 @@ export type CoinmarketFormStateMapProps = {
 export interface CoinmarketFormInputCryptoSelectProps<TFieldValues extends FieldValues>
     extends CoinmarketFormInputDefaultProps {
     cryptoSelectName: FieldPath<TFieldValues>;
-    supportedCryptoCurrencies: Set<CryptoSymbol> | undefined;
+    supportedCryptoCurrencies: Set<CryptoId> | undefined;
     methods: UseFormReturn<TFieldValues>;
+    openMenuOnInput?: boolean;
 }
 
 export interface CoinmarketFormInputFiatCryptoProps<TFieldValues extends FieldValues> {
@@ -293,7 +292,7 @@ export interface CoinmarketFormInputFiatCryptoWrapProps<TFieldValues extends Fie
     cryptoInputName: FieldPath<TFieldValues>;
     fiatInputName: FieldPath<TFieldValues>;
     cryptoSelectName: FieldPath<TFieldValues>;
-    cryptoCurrencyLabel?: CryptoSymbol;
+    cryptoCurrencyLabel?: CryptoId;
     currencySelectLabel?: string;
 }
 

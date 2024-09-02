@@ -65,3 +65,9 @@ export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol]?.coing
 
 export const isNetworkSymbol = (symbol: NetworkSymbol | string): symbol is NetworkSymbol =>
     networks.hasOwnProperty(symbol);
+
+export const getNetworkByCoingeckoId = (coingeckoId: string) =>
+    networksCollection.find(n => n.coingeckoId === coingeckoId);
+
+export const getNetworkByCoingeckoNativeId = (coingeckoId: string) =>
+    networksCollection.find(n => n.coingeckoNativeId === coingeckoId);

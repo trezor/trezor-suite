@@ -1,0 +1,64 @@
+{
+    "platforms": {
+        "bitcoin-cash": {
+            "id": "bitcoin-cash",
+            "name": "Simple Ledger Protocol (Bitcoin Cash)"
+        },
+        "ethereum": {
+            "id": "ethereum",
+            "name": "Ethereum"
+        }
+    },
+    "coins": {
+        "bitcoin-cash": {
+            "symbol": "bch",
+            "name": "Bitcoin Cash",
+            "coingeckoId": "bitcoin-cash",
+            "services": {
+                "buy": true,
+                "sell": true,
+                "exchange": true
+            }
+        },
+        "bitcoin": {
+            "symbol": "btc",
+            "name": "Bitcoin",
+            "coingeckoId": "bitcoin",
+            "services": {
+                "buy": true,
+                "sell": true,
+                "exchange": true
+            }
+        },
+        "ethereum": {
+            "symbol": "eth",
+            "name": "Ethereum",
+            "coingeckoId": "ethereum",
+            "services": {
+                "buy": true,
+                "sell": true,
+                "exchange": true
+            }
+        },
+        "litecoin": {
+            "symbol": "ltc",
+            "name": "Litecoin",
+            "coingeckoId": "litecoin",
+            "services": {
+                "buy": true,
+                "sell": true,
+                "exchange": true
+            }
+        },
+        "ripple": {
+            "symbol": "xrp",
+            "name": "XRP",
+            "coingeckoId": "ripple",
+            "services": {
+                "buy": true,
+                "sell": true,
+                "exchange": true
+            }
+        }
+    }
+}

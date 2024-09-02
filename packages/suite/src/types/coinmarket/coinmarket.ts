@@ -14,13 +14,11 @@ import {
     BuyProviderInfo,
     BuyTrade,
     BuyTradeStatus,
-    CryptoSymbol,
-    CryptoSymbolInfo,
+    CryptoId,
     ExchangeProviderInfo,
     ExchangeTrade,
     ExchangeTradeStatus,
     FiatCurrencyCode,
-    SavingsTradeItemStatus,
     SellCryptoPaymentMethod,
     SellFiatTrade,
     SellProviderInfo,
@@ -29,22 +27,16 @@ import {
     WatchExchangeTradeResponse,
     WatchSellTradeResponse,
 } from 'invity-api';
-import { Account, AccountSymbol } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
 import { AnyAction, Dispatch } from 'redux';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
 import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import {
-    CryptoCategoryA,
-    CryptoCategoryB,
-    CryptoCategoryC,
-    CryptoCategoryD,
-    CryptoCategoryE,
-} from 'src/constants/wallet/coinmarket/cryptoCategories';
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType } from '@suite-common/wallet-config';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import { Timer } from '@trezor/react-utils';
 import { AccountsState } from '@suite-common/wallet-core';
 import { TokenDefinitionsState } from '@suite-common/token-definitions';
+import { AssetLogoProps } from '@trezor/components';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
@@ -114,11 +106,7 @@ export interface CoinmarketGetTypedTradeProps {
     transactionId: string | undefined;
 }
 
-export type CoinmarketTradeStatusType =
-    | BuyTradeStatus
-    | SellTradeStatus
-    | ExchangeTradeStatus
-    | SavingsTradeItemStatus;
+export type CoinmarketTradeStatusType = BuyTradeStatus | SellTradeStatus | ExchangeTradeStatus;
 
 export interface CoinmarketGetDetailDataProps {
     coinmarket: State;
@@ -150,27 +138,10 @@ export interface CoinmarketPaymentMethodListProps extends Option {
     label: string;
 }
 
-export type CryptoCategoryType =
-    | typeof CryptoCategoryA
-    | typeof CryptoCategoryB
-    | typeof CryptoCategoryC
-    | typeof CryptoCategoryD
-    | typeof CryptoCategoryE;
-
-export type CryptoCategoriesProps = {
-    [key in CryptoCategoryType]?: {
-        translationId: Extract<
-            ExtendedMessageDescriptor['id'],
-            `TR_COINMARKET_CRYPTO_CATEGORY_${string}`
-        >;
-        network?: NetworkSymbol;
-    };
-};
-
 export interface CoinmarketCryptoListProps {
-    value: CryptoSymbol;
+    value: CryptoId;
     label: string; // token shortcut
-    cryptoName: string | null; // full name
+    cryptoName: string | undefined; // full name
 }
 
 export type CoinmarketUtilsProvidersProps = {
@@ -181,14 +152,26 @@ export type CoinmarketUtilsProvidersProps = {
     };
 };
 
-export interface CoinmarketBuildOptionsProps {
-    symbolsInfo: CryptoSymbolInfo[] | undefined;
-    cryptoCurrencies: Set<CryptoSymbol>;
-    excludeAccountSymbol?: AccountSymbol | undefined;
+export interface CoinmarketInfoProps {
+    cryptoIdToPlatformName: (cryptoId: CryptoId) => string | undefined;
+    cryptoIdToCoinSymbol: (cryptoId: CryptoId) => string | undefined;
+    buildCryptoOptions: (
+        cryptoIds: Set<CryptoId>,
+        excludedCryptoIds?: Set<CryptoId>,
+    ) => CoinmarketOptionsGroupProps[];
+    buildDefaultCryptoOption: (cryptoId: CryptoId) => CoinmarketCryptoListProps;
+}
+
+export interface CoinmarketCoinLogoProps {
+    cryptoId: CryptoId;
+    size?: 20 | 24;
+    margin?: AssetLogoProps['margin'];
+    className?: string;
 }
 
 export interface CoinmarketOptionsGroupProps {
-    label: CryptoCategoryType;
+    translationId: ExtendedMessageDescriptor['id'];
+    networkName?: string;
     options: CoinmarketCryptoListProps[];
 }
 
@@ -198,7 +181,6 @@ export interface CoinmarketGetSortedAccountsProps {
 }
 
 export interface CoinmarketBuildAccountOptionsProps extends CoinmarketGetSortedAccountsProps {
-    symbolsInfo: CryptoSymbolInfo[] | undefined;
     accountLabels: Record<string, string | undefined>;
     defaultAccountLabelString: ({
         accountType,
@@ -209,7 +191,7 @@ export interface CoinmarketBuildAccountOptionsProps extends CoinmarketGetSortedA
         symbol: Account['symbol'];
         index?: number;
     }) => string;
-    supportedSymbols: Set<CryptoSymbol> | undefined;
+    supportedCryptoIds: Set<CryptoId> | undefined;
     tokenDefinitions: Partial<TokenDefinitionsState>;
 }
 
@@ -266,9 +248,9 @@ export interface CoinmarketGetFiatCurrenciesProps {
 export interface CoinmarketGetCryptoQuoteAmountProps {
     amountInCrypto?: boolean | undefined;
     sendAmount: string;
-    sendCurrency: CryptoSymbol | string | undefined;
+    sendCurrency: CryptoId | string | undefined;
     receiveAmount: string;
-    receiveCurrency: CryptoSymbol | undefined;
+    receiveCurrency: CryptoId | undefined;
 }
 
 export interface CoinmarketGetPaymentMethodProps {

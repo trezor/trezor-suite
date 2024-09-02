@@ -4,7 +4,7 @@ import coinmarketReducer from 'src/reducers/wallet/coinmarketReducer';
 
 import * as coinmarketBuyActions from '../coinmarketBuyActions';
 import invityAPI from 'src/services/suite/invityAPI';
-import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
+import { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 
 export const getInitialState = () => ({
     wallet: {
@@ -183,7 +183,7 @@ describe('Coinmarket Buy Actions', () => {
 
         const request: BuyTradeQuoteRequest = {
             fiatCurrency: 'EUR',
-            receiveCurrency: 'BTC',
+            receiveCurrency: 'BTC' as CryptoId,
             wantCrypto: false,
             country: 'CZ',
             fiatStringAmount: '1',
@@ -206,7 +206,7 @@ describe('Coinmarket Buy Actions', () => {
             {
                 fiatStringAmount: '10',
                 fiatCurrency: 'EUR',
-                receiveCurrency: 'BTC',
+                receiveCurrency: 'BTC' as CryptoId,
                 receiveStringAmount: '0.0005',
                 rate: 20000,
                 quoteId: 'fc12d4c4-9078-4175-becd-90fc58a3145c',
@@ -222,7 +222,7 @@ describe('Coinmarket Buy Actions', () => {
             {
                 fiatStringAmount: '10',
                 fiatCurrency: 'EUR',
-                receiveCurrency: 'BTC',
+                receiveCurrency: 'BTC' as CryptoId,
                 receiveStringAmount: '0.0010001683607972866',
                 rate: 9998.316675433,
                 quoteId: 'ff259797-6cbe-4fea-8330-5181353f64a0',

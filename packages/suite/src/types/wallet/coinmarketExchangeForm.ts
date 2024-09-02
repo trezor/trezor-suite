@@ -12,7 +12,6 @@ import type {
 } from '@suite-common/wallet-types';
 import type { AmountLimits, CryptoAmountLimits, Option } from './coinmarketCommonTypes';
 import { Rate } from '@suite-common/wallet-types';
-import { CryptoSymbol, CryptoSymbolInfo } from 'invity-api';
 import { SendContextValues } from 'src/types/wallet/sendForm';
 
 export const CRYPTO_INPUT = 'outputs.0.amount';
@@ -22,8 +21,8 @@ export const FIAT_CURRENCY = 'outputs.0.currency';
 
 export type ExchangeFormState = FormState & {
     // NOTE: react-select value type cannot be undefined, but at least null works
-    receiveCryptoSelect: (Option & { cryptoSymbol?: CryptoSymbol }) | null;
-    sendCryptoSelect: Option & { cryptoSymbol?: CryptoSymbol };
+    receiveCryptoSelect: Option | null;
+    sendCryptoSelect: Option;
 };
 
 export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormState> {
@@ -32,7 +31,6 @@ export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormSta
     isComposing: boolean;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     exchangeInfo?: ExchangeInfo;
-    symbolsInfo?: CryptoSymbolInfo[];
     defaultCurrency: Option;
     composeRequest: SendContextValues['composeTransaction'];
     updateFiatCurrency: (selectedCurrency: { value: string; label: string }, rate: number) => void;

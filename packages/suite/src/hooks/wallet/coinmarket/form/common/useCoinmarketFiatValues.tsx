@@ -7,19 +7,19 @@ import {
     getNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { CryptoSymbol, FiatCurrencyCode } from 'invity-api';
+import { CryptoId, FiatCurrencyCode } from 'invity-api';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
-    cryptoToNetworkSymbol,
+    cryptoIdToNetworkSymbol,
+    mapTestnetSymbol,
     getNetworkDecimals,
-} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 interface CoinmarketBalanceProps {
-    cryptoSymbol: CryptoSymbol | undefined;
+    cryptoSymbol: CryptoId | undefined;
     tokenAddress?: string | null;
     accountBalance?: string;
     fiatCurrency?: FiatCurrencyCode;
@@ -45,7 +45,7 @@ export const useCoinmarketFiatValues = ({
     const dispatch = useDispatch();
     const defaultCryptoSymbol = 'btc';
     const networkSymbol = cryptoSymbol
-        ? cryptoToNetworkSymbol(cryptoSymbol) ?? defaultCryptoSymbol
+        ? cryptoIdToNetworkSymbol(cryptoSymbol) ?? defaultCryptoSymbol
         : defaultCryptoSymbol;
     const tokenAddressTyped = tokenAddress as TokenAddress | undefined;
     const symbolForFiat = mapTestnetSymbol(networkSymbol);

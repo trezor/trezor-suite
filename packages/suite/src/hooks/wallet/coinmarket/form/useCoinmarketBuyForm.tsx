@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
-import type { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
+import type { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 import { isChanged } from '@suite-common/suite-utils';
 import { formatAmount, getNetwork } from '@suite-common/wallet-utils';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
@@ -17,6 +17,7 @@ import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefault
 import { CoinmarketTradeBuyType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
 import {
     addIdsToQuotes,
+    cryptoIdToNetwork,
     filterQuotesAccordingTags,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
@@ -42,11 +43,10 @@ import {
     FORM_FIAT_INPUT,
     FORM_PAYMENT_METHOD_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
-import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketCurrencySwitcher';
 import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketModalCrypto';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
@@ -57,6 +57,7 @@ const useCoinmarketBuyForm = ({
     const dispatch = useDispatch();
     const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest, selectedQuote } =
         useSelector(state => state.wallet.coinmarket.buy);
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const { callInProgress, account, timer, device, setCallInProgress, checkQuotesTimer } =
         useCoinmarketCommonOffers({ selectedAccount, type });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
@@ -149,10 +150,11 @@ const useCoinmarketBuyForm = ({
         values?.paymentMethod?.value ?? '',
     );
     // based on selected cryptoSymbol, because of using for validation cryptoInput
-    const network = getNetwork(
-        cryptoToNetworkSymbol(values.cryptoSelect?.value ?? FORM_DEFAULT_CRYPTO_CURRENCY) ??
-            FORM_DEFAULT_CRYPTO_CURRENCY.toLowerCase(),
-    ) as NetworkCompatible;
+    const network =
+        cryptoIdToNetwork(
+            (values.cryptoSelect?.value as CryptoId) ?? FORM_DEFAULT_CRYPTO_CURRENCY,
+        ) ?? getNetwork('btc')!;
+
     const { toggleAmountInCrypto } = useCoinmarketCurrencySwitcher({
         account,
         methods,
@@ -304,7 +306,7 @@ const useCoinmarketBuyForm = ({
         if (quotesRequest) {
             const result = await openCoinmarketBuyConfirmModal(
                 provider?.companyName,
-                quote.receiveCurrency,
+                cryptoIdToCoinSymbol(quote.receiveCurrency!),
             );
             if (result) {
                 // empty quoteId means the partner requests login first, requestTrade to get login screen
@@ -372,7 +374,9 @@ const useCoinmarketBuyForm = ({
     };
 
     useCoinmarketLoadData();
-    useCoinmarketModalCrypto({ receiveCurrency: values.cryptoSelect?.value });
+    useCoinmarketModalCrypto({
+        receiveCurrency: values.cryptoSelect?.value as CryptoId | undefined,
+    });
 
     // call change handler on every change of text inputs with debounce
     useDebounce(

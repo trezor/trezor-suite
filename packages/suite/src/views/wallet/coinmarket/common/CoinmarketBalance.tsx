@@ -4,8 +4,10 @@ import { amountToSatoshi, getNetwork } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
 import { FiatValue, Translation } from 'src/components/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { coinmarketGetAccountLabel } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { getNetworkDecimals } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import {
+    coinmarketGetAccountLabel,
+    getNetworkDecimals,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import styled from 'styled-components';
 
 const CoinmarketBalanceWrapper = styled.div`

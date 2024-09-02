@@ -91,6 +91,7 @@ export type Network = {
     support?: NetworkDeviceSupport;
     isDebugOnlyNetwork?: boolean;
     coingeckoId?: string;
+    coingeckoNativeId?: string;
 };
 
 export type Networks = {

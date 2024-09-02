@@ -1,10 +1,10 @@
-import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 export const buyQuotes: BuyTrade[] = [
     {
         fiatStringAmount: '47.12',
         fiatCurrency: 'EUR',
-        receiveCurrency: 'BTC',
+        receiveCurrency: 'BTC' as CryptoId,
         receiveStringAmount: '0.004705020432603938',
         rate: 10014.834297738,
         quoteId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
@@ -18,7 +18,7 @@ export const buyQuotes: BuyTrade[] = [
     {
         fiatStringAmount: '47.12',
         fiatCurrency: 'EUR',
-        receiveCurrency: 'BTC',
+        receiveCurrency: 'BTC' as CryptoId,
         receiveStringAmount: '0.0041',
         rate: 11492.682926829268,
         quoteId: '53233267-8181-4151-9a67-9d8efc9a15db',
@@ -36,7 +36,7 @@ export const sellQuotes: SellFiatTrade[] = [
         amountInCrypto: true,
         fiatStringAmount: '55.5',
         fiatCurrency: 'EUR',
-        cryptoCurrency: 'BTC',
+        cryptoCurrency: 'BTC' as CryptoId,
         cryptoStringAmount: '0.00107223',
         rate: 51761.282560644635,
         quoteId:
@@ -73,9 +73,9 @@ export const exchangeQuotes: ExchangeTrade[] = [
         min: 0.0007199999999999999,
         orderId: '00000000-0000-0000-0000-000000000000',
         rate: 169.71201709682722,
-        receive: 'BCH',
+        receive: 'BCH' as CryptoId,
         receiveStringAmount: '0.36132537',
-        send: 'BTC',
+        send: 'BTC' as CryptoId,
         sendStringAmount: '0.00212905',
     },
     {
@@ -85,9 +85,9 @@ export const exchangeQuotes: ExchangeTrade[] = [
         min: 0.0001,
         orderId: '00000000-0000-0000-0000-000000000001',
         rate: 2.71201709682722,
-        receive: 'DOGE',
+        receive: 'DOGE' as CryptoId,
         receiveStringAmount: '1224.42110101',
-        send: 'ETH',
+        send: 'ETH' as CryptoId,
         sendStringAmount: '0.12392375610249',
     },
 ];

@@ -1,10 +1,10 @@
-import { CryptoSymbol } from 'invity-api';
+import { CryptoId } from 'invity-api';
 import { useEffect } from 'react';
 import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
 import { useDispatch } from 'src/hooks/suite';
 
 interface CoinmarketModalCryptoProps {
-    receiveCurrency: CryptoSymbol | undefined;
+    receiveCurrency: CryptoId | undefined;
 }
 
 export const useCoinmarketModalCrypto = ({ receiveCurrency }: CoinmarketModalCryptoProps) => {
@@ -13,7 +13,7 @@ export const useCoinmarketModalCrypto = ({ receiveCurrency }: CoinmarketModalCry
     useEffect(() => {
         dispatch({
             type: SET_MODAL_CRYPTO_CURRENCY,
-            modalCryptoSymbol: receiveCurrency,
+            modalCryptoId: receiveCurrency,
         });
     }, [receiveCurrency, dispatch]);
 
@@ -22,7 +22,7 @@ export const useCoinmarketModalCrypto = ({ receiveCurrency }: CoinmarketModalCry
         return () => {
             dispatch({
                 type: SET_MODAL_CRYPTO_CURRENCY,
-                modalCryptoSymbol: undefined,
+                modalCryptoId: undefined,
             });
         };
     }, [dispatch]);

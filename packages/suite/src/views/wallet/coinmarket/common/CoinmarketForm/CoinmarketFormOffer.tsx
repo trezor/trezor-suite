@@ -1,4 +1,5 @@
 import { Button, TextButton } from '@trezor/components';
+import { CryptoId } from 'invity-api';
 import styled from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -11,11 +12,6 @@ import {
 import { useState } from 'react';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { Translation } from 'src/components/suite';
-import {
-    cryptoToCoinSymbol,
-    cryptoToNetworkSymbol,
-    isCryptoSymbolToken,
-} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import CoinmarketFormOfferItem from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferItem';
 import {
     CoinmarketFormInputLabelText,
@@ -26,7 +22,9 @@ import {
     coinmarketGetAmountLabels,
     coinmarketGetRoundedFiatAmount,
     coinmarketGetSectionActionLabel,
+    cryptoIdToNetwork,
     getBestRatedQuote,
+    parseCryptoId,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import CoinmarketFormOfferFiatAmount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
 import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
@@ -34,7 +32,6 @@ import { CoinmarketFormOffersSwitcher } from './CoinmarketFormOffersSwitcher';
 import { ExchangeTrade } from 'invity-api';
 import { CoinmarketTradeDetailType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
-import { networks } from '@suite-common/wallet-config';
 import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/coinmarket/form';
 
 const CoinmarketFormOfferHeader = styled.div`
@@ -102,9 +99,7 @@ const CoinmarketFormOffer = () => {
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
 
     const selectedCrypto = getSelectedCrypto(context);
-    const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency
-        ? cryptoToCoinSymbol(bestScoredQuoteAmounts.receiveCurrency)
-        : null;
+    const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency;
     const { amountInCrypto } = getValues();
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto });
     const sendAmount =
@@ -114,10 +109,8 @@ const CoinmarketFormOffer = () => {
 
     const selectQuote = getSelectQuoteTyped(context);
     const shouldDisplayFiatAmount = isCoinmarketExchangeOffers(context) ? false : amountInCrypto;
-    const networkSymbol =
-        selectedCrypto && isCryptoSymbolToken(selectedCrypto.value)
-            ? cryptoToNetworkSymbol(selectedCrypto.value)
-            : null;
+    const { contractAddress } = parseCryptoId(selectedCrypto?.value ?? ('' as CryptoId));
+    const network = selectedCrypto?.value ? cryptoIdToNetwork(selectedCrypto?.value) : undefined;
 
     return (
         <>
@@ -137,25 +130,23 @@ const CoinmarketFormOffer = () => {
                             ? bestScoredQuoteAmounts.receiveAmount
                             : '0'
                     }
-                    symbol={
+                    cryptoId={
                         !state.isLoadingOrInvalid && receiveCurrency
                             ? receiveCurrency
-                            : selectedCrypto?.label ?? ''
+                            : (selectedCrypto?.value as CryptoId)
                     }
                 />
             )}
-            {isCoinmarketExchangeOffers(context) &&
-                networkSymbol &&
-                networks[networkSymbol].name && (
-                    <CoinmarketFormOfferChain>
-                        <Translation
-                            id="TR_COINMARKET_ON_NETWORK_CHAIN"
-                            values={{
-                                networkName: networks[networkSymbol].name,
-                            }}
-                        />
-                    </CoinmarketFormOfferChain>
-                )}
+            {isCoinmarketExchangeOffers(context) && contractAddress && network && (
+                <CoinmarketFormOfferChain>
+                    <Translation
+                        id="TR_COINMARKET_ON_NETWORK_CHAIN"
+                        values={{
+                            networkName: network.name,
+                        }}
+                    />
+                </CoinmarketFormOfferChain>
+            )}
             <CoinmarketFormOfferHeader>
                 <CoinmarketFormOfferHeaderText>
                     <Translation id="TR_COINMARKET_YOUR_BEST_OFFER" />

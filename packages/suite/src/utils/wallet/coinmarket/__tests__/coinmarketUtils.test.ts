@@ -1,15 +1,11 @@
 import { Account } from 'src/types/wallet';
 import {
     buildFiatOption,
-    symbolToInvityApiSymbol,
     getUnusedAddressFromAccount,
     getCountryLabelParts,
     mapTestnetSymbol,
-    getSendCryptoOptions,
     getTagAndInfoNote,
-    buildCryptoOption,
     getBestRatedQuote,
-    coinmarketBuildCryptoOptions,
     addIdsToQuotes,
     filterQuotesAccordingTags,
     coinmarketGetSortedAccounts,
@@ -27,14 +23,7 @@ import {
 import * as BUY_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/buyUtils';
 import * as SELL_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/sellUtils';
 import * as EXCHANGE_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';
-import { CryptoSymbol, CryptoSymbolInfo } from 'invity-api';
-import {
-    CryptoCategoryA,
-    CryptoCategoryB,
-    CryptoCategoryC,
-    CryptoCategoryD,
-    CryptoCategoryE,
-} from 'src/constants/wallet/coinmarket/cryptoCategories';
+import { CryptoId } from 'invity-api';
 import { useAccountLabel } from 'src/components/suite/AccountLabel';
 
 jest.mock('src/components/suite/AccountLabel', () => ({
@@ -45,29 +34,6 @@ jest.mock('src/components/suite/AccountLabel', () => ({
 describe('coinmarket utils', () => {
     it('buildFiatOption', () => {
         expect(buildFiatOption('czk')).toStrictEqual({ value: 'czk', label: 'CZK' });
-    });
-
-    it('buildCryptoOption', () => {
-        expect(buildCryptoOption('BTC')).toStrictEqual({
-            value: 'BTC',
-            label: 'BTC',
-            cryptoName: 'Bitcoin',
-        });
-        expect(buildCryptoOption('ETH')).toStrictEqual({
-            value: 'ETH',
-            label: 'ETH',
-            cryptoName: 'Ethereum',
-        });
-        expect(buildCryptoOption('USDT@ETH')).toStrictEqual({
-            value: 'USDT@ETH',
-            label: 'USDT',
-            cryptoName: 'Ethereum',
-        });
-    });
-
-    it('symbolToInvityApiSymbol', () => {
-        expect(symbolToInvityApiSymbol('btc')).toStrictEqual('btc');
-        expect(symbolToInvityApiSymbol('usdt')).toStrictEqual('usdt');
     });
 
     it('getUnusedAddressFromAccount', () => {
@@ -98,76 +64,6 @@ describe('coinmarket utils', () => {
         expect(mapTestnetSymbol('eth')).toStrictEqual('eth');
         expect(mapTestnetSymbol('test')).toStrictEqual('btc');
         expect(mapTestnetSymbol('txrp')).toStrictEqual('xrp');
-    });
-
-    it('getSendCryptoOptions', () => {
-        expect(getSendCryptoOptions(accountBtc as Account, new Set())).toStrictEqual([
-            {
-                value: 'BTC',
-                label: 'BTC',
-                cryptoSymbol: 'BTC',
-            },
-        ]);
-
-        expect(
-            getSendCryptoOptions(
-                accountEth as Account,
-                new Set(['ETH', 'USDT@ETH', 'USDC@ETH', 'DAI@ETH']),
-            ),
-        ).toStrictEqual([
-            {
-                value: 'ETH',
-                label: 'ETH',
-                cryptoSymbol: 'ETH',
-            },
-            {
-                value: 'USDT@ETH',
-                label: 'USDT',
-                token: {
-                    type: 'ERC20',
-                    contract: '0x1234123412341234123412341234123412341234',
-                    symbol: 'usdt',
-                    decimals: 18,
-                },
-                cryptoSymbol: 'USDT@ETH',
-            },
-            {
-                label: 'USDC',
-                value: 'USDC@ETH',
-                token: {
-                    type: 'ERC20',
-                    contract: '0x1234123412341234123412341234123412341235',
-                    symbol: 'usdc',
-                    decimals: 18,
-                },
-                cryptoSymbol: 'USDC@ETH',
-            },
-        ]);
-
-        expect(
-            getSendCryptoOptions(
-                accountEth as Account,
-                new Set(['ETH', 'USDT@ETH', 'USDC@ETH', 'DAI@ETH']),
-                coinDefinitions,
-            ),
-        ).toStrictEqual([
-            {
-                value: 'ETH',
-                label: 'ETH',
-                cryptoSymbol: 'ETH',
-            },
-            {
-                label: 'USDC',
-                value: 'USDC@ETH',
-                token: {
-                    type: 'ERC20',
-                    contract: '0x1234123412341234123412341234123412341235',
-                    symbol: 'usdc',
-                    decimals: 18,
-                },
-                cryptoSymbol: 'USDC@ETH',
-            },
-        ]);
     });
 
     it('getTagAndInfoNote', () => {
@@ -245,101 +141,6 @@ describe('coinmarket utils', () => {
         });
     });
 
-    it('function coinmarketBuildCryptoOptions', () => {
-        const symbolsInfo: CryptoSymbolInfo[] = [
-            {
-                symbol: 'BTC',
-                name: 'Bitcoin',
-                category: 'Popular currencies',
-            },
-            {
-                symbol: 'ETH',
-                name: 'Ethereum',
-                category: 'Popular currencies',
-            },
-            {
-                symbol: 'USDT@ETH',
-                name: 'Tether',
-                category: 'Ethereum ERC20 tokens',
-            },
-            {
-                symbol: 'USDT@MATIC',
-                name: 'Tether',
-                category: 'Polygon ERC20 tokens',
-            },
-        ];
-        const cryptoCurrencies: Set<CryptoSymbol> = new Set([
-            'BTC',
-            'ETH',
-            'USDT@ETH',
-            'USDT@MATIC',
-            'VEN',
-            'STEEM',
-        ]);
-
-        expect(
-            coinmarketBuildCryptoOptions({
-                symbolsInfo,
-                cryptoCurrencies,
-            }),
-        ).toStrictEqual([
-            {
-                label: CryptoCategoryA,
-                options: [
-                    {
-                        value: 'BTC',
-                        label: 'BTC',
-                        cryptoName: 'Bitcoin',
-                    },
-                    {
-                        value: 'ETH',
-                        label: 'ETH',
-                        cryptoName: 'Ethereum',
-                    },
-                ],
-            },
-            {
-                label: CryptoCategoryB,
-                options: [
-                    {
-                        value: 'USDT@ETH',
-                        label: 'USDT',
-                        cryptoName: 'Tether',
-                    },
-                ],
-            },
-            {
-                label: CryptoCategoryC,
-                options: [],
-            },
-            {
-                label: CryptoCategoryD,
-                options: [
-                    {
-                        value: 'USDT@MATIC',
-                        label: 'USDT',
-                        cryptoName: 'Tether',
-                    },
-                ],
-            },
-            {
-                label: CryptoCategoryE,
-                options: [
-                    {
-                        value: 'VEN',
-                        label: 'VEN',
-                        cryptoName: null,
-                    },
-                    {
-                        value: 'STEEM',
-                        label: 'STEEM',
-                        cryptoName: null,
-                    },
-                ],
-            },
-        ]);
-    });
-
     it('coinmarketGetSortedAccounts', () => {
         const sortedAccounts = coinmarketGetSortedAccounts({
             accounts: FIXTURE_ACCOUNTS as Account[],
@@ -355,28 +156,6 @@ describe('coinmarket utils', () => {
     });
 
     it('coinmarketBuildAccountOptions', () => {
-        const symbolsInfo: CryptoSymbolInfo[] = [
-            {
-                symbol: 'BTC',
-                name: 'Bitcoin',
-                category: 'Popular currencies',
-            },
-            {
-                symbol: 'LTC',
-                name: 'Litecoin',
-                category: 'Popular currencies',
-            },
-            {
-                symbol: 'USDT@ETH',
-                name: 'Tether',
-                category: 'Ethereum ERC20 tokens',
-            },
-            {
-                symbol: 'ETH',
-                name: 'Ethereum',
-                category: 'Popular currencies',
-            },
-        ];
         const label = 'mocked label';
         const defaultAccountLabelString = (useAccountLabel as jest.Mock).mockImplementation(
             () => label,
@@ -387,9 +166,14 @@ describe('coinmarket utils', () => {
             deviceState: 'deviceState',
             accountLabels: {},
             defaultAccountLabelString,
-            symbolsInfo,
             tokenDefinitions: { eth: { coin: coinDefinitions } },
-            supportedSymbols: new Set(['BTC', 'LTC', 'ETH', 'USDC@ETH', 'MATIC', 'VEE@ETH']),
+            supportedCryptoIds: new Set([
+                'bitcoin',
+                'litecoin',
+                'ethereum',
+                'matic-network',
+                'ethereum--0x1234123412341234123412341234123412341236',
+            ]) as Set<CryptoId>,
         });
 
         expect(sortedAccounts).toStrictEqual([
@@ -402,7 +186,7 @@ describe('coinmarket utils', () => {
                         cryptoName: 'Bitcoin',
                         descriptor: 'descriptor1',
                         label: 'BTC',
-                        value: 'BTC',
+                        value: 'bitcoin',
                     },
                 ],
             },
@@ -415,7 +199,7 @@ describe('coinmarket utils', () => {
                         cryptoName: 'Litecoin',
                         descriptor: 'descriptor2',
                         label: 'LTC',
-                        value: 'LTC',
+                        value: 'litecoin',
                     },
                 ],
             },
@@ -428,16 +212,16 @@ describe('coinmarket utils', () => {
                         cryptoName: 'Ethereum',
                         descriptor: 'descriptor3',
                         label: 'ETH',
-                        value: 'ETH',
+                        value: 'ethereum',
                     },
                     {
                         accountType: undefined,
                         balance: '2230',
                         contractAddress: '0x1234123412341234123412341234123412341236',
-                        cryptoName: null,
+                        cryptoName: 'VeChain',
                         descriptor: 'descriptor3',
                         label: 'VEE',
-                        value: 'VEE',
+                        value: 'ethereum--0x1234123412341234123412341234123412341236',
                     },
                 ],
             },
@@ -447,10 +231,10 @@ describe('coinmarket utils', () => {
                     {
                         accountType: undefined,
                         balance: '250',
-                        cryptoName: null,
+                        cryptoName: 'Polygon PoS',
                         descriptor: 'descriptor6',
                         label: 'MATIC',
-                        value: 'MATIC',
+                        value: 'matic-network',
                     },
                 ],
             },

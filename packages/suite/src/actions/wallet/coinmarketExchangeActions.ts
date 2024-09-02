@@ -5,7 +5,7 @@ import {
     ExchangeProviderInfo,
     ExchangeTradeQuoteRequest,
     ExchangeTrade,
-    CryptoSymbol,
+    CryptoId,
 } from 'invity-api';
 import invityAPI from 'src/services/suite/invityAPI';
 import { COINMARKET_EXCHANGE, COINMARKET_COMMON } from './constants';
@@ -15,8 +15,8 @@ import { verifyAddress as verifyExchangeAddress } from 'src/actions/wallet/coinm
 export interface ExchangeInfo {
     exchangeList?: ExchangeListResponse;
     providerInfos: { [name: string]: ExchangeProviderInfo };
-    buySymbols: Set<CryptoSymbol>;
-    sellSymbols: Set<CryptoSymbol>;
+    buySymbols: Set<CryptoId>;
+    sellSymbols: Set<CryptoId>;
 }
 
 export type CoinmarketExchangeAction =
@@ -62,8 +62,8 @@ export const loadExchangeInfo = async (): Promise<ExchangeInfo> => {
     exchangeList.forEach(e => (providerInfos[e.name] = e));
 
     // merge symbols supported by at least one partner
-    const buySymbolsArray: CryptoSymbol[] = [];
-    const sellSymbolsArray: CryptoSymbol[] = [];
+    const buySymbolsArray: CryptoId[] = [];
+    const sellSymbolsArray: CryptoId[] = [];
     exchangeList.forEach(p => {
         if (p.buyTickers) {
             buySymbolsArray.push(...p.buyTickers);
@@ -73,8 +73,8 @@ export const loadExchangeInfo = async (): Promise<ExchangeInfo> => {
         }
     });
 
-    const buySymbols = new Set<CryptoSymbol>(buySymbolsArray);
-    const sellSymbols = new Set<CryptoSymbol>(sellSymbolsArray);
+    const buySymbols = new Set<CryptoId>(buySymbolsArray);
+    const sellSymbols = new Set<CryptoId>(sellSymbolsArray);
 
     return {
         exchangeList,

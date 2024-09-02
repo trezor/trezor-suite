@@ -1,31 +1,32 @@
-import { spacingsPx } from '@trezor/theme';
-import styled from 'styled-components';
-import { CoinmarketCoinImage } from '../CoinmarketCoinImage';
 import { CoinmarketAmountContainer, CoinmarketAmountWrapper } from 'src/views/wallet/coinmarket';
 import { FormattedCryptoAmount } from 'src/components/suite';
-
-const TokenWrapper = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const TokenLogoBig = styled(CoinmarketCoinImage)`
-    margin: 0 ${spacingsPx.xs} 0 0;
-`;
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
+import { CryptoId } from 'invity-api';
 
 export interface CoinmarketCryptoAmountProps {
     amount: string | number;
-    symbol: string;
+    cryptoId: CryptoId;
 }
 
-const CoinmarketFormOfferCryptoAmount = ({ amount, symbol }: CoinmarketCryptoAmountProps) => {
+const CoinmarketFormOfferCryptoAmount = ({ amount, cryptoId }: CoinmarketCryptoAmountProps) => {
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const networkSymbol = cryptoIdToCoinSymbol(cryptoId);
+
+    if (!networkSymbol) {
+        return;
+    }
+
     return (
         <CoinmarketAmountContainer>
             <CoinmarketAmountWrapper>
-                <TokenWrapper>
-                    <TokenLogoBig symbol={symbol} size="large" />
-                </TokenWrapper>
-                <FormattedCryptoAmount value={amount} symbol={symbol} isRawString isBalance />
+                <CoinmarketCoinLogo cryptoId={cryptoId} />
+                <FormattedCryptoAmount
+                    value={amount}
+                    symbol={networkSymbol}
+                    isRawString
+                    isBalance
+                />
             </CoinmarketAmountWrapper>
         </CoinmarketAmountContainer>
     );
