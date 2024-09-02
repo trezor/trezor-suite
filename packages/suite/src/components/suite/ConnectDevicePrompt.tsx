@@ -9,6 +9,7 @@ import {
     ElevationUp,
     Icon,
 } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -72,7 +73,7 @@ const getMessageId = ({
 }) => {
     switch (prerequisite) {
         case 'transport-bridge':
-            return 'TR_NO_TRANSPORT';
+            return isDesktop() ? 'TR_NO_TRANSPORT_DESKTOP' : 'TR_NO_TRANSPORT';
         case 'device-bootloader':
             return 'TR_DEVICE_CONNECTED_BOOTLOADER';
         default: {
