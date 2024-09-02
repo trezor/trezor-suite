@@ -138,6 +138,7 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                     description="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC"
                     cta={{
                         action: () => dispatch(authorizeDeviceThunk()),
+                        icon: 'refresh',
                     }}
                     dataTestBase={exception.type}
                 />
@@ -146,7 +147,10 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
             return (
                 <Container
                     title="TR_AUTH_CONFIRM_FAILED_TITLE"
-                    cta={{ action: () => dispatch(authConfirm()) }}
+                    cta={{
+                        action: () => dispatch(authConfirm()),
+                        icon: 'refresh',
+                    }}
                     dataTestBase={exception.type}
                 />
             );
