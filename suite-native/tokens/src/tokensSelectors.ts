@@ -1,5 +1,9 @@
 // Temporary solution until we solve performance issues with token definitions
 
+import { selectAccountByKey } from '@suite-common/wallet-core';
+
+import { isCoinWithTokens } from './utils';
+
 // import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 // import { NetworkSymbol } from '@suite-common/wallet-config';
 // import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -53,14 +57,20 @@
 //     return selectNumberOfAccountTokensWithFiatRates(state, accountKey) > 0;
 // };
 
-export const selectNumberOfUniqueTokensForCoinPerDevice = (_state: any, _coin: any) => {
+export const selectNumberOfUniqueTokensForCoinPerDevice = (_state: any, coin: any) => {
+    if (!isCoinWithTokens(coin)) return 0;
+
     return 1;
 };
 
-export const selectNumberOfAccountTokensWithFiatRates = (_state: any, _accountKey: any) => {
+export const selectNumberOfAccountTokensWithFiatRates = (state: any, accountKey: any) => {
+    const account = selectAccountByKey(state, accountKey);
+
+    if (!account || !isCoinWithTokens(account.symbol)) return 0;
+
     return 1;
 };
 
-export const selectAccountHasAnyTokensWithFiatRates = (_state: any, _accountKey: any) => {
-    return true;
+export const selectAccountHasAnyTokensWithFiatRates = (state: any, accountKey: any) => {
+    return selectNumberOfAccountTokensWithFiatRates(state, accountKey) > 0;
 };
