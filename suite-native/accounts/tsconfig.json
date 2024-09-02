@@ -7,6 +7,9 @@
         },
         { "path": "../../suite-common/icons" },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/validators"
         },
         {

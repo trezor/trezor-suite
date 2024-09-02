@@ -1,10 +1,7 @@
-import { useSelector } from 'react-redux';
-
-import { Box, DiscreetTextTrigger, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-common/icons';
-import { FiatRatesRootState, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
-import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { Timestamp, TransactionType } from '@suite-common/wallet-types';
+import { SignValue } from '@suite-common/suite-types';
+import { AccountKey, TransactionType } from '@suite-common/wallet-types';
+import { Box, DiscreetTextTrigger, Text } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
@@ -13,12 +10,13 @@ import {
     SignValueFormatter,
 } from '@suite-native/formatters';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { SignValue } from '@suite-common/suite-types';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
+
+import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
     tokenTransfer?: EthereumTokenTransfer;
+    accountKey: AccountKey;
 };
 
 type TransactionTypeInfo = {
@@ -65,16 +63,13 @@ const transactionTypeInfo = {
 export const TransactionDetailHeader = ({
     transaction,
     tokenTransfer,
+    accountKey,
 }: TransactionDetailHeaderProps) => {
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const fiatRateKey = getFiatRateKey(
-        transaction.symbol,
-        fiatCurrencyCode,
-        tokenTransfer?.contract,
-    );
-    const historicRate = useSelector((state: FiatRatesRootState) =>
-        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
-    );
+    const historicRate = useTransactionFiatRate({
+        accountKey,
+        transaction,
+        tokenAddress: tokenTransfer?.contract,
+    });
 
     const { type } = transaction;
     const { text } = transactionTypeInfo[type];

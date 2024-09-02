@@ -133,6 +133,7 @@ export const fetchTransactionsRates = async (
             isElectrumBackend,
         );
         if (results && 'tickers' in results) {
+            // This is super anti-pattern, we should never push to an array that is passed as an argument
             rates.push({
                 tickerId,
                 localCurrency,

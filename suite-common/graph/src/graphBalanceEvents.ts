@@ -4,8 +4,8 @@ import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
+import { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
 
@@ -139,8 +139,11 @@ export const getAccountMovementEvents = async ({
     const getBalanceHistory = async () => {
         if (isLocalBalanceHistoryCoin(coin)) {
             const allTransactions = await dispatch(
-                fetchAllTransactionsForAccountThunk({
+                fetchTransactionsFromNowUntilTimestamp({
                     accountKey: account.accountKey,
+                    timestamp: startOfTimeFrameDate
+                        ? (getUnixTime(startOfTimeFrameDate) as Timestamp)
+                        : null,
                 }),
             ).unwrap();
 
@@ -188,6 +191,10 @@ export const getAccountMovementEvents = async ({
     return pipe(
         accountHistoryMovements,
         formatBalanceMovementEventsAmounts,
+        A.filter(
+            balanceMovement =>
+                balanceMovement.payload.sent !== 0 || balanceMovement.payload.received !== 0,
+        ),
         formattedBalances => groupBalanceMovementEvents(formattedBalances, GROUPING_THRESHOLD),
         groups => mergeGroups({ groups, networkSymbol: coin, tokenAddress, accountKey }),
     ) as GroupedBalanceMovementEvent[];

@@ -1,26 +1,20 @@
 import { useSelector } from 'react-redux';
 
-import { AccountKey, Timestamp, TransactionType } from '@suite-common/wallet-types';
+import { SignValue } from '@suite-common/suite-types';
+import { AccountsRootState, selectIsTestnetAccount } from '@suite-common/wallet-core';
+import { AccountKey, TransactionType } from '@suite-common/wallet-types';
+import { Box } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     SignValueFormatter,
 } from '@suite-native/formatters';
-import { SignValue } from '@suite-common/suite-types';
-import { Box } from '@suite-native/atoms';
-import {
-    AccountsRootState,
-    FiatRatesRootState,
-    selectHistoricFiatRatesByTimestamp,
-    selectIsTestnetAccount,
-} from '@suite-common/wallet-core';
-import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { EmptyAmountText } from '@suite-native/formatters/src/components/EmptyAmountText';
 import { WalletAccountTransaction } from '@suite-native/tokens';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 
-import { TransactionListItemContainer } from './TransactionListItemContainer';
+import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { TokenTransferListItem } from './TokenTransferListItem';
+import { TransactionListItemContainer } from './TransactionListItemContainer';
 
 type TransactionListItemProps = {
     transaction: WalletAccountTransaction;
@@ -51,11 +45,7 @@ export const TransactionListItemValues = ({
         selectIsTestnetAccount(state, accountKey),
     );
 
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
-    const historicRate = useSelector((state: FiatRatesRootState) =>
-        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
-    );
+    const historicRate = useTransactionFiatRate({ accountKey, transaction });
 
     return (
         <>

@@ -1,7 +1,16 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import {
+    BlockchainRootState,
+    selectBlockchainExplorerBySymbol,
+    selectTransactionByTxidAndAccountKey,
+    TransactionsRootState,
+} from '@suite-common/wallet-core';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { analytics, EventType } from '@suite-native/analytics';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
+import { useOpenLink } from '@suite-native/link';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -9,20 +18,11 @@ import {
     ScreenSubHeader,
     StackProps,
 } from '@suite-native/navigation';
-import {
-    BlockchainRootState,
-    selectBlockchainExplorerBySymbol,
-    selectTransactionByTxidAndAccountKey,
-    TransactionsRootState,
-} from '@suite-common/wallet-core';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { analytics, EventType } from '@suite-native/analytics';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { useOpenLink } from '@suite-native/link';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
+import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';
 import { TransactionDetailSheets } from '../components/TransactionDetail/TransactionDetailSheets';
 
 const buttonStyle = prepareNativeStyle(utils => ({
@@ -43,7 +43,7 @@ export const TransactionDetailScreen = ({
     );
 
     useEffect(() => {
-        if (transaction)
+        if (transaction) {
             analytics.report({
                 type: EventType.TransactionDetail,
                 payload: {
@@ -52,6 +52,7 @@ export const TransactionDetailScreen = ({
                     tokenAddress: tokenTransfer?.contract as TokenAddress,
                 },
             });
+        }
     }, [transaction, tokenTransfer]);
 
     if (!transaction) return null;
@@ -70,6 +71,7 @@ export const TransactionDetailScreen = ({
                 <TransactionDetailHeader
                     transaction={transaction}
                     tokenTransfer={tokenTransfer as EthereumTokenTransfer}
+                    accountKey={accountKey}
                 />
                 <TransactionDetailData
                     transaction={transaction}

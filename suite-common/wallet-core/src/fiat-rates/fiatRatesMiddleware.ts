@@ -39,12 +39,16 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             }
         }
 
-        if (transactionsActions.addTransaction.match(action)) {
+        if (
+            transactionsActions.addTransaction.match(action) &&
+            // On mobile we fetch txs fiat rates on demand, for example when user opens tx details
+            !isNative()
+        ) {
             // fetch historical rates for each added transaction
             const { account, transactions } = action.payload;
             dispatch(
                 updateTxsFiatRatesThunk({
-                    account,
+                    accountKey: account.key,
                     txs: transactions,
                     localCurrency: selectLocalCurrency(getState()),
                 }),
@@ -55,7 +59,9 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             isAnyOf(
                 fetchAllTransactionsForAccountThunk.fulfilled,
                 fetchAllTransactionsForAccountThunk.rejected,
-            )(action)
+            )(action) &&
+            // On mobile we fetch txs fiat rates on demand, for example when user opens tx details
+            !isNative()
         ) {
             // Fiat rates are fetched for transaction when the transaction is added (see above).
             // This is a fallback mechanism for cases when only fiat rates are missing.
@@ -77,8 +83,8 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                         localCurrency,
                     }),
                 );
+                dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
             }
-            dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
         }
 
         if (blockchainActions.connected.match(action)) {

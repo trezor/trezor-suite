@@ -1,17 +1,13 @@
-import { useSelector } from 'react-redux';
-
-import { FiatRatesRootState, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
-import { AccountKey, Timestamp } from '@suite-common/wallet-types';
-import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
+import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 
-import { TransactionListItemContainer } from './TransactionListItemContainer';
+import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { signValueMap } from '../TransactionDetail/TransactionDetailHeader';
+import { TransactionListItemContainer } from './TransactionListItemContainer';
 
 type TokenTransferListItemProps = {
     txid: string;
@@ -26,19 +22,17 @@ type TokenTransferListItemProps = {
 export const TokenTransferListItemValues = ({
     tokenTransfer,
     transaction,
+    accountKey,
 }: {
     tokenTransfer: EthereumTokenTransfer;
     transaction: WalletAccountTransaction;
+    accountKey: AccountKey;
 }) => {
-    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const fiatRateKey = getFiatRateKey(
-        transaction.symbol,
-        fiatCurrencyCode,
-        tokenTransfer.contract,
-    );
-    const historicRate = useSelector((state: FiatRatesRootState) =>
-        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
-    );
+    const historicRate = useTransactionFiatRate({
+        accountKey,
+        transaction,
+        tokenAddress: tokenTransfer.contract,
+    });
 
     return (
         <>
@@ -81,6 +75,10 @@ export const TokenTransferListItem = ({
         isFirst={isFirst}
         isLast={isLast}
     >
-        <TokenTransferListItemValues tokenTransfer={tokenTransfer} transaction={transaction} />
+        <TokenTransferListItemValues
+            tokenTransfer={tokenTransfer}
+            transaction={transaction}
+            accountKey={accountKey}
+        />
     </TransactionListItemContainer>
 );

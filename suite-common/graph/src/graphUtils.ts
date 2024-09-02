@@ -65,27 +65,42 @@ export const mapCryptoBalanceMovementToFixedTimeFrame = ({
         };
     }>;
     fiatCurrency: FiatCurrencyCode;
-}): readonly FiatGraphPointWithCryptoBalance[] =>
-    pipe(
+}): readonly FiatGraphPointWithCryptoBalance[] => {
+    return pipe(
         fiatRates,
         A.map(fiatRatePoint => {
-            let cryptoBalance = new BigNumber('0');
-            balanceHistory.forEach(accountBalancePoint => {
-                if (accountBalancePoint.time <= fiatRatePoint.time) {
-                    cryptoBalance = new BigNumber(accountBalancePoint.cryptoBalance);
-                }
-            });
+            let fiatRate = fiatRatePoint.rates[fiatCurrency] ?? 0;
+            // for some tokens we could get fiat rate -1, which is not valid
+            fiatRate = fiatRate < 0 ? 0 : fiatRate;
+            const rateDate = fromUnixTime(fiatRatePoint.time);
 
-            const fiatRate = fiatRatePoint.rates[fiatCurrency] ?? 0;
+            if (fiatRate === 0) {
+                // return early if the fiat rate is 0 to save resources on further calculations (find and BigNumber are slow)
+                return {
+                    date: rateDate,
+                    cryptoBalance: '0',
+                    value: 0,
+                };
+            }
+
+            // Find the latest account balance before or at the fiatRatePoint time
+            const accountBalancePoint = balanceHistory.find(
+                point => point.time >= fiatRatePoint.time,
+            );
+
+            const cryptoBalance = accountBalancePoint
+                ? new BigNumber(accountBalancePoint.cryptoBalance)
+                : new BigNumber('0');
 
             return {
-                date: fromUnixTime(fiatRatePoint.time),
+                date: rateDate,
                 cryptoBalance: cryptoBalance.toFixed(),
                 // We display only two decimal places in the graph. So if there is any value lower than that, we want to round it.
                 value: Number(cryptoBalance.multipliedBy(fiatRate).toFixed(2)),
             };
         }),
     );
+};
 
 export const mergeMultipleFiatBalanceHistories = (
     fiatBalancesHistories: readonly (readonly FiatGraphPointWithCryptoBalance[])[],
