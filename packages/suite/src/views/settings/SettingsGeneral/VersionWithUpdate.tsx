@@ -97,7 +97,7 @@ export const VersionWithUpdate = () => {
             {desktopUpdateState.enabled && (
                 <ActionColumn>
                     {desktopUpdateState.state === UpdateState.Checking && (
-                        <ActionButton isDisabled variant="tertiary">
+                        <ActionButton isDisabled variant="primary">
                             <Translation id="SETTINGS_UPDATE_CHECKING" />
                         </ActionButton>
                     )}
@@ -106,22 +106,22 @@ export const VersionWithUpdate = () => {
                         UpdateState.EarlyAccessDisable,
                         UpdateState.EarlyAccessEnable,
                     ].includes(desktopUpdateState.state) && (
-                        <ActionButton onClick={checkForUpdates} variant="tertiary">
+                        <ActionButton onClick={checkForUpdates} variant="primary">
                             <Translation id="SETTINGS_UPDATE_CHECK" />
                         </ActionButton>
                     )}
                     {desktopUpdateState.state === UpdateState.Available && (
-                        <ActionButton onClick={maximizeUpdateModal} variant="tertiary">
+                        <ActionButton onClick={maximizeUpdateModal} variant="primary">
                             <Translation id="SETTINGS_UPDATE_AVAILABLE" />
                         </ActionButton>
                     )}
                     {desktopUpdateState.state === UpdateState.Downloading && (
-                        <ActionButton onClick={maximizeUpdateModal} variant="tertiary">
+                        <ActionButton onClick={maximizeUpdateModal} variant="primary">
                             <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
                         </ActionButton>
                     )}
                     {desktopUpdateState.state === UpdateState.Ready && (
-                        <ActionButton onClick={installAndRestart} variant="tertiary">
+                        <ActionButton onClick={installAndRestart} variant="primary">
                             <Translation id="SETTINGS_UPDATE_READY" />
                         </ActionButton>
                     )}
