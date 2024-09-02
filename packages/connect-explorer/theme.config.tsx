@@ -6,7 +6,8 @@ const config: DocsThemeConfig = {
     project: {
         link: 'https://github.com/trezor/trezor-suite',
     },
-    docsRepositoryBase: 'https://github.com/trezor/trezor-suite',
+    docsRepositoryBase:
+        'https://github.com/trezor/trezor-suite/tree/develop/packages/connect-explorer',
     darkMode: true,
     primaryHue: 140,
     primarySaturation: 40,
