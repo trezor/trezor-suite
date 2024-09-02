@@ -1,12 +1,5 @@
-import {
-    AccountType,
-    Networks,
-    Network,
-    NetworkFeature,
-    networks,
-    networksCompatibility,
-    NetworkSymbol,
-} from './networksConfig';
+import { networks, networksCompatibility } from './networksConfig';
+import { AccountType, Network, NetworkFeature, Networks, NetworkSymbol } from './types';
 
 const networksCollection: Network[] = Object.values(networks);
 
@@ -69,3 +62,6 @@ export const getNetworkFeatures = (symbol: NetworkSymbol) =>
     networks[symbol]?.features as unknown as NetworkFeature;
 
 export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol]?.coingeckoId;
+
+export const isNetworkSymbol = (symbol: NetworkSymbol | string): symbol is NetworkSymbol =>
+    networks.hasOwnProperty(symbol);
