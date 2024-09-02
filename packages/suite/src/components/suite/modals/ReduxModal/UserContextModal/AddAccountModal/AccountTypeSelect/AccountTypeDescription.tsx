@@ -1,3 +1,4 @@
+import { Paragraph } from '@trezor/components';
 import { Bip43Path } from '@suite-common/wallet-config';
 import { Translation } from 'src/components/suite';
 import {
@@ -44,7 +45,9 @@ export const AccountTypeDescription = ({
 
     return (
         <Column alignItems="flex-start" gap={spacings.sm}>
-            {renderAccountTypeDesc()}
+            <Paragraph variant="tertiary" typographyStyle="hint">
+                {renderAccountTypeDesc()}
+            </Paragraph>
             {accountTypeUrl && <LearnMoreButton url={accountTypeUrl} />}
         </Column>
     );
