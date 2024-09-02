@@ -54,7 +54,7 @@ Basic implementation is same for both Google Chrome & Firefox. However, few addi
             "content_scripts": [
                 {
                 "matches": [
-                    "*://connect.trezor.io/*/popup.html"
+                    "*://connect.trezor.io/*/popup.html*"
                 ],
                 "js": ["trezor-content-script.js"]
                 }
