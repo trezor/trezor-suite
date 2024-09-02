@@ -5,7 +5,7 @@ import { IconName, icons, Icon, IconProps, allowedIconFrameProps, iconVariants }
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Input } from '../form/Input/Input';
 import { typography } from '@trezor/theme';
-import { iconSizes } from '@suite-common/icons';
+import { iconSizes } from '@suite-common/icons/src/webComponents';
 
 const CopiedText = styled.div`
     display: flex;
