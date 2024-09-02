@@ -3370,6 +3370,11 @@ export default defineMessages({
         description: '',
         id: 'TR_NO_TRANSPORT',
     },
+    TR_NO_TRANSPORT_DESKTOP: {
+        defaultMessage: "App can't communicate with device",
+        description: 'similar to TR_NO_TRANSPORT but for desktop',
+        id: 'TR_NO_TRANSPORT_DESKTOP',
+    },
     TR_TRY_AGAIN: {
         defaultMessage: 'Try again',
         description: 'Try to run the process again',

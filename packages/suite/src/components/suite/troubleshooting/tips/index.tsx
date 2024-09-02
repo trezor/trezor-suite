@@ -18,7 +18,7 @@ export const TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT = {
     key: 'webusb-environment',
     heading: <Translation id="TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_TITLE" />,
     description: <Translation id="TR_TROUBLESHOOTING_TIP_BROWSER_WEBUSB_DESCRIPTION" />,
-    hide: isWebUsb(),
+    hide: isWebUsb() || !isWeb(),
 };
 
 export const TROUBLESHOOTING_TIP_SUITE_DESKTOP = {
