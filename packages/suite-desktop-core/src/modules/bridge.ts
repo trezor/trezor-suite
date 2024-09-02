@@ -4,6 +4,7 @@
 import { TrezordNode } from '@trezor/transport-bridge';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { scheduleAction } from '@trezor/utils';
 
 import { app, ipcMain } from '../typed-electron';
 import { BridgeProcess } from '../libs/processes/BridgeProcess';
@@ -205,7 +206,10 @@ export const init: Module = dependencies => {
     return () => {
         if (loaded) return;
         loaded = true;
-        // TODO intentionally not awaited to mimic previous behavior, resolve later!
-        load(dependencies);
+
+        return scheduleAction(() => load(dependencies), { timeout: 3000 }).catch(err => {
+            // Error ignored, user will see transport error afterwards
+            logger.error(SERVICE_NAME, `Failed to load: ${err.message}`);
+        });
     };
 };
