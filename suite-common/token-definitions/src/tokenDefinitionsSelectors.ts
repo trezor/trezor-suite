@@ -26,12 +26,12 @@ export const selectCoinDefinition = (
     state: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
     contractAddress: TokenAddress,
-) =>
-    isTokenDefinitionKnown(
-        state.tokenDefinitions?.[networkSymbol]?.coin?.data,
-        networkSymbol,
-        contractAddress,
-    );
+) => {
+    const coinDefinitions = state.tokenDefinitions?.[networkSymbol]?.coin?.data;
+    const isKnown = isTokenDefinitionKnown(coinDefinitions, networkSymbol, contractAddress);
+
+    return isKnown;
+};
 
 export const selectIsSpecificCoinDefinitionKnown = (
     state: TokenDefinitionsRootState,

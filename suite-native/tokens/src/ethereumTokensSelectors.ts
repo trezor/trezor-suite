@@ -213,7 +213,7 @@ export const selectNumberOfUniqueEthereumTokensPerDevice = memoize(
     (state: AccountsRootState & DeviceRootState & TokenDefinitionsRootState) => {
         return pipe(
             selectUniqueEtheruemTokens(state),
-            A.filter(tokenAddress => selectCoinDefinition(state, 'eth', tokenAddress)),
+            A.filter(tokenAddress => !!selectCoinDefinition(state, 'eth', tokenAddress)),
             A.length,
         );
     },
