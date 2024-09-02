@@ -29,7 +29,7 @@ export const CoinmarketPaymentPlainType = ({
     methodName,
 }: CoinmarketPaymentTypeProps) => (
     <div>
-        <Text>
+        <Text data-testid="@coinmarket/form/info/payment-method">
             {method ? (
                 <>
                     {method === 'bankTransfer' || method === FORM_DEFAULT_PAYMENT_METHOD ? (

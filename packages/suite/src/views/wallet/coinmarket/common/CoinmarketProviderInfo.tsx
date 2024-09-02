@@ -48,7 +48,7 @@ export const CoinmarketProviderInfo = ({ exchange, providers }: CoinmarketProvid
     const provider = providers && exchange ? providers[exchange] : null;
 
     return (
-        <Wrapper>
+        <Wrapper data-testid="@coinmarket/form/info/provider">
             {!exchange && 'Unknown provider'}
             {!provider && exchange}
             {provider && (

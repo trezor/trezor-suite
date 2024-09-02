@@ -349,3 +349,5 @@ export const CoinmarketWarning = styled.div`
     border-radius: ${borders.radii.sm};
     background-color: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation1};
 `;
+
+export const CoinmarketTestWrapper = styled.div``;

@@ -117,7 +117,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                         return (
                             <Option>
                                 <AddressWrapper>
-                                    <Address>
+                                    <Address data-testid="@coinmarket/form/verify/address">
                                         {accountMetadata.addressLabels[accountAddress.address] ||
                                             accountAddress.address}
                                     </Address>

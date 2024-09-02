@@ -8,7 +8,7 @@ import { CoinmarketInfoItem } from 'src/views/wallet/coinmarket/common/Coinmarke
 import { CoinmarketInfoProvider } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoProvider';
 import { CoinmarketInfoPaymentMethod } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoPaymentMethod';
 import { spacings } from '@trezor/theme';
-import { CoinmarketBorder } from 'src/views/wallet/coinmarket';
+import { CoinmarketBorder, CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 import { CoinmarketInfoExchangeType } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoExchangeType';
 import { CoinmarketSelectedOfferInfoProps } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketUtilsKyc } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsKyc';
@@ -38,51 +38,53 @@ export const CoinmarketSelectedOfferInfo = ({
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto: true });
 
     return (
-        <Column gap={spacings.xl} alignItems="stretch">
-            {type !== 'exchange' && (
-                <CoinmarketInfoHeader receiveCurrency={quoteAmounts?.receiveCurrency} />
-            )}
-            <CoinmarketInfoItem
-                account={account}
-                type={type}
-                label={amountLabels.sendLabel}
-                currency={sendCurrency}
-                amount={quoteAmounts?.sendAmount}
-            />
-            <CoinmarketInfoItem
-                account={selectedAccount}
-                type={type}
-                label={amountLabels.receiveLabel}
-                currency={receiveCurrency}
-                amount={quoteAmounts?.receiveAmount}
-                isReceive
-            />
-            <CoinmarketBorder />
-            {type === 'exchange' && (
-                <>
-                    <CoinmarketInfoExchangeType
-                        selectedQuote={selectedQuote}
-                        providers={providers as CoinmarketExchangeProvidersInfoProps}
-                    />
-                    <CoinmarketBorder />
-                </>
-            )}
-            <CoinmarketInfoProvider providers={providers} exchange={exchange} />
-            {paymentMethod && (
-                <CoinmarketInfoPaymentMethod
-                    paymentMethod={paymentMethod}
-                    paymentMethodName={paymentMethodName}
+        <CoinmarketTestWrapper data-testid="@coinmarket/form/info">
+            <Column gap={spacings.xl} alignItems="stretch">
+                {type !== 'exchange' && (
+                    <CoinmarketInfoHeader receiveCurrency={quoteAmounts?.receiveCurrency} />
+                )}
+                <CoinmarketInfoItem
+                    account={account}
+                    type={type}
+                    label={amountLabels.sendLabel}
+                    currency={sendCurrency}
+                    amount={quoteAmounts?.sendAmount}
                 />
-            )}
-            {type === 'exchange' && (
-                <>
-                    <CoinmarketUtilsKyc
-                        exchange={exchange}
-                        providers={providers as CoinmarketExchangeProvidersInfoProps}
+                <CoinmarketInfoItem
+                    account={selectedAccount}
+                    type={type}
+                    label={amountLabels.receiveLabel}
+                    currency={receiveCurrency}
+                    amount={quoteAmounts?.receiveAmount}
+                    isReceive
+                />
+                <CoinmarketBorder />
+                {type === 'exchange' && (
+                    <>
+                        <CoinmarketInfoExchangeType
+                            selectedQuote={selectedQuote}
+                            providers={providers as CoinmarketExchangeProvidersInfoProps}
+                        />
+                        <CoinmarketBorder />
+                    </>
+                )}
+                <CoinmarketInfoProvider providers={providers} exchange={exchange} />
+                {paymentMethod && (
+                    <CoinmarketInfoPaymentMethod
+                        paymentMethod={paymentMethod}
+                        paymentMethodName={paymentMethodName}
                     />
-                </>
-            )}
-            {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
-        </Column>
+                )}
+                {type === 'exchange' && (
+                    <>
+                        <CoinmarketUtilsKyc
+                            exchange={exchange}
+                            providers={providers as CoinmarketExchangeProvidersInfoProps}
+                        />
+                    </>
+                )}
+                {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
+            </Column>
+        </CoinmarketTestWrapper>
     );
 };

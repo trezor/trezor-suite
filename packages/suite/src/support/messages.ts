@@ -1502,18 +1502,6 @@ export default defineMessages({
         id: 'TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL',
         dynamic: true,
     },
-    TR_COINMARKET_FEATURED_OFFER_BUY: {
-        defaultMessage: 'Buy',
-        id: 'TR_COINMARKET_FEATURED_OFFER_BUY',
-    },
-    TR_COINMARKET_FEATURED_OFFER_SELL: {
-        defaultMessage: 'Sell',
-        id: 'TR_COINMARKET_FEATURED_OFFER_SELL',
-    },
-    TR_COINMARKET_FEATURED_OFFER_EXCHANGE: {
-        defaultMessage: 'Exchange',
-        id: 'TR_COINMARKET_FEATURED_OFFER_EXCHANGE',
-    },
     TR_COINMARKET_NO_METHODS_AVAILABLE: {
         defaultMessage: 'No methods available',
         id: 'TR_COINMARKET_NO_METHODS_AVAILABLE',

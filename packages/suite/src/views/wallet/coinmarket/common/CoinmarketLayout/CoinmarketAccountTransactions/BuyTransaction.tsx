@@ -31,6 +31,7 @@ import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -190,17 +191,19 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
             <Column>
                 <Row>
                     <Amount>
-                        <HiddenPlaceholder>
+                        <HiddenPlaceholder data-testid="@coinmarket/transaction/fiat-amount">
                             {fiatStringAmount} {fiatCurrency}
                         </HiddenPlaceholder>
                     </Amount>
                     <Arrow>
                         <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={13} name="chevronRight" />
                     </Arrow>
-                    <FormattedCryptoAmount
-                        value={receiveStringAmount}
-                        symbol={cryptoToCoinSymbol(receiveCurrency!)}
-                    />
+                    <CoinmarketTestWrapper data-testid="@coinmarket/transaction/crypto-amount">
+                        <FormattedCryptoAmount
+                            value={receiveStringAmount}
+                            symbol={cryptoToCoinSymbol(receiveCurrency!)}
+                        />
+                    </CoinmarketTestWrapper>
                     {/* TODO FIX THIS LOGO */}
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>

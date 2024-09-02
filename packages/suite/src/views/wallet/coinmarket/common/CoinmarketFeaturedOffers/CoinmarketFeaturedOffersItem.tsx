@@ -85,16 +85,16 @@ const actionButtonText = (
     quote: CoinmarketTradeDetailType,
 ) => {
     if (isCoinmarketBuyOffers(context)) {
-        return <Translation id="TR_COINMARKET_FEATURED_OFFER_BUY" />;
+        return <Translation id="TR_BUY" />;
     }
     if (isCoinmarketSellOffers(context)) {
         if (context.needToRegisterOrVerifyBankAccount(quote as SellFiatTrade))
             return <Translation id="TR_SELL_REGISTER" />;
 
-        return <Translation id="TR_COINMARKET_FEATURED_OFFER_SELL" />;
+        return <Translation id="TR_COINMARKET_SELL" />;
     }
     if (isCoinmarketExchangeOffers(context)) {
-        return <Translation id="TR_COINMARKET_FEATURED_OFFER_EXCHANGE" />;
+        return <Translation id="TR_COINMARKET_EXCHANGE" />;
     }
 };
 

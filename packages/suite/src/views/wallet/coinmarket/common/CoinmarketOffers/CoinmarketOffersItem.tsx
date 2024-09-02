@@ -19,8 +19,7 @@ import {
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { SellFiatTrade } from 'invity-api';
 import { CoinmarketUtilsKyc } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsKyc';
-
-const OfferWrap = styled.div``;
+import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 
 const Offer = styled.div`
     display: flex;
@@ -128,7 +127,7 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     if (!cryptoAmountProps) return null;
 
     return (
-        <OfferWrap>
+        <CoinmarketTestWrapper data-testid="@coinmarket/offers/quote">
             <Card margin={{ top: spacings.md }} minHeight={100}>
                 <Offer>
                     <OfferColumn1>
@@ -183,7 +182,7 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                     </OfferColumn3>
                 </Offer>
             </Card>
-        </OfferWrap>
+        </CoinmarketTestWrapper>
     );
 };
 

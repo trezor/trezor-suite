@@ -7,6 +7,7 @@ import {
     CoinmarketInfoAmount,
     CoinmarketInfoLeftColumn,
     CoinmarketInfoRightColumn,
+    CoinmarketTestWrapper,
 } from 'src/views/wallet/coinmarket';
 import { CoinmarketCoinImage } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
@@ -68,7 +69,9 @@ export const CoinmarketInfoItem = ({
                     )}
                 </Column>
             ) : (
-                <CoinmarketFiatAmount amount={amount} currency={currency} />
+                <CoinmarketTestWrapper data-testid="@coinmarket/form/info/fiat-amount">
+                    <CoinmarketFiatAmount amount={amount} currency={currency} />
+                </CoinmarketTestWrapper>
             )}
         </CoinmarketInfoRightColumn>
     </Row>
