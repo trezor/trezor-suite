@@ -220,6 +220,7 @@ export const icons = {
     warningTriangleLight: require('../assets/icons/warningTriangleLight.svg'),
     wifiSlash: require('../assets/icons/wifiSlash.svg'),
 } as const;
+
 export type IconName = keyof typeof icons;
 
 export const cryptoIcons = {

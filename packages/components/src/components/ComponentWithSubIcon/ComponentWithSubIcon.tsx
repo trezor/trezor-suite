@@ -31,8 +31,14 @@ type SubIconWrapperProps = TransientProps<ExclusiveColorOrVariant> & {
 };
 
 const SubIconWrapper = styled.div<SubIconWrapperProps>`
-    position: absolute;
+    width: ${spacingsPx.sm};
+    height: ${spacingsPx.sm};
 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
     right: -${({ $subIconSize }) => $subIconSize / 2 + 3}px;
     top: -${({ $subIconSize }) => $subIconSize / 2 + 3}px;
 
@@ -40,7 +46,6 @@ const SubIconWrapper = styled.div<SubIconWrapperProps>`
         getColorForIconVariant({ theme, variant: $variant, color: $color })};
     border-radius: ${borders.radii.full};
     border: 1px solid ${({ theme }) => theme['borderElevationNegative']};
-    padding: ${spacingsPx.xxxs};
 `;
 
 export type ComponentWithSubIconProps = AllowedFrameProps &

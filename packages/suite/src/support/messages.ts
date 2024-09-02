@@ -3950,6 +3950,30 @@ export default defineMessages({
         defaultMessage: 'Install latest',
         id: 'TR_INSTALL_LATEST_FW',
     },
+    TR_QUICK_ACTION_TOOLTIP_TREZOR_SUITE: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_TREZOR_SUITE',
+        defaultMessage: 'Trezor Suite',
+    },
+    TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE',
+        defaultMessage: 'Trezor Device',
+    },
+    TR_QUICK_ACTION_TOOLTIP_UP_TO_DATE: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_UP_TO_DATE',
+        defaultMessage: 'Up-to-date ({currentVersion})',
+    },
+    TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE',
+        defaultMessage: 'Update available ({newVersion})',
+    },
+    TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE',
+        defaultMessage: 'Restart to update',
+    },
+    TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED',
+        defaultMessage: 'Just updated ({currentVersion})',
+    },
     TR_TOR_TITLE: {
         id: 'TR_TOR_TITLE',
         defaultMessage: 'Tor',
