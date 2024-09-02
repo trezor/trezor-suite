@@ -61,7 +61,7 @@ type StyledPProps = TransientProps<AllowedFrameProps> & {
 
 const P = styled.p<StyledPProps>`
     ${({ $typographyStyle }) => typography[$typographyStyle]}
-    ${({ $variant, theme }) => $variant && `color: ${mapVariantToColor({ $variant, theme })}`}
+    ${({ $variant, theme }) => $variant && `color: ${mapVariantToColor({ $variant, theme })};`}
     ${withFrameProps}
 `;
 
