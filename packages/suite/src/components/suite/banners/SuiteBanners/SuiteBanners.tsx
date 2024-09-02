@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
@@ -62,7 +63,7 @@ export const SuiteBanners = () => {
         priority = 92;
     } else if (
         !isFirmwareRevisionCheckDisabled &&
-        device?.features &&
+        isDeviceAcquired(device) &&
         device.authenticityChecks !== undefined &&
         device.authenticityChecks.firmwareRevision !== null && // check was performed
         device.authenticityChecks.firmwareRevision.success === false
@@ -93,8 +94,8 @@ export const SuiteBanners = () => {
         priority = 30;
     } else if (
         device?.connected &&
-        device?.features &&
-        device?.mode !== 'bootloader' &&
+        isDeviceAcquired(device) &&
+        device.mode !== 'bootloader' &&
         ['outdated'].includes(device.firmware)
     ) {
         banner = <UpdateFirmware />;

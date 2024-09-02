@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 
 import { WelcomeLayout } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
@@ -17,7 +18,7 @@ export const DeviceCompromised = () => {
     const version = getFirmwareVersion(device);
     const vendor = device?.features?.fw_vendor;
     const authenticityError =
-        device?.features && device.authenticityChecks?.firmwareRevision?.success === false
+        isDeviceAcquired(device) && device.authenticityChecks?.firmwareRevision?.success === false
             ? device.authenticityChecks.firmwareRevision?.error
             : undefined;
 

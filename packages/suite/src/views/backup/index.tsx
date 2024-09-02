@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { Paragraph, Button, Image, Row } from '@trezor/components';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -90,7 +91,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const dispatch = useDispatch();
 
     const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
-    const isDeviceUnavailable = !device || !device.features || !device.connected;
+    const isDeviceUnavailable = !isDeviceAcquired(device) || !device.connected;
     const currentProgressBarStep = nonErrorBackupStatuses.some(status => status === backup.status)
         ? nonErrorBackupStatuses.findIndex(s => s === backup.status) + 1
         : undefined;

@@ -19,6 +19,7 @@ import {
     getNewInstanceNumber,
     getDeviceInstances,
     getFirstDeviceInstance,
+    isDeviceAcquired,
 } from '@suite-common/suite-utils';
 import { AccountKey, WalletType } from '@suite-common/wallet-types';
 import {
@@ -318,7 +319,7 @@ export const authorizeDeviceThunk = createThunk<
 
         const isDeviceReady =
             device.connected &&
-            device.features &&
+            isDeviceAcquired(device) &&
             // Should ignore device state serves as a variant to call "reauthorize" device. For example in passphrase mode
             // mobile has retry button which starts passphrase flow on the same device instance to override device state.
             (!device.state || shouldIgnoreDeviceState) &&
