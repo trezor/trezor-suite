@@ -30,9 +30,9 @@ import { selectSendSignedTx } from '../send/sendFormReducer';
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {
     selectAccountTransactions,
-    selectAccountTransactionsAfterTimestamp,
+    selectAccountTransactionsFromNowUntilTimestamp,
     selectAreAllAccountTransactionsLoaded,
-    selectAreAllAccountTransactionsLoadedTillTimestamp,
+    selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp,
     selectIsPageAlreadyFetched,
     selectTransactions,
 } from './transactionsReducer';
@@ -398,7 +398,7 @@ export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk(
     },
 );
 
-export const fetchTransactionsUntilTimestamp = createSingleInstanceThunk(
+export const fetchTransactionsFromNowUntilTimestamp = createSingleInstanceThunk(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsForAccount`,
     async (
         { accountKey, timestamp }: { accountKey: AccountKey; timestamp: Timestamp | null },
@@ -412,20 +412,26 @@ export const fetchTransactionsUntilTimestamp = createSingleInstanceThunk(
             throw new Error(`Account not found: ${accountKey}`);
         }
 
-        const areTransactionsAlreadyFetched = selectAreAllAccountTransactionsLoadedTillTimestamp(
-            getState(),
-            accountKey,
-            timestamp,
-        );
+        const areTransactionsAlreadyFetched =
+            selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp(
+                getState(),
+                accountKey,
+                timestamp,
+            );
 
         if (areTransactionsAlreadyFetched) {
-            return selectAccountTransactionsAfterTimestamp(getState(), accountKey, timestamp);
+            return selectAccountTransactionsFromNowUntilTimestamp(
+                getState(),
+                accountKey,
+                timestamp,
+            );
         }
 
         let page = 1;
         let marker: AccountInfo['marker'] | undefined;
         let totalPages = 0;
-        let forceRefetch = false;
+        // Some reasonable number of transactions per page, that user could have in given time period.
+        // If necessary this could be improved for example by checking how many transactions account has in total etc, how far in past is the timestamp etc.
         const perPage = 7;
 
         while (true) {
@@ -436,13 +442,12 @@ export const fetchTransactionsUntilTimestamp = createSingleInstanceThunk(
                     perPage,
                     // Loading here MUST be always disabled, because loading is handled by this thunk a not by fetchTransactionsPageThunk
                     noLoading: true,
-                    forceRefetch,
                     ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
                 }),
             ).unwrap();
 
             const areNowTransactionsAlreadyFetched =
-                selectAreAllAccountTransactionsLoadedTillTimestamp(
+                selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp(
                     getState(),
                     accountKey,
                     timestamp,
@@ -469,6 +474,6 @@ export const fetchTransactionsUntilTimestamp = createSingleInstanceThunk(
             page += 1;
         }
 
-        return selectAccountTransactionsAfterTimestamp(getState(), accountKey, timestamp);
+        return selectAccountTransactionsFromNowUntilTimestamp(getState(), accountKey, timestamp);
     },
 );

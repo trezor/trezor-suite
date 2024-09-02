@@ -434,7 +434,7 @@ export const selectIsPageAlreadyFetched = (
     return isPageAlreadyFetched;
 };
 
-export const selectAreAllAccountTransactionsLoadedTillTimestamp = (
+export const selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp = (
     state: TransactionsRootState & AccountsRootState,
     accountKey: AccountKey,
     timestamp: number,
@@ -448,7 +448,7 @@ export const selectAreAllAccountTransactionsLoadedTillTimestamp = (
     return lastTransaction?.blockTime && lastTransaction.blockTime < timestamp;
 };
 
-export const selectAccountTransactionsAfterTimestamp = (
+export const selectAccountTransactionsFromNowUntilTimestamp = (
     state: TransactionsRootState & AccountsRootState,
     accountKey: AccountKey,
     timestamp: number,

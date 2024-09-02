@@ -12,7 +12,7 @@ import {
 import { EmptyAmountText } from '@suite-native/formatters/src/components/EmptyAmountText';
 import { WalletAccountTransaction } from '@suite-native/tokens';
 
-import { useTransactionFiatRates } from '../../hooks/useTransactionFiatRates';
+import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 
@@ -45,7 +45,7 @@ export const TransactionListItemValues = ({
         selectIsTestnetAccount(state, accountKey),
     );
 
-    const historicRate = useTransactionFiatRates({ accountKey, transaction });
+    const historicRate = useTransactionFiatRate({ accountKey, transaction });
 
     return (
         <>

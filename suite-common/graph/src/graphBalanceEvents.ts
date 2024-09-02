@@ -4,7 +4,7 @@ import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { fetchTransactionsUntilTimestamp } from '@suite-common/wallet-core';
+import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
@@ -139,7 +139,7 @@ export const getAccountMovementEvents = async ({
     const getBalanceHistory = async () => {
         if (isLocalBalanceHistoryCoin(coin)) {
             const allTransactions = await dispatch(
-                fetchTransactionsUntilTimestamp({
+                fetchTransactionsFromNowUntilTimestamp({
                     accountKey: account.accountKey,
                     timestamp: startOfTimeFrameDate
                         ? (getUnixTime(startOfTimeFrameDate) as Timestamp)

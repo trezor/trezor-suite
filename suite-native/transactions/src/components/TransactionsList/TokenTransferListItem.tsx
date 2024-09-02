@@ -5,7 +5,7 @@ import {
 } from '@suite-native/formatters';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 
-import { useTransactionFiatRates } from '../../hooks/useTransactionFiatRates';
+import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { signValueMap } from '../TransactionDetail/TransactionDetailHeader';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
 
@@ -28,7 +28,7 @@ export const TokenTransferListItemValues = ({
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
 }) => {
-    const historicRate = useTransactionFiatRates({
+    const historicRate = useTransactionFiatRate({
         accountKey,
         transaction,
         tokenAddress: tokenTransfer.contract,

@@ -10,7 +10,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { fetchTransactionsUntilTimestamp } from '@suite-common/wallet-core';
+import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
 import { NUMBER_OF_POINTS, isLocalBalanceHistoryCoin } from './constants';
@@ -149,7 +149,7 @@ const getAccountBalanceHistory = async ({
     const getBalanceHistory = async () => {
         if (isLocalBalanceHistoryCoin(coin)) {
             const allTransactions = await dispatch(
-                fetchTransactionsUntilTimestamp({
+                fetchTransactionsFromNowUntilTimestamp({
                     accountKey,
                     timestamp: startOfTimeFrameDateTimestamp,
                 }),

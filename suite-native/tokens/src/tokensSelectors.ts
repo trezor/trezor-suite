@@ -1,3 +1,5 @@
+// Temporary solution until we solve performance issues with token definitions
+
 // import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 // import { NetworkSymbol } from '@suite-common/wallet-config';
 // import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -50,8 +52,6 @@
 // ) => {
 //     return selectNumberOfAccountTokensWithFiatRates(state, accountKey) > 0;
 // };
-
-// Temporary solution until we solve performance issues with token definitions
 
 export const selectNumberOfUniqueTokensForCoinPerDevice = (_state: any, _coin: any) => {
     return 1;

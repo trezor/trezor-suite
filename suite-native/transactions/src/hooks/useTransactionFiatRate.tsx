@@ -15,7 +15,7 @@ import {
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
-export const useTransactionFiatRates = ({
+export const useTransactionFiatRate = ({
     accountKey,
     transaction,
     tokenAddress,

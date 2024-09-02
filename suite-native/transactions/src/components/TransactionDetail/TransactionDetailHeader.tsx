@@ -11,7 +11,7 @@ import {
 } from '@suite-native/formatters';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 
-import { useTransactionFiatRates } from '../../hooks/useTransactionFiatRates';
+import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
@@ -65,7 +65,7 @@ export const TransactionDetailHeader = ({
     tokenTransfer,
     accountKey,
 }: TransactionDetailHeaderProps) => {
-    const historicRate = useTransactionFiatRates({
+    const historicRate = useTransactionFiatRate({
         accountKey,
         transaction,
         tokenAddress: tokenTransfer?.contract,
