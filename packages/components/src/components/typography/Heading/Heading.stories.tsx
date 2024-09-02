@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { H1, H2, H3, allowedHeadingFrameProps } from './Heading';
+import { H1, H2, H3, allowedHeadingFrameProps, allowedHeadingTextProps } from './Heading';
 import { getFramePropsStory } from '../../../utils/frameProps';
+import { getTextPropsStory } from '../utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -14,13 +15,19 @@ const meta: Meta = {
 export default meta;
 
 export const Heading: StoryObj = {
-    render: () => (
+    render: props => (
         <Wrapper>
-            <H1>This is heading 1</H1>
-            <H2>This is heading 2</H2>
-            <H3>This is heading 3</H3>
+            <H1 {...props}>This is heading 1</H1>
+            <H2 {...props}>This is heading 2</H2>
+            <H3 {...props}>This is heading 3</H3>
         </Wrapper>
     ),
-    args: getFramePropsStory(allowedHeadingFrameProps).args,
-    argTypes: getFramePropsStory(allowedHeadingFrameProps).argTypes,
+    args: {
+        ...getTextPropsStory(allowedHeadingTextProps).args,
+        ...getFramePropsStory(allowedHeadingFrameProps).args,
+    },
+    argTypes: {
+        ...getTextPropsStory(allowedHeadingTextProps).argTypes,
+        ...getFramePropsStory(allowedHeadingFrameProps).argTypes,
+    },
 };

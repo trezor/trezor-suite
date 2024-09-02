@@ -3,15 +3,18 @@ import { pipe, D } from '@mobily/ts-belt';
 import { NativeFont } from './fontFamilies';
 import { fontWeights, FontWeightValue } from './fontWeights';
 
-export type TypographyStyle =
-    | 'titleLarge'
-    | 'titleMedium'
-    | 'titleSmall'
-    | 'highlight'
-    | 'body'
-    | 'callout'
-    | 'hint'
-    | 'label';
+export const typographyStyles = [
+    'titleLarge',
+    'titleMedium',
+    'titleSmall',
+    'highlight',
+    'body',
+    'callout',
+    'hint',
+    'label',
+] as const;
+
+export type TypographyStyle = (typeof typographyStyles)[number];
 
 export type TypographyStyles = Record<TypographyStyle, string>;
 
