@@ -25,6 +25,7 @@ export interface DesktopUpdateState {
     modalVisibility: UpdateModalVisibility;
     allowPrerelease: boolean;
     isAutomaticUpdateEnabled: boolean;
+    firstRunAfterUpdate: boolean;
 }
 
 const initialState: DesktopUpdateState = {
@@ -33,6 +34,7 @@ const initialState: DesktopUpdateState = {
     modalVisibility: 'hidden',
     allowPrerelease: false,
     isAutomaticUpdateEnabled: false,
+    firstRunAfterUpdate: false,
 };
 
 const desktopUpdateReducer = (
@@ -47,6 +49,7 @@ const desktopUpdateReducer = (
                     draft.allowPrerelease = action.payload.desktopUpdate.allowPrerelease;
                     draft.isAutomaticUpdateEnabled =
                         action.payload.desktopUpdate.isAutomaticUpdateEnabled;
+                    draft.firstRunAfterUpdate = action.payload.desktopUpdate.firstRun !== undefined;
                 }
                 break;
             case DESKTOP_UPDATE.CHECKING:

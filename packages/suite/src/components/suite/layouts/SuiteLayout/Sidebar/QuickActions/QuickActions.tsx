@@ -5,13 +5,14 @@ import { Tor } from './Tor';
 import { CustomBackend } from './CustomBackend';
 import { DebugAndExperimental } from './DebugAndExperimental';
 import { HideBalances } from './HideBalances';
-// import { Update } from './Update';
+import { UpdateStatusActionBarIcon } from './Update/UpdateStatusActionBarIcon';
 
 const ActionsContainer = styled.div`
-    border-top: 1px solid ${({ theme }) => theme.borderElevation1};
     display: flex;
-    gap: ${spacingsPx.xxs};
-    padding: ${spacingsPx.xxs};
+    gap: ${spacingsPx.xs};
+
+    border-top: 1px solid ${({ theme }) => theme.borderElevation1};
+    padding: 0 ${spacingsPx.xs};
     align-items: stretch;
 
     > * {
@@ -21,7 +22,7 @@ const ActionsContainer = styled.div`
 
 export const QuickActions = () => (
     <ActionsContainer>
-        {/* <Update /> */}
+        <UpdateStatusActionBarIcon />
         <DebugAndExperimental />
         <CustomBackend />
         <Tor />
