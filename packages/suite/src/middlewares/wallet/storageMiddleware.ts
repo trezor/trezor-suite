@@ -106,15 +106,18 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 )(action)
             ) {
                 const { account } = action.payload;
-                const device = findAccountDevice(account, selectDevices(api.getState()));
-                const historicRates = selectHistoricFiatRates(api.getState());
-                // update only historic rates for remembered device
-                if (isDeviceRemembered(device)) {
-                    storageActions.removeAccountHistoricRates(account.key);
-                    if (historicRates) {
-                        api.dispatch(
-                            storageActions.saveAccountHistoricRates(account.key, historicRates),
-                        );
+                // TS doesn't know return type of updateTxsFiatRatesThunk.fulfilled, investigate why
+                if (account) {
+                    const device = findAccountDevice(account, selectDevices(api.getState()));
+                    const historicRates = selectHistoricFiatRates(api.getState());
+                    // update only historic rates for remembered device
+                    if (isDeviceRemembered(device)) {
+                        storageActions.removeAccountHistoricRates(account.key);
+                        if (historicRates) {
+                            api.dispatch(
+                                storageActions.saveAccountHistoricRates(account.key, historicRates),
+                            );
+                        }
                     }
                 }
             }
