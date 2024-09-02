@@ -1,36 +1,67 @@
-import { Column, Paragraph } from '@trezor/components';
-import { Translation } from 'src/components/suite';
+import { useState } from 'react';
+
+import { Column, NewModal, Banner, Card, H3, Paragraph } from '@trezor/components';
+import { Translation, CheckItem } from 'src/components/suite';
 import { checkFirmwareRevision } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite';
-import { OptOutModal } from './OptOutModal';
+import { spacings } from '@trezor/theme';
 
 type DeviceAuthenticityOptOutModalProps = {
     onCancel: () => void;
 };
 
 export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptOutModalProps) => {
+    const [isConfirmed, setIsConfirmed] = useState(false);
     const dispatch = useDispatch();
 
+    const handleTurningOffRevisionCheck = () => {
+        dispatch(checkFirmwareRevision({ isDisabled: true }));
+        onCancel();
+    };
+
     return (
-        <OptOutModal
+        <NewModal
             onCancel={onCancel}
-            headingKey="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_HEADING"
-            checkboxLabelKey="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_CHECKBOX_TITLE"
-            confirmKey="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON"
-            data-testid="@device-firmware-revision"
-            onChange={({ isDisabled }) => dispatch(checkFirmwareRevision({ isDisabled }))}
+            icon="shieldWarning"
+            size="small"
+            bottomContent={
+                <>
+                    <NewModal.Button
+                        onClick={handleTurningOffRevisionCheck}
+                        isDisabled={!isConfirmed}
+                        data-testid="@device-firmware-revision/opt-out-button"
+                    >
+                        <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON" />
+                    </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                        <Translation id="TR_CANCEL" />
+                    </NewModal.Button>
+                </>
+            }
+            variant="warning"
         >
-            <Column gap={16}>
-                <Paragraph>
+            <H3>
+                <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE" />
+            </H3>
+            <Paragraph variant="tertiary" typographyStyle="hint">
+                <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3" />
+            </Paragraph>
+            <Column gap={spacings.sm} margin={{ top: spacings.xl }}>
+                <Banner icon="questionFilled">
                     <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1" />
-                </Paragraph>
-                <Paragraph>
+                </Banner>
+                <Banner icon="warningFilled">
                     <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_2" />
-                </Paragraph>
-                <Paragraph>
-                    <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3" />
-                </Paragraph>
+                </Banner>
             </Column>
-        </OptOutModal>
+            <Card margin={{ top: spacings.lg }}>
+                <CheckItem
+                    title={<Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE" />}
+                    isChecked={isConfirmed}
+                    onClick={() => setIsConfirmed(!isConfirmed)}
+                    data-testid="@device-firmware-revision/checkbox"
+                />
+            </Card>
+        </NewModal>
     );
 };
