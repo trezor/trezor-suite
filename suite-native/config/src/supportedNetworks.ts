@@ -65,8 +65,14 @@ export const filterTestnetNetworks = (
     return networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol));
 };
 
-export const filterBlacklistedNetworks = (networks: NetworkCompatible[]) =>
-    networks.filter(network => !discoveryBlacklist.includes(network.symbol));
+export const filterBlacklistedNetworks = (
+    networks: NetworkCompatible[],
+    allowList: NetworkSymbol[],
+) =>
+    networks.filter(
+        network =>
+            !discoveryBlacklist.includes(network.symbol) || allowList.includes(network.symbol),
+    );
 
 export const portfolioTrackerMainnets = sortNetworks(
     getMainnetsCompatible()
