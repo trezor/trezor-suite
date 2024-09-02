@@ -1,41 +1,9 @@
 import { useState } from 'react';
-import styled from 'styled-components';
-import { Button, Image } from '@trezor/components';
-import { Translation, CheckItem, Modal } from 'src/components/suite';
+import { NewModal, Card, Column, H3, Paragraph } from '@trezor/components';
+import { Translation, CheckItem } from 'src/components/suite';
 import { wipeDevice } from 'src/actions/settings/deviceSettingsActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { spacings } from '@trezor/theme';
-
-const Row = styled.div`
-    display: flex;
-    flex-direction: row;
-`;
-
-const Col = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: ${spacings.xs};
-`;
-
-const CheckItems = styled(Row)`
-    justify-content: center;
-    margin-top: 16px;
-    margin-bottom: 16px;
-`;
-
-const StyledModal = styled(Modal)`
-    width: 600px;
-    ${Modal.Content} {
-        justify-content: center;
-        align-items: center;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const WarningImage = styled(Image)`
-    margin: 24px 0;
-`;
 
 type WipeDeviceModalProps = {
     onCancel: () => void;
@@ -52,26 +20,35 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
     const handleWipeDevice = () => dispatch(wipeDevice());
 
     return (
-        <StyledModal
-            isCancelable
+        <NewModal
             onCancel={onCancel}
-            heading={<Translation id="TR_WIPE_DEVICE_HEADING" />}
-            description={<Translation id="TR_WIPE_DEVICE_TEXT" />}
-            bottomBarComponents={
-                <Button
-                    variant="destructive"
-                    onClick={handleWipeDevice}
-                    isDisabled={isLocked() || !checkbox1 || !checkbox2}
-                    data-testid="@wipe/wipe-button"
-                >
-                    <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
-                </Button>
+            variant="destructive"
+            icon="shieldWarning"
+            size="small"
+            bottomContent={
+                <>
+                    <NewModal.Button
+                        variant="destructive"
+                        onClick={handleWipeDevice}
+                        isDisabled={isLocked() || !checkbox1 || !checkbox2}
+                        data-testid="@wipe/wipe-button"
+                    >
+                        <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
+                    </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                        <Translation id="TR_CANCEL" />
+                    </NewModal.Button>
+                </>
             }
         >
-            <WarningImage image="UNI_ERROR" />
-
-            <CheckItems>
-                <Col>
+            <H3>
+                <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
+            </H3>
+            <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
+                <Translation id="TR_WIPE_DEVICE_TEXT" />
+            </Paragraph>
+            <Card margin={{ top: spacings.lg }}>
+                <Column gap={spacings.xs}>
                     <CheckItem
                         title={<Translation id="TR_WIPE_DEVICE_CHECKBOX_1_TITLE" />}
                         description={<Translation id="TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION" />}
@@ -86,8 +63,8 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                         onClick={() => setCheckbox2(!checkbox2)}
                         data-testid="@wipe/checkbox-2"
                     />
-                </Col>
-            </CheckItems>
-        </StyledModal>
+                </Column>
+            </Card>
+        </NewModal>
     );
 };
