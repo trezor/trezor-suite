@@ -1,5 +1,5 @@
 ---
-icon: LOG
+icon: log
 ---
 
 import rehypeSectionize from '@hbsnow/rehype-sectionize';
@@ -70,12 +70,12 @@ export const MarkdownCustom = ({ children }) => {
 
 export const Changelog = () => {
     const { data, error } = useSWR("changelog", loadData);
-    
+
     if (!data) return <>Loading...</>;
     if (error) return <Callout>
         <MarkdownCustom>An error occurred while loading the changelog. Please [view it on GitHub](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/CHANGELOG.md).</MarkdownCustom>
     </Callout>;
-    
+
     const { changelog, versionOverview } = data;
 
     return (

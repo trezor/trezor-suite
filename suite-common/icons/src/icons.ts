@@ -112,6 +112,7 @@ export const icons = {
     link: require('../assets/icons/link.svg'),
     lock: require('../assets/icons/lock.svg'),
     lockLaminatedOpen: require('../assets/icons/lockLaminatedOpen.svg'),
+    log: require('../assets/icons/log.svg'),
     menu: require('../assets/icons/menu.svg'),
     minus: require('../assets/icons/minus.svg'),
     minusCircle: require('../assets/icons/minusCircle.svg'),
