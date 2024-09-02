@@ -177,6 +177,7 @@ export const icons = {
     stack: require('../assets/icons/stack.svg'),
     standardWallet: require('../assets/icons/standardWallet.svg'),
     stop: require('../assets/icons/stop.svg'),
+    staking: require('../assets/icons/staking.svg'),
     swap: require('../assets/icons/swap.svg'),
     syncedCoin: require('../assets/icons/syncedCoin.svg'),
     table: require('../assets/icons/table.svg'),

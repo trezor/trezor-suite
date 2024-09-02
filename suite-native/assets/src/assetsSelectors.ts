@@ -9,7 +9,11 @@ import {
     selectDeviceAccounts,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { getAccountFiatBalance } from '@suite-common/wallet-utils';
+import {
+    getAccountCryptoBalanceWithStakingFormatted,
+    getAccountEverstakeStakingPool,
+    getAccountFiatBalance,
+} from '@suite-common/wallet-utils';
 import { discoverySupportedNetworks } from '@suite-native/config';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -69,10 +73,12 @@ export const selectDeviceAssetsWithBalances = (state: AssetsRootState & DeviceRo
             shouldIncludeStaking: true,
         });
 
+        const cryptoBalanceWithStaking = getAccountCryptoBalanceWithStakingFormatted(account);
+
         return {
             symbol: account.symbol,
             fiatValue,
-            cryptoValue: account.formattedBalance,
+            cryptoValue: cryptoBalanceWithStaking,
         };
     });
 
@@ -100,4 +106,18 @@ export const selectDeviceAssetsWithBalances = (state: AssetsRootState & DeviceRo
 
         return asset;
     });
+};
+
+export const selectVisibleDeviceAccountsWithStakingByNetworkSymbol = (
+    state: AccountsRootState & DeviceRootState,
+    networkSymbol: NetworkSymbol | null,
+) => {
+    const accounts = selectDeviceAccounts(state).filter(
+        account =>
+            account.symbol === networkSymbol &&
+            account.visible &&
+            !!getAccountEverstakeStakingPool(account),
+    );
+
+    return accounts;
 };

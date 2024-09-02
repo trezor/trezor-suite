@@ -92,6 +92,8 @@ export const en = {
     accountList: {
         numberOfTokens: '+{numberOfTokens} tokens',
         tokens: 'Tokens',
+        staking: 'Staking',
+        hasStaking: '+Staking',
     },
     assets: {
         dashboard: {

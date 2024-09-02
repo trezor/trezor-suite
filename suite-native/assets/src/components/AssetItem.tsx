@@ -23,7 +23,10 @@ import { selectNumberOfUniqueTokensForCoinPerDevice } from '@suite-native/tokens
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountListItemBase } from '@suite-native/accounts';
 
-import { selectVisibleDeviceAccountsKeysByNetworkSymbol } from '../assetsSelectors';
+import {
+    selectVisibleDeviceAccountsKeysByNetworkSymbol,
+    selectVisibleDeviceAccountsWithStakingByNetworkSymbol,
+} from '../assetsSelectors';
 
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
@@ -72,6 +75,17 @@ export const AssetItem = memo(
             ) => selectNumberOfUniqueTokensForCoinPerDevice(state, cryptoCurrencySymbol),
         );
 
+        const accountsWithStaking = useSelector(
+            (
+                state: AccountsRootState &
+                    DeviceRootState &
+                    FiatRatesRootState &
+                    SettingsSliceRootState,
+            ) => selectVisibleDeviceAccountsWithStakingByNetworkSymbol(state, cryptoCurrencySymbol),
+        );
+
+        const isStaking = accountsWithStaking.length > 0;
+
         const handleAssetPress = () => {
             if (accountsPerAsset === 1 && numberOfTokens === 0) {
                 navigation.navigate(RootStackRoutes.AccountDetail, {
@@ -114,6 +128,13 @@ export const AssetItem = memo(
                                         values={{ numberOfTokens }}
                                     />
                                 }
+                            />
+                        )}
+                        {isStaking && (
+                            <Badge
+                                style={applyStyle(numberOfTokensStyle)}
+                                label={<Translation id="accountList.hasStaking" />}
+                                size="small"
                             />
                         )}
                     </>

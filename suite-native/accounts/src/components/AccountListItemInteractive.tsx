@@ -3,6 +3,10 @@ import { useSelector } from 'react-redux';
 import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
+import {
+    getAccountCryptoBalanceWithStaking,
+    getAccountEverstakeStakingPool,
+} from '@suite-common/wallet-utils';
 import { SettingsSliceRootState } from '@suite-native/settings';
 import { isCoinWithTokens, selectAccountHasAnyTokensWithFiatRates } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -11,6 +15,7 @@ import { selectAccountFiatBalance } from '../selectors';
 import { OnSelectAccount } from '../types';
 import { AccountListItem, AccountListItemProps } from './AccountListItem';
 import { TokenList } from './TokenList';
+import { StakingItem } from './StakingItem';
 
 interface AccountListItemInteractiveProps extends AccountListItemProps {
     onSelectAccount: OnSelectAccount;
@@ -38,17 +43,20 @@ export const AccountListItemInteractive = ({
         (state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState) =>
             selectAccountFiatBalance(state, account.key),
     );
+    const cryptoBalance = getAccountCryptoBalanceWithStaking(account);
 
+    const isAccountWithStaking = !!getAccountEverstakeStakingPool(account);
     const shouldShowTokens = doesCoinSupportTokens && !hideTokens;
+    const shouldShowHeading = shouldShowTokens || isAccountWithStaking;
     const showSeparator = hasAnyTokensWithFiatRates && shouldShowTokens;
 
     return (
         <Box>
-            {shouldShowTokens && (
+            {shouldShowHeading && (
                 <HStack alignItems="center" justifyContent="space-between" marginBottom="medium">
                     <Text variant="highlight">{account.accountLabel}</Text>
 
-                    {hasAnyTokensWithFiatRates && (
+                    {(hasAnyTokensWithFiatRates || isAccountWithStaking) && (
                         <VStack spacing={0} alignItems="flex-end">
                             <FiatAmountFormatter
                                 numberOfLines={1}
@@ -56,7 +64,7 @@ export const AccountListItemInteractive = ({
                                 value={fiatBalance}
                             />
                             <CryptoAmountFormatter
-                                value={account.availableBalance}
+                                value={cryptoBalance}
                                 network={account.symbol}
                                 isBalance={false}
                                 numberOfLines={1}
@@ -78,6 +86,14 @@ export const AccountListItemInteractive = ({
                         })
                     }
                 />
+
+                {isAccountWithStaking && (
+                    <>
+                        <Box style={applyStyle(separatorStyle)} />
+                        <StakingItem account={account} />
+                    </>
+                )}
+
                 {showSeparator && <Box style={applyStyle(separatorStyle)} />}
                 {shouldShowTokens && (
                     <TokenList account={account} onSelectAccount={onSelectAccount} />

@@ -38,7 +38,7 @@ import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
 
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
-import { getAccountTotalStakingBalance } from './stakingUtils';
+import { getAccountTotalStakingBalance, getAccountTotalStakingBalanceWei } from './stakingUtils';
 import { isRbfTransaction } from './transactionUtils';
 
 export const isEthereumAccountSymbol = (symbol: NetworkSymbol) => symbol === 'eth';
@@ -602,6 +602,18 @@ export const getStakingFiatBalance = (account: Account, rate: number | undefined
     const balanceInEther = getAccountTotalStakingBalance(account);
 
     return toFiatCurrency(balanceInEther, rate, 2);
+};
+
+export const getAccountCryptoBalanceWithStakingFormatted = (account: Account) => {
+    const stakingBalanceFormatted = getAccountTotalStakingBalance(account);
+
+    return new BigNumber(account.formattedBalance).plus(stakingBalanceFormatted).toString();
+};
+
+export const getAccountCryptoBalanceWithStaking = (account: Account) => {
+    const stakingBalance = getAccountTotalStakingBalanceWei(account);
+
+    return new BigNumber(account.availableBalance).plus(stakingBalance).toString();
 };
 
 export const getAccountFiatBalance = ({

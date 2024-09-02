@@ -1,4 +1,4 @@
-import { fromWei } from 'web3-utils';
+import { fromWei, toWei } from 'web3-utils';
 
 import { Account, StakingPoolExtended } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -51,4 +51,10 @@ export const getAccountTotalStakingBalance = (account?: Account) => {
         .plus(pool?.pendingDepositedBalance ?? '0')
         .plus(pool?.withdrawTotalAmount ?? '0')
         .toFixed();
+};
+
+export const getAccountTotalStakingBalanceWei = (account?: Account) => {
+    const stakingBalance = getAccountTotalStakingBalance(account);
+
+    return toWei(stakingBalance, 'ether');
 };
