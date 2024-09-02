@@ -15,6 +15,7 @@ export const DeviceCompromised = () => {
 
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
+    const vendor = device?.features?.fw_vendor;
     const authenticityError =
         device?.features && device.authenticityChecks?.firmwareRevision?.success === false
             ? device.authenticityChecks.firmwareRevision?.error
@@ -28,7 +29,7 @@ export const DeviceCompromised = () => {
     };
 
     useEffect(() => {
-        const contextData = { revision, version, authenticityError };
+        const contextData = { revision, version, vendor, authenticityError };
 
         withSentryScope(scope => {
             scope.setLevel('error');
@@ -38,7 +39,7 @@ export const DeviceCompromised = () => {
                 scope,
             );
         });
-    }, [revision, version, authenticityError]);
+    }, [authenticityError, revision, vendor, version]);
 
     return (
         <WelcomeLayout>
