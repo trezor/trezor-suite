@@ -64,5 +64,5 @@
     },
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
     "nxCloudAccessToken": "NmE2NmFlYTUtN2JhZi00ZmQ3LWEyYzMtYWRkNzc3MTg0YmUyfHJlYWQ=",
-    "parallel": 3
+    "parallel": 4
 }
