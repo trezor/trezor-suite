@@ -6,6 +6,7 @@ import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectHistoricRatesByTransactions, getFormDraftKey } from '@suite-common/wallet-utils';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectDevices, deviceActions } from '@suite-common/wallet-core';
 
 import { db } from 'src/storage';
@@ -135,7 +136,7 @@ const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: st
 
 export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => {
     if (!(await db.isAccessible())) return;
-    if (!device || !device.features || !device.state) return;
+    if (!isDeviceAcquired(device) || !device.state) return;
 
     return db.addItem('devices', serializeDevice(device, forceRemember), device.state, true);
 };
@@ -250,7 +251,7 @@ export const rememberDevice =
     (device: TrezorDevice, remember: boolean, forcedRemember?: true) =>
     async (dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return;
-        if (!device || !device.features || !device.state) return;
+        if (!isDeviceAcquired(device) || !device.state) return;
         if (!remember) {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             dispatch(forgetDeviceMetadataError(device));

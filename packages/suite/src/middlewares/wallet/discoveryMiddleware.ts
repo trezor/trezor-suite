@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
@@ -74,8 +75,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         const device = selectDevice(nextState);
         // 1. selected device is acquired but doesn't have a state
         if (
-            device &&
-            device.features &&
+            isDeviceAcquired(device) &&
             !device.state &&
             !locks.includes(SUITE.LOCK_TYPE.DEVICE) &&
             (deviceActions.selectDevice.match(action) || action.type === SUITE.APP_CHANGED)

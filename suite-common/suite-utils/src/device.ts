@@ -119,6 +119,9 @@ export const isDeviceAccessible = (device?: TrezorDevice) => {
     return device.mode === 'normal' && device.firmware !== 'required';
 };
 
+export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevice =>
+    !!device?.features;
+
 export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevice) =>
     !!(
         selected &&
@@ -339,7 +342,7 @@ export const getDeviceInstances = (
     devices: TrezorDevice[],
     exclude = false,
 ): AcquiredDevice[] => {
-    if (!device || !device.features || !device.id) return [];
+    if (!isDeviceAcquired(device) || !device.id) return [];
 
     return devices
         .filter(
@@ -363,7 +366,7 @@ export const getDeviceInstances = (
  */
 export const getDeviceInstancesGroupedByDeviceId = (devices: TrezorDevice[]): AcquiredDevice[][] =>
     devices.reduce((deviceGroups, device) => {
-        if (!device.features || !device.id) {
+        if (!isDeviceAcquired(device) || !device.id) {
             return deviceGroups;
         }
         const existingGroupIndex = deviceGroups.findIndex(group => group[0].id === device.id);
