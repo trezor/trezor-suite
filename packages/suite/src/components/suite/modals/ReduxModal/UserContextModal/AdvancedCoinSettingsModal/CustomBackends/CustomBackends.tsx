@@ -24,11 +24,13 @@ const Wrapper = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const AddUrlButton = styled(Button)`
     align-self: end;
     margin-top: 0;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Heading = styled(H3)`
     display: flex;
     align-items: center;
@@ -41,12 +43,14 @@ const TooltipContent = styled.div`
     flex-direction: column;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const SaveButton = styled(Button)`
     width: 200px;
     margin-top: 30px;
     align-self: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const TransparentCollapsibleBox = styled(CollapsibleBox)`
     background: ${({ theme }) => theme.backgroundSurfaceElevation2};
 

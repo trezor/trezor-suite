@@ -54,6 +54,8 @@ const ParamType = styled.div<{
         text-decoration: underline;
     `}
 `;
+
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ParamBadge = styled(Badge)`
     cursor: default;
 `;

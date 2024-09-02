@@ -100,6 +100,7 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
     );
 };
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCollapsibleBox = styled(CollapsibleBox)<{ $isPending: boolean }>`
     background-color: ${({ theme }) => theme.legacy.BG_WHITE};
     box-shadow: none;

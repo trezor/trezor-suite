@@ -19,11 +19,13 @@ const SummaryWrap = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)`
     padding: 0 ${spacingsPx.sm};
     margin: 0 ${spacingsPx.lg};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const TextWrap = styled(H2)`
     ${SCREEN_QUERY.BELOW_TABLET} {
         font-size: ${variables.FONT_SIZE.H2};

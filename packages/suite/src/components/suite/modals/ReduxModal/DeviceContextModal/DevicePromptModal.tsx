@@ -15,6 +15,7 @@ import { ModalEnvironment } from '../../ModalEnvironment';
 import { Modal } from '../../Modal/Modal';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTrezorModal = styled(TrezorModal)`
     ${Modal.Header} {
         padding: 24px 24px 0;

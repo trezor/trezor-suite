@@ -11,6 +11,7 @@ import { borders, typography } from '@trezor/theme';
 
 const TRANSITION_CONFIG = '0.1s ease';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)<{ $isActivated: boolean }>`
     position: absolute;
     left: 6px;

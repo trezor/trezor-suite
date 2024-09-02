@@ -29,6 +29,7 @@ const Inputs = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTextarea = styled(Textarea)`
     > :nth-child(1) {
         border-color: ${({ theme }) => theme.borderElevation2};

@@ -3,6 +3,7 @@ import { GradientOverlay, useElevation } from '@trezor/components';
 import type { AddressItem } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
 import { borders, nextElevation, spacingsPx } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledGradientOverlay = styled(GradientOverlay)`
     margin: -${spacingsPx.xs};
     border-radius: ${borders.radii.xxs};

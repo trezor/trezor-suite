@@ -39,11 +39,13 @@ export const ButtonWrapper = styled.div`
     padding-top: 24px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const Title = styled(H2)`
     padding-top: 24px;
     padding-bottom: 12px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const Description = styled(Paragraph)`
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};

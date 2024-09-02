@@ -40,6 +40,7 @@ const MessageSlowWrapper = styled(MessageWrapper)`
     margin-top: 28px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const DisableButton = styled(Button)`
     margin-left: 10px;
     border: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
@@ -58,6 +59,7 @@ const Percentage = styled.span`
     height: 24px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledProgressBar = styled(ProgressBar)`
     display: flex;
     margin: 0 20px;

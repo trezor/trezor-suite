@@ -37,6 +37,7 @@ const Label = styled.div`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     display: flex;
     min-width: 200px;
@@ -49,6 +50,7 @@ const StyledButton = styled(Button)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledSelect = styled(Select)`
     width: max-content;
 `;

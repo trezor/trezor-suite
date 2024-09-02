@@ -9,6 +9,7 @@ interface BatchWrapperProps {
     onRemove: () => void;
 }
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Wrapper = styled(Card)`
     display: flex;
     flex-direction: row;

@@ -30,6 +30,7 @@ const Body = styled.div`
     flex: 1;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledDropdown = styled(Dropdown)`
     display: flex;
     height: 38px;

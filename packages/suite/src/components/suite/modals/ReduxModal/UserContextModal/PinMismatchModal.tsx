@@ -4,6 +4,7 @@ import { Translation, Modal, ModalProps } from 'src/components/suite';
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     margin: 48px auto;
 `;

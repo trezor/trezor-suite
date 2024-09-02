@@ -11,6 +11,7 @@ import { ActionButton } from './ActionButton';
 import { openModal } from 'src/actions/suite/modalActions';
 import { spacingsPx, typography } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledDropdown = styled(Dropdown)`
     display: block;
     width: 100%;

@@ -6,6 +6,7 @@ import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/su
 import { ReviewButton } from './ReviewButton';
 import { spacingsPx } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCard = styled(Card)`
     position: sticky;
     top: 60px;

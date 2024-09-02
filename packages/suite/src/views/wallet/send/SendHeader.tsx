@@ -8,6 +8,7 @@ import { sendFormActions } from '@suite-common/wallet-core';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 import { ConnectDeviceSendPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ClearButton = styled(Button)`
     animation: ${FADE_IN} 0.16s;
 `;

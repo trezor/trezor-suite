@@ -28,6 +28,7 @@ const StyledTooltipSymbol = styled(TooltipSymbol)<{ $isExpanded: boolean }>`
 
 const INPUT_WIDTH = '38px';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledInput = styled(Input)<{ $isExpanded: boolean }>`
     width: ${({ $isExpanded }) => ($isExpanded ? '210px' : INPUT_WIDTH)};
     margin-right: ${spacingsPx.xs};

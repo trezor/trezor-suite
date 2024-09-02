@@ -31,6 +31,7 @@ const Description = styled.div`
     text-align: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLink = styled(Link)`
     margin-top: 30px;
     margin-bottom: 30px;

@@ -10,11 +10,13 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledP = styled(Paragraph)`
     margin-top: ${spacingsPx.xs};
     color: ${({ theme }) => theme.textSubdued};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const GreenP = styled(Paragraph)`
     color: ${({ theme }) => theme.textPrimaryDefault};
 `;
@@ -44,6 +46,7 @@ const FlexRowChild = styled.div`
     flex: 1 0 200px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTooltip = styled(Tooltip)`
     width: fit-content;
 `;

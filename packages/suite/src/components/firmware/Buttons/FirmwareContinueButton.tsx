@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button, ButtonProps } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     min-width: 180px;
 `;

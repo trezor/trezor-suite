@@ -11,6 +11,7 @@ const Center = styled.div`
     justify-content: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     min-width: 200px;
     margin-left: 20px;

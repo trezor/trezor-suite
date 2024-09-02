@@ -61,6 +61,7 @@ const BoxRight = styled.div`
     align-items: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const InvityLink = styled(Link)`
     display: flex;
     flex: 1;
@@ -90,6 +91,7 @@ const linkStyle = css`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLink = styled(Link)`
     ${linkStyle}
 `;

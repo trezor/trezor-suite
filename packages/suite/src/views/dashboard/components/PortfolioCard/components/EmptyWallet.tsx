@@ -21,6 +21,7 @@ const Content = styled.div`
     align-items: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Title = styled(H3)`
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
     margin-bottom: 30px;
@@ -30,6 +31,7 @@ const Title = styled(H3)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     display: flex;
     margin-bottom: 24px;

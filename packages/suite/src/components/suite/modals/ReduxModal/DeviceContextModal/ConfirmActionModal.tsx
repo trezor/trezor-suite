@@ -14,6 +14,7 @@ const StyledDeviceConfirmImage = styled(DeviceConfirmImage)`
     margin-top: -30px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledH1 = styled(H2)`
     margin-top: 12px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

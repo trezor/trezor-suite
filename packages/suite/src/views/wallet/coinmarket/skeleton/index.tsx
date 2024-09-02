@@ -43,6 +43,7 @@ const StyledLeft = styled(Left)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledSkeletonRectangle = styled(SkeletonRectangle)`
     margin-bottom: 27px;
 `;

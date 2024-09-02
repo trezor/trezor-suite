@@ -14,6 +14,7 @@ const Wrapper = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const AddRecipientButton = styled(Button)`
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
         width: 100%;

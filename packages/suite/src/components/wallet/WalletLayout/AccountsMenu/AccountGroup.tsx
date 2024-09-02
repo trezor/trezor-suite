@@ -23,6 +23,7 @@ const ChevronContainer = styled.div`
     width: ${spacingsPx.xxxl};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
     padding: ${spacingsPx.sm};
     border-radius: 50%;

@@ -32,6 +32,7 @@ const HeaderTop = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const HeaderH2 = styled(H2)`
     flex: auto;
     width: 100%;

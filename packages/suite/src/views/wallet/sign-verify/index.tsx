@@ -61,6 +61,7 @@ const FormatDescription = styled.p`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledSelectBar = styled(SelectBar)`
     margin: ${spacingsPx.sm} 0 ${spacingsPx.lg};
 
@@ -86,6 +87,7 @@ const Divider = styled.div`
     background: ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const CopyButton = styled(Button)`
     position: absolute;
     right: 0;

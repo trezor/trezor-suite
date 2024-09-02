@@ -10,6 +10,7 @@ const Wrapper = styled.div`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLink = styled(Link)`
     display: flex;
     flex: 1;

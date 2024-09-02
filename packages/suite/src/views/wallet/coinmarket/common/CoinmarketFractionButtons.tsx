@@ -9,6 +9,7 @@ const Wrapper = styled.div`
     position: relative;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const SmallButton = styled(Button).attrs(props => ({
     ...props,
     variant: 'tertiary',

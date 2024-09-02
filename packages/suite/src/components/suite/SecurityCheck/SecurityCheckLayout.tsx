@@ -27,6 +27,7 @@ const ImageWrapper = styled.div`
     padding: 32px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     max-height: 300px;
 

@@ -14,6 +14,7 @@ const SmallModal = styled(Modal)`
     width: 560px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Description = styled(Paragraph)`
     text-align: left;
     margin-bottom: 16px;

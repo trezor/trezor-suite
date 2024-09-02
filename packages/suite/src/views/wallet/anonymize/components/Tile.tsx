@@ -9,6 +9,7 @@ const containerGridStyle = css`
     gap: 0 14px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Container = styled(Card)`
     background: ${({ theme }) => theme.legacy.BG_GREY};
     box-shadow: none;
@@ -30,6 +31,7 @@ const imageGridStyle = css`
     grid-row: 1/3;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${imageGridStyle}

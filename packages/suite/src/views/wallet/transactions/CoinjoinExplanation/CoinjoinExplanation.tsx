@@ -10,6 +10,7 @@ import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcess
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Container = styled(Card)`
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
 `;
@@ -22,6 +23,7 @@ const Heading = styled.div`
     ${typography.hint};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Steps = styled(Card)`
     box-shadow: none;
     display: grid;

@@ -26,6 +26,7 @@ const StyledNavigationItem = styled(NavigationItem)`
         `}
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledDropdown = styled(Dropdown)`
     width: 100%;
 `;

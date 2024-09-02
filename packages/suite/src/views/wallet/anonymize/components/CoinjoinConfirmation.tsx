@@ -26,6 +26,7 @@ import {
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { Tile, TileProps } from './Tile';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const TopRow = styled(H3)`
     display: flex;
     justify-content: space-between;
@@ -45,6 +46,7 @@ const FeeWrapper = styled.div`
     padding: ${spacingsPx.md} 0;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const FeeHeading = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
 `;
@@ -67,10 +69,12 @@ const Tiles = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCheckbox = styled(Checkbox)`
     ${typography.highlight}
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     margin: ${spacingsPx.xl} auto 0;
 

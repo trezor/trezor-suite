@@ -6,6 +6,7 @@ import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-util
 import { spacingsPx } from '@trezor/theme';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Info = styled(Paragraph)`
     margin: ${spacingsPx.md} 0 ${spacingsPx.xs};
 `;

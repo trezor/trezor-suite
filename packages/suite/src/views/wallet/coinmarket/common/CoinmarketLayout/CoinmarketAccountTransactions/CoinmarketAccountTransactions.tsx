@@ -26,6 +26,7 @@ const NoTransactions = styled.div`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledH2 = styled(H2)`
     flex-direction: column;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

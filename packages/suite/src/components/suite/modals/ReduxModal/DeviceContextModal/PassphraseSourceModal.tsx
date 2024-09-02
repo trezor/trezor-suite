@@ -13,6 +13,7 @@ const StyledDevicePromptModal = styled(DevicePromptModal)`
     width: 360px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledH2 = styled(H2)`
     margin-top: 12px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

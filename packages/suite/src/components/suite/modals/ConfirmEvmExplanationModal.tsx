@@ -10,6 +10,7 @@ import { TranslationKey } from 'src/components/suite/Translation';
 import { SUITE } from 'src/actions/suite/constants';
 import { spacingsPx } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     width: 100%;
     height: 100%;
@@ -20,6 +21,7 @@ const StyledModal = styled(Modal)`
     width: 390px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     flex-grow: 1;
     margin-top: ${spacingsPx.xxl};
@@ -30,6 +32,7 @@ const Content = styled.div`
     flex-direction: column;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Title = styled(H3)`
     margin-bottom: ${spacingsPx.xs};
     text-align: left;
@@ -48,6 +51,7 @@ const ImageWrapper = styled.div`
     margin-bottom: ${spacingsPx.xxl};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ImageCoinLogoCommon = styled(CoinLogo)`
     position: absolute;
     width: auto;

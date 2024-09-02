@@ -23,6 +23,7 @@ const Header = styled.div`
     z-index: ${zIndices.secondaryStickyBar};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Wrapper = styled(Card)`
     display: flex;
     flex-direction: row;

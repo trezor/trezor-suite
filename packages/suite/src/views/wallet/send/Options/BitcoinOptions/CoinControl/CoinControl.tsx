@@ -36,6 +36,7 @@ const GreyText = styled.div`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledSwitch = styled(Switch)`
     margin: 0 14px 0 auto;
 `;

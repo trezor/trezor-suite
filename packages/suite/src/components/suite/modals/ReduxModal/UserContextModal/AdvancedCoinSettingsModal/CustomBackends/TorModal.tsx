@@ -9,6 +9,7 @@ const StyledModal = styled(Modal)`
     width: 550px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Content = styled(Paragraph)`
     margin: 16px 0;
 `;

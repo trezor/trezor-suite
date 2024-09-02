@@ -46,6 +46,7 @@ const Row = styled.div`
 
 const Address = styled.div``;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     display: flex;
     min-width: 200px;

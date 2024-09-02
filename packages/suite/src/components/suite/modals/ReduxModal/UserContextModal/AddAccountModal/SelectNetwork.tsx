@@ -6,6 +6,7 @@ import { spacingsPx } from '@trezor/theme';
 
 import { CoinList } from 'src/components/suite';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Title = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
     margin-bottom: ${spacingsPx.sm};

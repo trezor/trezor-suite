@@ -30,6 +30,7 @@ const Message = styled.div`
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)<{ $action: NotificationViewProps['action'] }>`
     ${({ $action }) =>
         (!$action?.position || $action.position === 'right') &&

@@ -19,6 +19,7 @@ const Loader = styled(Loading)`
     flex: 0;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const LoadingText = styled(Paragraph)`
     height: 0;
 `;

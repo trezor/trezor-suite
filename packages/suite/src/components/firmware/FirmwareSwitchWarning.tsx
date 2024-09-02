@@ -11,6 +11,7 @@ const Row = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     width: 48px;
 `;

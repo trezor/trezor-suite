@@ -111,15 +111,18 @@ const Right = styled.div`
     display: flex;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const RegisterAnother = styled(Button)`
     align-self: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     display: flex;
     min-width: 200px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)`
     margin-right: ${spacingsPx.xxxs};
 `;

@@ -29,6 +29,7 @@ const Message = styled.div`
     white-space: nowrap;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledIcon = styled(Icon)`
     display: inline-block;
     margin-left: 5px;
@@ -39,6 +40,7 @@ const SpanToResetWhitespace = styled.span`
     white-space: normal;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTooltip = styled(Tooltip)`
     display: inline-block;
 `;

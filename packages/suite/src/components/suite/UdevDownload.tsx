@@ -39,6 +39,7 @@ const Manual = styled(Download)`
     border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     margin-left: 12px;
     min-width: 280px;

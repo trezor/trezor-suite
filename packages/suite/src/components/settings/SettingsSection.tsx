@@ -30,6 +30,7 @@ const Title = styled.div`
     gap: ${spacingsPx.sm};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Description = styled(Paragraph)`
     padding-left: ${spacings.xl + spacings.sm}px;
     color: ${({ theme }) => theme.textSubdued};

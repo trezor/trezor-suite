@@ -29,10 +29,12 @@ const Description = styled.div`
     text-align: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLink = styled(Link)`
     margin-bottom: 30px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     margin-top: 30px;
 `;

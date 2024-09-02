@@ -7,6 +7,7 @@ import { selectDevice } from '@suite-common/wallet-core';
 
 import { useSelector, useAccountSearch } from 'src/hooks/suite';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCoinLogo = styled(CoinLogo)<{ $isSelected?: boolean }>`
     display: block;
     border-radius: ${borders.radii.full};

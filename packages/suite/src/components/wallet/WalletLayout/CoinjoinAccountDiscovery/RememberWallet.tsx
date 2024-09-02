@@ -5,6 +5,7 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { Card, Image, Note, Paragraph, Row, Switch } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     align-self: flex-start;
 `;
@@ -15,6 +16,7 @@ const Middle = styled.div`
     gap: ${spacingsPx.xxs};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledSwitch = styled(Switch)`
     margin-left: auto;
 `;

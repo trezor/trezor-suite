@@ -10,6 +10,7 @@ const Wrapper = styled.div`
     margin-top: 22px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     min-width: 30%;
 `;

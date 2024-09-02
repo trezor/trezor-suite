@@ -34,6 +34,7 @@ const IconQuestionWrapper = styled.div`
     left: 25px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const TextDiv = styled(Text)`
     display: block;
 `;

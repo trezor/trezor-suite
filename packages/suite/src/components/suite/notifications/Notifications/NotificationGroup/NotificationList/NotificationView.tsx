@@ -33,6 +33,7 @@ const Text = styled.div`
     white-space: break-spaces;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ActionButton = styled(Button)`
     min-width: 80px;
     align-self: center;

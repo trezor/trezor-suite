@@ -3,6 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { variables, Checkbox, Card, Icon, IconName } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCheckbox = styled(Checkbox)`
     /* so the entire card acts as a checkbox */
     position: absolute;
@@ -28,6 +29,7 @@ const StyledCheckbox = styled(Checkbox)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Container = styled(Card)<{ $checked: boolean }>`
     position: relative;
 

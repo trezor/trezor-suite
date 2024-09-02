@@ -37,10 +37,12 @@ const Separator = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     margin: 6px 12px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const GenericMessage = styled(Paragraph)`
     margin-bottom: 10px;
     text-align: center;

@@ -15,6 +15,7 @@ const Wrapper = styled.div`
     gap: 16px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledModal = styled(Modal)`
     max-width: 600px;
 `;

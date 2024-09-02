@@ -41,6 +41,7 @@ const Units = styled.div`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledNote = styled(Note)`
     text-align: left;
 `;

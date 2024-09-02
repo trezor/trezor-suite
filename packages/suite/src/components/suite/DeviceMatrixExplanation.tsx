@@ -44,6 +44,7 @@ const ItemText = styled.div`
     text-align: left;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     height: 40px;
 `;

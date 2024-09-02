@@ -7,6 +7,7 @@ import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { CoinjoinLogsAnchor } from 'src/constants/suite/anchors';
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const SetupCard = styled(Card)<{ $shouldHighlight?: boolean }>`
     position: relative;
     overflow: hidden;

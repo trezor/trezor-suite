@@ -12,6 +12,7 @@ const Header = styled.div`
     padding-bottom: 25px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Title = styled(H3)`
     display: flex;
     align-items: center;

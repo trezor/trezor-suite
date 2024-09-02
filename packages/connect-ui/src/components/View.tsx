@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { H3, Paragraph, variables } from '@trezor/components';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Title = styled(H3)`
     font-size: 19px;
     color: #333;
@@ -11,6 +12,7 @@ const Title = styled(H3)`
     text-align: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledP = styled(Paragraph)`
     margin: 0 20%;
     color: #757575;

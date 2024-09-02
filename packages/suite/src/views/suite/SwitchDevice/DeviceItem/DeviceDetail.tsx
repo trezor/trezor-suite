@@ -11,6 +11,7 @@ const Container = styled.div`
     align-self: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const DeviceLabel = styled(TruncateWithTooltip)`
     ${typography.body};
     margin-bottom: -${spacingsPx.xxs};

@@ -8,6 +8,7 @@ interface ActionButtonProps extends IconButtonProps {
     className?: string;
 }
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const Button = styled(IconButton)`
     border-radius: ${borders.radii.sm};
 `;

@@ -126,6 +126,7 @@ const ConfirmationStatusWrapper = styled.div`
     justify-content: flex-end;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const TxSentStatus = styled(H3)`
     overflow: hidden;
     text-overflow: ellipsis;

@@ -29,6 +29,7 @@ const Headline = styled.div`
     width: 100%;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Submit = styled(Button)`
     width: 100%;
     margin: 0 0 20px;
@@ -80,6 +81,7 @@ const AnonymousDataItem = styled.li`
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTextarea = styled(Textarea)`
     margin-bottom: ${spacingsPx.md};
 `;

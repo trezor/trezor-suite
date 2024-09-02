@@ -80,6 +80,7 @@ const CenteredPointText = styled(BulletPointText)`
     text-align: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledDeviceAnimation = styled(DeviceAnimation)`
     flex: 0 0 220px;
     width: 220px;
@@ -96,6 +97,7 @@ const StyledConfirmImage = styled(DeviceConfirmImage)`
     height: 200px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Heading = styled(H2)`
     margin-bottom: 16px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};

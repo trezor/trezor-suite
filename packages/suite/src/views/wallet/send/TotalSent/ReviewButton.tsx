@@ -15,10 +15,12 @@ const Container = styled.div`
     gap: ${spacingsPx.md};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledWarning = styled(Warning)`
     justify-content: flex-start;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ButtonReview = styled(TooltipButton)<{ $isRed: boolean }>`
     background: ${({ $isRed, theme }) => $isRed && theme.legacy.BUTTON_RED};
     display: flex;

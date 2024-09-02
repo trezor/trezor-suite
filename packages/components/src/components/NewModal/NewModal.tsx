@@ -61,6 +61,7 @@ const HeadingContainer = styled.div`
     overflow: hidden;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Heading = styled(H3)`
     text-overflow: ellipsis;
     white-space: nowrap;

@@ -31,6 +31,7 @@ const Text = styled.p`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledSwitch = styled(Switch)`
     margin-top: 10px;
 `;

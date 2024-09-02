@@ -28,6 +28,7 @@ const EmptyHeadline = styled.div`
     margin: 10px 0 6px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const EmptyDescriptionP = styled(Paragraph)`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;

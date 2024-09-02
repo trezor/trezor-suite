@@ -10,6 +10,7 @@ const InputWrapper = styled.div<{ $showCoinFilter: boolean }>`
     flex: 1;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledInput = styled(Input)`
     input {
         /* to line up with the coin filter  */

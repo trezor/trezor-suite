@@ -68,6 +68,7 @@ const FooterText = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     margin: 0 20px 20px;
 `;

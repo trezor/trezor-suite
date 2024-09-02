@@ -181,6 +181,7 @@ const Container = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Heading = styled(H3)`
     font-size: 16px;
     font-weight: 600;
@@ -211,6 +212,7 @@ const Sticky = styled.div`
     width: 100%;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Button = styled(TrezorButton)`
     margin-top: ${spacingsPx.sm};
 `;

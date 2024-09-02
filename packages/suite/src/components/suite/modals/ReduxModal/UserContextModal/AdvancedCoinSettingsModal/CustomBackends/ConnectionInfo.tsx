@@ -4,6 +4,7 @@ import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { NetworkCompatible } from '@suite-common/wallet-config';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Wrapper = styled(Paragraph)`
     display: flex;
     flex-direction: column;

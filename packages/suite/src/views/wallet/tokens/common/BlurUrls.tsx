@@ -5,6 +5,7 @@ import { BlurWrapper } from 'src/components/wallet/TransactionItem/TransactionIt
 import { Translation } from 'src/components/suite';
 import { extractUrlsFromText } from '@trezor/utils';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTooltip = styled(Tooltip)`
     display: inline-block;
 `;

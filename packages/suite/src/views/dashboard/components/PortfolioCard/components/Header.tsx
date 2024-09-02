@@ -39,6 +39,7 @@ const Buttons = styled.div`
     flex-flow: row wrap;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const WalletEmptyButton = styled(Button)`
     min-width: 120px;
 `;

@@ -11,6 +11,7 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
 `;

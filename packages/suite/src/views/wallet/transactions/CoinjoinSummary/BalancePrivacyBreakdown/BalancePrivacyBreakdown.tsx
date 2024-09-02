@@ -30,6 +30,7 @@ const PrivateBalanceHeading = styled.span`
 `;
 
 // svg padding offset
+// eslint-disable-next-line local-rules/no-override-ds-component
 const CheckIcon = styled(Icon)`
     width: 15px;
     height: 15px;

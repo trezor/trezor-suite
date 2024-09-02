@@ -36,6 +36,7 @@ const PinFooter = styled.div`
     flex-direction: column;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledPinButton = styled(PinButton)<{ $blur?: boolean }>`
     ${props =>
         props.$blur &&

@@ -26,6 +26,7 @@ const Error = styled.div`
 
 // todo: can't use button from @trezor/components directly, probably inconsistent design again
 // background-color is not even in components color palette
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     padding: 10px;
     font-size: ${FONT_SIZE.NORMAL};
@@ -35,6 +36,7 @@ const StyledButton = styled(Button)`
 `;
 
 // todo: typography shall be unified and these ad hoc styles removed..
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledP = styled(Paragraph)`
     color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
 `;

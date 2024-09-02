@@ -14,6 +14,7 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Title = styled(H2)`
     text-align: center;
     font-weight: 600;
@@ -26,6 +27,7 @@ const Description = styled.span`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     width: auto;
     height: 80px;

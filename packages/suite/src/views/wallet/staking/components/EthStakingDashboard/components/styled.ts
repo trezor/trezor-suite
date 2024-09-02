@@ -6,11 +6,13 @@ export const CardBottomContent = styled.div`
     margin-top: ${spacingsPx.lg};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const AccentP = styled(Paragraph)`
     color: ${({ theme }) => theme.textDefault};
     font-size: ${variables.FONT_SIZE.H2};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 export const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.SMALL};

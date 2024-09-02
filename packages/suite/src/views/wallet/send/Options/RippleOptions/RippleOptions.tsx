@@ -18,6 +18,7 @@ const Left = styled.div`
     justify-content: flex-start;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     margin-right: 8px;
 `;

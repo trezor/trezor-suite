@@ -9,6 +9,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 import { typography } from '@trezor/theme';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Container = styled(Card)<{ $isWide?: boolean }>`
     position: relative;
     display: flex;
@@ -23,6 +24,7 @@ const Container = styled(Card)<{ $isWide?: boolean }>`
     text-align: center;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StopButton = styled(Button)`
     /* 23px button height + 7 margin = 30 height of StatusMessage */
     margin-top: 7px;

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { H3, Image, ImageType, Paragraph, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`
     margin: -8px;
 
@@ -13,6 +14,7 @@ const StyledImage = styled(Image)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StepNumber = styled(Paragraph)`
     margin: 24px 0 6px;
     color: ${({ theme }) => theme.textSubdued};
@@ -23,6 +25,7 @@ const StepNumber = styled(Paragraph)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StepTitle = styled(H3)`
     margin-bottom: 20px;
 
@@ -34,6 +37,7 @@ const StepTitle = styled(H3)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StepDescription = styled(Paragraph)`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

@@ -62,6 +62,7 @@ const RightBottom = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     display: flex;
     flex: 1;

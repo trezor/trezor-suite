@@ -36,6 +36,7 @@ const Explanation = styled.i`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const AgreeButton = styled(Button)`
     background: ${({ theme }) => theme.legacy.TYPE_DARK_ORANGE};
 

@@ -11,6 +11,7 @@ import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
 import { Button, ModalProps } from '@trezor/components';
 import { TorProgressBar } from './TorProgressBar';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     width: 150px;
 `;

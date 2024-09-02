@@ -32,6 +32,7 @@ const Subheader = styled.div`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const DiscoveryProgress = styled(ProgressBar)`
     max-width: 440px;
     margin: 18px 0 28px;
@@ -50,11 +51,13 @@ const FactHeading = styled.div`
     text-transform: uppercase;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const SparksIcon = styled(Icon)`
     margin-right: 4px;
     padding-bottom: 2px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLottieAnimation = styled(LottieAnimation)`
     margin: -32px -8px -32px -20px;
 

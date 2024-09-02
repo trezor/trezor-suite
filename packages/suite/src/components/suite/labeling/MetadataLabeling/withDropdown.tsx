@@ -5,6 +5,7 @@ import { Dropdown } from '@trezor/components';
 import { ExtendedProps } from './definitions';
 import { RequiredKey } from '@trezor/type-utils';
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledDropdown = styled(Dropdown)`
     display: flex;
     flex-direction: row;

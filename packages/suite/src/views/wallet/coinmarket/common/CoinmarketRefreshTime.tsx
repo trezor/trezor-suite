@@ -13,6 +13,7 @@ const Wrapper = styled.div`
     flex: none;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ProgressPieWrap = styled(ProgressPie)`
     flex: none;
 `;

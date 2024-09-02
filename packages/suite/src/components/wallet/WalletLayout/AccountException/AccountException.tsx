@@ -16,6 +16,7 @@ const Wrapper = styled.div`
     height: 100%;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Title = styled(H2)`
     display: flex;
     text-align: center;

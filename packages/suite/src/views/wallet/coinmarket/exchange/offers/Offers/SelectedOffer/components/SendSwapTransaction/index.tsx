@@ -107,6 +107,7 @@ const SlippageSettingsButton = styled.button`
     line-height: 1;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledInput = styled(Input)`
     align-self: center;
     margin-left: ${spacingsPx.xs};

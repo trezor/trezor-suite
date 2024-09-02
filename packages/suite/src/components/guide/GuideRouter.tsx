@@ -31,6 +31,7 @@ const smoothBlur = keyframes`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledBackdrop = styled(Backdrop)`
     animation: ${smoothBlur} 0.3s ease-in forwards;
     z-index: ${zIndices.guide};

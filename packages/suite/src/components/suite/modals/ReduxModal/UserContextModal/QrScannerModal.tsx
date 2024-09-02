@@ -55,6 +55,7 @@ const Error = styled.div`
     padding: 10px 0;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ErrorTitle = styled(Paragraph)`
     text-align: center;
     color: ${colors.legacy.TYPE_RED};
@@ -68,6 +69,7 @@ const IconWrapper = styled.div`
     margin-bottom: 40px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const ActionButton = styled(Button)`
     min-width: 200px;
 `;
@@ -87,6 +89,7 @@ const StyledQrReader = styled(QrReader)`
     }
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledTextarea = styled(Textarea)`
     height: 100%;
 

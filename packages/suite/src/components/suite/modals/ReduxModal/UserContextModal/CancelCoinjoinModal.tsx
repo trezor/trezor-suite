@@ -10,6 +10,7 @@ const StyledModal = styled(Modal)`
     width: 435px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const StyledButton = styled(Button)`
     flex: 1;
 `;

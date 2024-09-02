@@ -9,6 +9,7 @@ const Container = styled.div`
     margin-bottom: 32px;
 `;
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Heading = styled(H3)`
     margin-bottom: 28px;
 `;

@@ -54,6 +54,7 @@ const Header = styled.header<HeaderProps>`
 `;
 
 const BACK_ICON_WIDTH = spacingsPx.xxxl;
+// eslint-disable-next-line local-rules/no-override-ds-component
 const BackIcon = styled(Icon)`
     position: relative;
     width: ${BACK_ICON_WIDTH};
@@ -94,6 +95,7 @@ type HeadingSize = keyof typeof HEADING_SIZES;
 
 type HeadingProps = { $isWithIcon?: boolean; $headingSize: HeadingSize };
 
+// eslint-disable-next-line local-rules/no-override-ds-component
 const Heading = styled(H3)<HeadingProps>`
     ${({ $isWithIcon }) =>
         $isWithIcon &&
