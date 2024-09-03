@@ -11,8 +11,6 @@ import * as ERRORS from '../errors';
 type BackgroundResponseWithError<T, E> = ResultWithTypedError<T, E> & { id: number };
 type BackgroundResponse<T> = Success<T> & { id: number };
 
-export type Sessions = Record<string, Descriptor>;
-
 export type HandshakeRequest = Record<string, never>;
 export type HandshakeResponse = BackgroundResponse<undefined>;
 
