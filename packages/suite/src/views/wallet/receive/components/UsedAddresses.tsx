@@ -111,7 +111,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
     const fresh = !addr.transfers;
     const address = addr.address.substring(0, 20);
     const isDisabled = locked || hasFailedSecurityChecks;
-    const tooltipContent = isDisabled ? (
+    const tooltipContent = hasFailedSecurityChecks ? (
         <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />
     ) : null;
 
