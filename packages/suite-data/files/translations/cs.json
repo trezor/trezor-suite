@@ -599,7 +599,7 @@
   "TR_CONTRACT": "Kontrakt",
   "TR_CONTRACT_ADDRESS": "Adresa kontraktu:",
   "TR_CONTRACT_TRANSACTION": "Transakce kontraktu",
-  "TR_CONVERT_TO_CHECKSUM_ADDRESS": "Převést na adresu kontrolního součtu",
+  "TR_CONVERT_TO_CHECKSUM_ADDRESS": "Převést na checksum",
   "TR_CONVERT_TO_LOWERCASE": "Převést na malá písmena",
   "TR_COPY_ADDRESS_CONTRACT": "Nikdy neposílejte prostředky na adresu kontraktu.",
   "TR_COPY_ADDRESS_FINGERPRINT": "Nikdy neposílejte prostředky na adresu podpisu.",
