@@ -1,5 +1,5 @@
 export interface AssetFiatBalance {
-    fiatBalance: string;
+    fiatBalance: string | null;
     symbol: string;
 }
 export interface AssetFiatBalanceWithPercentage extends AssetFiatBalance {

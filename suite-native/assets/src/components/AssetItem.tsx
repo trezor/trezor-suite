@@ -30,7 +30,7 @@ type AssetItemProps = {
     cryptoCurrencyValue: string;
     iconName: CryptoIconName;
     onPress?: (symbol: NetworkSymbol) => void;
-    fiatBalance: string;
+    fiatBalance: string | null;
     fiatPercentage: number;
     fiatPercentageOffset: number;
 };

@@ -17,15 +17,12 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 export interface AssetType {
     symbol: NetworkSymbol;
     assetBalance: string;
-    fiatBalance: string;
+    fiatBalance: string | null;
 }
 
 type AssetsRootState = AccountsRootState & FiatRatesRootState & SettingsSliceRootState;
 
-const sumCryptoBalance = (balances: string[]): BigNumber =>
-    balances.reduce((prev, balance) => prev.plus(balance), new BigNumber(0));
-
-/* 
+/*
 We do not memoize any of following selectors because they are using only with `useSelectorDeepComparison` hook which is faster than memoization in proxy-memoize.
 */
 
@@ -80,22 +77,19 @@ export const selectDeviceAssetsWithBalances = (state: AssetsRootState & DeviceRo
         const networkAccounts = accountsWithFiatBalance.filter(
             account => account.symbol === networkSymbol,
         );
-        const fiatBalance = networkAccounts
-            .reduce((prev, { symbol, fiatValue }) => {
-                if (symbol === networkSymbol && fiatValue) {
-                    return prev + Number(fiatValue);
-                }
-
-                return prev;
-            }, 0)
-            .toFixed();
-
-        const cryptoValue = sumCryptoBalance(networkAccounts.map(account => account.cryptoValue));
+        const assetBalance = networkAccounts.reduce(
+            (sum, { cryptoValue }) => sum.plus(cryptoValue),
+            new BigNumber(0),
+        );
+        const fiatBalance = networkAccounts.reduce(
+            (sum, { fiatValue }) => (fiatValue ? Number(fiatValue) + (sum ?? 0) : sum),
+            null as number | null,
+        );
 
         const asset: AssetType = {
             symbol: networkSymbol,
-            assetBalance: cryptoValue.toFixed(),
-            fiatBalance,
+            assetBalance: assetBalance.toFixed(),
+            fiatBalance: fiatBalance !== null ? fiatBalance.toFixed(2) : null,
         };
 
         return asset;

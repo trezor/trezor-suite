@@ -16,7 +16,6 @@
         { "path": "../device-manager" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
-        { "path": "../formatters" },
         { "path": "../graph" },
         { "path": "../intl" },
         { "path": "../navigation" },

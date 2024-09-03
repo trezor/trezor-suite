@@ -8,11 +8,8 @@ import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { VStack } from '@suite-native/atoms';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 
-import {
-    PortfolioGraphHeader,
-    referencePointAtom,
-    selectedPointAtom,
-} from './PortfolioGraphHeader';
+import { PortfolioGraphHeader } from './PortfolioGraphHeader';
+import { referencePointAtom, selectedPointAtom } from '../portfolioGraphAtoms';
 
 export type PortfolioGraphRef = {
     refetchGraph: () => Promise<void>;
