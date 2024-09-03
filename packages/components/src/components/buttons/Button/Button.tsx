@@ -26,6 +26,7 @@ type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
     $hasIcon?: boolean;
     $isFullWidth?: boolean;
     $isSubtle: boolean;
+    as?: 'a' | 'button';
     $borderRadius?: typeof borders.radii.sm | typeof borders.radii.full; // Do not allow all, we want consistency
 };
 
@@ -87,8 +88,16 @@ type SelectedHTMLButtonProps = Pick<
     'onClick' | 'onMouseOver' | 'onMouseLeave' | 'type' | 'tabIndex'
 >;
 
+type ExclusiveAProps =
+    | { href?: undefined; target?: undefined }
+    | {
+          href?: string;
+          target?: string;
+      };
+
 export type ButtonProps = SelectedHTMLButtonProps &
-    AllowedFrameProps & {
+    AllowedFrameProps &
+    ExclusiveAProps & {
         variant?: ButtonVariant;
         isSubtle?: boolean;
         size?: ButtonSize;
@@ -118,6 +127,8 @@ export const Button = ({
     type = 'button',
     children,
     margin,
+    target,
+    href,
     textWrap = true,
     ...rest
 }: ButtonProps) => {
@@ -139,8 +150,12 @@ export const Button = ({
         <Spinner size={getIconSize(size)} data-testid={`${rest['data-testid']}/spinner`} />
     );
 
+    const isLink = href !== undefined;
+
     return (
         <ButtonContainer
+            as={isLink ? 'a' : 'button'}
+            href={href}
             $variant={variant}
             $size={size}
             $iconAlignment={iconAlignment}
