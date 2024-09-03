@@ -146,7 +146,7 @@ export const CoinmarketExchangeOfferInfo = ({
             <Info>
                 <Row>
                     <LeftColumn>
-                        <Translation id="TR_EXCHANGE_SELL" />
+                        <Translation id="TR_COINMARKET_SWAP" />
                     </LeftColumn>
                     <RightColumn>
                         <Dark>

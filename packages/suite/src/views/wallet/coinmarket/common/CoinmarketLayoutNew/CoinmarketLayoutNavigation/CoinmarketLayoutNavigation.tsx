@@ -46,8 +46,8 @@ const CoinmarketLayoutNavigation = () => {
             {!isBitcoinOnly ? (
                 <CoinmarketLayoutNavigationItem
                     route="wallet-coinmarket-exchange"
-                    title="TR_NAV_EXCHANGE"
-                    icon="trade"
+                    title="TR_COINMARKET_SWAP"
+                    icon="arrowsClockwise"
                 />
             ) : null}
 

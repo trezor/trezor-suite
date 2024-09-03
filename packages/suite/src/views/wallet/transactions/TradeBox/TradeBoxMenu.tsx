@@ -54,7 +54,7 @@ export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
         {
             route: 'wallet-coinmarket-exchange',
             type: 'exchange',
-            title: <Translation id="TR_NAV_EXCHANGE" />,
+            title: <Translation id="TR_COINMARKET_SWAP" />,
         },
     ];
 

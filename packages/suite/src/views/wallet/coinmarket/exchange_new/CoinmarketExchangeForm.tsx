@@ -18,5 +18,5 @@ const CoinmarketExchangeFormComponent = (props: UseCoinmarketProps) => {
 };
 
 export const CoinmarketExchangeForm = withSelectedAccountLoaded(CoinmarketExchangeFormComponent, {
-    title: 'TR_NAV_EXCHANGE',
+    title: 'TR_COINMARKET_SWAP',
 });
