@@ -9497,6 +9497,7 @@ __metadata:
     "@babel/core": "npm:^7.20.0"
     "@babel/plugin-transform-export-namespace-from": "npm:^7.23.4"
     "@config-plugins/detox": "npm:^8.0.0"
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-native-community/netinfo": "npm:11.3.2"
     "@react-native/babel-preset": "npm:^0.75.2"
     "@react-native/metro-config": "npm:0.75.2"
@@ -10177,7 +10178,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-home@workspace:suite-native/module-home"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:1.9.5"
@@ -10188,7 +10188,6 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
-    "@suite-native/coin-enabling": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"

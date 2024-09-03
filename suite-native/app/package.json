@@ -20,6 +20,7 @@
         "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21325 tcp:21325 && adb reverse tcp:19121 tcp:19121"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@react-native-community/netinfo": "11.3.2",
         "@react-native/metro-config": "0.75.2",
         "@react-navigation/bottom-tabs": "6.6.1",

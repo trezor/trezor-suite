@@ -18,23 +18,29 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 export const useCoinEnablingInitialCheck = () => {
     const dispatch = useDispatch();
+
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.CoinEnablingInit>>();
+    const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
 
-    const isDeviceUnlocked = useSelector(selectShouldShowCoinEnablingInitFlow);
     const isBitcoinOnlyDevice = useSelector(selectIsBitcoinOnlyDevice);
+    const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
+    const shouldShowCoinEnablingInitFlow = useSelector(selectShouldShowCoinEnablingInitFlow);
     const viewOnlyDevicesAccountsNetworkSymbols = useSelector(
         selectViewOnlyDevicesAccountsNetworkSymbols,
     );
-    const shouldShowCoinEnablingInitFlow = useSelector(selectShouldShowCoinEnablingInitFlow);
-    const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
+
     const wasInitScreenShown = useRef(false);
 
+    const canShowCoinEnablingInitFlow =
+        isOnboardingFinished && isCoinEnablingActive && !wasInitScreenShown.current;
+
     useEffect(() => {
-        if (isCoinEnablingActive && shouldShowCoinEnablingInitFlow && !wasInitScreenShown.current) {
+        if (shouldShowCoinEnablingInitFlow && canShowCoinEnablingInitFlow) {
             let timeoutId: ReturnType<typeof setTimeout>;
             //if btc only device, just run discovery for btc and do not show the UI
             if (isBitcoinOnlyDevice) {
@@ -42,17 +48,16 @@ export const useCoinEnablingInitialCheck = () => {
                 dispatch(setIsCoinEnablingInitFinished(true));
                 dispatch(applyDiscoveryChangesThunk());
             } else {
-                wasInitScreenShown.current = true;
-                // if there are remembered accounts, enable its networks
+                // if there are remembered accounts, enable its networks before showing UI
                 if (A.isNotEmpty(viewOnlyDevicesAccountsNetworkSymbols)) {
                     dispatch(
                         setEnabledDiscoveryNetworkSymbols(viewOnlyDevicesAccountsNetworkSymbols),
                     );
                 }
-                timeoutId = setTimeout(
-                    () => navigation.navigate(RootStackRoutes.CoinEnablingInit),
-                    4000,
-                );
+                timeoutId = setTimeout(() => {
+                    wasInitScreenShown.current = true;
+                    navigation.navigate(RootStackRoutes.CoinEnablingInit);
+                }, 2000);
             }
 
             return () => {
@@ -62,12 +67,12 @@ export const useCoinEnablingInitialCheck = () => {
             };
         }
     }, [
-        isDeviceUnlocked,
         dispatch,
         isBitcoinOnlyDevice,
         isCoinEnablingActive,
         navigation,
         viewOnlyDevicesAccountsNetworkSymbols,
         shouldShowCoinEnablingInitFlow,
+        canShowCoinEnablingInitFlow,
     ]);
 };

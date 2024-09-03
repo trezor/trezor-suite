@@ -11,7 +11,6 @@
         { "path": "../atoms" },
         { "path": "../biometrics" },
         { "path": "../blockchain" },
-        { "path": "../coin-enabling" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },

@@ -1,8 +1,10 @@
 import {
     DeviceRootState,
     selectDevice,
+    selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceUnlocked,
     selectIsPortfolioTrackerDevice,
+    selectIsUnacquiredDevice,
 } from '@suite-common/wallet-core';
 import {
     DiscoveryConfigSliceRootState,
@@ -17,11 +19,15 @@ export const selectShouldShowCoinEnablingInitFlow = (
     const isDeviceUnlocked = selectIsDeviceUnlocked(state);
     const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(state);
     const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(state);
+    const isDeviceConnectedAndAuthorized = selectIsDeviceConnectedAndAuthorized(state);
+    const isUnacquiredDevice = selectIsUnacquiredDevice(state);
 
     return (
         !isCoinEnablingInitFinished &&
         !!device?.connected &&
         isDeviceUnlocked &&
-        !isPortfolioTrackerDevice
+        !isPortfolioTrackerDevice &&
+        isDeviceConnectedAndAuthorized &&
+        !isUnacquiredDevice
     );
 };

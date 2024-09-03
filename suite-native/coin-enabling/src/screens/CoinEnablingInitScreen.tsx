@@ -1,14 +1,16 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
-import { useCallback } from 'react';
+import { useEffect } from 'react';
+import { BackHandler } from 'react-native';
 
 import { A } from '@mobily/ts-belt';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import { Screen } from '@suite-native/navigation';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
+    applyDiscoveryChangesThunk,
     selectEnabledDiscoveryNetworkSymbols,
     setIsCoinEnablingInitFinished,
 } from '@suite-native/discovery';
@@ -35,30 +37,32 @@ export const CoinEnablingInitScreen = () => {
 
     const handleSave = () => {
         dispatch(setIsCoinEnablingInitFinished(true));
-        navigation.goBack();
+        if (enabledNetworkSymbols.length > 0) {
+            dispatch(setIsCoinEnablingInitFinished(true));
+            dispatch(applyDiscoveryChangesThunk());
+            analytics.report({
+                type: EventType.CoinEnablingInitState,
+                payload: { enabledNetworks: enabledNetworkSymbols },
+            });
+            navigation.goBack();
+        }
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            // mark coin init as finished if there are enabled coins on leaving the screen
-            return () => {
-                if (enabledNetworkSymbols.length > 0) {
-                    dispatch(setIsCoinEnablingInitFinished(true));
-                }
-                analytics.report({
-                    type: EventType.CoinEnablingInitState,
-                    payload: { enabledNetworks: enabledNetworkSymbols },
-                });
-            };
-        }, [dispatch, enabledNetworkSymbols]),
-    );
+    useEffect(() => {
+        //prevent dismissing screen via HW
+        const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+            return true;
+        });
+
+        return () => subscription.remove();
+    }, []);
 
     return (
         <>
             <Screen>
                 <VStack paddingHorizontal="small">
                     <VStack paddingBottom="extraLarge">
-                        <Text variant="titleSmall" color="textSubdued">
+                        <Text variant="titleSmall">
                             <Translation id="moduleHome.coinEnabling.title" />
                         </Text>
                         <Text color="textSubdued">
