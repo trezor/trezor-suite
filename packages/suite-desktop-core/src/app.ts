@@ -126,6 +126,8 @@ const init = async () => {
         restartApp();
     });
 
+    await app.whenReady();
+
     // No UI mode with bridge only
     const { wasOpenedAtLogin } = app.getLoginItemSettings();
     if (app.commandLine.hasSwitch('bridge-daemon') || wasOpenedAtLogin) {
@@ -133,12 +135,10 @@ const init = async () => {
         app.dock?.hide(); // hide dock icon on macOS
         app.releaseSingleInstanceLock(); // allow user to open new instance with UI
         const { onLoad: loadBridgeModule } = initBridgeModule({ store }); // bridge module only needs store
-        loadBridgeModule();
+        await loadBridgeModule();
 
         return;
     }
-
-    await app.whenReady();
 
     const buildInfo = getBuildInfo();
     logger.info('build', buildInfo);
