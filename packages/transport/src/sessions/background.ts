@@ -21,11 +21,12 @@ import type {
     GetPathBySessionRequest,
     HandleMessageParams,
     HandleMessageResponse,
-    Sessions,
 } from './types';
 import type { Descriptor, Success } from '../types';
 
 import * as ERRORS from '../errors';
+
+type DescriptorsDict = Record<string, Descriptor>;
 
 // in nodeusb, enumeration operation takes ~3 seconds
 const lockDuration = 1000 * 4;
@@ -40,7 +41,7 @@ export class SessionsBackground extends TypedEmitter<{
     /**
      * Dictionary where key is path and value is Descriptor
      */
-    private descriptors: Sessions = {};
+    private descriptors: DescriptorsDict = {};
 
     // if lock is set, somebody is doing something with device. we have to wait
     private locksQueue: { id: ReturnType<typeof setTimeout>; dfd: Deferred<void> }[] = [];
@@ -171,7 +172,7 @@ export class SessionsBackground extends TypedEmitter<{
 
         // new "unconfirmed" descriptors are  broadcasted. we can't yet update this.sessions object as it needs
         // to stay as it is. we can not allow 2 clients sending session:null to proceed. this way only one gets through
-        const unconfirmedSessions: Sessions = JSON.parse(JSON.stringify(this.descriptors));
+        const unconfirmedSessions: DescriptorsDict = JSON.parse(JSON.stringify(this.descriptors));
 
         this.lastSessionId++;
         unconfirmedSessions[payload.path].session = `${this.lastSessionId}`;
