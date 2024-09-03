@@ -3,7 +3,7 @@ import { Select } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
 import { AccountTypeDescription } from './AccountTypeDescription';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkAccountCollection } from '@suite-common/wallet-config';
 import { typography } from '@trezor/theme';
 
 const LabelWrapper = styled.div`
@@ -19,12 +19,11 @@ const TypeInfo = styled.div`
     ${typography.label}
 `;
 
-const buildAccountTypeOption = (network: NetworkCompatible) =>
+const buildAccountTypeOption = (account: NetworkAccountCollection[number]) =>
     ({
-        value: network,
-        label: network.accountType || 'normal',
+        value: account,
+        label: account.accountType,
     }) as const;
-
 type Option = ReturnType<typeof buildAccountTypeOption>;
 
 const formatLabel = (option: Option) => (
@@ -38,17 +37,21 @@ const formatLabel = (option: Option) => (
 );
 
 interface AccountTypeSelectProps {
-    network: NetworkCompatible;
-    accountTypes: NetworkCompatible[];
-    onSelectAccountType: (network: NetworkCompatible) => void;
+    accountTypes: NetworkAccountCollection;
+    onSelectAccountType: (account: NetworkAccountCollection[number]) => void;
+    selectedAccountType?: NetworkAccountCollection[number];
 }
 
 export const AccountTypeSelect = ({
-    network,
+    selectedAccountType,
     accountTypes,
     onSelectAccountType,
 }: AccountTypeSelectProps) => {
     const options = accountTypes.map(buildAccountTypeOption);
+    // the default, 'normal' account type is expected to be the first one
+    const defaultAccountType = accountTypes[0];
+
+    const bip43PathToDescribe = selectedAccountType?.bip43Path ?? defaultAccountType.bip43Path;
 
     return (
         <>
@@ -57,13 +60,13 @@ export const AccountTypeSelect = ({
                 label={<Translation id="TR_ACCOUNT_TYPE" />}
                 isSearchable={false}
                 isClearable={false}
-                value={buildAccountTypeOption(network || accountTypes[0])}
+                value={buildAccountTypeOption(selectedAccountType ?? defaultAccountType)}
                 options={options}
                 formatOptionLabel={formatLabel}
                 onChange={(option: Option) => onSelectAccountType(option.value)}
             />
             <AccountTypeDescription
-                bip43Path={network.bip43Path}
+                bip43Path={bip43PathToDescribe}
                 hasMultipleAccountTypes={accountTypes && accountTypes?.length > 1}
             />
         </>
