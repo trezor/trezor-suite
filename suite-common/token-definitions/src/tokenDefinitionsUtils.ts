@@ -14,6 +14,9 @@ export const getContractAddressForNetwork = (
     contractAddress: string,
 ) => {
     switch (networkSymbol) {
+        case 'eth':
+            // Specyfing most common network as first case improves performance little bit
+            return contractAddress.toLowerCase();
         case 'sol':
         case 'dsol':
             return contractAddress;
@@ -27,14 +30,23 @@ export const getContractAddressForNetwork = (
     }
 };
 
+// Using Set greatly improves performance of this function because of O(1) complexity instead of O(n) for Array.includes
+const tokenDefinitionsMap = new Map<SimpleTokenStructure, Set<string>>();
 export const isTokenDefinitionKnown = (
     tokenDefinitions: SimpleTokenStructure | undefined,
     networkSymbol: NetworkSymbol,
     contractAddress: string,
-) =>
-    Array.isArray(tokenDefinitions)
-        ? tokenDefinitions?.includes(getContractAddressForNetwork(networkSymbol, contractAddress))
-        : false;
+) => {
+    if (!tokenDefinitions) return false;
+
+    if (!tokenDefinitionsMap.has(tokenDefinitions)) {
+        tokenDefinitionsMap.set(tokenDefinitions, new Set(tokenDefinitions));
+    }
+
+    const contractAddressForNetwork = getContractAddressForNetwork(networkSymbol, contractAddress);
+
+    return tokenDefinitionsMap.get(tokenDefinitions)?.has(contractAddressForNetwork);
+};
 
 export const getSupportedDefinitionTypes = (networkSymbol: NetworkSymbol) => {
     const isCoinDefinitionsEnabled = getNetworkFeatures(networkSymbol).includes('coin-definitions');
