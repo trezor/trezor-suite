@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { selectDevice } from '@suite-common/wallet-core';
 import { getPackagingUrl } from '@suite-common/suite-utils';
-import { DeviceAnimation, Warning, variables } from '@trezor/components';
+import { DeviceAnimation, Banner, variables } from '@trezor/components';
 import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
@@ -22,7 +22,7 @@ const AnimationWrapper = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledWarning = styled(Warning)`
+const StyledWarning = styled(Banner)`
     ${typography.hint}
 
     a {

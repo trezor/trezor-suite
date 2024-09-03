@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Icon, Warning, Column, Text } from '@trezor/components';
+import { Icon, Banner, Column, Text } from '@trezor/components';
 import { getInputState } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -101,7 +101,7 @@ export const Inputs = () => {
             )}
 
             {isAmountForWithdrawalWarningShown && (
-                <Warning variant="info" margin={{ top: spacings.md }}>
+                <Banner variant="info" margin={{ top: spacings.md }}>
                     <Translation
                         id="TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL"
                         values={{
@@ -109,10 +109,10 @@ export const Inputs = () => {
                             symbol: account.symbol.toUpperCase(),
                         }}
                     />
-                </Warning>
+                </Banner>
             )}
             {isAdviceForWithdrawalWarningShown && (
-                <Warning variant="info" margin={{ top: spacings.md }}>
+                <Banner variant="info" margin={{ top: spacings.md }}>
                     <Translation
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
@@ -120,7 +120,7 @@ export const Inputs = () => {
                             symbol: account.symbol.toUpperCase(),
                         }}
                     />
-                </Warning>
+                </Banner>
             )}
         </Column>
     );

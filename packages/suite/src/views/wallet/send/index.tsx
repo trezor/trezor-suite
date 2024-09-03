@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { Warning } from '@trezor/components';
+import { Banner } from '@trezor/components';
 import { breakpointMediaQueries } from '@trezor/styles';
 import { spacingsPx } from '@trezor/theme';
 
@@ -95,9 +95,9 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
                     <SendFees />
 
                     {symbol === 'dsol' && (
-                        <Warning icon>
+                        <Banner icon>
                             <Translation id="TR_SOLANA_DEVNET_SHORTCUT_WARNING" />
-                        </Warning>
+                        </Banner>
                     )}
 
                     <TotalSent />

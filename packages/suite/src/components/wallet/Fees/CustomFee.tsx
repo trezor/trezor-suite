@@ -9,7 +9,7 @@ import {
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
-import { Note, Warning, motionEasing, variables, Icon } from '@trezor/components';
+import { Note, Banner, motionEasing, variables, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { NumberInput } from 'src/components/suite/NumberInput';
 import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
@@ -171,7 +171,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                 marginTop: { duration: 0.25, ease: motionEasing.transition },
             }}
         >
-            <Warning
+            <Banner
                 icon
                 variant="warning"
                 margin={{ bottom: spacings.xs }}
@@ -180,7 +180,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                 }
             >
                 <Translation id="TR_CUSTOM_FEE_WARNING" />
-            </Warning>
+            </Banner>
             <Wrapper>
                 {useFeeLimit ? (
                     <NumberInput

@@ -1,7 +1,7 @@
 import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 
-import { Checkbox, Button, Warning, variables, Tooltip } from '@trezor/components';
+import { Checkbox, Button, Banner, variables, Tooltip } from '@trezor/components';
 import { useDevice } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
@@ -16,7 +16,7 @@ const Container = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledWarning = styled(Warning)`
+const StyledWarning = styled(Banner)`
     justify-content: flex-start;
 `;
 

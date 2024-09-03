@@ -1,7 +1,7 @@
 import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
-import { Warning } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 export const NoBackup = () => {
     const dispatch = useDispatch();
@@ -12,19 +12,19 @@ export const NoBackup = () => {
     )} ${translationString('TR_IF_YOUR_DEVICE_IS_EVER_LOST')}`;
 
     return (
-        <Warning
+        <Banner
             icon
             variant="destructive"
             rightContent={
-                <Warning.Button
+                <Banner.Button
                     onClick={() => dispatch(goto('backup-index'))}
                     data-testid="@notification/no-backup/button"
                 >
                     <Translation id="TR_CREATE_BACKUP" />
-                </Warning.Button>
+                </Banner.Button>
             }
         >
             {translation}
-        </Warning>
+        </Banner>
     );
 };

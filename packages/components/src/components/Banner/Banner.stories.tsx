@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { Warning as WarningComponent, WarningProps, variables, Row } from '../../index';
-import { allowedWarningFrameProps } from './Warning';
+import { Banner as BannerComponent, BannerProps, variables, Row } from '../../index';
+import { allowedBannerFrameProps } from './Banner';
 import styled from 'styled-components';
 import { getFramePropsStory } from '../../utils/frameProps';
 
@@ -12,38 +12,38 @@ const Wrapper = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Warning',
-    component: WarningComponent,
+    title: 'Banner',
+    component: BannerComponent,
     render: ({ children, ...rest }) => (
         <Wrapper>
-            <WarningComponent {...rest} variant="primary">
+            <BannerComponent {...rest} variant="primary">
                 {children}
-            </WarningComponent>
-            <WarningComponent {...rest} variant="tertiary">
+            </BannerComponent>
+            <BannerComponent {...rest} variant="tertiary">
                 {children}
-            </WarningComponent>
-            <WarningComponent {...rest} variant="warning">
+            </BannerComponent>
+            <BannerComponent {...rest} variant="warning">
                 {children}
-            </WarningComponent>
-            <WarningComponent {...rest} variant="destructive">
+            </BannerComponent>
+            <BannerComponent {...rest} variant="destructive">
                 {children}
-            </WarningComponent>
-            <WarningComponent {...rest} variant="info">
+            </BannerComponent>
+            <BannerComponent {...rest} variant="info">
                 {children}
-            </WarningComponent>
+            </BannerComponent>
         </Wrapper>
     ),
 } as Meta;
 export default meta;
 
-export const Warning: StoryObj<WarningProps> = {
+export const Banner: StoryObj<BannerProps> = {
     args: {
         children: 'Insert text here.',
         filled: true,
         variant: 'warning',
         icon: undefined,
-        rightContent: <WarningComponent.Button>Click</WarningComponent.Button>,
-        ...getFramePropsStory(allowedWarningFrameProps).args,
+        rightContent: <BannerComponent.Button>Click</BannerComponent.Button>,
+        ...getFramePropsStory(allowedBannerFrameProps).args,
     },
     argTypes: {
         className: {
@@ -59,18 +59,18 @@ export const Warning: StoryObj<WarningProps> = {
             options: ['nothing', 'button', 'buttons', 'iconButton', 'iconButtons'],
             mapping: {
                 nothing: undefined,
-                button: <WarningComponent.Button>Button</WarningComponent.Button>,
+                button: <BannerComponent.Button>Button</BannerComponent.Button>,
                 buttons: (
                     <Row gap={8}>
-                        <WarningComponent.Button>Button 1</WarningComponent.Button>
-                        <WarningComponent.Button isSubtle>Button 2</WarningComponent.Button>
+                        <BannerComponent.Button>Button 1</BannerComponent.Button>
+                        <BannerComponent.Button isSubtle>Button 2</BannerComponent.Button>
                     </Row>
                 ),
-                iconButton: <WarningComponent.IconButton icon="close" />,
+                iconButton: <BannerComponent.IconButton icon="close" />,
                 iconButtons: (
                     <Row gap={8}>
-                        <WarningComponent.IconButton icon="close" />
-                        <WarningComponent.IconButton icon="asterisk" isSubtle />
+                        <BannerComponent.IconButton icon="close" />
+                        <BannerComponent.IconButton icon="asterisk" isSubtle />
                     </Row>
                 ),
             },
@@ -85,6 +85,6 @@ export const Warning: StoryObj<WarningProps> = {
                 },
             },
         },
-        ...getFramePropsStory(allowedWarningFrameProps).argTypes,
+        ...getFramePropsStory(allowedBannerFrameProps).argTypes,
     },
 };

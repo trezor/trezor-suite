@@ -3,7 +3,7 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 import {
     Radio,
     Paragraph,
-    Warning,
+    Banner,
     NewModal,
     NewModalProps,
     Column,
@@ -49,9 +49,9 @@ export const SafetyChecksModal = ({ onCancel }: NewModalProps) => {
                 </>
             }
         >
-            <Warning icon>
+            <Banner icon>
                 <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />
-            </Warning>
+            </Banner>
             <Card margin={{ top: spacings.md }}>
                 <Column gap={spacings.xl} alignItems="flex-start">
                     <Radio

@@ -5,11 +5,11 @@ import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
 import { Row, Column, TransientProps, useElevation, useMediaQuery } from '../..';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { WarningContext } from './WarningContext';
-import { WarningButton } from './WarningButton';
-import { WarningVariant } from './types';
+import { BannerContext } from './BannerContext';
+import { BannerButton } from './BannerButton';
+import { BannerVariant } from './types';
 import { DEFAULT_VARIANT } from './consts';
-import { WarningIconButton } from './WarningIconButton';
+import { BannerIconButton } from './BannerIconButton';
 import {
     mapVariantToBackgroundColor,
     mapVariantToIcon,
@@ -19,13 +19,13 @@ import {
 import { Icon, IconName } from '../Icon/Icon';
 import { SCREEN_SIZE } from '../../config/variables';
 
-export const allowedWarningFrameProps: FramePropsKeys[] = ['margin'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedWarningFrameProps)[number]>;
+export const allowedBannerFrameProps: FramePropsKeys[] = ['margin'];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
 
-export type WarningProps = AllowedFrameProps & {
+export type BannerProps = AllowedFrameProps & {
     children: ReactNode;
     className?: string;
-    variant?: WarningVariant;
+    variant?: BannerVariant;
     rightContent?: ReactNode;
     icon?: IconName | true;
     filled?: boolean;
@@ -33,7 +33,7 @@ export type WarningProps = AllowedFrameProps & {
 };
 
 type WrapperParams = TransientProps<AllowedFrameProps> & {
-    $variant: WarningVariant;
+    $variant: BannerVariant;
     $withIcon?: boolean;
     $elevation: Elevation;
     $filled: boolean;
@@ -64,7 +64,7 @@ const Wrapper = styled.div<WrapperParams>`
     }
 `;
 
-export const Warning = ({
+export const Banner = ({
     children,
     className,
     variant = DEFAULT_VARIANT,
@@ -73,7 +73,7 @@ export const Warning = ({
     margin,
     rightContent,
     'data-testid': dataTest,
-}: WarningProps) => {
+}: BannerProps) => {
     const theme = useTheme();
     const { elevation } = useElevation();
 
@@ -123,14 +123,14 @@ export const Warning = ({
             <ContentComponent>
                 <Column alignItems="flex-start">{children}</Column>
                 {rightContent && (
-                    <WarningContext.Provider value={{ variant }}>
+                    <BannerContext.Provider value={{ variant }}>
                         {rightContent}
-                    </WarningContext.Provider>
+                    </BannerContext.Provider>
                 )}
             </ContentComponent>
         </Wrapper>
     );
 };
 
-Warning.Button = WarningButton;
-Warning.IconButton = WarningIconButton;
+Banner.Button = BannerButton;
+Banner.IconButton = BannerIconButton;

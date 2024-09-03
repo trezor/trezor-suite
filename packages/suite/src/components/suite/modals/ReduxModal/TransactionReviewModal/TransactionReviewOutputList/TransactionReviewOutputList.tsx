@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { Button, variables, Warning } from '@trezor/components';
+import { Button, variables, Banner } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { TranslationKey } from '@suite-common/intl-types';
@@ -269,12 +269,12 @@ export const TransactionReviewOutputList = ({
                     )}
                     {isSending && networkType === 'solana' ? (
                         <TxReviewFootnote>
-                            <Warning variant="tertiary" icon="info">
+                            <Banner variant="tertiary" icon="info">
                                 <Translation
                                     id="TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN"
                                     values={{ nowrap: chunks => <Nowrap>{chunks}</Nowrap> }}
                                 />
-                            </Warning>
+                            </Banner>
                         </TxReviewFootnote>
                     ) : null}
                 </RightBottom>

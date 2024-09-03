@@ -1,4 +1,4 @@
-import { Warning } from '@trezor/components';
+import { Banner } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { networks } from '@suite-common/wallet-config';
@@ -21,7 +21,7 @@ export const TransactionReviewEvmExplanation = ({
     }
 
     return (
-        <Warning margin={{ top: spacings.sm }}>
+        <Banner margin={{ top: spacings.sm }}>
             <Translation
                 id="TR_EVM_EXPLANATION_SEND_MODAL_DESCRIPTION"
                 values={{
@@ -29,6 +29,6 @@ export const TransactionReviewEvmExplanation = ({
                     b: text => <b>{text}</b>,
                 }}
             />
-        </Warning>
+        </Banner>
     );
 };

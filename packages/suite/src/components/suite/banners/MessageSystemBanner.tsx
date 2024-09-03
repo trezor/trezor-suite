@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 
 import { selectLanguage, selectTorState } from 'src/reducers/suite/suiteReducer';
-import { Row, Warning as WarningComponent, Warning } from '@trezor/components';
+import { Row, Banner as WarningComponent, Banner } from '@trezor/components';
 
 type MessageSystemBannerProps = {
     message: Message;
@@ -55,18 +55,18 @@ export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
     }, [id, dismissible, dispatch]);
 
     return (
-        <Warning
+        <Banner
             icon
             variant={variant === 'critical' ? 'destructive' : variant}
             rightContent={
                 <Row gap={8}>
                     {actionConfig && (
-                        <Warning.Button
+                        <Banner.Button
                             onClick={actionConfig.onClick}
                             data-testid={actionConfig['data-testid']}
                         >
                             {actionConfig.label}
-                        </Warning.Button>
+                        </Banner.Button>
                     )}
                     {dismissalConfig && (
                         <WarningComponent.IconButton
@@ -80,6 +80,6 @@ export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
             }
         >
             {content[language] || content.en}
-        </Warning>
+        </Banner>
     );
 };
