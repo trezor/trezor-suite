@@ -1,72 +1,37 @@
 import { useEffect, useMemo, useState } from 'react';
-import styled, { useTheme } from 'styled-components';
-import { variables, H3, Icon, Card, Column } from '@trezor/components';
+import {
+    variables,
+    Divider,
+    H3,
+    Icon,
+    Card,
+    Column,
+    Tooltip,
+    Grid,
+    useMediaQuery,
+    Paragraph,
+} from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation, StakingFeature, Divider } from 'src/components/suite';
+import { Translation, StakingFeature } from 'src/components/suite';
 import { Footer } from './components/Footer';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
-import { spacingsPx, borders } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
-const Flex = styled.div`
-    display: flex;
-    gap: ${spacingsPx.sm};
-    align-items: center;
-`;
-
-const Badge = styled.span`
-    padding: 9px ${spacingsPx.xs} ${spacingsPx.xs};
-    border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
-    color: ${({ theme }) => theme.textPrimaryDefault};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-transform: uppercase;
-    line-height: 16px;
-    max-height: 32px;
-`;
-
-const Body = styled.div`
-    padding: ${spacingsPx.xxl} ${spacingsPx.xxl} 0 ${spacingsPx.xxl};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const CardTitle = styled(H3)`
-    color: ${({ theme }) => theme.textPrimaryDefault};
-    line-height: 23px;
-`;
-
-const FlexRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin: ${spacingsPx.xl} 0 ${spacingsPx.lg};
-    gap: 68px;
-    flex-wrap: wrap;
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        flex-direction: column;
-        gap: ${spacingsPx.md};
-    }
-`;
-
-const FlexRowChild = styled.div`
-    flex: 1 0 200px;
-`;
-
 const bannerSymbol = 'eth';
 
 export const StakeEthCard = () => {
-    const theme = useTheme();
     const dispatch = useDispatch();
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const { showDashboardStakingPromoBanner } = useSelector(selectSuiteFlags);
     const { device } = useDevice();
+    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
     const isBitcoinOnlyDevice = hasBitcoinOnlyFirmware(device);
 
     const closeBanner = () => {
@@ -98,75 +63,77 @@ export const StakeEthCard = () => {
         () => [
             {
                 id: 0,
-                icon: <Icon name="piggyBank" size={32} color={theme.iconPrimaryDefault} />,
+                icon: <Icon name="piggyBank" size="extraLarge" variant="primary" />,
                 title: <Translation id="TR_STAKE_ETH_SEE_MONEY_DANCE" />,
                 description: (
                     <Translation
                         id="TR_STAKE_ETH_SEE_MONEY_DANCE_DESC"
                         values={{
                             apyPercent: ethApy,
+                            t: text => (
+                                <Tooltip
+                                    dashed
+                                    isInline
+                                    content={<Translation id="TR_STAKE_APY_DESC" />}
+                                >
+                                    <abbr>{text}</abbr>
+                                </Tooltip>
+                            ),
                         }}
                     />
                 ),
-                extraDescription: <Translation id="TR_STAKE_APY_DESC" />,
             },
             {
                 id: 1,
-                icon: <Icon name="lockLaminatedOpen" size={32} color={theme.iconPrimaryDefault} />,
+                icon: <Icon name="lockLaminatedOpen" size="extraLarge" variant="primary" />,
                 title: <Translation id="TR_STAKE_ETH_LOCK_FUNDS" />,
                 description: <Translation id="TR_STAKE_ETH_LOCK_FUNDS_DESC" />,
             },
             {
                 id: 2,
-                icon: <Icon name="trendUpThin" size={32} color={theme.iconPrimaryDefault} />,
+                icon: <Icon name="trendUp" size="extraLarge" variant="primary" />,
                 title: <Translation id="TR_STAKE_ETH_MAXIMIZE_REWARDS" />,
                 description: <Translation id="TR_STAKE_ETH_MAXIMIZE_REWARDS_DESC" />,
             },
         ],
-        [ethApy, theme.iconPrimaryDefault],
+        [ethApy],
     );
 
     if (!isShown) return null;
 
     return (
         <>
-            <DashboardSection
-                heading={
-                    <Flex>
-                        <Translation id="TR_STAKE_ETH" />
-                        <Badge>
-                            <Translation id="TR_STAKE_ETH_BADGE" />
-                        </Badge>
-                    </Flex>
-                }
-            >
-                <Card paddingType="none">
-                    <Column alignItems="normal">
-                        <Body>
-                            <CardTitle>
+            <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
+                <Card>
+                    <Column alignItems="stretch">
+                        <Column alignItems="flex-start">
+                            <H3>
                                 <Translation
                                     id="TR_STAKE_ETH_CARD_TITLE"
                                     values={{ symbol: bannerSymbol.toUpperCase() }}
                                 />
-                                <br />
+                            </H3>
+                            <Paragraph>
                                 <Translation id="TR_STAKE_ETH_EARN_REPEAT" />
-                            </CardTitle>
+                            </Paragraph>
+                        </Column>
 
-                            <FlexRow>
-                                {stakeEthFeatures.map(
-                                    ({ id, icon, title, description, extraDescription }) => (
-                                        <FlexRowChild key={id}>
-                                            <StakingFeature
-                                                icon={icon}
-                                                title={title}
-                                                description={description}
-                                                extraDescription={extraDescription}
-                                            />
-                                        </FlexRowChild>
-                                    ),
-                                )}
-                            </FlexRow>
-                        </Body>
+                        <Grid
+                            columns={isBelowLaptop ? 1 : 3}
+                            gap={isBelowLaptop ? spacings.xxxl : spacings.xxxxl}
+                            margin={{ top: spacings.xxxxl, bottom: spacings.xxl }}
+                        >
+                            {stakeEthFeatures.map(({ id, icon, title, description }) => (
+                                <StakingFeature
+                                    key={id}
+                                    icon={icon}
+                                    title={title}
+                                    description={description}
+                                />
+                            ))}
+                        </Grid>
+
+                        <Divider />
 
                         <Footer
                             accountIndex={ethAccountWithSufficientBalanceForStaking?.index}
@@ -175,8 +142,6 @@ export const StakeEthCard = () => {
                     </Column>
                 </Card>
             </DashboardSection>
-
-            <Divider />
         </>
     );
 };

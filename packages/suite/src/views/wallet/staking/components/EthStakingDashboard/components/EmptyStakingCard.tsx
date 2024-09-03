@@ -1,7 +1,18 @@
 import { useMemo } from 'react';
-import styled, { useTheme } from 'styled-components';
-import { Button, Card, Column, Icon, Paragraph, Row, Tooltip, variables } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import {
+    Button,
+    Card,
+    Column,
+    Icon,
+    Paragraph,
+    Text,
+    Tooltip,
+    variables,
+    Divider,
+    Grid,
+    useMediaQuery,
+} from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -10,49 +21,8 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledP = styled(Paragraph)`
-    margin-top: ${spacingsPx.xs};
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const GreenP = styled(Paragraph)`
-    color: ${({ theme }) => theme.textPrimaryDefault};
-`;
-
-const Header = styled.div`
-    padding-bottom: ${spacingsPx.xl};
-`;
-
-const Body = styled.div`
-    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
-`;
-
-const FlexRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin: ${spacingsPx.xl} 0 ${spacingsPx.xxl};
-    gap: 68px;
-    flex-wrap: wrap;
-
-    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
-        flex-direction: column;
-        gap: 12px;
-    }
-`;
-
-const FlexRowChild = styled.div`
-    flex: 1 0 200px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledTooltip = styled(Tooltip)`
-    width: fit-content;
-`;
-
 export const EmptyStakingCard = () => {
-    const theme = useTheme();
+    const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
     const account = useSelector(selectSelectedAccount);
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking();
 
@@ -69,77 +39,74 @@ export const EmptyStakingCard = () => {
         () => [
             {
                 id: 0,
-                icon: <Icon name="piggyBank" size={32} color={theme.iconPrimaryDefault} />,
+                icon: <Icon name="piggyBank" size="extraLarge" variant="primary" />,
                 title: <Translation id="TR_STAKE_ETH_SEE_MONEY_DANCE" />,
                 description: (
                     <Translation
                         id="TR_STAKE_ETH_SEE_MONEY_DANCE_DESC"
                         values={{
                             apyPercent: ethApy,
+                            t: text => (
+                                <Tooltip
+                                    dashed
+                                    isInline
+                                    content={<Translation id="TR_STAKE_APY_DESC" />}
+                                >
+                                    <abbr>{text}</abbr>
+                                </Tooltip>
+                            ),
                         }}
                     />
                 ),
-                extraDescription: <Translation id="TR_STAKE_APY_DESC" />,
             },
             {
                 id: 1,
-                icon: <Icon name="lockLaminatedOpen" size={32} color={theme.iconPrimaryDefault} />,
+                icon: <Icon name="lockLaminatedOpen" size="extraLarge" variant="primary" />,
                 title: <Translation id="TR_STAKE_ETH_LOCK_FUNDS" />,
                 description: <Translation id="TR_STAKE_ETH_LOCK_FUNDS_DESC" />,
             },
             {
                 id: 2,
-                icon: <Icon name="everstakeLogo" size={32} color={theme.iconEverstake} />,
+                icon: <Icon name="everstakeLogo" size="extraLarge" variant="primary" />,
                 title: <Translation id="TR_STAKE_ETH_EVERSTAKE" />,
                 description: <Translation id="TR_STAKE_ETH_EVERSTAKE_DESC" />,
             },
         ],
-        [ethApy, theme.iconEverstake, theme.iconPrimaryDefault],
+        [ethApy],
     );
 
     return (
         <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
             <Card>
-                <Column>
-                    <Header>
-                        <Row alignItems="center" gap={spacings.xxs}>
-                            <Icon
-                                name="questionFilled"
-                                size={11}
-                                color={theme.iconPrimaryDefault}
-                            />
-
-                            <GreenP>
-                                <Translation id="TR_STAKE_WHAT_IS_STAKING" />
-                            </GreenP>
-                        </Row>
-                        <StyledP>
+                <Column alignItems="stretch">
+                    <section>
+                        <Text typographyStyle="highlight">
+                            <Translation id="TR_STAKE_WHAT_IS_STAKING" />
+                        </Text>
+                        <Paragraph variant="tertiary">
                             <Translation
                                 id="TR_STAKE_STAKING_IS"
                                 values={{ symbol: account?.symbol.toUpperCase() }}
                             />
-                        </StyledP>
-                    </Header>
-
-                    <Body>
-                        <FlexRow>
-                            {stakeEthFeatures.map(
-                                ({ id, icon, title, description, extraDescription }) => (
-                                    <FlexRowChild key={id}>
-                                        <StakingFeature
-                                            icon={icon}
-                                            title={title}
-                                            titleSize="small"
-                                            description={description}
-                                            extraDescription={extraDescription}
-                                        />
-                                    </FlexRowChild>
-                                ),
-                            )}
-                        </FlexRow>
-
-                        {/* TODO: Add arrow line down icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                        <StyledTooltip content={stakingMessageContent}>
+                        </Paragraph>
+                    </section>
+                    <Divider />
+                    <section>
+                        <Grid
+                            columns={isBelowLaptop ? 1 : 3}
+                            gap={isBelowLaptop ? spacings.xxxl : spacings.xxxxl}
+                            margin={{ top: spacings.xl, bottom: spacings.xxl }}
+                        >
+                            {stakeEthFeatures.map(({ id, icon, title, description }) => (
+                                <StakingFeature
+                                    icon={icon}
+                                    title={title}
+                                    description={description}
+                                    key={id}
+                                />
+                            ))}
+                        </Grid>
+                        <Tooltip content={stakingMessageContent}>
                             <Button
                                 onClick={openStakingEthInANutshellModal}
                                 isDisabled={isStakingDisabled}
@@ -147,8 +114,8 @@ export const EmptyStakingCard = () => {
                             >
                                 <Translation id="TR_STAKE_START_STAKING" />
                             </Button>
-                        </StyledTooltip>
-                    </Body>
+                        </Tooltip>
+                    </section>
                 </Column>
             </Card>
         </DashboardSection>

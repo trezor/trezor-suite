@@ -8529,11 +8529,11 @@ export default defineMessages({
     },
     TR_STAKE_ETH_SEE_MONEY_DANCE_DESC: {
         id: 'TR_STAKE_ETH_SEE_MONEY_DANCE_DESC',
-        defaultMessage: 'Earn {apyPercent}% APY* by staking your Ethereum with Trezor.',
+        defaultMessage: 'Earn {apyPercent}% <t>APY</t> by staking your Ethereum with Trezor.',
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
-        defaultMessage: '*Annual Percentage Yield',
+        defaultMessage: 'Annual Percentage Yield',
     },
     TR_STAKE_ETH_LOCK_FUNDS: {
         id: 'TR_STAKE_ETH_LOCK_FUNDS',

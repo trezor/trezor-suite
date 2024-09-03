@@ -1,43 +1,9 @@
-import styled from 'styled-components';
-import { Button, Paragraph, variables } from '@trezor/components';
+import { Button, Paragraph, Row } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { NetworkBadge } from './NetworkBadge';
 import { useAccountSearch, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { spacingsPx } from '@trezor/theme';
-
-const Wrapper = styled.div`
-    padding: ${spacingsPx.lg} ${spacingsPx.lg} ${spacingsPx.lg} ${spacingsPx.xxl};
-    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_LIGHT_GREY};
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: ${spacingsPx.xs};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledP = styled(Paragraph)`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const Flex = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xs};
-    flex-wrap: wrap;
-`;
-
-const Right = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xs};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ButtonTertiary = styled(Button)`
-    padding: 9px 22px;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-`;
+import { spacings } from '@trezor/theme';
 
 interface FooterProps {
     accountIndex: number | undefined;
@@ -63,25 +29,22 @@ export const Footer = ({ accountIndex = 0, hideSection }: FooterProps) => {
     };
 
     return (
-        <Wrapper>
+        <Row justifyContent="space-between" alignItems="center" gap={spacings.xs}>
             <div>
-                <StyledP>
+                <Paragraph variant="tertiary" typographyStyle="label">
                     <Translation id="TR_AVAILABLE_NOW_FOR" />
-                </StyledP>
-                {/* Flex is used because more networks will be available for staking in the future  */}
-                <Flex>
-                    <NetworkBadge logo="eth" name={<Translation id="TR_NETWORK_ETHEREUM" />} />
-                </Flex>
+                </Paragraph>
+                <NetworkBadge logo="eth" name={<Translation id="TR_NETWORK_ETHEREUM" />} />
             </div>
 
-            <Right>
+            <Row gap={spacings.xs}>
                 <Button onClick={goToEthStakingTab}>
                     <Translation id="TR_STAKE_START_STAKING" />
                 </Button>
-                <ButtonTertiary variant="tertiary" onClick={hideSection}>
+                <Button variant="tertiary" onClick={hideSection}>
                     <Translation id="TR_MAYBE_LATER" />
-                </ButtonTertiary>
-            </Right>
-        </Wrapper>
+                </Button>
+            </Row>
+        </Row>
     );
 };

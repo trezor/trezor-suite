@@ -42,15 +42,16 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                 margin={{ top: spacings.xs, bottom: spacings.lg }}
                 alignItems="stretch"
             >
-                <Banner icon="file" variant="info">
+                <Banner icon="fileFilled" variant="info">
                     <Translation
                         id="TR_STAKE_EVERSTAKE_MANAGES"
                         values={{
                             symbol: account?.symbol.toUpperCase(),
+                            t: text => <strong>{text}</strong>,
                         }}
                     />
                 </Banner>
-                <Banner icon="shield" variant="info">
+                <Banner icon="shieldWarningFilled" variant="info">
                     <Translation id="TR_STAKE_TREZOR_NO_LIABILITY" />
                 </Banner>
             </Column>
