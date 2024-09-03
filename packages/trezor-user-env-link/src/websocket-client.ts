@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import WebSocket from 'ws';
+import WebSocket, { RawData } from 'ws';
 import fetch from 'cross-fetch';
 
 import { createDeferred, Deferred, TypedEmitter } from '@trezor/utils';
@@ -138,10 +138,9 @@ export class WebsocketClient extends TypedEmitter<WebsocketClientEvents> {
         return dfd.promise;
     }
 
-    // todo: typesafe messages
-    private onmessage(message: any) {
+    private onmessage(message: RawData) {
         try {
-            const resp = JSON.parse(message);
+            const resp = JSON.parse(message.toString());
             const { id, success } = resp;
             const dfd = this.messages.find(m => m.id === id);
 
@@ -162,7 +161,7 @@ export class WebsocketClient extends TypedEmitter<WebsocketClientEvents> {
                 this.messages.splice(this.messages.indexOf(dfd), 1);
             }
         } catch (error) {
-            // empty
+            console.error('websocket onmessage error: ', error);
         }
 
         if (this.messages.length === 0) {
