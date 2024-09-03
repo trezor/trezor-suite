@@ -1,4 +1,4 @@
-import { ElevationUp, Text, Warning, useElevation } from '@trezor/components';
+import { ElevationUp, Text, Banner, useElevation } from '@trezor/components';
 import {
     Elevation,
     borders,
@@ -75,9 +75,9 @@ const SelectWrapper = styled.div<{ $elevation: Elevation }>`
 `;
 
 const BackupWarning = ({ id }: { id: TranslationKey }) => (
-    <Warning variant="info" icon>
+    <Banner variant="info" icon>
         <Translation id={id} values={{ strong: chunks => <strong>{chunks}</strong> }} />
-    </Warning>
+    </Banner>
 );
 
 type SelectBackupTypeProps = {

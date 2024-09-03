@@ -1,4 +1,4 @@
-import { Checkbox, NewModal, Column, Warning, Card } from '@trezor/components';
+import { Checkbox, NewModal, Column, Banner, Card } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -42,17 +42,17 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                 margin={{ top: spacings.xs, bottom: spacings.lg }}
                 alignItems="stretch"
             >
-                <Warning icon="file" variant="info">
+                <Banner icon="file" variant="info">
                     <Translation
                         id="TR_STAKE_EVERSTAKE_MANAGES"
                         values={{
                             symbol: account?.symbol.toUpperCase(),
                         }}
                     />
-                </Warning>
-                <Warning icon="shield" variant="info">
+                </Banner>
+                <Banner icon="shield" variant="info">
                     <Translation id="TR_STAKE_TREZOR_NO_LIABILITY" />
-                </Warning>
+                </Banner>
             </Column>
             <Card>
                 <Checkbox

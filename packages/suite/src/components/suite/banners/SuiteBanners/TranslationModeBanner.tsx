@@ -1,19 +1,19 @@
 import { setTranslationMode } from 'src/utils/suite/l10n';
-import { Warning } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 export const TranslationMode = () => (
-    <Warning
+    <Banner
         icon
         variant="warning"
         rightContent={
-            <Warning.Button
+            <Banner.Button
                 onClick={() => setTranslationMode(false)}
                 data-testid="@notification/translation-mode/button"
             >
                 Turn off
-            </Warning.Button>
+            </Banner.Button>
         }
     >
         TRANSLATION MODE IS ON, ALL TEXTS MAY BE INCORRECT
-    </Warning>
+    </Banner>
 );

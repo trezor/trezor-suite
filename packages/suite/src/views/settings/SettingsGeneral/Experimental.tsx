@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Checkbox, Switch, Warning } from '@trezor/components';
+import { Checkbox, Switch, Banner } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 
@@ -108,9 +108,9 @@ export const Experimental = () => {
                 <TextColumn
                     title={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
                     description={
-                        <Warning icon="warningTriangle" variant="warning">
+                        <Banner icon="warningTriangle" variant="warning">
                             <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
-                        </Warning>
+                        </Banner>
                     }
                     buttonLink={EXPERIMENTAL_FEATURES_KB_URL}
                 />

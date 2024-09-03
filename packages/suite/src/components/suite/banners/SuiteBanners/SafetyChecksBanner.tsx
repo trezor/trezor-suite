@@ -2,7 +2,7 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { Row, Warning as WarningComponent, Warning } from '@trezor/components';
+import { Row, Banner as WarningComponent, Banner } from '@trezor/components';
 
 interface SafetyChecksBannerProps {
     onDismiss?: () => void;
@@ -12,12 +12,12 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
     const dispatch = useDispatch();
 
     return (
-        <Warning
+        <Banner
             icon
             variant="warning"
             rightContent={
                 <Row gap={8}>
-                    <Warning.Button
+                    <Banner.Button
                         onClick={() =>
                             dispatch(
                                 goto('settings-device', {
@@ -29,7 +29,7 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
                         data-testid="@banner/safety-checks/button"
                     >
                         <Translation id="TR_SAFETY_CHECKS_BANNER_CHANGE" />
-                    </Warning.Button>
+                    </Banner.Button>
                     {onDismiss && (
                         <WarningComponent.IconButton
                             icon="close"
@@ -42,6 +42,6 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
             }
         >
             <Translation id="TR_SAFETY_CHECKS_DISABLED_WARNING" />
-        </Warning>
+        </Banner>
     );
 };

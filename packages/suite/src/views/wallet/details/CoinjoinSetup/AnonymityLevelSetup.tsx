@@ -5,7 +5,7 @@ import styled, { useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { AnonymityStatus } from 'src/constants/suite/coinjoin';
 import { useAnonymityStatus, useDispatch } from 'src/hooks/suite';
-import { Icon, Warning, motionEasing } from '@trezor/components';
+import { Icon, Banner, motionEasing } from '@trezor/components';
 import { coinjoinAccountUpdateAnonymity } from 'src/actions/wallet/coinjoinAccountActions';
 import { SetupSlider } from './SetupSlider/SetupSlider';
 
@@ -139,14 +139,14 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
             <AnimatePresence initial={!isErrorDisplayed}>
                 {isErrorDisplayed && (
                     <motion.div {...expandAnimation}>
-                        <Warning icon variant="destructive">
+                        <Banner icon variant="destructive">
                             <Translation
                                 values={{
                                     red: chunks => <RedText>{chunks}</RedText>,
                                 }}
                                 id="TR_LOW_ANONYMITY_WARNING"
                             />
-                        </Warning>
+                        </Banner>
                     </motion.div>
                 )}
             </AnimatePresence>

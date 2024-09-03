@@ -1,4 +1,4 @@
-import { Warning, Text } from '@trezor/components';
+import { Banner, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import { spacings } from '@trezor/theme';
@@ -64,14 +64,14 @@ export const InstantStakeBanner = ({
     const remainingDays = stakeType === 'stake' ? daysToAddToPool : daysToUnstake;
 
     return (
-        <Warning
+        <Banner
             variant="info"
             icon="lightning"
             margin={{ bottom: spacings.sm }}
             rightContent={
-                <Warning.Button onClick={closeBanner}>
+                <Banner.Button onClick={closeBanner}>
                     <Translation id="TR_GOT_IT" />
-                </Warning.Button>
+                </Banner.Button>
             }
         >
             <TextWrapper>
@@ -86,6 +86,6 @@ export const InstantStakeBanner = ({
                     />
                 </Text>
             </TextWrapper>
-        </Warning>
+        </Banner>
     );
 };

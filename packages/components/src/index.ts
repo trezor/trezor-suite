@@ -71,7 +71,7 @@ export * from './components/typography/Link/Link';
 export * from './components/typography/Paragraph/Paragraph';
 export * from './components/typography/Text/Text';
 export * from './components/typography/TruncateWithTooltip/TruncateWithTooltip';
-export * from './components/Warning/Warning';
+export * from './components/Banner/Banner';
 export { StoryColumn, StoryWrapper } from './support/Story';
 
 export * from './constants/keyboardEvents';

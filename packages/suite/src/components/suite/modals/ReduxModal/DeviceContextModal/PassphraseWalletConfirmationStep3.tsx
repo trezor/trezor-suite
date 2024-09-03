@@ -1,4 +1,4 @@
-import { Warning, Text } from '@trezor/components';
+import { Banner, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { PassphraseHeading } from './PassphraseHeading';
 import { OpenGuideFromTooltip } from 'src/components/guide';
@@ -22,7 +22,7 @@ export const PassphraseWalletConfirmationStep3 = ({
             <PassphraseHeading>
                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE" />
             </PassphraseHeading>
-            <Warning icon="info">
+            <Banner icon="info">
                 <Translation
                     id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING"
                     values={{
@@ -33,7 +33,7 @@ export const PassphraseWalletConfirmationStep3 = ({
                         ),
                     }}
                 />
-            </Warning>
+            </Banner>
             <PassphraseTypeCard
                 type="hidden"
                 submitLabel={<Translation id="TR_CONFIRM_PASSPHRASE" />}

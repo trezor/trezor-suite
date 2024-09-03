@@ -4,7 +4,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     Tooltip,
     NewModal,
-    Warning,
+    Banner,
     NewModalProps,
     Paragraph,
     Row,
@@ -113,7 +113,7 @@ export const ConfirmValueModal = ({
             >
                 <Column alignItems="stretch" gap={spacings.xl}>
                     {!device?.connected && (
-                        <Warning icon="warningTriangle" variant="warning">
+                        <Banner icon="warningTriangle" variant="warning">
                             <Paragraph typographyStyle="hint">
                                 <Translation
                                     id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"
@@ -123,7 +123,7 @@ export const ConfirmValueModal = ({
                             <Paragraph typographyStyle="label">
                                 <Translation id="TR_PLEASE_CONNECT_YOUR_DEVICE" />
                             </Paragraph>
-                        </Warning>
+                        </Banner>
                     )}
                     <Row gap={spacings.xl} alignItems="stretch">
                         <Column flex="1 1 50%">

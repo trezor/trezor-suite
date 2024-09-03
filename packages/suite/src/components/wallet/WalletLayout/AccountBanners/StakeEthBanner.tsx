@@ -1,4 +1,4 @@
-import { Button, Text, IconButton, Row, Warning, Column } from '@trezor/components';
+import { Button, Text, IconButton, Row, Banner, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -40,7 +40,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
     }
 
     return (
-        <Warning
+        <Banner
             variant="tertiary"
             icon="piggyBankFilled"
             rightContent={
@@ -73,6 +73,6 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
                     />
                 </Text>
             </Column>
-        </Warning>
+        </Banner>
     );
 };

@@ -1,19 +1,19 @@
 import { IconButton, IconButtonProps } from '../buttons/IconButton/IconButton';
-import { useWarningContextContext, WarningContext } from './WarningContext';
+import { useBannerContext, BannerContext } from './BannerContext';
 import { DEFAULT_VARIANT } from './consts';
 
-export const WarningIconButton = ({ icon, ...rest }: IconButtonProps) => {
-    const { variant } = useWarningContextContext();
+export const BannerIconButton = ({ icon, ...rest }: IconButtonProps) => {
+    const { variant } = useBannerContext();
     const value = { variant: DEFAULT_VARIANT };
 
     return (
-        <WarningContext.Provider value={value}>
+        <BannerContext.Provider value={value}>
             <IconButton
                 icon={icon}
                 {...rest}
                 variant={rest.variant ?? variant}
                 size={rest.size ?? 'small'}
             />
-        </WarningContext.Provider>
+        </BannerContext.Provider>
     );
 };

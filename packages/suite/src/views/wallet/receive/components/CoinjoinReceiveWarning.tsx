@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { darken } from 'polished';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
-import { Button, Icon, variables, Warning } from '@trezor/components';
+import { Button, Icon, variables, Banner } from '@trezor/components';
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -69,7 +69,7 @@ export const CoinjoinReceiveWarning = () => {
 
     return (
         <Container>
-            <Warning
+            <Banner
                 rightContent={
                     <StyledButton onClick={() => dispatch(hideCoinjoinReceiveWarning())}>
                         <Translation id="TR_GOT_IT" />
@@ -92,7 +92,7 @@ export const CoinjoinReceiveWarning = () => {
                         </li>
                     </WarningList>
                 </Text>
-            </Warning>
+            </Banner>
         </Container>
     );
 };

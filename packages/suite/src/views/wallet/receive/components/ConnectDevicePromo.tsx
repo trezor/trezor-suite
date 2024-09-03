@@ -1,4 +1,4 @@
-import { Column, Image, Text, Warning } from '@trezor/components';
+import { Column, Image, Text, Banner } from '@trezor/components';
 import { useSelector } from '../../../../hooks/suite';
 import { selectDevice } from '@suite-common/wallet-core';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
@@ -15,7 +15,7 @@ const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => 
         selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
 
     return (
-        <Warning
+        <Banner
             variant="warning"
             data-testid="@warning/trezorNotConnected"
             rightContent={<Image alt="Trezor" image={`TREZOR_${selectedDeviceModelInternal}`} />}
@@ -26,7 +26,7 @@ const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => 
                 </Text>
                 <Text typographyStyle="titleSmall">{description}</Text>
             </Column>
-        </Warning>
+        </Banner>
     );
 };
 

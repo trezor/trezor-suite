@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { Card, Radio, motionAnimation, motionEasing, Warning } from '@trezor/components';
+import { Card, Radio, motionAnimation, motionEasing, Banner } from '@trezor/components';
 import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
 import { AnonymityLevelSetup } from './AnonymityLevelSetup';
 import { MaxMiningFeeSetup } from './MaxMiningFeeSetup';
@@ -56,9 +56,9 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
     return (
         <Card>
             {hasSession && (
-                <Warning variant="info">
+                <Banner variant="info">
                     <Translation id="TR_DISABLED_ANONYMITY_CHANGE_MESSAGE" />
-                </Warning>
+                </Banner>
             )}
             <SetupContainer>
                 <SetupOptions>

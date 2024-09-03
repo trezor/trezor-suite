@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Checkbox, NewModal, Column, Warning, Card } from '@trezor/components';
+import { Checkbox, NewModal, Column, Banner, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -60,7 +60,7 @@ export const ConfirmStakeEthModal = ({
                 margin={{ top: spacings.xxs, bottom: spacings.lg }}
                 alignItems="stretch"
             >
-                <Warning icon="clock">
+                <Banner icon="clock">
                     <Translation
                         id="TR_STAKE_ENTERING_POOL_MAY_TAKE"
                         values={{
@@ -68,8 +68,8 @@ export const ConfirmStakeEthModal = ({
                                 daysToAddToPoolInitial === undefined ? 30 : daysToAddToPoolInitial,
                         }}
                     />
-                </Warning>
-                <Warning icon="hand">
+                </Banner>
+                <Banner icon="hand">
                     <Translation
                         id="TR_STAKE_ETH_WILL_BE_BLOCKED"
                         values={{
@@ -85,7 +85,7 @@ export const ConfirmStakeEthModal = ({
                             symbol: account?.symbol.toUpperCase(),
                         }}
                     />
-                </Warning>
+                </Banner>
             </Column>
 
             <Card>

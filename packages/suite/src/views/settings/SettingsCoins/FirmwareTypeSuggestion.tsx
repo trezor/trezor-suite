@@ -5,7 +5,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { Button, Warning } from '@trezor/components';
+import { Button, Banner } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { typography } from '@trezor/theme';
 
@@ -60,17 +60,17 @@ export const FirmwareTypeSuggestion = () => {
     const handleClose = () => dispatch(setFlag('firmwareTypeBannerClosed', true));
 
     return (
-        <Warning
+        <Banner
             variant="info"
             icon
             margin={{ bottom: 20 }}
             rightContent={
-                <Warning.Button onClick={handleClose}>
+                <Banner.Button onClick={handleClose}>
                     <Translation id="TR_GOT_IT" />
-                </Warning.Button>
+                </Banner.Button>
             }
         >
             <FirmwareTypeSuggestionDescription />
-        </Warning>
+        </Banner>
     );
 };

@@ -1,5 +1,5 @@
 import { selectDevice } from '@suite-common/wallet-core';
-import { Warning } from '@trezor/components';
+import { Banner } from '@trezor/components';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
@@ -17,20 +17,20 @@ export const FirmwareRevisionCheckBanner = () => {
         : 'TR_FIRMWARE_REVISION_CHECK_FAILED';
 
     return (
-        <Warning
+        <Banner
             icon
             variant="destructive"
             rightContent={
                 !wasOffline && (
                     <TrezorLink variant="nostyle" href={HELP_CENTER_FIRMWARE_REVISION_CHECK}>
-                        <Warning.Button iconAlignment="right">
+                        <Banner.Button iconAlignment="right">
                             <Translation id="TR_LEARN_MORE" />
-                        </Warning.Button>
+                        </Banner.Button>
                     </TrezorLink>
                 )
             }
         >
             <Translation id={message} />
-        </Warning>
+        </Banner>
     );
 };

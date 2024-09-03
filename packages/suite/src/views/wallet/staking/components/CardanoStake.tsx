@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Card, Column, Icon, Warning } from '@trezor/components';
+import { Card, Column, Icon, Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -110,7 +110,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
                             delegatingAvailable.reason === 'UTXO_BALANCE_INSUFFICIENT' && (
                                 <Row>
                                     <CardanoColumn>
-                                        <Warning variant="info">
+                                        <Banner variant="info">
                                             <div>
                                                 <Translation id="TR_STAKING_NOT_ENOUGH_FUNDS" />
                                                 <br />
@@ -119,7 +119,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
                                                     values={{ feeAmount: 2 }}
                                                 />
                                             </div>
-                                        </Warning>
+                                        </Banner>
                                     </CardanoColumn>
                                 </Row>
                             )}

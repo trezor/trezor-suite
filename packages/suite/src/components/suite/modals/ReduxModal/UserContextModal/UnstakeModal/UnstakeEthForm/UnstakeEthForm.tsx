@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button, Divider, Paragraph, Tooltip, Warning } from '@trezor/components';
+import { Button, Divider, Paragraph, Tooltip, Banner } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
@@ -27,7 +27,7 @@ const DividerWrapper = styled.div`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledWarning = styled(Warning)`
+const StyledWarning = styled(Banner)`
     justify-content: flex-start;
 `;
 

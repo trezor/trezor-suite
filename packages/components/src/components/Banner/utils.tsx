@@ -1,16 +1,16 @@
 import { Color, CSSColor, Elevation, mapElevationToBackgroundToken } from '@trezor/theme';
-import { WarningVariant } from './types';
+import { BannerVariant } from './types';
 import { DefaultTheme } from 'styled-components';
 import { IconName } from '../Icon/Icon';
 
 type MapArgs = {
-    $variant: WarningVariant;
+    $variant: BannerVariant;
     theme: DefaultTheme;
     $elevation: Elevation;
 };
 
 export const mapVariantToBackgroundColor = ({ $variant, theme, $elevation }: MapArgs): CSSColor => {
-    const colorMap: Record<WarningVariant, Color> = {
+    const colorMap: Record<BannerVariant, Color> = {
         primary: 'backgroundPrimarySubtleOnElevation0',
         info: 'backgroundAlertBlueSubtleOnElevation0',
         warning: 'backgroundAlertYellowSubtleOnElevation0',
@@ -22,7 +22,7 @@ export const mapVariantToBackgroundColor = ({ $variant, theme, $elevation }: Map
 };
 
 export const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor => {
-    const colorMap: Record<WarningVariant, Color> = {
+    const colorMap: Record<BannerVariant, Color> = {
         primary: 'textPrimaryDefault',
         info: 'textAlertBlue',
         warning: 'textAlertYellow',
@@ -33,7 +33,7 @@ export const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor =>
     return theme[colorMap[$variant]];
 };
 export const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
-    const colorMap: Record<WarningVariant, Color> = {
+    const colorMap: Record<BannerVariant, Color> = {
         primary: 'iconPrimaryDefault',
         info: 'iconAlertBlue',
         warning: 'iconAlertYellow',
@@ -45,7 +45,7 @@ export const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor =>
 };
 
 export const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconName => {
-    const iconMap: Record<WarningVariant, IconName> = {
+    const iconMap: Record<BannerVariant, IconName> = {
         primary: 'lightbulb',
         info: 'info',
         warning: 'warningTriangle',
