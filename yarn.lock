@@ -10025,7 +10025,6 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@suite-native/video-assets": "workspace:*"
-    "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
