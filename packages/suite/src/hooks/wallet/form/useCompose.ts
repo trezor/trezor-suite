@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
+import { isFulfilled } from '@reduxjs/toolkit';
 
 import { FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
@@ -88,7 +89,7 @@ export const useCompose = <TFieldValues extends FormState>({
                         formState,
                         composeContext: state,
                     }),
-                ).unwrap();
+                ).then(res => (isFulfilled(res) ? res.payload : undefined));
             });
 
             // RACE-CONDITION NOTE:
