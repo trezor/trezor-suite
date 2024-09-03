@@ -395,11 +395,11 @@ export const selectIsEmptyDevice = (
     return isDeviceAccountless && !isDeviceDiscoveryActive;
 };
 
-export const selectHasOnlyEmptyPortfolioTracker = (
-    state: AccountsRootState & DeviceRootState & DiscoveryRootState,
-) => {
-    const isEmptyDevice = selectIsEmptyDevice(state);
-    const hasOnlyPortfolioDevice = selectHasOnlyPortfolioDevice(state);
+export const selectHasOnlyEmptyPortfolioTracker = memoize(
+    (state: AccountsRootState & DeviceRootState & DiscoveryRootState) => {
+        const isEmptyDevice = selectIsEmptyDevice(state);
+        const hasOnlyPortfolioDevice = selectHasOnlyPortfolioDevice(state);
 
-    return isEmptyDevice && hasOnlyPortfolioDevice;
-};
+        return isEmptyDevice && hasOnlyPortfolioDevice;
+    },
+);

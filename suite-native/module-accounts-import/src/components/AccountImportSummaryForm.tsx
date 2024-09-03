@@ -1,6 +1,8 @@
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/core';
+import { FlashList } from '@shopify/flash-list';
 
 import {
     selectFilterKnownTokens,
@@ -12,10 +14,10 @@ import {
     PORTFOLIO_TRACKER_DEVICE_STATE,
     selectAccountsByNetworkAndDeviceState,
 } from '@suite-common/wallet-core';
-import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
 import { analytics, EventType } from '@suite-native/analytics';
-import { Box, Button, Divider, VStack } from '@suite-native/atoms';
+import { Box, Button, Divider, Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import {
     AccountsImportStackParamList,
@@ -25,14 +27,13 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { selectAnyOfTokensHasFiatRates } from '@suite-native/tokens';
-import { AccountInfo } from '@trezor/connect';
+import { AccountInfo, TokenInfo } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { useShowImportError } from '../useShowImportError';
-import { AccountImportEthereumTokens } from './AccountImportEthereumTokens';
 import { AccountImportOverview } from './AccountImportOverview';
+import { EthereumTokenInfo } from './EthereumTokenInfo';
 
 type AccountImportSummaryFormProps = {
     networkSymbol: NetworkSymbol;
@@ -57,10 +58,6 @@ export const AccountImportSummaryForm = ({
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
     const showImportError = useShowImportError(networkSymbol, navigation);
-
-    const areTokensDisplayed = useSelector((state: TokenDefinitionsRootState) =>
-        selectAnyOfTokensHasFiatRates(state, (accountInfo?.tokens as TokenInfoBranded[]) ?? []),
-    );
 
     const knownTokens = useSelector((state: TokenDefinitionsRootState) =>
         selectFilterKnownTokens(state, networkSymbol, accountInfo.tokens ?? []),
@@ -117,29 +114,58 @@ export const AccountImportSummaryForm = ({
         }
     });
 
+    const renderItem = useCallback(
+        ({ item }: { item: TokenInfo }) => (
+            <Box marginBottom="small">
+                <EthereumTokenInfo
+                    symbol={item.symbol as TokenSymbol}
+                    balance={item.balance}
+                    decimals={item.decimals}
+                    name={item.name}
+                    contract={item.contract as TokenAddress}
+                />
+            </Box>
+        ),
+        [],
+    );
+
     return (
         <Form form={form}>
-            <VStack spacing="large">
-                <AccountImportOverview
-                    balance={accountInfo.availableBalance}
-                    networkSymbol={networkSymbol}
-                />
-                {areTokensDisplayed && (
-                    <AccountImportEthereumTokens tokens={accountInfo.tokens ?? []} />
-                )}
-                <Divider marginHorizontal="extraLarge" />
-                <Box marginHorizontal="medium">
-                    <Button
-                        testID="@account-import/coin-synced/confirm-button"
-                        onPress={handleImportAccount}
-                        size="large"
-                        style={applyStyle(confirmButtonStyle)}
-                        isDisabled={!!errors.accountLabel}
-                    >
-                        Confirm
-                    </Button>
-                </Box>
-            </VStack>
+            <FlashList
+                data={knownTokens}
+                renderItem={renderItem}
+                ListEmptyComponent={null}
+                ListHeaderComponent={
+                    <>
+                        <AccountImportOverview
+                            balance={accountInfo.availableBalance}
+                            networkSymbol={networkSymbol}
+                        />
+                        {knownTokens.length > 0 && (
+                            <Box marginTop="medium" marginBottom="small">
+                                <Text variant="titleSmall">Tokens: </Text>
+                            </Box>
+                        )}
+                    </>
+                }
+                ListFooterComponent={
+                    <>
+                        <Divider marginHorizontal="extraLarge" marginTop="large" />
+                        <Box marginHorizontal="medium" marginTop="large">
+                            <Button
+                                testID="@account-import/coin-synced/confirm-button"
+                                onPress={handleImportAccount}
+                                size="large"
+                                style={applyStyle(confirmButtonStyle)}
+                                isDisabled={!!errors.accountLabel}
+                            >
+                                Confirm
+                            </Button>
+                        </Box>
+                    </>
+                }
+                estimatedItemSize={115}
+            />
         </Form>
     );
 };

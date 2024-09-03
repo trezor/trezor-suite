@@ -42,9 +42,6 @@
         { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../video-assets" },
-        {
-            "path": "../../packages/blockchain-link-types"
-        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/utxo-lib" }
