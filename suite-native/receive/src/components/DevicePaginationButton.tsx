@@ -1,7 +1,7 @@
 import { Pressable } from 'react-native';
 
 import { NativeStyle, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconName } from '@suite-common/icons';
+import { Icon, IconName } from '@suite-common/icons-deprecated';
 import { CSSColor, nativeBorders } from '@trezor/theme';
 import { DeviceModelInternal } from '@trezor/connect';
 

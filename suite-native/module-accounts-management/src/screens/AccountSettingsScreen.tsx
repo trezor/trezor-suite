@@ -17,7 +17,7 @@ import {
     selectFormattedAccountType,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { CryptoIcon } from '@suite-common/icons';
+import { CryptoIcon } from '@suite-common/icons-deprecated';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@suite-native/atoms';
 import { onPassphraseSubmit, selectDeviceInternalModel } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
-import { DeviceModelIcon } from '@suite-common/icons';
+import { DeviceModelIcon } from '@suite-common/icons-deprecated';
 import { EventType, analytics } from '@suite-native/analytics';
 
 export const EnterPassphraseOnTrezorButton = () => {

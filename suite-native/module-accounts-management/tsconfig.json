@@ -6,7 +6,9 @@
             "path": "../../suite-common/fiat-services"
         },
         { "path": "../../suite-common/graph" },
-        { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/icons-deprecated"
+        },
         {
             "path": "../../suite-common/wallet-config"
         },

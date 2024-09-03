@@ -25,7 +25,7 @@ import {
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
 } from '@suite-common/wallet-core';
 import { selectEthereumAccountTokenSymbol } from '@suite-native/tokens';
-import { CryptoIcon } from '@suite-common/icons';
+import { CryptoIcon } from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ReceiveAccount } from '../components/ReceiveAccount';

@@ -5,7 +5,7 @@ import { useNativeStyles } from '@trezor/styles';
 import { GoBackIcon, Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { Text, HStack, VStack } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import { CryptoIcon } from '@suite-common/icons';
+import { CryptoIcon } from '@suite-common/icons-deprecated';
 import {
     AccountsRootState,
     selectAccountAvailableBalance,

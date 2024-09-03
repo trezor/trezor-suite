@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
-import { CryptoIconName, CryptoIconWithPercentage, Icon } from '@suite-common/icons';
+import { CryptoIconName, CryptoIconWithPercentage, Icon } from '@suite-common/icons-deprecated';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, DeviceRootState, FiatRatesRootState } from '@suite-common/wallet-core';

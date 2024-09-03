@@ -1,7 +1,7 @@
 import { Atom, useAtom } from 'jotai';
 
 import { HStack, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-common/icons';
+import { Icon, IconName } from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type PriceChangeIndicatorProps = {

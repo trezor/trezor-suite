@@ -1,7 +1,7 @@
 import { G } from '@mobily/ts-belt';
 import { RequireExactlyOne } from 'type-fest';
 
-import { Icon, IconName, IconSize } from '@suite-common/icons';
+import { Icon, IconName, IconSize } from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 

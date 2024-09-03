@@ -107,7 +107,7 @@ export const Snowflake: React.FC<{
         return (
             <Animated.View style={[styles.text, animatedStyle, props.style]}>
                 <Image
-                    source={require('@suite-common/icons/assets/cryptoIcons/btc.svg')}
+                    source={require('@suite-common/icons-deprecated/assets/cryptoIcons/btc.svg')}
                     style={{ width: 13, height: 13 }}
                 />
             </Animated.View>

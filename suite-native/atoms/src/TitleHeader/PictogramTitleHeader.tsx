@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { IconName } from '@suite-common/icons';
+import { IconName } from '@suite-common/icons-deprecated';
 import { TypographyStyle } from '@trezor/theme';
 
 import { VStack } from '../Stack';

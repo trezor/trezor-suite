@@ -10,7 +10,7 @@ import {
     GoBackIcon,
 } from '@suite-native/navigation';
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
-import { CryptoIcon } from '@suite-common/icons';
+import { CryptoIcon } from '@suite-common/icons-deprecated';
 import { useTranslate } from '@suite-native/intl';
 
 type TokenAccountDetailScreenHeaderProps = {

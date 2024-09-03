@@ -9,7 +9,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { IconName } from '@suite-common/icons';
+import { IconName } from '@suite-common/icons-deprecated';
 import { PictogramVariant } from '@suite-native/atoms';
 
 type AlertError = 'invalidXpub' | 'invalidReceiveAddress' | 'networkError' | 'unknownError';

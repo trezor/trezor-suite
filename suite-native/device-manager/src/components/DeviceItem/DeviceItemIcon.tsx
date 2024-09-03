@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Icon, DeviceModelIcon } from '@suite-common/icons';
+import { Icon, DeviceModelIcon } from '@suite-common/icons-deprecated';
 import {
     DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,

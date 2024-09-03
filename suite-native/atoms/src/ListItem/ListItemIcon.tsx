@@ -1,4 +1,4 @@
-import { IconName } from '@suite-common/icons';
+import { IconName } from '@suite-common/icons-deprecated';
 
 import { Box } from '../Box';
 import { RoundedIcon } from '../RoundedIcon';

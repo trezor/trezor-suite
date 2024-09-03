@@ -10,7 +10,7 @@ import {
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 
 type TransactionDetailStatusSectionProps = {
     txid: string;

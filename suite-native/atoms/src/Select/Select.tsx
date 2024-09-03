@@ -7,7 +7,7 @@ import {
     FlagIconName,
     isCryptoIconType,
     isFlagIconType,
-} from '@suite-common/icons';
+} from '@suite-common/icons-deprecated';
 
 import { BottomSheet } from '../Sheet/BottomSheet';
 import { SelectItemValue, SelectItem } from './SelectItem';

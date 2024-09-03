@@ -1,4 +1,4 @@
-import { Icon, IconName } from '@suite-common/icons';
+import { Icon, IconName } from '@suite-common/icons-deprecated';
 import { SignValue } from '@suite-common/suite-types';
 import { AccountKey, TransactionType } from '@suite-common/wallet-types';
 import { Box, DiscreetTextTrigger, Text } from '@suite-native/atoms';

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { A, G } from '@mobily/ts-belt';
 
-import { IconName } from '@suite-common/icons/src';
+import { IconName } from '@suite-common/icons-deprecated';
 import { Box, Button, PictogramTitleHeader, PictogramVariant, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Variant } from '@suite-common/suite-types';

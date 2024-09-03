@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { atom } from 'jotai';
 
-import { IconName } from '@suite-common/icons';
+import { IconName } from '@suite-common/icons-deprecated';
 import { ButtonAccessory, ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
 
 export type Alert = {

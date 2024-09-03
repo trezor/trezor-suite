@@ -31,7 +31,7 @@ import {
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
-import { CryptoIcon, tokenIcons, Icon, IconName, icons } from '@suite-common/icons';
+import { CryptoIcon, tokenIcons, Icon, IconName, icons } from '@suite-common/icons-deprecated';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';
 import { TokenAddress } from '@suite-common/wallet-types';

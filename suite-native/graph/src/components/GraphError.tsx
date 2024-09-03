@@ -2,7 +2,7 @@ import Animated, { FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimat
 import { Pressable } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 

@@ -10,7 +10,7 @@ import {
     selectIsDeviceProtectedByPassphrase,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,

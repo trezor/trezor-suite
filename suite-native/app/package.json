@@ -32,7 +32,7 @@
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/formatters": "workspace:*",
-        "@suite-common/icons": "workspace:*",
+        "@suite-common/icons-deprecated": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",

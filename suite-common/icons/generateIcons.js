@@ -10,18 +10,8 @@ const iconsFilePath = './src/icons.ts';
 const assetTypesConfig = [
     {
         name: 'icons',
-        dirname: 'assets/icons',
+        dirname: 'assets',
         typeName: 'IconName',
-    },
-    {
-        name: 'cryptoIcons',
-        dirname: 'assets/cryptoIcons',
-        typeName: 'CryptoIconName',
-    },
-    {
-        name: 'flagIcons',
-        dirname: 'assets/flags',
-        typeName: 'FlagIconName',
     },
 ];
 

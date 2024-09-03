@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ListItemSkeleton, HStack, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { Translation } from '@suite-native/intl';
 
 const DEFAULT_LIST_SKELETON_COUNT = 3;

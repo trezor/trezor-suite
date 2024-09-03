@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { IconName } from '@suite-common/icons';
+import { IconName } from '@suite-common/icons-deprecated';
 import { NativeStyleObject } from '@trezor/styles';
 
 export type BaseListItem = {

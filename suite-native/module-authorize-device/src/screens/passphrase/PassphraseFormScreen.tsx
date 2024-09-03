@@ -5,7 +5,7 @@ import { useOpenLink } from '@suite-native/link';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { EventType, analytics } from '@suite-native/analytics';
 
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
