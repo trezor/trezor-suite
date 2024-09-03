@@ -54,6 +54,8 @@ export type NetworkFeature =
     | 'coin-definitions'
     | 'nft-definitions';
 
+export type Bip43Path = string; // TODO define a more specific type
+
 export type Explorer = {
     tx: string;
     account: string;
@@ -64,7 +66,7 @@ export type Explorer = {
 };
 
 export type Account = {
-    bip43Path: string;
+    bip43Path: Bip43Path;
     backendType?: BackendType;
     features?: NetworkFeature[];
     isDebugOnlyAccountType?: boolean;
@@ -79,7 +81,7 @@ export type Network = {
     symbol: NetworkSymbol;
     name: string;
     networkType: NetworkType;
-    bip43Path: string;
+    bip43Path: Bip43Path;
     decimals: number;
     testnet: boolean;
     explorer: Explorer;
@@ -97,3 +99,5 @@ export type Network = {
 export type Networks = {
     [key in NetworkSymbol]: Network;
 };
+
+export type NetworkAccountCollection = Array<Account & { accountType: AccountType }>;

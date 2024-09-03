@@ -1,5 +1,19 @@
 import { networks, networksCompatibility } from './networksConfig';
-import { AccountType, Network, NetworkFeature, Networks, NetworkSymbol } from './types';
+import {
+    AccountType,
+    Network,
+    NetworkAccountCollection,
+    NetworkAccountTypes,
+    NetworkFeature,
+    Networks,
+    NetworkSymbol,
+} from './types';
+
+export const accountTypesToArray = (accountTypes: NetworkAccountTypes): NetworkAccountCollection =>
+    Object.entries(accountTypes).map(([key, value]) => ({
+        ...value,
+        accountType: key as AccountType,
+    }));
 
 const networksCollection: Network[] = Object.values(networks);
 
