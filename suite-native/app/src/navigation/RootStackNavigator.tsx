@@ -24,11 +24,13 @@ import { SendStackNavigator } from '@suite-native/module-send';
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
 
 import { AppTabNavigator } from './AppTabNavigator';
+import { useCoinEnablingInitialCheck } from '../hooks/useCoinEnablingInitialCheck';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
     useHandleDeviceConnection();
+    useCoinEnablingInitialCheck();
 
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 

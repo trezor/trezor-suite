@@ -22,7 +22,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsDeviceConnectEnabled]: isAndroid() || isDebugEnv(),
     [FeatureFlag.IsSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
-    [FeatureFlag.IsCoinEnablingActive]: false,
+    [FeatureFlag.IsCoinEnablingActive]: isDevelopOrDebugEnv() && !isDetoxTestBuild(),
     [FeatureFlag.IsPolygonEnabled]: false,
 };
 
