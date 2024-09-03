@@ -10184,7 +10184,6 @@ __metadata:
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
-    "@suite-native/formatters": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"

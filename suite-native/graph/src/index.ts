@@ -3,5 +3,4 @@ export * from './components/TimeSwitch';
 export * from './utils';
 export * from './hooks';
 export * from './slice';
-export * from './components/GraphDateFormatter';
-export * from './components/PriceChangeIndicator';
+export * from './components/GraphFiatBalance';

@@ -1,4 +1,4 @@
-import { TextProps } from '@suite-native/atoms';
+import { BoxSkeleton, TextProps } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
@@ -21,9 +21,12 @@ export const FiatAmountFormatter = ({
 }: FiatAmountFormatterProps) => {
     const { FiatAmountFormatter: formatter } = useFormatters();
 
-    const isTestnetValue = !!network && isTestnet(network);
-
-    if (!value || isTestnetValue) return <EmptyAmountText />;
+    if (!!network && isTestnet(network)) {
+        return <EmptyAmountText />;
+    }
+    if (value === null) {
+        return <BoxSkeleton width={48} height={24} />;
+    }
 
     const formattedValue = formatter.format(value);
 

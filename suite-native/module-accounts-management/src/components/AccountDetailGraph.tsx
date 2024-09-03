@@ -10,11 +10,8 @@ import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 import { TokenAddress } from '@suite-common/wallet-types';
 
-import {
-    AccountDetailGraphHeader,
-    referencePointAtom,
-    selectedPointAtom,
-} from './AccountDetailGraphHeader';
+import { AccountDetailGraphHeader } from './AccountDetailGraphHeader';
+import { referencePointAtom, selectedPointAtom } from '../accountDetailGraphAtoms';
 
 type AccountDetailGraphProps = {
     accountKey: string;
