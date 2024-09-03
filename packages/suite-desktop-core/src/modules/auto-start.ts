@@ -42,7 +42,6 @@ export const init: Module = () => {
 
     ipcMain.on('app/auto-start', (_, enabled: boolean) => {
         logger.debug(SERVICE_NAME, 'Auto start ' + (enabled ? 'enabled' : 'disabled'));
-
         if (process.platform === 'linux') {
             // For Linux, we use a custom implementation
             linuxAutoStart(enabled);
@@ -55,4 +54,20 @@ export const init: Module = () => {
             });
         }
     });
+
+    return {
+        onLoad: () => {
+            // Update autostart file on Linux, since the AppImage might have been moved
+            if (process.platform === 'linux') {
+                const autostartFile = path.join(
+                    os.homedir(),
+                    LINUX_AUTOSTART_DIR,
+                    LINUX_AUTOSTART_FILE,
+                );
+                if (fs.existsSync(autostartFile)) {
+                    linuxAutoStart(true);
+                }
+            }
+        },
+    };
 };
