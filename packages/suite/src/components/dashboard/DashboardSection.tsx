@@ -2,11 +2,11 @@ import { Ref, forwardRef, ReactElement, HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { H3 } from '@trezor/components';
 
-const Wrapper = styled.div`
+const Wrapper = styled.section`
     display: flex;
     flex-direction: column;
 `;
-const Header = styled.div`
+const Header = styled.header`
     display: flex;
     justify-content: space-between;
     padding-bottom: 25px;
