@@ -4953,7 +4953,7 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_AUTOMATIC_UPDATE: {
         id: 'TR_EXPERIMENTAL_AUTOMATIC_UPDATE',
-        defaultMessage: ' Automatic Trezor Suite updates',
+        defaultMessage: 'Automatic Trezor Suite updates',
     },
     TR_EXPERIMENTAL_AUTOMATIC_UPDATE_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_AUTOMATIC_UPDATE_DESCRIPTION',
