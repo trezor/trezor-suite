@@ -189,10 +189,6 @@ export default defineMessages({
         defaultMessage: 'All',
         id: 'TR_FRACTION_BUTTONS_ALL',
     },
-    TR_EXCHANGE_NO_PROVIDERS: {
-        defaultMessage: 'No providers',
-        id: 'TR_EXCHANGE_NO_PROVIDERS',
-    },
     TR_EXCHANGE_PROVIDER: {
         defaultMessage: 'Provider',
         id: 'TR_EXCHANGE_PROVIDER',
@@ -221,10 +217,6 @@ export default defineMessages({
         id: 'TR_EXCHANGE_FEES_INFO',
         defaultMessage:
             'All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).',
-    },
-    TR_EXCHANGE_SHOW_OFFERS: {
-        defaultMessage: 'Compare offers',
-        id: 'TR_EXCHANGE_SHOW_OFFERS',
     },
     TR_EXCHANGE_MODAL_FOR_YOUR_SAFETY: {
         defaultMessage: 'Exchange {fromCrypto} to {toCrypto} with {provider}',
@@ -442,10 +434,6 @@ export default defineMessages({
         defaultMessage: 'Go to provider support',
         id: 'TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT',
     },
-    TR_EXCHANGE_RECEIVING_ACCOUNT: {
-        defaultMessage: 'Receive account',
-        id: 'TR_EXCHANGE_RECEIVING_ACCOUNT',
-    },
     TR_EXCHANGE_VERIFY_ADDRESS_STEP: {
         defaultMessage: 'Receive address',
         id: 'TR_EXCHANGE_VERIFY_ADDRESS_STEP',
@@ -594,11 +582,6 @@ export default defineMessages({
         defaultMessage: 'Confirm on Trezor & send',
         id: 'TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND',
     },
-    TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
-        id: 'TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage:
-            "This is the account where you'll find your coins once the transaction is finished.",
-    },
     TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP: {
         id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
         defaultMessage: 'Receive account is outside of Suite.',
@@ -627,11 +610,6 @@ export default defineMessages({
         defaultMessage: 'Receive address is invalid',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID',
     },
-    TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
-        id: 'TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage:
-            'This is the specific alphanumeric address that will receive your coins. Verify this address on your Trezor.',
-    },
     TR_EXCHANGE_EXTRA_FIELD: {
         defaultMessage: '{extraFieldName}',
         id: 'TR_EXCHANGE_EXTRA_FIELD',
@@ -655,14 +633,6 @@ export default defineMessages({
     TR_EXCHANGE_USE_NON_SUITE_ACCOUNT: {
         defaultMessage: "Use an account ({symbol}) that isn't in Suite",
         id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
-    },
-    TR_EXCHANGE_CONFIRM_ON_TREZOR: {
-        defaultMessage: 'Confirm on Trezor',
-        id: 'TR_EXCHANGE_CONFIRM_ON_TREZOR',
-    },
-    TR_EXCHANGE_GO_TO_PAYMENT: {
-        defaultMessage: 'Continue transaction',
-        id: 'TR_EXCHANGE_GO_TO_PAYMENT',
     },
     TR_EXCHANGE_SELL: {
         defaultMessage: 'Exchange',
@@ -695,18 +665,6 @@ export default defineMessages({
     TR_SELL_STATUS_PENDING: {
         defaultMessage: 'Pending',
         id: 'TR_SELL_STATUS_PENDING',
-    },
-    TR_SELL_NO_PROVIDERS: {
-        defaultMessage: 'No providers',
-        id: 'TR_SELL_NO_PROVIDERS',
-    },
-    TR_SELL_OFFERS_FOR: {
-        defaultMessage: 'Offers for',
-        id: 'TR_SELL_OFFERS_FOR',
-    },
-    TR_SELL_SHOW_OFFERS: {
-        defaultMessage: 'Show offers',
-        id: 'TR_SELL_SHOW_OFFERS',
     },
     TR_REQUIRED_FIELD: {
         defaultMessage: 'Required',
@@ -788,22 +746,6 @@ export default defineMessages({
     TR_SELL_REGISTER: {
         id: 'TR_SELL_REGISTER',
         defaultMessage: 'Register',
-    },
-    TR_SELL_PROVIDER: {
-        defaultMessage: 'Provider',
-        id: 'TR_SELL_PROVIDER',
-    },
-    TR_SELL_PAID_BY: {
-        defaultMessage: 'paid by',
-        id: 'TR_SELL_PAID_BY',
-    },
-    TR_SELL_SPEND: {
-        defaultMessage: 'spend',
-        id: 'TR_SELL_SPEND',
-    },
-    TR_SELL_RECEIVE: {
-        defaultMessage: 'receive',
-        id: 'TR_SELL_RECEIVE',
     },
     TR_SELL_BANK_ACCOUNT_STEP: {
         defaultMessage: 'Bank account',
@@ -1382,7 +1324,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_OFFER_LOOKING',
     },
     TR_COINMARKET_OFFER_NO_FOUND: {
-        defaultMessage: 'No offers found for your request. Try a different amount or currency.',
+        defaultMessage: 'No offers available for your request. Change amount or currency.',
         id: 'TR_COINMARKET_OFFER_NO_FOUND',
     },
     TR_COINMARKET_BEST_RATE: {
@@ -1456,11 +1398,11 @@ export default defineMessages({
     },
     TR_COINMARKET_FIX_RATE_DESCRIPTION: {
         id: 'TR_COINMARKET_FIX_RATE_DESCRIPTION',
-        defaultMessage: 'Guarantee your rate for 15 minutes with a higher fee.',
+        defaultMessage: 'Lock in your rate for 15 minutes by paying a higher fee.',
     },
     TR_COINMARKET_FLOATING_RATE_DESCRIPTION: {
         id: 'TR_COINMARKET_FLOATING_RATE_DESCRIPTION',
-        defaultMessage: 'Get an approximate rate subject to real-time market change.',
+        defaultMessage: 'Get an estimated rate that may adjust with real-time market changes.',
     },
     TR_COINMARKET_CEX_TOOLTIP: {
         id: 'TR_COINMARKET_CEX_TOOLTIP',
@@ -4472,10 +4414,6 @@ export default defineMessages({
         defaultMessage:
             'This is the specific alphanumeric address that will receive your coins. Verify this address on your Trezor.',
     },
-    TR_TRADE_SELECT_COIN: {
-        id: 'TR_TRADE_SELECT_COIN',
-        defaultMessage: 'Select a coin...',
-    },
     TR_TRADE_ENTER_COIN: {
         id: 'TR_TRADE_ENTER_COIN',
         defaultMessage: 'Enter crypto name or symbol...',
@@ -6270,7 +6208,7 @@ export default defineMessages({
     },
     TR_BACKUP_CHECKBOX_2_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_2_TITLE',
-        defaultMessage: 'Never take a picture or make a digital copy of your backup.',
+        defaultMessage: 'Never take a picture of your backup or store it anywhere digital.',
     },
     TR_BACKUP_CHECKBOX_2_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_2_DESCRIPTION',
@@ -8436,10 +8374,6 @@ export default defineMessages({
         defaultMessage:
             'Send only through the {network} network. The address must be on the {network} network for the sent crypto to be received.',
     },
-    TR_EVM_EXPLANATION_EXCHANGE_TITLE: {
-        id: 'TR_EVM_EXPLANATION_EXCHANGE_TITLE',
-        defaultMessage: 'Did you choose the correct network?',
-    },
     TR_EVM_EXPLANATION_EXCHANGE_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_EXCHANGE_DESCRIPTION',
         defaultMessage:
@@ -8780,14 +8714,10 @@ export default defineMessages({
         id: 'TR_STAKE_YOUR_FUNDS_MAINTAINED',
         defaultMessage: 'Your staked funds are maintained by Everstake',
     },
-    TR_STAKE_POWERED_BY: {
-        id: 'TR_STAKE_POWERED_BY',
-        defaultMessage: 'Powered by',
-    },
     TR_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_STAKE_EVERSTAKE_MANAGES',
         defaultMessage:
-            'Everstake maintains and protects your staked {symbol} with their smart contracts, infrastructure, and technology.',
+            'Everstake maintains and protects your staked {symbol} <t>with their smart contracts, infrastructure, and technology.</t>',
     },
     TR_STAKE_TREZOR_NO_LIABILITY: {
         id: 'TR_STAKE_TREZOR_NO_LIABILITY',
