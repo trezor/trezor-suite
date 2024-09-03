@@ -12,7 +12,7 @@ import {
 import { analytics, EventType } from '@suite-native/analytics';
 import { useAlert } from '@suite-native/alerts';
 import { useToast } from '@suite-native/toasts';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { setViewOnlyCancelationTimestamp } from '@suite-native/settings';

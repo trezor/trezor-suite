@@ -5,7 +5,7 @@ import { Translation } from '@suite-native/intl';
 import { ConnectionDot } from '@suite-native/device-manager';
 import { selectPhysicalDevicesGrouppedById } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { DeviceModelIcon } from '@suite-common/icons';
+import { DeviceModelIcon } from '@suite-common/icons-deprecated';
 
 import { About, AboutProps } from './About';
 import { WalletRow } from './WalletRow';

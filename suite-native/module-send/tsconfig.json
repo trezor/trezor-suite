@@ -5,7 +5,9 @@
         {
             "path": "../../suite-common/formatters"
         },
-        { "path": "../../suite-common/icons" },
+        {
+            "path": "../../suite-common/icons-deprecated"
+        },
         {
             "path": "../../suite-common/redux-utils"
         },

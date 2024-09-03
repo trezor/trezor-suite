@@ -2,7 +2,7 @@ import { ReactNode, useState } from 'react';
 import { Pressable, PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { IconName } from '@suite-common/icons';
+import { IconName } from '@suite-common/icons-deprecated';
 import {
     NativeStyleObject,
     prepareNativeStyle,

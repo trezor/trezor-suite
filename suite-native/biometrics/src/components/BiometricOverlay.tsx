@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, iconSizes } from '@suite-common/icons';
+import { Icon, iconSizes } from '@suite-common/icons-deprecated';
 import { Translation } from '@suite-native/intl';
 
 import { BiometricsIcon } from './BiometricsIcon';

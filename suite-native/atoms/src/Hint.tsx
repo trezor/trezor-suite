@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 
-import { Icon, IconName } from '@suite-common/icons';
+import { Icon, IconName } from '@suite-common/icons-deprecated';
 import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 

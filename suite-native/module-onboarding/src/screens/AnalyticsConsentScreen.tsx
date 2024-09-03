@@ -17,7 +17,7 @@ import {
 } from '@suite-native/navigation';
 import { Box, Button, Stack, Switch, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Link } from '@suite-native/link';

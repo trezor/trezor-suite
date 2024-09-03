@@ -1,6 +1,6 @@
 import { TouchableOpacity, View } from 'react-native';
 
-import { Icon, IconName } from '@suite-common/icons';
+import { Icon, IconName } from '@suite-common/icons-deprecated';
 import { Text, TITLE_MAX_FONT_MULTIPLIER } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

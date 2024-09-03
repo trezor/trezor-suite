@@ -15,6 +15,9 @@
     "references": [
         { "path": "../../suite-common/icons" },
         {
+            "path": "../../suite-common/icons-deprecated"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {

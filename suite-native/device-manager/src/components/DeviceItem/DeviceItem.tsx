@@ -2,7 +2,7 @@ import { Pressable } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HStack } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { TrezorDevice } from '@suite-common/suite-types';
 
 import { DeviceItemContent } from './DeviceItemContent';

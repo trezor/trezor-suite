@@ -19,7 +19,7 @@
         "@reduxjs/toolkit": "1.9.5",
         "@shopify/flash-list": "1.7.1",
         "@shopify/react-native-skia": "1.3.11",
-        "@suite-common/icons": "workspace:*",
+        "@suite-common/icons-deprecated": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",

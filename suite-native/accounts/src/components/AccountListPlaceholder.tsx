@@ -4,7 +4,7 @@ import { Box, PictogramTitleHeader } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TxKeyPath, Translation } from '@suite-native/intl';
 import { ReceiveStackRoutes, RootStackRoutes } from '@suite-native/navigation';
-import { IconName } from '@suite-common/icons';
+import { IconName } from '@suite-common/icons-deprecated';
 
 const PLACEHOLDER_HEIGHT = 380;
 

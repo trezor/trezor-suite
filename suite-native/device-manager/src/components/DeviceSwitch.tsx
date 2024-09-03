@@ -2,7 +2,7 @@ import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { Box, HStack } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDeviceInstances, selectDeviceState } from '@suite-common/wallet-core';
 

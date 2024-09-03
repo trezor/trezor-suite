@@ -17,7 +17,7 @@ import {
     StackNavigationProps,
     RootStackParamList,
 } from '@suite-native/navigation';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import {
     notificationsActions,
     TransactionNotificationType,

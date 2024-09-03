@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Box, Divider, Text } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CoinSymbol, CryptoIcon } from '@suite-common/icons';
+import { CoinSymbol, CryptoIcon } from '@suite-common/icons-deprecated';
 
 import { SummaryRow } from './TransactionDetailStatusSection';
 import { formatAddressLabel } from './TransactionDetailAddressesSheet';

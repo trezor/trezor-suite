@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Box, Text, Switch, RoundedIcon } from '@suite-native/atoms';
-import { IconName } from '@suite-common/icons';
+import { IconName } from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TouchableSwitchRowProps = {

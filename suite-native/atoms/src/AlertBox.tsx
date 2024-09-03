@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeBorders } from '@trezor/theme';
-import { Icon, IconName } from '@suite-common/icons';
+import { Icon, IconName } from '@suite-common/icons-deprecated';
 
 import { Box } from './Box';
 import { Text } from './Text';

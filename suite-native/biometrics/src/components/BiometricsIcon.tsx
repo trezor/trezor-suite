@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { IconName, Icon } from '@suite-common/icons';
+import { IconName, Icon } from '@suite-common/icons-deprecated';
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

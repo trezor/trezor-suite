@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { CryptoIcon } from '@suite-common/icons';
+import { CryptoIcon } from '@suite-common/icons-deprecated';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import {

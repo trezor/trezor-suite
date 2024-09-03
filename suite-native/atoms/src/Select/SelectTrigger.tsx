@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';

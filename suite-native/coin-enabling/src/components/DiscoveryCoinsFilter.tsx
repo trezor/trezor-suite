@@ -6,7 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { VStack, Text } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Translation } from '@suite-native/intl';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import {
     applyDiscoveryChangesThunk,
     selectDiscoverySupportedNetworks,

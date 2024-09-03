@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { A } from '@mobily/ts-belt';
 import { atom } from 'jotai';
 
-import { IconName } from '@suite-common/icons';
+import { IconName } from '@suite-common/icons-deprecated';
 
 export type ToastVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
 

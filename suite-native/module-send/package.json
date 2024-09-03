@@ -16,7 +16,7 @@
         "@react-navigation/native-stack": "6.11.0",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/formatters": "workspace:*",
-        "@suite-common/icons": "workspace:*",
+        "@suite-common/icons-deprecated": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/validators": "workspace:*",

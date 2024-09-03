@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { HStack, Radio, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDevice, selectDeviceByState } from '@suite-common/wallet-core';

@@ -1,7 +1,7 @@
 import { TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CryptoIcon } from '@suite-common/icons';
+import { CryptoIcon } from '@suite-common/icons-deprecated';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Text, Switch } from '@suite-native/atoms';
 import {

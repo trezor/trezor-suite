@@ -7,7 +7,7 @@ import { messageSystemActions } from '@suite-common/message-system';
 import { Color } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HStack, Box, Text, RoundedIcon, VStack } from '@suite-native/atoms';
-import { IconName, Icon } from '@suite-common/icons';
+import { IconName, Icon } from '@suite-common/icons-deprecated';
 import { Link } from '@suite-native/link';
 
 type MessageBannerProps = {

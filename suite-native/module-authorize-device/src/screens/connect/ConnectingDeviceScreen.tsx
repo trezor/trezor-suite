@@ -1,7 +1,7 @@
 import { ActivityIndicator } from 'react-native';
 
 import { Text, VStack, Box } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { useDelayedNavigation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';

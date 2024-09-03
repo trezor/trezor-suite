@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { RequireAllOrNone } from 'type-fest';
 
-import { IconName } from '@suite-common/icons';
+import { IconName } from '@suite-common/icons-deprecated';
 
 import { Card, CardProps } from './Card';
 import { Text } from '../Text';

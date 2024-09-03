@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { BottomSheet, VStack, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 

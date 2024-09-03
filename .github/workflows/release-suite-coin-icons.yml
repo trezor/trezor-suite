@@ -29,7 +29,7 @@ jobs:
       - name: Download crypto icons
         run: |
           yarn install
-          cd suite-common/icons
+          cd suite-common/icons-deprecated
           yarn download-crypto-icons
 
       - name: Configure aws credentials
@@ -40,5 +40,5 @@ jobs:
 
       - name: Upload crypto icons
         run: |
-          aws s3 sync suite-common/icons/files/cryptoIcons s3://data.trezor.io/suite/icons/coins
+          aws s3 sync suite-common/icons-deprecated/files/cryptoIcons s3://data.trezor.io/suite/icons/coins
           aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/suite/icons/coins/*'

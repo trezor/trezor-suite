@@ -3,14 +3,13 @@ import { forwardRef, MouseEvent, Ref } from 'react';
 
 import styled, { css, DefaultTheme } from 'styled-components';
 import {
-    IconProps as IconCommonProps,
-    getIconSize,
-    icons,
-} from '@suite-common/icons/src/webComponents';
-import { UIVariant } from '../../config/types';
-
+    icons as iconsDeprecated,
+    IconName as IconNameDeprecated,
+} from '@suite-common/icons-deprecated/src/webComponents';
+import { icons, IconName as IconNameNew } from '@suite-common/icons';
 import { CSSColor, Color } from '@trezor/theme';
 
+import { UIVariant } from '../../config/types';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 
@@ -35,6 +34,20 @@ export type ExclusiveColorOrVariant =
 
 export const allowedIconFrameProps: FramePropsKeys[] = ['margin', 'pointerEvents'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconFrameProps)[number]>;
+
+export const iconSizes = {
+    extraSmall: 8,
+    small: 12,
+    medium: 16,
+    mediumLarge: 20,
+    large: 24,
+    extraLarge: 32,
+} as const;
+
+export type IconSize = keyof typeof iconSizes;
+
+export const getIconSize = (size: IconSize | number) =>
+    typeof size === 'string' ? iconSizes[size] : size;
 
 const variantColorMap: Record<IconVariant, Color> = {
     primary: 'iconPrimaryDefault',
@@ -118,20 +131,22 @@ const SVG = styled(ReactSVG)`
         `}
 ` as typeof ReactSVG;
 
-export type IconProps = AllowedFrameProps &
-    Omit<IconCommonProps, 'color'> & {
-        onClick?: (e: any) => void;
-        className?: string;
-        'data-testid'?: string;
+export type IconName = IconNameNew | IconNameDeprecated;
 
-        /**
-         * @deprecated This should not be used, only for back-compatibility.
-         *             Use Link or some other clickable wrapping component.
-         */
-        cursorPointer?: boolean;
+export type IconProps = AllowedFrameProps & {
+    name: IconName;
+    size?: IconSize | number;
+    onClick?: (e: any) => void;
+    className?: string;
+    'data-testid'?: string;
 
-        hoverColor?: string;
-    } & ExclusiveColorOrVariant;
+    /**
+     * @deprecated This should not be used, only for back-compatibility.
+     *             Use Link or some other clickable wrapping component.
+     */
+    cursorPointer?: boolean;
+    hoverColor?: string;
+} & ExclusiveColorOrVariant;
 
 export const Icon = forwardRef(
     (
@@ -191,18 +206,10 @@ export const Icon = forwardRef(
                 <SVG
                     tabIndex={onClick ? 0 : undefined}
                     onKeyDown={handleOnKeyDown}
-                    src={icons[name]}
+                    src={icons[name as IconNameNew] ?? iconsDeprecated[name as IconNameDeprecated]}
                     beforeInjection={handleInjection}
                 />
             </SvgWrapper>
         );
     },
 );
-
-export {
-    type IconName,
-    icons,
-    type IconSize,
-    iconSizes,
-    getIconSize,
-} from '@suite-common/icons/src/webComponents';

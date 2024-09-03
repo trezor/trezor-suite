@@ -2,7 +2,7 @@ import { ReactNode, Fragment } from 'react';
 
 import { A, G } from '@mobily/ts-belt';
 
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';

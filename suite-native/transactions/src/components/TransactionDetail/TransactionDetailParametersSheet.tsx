@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons-deprecated';
 import {
     BlockchainRootState,
     selectTransactionConfirmations,

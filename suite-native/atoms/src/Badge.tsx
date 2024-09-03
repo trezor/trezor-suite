@@ -1,7 +1,14 @@
 import { ReactNode } from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconSize, IconName, CryptoIconName, icons, CryptoIcon } from '@suite-common/icons';
+import {
+    Icon,
+    IconSize,
+    IconName,
+    CryptoIconName,
+    icons,
+    CryptoIcon,
+} from '@suite-common/icons-deprecated';
 import { Color } from '@trezor/theme';
 
 import { Text } from './Text';

@@ -1,6 +1,13 @@
 import { G } from '@mobily/ts-belt';
 
-import { CryptoIcon, CoinSymbol, Icon, IconName, icons, IconSize } from '@suite-common/icons';
+import {
+    CryptoIcon,
+    CoinSymbol,
+    Icon,
+    IconName,
+    icons,
+    IconSize,
+} from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 

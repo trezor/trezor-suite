@@ -23,7 +23,7 @@ import {
     vec,
 } from '@shopify/react-native-skia';
 
-import { icons } from '@suite-common/icons';
+import { icons } from '@suite-common/icons-deprecated';
 import { useNativeStyles } from '@trezor/styles';
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/helpers';
 
