@@ -2,7 +2,7 @@
     {
         "fiatStringAmount": "500.00",
         "fiatCurrency": "EUR",
-        "receiveCurrency": "BTC",
+        "receiveCurrency": "bitcoin",
         "receiveStringAmount": "0.02073954",
         "rate": 24108.538569322172,
         "quoteId": "mockedQuote3",
@@ -20,7 +20,7 @@
     {
         "fiatStringAmount": "500",
         "fiatCurrency": "EUR",
-        "receiveCurrency": "BTC",
+        "receiveCurrency": "bitcoin",
         "receiveStringAmount": "0.02121718",
         "rate": 23565.80846276461,
         "quoteId": "mockedQuote1",
@@ -38,7 +38,7 @@
     {
         "fiatStringAmount": "500",
         "fiatCurrency": "EUR",
-        "receiveCurrency": "BTC",
+        "receiveCurrency": "bitcoin",
         "receiveStringAmount": "0.0209449",
         "rate": 23872.15980978663,
         "quoteId": "mockedQuote2",
@@ -56,7 +56,7 @@
     {
         "fiatStringAmount": "500.00",
         "fiatCurrency": "EUR",
-        "receiveCurrency": "BTC",
+        "receiveCurrency": "bitcoin",
         "receiveStringAmount": "0.02073954",
         "rate": 24108.538569322172,
         "quoteId": "mockedQuote4",

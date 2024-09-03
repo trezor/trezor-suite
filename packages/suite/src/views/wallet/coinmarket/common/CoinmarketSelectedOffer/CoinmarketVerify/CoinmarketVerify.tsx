@@ -4,15 +4,15 @@ import { QuestionTooltip, Translation } from 'src/components/suite';
 import { Input, variables, Button } from '@trezor/components';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeBuyExchangeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketVerifyOptions } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerifyOptions';
 import { CoinmarketVerifyAccountReturnProps } from 'src/types/coinmarket/coinmarketVerify';
-import { CryptoSymbol } from 'invity-api';
+import { CryptoId } from 'invity-api';
 import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { CoinmarketAddressOptions } from 'src/views/wallet/coinmarket/common/CoinmarketAddressOptions';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const Wrapper = styled.div`
     display: flex;
@@ -62,11 +62,12 @@ const Row = styled.div`
 
 interface CoinmarketVerifyProps {
     coinmarketVerifyAccount: CoinmarketVerifyAccountReturnProps;
-    currency: CryptoSymbol;
+    currency: CryptoId;
 }
 
 export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: CoinmarketVerifyProps) => {
     const { translationString } = useTranslation();
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const context = useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
     const { callInProgress, device, verifyAddress, addressVerified, confirmTrade } = context;
     const exchangeQuote = isCoinmarketExchangeOffers(context) ? context.selectedQuote : null;
@@ -130,7 +131,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
             <Heading>
                 <Translation
                     id="TR_EXCHANGE_RECEIVING_ADDRESS_INFO"
-                    values={{ symbol: cryptoToCoinSymbol(currency) }}
+                    values={{ symbol: cryptoIdToCoinSymbol(currency) }}
                 />
             </Heading>
             <CardContent>

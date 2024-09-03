@@ -2,7 +2,7 @@
     "trade": {
         "fiatStringAmount": "500",
         "fiatCurrency": "EUR",
-        "receiveCurrency": "BTC",
+        "receiveCurrency": "bitcoin",
         "receiveStringAmount": "0.02066953",
         "rate": 24190.19687433628,
         "orderId": "6476d7c4-a873-400f-8276-5a47a43cd392",

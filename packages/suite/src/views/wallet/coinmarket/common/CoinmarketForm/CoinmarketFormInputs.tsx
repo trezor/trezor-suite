@@ -180,6 +180,7 @@ export const CoinmarketFormInputs = () => {
                         cryptoSelectName={FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
                         supportedCryptoCurrencies={supportedCryptoCurrencies}
                         methods={{ ...context }}
+                        openMenuOnInput
                     />
                 </CoinmarketFormInput>
                 <CoinmarketBorder

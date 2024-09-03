@@ -1,7 +1,6 @@
-import { CryptoSymbol } from 'invity-api';
+import { CryptoId } from 'invity-api';
 import { Column } from '@trezor/components';
 import { CoinmarketTransactionId } from 'src/views/wallet/coinmarket/common';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketInfoHeader } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoHeader';
 import { CoinmarketInfoItem } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoItem';
@@ -27,14 +26,6 @@ export const CoinmarketSelectedOfferInfo = ({
 }: CoinmarketSelectedOfferInfoProps) => {
     const { exchange } = selectedQuote;
 
-    const receiveCurrency = quoteAmounts?.receiveCurrency
-        ? cryptoToCoinSymbol(quoteAmounts.receiveCurrency)
-        : undefined;
-    const sendCurrency =
-        type === 'exchange' && quoteAmounts?.sendCurrency
-            ? cryptoToCoinSymbol(quoteAmounts.sendCurrency as CryptoSymbol)
-            : quoteAmounts?.sendCurrency;
-
     const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto: true });
 
     return (
@@ -47,14 +38,14 @@ export const CoinmarketSelectedOfferInfo = ({
                     account={account}
                     type={type}
                     label={amountLabels.sendLabel}
-                    currency={sendCurrency}
+                    currency={quoteAmounts?.sendCurrency as CryptoId}
                     amount={quoteAmounts?.sendAmount}
                 />
                 <CoinmarketInfoItem
                     account={selectedAccount}
                     type={type}
                     label={amountLabels.receiveLabel}
-                    currency={receiveCurrency}
+                    currency={quoteAmounts?.receiveCurrency}
                     amount={quoteAmounts?.receiveAmount}
                     isReceive
                 />

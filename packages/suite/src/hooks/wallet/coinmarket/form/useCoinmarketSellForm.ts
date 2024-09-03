@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import type { BankAccount, SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
+import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 import { amountToSatoshi, formatAmount, getNetwork } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
@@ -229,7 +229,7 @@ export const useCoinmarketSellForm = ({
         const currencySelect = outputs[0].currency ?? '';
         const request: SellFiatTradeQuoteRequest = {
             amountInCrypto,
-            cryptoCurrency: sendCryptoSelect?.value ?? FORM_DEFAULT_CRYPTO_CURRENCY,
+            cryptoCurrency: sendCryptoSelect?.value ?? (FORM_DEFAULT_CRYPTO_CURRENCY as CryptoId),
             fiatCurrency: currencySelect.value.toUpperCase(),
             country: countrySelect.value,
             cryptoStringAmount,

@@ -68,7 +68,7 @@ export const CoinmarketFormInputAccount = <
                             onChange(selected);
                         }}
                         filterOption={createFilter<CoinmarketCryptoListProps>({
-                            stringify: option => `${option.value} ${option.data.cryptoName}`,
+                            stringify: option => `${option.label} ${option.data.cryptoName}`,
                         })}
                         formatGroupLabel={group => (
                             <CoinmarketFormOptionGroupLabel>

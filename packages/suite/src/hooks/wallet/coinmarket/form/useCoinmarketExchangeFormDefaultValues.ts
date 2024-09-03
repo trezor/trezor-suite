@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    buildFiatOption,
+    cryptoIdToNetworkSymbol,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useSelector } from 'src/hooks/suite';
@@ -11,7 +14,6 @@ import {
 } from 'src/types/coinmarket/coinmarketForm';
 import { FormState, Output } from '@suite-common/wallet-types';
 import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormDefaultValues';
-import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { FORM_EXCHANGE_CEX, FORM_RATE_FIXED } from 'src/constants/wallet/coinmarket/form';
 
 export const useCoinmarketExchangeFormDefaultValues = (
@@ -26,7 +28,7 @@ export const useCoinmarketExchangeFormDefaultValues = (
             cryptoOptions.find(
                 option =>
                     option.descriptor === account.descriptor &&
-                    cryptoToNetworkSymbol(option.value) === account.symbol,
+                    cryptoIdToNetworkSymbol(option.value) === account.symbol,
             ),
         [account.descriptor, account.symbol, cryptoOptions],
     );

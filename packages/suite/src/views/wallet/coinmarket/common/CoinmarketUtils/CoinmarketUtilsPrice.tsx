@@ -1,5 +1,4 @@
 import { CoinmarketCryptoAmount, CoinmarketFiatAmount } from '..';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import styled from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
@@ -62,7 +61,7 @@ const CoinmarketUtilsPrice = ({
                             {receiveCurrency && (
                                 <CoinmarketCryptoAmount
                                     amount={receiveAmount}
-                                    symbol={cryptoToCoinSymbol(receiveCurrency)}
+                                    cryptoId={receiveCurrency}
                                     displayLogo
                                 />
                             )}

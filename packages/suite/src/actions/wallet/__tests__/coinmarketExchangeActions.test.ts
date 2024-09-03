@@ -4,7 +4,7 @@ import coinmarketReducer from 'src/reducers/wallet/coinmarketReducer';
 
 import * as coinmarketExchangeActions from '../coinmarketExchangeActions';
 import invityAPI from 'src/services/suite/invityAPI';
-import { ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
+import { CryptoId, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
 export const getInitialState = () => ({
     wallet: {
@@ -100,7 +100,7 @@ describe('Coinmarket Exchange Actions', () => {
         ];
 
         setFetchMock({
-            'https://exchange.trezor.io/api/v2/exchange/list': { ok: true, response: exchangeList },
+            'https://exchange.trezor.io/api/v3/exchange/list': { ok: true, response: exchangeList },
         });
 
         const store = initStore(getInitialState());
@@ -126,8 +126,8 @@ describe('Coinmarket Exchange Actions', () => {
         const store = initStore(getInitialState());
 
         const request: ExchangeTradeQuoteRequest = {
-            receive: 'BTC',
-            send: 'LTC',
+            receive: 'BTC' as CryptoId,
+            send: 'LTC' as CryptoId,
             sendStringAmount: '12',
         };
 

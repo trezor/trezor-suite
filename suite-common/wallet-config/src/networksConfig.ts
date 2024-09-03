@@ -43,6 +43,7 @@ export const networks = {
             },
         },
         coingeckoId: 'bitcoin',
+        coingeckoNativeId: 'bitcoin',
     },
     ltc: {
         symbol: 'ltc',
@@ -67,6 +68,7 @@ export const networks = {
             },
         },
         coingeckoId: 'litecoin',
+        coingeckoNativeId: 'litecoin',
     },
     eth: {
         symbol: 'eth',
@@ -104,6 +106,7 @@ export const networks = {
             },
         },
         coingeckoId: 'ethereum',
+        coingeckoNativeId: 'ethereum',
     },
     etc: {
         symbol: 'etc',
@@ -123,6 +126,7 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'ethereum-classic',
+        coingeckoNativeId: 'ethereum-classic',
     },
     // Ripple
     xrp: {
@@ -141,6 +145,7 @@ export const networks = {
         customBackends: [],
         accountTypes: {},
         coingeckoId: 'ripple',
+        coingeckoNativeId: 'ripple',
     },
     bch: {
         symbol: 'bch',
@@ -158,6 +163,7 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'bitcoin-cash',
+        coingeckoNativeId: 'bitcoin-cash',
     },
     btg: {
         symbol: 'btg',
@@ -179,6 +185,7 @@ export const networks = {
             },
         },
         coingeckoId: 'bitcoin-gold',
+        coingeckoNativeId: 'bitcoin-gold',
     },
     dash: {
         symbol: 'dash',
@@ -196,6 +203,7 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'dash',
+        coingeckoNativeId: 'dash',
     },
     dgb: {
         symbol: 'dgb',
@@ -217,6 +225,7 @@ export const networks = {
             },
         },
         coingeckoId: 'digibyte',
+        coingeckoNativeId: 'digibyte',
     },
     doge: {
         symbol: 'doge',
@@ -234,6 +243,7 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'dogecoin',
+        coingeckoNativeId: 'dogecoin',
     },
     nmc: {
         symbol: 'nmc',
@@ -251,6 +261,7 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'namecoin',
+        coingeckoNativeId: 'namecoin',
     },
     vtc: {
         symbol: 'vtc',
@@ -275,6 +286,7 @@ export const networks = {
             },
         },
         coingeckoId: 'vertcoin',
+        coingeckoNativeId: 'vertcoin',
     },
     zec: {
         symbol: 'zec',
@@ -292,6 +304,7 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'zcash',
+        coingeckoNativeId: 'zcash',
     },
     ada: {
         // icarus derivation
@@ -327,6 +340,7 @@ export const networks = {
             },
         },
         coingeckoId: 'cardano',
+        coingeckoNativeId: 'cardano',
     },
     sol: {
         symbol: 'sol',
@@ -355,6 +369,7 @@ export const networks = {
             },
         },
         coingeckoId: 'solana',
+        coingeckoNativeId: 'solana',
     },
     matic: {
         symbol: 'matic',
@@ -380,6 +395,7 @@ export const networks = {
             },
         },
         coingeckoId: 'polygon-pos',
+        coingeckoNativeId: 'matic-network',
     },
     bnb: {
         symbol: 'bnb',
@@ -405,6 +421,7 @@ export const networks = {
             },
         },
         coingeckoId: 'binance-smart-chain',
+        coingeckoNativeId: 'binancecoin',
     },
     // testnets
     test: {
@@ -439,6 +456,7 @@ export const networks = {
             },
         },
         coingeckoId: undefined,
+        coingeckoNativeId: undefined,
     },
     regtest: {
         symbol: 'regtest',
@@ -473,6 +491,7 @@ export const networks = {
         },
         isDebugOnlyNetwork: true,
         coingeckoId: undefined,
+        coingeckoNativeId: undefined,
     },
     tsep: {
         symbol: 'tsep',
@@ -492,6 +511,7 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: undefined,
+        coingeckoNativeId: undefined,
     },
     thol: {
         symbol: 'thol',
@@ -511,6 +531,7 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: undefined,
+        coingeckoNativeId: undefined,
     },
     txrp: {
         symbol: 'txrp',
@@ -528,6 +549,7 @@ export const networks = {
         customBackends: [],
         accountTypes: {},
         coingeckoId: undefined,
+        coingeckoNativeId: undefined,
     },
     tada: {
         // icarus derivation
@@ -561,6 +583,7 @@ export const networks = {
             },
         },
         coingeckoId: undefined,
+        coingeckoNativeId: undefined,
     },
     dsol: {
         symbol: 'dsol',
@@ -584,6 +607,7 @@ export const networks = {
         customBackends: ['solana'],
         accountTypes: {},
         coingeckoId: undefined,
+        coingeckoNativeId: undefined,
     },
 } as const satisfies Networks;
 

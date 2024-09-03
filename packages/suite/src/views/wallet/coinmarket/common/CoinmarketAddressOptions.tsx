@@ -14,7 +14,7 @@ import { CoinmarketBuyAddressOptionsType } from 'src/types/coinmarket/coinmarket
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
 import { spacingsPx, typography } from '@trezor/theme';
 import { formatAmount, getNetwork } from '@suite-common/wallet-utils';
-import { getNetworkDecimals } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { getNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const AddressWrapper = styled.div`
     display: flex;

@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { CoinmarketFiatAmount } from '../CoinmarketFiatAmount';
 import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { useCoinmarketInfo } from '../../../../../hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketTradeDetailType } from 'src/types/coinmarket/coinmarket';
 import { spacingsPx } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -11,7 +11,7 @@ import {
     isCoinmarketBuyOffers,
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { CryptoSymbol } from 'invity-api';
+import { CryptoId } from 'invity-api';
 import { Icon } from '@trezor/components';
 
 const Arrow = styled.div`
@@ -55,6 +55,7 @@ const CoinmarketFeaturedOffersAmount = ({
 export const CoinmarketFeaturedOffersAmounts = ({
     quote,
 }: CoinmarketFeaturedOffersAmountsProps) => {
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const context = useCoinmarketFormContext();
     const quoteProps = getCryptoQuoteAmountProps(quote, context);
 
@@ -73,7 +74,7 @@ export const CoinmarketFeaturedOffersAmounts = ({
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={quoteProps.sendAmount}
-                        symbol={cryptoToCoinSymbol(quoteProps.receiveCurrency)}
+                        symbol={cryptoIdToCoinSymbol(quoteProps.receiveCurrency)}
                     />
                 }
             />
@@ -87,7 +88,7 @@ export const CoinmarketFeaturedOffersAmounts = ({
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={quoteProps.receiveAmount}
-                        symbol={cryptoToCoinSymbol(quoteProps.receiveCurrency)}
+                        symbol={cryptoIdToCoinSymbol(quoteProps.receiveCurrency)}
                     />
                 }
                 toAmount={
@@ -100,7 +101,7 @@ export const CoinmarketFeaturedOffersAmounts = ({
         );
     }
 
-    const sendCurrencyExchange = quoteProps?.sendCurrency as CryptoSymbol | undefined;
+    const sendCurrencyExchange = quoteProps?.sendCurrency as CryptoId | undefined;
 
     if (!sendCurrencyExchange) return null;
 
@@ -110,14 +111,14 @@ export const CoinmarketFeaturedOffersAmounts = ({
                 <FormattedCryptoAmount
                     disableHiddenPlaceholder
                     value={quoteProps.sendAmount}
-                    symbol={cryptoToCoinSymbol(sendCurrencyExchange)}
+                    symbol={cryptoIdToCoinSymbol(sendCurrencyExchange)}
                 />
             }
             toAmount={
                 <FormattedCryptoAmount
                     disableHiddenPlaceholder
                     value={quoteProps.receiveAmount}
-                    symbol={cryptoToCoinSymbol(quoteProps.receiveCurrency)}
+                    symbol={cryptoIdToCoinSymbol(quoteProps.receiveCurrency)}
                 />
             }
         />

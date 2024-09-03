@@ -16,7 +16,7 @@ const coinmarketMiddleware =
         if (action.type === COINMARKET_COMMON.LOAD_DATA) {
             const { isLoading, lastLoadedTimestamp } = api.getState().wallet.coinmarket;
             const { account, status } = api.getState().wallet.selectedAccount;
-            const { symbolsInfo } = api.getState().wallet.coinmarket.info;
+            const { platforms, coins } = api.getState().wallet.coinmarket.info;
             const { buyInfo } = api.getState().wallet.coinmarket.buy;
             const { exchangeInfo } = api.getState().wallet.coinmarket.exchange;
             const { sellInfo } = api.getState().wallet.coinmarket.sell;
@@ -42,10 +42,10 @@ const coinmarketMiddleware =
 
                 const loadPromises: Promise<void>[] = [];
 
-                if (isDifferentAccount || !symbolsInfo || symbolsInfo.length === 0) {
+                if (isDifferentAccount || !platforms || !coins) {
                     loadPromises.push(
-                        coinmarketInfoAction.loadSymbolsInfo().then(symbolsInfo => {
-                            api.dispatch(coinmarketInfoAction.saveSymbolsInfo(symbolsInfo));
+                        invityAPI.getInfo().then(info => {
+                            api.dispatch(coinmarketInfoAction.saveInfo(info));
                         }),
                     );
                 }

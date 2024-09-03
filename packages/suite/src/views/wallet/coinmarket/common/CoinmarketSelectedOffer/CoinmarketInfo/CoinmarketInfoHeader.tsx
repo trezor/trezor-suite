@@ -1,12 +1,10 @@
 import { Row } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
-import { CryptoSymbol } from 'invity-api';
+import { CryptoId } from 'invity-api';
 import { Translation } from 'src/components/suite';
-import {
-    cryptoToNetworkSymbol,
-    isCryptoSymbolToken,
-} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { CoinmarketCoinImage } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { cryptoIdToNetwork, parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 import styled from 'styled-components';
 
 const Header = styled.div`
@@ -20,30 +18,30 @@ const AccountText = styled.div`
 `;
 
 interface CoinmarketInfoHeaderProps {
-    receiveCurrency?: CryptoSymbol;
+    receiveCurrency?: CryptoId;
 }
 
 export const CoinmarketInfoHeader = ({ receiveCurrency }: CoinmarketInfoHeaderProps) => {
-    const network =
-        receiveCurrency && isCryptoSymbolToken(receiveCurrency)
-            ? cryptoToNetworkSymbol(receiveCurrency)?.toUpperCase()
-            : undefined;
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+
+    const { networkId, contractAddress } = parseCryptoId(receiveCurrency!);
+    const network = cryptoIdToNetwork(networkId);
 
     return (
         <Header>
             <Row alignItems="center">
-                <CoinmarketCoinImage symbol={receiveCurrency} size="large" />
+                <CoinmarketCoinLogo cryptoId={receiveCurrency!} size={24} />
                 <AccountText>
-                    {network ? (
+                    {contractAddress && network ? (
                         <Translation
                             id="TR_COINMARKET_TOKEN_NETWORK"
                             values={{
-                                tokenName: receiveCurrency,
-                                networkName: network,
+                                tokenName: cryptoIdToCoinSymbol(receiveCurrency!),
+                                networkName: network.name,
                             }}
                         />
                     ) : (
-                        receiveCurrency
+                        cryptoIdToCoinSymbol(receiveCurrency!)
                     )}
                 </AccountText>
             </Row>

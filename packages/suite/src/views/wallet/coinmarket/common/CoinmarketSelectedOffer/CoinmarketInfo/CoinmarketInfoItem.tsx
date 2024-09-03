@@ -1,6 +1,7 @@
 import { Account } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
+import { CryptoId } from 'invity-api';
 import { AccountLabeling, Translation } from 'src/components/suite';
 import { CoinmarketPayGetLabelType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 import {
@@ -9,7 +10,7 @@ import {
     CoinmarketInfoRightColumn,
     CoinmarketTestWrapper,
 } from 'src/views/wallet/coinmarket';
-import { CoinmarketCoinImage } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
+import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import styled from 'styled-components';
@@ -29,7 +30,7 @@ interface CoinmarketInfoItemProps {
     account?: Account;
     type: CoinmarketTradeType;
     label: CoinmarketPayGetLabelType;
-    currency?: string;
+    currency?: CryptoId;
     amount?: string;
     isReceive?: boolean;
 }
@@ -50,9 +51,9 @@ export const CoinmarketInfoItem = ({
             {type === 'exchange' || isReceive ? (
                 <Column>
                     <Row alignItems="center">
-                        <CoinmarketCoinImage symbol={currency} />
+                        <CoinmarketCoinLogo cryptoId={currency!} size={20} />
                         <CoinmarketInfoAmount>
-                            <CoinmarketCryptoAmount amount={amount} symbol={currency} />
+                            <CoinmarketCryptoAmount amount={amount} cryptoId={currency!} />
                         </CoinmarketInfoAmount>
                     </Row>
                     {account && (

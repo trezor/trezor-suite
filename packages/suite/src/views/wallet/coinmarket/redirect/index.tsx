@@ -6,7 +6,7 @@ import { variables } from '@trezor/components';
 import { useCoinmarketRedirect } from 'src/hooks/wallet/useCoinmarketRedirect';
 import { Translation } from 'src/components/suite';
 import { FeeLevel } from '@trezor/connect';
-import { CryptoSymbol } from 'invity-api';
+import { CryptoId } from 'invity-api';
 
 const Wrapper = styled.div`
     display: flex;
@@ -40,7 +40,7 @@ const CoinmarketRedirect = () => {
                 wantCrypto: params[4] === 'qc',
                 fiatCurrency: params[6],
                 amount: params[7],
-                receiveCurrency: params[8] as CryptoSymbol,
+                receiveCurrency: params[8] as CryptoId,
                 country: params[5],
             });
         }
@@ -59,7 +59,7 @@ const CoinmarketRedirect = () => {
                 amountInCrypto: params[4] === 'qc',
                 fiatCurrency: params[6],
                 amount: params[7],
-                cryptoCurrency: params[8] as CryptoSymbol,
+                cryptoCurrency: params[8] as CryptoId,
                 country: params[5],
                 orderId,
                 selectedFee: params[feeIndex] as FeeLevel['label'],

@@ -1,6 +1,6 @@
 import type { Account } from 'src/types/wallet';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { CryptoSymbol } from 'invity-api';
+import { CryptoId } from 'invity-api';
 import { UseFormReturn } from 'react-hook-form';
 import { AccountAddress } from '@trezor/connect';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
@@ -17,7 +17,7 @@ export interface CoinmarketVerifyFormAccountOptionProps {
 }
 
 export interface CoinmarketVerifyAccountProps {
-    currency: CryptoSymbol | undefined;
+    currency: CryptoId | undefined;
 }
 
 export interface CoinmarketGetTranslationIdsProps {
@@ -28,7 +28,7 @@ export interface CoinmarketGetTranslationIdsProps {
 export interface CoinmarketVerifyAccountReturnProps {
     form: UseFormReturn<CoinmarketVerifyFormProps>;
     accountAddress: AccountAddress | Pick<AccountAddress, 'path' | 'address'> | undefined;
-    receiveNetwork: NetworkSymbol | CryptoSymbol | undefined;
+    receiveNetwork: CryptoId | undefined;
     selectAccountOptions: CoinmarketVerifyFormAccountOptionProps[];
     selectedAccountOption?: CoinmarketVerifyFormAccountOptionProps;
     isMenuOpen: boolean | undefined;
@@ -49,11 +49,11 @@ export type CoinmarketVerifyOptionsProps = Pick<
 
 export interface CoinmarketVerifyOptionsItemProps {
     option: CoinmarketVerifyFormAccountOptionProps;
-    receiveNetwork: NetworkSymbol | CryptoSymbol | undefined;
+    receiveNetwork: CryptoId | undefined;
 }
 
 export interface CoinmarketGetSuiteReceiveAccountsProps {
-    currency: CryptoSymbol | undefined;
+    currency: CryptoId | undefined;
     device: TrezorDevice | undefined;
     receiveNetwork: NetworkSymbol | undefined;
     isDebug: boolean;

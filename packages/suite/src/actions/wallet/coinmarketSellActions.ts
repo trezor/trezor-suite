@@ -1,6 +1,6 @@
 import { Account } from 'src/types/wallet';
 import {
-    CryptoSymbol,
+    CryptoId,
     SellFiatTrade,
     SellFiatTradeQuoteRequest,
     SellListResponse,
@@ -15,7 +15,7 @@ export interface SellInfo {
     sellList?: SellListResponse;
     providerInfos: { [name: string]: SellProviderInfo };
     supportedFiatCurrencies: Set<string>;
-    supportedCryptoCurrencies: Set<CryptoSymbol>;
+    supportedCryptoCurrencies: Set<CryptoId>;
 }
 
 export type CoinmarketSellAction =
@@ -56,7 +56,7 @@ export const loadSellInfo = async (): Promise<SellInfo> => {
     }
 
     const supportedFiatCurrencies = new Set<string>();
-    const supportedCryptoCurrencies = new Set<CryptoSymbol>();
+    const supportedCryptoCurrencies = new Set<CryptoId>();
     sellList?.providers.forEach(p => {
         if (p.tradedFiatCurrencies) {
             p.tradedFiatCurrencies

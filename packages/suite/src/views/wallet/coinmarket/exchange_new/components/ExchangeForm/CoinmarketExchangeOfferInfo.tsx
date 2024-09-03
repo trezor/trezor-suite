@@ -14,8 +14,8 @@ import {
 } from 'src/components/suite';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import { typography } from '@trezor/theme';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { CoinmarketCoinImage } from '../../../common/CoinmarketCoinImage';
+import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const Wrapper = styled.div`
     margin: 0 0 0 30px;
@@ -137,6 +137,8 @@ export const CoinmarketExchangeOfferInfo = ({
     const provider =
         exchangeInfo?.providerInfos && exchange ? exchangeInfo?.providerInfos[exchange] : undefined;
 
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+
     if (!provider) return null;
 
     return (
@@ -148,11 +150,11 @@ export const CoinmarketExchangeOfferInfo = ({
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <CoinmarketCoinImage symbol={cryptoToCoinSymbol(send!)} size="small" />
+                            <CoinmarketCoinLogo cryptoId={send!} size={20} />
                             <Amount>
                                 <FormattedCryptoAmount
                                     value={sendStringAmount}
-                                    symbol={cryptoToCoinSymbol(send!)}
+                                    symbol={cryptoIdToCoinSymbol(send!)}
                                 />
                             </Amount>
                         </Dark>
@@ -174,15 +176,12 @@ export const CoinmarketExchangeOfferInfo = ({
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <CoinmarketCoinImage
-                                symbol={cryptoToCoinSymbol(receive!)}
-                                size="small"
-                            />
+                            <CoinmarketCoinLogo cryptoId={receive!} size={20} />
                             <Amount>
                                 {(!provider.isFixedRate || selectedQuote.isDex) && '≈ '}
                                 <FormattedCryptoAmount
                                     value={receiveStringAmount}
-                                    symbol={cryptoToCoinSymbol(receive!)}
+                                    symbol={cryptoIdToCoinSymbol(receive!)}
                                 />
                             </Amount>
                         </Dark>

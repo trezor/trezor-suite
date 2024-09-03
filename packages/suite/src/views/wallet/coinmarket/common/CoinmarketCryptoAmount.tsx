@@ -1,40 +1,38 @@
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import styled from 'styled-components';
 import { Row } from '@trezor/components';
-import { CoinmarketCoinImage } from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
+import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { CryptoId } from 'invity-api';
 import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 
-const TokenLogo = styled(CoinmarketCoinImage)`
-    margin-right: ${spacingsPx.sm};
+const LogoWrapper = styled.div`
+    line-height: 0;
 `;
 
 export interface CoinmarketCryptoAmountProps {
     amount?: string | number;
-    symbol?: string;
+    cryptoId: CryptoId;
     displayLogo?: boolean;
 }
 
 export const CoinmarketCryptoAmount = ({
     amount,
-    symbol,
+    cryptoId,
     displayLogo,
 }: CoinmarketCryptoAmountProps) => {
-    const symbolUpper = symbol?.toUpperCase();
-
-    if (!amount || amount === '') {
-        return (
-            <Row alignItems="center">
-                {displayLogo && <TokenLogo symbol={symbol} />}
-                {symbolUpper}
-            </Row>
-        );
-    }
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const symbol = cryptoIdToCoinSymbol(cryptoId);
 
     return (
         <CoinmarketTestWrapper data-testid="@coinmarket/form/info/crypto-amount">
             <Row alignItems="center">
-                {displayLogo && <TokenLogo symbol={symbol} />}
+                {displayLogo && (
+                    <LogoWrapper>
+                        <CoinmarketCoinLogo cryptoId={cryptoId} margin={{ right: spacings.sm }} />
+                    </LogoWrapper>
+                )}
                 <FormattedCryptoAmount
                     value={amount}
                     symbol={symbol}

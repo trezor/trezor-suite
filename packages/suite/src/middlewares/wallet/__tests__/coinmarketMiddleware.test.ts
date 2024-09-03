@@ -11,6 +11,11 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 jest.mock('src/services/suite/invityAPI');
 invityAPI.setInvityServersEnvironment = () => {};
 invityAPI.createInvityAPIKey = () => {};
+invityAPI.getInfo = () =>
+    Promise.resolve({
+        coins: {},
+        platforms: {},
+    });
 
 export const ACCOUNT = {
     descriptor: 'btc-descriptor',

@@ -1891,6 +1891,7 @@
   "TR_TRADE_EXCHANGES": "exchanges",
   "TR_TRADE_REDIRECTING": "Redirecting ...",
   "TR_TRADE_SELECT_COIN": "Select a coin...",
+  "TR_TRADE_ENTER_COIN": "Enter crypto name or symbol...",
   "TR_TRADE_SELLS": "sells",
   "TR_TRANSACTIONS_NOT_AVAILABLE": "Transaction history not available",
   "TR_TRANSACTIONS_SEARCH_TIP_1": "Tip: You can search for transaction IDs, addresses, tokens, labels, amounts, and dates.",

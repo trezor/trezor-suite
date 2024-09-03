@@ -2,7 +2,7 @@ import { Translation } from 'src/components/suite';
 import { CoinmarketTextButton } from 'src/views/wallet/coinmarket';
 
 interface CoinmarketFormSwitcherCryptoFiatProps {
-    symbol: string;
+    symbol?: string;
     isDisabled: boolean;
     toggleAmountInCrypto: () => void;
 }

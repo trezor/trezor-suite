@@ -43,7 +43,7 @@ import {
 import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
 import type { ReduxModalProps } from '../ReduxModal';
-import { CryptoSymbol } from 'invity-api';
+import { CryptoId } from 'invity-api';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
@@ -119,7 +119,7 @@ export const UserContextModal = ({
                     type="BUY"
                     decision={payload.decision}
                     provider={payload.provider}
-                    cryptoCurrency={payload.cryptoCurrency as CryptoSymbol}
+                    cryptoCurrency={payload.cryptoCurrency as CryptoId}
                 />
             );
         }
@@ -130,7 +130,7 @@ export const UserContextModal = ({
                     type="SELL"
                     decision={payload.decision}
                     provider={payload.provider}
-                    cryptoCurrency={payload.cryptoCurrency as CryptoSymbol}
+                    cryptoCurrency={payload.cryptoCurrency as CryptoId}
                 />
             );
 
@@ -141,8 +141,8 @@ export const UserContextModal = ({
                     type="EXCHANGE"
                     decision={payload.decision}
                     provider={payload.provider}
-                    toCryptoCurrency={payload.toCryptoCurrency as CryptoSymbol}
-                    fromCryptoCurrency={payload.fromCryptoCurrency as CryptoSymbol}
+                    toCryptoCurrency={payload.toCryptoCurrency as CryptoId}
+                    fromCryptoCurrency={payload.fromCryptoCurrency as CryptoId}
                 />
             );
         case 'coinmarket-exchange-dex-terms':
@@ -152,8 +152,8 @@ export const UserContextModal = ({
                     type="EXCHANGE_DEX"
                     decision={payload.decision}
                     provider={payload.provider}
-                    toCryptoCurrency={payload.toCryptoCurrency as CryptoSymbol}
-                    fromCryptoCurrency={payload.fromCryptoCurrency as CryptoSymbol}
+                    toCryptoCurrency={payload.toCryptoCurrency as CryptoId}
+                    fromCryptoCurrency={payload.fromCryptoCurrency as CryptoId}
                 />
             );
         case 'import-transaction':

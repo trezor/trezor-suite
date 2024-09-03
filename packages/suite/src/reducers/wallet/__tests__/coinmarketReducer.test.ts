@@ -10,8 +10,9 @@ import {
 } from 'src/actions/wallet/constants';
 import {
     BuyTradeQuoteRequest,
-    CryptoSymbolInfo,
+    CryptoId,
     ExchangeTradeQuoteRequest,
+    InfoResponse,
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
@@ -48,43 +49,50 @@ describe('settings reducer', () => {
         expect(
             reducer(undefined, {
                 type: COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY,
-                modalCryptoSymbol: 'ANKR@ETH',
+                modalCryptoId: 'ankr' as CryptoId,
             }),
         ).toEqual({
             ...initialState,
-            modalCryptoSymbol: 'ANKR@ETH',
+            modalCryptoId: 'ankr',
         });
 
         expect(
             reducer(undefined, {
                 type: COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY,
-                modalCryptoSymbol: undefined,
+                modalCryptoId: undefined,
             }),
         ).toEqual({
             ...initialState,
-            modalCryptoSymbol: undefined,
+            modalCryptoId: undefined,
         });
     });
 
     it('COINMARKET_INFO.SAVE_SYMBOLS_INFO', () => {
-        const symbolsInfo: CryptoSymbolInfo[] = [
-            {
-                name: 'Bitcoin',
-                symbol: 'BTC',
-                category: 'Popular',
+        const info: InfoResponse = {
+            platforms: {
+                ethereum: {
+                    name: 'Ethereum',
+                },
             },
-            {
-                name: 'Ethereum',
-                symbol: 'ETH',
-                category: 'Popular',
+            coins: {
+                ethereum: {
+                    coingeckoId: 'ethereum',
+                    symbol: 'ETH',
+                    name: 'Ethereum',
+                    services: {
+                        buy: true,
+                        sell: true,
+                        exchange: true,
+                    },
+                },
             },
-        ];
+        };
         expect(
             reducer(undefined, {
-                type: COINMARKET_INFO.SAVE_SYMBOLS_INFO,
-                symbolsInfo,
+                type: COINMARKET_INFO.SAVE_INFO,
+                info,
             }),
-        ).toEqual({ ...initialState, info: { ...initialState.info, symbolsInfo } });
+        ).toEqual({ ...initialState, info: { ...initialState.info, ...info } });
     });
 
     it('COINMARKET_BUY.SAVE_BUY_INFO', () => {
@@ -95,7 +103,7 @@ describe('settings reducer', () => {
                 defaultAmountsOfFiatCurrencies: new Map([['usd', '1000']]),
             },
             providerInfos: {},
-            supportedCryptoCurrencies: new Set(['BTC', 'ETH']),
+            supportedCryptoCurrencies: new Set(['BTC', 'ETH']) as Set<CryptoId>,
             supportedFiatCurrencies: new Set(['usd']),
         };
         expect(
@@ -118,7 +126,7 @@ describe('settings reducer', () => {
     it('COINMARKET_BUY.SAVE_QUOTE_REQUEST', () => {
         const request: BuyTradeQuoteRequest = {
             fiatCurrency: 'EUR',
-            receiveCurrency: 'BTC',
+            receiveCurrency: 'BTC' as CryptoId,
             wantCrypto: false,
             country: 'CZ',
             fiatStringAmount: '1',
@@ -218,8 +226,8 @@ describe('settings reducer', () => {
     it('COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO', () => {
         const exchangeInfo: ExchangeInfo = {
             providerInfos: {},
-            buySymbols: new Set(['BTC', 'ETH']),
-            sellSymbols: new Set(['USDT@ETH']),
+            buySymbols: new Set(['BTC', 'ETH']) as Set<CryptoId>,
+            sellSymbols: new Set(['USDT@ETH']) as Set<CryptoId>,
         };
         expect(
             reducer(undefined, {
@@ -231,8 +239,8 @@ describe('settings reducer', () => {
 
     it('COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST', () => {
         const request: ExchangeTradeQuoteRequest = {
-            receive: 'BTC',
-            send: 'LTC',
+            receive: 'BTC' as CryptoId,
+            send: 'LTC' as CryptoId,
             sendStringAmount: '1',
         };
         expect(
@@ -266,7 +274,7 @@ describe('settings reducer', () => {
             data: {
                 fiatStringAmount: '47.12',
                 fiatCurrency: 'EUR',
-                receiveCurrency: 'BTC',
+                receiveCurrency: 'BTC' as CryptoId,
                 receiveStringAmount: '0.004705020432603938',
                 rate: 10014.834297738,
                 quoteId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
@@ -290,8 +298,8 @@ describe('settings reducer', () => {
             tradeType: 'exchange',
             data: {
                 sendStringAmount: '47.12',
-                send: 'LTC',
-                receive: 'BTC',
+                send: 'LTC' as CryptoId,
+                receive: 'BTC' as CryptoId,
                 receiveStringAmount: '0.004705020432603938',
                 orderId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
                 exchange: 'changelly',
@@ -361,7 +369,7 @@ describe('settings reducer', () => {
     it('COINMARKET_SELL.SAVE_QUOTE_REQUEST', () => {
         const request: SellFiatTradeQuoteRequest = {
             amountInCrypto: true,
-            cryptoCurrency: 'BTC',
+            cryptoCurrency: 'BTC' as CryptoId,
             fiatCurrency: 'EUR',
             cryptoStringAmount: '1',
         };

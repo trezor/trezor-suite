@@ -4,6 +4,7 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import {
     buildFiatOption,
     coinmarketBuildAccountOptions,
+    cryptoIdToNetworkSymbol,
     getDefaultCountry,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
@@ -18,7 +19,6 @@ import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { useAccountLabel } from 'src/components/suite/AccountLabel';
-import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import {
     FORM_DEFAULT_FIAT_CURRENCY,
     FORM_DEFAULT_PAYMENT_METHOD,
@@ -31,7 +31,6 @@ export const useCoinmarketBuildAccountGroups = (
     const accountLabels = useSelector(selectAccountLabels);
     const device = useSelector(selectDevice);
     const { defaultAccountLabelString } = useAccountLabel();
-    const { symbolsInfo } = useSelector(state => state.wallet.coinmarket.info);
     const { tokenDefinitions } = useSelector(state => state);
     const supportedSymbols = useSelector(state =>
         type === 'sell'
@@ -44,14 +43,12 @@ export const useCoinmarketBuildAccountGroups = (
             coinmarketBuildAccountOptions({
                 accounts,
                 deviceState: device?.state,
-                symbolsInfo,
                 accountLabels,
                 tokenDefinitions,
-                supportedSymbols,
+                supportedCryptoIds: supportedSymbols,
                 defaultAccountLabelString,
             }),
         [
-            symbolsInfo,
             accounts,
             supportedSymbols,
             accountLabels,
@@ -76,7 +73,7 @@ export const useCoinmarketSellFormDefaultValues = (
             cryptoOptions.find(
                 option =>
                     option.descriptor === account.descriptor &&
-                    cryptoToNetworkSymbol(option.value) === account.symbol,
+                    cryptoIdToNetworkSymbol(option.value) === account.symbol,
             ),
         [account.descriptor, account.symbol, cryptoOptions],
     );

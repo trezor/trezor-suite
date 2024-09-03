@@ -15,8 +15,10 @@ import {
     CoinmarketSellExchangeFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { SendContextValues } from 'src/types/wallet/sendForm';
-import { coinmarketGetRoundedFiatAmount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { getNetworkDecimals } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import {
+    coinmarketGetRoundedFiatAmount,
+    getNetworkDecimals,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 interface CoinmarketUseCurrencySwitcherProps<T extends CoinmarketAllFormProps> {
     account: Account;
