@@ -116,6 +116,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                             variant="primary"
                             onClick={handleNavigateToBuyPage}
                             minWidth={160}
+                            maxWidth={200} // now it throws TS error as it should :-)
                         >
                             <Translation id="TR_BUY_NETWORK" values={{ network: networkSymbol }} />
                         </Button>

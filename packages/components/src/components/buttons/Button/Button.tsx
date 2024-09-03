@@ -16,7 +16,7 @@ import { makePropsTransient, TransientProps } from '../../../utils/transientProp
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
 import { Icon, IconName } from '../../Icon/Icon';
 
-export const allowedButtonFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedButtonFrameProps = ['margin', 'minWidth'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
 type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
@@ -117,6 +117,7 @@ export const Button = ({
     type = 'button',
     children,
     margin,
+    minWidth,
     textWrap = true,
     ...rest
 }: ButtonProps) => {
@@ -148,6 +149,7 @@ export const Button = ({
             $isSubtle={isSubtle}
             type={type}
             $hasIcon={!!icon || isLoading}
+            $minWidth={minWidth}
             {...rest}
             onClick={isDisabled ? undefined : rest?.onClick}
             {...makePropsTransient(frameProps)}
