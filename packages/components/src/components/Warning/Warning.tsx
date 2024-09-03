@@ -3,7 +3,7 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
-import { Row, Column, TransientProps, useElevation } from '../..';
+import { Row, Column, TransientProps, useElevation, useMediaQuery } from '../..';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { WarningContext } from './WarningContext';
 import { WarningButton } from './WarningButton';
@@ -17,6 +17,7 @@ import {
     mapVariantToTextColor,
 } from './utils';
 import { Icon, IconName } from '../Icon/Icon';
+import { SCREEN_SIZE } from '../../config/variables';
 
 export const allowedWarningFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedWarningFrameProps)[number]>;
@@ -78,6 +79,24 @@ export const Warning = ({
 
     const withIcon = icon !== undefined;
 
+    const isMobile = useMediaQuery(`(max-width: ${SCREEN_SIZE.SM})`);
+
+    const ContentComponent = ({ children }: { children: ReactNode }) => {
+        const commonProps = {
+            justifyContent: 'space-between' as const,
+            gap: spacings.lg,
+            flex: '1' as const,
+        };
+
+        return isMobile ? (
+            <Column {...commonProps} alignItems="stretch">
+                {children}
+            </Column>
+        ) : (
+            <Row {...commonProps}>{children}</Row>
+        );
+    };
+
     return (
         <Wrapper
             $variant={variant}
@@ -101,14 +120,14 @@ export const Warning = ({
                 />
             )}
 
-            <Row justifyContent="space-between" gap={spacings.lg} flex="1">
+            <ContentComponent>
                 <Column alignItems="flex-start">{children}</Column>
                 {rightContent && (
                     <WarningContext.Provider value={{ variant }}>
                         {rightContent}
                     </WarningContext.Provider>
                 )}
-            </Row>
+            </ContentComponent>
         </Wrapper>
     );
 };
