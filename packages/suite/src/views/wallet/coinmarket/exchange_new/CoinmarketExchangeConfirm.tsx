@@ -23,6 +23,6 @@ export const CoinmarketExchangeConfirm = withSelectedAccountLoaded(
         backRoute: 'wallet-coinmarket-exchange',
     }),
     {
-        title: 'TR_NAV_EXCHANGE',
+        title: 'TR_COINMARKET_SWAP',
     },
 );

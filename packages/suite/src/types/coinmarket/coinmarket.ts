@@ -217,8 +217,8 @@ export interface CoinmarketGetAmountLabelsProps {
 
 export type CoinmarketPayGetLabelType =
     | Extract<ExtendedMessageDescriptor['id'], `TR_COINMARKET_YOU_${'PAY' | 'GET' | 'RECEIVE'}`>
-    | 'TR_COINMARKET_EXCHANGE'
-    | 'TR_COINMARKET_EXCHANGE_AMOUNT';
+    | 'TR_COINMARKET_SWAP'
+    | 'TR_COINMARKET_SWAP_AMOUNT';
 
 export interface CoinmarketGetAmountLabelsReturnProps {
     inputLabel: CoinmarketPayGetLabelType;
