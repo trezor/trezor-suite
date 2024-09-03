@@ -202,11 +202,12 @@ export class SessionsBackground extends TypedEmitter<{
     }
 
     private async releaseIntent(payload: ReleaseIntentRequest) {
-        const path = this.getPathFromSessions({ session: payload.session });
+        const pathResult = this.getPathBySession({ session: payload.session });
 
-        if (!path) {
-            return this.error(ERRORS.SESSION_NOT_FOUND);
+        if (!pathResult.success) {
+            return pathResult;
         }
+        const { path } = pathResult.payload;
 
         await this.waitInQueue();
 
@@ -226,15 +227,6 @@ export class SessionsBackground extends TypedEmitter<{
     }
 
     private getPathBySession({ session }: GetPathBySessionRequest) {
-        const path = this.getPathFromSessions({ session });
-        if (!path) {
-            return this.error(ERRORS.SESSION_NOT_FOUND);
-        }
-
-        return this.success({ path });
-    }
-
-    private getPathFromSessions({ session }: GetPathBySessionRequest) {
         let path: string | undefined;
         Object.keys(this.descriptors).forEach(pathKey => {
             if (this.descriptors[pathKey]?.session === session) {
@@ -242,7 +234,11 @@ export class SessionsBackground extends TypedEmitter<{
             }
         });
 
-        return path;
+        if (!path) {
+            return this.error(ERRORS.SESSION_NOT_FOUND);
+        }
+
+        return this.success({ path });
     }
 
     private startLock() {
