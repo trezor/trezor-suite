@@ -6,8 +6,9 @@ const { USE_HW, USE_NODE_BRIDGE } = env;
 
 const debug = USE_NODE_BRIDGE ? undefined : USE_HW ? false : true;
 const debugSession = USE_NODE_BRIDGE ? undefined : null;
+
 const path = USE_NODE_BRIDGE ? expect.any(String) : '1';
-const product = USE_HW ? 21441 : USE_NODE_BRIDGE ? undefined : 0;
+const product = USE_HW ? 21441 : 0;
 const vendor = USE_NODE_BRIDGE ? undefined : USE_HW ? 4617 : 0;
 const type =
     USE_NODE_BRIDGE && USE_HW
