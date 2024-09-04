@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
+import { AcquiredDevice } from '@suite-common/suite-types';
 import {
     deviceActions,
     selectDevice,
@@ -9,7 +10,7 @@ import {
     selectDevices,
 } from '@suite-common/wallet-core';
 import { Icon, Tooltip, variables, H2, useElevation } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 import { TREZOR_RESELLERS_URL, TREZOR_URL } from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -17,14 +18,14 @@ import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hook
 import { Translation, TrezorLink } from 'src/components/suite';
 import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
-import { SecurityCheckLayout } from '../../../../components/suite/SecurityCheck/SecurityCheckLayout';
+import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
+import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from 'src/constants/suite/device';
+import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
+import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { SecurityChecklist } from './SecurityChecklist';
-import { SecurityCheckFail } from '../../../../components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckButton } from './SecurityCheckButton';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
-import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
-import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
-import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     max-width: 840px;
@@ -126,14 +127,6 @@ const firmwareInstalledChecklist = [
     },
 ] as const;
 
-const isAuthenticationSupportedMap: Record<DeviceModelInternal, boolean> = {
-    [DeviceModelInternal.T1B1]: false,
-    [DeviceModelInternal.T2T1]: false,
-    [DeviceModelInternal.T2B1]: true,
-    [DeviceModelInternal.T3B1]: true,
-    [DeviceModelInternal.T3T1]: true,
-};
-
 const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
     [
         {
@@ -195,11 +188,6 @@ const SecurityCheckContent = ({
     const { isMobileLayout } = useLayoutSize();
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectDevice);
-    const { initialRun } = useSelector(selectSuiteFlags);
-    const {
-        isDeviceAuthenticityCheckDisabled,
-        debug: { isUnlockedBootloaderAllowed },
-    } = useSelector(state => state.suite.settings);
     const isOnboardingActive = useSelector(selectIsOnboardingActive);
 
     const [isFailed, setIsFailed] = useState(false);
@@ -227,15 +215,8 @@ const SecurityCheckContent = ({
         : getNoFirmwareChecklist(isMobileLayout);
 
     const toggleView = () => setIsFailed(current => !current);
-
-    const isDeviceAuthenticationNeeded =
-        shouldAuthenticateSelectedDevice &&
-        initialRun &&
-        !isDeviceAuthenticityCheckDisabled &&
-        (!isUnlockedBootloaderAllowed || device?.features?.bootloader_locked !== false);
-
     const handleContinueButtonClick = () =>
-        isDeviceAuthenticationNeeded ? goToDeviceAuthentication() : goToSuiteOrNextDevice();
+        shouldAuthenticateSelectedDevice ? goToDeviceAuthentication() : goToSuiteOrNextDevice();
 
     const handleSetupButtonClick = () => {
         if (isRecoveryInProgress) {
@@ -309,23 +290,38 @@ export const SecurityCheck = () => {
     const device = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
     const deviceAuthenticity = useSelector(selectDeviceAuthenticity);
+    const { initialRun } = useSelector(selectSuiteFlags);
+    const {
+        isDeviceAuthenticityCheckDisabled,
+        debug: { isUnlockedBootloaderAllowed },
+    } = useSelector(state => state.suite.settings);
     const dispatch = useDispatch();
     const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);
     const { goToSuite } = useOnboarding();
 
+    const isDebugDevice = (device: AcquiredDevice) =>
+        isUnlockedBootloaderAllowed && device.features.bootloader_locked === false;
+
     const shouldAuthenticateSelectedDevice =
         !!device?.features?.internal_model &&
-        isAuthenticationSupportedMap[device.features.internal_model];
+        SUPPORTS_DEVICE_AUTHENTICITY_CHECK[device.features.internal_model] &&
+        initialRun &&
+        !isDeviceAuthenticityCheckDisabled &&
+        !isDebugDevice(device);
 
     // If there are multiple devices connected, make sure to authenticate all those that support the check before continuing to Suite.
     const goToSuiteOrNextDevice = () => {
-        const nextDeviceToAuthenticate = devices.find(
-            device =>
-                device.features?.internal_model &&
-                isAuthenticationSupportedMap[device.features.internal_model] &&
-                device.id &&
-                !deviceAuthenticity?.[device.id],
-        );
+        let nextDeviceToAuthenticate;
+        if (!isDeviceAuthenticityCheckDisabled) {
+            nextDeviceToAuthenticate = devices.find(
+                device =>
+                    device.features?.internal_model &&
+                    SUPPORTS_DEVICE_AUTHENTICITY_CHECK[device.features.internal_model] &&
+                    device.id &&
+                    !deviceAuthenticity?.[device.id] &&
+                    !isDebugDevice(device),
+            );
+        }
 
         if (nextDeviceToAuthenticate !== undefined) {
             if (setIsAuthenticityCheckStep) {
