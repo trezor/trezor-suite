@@ -295,4 +295,27 @@ describe('bridge', () => {
             },
         ]);
     });
+
+    test(`connect/disconnect device - get transport-update events`, async () => {
+        const eventSpy = jest.fn();
+        bridge1.on('transport-update', eventSpy);
+        await TrezorUserEnvLink.stopEmu();
+
+        expect(eventSpy).toHaveBeenCalledTimes(0);
+
+        bridge1.listen();
+
+        const waitForUpdateEvent = () =>
+            new Promise(resolve => {
+                bridge1.once('transport-update', resolve);
+            });
+
+        TrezorUserEnvLink.startEmu(emulatorStartOpts);
+        await waitForUpdateEvent();
+        expect(eventSpy).toHaveBeenCalledTimes(1);
+
+        TrezorUserEnvLink.stopEmu();
+        await waitForUpdateEvent();
+        expect(eventSpy).toHaveBeenCalledTimes(2);
+    });
 });

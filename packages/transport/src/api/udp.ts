@@ -1,5 +1,5 @@
 import UDP from 'dgram';
-import { isNotUndefined } from '@trezor/utils';
+import { isNotUndefined, arrayPartition } from '@trezor/utils';
 
 import {
     AbstractApi,
@@ -7,12 +7,13 @@ import {
     AbstractApiConstructorParams,
     DEVICE_TYPE,
 } from './abstract';
-
+import { DescriptorApiLevel } from '../types';
 import * as ERRORS from '../errors';
 
 export class UdpApi extends AbstractApi {
     chunkSize = 64;
 
+    protected devices: DescriptorApiLevel[] = [];
     protected interface = UDP.createSocket('udp4');
     protected communicating = false;
 
@@ -172,10 +173,24 @@ export class UdpApi extends AbstractApi {
                     ),
                 ),
             ).then(res => res.filter(isNotUndefined));
+            this.handleDevicesChange(enumerateResult);
 
             return this.success(enumerateResult);
         } catch (e) {
+            this.handleDevicesChange([]);
+
             return this.error({ error: ERRORS.ABORTED_BY_SIGNAL });
+        }
+    }
+
+    private handleDevicesChange(devices: DescriptorApiLevel[]) {
+        const [known, unknown] = arrayPartition(devices, device => this.devices.includes(device));
+
+        if (known.length !== this.devices.length || unknown.length > 0) {
+            this.devices = devices;
+            if (this.listening) {
+                this.emit('transport-interface-change', this.devices);
+            }
         }
     }
 
