@@ -169,7 +169,7 @@ export class UdpApi extends AbstractApi {
             const enumerateResult = await Promise.all(
                 paths.map(path =>
                     this.ping(path, signal).then(pinged =>
-                        pinged ? { path, type: DEVICE_TYPE.TypeEmulator } : undefined,
+                        pinged ? { path, type: DEVICE_TYPE.TypeEmulator, product: 0 } : undefined,
                     ),
                 ),
             ).then(res => res.filter(isNotUndefined));
