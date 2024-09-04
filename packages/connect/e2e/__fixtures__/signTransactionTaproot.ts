@@ -1,6 +1,6 @@
 // fixures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/bitcoin/test_signtx_taproot.py
 
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 export default {
     method: 'signTransaction',
@@ -16,7 +16,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/86'/1'/0'/1/0"),
+                        address_n: "m/86'/1'/0'/1/0",
                         amount: 4600,
                         prev_hash:
                             'ec519494bea3746bd5fbdd7a15dac5049a873fa674c67e596d46505b9b835425',
@@ -46,7 +46,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/86'/1'/0'/0/0"),
+                        address_n: "m/86'/1'/0'/0/0",
                         amount: 6800,
                         prev_hash:
                             'c96621a96668f7dd505c4deb9ee2b2038503a5daa4888242560e9b640cca8819',
@@ -54,7 +54,7 @@ export default {
                         script_type: 'SPENDTAPROOT',
                     },
                     {
-                        address_n: ADDRESS_N("m/86'/1'/0'/0/1"),
+                        address_n: "m/86'/1'/0'/0/1",
                         amount: 13000,
                         prev_hash:
                             'c96621a96668f7dd505c4deb9ee2b2038503a5daa4888242560e9b640cca8819',
@@ -69,7 +69,7 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/86'/1'/0'/1/0"),
+                        address_n: "m/86'/1'/0'/1/0",
                         amount: 6800 + 13000 - 200 - 15000,
                         script_type: 'PAYTOTAPROOT',
                     },
@@ -88,7 +88,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/49'/1'/1'/0/0"),
+                        address_n: "m/49'/1'/1'/0/0",
                         amount: 20000,
                         prev_hash:
                             '8c3ea7a10ab6d289119b722ec8c27b70c17c722334ced31a0370d782e4b6775d',
@@ -96,7 +96,7 @@ export default {
                         script_type: 'SPENDP2SHWITNESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/84'/1'/1'/0/0"),
+                        address_n: "m/84'/1'/1'/0/0",
                         amount: 15000,
                         prev_hash:
                             '7956f1de3e7362b04115b64a31f0b6822c50dd6c08d78398f392a0ac3f0e357b',
@@ -104,7 +104,7 @@ export default {
                         script_type: 'SPENDWITNESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/86'/1'/1'/0/0"),
+                        address_n: "m/86'/1'/1'/0/0",
                         amount: 4450,
                         prev_hash:
                             '901593bed347678d9762fdee728c35dc4ec3cfdc3728a4d72dcaab3751122e85',
@@ -112,7 +112,7 @@ export default {
                         script_type: 'SPENDTAPROOT',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/1'/1'/0/0"),
+                        address_n: "m/44'/1'/1'/0/0",
                         amount: 10000,
                         prev_hash:
                             '3ac32e90831d79385eee49d6030a2123cd9d009fe8ffc3d470af9a6a777a119b',

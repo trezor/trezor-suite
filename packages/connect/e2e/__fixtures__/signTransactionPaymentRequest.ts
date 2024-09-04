@@ -1,6 +1,6 @@
 // fixtures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/bitcoin/test_signtx_payreq.py
 
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 export default {
     method: 'signTransaction',
@@ -18,7 +18,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/84'/1'/0'/0/0"),
+                        address_n: "m/84'/1'/0'/0/0",
                         amount: 12300000,
                         prev_hash:
                             'b223a7123d0d1e64ee7924617be88d0ccbe745fefca1bcf286ea2158e80593e2',
@@ -41,7 +41,7 @@ export default {
                     },
                     {
                         // tb1qkvwu9g3k2pdxewfqr7syz89r3gj557l3uuf9r9
-                        address_n: ADDRESS_N("m/84'/1'/0'/0/0"),
+                        address_n: "m/84'/1'/0'/0/0",
                         amount: 12300000 - 5000000 - 2000000 - 11000,
                         script_type: 'PAYTOWITNESS',
                         payment_req_index: 0,

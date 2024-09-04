@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 const legacyResults = [
     {
@@ -23,7 +23,7 @@ export default {
                 coin: 'Bgold',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/156'/0'/0/0"),
+                        address_n: "m/44'/156'/0'/0/0",
                         amount: '1252382934',
                         prev_hash:
                             '6f0398f8bac639312afc2e40210ce5253535f92326167f40e1f38dd7047b00ec',
@@ -33,7 +33,7 @@ export default {
                 ],
                 outputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/156'/0'/1/0"),
+                        address_n: "m/44'/156'/0'/1/0",
                         amount: '1896050',
                         script_type: 'PAYTOADDRESS',
                     },
@@ -57,7 +57,7 @@ export default {
                 coin: 'Bgold',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/156'/0'/0/0"),
+                        address_n: "m/44'/156'/0'/0/0",
                         amount: '1252382934',
                         prev_hash:
                             '6f0398f8bac639312afc2e40210ce5253535f92326167f40e1f38dd7047b00ec',
@@ -65,7 +65,7 @@ export default {
                         script_type: 'SPENDADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/156'/0'/0/1"),
+                        address_n: "m/44'/156'/0'/0/1",
                         amount: '38448607',
                         prev_hash:
                             'aae50f8dc1c19c35517e5bbc2214d38e1ce4b4ff7cb3151b5b31bf0f723f8e06',
@@ -94,7 +94,7 @@ export default {
                 coin: 'Bgold',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/49'/156'/0'/1/0"),
+                        address_n: "m/49'/156'/0'/1/0",
                         amount: '1252382934',
                         prev_hash:
                             'db7239c358352c10996115b3de9e3f37ea0a97be4ea8c4b9e08996e257a21d0e',
@@ -128,7 +128,7 @@ export default {
                 coin: 'Bgold',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/49'/156'/0'/1/0"),
+                        address_n: "m/49'/156'/0'/1/0",
                         amount: '1252382934',
                         prev_hash:
                             'db7239c358352c10996115b3de9e3f37ea0a97be4ea8c4b9e08996e257a21d0e',
@@ -143,7 +143,7 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/49'/156'/0'/1/0"),
+                        address_n: "m/49'/156'/0'/1/0",
                         amount: '1240071934',
                         script_type: 'PAYTOP2SHWITNESS',
                     },
@@ -162,7 +162,7 @@ export default {
                 coin: 'Bgold',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/49'/156'/1'/1/0"),
+                        address_n: "m/49'/156'/1'/1/0",
                         prev_hash:
                             '7f1f6bfe8d5a23e038c58bdcf47e6eb3b5ddb93300176b273564951105206b39',
                         prev_index: 0,

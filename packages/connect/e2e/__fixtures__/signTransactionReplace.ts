@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 export default {
     method: 'signTransaction',
@@ -12,7 +12,7 @@ export default {
                 coin: 'Bitcoin',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/4"),
+                        address_n: "m/44'/0'/0'/0/4",
                         amount: '174998',
                         prev_index: 0,
                         prev_hash:
@@ -24,7 +24,7 @@ export default {
                 ],
                 outputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/1/2"),
+                        address_n: "m/44'/0'/0'/1/2",
                         script_type: 'PAYTOADDRESS',
                         amount: '109998', // 174998 - 50000 - 15000
                         orig_hash:
@@ -53,7 +53,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/0/4"),
+                        address_n: "m/49'/1'/0'/0/4",
                         amount: '100000',
                         script_type: 'SPENDP2SHWITNESS',
                         prev_hash:
@@ -64,7 +64,7 @@ export default {
                         orig_index: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/0/3"),
+                        address_n: "m/49'/1'/0'/0/3",
                         amount: '998060',
                         script_type: 'SPENDP2SHWITNESS',
                         prev_hash:
@@ -98,7 +98,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/84'/1'/0'/0/2"),
+                        address_n: "m/84'/1'/0'/0/2",
                         amount: '20000000',
                         script_type: 'SPENDWITNESS',
                         prev_hash:
@@ -121,7 +121,7 @@ export default {
                         orig_index: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/84'/1'/0'/1/1"),
+                        address_n: "m/84'/1'/0'/1/1",
                         amount: '19899800', // 20000000 - 100000 - 200
                         script_type: 'PAYTOWITNESS',
                         orig_hash:
@@ -144,7 +144,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/0/4"),
+                        address_n: "m/49'/1'/0'/0/4",
                         amount: '100000',
                         script_type: 'SPENDP2SHWITNESS',
                         prev_hash:
@@ -155,7 +155,7 @@ export default {
                         orig_index: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/0/8"),
+                        address_n: "m/49'/1'/0'/0/8",
                         amount: '4973340',
                         script_type: 'SPENDP2SHWITNESS',
                         prev_hash:
@@ -166,7 +166,7 @@ export default {
                         orig_index: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/0/3"),
+                        address_n: "m/49'/1'/0'/0/3",
                         amount: '998060',
                         script_type: 'SPENDP2SHWITNESS',
                         prev_hash:
@@ -177,7 +177,7 @@ export default {
                         orig_index: 1,
                     },
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/0/9"),
+                        address_n: "m/49'/1'/0'/0/9",
                         amount: '839318869',
                         script_type: 'SPENDP2SHWITNESS',
                         prev_hash:
@@ -205,7 +205,7 @@ export default {
                         orig_index: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/1/0"),
+                        address_n: "m/49'/1'/0'/1/0",
                         // 100000 + 4973340 + 998060 + 839318869 - 100000000 - 1000000 - 94500
                         amount: '744295769',
                         script_type: 'PAYTOP2SHWITNESS',
@@ -224,7 +224,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/84'/1'/1'/0/14"),
+                        address_n: "m/84'/1'/1'/0/14",
                         amount: '1000000',
                         script_type: 'SPENDWITNESS',
                         prev_hash:
@@ -246,7 +246,7 @@ export default {
                         orig_index: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/84'/1'/1'/1/10"),
+                        address_n: "m/84'/1'/1'/1/10",
                         // 1000000 - 150 - 150
                         amount: '999700',
                         script_type: 'PAYTOWITNESS',
@@ -268,7 +268,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/84'/1'/0'/0/65"),
+                        address_n: "m/84'/1'/0'/0/65",
                         amount: '10000',
                         script_type: 'SPENDWITNESS',
                         prev_hash:
@@ -280,7 +280,7 @@ export default {
                         sequence: 4294967293,
                     },
                     {
-                        address_n: ADDRESS_N("m/84'/1'/0'/0/66"),
+                        address_n: "m/84'/1'/0'/0/66",
                         amount: '100000',
                         script_type: 'SPENDWITNESS',
                         prev_hash:
@@ -299,7 +299,7 @@ export default {
                         orig_index: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/84'/1'/0'/1/0"),
+                        address_n: "m/84'/1'/0'/1/0",
                         // (10000 + 100000) - 9890 - 400 (new fee)
                         amount: '99710',
                         script_type: 'PAYTOWITNESS',
@@ -319,7 +319,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/0/4"),
+                        address_n: "m/49'/1'/0'/0/4",
                         amount: '100000',
                         script_type: 'SPENDP2SHWITNESS',
                         prev_hash:
@@ -330,7 +330,7 @@ export default {
                         orig_index: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/0/3"),
+                        address_n: "m/49'/1'/0'/0/3",
                         amount: '998060',
                         script_type: 'SPENDP2SHWITNESS',
                         prev_hash:
@@ -365,7 +365,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/86'/1'/0'/1/0"),
+                        address_n: "m/86'/1'/0'/1/0",
                         amount: '4600',
                         script_type: 'SPENDTAPROOT',
                         prev_hash:

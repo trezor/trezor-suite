@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 // vectors from https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_msg_signtx.py
 
@@ -32,7 +32,7 @@ export default {
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/5'/0/9"),
+                        address_n: "m/44'/0'/5'/0/9",
                         prev_hash:
                             '0dac366fd8a67b2a89fbb0d31086e7acded7a5bbf9ef9daa935bc873229ef5b5',
                         prev_index: 0,
@@ -59,7 +59,7 @@ export default {
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         prev_hash:
                             'e5040e1bc1ae7667ffb9e5248e90b2fb93cd9150234151ce90e14ab2f5933bcd',
                         prev_index: 0,
@@ -73,7 +73,7 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/1/0"),
+                        address_n: "m/44'/1'/0'/1/0",
                         amount: '900000',
                         script_type: 'PAYTOADDRESS',
                     },
@@ -91,7 +91,7 @@ export default {
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/7"),
+                        address_n: "m/44'/1'/0'/0/7",
                         prev_hash:
                             '25fee583181847cbe9d9fd9a483a8b8626c99854a72d01de848ef40508d0f3bc',
                         prev_index: 0,
@@ -118,7 +118,7 @@ export default {
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/5"),
+                        address_n: "m/44'/0'/0'/0/5",
                         prev_hash:
                             '50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d',
                         prev_index: 1,
@@ -127,7 +127,7 @@ export default {
                 ],
                 outputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/1/3"),
+                        address_n: "m/44'/0'/0'/1/3",
                         amount: '30000',
                         script_type: 'PAYTOADDRESS',
                     },
@@ -150,7 +150,7 @@ export default {
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/1'/0/21"),
+                        address_n: "m/44'/1'/1'/0/21",
                         prev_hash:
                             'bb5169091f09e833e155b291b662019df56870effe388c626221c5ea84274bc4',
                         prev_index: 0,
@@ -169,7 +169,7 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/1'/1'/1/21"),
+                        address_n: "m/44'/1'/1'/1/21",
                         amount: 1183825 - 100100 - 100100 - 10000,
                         script_type: 'PAYTOADDRESS',
                     },
@@ -187,14 +187,14 @@ export default {
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/55"),
+                        address_n: "m/44'/0'/0'/0/55",
                         prev_hash:
                             'ac4ca0e7827a1228f44449cb57b4b9a809a667ca044dc43bb124627fed4bc10a',
                         prev_index: 1,
                         amount: 10000,
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/1/7"),
+                        address_n: "m/44'/0'/0'/1/7",
                         prev_hash:
                             'ac4ca0e7827a1228f44449cb57b4b9a809a667ca044dc43bb124627fed4bc10a',
                         prev_index: 0,
@@ -203,7 +203,7 @@ export default {
                 ],
                 outputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/1/8"),
+                        address_n: "m/44'/0'/0'/1/8",
                         amount: 71790,
                         script_type: 'PAYTOADDRESS',
                     },
@@ -230,7 +230,7 @@ export default {
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         prev_hash:
                             '58d56a5d1325cf83543ee4c87fd73a784e4ba1499ced574be359fa2bdcb9ac8e',
                         prev_index: 1,
@@ -253,7 +253,7 @@ export default {
                 coin: 'Bitcoin',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/10"),
+                        address_n: "m/44'/0'/0'/0/10",
                         prev_hash:
                             '1f326f65768d55ef146efbb345bd87abe84ac7185726d0457a026fc347a26ef3',
                         prev_index: 0,
@@ -281,7 +281,7 @@ export default {
                 coin: 'Bitcoin',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/0"),
+                        address_n: "m/44'/0'/0'/0/0",
                         prev_hash:
                             'd5f65ee80147b4bcc70b75e4bbf2d7382021b871bd8867ef8fa525ef50864882',
                         prev_index: 0,
@@ -305,7 +305,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         prev_hash:
                             '005f6f7ff4b70aa09a15b3bc36607d378fad104c4efa4f0a1c8e970538622b3e',
                         prev_index: 0,
@@ -333,7 +333,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         prev_hash:
                             'e5040e1bc1ae7667ffb9e5248e90b2fb93cd9150234151ce90e14ab2f5933bcd',
                         prev_index: 0,
@@ -348,13 +348,13 @@ export default {
                     },
                     {
                         // change
-                        address_n: ADDRESS_N("m/44'/1'/0'/1/0"),
+                        address_n: "m/44'/1'/0'/1/0",
                         amount: '900000',
                         script_type: 'PAYTOADDRESS',
                     },
                     {
                         // change
-                        address_n: ADDRESS_N("m/44'/1'/0'/1/1"),
+                        address_n: "m/44'/1'/0'/1/1",
                         amount: '10000',
                         script_type: 'PAYTOADDRESS',
                     },
@@ -372,7 +372,7 @@ export default {
                 coin: 'testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/2"),
+                        address_n: "m/44'/1'/0'/0/2",
                         prev_hash:
                             '58d56a5d1325cf83543ee4c87fd73a784e4ba1499ced574be359fa2bdcb9ac8e',
                         prev_index: 0,
@@ -399,7 +399,7 @@ export default {
                 coin: 'testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/6"),
+                        address_n: "m/44'/1'/0'/0/6",
                         prev_hash:
                             '074b0070939db4c2635c1bef0c8e68412ccc8d3c8782137547c7a2bbde073fc0',
                         prev_index: 1,
@@ -426,7 +426,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         prev_hash:
                             'e5040e1bc1ae7667ffb9e5248e90b2fb93cd9150234151ce90e14ab2f5933bcd',
                         prev_index: 0,
@@ -441,7 +441,7 @@ export default {
                     },
                     {
                         // change on main chain is allowed => treated as a change
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         amount: '900000',
                         script_type: 'PAYTOADDRESS',
                     },

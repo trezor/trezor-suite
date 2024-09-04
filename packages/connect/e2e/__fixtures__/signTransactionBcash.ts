@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 export default {
     method: 'signTransaction',
@@ -12,7 +12,7 @@ export default {
                 coin: 'Bcash',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/145'/0'/0/0"),
+                        address_n: "m/44'/145'/0'/0/0",
                         amount: '1995344',
                         prev_hash:
                             'bc37c28dfb467d2ecb50261387bf752a3977d7e5337915071bb4151e6b711a78',
@@ -22,7 +22,7 @@ export default {
                 ],
                 outputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/145'/0'/1/0"),
+                        address_n: "m/44'/145'/0'/1/0",
                         amount: '1896050',
                         script_type: 'PAYTOADDRESS',
                     },
@@ -48,7 +48,7 @@ export default {
                 coin: 'Bcash',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/145'/0'/1/0"),
+                        address_n: "m/44'/145'/0'/1/0",
                         amount: '1896050',
                         prev_hash:
                             '502e8577b237b0152843a416f8f1ab0c63321b1be7a8cad7bf5c5c216fcf062c',
@@ -56,7 +56,7 @@ export default {
                         script_type: 'SPENDADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/145'/0'/0/1"),
+                        address_n: "m/44'/145'/0'/0/1",
                         amount: '73452',
                         prev_hash:
                             '502e8577b237b0152843a416f8f1ab0c63321b1be7a8cad7bf5c5c216fcf062c',
@@ -88,7 +88,7 @@ export default {
                 coin: 'Bcash',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/145'/0'/1/0"),
+                        address_n: "m/44'/145'/0'/1/0",
                         amount: '1896050',
                         prev_hash:
                             '502e8577b237b0152843a416f8f1ab0c63321b1be7a8cad7bf5c5c216fcf062c',
@@ -96,7 +96,7 @@ export default {
                         script_type: 'SPENDADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/145'/0'/0/1"),
+                        address_n: "m/44'/145'/0'/0/1",
                         amount: '73452',
                         prev_hash:
                             '502e8577b237b0152843a416f8f1ab0c63321b1be7a8cad7bf5c5c216fcf062c',

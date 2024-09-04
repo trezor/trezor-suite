@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 export default {
     method: 'signTransaction',
@@ -12,7 +12,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/1/0"),
+                        address_n: "m/49'/1'/0'/1/0",
                         amount: '123456789',
                         prev_hash:
                             '20912f98ea3ed849042efed0fdac8cb4fc301961c5988cba56902d8ffb61c337',
@@ -45,7 +45,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/1/0"),
+                        address_n: "m/49'/1'/0'/1/0",
                         amount: '123456789',
                         prev_hash:
                             '20912f98ea3ed849042efed0fdac8cb4fc301961c5988cba56902d8ffb61c337',
@@ -60,7 +60,7 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/49'/1'/0'/1/0"),
+                        address_n: "m/49'/1'/0'/1/0",
                         amount: '111145789',
                         script_type: 'PAYTOP2SHWITNESS',
                     },
@@ -78,7 +78,7 @@ export default {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/49'/1'/1'/1/0"),
+                        address_n: "m/49'/1'/1'/1/0",
                         prev_hash:
                             '338e2d02e0eaf8848e38925904e51546cf22e58db5b1860c4a0e72b69c56afe5',
                         prev_index: 0,
