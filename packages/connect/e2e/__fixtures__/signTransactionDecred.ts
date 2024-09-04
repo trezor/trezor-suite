@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 const legacyResults = [
     {
@@ -21,7 +21,7 @@ export default {
                 coin: 'tdcr',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         amount: '200000000',
                         prev_hash:
                             '4d8acde26d5efc7f5df1b3cdada6b11027616520c883e09c919b88f0f0cb6410',
@@ -50,7 +50,7 @@ export default {
                 coin: 'tdcr',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         amount: '200000000',
                         prev_hash:
                             '4d8acde26d5efc7f5df1b3cdada6b11027616520c883e09c919b88f0f0cb6410',
@@ -58,7 +58,7 @@ export default {
                         decred_tree: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         amount: '200000000',
                         prev_hash:
                             'f341fde6a78c2e150619d1c5ecbd90fabeb9e278024cc38ea4190d0b4a6d61d8',
@@ -66,7 +66,7 @@ export default {
                         decred_tree: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/1"),
+                        address_n: "m/44'/1'/0'/0/1",
                         amount: '200000000',
                         prev_hash:
                             '5f3a7d29623eba20788e967439c1ccf122688589dfc07cddcedd1b27dc14b568',
@@ -82,7 +82,7 @@ export default {
                     },
                     {
                         // TsaSFRwfN9muW5F6ZX36iSksc9hruiC5F97
-                        address_n: ADDRESS_N("m/44'/1'/0'/1/0"),
+                        address_n: "m/44'/1'/0'/1/0",
                         amount: '100000000',
                         script_type: 'PAYTOADDRESS',
                     },
@@ -104,7 +104,7 @@ export default {
                 coin: 'tdcr',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         amount: '200000000',
                         prev_hash:
                             '4d8acde26d5efc7f5df1b3cdada6b11027616520c883e09c919b88f0f0cb6410',
@@ -119,7 +119,7 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         amount: '200000000',
                         script_type: 'PAYTOADDRESS',
                     },
@@ -147,7 +147,7 @@ export default {
                 coin: 'tdcr',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         amount: '200000000',
                         prev_hash:
                             'f8e2f2b4eab772f6e3743cba92db341f64b84d9c16ae375c7690fbf0bf02fc7b',
@@ -156,7 +156,7 @@ export default {
                         decred_tree: 1,
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         amount: '200000000',
                         prev_hash:
                             '51bc9c71f10a81eef3caedb5333062eb4b1f70998adf02916fe98fdc04c572e8',
@@ -200,7 +200,7 @@ export default {
         //         coin: 'tdcr',
         //         inputs: [
         //             {
-        //                 address_n: ADDRESS_N("m/48'/1'/0'/0'/0/0"),
+        //                 address_n: "m/48'/1'/0'/0'/0/0",
         //                 script_type: 'SPENDMULTISIG',
         //                 amount: '200000000',
         //                 prev_hash:
@@ -227,7 +227,7 @@ export default {
         //                 },
         //             },
         //             {
-        //                 address_n: ADDRESS_N("m/48'/1'/0'/0'/0/1"),
+        //                 address_n: "m/48'/1'/0'/0'/0/1",
         //                 script_type: 'SPENDMULTISIG',
         //                 amount: '200000000',
         //                 prev_hash:
@@ -256,7 +256,7 @@ export default {
         //         ],
         //         outputs: [
         //             {
-        //                 address_n: ADDRESS_N('m/1/0'),
+        //                 address_n: 'm/1/0',
         //                 amount: '99900000',
         //                 script_type: 'PAYTOADDRESS',
         //             },

@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 const xpubExt1 =
     'tpubDADHV9u9Y6gkggintTdMjJE3be58zKNLhpxBQyuEM6Pwx3sN9JVLmMCMN4DNVwL9AKec27z5TaWcWuHzMXiGAtcra5DjwWbvppGX4gaEGVN';
@@ -106,7 +106,7 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/45'/0/1/1"),
+                        address_n: "m/45'/0/1/1",
                         amount: '44000000',
                         script_type: 'PAYTOADDRESS',
                     },
@@ -125,12 +125,12 @@ export default {
                 inputs: [input1, input2],
                 outputs: [
                     {
-                        address_n: ADDRESS_N("m/45'/0/1/0"),
+                        address_n: "m/45'/0/1/0",
                         amount: '40000000',
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/45'/0/1/1"),
+                        address_n: "m/45'/0/1/1",
                         amount: '44000000',
                         script_type: 'PAYTOADDRESS',
                     },

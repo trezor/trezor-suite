@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 // fixtures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_multisig.py
 
@@ -47,7 +47,7 @@ export default {
                 coin: 'testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/48'/1'/1'/0'/0/0"),
+                        address_n: "m/48'/1'/1'/0'/0/0",
                         prev_hash:
                             '6b07c1321b52d9c85743f9695e13eb431b41708cdf4e1585258d51208e5b93fc',
                         prev_index: 0,
@@ -80,7 +80,7 @@ export default {
                 coin: 'testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/48'/1'/3'/0'/0/0"),
+                        address_n: "m/48'/1'/3'/0'/0/0",
                         prev_hash:
                             '6b07c1321b52d9c85743f9695e13eb431b41708cdf4e1585258d51208e5b93fc',
                         prev_index: 0,
@@ -115,7 +115,7 @@ export default {
                 coin: 'testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/48'/1'/1'/0'/0/14"),
+                        address_n: "m/48'/1'/1'/0'/0/14",
                         prev_hash:
                             '0d5b5648d47b5650edea1af3d47bbe5624213abb577cf1b1c96f98321f75cdbc',
                         prev_index: 0,
@@ -168,7 +168,7 @@ export default {
                 coin: 'testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/48'/1'/1'/0'/0/0"),
+                        address_n: "m/48'/1'/1'/0'/0/0",
                         prev_hash:
                             '0d5b5648d47b5650edea1af3d47bbe5624213abb577cf1b1c96f98321f75cdbc',
                         prev_index: 0,

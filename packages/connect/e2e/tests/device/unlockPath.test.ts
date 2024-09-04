@@ -1,7 +1,6 @@
 import TrezorConnect from '../../../src';
 
 const { getController, setup, conditionalTest, initTrezorConnect } = global.Trezor;
-const { ADDRESS_N } = global.TestUtils;
 
 const controller = getController('unlockPath');
 
@@ -167,8 +166,7 @@ describe('TrezorConnect.unlockPath', () => {
         const params = {
             inputs: [
                 {
-                    // address_n: "m/10025'/1'/0'/1'/1/0",
-                    address_n: ADDRESS_N("m/10025'/1'/0'/1'/1/0"),
+                    address_n: "m/10025'/1'/0'/1'/1/0",
                     amount: 7289000,
                     prev_hash: 'f982c0a283bd65a59aa89eded9e48f2a3319cb80361dfab4cf6192a03badb60a',
                     prev_index: 1,
@@ -179,8 +177,7 @@ describe('TrezorConnect.unlockPath', () => {
                 // Our change output.
                 {
                     // tb1pchruvduckkwuzm5hmytqz85emften5dnmkqu9uhfxwfywaqhuu0qjggqyp
-                    // address_n: "m/10025'/1'/0'/1'/1/2",
-                    address_n: ADDRESS_N("m/10025'/1'/0'/1'/1/2"),
+                    address_n: "m/10025'/1'/0'/1'/1/2",
                     amount: 7289000 - 50000 - 400,
                     script_type: 'PAYTOTAPROOT' as const,
                 },

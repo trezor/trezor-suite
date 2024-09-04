@@ -1,7 +1,6 @@
 import TrezorConnect from '../../../src';
 
 const { getController, setup, conditionalTest, initTrezorConnect } = global.Trezor;
-const { ADDRESS_N } = global.TestUtils;
 
 const controller = getController();
 
@@ -32,8 +31,8 @@ describe('TrezorConnect passphrase', () => {
     });
 
     it('Using multiple passphrases at the same time', async () => {
-        const XPUB_PATH = ADDRESS_N("m/84'/0'/0'");
-        const ADDRESS_PATH = ADDRESS_N("m/84'/0'/0'/0/0");
+        const XPUB_PATH = "m/84'/0'/0'";
+        const ADDRESS_PATH = "m/84'/0'/0'/0/0";
         // get state of default wallet with empty passphrase
         const walletDefault = await TrezorConnect.getDeviceState({
             device: {
@@ -138,7 +137,7 @@ describe('TrezorConnect passphrase', () => {
                 instance: 0,
                 state: walletA.payload.state, // NOTE: state from different wallet/instance
             },
-            path: ADDRESS_N("m/84'/0'/0'/0/0"),
+            path: "m/84'/0'/0'/0/0",
             showOnTrezor: false,
         });
         expect(invalidState.payload).toMatchObject({
@@ -173,7 +172,7 @@ describe('TrezorConnect passphrase', () => {
                 instance: 0,
                 state: walletA.payload.state,
             },
-            path: ADDRESS_N("m/84'/0'/0'"),
+            path: "m/84'/0'/0'",
         });
         // same xpub as walletA from previous test case enforced on instance 0
         expect(xpubA.payload).toMatchObject({

@@ -1,7 +1,6 @@
 import TrezorConnect from '../src';
 import { versionUtils } from '@trezor/utils';
 import { UI } from '../src/events';
-import { toHardened, getHDPath } from '../src/utils/pathUtils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const MNEMONICS = {
@@ -196,9 +195,4 @@ global.Trezor = {
     initTrezorConnect,
 };
 
-const ADDRESS_N = getHDPath;
-
-global.TestUtils = {
-    ...global.TestUtils,
-    ADDRESS_N,
-};
+global.TestUtils = { ...global.TestUtils };

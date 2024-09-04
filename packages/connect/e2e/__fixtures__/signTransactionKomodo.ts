@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 export default {
     method: 'signTransaction',
@@ -17,7 +17,7 @@ export default {
                 locktime: 1563046072,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/141'/0'/0/0"),
+                        address_n: "m/44'/141'/0'/0/0",
                         prev_hash:
                             '2807c5b126ec8e2b078cab0f12e4c8b4ce1d7724905f8ebef8dca26b0c8e0f1d',
                         prev_index: 0,
@@ -49,7 +49,7 @@ export default {
                 locktime: 0x5d2af1f2,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/141'/0'/0/0"),
+                        address_n: "m/44'/141'/0'/0/0",
                         prev_hash:
                             '7b28bd91119e9776f0d4ebd80e570165818a829bbf4477cd1afe5149dbcd34b1',
                         prev_index: 0,

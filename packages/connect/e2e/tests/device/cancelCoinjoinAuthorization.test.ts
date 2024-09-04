@@ -1,6 +1,5 @@
 import TrezorConnect, { Success, PROTO, Unsuccessful } from '../../../src';
 
-const { ADDRESS_N } = global.TestUtils;
 const { getController, setup, conditionalTest, initTrezorConnect } = global.Trezor;
 
 describe('TrezorConnect.cancelCoinjoinAuthorization', () => {
@@ -29,7 +28,7 @@ describe('TrezorConnect.cancelCoinjoinAuthorization', () => {
             maxRounds: 2,
             maxCoordinatorFeeRate: 500000, // 5% => 0.005 * 10**8;
             maxFeePerKvbyte: 3500,
-            path: ADDRESS_N("m/10025'/1'/0'/1'"),
+            path: "m/10025'/1'/0'/1'",
             coin: 'Testnet',
             scriptType: 'SPENDTAPROOT',
         });
@@ -42,7 +41,7 @@ describe('TrezorConnect.cancelCoinjoinAuthorization', () => {
 
         const proof = await TrezorConnect.getOwnershipProof({
             coin: 'Testnet',
-            path: ADDRESS_N("m/10025'/1'/0'/1'/1/0"),
+            path: "m/10025'/1'/0'/1'/1/0",
             scriptType: 'SPENDTAPROOT',
             userConfirmation: true,
             commitmentData,
@@ -59,7 +58,7 @@ describe('TrezorConnect.cancelCoinjoinAuthorization', () => {
 
         const proof2 = await TrezorConnect.getOwnershipProof({
             coin: 'Testnet',
-            path: ADDRESS_N("m/10025'/1'/0'/1'/1/0"),
+            path: "m/10025'/1'/0'/1'/1/0",
             scriptType: 'SPENDTAPROOT',
             userConfirmation: true,
             commitmentData,

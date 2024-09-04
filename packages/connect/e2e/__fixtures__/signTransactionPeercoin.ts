@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 export default {
     method: 'signTransaction',
@@ -14,7 +14,7 @@ export default {
                 timestamp: 1573209226,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/6'/0'/0/0"),
+                        address_n: "m/44'/6'/0'/0/0",
                         prev_hash:
                             '41b29ad615d8eea40a4654a052d18bb10cd08f203c351f4d241f88b031357d3d',
                         prev_index: 0,
@@ -44,7 +44,7 @@ export default {
                 timestamp: 1573218223,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/6'/0'/0/0"),
+                        address_n: "m/44'/6'/0'/0/0",
                         prev_hash:
                             '41b29ad615d8eea40a4654a052d18bb10cd08f203c351f4d241f88b031357d3d',
                         prev_index: 0,
@@ -53,7 +53,7 @@ export default {
                 ],
                 outputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/6'/0'/0/1"),
+                        address_n: "m/44'/6'/0'/0/1",
                         amount: '900000',
                         script_type: 'PAYTOADDRESS',
                     },

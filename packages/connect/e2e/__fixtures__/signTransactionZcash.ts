@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 export default {
     method: 'signTransaction',
@@ -14,13 +14,13 @@ export default {
                 coin: 'Zcash',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/133'/0'/0/2"),
+                        address_n: "m/44'/133'/0'/0/2",
                         prev_hash:
                             '84533aa6244bcee68040d851dc4f502838ed3fd9ce838e2e48dbf440e7f4df2a',
                         prev_index: 0,
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/133'/0'/1/0"),
+                        address_n: "m/44'/133'/0'/1/0",
                         prev_hash:
                             '84533aa6244bcee68040d851dc4f502838ed3fd9ce838e2e48dbf440e7f4df2a',
                         prev_index: 1,
@@ -48,7 +48,7 @@ export default {
                 coin: 'Zcash',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/133'/0'/0/0"),
+                        address_n: "m/44'/133'/0'/0/0",
                         prev_hash:
                             '29d25589db4623d1a33c58745b8f95b131f49841c79dcd171847d0d7e9e2dc3a',
                         prev_index: 0,
@@ -80,14 +80,14 @@ export default {
                 branchId: 0x5ba81b19,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/133'/0'/0/2"),
+                        address_n: "m/44'/133'/0'/0/2",
                         prev_hash:
                             '6df53ccdc6fa17e1cd248f7ec57e86178d6f96f2736bdf978602992b5850ac79',
                         prev_index: 1,
                         amount: '5748208',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/133'/0'/1/0"),
+                        address_n: "m/44'/133'/0'/1/0",
                         prev_hash:
                             'e7e1d11992e8fcb88e051e59c2917d78dd9fcd857ee042e0263e995590f02ee3',
                         prev_index: 0,
@@ -96,7 +96,7 @@ export default {
                 ],
                 outputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/133'/0'/2/0"),
+                        address_n: "m/44'/133'/0'/2/0",
                         amount: '9800000',
                         script_type: 'PAYTOADDRESS',
                     },
@@ -132,7 +132,7 @@ export default {
                 branchId: 0x76b809bb,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/133'/0'/0/2"),
+                        address_n: "m/44'/133'/0'/0/2",
                         prev_hash:
                             '4264f5f339c9fd498976dabb6d7b8819e112d25a0c1770a0f3ee81de525de8f8',
                         prev_index: 0,
@@ -166,7 +166,7 @@ export default {
                 branchId: 0x76b809bb,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/7"),
+                        address_n: "m/44'/1'/0'/0/7",
                         prev_hash:
                             '4b6cecb81c825180786ebe07b65bcc76078afc5be0f1c64e08d764005012380d',
                         prev_index: 0,
@@ -199,7 +199,7 @@ export default {
                 branchId: 0x2bb40e60,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/4"),
+                        address_n: "m/44'/1'/0'/0/4",
                         prev_hash:
                             '86850826b043dd9826b4700c555c06bc8b5713938b4e47cb5ecd60679c6d81dc',
                         prev_index: 1,
@@ -232,7 +232,7 @@ export default {
                 // branchId: 0xc2d6d0b4,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/7"),
+                        address_n: "m/44'/1'/0'/0/7",
                         prev_hash:
                             '4b6cecb81c825180786ebe07b65bcc76078afc5be0f1c64e08d764005012380d',
                         prev_index: 0,
@@ -265,7 +265,7 @@ export default {
                 // branchId: 0xc2d6d0b4,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/9"),
+                        address_n: "m/44'/1'/0'/0/9",
                         prev_hash:
                             'f9231f2d6cdcd86b4892c95a5d2045bacd81f4060e8127073456fbb7b7b51568',
                         prev_index: 0,
@@ -298,7 +298,7 @@ export default {
                 // branchId: 0xc2d6d0b4,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         prev_hash:
                             'c5309bd6a18f6bf374918b1c96e872af02e80d678c53d37547de03048ace79bf',
                         prev_index: 0,
@@ -312,7 +312,7 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         amount: 4134720 - 1000000 - 2000,
                         script_type: 'PAYTOADDRESS',
                     },
@@ -336,7 +336,7 @@ export default {
                 // branchId: 0xc2d6d0b4,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: "m/44'/1'/0'/0/0",
                         prev_hash:
                             'e3820602226974b1dd87b7113cc8aea8c63e5ae29293991e7bfa80c126930368',
                         prev_index: 0,
@@ -379,7 +379,7 @@ export default {
                 // branchId: 0xc2d6d0b4,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/48'/1'/1'/0'/0/0"),
+                        address_n: "m/48'/1'/1'/0'/0/0",
                         prev_hash:
                             '431b68c170799a1ba9a936f9bde4ba1fb5606b0ab0a770012875a23d23ba72a3',
                         prev_index: 0,

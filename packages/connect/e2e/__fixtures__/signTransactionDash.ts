@@ -1,4 +1,4 @@
-const { ADDRESS_N, TX_CACHE } = global.TestUtils;
+const { TX_CACHE } = global.TestUtils;
 
 // vectors from https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_msg_signtx_dash.py
 
@@ -23,7 +23,7 @@ export default {
                 coin: 'Dash',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/5'/0'/0/0"),
+                        address_n: "m/44'/5'/0'/0/0",
                         prev_hash:
                             '24522992fb42f85d2d43efa3a1ddb98de23ed28583e19128e6e200a9fa6bc665',
                         prev_index: 1,
@@ -51,7 +51,7 @@ export default {
                 coin: 'Dash',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/5'/0'/0/0"),
+                        address_n: "m/44'/5'/0'/0/0",
                         prev_hash:
                             '15575a1c874bd60a819884e116c42e6791c8283ce1fc3b79f0d18531a61bbb8a',
                         prev_index: 1,
@@ -60,7 +60,7 @@ export default {
                 ],
                 outputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/5'/0'/1/0"),
+                        address_n: "m/44'/5'/0'/1/0",
                         amount: '4000000000',
                         script_type: 'PAYTOADDRESS',
                     },
@@ -87,7 +87,7 @@ export default {
                 coin: 'Dash',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/5'/0'/0/0"),
+                        address_n: "m/44'/5'/0'/0/0",
                         prev_hash:
                             'adb43bcd8fc99d6ed353c30ca8e5bd5996cd7bcf719bd4253f103dfb7227f6ed',
                         prev_index: 0,

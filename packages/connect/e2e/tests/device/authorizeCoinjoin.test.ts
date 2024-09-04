@@ -1,7 +1,6 @@
 import TrezorConnect from '../../../src';
 
 const { getController, setup, conditionalTest, initTrezorConnect } = global.Trezor;
-const { ADDRESS_N } = global.TestUtils;
 
 const controller = getController('applyFlags');
 
@@ -37,7 +36,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
     conditionalTest(['1', '<2.5.4'], 'Coinjoin success', async () => {
         // unlocked path is required for tx validation
         const unlockPath = await TrezorConnect.unlockPath({
-            path: ADDRESS_N("m/10025'"),
+            path: "m/10025'",
         });
         if (!unlockPath.success) throw new Error(unlockPath.payload.error);
 
@@ -46,7 +45,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             maxRounds: 2,
             maxCoordinatorFeeRate: 500000, // 5% => 0.005 * 10**8;
             maxFeePerKvbyte: 3500,
-            path: ADDRESS_N("m/10025'/1'/0'/1'"),
+            path: "m/10025'/1'/0'/1'",
             coin: 'Testnet',
             scriptType: 'SPENDTAPROOT',
         });
@@ -67,7 +66,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
 
         const proof = await TrezorConnect.getOwnershipProof({
             coin: 'Testnet',
-            path: ADDRESS_N("m/10025'/1'/0'/1'/1/0"),
+            path: "m/10025'/1'/0'/1'/1/0",
             scriptType: 'SPENDTAPROOT',
             userConfirmation: true, // ButtonRequest is not emitted because of preauthorization
             commitmentData,
@@ -106,7 +105,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                 },
                 // # NOTE: FAKE input tx
                 {
-                    address_n: ADDRESS_N("m/10025'/1'/0'/1'/1/0"),
+                    address_n: "m/10025'/1'/0'/1'/1/0",
                     prev_hash: 'f982c0a283bd65a59aa89eded9e48f2a3319cb80361dfab4cf6192a03badb60a',
                     prev_index: 1,
                     amount: 7289000,
@@ -124,14 +123,14 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                 // Our coinjoined output.
                 {
                     // tb1phkcspf88hge86djxgtwx2wu7ddghsw77d6sd7txtcxncu0xpx22shcydyf
-                    address_n: ADDRESS_N("m/10025'/1'/0'/1'/1/1"),
+                    address_n: "m/10025'/1'/0'/1'/1/1",
                     amount: 50000,
                     script_type: 'PAYTOTAPROOT',
                 },
                 // Our change output.
                 {
                     // tb1qr5p6f5sk09sms57ket074vywfymuthlgud7xyx
-                    address_n: ADDRESS_N("m/10025'/1'/0'/1'/1/2"),
+                    address_n: "m/10025'/1'/0'/1'/1/2",
                     amount: 7289000 - 50000 - 36445 - 490,
                     script_type: 'PAYTOTAPROOT',
                 },
@@ -221,7 +220,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             maxRounds: 2,
             maxCoordinatorFeeRate: 500000, // 5% => 0.005 * 10**8;
             maxFeePerKvbyte: 3500,
-            path: ADDRESS_N("m/10025'/1'/0'/1'"),
+            path: "m/10025'/1'/0'/1'",
             coin: 'Testnet',
             scriptType: 'SPENDTAPROOT',
         } as const;
