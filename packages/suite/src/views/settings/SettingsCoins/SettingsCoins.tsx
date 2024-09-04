@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Button, motionEasing, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { Network } from '@suite-common/wallet-config';
 
 import {
     DeviceBanner,
@@ -17,7 +17,7 @@ import {
     SettingsSectionItem,
 } from 'src/components/settings';
 import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
-import { useEnabledNetworksCompatible } from 'src/hooks/settings/useEnabledNetworks';
+import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
     useDevice,
@@ -89,7 +89,7 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(selectSuiteFlags);
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
-    const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworksCompatible();
+    const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const deviceModel = useSelector(selectDeviceModel);
     const { device, isLocked } = useDevice();
@@ -101,7 +101,7 @@ export const SettingsCoins = () => {
         deviceSupportedNetworkSymbols.includes(enabledNetwork),
     );
 
-    const getNetworks = (networks: NetworkCompatible[], getUnsupported = false) =>
+    const getNetworks = (networks: Network[], getUnsupported = false) =>
         networks.filter(
             ({ symbol }) => getUnsupported !== deviceSupportedNetworkSymbols.includes(symbol),
         );
