@@ -201,7 +201,7 @@ export const getFeeUnits = (networkType: NetworkType) => {
     if (networkType === 'cardano') return 'Lovelaces/B';
     if (networkType === 'solana') return 'Lamports';
 
-    return 'sat/B';
+    return 'sat/vB';
 };
 
 export const getFee = (networkType: NetworkType, tx: GeneralPrecomposedTransactionFinal) => {

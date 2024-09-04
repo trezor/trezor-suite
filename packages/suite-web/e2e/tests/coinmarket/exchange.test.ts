@@ -175,7 +175,7 @@ describe.skip('Coinmarket exchange', () => {
                     .first()
                     .should('contain.text', 'REGTEST');
             });
-        cy.getTestElement('@modal').within(() => cy.contains('1 sat/B'));
+        cy.getTestElement('@modal').within(() => cy.contains('1 sat/vB'));
         cy.task('pressYes');
         cy.task('pressYes');
         cy.getTestElement('@modal/send').should('not.be.disabled').click();
