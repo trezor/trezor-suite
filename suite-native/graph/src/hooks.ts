@@ -29,6 +29,7 @@ import {
     setAccountGraphTimeframe,
     setPortfolioGraphTimeframe,
 } from './slice';
+import { A } from '@mobily/ts-belt';
 
 const useWatchTimeframeChangeForAnalytics = (
     timeframeHours: TimeframeHoursValue,
@@ -187,6 +188,7 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
 
     return {
         ...graphForAccounts,
+        isAnyMainnetAccountPresent: A.isNotEmpty(accounts),
         timeframe: portfolioGraphTimeframe,
         onSelectTimeFrame: handleSelectPortfolioTimeframe,
     };
