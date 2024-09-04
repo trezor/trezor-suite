@@ -1,48 +1,33 @@
 import { ReactNode } from 'react';
-import styled, { useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
-import { Icon, IconName, variables } from '@trezor/components';
+import { Column, Icon, IconName, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-const Items = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
-    margin: 24px 0;
-`;
-
-const Item = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 24px;
-`;
-
-const Text = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-interface Item {
+type Item = {
     icon: IconName;
     content: ReactNode;
-}
+};
 
-interface SecurityChecklistProps {
+type SecurityChecklistProps = {
     items: readonly Item[];
-}
+};
 
 export const SecurityChecklist = ({ items }: SecurityChecklistProps) => {
     const theme = useTheme();
 
     return (
-        <Items>
+        <Column
+            alignItems="flex-start"
+            gap={spacings.xl}
+            margin={{ top: spacings.xl, bottom: spacings.xl }}
+        >
             {items.map(item => (
-                <Item key={item.icon}>
+                <Row key={item.icon} gap={spacings.xl}>
                     <Icon size={24} name={item.icon} color={theme.legacy.TYPE_DARK_GREY} />
-                    <Text>{item.content}</Text>
-                </Item>
+                    <Text variant="tertiary">{item.content}</Text>
+                </Row>
             ))}
-        </Items>
+        </Column>
     );
 };
