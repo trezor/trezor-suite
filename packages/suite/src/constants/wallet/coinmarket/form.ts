@@ -18,6 +18,7 @@ export const FORM_RECEIVE_CRYPTO_CURRENCY_SELECT = 'receiveCryptoSelect';
 
 export const FORM_DEFAULT_PAYMENT_METHOD = 'creditCard';
 export const FORM_DEFAULT_CRYPTO_CURRENCY = 'bitcoin';
+export const FORM_DEFAULT_CRYPTO_SECONDARY_CURRENCY = 'ethereum';
 export const FORM_DEFAULT_FIAT_CURRENCY = 'eur';
 
 export const FORM_RATE_TYPE = 'rateType';

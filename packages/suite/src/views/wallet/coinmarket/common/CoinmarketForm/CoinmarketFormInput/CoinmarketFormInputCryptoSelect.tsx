@@ -43,16 +43,17 @@ export const CoinmarketFormInputCryptoSelect = <
 
     const [isOpen, setIsOpen] = useState(false);
     const [isFocus, setIsFocus] = useState(false);
+    const sendCryptoSelectValue = isCoinmarketExchangeOffers(context)
+        ? (context.getValues()?.sendCryptoSelect?.value as CryptoId)
+        : null;
 
     const options = useMemo(
         () =>
             buildCryptoOptions(
                 supportedCryptoCurrencies ?? new Set(),
-                isCoinmarketExchangeOffers(context) && context.getValues()?.sendCryptoSelect?.value
-                    ? new Set([context.getValues()?.sendCryptoSelect?.value as CryptoId])
-                    : new Set(),
+                sendCryptoSelectValue ? new Set([sendCryptoSelectValue]) : new Set(),
             ),
-        [buildCryptoOptions, supportedCryptoCurrencies, context],
+        [buildCryptoOptions, supportedCryptoCurrencies, sendCryptoSelectValue],
     );
 
     return (
