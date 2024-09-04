@@ -8,24 +8,31 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 type LaunchSuiteParams = {
     rmUserData?: boolean;
+    bridgeLegacyTest?: boolean;
+    bridgeDaemon?: boolean;
 };
 
-export const launchSuite = async (params: LaunchSuiteParams = {}) => {
+export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => {
     const defaultParams = {
         rmUserData: true,
+        bridgeLegacyTest: true,
+        bridgeDaemon: false,
     };
     const options = Object.assign(defaultParams, params);
 
     const appDir = path.join(__dirname, '../../../suite-desktop');
     const desiredLogLevel = process.env.LOGLEVEL ?? 'error';
-    // TODO: Find out why currently pw fails to see node-bridge so we default to legacy bridge.
-    await TrezorUserEnvLink.startBridge();
+    if (!options.bridgeDaemon) {
+        // TODO: Find out why currently pw fails to see node-bridge so we default to legacy bridge.
+        await TrezorUserEnvLink.startBridge();
+    }
     const electronApp = await electron.launch({
         cwd: appDir,
         args: [
             path.join(appDir, './dist/app.js'),
             `--log-level=${desiredLogLevel}`,
-            '--bridge-legacy-test',
+            ...(options.bridgeLegacyTest ? ['--bridge-legacy-test'] : []),
+            ...(options.bridgeDaemon ? ['--bridge-daemon', '--skip-new-bridge-rollout'] : []),
         ],
         // when testing electron, video needs to be setup like this. it works locally but not in docker
         // recordVideo: { dir: 'test-results' },
@@ -61,6 +68,11 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
         [path.join(appDir, 'build/static')],
     );
 
+    return electronApp;
+};
+
+export const launchSuite = async (params: LaunchSuiteParams = {}) => {
+    const electronApp = await launchSuiteElectronApp(params);
     const window = await electronApp.firstWindow();
 
     return { electronApp, window };
