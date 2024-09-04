@@ -2,7 +2,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { amountToSatoshi, getNetwork } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
-import { FiatValue, Translation } from 'src/components/suite';
+import { FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
     coinmarketGetAccountLabel,
@@ -25,7 +25,7 @@ interface CoinmarketBalanceProps {
 }
 
 export const CoinmarketBalance = ({
-    balance,
+    balance, // expects a value in full units (BTC not sats)
     cryptoSymbolLabel,
     networkSymbol,
     tokenAddress,
@@ -48,9 +48,9 @@ export const CoinmarketBalance = ({
             <CoinmarketBalanceWrapper>
                 &asymp;{' '}
                 {!amountInCrypto ? (
-                    <>
+                    <HiddenPlaceholder>
                         {formattedBalance} {cryptoSymbolLabel}
-                    </>
+                    </HiddenPlaceholder>
                 ) : (
                     stringBalance &&
                     networkSymbol &&
@@ -68,7 +68,11 @@ export const CoinmarketBalance = ({
 
     return (
         <CoinmarketBalanceWrapper>
-            <Translation id="TR_BALANCE" />: {formattedBalance} {balanceCurrency}
+            <Translation id="TR_BALANCE" />
+            {': '}
+            <HiddenPlaceholder>
+                {formattedBalance} {balanceCurrency}
+            </HiddenPlaceholder>
             {stringBalance && networkSymbol && stringBalance !== '0' && (
                 <>
                     {' '}

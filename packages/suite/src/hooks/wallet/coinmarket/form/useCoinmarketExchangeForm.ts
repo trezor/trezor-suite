@@ -650,6 +650,7 @@ export const useCoinmarketExchangeForm = ({
         receiveAccount,
         selectedQuote,
         addressVerified,
+        shouldSendInSats,
         setReceiveAccount,
         composeRequest,
         changeFeeLevel,

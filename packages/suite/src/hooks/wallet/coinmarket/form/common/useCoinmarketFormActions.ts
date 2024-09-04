@@ -165,7 +165,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         const isSameCryptoSelected =
             cryptoSelectedCurrent &&
             cryptoSelectedCurrent.descriptor === selected.descriptor &&
-            cryptoIdToNetworkSymbol(cryptoSelectedCurrent.value) === networkSymbol;
+            cryptoSelectedCurrent.value === selected.value;
         const account = accountsSorted.find(
             item => item.descriptor === selected.descriptor && item.symbol === networkSymbol,
         );
