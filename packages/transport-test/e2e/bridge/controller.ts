@@ -115,8 +115,8 @@ class Controller extends TrezorUserEnvLinkClass {
 
         return scheduleAction(
             async () => {
-                const devices = await webusb.getDevices();
-                if (devices.filter(d => d.productName === 'TREZOR').length === expected) {
+                const devices = (await webusb.getDevices()).filter(d => d.productName === 'TREZOR');
+                if (devices.length === expected) {
                     return null;
                 }
                 throw new Error('Condition not met');
