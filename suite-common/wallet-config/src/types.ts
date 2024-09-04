@@ -54,6 +54,8 @@ export type NetworkFeature =
     | 'coin-definitions'
     | 'nft-definitions';
 
+export type Bip43Path = string; // TODO define a more specific type
+
 export type Explorer = {
     tx: string;
     account: string;
@@ -63,23 +65,26 @@ export type Explorer = {
     queryString?: string;
 };
 
-export type Account = {
-    bip43Path: string;
+type NetworkAccountWithSpecificKey<TKey extends AccountType> = {
+    accountType: TKey;
+    bip43Path: Bip43Path;
     backendType?: BackendType;
     features?: NetworkFeature[];
     isDebugOnlyAccountType?: boolean;
 };
+export type NetworkAccount = NetworkAccountWithSpecificKey<AccountType>;
 
-// template types serve only to check if `networks` satisfies it. Exact type is inferred below
-export type NetworkAccountTypes = Partial<Record<AccountType, Account>>;
+export type NetworkAccountTypes = Partial<{
+    [key in AccountType]: NetworkAccountWithSpecificKey<key>;
+}>;
 
 export type NetworkDeviceSupport = Partial<Record<DeviceModelInternal, string>>;
 
-export type Network = {
-    symbol: NetworkSymbol;
+type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
+    symbol: TKey;
     name: string;
     networkType: NetworkType;
-    bip43Path: string;
+    bip43Path: Bip43Path;
     decimals: number;
     testnet: boolean;
     explorer: Explorer;
@@ -93,7 +98,8 @@ export type Network = {
     coingeckoId?: string;
     coingeckoNativeId?: string;
 };
+export type Network = NetworkWithSpecificKey<NetworkSymbol>;
 
 export type Networks = {
-    [key in NetworkSymbol]: Network;
+    [key in NetworkSymbol]: NetworkWithSpecificKey<key>;
 };
