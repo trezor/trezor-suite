@@ -3,7 +3,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Translation } from 'src/components/suite';
 import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wallet-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ReviewOutput } from '@suite-common/wallet-types';
 import {
     TransactionReviewStepIndicator,
@@ -49,7 +49,7 @@ const getDisplayModeStringsMap = (): Record<
 
 export type TransactionReviewOutputProps = {
     state: TransactionReviewStepIndicatorProps['state'];
-    symbol: NetworkCompatible['symbol'];
+    symbol: NetworkSymbol;
     account: Account;
     isRbf: boolean;
     ethereumStakeType?: StakeType;

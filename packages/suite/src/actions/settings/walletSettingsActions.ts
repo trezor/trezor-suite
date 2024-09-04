@@ -1,6 +1,6 @@
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import { Dispatch, GetState } from 'src/types/suite';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { createAction } from '@reduxjs/toolkit';
 
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
@@ -21,7 +21,7 @@ export const setLocalCurrency = createAction(
 
 export const changeNetworks = createAction(
     WALLET_SETTINGS.CHANGE_NETWORKS,
-    (payload: NetworkCompatible['symbol'][]) => ({
+    (payload: NetworkSymbol[]) => ({
         payload,
     }),
 );
@@ -32,7 +32,7 @@ export type WalletSettingsAction =
     | { type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE; toggled: boolean }
     | {
           type: typeof WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL;
-          symbol: NetworkCompatible['symbol'];
+          symbol: NetworkSymbol;
           feeLevel?: FeeLevel;
       }
     | {
@@ -58,7 +58,7 @@ export const setDiscreetMode = (toggled: boolean) => (dispatch: Dispatch, getSta
 };
 
 export const changeCoinVisibility =
-    (symbol: NetworkCompatible['symbol'], shouldBeVisible: boolean) =>
+    (symbol: NetworkSymbol, shouldBeVisible: boolean) =>
     (dispatch: Dispatch, getState: GetState) => {
         let { enabledNetworks } = getState().wallet.settings;
         const isAlreadyHidden = enabledNetworks.find(coin => coin === symbol);

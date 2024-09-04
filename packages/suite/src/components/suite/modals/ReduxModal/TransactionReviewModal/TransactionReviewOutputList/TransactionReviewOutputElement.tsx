@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/connect';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
 import { TransactionReviewStepIndicatorProps } from './TransactionReviewStepIndicator';
@@ -142,7 +142,7 @@ export type TransactionReviewOutputElementProps = {
     indicator?: JSX.Element;
     lines: OutputElementLine[];
     cryptoSymbol?: NetworkSymbol;
-    fiatSymbol?: NetworkCompatible['symbol'];
+    fiatSymbol?: NetworkSymbol;
     fiatVisible?: boolean;
     token?: TokenInfo;
     account?: Account;

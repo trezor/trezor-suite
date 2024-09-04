@@ -1,4 +1,4 @@
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FeeLevel, PROTO } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
@@ -20,7 +20,7 @@ export type WalletType = (typeof WalletType)[keyof typeof WalletType];
 export interface WalletSettings {
     localCurrency: FiatCurrencyCode;
     discreetMode: boolean;
-    enabledNetworks: NetworkCompatible['symbol'][];
+    enabledNetworks: NetworkSymbol[];
     bitcoinAmountUnit: PROTO.AmountUnit;
     lastUsedFeeLevel: {
         [key: string]: Omit<FeeLevel, 'blocks'>; // Key: Network['symbol']

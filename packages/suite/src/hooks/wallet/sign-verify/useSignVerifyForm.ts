@@ -5,14 +5,14 @@ import { isAddressValid } from '@suite-common/wallet-utils';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import type { Account } from 'src/types/wallet';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export const MAX_LENGTH_MESSAGE = 1024;
 export const MAX_LENGTH_SIGNATURE = 255;
 
 type SignVerifyContext = {
     isSignPage: boolean;
-    accountNetwork: NetworkCompatible['symbol'];
+    accountNetwork: NetworkSymbol;
 };
 
 const signVerifySchema = yup.object({

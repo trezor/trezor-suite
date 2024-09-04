@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Paragraph } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const Wrapper = styled(Paragraph)`
@@ -12,7 +12,7 @@ const Wrapper = styled(Paragraph)`
 `;
 
 interface ConnectionInfoProps {
-    coin: NetworkCompatible['symbol'];
+    coin: NetworkSymbol;
 }
 
 const ConnectionInfo = ({ coin }: ConnectionInfoProps) => {

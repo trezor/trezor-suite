@@ -7,7 +7,7 @@ import { isUrl } from '@trezor/utils';
 import { isOnionUrl } from 'src/utils/suite/tor';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { isElectrumUrl } from '@suite-common/wallet-utils';
-import { NetworkCompatible, BackendType } from '@suite-common/wallet-config';
+import { NetworkSymbol, BackendType } from '@suite-common/wallet-config';
 import { BackendSettings } from '@suite-common/wallet-types';
 
 export type BackendOption = BackendType | 'default';
@@ -32,7 +32,7 @@ const validateUrl = (type: BackendOption, value: string) => {
     }
 };
 
-const getUrlPlaceholder = (coin: NetworkCompatible['symbol'], type: BackendOption) => {
+const getUrlPlaceholder = (coin: NetworkSymbol, type: BackendOption) => {
     switch (type) {
         case 'blockbook':
             return `https://${coin}1.trezor.io/`;
@@ -47,11 +47,7 @@ const getUrlPlaceholder = (coin: NetworkCompatible['symbol'], type: BackendOptio
     }
 };
 
-const useBackendUrlInput = (
-    coin: NetworkCompatible['symbol'],
-    type: BackendOption,
-    currentUrls: string[],
-) => {
+const useBackendUrlInput = (coin: NetworkSymbol, type: BackendOption, currentUrls: string[]) => {
     const {
         register,
         watch,
@@ -91,7 +87,7 @@ const useBackendUrlInput = (
 };
 
 const getStoredState = (
-    coin: NetworkCompatible['symbol'],
+    coin: NetworkSymbol,
     type?: BackendOption,
     urls?: BackendSettings['urls'],
 ): BackendsFormData => ({
@@ -99,7 +95,7 @@ const getStoredState = (
     urls: (type && type !== 'default' && urls?.[type]) || [],
 });
 
-export const useBackendsForm = (coin: NetworkCompatible['symbol']) => {
+export const useBackendsForm = (coin: NetworkSymbol) => {
     const backends = useSelector(state => state.wallet.blockchain[coin].backends);
     const dispatch = useDispatch();
     const initial = getStoredState(coin, backends.selected, backends.urls);

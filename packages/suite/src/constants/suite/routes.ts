@@ -2,7 +2,7 @@ import { ArrayElement } from '@trezor/type-utils';
 import { Route } from '@suite-common/suite-types';
 import { routes } from '@suite-common/suite-config';
 
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
 import { RouteParams } from 'src/utils/suite/router';
 
 export type SettingsBackRoute = {
@@ -11,7 +11,7 @@ export type SettingsBackRoute = {
 };
 
 type RouteParamsTypes = {
-    symbol: NetworkCompatible['symbol'];
+    symbol: NetworkSymbol;
     accountIndex: number;
     accountType: NonNullable<NetworkCompatible['accountType']>;
     cancelable: boolean;

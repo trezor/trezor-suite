@@ -9,17 +9,16 @@ import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import type { NotificationRendererProps } from 'src/components/suite';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
 
 const Row = styled.span`
     display: flex;
 `;
 
-const getIcon = (symbol?: NetworkCompatible['symbol']) =>
-    symbol && <CoinLogo symbol={symbol} size={24} />;
+const getIcon = (symbol?: NetworkSymbol) => symbol && <CoinLogo symbol={symbol} size={24} />;
 
-const useActionAllowed = (path: string, network?: NetworkCompatible['symbol']) => {
+const useActionAllowed = (path: string, network?: NetworkSymbol) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const pathMatch = useRouteMatch(`${process.env.ASSET_PREFIX || ''}${path}`);
 
