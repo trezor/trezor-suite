@@ -3,7 +3,7 @@ import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkAccount, Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     accountsActions,
@@ -550,8 +550,9 @@ const handleError = (error: string) => (dispatch: Dispatch) => {
 };
 
 export const createCoinjoinAccount =
-    (network: NetworkCompatible) => async (dispatch: Dispatch, getState: GetState) => {
-        if (network.accountType !== 'coinjoin') {
+    (network: Network, account: NetworkAccount) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        if (account.accountType !== 'coinjoin') {
             throw new Error('createCoinjoinAccount: invalid account type');
         }
 
@@ -577,7 +578,7 @@ export const createCoinjoinAccount =
             return;
         }
 
-        const path = network.bip43Path.replace('i', '0');
+        const path = account.bip43Path.replace('i', '0');
 
         // get coinjoin account xpub
         const publicKey = await TrezorConnect.getPublicKey({
@@ -597,14 +598,14 @@ export const createCoinjoinAccount =
         }
 
         // create empty account
-        const account = dispatch(
+        const coinjoinAccount = dispatch(
             accountsActions.createAccount({
                 deviceState: device!.state!,
                 discoveryItem: {
                     index: 0,
                     path,
                     unlockPath: unlockPath.payload,
-                    accountType: network.accountType,
+                    accountType: account.accountType,
                     networkType: network.networkType,
                     backendType: 'coinjoin',
                     coin: network.symbol,
@@ -620,11 +621,13 @@ export const createCoinjoinAccount =
             }),
         );
 
-        log(`CoinjoinAccount created: ${getAccountProgressHandle(account.payload)}`);
+        log(`CoinjoinAccount created: ${getAccountProgressHandle(coinjoinAccount.payload)}`);
 
         // birthdate optimization
-        const checkpoint = await api.backend.getAccountCheckpoint(account.payload.descriptor);
-        dispatch(coinjoinAccountDiscoveryReset(account.payload.key, checkpoint));
+        const checkpoint = await api.backend.getAccountCheckpoint(
+            coinjoinAccount.payload.descriptor,
+        );
+        dispatch(coinjoinAccountDiscoveryReset(coinjoinAccount.payload.key, checkpoint));
 
         dispatch(coinjoinAccountPreloading(false));
 
@@ -633,14 +636,14 @@ export const createCoinjoinAccount =
             goto('wallet-index', {
                 params: {
                     symbol: network.symbol,
-                    accountType: network.accountType,
+                    accountType: account.accountType,
                     accountIndex: 0,
                 },
             }),
         );
 
         // start discovery
-        return dispatch(fetchAndUpdateAccount(account.payload));
+        return dispatch(fetchAndUpdateAccount(coinjoinAccount.payload));
     };
 
 export const rescanCoinjoinAccount =

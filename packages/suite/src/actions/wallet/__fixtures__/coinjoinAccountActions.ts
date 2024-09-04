@@ -22,9 +22,11 @@ export const createCoinjoinAccount = [
     {
         description: 'unsupported coinjoin client',
         params: {
-            symbol: 'ltc', // only btc is supported in tests
-            networkType: 'bitcoin',
-            accountType: 'coinjoin',
+            network: {
+                symbol: 'ltc', // only btc is supported in tests
+                networkType: 'bitcoin',
+            },
+            account: { accountType: 'coinjoin' },
         },
         result: {
             actions: [
@@ -43,9 +45,13 @@ export const createCoinjoinAccount = [
             },
         },
         params: {
-            symbol: 'btc',
-            networkType: 'bitcoin',
-            accountType: 'coinjoin',
+            network: {
+                symbol: 'btc',
+                networkType: 'bitcoin',
+            },
+            account: {
+                accountType: 'coinjoin',
+            },
         },
         result: {
             actions: [
@@ -72,10 +78,14 @@ export const createCoinjoinAccount = [
             },
         ],
         params: {
-            symbol: 'btc',
-            networkType: 'bitcoin',
-            accountType: 'coinjoin',
-            bip43Path: "m/10025'/1'/i'/1'",
+            network: {
+                symbol: 'btc',
+                networkType: 'bitcoin',
+            },
+            account: {
+                accountType: 'coinjoin',
+                bip43Path: "m/10025'/1'/i'/1'",
+            },
         },
         result: {
             actions: [
@@ -110,10 +120,14 @@ export const createCoinjoinAccount = [
             },
         ],
         params: {
-            symbol: 'btc',
-            networkType: 'bitcoin',
-            accountType: 'coinjoin',
-            bip43Path: "m/10025'/1'/i'/1'",
+            network: {
+                symbol: 'btc',
+                networkType: 'bitcoin',
+            },
+            account: {
+                accountType: 'coinjoin',
+                bip43Path: "m/10025'/1'/i'/1'",
+            },
         },
         result: {
             actions: [

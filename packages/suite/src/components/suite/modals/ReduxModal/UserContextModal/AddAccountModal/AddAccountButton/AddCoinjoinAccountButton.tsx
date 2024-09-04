@@ -13,12 +13,7 @@ import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
 import { Account } from 'src/types/wallet';
-import {
-    Network,
-    NetworkAccount,
-    NetworkCompatible,
-    NetworkSymbol,
-} from '@suite-common/wallet-config';
+import { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 import { AddButton } from './AddButton';
@@ -80,15 +75,9 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
         unavailableCapabilities: device.unavailableCapabilities,
     });
 
-    // TODO refactor createCoinjoinAccount
-    const networkCompatible = {
-        ...network,
-        ...selectedAccount, // adds accountType, overrides Bip43Path and other properties
-    } as unknown as NetworkCompatible;
-
     const onCreateCoinjoinAccountClick = async () => {
         const createAccount = async () => {
-            await dispatch(createCoinjoinAccount(networkCompatible));
+            await dispatch(createCoinjoinAccount(network, selectedAccount));
             setIsLoading(false);
         };
 
