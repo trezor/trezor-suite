@@ -70,7 +70,12 @@ describe('coinjoinAccountActions', () => {
             testMocks.setTrezorConnectFixtures(f.connect);
             jest.spyOn(console, 'log').mockImplementation(() => {});
 
-            await store.dispatch(coinjoinAccountActions.createCoinjoinAccount(f.params as any)); // params are incomplete
+            await store.dispatch(
+                coinjoinAccountActions.createCoinjoinAccount(
+                    f.params.network as any,
+                    f.params.account as any,
+                ),
+            ); // params are incomplete
 
             const actions = store.getActions();
             expect(actions.map(a => a.type)).toEqual(f.result.actions);
