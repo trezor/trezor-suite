@@ -10,7 +10,7 @@ import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@su
 import { FormatterProvider } from '@suite-common/formatters';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { FeatureMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
-import { OfflineBanner } from '@suite-native/connection-status';
+import { configureNetInfo, OfflineBanner } from '@suite-native/connection-status';
 import { IntlProvider } from '@suite-native/intl';
 import { isDebugEnv } from '@suite-native/config';
 
@@ -33,6 +33,11 @@ const APP_STARTED_TIMESTAMP = Date.now();
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
+
+// Global configuration of NetInfo for network status monitoring.
+// Calling this will stop all previously added listeners on NetInfo from being called again.
+// https://github.com/react-native-netinfo/react-native-netinfo?tab=readme-ov-file#configure
+configureNetInfo();
 
 const AppComponent = () => {
     const dispatch = useDispatch();
