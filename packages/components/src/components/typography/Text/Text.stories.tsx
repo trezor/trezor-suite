@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { allowedTextFrameProps, Text as TextComponent } from './Text';
+import { allowedTextFrameProps, allowedTextTextProps, Text as TextComponent } from './Text';
 import { getFramePropsStory } from '../../../utils/frameProps';
+import { getTextPropsStory } from '../utils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,41 +21,43 @@ const meta: Meta = {
 export default meta;
 
 export const Text: StoryObj = {
-    render: () => (
+    render: props => (
         <Wrapper>
             <Block>
-                <TextComponent>This is just a plain text</TextComponent>
+                <TextComponent {...props}>This is just a plain text</TextComponent>
             </Block>
             <Block>
-                <TextComponent variant="primary">
+                <TextComponent variant="primary" {...props}>
                     This is <strong>primary</strong> text
                 </TextComponent>
-                <TextComponent variant="info">
+                <TextComponent variant="info" {...props}>
                     This is <strong>info</strong> text
                 </TextComponent>
-                <TextComponent variant="warning">
+                <TextComponent variant="warning" {...props}>
                     This is <strong>warning</strong> text
                 </TextComponent>
-                <TextComponent variant="destructive">
+                <TextComponent variant="destructive" {...props}>
                     This is <strong>destructive</strong> text
                 </TextComponent>
             </Block>
             <Block>
-                <TextComponent color="#9be887">
+                <TextComponent color="#9be887" {...props}>
                     This is <strong>custom</strong> color text
                 </TextComponent>
             </Block>
             <Block>
-                <TextComponent variant="info" typographyStyle="titleMedium">
+                <TextComponent variant="info" typographyStyle="titleMedium" {...props}>
                     This is just a plain Medium Title
                 </TextComponent>
             </Block>
         </Wrapper>
     ),
     args: {
+        ...getTextPropsStory(allowedTextTextProps).args,
         ...getFramePropsStory(allowedTextFrameProps).args,
     },
     argTypes: {
+        ...getTextPropsStory(allowedTextTextProps).argTypes,
         ...getFramePropsStory(allowedTextFrameProps).argTypes,
     },
 };

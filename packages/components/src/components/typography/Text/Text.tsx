@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import { UIVariant } from '../../../config/types';
-import { CSSColor, Color, Colors, TypographyStyle, typography } from '@trezor/theme';
+import { CSSColor, Color, Colors, TypographyStyle } from '@trezor/theme';
 import { ReactNode } from 'react';
-import { TransientProps } from '../../../utils/transientProps';
+import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
+import { TextPropsKeys, TextWrap, withTextProps, TextProps as TextPropsCommon } from '../utils';
 
-type TextWrap = 'balance' | 'break-word';
+export const allowedTextTextProps: TextPropsKeys[] = ['typographyStyle', 'textWrap'];
+type AllowedTextTextProps = Pick<TextPropsCommon, (typeof allowedTextTextProps)[number]>;
 
 export const allowedTextFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextFrameProps)[number]>;
@@ -48,23 +50,21 @@ type StyledTextProps = {
     $typographyStyle?: TypographyStyle;
     $textWrap?: TextWrap;
 } & ExclusiveColorOrVariant &
-    TransientProps<AllowedFrameProps>;
+    TransientProps<AllowedFrameProps> &
+    TransientProps<AllowedTextTextProps>;
 
 const StyledText = styled.span<StyledTextProps>`
     color: ${getColorForTextVariant};
-    ${({ $typographyStyle }) => ($typographyStyle ? typography[$typographyStyle] : '')}
-    ${({ $textWrap }) => ($textWrap ? `text-wrap: ${$textWrap}` : '')}
-
+    ${withTextProps}
     ${withFrameProps}
 `;
 
 type TextProps = {
     children: ReactNode;
     className?: string;
-    typographyStyle?: TypographyStyle;
-    textWrap?: TextWrap;
 } & ExclusiveColorOrVariant &
-    AllowedFrameProps;
+    AllowedFrameProps &
+    AllowedTextTextProps;
 
 export const Text = ({
     variant,
@@ -79,9 +79,7 @@ export const Text = ({
         <StyledText
             {...(variant !== undefined ? { $variant: variant } : { $color: color })}
             className={className}
-            $typographyStyle={typographyStyle}
-            $margin={margin}
-            $textWrap={textWrap}
+            {...makePropsTransient({ margin, typographyStyle, textWrap })}
         >
             {children}
         </StyledText>
