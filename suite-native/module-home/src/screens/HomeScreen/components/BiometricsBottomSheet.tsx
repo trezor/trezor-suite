@@ -13,6 +13,8 @@ import {
     BiometricsIcon,
 } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
+import { selectIsCoinEnablingInitFinished } from '@suite-native/discovery';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 const SHOW_TIMEOUT = 1500;
 
@@ -41,15 +43,24 @@ export const BiometricsBottomSheet = () => {
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const { toggleBiometricsOption } = useBiometricsSettings();
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
+    const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
+    const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
 
     const [isVisible, setIsVisible] = useState(false);
+
+    // if coin enabling is active, we need to wait for it to finish before showing the biometrics modal
+    const isCoinEnablingSetupFinished = isCoinEnablingActive ? isCoinEnablingInitFinished : true;
 
     useEffect(() => {
         let isMounted = true;
         let timerId: ReturnType<typeof setTimeout>;
         const checkBiometrics = async () => {
             const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
-            if (isBiometricsAvailable && !isBiometricsOptionEnabled) {
+            if (
+                isBiometricsAvailable &&
+                !isBiometricsOptionEnabled &&
+                isCoinEnablingSetupFinished
+            ) {
                 timerId = setTimeout(() => {
                     if (isMounted) {
                         setIsVisible(true);
@@ -66,7 +77,7 @@ export const BiometricsBottomSheet = () => {
             clearTimeout(timerId);
             isMounted = false;
         };
-    }, [isBiometricsOptionEnabled, isBiometricsInitialSetupFinished, isDeviceAuthorized]);
+    }, [isBiometricsOptionEnabled, isDeviceAuthorized, isCoinEnablingSetupFinished]);
 
     const handleClose = () => {
         setIsVisible(false);
