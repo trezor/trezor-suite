@@ -4,7 +4,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { UnavailableCapability } from '@trezor/connect';
 import { selectDevice } from '@suite-common/wallet-core';
 import { Account } from 'src/types/wallet';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { Network, NetworkAccount } from '@suite-common/wallet-config';
 import { Translation } from 'src/components/suite';
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
 import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';
@@ -52,7 +52,8 @@ const verifyAvailability = ({
 };
 
 interface AddAccountButtonProps {
-    network: NetworkCompatible;
+    network: Network;
+    selectedAccount?: NetworkAccount;
     emptyAccounts: Account[];
     onEnableAccount: (account: Account) => void;
 }
@@ -61,15 +62,16 @@ const AddDefaultAccountButton = ({
     emptyAccounts,
     onEnableAccount,
     network,
+    selectedAccount,
 }: AddAccountButtonProps) => {
-    const account = emptyAccounts[emptyAccounts.length - 1];
+    const defaultAccount = emptyAccounts[emptyAccounts.length - 1];
     const device = useSelector(selectDevice);
 
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 
     const handleClick = useCallback(() => {
-        const { accountType: type, path, symbol } = account;
-        onEnableAccount(account);
+        const { accountType: type, path, symbol } = defaultAccount;
+        onEnableAccount(defaultAccount);
         // reset search string in account search box
         setSearchString(undefined);
         if (coinFilter && coinFilter !== symbol) {
@@ -85,15 +87,15 @@ const AddDefaultAccountButton = ({
                 symbol,
             },
         });
-    }, [account, onEnableAccount, setSearchString, setCoinFilter, coinFilter]);
+    }, [defaultAccount, onEnableAccount, setSearchString, setCoinFilter, coinFilter]);
 
-    const unavailableCapability = network.accountType
-        ? device?.unavailableCapabilities?.[network.accountType]
+    const unavailableCapability = selectedAccount?.accountType
+        ? device?.unavailableCapabilities?.[selectedAccount?.accountType]
         : undefined;
 
     const disabledMessage = verifyAvailability({
         emptyAccounts,
-        account,
+        account: defaultAccount,
         unavailableCapability,
     });
 
@@ -108,16 +110,18 @@ const AddDefaultAccountButton = ({
 
 export const AddAccountButton = ({
     network,
+    selectedAccount,
     emptyAccounts,
     onEnableAccount,
 }: AddAccountButtonProps) => {
-    switch (network.accountType) {
+    switch (selectedAccount?.accountType) {
         case 'coinjoin':
-            return <AddCoinjoinAccountButton network={network} />;
+            return <AddCoinjoinAccountButton network={network} selectedAccount={selectedAccount} />;
         default:
             return (
                 <AddDefaultAccountButton
                     network={network}
+                    selectedAccount={selectedAccount}
                     emptyAccounts={emptyAccounts}
                     onEnableAccount={onEnableAccount}
                 />
