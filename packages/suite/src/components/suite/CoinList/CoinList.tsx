@@ -7,7 +7,7 @@ import { versionUtils } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useDiscovery, useSelector } from 'src/hooks/suite';
-import { Network, NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Coin } from './Coin';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
@@ -20,7 +20,7 @@ const Wrapper = styled.div`
 `;
 
 interface CoinListProps {
-    networks: Network[] | NetworkCompatible[]; // CoinList only uses what they have in common, so it's interchangeable
+    networks: Network[];
     enabledNetworks?: NetworkSymbol[];
     settingsMode?: boolean;
     onSettings?: (symbol: NetworkSymbol) => void;
