@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import TrezorConnect, { BlockchainLink } from '@trezor/connect';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export const useDefaultUrls = (
-    coin: NetworkCompatible['symbol'],
+    coin: NetworkSymbol,
 ): { defaultUrls: string[]; isLoading: boolean } => {
     const [link, setLink] = useState<BlockchainLink>();
     const [isLoading, setIsLoading] = useState(false);

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { AccountAddress } from '@trezor/connect';
 import { Card, Button, Column, GradientOverlay, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectFailedSecurityChecks } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
@@ -98,7 +98,7 @@ interface ItemProps {
     index: number;
     addr: AccountAddress;
     locked: boolean;
-    symbol: NetworkCompatible['symbol'];
+    symbol: NetworkSymbol;
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
 }

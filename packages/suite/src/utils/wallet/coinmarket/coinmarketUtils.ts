@@ -1,10 +1,6 @@
 import { Account } from 'src/types/wallet';
-import { NetworkCompatible } from '@suite-common/wallet-config';
-import TrezorConnect from '@trezor/connect';
-import regional from 'src/constants/wallet/coinmarket/regional';
-import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
-import { BuyTrade, SellFiatTrade, CryptoId } from 'invity-api';
 import {
+    NetworkCompatible,
     NetworkSymbol,
     getCoingeckoId,
     getNetworkByCoingeckoId,
@@ -13,6 +9,10 @@ import {
     networks,
     networksCompatibility,
 } from '@suite-common/wallet-config';
+import TrezorConnect from '@trezor/connect';
+import regional from 'src/constants/wallet/coinmarket/regional';
+import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
+import { BuyTrade, SellFiatTrade, CryptoId } from 'invity-api';
 import {
     DefinitionType,
     getContractAddressForNetwork,
@@ -197,7 +197,7 @@ export const getComposeAddressPlaceholder = async (
     }
 };
 
-export const mapTestnetSymbol = (symbol: NetworkCompatible['symbol']) => {
+export const mapTestnetSymbol = (symbol: NetworkSymbol) => {
     if (symbol === 'test') return 'btc';
     if (symbol === 'tsep') return 'eth';
     if (symbol === 'thol') return 'eth';

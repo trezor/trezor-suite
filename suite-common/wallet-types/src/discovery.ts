@@ -1,6 +1,6 @@
 import { ObjectValues } from '@trezor/type-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
 import { Deferred } from '@trezor/utils';
 
 import { Account, AccountBackendSpecific } from './account';
@@ -15,13 +15,13 @@ export interface Discovery {
     status: ObjectValues<typeof DiscoveryStatus>;
     // coins which failed to load
     failed: {
-        symbol: NetworkCompatible['symbol'];
+        symbol: NetworkSymbol;
         index: number;
         accountType: NonNullable<NetworkCompatible['accountType']>;
         error: string;
         fwException?: string;
     }[];
-    networks: NetworkCompatible['symbol'][];
+    networks: NetworkSymbol[];
     running?: Deferred<void>;
     error?: string;
     errorCode?: string | number;

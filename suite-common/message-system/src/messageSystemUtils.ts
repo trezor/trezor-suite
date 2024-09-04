@@ -21,7 +21,7 @@ import type {
     Device,
     Environment,
 } from '@suite-common/suite-types';
-import type { NetworkCompatible } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
 import {
     getBootloaderVersion,
@@ -56,7 +56,7 @@ export const categorizeMessages = (messages: Message[]): ValidMessagesPayload =>
 
 type CurrentSettings = {
     tor: boolean;
-    enabledNetworks: NetworkCompatible['symbol'][];
+    enabledNetworks: NetworkSymbol[];
 };
 
 type Options = {

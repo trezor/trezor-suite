@@ -1,4 +1,4 @@
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export enum PROTOCOL_SCHEME {
     BITCOIN = 'bitcoin',
@@ -19,7 +19,7 @@ export enum PROTOCOL_SCHEME {
 }
 
 export const PROTOCOL_TO_NETWORK: Partial<{
-    [key in PROTOCOL_SCHEME]: NetworkCompatible['symbol'];
+    [key in PROTOCOL_SCHEME]: NetworkSymbol;
 }> = {
     [PROTOCOL_SCHEME.BITCOIN]: 'btc',
     [PROTOCOL_SCHEME.LITECOIN]: 'ltc',
