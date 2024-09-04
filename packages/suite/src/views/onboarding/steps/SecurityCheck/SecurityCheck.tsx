@@ -3,12 +3,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { AcquiredDevice } from '@suite-common/suite-types';
-import {
-    deviceActions,
-    selectDevice,
-    selectDeviceAuthenticity,
-    selectDevices,
-} from '@suite-common/wallet-core';
+import { deviceActions, selectDevice, selectDevices } from '@suite-common/wallet-core';
 import { Icon, Tooltip, variables, H2, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 import { TREZOR_RESELLERS_URL, TREZOR_URL } from '@trezor/urls';
@@ -287,45 +282,38 @@ const SecurityCheckContent = ({
 };
 
 export const SecurityCheck = () => {
-    const device = useSelector(selectDevice);
+    const selectedDevice = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
-    const deviceAuthenticity = useSelector(selectDeviceAuthenticity);
     const { initialRun } = useSelector(selectSuiteFlags);
     const {
         isDeviceAuthenticityCheckDisabled,
         debug: { isUnlockedBootloaderAllowed },
     } = useSelector(state => state.suite.settings);
     const dispatch = useDispatch();
-    const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);
     const { goToSuite } = useOnboarding();
+    const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);
+    const [checkedDevices, setCheckedDevices] = useState<string[]>([]);
 
     const isDebugDevice = (device: AcquiredDevice) =>
         isUnlockedBootloaderAllowed && device.features.bootloader_locked === false;
 
     const shouldAuthenticateSelectedDevice =
-        !!device?.features?.internal_model &&
-        SUPPORTS_DEVICE_AUTHENTICITY_CHECK[device.features.internal_model] &&
+        !!selectedDevice?.features?.internal_model &&
+        SUPPORTS_DEVICE_AUTHENTICITY_CHECK[selectedDevice.features.internal_model] &&
         initialRun &&
         !isDeviceAuthenticityCheckDisabled &&
-        !isDebugDevice(device);
+        !isDebugDevice(selectedDevice);
 
-    // If there are multiple devices connected, make sure to authenticate all those that support the check before continuing to Suite.
-    const goToSuiteOrNextDevice = () => {
-        let nextDeviceToAuthenticate;
-        if (!isDeviceAuthenticityCheckDisabled) {
-            nextDeviceToAuthenticate = devices.find(
-                device =>
-                    device.features?.internal_model &&
-                    SUPPORTS_DEVICE_AUTHENTICITY_CHECK[device.features.internal_model] &&
-                    device.id &&
-                    !deviceAuthenticity?.[device.id] &&
-                    !isDebugDevice(device),
-            );
-        }
+    // If there are multiple devices connected, check all of them before continuing to Suite.
+    const goToSuiteOrNextDevice = (onSelectNext?: () => void) => {
+        const nextDeviceToCheck = devices
+            .filter(device => device.id !== selectedDevice?.id)
+            .find(device => device.id && !checkedDevices.includes(device.id));
 
-        if (nextDeviceToAuthenticate !== undefined) {
-            setIsAuthenticityCheckStep(false);
-            dispatch(deviceActions.selectDevice(nextDeviceToAuthenticate));
+        if (nextDeviceToCheck !== undefined) {
+            onSelectNext?.();
+            setCheckedDevices(prev => [...prev, selectedDevice?.id ?? '']); // Device ID must be available as firmware is already installed.
+            dispatch(deviceActions.selectDevice(nextDeviceToCheck));
         } else {
             goToSuite();
         }
@@ -341,7 +329,11 @@ export const SecurityCheck = () => {
     }, [isAuthenticityCheckStep, shouldAuthenticateSelectedDevice]);
 
     if (isAuthenticityCheckStep) {
-        return <DeviceAuthenticity goToNext={goToSuiteOrNextDevice} />;
+        return (
+            <DeviceAuthenticity
+                goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
+            />
+        );
     }
 
     const goToDeviceAuthentication = () => setIsAuthenticityCheckStep(true);
