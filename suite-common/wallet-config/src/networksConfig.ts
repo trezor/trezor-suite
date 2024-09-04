@@ -27,18 +27,22 @@ export const networks = {
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
+                accountType: 'coinjoin',
                 bip43Path: "m/10025'/0'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
                 features: ['rbf', 'amount-unit'], // no sign-verify
             },
             taproot: {
+                accountType: 'taproot',
                 bip43Path: "m/86'/0'/i'",
                 features: ['rbf', 'amount-unit'], // no sign-verify
             },
             segwit: {
+                accountType: 'segwit',
                 bip43Path: "m/49'/0'/i'",
             },
             legacy: {
+                accountType: 'legacy',
                 bip43Path: "m/44'/0'/i'",
             },
         },
@@ -61,9 +65,11 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {
             segwit: {
+                accountType: 'segwit',
                 bip43Path: "m/49'/2'/i'",
             },
             legacy: {
+                accountType: 'legacy',
                 bip43Path: "m/44'/2'/i'",
             },
         },
@@ -96,11 +102,13 @@ export const networks = {
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
+                accountType: 'ledger',
                 bip43Path: "m/44'/60'/i'/0/0",
                 isDebugOnlyAccountType: true,
             },
             legacy: {
                 // ledger (legacy)
+                accountType: 'legacy',
                 bip43Path: "m/44'/60'/0'/i",
                 isDebugOnlyAccountType: true,
             },
@@ -181,6 +189,7 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {
             legacy: {
+                accountType: 'legacy',
                 bip43Path: "m/44'/156'/i'",
             },
         },
@@ -221,6 +230,7 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {
             legacy: {
+                accountType: 'legacy',
                 bip43Path: "m/44'/20'/i'",
             },
         },
@@ -279,9 +289,11 @@ export const networks = {
         customBackends: ['blockbook'],
         accountTypes: {
             segwit: {
+                accountType: 'segwit',
                 bip43Path: "m/49'/28'/i'",
             },
             legacy: {
+                accountType: 'legacy',
                 bip43Path: "m/44'/28'/i'",
             },
         },
@@ -330,11 +342,13 @@ export const networks = {
         accountTypes: {
             legacy: {
                 // icarus-trezor derivation, differs from default just for 24 words seed
+                accountType: 'legacy',
                 bip43Path: "m/1852'/1815'/i'",
                 isDebugOnlyAccountType: true,
             },
             ledger: {
                 // ledger derivation
+                accountType: 'ledger',
                 bip43Path: "m/1852'/1815'/i'",
                 isDebugOnlyAccountType: true,
             },
@@ -364,6 +378,7 @@ export const networks = {
         accountTypes: {
             ledger: {
                 // bip44Change - Ledger Live
+                accountType: 'ledger',
                 bip43Path: "m/44'/501'/i'",
                 isDebugOnlyAccountType: true,
             },
@@ -390,6 +405,7 @@ export const networks = {
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
+                accountType: 'ledger',
                 bip43Path: "m/44'/60'/i'/0/0",
                 isDebugOnlyAccountType: true,
             },
@@ -416,6 +432,7 @@ export const networks = {
         accountTypes: {
             ledger: {
                 // ledger (live), #1 acc is same as Trezor, so it is skipped
+                accountType: 'ledger',
                 bip43Path: "m/44'/60'/i'/0/0",
                 isDebugOnlyAccountType: true,
             },
@@ -440,18 +457,22 @@ export const networks = {
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
+                accountType: 'coinjoin',
                 bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
                 features: ['rbf', 'amount-unit'], // no sign-verify
             },
             taproot: {
+                accountType: 'taproot',
                 bip43Path: "m/86'/1'/i'",
                 features: ['rbf', 'amount-unit'], // no sign-verify
             },
             segwit: {
+                accountType: 'segwit',
                 bip43Path: "m/49'/1'/i'",
             },
             legacy: {
+                accountType: 'legacy',
                 bip43Path: "m/44'/1'/i'",
             },
         },
@@ -474,18 +495,22 @@ export const networks = {
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             coinjoin: {
+                accountType: 'coinjoin',
                 bip43Path: "m/10025'/1'/i'/1'", // https://github.com/satoshilabs/slips/blob/master/slip-0025.md#public-key-derivation
                 backendType: 'coinjoin', // use non-standard backend
                 features: ['rbf', 'amount-unit'], // no sign-verify
             },
             taproot: {
+                accountType: 'taproot',
                 bip43Path: "m/86'/1'/i'",
                 features: ['rbf', 'amount-unit'], // no sign-verify
             },
             segwit: {
+                accountType: 'segwit',
                 bip43Path: "m/49'/1'/i'",
             },
             legacy: {
+                accountType: 'legacy',
                 bip43Path: "m/44'/1'/i'",
             },
         },
@@ -575,10 +600,12 @@ export const networks = {
         accountTypes: {
             legacy: {
                 // icarus-trezor derivation
+                accountType: 'legacy',
                 bip43Path: "m/1852'/1815'/i'",
             },
             ledger: {
                 // ledger derivation
+                accountType: 'ledger',
                 bip43Path: "m/1852'/1815'/i'",
             },
         },
