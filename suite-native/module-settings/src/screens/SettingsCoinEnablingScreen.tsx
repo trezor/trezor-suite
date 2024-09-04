@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -13,10 +13,12 @@ import { selectIsBitcoinOnlyDevice } from '@suite-common/wallet-core';
 import {
     selectDiscoverySupportedNetworks,
     selectEnabledDiscoveryNetworkSymbols,
+    setEnabledDiscoveryNetworkSymbols,
     setIsCoinEnablingInitFinished,
 } from '@suite-native/discovery';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@suite-common/suite-utils';
+import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
 
 const GRADIENT_HEIGHT = 40;
 
@@ -40,9 +42,20 @@ export const SettingsCoinEnablingScreen = () => {
     const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
     const availableNetworks = useSelector(selectDiscoverySupportedNetworks);
     const isBitcoinOnlyDevice = useSelector(selectIsBitcoinOnlyDevice);
+    const viewOnlyDevicesAccountsNetworkSymbols = useSelector(
+        selectViewOnlyDevicesAccountsNetworkSymbols,
+    );
 
     //testnets can be enabled and we want to show networks that case
     const showNetworks = availableNetworks.length > 1 || !isBitcoinOnlyDevice;
+
+    useEffect(() => {
+        // in case the user has view only devices and gets to the settings
+        // before the Coin Enabling has been initialized, we need to set the networks
+        if (enabledNetworkSymbols.length === 0) {
+            dispatch(setEnabledDiscoveryNetworkSymbols(viewOnlyDevicesAccountsNetworkSymbols));
+        }
+    }, [enabledNetworkSymbols.length, dispatch, viewOnlyDevicesAccountsNetworkSymbols]);
 
     useFocusEffect(
         useCallback(() => {

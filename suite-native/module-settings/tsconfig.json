@@ -29,6 +29,7 @@
         { "path": "../biometrics" },
         { "path": "../coin-enabling" },
         { "path": "../config" },
+        { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
