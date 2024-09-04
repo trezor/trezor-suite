@@ -324,9 +324,7 @@ export const SecurityCheck = () => {
         }
 
         if (nextDeviceToAuthenticate !== undefined) {
-            if (setIsAuthenticityCheckStep) {
-                setIsAuthenticityCheckStep(false);
-            }
+            setIsAuthenticityCheckStep(false);
             dispatch(deviceActions.selectDevice(nextDeviceToAuthenticate));
         } else {
             goToSuite();
