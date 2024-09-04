@@ -6787,7 +6787,8 @@ export default defineMessages({
     },
     TR_ONBOARDING_DEVICE_CHECK_2: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_2',
-        defaultMessage: 'My device was bought from the official Trezor Shop or a trusted reseller.',
+        defaultMessage:
+            'My device was bought from the <shop>official Trezor Shop</shop> or a <reseller>trusted reseller</reseller>.',
     },
     TR_ONBOARDING_DEVICE_CHECK_3: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_3',

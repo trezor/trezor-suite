@@ -1379,7 +1379,7 @@
   "TR_ONBOARDING_DATA_COLLECTION_HEADING": "Anonymous data collection",
   "TR_ONBOARDING_DEVICE_CHECK": "Device security check",
   "TR_ONBOARDING_DEVICE_CHECK_1": "My <strong>hologram</strong> was intact and untampered with.",
-  "TR_ONBOARDING_DEVICE_CHECK_2": "My device was bought from the official Trezor Shop or a trusted reseller.",
+  "TR_ONBOARDING_DEVICE_CHECK_2": "My device was bought from the <shop>official Trezor Shop</shop> or a <reseller>trusted reseller</reseller>.",
   "TR_ONBOARDING_DEVICE_CHECK_3": "The device package was intact and untampered with.",
   "TR_ONBOARDING_DEVICE_CHECK_4": "Firmware is already installed on the connected Trezor. Only continue with setup if you have used this Trezor before.",
   "TR_ONBOARDING_DOWNLOAD_DESKTOP_APP": "Download desktop app",
