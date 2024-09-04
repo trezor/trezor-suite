@@ -17,7 +17,7 @@ import {
     SettingsSectionItem,
 } from 'src/components/settings';
 import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
-import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { useEnabledNetworksCompatible } from 'src/hooks/settings/useEnabledNetworks';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
     useDevice,
@@ -89,7 +89,7 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 export const SettingsCoins = () => {
     const { firmwareTypeBannerClosed } = useSelector(selectSuiteFlags);
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
-    const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
+    const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworksCompatible();
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const deviceModel = useSelector(selectDeviceModel);
     const { device, isLocked } = useDevice();

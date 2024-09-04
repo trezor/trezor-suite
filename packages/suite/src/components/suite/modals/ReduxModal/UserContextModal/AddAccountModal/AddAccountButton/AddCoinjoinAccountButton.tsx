@@ -13,7 +13,12 @@ import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
 import { Account } from 'src/types/wallet';
-import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    Network,
+    NetworkAccount,
+    NetworkCompatible,
+    NetworkSymbol,
+} from '@suite-common/wallet-config';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 import { AddButton } from './AddButton';
@@ -46,10 +51,11 @@ const verifyAvailability = ({
 };
 
 interface AddCoinjoinAccountProps {
-    network: NetworkCompatible;
+    network: Network;
+    selectedAccount: NetworkAccount;
 }
 
-export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) => {
+export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjoinAccountProps) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const { isTorEnabled } = useSelector(selectTorState);
@@ -65,7 +71,7 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
         a =>
             a.deviceState === device?.state &&
             a.symbol === network.symbol &&
-            a.accountType === network.accountType,
+            a.accountType === selectedAccount.accountType,
     );
 
     const disabledMessage = verifyAvailability({
@@ -74,9 +80,15 @@ export const AddCoinjoinAccountButton = ({ network }: AddCoinjoinAccountProps) =
         unavailableCapabilities: device.unavailableCapabilities,
     });
 
+    // TODO refactor createCoinjoinAccount
+    const networkCompatible = {
+        ...network,
+        ...selectedAccount, // adds accountType, overrides Bip43Path and other properties
+    } as unknown as NetworkCompatible;
+
     const onCreateCoinjoinAccountClick = async () => {
         const createAccount = async () => {
-            await dispatch(createCoinjoinAccount(network));
+            await dispatch(createCoinjoinAccount(networkCompatible));
             setIsLoading(false);
         };
 

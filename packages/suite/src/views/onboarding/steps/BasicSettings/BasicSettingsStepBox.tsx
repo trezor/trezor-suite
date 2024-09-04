@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
 import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
-import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
+import { useEnabledNetworksCompatible } from 'src/hooks/settings/useEnabledNetworks';
 import { CollapsibleBox } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { selectDeviceSupportedNetworks, selectDeviceModel } from '@suite-common/wallet-core';
@@ -20,7 +20,7 @@ const Separator = styled.hr`
 `;
 
 export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
-    const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
+    const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworksCompatible();
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const deviceModel = useSelector(selectDeviceModel);
 
