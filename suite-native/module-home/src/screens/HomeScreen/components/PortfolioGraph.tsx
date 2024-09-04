@@ -19,10 +19,17 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
 
-    const { graphPoints, error, isLoading, refetch, onSelectTimeFrame, timeframe } =
-        useGraphForAllDeviceAccounts({
-            fiatCurrency: fiatCurrencyCode,
-        });
+    const {
+        graphPoints,
+        error,
+        isLoading,
+        isAnyMainnetAccountPresent,
+        refetch,
+        onSelectTimeFrame,
+        timeframe,
+    } = useGraphForAllDeviceAccounts({
+        fiatCurrency: fiatCurrencyCode,
+    });
     const setSelectedPoint = useSetAtom(selectedPointAtom);
     const setReferencePoint = useSetAtom(referencePointAtom);
 
@@ -48,7 +55,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
 
     return (
         <VStack spacing="large" testID="@home/portfolio/graph">
-            <PortfolioGraphHeader />
+            {isAnyMainnetAccountPresent ? <PortfolioGraphHeader /> : null}
             <Graph
                 points={graphPoints}
                 loading={isLoading}

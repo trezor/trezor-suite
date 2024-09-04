@@ -18,19 +18,36 @@ import {
 } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
-import { nativeBorders } from '@trezor/theme';
+import { Color, nativeBorders } from '@trezor/theme';
+
+import { SurfaceElevation } from '../types';
 
 type BoxSkeletonProps = {
     height: number;
     width: number;
+    elevation?: SurfaceElevation;
     borderRadius?: number;
 };
 
 const ANIMATION_DURATION = 1200;
 
+const elevationToGradientColors = {
+    0: [
+        'backgroundSurfaceElevation0',
+        'backgroundSurfaceElevationNegative',
+        'backgroundSurfaceElevation0',
+    ],
+    1: [
+        'backgroundSurfaceElevation1',
+        'backgroundSurfaceElevationNegative',
+        'backgroundSurfaceElevation1',
+    ],
+} as const satisfies Record<SurfaceElevation, Color[]>;
+
 export const BoxSkeleton = ({
     height,
     width,
+    elevation = '1',
     borderRadius = nativeBorders.radii.small,
 }: BoxSkeletonProps) => {
     const {
@@ -55,12 +72,8 @@ export const BoxSkeleton = ({
     }, [width, height, borderRadius]);
 
     const gradientColors = useMemo(
-        () => [
-            colors.backgroundSurfaceElevation1,
-            colors.backgroundSurfaceElevationNegative,
-            colors.backgroundSurfaceElevation1,
-        ],
-        [colors],
+        () => elevationToGradientColors[elevation].map(color => colors[color]),
+        [colors, elevation],
     );
 
     return (
