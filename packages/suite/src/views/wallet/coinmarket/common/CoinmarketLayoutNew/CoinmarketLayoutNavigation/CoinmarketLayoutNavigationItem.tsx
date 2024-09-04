@@ -46,10 +46,6 @@ const NavListItemWrapper = styled(NavigationItem)`
 // eslint-disable-next-line local-rules/no-override-ds-component
 const ButtonWrapper = styled(Button)`
     margin-left: auto;
-
-    ${SCREEN_QUERY.BELOW_DESKTOP} {
-        margin-left: 0;
-    }
 `;
 
 interface CoinmarketLayoutNavigationItemProps {

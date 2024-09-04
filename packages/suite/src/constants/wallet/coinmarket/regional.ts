@@ -267,7 +267,47 @@ class Regional {
 
             return l1.localeCompare(l2);
         });
+
+    // European Economic Area (EEA) - https://en.wikipedia.org/wiki/European_Economic_Area
+    EEACountryCodes = [
+        'AT',
+        'BE',
+        'BG',
+        'CY',
+        'CZ',
+        'DE',
+        'DK',
+        'EE',
+        'ES',
+        'FI',
+        'FR',
+        'GR',
+        'HR',
+        'HU',
+        'IE',
+        'IS',
+        'IT',
+        'LI',
+        'LT',
+        'LU',
+        'LV',
+        'MT',
+        'NL',
+        'NO',
+        'PL',
+        'PT',
+        'RO',
+        'SE',
+        'SI',
+        'SK',
+    ] as const;
+
+    isInEEA(country: string) {
+        return this.EEACountryCodes.includes(country as EEACountryCodes);
+    }
 }
+
+type EEACountryCodes = (typeof regional.EEACountryCodes)[number];
 
 const regional = new Regional();
 
