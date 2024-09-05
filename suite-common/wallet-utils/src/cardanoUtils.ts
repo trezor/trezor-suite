@@ -8,7 +8,7 @@ import {
     StakePool,
 } from '@suite-common/wallet-types';
 import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { AccountType } from '@suite-common/wallet-config';
 
 import {
     amountToSatoshi,
@@ -17,7 +17,7 @@ import {
     networkAmountToSatoshi,
 } from './accountUtils';
 
-export const getDerivationType = (accountType: NetworkCompatible['accountType']) => {
+export const getDerivationType = (accountType: AccountType) => {
     switch (accountType) {
         case 'normal':
             return 1;

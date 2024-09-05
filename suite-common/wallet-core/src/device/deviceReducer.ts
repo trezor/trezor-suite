@@ -9,7 +9,7 @@ import {
     getFirmwareVersionArray,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
-import { NetworkCompatible, NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { NetworkDeviceSupport, NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { TrezorDevice, AcquiredDevice, ButtonRequest } from '@suite-common/suite-types';
@@ -739,9 +739,7 @@ export const selectDeviceSupportedNetworks = (state: DeviceRootState) => {
     return Object.entries(networks)
         .filter(([symbol, network]) => {
             const support =
-                'support' in network
-                    ? (network.support as NetworkCompatible['support'])
-                    : undefined;
+                'support' in network ? (network.support as NetworkDeviceSupport) : undefined;
 
             const firmwareSupportRestriction =
                 deviceModelInternal && support?.[deviceModelInternal];

@@ -1,6 +1,6 @@
 import { ObjectValues } from '@trezor/type-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { Deferred } from '@trezor/utils';
 
 import { Account, AccountBackendSpecific } from './account';
@@ -17,7 +17,7 @@ export interface Discovery {
     failed: {
         symbol: NetworkSymbol;
         index: number;
-        accountType: NonNullable<NetworkCompatible['accountType']>;
+        accountType: NonNullable<AccountType>;
         error: string;
         fwException?: string;
     }[];

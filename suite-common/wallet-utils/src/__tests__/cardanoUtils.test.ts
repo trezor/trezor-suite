@@ -36,7 +36,8 @@ describe('cardano utils', () => {
     expect(getDerivationType('normal')).toEqual(1);
     expect(getDerivationType('legacy')).toEqual(2);
     expect(getDerivationType('ledger')).toEqual(0);
-    expect(getDerivationType(undefined)).toEqual(1);
+    // TS does not allow this, but in runtime, the default case handles it
+    expect(getDerivationType(undefined as any)).toEqual(1);
 
     expect(getNetworkId('ada')).toEqual(CARDANO.NETWORK_IDS.mainnet);
     expect(getNetworkId('tada')).toEqual(CARDANO.NETWORK_IDS.testnet);
