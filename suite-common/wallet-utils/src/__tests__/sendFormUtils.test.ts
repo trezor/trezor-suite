@@ -1,4 +1,4 @@
-import { networksCompatibility } from '@suite-common/wallet-config';
+import { networks } from '@suite-common/wallet-config';
 import { testMocks } from '@suite-common/test-utils';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';
@@ -244,8 +244,8 @@ describe('sendForm utils', () => {
                 { type: 'ERC20', contract: 'B', symbol: 'B', decimals: 6, name: 'B' },
             ],
         });
-        const EthNetwork: any = networksCompatibility.find(n => n.symbol === 'eth');
-        const XrpNetwork: any = networksCompatibility.find(n => n.symbol === 'xrp');
+        const EthNetwork = networks.eth;
+        const XrpNetwork = networks.xrp;
 
         expect(getExternalComposeOutput({ outputs: [] }, EthAccount, EthNetwork)).toEqual(
             undefined,

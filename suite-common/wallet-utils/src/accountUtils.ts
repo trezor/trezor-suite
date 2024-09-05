@@ -16,6 +16,9 @@ import {
     NetworkFeature,
     NetworkSymbol,
     NetworkType,
+    Network,
+    networks,
+    AccountType,
 } from '@suite-common/wallet-config';
 import {
     Account,
@@ -273,11 +276,7 @@ export const getAccountTypeUrl = (path: string) => {
     }
 };
 
-export const getAccountDecimals = (symbol: NetworkSymbol) => {
-    const network = networksCompatibility.find(n => n.symbol === symbol);
-
-    return network?.decimals;
-};
+export const getAccountDecimals = (symbol: NetworkSymbol) => networks[symbol]?.decimals;
 
 export const stripNetworkAmount = (amount: string, decimals: number) =>
     new BigNumber(amount).toFixed(decimals, 1);
@@ -418,6 +417,9 @@ export const getAllAccounts = (deviceState: string | typeof undefined, accounts:
     return accounts.filter(a => a.deviceState === deviceState && a.visible);
 };
 
+/**
+ * @deprecated use directly networks[symbol], you can import { networks } from '@suite-common/wallet-config'
+ */
 export const getNetwork = (symbol: string): NetworkCompatible | null =>
     networksCompatibility.find(c => c.symbol === symbol) || null;
 
@@ -672,11 +674,7 @@ export const getTotalFiatBalance = ({
     return instanceBalance;
 };
 
-export const isTestnet = (symbol: NetworkSymbol) => {
-    const net = networksCompatibility.find(n => n.symbol === symbol);
-
-    return net?.testnet ?? false;
-};
+export const isTestnet = (symbol: NetworkSymbol) => networks[symbol].testnet;
 
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     if (
@@ -723,10 +721,7 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
 };
 
 // Used in accountActions and failed accounts
-export const getAccountSpecific = (
-    accountInfo: Partial<AccountInfo>,
-    networkType: NetworkCompatible['networkType'],
-) => {
+export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkType: NetworkType) => {
     const { misc } = accountInfo;
     if (networkType === 'ripple') {
         return {
@@ -814,7 +809,7 @@ export const getFailedAccounts = (discovery: Discovery): Account[] =>
             metadata: {
                 key: descriptor,
             },
-            ...getAccountSpecific({}, getNetwork(f.symbol)!.networkType),
+            ...getAccountSpecific({}, networks[f.symbol].networkType),
         };
     });
 
@@ -837,7 +832,7 @@ export const accountSearchFn = (
     const searchString = rawSearchString?.trim().toLowerCase();
     if (!searchString) return true; // no search string
 
-    const network = getNetwork(account.symbol);
+    const network = networks[account.symbol];
 
     // helper func for searching in account's addresses
     const matchAddressFn = (u: NonNullable<Account['addresses']>['used'][number]) =>

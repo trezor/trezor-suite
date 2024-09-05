@@ -58,8 +58,8 @@ export const isDebugOnlyAccountType = (
 export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.networkType;
 
 // Takes into account just network features, not features for specific accountTypes.
-export const getNetworkFeatures = (symbol: NetworkSymbol) =>
-    networks[symbol]?.features as unknown as NetworkFeature;
+export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
+    networks[symbol]?.features;
 
 export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol]?.coingeckoId;
 
