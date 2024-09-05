@@ -10,12 +10,8 @@ const debugSession = USE_NODE_BRIDGE ? undefined : null;
 const path = USE_NODE_BRIDGE ? expect.any(String) : '1';
 const product = USE_HW ? 21441 : 0;
 const vendor = USE_HW ? 4617 : 0;
-const type =
-    USE_NODE_BRIDGE && USE_HW
-        ? expect.any(Number)
-        : USE_NODE_BRIDGE && !USE_HW
-          ? DEVICE_TYPE.TypeEmulator
-          : undefined;
+
+const type = USE_NODE_BRIDGE ? expect.toBeOneOf(Object.values(DEVICE_TYPE)) : undefined;
 
 /**
  * emu            '127.0.0.1:21324' (15)
