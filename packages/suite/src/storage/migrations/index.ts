@@ -890,4 +890,217 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
         await updateAll(transaction, 'suiteSettings', suiteSettings => suiteSettings);
     }
+
+    if (oldVersion < 47) {
+        //  migrate matic to pol
+
+        await updateAll(transaction, 'walletSettings', walletSettings => {
+            // @ts-expect-error
+            const indexOfMatic = walletSettings.enabledNetworks.indexOf('matic');
+            if (indexOfMatic !== -1) {
+                walletSettings.enabledNetworks[indexOfMatic] = 'pol';
+            }
+
+            return walletSettings;
+        });
+
+        await updateAll(transaction, 'suiteSettings', suiteSettings => {
+            if (
+                // @ts-expect-error
+                typeof suiteSettings.evmSettings.confirmExplanationModalClosed?.matic == 'boolean'
+            ) {
+                suiteSettings.evmSettings.confirmExplanationModalClosed.pol =
+                    // @ts-expect-error
+                    suiteSettings.evmSettings.confirmExplanationModalClosed.matic;
+                // @ts-expect-error
+                delete suiteSettings.evmSettings.confirmExplanationModalClosed.matic;
+            }
+
+            if (
+                // @ts-expect-error
+                typeof suiteSettings.evmSettings.explanationBannerClosed?.matic == 'boolean'
+            ) {
+                suiteSettings.evmSettings.explanationBannerClosed.pol =
+                    // @ts-expect-error
+                    suiteSettings.evmSettings.explanationBannerClosed.matic;
+                // @ts-expect-error
+                delete suiteSettings.evmSettings.explanationBannerClosed.matic;
+            }
+
+            return suiteSettings;
+        });
+
+        const backendSettings = transaction.objectStore('backendSettings');
+        // @ts-expect-error
+        const maticBackendSettings = await backendSettings.get('matic');
+        if (maticBackendSettings) {
+            backendSettings.add(maticBackendSettings, 'pol');
+            // @ts-expect-error
+            backendSettings.delete('matic');
+        }
+
+        const tokenManagement = transaction.objectStore('tokenManagement');
+        const maticTokenManagementShow = await tokenManagement.get('matic-coin-show');
+        if (maticTokenManagementShow) {
+            tokenManagement.add(maticTokenManagementShow, 'pol-coin-show');
+            tokenManagement.delete('matic-coin-show');
+        }
+
+        const maticTokenManagementHide = await tokenManagement.get('matic-coin-hide');
+        if (maticTokenManagementHide) {
+            tokenManagement.add(maticTokenManagementHide, 'pol-coin-hide');
+            tokenManagement.delete('matic-coin-hide');
+        }
+
+        await updateAll(transaction, 'discovery', discovery => {
+            discovery.networks = discovery.networks.map(network =>
+                // @ts-expect-error
+                network === 'matic' ? 'pol' : network,
+            );
+
+            discovery.failed = discovery.failed.map(network => {
+                // @ts-expect-error
+                if (network.symbol === 'matic') {
+                    network = { ...network, symbol: 'pol' };
+                }
+
+                return network;
+            });
+
+            return discovery;
+        });
+
+        const accounts = transaction.objectStore('accounts');
+        let accountsCursor = await accounts.openCursor();
+        while (accountsCursor) {
+            const account = accountsCursor.value;
+            // @ts-expect-error
+            if (account.symbol === 'matic') {
+                const newAccount = {
+                    ...account,
+                    symbol: 'pol' as const,
+                    key: account.key.replace('matic', 'pol'),
+                };
+                await accountsCursor.delete();
+                await accounts.add(newAccount);
+            }
+
+            accountsCursor = await accountsCursor.continue();
+        }
+
+        await updateAll(transaction, 'walletSettings', walletSettings => {
+            if (walletSettings.lastUsedFeeLevel['matic']) {
+                walletSettings.lastUsedFeeLevel = {
+                    ...walletSettings.lastUsedFeeLevel,
+                    pol: { ...walletSettings.lastUsedFeeLevel['matic'] },
+                };
+
+                delete walletSettings.lastUsedFeeLevel['matic'];
+            }
+
+            return walletSettings;
+        });
+
+        await updateAll(transaction, 'txs', tx => {
+            // @ts-expect-error
+            if (tx.tx.symbol === 'matic') {
+                tx.tx = { ...tx.tx, symbol: 'pol' };
+            }
+
+            return tx;
+        });
+
+        const graphs = transaction.objectStore('graph');
+        let graphCursor = await graphs.openCursor();
+        while (graphCursor) {
+            const graph = graphCursor.value;
+            //@ts-expect-error
+            if (graph.account.symbol === 'matic') {
+                const newGraph = {
+                    ...graph,
+                    account: { ...graph.account, symbol: 'pol' as const },
+                };
+                await graphCursor.delete();
+                await graphs.add(newGraph);
+            }
+
+            graphCursor = await graphCursor.continue();
+        }
+
+        await updateAll(transaction, 'historicRates', rates => {
+            const rate = Object.keys(rates).reduce((newRates, key) => {
+                const newKey = key.replace('matic', 'pol');
+                // @ts-expect-error
+                newRates[newKey] = rates[key];
+
+                return newRates;
+            }, {});
+
+            return rate;
+        });
+
+        const historicRates = transaction.objectStore('historicRates');
+        const historicRatesKeys = await historicRates.getAllKeys();
+        const historicRatesKeysWithMatic = historicRatesKeys.filter(key => key.includes('matic'));
+
+        historicRatesKeysWithMatic.forEach(async key => {
+            const rate = await historicRates.get(key);
+            if (rate) {
+                historicRates.add(rate, key.replace('matic', 'pol'));
+            }
+            historicRates.delete(key);
+        });
+
+        const sendFormDrafts = transaction.objectStore('sendFormDrafts');
+        const sendFormDraftsKeys = await sendFormDrafts.getAllKeys();
+        const sendFormDraftsKeysWithMatic = sendFormDraftsKeys.filter(key => key.includes('matic'));
+
+        sendFormDraftsKeysWithMatic.forEach(async key => {
+            const draft = await sendFormDrafts.get(key);
+            if (draft) {
+                sendFormDrafts.add(draft, key.replace('matic', 'pol'));
+            }
+            sendFormDrafts.delete(key);
+        });
+
+        const formDrafts = transaction.objectStore('formDrafts');
+        const formDraftsKeys = await formDrafts.getAllKeys();
+        const formDraftsKeysWithMatic = formDraftsKeys.filter(key => key.includes('matic'));
+
+        formDraftsKeysWithMatic.forEach(async key => {
+            const draft = await formDrafts.get(key);
+            if (draft) {
+                formDrafts.add(draft, key.replace('matic', 'pol'));
+            }
+            formDrafts.delete(key);
+        });
+
+        await updateAll(transaction, 'formDrafts', draft => {
+            if (draft.cryptoSelect?.label === 'MATIC') {
+                draft.cryptoSelect = {
+                    ...draft.cryptoSelect,
+                    label: 'POL',
+                    value: 'polygon-ecosystem-token',
+                };
+            }
+
+            if (draft.receiveCryptoSelect?.label === 'MATIC') {
+                draft.receiveCryptoSelect = {
+                    ...draft.receiveCryptoSelect,
+                    label: 'POL',
+                    value: 'polygon-ecosystem-token',
+                };
+            }
+
+            if (draft.sendCryptoSelect?.label === 'MATIC') {
+                draft.sendCryptoSelect = {
+                    ...draft.sendCryptoSelect,
+                    label: 'POL',
+                    value: 'polygon-ecosystem-token',
+                };
+            }
+
+            return draft;
+        });
+    }
 };
