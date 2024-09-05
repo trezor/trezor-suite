@@ -6,6 +6,9 @@
             "path": "../../suite-common/icons-deprecated"
         },
         {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
