@@ -31,7 +31,6 @@ import {
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { ACCOUNT_TYPE } from '@suite-common/wallet-constants';
 import {
     HELP_CENTER_ADDRESSES_URL,
     HELP_CENTER_COINJOIN_URL,
@@ -365,22 +364,32 @@ export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {
     return formattedTokenSymbol ? `${formattedAmount} ${formattedTokenSymbol}` : formattedAmount;
 };
 
-export const sortByCoin = (accounts: Account[]) =>
-    accounts.sort((a, b) => {
-        const aIndex = networksCompatibility.findIndex(n => {
-            const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
+/**
+ * Sort accounts as they are defined in `networksConfig`, by two criteria:
+ * - primary: by network `symbol`
+ * - secondary: by `accountType`
+ */
+export const sortByCoin = (accounts: Account[]) => {
+    const orderedNetworkSymbols = Object.keys(networks) as NetworkSymbol[];
 
-            return accountType === a.accountType && n.symbol === a.symbol;
-        });
-        const bIndex = networksCompatibility.findIndex(n => {
-            const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
+    return accounts.sort((a, b) => {
+        // primary sorting: by order of network keys
+        const aSymbolIndex = orderedNetworkSymbols.indexOf(a.symbol);
+        const bSymbolIndex = orderedNetworkSymbols.indexOf(b.symbol);
+        if (aSymbolIndex !== bSymbolIndex) return aSymbolIndex - bSymbolIndex;
 
-            return accountType === b.accountType && n.symbol === b.symbol;
-        });
-        if (aIndex === bIndex) return a.index - b.index;
+        // when it is sorted by network, sort by order of accountType keys within the same network
+        const network = networks[a.symbol];
+        const orderedAccountTypes = Object.keys(network.accountTypes) as AccountType[];
+        const aAccountTypeIndex = orderedAccountTypes.indexOf(a.accountType);
+        const bAccountTypeIndex = orderedAccountTypes.indexOf(b.accountType);
 
-        return aIndex - bIndex;
+        if (aAccountTypeIndex !== bAccountTypeIndex) return aAccountTypeIndex - bAccountTypeIndex;
+
+        // if both are same, keep the original order in `accounts`
+        return a.index - b.index;
     });
+};
 
 export const findAccountsByNetwork = (symbol: NetworkSymbol, accounts: Account[]) =>
     accounts.filter(a => a.symbol === symbol);
