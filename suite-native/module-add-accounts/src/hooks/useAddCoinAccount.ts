@@ -5,7 +5,12 @@ import { A, pipe } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
-import { AccountType, NetworkSymbol, networks } from '@suite-common/wallet-config';
+import {
+    AccountType,
+    NetworkSymbol,
+    networks,
+    NORMAL_ACCOUNT_TYPE,
+} from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
@@ -18,8 +23,6 @@ import {
 } from '@suite-common/wallet-core';
 import {
     addAndDiscoverNetworkAccountThunk,
-    selectDiscoverySupportedNetworks,
-    NORMAL_ACCOUNT_TYPE,
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
@@ -73,7 +76,6 @@ export const useAddCoinAccount = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
 
-    const supportedNetworks = useSelector(selectDiscoverySupportedNetworks);
     const supportedNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccounts(state),
@@ -121,24 +123,6 @@ export const useAddCoinAccount = () => {
     }: {
         networkSymbol: NetworkSymbol;
     }) => availableNetworkAccountTypes.get(networkSymbol) ?? [NORMAL_ACCOUNT_TYPE];
-
-    const getNetworkToAdd = ({
-        networkSymbol,
-        accountType,
-    }: {
-        networkSymbol: NetworkSymbol;
-        accountType?: AccountType;
-    }) => {
-        const type = accountType ?? NORMAL_ACCOUNT_TYPE;
-
-        return supportedNetworks.filter(
-            network =>
-                network.symbol === networkSymbol &&
-                (type === NORMAL_ACCOUNT_TYPE
-                    ? network.accountType === undefined
-                    : network.accountType === type),
-        )[0];
-    };
 
     const getAccountTypeToBeAddedName = () =>
         networkSymbolWithTypeToBeAdded
@@ -258,7 +242,7 @@ export const useAddCoinAccount = () => {
             return;
         }
 
-        const network = getNetworkToAdd({ networkSymbol, accountType });
+        const network = networks[networkSymbol];
 
         //If the account already exists, but is invisible, make it visible
         if (firstHiddenEmptyAccount) {
@@ -275,6 +259,7 @@ export const useAddCoinAccount = () => {
         const newAccountResult = await dispatch(
             addAndDiscoverNetworkAccountThunk({
                 network,
+                accountType,
                 deviceState: device.state,
             }),
         );

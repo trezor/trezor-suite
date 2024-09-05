@@ -10,7 +10,14 @@ import {
 } from '@suite-common/wallet-utils';
 import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    networksCompatibility,
+    NetworkSymbol,
+    Network,
+    networksCollection,
+    normalizeNetworkAccounts,
+    NormalizedNetworkAccount,
+} from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
@@ -36,7 +43,49 @@ type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
 export const LIMIT = 10;
 
+/**
+ * Filter collection of activated networks to only include those supported by device & suite
+ */
 export const filterUnavailableNetworks = (
+    enabledNetworks: NetworkSymbol[],
+    device?: TrezorDevice,
+): Network[] =>
+    networksCollection.filter(n => {
+        const firmwareVersion = getFirmwareVersion(device);
+        const internalModel = device?.features?.internal_model;
+
+        const isSupportedInSuite =
+            !n.support || // support is not defined => is supported
+            !internalModel || // typescript. device undefined. => supported
+            (n.support[internalModel] && // support is defined for current device
+                versionUtils.isNewerOrEqual(firmwareVersion, n.support[internalModel] as string)); // device version is newer or equal to support field in networks => supported
+
+        return (
+            enabledNetworks.includes(n.symbol) &&
+            !n.isHidden &&
+            !device?.unavailableCapabilities?.[n.symbol] && // exclude by network symbol (ex: xrp on T1B1)
+            isSupportedInSuite
+        );
+    });
+
+/**
+ * For a given network, return a collection of normalized accounts (incl. 'normal'), excluding types unsupported by device or suite
+ */
+export const filterUnavailableAccountTypes = (
+    network: Network,
+    device?: TrezorDevice,
+): NormalizedNetworkAccount[] =>
+    normalizeNetworkAccounts(network).filter(
+        networkAccount =>
+            isTrezorConnectBackendType(networkAccount.backendType) && // exclude accounts with unsupported backend type, such as coinjoin
+            !device?.unavailableCapabilities?.[networkAccount.accountType!], // exclude by account types (ex: taproot)
+    );
+
+/**
+ * @deprecated Old implementation, temporarily duplicated here for suite, while the new one is used in suite-native
+ * Fully replaced by combined use of filterUnavailableNetworks and filterUnavailableAccountTypes
+ */
+export const filterUnavailableNetworksCompatible = (
     enabledNetworks: NetworkSymbol[],
     device?: TrezorDevice,
 ) =>
@@ -230,8 +279,8 @@ export const getBundleThunk = createThunk(
             return bundle;
         }
 
-        const networks = filterUnavailableNetworks(discovery.networks, device);
-        networks.forEach(configNetwork => {
+        const filteredNetworks = filterUnavailableNetworksCompatible(discovery.networks, device);
+        filteredNetworks.forEach(configNetwork => {
             // find all existed accounts
             const accountType = configNetwork.accountType || 'normal';
             const prevAccounts = accountsByDeviceState
@@ -660,7 +709,9 @@ export const createDiscoveryThunk = createThunk(
             selectors: { selectEnabledNetworks },
         } = extra;
         const enabledNetworks = selectEnabledNetworks(getState());
-        const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
+        const networksSymbols = filterUnavailableNetworksCompatible(enabledNetworks, device).map(
+            n => n.symbol,
+        );
 
         dispatch(
             createDiscovery({
@@ -668,11 +719,11 @@ export const createDiscoveryThunk = createThunk(
                 authConfirm: !device.useEmptyPassphrase,
                 index: 0,
                 status: DiscoveryStatus.IDLE,
-                total: LIMIT * networks.length,
+                total: LIMIT * networksSymbols.length,
                 bundleSize: 0,
                 loaded: 0,
                 failed: [],
-                networks,
+                networks: networksSymbols,
             }),
         );
     },
@@ -690,19 +741,22 @@ export const updateNetworkSettingsThunk = createThunk(
         discovery.forEach(d => {
             const devices = selectDevices(getState());
             const device = devices.find(dev => dev.state === d.deviceState);
-            const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
+            const networksSymbols = filterUnavailableNetworksCompatible(
+                enabledNetworks,
+                device,
+            ).map(n => n.symbol);
 
             const progress = dispatch(
                 calculateProgress({
                     ...d,
-                    networks,
+                    networks: networksSymbols,
                     failed: [],
                 }),
             );
             dispatch(
                 updateDiscovery({
                     ...progress,
-                    networks,
+                    networks: networksSymbols,
                     failed: [],
                 }),
             );

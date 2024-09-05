@@ -1,38 +1,42 @@
-import { A, F } from '@mobily/ts-belt';
+import { A } from '@mobily/ts-belt';
 
-import { NetworkCompatible, AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, Network, normalizeNetworkAccounts } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
-const NORMAL_ACCOUNT_TYPE = 'normal';
-
-// network uses undefined for normal type, but account uses 'normal'
-const normalizedAccountType = (accountType?: AccountType) => accountType ?? NORMAL_ACCOUNT_TYPE;
-
-export const getNetworksWithUnfinishedDiscovery = (
-    enabledNetworks: readonly NetworkCompatible[],
-    accounts: Account[],
-    accountsLimit: number,
-) =>
-    enabledNetworks.filter(network => {
-        const networkAccountsOfType = accounts.filter(
-            account =>
-                account.symbol === network.symbol &&
-                account.accountType === normalizedAccountType(network.accountType),
-        );
-
+export const getNetworksWithUnfinishedDiscovery = ({
+    enabledNetworks,
+    accounts,
+    accountsLimit,
+    availableCardanoDerivations,
+}: {
+    enabledNetworks: readonly Network[];
+    accounts: Account[];
+    accountsLimit: number;
+    availableCardanoDerivations?: AccountType[];
+}) =>
+    enabledNetworks.filter(network =>
         // if there is no account for this network -> we should have at least one account even if added via Add Coin
         // or if there is at least one visible account of this type, we should have at least one hidden account so adding funds outside of this app is detected and account shown
-        return (
-            A.isEmpty(networkAccountsOfType) ||
-            (networkAccountsOfType.length < accountsLimit &&
-                networkAccountsOfType.every(account => account.visible))
-        );
-    });
+        // the whole network is considered undiscovered if this is found for either 'normal' account, or any of supported accountTypes
+        normalizeNetworkAccounts(network).some(({ accountType }) => {
+            // coinjoin and some cardano derivation might not be supported (cardano derivations are provided)
+            if (
+                'coinjoin' === accountType ||
+                (network.networkType === 'cardano' &&
+                    availableCardanoDerivations &&
+                    !availableCardanoDerivations.includes(accountType))
+            ) {
+                return false;
+            }
 
-export const getNetworkSymbols = (networks: readonly NetworkCompatible[]): NetworkSymbol[] =>
-    F.toMutable(
-        A.uniqBy(
-            networks.map(n => n.symbol),
-            F.identity,
-        ),
+            const networkAccountsOfType = accounts.filter(
+                account => account.symbol === network.symbol && account.accountType === accountType,
+            );
+
+            return (
+                A.isEmpty(networkAccountsOfType) ||
+                (networkAccountsOfType.length < accountsLimit &&
+                    networkAccountsOfType.every(account => account.visible))
+            );
+        }),
     );

@@ -19,6 +19,7 @@ import {
     disableAccountsThunk,
     selectFirstNormalAccountForNetworkSymbol,
     selectHasDeviceDiscovery,
+    filterUnavailableAccountTypes,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
@@ -26,9 +27,12 @@ import { Account, DiscoveryItem } from '@suite-common/wallet-types';
 import { getDerivationType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import {
     AccountType,
-    NetworkCompatible,
+    Network,
     NetworkSymbol,
+    getNetwork,
     getNetworkType,
+    NetworkAccount,
+    normalizeNetworkAccounts,
 } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
@@ -45,11 +49,8 @@ import {
     selectNetworksWithUnfinishedDiscovery,
     selectShouldRunDiscoveryForDevice,
 } from './discoverySelectors';
-import { getNetworkSymbols } from './utils';
 
 const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
-
-export const NORMAL_ACCOUNT_TYPE: AccountType = 'normal';
 
 const DISCOVERY_BATCH_SIZE_PER_COIN: Partial<Record<NetworkSymbol, number>> = {
     bch: 1,
@@ -341,15 +342,17 @@ const discoverAccountsByDescriptorThunk = createThunk(
 export const addAndDiscoverNetworkAccountThunk = createThunk<
     Account,
     {
-        network: NetworkCompatible;
+        accountType: AccountType;
+        network: Network;
         deviceState: StaticSessionId;
     },
     { rejectValue: string }
 >(
     `${DISCOVERY_MODULE_PREFIX}/addAndDiscoverNetworkAccountThunk`,
-    async ({ network, deviceState }, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
-        const accountType = network.accountType ?? NORMAL_ACCOUNT_TYPE;
-
+    async (
+        { accountType, network, deviceState },
+        { dispatch, getState, rejectWithValue, fulfillWithValue },
+    ) => {
         const accounts = selectDeviceAccountsForNetworkSymbolAndAccountType(
             getState(),
             network.symbol,
@@ -423,46 +426,38 @@ const discoverNetworkBatchThunk = createThunk(
             deviceState,
             round = 1,
             network,
+            accountType,
         }: {
             deviceState: StaticSessionId;
             round?: number;
-            network: NetworkCompatible;
+            network: Network;
+            accountType: AccountType;
         },
         { dispatch, getState },
     ) => {
         const discovery = selectDeviceDiscovery(getState());
         const batchSize = getBatchSizeByCoin(network.symbol);
+        // expected to be found, because this thunk is called with accountType taken from the network
+        const normalizedNetworkAccount = normalizeNetworkAccounts(network).find(
+            a => a.accountType === accountType,
+        );
 
-        if (!discovery || !deviceState) {
+        if (!discovery || !deviceState || !normalizedNetworkAccount) {
             return;
         }
-
-        const accountType = network.accountType || NORMAL_ACCOUNT_TYPE;
 
         const lastDiscoveredAccountIndex = (round - 1) * batchSize;
-
-        // Skip Cardano legacy/ledger account types if device does not support it.
-        const isIncompatibleCardanoType =
-            network.networkType === 'cardano' &&
-            (network.accountType === 'ledger' || network.accountType === 'legacy') &&
-            !discovery.availableCardanoDerivations?.includes(network.accountType);
-
-        if (isIncompatibleCardanoType) {
-            dispatch(finishNetworkTypeDiscoveryThunk());
-
-            return;
-        }
 
         const chunkBundle: Array<DiscoveryItem> = [];
 
         A.makeWithIndex(batchSize, batchIndex => {
             const isEvmLedgerDerivationPath =
-                network.networkType === 'ethereum' && network.accountType === 'ledger';
+                network.networkType === 'ethereum' && accountType === 'ledger';
             // first Ledger derivation path for EVM networks is the same as trezor, so we need to skip it (consistent with desktop)
             const index =
                 lastDiscoveredAccountIndex + batchIndex + (isEvmLedgerDerivationPath ? 1 : 0);
 
-            const accountPath = network.bip43Path.replace('i', index.toString());
+            const accountPath = normalizedNetworkAccount.bip43Path.replace('i', index.toString());
 
             const isAccountAlreadyDiscovered = selectIsAccountAlreadyDiscovered(getState(), {
                 deviceState,
@@ -490,6 +485,7 @@ const discoverNetworkBatchThunk = createThunk(
                 discoverNetworkBatchThunk({
                     deviceState,
                     network,
+                    accountType,
                     round: round + 1,
                 }),
             );
@@ -521,6 +517,7 @@ const discoverNetworkBatchThunk = createThunk(
                 discoverNetworkBatchThunk({
                     deviceState,
                     network,
+                    accountType,
                     round: round + 1,
                 }),
             );
@@ -539,7 +536,7 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
             availableCardanoDerivations,
         }: {
             deviceState: StaticSessionId;
-            networks: readonly NetworkCompatible[];
+            networks: readonly Network[];
             availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] | undefined;
         },
         { dispatch, getState },
@@ -559,13 +556,22 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        const networksSymbols = networks.map(network => network.symbol);
+        const discoveryNetworksTotalCount = networks.reduce((count, network) => {
+            const availableAccountTypes = filterUnavailableAccountTypes(network, device).filter(
+                ({ accountType }) =>
+                    // Some cardano derivation may not be supported by the device. We need to exclude them from total count.
+                    network.networkType !== 'cardano' ||
+                    (availableCardanoDerivations as string[]).includes(accountType),
+            );
 
-        const discoveryNetworksTotalCount = networksSymbols.length;
+            return count + availableAccountTypes.length;
+        }, 0);
 
         if (discoveryNetworksTotalCount < 1) {
             return;
         }
+
+        const networksSymbols = networks.map(network => network.symbol);
 
         dispatch(
             createDiscovery({
@@ -621,22 +627,14 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        const networksWithUnfinishedDiscovery = selectNetworksWithUnfinishedDiscovery(
-            getState(),
-            forcedAreTestnetsEnabled,
-        );
+        const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(getState());
 
-        // Start tracking duration and networks for analytics purposes
-        dispatch(
-            setDiscoveryInfo({
-                startTimestamp: performance.now(),
-                networkSymbols: getNetworkSymbols(networksWithUnfinishedDiscovery),
-            }),
-        );
-
-        // Some cardano derivation are not supported by the device. We need to filter them out.
         let availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] = [];
-        if (networksWithUnfinishedDiscovery.some(network => network.networkType === 'cardano')) {
+        if (
+            enabledNetworks.some(
+                networkSymbol => getNetwork(networkSymbol).networkType === 'cardano',
+            )
+        ) {
             availableCardanoDerivations =
                 (await dispatch(
                     getCardanoSupportedAccountTypesThunk({
@@ -644,11 +642,29 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
                     }),
                 ).unwrap()) ?? [];
         }
+
+        const networksWithUnfinishedDiscovery = selectNetworksWithUnfinishedDiscovery(
+            getState(),
+            forcedAreTestnetsEnabled,
+            availableCardanoDerivations,
+        );
+
+        // Start tracking duration and networks for analytics purposes
+        dispatch(
+            setDiscoveryInfo({
+                startTimestamp: performance.now(),
+                networkSymbols: networksWithUnfinishedDiscovery.map(n => n.symbol),
+            }),
+        );
+
+        // Some cardano derivation are not supported by the device. We need to filter them out.
+
+        // filter out cardano-type networks, if none of their derivations are available
         const networksFiltered = networksWithUnfinishedDiscovery.filter(
             network =>
                 network.networkType !== 'cardano' ||
-                (availableCardanoDerivations as string[]).includes(
-                    (network.accountType ?? NORMAL_ACCOUNT_TYPE) as string,
+                normalizeNetworkAccounts(network).some(({ accountType }) =>
+                    (availableCardanoDerivations as string[]).includes(accountType),
                 ),
         );
 
@@ -666,9 +682,18 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        // Start discovery for every network account type.
+        // Start discovery for every network - normal accounts as well as alternative accounts
         networksFiltered.forEach(network => {
-            dispatch(discoverNetworkBatchThunk({ deviceState, network }));
+            filterUnavailableAccountTypes(network)
+                // with Cardano, we only get here if there are at least some accountTypes available, so discover those ones.
+                .filter(
+                    ({ accountType }: NetworkAccount) =>
+                        network.networkType !== 'cardano' ||
+                        (availableCardanoDerivations as string[]).includes(accountType),
+                )
+                .forEach(({ accountType }: NetworkAccount) => {
+                    dispatch(discoverNetworkBatchThunk({ deviceState, network, accountType }));
+                });
         });
     },
 );

@@ -3,10 +3,10 @@ import { A } from '@mobily/ts-belt';
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
     AccountType,
-    NetworkCompatible,
+    Network,
     NetworkSymbol,
-    getMainnetsCompatible,
-    getTestnetsCompatible,
+    getMainnets,
+    getTestnets,
 } from '@suite-common/wallet-config';
 
 export const orderedAccountTypes: AccountType[] = [
@@ -48,7 +48,7 @@ export const discoverySupportedNetworks = [
     ...networkSymbolsWhitelistMap.testnet,
 ];
 
-export const sortNetworks = (networks: NetworkCompatible[]) =>
+export const sortNetworks = (networks: Network[]) =>
     A.sort(networks, (a, b) => {
         const aOrder = discoverySupportedNetworks.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
         const bOrder = discoverySupportedNetworks.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
@@ -65,24 +65,21 @@ export const filterTestnetNetworks = (
     return networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol));
 };
 
-export const filterBlacklistedNetworks = (
-    networks: NetworkCompatible[],
-    allowList: NetworkSymbol[],
-) =>
+export const filterBlacklistedNetworks = (networks: Network[], allowList: NetworkSymbol[]) =>
     networks.filter(
         network =>
             !discoveryBlacklist.includes(network.symbol) || allowList.includes(network.symbol),
     );
 
 export const portfolioTrackerMainnets = sortNetworks(
-    getMainnetsCompatible()
+    getMainnets()
         .filter(network => networkSymbolsWhitelistMap.mainnet.includes(network.symbol))
         .filter(network => !portfolioTrackerBlacklist.includes(network.symbol)),
 ).map(network => network.symbol);
 
 const getPortfolioTrackerTestnets = () => {
     return sortNetworks(
-        getTestnetsCompatible().filter(network =>
+        getTestnets().filter(network =>
             networkSymbolsWhitelistMap.testnet.includes(network.symbol),
         ),
     ).map(network => network.symbol);
