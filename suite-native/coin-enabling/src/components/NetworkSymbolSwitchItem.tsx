@@ -22,12 +22,8 @@ type NetworkSymbolSwitchItemProps = {
     allowChangeAnalytics?: boolean;
 };
 
-const wrapperStyle = prepareNativeStyle<{ isEnabled: boolean }>((utils, { isEnabled }) => ({
-    gap: 12,
-    flexDirection: 'row',
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    alignItems: 'center',
+const cardStyle = prepareNativeStyle<{ isEnabled: boolean }>((utils, { isEnabled }) => ({
+    padding: 0,
     extend: [
         {
             condition: !isEnabled,
@@ -38,6 +34,14 @@ const wrapperStyle = prepareNativeStyle<{ isEnabled: boolean }>((utils, { isEnab
             },
         },
     ],
+}));
+
+const wrapperStyle = prepareNativeStyle(_ => ({
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    gap: 12,
+    alignItems: 'center',
+    flex: 1,
 }));
 
 const iconWrapperStyle = prepareNativeStyle(utils => ({
@@ -86,12 +90,12 @@ export const NetworkSymbolSwitchItem = ({
                 message: isChecked ? (
                     <Translation
                         id="moduleSettings.coinEnabling.toasts.coinEnabled"
-                        values={{ coin: _ => name }}
+                        values={{ coin: name }}
                     />
                 ) : (
                     <Translation
                         id="moduleSettings.coinEnabling.toasts.coinDisabled"
-                        values={{ coin: _ => name }}
+                        values={{ coin: name }}
                     />
                 ),
             });
@@ -110,20 +114,27 @@ export const NetworkSymbolSwitchItem = ({
     };
 
     return (
-        <TouchableOpacity
-            onPress={_ => handleEnabledChange(!isEnabled)}
-            accessibilityRole="togglebutton"
-            activeOpacity={0.6}
-        >
-            <Card style={applyStyle(wrapperStyle, { isEnabled })}>
-                <View style={applyStyle(iconWrapperStyle)}>
-                    <CryptoIcon symbol={networkSymbol} />
-                </View>
-                <HStack justifyContent="space-between" spacing={12} flex={1} alignItems="center">
-                    <Text variant="callout">{name}</Text>
-                    <Switch onChange={handleEnabledChange} isChecked={isEnabled} />
+        <Card style={applyStyle(cardStyle, { isEnabled })}>
+            <TouchableOpacity
+                onPress={_ => handleEnabledChange(!isEnabled)}
+                accessibilityRole="togglebutton"
+                activeOpacity={0.6}
+            >
+                <HStack style={applyStyle(wrapperStyle)}>
+                    <View style={applyStyle(iconWrapperStyle)}>
+                        <CryptoIcon symbol={networkSymbol} />
+                    </View>
+                    <HStack
+                        justifyContent="space-between"
+                        spacing={12}
+                        flex={1}
+                        alignItems="center"
+                    >
+                        <Text variant="callout">{name}</Text>
+                        <Switch onChange={handleEnabledChange} isChecked={isEnabled} />
+                    </HStack>
                 </HStack>
-            </Card>
-        </TouchableOpacity>
+            </TouchableOpacity>
+        </Card>
     );
 };
