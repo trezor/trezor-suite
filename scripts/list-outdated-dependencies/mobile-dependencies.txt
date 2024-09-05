@@ -33,7 +33,8 @@ babel-plugin-transform-remove-console
 buffer
 expo-atlas
 expo-av
-expo-barcode-scanner
+expo-camera
+expo-image-picker
 expo-build-properties
 expo-clipboard
 expo-crypto

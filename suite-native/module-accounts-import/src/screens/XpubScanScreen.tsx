@@ -26,8 +26,9 @@ import {
     // to the `connect` packages. Should be revisited soon when fixing the monorepo tree shaking problems.
 } from '@suite-common/validators/src/schemas/xpubSchema';
 import { SelectableNetworkItem } from '@suite-native/accounts';
+import { ScanQRBottomSheet } from '@suite-native/qr-code';
 
-import { XpubImportSection } from '../components/XpubImportSection';
+import { XpubImportSection, networkTypeToTitleMap } from '../components/XpubImportSection';
 import { AccountImportSubHeader } from '../components/AccountImportSubHeader';
 import { DevXpub } from '../components/DevXpub';
 import { XpubHint } from '../components/XpubHint';
@@ -58,7 +59,9 @@ export const XpubScanScreen = ({
 }: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScan>) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
-    const [_, setIsCameraRequested] = useState<boolean>(false);
+    const [_, setIsCameraRequested] = useState(false);
+    const [isScannerVisible, setIsScannerVisible] = useState(false);
+
     const { showAlert, hideAlert } = useAlert();
 
     const { networkSymbol } = route.params;
@@ -68,7 +71,7 @@ export const XpubScanScreen = ({
         validation: xpubFormValidationSchema,
         context: { networkSymbol },
     });
-    const { handleSubmit, setValue, watch, reset } = form;
+    const { handleSubmit, setValue, watch } = form;
     const watchXpubAddress = watch('xpubAddress');
     const [isHintSheetVisible, setIsHintSheetVisible] = useState(false);
 
@@ -160,17 +163,17 @@ export const XpubScanScreen = ({
         }
     }, [handleXpubResult, route.params]);
 
-    const handleRequestCamera = () => {
-        reset({
-            xpubAddress: '',
-        });
-        navigation.navigate(AccountsImportStackRoutes.XpubScanModal, {
-            networkSymbol,
-        });
-    };
-
     const handleOpenHint = () => setIsHintSheetVisible(true);
     const handleGoBack = () => navigation.goBack();
+
+    const handleToggleScanner = () => {
+        setIsScannerVisible(prevState => !prevState);
+    };
+
+    const handleBarCodeScanned = (data: string) => {
+        setValue('xpubAddress', data);
+        onXpubFormSubmit();
+    };
 
     return (
         <Screen
@@ -189,7 +192,7 @@ export const XpubScanScreen = ({
             <VStack spacing="medium" marginHorizontal="medium">
                 <View style={applyStyle(cameraStyle)}>
                     <XpubImportSection
-                        onRequestCamera={handleRequestCamera}
+                        onRequestCamera={handleToggleScanner}
                         networkSymbol={networkSymbol}
                     />
                 </View>
@@ -229,6 +232,13 @@ export const XpubScanScreen = ({
                 networkType={networkType}
                 isVisible={isHintSheetVisible}
                 handleClose={() => setIsHintSheetVisible(false)}
+            />
+
+            <ScanQRBottomSheet
+                title={networkTypeToTitleMap[networkType]}
+                isVisible={isScannerVisible}
+                onCodeScanned={handleBarCodeScanned}
+                onClose={handleToggleScanner}
             />
         </Screen>
     );

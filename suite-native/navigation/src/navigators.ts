@@ -106,9 +106,6 @@ export type AccountsImportStackParamList = {
         qrCode?: string;
         networkSymbol: NetworkSymbol;
     };
-    [AccountsImportStackRoutes.XpubScanModal]: {
-        networkSymbol: NetworkSymbol;
-    };
     [AccountsImportStackRoutes.AccountImportLoading]: {
         xpubAddress: XpubAddress;
         networkSymbol: NetworkSymbol;

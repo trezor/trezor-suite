@@ -753,6 +753,9 @@ export const en = {
         addressCopied: 'Address copied',
         copyButton: 'Copy',
         shareButton: 'Share',
+        qrCodeHint: 'Point the camera directly at the QR code',
+        pickImageButton: 'Upload from gallery',
+        pickImageError: 'QR code not found in the image.',
     },
     graph: {
         retrievingData: 'Retrieving data...',
@@ -851,6 +854,7 @@ export const en = {
             recipients: {
                 title: 'Amount & recipients',
                 addressLabel: 'Recipient address',
+                addressQrLabel: 'Scan recipient address',
                 amountLabel: 'Amount to be sent',
             },
         },

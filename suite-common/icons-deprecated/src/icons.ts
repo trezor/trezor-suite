@@ -106,6 +106,7 @@ export const icons = {
     hide: require('../assets/icons/hide.svg'),
     hologram: require('../assets/icons/hologram.svg'),
     home: require('../assets/icons/home.svg'),
+    image: require('../assets/icons/image.svg'),
     info: require('../assets/icons/info.svg'),
     infoLight: require('../assets/icons/infoLight.svg'),
     infoMedium: require('../assets/icons/infoMedium.svg'),

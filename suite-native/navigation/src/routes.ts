@@ -32,7 +32,6 @@ export enum OnboardingStackRoutes {
 export enum AccountsImportStackRoutes {
     SelectNetwork = 'SelectNetwork',
     XpubScan = 'XpubScan',
-    XpubScanModal = 'XpubScanModal',
     AccountImportLoading = 'AccountImportLoading',
     AccountImportSummary = 'AccountImportSummary',
 }

@@ -34,6 +34,7 @@
         "@suite-native/helpers": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/qr-code": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/react-utils": "workspace:*",
