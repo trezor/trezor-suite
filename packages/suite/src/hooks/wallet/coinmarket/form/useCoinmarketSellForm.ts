@@ -48,6 +48,7 @@ import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/
 import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 export const useCoinmarketSellForm = ({
     selectedAccount,
@@ -455,6 +456,14 @@ export const useCoinmarketSellForm = ({
 
     const confirmTrade = async (bankAccount: BankAccount) => {
         if (!selectedQuote) return;
+
+        analytics.report({
+            type: EventType.CoinmarketConfirmTrade,
+            payload: {
+                type,
+            },
+        });
+
         const quote = { ...selectedQuote, bankAccount };
         const response = await doSellTrade(quote);
         if (response) {

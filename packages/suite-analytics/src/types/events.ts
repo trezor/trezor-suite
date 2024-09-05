@@ -161,6 +161,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.CoinmarketConfirmTrade;
+          payload: {
+              type: 'buy' | 'sell' | 'exchange';
+          };
+      }
+    | {
           type: EventType.AccountsTransactionsExport;
           payload: {
               symbol: string;
