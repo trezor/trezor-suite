@@ -8,10 +8,10 @@ import {
 } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
 import { networks, Network, NetworkSymbol, NetworkAccount } from '@suite-common/wallet-config';
-import { CollapsibleBox, NewModal } from '@trezor/components';
+import { CollapsibleBox, NewModal, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { Translation, CoinList, TooltipSymbol } from 'src/components/suite';
+import { Translation, CoinList } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { TrezorDevice } from 'src/types/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
@@ -223,14 +223,14 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                           {!!disabledTestnetNetworks.length && (
                               <CollapsibleBox
                                   heading={
-                                      <>
+                                      <Tooltip
+                                          content={
+                                              <Translation id="TR_TESTNET_COINS_DESCRIPTION" />
+                                          }
+                                          hasIcon
+                                      >
                                           <Translation id="TR_TESTNET_COINS" />
-                                          <TooltipSymbol
-                                              content={
-                                                  <Translation id="TR_TESTNET_COINS_DESCRIPTION" />
-                                              }
-                                          />
-                                      </>
+                                      </Tooltip>
                                   }
                                   data-testid="@modal/account/activate_more_coins"
                                   margin={{ top: spacings.md }}
@@ -245,14 +245,14 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                           {deviceModel === DeviceModelInternal.T1B1 && (
                               <CollapsibleBox
                                   heading={
-                                      <>
+                                      <Tooltip
+                                          hasIcon
+                                          content={
+                                              <Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />
+                                          }
+                                      >
                                           <Translation id="TR_UNSUPPORTED_COINS" />
-                                          <TooltipSymbol
-                                              content={
-                                                  <Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />
-                                              }
-                                          />
-                                      </>
+                                      </Tooltip>
                                   }
                                   data-testid="@modal/account/activate_more_coins"
                                   margin={{ top: spacings.md }}

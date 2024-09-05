@@ -1,12 +1,7 @@
 import { memo, useMemo } from 'react';
 import styled from 'styled-components';
-import { Dropdown, Card } from '@trezor/components';
-import {
-    GraphScaleDropdownItem,
-    GraphSkeleton,
-    QuestionTooltip,
-    Translation,
-} from 'src/components/suite';
+import { Dropdown, Card, H3, Tooltip } from '@trezor/components';
+import { GraphScaleDropdownItem, GraphSkeleton, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useFastAccounts } from 'src/hooks/wallet';
@@ -104,14 +99,22 @@ const PortfolioCard = memo(() => {
 
     const goToReceive = () => dispatch(goto('wallet-receive'));
     const goToBuy = () => dispatch(goto('wallet-coinmarket-buy'));
+    const heading = (
+        <H3>
+            <Translation id="TR_MY_PORTFOLIO" />
+        </H3>
+    );
 
     return (
         <DashboardSection
             heading={
-                <QuestionTooltip
-                    label="TR_MY_PORTFOLIO"
-                    tooltip={showMissingDataTooltip ? 'TR_GRAPH_MISSING_DATA' : undefined}
-                />
+                showMissingDataTooltip ? (
+                    <Tooltip hasIcon content={<Translation id="TR_GRAPH_MISSING_DATA" />}>
+                        {heading}
+                    </Tooltip>
+                ) : (
+                    heading
+                )
             }
             actions={
                 !isWalletEmpty && !isWalletLoading && !isWalletError ? (

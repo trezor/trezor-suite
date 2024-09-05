@@ -1,7 +1,9 @@
 import styled, { ThemeProvider } from 'styled-components';
 import { ReactNode, MutableRefObject } from 'react';
 import { transparentize } from 'polished';
-import { ZIndexValues, spacings, zIndices } from '@trezor/theme';
+import { ZIndexValues, spacingsPx, spacings, zIndices } from '@trezor/theme';
+
+import { Icon } from '../Icon/Icon';
 import { TooltipContent, TooltipFloatingUi, TooltipTrigger } from './TooltipFloatingUi';
 import { Placement, ShiftOptions } from '@floating-ui/react';
 import { TooltipBox, TooltipBoxProps } from './TooltipBox';
@@ -15,14 +17,14 @@ const Wrapper = styled.div<{ $isFullWidth: boolean }>`
     width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
 `;
 
-const Content = styled.div<{ $dashed: boolean; $cursor: Cursor }>`
+const Content = styled.div<{ $dashed: boolean; $isInline: boolean; $cursor: Cursor }>`
+    display: ${({ $isInline }) => ($isInline ? 'inline-flex' : 'flex')};
+    align-items: center;
+    justify-content: flex-start;
+    gap: ${spacingsPx.xxs};
     cursor: ${({ $cursor }) => $cursor};
-
-    > * {
-        border-bottom: ${({ $dashed, theme }) =>
-            $dashed && `1.5px dashed ${transparentize(0.66, theme.legacy.TYPE_LIGHT_GREY)}`};
-        cursor: ${({ $cursor }) => $cursor};
-    }
+    border-bottom: ${({ $dashed, theme }) =>
+        $dashed && `1.5px dotted ${transparentize(0.66, theme.textSubdued)}`};
 `;
 
 export type TooltipInteraction = 'none' | 'hover';
@@ -52,8 +54,10 @@ type TooltipUiProps = {
     isFullWidth?: boolean;
     placement?: Placement;
     hasArrow?: boolean;
+    hasIcon?: boolean;
     appendTo?: HTMLElement | null | MutableRefObject<HTMLElement | null>;
     zIndex?: ZIndexValues;
+    isInline?: boolean;
 };
 
 export type TooltipProps = (ManagedModeProps | UnmanagedModeProps) &
@@ -77,8 +81,10 @@ export const Tooltip = ({
     disabled,
     className,
     isFullWidth = false,
+    isInline = false,
     isOpen,
     hasArrow,
+    hasIcon = false,
     appendTo,
     shift,
     zIndex = zIndices.tooltip,
@@ -88,9 +94,10 @@ export const Tooltip = ({
     }
 
     const delayConfiguration = { open: delayShow, close: delayHide };
+    const elType = isInline ? 'span' : 'div';
 
     return (
-        <Wrapper $isFullWidth={isFullWidth} className={className}>
+        <Wrapper $isFullWidth={isFullWidth} className={className} as={elType}>
             <TooltipFloatingUi
                 placement={placement}
                 isOpen={isOpen}
@@ -99,8 +106,14 @@ export const Tooltip = ({
                 delay={delayConfiguration}
             >
                 <TooltipTrigger>
-                    <Content $dashed={dashed} $cursor={disabled ? 'default' : cursor}>
+                    <Content
+                        $dashed={dashed}
+                        $isInline={isInline}
+                        $cursor={disabled ? 'default' : cursor}
+                        as={elType}
+                    >
                         {children}
+                        {hasIcon && <Icon name="question" size="medium" />}
                     </Content>
                 </TooltipTrigger>
 
