@@ -64,7 +64,7 @@ export const DashboardPassphraseBanner = () => {
                                     <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON" />
                                 </Button>
                                 <IconButton
-                                    icon="close"
+                                    icon="x"
                                     variant="tertiary"
                                     onClick={() => {
                                         setIsVisible(false);

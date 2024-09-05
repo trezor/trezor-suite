@@ -103,7 +103,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                         onClick: () => {
                             console.log('item 3 clicked - disabled');
                         },
-                        iconRight: 'chevronRight',
+                        iconRight: 'caretRight',
                         isDisabled: true,
                     },
                     {
@@ -117,7 +117,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                         onClick: () => {
                             console.log('item 5 clicked');
                         },
-                        iconRight: 'chevronRight',
+                        iconRight: 'caretRight',
                         separatorBefore: true,
                     },
                 ],

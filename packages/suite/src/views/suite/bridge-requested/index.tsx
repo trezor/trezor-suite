@@ -75,7 +75,7 @@ export const BridgeRequested = () => {
             bottomBarComponents={
                 <>
                     <StyledButton
-                        icon="chevronLeft"
+                        icon="caretLeft"
                         variant="tertiary"
                         onClick={() => setConfirmGoToWallet(true)}
                         data-testid="@bridge/goto/wallet-index"

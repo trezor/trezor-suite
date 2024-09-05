@@ -67,7 +67,7 @@ export const SettingsGeneral = () => {
                 {hasBitcoinNetworks && <BitcoinAmountUnit />}
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_LABELING" />} icon="tagMinimal">
+            <SettingsSection title={<Translation id="TR_LABELING" />} icon="tag">
                 <Labeling />
                 {isMetadataEnabled &&
                     (isProviderConnected ? (
@@ -78,14 +78,14 @@ export const SettingsGeneral = () => {
             </SettingsSection>
 
             {(isDesktop() || (isWeb() && isTorEnabled)) && (
-                <SettingsSection title={<Translation id="TR_TOR" />} icon="tor">
+                <SettingsSection title={<Translation id="TR_TOR" />} icon="torBrowser">
                     {isDesktop() && <Tor />}
                     {isTorEnabled && <TorOnionLinks />}
                     {isDesktop() && torSnowflakeExperimentalFeature && <TorSnowflake />}
                 </SettingsSection>
             )}
 
-            <SettingsSection title={<Translation id="TR_APPLICATION" />} icon="app">
+            <SettingsSection title={<Translation id="TR_APPLICATION" />} icon="appWindow">
                 <Theme />
                 <AddressDisplay />
                 <Analytics />

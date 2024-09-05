@@ -144,7 +144,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                                             setSection('DETAILS');
                                             setTab(undefined);
                                         }}
-                                        icon="chevronLeft"
+                                        icon="caretLeft"
                                     >
                                         <Translation id="TR_BACK" />
                                     </Button>

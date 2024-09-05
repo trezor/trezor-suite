@@ -88,7 +88,7 @@ export const PassphraseTypeCardHeading = ({
             </Column>
             {type === 'standard' && (
                 <ArrowCol>
-                    <Icon name="chevronLeft" color={theme.iconSubdued} />
+                    <Icon name="caretLeft" color={theme.iconSubdued} />
                 </ArrowCol>
             )}
         </Row>

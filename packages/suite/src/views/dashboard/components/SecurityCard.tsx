@@ -132,7 +132,7 @@ export const SecurityCard = ({ variant, icon, heading, description, cta }: Secur
                                     variant="primary"
                                     isDisabled={cta.isDisabled}
                                     onClick={cta.action}
-                                    icon="chevronRight"
+                                    icon="caretRight"
                                     iconAlignment="right"
                                     size="small"
                                     {...(cta.dataTest

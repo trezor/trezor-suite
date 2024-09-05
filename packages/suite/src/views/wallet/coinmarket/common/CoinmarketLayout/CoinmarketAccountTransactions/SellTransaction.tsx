@@ -197,7 +197,7 @@ export const SellTransaction = ({ trade, providers, account }: SellTransactionPr
                         symbol={cryptoIdToCoinSymbol(cryptoCurrency!)}
                     />
                     <Arrow>
-                        <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={13} name="chevronRight" />
+                        <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={13} name="caretRight" />
                     </Arrow>
                     <div>
                         <HiddenPlaceholder>

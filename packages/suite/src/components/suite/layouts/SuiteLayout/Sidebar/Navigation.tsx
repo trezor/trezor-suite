@@ -24,7 +24,7 @@ const PasswordManagerNavItem = (props: NavigationItemProps) => {
 const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> = [
     {
         nameId: 'TR_DASHBOARD',
-        icon: 'home',
+        icon: 'house',
         goToRoute: 'suite-index',
         routes: ['suite-index'],
     },
@@ -35,7 +35,7 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
     },
     {
         nameId: 'TR_SETTINGS',
-        icon: 'settings',
+        icon: 'gearSix',
         goToRoute: 'settings-index',
         routes: ['settings-index', 'settings-device', 'settings-coins', 'settings-debug'],
         'data-testid': '@suite/menu/settings',

@@ -151,7 +151,7 @@ const NewModalBase = ({
                         {onBackClick && (
                             <IconButton
                                 variant="tertiary"
-                                icon="chevronLeft"
+                                icon="caretLeft"
                                 data-testid="@modal/back-button"
                                 onClick={onBackClick}
                                 size="small"

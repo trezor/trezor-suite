@@ -90,9 +90,7 @@ export const Locktime = ({ close }: LocktimeProps) => {
                         <Translation id="LOCKTIME_SCHEDULE_SEND" />
                     </Label>
                 }
-                labelRight={
-                    <IconButton icon="close" size="tiny" variant="tertiary" onClick={close} />
-                }
+                labelRight={<IconButton icon="x" size="tiny" variant="tertiary" onClick={close} />}
                 bottomText={error?.message || null}
                 data-testid="locktime-input"
             />

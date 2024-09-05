@@ -87,7 +87,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                     onCancel={onEnterPassphraseDialogCancel}
                     device={device}
                     isFullHeaderVisible
-                    icon="close"
+                    icon="x"
                 >
                     <MarginContainer>
                         <PassphraseHeading>

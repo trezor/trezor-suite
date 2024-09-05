@@ -197,7 +197,7 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
                         </HiddenPlaceholder>
                     </Amount>
                     <Arrow>
-                        <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={13} name="chevronRight" />
+                        <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={13} name="caretRight" />
                     </Arrow>
                     <CoinmarketTestWrapper data-testid="@coinmarket/transaction/crypto-amount">
                         <FormattedCryptoAmount
