@@ -22,6 +22,7 @@ import {
     getUnusedAddressFromAccount,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
+    coinmarketGetExchangeReceiveCryptoId,
     getAmountLimits,
     getCexQuotesByRateType,
     getSuccessQuotesOrdered,
@@ -89,6 +90,7 @@ export const useCoinmarketExchangeForm = ({
     });
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
         useCoinmarketCommonOffers({ selectedAccount, type });
+    const { buildDefaultCryptoOption } = useCoinmarketInfo();
 
     const dispatch = useDispatch();
     const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
@@ -145,10 +147,15 @@ export const useCoinmarketExchangeForm = ({
         if (!draft) return null;
         if (isNotFormPage) return draft;
 
+        const defaultReceiveCryptoSelect = coinmarketGetExchangeReceiveCryptoId(
+            defaultValues.sendCryptoSelect?.value,
+            draft.receiveCryptoSelect?.value,
+        );
+
         return {
             ...defaultValues,
             amountInCrypto: draft.amountInCrypto,
-            receiveCryptoSelect: draft.receiveCryptoSelect,
+            receiveCryptoSelect: buildDefaultCryptoOption(defaultReceiveCryptoSelect),
             rateType: draft.rateType,
             exchangeType: draft.exchangeType,
         };

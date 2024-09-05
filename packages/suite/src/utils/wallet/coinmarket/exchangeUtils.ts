@@ -1,8 +1,13 @@
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
-import { ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
+import { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 import { RateType } from 'src/types/coinmarket/coinmarketForm';
-import { FORM_RATE_FIXED, FORM_RATE_FLOATING } from 'src/constants/wallet/coinmarket/form';
+import {
+    FORM_DEFAULT_CRYPTO_CURRENCY,
+    FORM_DEFAULT_CRYPTO_SECONDARY_CURRENCY,
+    FORM_RATE_FIXED,
+    FORM_RATE_FLOATING,
+} from 'src/constants/wallet/coinmarket/form';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message
 export const getAmountLimits = (quotes: ExchangeTrade[]): CryptoAmountLimits | undefined => {
@@ -103,4 +108,21 @@ export const getStatusMessage = (status: ExchangeTradeStatus) => {
         default:
             return 'TR_EXCHANGE_STATUS_CONFIRMING';
     }
+};
+
+export const coinmarketGetExchangeReceiveCryptoId = (
+    sendCryptoId: CryptoId | undefined,
+    receiveCryptoId?: CryptoId | undefined,
+): CryptoId => {
+    const getReceivedDefaultCryptoId = (cryptoId: CryptoId | undefined) => {
+        if (cryptoId === FORM_DEFAULT_CRYPTO_CURRENCY)
+            return FORM_DEFAULT_CRYPTO_SECONDARY_CURRENCY as CryptoId;
+
+        return FORM_DEFAULT_CRYPTO_CURRENCY as CryptoId;
+    };
+
+    if (sendCryptoId === receiveCryptoId) return getReceivedDefaultCryptoId(receiveCryptoId);
+    if (receiveCryptoId) return receiveCryptoId;
+
+    return getReceivedDefaultCryptoId(sendCryptoId);
 };

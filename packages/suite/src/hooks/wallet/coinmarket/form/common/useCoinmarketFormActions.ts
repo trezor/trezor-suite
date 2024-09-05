@@ -19,10 +19,12 @@ import {
     FORM_OUTPUT_CURRENCY,
     FORM_OUTPUT_FIAT,
     FORM_OUTPUT_MAX,
+    FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     FORM_SEND_CRYPTO_CURRENCY_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
 import { useSelector } from 'src/hooks/suite';
 import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
 import {
@@ -37,6 +39,7 @@ import {
     cryptoIdToNetworkSymbol,
     getNetworkDecimals,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { coinmarketGetExchangeReceiveCryptoId } from 'src/utils/wallet/coinmarket/exchangeUtils';
 
 /**
  * shareable sub-hook used in useCoinmarketSellForm & useCoinmarketExchangeForm
@@ -64,6 +67,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         deviceState: device?.state,
     });
     const [isUsedFractionButton, setIsUsedFractionButton] = useState(false);
+    const { buildDefaultCryptoOption } = useCoinmarketInfo();
 
     const { getValues, setValue, clearErrors, handleSubmit, control } =
         methods as unknown as UseFormReturn<CoinmarketSellExchangeFormProps>;
@@ -159,6 +163,24 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         [coinmarketFiatValues, networkDecimals, setValue, shouldSendInSats],
     );
 
+    const setExchangeReceiveCrypto = (selected: CoinmarketAccountOptionsGroupOptionProps) => {
+        if (type !== 'exchange') return;
+
+        const valuesTyped = values as CoinmarketExchangeFormProps;
+
+        if (selected.value === valuesTyped?.receiveCryptoSelect?.value) {
+            const receiveCryptoSelect = coinmarketGetExchangeReceiveCryptoId(
+                selected.value,
+                valuesTyped?.receiveCryptoSelect?.value,
+            );
+
+            setValue(
+                FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+                buildDefaultCryptoOption(receiveCryptoSelect),
+            );
+        }
+    };
+
     const onCryptoCurrencyChange = async (selected: CoinmarketAccountOptionsGroupOptionProps) => {
         const networkSymbol = cryptoIdToNetworkSymbol(selected.value);
         const cryptoSelectedCurrent = getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT);
@@ -195,6 +217,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         );
 
         setAccountOnChange(account);
+        setExchangeReceiveCrypto(selected);
 
         changeFeeLevel('normal'); // reset fee level
     };
