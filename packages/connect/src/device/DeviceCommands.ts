@@ -3,7 +3,7 @@
 import { randomBytes } from 'crypto';
 import { Transport, Session } from '@trezor/transport';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
-import { versionUtils } from '@trezor/utils';
+import { createTimeoutPromise, versionUtils } from '@trezor/utils';
 import { ERRORS } from '../constants';
 import { DEVICE } from '../events';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
@@ -17,7 +17,7 @@ import type { CoinInfo, BitcoinNetworkInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
 import { Assert } from '@trezor/schema-utils';
 import { resolveDescriptorForTaproot } from './resolveDescriptorForTaproot';
-import { promptPin, promptPassphrase, promptWord } from './prompts';
+import { promptPin, promptPassphrase, promptWord, cancelPrompt } from './prompts';
 
 type MessageType = Messages.MessageType;
 type MessageKey = keyof MessageType;
@@ -90,9 +90,6 @@ export class DeviceCommands {
     disposed: boolean;
 
     callPromise?: ReturnType<Transport['call']>;
-
-    // see DeviceCommands.cancel
-    _cancelableRequestBySend?: boolean;
 
     constructor(device: Device, transport: Transport, transportSession: Session) {
         this.device = device;
@@ -385,7 +382,7 @@ export class DeviceCommands {
     }
 
     _filterCommonTypes(res: DefaultPayloadMessage): Promise<DefaultPayloadMessage> {
-        this._cancelableRequestBySend = false;
+        this.device.clearCancelableAction();
 
         if (res.type === 'Failure') {
             const { code } = res.message;
@@ -417,7 +414,7 @@ export class DeviceCommands {
         }
 
         if (res.type === 'ButtonRequest') {
-            this._cancelableRequestBySend = true;
+            this.device.setCancelableAction(() => this.cancelWithFallback());
 
             if (res.message.code === 'ButtonRequest_PassphraseEntry') {
                 this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
@@ -554,45 +551,37 @@ export class DeviceCommands {
         );
     }
 
+    async cancelWithFallback() {
+        const { name, version } = this.transport;
+        if (name === 'BridgeTransport' && !versionUtils.isNewer(version, '2.0.28')) {
+            /**
+             * Bridge version =< 2.0.28 throws "other call in progress" error.
+             * as workaround takeover transportSession (acquire) before sending Cancel, this will resolve previous pending call.
+             */
+            try {
+                // UI_EVENT is send right before ButtonAck, make sure that ButtonAck is sent
+                await createTimeoutPromise(1);
+                await this.device.acquire();
+                await cancelPrompt(this.device, false);
+            } catch (err) {
+                // ignore whatever happens
+            }
+        } else {
+            return cancelPrompt(this.device, false);
+        }
+    }
+
     async cancel() {
         if (this.disposed) {
             return;
         }
         this.dispose();
-
-        if (!this._cancelableRequestBySend) {
-            if (this.callPromise) {
-                await this.callPromise;
-            }
-
-            return;
-        }
-        /**
-         * Bridge version =< 2.0.28 has a bug that doesn't permit it to cancel
-         * user interactions in progress, so we have to do it manually.
-         */
-        const { name, version } = this.transport;
-        if (name === 'BridgeTransport' && !versionUtils.isNewer(version, '2.0.28')) {
+        if (this.callPromise) {
             try {
-                await this.device.legacyForceRelease();
-            } catch (err) {
-                // ignore
-            }
-        } else {
-            await this.transport.send({
-                protocol: this.device.protocol,
-                session: this.transportSession,
-                name: 'Cancel',
-                data: {},
-            });
-
-            if (this.callPromise) {
                 await this.callPromise;
+            } catch {
+                // do nothing
             }
-            // if my observations are correct, it is not necessary to transport.receive after send
-            // transport.call -> transport.send -> transport call returns Failure meaning it won't be
-            // returned in subsequent calls
-            // await this.transport.receive({ session: this.transportSession }).promise;
         }
     }
 }

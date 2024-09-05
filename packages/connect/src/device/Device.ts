@@ -317,14 +317,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
         _log.debug('interruptionFromUser');
 
         await this.cancelableAction?.(error);
+        await this.commands?.cancel();
 
         if (this.runPromise) {
             // reject inner defer
             this.runPromise.reject(error);
             delete this.runPromise;
-        }
-        if (this.commands) {
-            await this.commands.cancel();
         }
     }
 
@@ -774,9 +772,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // TODO: cleanup everything
         _log.debug('Disconnect cleanup');
 
-        this.transportSession = null; // set to null to prevent transport.release
-        this.interruptionFromUser(ERRORS.TypedError('Device_Disconnected'));
-        delete this.runPromise;
+        this.transportSession = null; // set to null to prevent transport.release and cancelableAction
+
+        return this.interruptionFromUser(ERRORS.TypedError('Device_Disconnected'));
     }
 
     isBootloader() {
@@ -882,9 +880,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.removeAllListeners();
         if (this.isUsedHere() && this.transportSession) {
             try {
-                if (this.commands) {
-                    await this.commands.cancel();
-                }
+                await this.cancelableAction?.();
+                await this.commands?.cancel();
 
                 return this.transport.release({
                     session: this.transportSession,
@@ -949,13 +946,5 @@ export class Device extends TypedEmitter<DeviceEvents> {
             availableTranslations: this.availableTranslations,
             authenticityChecks: this.authenticityChecks,
         };
-    }
-
-    async legacyForceRelease() {
-        if (this.isUsedHere()) {
-            await this.acquire();
-            await this.getFeatures();
-            await this.release();
-        }
     }
 }
