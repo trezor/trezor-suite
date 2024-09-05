@@ -14,7 +14,7 @@ import {
     getTitleForNetwork,
     getTitleForCoinjoinAccount,
     getUtxoFromSignedTransaction,
-    getNetworkFeatures,
+    getNetworkAccountFeatures,
     hasNetworkFeatures,
     isTestnet,
     networkAmountToSatoshi,
@@ -226,29 +226,18 @@ describe('account utils', () => {
         ).toBe(true);
     });
 
-    it('getNetworkFeatures', () => {
-        const btcAcc = getWalletAccount({
-            networkType: 'bitcoin',
-            symbol: 'btc',
-        });
+    it('getNetworkAccountFeatures', () => {
+        const btcAcc = getWalletAccount({ symbol: 'btc' });
 
-        const btcTaprootAcc = getWalletAccount({
-            networkType: 'bitcoin',
-            symbol: 'btc',
-            accountType: 'taproot',
-        });
+        const btcTaprootAcc = getWalletAccount({ symbol: 'btc', accountType: 'taproot' });
 
         const ethAcc = getWalletAccount();
 
-        const coinjoinAcc = getWalletAccount({
-            networkType: 'bitcoin',
-            symbol: 'regtest',
-            accountType: 'coinjoin',
-        });
+        const coinjoinAcc = getWalletAccount({ symbol: 'regtest', accountType: 'coinjoin' });
 
-        expect(getNetworkFeatures(btcAcc)).toEqual(['rbf', 'sign-verify', 'amount-unit']);
-        expect(getNetworkFeatures(btcTaprootAcc)).toEqual(['rbf', 'amount-unit']);
-        expect(getNetworkFeatures(ethAcc)).toEqual([
+        expect(getNetworkAccountFeatures(btcAcc)).toEqual(['rbf', 'sign-verify', 'amount-unit']);
+        expect(getNetworkAccountFeatures(btcTaprootAcc)).toEqual(['rbf', 'amount-unit']);
+        expect(getNetworkAccountFeatures(ethAcc)).toEqual([
             'rbf',
             'sign-verify',
             'tokens',
@@ -256,7 +245,7 @@ describe('account utils', () => {
             'nft-definitions',
             'staking',
         ]);
-        expect(getNetworkFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);
+        expect(getNetworkAccountFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);
     });
 
     it('hasNetworkFeatures', () => {
