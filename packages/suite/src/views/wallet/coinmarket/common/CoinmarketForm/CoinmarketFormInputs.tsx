@@ -31,6 +31,9 @@ import { CoinmarketFormInputFiatCrypto } from 'src/views/wallet/coinmarket/commo
 import { CoinmarketFractionButtons } from 'src/views/wallet/coinmarket/common/CoinmarketFractionButtons';
 import { Row } from '@trezor/components';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { formatAmount } from '@suite-common/wallet-utils';
+import { getNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const CoinmarketFeesWrapper = styled.div`
     margin-bottom: ${spacingsPx.md};
@@ -47,13 +50,20 @@ export const CoinmarketFormInputs = () => {
             composedLevels,
             formState: { errors },
             form: { helpers },
+            shouldSendInSats,
             register,
             setValue,
             getValues,
             changeFeeLevel,
         } = context;
         const { outputs, sendCryptoSelect, amountInCrypto } = getValues();
-        const currencySelect = getValues().outputs[0].currency;
+        const output = outputs[0];
+        const currencySelect = output.currency;
+        const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
+        const outputAmount =
+            shouldSendInSats && output.amount
+                ? formatAmount(output.amount, getNetworkDecimals(sendCryptoSelect?.decimals))
+                : output.amount;
 
         return (
             <>
@@ -86,9 +96,10 @@ export const CoinmarketFormInputs = () => {
                             onAllClick={helpers.setAllAmount}
                         />
                         <CoinmarketBalance
-                            balance={outputs[0].amount}
+                            balance={outputAmount}
                             cryptoSymbolLabel={sendCryptoSelect?.value}
                             networkSymbol={account.symbol}
+                            tokenAddress={tokenAddress as TokenAddress}
                             showOnlyAmount
                             amountInCrypto={amountInCrypto}
                         />
@@ -130,10 +141,17 @@ export const CoinmarketFormInputs = () => {
             setValue,
             getValues,
             changeFeeLevel,
+            shouldSendInSats,
         } = context;
         const { rateType, sendCryptoSelect, exchangeType, outputs, amountInCrypto } = getValues();
-        const currencySelect = outputs[0].currency;
+        const output = outputs[0];
+        const currencySelect = output.currency;
+        const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
         const supportedCryptoCurrencies = exchangeInfo?.buySymbols;
+        const outputAmount =
+            shouldSendInSats && output.amount
+                ? formatAmount(output.amount, getNetworkDecimals(sendCryptoSelect?.decimals))
+                : output.amount;
 
         return (
             <>
@@ -166,9 +184,10 @@ export const CoinmarketFormInputs = () => {
                             onAllClick={helpers.setAllAmount}
                         />
                         <CoinmarketBalance
-                            balance={outputs[0].amount}
+                            balance={outputAmount}
                             cryptoSymbolLabel={sendCryptoSelect?.value}
                             networkSymbol={account.symbol}
+                            tokenAddress={tokenAddress}
                             showOnlyAmount
                             amountInCrypto={amountInCrypto}
                         />

@@ -185,7 +185,7 @@ export interface CoinmarketSellFormContextProps
         state: CoinmarketFormStateProps;
         helpers: CoinmarketUseFormActionsReturnProps;
     };
-
+    shouldSendInSats: boolean | undefined;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     composeRequest: SendContextValues<CoinmarketSellExchangeFormProps>['composeTransaction'];
     setAmountLimits: (limits?: AmountLimits) => void;
@@ -223,6 +223,7 @@ export interface CoinmarketExchangeFormContextProps
     quotesRequest: ExchangeTradeQuoteRequest | undefined;
     receiveAccount?: Account;
     addressVerified: string | undefined;
+    shouldSendInSats: boolean | undefined;
     setReceiveAccount: (account?: Account) => void;
     setAmountLimits: (limits?: CryptoAmountLimits) => void;
     composeRequest: SendContextValues<CoinmarketSellExchangeFormProps>['composeTransaction'];
