@@ -73,7 +73,7 @@ interface IOAddressProps {
 export const IOAddress = ({
     txAddress,
     explorerUrl,
-    explorerUrlQueryString,
+    explorerUrlQueryString = '',
     shouldAllowCopy = true,
 }: IOAddressProps) => {
     const [isClicked, setIsClicked] = useState(false);
