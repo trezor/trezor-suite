@@ -47,6 +47,7 @@ import { useCoinmarketComposeTransaction } from 'src/hooks/wallet/coinmarket/for
 import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketCurrencySwitcher';
 import { NetworkCompatible } from '@suite-common/wallet-config';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 export const useCoinmarketSellForm = ({
     selectedAccount,
@@ -64,6 +65,7 @@ export const useCoinmarketSellForm = ({
         coinmarketAccount,
         selectedQuote,
     } = useSelector(state => state.wallet.coinmarket.sell);
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
 
     const [account, setAccount] = useCoinmarketAccount({
         coinmarketAccount,
@@ -266,6 +268,10 @@ export const useCoinmarketSellForm = ({
 
             if (Array.isArray(allQuotes)) {
                 const limits = getAmountLimits(quoteRequest, allQuotes);
+                if (limits && quoteRequest.amountInCrypto) {
+                    limits.currency =
+                        cryptoIdToCoinSymbol(quoteRequest.cryptoCurrency) ?? limits.currency;
+                }
 
                 const quotesDefault = filterQuotesAccordingTags<CoinmarketTradeSellType>(
                     addIdsToQuotes<CoinmarketTradeSellType>(allQuotes, 'sell'),
@@ -312,6 +318,7 @@ export const useCoinmarketSellForm = ({
         },
         [
             timer,
+            cryptoIdToCoinSymbol,
             getQuoteRequestData,
             getQuotesRequest,
             values,
