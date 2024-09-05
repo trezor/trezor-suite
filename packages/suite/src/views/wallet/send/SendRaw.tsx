@@ -1,7 +1,6 @@
-import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { Card, Textarea, Button, Tooltip, H3, Icon } from '@trezor/components';
+import { Card, Textarea, Button, Tooltip, H3, IconButton, Row } from '@trezor/components';
 import { sendFormActions, pushSendFormRawTransactionThunk } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
@@ -9,35 +8,7 @@ import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { tryGetAccountIdentity, getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Account } from 'src/types/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { spacingsPx } from '@trezor/theme';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCard = styled(Card)`
-    position: relative;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const CloseIcon = styled(Icon)`
-    position: absolute;
-    right: ${spacingsPx.md};
-    top: ${spacingsPx.md};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledTextarea = styled(Textarea)`
-    margin: ${spacingsPx.md} 0 ${spacingsPx.lg};
-
-    > :first-child {
-        background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-        border-color: ${({ theme }) => theme.borderElevation2};
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const SendButton = styled(Button)`
-    margin: 0 auto;
-    min-width: 120px;
-`;
+import { spacings } from '@trezor/theme';
 
 const INPUT_NAME = 'rawTx';
 
@@ -97,22 +68,24 @@ export const SendRaw = ({ account }: SendRawProps) => {
     const isSubmitDisabled = inputState === 'error' || !inputValue;
 
     return (
-        <StyledCard>
-            <H3>
-                <Tooltip
-                    addon={
-                        <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/send-raw.md" />
-                    }
-                    content={<Translation id="SEND_RAW_TRANSACTION_TOOLTIP" />}
-                    dashed
-                >
-                    <Translation id="SEND_RAW" />
-                </Tooltip>
-            </H3>
+        <Card>
+            <Row justifyContent="space-between" margin={{ bottom: spacings.md }}>
+                <H3>
+                    <Tooltip
+                        addon={
+                            <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/send-raw.md" />
+                        }
+                        content={<Translation id="SEND_RAW_TRANSACTION_TOOLTIP" />}
+                        hasIcon
+                    >
+                        <Translation id="SEND_RAW" />
+                    </Tooltip>
+                </H3>
 
-            <CloseIcon variant="tertiary" size="small" name="close" onClick={cancel} />
+                <IconButton variant="tertiary" icon="x" onClick={cancel} size="small" />
+            </Row>
 
-            <StyledTextarea
+            <Textarea
                 inputState={inputState}
                 data-testid={INPUT_NAME}
                 defaultValue={inputValue}
@@ -122,9 +95,9 @@ export const SendRaw = ({ account }: SendRawProps) => {
                 {...inputField}
             />
 
-            <SendButton isDisabled={isSubmitDisabled} onClick={send}>
+            <Button isDisabled={isSubmitDisabled} onClick={send} margin={{ top: spacings.lg }}>
                 <Translation id="SEND_TRANSACTION" />
-            </SendButton>
-        </StyledCard>
+            </Button>
+        </Card>
     );
 };
