@@ -17,7 +17,7 @@ export type NetworkSymbol =
     | 'zec'
     | 'ada'
     | 'sol'
-    | 'matic'
+    | 'pol'
     | 'bnb'
     | 'test'
     | 'regtest'

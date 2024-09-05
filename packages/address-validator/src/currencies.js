@@ -943,8 +943,8 @@ var CURRENCIES = [
         validator: ETHValidator,
     },
     {
-        name: 'Matic Network',
-        symbol: 'matic',
+        name: 'Polygon PoS',
+        symbol: 'pol',
         validator: ETHValidator,
     },
     {

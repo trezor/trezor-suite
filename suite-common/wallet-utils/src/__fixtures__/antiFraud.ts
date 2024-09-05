@@ -61,7 +61,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'non-zero tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '1.23',
             tokens: [{ standard: 'ERC20', contract: '0xA' }],
         } as WalletAccountTransaction,
@@ -82,7 +82,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'only fake tokens tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC20', contract: '0xC' },
@@ -106,7 +106,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'only zero-value fake tokens tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC20', contract: '0xC', amount: '0' },
@@ -130,7 +130,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'one fake, one legit token tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC20', contract: '0xA' },
@@ -154,7 +154,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'one fake, one zero-value legit token tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC20', contract: '0xA', amount: '1' },
@@ -178,7 +178,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'one zero-value fake, one legit token tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC20', contract: '0xA', amount: '0' },
@@ -202,7 +202,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'only legit tokens tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC20', contract: '0xA' },
@@ -226,7 +226,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'only zero-value legit tokens tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC20', contract: '0xA', amount: '0' },
@@ -250,7 +250,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'no tokens tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [],
         } as unknown as WalletAccountTransaction,
@@ -271,7 +271,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'legit NFT token with fake token tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC1155', contract: '0xN' },
@@ -295,7 +295,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'fake NFT token with legit token tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC1155', contract: '0xT' },
@@ -319,7 +319,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'fake NFT token with zero-value legit token tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC1155', contract: '0xT', amount: '1' },
@@ -343,7 +343,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'just legit NFT token tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [{ standard: 'ERC721', contract: '0xN' }],
         } as WalletAccountTransaction,
@@ -364,7 +364,7 @@ export const getIsFakeTokenPhishingFixtures = [
     {
         testName: 'just fake NFT token tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [
                 { standard: 'ERC721', contract: '0xT' },
@@ -423,7 +423,7 @@ export const getIsPhishingTransactionFixtures = [
     {
         testName: 'legit tx with known token',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '1',
             tokens: [{ amount: '1', standard: 'ERC20', contract: '0xA' }],
         } as WalletAccountTransaction,
@@ -444,7 +444,7 @@ export const getIsPhishingTransactionFixtures = [
     {
         testName: 'zero value phishing tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [{ amount: '0', standard: 'ERC20', contract: '0xA' }],
         } as WalletAccountTransaction,
@@ -465,7 +465,7 @@ export const getIsPhishingTransactionFixtures = [
     {
         testName: 'fake token tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '1',
             tokens: [{ amount: '5', standard: 'ERC20', contract: '0xC' }],
         } as WalletAccountTransaction,
@@ -486,7 +486,7 @@ export const getIsPhishingTransactionFixtures = [
     {
         testName: 'NFT token tx',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '1',
             tokens: [{ amount: '0', standard: 'ERC1155', contract: '0xN' }],
         } as WalletAccountTransaction,
@@ -507,7 +507,7 @@ export const getIsPhishingTransactionFixtures = [
     {
         testName: 'fake tx with fake token',
         transaction: {
-            symbol: 'matic',
+            symbol: 'pol',
             amount: '0',
             tokens: [{ amount: '0', standard: 'ERC20', contract: '0xC' }],
         } as WalletAccountTransaction,

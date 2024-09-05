@@ -380,8 +380,8 @@ export const networks = {
         coingeckoId: 'solana',
         coingeckoNativeId: 'solana',
     },
-    matic: {
-        symbol: 'matic',
+    pol: {
+        symbol: 'pol',
         name: 'Polygon PoS',
         networkType: 'ethereum',
         chainId: 137,
@@ -389,10 +389,10 @@ export const networks = {
         decimals: 18,
         testnet: false,
         explorer: {
-            tx: 'https://matic2.trezor.io/tx/',
-            account: 'https://matic2.trezor.io/address/',
-            nft: 'https://matic2.trezor.io/nft/',
-            address: 'https://matic2.trezor.io/address/',
+            tx: 'https://pol1.trezor.io/tx/',
+            account: 'https://pol1.trezor.io/address/',
+            nft: 'https://pol1.trezor.io/nft/',
+            address: 'https://pol1.trezor.io/address/',
         },
         features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
         customBackends: ['blockbook'],
@@ -405,7 +405,7 @@ export const networks = {
             },
         },
         coingeckoId: 'polygon-pos',
-        coingeckoNativeId: 'matic-network',
+        coingeckoNativeId: 'polygon-ecosystem-token',
     },
     bnb: {
         symbol: 'bnb',

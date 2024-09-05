@@ -111,7 +111,7 @@ export const useAddCoinAccount = () => {
             availableTypes.set(symbol as NetworkSymbol, [
                 NORMAL_ACCOUNT_TYPE,
                 // For Cardano and EVMs allow only normal account type
-                ...(['ada', 'eth', 'matic', 'bnb'].includes(symbol) ? [] : types),
+                ...(['ada', 'eth', 'pol', 'bnb'].includes(symbol) ? [] : types),
             ]);
         });
 

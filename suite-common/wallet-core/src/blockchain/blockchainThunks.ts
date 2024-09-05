@@ -39,7 +39,7 @@ const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000;
 
 // using fast and cheap blockchains, it looks suspicious when tx is not almost instantly confirmed
 const CUSTOM_ACCOUNT_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
-    matic: 20 * 1000,
+    pol: 20 * 1000,
     bnb: 20 * 1000,
 };
 

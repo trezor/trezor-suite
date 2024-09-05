@@ -33,11 +33,20 @@ const getWorker = (type: string) => {
     }
 };
 
-const getNormalizedShortcut = (shortcut: string) => {
+const getNormalizedTrezorShortcut = (shortcut: string) => {
     // There is no `rippled` setting that defines which network it uses neither mainnet or testnet
     // see: https://xrpl.org/parallel-networks.html
     if (shortcut === 'tXRP') {
         return 'XRP';
+    }
+
+    return shortcut;
+};
+
+const getNormalizedBackendShortcut = (shortcut: string) => {
+    // Can be safely removed when both Polygon PoS Blockbooks return POL as shortcut
+    if (shortcut.toLowerCase() === 'matic') {
+        return 'pol';
     }
 
     return shortcut;
@@ -128,9 +137,10 @@ export class Blockchain {
 
         this.serverInfo = info;
 
-        const shortcut = getNormalizedShortcut(this.coinInfo.shortcut);
+        const trezorShortcut = getNormalizedTrezorShortcut(this.coinInfo.shortcut);
+        const backendShortcut = getNormalizedBackendShortcut(this.serverInfo.shortcut);
 
-        if (info.shortcut.toLowerCase() !== shortcut.toLowerCase()) {
+        if (trezorShortcut.toLowerCase() !== backendShortcut.toLowerCase()) {
             throw ERRORS.TypedError('Backend_Invalid');
         }
 

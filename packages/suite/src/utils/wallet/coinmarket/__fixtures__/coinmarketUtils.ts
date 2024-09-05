@@ -125,7 +125,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
     {
         deviceState: '1stTestnet@device_id:0',
         formattedBalance: '0.101213',
-        symbol: 'matic',
+        symbol: 'pol',
         visible: true,
         tokens: [
             {
@@ -143,7 +143,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
     {
         deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '250',
-        symbol: 'matic',
+        symbol: 'pol',
         visible: true,
         tokens: [
             // unsupported token
@@ -162,7 +162,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
     {
         deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '250',
-        symbol: 'matic',
+        symbol: 'pol',
         visible: false,
         tokens: [
             // unsupported token
