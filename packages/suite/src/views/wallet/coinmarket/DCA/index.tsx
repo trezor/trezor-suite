@@ -113,9 +113,9 @@ const DCALanding = (props: UseCoinmarketProps) => {
                         </H2>
                         <Column gap={spacings.xxl} alignItems="start">
                             <FeatureItem icon="shieldCheck" featureNumber={1} />
-                            <FeatureItem icon="arrowDownLong" featureNumber={2} />
+                            <FeatureItem icon="arrowDown" featureNumber={2} />
                             <FeatureItem icon="lightning" featureNumber={3} />
-                            <FeatureItem icon="eyeBold" featureNumber={4} />
+                            <FeatureItem icon="eye" featureNumber={4} />
                         </Column>
                     </Column1>
                     <Column2>
