@@ -1,4 +1,4 @@
-import { networks, networksCompatibility } from './networksConfig';
+import { networks } from './networksConfig';
 import {
     AccountType,
     Network,
@@ -14,26 +14,6 @@ export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
  * array from `networks` as a `Network[]` type instead of inferred type
  */
 export const networksCollection: Network[] = Object.values(networks);
-
-/**
- * @deprecated See `networksCompatibility`
- */
-export const getMainnetsCompatible = (debug = false, bnb = false) =>
-    networksCompatibility.filter(
-        n =>
-            !n.accountType &&
-            !n.testnet &&
-            (!n.isDebugOnlyNetwork || debug) &&
-            (bnb || n.symbol !== 'bnb'),
-    );
-
-/**
- * @deprecated See `networksCompatibility`
- */
-export const getTestnetsCompatible = (debug = false) =>
-    networksCompatibility.filter(
-        n => !n.accountType && n.testnet === true && (!n.isDebugOnlyNetwork || debug),
-    );
 
 export const getMainnets = (debug = false, bnb = false) =>
     networksCollection.filter(

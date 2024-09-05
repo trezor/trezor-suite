@@ -26,9 +26,10 @@ import { Account, DiscoveryItem } from '@suite-common/wallet-types';
 import { getDerivationType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import {
     AccountType,
-    NetworkCompatible,
+    Network,
     NetworkSymbol,
     getNetworkType,
+    NetworkAccount,
 } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
@@ -350,15 +351,17 @@ const discoverAccountsByDescriptorThunk = createThunk(
 export const addAndDiscoverNetworkAccountThunk = createThunk<
     Account,
     {
-        network: NetworkCompatible;
+        accountType: AccountType;
+        network: Network;
         deviceState: StaticSessionId;
     },
     { rejectValue: string }
 >(
     `${DISCOVERY_MODULE_PREFIX}/addAndDiscoverNetworkAccountThunk`,
-    async ({ network, deviceState }, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
-        const accountType = network.accountType ?? NORMAL_ACCOUNT_TYPE;
-
+    async (
+        { accountType, network, deviceState },
+        { dispatch, getState, rejectWithValue, fulfillWithValue },
+    ) => {
         const accounts = selectDeviceAccountsForNetworkSymbolAndAccountType(
             getState(),
             network.symbol,
@@ -432,10 +435,12 @@ const discoverNetworkBatchThunk = createThunk(
             deviceState,
             round = 1,
             network,
+            accountType,
         }: {
             deviceState: StaticSessionId;
             round?: number;
-            network: NetworkCompatible;
+            network: Network;
+            accountType: AccountType;
         },
         { dispatch, getState },
     ) => {
@@ -446,15 +451,13 @@ const discoverNetworkBatchThunk = createThunk(
             return;
         }
 
-        const accountType = network.accountType || NORMAL_ACCOUNT_TYPE;
-
         const lastDiscoveredAccountIndex = (round - 1) * batchSize;
 
         // Skip Cardano legacy/ledger account types if device does not support it.
         const isIncompatibleCardanoType =
             network.networkType === 'cardano' &&
-            (network.accountType === 'ledger' || network.accountType === 'legacy') &&
-            !discovery.availableCardanoDerivations?.includes(network.accountType);
+            (accountType === 'ledger' || accountType === 'legacy') &&
+            !discovery.availableCardanoDerivations?.includes(accountType);
 
         if (isIncompatibleCardanoType) {
             dispatch(finishNetworkTypeDiscoveryThunk());
@@ -466,7 +469,7 @@ const discoverNetworkBatchThunk = createThunk(
 
         A.makeWithIndex(batchSize, batchIndex => {
             const isEvmLedgerDerivationPath =
-                network.networkType === 'ethereum' && network.accountType === 'ledger';
+                network.networkType === 'ethereum' && accountType === 'ledger';
             // first Ledger derivation path for EVM networks is the same as trezor, so we need to skip it (consistent with desktop)
             const index =
                 lastDiscoveredAccountIndex + batchIndex + (isEvmLedgerDerivationPath ? 1 : 0);
@@ -499,6 +502,7 @@ const discoverNetworkBatchThunk = createThunk(
                 discoverNetworkBatchThunk({
                     deviceState,
                     network,
+                    accountType,
                     round: round + 1,
                 }),
             );
@@ -530,6 +534,7 @@ const discoverNetworkBatchThunk = createThunk(
                 discoverNetworkBatchThunk({
                     deviceState,
                     network,
+                    accountType,
                     round: round + 1,
                 }),
             );
@@ -548,7 +553,7 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
             availableCardanoDerivations,
         }: {
             deviceState: StaticSessionId;
-            networks: readonly NetworkCompatible[];
+            networks: readonly Network[];
             availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] | undefined;
         },
         { dispatch, getState },
@@ -653,18 +658,11 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
                     }),
                 ).unwrap()) ?? [];
         }
-        const networksFiltered = networksWithUnfinishedDiscovery.filter(
-            network =>
-                network.networkType !== 'cardano' ||
-                (availableCardanoDerivations as string[]).includes(
-                    (network.accountType ?? NORMAL_ACCOUNT_TYPE) as string,
-                ),
-        );
 
         await dispatch(
             createDescriptorPreloadedDiscoveryThunk({
                 deviceState,
-                networks: networksFiltered,
+                networks: networksWithUnfinishedDiscovery,
                 availableCardanoDerivations,
             }),
         );
@@ -675,9 +673,26 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        // Start discovery for every network account type.
-        networksFiltered.forEach(network => {
-            dispatch(discoverNetworkBatchThunk({ deviceState, network }));
+        // Start discovery for every network (normal account)
+        networksWithUnfinishedDiscovery.forEach(network => {
+            dispatch(
+                discoverNetworkBatchThunk({
+                    deviceState,
+                    network,
+                    accountType: NORMAL_ACCOUNT_TYPE,
+                }),
+            );
+
+            // Start discovery for every other account of the network
+            Object.values(network.accountTypes)
+                .filter(
+                    ({ accountType }: NetworkAccount) =>
+                        network.networkType !== 'cardano' ||
+                        (availableCardanoDerivations as string[]).includes(accountType),
+                )
+                .forEach(({ accountType }: NetworkAccount) => {
+                    dispatch(discoverNetworkBatchThunk({ deviceState, network, accountType }));
+                });
         });
     },
 );

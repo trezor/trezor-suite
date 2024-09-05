@@ -122,23 +122,8 @@ export const useAddCoinAccount = () => {
         networkSymbol: NetworkSymbol;
     }) => availableNetworkAccountTypes.get(networkSymbol) ?? [NORMAL_ACCOUNT_TYPE];
 
-    const getNetworkToAdd = ({
-        networkSymbol,
-        accountType,
-    }: {
-        networkSymbol: NetworkSymbol;
-        accountType?: AccountType;
-    }) => {
-        const type = accountType ?? NORMAL_ACCOUNT_TYPE;
-
-        return supportedNetworks.filter(
-            network =>
-                network.symbol === networkSymbol &&
-                (type === NORMAL_ACCOUNT_TYPE
-                    ? network.accountType === undefined
-                    : network.accountType === type),
-        )[0];
-    };
+    const getNetworkToAdd = ({ networkSymbol }: { networkSymbol: NetworkSymbol }) =>
+        supportedNetworks.filter(network => network.symbol === networkSymbol)[0];
 
     const getAccountTypeToBeAddedName = () =>
         networkSymbolWithTypeToBeAdded
@@ -258,7 +243,7 @@ export const useAddCoinAccount = () => {
             return;
         }
 
-        const network = getNetworkToAdd({ networkSymbol, accountType });
+        const network = getNetworkToAdd({ networkSymbol });
 
         //If the account already exists, but is invisible, make it visible
         if (firstHiddenEmptyAccount) {
@@ -275,6 +260,7 @@ export const useAddCoinAccount = () => {
         const newAccountResult = await dispatch(
             addAndDiscoverNetworkAccountThunk({
                 network,
+                accountType,
                 deviceState: device.state,
             }),
         );

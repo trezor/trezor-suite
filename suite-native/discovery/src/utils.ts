@@ -1,24 +1,15 @@
 import { A, F } from '@mobily/ts-belt';
 
-import { NetworkCompatible, AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
-const NORMAL_ACCOUNT_TYPE = 'normal';
-
-// network uses undefined for normal type, but account uses 'normal'
-const normalizedAccountType = (accountType?: AccountType) => accountType ?? NORMAL_ACCOUNT_TYPE;
-
 export const getNetworksWithUnfinishedDiscovery = (
-    enabledNetworks: readonly NetworkCompatible[],
+    enabledNetworks: readonly Network[],
     accounts: Account[],
     accountsLimit: number,
 ) =>
     enabledNetworks.filter(network => {
-        const networkAccountsOfType = accounts.filter(
-            account =>
-                account.symbol === network.symbol &&
-                account.accountType === normalizedAccountType(network.accountType),
-        );
+        const networkAccountsOfType = accounts.filter(({ symbol }) => symbol === network.symbol);
 
         // if there is no account for this network -> we should have at least one account even if added via Add Coin
         // or if there is at least one visible account of this type, we should have at least one hidden account so adding funds outside of this app is detected and account shown
@@ -29,10 +20,5 @@ export const getNetworksWithUnfinishedDiscovery = (
         );
     });
 
-export const getNetworkSymbols = (networks: readonly NetworkCompatible[]): NetworkSymbol[] =>
-    F.toMutable(
-        A.uniqBy(
-            networks.map(n => n.symbol),
-            F.identity,
-        ),
-    );
+export const getNetworkSymbols = (networks: readonly Network[]): NetworkSymbol[] =>
+    F.toMutable(networks.map(n => n.symbol));
