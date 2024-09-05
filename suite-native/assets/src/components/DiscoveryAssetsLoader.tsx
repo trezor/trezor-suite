@@ -32,7 +32,7 @@ export const DiscoveryAssetsLoader = ({ numberOfAssets }: { numberOfAssets: numb
                 <ListItemSkeleton key={i} />
             ))}
 
-            <HStack justifyContent="center">
+            <HStack justifyContent="center" marginBottom="medium">
                 <Icon size="mediumLarge" name="trezor" />
                 <Text variant="callout">{discoveryProgressText}</Text>
             </HStack>
