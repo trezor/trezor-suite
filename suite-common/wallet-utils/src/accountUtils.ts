@@ -1005,17 +1005,16 @@ export const getPendingAccount = ({
     };
 };
 
-export const getNetworkFeatures = ({
-    networkType,
+export const getNetworkAccountFeatures = ({
     symbol,
     accountType,
-}: Pick<Account, 'networkType' | 'symbol' | 'accountType'>) =>
-    networksCompatibility.find(
-        network =>
-            network.networkType === networkType &&
-            network.symbol === symbol &&
-            (network.accountType || 'normal') === accountType,
-    )?.features || [];
+}: Pick<Account, 'symbol' | 'accountType'>): NetworkFeature[] => {
+    const matchedNetwork: Network = networks[symbol];
+
+    return accountType === 'normal'
+        ? matchedNetwork.features
+        : matchedNetwork.accountTypes[accountType]?.features ?? [];
+};
 
 export const hasNetworkFeatures = (
     account: Account | undefined,
@@ -1025,11 +1024,7 @@ export const hasNetworkFeatures = (
         return false;
     }
 
-    const networkFeatures = getNetworkFeatures(account);
-
-    if (!networkFeatures) {
-        return false;
-    }
+    const networkFeatures = getNetworkAccountFeatures(account);
 
     const areFeaturesPresent = ([] as NetworkFeature[])
         .concat(features)
