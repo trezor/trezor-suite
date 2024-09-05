@@ -247,7 +247,6 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                             isLoading={callInProgress}
                             onClick={() => {
                                 if (address) {
-                                    confirmTrade(address);
                                     confirmTrade(address, extraField);
                                 }
                             }}

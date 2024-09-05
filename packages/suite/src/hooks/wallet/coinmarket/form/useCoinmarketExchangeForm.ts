@@ -60,6 +60,7 @@ import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/commo
 import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 export const useCoinmarketExchangeForm = ({
     selectedAccount,
@@ -353,6 +354,13 @@ export const useCoinmarketExchangeForm = ({
     };
 
     const confirmTrade = async (address: string, extraField?: string, trade?: ExchangeTrade) => {
+        analytics.report({
+            type: EventType.CoinmarketConfirmTrade,
+            payload: {
+                type,
+            },
+        });
+
         let ok = false;
         const { address: refundAddress } = getUnusedAddressFromAccount(account);
         if (!trade) {
