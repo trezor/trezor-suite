@@ -224,12 +224,14 @@ describe('Usb', () => {
                         session: null,
                         type: 1,
                         product: 21441,
+                        vendor: 4617,
                     },
                     {
                         path: 'bootloader1',
                         session: null,
                         type: 1,
                         product: 21441,
+                        vendor: 4617,
                     },
                 ],
             });
