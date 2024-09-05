@@ -1,21 +1,17 @@
 import { useMemo } from 'react';
-
 import styled from 'styled-components';
+
 import { Translation, QuestionTooltip, ReadMoreLink } from 'src/components/suite';
 import { AppState } from 'src/types/suite';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
-
 import { Button, Card, variables, H2, Tooltip, GradientOverlay } from '@trezor/components';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
-import {
-    AccountsRootState,
-    selectFailedSecurityChecks,
-    selectIsAccountUtxoBased,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { networks } from '@suite-common/wallet-config';
 import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
 import { spacingsPx, typography } from '@trezor/theme';
+import { selectIsFirmwareRevisionCheckEnabledAndFailed } from 'src/reducers/suite/suiteReducer';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCard = styled(Card)`
@@ -130,7 +126,7 @@ export const FreshAddress = ({
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account?.key ?? ''),
     );
-    const hasFailedSecurityChecks = useSelector(selectFailedSecurityChecks).length > 0;
+    const isRevisionCheckFailed = useSelector(selectIsFirmwareRevisionCheckEnabledAndFailed);
     const dispatch = useDispatch();
 
     const firstFreshAddress = useMemo(() => {
@@ -162,7 +158,7 @@ export const FreshAddress = ({
         if (!firstFreshAddress) {
             return <Translation id="RECEIVE_ADDRESS_LIMIT_REACHED" />;
         }
-        if (hasFailedSecurityChecks) {
+        if (isRevisionCheckFailed) {
             return <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />;
         }
 
@@ -177,7 +173,7 @@ export const FreshAddress = ({
             locked ||
             coinjoinDisallowReveal ||
             !firstFreshAddress ||
-            hasFailedSecurityChecks,
+            isRevisionCheckFailed,
         isLoading: locked,
     };
 

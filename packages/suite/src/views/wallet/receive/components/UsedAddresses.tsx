@@ -5,7 +5,6 @@ import { AccountAddress } from '@trezor/connect';
 import { Card, Button, Column, GradientOverlay, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectFailedSecurityChecks } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 import { Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
@@ -14,6 +13,7 @@ import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { selectIsFirmwareRevisionCheckEnabledAndFailed } from 'src/reducers/suite/suiteReducer';
 
 const GridTable = styled.div`
     display: grid;
@@ -104,14 +104,14 @@ interface ItemProps {
 }
 
 const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
-    const hasFailedSecurityChecks = useSelector(selectFailedSecurityChecks).length > 0;
+    const isRevisionCheckFailed = useSelector(selectIsFirmwareRevisionCheckEnabledAndFailed);
     const [isHovered, setIsHovered] = useState(false);
 
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
     const address = addr.address.substring(0, 20);
-    const isDisabled = locked || hasFailedSecurityChecks;
-    const tooltipContent = hasFailedSecurityChecks ? (
+    const isDisabled = locked || isRevisionCheckFailed;
+    const tooltipContent = isRevisionCheckFailed ? (
         <Translation id="TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED" />
     ) : null;
 

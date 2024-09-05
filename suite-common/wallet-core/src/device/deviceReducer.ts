@@ -3,7 +3,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInstances, getStatus } from '@suite-common/suite-utils';
-import { Device, Features, FirmwareRevisionCheckResult, UI } from '@trezor/connect';
+import { Device, Features, UI } from '@trezor/connect';
 import {
     getFirmwareVersion,
     getFirmwareVersionArray,
@@ -779,19 +779,6 @@ export const selectSelectedDeviceAuthenticity = (state: DeviceRootState) => {
     const deviceAuthenticity = selectDeviceAuthenticity(state);
 
     return device?.id ? deviceAuthenticity?.[device.id] : undefined;
-};
-
-export const selectFailedSecurityChecks = (state: DeviceRootState) => {
-    const device = selectDevice(state);
-
-    return device && 'authenticityChecks' in device && device.authenticityChecks !== undefined
-        ? Object.values(device.authenticityChecks).filter(
-              // If `check` is null, it means that it was not performed yet.
-              // If Suite is offline and we cannot perform check, the error banner shows to urge user to go online.
-              (check): check is FirmwareRevisionCheckResult =>
-                  check?.success === false && check?.error !== 'cannot-perform-check-offline',
-          )
-        : [];
 };
 
 export const selectIsFirmwareRevisionCheckDismissed = (state: DeviceRootState): boolean => {
