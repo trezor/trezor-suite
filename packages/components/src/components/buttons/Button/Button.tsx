@@ -37,7 +37,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'right' && 'row-reverse'};
     gap: ${({ $hasIcon }) => $hasIcon && spacingsPx.xs};
     padding: ${({ $size }) => getPadding($size, true)};
-    width: ${({ $isFullWidth }) => $isFullWidth && '100%'};
+    width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'fit-content')};
     border-radius: ${({ $borderRadius }) => $borderRadius ?? borders.radii.full};
     transition:
         ${focusStyleTransition},
