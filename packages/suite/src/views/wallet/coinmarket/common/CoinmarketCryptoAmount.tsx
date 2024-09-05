@@ -25,6 +25,19 @@ export const CoinmarketCryptoAmount = ({
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const symbol = cryptoIdToCoinSymbol(cryptoId);
 
+    if (!amount || amount === '') {
+        return (
+            <Row alignItems="center">
+                {displayLogo && (
+                    <LogoWrapper>
+                        <CoinmarketCoinLogo cryptoId={cryptoId} margin={{ right: spacings.sm }} />
+                    </LogoWrapper>
+                )}
+                {symbol}
+            </Row>
+        );
+    }
+
     return (
         <CoinmarketTestWrapper data-testid="@coinmarket/form/info/crypto-amount">
             <Row alignItems="center">
