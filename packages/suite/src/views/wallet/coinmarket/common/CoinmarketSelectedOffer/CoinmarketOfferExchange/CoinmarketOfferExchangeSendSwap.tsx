@@ -111,6 +111,10 @@ const StyledInput = styled(Input)`
     }
 `;
 
+const SLIPPAGE_MIN = '0.01';
+const SLIPPAGE_MAX = '50';
+const CUSTOM_SLIPPAGE = 'CUSTOM';
+
 const slippageOptions = [
     {
         label: '0.1%',
@@ -130,12 +134,9 @@ const slippageOptions = [
     },
     {
         label: <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_CUSTOM" />,
-        value: 'CUSTOM',
+        value: CUSTOM_SLIPPAGE,
     },
 ];
-
-const slippageMin = '0.01';
-const slippageMax = '50';
 
 export function formatCryptoAmountAsAmount(
     amount: number,
@@ -158,39 +159,44 @@ export const CoinmarketOfferExchangeSendSwap = () => {
     const { account, callInProgress, selectedQuote, exchangeInfo, confirmTrade, sendTransaction } =
         useCoinmarketFormContext<CoinmarketTradeExchangeType>();
     const [slippageSettings, setSlippageSettings] = useState(false);
-    const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage || '1');
+    const selectedQuoteHelper = { ...selectedQuote };
+    const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
     const [customSlippageError, setCustomSlippageError] = useState<
         (FieldError & { message: TranslationKey }) | undefined
     >();
+
+    // only used for custom slippage
     useDebounce(
         () => {
+            if (slippage !== CUSTOM_SLIPPAGE) return;
+
             if (
-                selectedQuote &&
-                selectedQuote?.dexTx &&
+                selectedQuoteHelper &&
+                selectedQuoteHelper?.dexTx &&
                 !customSlippageError &&
-                customSlippage !== selectedQuote.swapSlippage
+                customSlippage !== selectedQuoteHelper.swapSlippage
             ) {
-                selectedQuote.swapSlippage = customSlippage;
-                selectedQuote.approvalType = undefined;
-                confirmTrade(selectedQuote.dexTx.from);
+                selectedQuoteHelper.swapSlippage = customSlippage;
+                selectedQuoteHelper.approvalType = undefined;
+                confirmTrade(selectedQuoteHelper.dexTx.from, undefined, selectedQuoteHelper);
             }
         },
         500,
         [customSlippage, slippage],
     );
 
-    if (!selectedQuote) return null;
+    if (!selectedQuoteHelper) return null;
 
-    const { exchange, dexTx, receive, receiveStringAmount } = selectedQuote;
+    const { exchange, dexTx, receive, receiveStringAmount } = selectedQuoteHelper;
     if (!exchange || !dexTx) return null;
 
     const providerName =
-        exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuote.exchange;
+        exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuoteHelper.exchange;
 
     const translationValues = {
-        value: selectedQuote.approvalStringAmount,
-        send: selectedQuote.send,
+        value: selectedQuoteHelper.approvalStringAmount,
+        send: selectedQuoteHelper.send,
         provider: providerName,
     };
 
@@ -199,15 +205,16 @@ export const CoinmarketOfferExchangeSendSwap = () => {
         setSlippageSettings(!slippageSettings);
     };
 
-    const selectedSlippage = slippageOptions.find(o => o.value === slippage)?.value || 'CUSTOM';
+    const selectedSlippage =
+        slippageOptions.find(o => o.value === slippage)?.value || CUSTOM_SLIPPAGE;
 
     const changeSlippage = (value: string) => {
         setSlippage(value);
-        if (value !== 'CUSTOM') {
+        if (value !== CUSTOM_SLIPPAGE) {
             setCustomSlippage(value);
-            selectedQuote.swapSlippage = value;
-            selectedQuote.approvalType = undefined;
-            confirmTrade(dexTx.from);
+            selectedQuoteHelper.swapSlippage = value;
+            selectedQuoteHelper.approvalType = undefined;
+            confirmTrade(dexTx.from, undefined, selectedQuoteHelper);
         }
     };
 
@@ -228,7 +235,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                 type: 'error',
                 message: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_NUMBER',
             });
-        } else if (slippage.lt(slippageMin) || slippage.gt(slippageMax)) {
+        } else if (slippage.lt(SLIPPAGE_MIN) || slippage.gt(SLIPPAGE_MAX)) {
             setCustomSlippageError({
                 type: 'error',
                 message: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE',
@@ -272,7 +279,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         </Slippage>
                     </LeftColumn>
                     <RightColumn>
-                        <SlippageAmount>{selectedQuote.swapSlippage}%</SlippageAmount>
+                        <SlippageAmount>{selectedQuoteHelper.swapSlippage}%</SlippageAmount>
                         <SlippageSettingsButton type="button" onClick={toggleSlippage}>
                             <Icon
                                 name={slippageSettings ? 'chevronUp' : 'chevronDown'}
@@ -293,7 +300,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                 onChange={changeSlippage}
                             />
                         </LeftColumn>
-                        {slippage === 'CUSTOM' && (
+                        {slippage === CUSTOM_SLIPPAGE && (
                             <RightColumn>
                                 <StyledInput
                                     value={customSlippage}
@@ -340,7 +347,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         <RightColumn>
                             -
                             {formatCryptoAmountAsAmount(
-                                (Number(selectedQuote.swapSlippage) / 100) *
+                                (Number(selectedQuoteHelper.swapSlippage) / 100) *
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
                             )}{' '}
@@ -355,7 +362,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         </LeftColumn>
                         <RightColumn>
                             {formatCryptoAmountAsAmount(
-                                ((100 - Number(selectedQuote.swapSlippage)) / 100) *
+                                ((100 - Number(selectedQuoteHelper.swapSlippage)) / 100) *
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
                             )}{' '}

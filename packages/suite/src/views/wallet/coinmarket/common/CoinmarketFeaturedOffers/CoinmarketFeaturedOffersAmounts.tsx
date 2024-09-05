@@ -73,7 +73,7 @@ export const CoinmarketFeaturedOffersAmounts = ({
                 toAmount={
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
-                        value={quoteProps.sendAmount}
+                        value={quoteProps.receiveAmount}
                         symbol={cryptoIdToCoinSymbol(quoteProps.receiveCurrency)}
                     />
                 }

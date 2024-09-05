@@ -19,6 +19,8 @@ import {
     FORM_EXCHANGE_CEX,
     FORM_EXCHANGE_DEX,
     FORM_EXCHANGE_TYPE,
+    FORM_RATE_FLOATING,
+    FORM_RATE_TYPE,
 } from 'src/constants/wallet/coinmarket/form';
 import {
     CoinmarketFormOfferSpinnerText,
@@ -95,8 +97,10 @@ export const CoinmarketFormOffersSwitcher = ({
                 <NoOffers>
                     <CoinmarketFormOfferSpinnerWrapper>
                         <Row justifyContent="center" alignItems="center">
-                            <CoinmarketFormOfferSpinnerText $withoutSpinner>
+                            <CoinmarketFormOfferSpinnerText>
                                 <Translation id="TR_COINMARKET_OFFER_NO_FOUND" />
+                                <br />
+                                <Translation id="TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY" />
                             </CoinmarketFormOfferSpinnerText>
                         </Row>
                     </CoinmarketFormOfferSpinnerWrapper>
@@ -125,7 +129,10 @@ export const CoinmarketFormOffersSwitcher = ({
                 <CoinmarketFormOffersSwitcherItem
                     selectedExchangeType={exchangeType}
                     isSelectable={!hasSingleOption}
-                    onSelect={() => setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_DEX)}
+                    onSelect={() => {
+                        setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_DEX);
+                        setValue(FORM_RATE_TYPE, FORM_RATE_FLOATING);
+                    }}
                     providers={providers}
                     quote={dexQuote}
                     isBestRate={bestRatedQuote?.orderId === dexQuote?.orderId}

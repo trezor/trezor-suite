@@ -231,7 +231,7 @@ export interface CoinmarketExchangeFormContextProps
     removeDraft: (key: string) => void;
 
     setExchangeStep: (step: CoinmarketExchangeStepType) => void;
-    confirmTrade: (address: string, extraField?: string) => Promise<boolean>;
+    confirmTrade: (address: string, extraField?: string, trade?: ExchangeTrade) => Promise<boolean>;
     sendTransaction: () => void;
     selectQuote: (quote: ExchangeTrade) => void;
     verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
