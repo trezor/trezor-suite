@@ -19,13 +19,9 @@ const HeaderWrapper = styled.div`
     z-index: 30;
 `;
 
-const ChevronContainer = styled.div`
-    width: ${spacingsPx.xxxl};
-`;
-
 // eslint-disable-next-line local-rules/no-override-ds-component
 const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
-    padding: ${spacingsPx.sm};
+    padding: ${spacingsPx.xs};
     border-radius: 50%;
     transition:
         background 0.2s,
@@ -35,6 +31,7 @@ const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
 
 const Header = styled.header<{ $isOpen: boolean; onClick?: () => void }>`
     display: flex;
+    gap: ${spacingsPx.md};
     padding: ${spacingsPx.xs};
     cursor: ${props => (props.onClick ? 'pointer' : 'default')};
     background-color: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
@@ -119,7 +116,7 @@ export const AccountGroup = forwardRef(
                             onClick={!keepOpen ? onClick : undefined}
                             data-testid={`@account-menu/${type}`}
                         >
-                            <ChevronContainer>
+                            <div>
                                 {!keepOpen && (
                                     <ChevronIcon
                                         data-testid="@account-menu/arrow"
@@ -129,7 +126,7 @@ export const AccountGroup = forwardRef(
                                         name="chevronDown"
                                     />
                                 )}
-                            </ChevronContainer>
+                            </div>
                             <Translation id={heading} />
                         </Header>
                     )}
