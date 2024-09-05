@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions, selectDevice, selectDevices } from '@suite-common/wallet-core';
-import { Column, Icon, H2, Text, Tooltip, useElevation } from '@trezor/components';
+import { useElevation, Button, Column, Icon, H2, Text, Tooltip } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacingsPx, typography } from '@trezor/theme';
 import { TREZOR_RESELLERS_URL, TREZOR_URL } from '@trezor/urls';
 
@@ -19,7 +19,6 @@ import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCh
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { SecurityChecklist } from './SecurityChecklist';
-import { SecurityCheckButton } from './SecurityCheckButton';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
@@ -69,18 +68,8 @@ const Buttons = styled.div<{ $elevation: Elevation }>`
     display: flex;
     flex-wrap: wrap;
     gap: ${spacingsPx.xl};
-    justify-content: space-between;
     padding-top: ${spacingsPx.xl};
     border-top: 2px solid ${mapElevationToBorder};
-    width: 100%;
-`;
-
-const StyledSecurityCheckButton = styled(SecurityCheckButton)`
-    flex-grow: 1;
-`;
-
-const SecurityCheckButtonWithSecondLine = styled(StyledSecurityCheckButton)`
-    flex-direction: column;
 `;
 
 const StyledTrezorLink = styled(TrezorLink)`
@@ -231,27 +220,29 @@ const SecurityCheckContent = ({
                 <SecurityChecklist items={checklistItems} />
             </Column>
             <Buttons $elevation={elevation}>
-                <StyledSecurityCheckButton variant="tertiary" onClick={toggleView}>
+                <Button variant="tertiary" onClick={toggleView}>
                     <Translation id={secondaryButtonText} />
-                </StyledSecurityCheckButton>
+                </Button>
                 {initialized ? (
-                    <StyledSecurityCheckButton
+                    <Button
                         data-testid="@onboarding/exit-app-button"
                         onClick={handleContinueButtonClick}
                     >
                         <Translation id="TR_YES_CONTINUE" />
-                    </StyledSecurityCheckButton>
+                    </Button>
                 ) : (
-                    <SecurityCheckButtonWithSecondLine
+                    <Button
                         onClick={handleSetupButtonClick}
                         data-testid="@analytics/continue-button"
                     >
-                        <Translation id={primaryButtonTopText} />
-                        <TimeEstimateWrapper>
-                            <Icon size={12} name="clock" color={theme.iconOnPrimary} />
-                            <Translation id="TR_TAKES_N_MINUTES" />
-                        </TimeEstimateWrapper>
-                    </SecurityCheckButtonWithSecondLine>
+                        <Column>
+                            <Translation id={primaryButtonTopText} />
+                            <TimeEstimateWrapper>
+                                <Icon size={12} name="clock" color={theme.iconOnPrimary} />
+                                <Translation id="TR_TAKES_N_MINUTES" />
+                            </TimeEstimateWrapper>
+                        </Column>
+                    </Button>
                 )}
             </Buttons>
         </SecurityCheckLayout>

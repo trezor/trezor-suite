@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 
-import { H2, Row, Text, useElevation } from '@trezor/components';
+import { Button, H2, Row, Text, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 import { TREZOR_SUPPORT_FW_CHECK_FAILED } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { SecurityChecklist } from '../../../views/onboarding/steps/SecurityCheck/SecurityChecklist';
-import { SecurityCheckButton } from '../../../views/onboarding/steps/SecurityCheck/SecurityCheckButton';
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 
 const TopSection = styled.div<{ $elevation: Elevation }>`
@@ -19,10 +18,6 @@ const TopSection = styled.div<{ $elevation: Elevation }>`
 const StyledTrezorLink = styled(TrezorLink)`
     /* flex-grow has no effect on a link, display is set to contents so that it can be read from the child */
     display: contents;
-`;
-
-const StyledSecurityCheckButton = styled(SecurityCheckButton)`
-    flex-grow: 1;
 `;
 
 const checklistItems = [
@@ -70,14 +65,14 @@ export const SecurityCheckFail = ({ goBack, useSoftMessaging }: SecurityCheckFai
             <SecurityChecklist items={checklistItems} />
             <Row flexWrap="wrap" gap={spacings.xl} width="100%">
                 {goBack && (
-                    <StyledSecurityCheckButton variant="tertiary" onClick={goBack}>
+                    <Button variant="tertiary" onClick={goBack}>
                         <Translation id="TR_BACK" />
-                    </StyledSecurityCheckButton>
+                    </Button>
                 )}
                 <StyledTrezorLink variant="nostyle" href={supportChatUrl}>
-                    <StyledSecurityCheckButton>
+                    <Button>
                         <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
-                    </StyledSecurityCheckButton>
+                    </Button>
                 </StyledTrezorLink>
             </Row>
         </SecurityCheckLayout>
