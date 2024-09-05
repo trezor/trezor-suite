@@ -9,6 +9,7 @@ import useUnmount from 'react-use/lib/useUnmount';
 import invityAPI from 'src/services/suite/invityAPI';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 // add APPROVED means no approval request is necessary
 type ExtendedDexApprovalType = DexApprovalType | 'APPROVED';
@@ -87,6 +88,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
         sendTransaction,
         setExchangeStep,
     } = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const [approvalType, setApprovalType] = useState<ExtendedDexApprovalType>(
         selectedQuote?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',
     );
@@ -140,13 +142,15 @@ export const CoinmarketOfferExchangeSendApproval = () => {
     const isFullApproval = !(Number(selectedQuote.preapprovedStringAmount) > 0);
     const isToken = selectedQuote.send !== account.symbol.toUpperCase();
 
+    if (!selectedQuote.send) return null;
+
     if (isFullApproval && approvalType === 'ZERO') {
         setApprovalType('MINIMAL');
     }
 
     const translationValues = {
         value: selectedQuote.approvalStringAmount,
-        send: selectedQuote.send,
+        send: cryptoIdToCoinSymbol(selectedQuote.send),
         provider: providerName,
     };
 
