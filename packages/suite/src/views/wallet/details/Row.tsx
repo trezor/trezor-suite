@@ -1,21 +1,19 @@
-import { spacingsPx } from '@trezor/theme';
+import { Row as RowComponent } from '@trezor/components';
 import { ReactNode } from 'react';
-import styled from 'styled-components';
-
-const Container = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: space-between;
-    width: 100%;
-
-    &:not(:first-child) {
-        padding-top: ${spacingsPx.md};
-        border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    }
-`;
+import { spacings } from '@trezor/theme';
 
 interface RowProps {
     children: ReactNode;
 }
 
-export const Row = ({ children }: RowProps) => <Container>{children}</Container>;
+export const Row = ({ children }: RowProps) => (
+    <RowComponent
+        justifyContent="space-between"
+        flex="1"
+        gap={spacings.xxl}
+        hasDivider
+        width="100%"
+    >
+        {children}
+    </RowComponent>
+);

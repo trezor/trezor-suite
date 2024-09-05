@@ -17,9 +17,9 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
-import { Row } from './Row';
 import { networksCompatibility } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
+import { Row } from './Row';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
