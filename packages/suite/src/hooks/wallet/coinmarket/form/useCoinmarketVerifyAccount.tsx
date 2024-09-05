@@ -1,6 +1,5 @@
 import { isDebugOnlyAccountType, Network, networks } from '@suite-common/wallet-config';
 import { selectDevice } from '@suite-common/wallet-core';
-import { CryptoId } from 'invity-api';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -128,7 +127,7 @@ const useCoinmarketVerifyAccount = ({
         CoinmarketVerifyFormAccountOptionProps | undefined
     >();
 
-    const { networkId } = parseCryptoId(currency as CryptoId);
+    const networkId = currency && parseCryptoId(currency).networkId;
     const receiveNetwork = currency && cryptoIdToNetworkSymbol(currency);
     const suiteReceiveAccounts = useMemo(
         () =>
