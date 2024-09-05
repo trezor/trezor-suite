@@ -1,7 +1,13 @@
 import produce from 'immer';
 
-import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/wallet-core';
 import type { InvityServerEnvironment } from '@suite-common/invity';
+import {
+    Feature,
+    MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/wallet-core';
 import { versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
@@ -431,5 +437,29 @@ export const selectSuiteSettings = (state: SuiteRootState) => ({
 export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteRootState) =>
         state.suite.settings.experimental?.includes(feature) ?? false;
+
+export const selectIsFirmwareRevisionCheckEnabledAndFailed = (
+    state: SuiteRootState & DeviceRootState & MessageSystemRootState,
+) => {
+    const { isFirmwareRevisionCheckDisabled } = state.suite.settings;
+    const isFirmwareRevisionCheckDisabledByMessageSystem = selectIsFeatureDisabled(
+        state,
+        Feature.firmwareRevisionCheck,
+    );
+
+    if (isFirmwareRevisionCheckDisabled || isFirmwareRevisionCheckDisabledByMessageSystem) {
+        return false;
+    }
+
+    const device = selectDevice(state);
+
+    return (
+        isDeviceAcquired(device) &&
+        // If `check` is null, it means that it was not performed yet.
+        device.authenticityChecks?.firmwareRevision?.success === false &&
+        // If Suite is offline and we cannot perform check, the error banner shows to urge user to go online.
+        device.authenticityChecks.firmwareRevision.error !== 'cannot-perform-check-offline'
+    );
+};
 
 export default suiteReducer;
