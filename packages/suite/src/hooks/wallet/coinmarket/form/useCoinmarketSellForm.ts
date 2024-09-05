@@ -671,6 +671,7 @@ export const useCoinmarketSellForm = ({
         timer,
         sellStep,
         selectedQuote,
+        shouldSendInSats,
         changeFeeLevel,
         composeRequest,
         setAmountLimits,

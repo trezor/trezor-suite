@@ -333,6 +333,7 @@ export const coinmarketBuildAccountOptions = ({
                 index,
             });
 
+        const accountDecimals = networks[accountSymbol].decimals;
         const options: CoinmarketAccountOptionsGroupOptionProps[] = [
             {
                 value: networks[accountSymbol].coingeckoNativeId as CryptoId,
@@ -341,6 +342,7 @@ export const coinmarketBuildAccountOptions = ({
                 descriptor,
                 balance: formattedBalance ?? '',
                 accountType: account.accountType,
+                decimals: accountDecimals,
             },
         ];
 
@@ -381,6 +383,7 @@ export const coinmarketBuildAccountOptions = ({
                     descriptor,
                     accountType,
                     balance: balance ?? '',
+                    decimals: token.decimals,
                 });
             });
         }

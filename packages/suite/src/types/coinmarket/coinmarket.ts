@@ -198,6 +198,7 @@ export interface CoinmarketBuildAccountOptionsProps extends CoinmarketGetSortedA
 export interface CoinmarketAccountOptionsGroupOptionProps extends CoinmarketCryptoListProps {
     balance: string;
     descriptor: string;
+    decimals: number;
     contractAddress?: string;
     accountType?: AccountType;
 }
