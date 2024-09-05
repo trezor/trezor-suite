@@ -89,23 +89,11 @@ class Controller extends TrezorUserEnvLinkClass {
 
         this.startEmu = !env.USE_HW
             ? this.originalApi.startEmu
-            : env.USE_HW
-              ? () => this.waitForNumberOfDevices(1)
-              : () => {
-                    console.log('todo: ping local emu');
-
-                    return Promise.resolve(null);
-                };
+            : () => this.waitForNumberOfDevices(1);
 
         this.stopEmu = !env.USE_HW
             ? this.originalApi.stopEmu
-            : env.USE_HW
-              ? () => this.waitForNumberOfDevices(0)
-              : () => {
-                    console.log('todo: ping local emu');
-
-                    return Promise.resolve(null);
-                };
+            : () => this.waitForNumberOfDevices(0);
     }
 
     private waitForNumberOfDevices = (expected: number) => {
