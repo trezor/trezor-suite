@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import path from 'path';
 import { app, BrowserWindow } from 'electron';
 
@@ -128,18 +129,38 @@ const init = async () => {
 
     await app.whenReady();
 
-    // No UI mode with bridge only
+    // Load bridge module first, it is required in both UI and daemon mode
+    const { onLoad: loadBridgeModule, onQuit: quitBridgeModule } = initBridgeModule({ store });
+    await loadBridgeModule();
+
+    // Daemon mode with no UI
     const { wasOpenedAtLogin } = app.getLoginItemSettings();
-    if (app.commandLine.hasSwitch('bridge-daemon') || wasOpenedAtLogin) {
+    const daemon = app.commandLine.hasSwitch('bridge-daemon') || wasOpenedAtLogin;
+    if (daemon) {
         logger.info('main', 'App is hidden, starting bridge only');
         app.dock?.hide(); // hide dock icon on macOS
-        app.releaseSingleInstanceLock(); // allow user to open new instance with UI
-        const { onLoad: loadBridgeModule } = initBridgeModule({ store }); // bridge module only needs store
-        await loadBridgeModule();
+        app.once('second-instance', () => {
+            // Initialize the UI when the second instance is opened
+            logger.warn('main', 'Second instance detected, initializing UI');
+            app.dock?.show();
+            initUi({ store, daemon, quitBridgeModule });
+        });
 
         return;
     }
 
+    await initUi({ store, daemon, quitBridgeModule });
+};
+
+const initUi = async ({
+    store,
+    daemon,
+    quitBridgeModule,
+}: {
+    store: Store;
+    daemon: boolean;
+    quitBridgeModule: () => Promise<void>;
+}) => {
     const buildInfo = getBuildInfo();
     logger.info('build', buildInfo);
 
@@ -153,6 +174,9 @@ const init = async () => {
 
     app.on('second-instance', () => {
         // Someone tried to run a second instance, we should focus our window.
+        app.dock?.show();
+        app.show();
+        if (!mainWindow.isVisible()) mainWindow.show();
         if (mainWindow.isMinimized()) mainWindow.restore();
         mainWindow.focus();
     });
@@ -203,12 +227,23 @@ const init = async () => {
     let readyToQuit = false;
     app.on('before-quit', async event => {
         if (readyToQuit) return;
+
+        if (daemon && !mainWindow.isDestroyed() && mainWindow.isClosable() && !app.isHidden()) {
+            // Prevent quitting app when in daemon mode, unless the UI is already closed
+            logger.info('main', 'Preventing app quit in daemon mode');
+            event.preventDefault();
+            app.dock?.hide();
+            mainWindow.close();
+
+            return;
+        }
+
         event.preventDefault();
         logger.info('modules', 'Quitting all modules');
 
         await Promise.race([
             // await quitting all registered modules
-            Promise.allSettled([quitModules(), quitTorModule()]),
+            Promise.allSettled([quitModules(), quitTorModule(), quitBridgeModule()]),
             // or timeout after 5s
             createTimeoutPromise(5000),
         ]);
@@ -217,6 +252,8 @@ const init = async () => {
         logger.info('modules', 'All modules quit, exiting');
         mainWindow.removeAllListeners();
         logger.exit();
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
         readyToQuit = true;
         app.quit();
@@ -229,6 +266,7 @@ const init = async () => {
     // handle hangDetect errors
     if (handshake === 'quit') {
         logger.info('hang-detect', 'Quitting app');
+        readyToQuit = true;
         app.quit();
 
         return;

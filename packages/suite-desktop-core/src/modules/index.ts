@@ -21,7 +21,6 @@ import * as windowControls from './window-controls';
 import * as theme from './theme';
 import * as httpReceiverModule from './http-receiver';
 import * as metadata from './metadata';
-import * as bridge from './bridge';
 import * as customProtocols from './custom-protocols';
 import * as autoUpdater from './auto-updater';
 import * as store from './store';
@@ -52,7 +51,6 @@ const MODULES = [
     theme,
     httpReceiverModule,
     metadata,
-    bridge,
     customProtocols,
     autoUpdater,
     store,
