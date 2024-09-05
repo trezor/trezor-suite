@@ -95,8 +95,10 @@ export const CoinmarketFormOffersSwitcher = ({
                 <NoOffers>
                     <CoinmarketFormOfferSpinnerWrapper>
                         <Row justifyContent="center" alignItems="center">
-                            <CoinmarketFormOfferSpinnerText $withoutSpinner>
+                            <CoinmarketFormOfferSpinnerText>
                                 <Translation id="TR_COINMARKET_OFFER_NO_FOUND" />
+                                <br />
+                                <Translation id="TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY" />
                             </CoinmarketFormOfferSpinnerText>
                         </Row>
                     </CoinmarketFormOfferSpinnerWrapper>

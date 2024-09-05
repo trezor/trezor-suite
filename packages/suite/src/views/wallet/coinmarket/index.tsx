@@ -291,10 +291,9 @@ export const CoinmarketFormOfferSpinnerWrapper = styled.div`
     padding: ${spacingsPx.sm} 0;
 `;
 
-export const CoinmarketFormOfferSpinnerText = styled.div<{ $withoutSpinner?: boolean }>`
-    ${({ $withoutSpinner }) => ($withoutSpinner ? typography.label : typography.hint)}
-    color: ${({ theme, $withoutSpinner }) =>
-        $withoutSpinner ? theme.textDefault : theme.textSubdued};
+export const CoinmarketFormOfferSpinnerText = styled.div`
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
     text-align: center;
 `;
 
