@@ -180,7 +180,7 @@ export const getTitleForNetwork = (symbol: NetworkSymbol) => {
             return 'TR_NETWORK_SOLANA_MAINNET';
         case 'dsol':
             return 'TR_NETWORK_SOLANA_DEVNET';
-        case 'matic':
+        case 'pol':
             return 'TR_NETWORK_POLYGON';
         default:
             return 'TR_NETWORK_UNKNOWN';

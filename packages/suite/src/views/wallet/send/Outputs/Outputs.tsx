@@ -61,8 +61,6 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
         }
     }, [outputs]);
 
-    const isMatic = account.networkType === 'ethereum' && account.symbol === 'matic'; // TODO: POLYGON DEBUG
-
     return (
         <Container $height={height || 0}>
             <div ref={ref}>
@@ -83,7 +81,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                     >
                         <Card
                             label={
-                                isMatic && (
+                                account.networkType === 'ethereum' && (
                                     <StyledEvmExplanation>
                                         <CoinLogo symbol={account.symbol} size={16} />
                                         <Translation

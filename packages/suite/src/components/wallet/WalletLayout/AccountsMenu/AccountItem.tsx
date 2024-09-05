@@ -7,7 +7,6 @@ import {
     Icon,
     Column,
     Row,
-    Paragraph,
     SkeletonRectangle,
     TOOLTIP_DELAY_LONG,
     TruncateWithTooltip,
@@ -111,17 +110,13 @@ export const AccountItem = forwardRef(
 
         const { shouldAnimate } = useLoadingSkeleton();
 
-        const { accountType, index, networkType, symbol } = account;
+        const { accountType, index, symbol } = account;
 
         const accountRouteParams = {
             symbol,
             accountIndex: index,
             accountType,
         };
-
-        const isTokensCountShown =
-            (['cardano', 'solana'].includes(networkType) || account.symbol === 'matic') &&
-            !!tokens?.length;
 
         const getRoute = () => {
             switch (type) {
@@ -140,9 +135,6 @@ export const AccountItem = forwardRef(
                     return (
                         <Column>
                             <CoinLogo size={ICON_SIZE} symbol={symbol} />
-                            {isTokensCountShown && type === 'coin' && (
-                                <Paragraph typographyStyle="label">{tokens?.length}</Paragraph>
-                            )}
                         </Column>
                     );
                 case 'staking':

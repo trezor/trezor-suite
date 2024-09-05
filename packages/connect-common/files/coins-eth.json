@@ -63,14 +63,14 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://matic1.trezor.io", "https://matic2.trezor.io"]
+                "url": ["https://pol1.trezor.io", "https://pol2.trezor.io"]
             },
-            "chain": "matic",
+            "chain": "pol",
             "chain_id": 137,
             "coingecko_id": "polygon-pos",
             "is_testnet": false,
             "name": "Polygon",
-            "shortcut": "MATIC",
+            "shortcut": "POL",
             "slip44": 966,
             "support": {
                 "T1B1": "1.9.4",

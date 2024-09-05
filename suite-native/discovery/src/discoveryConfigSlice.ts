@@ -97,7 +97,7 @@ export const selectDiscoverySupportedNetworks = memoizeWithArgs(
         const allowlist: NetworkSymbol[] = [];
 
         if (isPolygonEnabled) {
-            allowlist.push('matic');
+            allowlist.push('pol');
         }
         if (isBscEnabled) {
             allowlist.push('bnb');
