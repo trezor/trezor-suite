@@ -3,7 +3,6 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import {
     FORM_CRYPTO_CURRENCY_SELECT,
     FORM_CRYPTO_INPUT,
-    FORM_EXCHANGE_DEX,
     FORM_FIAT_INPUT,
     FORM_OUTPUT_AMOUNT,
     FORM_OUTPUT_FIAT,
@@ -143,7 +142,7 @@ export const CoinmarketFormInputs = () => {
             changeFeeLevel,
             shouldSendInSats,
         } = context;
-        const { rateType, sendCryptoSelect, exchangeType, outputs, amountInCrypto } = getValues();
+        const { rateType, sendCryptoSelect, outputs, amountInCrypto } = getValues();
         const output = outputs[0];
         const currencySelect = output.currency;
         const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
@@ -221,9 +220,7 @@ export const CoinmarketFormInputs = () => {
                         changeFeeLevel={changeFeeLevel}
                     />
                 </CoinmarketFeesWrapper>
-                {exchangeType !== FORM_EXCHANGE_DEX && (
-                    <CoinmarketFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
-                )}
+                <CoinmarketFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
             </>
         );
     }
