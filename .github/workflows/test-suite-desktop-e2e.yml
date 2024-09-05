@@ -85,7 +85,7 @@ jobs:
         run: |
           docker compose pull
           docker compose up -d ${{ matrix.CONTAINERS }}
-          docker compose run test-run
+          yarn workspace @trezor/suite-desktop-core test:e2e ${{ env.TEST_FILE }}
 
       - name: cleanup
         env:

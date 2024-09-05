@@ -5,44 +5,10 @@ services:
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
-
-  test-run:
-    environment:
-      - TEST_FILE=$TEST_FILE
-      - HEADLESS=true
-      - CURRENTS_PROJECT_ID=$CURRENTS_PROJECT_ID
-      - CURRENTS_RECORD_KEY=$CURRENTS_RECORD_KEY
-      - CURRENTS_CI_BUILD_ID=$CURRENTS_CI_BUILD_ID
-      - GITHUB_WORKFLOW=$GITHUB_WORKFLOW
-      - GITHUB_ACTION=$GITHUB_ACTION
-      - GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME
-      - GITHUB_RUN_ID=$GITHUB_RUN_ID
-      - GITHUB_RUN_ATTEMPT=$GITHUB_RUN_ATTEMPT
-      - GITHUB_REPOSITORY=$GITHUB_REPOSITORY
-      - COMMIT_INFO_BRANCH=$COMMIT_INFO_BRANCH
-      - COMMIT_INFO_MESSAGE=$COMMIT_INFO_MESSAGE
-      - COMMIT_INFO_EMAIL=$COMMIT_INFO_EMAIL
-      - COMMIT_INFO_AUTHOR=$COMMIT_INFO_AUTHOR
-      - COMMIT_INFO_SHA=$COMMIT_INFO_SHA
-      - COMMIT_INFO_TIMESTAMP=$COMMIT_INFO_TIMESTAMP
-      - COMMIT_INFO_REMOTE=$COMMIT_INFO_REMOTE
-    image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
-    container_name: desktop-test-runner
-    ipc: host
-    network_mode: service:trezor-user-env-unix
-    working_dir: /trezor-suite
-    command: bash -c "yarn workspace @trezor/suite-desktop-core test:e2e $TEST_FILE"
-    volumes:
-      - ../:/trezor-suite
+    network_mode: host
 
   electrum-regtest:
     image: ghcr.io/trezor/electrs:latest
     volumes:
       - ../:/trezor-suite
     network_mode: service:trezor-user-env-unix
-
-  # coinjoin-backend:
-  #   image: ghcr.io/trezor/coinjoin-backend:latest
-  #   network_mode: service:trezor-user-env-unix
-  #   volumes:
-  #     - ../:/coinjoin-backend
