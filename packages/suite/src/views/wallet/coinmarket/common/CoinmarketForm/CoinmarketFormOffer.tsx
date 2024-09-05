@@ -22,7 +22,6 @@ import {
     coinmarketGetAmountLabels,
     coinmarketGetRoundedFiatAmount,
     coinmarketGetSectionActionLabel,
-    cryptoIdToNetwork,
     getBestRatedQuote,
     parseCryptoId,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -33,6 +32,7 @@ import { ExchangeTrade } from 'invity-api';
 import { CoinmarketTradeDetailType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/coinmarket/form';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const CoinmarketFormOfferHeader = styled.div`
     display: flex;
@@ -85,6 +85,7 @@ const getSelectedQuote = (
 const CoinmarketFormOffer = () => {
     const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
     const context = useCoinmarketFormContext();
+    const { cryptoIdToPlatformName } = useCoinmarketInfo();
     const {
         type,
         quotes,
@@ -109,8 +110,8 @@ const CoinmarketFormOffer = () => {
 
     const selectQuote = getSelectQuoteTyped(context);
     const shouldDisplayFiatAmount = isCoinmarketExchangeOffers(context) ? false : amountInCrypto;
-    const { contractAddress } = parseCryptoId(selectedCrypto?.value ?? ('' as CryptoId));
-    const network = selectedCrypto?.value ? cryptoIdToNetwork(selectedCrypto?.value) : undefined;
+    const { networkId, contractAddress } = parseCryptoId(selectedCrypto?.value ?? ('' as CryptoId));
+    const network = selectedCrypto?.value ? cryptoIdToPlatformName(networkId) : undefined;
 
     return (
         <>
@@ -142,7 +143,7 @@ const CoinmarketFormOffer = () => {
                     <Translation
                         id="TR_COINMARKET_ON_NETWORK_CHAIN"
                         values={{
-                            networkName: network.name,
+                            networkName: network,
                         }}
                     />
                 </CoinmarketFormOfferChain>
