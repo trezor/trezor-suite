@@ -1,22 +1,12 @@
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Translation } from 'src/components/suite';
-import { Textarea, Icon, Tooltip, variables } from '@trezor/components';
+import { Textarea, IconButton, Row, Tooltip, variables } from '@trezor/components';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useTranslation } from 'src/hooks/suite';
 import { spacingsPx } from '@trezor/theme';
-
-const Container = styled.div`
-    position: relative;
-`;
-
-const IconWrapper = styled.div`
-    position: absolute;
-    right: 0;
-    top: 0;
-`;
 
 const Inputs = styled.div`
     display: flex;
@@ -92,20 +82,25 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
     });
 
     return (
-        <Container>
-            <Tooltip
-                addon={
-                    <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/op_return.md" />
-                }
-                content={<Translation id="OP_RETURN_TOOLTIP" />}
-                dashed
-            >
-                <Translation id="OP_RETURN_ADD" />
-            </Tooltip>
+        <div>
+            <Row justifyContent="space-between">
+                <Tooltip
+                    addon={
+                        <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/op_return.md" />
+                    }
+                    content={<Translation id="OP_RETURN_TOOLTIP" />}
+                    hasIcon
+                >
+                    <Translation id="OP_RETURN_ADD" />
+                </Tooltip>
 
-            <IconWrapper>
-                <Icon size={20} name="close" onClick={() => removeOpReturn(outputId)} />
-            </IconWrapper>
+                <IconButton
+                    variant="tertiary"
+                    icon="x"
+                    onClick={() => removeOpReturn(outputId)}
+                    size="small"
+                />
+            </Row>
 
             <Inputs>
                 <StyledTextarea
@@ -129,6 +124,6 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                     {...hexField}
                 />
             </Inputs>
-        </Container>
+        </div>
     );
 };
