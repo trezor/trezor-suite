@@ -19,8 +19,6 @@ import {
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 
-import { getNetworkSymbols } from './utils';
-
 type DiscoveryInfo = {
     startTimestamp: number;
     networkSymbols: NetworkSymbol[];
@@ -115,7 +113,7 @@ export const selectDiscoveryNetworkSymbols = memoizeWithArgs(
     ) => {
         const supportedNetworks = selectDiscoverySupportedNetworks(state, forcedAreTestnetsEnabled);
 
-        return getNetworkSymbols(supportedNetworks);
+        return supportedNetworks.map(n => n.symbol);
     },
     { size: 2 },
 );

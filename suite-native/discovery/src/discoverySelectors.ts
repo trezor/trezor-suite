@@ -4,7 +4,7 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     LIMIT as ACCOUNTS_LIMIT,
     AccountsRootState,
@@ -107,6 +107,7 @@ export const selectNetworksWithUnfinishedDiscovery = (
         FeatureFlagsRootState &
         DiscoveryConfigSliceRootState,
     forcedAreTestnetsEnabled?: boolean,
+    availableCardanoDerivations?: AccountType[],
 ) => {
     const enabledNetworkSymbols = selectDeviceEnabledDiscoveryNetworkSymbols(
         state,
@@ -117,7 +118,12 @@ export const selectNetworksWithUnfinishedDiscovery = (
 
     const enabledNetworks = supportedNetworks.filter(n => enabledNetworkSymbols.includes(n.symbol));
 
-    return getNetworksWithUnfinishedDiscovery(enabledNetworks, accounts, ACCOUNTS_LIMIT);
+    return getNetworksWithUnfinishedDiscovery({
+        enabledNetworks,
+        accounts,
+        accountsLimit: ACCOUNTS_LIMIT,
+        availableCardanoDerivations,
+    });
 };
 
 //we should run discovery when there are network symbols with unfinished discovery
