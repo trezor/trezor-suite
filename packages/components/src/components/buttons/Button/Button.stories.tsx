@@ -14,6 +14,9 @@ export default meta;
 export const Button: StoryObj<ButtonProps> = {
     args: {
         children: 'Button label',
+        onClick: () => null,
+        href: undefined,
+        target: undefined,
         variant: 'primary',
         size: 'medium',
         isDisabled: false,
@@ -31,6 +34,12 @@ export const Button: StoryObj<ButtonProps> = {
                     summary: 'ReactNode',
                 },
             },
+        },
+        href: {
+            description: `HTML based href. This creates also anchor from button element.`,
+        },
+        target: {
+            description: `HTML based target. Related only for href attribute.`,
         },
         variant: {
             control: {
