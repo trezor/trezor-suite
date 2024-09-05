@@ -573,7 +573,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                 await this.handle(descriptor, transport);
             }
         }
-        delete this.creatingDevicesDescriptors[path];
     }
 
     private async _takeAndCreateDevice(descriptor: Descriptor, transport: Transport) {
