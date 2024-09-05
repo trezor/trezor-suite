@@ -4,7 +4,7 @@ import { BadgeSize, Row, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor
 import { useCallback } from 'react';
 import { useTranslation } from '../../hooks/suite';
 import { spacings } from '@trezor/theme';
-import { AccountSymbol, AccountType } from '@suite-common/wallet-types';
+import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountTypeBadge } from './AccountTypeBadge';
 
 const TabularNums = styled.span`
@@ -16,7 +16,7 @@ const TabularNums = styled.span`
 export interface AccountLabelProps {
     accountLabel?: string;
     accountType: AccountType;
-    symbol: AccountSymbol;
+    symbol: NetworkSymbol;
     index?: number;
     showAccountTypeBadge?: boolean;
     accountTypeBadgeSize?: BadgeSize;
@@ -32,7 +32,7 @@ export const useAccountLabel = () => {
             index = 0,
         }: {
             accountType: AccountType;
-            symbol: AccountSymbol;
+            symbol: NetworkSymbol;
             index?: number;
         }) => {
             if (accountType === 'coinjoin') {

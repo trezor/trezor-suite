@@ -2,12 +2,12 @@ import { A } from '@mobily/ts-belt';
 
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
+    AccountType,
     NetworkCompatible,
     NetworkSymbol,
     getMainnetsCompatible,
     getTestnetsCompatible,
 } from '@suite-common/wallet-config';
-import { AccountType } from '@suite-common/wallet-types';
 
 export const orderedAccountTypes: AccountType[] = [
     'normal',
