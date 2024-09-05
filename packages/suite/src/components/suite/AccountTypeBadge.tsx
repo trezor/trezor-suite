@@ -1,4 +1,5 @@
-import { AccountType, UppercaseAccountType } from '@suite-common/wallet-types';
+import { UppercaseAccountType } from '@suite-common/wallet-types';
+import { AccountType } from '@suite-common/wallet-config';
 import { toUppercaseType } from '@suite-common/suite-utils';
 import { Badge, BadgeSize } from '@trezor/components';
 import { Translation } from './Translation';

@@ -1,8 +1,4 @@
-import {
-    AccountType as NetworkAccountType,
-    BackendType,
-    NetworkSymbol,
-} from '@suite-common/wallet-config';
+import { AccountType, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountEntityKeys } from '@suite-common/metadata-types';
 import { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
 import {
@@ -91,7 +87,7 @@ export type Account = {
     unlockPath?: PROTO.UnlockPath; // parameter used to unlock SLIP-25/coinjoin keychain
     descriptor: string;
     descriptorChecksum?: string;
-    accountType: NetworkAccountType;
+    accountType: AccountType;
     symbol: NetworkSymbol;
     empty: boolean;
     visible: boolean;
@@ -112,9 +108,6 @@ export type Account = {
     accountLabel?: string;
 } & AccountBackendSpecific &
     AccountNetworkSpecific;
-
-export type AccountType = Account['accountType'];
-export type AccountSymbol = Account['symbol'];
 
 export type UppercaseAccountType = Uppercase<AccountType>;
 
