@@ -1,5 +1,7 @@
+import { CryptoId } from 'invity-api';
 import * as fixtures from '../__fixtures__/exchangeUtils';
 import {
+    coinmarketGetExchangeReceiveCryptoId,
     getAmountLimits,
     getStatusMessage,
     getSuccessQuotesOrdered,
@@ -172,5 +174,27 @@ describe('coinmarket/exchange utils', () => {
         expect(getStatusMessage('KYC')).toBe('TR_EXCHANGE_STATUS_KYC');
         expect(getStatusMessage('ERROR')).toBe('TR_EXCHANGE_STATUS_ERROR');
         expect(getStatusMessage('SUCCESS')).toBe('TR_EXCHANGE_STATUS_SUCCESS');
+    });
+
+    it('coinmarketGetExchangeReceiveCryptoId', () => {
+        // default cryptoId
+        expect(coinmarketGetExchangeReceiveCryptoId('bitcoin' as CryptoId)).toBe('ethereum');
+        expect(coinmarketGetExchangeReceiveCryptoId('litecoin' as CryptoId)).toBe('bitcoin');
+        expect(
+            coinmarketGetExchangeReceiveCryptoId(
+                'ethereum--0x0000000000085d4780b73119b644ae5ecd22b376' as CryptoId,
+            ),
+        ).toBe('bitcoin');
+
+        // already selected
+        expect(
+            coinmarketGetExchangeReceiveCryptoId('bitcoin' as CryptoId, 'bitcoin' as CryptoId),
+        ).toBe('ethereum');
+        expect(
+            coinmarketGetExchangeReceiveCryptoId(
+                'bitcoin' as CryptoId,
+                'ethereum--0x0000000000085d4780b73119b644ae5ecd22b376' as CryptoId,
+            ),
+        ).toBe('ethereum--0x0000000000085d4780b73119b644ae5ecd22b376');
     });
 });
