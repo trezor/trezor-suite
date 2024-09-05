@@ -259,6 +259,10 @@ const useCoinmarketBuyForm = ({
                     paymentMethodsFromQuotes.find(item => item.value === paymentMethodSelected) !==
                     undefined;
                 const limits = getAmountLimits(quoteRequest, quotesDefault); // from all quotes except alternative
+                if (limits && quoteRequest.wantCrypto) {
+                    limits.currency =
+                        cryptoIdToCoinSymbol(quoteRequest.receiveCurrency) ?? limits.currency;
+                }
 
                 setInnerQuotes(quotesSuccess);
                 dispatch(saveQuotes(quotesSuccess));
@@ -283,6 +287,7 @@ const useCoinmarketBuyForm = ({
         [
             timer,
             values.paymentMethod?.value,
+            cryptoIdToCoinSymbol,
             getQuoteRequestData,
             getQuotesRequest,
             getPaymentMethods,
