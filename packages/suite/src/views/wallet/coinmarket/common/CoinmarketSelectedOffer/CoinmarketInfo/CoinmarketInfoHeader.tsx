@@ -3,7 +3,7 @@ import { spacingsPx, typography } from '@trezor/theme';
 import { CryptoId } from 'invity-api';
 import { Translation } from 'src/components/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { cryptoIdToNetwork, parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 import styled from 'styled-components';
 
@@ -22,10 +22,10 @@ interface CoinmarketInfoHeaderProps {
 }
 
 export const CoinmarketInfoHeader = ({ receiveCurrency }: CoinmarketInfoHeaderProps) => {
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const { cryptoIdToCoinSymbol, cryptoIdToPlatformName } = useCoinmarketInfo();
 
     const { networkId, contractAddress } = parseCryptoId(receiveCurrency!);
-    const network = cryptoIdToNetwork(networkId);
+    const network = cryptoIdToPlatformName(networkId);
 
     return (
         <Header>
@@ -37,7 +37,7 @@ export const CoinmarketInfoHeader = ({ receiveCurrency }: CoinmarketInfoHeaderPr
                             id="TR_COINMARKET_TOKEN_NETWORK"
                             values={{
                                 tokenName: cryptoIdToCoinSymbol(receiveCurrency!),
-                                networkName: network.name,
+                                networkName: network,
                             }}
                         />
                     ) : (
