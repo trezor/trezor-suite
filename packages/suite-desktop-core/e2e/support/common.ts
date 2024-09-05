@@ -38,7 +38,11 @@ export const launchSuite = async (params: LaunchSuiteParams = {}) => {
         filesToDelete.forEach(file => {
             // omitting Cache folder it sometimes prevents the deletion and is not necessary to delete for test idempotency
             if (file !== 'Cache') {
-                fse.removeSync(`${localDataDir}/${file}`);
+                try {
+                    fse.removeSync(`${localDataDir}/${file}`);
+                } catch (error) {
+                    // If files does not exist do nothing.
+                }
             }
         });
     }
