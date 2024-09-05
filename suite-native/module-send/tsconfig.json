@@ -39,6 +39,7 @@
         { "path": "../helpers" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../qr-code" },
         { "path": "../settings" },
         { "path": "../toasts" },
         { "path": "../../packages/react-utils" },

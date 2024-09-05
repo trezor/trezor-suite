@@ -1,9 +1,8 @@
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Button } from '@suite-native/atoms';
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 
 import { QrWithLaser } from './QRWithLaser';
-import { networkTypeToTitleMap } from '../screens/ScanQRCodeModalScreen';
 
 type XpubImportSectionProps = {
     onRequestCamera: () => void;
@@ -17,6 +16,14 @@ const iconWrapperStyle = prepareNativeStyle(_ => ({
 const importSectionWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
 }));
+
+export const networkTypeToTitleMap: Record<NetworkType, string> = {
+    bitcoin: 'Scan public key (XPUB)',
+    cardano: 'Scan public key (XPUB)',
+    ethereum: 'Scan receive address',
+    ripple: 'Scan receive address',
+    solana: 'Scan receive address',
+};
 
 export const XpubImportSection = ({ onRequestCamera, networkSymbol }: XpubImportSectionProps) => {
     const { applyStyle } = useNativeStyles();

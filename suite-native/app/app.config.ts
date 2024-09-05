@@ -75,9 +75,20 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         [
-            'expo-barcode-scanner',
+            'expo-camera',
             {
                 cameraPermission: 'Allow $(PRODUCT_NAME) to access camera for QR code scanning.',
+                microphonePermission: false,
+                recordAudioAndroid: false,
+            },
+        ],
+        [
+            'expo-image-picker',
+            {
+                photosPermission:
+                    'Allow $(PRODUCT_NAME) to access your photos to let you import QR code images.',
+                microphonePermission: false,
+                cameraPermission: false,
             },
         ],
         [

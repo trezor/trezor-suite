@@ -93,9 +93,13 @@ jest.mock('expo-constants', () => {
                                     name: 'expo-font',
                                     version: '12.0.6',
                                 },
-                                'expo-barcode-scanner': {
-                                    name: 'expo-barcode-scanner',
-                                    version: '13.0.1',
+                                'expo-camera': {
+                                    name: 'expo-camera',
+                                    version: '15.0.15',
+                                },
+                                'expo-image-picker': {
+                                    name: 'expo-image-picker',
+                                    version: '15.0.15',
                                 },
                             },
                             isDebug: false,
@@ -156,10 +160,17 @@ jest.mock('expo-constants', () => {
                                 },
                             ],
                             [
-                                'expo-barcode-scanner',
+                                'expo-camera',
                                 {
                                     cameraPermission:
                                         'Allow $(PRODUCT_NAME) to access camera for QR code scanning.',
+                                },
+                            ],
+                            [
+                                'expo-image-picker',
+                                {
+                                    photosPermission:
+                                        'Allow $(PRODUCT_NAME) to access your photos to let you import QR code images.',
                                 },
                             ],
                             [
@@ -247,9 +258,13 @@ jest.mock('expo-constants', () => {
                             name: 'expo-font',
                             version: '12.0.6',
                         },
-                        'expo-barcode-scanner': {
-                            name: 'expo-barcode-scanner',
-                            version: '13.0.1',
+                        'expo-camera': {
+                            name: 'expo-camera',
+                            version: '15.0.15',
+                        },
+                        'expo-image-picker': {
+                            name: 'expo-image-picker',
+                            version: '15.0.15',
                         },
                     },
                     isDebug: false,
@@ -310,10 +325,17 @@ jest.mock('expo-constants', () => {
                         },
                     ],
                     [
-                        'expo-barcode-scanner',
+                        'expo-camera',
                         {
                             cameraPermission:
                                 'Allow $(PRODUCT_NAME) to access camera for QR code scanning.',
+                        },
+                    ],
+                    [
+                        'expo-image-picker',
+                        {
+                            photosPermission:
+                                'Allow $(PRODUCT_NAME) to access your photos to let you import QR code images.',
                         },
                     ],
                     [

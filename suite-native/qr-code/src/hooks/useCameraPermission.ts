@@ -1,61 +1,39 @@
-import { useCallback, useEffect, useState } from 'react';
-import { AppState, Linking } from 'react-native';
+import { useEffect, useState } from 'react';
+import { AppState } from 'react-native';
 
-import { useFocusEffect } from '@react-navigation/core';
-import { BarCodeScanner, PermissionStatus } from 'expo-barcode-scanner';
+import { Camera, PermissionStatus } from 'expo-camera';
 
 export const useCameraPermission = () => {
-    const [cameraPermissionStatus, setCameraPermissionStatus] = useState<PermissionStatus>(
+    const [cameraPermissionStatus, setCameraPermissionStatus] = useState(
         PermissionStatus.UNDETERMINED,
     );
 
-    const checkCameraPermissionStatus = useCallback(async () => {
-        const { status } = await BarCodeScanner.getPermissionsAsync();
-        setCameraPermissionStatus(status);
+    useEffect(() => {
+        const invokeCameraPermissionDialog = async () => {
+            const { status } = await Camera.requestCameraPermissionsAsync();
+            setCameraPermissionStatus(status);
+        };
 
-        return status;
+        invokeCameraPermissionDialog();
     }, []);
 
     useEffect(() => {
         // When we go back from settings we need to check if the permission was granted.
-        const subscription = AppState.addEventListener('change', nextAppState => {
+        const subscription = AppState.addEventListener('change', async nextAppState => {
             if (nextAppState === 'active') {
-                checkCameraPermissionStatus();
+                // `getCameraPermissionsAsync` has to be called instead of `requestCameraPermissionsAsync`!
+                // `requestCameraPermissionsAsync` is triggering system dialog which changes the AppState to background and causes infinite loop of this event listener.
+                const { status } = await Camera.getCameraPermissionsAsync();
+                setCameraPermissionStatus(status);
             }
         });
 
         return () => {
             subscription.remove();
         };
-    }, [checkCameraPermissionStatus]);
-
-    useFocusEffect(() => {
-        const getBarCodeScannerPermissions = async () => {
-            const { status } = await BarCodeScanner.getPermissionsAsync();
-
-            setCameraPermissionStatus(status);
-
-            if (status === PermissionStatus.UNDETERMINED) {
-                await BarCodeScanner.requestPermissionsAsync();
-                checkCameraPermissionStatus();
-            }
-        };
-
-        getBarCodeScannerPermissions();
-    });
-
-    const requestCameraPermission = useCallback(async () => {
-        const status = await checkCameraPermissionStatus();
-        if (status === PermissionStatus.UNDETERMINED) {
-            await BarCodeScanner.requestPermissionsAsync();
-        } else if (status === PermissionStatus.DENIED) {
-            await Linking.openSettings();
-        }
-        checkCameraPermissionStatus();
-    }, [checkCameraPermissionStatus]);
+    }, []);
 
     return {
         cameraPermissionStatus,
-        requestCameraPermission,
     };
 };
