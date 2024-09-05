@@ -336,29 +336,6 @@ export const useCoinmarketExchangeForm = ({
         },
     });
 
-    const getQuotes = useCallback(async () => {
-        if (!selectedQuote && quotesRequest) {
-            timer.loading();
-            invityAPI.createInvityAPIKey(account.descriptor);
-            const allQuotes = await invityAPI.getExchangeQuotes(quotesRequest);
-            if (Array.isArray(allQuotes)) {
-                if (allQuotes.length === 0) {
-                    timer.stop();
-
-                    return;
-                }
-                const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
-                    getSuccessQuotesOrdered(allQuotes),
-                    'exchange',
-                );
-                setInnerQuotes(successQuotes);
-            } else {
-                setInnerQuotes(undefined);
-            }
-            timer.reset();
-        }
-    }, [account.descriptor, quotesRequest, selectedQuote, timer]);
-
     const selectQuote = async (quote: ExchangeTrade) => {
         const provider =
             exchangeInfo?.providerInfos && quote.exchange
@@ -595,7 +572,7 @@ export const useCoinmarketExchangeForm = ({
             return;
         }
 
-        checkQuotesTimer(getQuotes);
+        checkQuotesTimer(handleChange);
     });
 
     useEffect(() => {
