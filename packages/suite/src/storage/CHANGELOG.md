@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 47
+
+-   migrate matic to pol
+
 ## 46
 
 -   added `tokenManagement`
