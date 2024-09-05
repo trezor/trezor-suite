@@ -15,6 +15,9 @@ type TooltipSymbolProps = {
     className?: string;
 };
 
+/**
+ * @deprecated Use Tooltip hasIcon prop.
+ */
 const TooltipSymbol = ({
     content,
     icon = 'question',

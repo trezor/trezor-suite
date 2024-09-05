@@ -109,6 +109,16 @@ export const Tooltip: StoryObj<TooltipProps> = {
         hasArrow: {
             type: 'boolean',
         },
+        hasIcon: {
+            type: 'boolean',
+            control: 'boolean',
+        },
+        dashed: {
+            type: 'boolean',
+        },
+        isInline: {
+            type: 'boolean',
+        },
         maxWidth: {
             type: 'number',
         },
