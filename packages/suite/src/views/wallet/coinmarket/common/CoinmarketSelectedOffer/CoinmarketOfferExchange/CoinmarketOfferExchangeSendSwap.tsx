@@ -11,6 +11,7 @@ import { spacingsPx } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { getInputStateTextColor } from '@trezor/components';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
 const Wrapper = styled.div`
     display: flex;
@@ -158,6 +159,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
     const theme = useTheme();
     const { account, callInProgress, selectedQuote, exchangeInfo, confirmTrade, sendTransaction } =
         useCoinmarketFormContext<CoinmarketTradeExchangeType>();
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const [slippageSettings, setSlippageSettings] = useState(false);
     const selectedQuoteHelper = { ...selectedQuote };
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
@@ -189,14 +191,14 @@ export const CoinmarketOfferExchangeSendSwap = () => {
     if (!selectedQuoteHelper) return null;
 
     const { exchange, dexTx, receive, receiveStringAmount } = selectedQuoteHelper;
-    if (!exchange || !dexTx) return null;
+    if (!exchange || !dexTx || !receive) return null;
 
     const providerName =
         exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuoteHelper.exchange;
 
     const translationValues = {
         value: selectedQuoteHelper.approvalStringAmount,
-        send: selectedQuoteHelper.send,
+        send: cryptoIdToCoinSymbol(selectedQuoteHelper.send!),
         provider: providerName,
     };
 
@@ -337,7 +339,10 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                     <Columns>
                         <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED" />
                         <RightColumn>
-                            <FormattedCryptoAmount value={receiveStringAmount} symbol={receive} />
+                            <FormattedCryptoAmount
+                                value={receiveStringAmount}
+                                symbol={cryptoIdToCoinSymbol(receive)}
+                            />
                         </RightColumn>
                     </Columns>
                 </PaddedValue>
@@ -351,7 +356,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
                             )}{' '}
-                            {receive}
+                            {cryptoIdToCoinSymbol(receive)}
                         </RightColumn>
                     </Columns>
                 </PaddedValue>
@@ -366,7 +371,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
                             )}{' '}
-                            {receive}
+                            {cryptoIdToCoinSymbol(receive)}
                         </RightColumn>
                     </Columns>
                 </PaddedValue>
