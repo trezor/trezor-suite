@@ -31,6 +31,7 @@ export const init: Module = ({ mainWindow }) => {
                 mainWindow.once('leave-full-screen', () => mainWindow.hide());
                 mainWindow.setFullScreen(false);
             } else {
+                mainWindow.hide();
                 app.hide();
             }
         });

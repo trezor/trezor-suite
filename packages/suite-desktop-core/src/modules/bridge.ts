@@ -192,6 +192,7 @@ const load = async (bridge: BridgeInterface, store: Dependencies['store']) => {
 
 type BridgeModule = ({ store }: Pick<Dependencies, 'store'>) => {
     onLoad: () => void;
+    onQuit: () => Promise<void>;
 };
 
 export const init: BridgeModule = ({ store }) => {
