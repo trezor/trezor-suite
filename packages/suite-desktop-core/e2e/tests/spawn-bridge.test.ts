@@ -12,7 +12,7 @@ testPlaywright.describe.serial('Bridge', () => {
     testPlaywright(
         `App spawns bundled bridge version ${expectedBridgeVersion} and stops it after app quit`,
         async ({ request }) => {
-            const isBridgeRunning = async (expected: boolean) => {
+            const isBridgeRunning = (expected: boolean) => {
                 return request
                     .post('http://127.0.0.1:21325/', {
                         headers: {
@@ -38,7 +38,7 @@ testPlaywright.describe.serial('Bridge', () => {
             };
 
             await TrezorUserEnvLink.stopBridge();
-            const suite = await launchSuite({ startExternalBridge: false });
+            const suite = await launchSuite();
             await suite.window.title();
 
             await waitForDataTestSelector(suite.window, '@welcome/title');
@@ -62,7 +62,7 @@ testPlaywright.describe.serial('Bridge', () => {
         async () => {
             await TrezorUserEnvLink.startEmu({ wipe: true, version: '2-latest', model: 'T2T1' });
             await TrezorUserEnvLink.setupEmu({});
-            const suite = await launchSuite({ startExternalBridge: true });
+            const suite = await launchSuite();
             await suite.window.title();
             await waitForDataTestSelector(suite.window, '@welcome/title');
             await onDashboardPage.passThroughInitialRun(suite.window);
