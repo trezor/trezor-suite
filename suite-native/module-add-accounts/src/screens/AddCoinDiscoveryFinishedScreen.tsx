@@ -97,7 +97,11 @@ export const AddCoinDiscoveryFinishedScreen = ({ route }) => {
                     textColor="textSubdued"
                 />
                 <Box paddingTop="small" paddingHorizontal="medium">
-                    <Button colorScheme="tertiaryElevation0" onPress={handleAddAccount}>
+                    <Button
+                        colorScheme="tertiaryElevation0"
+                        onPress={handleAddAccount}
+                        testID="@add-account/after-discovery/button-add-new"
+                    >
                         <Translation id="moduleAddAccounts.coinDiscoveryFinishedScreen.addNewButton" />
                     </Button>
                 </Box>

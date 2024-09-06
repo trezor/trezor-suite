@@ -119,6 +119,7 @@ export const NetworkSymbolSwitchItem = ({
                 onPress={_ => handleEnabledChange(!isEnabled)}
                 accessibilityRole="togglebutton"
                 activeOpacity={0.6}
+                testID={`@coin-enabling/toggle-${networkSymbol}`}
             >
                 <HStack style={applyStyle(wrapperStyle)}>
                     <View style={applyStyle(iconWrapperStyle)}>
