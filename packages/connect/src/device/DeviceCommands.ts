@@ -20,14 +20,14 @@ import { resolveDescriptorForTaproot } from './resolveDescriptorForTaproot';
 
 type MessageType = Messages.MessageType;
 type MessageKey = keyof MessageType;
-export type TypedResponseMessage<T extends MessageKey> = {
+export type TypedPayload<T extends MessageKey> = {
     type: T;
     message: MessageType[T];
 };
 type TypedCallResponseMap = {
-    [K in keyof MessageType]: TypedResponseMessage<K>;
+    [K in keyof MessageType]: TypedPayload<K>;
 };
-type DefaultMessageResponse = TypedCallResponseMap[keyof MessageType];
+type DefaultPayloadMessage = TypedCallResponseMap[keyof MessageType];
 
 export type PassphrasePromptResponse = {
     passphrase?: string;
@@ -37,7 +37,7 @@ export type PassphrasePromptResponse = {
 
 const logger = initLog('DeviceCommands');
 
-const assertType = (res: DefaultMessageResponse, resType: MessageKey | MessageKey[]) => {
+const assertType = (res: DefaultPayloadMessage, resType: MessageKey | MessageKey[]) => {
     const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
     if (!splitResTypes.includes(res.type)) {
         throw ERRORS.TypedError(
@@ -314,8 +314,8 @@ export class DeviceCommands {
     // Sends an async message to the opened device.
     private async call(
         type: MessageKey,
-        msg: DefaultMessageResponse['message'] = {},
-    ): Promise<DefaultMessageResponse> {
+        msg: DefaultPayloadMessage['message'] = {},
+    ): Promise<DefaultPayloadMessage> {
         logger.debug('Sending', type, filterForLog(type, msg));
 
         this.callPromise = this.transport.call({
@@ -353,11 +353,11 @@ export class DeviceCommands {
         type: T,
         resType: R,
         msg?: MessageType[T],
-    ): Promise<TypedResponseMessage<R>>;
+    ): Promise<TypedPayload<R>>;
     async typedCall(
         type: MessageKey,
         resType: MessageKey | MessageKey[],
-        msg?: DefaultMessageResponse['message'],
+        msg?: DefaultPayloadMessage['message'],
     ) {
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
@@ -382,7 +382,7 @@ export class DeviceCommands {
         return response;
     }
 
-    async _commonCall(type: MessageKey, msg?: DefaultMessageResponse['message']) {
+    async _commonCall(type: MessageKey, msg?: DefaultPayloadMessage['message']) {
         const resp = await this.call(type, msg);
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
@@ -391,7 +391,7 @@ export class DeviceCommands {
         return this._filterCommonTypes(resp);
     }
 
-    _filterCommonTypes(res: DefaultMessageResponse): Promise<DefaultMessageResponse> {
+    _filterCommonTypes(res: DefaultPayloadMessage): Promise<DefaultPayloadMessage> {
         this._cancelableRequestBySend = false;
 
         if (res.type === 'Failure') {
