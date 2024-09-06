@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { Button, Spinner, Radio, variables, Paragraph } from '@trezor/components';
@@ -89,14 +89,15 @@ export const CoinmarketOfferExchangeSendApproval = () => {
         setExchangeStep,
     } = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const selectQuoteHelper = useMemo(() => ({ ...selectedQuote }), [selectedQuote]);
     const [approvalType, setApprovalType] = useState<ExtendedDexApprovalType>(
-        selectedQuote?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',
+        selectQuoteHelper?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',
     );
 
     // watch the trade if transaction in confirmation
     const [refreshCount, setRefreshCount] = useState(0);
     const invokeRefresh = () => {
-        if (shouldRefresh(selectedQuote)) {
+        if (shouldRefresh(selectQuoteHelper)) {
             setRefreshCount(prevValue => prevValue + 1);
         }
     };
@@ -105,21 +106,21 @@ export const CoinmarketOfferExchangeSendApproval = () => {
         cancelRefresh();
     });
     useEffect(() => {
-        if (selectedQuote && shouldRefresh(selectedQuote)) {
+        if (selectQuoteHelper && shouldRefresh(selectQuoteHelper)) {
             const watchTradeAsync = async () => {
                 cancelRefresh();
                 const response = await invityAPI.watchTrade<'exchange'>(
-                    selectedQuote,
+                    selectQuoteHelper,
                     'exchange',
                     refreshCount,
                 );
 
-                if (response.status && response.status !== selectedQuote.status) {
-                    selectedQuote.status = response.status;
-                    selectedQuote.error = response.error;
-                    selectedQuote.approvalType = undefined;
-                    if (selectedQuote.dexTx) {
-                        confirmTrade(selectedQuote.dexTx.from);
+                if (response.status && response.status !== selectQuoteHelper.status) {
+                    selectQuoteHelper.status = response.status;
+                    selectQuoteHelper.error = response.error;
+                    selectQuoteHelper.approvalType = undefined;
+                    if (selectQuoteHelper.dexTx) {
+                        confirmTrade(selectQuoteHelper.dexTx.from, undefined, selectQuoteHelper);
                     }
                 }
                 resetRefresh();
@@ -127,38 +128,38 @@ export const CoinmarketOfferExchangeSendApproval = () => {
 
             watchTradeAsync();
         }
-    }, [cancelRefresh, confirmTrade, refreshCount, resetRefresh, selectedQuote]);
+    }, [cancelRefresh, confirmTrade, refreshCount, resetRefresh, selectQuoteHelper]);
 
     const { navigateToExchangeForm } = useCoinmarketNavigation(account);
 
-    if (!selectedQuote) return null;
+    if (!selectQuoteHelper) return null;
 
-    const { exchange, dexTx } = selectedQuote;
+    const { exchange, dexTx } = selectQuoteHelper;
     if (!exchange || !dexTx) return null;
 
     const providerName =
-        exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuote.exchange;
+        exchangeInfo?.providerInfos[exchange]?.companyName || selectQuoteHelper.exchange;
 
-    const isFullApproval = !(Number(selectedQuote.preapprovedStringAmount) > 0);
-    const isToken = selectedQuote.send !== account.symbol.toUpperCase();
+    const isFullApproval = !(Number(selectQuoteHelper.preapprovedStringAmount) > 0);
+    const isToken = selectQuoteHelper.send !== account.symbol.toUpperCase();
 
-    if (!selectedQuote.send) return null;
+    if (!selectQuoteHelper.send) return null;
 
     if (isFullApproval && approvalType === 'ZERO') {
         setApprovalType('MINIMAL');
     }
 
     const translationValues = {
-        value: selectedQuote.approvalStringAmount,
-        send: cryptoIdToCoinSymbol(selectedQuote.send),
+        value: selectQuoteHelper.approvalStringAmount,
+        send: cryptoIdToCoinSymbol(selectQuoteHelper.send),
         provider: providerName,
     };
 
     const selectApprovalValue = (type: ExtendedDexApprovalType) => {
         setApprovalType(type);
         if (type !== 'APPROVED') {
-            selectedQuote.approvalType = type;
-            confirmTrade(dexTx.from);
+            selectQuoteHelper.approvalType = type;
+            confirmTrade(dexTx.from, undefined, selectQuoteHelper);
         }
     };
 
@@ -188,17 +189,17 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                 </Value>
             </Row>
 
-            {selectedQuote.approvalSendTxHash && (
+            {selectQuoteHelper.approvalSendTxHash && (
                 <Row>
                     <LabelText>
                         <Translation id="TR_EXCHANGE_APPROVAL_TXID" />
                     </LabelText>
                     <Value>
-                        <Address>{selectedQuote.approvalSendTxHash}</Address>
+                        <Address>{selectQuoteHelper.approvalSendTxHash}</Address>
                     </Value>
                 </Row>
             )}
-            {selectedQuote.status === 'APPROVAL_PENDING' && (
+            {selectQuoteHelper.status === 'APPROVAL_PENDING' && (
                 <LoaderWrapper>
                     <Spinner />
                     <Title>
@@ -206,7 +207,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                     </Title>
                 </LoaderWrapper>
             )}
-            {selectedQuote.status === 'ERROR' && (
+            {selectQuoteHelper.status === 'ERROR' && (
                 <ErrorWrapper>
                     <Title>
                         <Translation id="TR_EXCHANGE_APPROVAL_FAILED" />
@@ -214,12 +215,13 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                 </ErrorWrapper>
             )}
 
-            {(selectedQuote.status === 'APPROVAL_REQ' || selectedQuote.status === 'CONFIRM') && (
+            {(selectQuoteHelper.status === 'APPROVAL_REQ' ||
+                selectQuoteHelper.status === 'CONFIRM') && (
                 <Row>
                     <LabelText>
                         <Translation id="TR_EXCHANGE_APPROVAL_VALUE" />
                     </LabelText>
-                    {selectedQuote.status === 'APPROVAL_REQ' && (
+                    {selectQuoteHelper.status === 'APPROVAL_REQ' && (
                         <>
                             <Value>
                                 <Radio
@@ -267,7 +269,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                             </Value>
                         </>
                     )}
-                    {selectedQuote.status !== 'APPROVAL_REQ' && (
+                    {selectQuoteHelper.status !== 'APPROVAL_REQ' && (
                         <Value>
                             <Radio
                                 isChecked={approvalType === 'APPROVED'}
@@ -281,10 +283,10 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                                                 values={translationValues}
                                             />
                                         )}
-                                        {isToken && selectedQuote.approvalSendTxHash && (
+                                        {isToken && selectQuoteHelper.approvalSendTxHash && (
                                             <Translation id="TR_EXCHANGE_APPROVAL_SUCCESS" />
                                         )}
-                                        {isToken && !selectedQuote.approvalSendTxHash && (
+                                        {isToken && !selectQuoteHelper.approvalSendTxHash && (
                                             <Translation id="TR_EXCHANGE_APPROVAL_PREAPPROVED" />
                                         )}
                                     </Paragraph>
@@ -321,7 +323,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                 </Row>
             )}
 
-            {dexTx.data && (selectedQuote.status !== 'CONFIRM' || approvalType === 'ZERO') && (
+            {dexTx.data && (selectQuoteHelper.status !== 'CONFIRM' || approvalType === 'ZERO') && (
                 <Row>
                     <LabelText>
                         <Translation id="TR_EXCHANGE_APPROVAL_DATA" />
@@ -332,8 +334,8 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                 </Row>
             )}
 
-            {(selectedQuote.status === 'APPROVAL_REQ' ||
-                (selectedQuote.status === 'CONFIRM' && approvalType === 'ZERO')) && (
+            {(selectQuoteHelper.status === 'APPROVAL_REQ' ||
+                (selectQuoteHelper.status === 'CONFIRM' && approvalType === 'ZERO')) && (
                 <ButtonWrapper>
                     <Button
                         isLoading={callInProgress}
@@ -345,16 +347,23 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                 </ButtonWrapper>
             )}
 
-            {selectedQuote.status === 'CONFIRM' && approvalType !== 'ZERO' && (
+            {selectQuoteHelper.status === 'CONFIRM' && approvalType !== 'ZERO' && (
                 <ButtonWrapper>
                     <Button
                         isLoading={callInProgress}
                         isDisabled={callInProgress}
                         onClick={async () => {
                             // if the last step was change in approval, we have to recompute the swap request
-                            if (selectedQuote.approvalType) {
-                                selectedQuote.approvalType = undefined;
-                                if (!(await confirmTrade(dexTx.from))) {
+                            if (selectQuoteHelper.approvalType) {
+                                selectQuoteHelper.approvalType = undefined;
+
+                                const confirmedTrade = await confirmTrade(
+                                    dexTx.from,
+                                    undefined,
+                                    selectQuoteHelper,
+                                );
+
+                                if (!confirmedTrade) {
                                     return;
                                 }
                             }
@@ -366,7 +375,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
                 </ButtonWrapper>
             )}
 
-            {selectedQuote.status === 'ERROR' && (
+            {selectQuoteHelper.status === 'ERROR' && (
                 <ButtonWrapper>
                     <Button onClick={navigateToExchangeForm}>
                         <Translation id="TR_EXCHANGE_DETAIL_ERROR_BUTTON" />
