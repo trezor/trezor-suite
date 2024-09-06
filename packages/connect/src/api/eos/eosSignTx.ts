@@ -6,7 +6,7 @@ import type {
     EosTxAction as $EosTxAction,
     EosAuthorization as $EosAuthorization,
 } from '../../types/api/eos';
-import type { TypedCall, TypedResponseMessage } from '../../device/DeviceCommands';
+import type { TypedCall } from '../../device/DeviceCommands';
 
 type Action = $EosTxAction; // | $EosActionCommon & { name: string; data: string };
 
@@ -361,7 +361,8 @@ const processTxRequest = async (
 ): Promise<PROTO.EosSignedTx> => {
     const action = actions[index];
     const lastOp = index + 1 >= actions.length;
-    let ack: TypedResponseMessage<'EosTxActionRequest'>;
+    let ack: { type: 'EosTxActionRequest'; message: PROTO.EosTxActionRequest };
+
     const requestedDataSize = message.data_size;
 
     if (action.unknown) {

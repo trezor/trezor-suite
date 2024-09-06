@@ -20,7 +20,7 @@ import { resolveDescriptorForTaproot } from './resolveDescriptorForTaproot';
 
 type MessageType = Messages.MessageType;
 type MessageKey = keyof MessageType;
-export type TypedPayload<T extends MessageKey> = {
+type TypedPayload<T extends MessageKey> = {
     type: T;
     message: MessageType[T];
 };
