@@ -331,4 +331,22 @@ describe('bridge', () => {
 
         expect(eventSpy).toHaveBeenCalledTimes(2);
     });
+
+    // todo: is it expected?
+    test(`enumerate - listen - no transport-update event`, async () => {
+        const eventSpy = jest.fn();
+        bridge1.on('transport-update', eventSpy);
+
+        await TrezorUserEnvLink.startEmu(emulatorStartOpts);
+        expect(eventSpy).toHaveBeenCalledTimes(0);
+
+        await bridge1.enumerate().promise;
+        expect(eventSpy).toHaveBeenCalledTimes(0);
+
+        bridge1.listen();
+        await wait(); // wait a little for potential events
+
+        /// this is flaky at least for node-bridge + hw!!!! sometimes 1 sometimes 0
+        expect(eventSpy).toHaveBeenCalledTimes(1);
+    });
 });
