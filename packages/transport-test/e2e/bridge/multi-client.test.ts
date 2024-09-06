@@ -248,12 +248,11 @@ describe('bridge', () => {
                 bridge1.once('transport-update', resolve);
             });
 
-        TrezorUserEnvLink.startEmu(emulatorStartOpts);
-        await waitForUpdateEvent();
+        await Promise.all([TrezorUserEnvLink.startEmu(emulatorStartOpts), waitForUpdateEvent()]);
         expect(eventSpy).toHaveBeenCalledTimes(1);
 
-        TrezorUserEnvLink.stopEmu();
-        await waitForUpdateEvent();
+        await Promise.all([TrezorUserEnvLink.stopEmu(), waitForUpdateEvent()]);
+
         expect(eventSpy).toHaveBeenCalledTimes(2);
     });
 });
