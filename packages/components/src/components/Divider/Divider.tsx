@@ -1,8 +1,14 @@
 import styled from 'styled-components';
 import { Color, Elevation, mapElevationToBorder, spacings } from '@trezor/theme';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
+import { allowedHeadingFrameProps } from '../typography/Heading/Heading';
 
 export const allowedDividerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedDividerFrameProps)[number]>;
@@ -41,20 +47,25 @@ const Line = styled.div<
 `;
 
 export const Divider = ({
-    margin = { top: spacings.md, bottom: spacings.md },
     strokeWidth = 1,
     color,
     orientation = 'horizontal',
+    ...rest
 }: DividerProps) => {
     const { elevation } = useElevation();
+
+    const frameProps = pickAndPrepareFrameProps(
+        { ...rest, margin: rest.margin ?? { top: spacings.md, bottom: spacings.md } },
+        allowedHeadingFrameProps,
+    );
 
     return (
         <Line
             $elevation={elevation}
-            $margin={margin}
             $color={color}
             $strokeWidth={strokeWidth}
             $orientation={orientation}
+            {...frameProps}
         />
     );
 };

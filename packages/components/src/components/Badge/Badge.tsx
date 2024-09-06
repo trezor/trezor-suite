@@ -3,7 +3,12 @@ import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 import { borders, Color, CSSColor, spacings, spacingsPx, typography } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
 import type { UISize, UIVariant } from '../../config/types';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 import { Icon, IconName } from '../Icon/Icon';
 
@@ -80,8 +85,6 @@ const mapVariantToPadding = ({ $size }: { $size: BadgeSize }): string => {
 };
 
 const Container = styled.div<BadgeContainerProps>`
-    ${withFrameProps}
-
     display: ${({ $inline }) => ($inline ? 'inline-flex' : 'flex')};
     align-items: center;
     gap: ${spacingsPx.xxs};
@@ -105,6 +108,8 @@ const Container = styled.div<BadgeContainerProps>`
                 box-shadow: 0 0 0 1px ${theme.borderAlertRed};
             }
         `}
+
+    ${withFrameProps}
 `;
 
 const Content = styled.span<{ $isDisabled: boolean; $variant: BadgeVariant; $size: BadgeSize }>`
@@ -123,9 +128,10 @@ export const Badge = ({
     className,
     children,
     inline,
-    margin,
+    ...rest
 }: BadgeProps) => {
     const theme = useTheme();
+    const frameProps = pickAndPrepareFrameProps(rest, allowedBadgeFrameProps);
 
     return (
         <Container
@@ -134,8 +140,8 @@ export const Badge = ({
             $hasAlert={!!hasAlert}
             $onElevation={!!onElevation}
             className={className}
-            $margin={margin}
             $inline={inline === true}
+            {...frameProps}
         >
             {icon && (
                 <Icon

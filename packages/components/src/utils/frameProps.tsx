@@ -47,7 +47,7 @@ const getValueWithUnit = (value: string | number) =>
 
 export const pickAndPrepareFrameProps = (
     props: Record<string, any>,
-    allowedFrameProps: Array<string>,
+    allowedFrameProps: Array<FramePropsKeys>,
 ) =>
     makePropsTransient(
         allowedFrameProps.reduce((acc, item) => ({ ...acc, [item]: props[item] }), {}),

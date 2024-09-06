@@ -9,7 +9,12 @@ import {
 import { borders, spacingsPx } from '@trezor/theme';
 import { TransientProps } from '../../utils/transientProps';
 import { ReactNode } from 'react';
-import { FramePropsKeys, FrameProps, withFrameProps } from '../../utils/frameProps';
+import {
+    FramePropsKeys,
+    FrameProps,
+    withFrameProps,
+    pickAndPrepareFrameProps,
+} from '../../utils/frameProps';
 
 export const allowedComponentWithSubIconFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedComponentWithSubIconFrameProps)[number]>;
@@ -49,12 +54,13 @@ export const ComponentWithSubIcon = ({
     color,
     children,
     subIconProps,
-    margin,
+    ...rest
 }: ComponentWithSubIconProps) => {
     const theme = useTheme();
+    const frameProps = pickAndPrepareFrameProps(rest, allowedComponentWithSubIconFrameProps);
 
     if (subIconProps === undefined) {
-        return <Container $margin={margin}>{children}</Container>;
+        return <Container {...frameProps}>{children}</Container>;
     }
 
     const backgroundIconColor = getColorForIconVariant({
@@ -72,7 +78,7 @@ export const ComponentWithSubIcon = ({
     const subIconSize = getIconSize(subIconProps.size ?? 12);
 
     return (
-        <Container $margin={margin}>
+        <Container {...frameProps}>
             {children}
             <SubIconWrapper
                 $color={backgroundIconColor}

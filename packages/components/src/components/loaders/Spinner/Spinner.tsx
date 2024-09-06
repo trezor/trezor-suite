@@ -5,7 +5,12 @@ import animationStart from './animationData/refresh-spinner-start.json';
 import animationMiddle from './animationData/refresh-spinner-middle.json';
 import animationEnd from './animationData/refresh-spinner-end-success.json';
 import animationWarn from './animationData/refresh-spinner-end-warning.json';
-import { withFrameProps, FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import {
+    withFrameProps,
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+} from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
 
 export const allowedSpinnerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -42,8 +47,10 @@ export const Spinner = ({
     hasError,
     className,
     'data-testid': dataTest,
-    margin,
+    ...rest
 }: SpinnerProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedSpinnerFrameProps);
+
     const [hasStarted, setHasStarted] = useState(false);
     const [hasFinishedRotation, setHasFinishedRotation] = useState(false);
 
@@ -85,9 +92,9 @@ export const Spinner = ({
             size={size}
             $isGrey={isGrey}
             className={className}
-            $margin={margin}
             {...getProps()}
             data-testid={dataTest ? dataTest : `@spinner`}
+            {...frameProps}
         />
     );
 };

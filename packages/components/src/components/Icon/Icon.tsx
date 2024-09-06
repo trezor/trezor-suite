@@ -10,8 +10,13 @@ import { icons, IconName as IconNameNew } from '@suite-common/icons';
 import { CSSColor, Color } from '@trezor/theme';
 
 import { UIVariant } from '../../config/types';
-import { makePropsTransient, TransientProps } from '../../utils/transientProps';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
 
 export const iconVariants = [
     'primary',
@@ -163,8 +168,7 @@ export const Icon = forwardRef(
             'data-testid': dataTest,
             cursorPointer,
             hoverColor,
-            margin,
-            pointerEvents,
+            ...rest
         }: IconProps,
         ref?: Ref<HTMLDivElement>,
     ) => {
@@ -189,22 +193,19 @@ export const Icon = forwardRef(
             e.stopPropagation();
         };
 
-        const frameProps = {
-            margin,
-            pointerEvents,
-        };
+        const frameProps = pickAndPrepareFrameProps(rest, allowedIconFrameProps);
 
         return (
             <SvgWrapper
                 $cursorPointer={cursorPointer}
                 $hoverColor={hoverColor}
-                {...makePropsTransient(frameProps)}
                 $color={color}
                 $variant={variant}
                 data-testid={dataTest}
                 onClick={onClick ? handleClick : undefined}
                 className={className}
                 ref={ref}
+                {...frameProps}
             >
                 <SVG
                     tabIndex={onClick ? 0 : undefined}

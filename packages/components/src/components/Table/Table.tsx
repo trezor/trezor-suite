@@ -7,7 +7,12 @@ import { TableHeader } from './TableHeader';
 import { TableCell, TableCellProps } from './TableCell';
 import { TableRow } from './TableRow';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
 export const allowedTableFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -28,10 +33,15 @@ interface TableProps {
     children: ReactNode;
 }
 
-export const Table = ({ children }: TableProps) => {
+export const Table = ({ children, ...rest }: TableProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedTableFrameProps);
     const { elevation } = useElevation();
 
-    return <Container $elevation={elevation}>{children}</Container>;
+    return (
+        <Container $elevation={elevation} {...frameProps}>
+            {children}
+        </Container>
+    );
 };
 
 Table.Row = TableRow;

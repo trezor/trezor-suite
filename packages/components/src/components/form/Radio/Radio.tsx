@@ -13,9 +13,10 @@ import {
     HiddenInput,
     CheckContainer,
     AllowedCheckboxFrameProps,
+    allowedCheckboxFrameProps,
 } from '../Checkbox/Checkbox';
 import { UIVariant } from '../../../config/types';
-import { makePropsTransient } from '../../../utils/transientProps';
+import { pickAndPrepareFrameProps } from '../../../utils/frameProps';
 
 interface VariantStyles {
     borderChecked: Color;
@@ -123,7 +124,7 @@ export const Radio = ({
     onClick,
     'data-testid': dataTest,
     children,
-    margin,
+    ...rest
 }: RadioProps) => {
     const handleKeyUp = (event: KeyboardEvent<HTMLElement>) => {
         if (
@@ -134,9 +135,7 @@ export const Radio = ({
         }
     };
 
-    const frameProps = {
-        margin,
-    };
+    const frameProps = pickAndPrepareFrameProps(rest, allowedCheckboxFrameProps);
 
     return (
         <Container
@@ -147,7 +146,7 @@ export const Radio = ({
             $verticalAlignment={verticalAlignment}
             data-checked={isChecked}
             data-testid={dataTest}
-            {...makePropsTransient(frameProps)}
+            {...frameProps}
         >
             <HiddenInput
                 type="radio"

@@ -12,7 +12,12 @@ import {
 import { Icon } from '../Icon/Icon';
 import { motionEasing } from '../../config/motion';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
 export const allowedCollapsibleBoxFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -206,12 +211,13 @@ const CollapsibleBoxContent = ({
     fillType = 'default',
     hasDivider = true,
     children,
-    margin,
     className,
     onAnimationComplete,
     'data-testid': dataTest,
+    ...rest
 }: CollapsibleBoxContentProps) => {
     const { elevation } = useElevation();
+    const frameProps = pickAndPrepareFrameProps(rest, allowedCollapsibleBoxFrameProps);
 
     const handleHeaderClick = useCallback(
         (e: MouseEvent<HTMLDivElement>) => {
@@ -273,7 +279,7 @@ const CollapsibleBoxContent = ({
     );
 
     const containerProps = {
-        $margin: margin,
+        ...frameProps,
         'data-testid': dataTest,
         className,
     };

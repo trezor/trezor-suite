@@ -2,8 +2,13 @@ import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { makePropsTransient, TransientProps } from '../../utils/transientProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
 import { AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
 
 export const paddingTypes = ['small', 'none', 'normal', 'large'] as const;
@@ -15,8 +20,12 @@ type MapArgs = {
 
 export const allowedCardFrameProps = [
     'margin',
+    'width',
     'maxWidth',
     'minWidth',
+    'height',
+    'minHeight',
+    'maxHeight',
     'overflow',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]>;
@@ -130,25 +139,20 @@ const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: Padd
 );
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ paddingType = 'normal', label, margin, maxWidth, minWidth, ...rest }, ref) => {
+    ({ paddingType = 'normal', label, ...rest }, ref) => {
         const props = {
             paddingType,
             ...rest,
         };
-
-        const frameProps = {
-            margin,
-            maxWidth,
-            minWidth,
-        };
+        const frameProps = pickAndPrepareFrameProps(rest, allowedCardFrameProps);
 
         return label ? (
-            <Container {...makePropsTransient(frameProps)}>
+            <Container {...frameProps}>
                 <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
                 <CardComponent {...props} ref={ref} />
             </Container>
         ) : (
-            <CardComponent {...props} {...makePropsTransient(frameProps)} ref={ref} />
+            <CardComponent {...props} {...frameProps} ref={ref} />
         );
     },
 );

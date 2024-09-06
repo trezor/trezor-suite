@@ -1,7 +1,12 @@
 import React from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 import { CSSColor, Color, typography, TypographyStyle } from '@trezor/theme';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 import { UIVariant } from '../../../config/types';
 
@@ -64,16 +69,20 @@ export const Paragraph = ({
     className,
     typographyStyle = 'body',
     'data-testid': dataTest,
-    margin,
-    maxWidth,
     children,
     variant,
-}: ParagraphProps) => (
-    <P
-        className={className}
-        {...makePropsTransient({ margin, maxWidth, variant, typographyStyle })}
-        data-testid={dataTest}
-    >
-        {children}
-    </P>
-);
+    ...rest
+}: ParagraphProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedParagraphFrameProps);
+
+    return (
+        <P
+            className={className}
+            data-testid={dataTest}
+            {...makePropsTransient({ variant, typographyStyle })}
+            {...frameProps}
+        >
+            {children}
+        </P>
+    );
+};
