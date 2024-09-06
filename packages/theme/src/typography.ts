@@ -22,14 +22,12 @@ type TypographyStyleDefinition = {
     fontSize: number;
     lineHeight: number;
     fontWeight: FontWeightValue;
-    letterSpacing: number;
     fontFamily?: string;
 };
 
 export type NativeTypographyStyleDefinition = {
     fontSize: number;
     lineHeight: number;
-    letterSpacing: number;
     fontFamily: string;
 };
 
@@ -42,49 +40,41 @@ export const typographyStylesBase: Record<TypographyStyle, TypographyStyleDefini
         fontSize: 48,
         lineHeight: 53,
         fontWeight: fontWeights.medium,
-        letterSpacing: 0.4,
     },
     titleMedium: {
         fontSize: 34,
         lineHeight: 37,
         fontWeight: fontWeights.medium,
-        letterSpacing: -1.4,
     },
     titleSmall: {
         fontSize: 22,
         lineHeight: 32,
         fontWeight: fontWeights.medium,
-        letterSpacing: -0.3,
     },
     highlight: {
         fontSize: 16,
         lineHeight: 24,
         fontWeight: fontWeights.semiBold,
-        letterSpacing: -0.4,
     },
     body: {
         fontSize: 16,
         lineHeight: 24,
         fontWeight: fontWeights.medium,
-        letterSpacing: -0.4,
     },
     callout: {
         fontSize: 14,
         lineHeight: 20,
         fontWeight: fontWeights.semiBold,
-        letterSpacing: -0.3,
     },
     hint: {
         fontSize: 14,
         lineHeight: 20,
         fontWeight: fontWeights.medium,
-        letterSpacing: -0.3,
     },
     label: {
         fontSize: 12,
         lineHeight: 18,
         fontWeight: fontWeights.medium,
-        letterSpacing: -0.1,
     },
 };
 
@@ -107,7 +97,6 @@ const prepareTypography = (): TypographyStyles =>
             font-size: ${value.fontSize}px;
             line-height: ${value.lineHeight}px;
             font-weight: ${value.fontWeight};
-            letter-spacing: ${value.letterSpacing}px;
             `,
         ]),
     ) as TypographyStyles;

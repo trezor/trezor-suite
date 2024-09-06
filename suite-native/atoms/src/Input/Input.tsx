@@ -128,9 +128,6 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
 const inputStyle = prepareNativeStyle<InputStyleProps>(
     (utils, { isLabelDisplayed, isLeftIconDisplayed, isRightIconDisplayed, isDisabled }) => ({
         ...utils.typography.body,
-        // letterSpacing from `typography.body` is making strange layout jumps on Android while filling the input.
-        // This resets it to the default TextInput value.
-        letterSpacing: 0,
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: INPUT_TEXT_HEIGHT,
