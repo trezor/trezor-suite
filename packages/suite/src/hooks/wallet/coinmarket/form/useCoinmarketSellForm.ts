@@ -201,24 +201,17 @@ export const useCoinmarketSellForm = ({
         },
     });
 
-    const getQuotesRequest = useCallback(
-        async (request: SellFiatTradeQuoteRequest) => {
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
+    const getQuotesRequest = useCallback(async (request: SellFiatTradeQuoteRequest) => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
 
-            abortControllerRef.current = new AbortController();
-            invityAPI.createInvityAPIKey(account.descriptor);
+        abortControllerRef.current = new AbortController();
 
-            const allQuotes = await invityAPI.getSellQuotes(
-                request,
-                abortControllerRef.current.signal,
-            );
+        const allQuotes = await invityAPI.getSellQuotes(request, abortControllerRef.current.signal);
 
-            return allQuotes;
-        },
-        [account.descriptor],
-    );
+        return allQuotes;
+    }, []);
 
     const getQuoteRequestData = useCallback((): SellFiatTradeQuoteRequest | null => {
         const { outputs, countrySelect, sendCryptoSelect, amountInCrypto } = methods.getValues();
