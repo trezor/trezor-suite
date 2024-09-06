@@ -88,6 +88,7 @@ export const AccountItemsGroup = ({
                         formattedBalance={stakingBalance}
                         isGroup
                         isGroupSelected={selected}
+                        dataTestKey={`${dataTestKey}/staking`}
                     />
                 </Wrapper>
             )}
@@ -103,6 +104,7 @@ export const AccountItemsGroup = ({
                         isGroupSelected={selected}
                         customFiatValue={tokensFiatBalance}
                         tokens={tokens}
+                        dataTestKey={`${dataTestKey}/tokens`}
                     />
                 </Wrapper>
             )}
