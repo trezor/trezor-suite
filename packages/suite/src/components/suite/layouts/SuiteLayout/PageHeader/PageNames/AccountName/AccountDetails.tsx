@@ -101,6 +101,8 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
             <AccountHeading $isBalanceShown={isBalanceShown}>
                 <MetadataLabeling
                     accountType={accountType}
+                    networkType={selectedAccount.networkType}
+                    path={path}
                     defaultVisibleValue={
                         <AccountLabel
                             showAccountTypeBadge
@@ -108,6 +110,8 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                             accountType={accountType}
                             symbol={selectedAccount.symbol}
                             index={index}
+                            path={path}
+                            networkType={selectedAccount.networkType}
                         />
                     }
                     payload={{

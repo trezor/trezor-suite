@@ -6,6 +6,7 @@ import { useTranslation } from '../../hooks/suite';
 import { spacings } from '@trezor/theme';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountTypeBadge } from './AccountTypeBadge';
+import { Bip43Path, NetworkType } from '@suite-common/wallet-config';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;
@@ -20,6 +21,8 @@ export interface AccountLabelProps {
     index?: number;
     showAccountTypeBadge?: boolean;
     accountTypeBadgeSize?: BadgeSize;
+    path?: Bip43Path;
+    networkType?: NetworkType;
 }
 
 export const useAccountLabel = () => {
@@ -55,6 +58,8 @@ export const useAccountLabel = () => {
 export const AccountLabel = ({
     accountLabel,
     accountType = 'normal',
+    path,
+    networkType,
     showAccountTypeBadge,
     accountTypeBadgeSize = 'medium',
     symbol,
@@ -68,7 +73,12 @@ export const AccountLabel = ({
                 <Row gap={spacings.sm}>
                     <TabularNums>{accountLabel}</TabularNums>
                     {showAccountTypeBadge && (
-                        <AccountTypeBadge accountType={accountType} size={accountTypeBadgeSize} />
+                        <AccountTypeBadge
+                            accountType={accountType}
+                            size={accountTypeBadgeSize}
+                            path={path}
+                            networkType={networkType}
+                        />
                     )}
                 </Row>
             </TruncateWithTooltip>
@@ -80,7 +90,12 @@ export const AccountLabel = ({
             <Row gap={spacings.sm}>
                 {defaultAccountLabelString({ accountType, symbol, index })}
                 {showAccountTypeBadge && (
-                    <AccountTypeBadge accountType={accountType} size={accountTypeBadgeSize} />
+                    <AccountTypeBadge
+                        accountType={accountType}
+                        size={accountTypeBadgeSize}
+                        path={path}
+                        networkType={networkType}
+                    />
                 )}
             </Row>
         </TruncateWithTooltip>
