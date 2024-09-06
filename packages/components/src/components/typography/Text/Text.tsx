@@ -3,13 +3,21 @@ import { UIVariant } from '../../../config/types';
 import { CSSColor, Color, Colors, TypographyStyle } from '@trezor/theme';
 import { ReactNode } from 'react';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../../utils/frameProps';
 import { TextPropsKeys, TextWrap, withTextProps, TextProps as TextPropsCommon } from '../utils';
 
-export const allowedTextTextProps: TextPropsKeys[] = ['typographyStyle', 'textWrap'];
+export const allowedTextTextProps = [
+    'typographyStyle',
+    'textWrap',
+] as const satisfies TextPropsKeys[];
 type AllowedTextTextProps = Pick<TextPropsCommon, (typeof allowedTextTextProps)[number]>;
 
-export const allowedTextFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedTextFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextFrameProps)[number]>;
 
 export type TextVariant =
@@ -72,14 +80,17 @@ export const Text = ({
     children,
     className,
     typographyStyle,
-    margin,
     textWrap,
+    ...rest
 }: TextProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedTextFrameProps);
+
     return (
         <StyledText
             {...(variant !== undefined ? { $variant: variant } : { $color: color })}
             className={className}
-            {...makePropsTransient({ margin, typographyStyle, textWrap })}
+            {...makePropsTransient({ typographyStyle, textWrap })}
+            {...frameProps}
         >
             {children}
         </StyledText>

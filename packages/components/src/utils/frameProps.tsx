@@ -1,5 +1,5 @@
 import { css } from 'styled-components';
-import { TransientProps } from './transientProps';
+import { makePropsTransient, TransientProps } from './transientProps';
 import { SpacingValues } from '@trezor/theme';
 
 type Margin = {
@@ -45,11 +45,21 @@ type TransientFrameProps = TransientProps<FrameProps>;
 const getValueWithUnit = (value: string | number) =>
     typeof value === 'string' ? value : `${value}px`;
 
+export const pickAndPrepareFrameProps = (
+    props: Record<string, any>,
+    allowedFrameProps: Array<FramePropsKeys>,
+) =>
+    makePropsTransient(
+        allowedFrameProps.reduce((acc, item) => ({ ...acc, [item]: props[item] }), {}),
+    );
+
 export const withFrameProps = ({
     $margin,
+    $minWidth,
     $maxWidth,
     $height,
     $width,
+    $minHeight,
     $maxHeight,
     $overflow,
     $pointerEvents,
@@ -63,9 +73,17 @@ export const withFrameProps = ({
             ${$margin.right ? `margin-right: ${$margin.right}px;` : ''}
         `}
 
+        ${$minWidth &&
+        css`
+            min-width: ${getValueWithUnit($minWidth)};
+        `};
         ${$maxWidth &&
         css`
             max-width: ${getValueWithUnit($maxWidth)};
+        `};
+        ${$minHeight &&
+        css`
+            min-height: ${getValueWithUnit($minHeight)};
         `};
         ${$maxHeight &&
         css`

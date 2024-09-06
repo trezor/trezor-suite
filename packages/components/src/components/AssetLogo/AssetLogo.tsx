@@ -1,16 +1,21 @@
 import styled from 'styled-components';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
 import { useEffect, useState } from 'react';
 import { borders } from '@trezor/theme';
 import { AssetInitials } from './AssetInitials';
-import { makePropsTransient, TransientProps } from '../../utils/transientProps';
+import { TransientProps } from '../../utils/transientProps';
 
 const ICONS_URL_BASE = 'https://data.trezor.io/suite/icons/coins/';
 
 export const allowedAssetLogoSizes = [20, 24];
 type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
 
-export const allowedAssetLogoFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedAssetLogoFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedAssetLogoFrameProps)[number]>;
 
 export type AssetLogoProps = AllowedFrameProps & {
@@ -48,17 +53,15 @@ export const AssetLogo = ({
     contractAddress,
     shouldTryToFetch = true,
     placeholder,
-    margin,
     'data-testid': dataTest,
+    ...rest
 }: AssetLogoProps) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isPlaceholder, setIsPlaceholder] = useState(false);
     const fileName = contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
     const logoUrl = getAssetLogoUrl(fileName);
 
-    const frameProps = {
-        margin,
-    };
+    const frameProps = pickAndPrepareFrameProps(rest, allowedAssetLogoFrameProps);
 
     const handleLoad = () => {
         setIsLoading(false);
@@ -72,7 +75,7 @@ export const AssetLogo = ({
     }, [shouldTryToFetch]);
 
     return (
-        <Container $size={size} {...makePropsTransient(frameProps)}>
+        <Container $size={size} {...frameProps}>
             {isPlaceholder && <AssetInitials size={size}>{placeholder}</AssetInitials>}
             {!isPlaceholder && (
                 <Logo

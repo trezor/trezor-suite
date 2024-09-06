@@ -1,11 +1,20 @@
 import { Elevation, mapElevationToBorder, SpacingValues } from '@trezor/theme';
 import styled, { css, DefaultTheme } from 'styled-components';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import React from 'react';
 
-export const allowedFlexFrameProps: FramePropsKeys[] = ['margin', 'width', 'height'];
+export const allowedFlexFrameProps = [
+    'margin',
+    'width',
+    'height',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedFlexFrameProps)[number]>;
 
 export const flexDirection = ['column', 'row'] as const;
@@ -142,21 +151,15 @@ const Flex = ({
     alignItems = 'center',
     children,
     direction = 'row',
-    margin,
     flex = 'initial',
     flexWrap = 'nowrap',
     isReversed = false,
     className,
-    width,
-    height,
     hasDivider = false,
     dividerColor,
+    ...rest
 }: FlexProps) => {
-    const frameProps = {
-        margin,
-        width,
-        height,
-    };
+    const frameProps = pickAndPrepareFrameProps(rest, allowedFlexFrameProps);
 
     const { elevation } = useElevation();
 
@@ -164,7 +167,6 @@ const Flex = ({
         <Container
             className={className}
             {...makePropsTransient({
-                ...frameProps,
                 gap,
                 justifyContent,
                 alignItems,
@@ -176,6 +178,7 @@ const Flex = ({
                 dividerColor,
                 elevation,
             })}
+            {...frameProps}
         >
             {children}
         </Container>

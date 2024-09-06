@@ -5,11 +5,16 @@ import { borders, Color, spacingsPx, typography } from '@trezor/theme';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { getFocusShadowStyle } from '../../../utils/utils';
 import { UIHorizontalAlignment, UIVerticalAlignment, UIVariant } from '../../../config/types';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
-import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../../utils/frameProps';
+import { TransientProps } from '../../../utils/transientProps';
 import { Icon } from '../../Icon/Icon';
 
-export const allowedCheckboxFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedCheckboxFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 export type AllowedCheckboxFrameProps = Pick<
     FrameProps,
     (typeof allowedCheckboxFrameProps)[number]
@@ -184,7 +189,7 @@ export const Checkbox = ({
     'data-testid': dataTest,
     className,
     children,
-    margin,
+    ...rest
 }: CheckboxProps) => {
     const theme = useTheme();
 
@@ -197,9 +202,7 @@ export const Checkbox = ({
         }
     };
 
-    const frameProps = {
-        margin,
-    };
+    const frameProps = pickAndPrepareFrameProps(rest, allowedCheckboxFrameProps);
 
     return (
         <Container
@@ -210,7 +213,7 @@ export const Checkbox = ({
             onKeyUp={handleKeyUp}
             data-testid={dataTest}
             className={className}
-            {...makePropsTransient(frameProps)}
+            {...frameProps}
         >
             <HiddenInput
                 checked={isChecked}

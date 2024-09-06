@@ -1,14 +1,19 @@
 import styled from 'styled-components';
 
 import { Color } from '@trezor/theme';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 import { TextProps as TextPropsCommon, TextPropsKeys, withTextProps } from '../utils';
 
 export const allowedHeadingTextProps: TextPropsKeys[] = ['typographyStyle', 'textWrap'];
 type AllowedHeadingTextProps = Pick<TextPropsCommon, (typeof allowedHeadingTextProps)[number]>;
 
-export const allowedHeadingFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedHeadingFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedHeadingFrameProps)[number]>;
 
 type Align = 'left' | 'center' | 'right';
@@ -36,26 +41,77 @@ type HProps = AllowedFrameProps &
         'data-testid'?: string;
     };
 
-export const H1 = ({ margin, color, align, typographyStyle = 'titleLarge', ...props }: HProps) => (
-    <Heading
-        as="h1"
-        {...makePropsTransient({ margin, color, align, typographyStyle })}
-        {...props}
-    />
-);
+export const H1 = ({
+    color,
+    align,
+    typographyStyle = 'titleLarge',
+    textWrap,
+    onClick,
+    'data-testid': dataTest,
+    children,
+    ...rest
+}: HProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
 
-export const H2 = ({ margin, color, align, typographyStyle = 'titleMedium', ...props }: HProps) => (
-    <Heading
-        as="h2"
-        {...makePropsTransient({ margin, color, align, typographyStyle })}
-        {...props}
-    />
-);
+    return (
+        <Heading
+            as="h1"
+            onClick={onClick}
+            data-testid={dataTest}
+            {...makePropsTransient({ color, align, typographyStyle, textWrap })}
+            {...frameProps}
+        >
+            {children}
+        </Heading>
+    );
+};
 
-export const H3 = ({ margin, color, align, typographyStyle = 'titleSmall', ...props }: HProps) => (
-    <Heading
-        as="h3"
-        {...makePropsTransient({ margin, color, align, typographyStyle })}
-        {...props}
-    />
-);
+export const H2 = ({
+    color,
+    align,
+    typographyStyle = 'titleMedium',
+    textWrap,
+    onClick,
+    'data-testid': dataTest,
+    children,
+    ...rest
+}: HProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
+
+    return (
+        <Heading
+            as="h2"
+            onClick={onClick}
+            data-testid={dataTest}
+            {...makePropsTransient({ color, align, typographyStyle, textWrap })}
+            {...frameProps}
+        >
+            {children}
+        </Heading>
+    );
+};
+
+export const H3 = ({
+    color,
+    align,
+    typographyStyle = 'titleSmall',
+    textWrap,
+    onClick,
+    'data-testid': dataTest,
+    children,
+    ...rest
+}: HProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
+
+    return (
+        <Heading
+            as="h3"
+            onClick={onClick}
+            data-testid={dataTest}
+            {...makePropsTransient({ color, align, typographyStyle, textWrap })}
+            {...frameProps}
+        >
+            {children}
+        </Heading>
+    );
+};

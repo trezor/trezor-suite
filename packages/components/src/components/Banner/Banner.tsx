@@ -4,7 +4,12 @@ import styled, { css, useTheme } from 'styled-components';
 import { variables } from '../../config';
 import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
 import { Row, Column, TransientProps, useElevation, useMediaQuery } from '../..';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
 import { BannerContext } from './BannerContext';
 import { BannerButton } from './BannerButton';
 import { BannerVariant } from './types';
@@ -19,7 +24,7 @@ import {
 import { Icon, IconName } from '../Icon/Icon';
 import { SCREEN_SIZE } from '../../config/variables';
 
-export const allowedBannerFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedBannerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
 
 export type BannerProps = AllowedFrameProps & {
@@ -70,9 +75,9 @@ export const Banner = ({
     variant = DEFAULT_VARIANT,
     icon,
     filled = true,
-    margin,
     rightContent,
     'data-testid': dataTest,
+    ...rest
 }: BannerProps) => {
     const theme = useTheme();
     const { elevation } = useElevation();
@@ -96,6 +101,7 @@ export const Banner = ({
             <Row {...commonProps}>{children}</Row>
         );
     };
+    const frameProps = pickAndPrepareFrameProps(rest, allowedBannerFrameProps);
 
     return (
         <Wrapper
@@ -104,8 +110,8 @@ export const Banner = ({
             className={className}
             $elevation={elevation}
             $filled={filled}
-            $margin={margin}
             data-testid={dataTest}
+            {...frameProps}
         >
             {withIcon && (
                 <Icon
