@@ -1,5 +1,11 @@
 import * as protobuf from 'protobufjs/light';
-import { scheduleAction, ScheduleActionParams, ScheduledAction, Deferred } from '@trezor/utils';
+import {
+    arrayPartition,
+    scheduleAction,
+    ScheduleActionParams,
+    ScheduledAction,
+    Deferred,
+} from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils';
 import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 import { MessageFromTrezor } from '@trezor/protobuf';
@@ -30,19 +36,15 @@ export type ReleaseInput = {
     onClose?: boolean;
 };
 
-export type DeviceDescriptorDiff = {
-    didUpdate: boolean;
-    descriptors: Descriptor[];
-    connected: Descriptor[];
-    disconnected: Descriptor[];
-    changedSessions: Descriptor[];
-    acquired: Descriptor[];
-    acquiredByMyself: Descriptor[];
-    acquiredElsewhere: Descriptor[];
-    released: Descriptor[];
-    releasedByMyself: Descriptor[];
-    releasedElsewhere: Descriptor[];
-};
+type DescriptorDiffItem = { descriptor: Descriptor } & (
+    | { type: 'connected' | 'disconnected' }
+    | {
+          type: 'acquired' | 'released';
+          subtype: 'here' | 'elsewhere';
+      }
+);
+
+export type DeviceDescriptorDiff = DescriptorDiffItem[];
 
 export interface AbstractTransportParams {
     messages?: Record<string, any>;
@@ -69,6 +71,8 @@ export const isTransportInstance = (transport?: AbstractTransport) => {
 
     return false;
 };
+
+const getKey = ({ path, product }: Descriptor) => `${path}${product}`;
 
 export abstract class AbstractTransport extends TypedEmitter<{
     [TRANSPORT.UPDATE]: DeviceDescriptorDiff;
@@ -347,66 +351,39 @@ export abstract class AbstractTransport extends TypedEmitter<{
     }
 
     private getDiff(nextDescriptors: Descriptor[]): DeviceDescriptorDiff {
-        const connected = nextDescriptors.filter(
-            nextDescriptor =>
-                !this.descriptors.find(
-                    descriptor =>
-                        `${descriptor.path}${descriptor.product}` ===
-                        `${nextDescriptor.path}${nextDescriptor.product}`,
-                ),
-        );
-        const disconnected = this.descriptors.filter(
-            d =>
-                nextDescriptors.find(x => `${x.path}${x.product}` === `${d.path}${d.product}`) ===
-                undefined,
-        );
-        const changedSessions = nextDescriptors.filter(d => {
-            const currentDescriptor = this.descriptors.find(x => x.path === d.path);
-            if (currentDescriptor) {
-                return currentDescriptor.session !== d.session;
-            }
+        const oldDescriptors = new Map(this.descriptors.map(d => [getKey(d), d]));
+        const newDescriptors = new Map(nextDescriptors.map(d => [getKey(d), d]));
 
-            return false;
-        });
-
-        const acquired = changedSessions.filter(d => typeof d.session === 'string');
-        const acquiredByMyself = acquired.filter(
-            d => d.session === this.acquiredUnconfirmed[d.path],
-        );
-        const acquiredElsewhere = acquired.filter(
-            d => d.session !== this.acquiredUnconfirmed[d.path],
+        const [remaining, connected] = arrayPartition(nextDescriptors, n =>
+            oldDescriptors.has(getKey(n)),
         );
 
-        const released = changedSessions.filter(d => typeof d.session !== 'string');
-        const releasedByMyself = released.filter(
-            d =>
-                this.descriptors.find(prevD => prevD.path === d.path)?.session ===
-                this.releaseUnconfirmed[d.path],
-        );
-        const releasedElsewhere = released.filter(
-            d =>
-                this.descriptors.find(prevD => prevD.path === d.path)?.session !==
-                this.releaseUnconfirmed[d.path],
-        );
+        const disconnected = this.descriptors.filter(d => !newDescriptors.has(getKey(d)));
 
-        const didUpdate = connected.length + disconnected.length + changedSessions.length > 0;
+        const changed = remaining.filter(d => oldDescriptors.get(getKey(d))?.session !== d.session);
 
-        return {
-            connected,
-            disconnected,
-            // changedSessions is superset of acquired
-            changedSessions,
-            // acquired is acquiredByMyself + acquiredElsewhere
-            acquired,
-            acquiredByMyself,
-            acquiredElsewhere,
+        return [
+            ...disconnected.map(descriptor => ({ type: 'disconnected', descriptor }) as const),
+            ...connected.map(descriptor => ({ type: 'connected', descriptor }) as const),
+            ...changed.map(descriptor => {
+                if (typeof descriptor.session === 'string') {
+                    const subtype =
+                        descriptor.session === this.acquiredUnconfirmed[descriptor.path]
+                            ? 'here'
+                            : 'elsewhere';
 
-            released,
-            releasedByMyself,
-            releasedElsewhere,
-            didUpdate,
-            descriptors: nextDescriptors,
-        };
+                    return { type: 'acquired', subtype, descriptor } as const;
+                } else {
+                    const subtype =
+                        this.descriptors.find(prevD => prevD.path === descriptor.path)?.session ===
+                        this.releaseUnconfirmed[descriptor.path]
+                            ? 'here'
+                            : 'elsewhere';
+
+                    return { type: 'released', subtype, descriptor } as const;
+                }
+            }),
+        ];
     }
 
     /**
@@ -428,12 +405,12 @@ export abstract class AbstractTransport extends TypedEmitter<{
         // we need to pass this data to the next /listen call
         this.descriptors = nextDescriptors;
 
-        if (!diff.didUpdate) {
+        if (!diff.length) {
             return;
         }
 
         Object.keys(this.listenPromise).forEach(path => {
-            const descriptor = diff.descriptors.find(device => device.path === path);
+            const descriptor = nextDescriptors.find(device => device.path === path);
 
             if (!descriptor) {
                 return this.listenPromise[path].resolve(
@@ -441,7 +418,10 @@ export abstract class AbstractTransport extends TypedEmitter<{
                 );
             }
 
-            const listenedPathChanged = diff.changedSessions.find(d => d.path === path);
+            const listenedPathChanged = diff.find(
+                d => d.descriptor.path === path && ['acquired', 'released'].includes(d.type),
+            )?.descriptor;
+
             if (!listenedPathChanged) {
                 return;
             }

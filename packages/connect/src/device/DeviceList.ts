@@ -185,95 +185,85 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private onTransportUpdate(diff: DeviceDescriptorDiff, transport: Transport) {
-        diff.disconnected.forEach(descriptor => {
+        diff.forEach(async ({ descriptor, ...category }) => {
+            // whenever descriptors change we need to update them so that we can use them
+            // in subsequent transport.acquire calls
             const path = descriptor.path.toString();
-            const device = this.devices[path];
-            if (device) {
-                device.disconnect();
-                delete this.devices[path];
-                this.emit(DEVICE.DISCONNECT, device.toMessageObject());
-            }
-        });
+            const device = this.devices[path] as Device | undefined;
 
-        diff.connected.forEach(async descriptor => {
             // creatingDevicesDescriptors is needed, so that if *during* creating of Device,
             // other application acquires the device and changes the descriptor,
             // the new unacquired device has correct descriptor
-            const path = descriptor.path.toString();
             this.creatingDevicesDescriptors[path] = descriptor;
 
-            const penalty = this.authPenaltyManager.get();
+            switch (category.type) {
+                case 'disconnected':
+                    if (!device) break;
 
-            if (penalty) {
-                await resolveAfter(501 + penalty, null).promise;
+                    device.disconnect();
+                    delete this.devices[path];
+                    this.emit(DEVICE.DISCONNECT, device.toMessageObject());
+                    break;
+
+                case 'connected':
+                    const penalty = this.authPenaltyManager.get();
+
+                    if (penalty) {
+                        await resolveAfter(501 + penalty, null).promise;
+                    }
+                    if (this.creatingDevicesDescriptors[path].session == null) {
+                        await this._createAndSaveDevice(descriptor, transport);
+                    } else {
+                        const device = this._createUnacquiredDevice(descriptor, transport);
+                        this.devices[path] = device;
+                        this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
+                    }
+                    break;
+
+                case 'acquired':
+                    if (!device) break;
+
+                    if (category.subtype === 'elsewhere') {
+                        device.featuresNeedsReload = true;
+                        device.interruptionFromOutside();
+                    }
+
+                    _log.debug('Event', DEVICE.CHANGED, device.toMessageObject());
+                    this.emit(DEVICE.CHANGED, device.toMessageObject());
+
+                    _log.debug('Event', DEVICE.ACQUIRED, device.toMessageObject());
+                    this.emit(DEVICE.ACQUIRED, device.toMessageObject());
+
+                    break;
+
+                case 'released':
+                    if (!device) break;
+
+                    const methodStillRunning = !device?.getCommands()?.isDisposed();
+                    if (methodStillRunning) {
+                        device.keepTransportSession = false;
+                    }
+
+                    _log.debug('Event', DEVICE.CHANGED, device.toMessageObject());
+                    this.emit(DEVICE.CHANGED, device.toMessageObject());
+
+                    _log.debug('Event', DEVICE.RELEASED, device.toMessageObject());
+                    this.emit(DEVICE.RELEASED, device.toMessageObject());
+
+                    if (category.subtype === 'elsewhere') {
+                        await resolveAfter(1000, null).promise;
+                        // after device was released in another window wait for a while (the other window might
+                        // have the intention of acquiring it again)
+                        // and if the device is still reelased and has never been acquired before, acquire it here.
+                        if (!device.isUsed() && device.isUnacquired() && !device.isInconsistent()) {
+                            _log.debug('Create device from unacquired', device.toMessageObject());
+                            await this._createAndSaveDevice(descriptor, transport);
+                        }
+                    }
+                    break;
             }
-            if (this.creatingDevicesDescriptors[path].session == null) {
-                await this._createAndSaveDevice(descriptor, transport);
-            } else {
-                const device = this._createUnacquiredDevice(descriptor, transport);
-                this.devices[path] = device;
-                this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
-            }
-        });
 
-        diff.acquiredElsewhere.forEach((descriptor: Descriptor) => {
-            const path = descriptor.path.toString();
-            const device = this.devices[path];
-
-            if (device) {
-                device.featuresNeedsReload = true;
-                device.interruptionFromOutside();
-            }
-        });
-
-        diff.released.forEach(descriptor => {
-            const path = descriptor.path.toString();
-            const device = this.devices[path];
-            const methodStillRunning = !device?.getCommands()?.isDisposed();
-
-            if (device && methodStillRunning) {
-                device.keepTransportSession = false;
-            }
-        });
-
-        diff.releasedElsewhere.forEach(async descriptor => {
-            const path = descriptor.path.toString();
-            const device = this.devices[path];
-            await resolveAfter(1000, null).promise;
-
-            if (device) {
-                // after device was released in another window wait for a while (the other window might
-                // have the intention of acquiring it again)
-                // and if the device is still reelased and has never been acquired before, acquire it here.
-                if (!device.isUsed() && device.isUnacquired() && !device.isInconsistent()) {
-                    _log.debug('Create device from unacquired', device.toMessageObject());
-                    await this._createAndSaveDevice(descriptor, transport);
-                }
-            }
-        });
-
-        const forEachDescriptor = (d: Descriptor[], e: keyof DeviceListEvents) => {
-            d.forEach(descriptor => {
-                const path = descriptor.path.toString();
-                const device = this.devices[path];
-                if (device) {
-                    _log.debug('Event', e, device.toMessageObject());
-                    this.emit(e, device.toMessageObject());
-                }
-            });
-        };
-
-        forEachDescriptor(diff.changedSessions, DEVICE.CHANGED);
-        forEachDescriptor(diff.acquired, DEVICE.ACQUIRED);
-        forEachDescriptor(diff.released, DEVICE.RELEASED);
-
-        // whenever descriptors change we need to update them so that we can use them
-        // in subsequent transport.acquire calls
-        diff.descriptors.forEach(d => {
-            this.creatingDevicesDescriptors[d.path] = d;
-            if (this.devices[d.path]) {
-                this.devices[d.path].updateDescriptor(d);
-            }
+            device?.updateDescriptor(descriptor);
         });
     }
 
