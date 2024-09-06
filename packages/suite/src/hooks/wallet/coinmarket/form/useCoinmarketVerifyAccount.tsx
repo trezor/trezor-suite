@@ -1,4 +1,4 @@
-import { isDebugOnlyAccountType, networksCompatibility } from '@suite-common/wallet-config';
+import { isDebugOnlyAccountType, Network, networks } from '@suite-common/wallet-config';
 import { selectDevice } from '@suite-common/wallet-core';
 import { CryptoId } from 'invity-api';
 import { useEffect, useMemo, useState } from 'react';
@@ -73,8 +73,8 @@ const getSuiteReceiveAccounts = ({
         const unavailableCapabilities = device?.unavailableCapabilities ?? {};
 
         // Is the symbol supported by the suite and the device natively?
-        const receiveNetworks = networksCompatibility.filter(
-            n =>
+        const receiveNetworks = Object.values(networks).filter(
+            (n: Network) =>
                 n.symbol === receiveNetwork &&
                 !unavailableCapabilities[n.symbol] &&
                 ((n.isDebugOnlyNetwork && isDebug) || !n.isDebugOnlyNetwork),

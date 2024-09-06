@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
 import type { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 import { isChanged } from '@suite-common/suite-utils';
-import { formatAmount, getNetwork } from '@suite-common/wallet-utils';
+import { formatAmount } from '@suite-common/wallet-utils';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import {
@@ -47,6 +47,7 @@ import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarket
 import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketCurrencySwitcher';
 import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketModalCrypto';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { networks } from '@suite-common/wallet-config';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
@@ -153,7 +154,7 @@ const useCoinmarketBuyForm = ({
     const network =
         cryptoIdToNetwork(
             (values.cryptoSelect?.value as CryptoId) ?? FORM_DEFAULT_CRYPTO_CURRENCY,
-        ) ?? getNetwork('btc')!;
+        ) ?? networks.btc;
 
     const { toggleAmountInCrypto } = useCoinmarketCurrencySwitcher({
         account,

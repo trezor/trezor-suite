@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
-import { amountToSatoshi, formatAmount, getNetwork } from '@suite-common/wallet-utils';
+import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
@@ -45,7 +45,7 @@ import { useCoinmarketFormActions } from 'src/hooks/wallet/coinmarket/form/commo
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 import { useCoinmarketComposeTransaction } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketComposeTransaction';
 import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketCurrencySwitcher';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
@@ -112,7 +112,7 @@ export const useCoinmarketSellForm = ({
 
     const { symbol } = account;
     const localCurrency = useSelector(selectLocalCurrency);
-    const network = getNetwork(account.symbol) as NetworkCompatible;
+    const network = networks[account.symbol];
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
     const trades = useSelector(state => state.wallet.coinmarket.trades);

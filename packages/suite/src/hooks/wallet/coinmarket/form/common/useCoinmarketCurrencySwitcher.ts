@@ -1,4 +1,4 @@
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { Network } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
@@ -25,7 +25,7 @@ interface CoinmarketUseCurrencySwitcherProps<T extends CoinmarketAllFormProps> {
     methods: UseFormReturn<T>;
     quoteCryptoAmount: string | undefined;
     quoteFiatAmount: string | undefined;
-    network: NetworkCompatible | null;
+    network: Network | null;
     inputNames: {
         cryptoInput: typeof FORM_CRYPTO_INPUT | typeof FORM_OUTPUT_AMOUNT;
         fiatInput: typeof FORM_FIAT_INPUT | typeof FORM_OUTPUT_FIAT;

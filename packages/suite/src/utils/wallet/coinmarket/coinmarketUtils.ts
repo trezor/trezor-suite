@@ -1,13 +1,12 @@
 import { Account } from 'src/types/wallet';
 import {
-    NetworkCompatible,
+    Network,
     NetworkSymbol,
     getCoingeckoId,
     getNetworkByCoingeckoId,
     getNetworkByCoingeckoNativeId,
     getNetworkFeatures,
     networks,
-    networksCompatibility,
 } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
@@ -48,14 +47,12 @@ export function parseCryptoId(cryptoId: CryptoId): ParsedCryptoId {
     return { networkId: parts[0] as CryptoId, contractAddress: parts[1] };
 }
 
-export function cryptoIdToNetwork(cryptoId: CryptoId): NetworkCompatible | undefined {
+export function cryptoIdToNetwork(cryptoId: CryptoId): Network | undefined {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
 
-    const network = contractAddress
+    return contractAddress
         ? getNetworkByCoingeckoId(networkId)
         : getNetworkByCoingeckoNativeId(networkId);
-
-    return networksCompatibility.find(n => n.symbol === network?.symbol); // TODO: use Network only
 }
 
 export function cryptoIdToNetworkSymbol(cryptoId: CryptoId): NetworkSymbol | undefined {
@@ -138,7 +135,7 @@ export const getCountryLabelParts = (label: string) => {
 
 export const getComposeAddressPlaceholder = async (
     account: Account,
-    network: NetworkCompatible,
+    network: Network,
     device?: TrezorDevice,
     accounts?: Account[],
     chunkify?: boolean,
@@ -150,19 +147,15 @@ export const getComposeAddressPlaceholder = async (
         case 'bitcoin': {
             // use legacy (the most expensive) address for fee calculation
             // as we do not know what address type the exchange will use
-            const legacy =
-                networksCompatibility.find(
-                    network =>
-                        network.symbol === account.symbol && network.accountType === 'legacy',
-                ) ||
-                networksCompatibility.find(
-                    network =>
-                        network.symbol === account.symbol && network.accountType === 'segwit',
-                ) ||
-                network;
-            if (legacy && device) {
+            const availableAccounts = network.accountTypes;
+            const bip43Path =
+                availableAccounts['legacy']?.bip43Path ??
+                availableAccounts['segwit']?.bip43Path ??
+                network.bip43Path;
+
+            if (device) {
                 // try to get the already discovered legacy account
-                const legacyPath = `${legacy.bip43Path.replace('i', '0')}`;
+                const legacyPath = `${bip43Path.replace('i', '0')}`;
                 const legacyAccount = accounts?.find(a => a.path === legacyPath);
                 if (legacyAccount?.addresses?.unused[0]) {
                     return legacyAccount?.addresses?.unused[0].address;
@@ -170,8 +163,8 @@ export const getComposeAddressPlaceholder = async (
                 // if it is not discovered, get an address from trezor
                 const result = await TrezorConnect.getAddress({
                     device,
-                    coin: legacy.symbol,
-                    path: `${legacy.bip43Path.replace('i', '0')}/0/0`,
+                    coin: account.symbol,
+                    path: `${bip43Path.replace('i', '0')}/0/0`,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                     showOnTrezor: false,
                     chunkify,

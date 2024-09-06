@@ -13,8 +13,9 @@ import { useSelector } from 'src/hooks/suite';
 import { CoinmarketBuyAddressOptionsType } from 'src/types/coinmarket/coinmarketOffers';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
 import { spacingsPx, typography } from '@trezor/theme';
-import { formatAmount, getNetwork } from '@suite-common/wallet-utils';
+import { formatAmount } from '@suite-common/wallet-utils';
 import { getNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { networks } from '@suite-common/wallet-config';
 
 const AddressWrapper = styled.div`
     display: flex;
@@ -108,7 +109,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                         if (!accountAddress || !account || !receiveSymbol) return null;
 
                         const networkDecimals = getNetworkDecimals(
-                            getNetwork(account.symbol)?.decimals,
+                            networks[account.symbol].decimals,
                         );
                         const balance = accountAddress.balance
                             ? formatAmount(accountAddress.balance, networkDecimals)
