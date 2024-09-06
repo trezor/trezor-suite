@@ -19,6 +19,7 @@ import {
     Network,
     networks,
     AccountType,
+    Bip43Path,
 } from '@suite-common/wallet-config';
 import {
     Account,
@@ -222,7 +223,36 @@ export const getBip43Type = (path: string) => {
     }
 };
 
-export const getAccountTypeName = (path: string) => {
+type getAccountTypeNameProps = {
+    path?: Bip43Path;
+    networkType?: NetworkType;
+    accountType?: AccountType;
+};
+
+export const getAccountTypeName = ({ path, accountType, networkType }: getAccountTypeNameProps) => {
+    if (!networkType) return null;
+    if (networkType !== 'bitcoin') {
+        switch (accountType?.toLowerCase()) {
+            case 'ledger':
+                return 'TR_ACCOUNT_TYPE_LEDGER';
+            case 'legacy':
+                return 'TR_ACCOUNT_TYPE_LEGACY';
+            case 'normal':
+                return 'TR_ACCOUNT_TYPE_NORMAL';
+        }
+    } else {
+        switch (accountType?.toLowerCase()) {
+            case 'segwit':
+                return 'TR_ACCOUNT_TYPE_SEGWIT';
+            case 'taproot':
+                return 'TR_ACCOUNT_TYPE_TAPROOT';
+            case 'normal':
+                return 'TR_ACCOUNT_TYPE_BIP84_NAME';
+            case 'legacy':
+                return 'TR_ACCOUNT_TYPE_LEGACY';
+        }
+    }
+    if (!path) return null;
     const accountTypePrefix = getAccountTypePrefix(path);
     if (accountTypePrefix) return `${accountTypePrefix}_NAME` as const;
     const bip43 = getBip43Type(path);
@@ -235,7 +265,7 @@ export const getAccountTypeName = (path: string) => {
     return 'TR_ACCOUNT_TYPE_BIP44_NAME';
 };
 
-export const getAccountTypeTech = (path: string) => {
+export const getAccountTypeTech = (path: Bip43Path) => {
     const accountTypePrefix = getAccountTypePrefix(path);
     if (accountTypePrefix) return `${accountTypePrefix}_TECH` as const;
     const bip43 = getBip43Type(path);
@@ -248,15 +278,46 @@ export const getAccountTypeTech = (path: string) => {
     return 'TR_ACCOUNT_TYPE_BIP44_TECH';
 };
 
-export const getAccountTypeDesc = (path: string) => {
+type getAccountTypeDescProps = {
+    path: Bip43Path;
+    accountType?: AccountType;
+    networkType?: NetworkType;
+};
+
+export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccountTypeDescProps) => {
+    switch (accountType?.toLowerCase()) {
+        case 'ledger':
+            return 'TR_ACCOUNT_TYPE_LEDGER_DESC';
+        case 'legacy':
+            return 'TR_ACCOUNT_TYPE_LEGACY_DESC';
+    }
+
+    switch (networkType?.toLowerCase()) {
+        case 'ethereum':
+            return 'TR_ACCOUNT_TYPE_NORMAL_EVM_DESC';
+        case 'solana':
+            return 'TR_ACCOUNT_TYPE_NORMAL_SOLANA_DESC';
+        case 'cardano':
+            return 'TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC';
+        case 'ripple':
+            return 'TR_ACCOUNT_TYPE_NORMAL_XRP_DESC';
+    }
+
     const accountTypePrefix = getAccountTypePrefix(path);
     if (accountTypePrefix) return `${accountTypePrefix}_DESC` as const;
     const bip43 = getBip43Type(path);
-    if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_DESC';
-    if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_DESC';
-    if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_DESC';
-    if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY_DESC';
-    if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_SLIP25_DESC';
+    switch (bip43) {
+        case 'bip86':
+            return 'TR_ACCOUNT_TYPE_BIP86_DESC';
+        case 'bip84':
+            return 'TR_ACCOUNT_TYPE_BIP84_DESC';
+        case 'bip49':
+            return 'TR_ACCOUNT_TYPE_BIP49_DESC';
+        case 'shelley':
+            return 'TR_ACCOUNT_TYPE_SHELLEY_DESC';
+        case 'slip25':
+            return 'TR_ACCOUNT_TYPE_SLIP25_DESC';
+    }
 
     return 'TR_ACCOUNT_TYPE_BIP44_DESC';
 };

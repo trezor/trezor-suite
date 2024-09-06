@@ -3646,6 +3646,36 @@ export default defineMessages({
         defaultMessage:
             'Legacy uses simpler transaction formats but may result in higher transaction fees and lacks the efficiency and features found in newer address types.',
     },
+    TR_ACCOUNT_TYPE_LEDGER_DESC: {
+        id: 'TR_ACCOUNT_TYPE_LEDGER_DESC',
+        defaultMessage:
+            'Ledger accounts are compatible with Ledger Live derivation paths, enabling smooth  migration from Ledger to Trezor.',
+    },
+    TR_ACCOUNT_TYPE_LEGACY_DESC: {
+        id: 'TR_ACCOUNT_TYPE_LEGACY_DESC',
+        defaultMessage:
+            'Legacy accounts are compatible with Ledger Legacy derivation paths, enabling smooth migration from Ledger to Trezor.',
+    },
+    TR_ACCOUNT_TYPE_NORMAL_EVM_DESC: {
+        id: 'TR_ACCOUNT_TYPE_NORMAL_EVM_DESC',
+        defaultMessage:
+            'The current and most widely accepted method of generating and managing {value} addresses ensures interoperability, security, and support for all types of tokens.',
+    },
+    TR_ACCOUNT_TYPE_NORMAL_SOLANA_DESC: {
+        id: 'TR_ACCOUNT_TYPE_NORMAL_SOLANA_DESC',
+        defaultMessage:
+            'The current and most widely accepted method of generating and managing Solana addresses ensures interoperability, security, and support for SOL and SPL tokens.',
+    },
+    TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC: {
+        id: 'TR_ACCOUNT_TYPE_CARDANO_DESC',
+        defaultMessage:
+            'The current and most widely accepted method of generating and managing Cardano addresses ensures interoperability, security, and support for all types of tokens.',
+    },
+    TR_ACCOUNT_TYPE_NORMAL_XRP_DESC: {
+        id: 'TR_ACCOUNT_TYPE_XRP_DESC',
+        defaultMessage:
+            'XRP is a digital currency that enables fast, low-cost cross-border payments without relying on traditional mining, using a consensus ledger for quick transaction confirmations.',
+    },
     TR_ACCOUNT_DETAILS_XPUB_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_XPUB_HEADER',
         defaultMessage: 'Public key (XPUB)',
