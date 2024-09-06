@@ -66,17 +66,19 @@ const TextareaExtender = ({ children }: { children: ReactNode }) => {
     );
 };
 
-export const Box = ({ children }: { children?: ReactNode }) => {
-    const { elevation } = useElevation();
+export const Box = {
+    render: ({ children }: { children?: ReactNode }) => {
+        const { elevation } = useElevation();
 
-    return (
-        <UiBox $elevation={elevation}>
-            Elevation: {elevation}
-            <br />
-            <br />
-            <ElevationUp>{children}</ElevationUp>
-        </UiBox>
-    );
+        return (
+            <UiBox $elevation={elevation}>
+                Elevation: {elevation}
+                <br />
+                <br />
+                <ElevationUp>{children}</ElevationUp>
+            </UiBox>
+        );
+    },
 };
 
 export const ElevationContext: StoryObj = {

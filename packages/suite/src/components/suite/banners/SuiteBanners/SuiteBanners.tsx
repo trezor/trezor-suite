@@ -28,6 +28,7 @@ const Container = styled.div<{ $isVisible?: boolean }>`
     display: flex;
     flex-direction: column;
     gap: ${spacingsPx.xs};
+    position: relative; /* because it must be on the top of the draggable area on Mac */
 `;
 
 export const SuiteBanners = () => {
