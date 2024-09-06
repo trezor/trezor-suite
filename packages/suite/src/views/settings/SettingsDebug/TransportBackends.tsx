@@ -6,15 +6,18 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { BridgeSettings } from '@trezor/suite-desktop-api/src/messages';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { useSelector } from 'src/hooks/suite';
+
 interface Process {
     service: boolean;
     process: boolean;
 }
 
 // note that this variable is duplicated with suite-desktop-core
-const NEW_BRIDGE_ROLLOUT_THRESHOLD = 1;
+const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0;
 
 export const TransportBackends = () => {
+    const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
     const [bridgeProcess, setBridgeProcess] = useState<Process>({ service: false, process: false });
     const [bridgeSettings, setBridgeSettings] = useState<BridgeSettings | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -110,7 +113,11 @@ export const TransportBackends = () => {
                 <SectionItem data-testid="@settings/debug/processes/newBridgeRollout">
                     <TextColumn
                         title="New bridge rollout"
-                        description={`New bridge is being rolled out to ${NEW_BRIDGE_ROLLOUT_THRESHOLD * 100}% of Trezor Suite instances that have applied for the Early access program.`}
+                        description={
+                            allowPrerelease
+                                ? 'New bridge is rolled out to all Trezor Suite instances that are in the Early access program.'
+                                : `New bridge is rolled out to ${NEW_BRIDGE_ROLLOUT_THRESHOLD * 100} % of Trezor Suite instances outside of Early access. Your rollout score is ${((bridgeSettings.newBridgeRollout ?? 0) * 100).toFixed()}%`
+                        }
                     />
                 </SectionItem>
             )}

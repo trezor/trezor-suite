@@ -14,8 +14,6 @@ import { ThreadProxy } from '../libs/thread-proxy';
 import type { Dependencies } from './index';
 
 const bridgeLegacy = app.commandLine.hasSwitch('bridge-legacy');
-const bridgeLegacyDev = app.commandLine.hasSwitch('bridge-legacy-dev');
-const bridgeLegacyTest = app.commandLine.hasSwitch('bridge-legacy-test');
 // bridge node is intended for internal testing
 const bridgeTest = app.commandLine.hasSwitch('bridge-test');
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
@@ -82,9 +80,9 @@ const handleBridgeStatus = async (bridge: BridgeInterface) => {
 const start = async (bridge: BridgeInterface) => {
     if (bridgeLegacy) {
         await bridge.start();
-    } else if (bridgeLegacyDev) {
+    } else if (bridgeDev) {
         await bridge.startDev();
-    } else if (bridgeLegacyTest) {
+    } else if (bridgeTest) {
         await bridge.startTest();
     } else {
         await bridge.start();
@@ -95,26 +93,23 @@ const shouldUseLegacyBridge = (store: Dependencies['store']) => {
     const legacyRequestedBySettings = store.getBridgeSettings().legacy;
     const { allowPrerelease } = store.getUpdateSettings();
 
-    const legacyRequestedByArg = bridgeLegacy || bridgeLegacyDev || bridgeLegacyTest;
+    // Legacy bridge explicitly requested
+    if (bridgeLegacy || legacyRequestedBySettings) return true;
+    // EAP or dev uses node-bridge by default
+    if (allowPrerelease || isDevEnv) return false;
 
-    // handle rollout
+    // handle rollout for regular users
+    if (skipNewBridgeRollout) return false;
     if (store.getBridgeSettings().newBridgeRollout === undefined) {
         const newBridgeRollout = Math.round(Math.random() * 100) / 100;
         store.setBridgeSettings({ ...store.getBridgeSettings(), newBridgeRollout });
     }
     const newBridgeRollout = store.getBridgeSettings().newBridgeRollout || 0;
     // note that this variable is duplicated with UI
-    const NEW_BRIDGE_ROLLOUT_THRESHOLD = 1;
-    const legacyBridgeReasonRollout = !isDevEnv && newBridgeRollout >= NEW_BRIDGE_ROLLOUT_THRESHOLD;
+    const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0;
+    const legacyBridgeReasonRollout = newBridgeRollout >= NEW_BRIDGE_ROLLOUT_THRESHOLD;
 
-    if (skipNewBridgeRollout && !legacyRequestedByArg) return false;
-
-    return (
-        legacyRequestedBySettings ||
-        legacyRequestedByArg ||
-        legacyBridgeReasonRollout ||
-        !allowPrerelease
-    );
+    return legacyBridgeReasonRollout;
 };
 
 const load = async (bridge: BridgeInterface, store: Dependencies['store']) => {
@@ -185,7 +180,7 @@ const load = async (bridge: BridgeInterface, store: Dependencies['store']) => {
     try {
         logger.info(
             SERVICE_NAME,
-            `Starting (Legacy dev: ${b2t(bridgeLegacyDev)}, Legacy test: ${b2t(bridgeLegacyTest)}, Legacy: ${b2t(bridgeLegacy)}, Test: ${b2t(bridgeTest)})`,
+            `Starting (Legacy: ${b2t(bridgeLegacy)}, Test: ${b2t(bridgeTest)}, Dev: ${b2t(bridgeDev)})`,
         );
         await start(bridge);
         handleBridgeStatus(bridge);
