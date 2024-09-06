@@ -41,6 +41,7 @@ export const FeaturesSettings = () => {
                     title={<Translation id="moduleSettings.items.features.devUtils.title" />}
                     subtitle={<Translation id="moduleSettings.items.features.devUtils.subtitle" />}
                     onPress={() => navigation.navigate(RootStackRoutes.DevUtilsStack)}
+                    testID="@settings/dev-utils"
                 />
             )}
             <SettingsSectionItem
@@ -50,6 +51,7 @@ export const FeaturesSettings = () => {
                     <Translation id="moduleSettings.items.features.privacyAndSecurity.subtitle" />
                 }
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
+                testID="@settings/privacy-and-security"
             />
             {isUsbDeviceConnectFeatureEnabled && (
                 <SettingsSectionItem
@@ -57,6 +59,7 @@ export const FeaturesSettings = () => {
                     title={<Translation id="moduleSettings.items.features.viewOnly.title" />}
                     subtitle={<Translation id="moduleSettings.items.features.viewOnly.subtitle" />}
                     onPress={() => handleNavigation(SettingsStackRoutes.SettingsViewOnly)}
+                    testID="@settings/view-only"
                 />
             )}
             {isCoinEnablingActive && (
@@ -67,6 +70,7 @@ export const FeaturesSettings = () => {
                         <Translation id="moduleSettings.items.features.coinEnabling.subtitle" />
                     }
                     onPress={() => handleNavigation(SettingsStackRoutes.SettingsCoinEnabling)}
+                    testID="@settings/coin-enabling"
                 />
             )}
         </SettingsSection>

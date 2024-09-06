@@ -29,6 +29,7 @@ export const SupportSettings = () => {
                 title={<Translation id="moduleSettings.items.support.help.title" />}
                 subtitle={<Translation id="moduleSettings.items.support.help.subtitle" />}
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsFAQ)}
+                testID="@settings/help"
             />
             <SettingsSectionItem
                 title={
@@ -39,6 +40,7 @@ export const SupportSettings = () => {
                 }
                 iconName="trezorT3T1"
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsAbout)}
+                testID="@settings/about"
             />
         </SettingsSection>
     );

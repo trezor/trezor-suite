@@ -34,6 +34,7 @@ export const PreferencesSettings = () => {
                     <Translation id="moduleSettings.items.preferences.localization.subtitle" />
                 }
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalization)}
+                testID="@settings/localization"
             />
             <SettingsSectionItem
                 iconName="palette"
@@ -42,6 +43,7 @@ export const PreferencesSettings = () => {
                     <Translation id="moduleSettings.items.preferences.customization.subtitle" />
                 }
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsCustomization)}
+                testID="@settings/customization"
             />
         </SettingsSection>
     );

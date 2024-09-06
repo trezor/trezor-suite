@@ -132,7 +132,7 @@ export const CoinEnablingInitScreen = () => {
                             exiting={SlideOutDown}
                             style={applyStyle(buttonStyle)}
                         >
-                            <Button onPress={handleSave}>
+                            <Button onPress={handleSave} testID="@coin-enabling/button-save">
                                 <Translation id="moduleSettings.coinEnabling.initialSetup.button" />
                             </Button>
                         </Animated.View>

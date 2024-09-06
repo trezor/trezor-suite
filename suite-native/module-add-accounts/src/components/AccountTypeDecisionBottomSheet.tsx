@@ -65,7 +65,11 @@ export const AccountTypeDecisionBottomSheet = ({
                         }}
                     />
                 </Text>
-                <Button size="medium" onPress={onConfirmTap}>
+                <Button
+                    size="medium"
+                    onPress={onConfirmTap}
+                    testID={`@add-account/button-${typeName}`}
+                >
                     <Translation
                         id="moduleAddAccounts.accountTypeDecisionBottomSheet.buttons.confirm"
                         values={{
@@ -73,7 +77,12 @@ export const AccountTypeDecisionBottomSheet = ({
                         }}
                     />
                 </Button>
-                <Button size="medium" colorScheme="tertiaryElevation0" onPress={onTypeSelectionTap}>
+                <Button
+                    size="medium"
+                    colorScheme="tertiaryElevation0"
+                    onPress={onTypeSelectionTap}
+                    testID="@add-account/button-select-type"
+                >
                     <Translation id="moduleAddAccounts.accountTypeDecisionBottomSheet.buttons.select" />
                 </Button>
             </VStack>
