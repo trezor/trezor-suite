@@ -1,35 +1,51 @@
-import styled from 'styled-components';
-import { Paragraph } from '@trezor/components';
 import { Bip43Path } from '@suite-common/wallet-config';
 import { Translation } from 'src/components/suite';
-import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
-import { spacingsPx } from '@trezor/theme';
+import {
+    getAccountTypeDesc,
+    getAccountTypeUrl,
+    getTitleForNetwork,
+} from '@suite-common/wallet-utils';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Info = styled(Paragraph)`
-    margin: ${spacingsPx.md} 0 ${spacingsPx.xs};
-`;
+import { AccountType } from '@suite-common/wallet-config';
+import { NetworkType } from '@suite-common/wallet-config';
+import { useTranslation } from 'src/hooks/suite';
+import { Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { Account } from '@suite-common/wallet-types';
 
 interface AccountTypeDescriptionProps {
     bip43Path: Bip43Path;
-    hasMultipleAccountTypes: boolean;
+    accountType?: AccountType;
+    symbol?: Account['symbol'];
+    networkType?: NetworkType;
 }
 
 export const AccountTypeDescription = ({
     bip43Path,
-    hasMultipleAccountTypes,
+    accountType,
+    symbol,
+    networkType,
 }: AccountTypeDescriptionProps) => {
-    if (!hasMultipleAccountTypes) return null;
+    const { translationString } = useTranslation();
     const accountTypeUrl = getAccountTypeUrl(bip43Path);
-    const accountTypeDesc = getAccountTypeDesc(bip43Path);
+    const accountTypeDescId = getAccountTypeDesc({ path: bip43Path, accountType, networkType });
+
+    const renderAccountTypeDesc = () => {
+        if (symbol && accountType === 'normal' && networkType === 'ethereum') {
+            const value = getTitleForNetwork(symbol);
+
+            return (
+                <Translation id={accountTypeDescId} values={{ value: translationString(value) }} />
+            );
+        }
+
+        return <Translation id={accountTypeDescId} />;
+    };
 
     return (
-        <>
-            <Info>
-                <Translation id={accountTypeDesc} />
-            </Info>
+        <Column alignItems="flex-start" gap={spacings.sm}>
+            {renderAccountTypeDesc()}
             {accountTypeUrl && <LearnMoreButton url={accountTypeUrl} />}
-        </>
+        </Column>
     );
 };

@@ -1,11 +1,6 @@
 import styled from 'styled-components';
 
-import {
-    getAccountTypeName,
-    getAccountTypeTech,
-    getAccountTypeUrl,
-    getAccountTypeDesc,
-} from '@suite-common/wallet-utils';
+import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Paragraph, variables, Card, Column } from '@trezor/components';
 
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
@@ -17,9 +12,10 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
-import { networksCompatibility } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
 import { Row } from './Row';
+import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
+import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 
 const Heading = styled.h3`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
@@ -50,10 +46,6 @@ const StyledActionButton = styled(ActionButton)`
     min-width: 170px;
 `;
 
-const NoWrap = styled.span`
-    white-space: nowrap;
-`;
-
 const Details = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const dispatch = useDispatch();
@@ -68,18 +60,13 @@ const Details = () => {
     const locked = isLocked(true);
     const disabled = !!device.authConfirm || locked;
 
-    // check if all network types
-    const accountTypes =
-        account.networkType === 'bitcoin'
-            ? networksCompatibility.filter(n => n.symbol === account.symbol)
-            : undefined;
-    // display type name only if there is more than 1 network type
-    const accountTypeName =
-        accountTypes && accountTypes.length > 1 ? getAccountTypeName(account.path) : undefined;
     const accountTypeTech = getAccountTypeTech(account.path);
-    const accountTypeUrl = getAccountTypeUrl(account.path);
-    const accountTypeDesc = getAccountTypeDesc(account.path);
+
     const isCoinjoinAccount = account.backendType === 'coinjoin';
+
+    // xPub is required by networks using UTXO model. Bitcoin, Bitcoin Cash, Litecoin, Dogecoin, Cardano etc.
+    const shouldDisplayXpubSection =
+        account.networkType === 'bitcoin' || account.networkType === 'cardano';
 
     const handleXpubClick = () => dispatch(showXpub());
 
@@ -104,17 +91,23 @@ const Details = () => {
                         <Row>
                             <TextColumn
                                 title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
-                                description={<Translation id={accountTypeDesc} />}
-                                buttonLink={accountTypeUrl}
+                                description={
+                                    <AccountTypeDescription
+                                        bip43Path={account.path}
+                                        accountType={account.accountType}
+                                        symbol={account.symbol}
+                                        networkType={account.networkType}
+                                    />
+                                }
                             />
                             <AccountTypeLabel>
-                                {accountTypeName && (
-                                    <Paragraph typographyStyle="hint">
-                                        <NoWrap>
-                                            <Translation id={accountTypeName} />
-                                        </NoWrap>
-                                    </Paragraph>
-                                )}
+                                <AccountTypeBadge
+                                    accountType={account.accountType}
+                                    shouldDisplayNormalType
+                                    path={account.path}
+                                    networkType={account.networkType}
+                                    onElevation={true}
+                                />
                                 <Paragraph typographyStyle="label">
                                     (<Translation id={accountTypeTech} />)
                                 </Paragraph>
@@ -131,24 +124,26 @@ const Details = () => {
                             </AccountTypeLabel>
                         </Row>
                         {!isCoinjoinAccount ? (
-                            <Row>
-                                <TextColumn
-                                    title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
-                                    description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
-                                    buttonLink={HELP_CENTER_XPUB_URL}
-                                />
-                                <ActionColumn>
-                                    <StyledActionButton
-                                        variant="tertiary"
-                                        data-testid="@wallets/details/show-xpub-button"
-                                        onClick={handleXpubClick}
-                                        isDisabled={disabled}
-                                        isLoading={locked}
-                                    >
-                                        <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
-                                    </StyledActionButton>
-                                </ActionColumn>
-                            </Row>
+                            shouldDisplayXpubSection && (
+                                <Row>
+                                    <TextColumn
+                                        title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
+                                        description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
+                                        buttonLink={HELP_CENTER_XPUB_URL}
+                                    />
+                                    <ActionColumn>
+                                        <StyledActionButton
+                                            variant="tertiary"
+                                            data-testid="@wallets/details/show-xpub-button"
+                                            onClick={handleXpubClick}
+                                            isDisabled={disabled}
+                                            isLoading={locked}
+                                        >
+                                            <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
+                                        </StyledActionButton>
+                                    </ActionColumn>
+                                </Row>
+                            )
                         ) : (
                             <RescanAccount account={account} />
                         )}

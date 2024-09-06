@@ -65,7 +65,6 @@ export const AccountNavigation = () => {
                 goToWithAnalytics('wallet-details', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_DETAILS" />,
-            isHidden: !['cardano', 'bitcoin'].includes(networkType),
             'data-testid': `@wallet/menu/wallet-details`,
         },
     ];

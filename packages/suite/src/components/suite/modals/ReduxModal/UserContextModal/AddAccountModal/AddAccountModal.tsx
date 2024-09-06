@@ -196,6 +196,8 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                           selectedAccountType={selectedAccount}
                           accountTypes={accountTypes}
                           onSelectAccountType={setSelectedAccount}
+                          networkType={selectedNetwork.networkType}
+                          symbol={selectedNetwork.symbol}
                       />
                   ),
                   onBackClick: () => setSelectedNetwork(undefined),
