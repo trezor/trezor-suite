@@ -46,11 +46,11 @@ export const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor =>
 
 export const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconName => {
     const iconMap: Record<BannerVariant, IconName> = {
-        primary: 'lightbulb',
-        info: 'info',
-        warning: 'warningTriangle',
-        destructive: 'warningTriangle',
-        tertiary: 'info',
+        primary: 'lightbulbFilled',
+        info: 'infoFilled',
+        warning: 'warningFilled',
+        destructive: 'warningFilled',
+        tertiary: 'infoFilled',
     };
 
     return iconMap[$variant];
