@@ -40,6 +40,8 @@ const args: Partial<FlexProps> = {
     gap: 8,
     flexWrap: 'wrap',
     isReversed: false,
+    hasDivider: false,
+    dividerColor: undefined,
     ...getFramePropsStory(allowedFlexFrameProps).args,
 };
 const argTypes: Partial<ArgTypes<FlexProps>> = {
@@ -66,6 +68,12 @@ const argTypes: Partial<ArgTypes<FlexProps>> = {
     },
     isReversed: {
         type: 'boolean',
+    },
+    hasDivider: {
+        type: 'boolean',
+    },
+    dividerColor: {
+        type: 'string',
     },
     flexWrap: {
         options: Object.values(flexWrap),

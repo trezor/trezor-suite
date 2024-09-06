@@ -1,7 +1,9 @@
-import { SpacingValues } from '@trezor/theme';
-import styled from 'styled-components';
+import { Elevation, mapElevationToBorder, SpacingValues } from '@trezor/theme';
+import styled, { css, DefaultTheme } from 'styled-components';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../utils/transientProps';
+import { useElevation } from '../ElevationContext/ElevationContext';
+import React from 'react';
 
 export const allowedFlexFrameProps: FramePropsKeys[] = ['margin', 'width', 'height'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedFlexFrameProps)[number]>;
@@ -51,18 +53,63 @@ export type Flex =
     | `${number} ${number} ${string}`;
 export type FlexWrap = (typeof flexWrap)[number];
 
-const Container = styled.div<
-    TransientProps<AllowedFrameProps> & {
-        $gap: SpacingValues;
-        $justifyContent: FlexJustifyContent;
-        $alignItems: FlexAlignItems;
-        $direction: FlexDirection;
-        $flex: Flex;
-        $flexWrap: FlexWrap;
-        $isReversed: boolean;
-    }
->`
+export const withDivider = ({
+    theme,
+    $gap,
+    $direction,
+    $elevation,
+    $dividerColor,
+}: {
+    theme: DefaultTheme;
+    $gap: SpacingValues;
+    $direction: FlexDirection;
+    $dividerColor?: string;
+    $elevation: Elevation;
+}) => {
+    return css`
+        & > * {
+            position: relative;
+        }
+
+        & > *:not(:first-child)::before {
+            content: '';
+            display: block;
+            position: absolute;
+
+            ${$direction === 'column' &&
+            `
+        top: -${$gap / 2}px;
+        height: 1px;
+        width: 100%;
+        left: 0;
+        border-top: 1px solid ${$dividerColor ? $dividerColor : mapElevationToBorder({ theme, $elevation })};`}
+            ${$direction === 'row' &&
+            `
+        top: 0;
+        height: 100%;
+        width: 1px;
+        left: -${$gap / 2}px;
+        border-left: 1px solid ${$dividerColor ? $dividerColor : mapElevationToBorder({ theme, $elevation })};`}
+        }
+    `;
+};
+
+type ContainerProps = TransientProps<AllowedFrameProps> & {
+    $gap: SpacingValues;
+    $justifyContent: FlexJustifyContent;
+    $alignItems: FlexAlignItems;
+    $direction: FlexDirection;
+    $flex: Flex;
+    $flexWrap: FlexWrap;
+    $isReversed: boolean;
+    $hasDivider: boolean;
+    $dividerColor?: string;
+    $elevation: Elevation;
+};
+
+const Container = styled.div<ContainerProps>`
     display: flex;
+
     flex-flow: ${({ $direction, $isReversed, $flexWrap }) =>
         `${$direction}${$isReversed === true ? '-reverse' : ''} ${$flexWrap}`};
     flex: ${({ $flex }) => $flex};
@@ -70,6 +117,7 @@ const Container = styled.div<
     justify-content: ${({ $justifyContent }) => $justifyContent};
     align-items: ${({ $alignItems }) => $alignItems};
 
+    ${({ $hasDivider, ...props }) => $hasDivider && withDivider(props)}
     ${withFrameProps}
 `;
 
@@ -82,6 +130,9 @@ export type FlexProps = AllowedFrameProps & {
     flex?: Flex;
     flexWrap?: FlexWrap;
     isReversed?: boolean;
+    hasDivider?: boolean;
+    /** @deprecated Use only is case of absolute desperation. Prefer keep it according to elevation. */
+    dividerColor?: string;
     className?: string;
 };
 
@@ -98,6 +149,8 @@ const Flex = ({
     className,
     width,
     height,
+    hasDivider = false,
+    dividerColor,
 }: FlexProps) => {
     const frameProps = {
         margin,
@@ -105,17 +158,24 @@ const Flex = ({
         height,
     };
 
+    const { elevation } = useElevation();
+
     return (
         <Container
             className={className}
-            $gap={gap}
-            $justifyContent={justifyContent}
-            $alignItems={alignItems}
-            $direction={direction}
-            $flex={flex}
-            $flexWrap={flexWrap}
-            $isReversed={isReversed}
-            {...makePropsTransient(frameProps)}
+            {...makePropsTransient({
+                ...frameProps,
+                gap,
+                justifyContent,
+                alignItems,
+                direction,
+                flex,
+                flexWrap,
+                isReversed,
+                hasDivider,
+                dividerColor,
+                elevation,
+            })}
         >
             {children}
         </Container>
