@@ -195,21 +195,13 @@ describe('Usb', () => {
 
             transport.handleDescriptorsChange([{ path: '1', session: null, type: 1 }]);
 
-            expect(spy).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    connected: [{ path: '1', session: null, type: 1 }],
-                    didUpdate: true,
-                    descriptors: [{ path: '1', session: null, type: 1 }],
-                }),
-            );
+            expect(spy).toHaveBeenCalledWith([
+                { type: 'connected', descriptor: { path: '1', session: null, type: 1 } },
+            ]);
             transport.handleDescriptorsChange([]);
-            expect(spy).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    disconnected: [{ path: '1', session: null, type: 1 }],
-                    didUpdate: true,
-                    descriptors: [],
-                }),
-            );
+            expect(spy).toHaveBeenCalledWith([
+                { type: 'disconnected', descriptor: { path: '1', session: null, type: 1 } },
+            ]);
             abortController.abort();
         });
 
@@ -303,7 +295,9 @@ describe('Usb', () => {
             // set some initial descriptors
             const acquireCall = transport.acquire({ input: { path: '123', previous: null } });
             setTimeout(() => {
-                sessionsClient.emit('descriptors', [{ path: '123', session: '2', type: 1 }]);
+                sessionsClient.emit('descriptors', [
+                    { path: '123', session: '2', type: 1, product: 21441 },
+                ]);
             }, 1);
 
             const res = await acquireCall.promise;
