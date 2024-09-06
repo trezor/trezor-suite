@@ -216,24 +216,20 @@ export const useCoinmarketExchangeForm = ({
         },
     });
 
-    const getQuotesRequest = useCallback(
-        async (request: ExchangeTradeQuoteRequest) => {
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
+    const getQuotesRequest = useCallback(async (request: ExchangeTradeQuoteRequest) => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
 
-            abortControllerRef.current = new AbortController();
-            invityAPI.createInvityAPIKey(account.descriptor);
+        abortControllerRef.current = new AbortController();
 
-            const allQuotes = await invityAPI.getExchangeQuotes(
-                request,
-                abortControllerRef.current.signal,
-            );
+        const allQuotes = await invityAPI.getExchangeQuotes(
+            request,
+            abortControllerRef.current.signal,
+        );
 
-            return allQuotes;
-        },
-        [account.descriptor],
-    );
+        return allQuotes;
+    }, []);
 
     const getQuoteRequestData = useCallback((): ExchangeTradeQuoteRequest | null => {
         const { outputs, receiveCryptoSelect, sendCryptoSelect } = getValues();
@@ -376,6 +372,7 @@ export const useCoinmarketExchangeForm = ({
             refundAddress,
             extraField,
         });
+
         if (!response) {
             addNotification({
                 type: 'error',
