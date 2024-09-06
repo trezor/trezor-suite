@@ -10,6 +10,7 @@ const Table = styled.div`
     padding-left: ${spacingsPx.xxs};
     padding-right: ${spacingsPx.xxs};
     padding-bottom: ${spacingsPx.xxs};
+    width: 100%;
 `;
 
 export interface AssetTableRowType {
