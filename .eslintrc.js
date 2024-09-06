@@ -76,6 +76,16 @@ module.exports = {
                 extensions: ['.tsx'],
             },
         ],
+        'sort-imports': [
+            1,
+            {
+                ignoreCase: false,
+                ignoreDeclarationSort: true, // don't want to sort import lines, use eslint-plugin-import instead
+                ignoreMemberSort: false,
+                memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+                allowSeparatedGroups: true,
+            },
+        ],
         'import/order': [
             1,
             {
@@ -93,6 +103,7 @@ module.exports = {
                 ],
                 pathGroupsExcludedImportTypes: ['internal', 'react'],
                 'newlines-between': 'always',
+                alphabetize: { order: 'asc' },
             },
         ],
         'import/no-extraneous-dependencies': [
