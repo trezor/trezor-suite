@@ -1,12 +1,7 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectFiatRatesByFiatRateKey, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import {
-    amountToSatoshi,
-    getFiatRateKey,
-    getNetwork,
-    toFiatCurrency,
-} from '@suite-common/wallet-utils';
+import { amountToSatoshi, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { CryptoId, FiatCurrencyCode } from 'invity-api';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -57,7 +52,7 @@ export const useCoinmarketFiatValues = ({
     );
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
-    const network = getNetwork(networkSymbol);
+    const network = networks[networkSymbol];
     const { shouldSendInSats } = useBitcoinAmountUnit(networkSymbol);
 
     const fiatRatesUpdater = useCallback(
@@ -89,7 +84,7 @@ export const useCoinmarketFiatValues = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (!network || !accountBalance || !fiatCurrency) return null;
+    if (!accountBalance || !fiatCurrency) return null;
 
     const decimals = getNetworkDecimals(network?.decimals);
     const formattedBalance = shouldSendInSats

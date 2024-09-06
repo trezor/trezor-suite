@@ -7,12 +7,7 @@ import type {
     FiatCurrencyCode,
 } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
-import {
-    amountToSatoshi,
-    formatAmount,
-    getNetwork,
-    toFiatCurrency,
-} from '@suite-common/wallet-utils';
+import { amountToSatoshi, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
@@ -62,7 +57,7 @@ import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/
 import { useCoinmarketFiatValues } from './common/useCoinmarketFiatValues';
 import { CoinmarketExchangeStepType } from 'src/types/coinmarket/coinmarketOffers';
 import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketModalCrypto';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 
@@ -135,7 +130,7 @@ export const useCoinmarketExchangeForm = ({
 
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const network = getNetwork(account.symbol) as NetworkCompatible;
+    const network = networks[account.symbol];
 
     const { defaultCurrency, defaultValues } = useCoinmarketExchangeFormDefaultValues(account);
     const exchangeDraftKey = 'coinmarket-exchange';
