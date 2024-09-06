@@ -25,6 +25,7 @@
     "dependencies": {
         "@headlessui/react": "^1.7.17",
         "@trezor/components": "workspace:*",
+        "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@vitejs/plugin-react": "^3.0.1",
         "clsx": "^2.1.1",

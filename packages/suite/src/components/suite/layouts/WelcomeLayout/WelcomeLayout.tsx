@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import {
-    TrezorLogo,
     Button,
     variables,
     SVG_IMAGES,
@@ -29,6 +28,7 @@ import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { NavSettings } from './NavSettings';
 import { Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { TrafficLightOffset } from '../../TrafficLightOffset';
+import { TrezorLogo } from '@trezor/product-components';
 
 const MessageContainer = styled.div`
     margin: ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs};

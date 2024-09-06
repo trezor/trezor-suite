@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { TrezorLogo } from '../../index';
-import { StoryColumn } from '../../support/Story';
+import { TrezorLogo } from './TrezorLogo';
+import { StoryColumn } from '@trezor/components';
 
 interface WrapperProps {
     isDark?: boolean;
@@ -16,7 +16,7 @@ const LogoWrapper = styled.div<WrapperProps>`
 `;
 
 const meta: Meta = {
-    title: 'TrezorLogos',
+    title: 'TrezorLogo',
 } as Meta;
 export default meta;
 

@@ -43,8 +43,7 @@
         "react-select": "^5.8.0",
         "react-svg": "^16.1.33",
         "react-use": "^17.5.0",
-        "styled-components": "^6.1.8",
-        "zxcvbn": "^4.4.2"
+        "styled-components": "^6.1.8"
     },
     "devDependencies": {
         "@storybook/addon-actions": "^7.6.13",

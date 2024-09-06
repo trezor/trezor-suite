@@ -8,7 +8,8 @@ import { ArrowRightIcon, MenuIcon } from 'nextra/icons';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 
 import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
-import { TrezorLogo, useElevation } from '@trezor/components';
+import { useElevation } from '@trezor/components';
+import { TrezorLogo } from '@trezor/product-components';
 
 import { useConfig, useMenu } from '../contexts';
 import { renderComponent } from '../utils';

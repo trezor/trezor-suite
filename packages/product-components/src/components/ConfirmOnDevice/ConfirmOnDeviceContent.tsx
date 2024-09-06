@@ -10,7 +10,7 @@ import {
     typography,
 } from '@trezor/theme';
 import { useElevation } from '@trezor/components';
-import { RotateDeviceImage } from '@trezor/components';
+import { RotateDeviceImage } from '../RotateDeviceImage/RotateDeviceImage';
 
 const Column = styled.div`
     display: flex;

@@ -1,7 +1,8 @@
 import { useMemo, ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { TrezorLogo, Button, variables } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
+import { TrezorLogo } from '@trezor/product-components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { TrezorLink, Translation } from 'src/components/suite';
 import { OnboardingProgressBar } from 'src/components/onboarding';
