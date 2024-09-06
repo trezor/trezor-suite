@@ -9,6 +9,7 @@ import { Translation } from 'src/components/suite';
 export const HeaderHeading = styled(H2)`
     display: flex;
     align-items: center;
+    -webkit-app-region: no-drag;
 `;
 
 export interface BasicNameProps {

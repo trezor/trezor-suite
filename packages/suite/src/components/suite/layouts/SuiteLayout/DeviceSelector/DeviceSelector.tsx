@@ -56,6 +56,7 @@ const InnerContainer = styled.div`
     align-items: center;
     cursor: pointer;
     gap: ${spacingsPx.md};
+    -webkit-app-region: no-drag;
 `;
 
 export const DeviceSelector = () => {

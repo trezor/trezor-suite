@@ -52,6 +52,7 @@ const DetailsContainer = styled.div<{ $isBalanceShown: boolean; $shouldAnimate: 
     animation: ${({ $isBalanceShown, $shouldAnimate }) =>
             getAnimation($isBalanceShown, $shouldAnimate)}
         0.3s forwards;
+    -webkit-app-region: no-drag;
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component

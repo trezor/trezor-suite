@@ -2,6 +2,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 
+import { zIndices } from '@trezor/theme';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 
 type Props = {
@@ -11,13 +12,21 @@ type Props = {
 };
 
 // See: https://github.com/electron/electron/issues/5678
-const FixForNotBeingAbleToDragWindow = styled.div`
+// Visible all the time in the app
+const ThinFixForNotBeingAbleToDragWindow = styled.div`
     -webkit-app-region: drag;
-    height: 12px;
+    height: 16px;
     position: fixed;
+    z-index: ${zIndices.windowControls};
     top: 0;
     left: 0;
     width: 100%;
+`;
+
+// Visible below content (but visible in the sidebar)
+const ThickFixForNotBeingAbleToDragWindow = styled(ThinFixForNotBeingAbleToDragWindow)`
+    height: 64px;
+    z-index: unset;
 `;
 
 const Container = styled.div<{ $offset: number }>`
@@ -35,7 +44,8 @@ export const TrafficLightOffset = ({ children, offset = 35, isVisible = true }: 
 
     return (
         <>
-            <FixForNotBeingAbleToDragWindow />
+            <ThinFixForNotBeingAbleToDragWindow />
+            <ThickFixForNotBeingAbleToDragWindow />
             <Container $offset={offset}>{children}</Container>
         </>
     );

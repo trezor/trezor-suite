@@ -47,6 +47,7 @@ type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
 };
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
+    -webkit-app-region: no-drag;
     display: flex;
     align-items: center;
     justify-content: center;
