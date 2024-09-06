@@ -164,6 +164,8 @@ const ButtonLikeLabel = ({
 
 const TextLikeLabel = ({
     accountType,
+    networkType,
+    path,
     editActive,
     defaultVisibleValue,
     defaultEditableValue,
@@ -187,7 +189,13 @@ const TextLikeLabel = ({
                     onBlur={onBlur}
                     updateFlag={updateFlag}
                 />
-                {isAccountLabel && <AccountTypeBadge accountType={accountType} />}
+                {isAccountLabel && (
+                    <AccountTypeBadge
+                        accountType={accountType}
+                        networkType={networkType}
+                        path={path}
+                    />
+                )}
             </Row>
         );
     }
@@ -197,7 +205,13 @@ const TextLikeLabel = ({
             <Label data-testid={dataTest}>
                 <Row gap={12}>
                     <LabelValue>{payload.value}</LabelValue>
-                    {isAccountLabel && <AccountTypeBadge accountType={accountType} />}
+                    {isAccountLabel && (
+                        <AccountTypeBadge
+                            accountType={accountType}
+                            networkType={networkType}
+                            path={path}
+                        />
+                    )}
                 </Row>
             </Label>
         );
@@ -255,6 +269,8 @@ const getLocalizedActions = (type: MetadataAddPayload['type']) => {
 export const MetadataLabeling = ({
     payload,
     accountType,
+    networkType,
+    path,
     dropdownOptions,
     defaultEditableValue,
     defaultVisibleValue,
@@ -437,10 +453,13 @@ export const MetadataLabeling = ({
                         onBlur={handleBlur}
                         data-testid={dataTestBase}
                         payload={payload}
+                        networkType={networkType}
+                        path={path}
                         defaultEditableValue={defaultEditableValue}
                         defaultVisibleValue={defaultVisibleValue}
                         updateFlag={updateFlag}
                     />
+
                     {showActionButton && (
                         <ActionButton
                             data-testid={

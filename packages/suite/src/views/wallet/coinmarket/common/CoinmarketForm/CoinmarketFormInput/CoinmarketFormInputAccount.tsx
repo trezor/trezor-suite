@@ -76,6 +76,7 @@ export const CoinmarketFormInputAccount = <
                                     {group.label}
                                     <AccountTypeBadge
                                         accountType={group.options[0].accountType}
+                                        networkType={group.options[0].value}
                                         size="small"
                                     />
                                 </Row>

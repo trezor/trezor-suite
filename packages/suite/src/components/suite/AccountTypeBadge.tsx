@@ -1,24 +1,38 @@
-import { UppercaseAccountType } from '@suite-common/wallet-types';
-import { AccountType } from '@suite-common/wallet-config';
-import { toUppercaseType } from '@suite-common/suite-utils';
 import { Badge, BadgeSize } from '@trezor/components';
 import { Translation } from './Translation';
+import { getAccountTypeName } from '@suite-common/wallet-utils';
+import { AccountType, Bip43Path, NetworkType } from '@suite-common/wallet-config';
 
 type AccountTypeBadgeProps = {
     accountType?: AccountType;
+    path?: Bip43Path;
+    networkType?: NetworkType;
+    onElevation?: boolean;
     size?: BadgeSize;
+    shouldDisplayNormalType?: boolean;
 };
 
-export const AccountTypeBadge = ({ accountType, size = 'medium' }: AccountTypeBadgeProps) => {
-    if (!accountType || accountType === 'normal') {
+export const AccountTypeBadge = ({
+    accountType,
+    path,
+    networkType,
+    size = 'medium',
+    onElevation = false,
+    shouldDisplayNormalType = false,
+}: AccountTypeBadgeProps) => {
+    if (!accountType || !networkType) {
         return null;
     }
 
-    const accountTypeUppercase: UppercaseAccountType = toUppercaseType(accountType);
+    if (!shouldDisplayNormalType && accountType === 'normal') {
+        return null;
+    }
+
+    const accountTypeName = getAccountTypeName({ path, accountType, networkType });
 
     return (
-        <Badge size={size}>
-            <Translation id={`TR_ACCOUNT_TYPE_${accountTypeUppercase}`} />
+        <Badge size={size} onElevation={onElevation}>
+            {accountTypeName ? <Translation id={accountTypeName} /> : null}
         </Badge>
     );
 };

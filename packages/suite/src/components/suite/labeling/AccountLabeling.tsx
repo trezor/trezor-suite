@@ -25,7 +25,7 @@ export const AccountLabeling = ({
     const devices = useSelector(selectDevices);
 
     const accounts = !Array.isArray(account) ? [account] : account;
-    const { symbol, index, accountType, key } = accounts[0];
+    const { symbol, index, accountType, key, path, networkType } = accounts[0];
 
     const labels = useSelector(state => selectLabelingDataForAccount(state, key));
 
@@ -39,6 +39,8 @@ export const AccountLabeling = ({
             index={index}
             showAccountTypeBadge={showAccountTypeBadge}
             accountTypeBadgeSize={accountTypeBadgeSize}
+            path={path}
+            networkType={networkType}
         />
     );
 

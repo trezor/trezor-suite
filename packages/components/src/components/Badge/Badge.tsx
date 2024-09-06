@@ -16,6 +16,7 @@ type BadgeVariant = Extract<UIVariant, 'primary' | 'tertiary' | 'destructive'>;
 export type BadgeProps = AllowedFrameProps & {
     size?: BadgeSize;
     variant?: BadgeVariant;
+    onElevation?: boolean;
     isDisabled?: boolean;
     icon?: IconName;
     hasAlert?: boolean;
@@ -26,6 +27,7 @@ export type BadgeProps = AllowedFrameProps & {
 
 type MapArgs = {
     $variant: BadgeVariant;
+    $onElevation?: boolean;
     theme: DefaultTheme;
 };
 
@@ -34,12 +36,13 @@ type BadgeContainerProps = {
     $variant: BadgeVariant;
     $hasAlert: boolean;
     $inline: boolean;
+    $onElevation: boolean;
 } & TransientProps<AllowedFrameProps>;
 
-const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
+const mapVariantToBackgroundColor = ({ $variant, $onElevation, theme }: MapArgs): CSSColor => {
     const colorMap: Record<BadgeVariant, Color> = {
         primary: 'backgroundPrimarySubtleOnElevation0',
-        tertiary: 'backgroundNeutralSubtleOnElevation0',
+        tertiary: `backgroundNeutralSubtleOnElevation${$onElevation ? 1 : 0}`,
         destructive: 'backgroundAlertRedSubtleOnElevation0',
     };
 
@@ -113,6 +116,7 @@ const Content = styled.span<{ $isDisabled: boolean; $variant: BadgeVariant; $siz
 export const Badge = ({
     size = 'medium',
     variant = 'tertiary',
+    onElevation,
     isDisabled,
     icon,
     hasAlert,
@@ -128,6 +132,7 @@ export const Badge = ({
             $size={size}
             $variant={variant}
             $hasAlert={!!hasAlert}
+            $onElevation={!!onElevation}
             className={className}
             $margin={margin}
             $inline={inline === true}
