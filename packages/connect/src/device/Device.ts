@@ -821,6 +821,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return null;
     }
 
+    updateDescriptor(descriptor: Descriptor) {
+        this.originalDescriptor = {
+            session: descriptor.session,
+            path: descriptor.path,
+            product: descriptor.product,
+            type: descriptor.type,
+        };
+    }
+
     async dispose() {
         this.removeAllListeners();
         if (this.isUsedHere() && this.transportSession) {

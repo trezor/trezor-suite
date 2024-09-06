@@ -272,12 +272,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         diff.descriptors.forEach(d => {
             this.creatingDevicesDescriptors[d.path] = d;
             if (this.devices[d.path]) {
-                this.devices[d.path].originalDescriptor = {
-                    session: d.session,
-                    path: d.path,
-                    product: d.product,
-                    type: d.type,
-                };
+                this.devices[d.path].updateDescriptor(d);
             }
         });
     }
@@ -500,12 +495,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         res.payload.forEach(d => {
             if (this.devices[d.path]) {
-                this.devices[d.path].originalDescriptor = {
-                    session: d.session,
-                    path: d.path,
-                    product: d.product,
-                    type: d.type,
-                };
+                this.devices[d.path].updateDescriptor(d);
                 // TODO: is this ok? transportSession should be set only as result of acquire/release
                 // this.devices[d.path].transportSession = d.session;
             }
