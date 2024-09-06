@@ -25,7 +25,7 @@ export const AffectedTransactions = ({ showChained }: { showChained: () => void 
                     <Button
                         variant="tertiary"
                         onClick={showChained}
-                        icon="chevronRight"
+                        icon="caretRight"
                         iconAlignment="right"
                     >
                         <Translation id="TR_SEE_DETAILS" />

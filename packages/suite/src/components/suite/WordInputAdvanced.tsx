@@ -170,7 +170,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                         </Row>
                     </>
                 )}
-                <Backspace variant="tertiary" onClick={backspace} icon="chevronLeft">
+                <Backspace variant="tertiary" onClick={backspace} icon="caretLeft">
                     <Translation id="TR_BACKSPACE" />
                 </Backspace>
             </MatrixWrapper>

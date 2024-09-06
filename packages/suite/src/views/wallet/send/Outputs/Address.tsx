@@ -385,7 +385,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 labelRight={
                     outputsCount > 1 ? (
                         <IconButton
-                            icon="close"
+                            icon="x"
                             size="tiny"
                             variant="tertiary"
                             data-testid={`outputs.${outputId}.remove`}

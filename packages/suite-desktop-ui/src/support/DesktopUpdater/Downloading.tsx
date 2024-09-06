@@ -61,7 +61,7 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
                 <Button
                     size="small"
                     variant="tertiary"
-                    icon="close"
+                    icon="x"
                     iconAlignment="right"
                     onClick={hideWindow}
                 >

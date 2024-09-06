@@ -351,7 +351,7 @@ export const TransactionReviewSummary = ({
                                 <Icon
                                     size={12}
                                     color={theme.iconSubdued}
-                                    name={detailsOpen ? 'close' : 'chevronRight'}
+                                    name={detailsOpen ? 'x' : 'caretRight'}
                                 />
                             </TxDetailsButton>
                         </LeftDetailsRow>

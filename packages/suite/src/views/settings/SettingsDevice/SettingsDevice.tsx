@@ -136,7 +136,7 @@ export const SettingsDevice = () => {
                 </SettingsSection>
             )}
 
-            <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="firmware">
+            <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="puzzlePiece">
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />
                 {(!bootloaderMode || bitcoinOnlyDevice) && (
                     <FirmwareTypeChange isDeviceLocked={isDeviceLocked} />

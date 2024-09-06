@@ -180,7 +180,7 @@ export const TransactionHeading = ({
                     <Icon
                         size={nestedItemIsHovered || headingIsHovered ? 18 : 16}
                         color={theme.legacy.TYPE_DARK_GREY}
-                        name="chevronRight"
+                        name="caretRight"
                     />
                 </ChevronIconWrapper>
             </Wrapper>

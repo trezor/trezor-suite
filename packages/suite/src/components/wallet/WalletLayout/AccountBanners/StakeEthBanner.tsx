@@ -48,12 +48,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
                     <Button size="small" onClick={goToEthStakingTab} textWrap={false}>
                         <Translation id="TR_STAKE_LEARN_MORE" />
                     </Button>
-                    <IconButton
-                        size="small"
-                        variant="tertiary"
-                        icon="close"
-                        onClick={closeBanner}
-                    />
+                    <IconButton size="small" variant="tertiary" icon="x" onClick={closeBanner} />
                 </Row>
             }
         >

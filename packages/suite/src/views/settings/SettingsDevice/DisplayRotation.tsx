@@ -3,7 +3,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { SelectBar } from '@trezor/components';
+import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -12,10 +12,38 @@ type RotationValue = 0 | 90 | 180 | 270;
 type Rotation = { label: JSX.Element; value: RotationValue };
 
 const DISPLAY_ROTATIONS: Array<Rotation> = [
-    { label: <Translation id="TR_NORTH" />, value: 0 },
-    { label: <Translation id="TR_EAST" />, value: 90 },
-    { label: <Translation id="TR_SOUTH" />, value: 180 },
-    { label: <Translation id="TR_WEST" />, value: 270 },
+    {
+        label: (
+            <Tooltip content={<Translation id="TR_NORTH" />} cursor="pointer" hasArrow>
+                <Icon name="arrowUp" />
+            </Tooltip>
+        ),
+        value: 0,
+    },
+    {
+        label: (
+            <Tooltip content={<Translation id="TR_EAST" />} cursor="pointer" hasArrow>
+                <Icon name="arrowLeft" />
+            </Tooltip>
+        ),
+        value: 90,
+    },
+    {
+        label: (
+            <Tooltip content={<Translation id="TR_SOUTH" />} cursor="pointer" hasArrow>
+                <Icon name="arrowDown" />
+            </Tooltip>
+        ),
+        value: 180,
+    },
+    {
+        label: (
+            <Tooltip content={<Translation id="TR_WEST" />} cursor="pointer" hasArrow>
+                <Icon name="arrowRight" />
+            </Tooltip>
+        ),
+        value: 270,
+    },
 ];
 
 // features.display_rotation cannot be used to determine support because can be defined for devices not supporting rotation (e.g. T2B1).

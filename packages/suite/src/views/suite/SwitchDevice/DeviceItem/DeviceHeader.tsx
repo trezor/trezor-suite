@@ -60,7 +60,7 @@ export const DeviceHeader = ({
             <Row gap={spacings.xs} flex="1">
                 {onBackButtonClick && (
                     <IconButton
-                        icon="chevronLeft"
+                        icon="caretLeft"
                         onClick={onBackButtonClick}
                         variant="tertiary"
                         size="small"

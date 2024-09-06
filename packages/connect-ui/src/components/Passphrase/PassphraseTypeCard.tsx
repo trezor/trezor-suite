@@ -331,7 +331,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                         </Col>
                         {props.type === 'standard' && (
                             <ArrowCol>
-                                <Icon name="chevronRight" color={theme.iconSubdued} />
+                                <Icon name="caretRight" color={theme.iconSubdued} />
                             </ArrowCol>
                         )}
                     </Row>

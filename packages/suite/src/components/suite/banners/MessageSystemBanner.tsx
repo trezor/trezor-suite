@@ -70,7 +70,7 @@ export const MessageSystemBanner = ({ message }: MessageSystemBannerProps) => {
                     )}
                     {dismissalConfig && (
                         <WarningComponent.IconButton
-                            icon="close"
+                            icon="x"
                             onClick={dismissalConfig.onClick}
                             isSubtle
                             data-testid={dismissalConfig['data-testid']}

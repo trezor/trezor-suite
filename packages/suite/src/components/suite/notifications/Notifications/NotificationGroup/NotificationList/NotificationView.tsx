@@ -98,7 +98,7 @@ export const NotificationView = ({
 
             {action?.onClick &&
                 (isMobileLayout ? (
-                    <Icon name="chevronRight" onClick={action.onClick} size={18} />
+                    <Icon name="caretRight" onClick={action.onClick} size={18} />
                 ) : (
                     <ActionButton variant="tertiary" size="tiny" onClick={action.onClick}>
                         <Translation id={action.label} />

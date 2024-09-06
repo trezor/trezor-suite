@@ -137,7 +137,7 @@ export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTrans
                         <FormattedCryptoAmount value={sendStringAmount} symbol={send} />
                     </Amount>
                     <Arrow>
-                        <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={13} name="chevronRight" />
+                        <Icon color={theme.legacy.TYPE_LIGHT_GREY} size={13} name="caretRight" />
                     </Arrow>
                     <FormattedCryptoAmount
                         value={receiveStringAmount}

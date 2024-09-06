@@ -62,7 +62,7 @@ export const CoinmarketSelectedOfferStepper = ({ steps }: CoinmarketSelectedOffe
                     </StepWrap>
                     {index < steps.length - 1 && (
                         <Arrow>
-                            <Icon name="chevronRight" color={theme.iconSubdued} />
+                            <Icon name="caretRight" color={theme.iconSubdued} />
                         </Arrow>
                     )}
                 </Fragment>

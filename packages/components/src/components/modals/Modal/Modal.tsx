@@ -262,7 +262,7 @@ const Modal = ({
                     <Header $isBottomBorderShown={!!heading}>
                         {onBackClick && (
                             <BackIcon
-                                name="chevronLeft"
+                                name="caretLeft"
                                 size={24}
                                 color={theme.iconSubdued}
                                 hoverColor={theme.iconOnTertiary}

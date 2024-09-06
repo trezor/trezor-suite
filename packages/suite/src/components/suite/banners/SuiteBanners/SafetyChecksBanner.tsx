@@ -32,7 +32,7 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
                     </Banner.Button>
                     {onDismiss && (
                         <WarningComponent.IconButton
-                            icon="close"
+                            icon="x"
                             onClick={onDismiss}
                             isSubtle
                             data-testid="@banner/safety-checks/dismiss"
