@@ -189,7 +189,6 @@ const useCoinmarketBuyForm = ({
             }
 
             abortControllerRef.current = new AbortController();
-            invityAPI.createInvityAPIKey(account.descriptor);
 
             const allQuotes = await invityAPI.getBuyQuotes(
                 request,
@@ -198,7 +197,7 @@ const useCoinmarketBuyForm = ({
 
             return allQuotes;
         },
-        [account.descriptor, timer],
+        [timer],
     );
 
     const getQuoteRequestData = useCallback((): BuyTradeQuoteRequest => {
