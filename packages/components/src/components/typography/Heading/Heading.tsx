@@ -8,7 +8,7 @@ import { TextProps as TextPropsCommon, TextPropsKeys, withTextProps } from '../u
 export const allowedHeadingTextProps: TextPropsKeys[] = ['typographyStyle', 'textWrap'];
 type AllowedHeadingTextProps = Pick<TextPropsCommon, (typeof allowedHeadingTextProps)[number]>;
 
-export const allowedHeadingFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedHeadingFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedHeadingFrameProps)[number]>;
 
 type Align = 'left' | 'center' | 'right';

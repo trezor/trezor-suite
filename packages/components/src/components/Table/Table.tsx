@@ -10,7 +10,7 @@ import { useElevation } from '../ElevationContext/ElevationContext';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 
-export const allowedTableFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedTableFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableFrameProps)[number]>;
 
 const Container = styled.table<{ $elevation: Elevation } & TransientProps<AllowedFrameProps>>`

@@ -5,7 +5,10 @@ import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frame
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 import { UIVariant } from '../../../config/types';
 
-export const allowedParagraphFrameProps: FramePropsKeys[] = ['margin', 'maxWidth'];
+export const allowedParagraphFrameProps = [
+    'margin',
+    'maxWidth',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedParagraphFrameProps)[number]>;
 
 export const paragraphVariants = [

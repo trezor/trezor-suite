@@ -32,7 +32,10 @@ export type ExclusiveColorOrVariant =
           color?: string;
       };
 
-export const allowedIconFrameProps: FramePropsKeys[] = ['margin', 'pointerEvents'];
+export const allowedIconFrameProps = [
+    'margin',
+    'pointerEvents',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconFrameProps)[number]>;
 
 export const iconSizes = {

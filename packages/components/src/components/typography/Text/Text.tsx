@@ -6,10 +6,13 @@ import { makePropsTransient, TransientProps } from '../../../utils/transientProp
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
 import { TextPropsKeys, TextWrap, withTextProps, TextProps as TextPropsCommon } from '../utils';
 
-export const allowedTextTextProps: TextPropsKeys[] = ['typographyStyle', 'textWrap'];
+export const allowedTextTextProps = [
+    'typographyStyle',
+    'textWrap',
+] as const satisfies TextPropsKeys[];
 type AllowedTextTextProps = Pick<TextPropsCommon, (typeof allowedTextTextProps)[number]>;
 
-export const allowedTextFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedTextFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextFrameProps)[number]>;
 
 export type TextVariant =

@@ -11,7 +11,7 @@ import { TransientProps } from '../../utils/transientProps';
 import { ReactNode } from 'react';
 import { FramePropsKeys, FrameProps, withFrameProps } from '../../utils/frameProps';
 
-export const allowedComponentWithSubIconFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedComponentWithSubIconFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedComponentWithSubIconFrameProps)[number]>;
 
 const Container = styled.div<TransientProps<AllowedFrameProps>>`

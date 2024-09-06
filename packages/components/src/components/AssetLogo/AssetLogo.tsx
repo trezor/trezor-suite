@@ -10,7 +10,7 @@ const ICONS_URL_BASE = 'https://data.trezor.io/suite/icons/coins/';
 export const allowedAssetLogoSizes = [20, 24];
 type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
 
-export const allowedAssetLogoFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedAssetLogoFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedAssetLogoFrameProps)[number]>;
 
 export type AssetLogoProps = AllowedFrameProps & {

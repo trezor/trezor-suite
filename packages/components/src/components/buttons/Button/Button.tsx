@@ -12,11 +12,20 @@ import {
     useVariantStyle,
 } from '../buttonStyleUtils';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
-import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
+import { TransientProps } from '../../../utils/transientProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../../utils/frameProps';
 import { Icon, IconName } from '../../Icon/Icon';
 
-export const allowedButtonFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedButtonFrameProps = [
+    'margin',
+    'minWidth',
+    'maxWidth',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
 type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
@@ -126,16 +135,12 @@ export const Button = ({
     iconAlignment = 'left',
     type = 'button',
     children,
-    margin,
     target,
     href,
     textWrap = true,
     ...rest
 }: ButtonProps) => {
-    const frameProps = {
-        margin,
-    };
-
+    const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
     const theme = useTheme();
 
     const IconComponent = icon ? (
@@ -166,7 +171,7 @@ export const Button = ({
             $hasIcon={!!icon || isLoading}
             {...rest}
             onClick={isDisabled ? undefined : rest?.onClick}
-            {...makePropsTransient(frameProps)}
+            {...frameProps}
         >
             {!isLoading && icon && IconComponent}
             {isLoading && Loader}

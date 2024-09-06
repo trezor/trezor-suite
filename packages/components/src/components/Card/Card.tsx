@@ -13,12 +13,12 @@ type MapArgs = {
     $paddingType: PaddingType;
 };
 
-export const allowedCardFrameProps: FramePropsKeys[] = [
+export const allowedCardFrameProps = [
     'margin',
     'maxWidth',
     'minWidth',
     'overflow',
-];
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]>;
 
 const mapPaddingTypeToLabelPadding = ({ $paddingType }: MapArgs): number | string => {

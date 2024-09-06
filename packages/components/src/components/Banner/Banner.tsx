@@ -19,7 +19,7 @@ import {
 import { Icon, IconName } from '../Icon/Icon';
 import { SCREEN_SIZE } from '../../config/variables';
 
-export const allowedBannerFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedBannerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
 
 export type BannerProps = AllowedFrameProps & {

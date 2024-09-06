@@ -5,7 +5,11 @@ import { makePropsTransient, TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import React from 'react';
 
-export const allowedFlexFrameProps: FramePropsKeys[] = ['margin', 'width', 'height'];
+export const allowedFlexFrameProps = [
+    'margin',
+    'width',
+    'height',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedFlexFrameProps)[number]>;
 
 export const flexDirection = ['column', 'row'] as const;

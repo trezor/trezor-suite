@@ -7,7 +7,7 @@ import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/framePro
 import { TransientProps } from '../../utils/transientProps';
 import { Icon, IconName } from '../Icon/Icon';
 
-export const allowedBadgeFrameProps: FramePropsKeys[] = ['margin'];
+export const allowedBadgeFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBadgeFrameProps)[number]>;
 
 export type BadgeSize = Extract<UISize, 'tiny' | 'small' | 'medium'>;
