@@ -44,6 +44,12 @@ describe('ETH staking', () => {
             cy.prefixedVisit('/accounts/staking#/eth/0');
             cy.discoveryShouldFinish();
 
+            cy.getTestElement('@account-menu/eth/normal/0').click();
+            cy.getTestElement('@wallet/menu/wallet-send').click();
+            cy.getTestElement('outputs.0.amount').type('1111,456789012345678901');
+
+            cy.getTestElement('@account-menu/eth/normal/0/staking').click();
+
             cy.getTestElement('@account/staking/pending')
                 .invoke('text')
                 .then(text => {
