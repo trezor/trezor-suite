@@ -90,7 +90,7 @@ export const FormattedCryptoAmount = ({
         <Container className={className}>
             {!!signValue && <Sign value={signValue} />}
             <Value data-testid={dataTest}>{formattedValue}</Value>
-            {formattedSymbol && <BlurUrls text={'\u00A0' + formattedSymbol} />}
+            {formattedSymbol && <BlurUrls text={' ' + formattedSymbol} />}
         </Container>
     );
 
