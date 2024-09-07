@@ -199,7 +199,7 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
         backgroundAlertBlueSubtleOnElevation1: palette.darkAccentBlue100,
         backgroundAlertBlueSubtleOnElevation2: palette.darkAccentBlue200,
         backgroundAlertBlueSubtleOnElevation3: palette.darkAccentBlue300,
-        backgroundAlertBlueSubtleOnElevationNegative: '#FFFFFF',
+        backgroundAlertBlueSubtleOnElevationNegative: palette.darkAccentBlue100,
         backgroundAlertRedBold: palette.darkAccentRed600,
         backgroundAlertRedBoldAlt: palette.darkAccentRed700,
         backgroundAlertRedSubtleOnElevation0: palette.darkAccentRed50,

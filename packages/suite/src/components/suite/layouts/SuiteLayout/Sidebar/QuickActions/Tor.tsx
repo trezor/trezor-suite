@@ -48,7 +48,7 @@ export const Tor = () => {
                         size: iconSizes.extraSmall,
                     }}
                 >
-                    <Icon name="tor" size={iconSizes.medium} />
+                    <Icon name="torBrowser" size={iconSizes.medium} variant="tertiary" />
                 </ComponentWithSubIcon>
             </QuickActionButton>
         )

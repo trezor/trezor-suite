@@ -31,7 +31,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
         args: [
             path.join(appDir, './dist/app.js'),
             `--log-level=${desiredLogLevel}`,
-            ...(options.bridgeLegacyTest ? ['--bridge-legacy-test'] : []),
+            ...(options.bridgeLegacyTest ? ['--bridge-legacy', '--bridge-test'] : []),
             ...(options.bridgeDaemon ? ['--bridge-daemon', '--skip-new-bridge-rollout'] : []),
         ],
         // when testing electron, video needs to be setup like this. it works locally but not in docker

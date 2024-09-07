@@ -62,7 +62,7 @@ export type HandshakeElectron = {
     desktopUpdate?: {
         allowPrerelease: boolean;
         isAutomaticUpdateEnabled: boolean;
-        firstRun?: string;
+        firstRun?: string; // string => contains the version of the updated Suite
     };
     paths: {
         userDir: string;
