@@ -7,13 +7,7 @@ interface RowProps {
 }
 
 export const Row = ({ children }: RowProps) => (
-    <RowComponent
-        justifyContent="space-between"
-        flex="1"
-        gap={spacings.xxl}
-        hasDivider
-        width="100%"
-    >
+    <RowComponent justifyContent="space-between" flex="1" gap={spacings.xxl} width="100%">
         {children}
     </RowComponent>
 );
