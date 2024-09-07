@@ -3974,6 +3974,10 @@ export default defineMessages({
         id: 'TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED',
         defaultMessage: 'Just updated ({currentVersion})',
     },
+    TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED: {
+        id: 'TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED',
+        defaultMessage: 'Enabled',
+    },
     TR_TOR_TITLE: {
         id: 'TR_TOR_TITLE',
         defaultMessage: 'Tor',
