@@ -9,13 +9,21 @@ type Props = {
 };
 
 // See: https://github.com/electron/electron/issues/5678
-const FixForNotBeingAbleToDragWindow = styled.div`
+// Visible all the time in the app
+const ThinFixForNotBeingAbleToDragWindow = styled.div`
     -webkit-app-region: drag;
     height: 12px;
     position: fixed;
+    z-index: 100;
     top: 0;
     left: 0;
     width: 100%;
+`;
+
+// Visible below content (but visible in the sidebar)
+const ThickFixForNotBeingAbleToDragWindow2 = styled(ThinFixForNotBeingAbleToDragWindow)`
+    height: 35px;
+    z-index: unset;
 `;
 
 const Container = styled.div<{ $hasTopPadding?: boolean; $offset: number }>`
@@ -33,7 +41,8 @@ export const TrafficLightOffset = ({ children, offset = 35, isVisible = true }: 
 
     return (
         <>
-            <FixForNotBeingAbleToDragWindow />
+            <ThinFixForNotBeingAbleToDragWindow />
+            <ThickFixForNotBeingAbleToDragWindow2 />
             <Container $hasTopPadding={isMac && isDesktopApp} $offset={offset}>
                 {children}
             </Container>
