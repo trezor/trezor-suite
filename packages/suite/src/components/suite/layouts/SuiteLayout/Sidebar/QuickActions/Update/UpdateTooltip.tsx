@@ -1,70 +1,18 @@
 import styled, { useTheme } from 'styled-components';
 import { useDevice, useSelector } from '../../../../../../../hooks/suite';
-import { Column, Row, Icon, iconSizes, Text, getColorForIconVariant } from '@trezor/components';
-import { ReactNode } from 'react';
+import { Column, Icon, iconSizes } from '@trezor/components';
 import {
+    mapUpdateStatusToIcon,
     mapUpdateStatusToVariant,
     UpdateStatus,
-    UpdateVariant,
-    mapUpdateStatusToIcon,
 } from './updateQuickActionTypes';
 import { Translation } from '../../../../../Translation';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
-
-type IconCircleWrapperProps = {
-    $variant: UpdateVariant;
-};
-
-const IconCircleWrapper = styled.div<IconCircleWrapperProps>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 14px;
-    height: 14px;
-
-    background-color: ${({ theme, $variant }) =>
-        getColorForIconVariant({ theme, variant: $variant })};
-    border-radius: ${borders.radii.full};
-    border: 1px solid ${({ theme }) => theme['borderElevationNegative']};
-    padding: ${spacingsPx.xxxs};
-`;
-
-type UpdateRowProps = {
-    children: ReactNode;
-    leftItem: ReactNode;
-    updateStatus: UpdateStatus;
-    header: ReactNode;
-};
-
-const UpdateRow = ({ leftItem, updateStatus, children, header }: UpdateRowProps) => {
-    const theme = useTheme();
-
-    const variant = mapUpdateStatusToVariant[updateStatus];
-
-    return (
-        <Row gap={spacings.xs}>
-            {leftItem}
-            <Column alignItems="start">
-                <Text>{header}</Text>
-                <Row gap={spacings.xxs}>
-                    <IconCircleWrapper $variant={variant}>
-                        <Icon
-                            name={mapUpdateStatusToIcon[updateStatus]}
-                            color={theme.iconDefaultInverted}
-                            size={iconSizes.extraSmall}
-                        />
-                    </IconCircleWrapper>
-                    <Text variant={variant}>{children}</Text>
-                </Row>
-            </Column>
-        </Row>
-    );
-};
+import { TooltipRow } from '../TooltipRow';
 
 const SuiteIconRectangle = styled.div`
     display: flex;
@@ -100,14 +48,15 @@ const DeviceRow = ({ updateStatus }: DeviceRowProps) => {
     const firmwareNewVersion = device.firmwareRelease?.release?.version?.join('.');
 
     return (
-        <UpdateRow
+        <TooltipRow
             leftItem={
                 <Icon
                     name={mapTrezorModelToIcon[device.features.internal_model]}
                     size={iconSizes.large}
                 />
             }
-            updateStatus={updateStatus}
+            circleIconName={mapUpdateStatusToIcon[updateStatus]}
+            variant={mapUpdateStatusToVariant[updateStatus]}
             header={<Translation id="TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE" />}
         >
             <Translation
@@ -117,7 +66,7 @@ const DeviceRow = ({ updateStatus }: DeviceRowProps) => {
                     newVersion: firmwareNewVersion,
                 }}
             />
-        </UpdateRow>
+        </TooltipRow>
     );
 };
 
@@ -134,20 +83,21 @@ const SuiteRow = ({ updateStatus }: SuiteRowProps) => {
     const suiteNewVersion = desktopUpdate.latest?.version;
 
     return (
-        <UpdateRow
+        <TooltipRow
             leftItem={
                 <SuiteIconRectangle>
                     <Icon name="trezor" size={iconSizes.medium} color={theme.iconDefaultInverted} />
                 </SuiteIconRectangle>
             }
-            updateStatus={updateStatus}
+            circleIconName={mapUpdateStatusToIcon[updateStatus]}
+            variant={mapUpdateStatusToVariant[updateStatus]}
             header={<Translation id="TR_QUICK_ACTION_TOOLTIP_TREZOR_SUITE" />}
         >
             <Translation
                 id={mapUpdateStatusToTranslation[updateStatus]}
                 values={{ currentVersion: suiteCurrentVersion, newVersion: suiteNewVersion }}
             />
-        </UpdateRow>
+        </TooltipRow>
     );
 };
 
