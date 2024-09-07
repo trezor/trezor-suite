@@ -1,26 +1,26 @@
 import styled, { useTheme } from 'styled-components';
 import { useDevice, useSelector } from '../../../../../../../hooks/suite';
-import { Column, Icon, iconSizes } from '@trezor/components';
+import { Column, getIconSize, Icon, IconSize, iconSizes } from '@trezor/components';
 import {
     mapUpdateStatusToIcon,
     mapUpdateStatusToVariant,
     UpdateStatus,
 } from './updateQuickActionTypes';
 import { Translation } from '../../../../../Translation';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { TooltipRow } from '../TooltipRow';
 
-const SuiteIconRectangle = styled.div`
+const SuiteIconRectangle = styled.div<{ $size: IconSize }>`
     display: flex;
     align-items: center;
     justify-content: center;
     padding-left: 0.5px;
-    width: ${spacingsPx.xl};
-    height: ${spacingsPx.xl};
+    width: ${({ $size }) => getIconSize($size)}px;
+    height: ${({ $size }) => getIconSize($size)}px;
 
     border-radius: 6px;
     background-color: ${({ theme }) => theme.iconDefault};
@@ -52,7 +52,7 @@ const DeviceRow = ({ updateStatus }: DeviceRowProps) => {
             leftItem={
                 <Icon
                     name={mapTrezorModelToIcon[device.features.internal_model]}
-                    size={iconSizes.large}
+                    size={iconSizes.medium}
                 />
             }
             circleIconName={mapUpdateStatusToIcon[updateStatus]}
@@ -85,8 +85,8 @@ const SuiteRow = ({ updateStatus }: SuiteRowProps) => {
     return (
         <TooltipRow
             leftItem={
-                <SuiteIconRectangle>
-                    <Icon name="trezor" size={iconSizes.medium} color={theme.iconDefaultInverted} />
+                <SuiteIconRectangle $size="medium">
+                    <Icon name="trezor" size={iconSizes.small} color={theme.iconDefaultInverted} />
                 </SuiteIconRectangle>
             }
             circleIconName={mapUpdateStatusToIcon[updateStatus]}
@@ -110,7 +110,7 @@ export const UpdateTooltip = ({ updateStatusDevice, updateStatusSuite }: UpdateT
     const isDesktopSuite = isDesktop();
 
     return (
-        <Column gap={spacings.xs} alignItems="start">
+        <Column gap={spacings.md} alignItems="start">
             <DeviceRow updateStatus={updateStatusDevice} />
             {isDesktopSuite && <SuiteRow updateStatus={updateStatusSuite} />}
         </Column>

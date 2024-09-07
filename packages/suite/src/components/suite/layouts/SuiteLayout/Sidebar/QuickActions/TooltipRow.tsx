@@ -49,7 +49,7 @@ export const TooltipRow = ({
     const theme = useTheme();
 
     return (
-        <Row gap={spacings.xs}>
+        <Row gap={spacings.sm}>
             {leftItem}
             <Column alignItems="start">
                 <Text>{header}</Text>
