@@ -19,7 +19,7 @@ const DebugAndExperimentalTooltip = ({
     isEapEnabled,
     isExperimental,
 }: DebugAndExperimentalTooltipProps) => (
-    <Column gap={spacings.xs} alignItems="start">
+    <Column gap={spacings.md} alignItems="start">
         {isExperimental && (
             <TooltipRow
                 circleIconName="check"
