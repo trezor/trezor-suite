@@ -18,8 +18,8 @@ const FixForNotBeingAbleToDragWindow = styled.div`
     width: 100%;
 `;
 
-const Container = styled.div<{ $hasTopPadding?: boolean; $offset: number }>`
-    ${({ $hasTopPadding, $offset }) => $hasTopPadding && `padding-top: ${$offset}px;`}
+const Container = styled.div<{ $offset: number }>`
+    ${({ $offset }) => `padding-top: ${$offset}px;`}
     width: 100%;
     height: 100%;
 `;
@@ -29,14 +29,12 @@ export const TrafficLightOffset = ({ children, offset = 35, isVisible = true }: 
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
 
-    if (!isVisible) return children;
+    if (!isVisible || !isMac || !isDesktopApp) return children;
 
     return (
         <>
             <FixForNotBeingAbleToDragWindow />
-            <Container $hasTopPadding={isMac && isDesktopApp} $offset={offset}>
-                {children}
-            </Container>
+            <Container $offset={offset}>{children}</Container>
         </>
     );
 };
