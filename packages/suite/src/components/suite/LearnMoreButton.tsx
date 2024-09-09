@@ -14,6 +14,7 @@ const StyledTrezorLink = styled(TrezorLink)`
 interface LearnMoreButtonProps extends Omit<ButtonProps, 'children'> {
     url: Url;
     children?: ReactNode;
+    textWrap?: boolean;
 }
 
 export const LearnMoreButton = ({
@@ -21,6 +22,7 @@ export const LearnMoreButton = ({
     className,
     size = 'tiny',
     url,
+    textWrap,
     ...buttonProps
 }: LearnMoreButtonProps) => (
     <StyledTrezorLink variant="nostyle" href={url} className={className}>
@@ -29,6 +31,7 @@ export const LearnMoreButton = ({
             size={size}
             icon="externalLink"
             iconAlignment="right"
+            textWrap={textWrap}
             {...buttonProps}
         >
             {children || <Translation id="TR_LEARN_MORE" />}

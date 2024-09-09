@@ -176,7 +176,11 @@ export const CustomFee = <TFieldValues extends FormState>({
                 variant="warning"
                 margin={{ bottom: spacings.xs }}
                 rightContent={
-                    <LearnMoreButton url={HELP_CENTER_TRANSACTION_FEES_URL} variant="warning" />
+                    <LearnMoreButton
+                        textWrap={false}
+                        url={HELP_CENTER_TRANSACTION_FEES_URL}
+                        variant="warning"
+                    />
                 }
             >
                 <Translation id="TR_CUSTOM_FEE_WARNING" />
