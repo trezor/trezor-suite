@@ -1324,7 +1324,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_OFFER_LOOKING',
     },
     TR_COINMARKET_OFFER_NO_FOUND: {
-        defaultMessage: 'No offers available for your request.',
+        defaultMessage: 'No offers available for your request. Change amount or currency.',
         id: 'TR_COINMARKET_OFFER_NO_FOUND',
     },
     TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY: {
@@ -1909,7 +1909,7 @@ export default defineMessages({
         id: 'TR_CREATE_SHARES_CARD_2',
     },
     TR_CREATE_SHARES_CARD_3: {
-        defaultMessage: "Make sure it's just you, no curious onlookers",
+        defaultMessage: "Make sure it's just you—no curious onlookers",
         id: 'TR_CREATE_SHARES_CARD_3',
     },
     TR_ENTER_EXISTING_BACKUP: {
@@ -3920,6 +3920,58 @@ export default defineMessages({
         defaultMessage: 'Install latest',
         id: 'TR_INSTALL_LATEST_FW',
     },
+    TR_QUICK_ACTION_TOOLTIP_TREZOR_SUITE: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_TREZOR_SUITE',
+        defaultMessage: 'Trezor Suite',
+    },
+    TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE',
+        defaultMessage: 'Trezor Device',
+    },
+    TR_QUICK_ACTION_TOOLTIP_UP_TO_DATE: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_UP_TO_DATE',
+        defaultMessage: 'Up-to-date ({currentVersion})',
+    },
+    TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE',
+        defaultMessage: 'Update available ({newVersion})',
+    },
+    TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE',
+        defaultMessage: 'Restart to update',
+    },
+    TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED: {
+        id: 'TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED',
+        defaultMessage: 'Just updated ({currentVersion})',
+    },
+    TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED: {
+        id: 'TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED',
+        defaultMessage: 'Enabled',
+    },
+    TR_TOR_ENABLED: {
+        id: 'TR_TOR_ENABLED',
+        defaultMessage: 'Enabled',
+    },
+    TR_TOR_DISABLED: {
+        id: 'TR_TOR_DISABLED',
+        defaultMessage: 'Disabled',
+    },
+    TR_TOR_DISABLING: {
+        id: 'TR_TOR_DISABLING',
+        defaultMessage: 'Disabling',
+    },
+    TR_TOR_ENABLING: {
+        id: 'TR_TOR_ENABLING',
+        defaultMessage: 'Enabling',
+    },
+    TR_TOR_ERROR: {
+        id: 'TR_TOR_ERROR',
+        defaultMessage: 'Error',
+    },
+    TR_TOR_MISBEHAVING: {
+        id: 'TR_TOR_MISBEHAVING',
+        defaultMessage: 'Misbehaving',
+    },
     TR_TOR_TITLE: {
         id: 'TR_TOR_TITLE',
         defaultMessage: 'Tor',
@@ -4983,7 +5035,8 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON: {
         id: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON',
-        defaultMessage: 'Enable the BNB Smart Chain without historical internal transactions.',
+        defaultMessage:
+            'Allows to enable network BNB Smart Chain. Missing historical internal transactions.',
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
@@ -8462,7 +8515,7 @@ export default defineMessages({
     },
     TR_STAKE_ETH_CARD_TITLE: {
         id: 'TR_STAKE_ETH_CARD_TITLE',
-        defaultMessage: 'The easiest way to earn {symbol}.',
+        defaultMessage: 'The easiest way to earn {symbol}',
     },
     TR_STAKE_ETH_EARN_REPEAT: {
         id: 'TR_STAKE_ETH_EARN_REPEAT',
