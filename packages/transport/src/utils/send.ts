@@ -57,5 +57,5 @@ export const sendChunks = async <T, E>(
         }
     }
 
-    return { success: true as const };
+    return { success: true as const, payload: undefined };
 };

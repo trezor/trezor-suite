@@ -110,12 +110,16 @@ describe('encoding json -> protobuf -> json', () => {
                 expect(result.length).toBeGreaterThanOrEqual(28 + length);
                 const decoded = await receiveAndParse(
                     parsedMessages,
-                    () => Promise.resolve(result),
+                    () => Promise.resolve({ success: true, payload: result }),
                     bridgeProtocol,
                 );
+                if (!decoded.success) {
+                    throw new Error('Decoding failed');
+                }
+                const { type, message } = decoded.payload;
                 // then decode message and check, whether decoded message matches original json
-                expect(decoded.type).toEqual(f.name);
-                expect(decoded.message).toEqual(f.in);
+                expect(type).toEqual(f.name);
+                expect(message).toEqual(f.in);
             });
 
             test('v1Protocol: buildMessage - createChunks - receiveAndParse', async () => {
@@ -137,13 +141,17 @@ describe('encoding json -> protobuf -> json', () => {
                     () => {
                         i++;
 
-                        return Promise.resolve(chunks[i]);
+                        return Promise.resolve({ success: true, payload: chunks[i] });
                     },
                     v1Protocol,
                 );
+                if (!decoded.success) {
+                    throw new Error('Decoding failed');
+                }
+                const { type, message } = decoded.payload;
                 // then decode message and check, whether decoded message matches original json
-                expect(decoded.type).toEqual(f.name);
-                expect(decoded.message).toEqual(f.in);
+                expect(type).toEqual(f.name);
+                expect(message).toEqual(f.in);
             });
         });
     });

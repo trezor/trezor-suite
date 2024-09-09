@@ -3,53 +3,54 @@ import { Root } from 'protobufjs/light';
 import { decode as decodeProtobuf, createMessageFromType } from '@trezor/protobuf';
 import { TransportProtocol } from '@trezor/protocol';
 
-async function receiveRest(
-    result: Buffer,
-    receiver: () => Promise<Buffer>,
-    offset: number,
-    expectedLength: number,
-    chunkHeader: Buffer,
-): Promise<void> {
-    if (offset >= expectedLength) {
-        return;
-    }
-    const data = await receiver();
-    // sanity check
-    if (data == null) {
-        throw new Error('Received no data.');
-    }
-    const length = offset + data.byteLength - chunkHeader.byteLength;
-    Buffer.from(data).copy(result, offset, chunkHeader.byteLength, length);
+import { success } from './result';
+import { AbstractApi } from '../api/abstract';
 
-    return receiveRest(result, receiver, length, expectedLength, chunkHeader);
-}
-
-export async function receive(receiver: () => Promise<Buffer>, protocol: TransportProtocol) {
-    const data = await receiver();
-    const { length, messageType, payload } = protocol.decode(data);
-    const result = Buffer.alloc(length);
-    const chunkHeader = protocol.getChunkHeader(Buffer.from(data));
-
-    if (length) {
-        payload.copy(result);
-    }
-
-    await receiveRest(result, receiver, payload.length, length, chunkHeader);
-
-    return { messageType, payload: result };
-}
-
-export async function receiveAndParse(
-    messages: Root,
-    receiver: () => Promise<Buffer>,
+export async function receive<T extends () => ReturnType<AbstractApi['read']>>(
+    receiver: T,
     protocol: TransportProtocol,
 ) {
-    const { messageType, payload } = await receive(receiver, protocol);
+    const readResult = await receiver();
+    if (!readResult.success) {
+        return readResult;
+    }
+    const data = readResult.payload;
+    const { length, messageType, payload } = protocol.decode(data);
+    let result = Buffer.alloc(length);
+    const chunkHeader = protocol.getChunkHeader(Buffer.from(data));
+
+    payload.copy(result);
+    let offset = payload.length;
+
+    while (offset < length) {
+        const readResult = await receiver();
+
+        if (!readResult.success) {
+            return readResult;
+        }
+        const data = readResult.payload;
+
+        Buffer.from(data).copy(result, offset, chunkHeader.byteLength);
+        offset += data.byteLength - chunkHeader.byteLength;
+    }
+
+    return success({ messageType, payload: result });
+}
+
+export async function receiveAndParse<T extends () => ReturnType<AbstractApi['read']>>(
+    messages: Root,
+    receiver: T,
+    protocol: TransportProtocol,
+) {
+    const readResult = await receive(receiver, protocol);
+    if (!readResult.success) return readResult;
+
+    const { messageType, payload } = readResult.payload;
     const { Message, messageName } = createMessageFromType(messages, messageType);
     const message = decodeProtobuf(Message, payload);
 
-    return {
+    return success({
         message,
         type: messageName,
-    };
+    });
 }

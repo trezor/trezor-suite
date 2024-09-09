@@ -174,6 +174,12 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     }: AbstractTransportMethodParams<'call'>) {
         return this.scheduleAction(
             async signal => {
+                const handleError = (error: string) => {
+                    // if user revokes usb permissions in browser we need a way how propagate that the device was technically disconnected,
+                    if (error === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
+                        this.enumerate();
+                    }
+                };
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
                     session,
                 });
@@ -187,51 +193,40 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 }
                 const { path } = getPathBySessionResponse.payload;
 
-                try {
-                    const protocol = customProtocol || v1Protocol;
-                    const bytes = buildMessage({
-                        messages: this.messages,
-                        name,
-                        data,
-                        encode: protocol.encode,
-                    });
-                    const chunks = createChunks(
-                        bytes,
-                        protocol.getChunkHeader(bytes),
-                        this.api.chunkSize,
-                    );
-                    const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
-                    const sendResult = await sendChunks(chunks, apiWrite);
-                    if (!sendResult.success) {
-                        throw new Error(sendResult.error);
-                    }
+                const protocol = customProtocol || v1Protocol;
+                const bytes = buildMessage({
+                    messages: this.messages,
+                    name,
+                    data,
+                    encode: protocol.encode,
+                });
+                const chunks = createChunks(
+                    bytes,
+                    protocol.getChunkHeader(bytes),
+                    this.api.chunkSize,
+                );
+                const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
+                const sendResult = await sendChunks(chunks, apiWrite);
 
-                    const message = await receiveAndParse(
-                        this.messages,
-                        () =>
-                            this.api.read(path, signal).then(result => {
-                                if (result.success) {
-                                    return result.payload;
-                                }
-                                throw new Error(result.error);
-                            }),
-                        protocol,
-                    );
+                if (!sendResult.success) {
+                    handleError(sendResult.error);
 
-                    return this.success(message);
-                } catch (err) {
-                    // if user revokes usb permissions in browser we need a way how propagate that the device was technically disconnected,
-                    if (err.message === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
-                        this.enumerate();
-                    }
-
-                    return this.unknownError(err, [
-                        ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
-                        ERRORS.DEVICE_NOT_FOUND,
-                        ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
-                        ERRORS.INTERFACE_DATA_TRANSFER,
-                    ]);
+                    return sendResult;
                 }
+
+                const readResult = await receiveAndParse(
+                    this.messages,
+                    () => this.api.read(path, signal),
+                    protocol,
+                );
+
+                if (!readResult.success) {
+                    handleError(readResult.error);
+
+                    return readResult;
+                }
+
+                return readResult;
             },
             { timeout: undefined },
         );
@@ -248,32 +243,24 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 }
                 const { path } = getPathBySessionResponse.payload;
 
-                try {
-                    const { encode, getChunkHeader } = protocol || v1Protocol;
-                    const bytes = buildMessage({
-                        messages: this.messages,
-                        name,
-                        data,
-                        encode,
-                    });
-                    const chunks = createChunks(bytes, getChunkHeader(bytes), this.api.chunkSize);
-                    const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
-                    const sendResult = await sendChunks(chunks, apiWrite);
-                    if (!sendResult.success) {
-                        throw new Error(sendResult.error);
-                    }
+                const { encode, getChunkHeader } = protocol || v1Protocol;
+                const bytes = buildMessage({
+                    messages: this.messages,
+                    name,
+                    data,
+                    encode,
+                });
+                const chunks = createChunks(bytes, getChunkHeader(bytes), this.api.chunkSize);
+                const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
+                const sendResult = await sendChunks(chunks, apiWrite);
 
-                    return this.success(undefined);
-                } catch (err) {
-                    if (err.message === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
+                if (!sendResult.success) {
+                    if (sendResult.error === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
                         this.enumerate();
                     }
-
-                    return this.unknownError(err, [
-                        ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
-                        ERRORS.ABORTED_BY_SIGNAL,
-                    ]);
                 }
+
+                return sendResult;
             },
             { timeout: undefined },
         );
@@ -293,32 +280,21 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 }
                 const { path } = getPathBySessionResponse.payload;
 
-                try {
-                    const protocol = customProtocol || v1Protocol;
-                    const message = await receiveAndParse(
-                        this.messages,
-                        () =>
-                            this.api.read(path, signal).then(result => {
-                                if (!result.success) {
-                                    throw new Error(result.error);
-                                }
+                const protocol = customProtocol || v1Protocol;
+                const message = await receiveAndParse(
+                    this.messages,
+                    () => this.api.read(path, signal),
+                    protocol,
+                );
 
-                                return result.payload;
-                            }),
-                        protocol,
-                    );
-
-                    return this.success(message);
-                } catch (err) {
-                    if (err.message === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
+                if (!message.success) {
+                    console.log(message.error);
+                    if (message.error === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
                         this.enumerate();
                     }
-
-                    return this.unknownError(err, [
-                        ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
-                        ERRORS.ABORTED_BY_SIGNAL,
-                    ]);
                 }
+
+                return message;
             },
             { timeout: undefined },
         );

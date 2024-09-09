@@ -317,7 +317,7 @@ describe('Usb', () => {
             abortController.abort();
         });
 
-        it('call - with valid message.', async () => {
+        it('call - with valid and invalid message.', async () => {
             const { transport, abortController } = await initTest();
             await transport.enumerate().promise;
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
@@ -330,13 +330,13 @@ describe('Usb', () => {
             expect(transport.getMessage('GetAddress')).toEqual(true);
 
             // doesn't really matter what what message we send
-            const res = await transport.call({
+            const res1 = await transport.call({
                 name: 'GetAddress',
                 data: {},
                 session: acquireRes.payload,
                 protocol: v1Protocol,
             }).promise;
-            expect(res).toEqual({
+            expect(res1).toEqual({
                 success: true,
                 payload: {
                     type: 'Success',
@@ -345,6 +345,19 @@ describe('Usb', () => {
                     },
                 },
             });
+
+            const res2 = await transport.call({
+                name: 'Foo-bar message',
+                data: {},
+                session: acquireRes.payload,
+                protocol: v1Protocol,
+            }).promise;
+            expect(res2).toEqual({
+                success: false,
+                error: 'unexpected error',
+                message: 'no such type: Foo-bar message',
+            });
+
             abortController.abort();
         });
 

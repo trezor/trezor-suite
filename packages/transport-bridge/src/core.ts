@@ -12,6 +12,7 @@ import { Session, BridgeProtocolMessage } from '@trezor/transport/src/types';
 import { createProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
 import { Log } from '@trezor/utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
+import { success, unknownError } from '@trezor/transport/src/utils/result';
 
 export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
     let api: AbstractApi;
@@ -52,7 +53,6 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         logger?.debug(`core: transport-interface-change ${JSON.stringify(descriptors)}`);
         sessionsClient.enumerateDone({ descriptors });
     });
-
     const writeUtil = async ({
         path,
         data,
@@ -96,34 +96,18 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         logger?.debug(`core: readUtil protocol ${protocol.name}`);
         try {
             const receiveProtocol = protocol.name === 'bridge' ? protocolV1 : protocol;
-            const { messageType, payload } = await receiveUtil(() => {
-                logger?.debug(`core: readUtil: api.read: reading next chunk`);
-
-                return api.read(path, signal).then(result => {
-                    if (result.success) {
-                        logger?.debug(
-                            `core: readUtil partial result: byteLength: ${result.payload.byteLength}`,
-                        );
-
-                        return result.payload;
-                    }
-                    logger?.debug(`core: readUtil partial result: error: ${result.error}`);
-                    throw new Error(result.error);
-                });
-            }, receiveProtocol);
-
+            const res = await receiveUtil(() => api.read(path, signal), receiveProtocol);
+            if (!res.success) return res;
+            const { messageType, payload } = res.payload;
             logger?.debug(
                 `core: readUtil result: messageType: ${messageType} byteLength: ${payload?.byteLength}`,
             );
 
-            return {
-                success: true as const,
-                payload: protocol.encode(payload, { messageType }).toString('hex'),
-            };
+            return success(protocol.encode(payload, { messageType }).toString('hex'));
         } catch (err) {
             logger?.debug(`core: readUtil catch: ${err.message}`);
 
-            return { success: false as const, error: err.message as string };
+            return unknownError(err, []);
         }
     };
 
