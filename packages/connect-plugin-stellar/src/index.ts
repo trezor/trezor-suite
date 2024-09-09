@@ -65,7 +65,8 @@ const transformAsset = (asset: Asset) => {
  * @param {string} amount
  * @returns {string}
  */
-const transformAmount = (amount: number) => new BigNumber(amount).times(10000000).toString();
+const transformAmount = (amount: number | string) =>
+    new BigNumber(amount).times(10000000).toString();
 
 /**
  * Transforms Memo to TrezorConnect.StellarTransaction.Memo
