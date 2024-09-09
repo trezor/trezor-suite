@@ -86,7 +86,7 @@
         "@types/web": "^0.0.162",
         "events": "^3.3.0",
         "ripple-lib": "^1.10.1",
-        "socks-proxy-agent": "6.1.1",
+        "socks-proxy-agent": "8.0.4",
         "ws": "^8.18.0"
     },
     "peerDependencies": {

@@ -14,7 +14,7 @@
     "dependencies": {
         "@trezor/node-utils": "workspace:^",
         "@trezor/utils": "workspace:*",
-        "socks-proxy-agent": "6.1.1"
+        "socks-proxy-agent": "8.0.4"
     },
     "devDependencies": {
         "ts-node": "^10.9.1",
