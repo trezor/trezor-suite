@@ -26,7 +26,7 @@ describe('sessions', () => {
         const client1 = new SessionsClient({ requestFn });
         await client1.handshake();
 
-        await client1.enumerateDone({ descriptors: [{ path: '1', type: 1 }] });
+        await client1.enumerateDone({ descriptors: [{ path: 'abc', type: 1 }] });
 
         const acquireIntent = await client1.acquireIntent({ path: '1', previous: null });
 
@@ -35,9 +35,10 @@ describe('sessions', () => {
             id: 2,
             payload: {
                 session: '1',
+                path: 'abc', // <= pathInternal
                 descriptors: [
                     {
-                        path: '1',
+                        path: '1', // <= pathPublic
                         session: '1',
                         type: 1,
                     },

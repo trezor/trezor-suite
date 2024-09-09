@@ -19,6 +19,7 @@ import {
     Success,
     AnyError,
     Logger,
+    PathPublic,
 } from '../types';
 import { success, error, unknownError } from '../utils/result';
 
@@ -26,12 +27,12 @@ import * as ERRORS from '../errors';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 
 export type AcquireInput = {
-    path: string;
+    path: PathPublic;
     previous: Session | null;
 };
 
 export type ReleaseInput = {
-    path: string;
+    path: PathPublic;
     session: Session;
     onClose?: boolean;
 };

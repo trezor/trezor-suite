@@ -5,6 +5,8 @@ import type {
     ResultWithTypedError,
     Session,
     Success,
+    PathPublic,
+    PathInternal,
 } from '../types';
 import * as ERRORS from '../errors';
 
@@ -25,12 +27,12 @@ export type EnumerateDoneResponse = BackgroundResponse<{
 export type AcquireIntentRequest = AcquireInput;
 
 export type AcquireIntentResponse = BackgroundResponseWithError<
-    { session: Session },
+    { session: Session; path: PathInternal },
     typeof ERRORS.SESSION_WRONG_PREVIOUS | typeof ERRORS.DESCRIPTOR_NOT_FOUND
 >;
 
 export type AcquireDoneRequest = {
-    path: string;
+    path: PathPublic;
 };
 
 export type AcquireDoneResponse = BackgroundResponseWithError<
@@ -45,12 +47,12 @@ export interface ReleaseIntentRequest {
 }
 
 export type ReleaseIntentResponse = BackgroundResponseWithError<
-    { path: string },
+    { path: PathInternal },
     typeof ERRORS.SESSION_NOT_FOUND
 >;
 
 export interface ReleaseDoneRequest {
-    path: string;
+    path: PathInternal;
 }
 
 export type ReleaseDoneResponse = BackgroundResponse<{
@@ -67,7 +69,7 @@ export interface GetPathBySessionRequest {
 
 export type GetPathBySessionResponse = BackgroundResponseWithError<
     {
-        path: string;
+        path: PathInternal;
     },
     typeof ERRORS.SESSION_NOT_FOUND
 >;
