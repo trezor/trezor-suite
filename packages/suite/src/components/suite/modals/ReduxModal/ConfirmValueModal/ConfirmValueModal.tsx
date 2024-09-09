@@ -136,7 +136,12 @@ export const ConfirmValueModal = ({
                                 />
                             </Card>
                         </Column>
-                        <Column flex="1 1 50%" justifyContent="space-between" alignItems="stretch">
+                        <Column
+                            flex="1 1 50%"
+                            justifyContent="space-between"
+                            alignItems="stretch"
+                            gap={spacings.lg}
+                        >
                             <TransactionReviewOutputElement
                                 indicator={
                                     <TransactionReviewStepIndicator state={state} size={16} />
