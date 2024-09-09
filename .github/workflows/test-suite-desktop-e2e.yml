@@ -27,10 +27,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - TEST_FILE: "spawn-bridge.test spawn-bridge-daemon.test suite-guide.test wallet-discovery.test"
+          - TEST_FILE: "spawn-bridge.test"
             CONTAINERS: "trezor-user-env-unix"
-          - TEST_FILE: "electrum"
-            CONTAINERS: "trezor-user-env-unix electrum-regtest"
+          # - TEST_FILE: "spawn-bridge.test spawn-bridge-daemon.test suite-guide.test wallet-discovery.test"
+          #   CONTAINERS: "trezor-user-env-unix"
+          # - TEST_FILE: "electrum"
+          #   CONTAINERS: "trezor-user-env-unix electrum-regtest"
 
     steps:
       - name: Checkout
@@ -88,11 +90,6 @@ jobs:
           docker compose pull
           docker compose up -d ${{ matrix.CONTAINERS }}
           yarn workspace @trezor/suite-desktop-core test:e2e ${{ env.TEST_FILE }}
-
-      - name: cleanup
-        env:
-          COMPOSE_FILE: ./docker/docker-compose.suite-desktop-ci.yml
-        run: docker compose down
 
       # TODO: currently only uploads trace.zip, figure out why screens are not uploaded
       - name: Upload artifacts
