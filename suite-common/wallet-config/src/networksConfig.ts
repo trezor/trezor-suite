@@ -471,7 +471,7 @@ export const networks = {
             },
         },
         coingeckoId: undefined,
-        coingeckoNativeId: undefined,
+        coingeckoNativeId: 'test-bitcoin', // fake, coingecko does not have testnets
     },
     regtest: {
         symbol: 'regtest',
@@ -568,7 +568,7 @@ export const networks = {
         customBackends: [],
         accountTypes: {},
         coingeckoId: undefined,
-        coingeckoNativeId: undefined,
+        coingeckoNativeId: 'test-ripple', // fake, coingecko does not have testnets
     },
     tada: {
         // icarus derivation

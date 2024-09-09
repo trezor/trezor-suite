@@ -19,7 +19,7 @@ export const CoinmarketCoinLogo = ({
                 coingeckoId={networkId}
                 contractAddress={contractAddress}
                 size={size}
-                placeholder={networkId}
+                placeholder={networkId.toUpperCase()}
                 margin={margin}
             />
         </Wrapper>

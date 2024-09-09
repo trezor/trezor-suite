@@ -10,19 +10,19 @@ import {
 } from 'src/constants/wallet/coinmarket/form';
 import { FiatCurrencyCode, CryptoId } from 'invity-api';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { getCoingeckoId } from '@suite-common/wallet-config';
+import { networks } from '@suite-common/wallet-config';
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
     buyInfo: BuyInfo | undefined,
 ): CoinmarketBuyFormDefaultValuesProps => {
     const { buildDefaultCryptoOption } = useCoinmarketInfo();
-    const cryptoId = getCoingeckoId(accountSymbol) as CryptoId;
+    const cryptoId = networks[accountSymbol]?.coingeckoNativeId;
 
     const country = buyInfo?.buyInfo?.country;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     const defaultCrypto = useMemo(
-        () => buildDefaultCryptoOption(cryptoId),
+        () => buildDefaultCryptoOption(cryptoId as CryptoId | undefined),
         [buildDefaultCryptoOption, cryptoId],
     );
     const defaultPaymentMethod: CoinmarketPaymentMethodListProps = useMemo(

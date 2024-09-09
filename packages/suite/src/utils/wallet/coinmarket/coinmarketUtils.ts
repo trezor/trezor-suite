@@ -32,7 +32,7 @@ import {
 } from 'src/types/coinmarket/coinmarket';
 import { v4 as uuidv4 } from 'uuid';
 import { BigNumber } from '@trezor/utils';
-import { isTestnet, sortByCoin } from '@suite-common/wallet-utils';
+import { sortByCoin } from '@suite-common/wallet-utils';
 
 export const cryptoPlatformSeparator = '--';
 
@@ -61,6 +61,14 @@ export function cryptoIdToNetworkSymbol(cryptoId: CryptoId): NetworkSymbol | und
 
 export function toTokenCryptoId(networkId: NetworkSymbol, contractAddress: string): CryptoId {
     return `${getCoingeckoId(networkId)}${cryptoPlatformSeparator}${contractAddress}` as CryptoId;
+}
+
+/** Convert testnet cryptoId to prod cryptoId (test-bitcoin -> bitcoin) */
+export function testnetToProdCryptoId(cryptoId: CryptoId): CryptoId {
+    const { networkId, contractAddress } = parseCryptoId(cryptoId);
+
+    return ((networkId.split('test-')?.[1] ?? networkId) +
+        (contractAddress ? `${cryptoPlatformSeparator}${contractAddress}` : '')) as CryptoId;
 }
 
 export const getNetworkName = (networkSymbol: NetworkSymbol) => {
@@ -320,7 +328,9 @@ export const coinmarketBuildAccountOptions = ({
             accountType,
         } = account;
 
-        if (isTestnet(accountSymbol)) return;
+        if (!networks[accountSymbol].coingeckoNativeId) {
+            return;
+        }
 
         const groupLabel =
             accountLabels[account.key] ??

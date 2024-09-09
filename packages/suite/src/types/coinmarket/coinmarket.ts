@@ -161,7 +161,7 @@ export interface CoinmarketInfoProps {
         cryptoIds: Set<CryptoId>,
         excludedCryptoIds?: Set<CryptoId>,
     ) => CoinmarketOptionsGroupProps[];
-    buildDefaultCryptoOption: (cryptoId: CryptoId) => CoinmarketCryptoListProps;
+    buildDefaultCryptoOption: (cryptoId: CryptoId | undefined) => CoinmarketCryptoListProps;
 }
 
 export interface CoinmarketCoinLogoProps {
