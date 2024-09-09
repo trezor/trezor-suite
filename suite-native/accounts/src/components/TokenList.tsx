@@ -7,10 +7,7 @@ import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    getEthereumTokenName,
-    selectEthereumAccountsTokensWithFiatRates,
-} from '@suite-native/tokens';
+import { getEthereumTokenName, selectEthereumAccountsKnownTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OnSelectAccount } from '../types';
@@ -29,7 +26,7 @@ const titleContainerStyle = prepareNativeStyle(utils => ({
 export const TokenList = ({ account, onSelectAccount }: TokenListProps) => {
     const { applyStyle } = useNativeStyles();
     const accountTokens = useSelector((state: AccountsRootState & TokenDefinitionsRootState) =>
-        selectEthereumAccountsTokensWithFiatRates(state, account.key),
+        selectEthereumAccountsKnownTokens(state, account.key),
     );
 
     if (A.isEmpty(accountTokens)) return null;
@@ -50,7 +47,7 @@ export const TokenList = ({ account, onSelectAccount }: TokenListProps) => {
                         onSelectAccount({
                             account,
                             tokenAddress: token.contract,
-                            hasAnyTokensWithFiatRates: true,
+                            hasAnyKnownTokens: true,
                         })
                     }
                     balance={token.balance}

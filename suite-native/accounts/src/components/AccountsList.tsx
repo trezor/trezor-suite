@@ -38,8 +38,8 @@ export const AccountsList = ({
 
     const handleSetBottomSheetAccount: OnSelectAccount = useCallback(
         params => {
-            const { account, hasAnyTokensWithFiatRates } = params;
-            if (hasAnyTokensWithFiatRates && hideTokensIntoModal) {
+            const { account, hasAnyKnownTokens } = params;
+            if (hasAnyKnownTokens && hideTokensIntoModal) {
                 setBottomSheetAccountAtom(account);
 
                 return;

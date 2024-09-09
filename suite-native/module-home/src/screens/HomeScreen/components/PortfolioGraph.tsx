@@ -30,6 +30,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     } = useGraphForAllDeviceAccounts({
         fiatCurrency: fiatCurrencyCode,
     });
+
     const setSelectedPoint = useSetAtom(selectedPointAtom);
     const setReferencePoint = useSetAtom(referencePointAtom);
 

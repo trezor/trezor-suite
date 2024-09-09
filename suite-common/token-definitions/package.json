@@ -24,7 +24,8 @@
         "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "jws": "^4.0.0"
+        "jws": "^4.0.0",
+        "proxy-memoize": "2.0.2"
     },
     "devDependencies": {
         "ajv": "^8.17.1"

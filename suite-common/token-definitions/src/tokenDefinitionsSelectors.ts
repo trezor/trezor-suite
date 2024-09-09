@@ -1,8 +1,8 @@
-import { A, F, G, pipe } from '@mobily/ts-belt';
+import { getUntracked } from 'proxy-memoize';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenAddress } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
-import { Account, TokenAddress } from '@suite-common/wallet-types';
 
 import { TokenDefinitionsRootState } from './tokenDefinitionsTypes';
 import { isTokenDefinitionKnown } from './tokenDefinitionsUtils';
@@ -23,10 +23,13 @@ export const selectNftDefinitions = (
 ) => state.tokenDefinitions?.[networkSymbol]?.nft;
 
 export const selectCoinDefinition = (
-    state: TokenDefinitionsRootState,
+    stateTracked: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
     contractAddress: TokenAddress,
 ) => {
+    // We need to use getUntracked here otherwise this could interfere with memoization in isTokenDefinitionKnown
+    const state = getUntracked(stateTracked) ?? stateTracked;
+
     const coinDefinitions = state.tokenDefinitions?.[networkSymbol]?.coin?.data;
     const isKnown = isTokenDefinitionKnown(coinDefinitions, networkSymbol, contractAddress);
 
@@ -46,28 +49,5 @@ export const selectFilterKnownTokens = (
 ) => {
     return tokens.filter(token =>
         selectCoinDefinition(state, networkSymbol, token.contract as TokenAddress),
-    );
-};
-
-export const selectValidTokensByDeviceStateAndNetworkSymbol = (
-    state: TokenDefinitionsRootState,
-    accounts: Account[],
-    networkSymbol: NetworkSymbol,
-): TokenInfo[] => {
-    return pipe(
-        accounts,
-        A.map(account => account.tokens),
-        A.flat,
-        A.uniq,
-        A.filter(
-            token =>
-                G.isNotNullable(token) &&
-                selectIsSpecificCoinDefinitionKnown(
-                    state,
-                    networkSymbol,
-                    token.contract as TokenAddress,
-                ),
-        ),
-        F.toMutable,
     );
 };

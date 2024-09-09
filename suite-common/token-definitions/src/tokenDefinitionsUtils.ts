@@ -31,7 +31,7 @@ export const getContractAddressForNetwork = (
 };
 
 // Using Set greatly improves performance of this function because of O(1) complexity instead of O(n) for Array.includes
-const tokenDefinitionsMap = new Map<SimpleTokenStructure, Set<string>>();
+const tokenDefinitionsMap = new WeakMap<SimpleTokenStructure, Set<string>>();
 export const isTokenDefinitionKnown = (
     tokenDefinitions: SimpleTokenStructure | undefined,
     networkSymbol: NetworkSymbol,

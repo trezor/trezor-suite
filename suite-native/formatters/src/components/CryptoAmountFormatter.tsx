@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { G } from '@mobily/ts-belt';
 
 import { TextProps } from '@suite-native/atoms';
@@ -17,48 +19,50 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         decimals?: number;
     };
 
-export const CryptoAmountFormatter = ({
-    value,
-    network,
-    isBalance = true,
-    isDiscreetText = true,
-    variant = 'hint',
-    color = 'textSubdued',
-    decimals,
-    ...textProps
-}: CryptoToFiatAmountFormatterProps) => {
-    const { CryptoAmountFormatter: formatter } = useFormatters();
+export const CryptoAmountFormatter = React.memo(
+    ({
+        value,
+        network,
+        isBalance = true,
+        isDiscreetText = true,
+        variant = 'hint',
+        color = 'textSubdued',
+        decimals,
+        ...textProps
+    }: CryptoToFiatAmountFormatterProps) => {
+        const { CryptoAmountFormatter: formatter } = useFormatters();
 
-    if (G.isNullable(value)) return <EmptyAmountText />;
+        if (G.isNullable(value)) return <EmptyAmountText />;
 
-    const maxDisplayedDecimals = decimals ?? networks[network].decimals;
+        const maxDisplayedDecimals = decimals ?? networks[network].decimals;
 
-    const stringValue = G.isNumber(value) ? value.toString() : value;
+        const stringValue = G.isNumber(value) ? value.toString() : value;
 
-    let formattedValue = formatter.format(stringValue, {
-        isBalance,
-        maxDisplayedDecimals,
-        symbol: network,
-        isEllipsisAppended: false,
-    });
+        let formattedValue = formatter.format(stringValue, {
+            isBalance,
+            maxDisplayedDecimals,
+            symbol: network,
+            isEllipsisAppended: false,
+        });
 
-    // due to possible sat <-> btc conversion in previous formatter
-    // we need to format the number after the currency was added (e.g. '123903 sat')
-    // split value and currency, format value with thousands commas
-    const splitValue = formattedValue.split(' ');
-    if (splitValue.length > 1) {
-        formattedValue = `${formatNumberWithThousandCommas(splitValue[0])} ${splitValue.slice(1).join(' ')}`;
-    } else if (splitValue.length > 0) {
-        formattedValue = formatNumberWithThousandCommas(splitValue[0]);
-    }
+        // due to possible sat <-> btc conversion in previous formatter
+        // we need to format the number after the currency was added (e.g. '123903 sat')
+        // split value and currency, format value with thousands commas
+        const splitValue = formattedValue.split(' ');
+        if (splitValue.length > 1) {
+            formattedValue = `${formatNumberWithThousandCommas(splitValue[0])} ${splitValue.slice(1).join(' ')}`;
+        } else if (splitValue.length > 0) {
+            formattedValue = formatNumberWithThousandCommas(splitValue[0]);
+        }
 
-    return (
-        <AmountText
-            value={formattedValue}
-            isDiscreetText={isDiscreetText}
-            variant={variant}
-            color={color}
-            {...textProps}
-        />
-    );
-};
+        return (
+            <AmountText
+                value={formattedValue}
+                isDiscreetText={isDiscreetText}
+                variant={variant}
+                color={color}
+                {...textProps}
+            />
+        );
+    },
+);

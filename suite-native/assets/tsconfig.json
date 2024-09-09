@@ -13,6 +13,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -29,7 +32,6 @@
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../tokens" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/styles" }
     ]
 }

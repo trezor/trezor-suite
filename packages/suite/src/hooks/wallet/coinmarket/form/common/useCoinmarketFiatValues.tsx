@@ -61,10 +61,12 @@ export const useCoinmarketFiatValues = ({
 
             const updateFiatRatesResult = await dispatch(
                 updateFiatRatesThunk({
-                    ticker: {
-                        symbol: networkSymbol,
-                        tokenAddress: tokenAddressTyped,
-                    },
+                    tickers: [
+                        {
+                            symbol: networkSymbol,
+                            tokenAddress: tokenAddressTyped,
+                        },
+                    ],
                     localCurrency: value,
                     rateType: 'current',
                     fetchAttemptTimestamp: Date.now() as Timestamp,

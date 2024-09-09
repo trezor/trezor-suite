@@ -4,7 +4,11 @@ import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
 import { SettingsSliceRootState } from '@suite-native/settings';
-import { isCoinWithTokens, selectAccountHasAnyTokensWithFiatRates } from '@suite-native/tokens';
+import {
+    isCoinWithTokens,
+    selectAccountHasAnyKnownToken,
+    TokensRootState,
+} from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { selectAccountFiatBalance } from '../selectors';
@@ -28,9 +32,8 @@ export const AccountListItemInteractive = ({
     hideTokens = false,
 }: AccountListItemInteractiveProps) => {
     const { applyStyle } = useNativeStyles();
-    const hasAnyTokensWithFiatRates = useSelector(
-        (state: SettingsSliceRootState & FiatRatesRootState & AccountsRootState) =>
-            selectAccountHasAnyTokensWithFiatRates(state, account.key),
+    const hasAnyKnownTokens = useSelector((state: TokensRootState) =>
+        selectAccountHasAnyKnownToken(state, account.key),
     );
     const doesCoinSupportTokens = isCoinWithTokens(account.symbol);
 
@@ -40,7 +43,7 @@ export const AccountListItemInteractive = ({
     );
 
     const shouldShowTokens = doesCoinSupportTokens && !hideTokens;
-    const showSeparator = hasAnyTokensWithFiatRates && shouldShowTokens;
+    const showSeparator = hasAnyKnownTokens && shouldShowTokens;
 
     return (
         <Box>
@@ -48,7 +51,7 @@ export const AccountListItemInteractive = ({
                 <HStack alignItems="center" justifyContent="space-between" marginBottom="medium">
                     <Text variant="highlight">{account.accountLabel}</Text>
 
-                    {hasAnyTokensWithFiatRates && (
+                    {hasAnyKnownTokens && (
                         <VStack spacing={0} alignItems="flex-end">
                             <FiatAmountFormatter
                                 numberOfLines={1}
@@ -74,7 +77,7 @@ export const AccountListItemInteractive = ({
                     onPress={() =>
                         onSelectAccount({
                             account,
-                            hasAnyTokensWithFiatRates,
+                            hasAnyKnownTokens,
                         })
                     }
                 />

@@ -7,7 +7,7 @@ import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { selectEthereumTokenHasFiatRates } from '@suite-native/tokens';
+import { selectEthereumTokenIsKnown } from '@suite-native/tokens';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
@@ -27,7 +27,7 @@ export const EthereumTokenInfo = ({
     contract,
 }: EthereumTokenInfoProps) => {
     const ethereumSymbolHasFiatRates = useSelector((state: TokenDefinitionsRootState) =>
-        selectEthereumTokenHasFiatRates(state, contract),
+        selectEthereumTokenIsKnown(state, contract),
     );
 
     if (!symbol || !balance || !name || !ethereumSymbolHasFiatRates) return null;
