@@ -8,7 +8,7 @@ import {
     CoinmarketInfoProps,
     CoinmarketOptionsGroupProps,
 } from 'src/types/coinmarket/coinmarket';
-import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { parseCryptoId, testnetToProdCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const supportedAddressValidatorSymbols = new Set(
     addressValidator.getCurrencies().map(c => c.symbol),
@@ -65,7 +65,9 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                     return;
                 }
 
-                const nativeCoinSymbol = cryptoIdToNativeCoinSymbol(cryptoId);
+                const nativeCoinSymbol = cryptoIdToNativeCoinSymbol(
+                    testnetToProdCryptoId(cryptoId),
+                );
                 if (!nativeCoinSymbol || !supportedAddressValidatorSymbols.has(nativeCoinSymbol)) {
                     return;
                 }
@@ -102,8 +104,8 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
     );
 
     const buildDefaultCryptoOption = useCallback(
-        (cryptoId: CryptoId) => {
-            const coinInfo = coins[cryptoId];
+        (cryptoId: CryptoId | undefined) => {
+            const coinInfo = cryptoId && coins[cryptoId];
             if (coinInfo) {
                 return toCryptoOption(cryptoId, coinInfo);
             }

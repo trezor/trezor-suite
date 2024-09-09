@@ -16,6 +16,8 @@ import { spacingsPx, typography } from '@trezor/theme';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { getNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { networks } from '@suite-common/wallet-config';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { CryptoId } from 'invity-api';
 
 const AddressWrapper = styled.div`
     display: flex;
@@ -63,7 +65,7 @@ const buildOptions = (addresses: Account['addresses']) => {
 interface CoinmarketAddressOptionsProps<TFieldValues extends CoinmarketBuyAddressOptionsType>
     extends Pick<UseFormReturn<TFieldValues>, 'setValue'> {
     control: Control<TFieldValues>;
-    receiveSymbol?: string;
+    receiveSymbol?: CryptoId;
     account?: Account;
     address?: string;
     menuPlacement?: MenuPlacement;
@@ -86,6 +88,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
     const accountMetadata = useSelector(state =>
         selectLabelingDataForAccount(state, account?.key || ''),
     );
+    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
 
     useEffect(() => {
         if (!address && addresses) {
@@ -125,7 +128,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                                     <Amount>
                                         <CoinmarketBalance
                                             balance={balance}
-                                            cryptoSymbolLabel={receiveSymbol.toUpperCase()}
+                                            cryptoSymbolLabel={cryptoIdToCoinSymbol(receiveSymbol)}
                                             networkSymbol={account.symbol}
                                         />
                                         <span>•</span>

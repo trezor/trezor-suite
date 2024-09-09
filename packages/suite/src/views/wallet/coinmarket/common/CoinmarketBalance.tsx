@@ -3,6 +3,7 @@ import { TokenAddress } from '@suite-common/wallet-types';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
 import { FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
+import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
     coinmarketGetAccountLabel,
@@ -41,6 +42,11 @@ export const CoinmarketBalance = ({
             ? amountToSatoshi(stringBalance, networkDecimals)
             : stringBalance;
 
+    const { fiatAmount } = useFiatFromCryptoValue({
+        amount: stringBalance || '',
+        symbol: networkSymbol || '',
+    });
+
     if (showOnlyAmount) {
         if (!balance ?? isNaN(Number(balance))) return null;
 
@@ -53,6 +59,7 @@ export const CoinmarketBalance = ({
                     </HiddenPlaceholder>
                 ) : (
                     stringBalance &&
+                    fiatAmount &&
                     networkSymbol &&
                     stringBalance !== '0' && (
                         <FiatValue
@@ -73,7 +80,7 @@ export const CoinmarketBalance = ({
             <HiddenPlaceholder>
                 {formattedBalance} {balanceCurrency}
             </HiddenPlaceholder>
-            {stringBalance && networkSymbol && stringBalance !== '0' && (
+            {stringBalance && fiatAmount && networkSymbol && stringBalance !== '0' && (
                 <>
                     {' '}
                     (

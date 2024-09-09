@@ -13,6 +13,7 @@ import {
     coinmarketGetRoundedFiatAmount,
     coinmarketGetAmountLabels,
     coinmarketGetAccountLabel,
+    testnetToProdCryptoId,
 } from '../coinmarketUtils';
 import {
     FIXTURE_ACCOUNTS,
@@ -301,5 +302,24 @@ describe('coinmarket utils', () => {
         expect(coinmarketGetAccountLabel('BTC', false)).toBe('BTC');
         expect(coinmarketGetAccountLabel('USDT', true)).toBe('USDT');
         expect(coinmarketGetAccountLabel('USDT', false)).toBe('USDT');
+    });
+
+    it('testnetToProdCryptoId', () => {
+        expect(testnetToProdCryptoId('test-bitcoin' as CryptoId)).toEqual('bitcoin');
+        expect(testnetToProdCryptoId('bitcoin' as CryptoId)).toEqual('bitcoin');
+
+        expect(testnetToProdCryptoId('test-ripple' as CryptoId)).toEqual('ripple');
+        expect(testnetToProdCryptoId('ripple' as CryptoId)).toEqual('ripple');
+
+        expect(
+            testnetToProdCryptoId(
+                'test-ethereum--0x1234123412341234123412341234123412341236' as CryptoId,
+            ),
+        ).toEqual('ethereum--0x1234123412341234123412341234123412341236');
+        expect(
+            testnetToProdCryptoId(
+                'ethereum--0x1234123412341234123412341234123412341236' as CryptoId,
+            ),
+        ).toEqual('ethereum--0x1234123412341234123412341234123412341236');
     });
 });
