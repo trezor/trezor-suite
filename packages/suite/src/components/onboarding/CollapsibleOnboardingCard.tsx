@@ -1,7 +1,7 @@
 import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
-import { Elevation, borders, mapElevationToBackground, zIndices } from '@trezor/theme';
+import { Elevation, borders, mapElevationToBackground, zIndices, spacings } from '@trezor/theme';
 import {
     ElevationUp,
     H2,
@@ -130,14 +130,6 @@ const ChildrenWrapper = styled.div`
     align-items: center;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Heading = styled(H2)<{ $withDescription?: boolean }>`
-    font-size: 28px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-bottom: ${({ $withDescription }) => ($withDescription ? '16px' : '36px')};
-    text-align: center;
-`;
-
 const Description = styled.div<{ $hasChildren?: boolean }>`
     padding: 0 60px 36px;
     text-align: center;
@@ -249,7 +241,12 @@ export const CollapsibleOnboardingCard = ({
                             )}
 
                             {heading && (
-                                <Heading $withDescription={!!description}>{heading}</Heading>
+                                <H2
+                                    margin={{ bottom: !!description ? spacings.sm : spacings.xxl }}
+                                    align="center"
+                                >
+                                    {heading}
+                                </H2>
                             )}
 
                             {description && (
