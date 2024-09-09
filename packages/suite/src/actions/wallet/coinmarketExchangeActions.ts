@@ -36,7 +36,7 @@ export type CoinmarketExchangeAction =
           quote: ExchangeTrade | undefined;
       }
     | { type: typeof COINMARKET_EXCHANGE.CLEAR_QUOTES }
-    | { type: typeof COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT; account: Account }
+    | { type: typeof COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT; account: Account | undefined }
     | {
           type: typeof COINMARKET_COMMON.SAVE_TRADE;
           date: string;
@@ -148,7 +148,9 @@ export const clearQuotes = (): CoinmarketExchangeAction => ({
 export const verifyAddress = (account: Account, address?: string, path?: string) =>
     verifyExchangeAddress(account, address, path, COINMARKET_EXCHANGE.VERIFY_ADDRESS);
 
-export const setCoinmarketExchangeAccount = (account: Account): CoinmarketExchangeAction => ({
+export const setCoinmarketExchangeAccount = (
+    account: Account | undefined,
+): CoinmarketExchangeAction => ({
     type: COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT,
     account,
 });
