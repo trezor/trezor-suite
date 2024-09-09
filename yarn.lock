@@ -11013,7 +11013,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    "@types/web": "npm:^0.0.157"
+    "@types/web": "npm:^0.0.162"
     events: "npm:^3.3.0"
     fs-extra: "npm:^11.2.0"
     html-webpack-plugin: "npm:^5.6.0"
@@ -12074,8 +12074,8 @@ __metadata:
     "@trezor/protocol": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/bytebuffer": "npm:^5.0.48"
-    "@types/sharedworker": "npm:^0.0.123"
+    "@types/bytebuffer": "npm:^5.0.49"
+    "@types/sharedworker": "npm:^0.0.124"
     "@types/w3c-web-usb": "npm:^1.0.10"
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
@@ -12339,13 +12339,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/bytebuffer@npm:^5.0.48":
-  version: 5.0.48
-  resolution: "@types/bytebuffer@npm:5.0.48"
+"@types/bytebuffer@npm:^5.0.49":
+  version: 5.0.49
+  resolution: "@types/bytebuffer@npm:5.0.49"
   dependencies:
     "@types/long": "npm:^3.0.0"
     "@types/node": "npm:*"
-  checksum: 10/4a43725692fc97f7219ab3ffbd8bf31ce6796b979727d7dc0e0ab6be62edc261369fc98ea3d0e1e56c50b0016a60c4369fb5eac662c6aec69829040571fa15f6
+  checksum: 10/31eb2521d2710f256c3d17a3e8d87f04394f335b29f7276c31c054ddbf4795146f2663effa3b6e910442da69238e994d2db9f7d5918eead4313e3f9e29165932
   languageName: node
   linkType: hard
 
@@ -13500,10 +13500,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sharedworker@npm:^0.0.123":
-  version: 0.0.123
-  resolution: "@types/sharedworker@npm:0.0.123"
-  checksum: 10/cef8c02135ec4002698c889a711ac2413547115e5c7ff3d19d1f0732b6998440c19604c4b9663ae4a981453c1a670ce90626a60b6182a093073c6bb3c0f97071
+"@types/sharedworker@npm:^0.0.124":
+  version: 0.0.124
+  resolution: "@types/sharedworker@npm:0.0.124"
+  checksum: 10/c2743267eaefd2860a2488846b1c825b633aa3f0cf755459994cd181f25f296b8149c9caa1ec3320ef03653c24626e5dc5d303f13a87bda73a4f9504276af324
   languageName: node
   linkType: hard
 
@@ -13631,10 +13631,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web@npm:^0.0.157":
-  version: 0.0.157
-  resolution: "@types/web@npm:0.0.157"
-  checksum: 10/0ef3b0e4218093f703306707d55174428cdd1228f629138b77c11bd1a9ad3e3b160a1e821636239b2c4acce358e9e7089a0befd391b169ff6496e9d4c013eda9
+"@types/web@npm:^0.0.162":
+  version: 0.0.162
+  resolution: "@types/web@npm:0.0.162"
+  checksum: 10/19cba7befa02cbf96fc14cb95503f24844a70626b45679b721a66a7a1941002e165f5d45a741d03e4908497ba4e9a47dcc001f0a281bc3d3de472e36017c8240
   languageName: node
   linkType: hard
 
