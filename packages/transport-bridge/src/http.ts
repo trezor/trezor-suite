@@ -12,7 +12,7 @@ import {
     RequestWithParams,
     Response,
 } from '@trezor/node-utils';
-import { Descriptor, Session } from '@trezor/transport/src/types';
+import { Descriptor, PathPublic, Session } from '@trezor/transport/src/types';
 import { validateProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
 import { Log, arrayPartition, Throttler } from '@trezor/utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
@@ -36,11 +36,12 @@ const validateDescriptorsJSON: RequestHandler<JSON, Descriptor[]> = (request, re
 };
 
 const validateAcquireParams: ParamsValidatorHandler<{
-    path: string;
+    path: PathPublic;
     previous: Session | 'null';
 }> = (request, response, next) => {
     if (
         typeof request.params.path === 'string' &&
+        /^[1-9][0-9]*$/.test(request.params.path) &&
         typeof request.params.previous === 'string' &&
         /^\d+$|^null$/.test(request.params.previous)
     ) {

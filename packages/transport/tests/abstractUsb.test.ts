@@ -202,14 +202,14 @@ describe('Usb', () => {
                 success: true,
                 payload: [
                     {
-                        path: '123',
+                        path: '1',
                         session: null,
                         type: 1,
                         product: 21441,
                         vendor: 4617,
                     },
                     {
-                        path: 'bootloader1',
+                        path: '2',
                         session: null,
                         type: 1,
                         product: 21441,
@@ -230,7 +230,7 @@ describe('Usb', () => {
 
             jest.runAllTimers();
 
-            const result = await transport.acquire({ input: { path: '123', previous: null } });
+            const result = await transport.acquire({ input: { path: '1', previous: null } });
             expect(result).toEqual({
                 success: true,
                 payload: '1',
@@ -254,7 +254,7 @@ describe('Usb', () => {
             transport.listen();
 
             // set some initial descriptors
-            const acquireCall = transport.acquire({ input: { path: '123', previous: null } });
+            const acquireCall = transport.acquire({ input: { path: '1', previous: null } });
 
             setTimeout(() => {
                 sessionsClient.emit('descriptors', [{ path: '321', session: '1', type: 1 }]);
@@ -280,10 +280,10 @@ describe('Usb', () => {
             transport.listen();
 
             // set some initial descriptors
-            const acquireCall = transport.acquire({ input: { path: '123', previous: null } });
+            const acquireCall = transport.acquire({ input: { path: '1', previous: null } });
             setTimeout(() => {
                 sessionsClient.emit('descriptors', [
-                    { path: '123', session: '2', type: 1, product: 21441 },
+                    { path: '1', session: '2', type: 1, product: 21441 },
                 ]);
             }, 1);
 
@@ -307,7 +307,7 @@ describe('Usb', () => {
         it('call - with valid and invalid message.', async () => {
             const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
-            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } });
+            const acquireRes = await transport.acquire({ input: { path: '1', previous: null } });
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -350,7 +350,7 @@ describe('Usb', () => {
         it('send and receive.', async () => {
             const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
-            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } });
+            const acquireRes = await transport.acquire({ input: { path: '1', previous: null } });
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -386,7 +386,7 @@ describe('Usb', () => {
         it('send protocol-v1 with custom chunkSize', async () => {
             const { transport, testUsbApi, sessionsBackground } = await initTest();
             await transport.enumerate();
-            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } });
+            const acquireRes = await transport.acquire({ input: { path: '1', previous: null } });
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -424,7 +424,7 @@ describe('Usb', () => {
         it('release', async () => {
             const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
-            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } });
+            const acquireRes = await transport.acquire({ input: { path: '1', previous: null } });
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -446,7 +446,7 @@ describe('Usb', () => {
         it('call - with use abort', async () => {
             const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
-            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } });
+            const acquireRes = await transport.acquire({ input: { path: '1', previous: null } });
             if (!acquireRes.success) return;
 
             const abort = new AbortController();

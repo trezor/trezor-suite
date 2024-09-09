@@ -14,11 +14,12 @@ const vendor = USE_HW ? 4617 : 0;
 const type = USE_NODE_BRIDGE ? expect.toBeOneOf(Object.values(DEVICE_TYPE)) : undefined;
 
 /**
+ * internal path has variable length
  * emu            '127.0.0.1:21324' (15)
- * hw old bridge  '1' (1)
  * hw new bridge  '185B982B5F37F9D96706EC49' (24)
+ * but it is masked using a growing sequence of numbers starting from 1
  */
-export const pathLength = USE_HW && USE_NODE_BRIDGE ? 24 : !USE_HW && USE_NODE_BRIDGE ? 15 : 1;
+export const pathLength = 1;
 
 export const descriptor = { debug, debugSession, path, product, vendor, type };
 
