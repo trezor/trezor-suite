@@ -3978,12 +3978,30 @@ export default defineMessages({
         id: 'TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED',
         defaultMessage: 'Enabled',
     },
-    TR_TOR_ENABLED: { id: 'TR_TOR_ENABLED', defaultMessage: 'Enabled' },
-    TR_TOR_DISABLED: { id: 'TR_TOR_DISABLED', defaultMessage: 'Disabled' },
-    TR_TOR_DISABLING: { id: 'TR_TOR_DISABLING', defaultMessage: 'Disabling' },
-    TR_TOR_ENABLING: { id: 'TR_TOR_ENABLING', defaultMessage: 'Enabling' },
-    TR_TOR_ERROR: { id: 'TR_TOR_ERROR', defaultMessage: 'Error' },
-    TR_TOR_MISBEHAVING: { id: 'TR_TOR_MISBEHAVING', defaultMessage: 'Misbehaving' },
+    TR_TOR_ENABLED: {
+        id: 'TR_TOR_ENABLED',
+        defaultMessage: 'Enabled',
+    },
+    TR_TOR_DISABLED: {
+        id: 'TR_TOR_DISABLED',
+        defaultMessage: 'Disabled',
+    },
+    TR_TOR_DISABLING: {
+        id: 'TR_TOR_DISABLING',
+        defaultMessage: 'Disabling',
+    },
+    TR_TOR_ENABLING: {
+        id: 'TR_TOR_ENABLING',
+        defaultMessage: 'Enabling',
+    },
+    TR_TOR_ERROR: {
+        id: 'TR_TOR_ERROR',
+        defaultMessage: 'Error',
+    },
+    TR_TOR_MISBEHAVING: {
+        id: 'TR_TOR_MISBEHAVING',
+        defaultMessage: 'Misbehaving',
+    },
     TR_TOR_TITLE: {
         id: 'TR_TOR_TITLE',
         defaultMessage: 'Tor',
@@ -8539,11 +8557,11 @@ export default defineMessages({
     },
     TR_STAKE_ETH_SEE_MONEY_DANCE_DESC: {
         id: 'TR_STAKE_ETH_SEE_MONEY_DANCE_DESC',
-        defaultMessage: 'Earn {apyPercent}% <t>APY</t> by staking your Ethereum with Trezor.',
+        defaultMessage: 'Earn {apyPercent}% APY* by staking your Ethereum with Trezor.',
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
-        defaultMessage: 'Annual Percentage Yield',
+        defaultMessage: '*Annual Percentage Yield',
     },
     TR_STAKE_ETH_LOCK_FUNDS: {
         id: 'TR_STAKE_ETH_LOCK_FUNDS',
