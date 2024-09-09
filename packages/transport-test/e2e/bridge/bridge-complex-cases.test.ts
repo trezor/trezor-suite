@@ -1,5 +1,5 @@
 import * as messages from '@trezor/protobuf/messages.json';
-import { BridgeTransport } from '@trezor/transport';
+import { BridgeTransport, Descriptor, Session } from '@trezor/transport';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
 import { descriptor as expectedDescriptor } from './expect';
@@ -16,8 +16,8 @@ const assertBridgeNotRunning = async () => {
 // all scenarios that require restarting bridge.
 describe('restarting bridge', () => {
     let bridge: BridgeTransport;
-    let devices: any[];
-    let session: any;
+    let descriptors: Descriptor[];
+    let session: Session;
     beforeAll(async () => {
         await TrezorUserEnvLink.connect();
         await TrezorUserEnvLink.startEmu();
@@ -29,10 +29,10 @@ describe('restarting bridge', () => {
 
         const enumerateResult = await bridge.enumerate().promise;
         assertSuccess(enumerateResult);
-        devices = enumerateResult.payload;
+        descriptors = enumerateResult.payload;
 
         const acquireResult = await bridge.acquire({
-            input: { path: devices[0].path, previous: session },
+            input: { path: descriptors[0].path, previous: session },
         }).promise;
         assertSuccess(acquireResult);
         session = acquireResult.payload;
@@ -66,12 +66,12 @@ describe('restarting bridge', () => {
                 },
             ],
         });
-        devices = enumerateResult.payload;
+        descriptors = enumerateResult.payload;
 
         // acquire hangs and once it is aborted by client, the bridge crashes
         await bridge.acquire({
             input: {
-                path: devices[0].path,
+                path: descriptors[0].path,
                 // OK so not sending previous (or sending null (force)) is the key ingredient
                 // so maybe it is not about send at all? it looks like that only one send is enough to cause it
                 previous: null,

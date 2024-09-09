@@ -11,7 +11,7 @@ const wait = (ms = 1000) =>
         }, ms);
     });
 
-const getDescriptor = (descriptor: any): Descriptor => ({
+const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => ({
     ...fixtureDescriptor,
     session: '1',
     ...descriptor,
@@ -23,7 +23,7 @@ describe('bridge', () => {
     let bridge1: BridgeTransport;
     let bridge2: BridgeTransport;
 
-    let descriptors: any[];
+    let descriptors: Descriptor[];
 
     /**
      * set bridge1 and bridge2 descriptors and start listening
