@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { CryptoIcon } from '@suite-common/icons-deprecated';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import { Card, HStack, Text, Switch } from '@suite-native/atoms';
+import { Card, HStack, Text, Switch, VStack } from '@suite-native/atoms';
 import {
     selectEnabledDiscoveryNetworkSymbols,
     toggleEnabledDiscoveryNetworkSymbol,
@@ -11,6 +11,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
+import { isCoinWithTokens } from '@suite-native/tokens';
 import { useAlert } from '@suite-native/alerts';
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
@@ -131,7 +132,15 @@ export const NetworkSymbolSwitchItem = ({
                         flex={1}
                         alignItems="center"
                     >
-                        <Text variant="callout">{name}</Text>
+                        <VStack spacing={0}>
+                            <Text variant="callout">{name}</Text>
+                            {isCoinWithTokens(networkSymbol) && (
+                                <Text variant="hint" color="textSubdued">
+                                    <Translation id="generic.tokens" />
+                                </Text>
+                            )}
+                        </VStack>
+
                         <Switch onChange={handleEnabledChange} isChecked={isEnabled} />
                     </HStack>
                 </HStack>

@@ -23,6 +23,7 @@
         { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../toasts" },
+        { "path": "../tokens" },
         { "path": "../../packages/styles" }
     ]
 }

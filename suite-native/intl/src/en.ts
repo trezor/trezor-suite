@@ -21,6 +21,7 @@ export const en = {
         default: 'Default',
         orSeparator: 'OR',
         offline: "You're offline.",
+        tokens: '+ Tokens',
     },
     messageSystem: {
         killswitch: {
@@ -84,7 +85,7 @@ export const en = {
         },
     },
     accountList: {
-        numberOfTokens: '+{numberOfTokens} tokens',
+        numberOfTokens: '+{numberOfTokens} Tokens',
         tokens: 'Tokens',
     },
     assets: {
