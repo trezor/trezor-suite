@@ -1,6 +1,6 @@
 // https://devdocs.decred.org/developer-guides/transactions/transaction-format/
 
-import varuint from 'varuint-bitcoin';
+import * as varuint from 'varuint-bitcoin';
 import { BufferReader, BufferWriter } from '../bufferutils';
 import * as bcrypto from '../crypto';
 import { TransactionBase, TransactionOptions, varSliceSize, EMPTY_SCRIPT } from './base';

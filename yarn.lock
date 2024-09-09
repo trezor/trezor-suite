@@ -12193,7 +12193,7 @@ __metadata:
     tiny-secp256k1: "npm:^1.1.6"
     tsx: "npm:^4.16.3"
     typeforce: "npm:^1.18.0"
-    varuint-bitcoin: "npm:^1.1.2"
+    varuint-bitcoin: "npm:2.0.0"
     wif: "npm:^5.0.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -40926,6 +40926,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uint8array-tools@npm:^0.0.8":
+  version: 0.0.8
+  resolution: "uint8array-tools@npm:0.0.8"
+  checksum: 10/db3310f197a9a728e45e19149e5b222b633622796e5ef621809d03986f4959b2c895f2347c065eb16c89a07033ee8b9222b9abb607283615bdaeb3297dedbf01
+  languageName: node
+  linkType: hard
+
 "ultron@npm:~1.1.0":
   version: 1.1.1
   resolution: "ultron@npm:1.1.1"
@@ -41767,12 +41774,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"varuint-bitcoin@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "varuint-bitcoin@npm:1.1.2"
+"varuint-bitcoin@npm:2.0.0":
+  version: 2.0.0
+  resolution: "varuint-bitcoin@npm:2.0.0"
   dependencies:
-    safe-buffer: "npm:^5.1.1"
-  checksum: 10/1c900bf08f2408ae33a6094dc5d809bdb6673eaf6039062d88c230155873e51e29c760053611f93ccd024854d04ebd92ed95c744720e94a79ca4e1150fcce071
+    uint8array-tools: "npm:^0.0.8"
+  checksum: 10/059ecf90cf7496e63ff585519873ad4f7b2009f586d3864fda4d02b92aab5af03b58ac518a06e5ae30dff5c5003cd250747a00e92f2cd2ce9fc1e4e16daf1ef1
   languageName: node
   linkType: hard
 

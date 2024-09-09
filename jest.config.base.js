@@ -47,5 +47,6 @@ module.exports = {
         '^bcrypto/lib/(.*)$': 'bcrypto/lib/$1-browser',
         // Enforce usage of CommonJS version of uuid because ESM version is not working in Jest
         '^uuid$': require.resolve('uuid'), // https://stackoverflow.com/questions/73203367/jest-syntaxerror-unexpected-token-export-with-uuid-library
+        '^uint8array-tools$': require.resolve('uint8array-tools'), // same case as with uuid
     },
 };

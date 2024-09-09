@@ -44,5 +44,4 @@ module.exports = {
         '<rootDir>/../../suite-native/test-utils/src/expoMock.js',
         '<rootDir>/../../suite-native/test-utils/src/walletSdkMock.js',
     ],
-    moduleNameMapper: { '^uuid$': require.resolve('uuid') },
 };

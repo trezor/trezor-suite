@@ -7,15 +7,17 @@
 
 import BN from 'bn.js';
 import pushdata from 'pushdata-bitcoin';
-import varuint from 'varuint-bitcoin';
+import * as varuint from 'varuint-bitcoin';
 import { Int64LE } from 'int64-buffer';
 import { bufferUtils } from '@trezor/utils';
 import * as types from './types';
 
+const OUT_OF_RANGE_ERROR = 'value out of range';
+
 export function verifuint(value: number, max: number) {
     if (typeof value !== 'number') throw new Error('cannot write a non-number as a number');
     if (value < 0) throw new Error('specified a negative value for writing an unsigned value');
-    if (value > max) throw new Error('value out of range');
+    if (value > max) throw new Error(OUT_OF_RANGE_ERROR);
     if (Math.floor(value) !== value) throw new Error('value has a fractional component');
 }
 
@@ -82,18 +84,20 @@ export function writeInt64LE(buffer: Buffer, value: number, offset: number) {
 }
 
 export function readVarInt(buffer: Buffer, offset: number) {
-    const result = varuint.decode(buffer, offset);
+    const { numberValue, bytes } = varuint.decode(buffer, offset);
+
+    if (numberValue === null) throw new Error(OUT_OF_RANGE_ERROR);
 
     return {
-        number: result,
-        size: varuint.decode.bytes,
+        number: numberValue,
+        size: bytes,
     };
 }
 
 export function writeVarInt(buffer: Buffer, number: number, offset: number) {
-    varuint.encode(number, buffer, offset);
+    const { bytes } = varuint.encode(number, buffer, offset);
 
-    return varuint.encode.bytes;
+    return bytes;
 }
 
 export function cloneBuffer(buffer: Buffer): Buffer {
@@ -163,8 +167,8 @@ export class BufferWriter {
     }
 
     writeVarInt(i: number): void {
-        varuint.encode(i, this.buffer, this.offset);
-        this.offset += varuint.encode.bytes;
+        const { bytes } = varuint.encode(i, this.buffer, this.offset);
+        this.offset += bytes;
     }
 
     writeSlice(slice: Buffer): void {
@@ -246,10 +250,11 @@ export class BufferReader {
     }
 
     readVarInt(): number {
-        const vi = varuint.decode(this.buffer, this.offset);
-        this.offset += varuint.decode.bytes;
+        const { numberValue, bytes } = varuint.decode(this.buffer, this.offset);
+        if (numberValue === null) throw new Error(OUT_OF_RANGE_ERROR);
+        this.offset += bytes;
 
-        return vi;
+        return numberValue;
     }
 
     readSlice(n: number): Buffer {
