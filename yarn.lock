@@ -9703,6 +9703,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@suite-native/toasts": "workspace:*"
+    "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
     expo-linear-gradient: "npm:13.0.2"
     react: "npm:18.2.0"

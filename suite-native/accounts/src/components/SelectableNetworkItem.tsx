@@ -5,6 +5,8 @@ import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { useFormatters } from '@suite-common/formatters';
 import { Icon, IconName } from '@suite-common/icons-deprecated';
 import { Badge, Box, HStack, RoundedIcon, Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { isCoinWithTokens } from '@suite-native/tokens';
 
 export type SelectableAssetItemProps = {
     symbol: NetworkSymbol;
@@ -20,7 +22,7 @@ const selectableAssetContentStyle = prepareNativeStyle(utils => ({
     marginLeft: utils.spacings.small + utils.spacings.extraSmall,
 }));
 
-const erc20BadgeStyle = prepareNativeStyle(utils => ({
+const tokensBadgeStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.extraSmall / 2,
 }));
 
@@ -35,7 +37,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
 
     const networkName = networks[symbol].name;
 
-    const isEthereumNetwork = symbol === 'eth';
+    const hasTokens = isCoinWithTokens(symbol);
 
     return (
         <TouchableOpacity
@@ -55,9 +57,13 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                                     areAmountUnitsEnabled={false}
                                 />
                             </Text>
-                            {isEthereumNetwork && (
-                                <Box style={applyStyle(erc20BadgeStyle)}>
-                                    <Badge label="+ ERC-20" variant="neutral" size="small" />
+                            {hasTokens && (
+                                <Box style={applyStyle(tokensBadgeStyle)}>
+                                    <Badge
+                                        label={<Translation id="generic.tokens" />}
+                                        variant="neutral"
+                                        size="small"
+                                    />
                                 </Box>
                             )}
                         </HStack>
