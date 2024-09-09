@@ -287,6 +287,16 @@ export const selectAccountsByNetworkAndDeviceState = memoizeWithArgs(
     },
 );
 
+export const selectFirstNormalAccountForNetworkSymbol = memoizeWithArgs(
+    (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol) =>
+        selectDeviceAccountsForNetworkSymbolAndAccountType(state, networkSymbol, 'normal').filter(
+            account => account.index === 0,
+        )[0] ?? null,
+    {
+        size: Object.keys(networks).length,
+    },
+);
+
 export const selectAccountLabel = (
     state: AccountsRootState,
     accountKey?: AccountKey,

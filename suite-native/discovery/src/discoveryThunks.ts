@@ -17,6 +17,7 @@ import {
     selectDeviceAccountsForNetworkSymbolAndAccountType,
     selectDeviceState,
     disableAccountsThunk,
+    selectFirstNormalAccountForNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
@@ -33,7 +34,11 @@ import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 
-import { selectDiscoveryInfo, setDiscoveryInfo } from './discoveryConfigSlice';
+import {
+    selectDiscoveryInfo,
+    selectEnabledDiscoveryNetworkSymbols,
+    setDiscoveryInfo,
+} from './discoveryConfigSlice';
 import {
     selectCanRunDiscoveryForDevice,
     selectDiscoveryAccountsAnalytics,
@@ -694,7 +699,28 @@ export const discoveryCheckThunk = createThunk(
 // It removes accounts for disabled networks and checks whether to start discovery and start if needed
 export const applyDiscoveryChangesThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/applyDiscoveryChangesThunk`,
-    (_, { dispatch }) => {
+    (_, { dispatch, getState }) => {
+        const isCoinEnablingActive = selectIsFeatureFlagEnabled(
+            getState(),
+            FeatureFlag.IsCoinEnablingActive,
+        );
+
+        // Make sure that first normal account is visible for enabled networks when coin enabling is active
+        // This might be needed in case user has View only device from before coin enabling was active
+        // in such case the first normal account can be invisible. We need to make it visible.
+        if (isCoinEnablingActive) {
+            const enabledDiscoveryNetworkSymbols = selectEnabledDiscoveryNetworkSymbols(getState());
+            enabledDiscoveryNetworkSymbols.forEach(networkSymbol => {
+                const firstNormalAccount = selectFirstNormalAccountForNetworkSymbol(
+                    getState(),
+                    networkSymbol,
+                );
+
+                if (firstNormalAccount && !firstNormalAccount.visible) {
+                    dispatch(accountsActions.changeAccountVisibility(firstNormalAccount, true));
+                }
+            });
+        }
         dispatch(disableAccountsThunk());
         dispatch(discoveryCheckThunk());
     },
