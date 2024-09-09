@@ -41,10 +41,7 @@ export abstract class AbstractApi extends TypedEmitter<{
 }> {
     protected logger?: Logger;
     protected listening: boolean = false;
-    protected lock: AccessLock = {
-        read: false,
-        write: false,
-    };
+    protected lock: Record<string, AccessLock> = {};
     constructor({ logger }: AbstractApiConstructorParams) {
         super();
 
@@ -155,15 +152,18 @@ export abstract class AbstractApi extends TypedEmitter<{
     /**
      * call this to ensure single access to transport api.
      */
-    private requestAccess(lock: AccessLock) {
+    private requestAccess({ lock, path }: { lock: AccessLock; path: string }) {
+        if (!this.lock[path]) {
+            this.lock[path] = { read: false, write: false };
+        }
         // check already existing lock
-        if ((this.lock.read && lock.read) || (this.lock.write && lock.write)) {
+        if ((this.lock[path].read && lock.read) || (this.lock[path].write && lock.write)) {
             return this.error({ error: ERRORS.OTHER_CALL_IN_PROGRESS });
         }
         // add to the current lock
-        this.lock = {
-            read: this.lock.read || lock.read,
-            write: this.lock.write || lock.write,
+        this.lock[path] = {
+            read: this.lock[path].read || lock.read,
+            write: this.lock[path].write || lock.write,
         };
 
         return this.success(undefined);
@@ -174,8 +174,11 @@ export abstract class AbstractApi extends TypedEmitter<{
      * 2. runs provided function
      * 3. clears its own lock
      */
-    public runInIsolation = async <T extends () => ReturnType<T>>(lock: AccessLock, fn: T) => {
-        const accessRes = this.requestAccess(lock);
+    public runInIsolation = async <T extends () => ReturnType<T>>(
+        { lock, path }: { lock: AccessLock; path: string },
+        fn: T,
+    ) => {
+        const accessRes = this.requestAccess({ lock, path });
         if (!accessRes.success) {
             return accessRes;
         }
@@ -189,9 +192,9 @@ export abstract class AbstractApi extends TypedEmitter<{
 
             return this.unknownError(err, []);
         } finally {
-            this.lock = {
-                read: lock.read ? false : this.lock.read,
-                write: lock.write ? false : this.lock.write,
+            this.lock[path] = {
+                read: lock.read ? false : this.lock[path].read,
+                write: lock.write ? false : this.lock[path].write,
             };
         }
     };
