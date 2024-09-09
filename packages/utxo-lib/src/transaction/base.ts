@@ -1,4 +1,4 @@
-import varuint from 'varuint-bitcoin';
+import * as varuint from 'varuint-bitcoin';
 import { reverseBuffer, getChunkSize } from '../bufferutils';
 import * as bcrypto from '../crypto';
 import * as types from '../types';

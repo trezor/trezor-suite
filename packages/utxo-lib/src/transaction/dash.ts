@@ -1,4 +1,4 @@
-import varuint from 'varuint-bitcoin';
+import * as varuint from 'varuint-bitcoin';
 import { BufferReader, BufferWriter } from '../bufferutils';
 import { TransactionBase, TransactionOptions, varSliceSize, vectorSize } from './base';
 
@@ -68,7 +68,7 @@ function toBuffer(
 
 function getExtraData(tx: TransactionBase<DashSpecific>) {
     if (!tx.specific?.extraPayload) return;
-    const extraDataLength = varuint.encode(tx.specific.extraPayload.length);
+    const { buffer: extraDataLength } = varuint.encode(tx.specific.extraPayload.length);
 
     return Buffer.concat([extraDataLength, tx.specific.extraPayload]);
 }
