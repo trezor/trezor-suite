@@ -105,6 +105,8 @@ export const HELP_CENTER_TRANSACTION_FEES_URL: Url =
     'https://trezor.io/learn/a/transaction-fees-in-trezor-suite';
 export const HELP_CENTER_EVM_ADDRESS_CHECKSUM: Url =
     'https://trezor.io/learn/a/evm-address-checksum-in-trezor-suite';
+export const HELP_CENTER_EVM_SEND_TO_CONTRACT_URL =
+    'https://trezor.io/support/a/where-is-my-ethereum';
 export const HELP_CENTER_FIRMWARE_REVISION_CHECK: Url =
     'https://trezor.io/learn/a/trezor-firmware-revision-check';
 export const HELP_CENTER_REPLACE_BY_FEE: Url =

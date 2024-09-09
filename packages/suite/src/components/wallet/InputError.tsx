@@ -1,10 +1,9 @@
 import { MouseEventHandler } from 'react';
 import styled from 'styled-components';
 
-import { Button } from '@trezor/components';
-import { LearnMoreButton } from '../suite/LearnMoreButton';
-import { Url } from '@trezor/urls';
+import { Button, Link } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
+import { useTranslation } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -14,7 +13,7 @@ const Wrapper = styled.div`
 
 const ButtonWrapper = styled.div`
     position: absolute;
-    top: 4px;
+    top: 8px;
     right: 16px;
 `;
 
@@ -24,25 +23,41 @@ const ContentWrapper = styled.div`
 `;
 
 type ButtonProps = { onClick: MouseEventHandler<HTMLButtonElement>; text: string };
-type LinkProps = { url: Url };
 
 export type InputErrorProps = {
-    button?: ButtonProps | LinkProps;
+    buttonProps?: ButtonProps;
+    learnMoreUrl?: string;
     message?: string;
 };
 
-export const InputError = ({ button, message }: InputErrorProps) => (
-    <Wrapper>
-        <ContentWrapper>{message}</ContentWrapper>
-        {button &&
-            ('url' in button ? (
-                <LearnMoreButton url={button.url} />
-            ) : (
+export const InputError = ({ buttonProps, message, learnMoreUrl }: InputErrorProps) => {
+    const { translationString } = useTranslation();
+
+    return (
+        <Wrapper>
+            <ContentWrapper>
+                {message}
+                {learnMoreUrl && (
+                    <>
+                        {' '}
+                        <Link
+                            href={learnMoreUrl}
+                            variant="nostyle"
+                            icon="externalLink"
+                            type="label"
+                        >
+                            {translationString('TR_LEARN_MORE')}
+                        </Link>
+                    </>
+                )}
+            </ContentWrapper>
+            {buttonProps && (
                 <ButtonWrapper>
-                    <Button size="tiny" variant="tertiary" onClick={button.onClick}>
-                        {button.text}
+                    <Button size="tiny" variant="tertiary" onClick={buttonProps.onClick}>
+                        {buttonProps.text}
                     </Button>
                 </ButtonWrapper>
-            ))}
-    </Wrapper>
-);
+            )}
+        </Wrapper>
+    );
+};

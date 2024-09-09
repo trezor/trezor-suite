@@ -2168,6 +2168,14 @@ export default defineMessages({
         defaultMessage: 'Unable to verify address history. Check that the address is correct.',
         id: 'TR_ETH_ADDRESS_CANT_VERIFY_HISTORY',
     },
+    TR_EVM_ADDRESS_IS_CONTRACT: {
+        defaultMessage: 'You are sending funds to a contract address.',
+        id: 'TR_EVM_ADDRESS_IS_CONTRACT',
+    },
+    TR_I_UNDERSTAND_THE_RISK: {
+        defaultMessage: 'I understand',
+        id: 'TR_I_UNDERSTAND_THE_RISK',
+    },
     TR_NEEDS_ATTENTION_BOOTLOADER: {
         defaultMessage: 'Trezor is in Bootloader mode.',
         id: 'TR_NEEDS_ATTENTION_BOOTLOADER',

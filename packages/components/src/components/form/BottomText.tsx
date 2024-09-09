@@ -21,7 +21,7 @@ export const Container = styled.div<{ $inputState?: InputState; $isDisabled?: bo
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
-    padding: ${spacingsPx.xs} ${spacingsPx.sm} 0 ${spacingsPx.sm};
+    padding: ${spacingsPx.xs} ${spacingsPx.sm};
     min-height: ${BOTTOM_TEXT_MIN_HEIGHT}px;
     color: ${({ $inputState, $isDisabled, theme }) =>
         $isDisabled ? theme.textDisabled : getInputStateTextColor($inputState, theme)};
