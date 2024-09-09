@@ -161,7 +161,6 @@ export const CoinmarketOfferExchangeSendSwap = () => {
         useCoinmarketFormContext<CoinmarketTradeExchangeType>();
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const [slippageSettings, setSlippageSettings] = useState(false);
-    const selectedQuoteHelper = { ...selectedQuote };
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
     const [customSlippageError, setCustomSlippageError] = useState<
@@ -174,31 +173,33 @@ export const CoinmarketOfferExchangeSendSwap = () => {
             if (slippage !== CUSTOM_SLIPPAGE) return;
 
             if (
-                selectedQuoteHelper &&
-                selectedQuoteHelper?.dexTx &&
+                selectedQuote &&
+                selectedQuote?.dexTx &&
                 !customSlippageError &&
-                customSlippage !== selectedQuoteHelper.swapSlippage
+                customSlippage !== selectedQuote.swapSlippage
             ) {
-                selectedQuoteHelper.swapSlippage = customSlippage;
-                selectedQuoteHelper.approvalType = undefined;
-                confirmTrade(selectedQuoteHelper.dexTx.from, undefined, selectedQuoteHelper);
+                confirmTrade(selectedQuote.dexTx.from, undefined, {
+                    ...selectedQuote,
+                    swapSlippage: customSlippage,
+                    approvalType: undefined,
+                });
             }
         },
         500,
         [customSlippage, slippage],
     );
 
-    if (!selectedQuoteHelper) return null;
+    if (!selectedQuote?.send) return null;
 
-    const { exchange, dexTx, receive, receiveStringAmount } = selectedQuoteHelper;
+    const { exchange, dexTx, receive, receiveStringAmount } = selectedQuote;
     if (!exchange || !dexTx || !receive) return null;
 
     const providerName =
-        exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuoteHelper.exchange;
+        exchangeInfo?.providerInfos[exchange]?.companyName || selectedQuote.exchange;
 
     const translationValues = {
-        value: selectedQuoteHelper.approvalStringAmount,
-        send: cryptoIdToCoinSymbol(selectedQuoteHelper.send!),
+        value: selectedQuote.approvalStringAmount,
+        send: cryptoIdToCoinSymbol(selectedQuote.send),
         provider: providerName,
     };
 
@@ -210,13 +211,18 @@ export const CoinmarketOfferExchangeSendSwap = () => {
     const selectedSlippage =
         slippageOptions.find(o => o.value === slippage)?.value || CUSTOM_SLIPPAGE;
 
-    const changeSlippage = (value: string) => {
+    const changeSlippage = async (value: string) => {
         setSlippage(value);
         if (value !== CUSTOM_SLIPPAGE) {
             setCustomSlippage(value);
-            selectedQuoteHelper.swapSlippage = value;
-            selectedQuoteHelper.approvalType = undefined;
-            confirmTrade(dexTx.from, undefined, selectedQuoteHelper);
+
+            if (!selectedQuote.dexTx) return;
+
+            await confirmTrade(selectedQuote.dexTx.from, undefined, {
+                ...selectedQuote,
+                swapSlippage: value,
+                approvalType: undefined,
+            });
         }
     };
 
@@ -281,7 +287,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         </Slippage>
                     </LeftColumn>
                     <RightColumn>
-                        <SlippageAmount>{selectedQuoteHelper.swapSlippage}%</SlippageAmount>
+                        <SlippageAmount>{selectedQuote.swapSlippage}%</SlippageAmount>
                         <SlippageSettingsButton type="button" onClick={toggleSlippage}>
                             <Icon
                                 name={slippageSettings ? 'chevronUp' : 'chevronDown'}
@@ -352,7 +358,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         <RightColumn>
                             -
                             {formatCryptoAmountAsAmount(
-                                (Number(selectedQuoteHelper.swapSlippage) / 100) *
+                                (Number(selectedQuote.swapSlippage) / 100) *
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
                             )}{' '}
@@ -367,7 +373,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         </LeftColumn>
                         <RightColumn>
                             {formatCryptoAmountAsAmount(
-                                ((100 - Number(selectedQuoteHelper.swapSlippage)) / 100) *
+                                ((100 - Number(selectedQuote.swapSlippage)) / 100) *
                                     Number(receiveStringAmount),
                                 Number(receiveStringAmount),
                             )}{' '}
