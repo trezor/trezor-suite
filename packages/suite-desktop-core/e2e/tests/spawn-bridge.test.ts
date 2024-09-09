@@ -33,6 +33,7 @@ testPlaywright.describe.serial('Bridge', () => {
                         console.error('Caught specific error:', error.message);
                         throw error; // Rethrow if you want the test to fail.
                     } else if (expected) {
+                        console.error(error);
                         throw new Error('Bridge should be running, but it is not.');
                     }
                     // If the error is not one we care about, we can just log it since it is expected.
