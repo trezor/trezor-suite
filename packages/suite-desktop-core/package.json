@@ -35,7 +35,7 @@
         "chalk": "^4.1.2",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "8.2.0",
-        "electron-updater": "6.3.3",
+        "electron-updater": "6.3.4",
         "openpgp": "^5.11.2",
         "systeminformation": "^5.23.5"
     },

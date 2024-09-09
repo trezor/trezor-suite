@@ -11798,7 +11798,7 @@ __metadata:
     electron: "npm:30.3.1"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
-    electron-updater: "npm:6.3.3"
+    electron-updater: "npm:6.3.4"
     fs-extra: "npm:^11.2.0"
     glob: "npm:^10.3.10"
     openpgp: "npm:^5.11.2"
@@ -11849,7 +11849,7 @@ __metadata:
     electron-builder: "npm:25.0.5"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
-    electron-updater: "npm:6.3.3"
+    electron-updater: "npm:6.3.4"
     glob: "npm:^10.3.10"
     usb: "npm:^2.13.0"
   languageName: unknown
@@ -20424,9 +20424,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-updater@npm:6.3.3":
-  version: 6.3.3
-  resolution: "electron-updater@npm:6.3.3"
+"electron-updater@npm:6.3.4":
+  version: 6.3.4
+  resolution: "electron-updater@npm:6.3.4"
   dependencies:
     builder-util-runtime: "npm:9.2.5"
     fs-extra: "npm:^10.1.0"
@@ -20434,9 +20434,9 @@ __metadata:
     lazy-val: "npm:^1.0.5"
     lodash.escaperegexp: "npm:^4.1.2"
     lodash.isequal: "npm:^4.5.0"
-    semver: "npm:^7.3.8"
+    semver: "npm:^7.6.3"
     tiny-typed-emitter: "npm:^2.1.0"
-  checksum: 10/8209e007d06345658bc1544ab97b308caf8a4a2c3551bb8007ae057c389400a55aad97cdb8036e38c4edd56417f9d33e4b28b74712fe2aad677f79cd6535bdbf
+  checksum: 10/e31d827fc7f7372a5856e118e83e6e37ed22e5db26b8c2bc5ce7cebbd739bd9bacc1b6ed3fef21d69f2508a0266477ec6a0ec238a504b3ba108a3372f8c7b30b
   languageName: node
   linkType: hard
 
