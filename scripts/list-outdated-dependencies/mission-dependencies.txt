@@ -12,7 +12,6 @@ electron-localshortcut
 cors
 dropbox
 express
-simple-git
 systeminformation
 golomb
 idb

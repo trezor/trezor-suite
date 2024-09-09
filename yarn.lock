@@ -11746,7 +11746,7 @@ __metadata:
     postcss-modules-local-by-default: "npm:^4.0.5"
     postcss-modules-scope: "npm:^3.2.0"
     postcss-modules-values: "npm:^4.0.0"
-    simple-git: "npm:^3.25.0"
+    simple-git: "npm:^3.26.0"
     style-loader: "npm:^3.3.4"
     tsx: "npm:^4.16.3"
     webpack: "npm:^5.94.0"
@@ -38130,7 +38130,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"simple-git@npm:^3.25.0":
+"simple-git@npm:^3.26.0":
   version: 3.26.0
   resolution: "simple-git@npm:3.26.0"
   dependencies:
