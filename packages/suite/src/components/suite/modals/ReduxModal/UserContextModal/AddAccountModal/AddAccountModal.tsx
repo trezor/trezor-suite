@@ -7,6 +7,7 @@ import {
     selectDeviceModel,
 } from '@suite-common/wallet-core';
 import { arrayPartition } from '@trezor/utils';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { networks, Network, NetworkSymbol, NetworkAccount } from '@suite-common/wallet-config';
 import { CollapsibleBox, NewModal, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
@@ -61,6 +62,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
     const allTestnetNetworksDisabled = supportedTestnets.some(network =>
         enabledNetworkSymbols.includes(network.symbol),
     );
+    const isBitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
 
     // applied when changing account in coinmarket exchange receive options context
     const networkPinned = !!symbol;
@@ -242,7 +244,7 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                                   />
                               </CollapsibleBox>
                           )}
-                          {deviceModel === DeviceModelInternal.T1B1 && (
+                          {!!isBitcoinOnlyFirmware && deviceModel === DeviceModelInternal.T1B1 && (
                               <CollapsibleBox
                                   heading={
                                       <Tooltip

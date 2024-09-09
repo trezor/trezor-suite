@@ -174,7 +174,7 @@ export const SettingsCoins = () => {
                 </SettingsSectionItem>
             </SettingsSection>
 
-            {deviceModel === DeviceModelInternal.T1B1 && (
+            {deviceModel === DeviceModelInternal.T1B1 && !bitcoinOnlyFirmware && (
                 <SettingsSection
                     title={
                         <>
