@@ -93,11 +93,10 @@ const runTests = async () => {
             });
         };
 
-        // interestingly, in node, concurrent enumeration does not work if triggered as the first interaction with connected device.
-        // concurrent enumeration triggered couple of lines below works correctly
+        // interestingly, in node, concurrent enumeration did not work if triggered as the first interaction with connected device.
+        // this had already been fixed. keeping the test here for reference.
         await sharedTest('concurrent enumerate - as the first operation', () =>
-            // todo: 3 doesn't work in node!!! FIX
-            concurrentEnumerate(typeof window !== 'undefined' ? 3 : 1),
+            concurrentEnumerate(3),
         );
         await getConnectedDevicePath();
 
