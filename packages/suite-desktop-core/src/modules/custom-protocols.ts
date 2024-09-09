@@ -9,7 +9,7 @@ import type { Module } from './index';
 
 export const SERVICE_NAME = 'custom-protocols';
 
-export const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindowProxy }) => {
     const { logger } = global;
 
     const protocols = process.env.PROTOCOLS as unknown as string[];
@@ -18,7 +18,7 @@ export const init: Module = ({ mainWindow }) => {
     const sendProtocolInfo = (protocol: string) => {
         if (isValidProtocol(protocol, protocols)) {
             logger.debug(SERVICE_NAME, `Send custom protocol to browser window: ${protocol}`);
-            mainWindow.webContents.send('protocol/open', protocol);
+            mainWindowProxy.getInstance()?.webContents.send('protocol/open', protocol);
         }
     };
 
@@ -52,10 +52,11 @@ export const init: Module = ({ mainWindow }) => {
 
         logger.debug(SERVICE_NAME, 'App is running and handling custom protocol (macOS)');
 
-        if (mainWindow.isMinimized()) {
-            mainWindow.restore();
+        const mainWindow = mainWindowProxy.getInstance();
+        if (mainWindow?.isMinimized()) {
+            mainWindow?.restore();
         } else {
-            mainWindow.focus();
+            mainWindow?.focus();
         }
 
         sendProtocolInfo(url);

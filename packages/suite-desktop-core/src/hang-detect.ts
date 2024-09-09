@@ -1,6 +1,7 @@
 import { BrowserWindow, dialog } from 'electron';
 
 import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { ElectionIpcMainInvokeEvent } from '@trezor/ipc-proxy/src/proxy-handler';
 
 import { ipcMain } from './typed-electron';
 import { APP_SRC } from './libs/constants';
@@ -19,14 +20,16 @@ const showDialog = async (mainWindow: BrowserWindow) => {
     return (['wait', 'quit', 'reload'] as const)[resp.response];
 };
 
-export const hangDetect = (
-    mainWindow: BrowserWindow,
-    statePatch?: Record<string, any>,
-): Promise<HandshakeResult> => {
+export const hangDetect = (mainWindow: BrowserWindow, statePatch?: Record<string, any>) => {
     const { logger } = global;
+    const handshakeHandler = (ipcEvent: ElectionIpcMainInvokeEvent) => {
+        validateIpcMessage(ipcEvent);
+
+        return Promise.resolve({});
+    };
     let timeout: ReturnType<typeof setTimeout>;
 
-    return new Promise(resolve => {
+    const handshake = new Promise<HandshakeResult>(resolve => {
         const timeoutCallback = async () => {
             // TODO: what happen if handshake will be fired up after timeout?
             const result = await showDialog(mainWindow);
@@ -40,12 +43,12 @@ export const hangDetect = (
         timeout = setTimeout(timeoutCallback, HANG_WAIT);
         ipcMain.handleOnce('handshake/client', () => {
             clearTimeout(timeout);
-            // always resolve repeated handshakes from renderer (e.g. Ctrl+R)
-            ipcMain.handle('handshake/client', ipcEvent => {
-                validateIpcMessage(ipcEvent);
-
-                return Promise.resolve({});
-            });
+            try {
+                // always resolve repeated handshakes from renderer (e.g. Ctrl+R)
+                ipcMain.handle('handshake/client', handshakeHandler);
+            } catch {
+                // Ignored - handler already registered
+            }
             resolve('success');
 
             return Promise.resolve({ statePatch });
@@ -53,4 +56,9 @@ export const hangDetect = (
         logger.debug('init', `Load URL (${APP_SRC})`);
         mainWindow.loadURL(APP_SRC);
     });
+    const cleanup = () => {
+        ipcMain.removeHandler('handshake/client', handshakeHandler);
+    };
+
+    return { handshake, cleanup };
 };

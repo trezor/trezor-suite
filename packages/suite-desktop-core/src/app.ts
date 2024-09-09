@@ -22,6 +22,7 @@ import { init as initBridgeModule } from './modules/bridge';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
 import { Logger } from './libs/logger';
+import { MainWindowProxy } from './libs/main-window-proxy';
 
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv) app.setVersion(process.env.VERSION);
@@ -170,24 +171,32 @@ const initUi = async ({
     const winBounds = store.getWinBounds();
     logger.debug('init', `Create Browser Window (${winBounds.width}x${winBounds.height})`);
 
-    const mainWindow = createMainWindow(winBounds);
-
-    app.on('second-instance', () => {
-        // Someone tried to run a second instance, we should focus our window.
-        app.dock?.show();
-        app.show();
-        if (!mainWindow.isVisible()) mainWindow.show();
-        if (mainWindow.isMinimized()) mainWindow.restore();
-        mainWindow.focus();
-    });
+    const mainWindowProxy = new MainWindowProxy();
 
     // init modules
     const interceptor = createInterceptor();
     const { loadModules, quitModules } = initModules({
-        mainWindow,
+        mainWindowProxy,
         store,
         interceptor,
         mainThreadEmitter,
+    });
+
+    app.on('second-instance', () => {
+        // Someone tried to run a second instance, we should focus our window.
+        logger.info('main', 'Second instance detected, focusing main window');
+        let mainWindow = mainWindowProxy.getInstance();
+        if (!mainWindow || mainWindow.isDestroyed()) {
+            logger.info('main', 'Main window destroyed, recreating');
+            mainWindow = createMainWindow(winBounds);
+            mainWindowProxy.setInstance(mainWindow);
+        }
+
+        app.dock?.show();
+        if (isMacOs()) app.show();
+        if (!mainWindow.isVisible()) mainWindow.show();
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
     });
 
     // create handler for handshake/load-modules
@@ -212,7 +221,7 @@ const initUi = async ({
     // Tor module initializes separated from general `initModules` because Tor is different
     // since it is allowed to fail and then the user decides whether to `try again` or `disable`.
     const { onLoad: loadTorModule, onQuit: quitTorModule } = initTorModule({
-        mainWindow,
+        mainWindowProxy,
         store,
         interceptor,
         mainThreadEmitter,
@@ -228,12 +237,19 @@ const initUi = async ({
     app.on('before-quit', async event => {
         if (readyToQuit) return;
 
-        if (daemon && !mainWindow.isDestroyed() && mainWindow.isClosable() && !app.isHidden()) {
+        const mainWindow = mainWindowProxy.getInstance();
+        const windowExists =
+            mainWindow && !mainWindow.isDestroyed() && mainWindow.isClosable() && !app.isHidden();
+        logger.info('main', `Before quit, window exists: ${windowExists}`);
+        if (
+            daemon &&
+            (!isMacOs() || windowExists) // On Mac the window closing and app quitting are different
+        ) {
             // Prevent quitting app when in daemon mode, unless the UI is already closed
             logger.info('main', 'Preventing app quit in daemon mode');
             event.preventDefault();
             app.dock?.hide();
-            mainWindow.close();
+            mainWindow?.close();
 
             return;
         }
@@ -250,7 +266,7 @@ const initUi = async ({
 
         // global cleanup
         logger.info('modules', 'All modules quit, exiting');
-        mainWindow.removeAllListeners();
+        mainWindow?.removeAllListeners();
         logger.exit();
 
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -259,26 +275,34 @@ const initUi = async ({
         app.quit();
     });
 
-    const statePatch = processStatePatch();
-    // load and wait for handshake message from renderer
-    const handshake = await hangDetect(mainWindow, statePatch);
+    mainWindowProxy.on('init', async mainWindow => {
+        logger.info('main', 'Main window initialized - calling handshake');
+        const statePatch = processStatePatch();
+        // load and wait for handshake message from renderer
+        const { handshake, cleanup } = hangDetect(mainWindow, statePatch);
+        mainWindowProxy.once('destroy', cleanup);
+        const handshakeResult = await handshake;
 
-    // handle hangDetect errors
-    if (handshake === 'quit') {
-        logger.info('hang-detect', 'Quitting app');
-        readyToQuit = true;
-        app.quit();
+        // handle hangDetect errors
+        if (handshakeResult === 'quit') {
+            logger.info('hang-detect', 'Quitting app');
+            readyToQuit = true;
+            app.quit();
 
-        return;
-    }
+            return;
+        }
 
-    if (handshake === 'reload') {
-        logger.info('hang-detect', 'Deleting cache');
-        await clearAppCache().catch(err =>
-            logger.error('hang-detect', `Couldn't clear cache: ${err.message}`),
-        );
-        restartApp();
-    }
+        if (handshakeResult === 'reload') {
+            logger.info('hang-detect', 'Deleting cache');
+            await clearAppCache().catch(err =>
+                logger.error('hang-detect', `Couldn't clear cache: ${err.message}`),
+            );
+            restartApp();
+        }
+    });
+
+    // Create main window last, so all listeners are set up
+    mainWindowProxy.setInstance(createMainWindow(winBounds));
 };
 
 init();

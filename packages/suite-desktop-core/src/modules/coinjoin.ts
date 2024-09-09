@@ -23,7 +23,7 @@ export const SERVICE_NAME = '@trezor/coinjoin';
 const CLIENT_CHANNEL = 'CoinjoinClient';
 const BACKEND_CHANNEL = 'CoinjoinBackend';
 
-export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
+export const init: Module = ({ mainWindowProxy, store, mainThreadEmitter }) => {
     const { logger } = global;
 
     const backends: ThreadProxy<CoinjoinBackend>[] = [];
@@ -232,7 +232,9 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
         await dispose();
     };
 
-    mainWindow.webContents.on('did-start-loading', dispose);
+    mainWindowProxy.on('init', mainWindow => {
+        mainWindow.webContents.on('did-start-loading', dispose);
+    });
     ipcMain.once('app/restart', dispose);
 
     return { onLoad: registerProxies, onQuit };

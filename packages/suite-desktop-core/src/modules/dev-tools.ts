@@ -11,8 +11,8 @@ const openDevToolsFlag = app.commandLine.hasSwitch('open-devtools');
 
 export const SERVICE_NAME = 'dev-tools';
 
-export const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindowProxy }) => {
     if (isDevEnv || openDevToolsFlag) {
-        mainWindow.webContents.openDevTools();
+        mainWindowProxy.getInstance()?.webContents.openDevTools();
     }
 };

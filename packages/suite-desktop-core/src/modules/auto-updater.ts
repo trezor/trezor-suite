@@ -31,7 +31,7 @@ const updaterURL = app.commandLine.getSwitchValue('updater-url');
 
 export const SERVICE_NAME = 'auto-updater';
 
-export const init: Module = ({ mainWindow, store }) => {
+export const init: Module = ({ mainWindowProxy, store }) => {
     const { logger } = global;
     if (!isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
         logger.info(SERVICE_NAME, 'Disabled via feature flag');
@@ -72,13 +72,13 @@ export const init: Module = ({ mainWindow, store }) => {
 
     autoUpdater.on('checking-for-update', () => {
         logger.info(SERVICE_NAME, 'Checking for update');
-        mainWindow.webContents.send('update/checking');
+        mainWindowProxy.getInstance()?.webContents.send('update/checking');
     });
 
     const startDownload = async () => {
         logger.info(SERVICE_NAME, 'Download requested');
 
-        mainWindow.webContents.send('update/downloading', {
+        mainWindowProxy.getInstance()?.webContents.send('update/downloading', {
             percent: 0,
             bytesPerSecond: 0,
             total: 0,
@@ -104,7 +104,7 @@ export const init: Module = ({ mainWindow, store }) => {
             `- Manual check: ${b2t(isManualCheck)}`,
         ]);
 
-        mainWindow.webContents.send('update/available', {
+        mainWindowProxy.getInstance()?.webContents.send('update/available', {
             version,
             releaseDate,
             isManualCheck,
@@ -130,7 +130,7 @@ export const init: Module = ({ mainWindow, store }) => {
             `- Manual check: ${b2t(isManualCheck)}`,
         ]);
 
-        mainWindow.webContents.send('update/not-available', {
+        mainWindowProxy.getInstance()?.webContents.send('update/not-available', {
             version,
             releaseDate,
             isManualCheck,
@@ -142,7 +142,7 @@ export const init: Module = ({ mainWindow, store }) => {
 
     autoUpdater.on('error', (err: Error) => {
         logger.error(SERVICE_NAME, `An error happened: ${err.toString()}`);
-        mainWindow.webContents.send('update/error', err);
+        mainWindowProxy.getInstance()?.webContents.send('update/error', err);
     });
 
     autoUpdater.on('download-progress', (progressObj: ProgressInfo) => {
@@ -152,7 +152,7 @@ export const init: Module = ({ mainWindow, store }) => {
                 progressObj.transferred,
             )}/${bytesToHumanReadable(progressObj.total)})`,
         );
-        mainWindow.webContents.send('update/downloading', progressObj);
+        mainWindowProxy.getInstance()?.webContents.send('update/downloading', progressObj);
     });
 
     autoUpdater.on('update-downloaded', async (info: UpdateDownloadedEvent) => {
@@ -166,7 +166,7 @@ export const init: Module = ({ mainWindow, store }) => {
             `- Release notes: ${releaseNotes}`,
         ]);
 
-        mainWindow.webContents.send('update/downloading', { verifying: true });
+        mainWindowProxy.getInstance()?.webContents.send('update/downloading', { verifying: true });
 
         try {
             // check downloaded file
@@ -177,7 +177,7 @@ export const init: Module = ({ mainWindow, store }) => {
 
             logger.info(SERVICE_NAME, 'Signature of update file is valid');
 
-            mainWindow.webContents.send('update/downloaded', {
+            mainWindowProxy.getInstance()?.webContents.send('update/downloaded', {
                 version,
                 releaseDate,
                 downloadedFile,
@@ -185,7 +185,7 @@ export const init: Module = ({ mainWindow, store }) => {
         } catch (err) {
             autoUpdater.autoInstallOnAppQuit = false;
             unlinkSync(downloadedFile);
-            mainWindow.webContents.send('update/error', err);
+            mainWindowProxy.getInstance()?.webContents.send('update/error', err);
 
             logger.error(SERVICE_NAME, `Signature check of update file failed: ${err.message}`);
             logger.info(SERVICE_NAME, `Unlink downloaded file ${downloadedFile}`);
@@ -214,8 +214,8 @@ export const init: Module = ({ mainWindow, store }) => {
         setImmediate(() => {
             // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
             app.removeAllListeners('window-all-closed');
-            mainWindow.removeAllListeners('close');
-            mainWindow.close();
+            mainWindowProxy.getInstance()?.removeAllListeners('close');
+            mainWindowProxy.getInstance()?.close();
 
             // Silent install on Windows to match on "Update on quit" and MacOS behavior
             autoUpdater.quitAndInstall(true, true);
@@ -234,7 +234,7 @@ export const init: Module = ({ mainWindow, store }) => {
 
     ipcMain.on('update/allow-prerelease', (_, value = true) => {
         logger.info(SERVICE_NAME, `${value ? 'allow' : 'disable'} prerelease!`);
-        mainWindow.webContents.send('update/allow-prerelease', value);
+        mainWindowProxy.getInstance()?.webContents.send('update/allow-prerelease', value);
         const settings = store.getUpdateSettings();
         store.setUpdateSettings({ ...settings, allowPrerelease: value });
         allowPrerelease = value;
@@ -247,7 +247,9 @@ export const init: Module = ({ mainWindow, store }) => {
     ipcMain.on('update/set-automatic-update-enabled', (_, value = true) => {
         logger.info(SERVICE_NAME, `set-automatic-update-enabled: ${value ? 'true' : 'false'}`);
 
-        mainWindow.webContents.send('update/set-automatic-update-enabled', value);
+        mainWindowProxy
+            .getInstance()
+            ?.webContents.send('update/set-automatic-update-enabled', value);
         const settings = store.getUpdateSettings();
         store.setUpdateSettings({ ...settings, isAutomaticUpdateEnabled: value });
         isAutomaticUpdateEnabled = value;

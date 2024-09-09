@@ -10,7 +10,7 @@ import type { Module } from './index';
 
 export const SERVICE_NAME = 'file-protocol';
 
-export const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindowProxy }) => {
     // Point to the right directory for file protocol requests
     session.defaultSession.protocol.interceptFileProtocol(FILE_PROTOCOL, (request, callback) => {
         let url = request.url.substring(FILE_PROTOCOL.length + 1);
@@ -19,7 +19,9 @@ export const init: Module = ({ mainWindow }) => {
     });
 
     // Refresh if it failed to load
-    mainWindow.webContents.on('did-fail-load', () => {
-        mainWindow.loadURL(APP_SRC);
+    mainWindowProxy.on('init', mainWindow => {
+        mainWindow.webContents.on('did-fail-load', () => {
+            mainWindow.loadURL(APP_SRC);
+        });
     });
 };
