@@ -74,6 +74,21 @@ export const isTransportInstance = (transport?: AbstractTransport) => {
 
 const getKey = ({ path, product }: Descriptor) => `${path}${product}`;
 
+type ReadWriteError =
+    | typeof ERRORS.HTTP_ERROR
+    | typeof ERRORS.WRONG_RESULT_TYPE
+    | typeof ERRORS.OTHER_CALL_IN_PROGRESS
+    | typeof PROTOCOL_MALFORMED
+    | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
+    | typeof ERRORS.UNEXPECTED_ERROR
+    | typeof ERRORS.SESSION_NOT_FOUND
+    | typeof ERRORS.ABORTED_BY_TIMEOUT
+    | typeof ERRORS.ABORTED_BY_SIGNAL
+    | typeof ERRORS.WRONG_ENVIRONMENT
+    | typeof ERRORS.DEVICE_NOT_FOUND
+    | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
+    | typeof ERRORS.INTERFACE_DATA_TRANSFER;
+
 export abstract class AbstractTransport extends TypedEmitter<{
     [TRANSPORT.UPDATE]: DeviceDescriptorDiff;
     [TRANSPORT.ERROR]:
@@ -268,21 +283,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         name: string;
         data: Record<string, unknown>;
         protocol?: TransportProtocol;
-    }): AbortableCall<
-        undefined,
-        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
-        // bridge
-        | typeof ERRORS.HTTP_ERROR
-        | typeof ERRORS.WRONG_RESULT_TYPE
-        | typeof ERRORS.OTHER_CALL_IN_PROGRESS
-        // webusb + bridge
-        | typeof PROTOCOL_MALFORMED
-        | typeof ERRORS.UNEXPECTED_ERROR
-        | typeof ERRORS.SESSION_NOT_FOUND
-        | typeof ERRORS.ABORTED_BY_TIMEOUT
-        | typeof ERRORS.ABORTED_BY_SIGNAL
-        | typeof ERRORS.WRONG_ENVIRONMENT
-    >;
+    }): AbortableCall<undefined, ReadWriteError>;
 
     /**
      * Only read from transport
@@ -291,21 +292,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         path?: string;
         session: Session;
         protocol?: TransportProtocol;
-    }): AbortableCall<
-        MessageFromTrezor,
-        // bridge
-        | typeof ERRORS.HTTP_ERROR
-        | typeof ERRORS.WRONG_RESULT_TYPE
-        | typeof ERRORS.OTHER_CALL_IN_PROGRESS
-        // webusb + bridge
-        | typeof PROTOCOL_MALFORMED
-        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
-        | typeof ERRORS.UNEXPECTED_ERROR
-        | typeof ERRORS.SESSION_NOT_FOUND
-        | typeof ERRORS.ABORTED_BY_TIMEOUT
-        | typeof ERRORS.ABORTED_BY_SIGNAL
-        | typeof ERRORS.WRONG_ENVIRONMENT
-    >;
+    }): AbortableCall<MessageFromTrezor, ReadWriteError>;
 
     /**
      * Send and read after that
@@ -315,24 +302,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         name: string;
         data: Record<string, unknown>;
         protocol?: TransportProtocol;
-    }): AbortableCall<
-        MessageFromTrezor,
-        // bridge
-        | typeof ERRORS.HTTP_ERROR
-        | typeof ERRORS.WRONG_RESULT_TYPE
-        | typeof ERRORS.OTHER_CALL_IN_PROGRESS
-        // webusb + bridge
-        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
-        | typeof PROTOCOL_MALFORMED
-        | typeof ERRORS.UNEXPECTED_ERROR
-        | typeof ERRORS.ABORTED_BY_TIMEOUT
-        | typeof ERRORS.ABORTED_BY_SIGNAL
-        | typeof ERRORS.WRONG_ENVIRONMENT
-        // webusb
-        | typeof ERRORS.DEVICE_NOT_FOUND
-        | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
-        | typeof ERRORS.INTERFACE_DATA_TRANSFER
-    >;
+    }): AbortableCall<MessageFromTrezor, ReadWriteError>;
 
     /**
      * Stop transport = remove all listeners + try to release session + cancel all requests

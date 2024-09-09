@@ -283,13 +283,12 @@ export class BridgeTransport extends AbstractTransport {
                 if (!response.success) {
                     return response;
                 }
-                const message = await receiveAndParse(
+
+                return receiveAndParse(
                     this.messages,
-                    () => Promise.resolve(Buffer.from(response.payload.data, 'hex')),
+                    () => Promise.resolve(this.success(Buffer.from(response.payload.data, 'hex'))),
                     protocol,
                 );
-
-                return this.success(message);
             },
             { timeout: undefined },
         );
@@ -338,13 +337,12 @@ export class BridgeTransport extends AbstractTransport {
                 if (!response.success) {
                     return response;
                 }
-                const message = await receiveAndParse(
+
+                return receiveAndParse(
                     this.messages,
-                    () => Promise.resolve(Buffer.from(response.payload.data, 'hex')),
+                    () => Promise.resolve(this.success(Buffer.from(response.payload.data, 'hex'))),
                     protocol,
                 );
-
-                return this.success(message);
             },
             { timeout: undefined },
         );
