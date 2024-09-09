@@ -7,7 +7,7 @@ import {
 } from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
 import { useDisplayMode, useSelector } from 'src/hooks/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectAccountIncludingChosenInCoinmarket } from 'src/reducers/wallet/selectedAccountReducer';
 import { cryptoIdToNetworkSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 interface ConfirmAddressModalProps
@@ -16,7 +16,7 @@ interface ConfirmAddressModalProps
 }
 
 export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
-    const account = useSelector(selectSelectedAccount);
+    const account = useSelector(selectAccountIncludingChosenInCoinmarket);
     const { modalCryptoId } = useSelector(state => state.wallet.coinmarket);
     const displayMode = useDisplayMode({ type: 'address' });
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();

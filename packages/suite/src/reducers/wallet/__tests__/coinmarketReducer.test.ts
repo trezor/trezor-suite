@@ -45,6 +45,28 @@ describe('settings reducer', () => {
         ).toEqual(initialState);
     });
 
+    it('COINMARKET_COMMON.SET_MODAL_ACCOUNT', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_COMMON.SET_MODAL_ACCOUNT,
+                modalAccount: accounts[0],
+            }),
+        ).toEqual({
+            ...initialState,
+            modalAccount: accounts[0],
+        });
+
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_COMMON.SET_MODAL_ACCOUNT,
+                modalAccount: undefined,
+            }),
+        ).toEqual({
+            ...initialState,
+            modalAccount: undefined,
+        });
+    });
+
     it('COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY', () => {
         expect(
             reducer(undefined, {

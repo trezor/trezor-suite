@@ -42,12 +42,28 @@ export type CoinmarketCommonAction =
     | {
           type: typeof COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY;
           modalCryptoId: CryptoId | undefined;
+      }
+    | {
+          type: typeof COINMARKET_COMMON.SET_MODAL_ACCOUNT;
+          modalAccount: Account | undefined;
       };
 
 type FormState = {
     cryptoInput?: string;
     outputs?: Output[];
 };
+
+/**
+ * Set modalAccount to retrieve the correct account in modals.
+ * Used in ConfirmAddressModal and TransactionReviewModalContent through selectAccountIncludingChosenInCoinmarket.
+ * Unset in middleware after modal is closed.
+ */
+export const setCoinmarketModalAccount = (
+    modalAccount: Account | undefined,
+): CoinmarketCommonAction => ({
+    type: COINMARKET_COMMON.SET_MODAL_ACCOUNT,
+    modalAccount,
+});
 
 export const verifyAddress =
     (
@@ -65,6 +81,8 @@ export const verifyAddress =
         address = address ?? accountAddress.address;
         path = path ?? accountAddress.path;
         if (!path || !address) return;
+
+        dispatch(setCoinmarketModalAccount(account));
 
         const addressDisplayType = selectAddressDisplayType(getState());
 
