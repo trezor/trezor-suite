@@ -32,7 +32,7 @@
     "devDependencies": {
         "@electron/notarize": "2.4.0",
         "electron": "30.3.1",
-        "electron-builder": "24.13.3",
+        "electron-builder": "25.0.5",
         "glob": "^10.3.10"
     }
 }
