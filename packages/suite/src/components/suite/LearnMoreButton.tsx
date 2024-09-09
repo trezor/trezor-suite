@@ -9,6 +9,7 @@ import { useExternalLink } from '../../hooks/suite';
 interface LearnMoreButtonProps extends Omit<ButtonProps, 'children'> {
     url: Url;
     children?: ReactNode;
+    textWrap?: boolean;
 }
 
 export const LearnMoreButton = ({
@@ -16,10 +17,12 @@ export const LearnMoreButton = ({
     className,
     size = 'tiny',
     url,
+    textWrap,
     ...buttonProps
 }: LearnMoreButtonProps) => (
     <Button
         href={useExternalLink(url)}
+        textWrap={textWrap}
         variant="tertiary"
         size={size}
         icon="externalLink"
