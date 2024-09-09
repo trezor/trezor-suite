@@ -107,16 +107,21 @@ export class TrezordNode {
         assetPrefix = '',
         logger,
         protocolMessages,
+        bundledVersion,
     }: {
         port: number;
         api: 'usb' | 'udp' | AbstractApi;
         assetPrefix?: string;
         logger: Log;
         protocolMessages?: boolean;
+        bundledVersion?: string;
     }) {
         this.port = port || defaults.port;
         this.logger = logger;
         this.descriptors = [];
+        if (bundledVersion) {
+            this.version = `${this.version}-bundled.${bundledVersion}`;
+        }
 
         this.listenSubscriptions = [];
 
