@@ -10,6 +10,7 @@ type LaunchSuiteParams = {
     rmUserData?: boolean;
     bridgeLegacyTest?: boolean;
     bridgeDaemon?: boolean;
+    startExternalBridge?: boolean;
 };
 
 export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => {
@@ -17,12 +18,13 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
         rmUserData: true,
         bridgeLegacyTest: true,
         bridgeDaemon: false,
+        startExternalBridge: true,
     };
     const options = Object.assign(defaultParams, params);
 
     const appDir = path.join(__dirname, '../../../suite-desktop');
     const desiredLogLevel = process.env.LOGLEVEL ?? 'error';
-    if (!options.bridgeDaemon) {
+    if (!options.bridgeDaemon && options.startExternalBridge) {
         // TODO: Find out why currently pw fails to see node-bridge so we default to legacy bridge.
         await TrezorUserEnvLink.startBridge();
     }

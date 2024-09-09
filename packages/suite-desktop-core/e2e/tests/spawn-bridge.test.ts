@@ -12,33 +12,35 @@ testPlaywright.describe.serial('Bridge', () => {
     testPlaywright(
         `App spawns bundled bridge version ${expectedBridgeVersion} and stops it after app quit`,
         async ({ request }) => {
-            const isBridgeRunning = (expected: boolean) => {
-                return request
-                    .post('http://127.0.0.1:21325/', {
+            const isBridgeRunning = async (expected: boolean) => {
+                try {
+                    const response = await request.post('http://127.0.0.1:21325/', {
                         headers: {
                             Origin: 'https://wallet.trezor.io',
                         },
-                    })
-                    .then(res => {
-                        if (!expected) {
-                            throw new Error('Bridge is running but is should not');
-                        }
-
-                        return res.json();
-                    })
-                    .then(json => {
-                        const { version } = json;
-                        expectPlaywright(version).toEqual(expectedBridgeVersion);
-                    })
-                    .catch(() => {
-                        if (expected) {
-                            throw new Error('Bridge should be running, but is not');
-                        }
                     });
+
+                    if (!expected) {
+                        throw new Error('Bridge is running but it should not be.');
+                    }
+
+                    const json = await response.json();
+                    const { version } = json;
+                    expectPlaywright(version).toEqual(expectedBridgeVersion);
+                } catch (error) {
+                    if (error.message === 'Bridge is running but it should not be.') {
+                        console.error('Caught specific error:', error.message);
+                        throw error; // Rethrow if you want the test to fail.
+                    } else if (expected) {
+                        throw new Error('Bridge should be running, but it is not.');
+                    }
+                    // If the error is not one we care about, we can just log it since it is expected.
+                    console.error('Caught expected error:', error.message);
+                }
             };
 
             await TrezorUserEnvLink.stopBridge();
-            const suite = await launchSuite();
+            const suite = await launchSuite({ startExternalBridge: false });
             await suite.window.title();
 
             await waitForDataTestSelector(suite.window, '@welcome/title');
