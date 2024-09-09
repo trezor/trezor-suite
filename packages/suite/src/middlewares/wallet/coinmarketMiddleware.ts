@@ -8,18 +8,23 @@ import * as coinmarketInfoAction from 'src/actions/wallet/coinmarketInfoActions'
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
+import { UI } from '@trezor/connect';
+import { ROUTER, MODAL } from 'src/actions/suite/constants';
 
 const coinmarketMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
+        const state = api.getState();
+        const { isLoading, lastLoadedTimestamp } = state.wallet.coinmarket;
+        const { exchangeInfo } = state.wallet.coinmarket.exchange;
+        const { sellInfo } = state.wallet.coinmarket.sell;
+        const { router, modal } = state;
+
         if (action.type === COINMARKET_COMMON.LOAD_DATA) {
-            const { isLoading, lastLoadedTimestamp } = api.getState().wallet.coinmarket;
-            const { account, status } = api.getState().wallet.selectedAccount;
-            const { platforms, coins } = api.getState().wallet.coinmarket.info;
-            const { buyInfo } = api.getState().wallet.coinmarket.buy;
-            const { exchangeInfo } = api.getState().wallet.coinmarket.exchange;
-            const { sellInfo } = api.getState().wallet.coinmarket.sell;
+            const { account, status } = state.wallet.selectedAccount;
+            const { platforms, coins } = state.wallet.coinmarket.info;
+            const { buyInfo } = state.wallet.coinmarket.buy;
 
             const currentAccountDescriptor = invityAPI.getCurrentAccountDescriptor();
             const isDifferentAccount = currentAccountDescriptor !== account?.descriptor;
@@ -33,7 +38,7 @@ const coinmarketMiddleware =
             ) {
                 api.dispatch(coinmarketCommonActions.setLoading(true));
 
-                const { invityServerEnvironment } = api.getState().suite.settings.debug;
+                const { invityServerEnvironment } = state.suite.settings.debug;
                 if (invityServerEnvironment) {
                     invityAPI.setInvityServersEnvironment(invityServerEnvironment);
                 }
@@ -80,7 +85,53 @@ const coinmarketMiddleware =
             }
         }
 
+        const isCoinmarketRoute = !!router.route?.name.includes('wallet-coinmarket');
+        const isDeviceContext = modal.context === MODAL.CONTEXT_DEVICE;
+        const isUserContext = modal.context === MODAL.CONTEXT_USER;
+
+        const isCloseUiWindowEvent = action.type === UI.CLOSE_UI_WINDOW;
+        const isReceiveModal =
+            isCloseUiWindowEvent && isDeviceContext && modal.windowType === 'ButtonRequest_Address';
+
+        /* 
+          isCloseEvent
+            - happens only one time when the whole flow of sending the transaction is closed
+            - isCloseUiWindowEvent can not be used, it is called multiple times during flow because of
+            changing context from CONTEXT_DEVICE (sign transaction) to CONTEXT_USER (summary)
+        */
+        const isCloseEvent = action.type === MODAL.CLOSE;
+        const isOtherFlow = isDeviceContext && modal.windowType === `ButtonRequest_Other`; // passphrase request, etc.
+        const isSigningFlow = isDeviceContext && modal.windowType === 'ButtonRequest_SignTx';
+        const isSummaryFlow = isUserContext && modal.payload.type === 'review-transaction';
+        const isSendModal = isCloseEvent && (isOtherFlow || isSigningFlow || isSummaryFlow);
+
+        // clear modal account on close button requests
+        // it is necessary to clear the state because it could affect the next modal state
+        if (isCoinmarketRoute && (isReceiveModal || isSendModal)) {
+            api.dispatch(coinmarketCommonActions.setCoinmarketModalAccount(undefined));
+        }
+
         next(action);
+
+        // get the new state after the action has been processed
+        const newState = api.getState();
+        const sellCoinmarketAccount = newState.wallet.coinmarket.sell.coinmarketAccount;
+        const exchangeCoinmarketAccount = newState.wallet.coinmarket.exchange.coinmarketAccount;
+
+        if (action.type === ROUTER.LOCATION_CHANGE) {
+            const isSell = newState.router.route?.name === 'wallet-coinmarket-sell';
+            const isExchange = newState.router.route?.name === 'wallet-coinmarket-exchange';
+
+            // clean coinmarketAccount in sell
+            if (isSell && sellCoinmarketAccount) {
+                api.dispatch(coinmarketSellActions.setCoinmarketSellAccount(undefined));
+            }
+
+            // clean coinmarketAccount in exchange
+            if (isExchange && exchangeCoinmarketAccount) {
+                api.dispatch(coinmarketExchangeActions.setCoinmarketExchangeAccount(undefined));
+            }
+        }
 
         return action;
     };

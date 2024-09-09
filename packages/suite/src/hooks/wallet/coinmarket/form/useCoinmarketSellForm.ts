@@ -462,6 +462,8 @@ export const useCoinmarketSellForm = ({
     };
 
     const sendTransaction = async () => {
+        dispatch(coinmarketCommonActions.setCoinmarketModalAccount(account));
+
         // destinationAddress may be set by useCoinmarketWatchTrade hook to the trade object
         const destinationAddress =
             selectedQuote?.destinationAddress || trade?.data?.destinationAddress;

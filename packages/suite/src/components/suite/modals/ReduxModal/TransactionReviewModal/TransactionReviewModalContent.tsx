@@ -22,6 +22,8 @@ import { TransactionReviewOutputList } from './TransactionReviewOutputList/Trans
 import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
 import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
+import { networks } from '@suite-common/wallet-config';
+import { selectAccountIncludingChosenInCoinmarket } from 'src/reducers/wallet/selectedAccountReducer';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
@@ -54,7 +56,7 @@ export const TransactionReviewModalContent = ({
     txInfoState,
     cancelSignTx,
 }: TransactionReviewModalContentProps) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const account = useSelector(selectAccountIncludingChosenInCoinmarket);
     const fees = useSelector(state => state.wallet.fees);
     const device = useSelector(selectDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);
@@ -62,8 +64,6 @@ export const TransactionReviewModalContent = ({
     const [isSending, setIsSending] = useState(false);
 
     const deviceModelInternal = device?.features?.internal_model;
-
-    const { account } = selectedAccount;
     const { precomposedTx, serializedTx } = txInfoState;
 
     const precomposedForm = useSelector(state =>
@@ -81,13 +81,11 @@ export const TransactionReviewModalContent = ({
         selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId),
     );
 
-    if (!account) {
+    if (!account || !device || !precomposedTx || !precomposedForm) {
         return null;
     }
 
-    if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm) {
-        return null;
-    }
+    const network = networks[account.symbol];
 
     const { networkType } = account;
 
@@ -106,7 +104,7 @@ export const TransactionReviewModalContent = ({
 
     // get estimate mining time
     let estimateTime;
-    const symbolFees = fees[selectedAccount.account.symbol];
+    const symbolFees = fees[account.symbol];
     const matchedFeeLevel = symbolFees.levels.find(
         item => item.feePerUnit === precomposedTx.feePerByte,
     );
@@ -140,8 +138,8 @@ export const TransactionReviewModalContent = ({
             <TransactionReviewSummary
                 estimateTime={estimateTime}
                 tx={precomposedTx}
-                account={selectedAccount.account}
-                network={selectedAccount.network}
+                account={account}
+                network={network}
                 broadcast={precomposedForm.options.includes('broadcast')}
                 detailsOpen={detailsOpen}
                 onDetailsClick={() => setDetailsOpen(!detailsOpen)}
@@ -152,7 +150,7 @@ export const TransactionReviewModalContent = ({
                 })}
             />
             <TransactionReviewOutputList
-                account={selectedAccount.account}
+                account={account}
                 precomposedForm={precomposedForm}
                 precomposedTx={precomposedTx}
                 signedTx={serializedTx}
@@ -171,7 +169,7 @@ export const TransactionReviewModalContent = ({
                 ethereumStakeType={ethereumStakeType || undefined}
             />
             <TransactionReviewEvmExplanation
-                account={selectedAccount.account}
+                account={account}
                 ethereumStakeType={ethereumStakeType}
             />
         </StyledModal>

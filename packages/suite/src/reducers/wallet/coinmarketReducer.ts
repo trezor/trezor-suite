@@ -89,6 +89,7 @@ export interface State {
     composedTransactionInfo: ComposedTransactionInfo;
     trades: Trade[];
     modalCryptoId: CryptoId | undefined;
+    modalAccount: Account | undefined;
     isLoading: boolean;
     lastLoadedTimestamp: number;
 }
@@ -135,6 +136,7 @@ export const initialState: State = {
     composedTransactionInfo: {},
     trades: [],
     isLoading: false,
+    modalAccount: undefined,
     modalCryptoId: undefined,
     lastLoadedTimestamp: 0,
 };
@@ -252,6 +254,9 @@ const coinmarketReducer = (
             case COINMARKET_COMMON.SET_LOADING:
                 draft.isLoading = action.isLoading;
                 draft.lastLoadedTimestamp = action.lastLoadedTimestamp;
+                break;
+            case COINMARKET_COMMON.SET_MODAL_ACCOUNT:
+                draft.modalAccount = action.modalAccount;
                 break;
             case COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY:
                 draft.modalCryptoId = action.modalCryptoId;

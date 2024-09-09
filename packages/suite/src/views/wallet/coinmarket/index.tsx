@@ -10,7 +10,6 @@ import {
     Icon,
 } from '@trezor/components';
 import {
-    borders,
     Elevation,
     mapElevationToBackground,
     nativeTypography,
@@ -349,13 +348,6 @@ export const TooltipText = styled.div<{ $isYellow?: boolean }>`
             $isYellow ? theme.textAlertYellow : theme.textDefault};
         transition: background 0.15s;
     }
-`;
-
-export const CoinmarketWarning = styled.div`
-    padding: ${spacingsPx.sm};
-    border: 1px solid ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevationNegative};
-    border-radius: ${borders.radii.sm};
-    background-color: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation1};
 `;
 
 export const CoinmarketTestWrapper = styled.div``;
