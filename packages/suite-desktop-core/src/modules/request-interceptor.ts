@@ -15,7 +15,7 @@ import type { Module } from './index';
 
 export const SERVICE_NAME = 'request-interceptor';
 
-export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
+export const init: Module = ({ mainWindowProxy, store, mainThreadEmitter }) => {
     const { logger } = global;
 
     const requestInterceptorEventHandler = (event: InterceptedEvent) => {
@@ -30,7 +30,7 @@ export const init: Module = ({ mainWindow, store, mainThreadEmitter }) => {
         }
         if (event.type === 'NETWORK_MISBEHAVING') {
             logger.debug(SERVICE_NAME, 'networks is misbehaving');
-            mainWindow.webContents.send('tor/status', {
+            mainWindowProxy.getInstance()?.webContents.send('tor/status', {
                 type: TorStatus.Misbehaving,
             });
         }

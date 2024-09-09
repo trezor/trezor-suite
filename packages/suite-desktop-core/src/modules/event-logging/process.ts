@@ -7,6 +7,7 @@ export const init: Module = () => {
 
     process.on('uncaughtException', e => {
         logger.error('exception', e.message);
+        if (e.stack) logger.error('exception', e.stack);
     });
 
     process.on('unhandledRejection', (e: Error) => {

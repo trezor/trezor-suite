@@ -16,7 +16,7 @@ import { app, ipcMain } from '../typed-electron';
 
 import type { Dependencies } from './index';
 
-const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
+const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies) => {
     const { logger } = global;
     const host = '127.0.0.1';
     const port = await getFreePort();
@@ -60,14 +60,14 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
             type = TorStatus.Disabled;
         }
         mainThreadEmitter.emit('module/tor-status-update', type);
-        mainWindow.webContents.send('tor/status', {
+        mainWindowProxy.getInstance()?.webContents.send('tor/status', {
             type,
         });
     };
 
     const handleBootstrapEvent = (bootstrapEvent: BootstrapEvent) => {
         if (bootstrapEvent.type === 'slow') {
-            mainWindow.webContents.send('tor/bootstrap', {
+            mainWindowProxy.getInstance()?.webContents.send('tor/bootstrap', {
                 type: 'slow',
             });
         }
@@ -86,7 +86,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
                 },
             };
 
-            mainWindow.webContents.send('tor/bootstrap', event);
+            mainWindowProxy.getInstance()?.webContents.send('tor/bootstrap', event);
         }
     };
 
@@ -105,7 +105,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
                 tor.setTorConfig({ snowflakeBinaryPath });
                 await tor.start();
             } catch (error) {
-                mainWindow.webContents.send('tor/bootstrap', {
+                mainWindowProxy.getInstance()?.webContents.send('tor/bootstrap', {
                     type: 'error',
                     message: error.message,
                 });
@@ -117,7 +117,7 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
                 tor.torController.removeAllListeners();
             }
         } else {
-            mainWindow.webContents.send('tor/status', {
+            mainWindowProxy.getInstance()?.webContents.send('tor/status', {
                 type: TorStatus.Disabling,
             });
             setProxy('');
@@ -145,7 +145,9 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
             } catch (error) {
                 return { success: false, error };
             } finally {
-                mainWindow.webContents.send('tor/settings', store.getTorSettings());
+                mainWindowProxy
+                    .getInstance()
+                    ?.webContents.send('tor/settings', store.getTorSettings());
             }
         },
     );

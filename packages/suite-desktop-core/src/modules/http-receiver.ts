@@ -10,7 +10,7 @@ import type { Module } from './index';
 
 export const SERVICE_NAME = 'http-receiver';
 
-export const init: Module = ({ mainWindow }) => {
+export const init: Module = ({ mainWindowProxy }) => {
     const { logger } = global;
     let httpReceiver: ReturnType<typeof createHttpReceiver> | null = null;
 
@@ -26,7 +26,7 @@ export const init: Module = ({ mainWindow }) => {
         receiver.on('server/listening', () => {
             // when httpReceiver accepted oauth response
             receiver.on('oauth/response', message => {
-                mainWindow.webContents.send('oauth/response', message);
+                mainWindowProxy.getInstance()?.webContents.send('oauth/response', message);
                 app.focus();
             });
 

@@ -6,7 +6,6 @@ import { InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
 
-import { StrictBrowserWindow } from '../typed-electron';
 import type { Store } from '../libs/store';
 import * as eventLogging from './event-logging';
 import * as eventLoggingProcess from './event-logging/process';
@@ -33,6 +32,7 @@ import * as coinjoin from './coinjoin';
 import * as csp from './csp';
 import * as fileProtocol from './file-protocol';
 import * as autoStart from './auto-start';
+import { MainWindowProxy } from '../libs/main-window-proxy';
 
 // General modules (both dev & prod)
 const MODULES = [
@@ -75,7 +75,7 @@ export const mainThreadEmitter = new TypedEmitter<MainThreadMessages>();
 export type MainThreadEmitter = typeof mainThreadEmitter;
 
 export type Dependencies = {
-    mainWindow: StrictBrowserWindow;
+    mainWindowProxy: MainWindowProxy;
     store: Store;
     interceptor: RequestInterceptor;
     mainThreadEmitter: MainThreadEmitter;
@@ -125,22 +125,26 @@ export const initModules = (dependencies: Dependencies) => {
                 try {
                     const payload = await onLoad(handshake);
                     logger.debug('modules', `Loaded ${moduleName}`);
-                    dependencies.mainWindow.webContents.send('handshake/event', {
-                        type: 'progress',
-                        message: `${moduleName} loaded`,
-                        progress: {
-                            current: ++loaded,
-                            total: modulesToLoad.length,
-                        },
-                    });
+                    dependencies.mainWindowProxy
+                        .getInstance()
+                        ?.webContents.send('handshake/event', {
+                            type: 'progress',
+                            message: `${moduleName} loaded`,
+                            progress: {
+                                current: ++loaded,
+                                total: modulesToLoad.length,
+                            },
+                        });
 
                     return [moduleName, payload] as const;
                 } catch (err) {
                     logger.error('modules', `Couldn't load ${moduleName} (${err?.toString()})`);
-                    dependencies.mainWindow.webContents.send('handshake/event', {
-                        type: 'error',
-                        message: `${moduleToLoad} error`,
-                    });
+                    dependencies.mainWindowProxy
+                        .getInstance()
+                        ?.webContents.send('handshake/event', {
+                            type: 'error',
+                            message: `${moduleToLoad} error`,
+                        });
 
                     throw new Error(
                         `Check if there is another instance of the Suite app running. ${err}`,
