@@ -1,5 +1,5 @@
 import * as messages from '@trezor/protobuf/messages.json';
-import { BridgeTransport } from '@trezor/transport';
+import { BridgeTransport, Descriptor, Session } from '@trezor/transport';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
 import { pathLength, descriptor as expectedDescriptor } from './expect';
@@ -9,8 +9,8 @@ const emulatorStartOpts = { model: 'T2T1', version: '2-main', wipe: true } as co
 
 describe('bridge', () => {
     let bridge: BridgeTransport;
-    let devices: any[];
-    let session: any;
+    let descriptors: Descriptor[];
+    let session: Session;
 
     beforeAll(async () => {
         await TrezorUserEnvLink.connect();
@@ -37,10 +37,10 @@ describe('bridge', () => {
         const { path } = enumerateResult.payload[0];
         expect(path.length).toEqual(pathLength);
 
-        devices = enumerateResult.payload;
+        descriptors = enumerateResult.payload;
 
         const acquireResult = await bridge.acquire({
-            input: { path: devices[0].path, previous: session },
+            input: { path: descriptors[0].path, previous: session },
         }).promise;
         assertSuccess(acquireResult);
         expect(acquireResult).toEqual({
@@ -168,7 +168,7 @@ describe('bridge', () => {
     }
 
     test(`concurrent acquire`, async () => {
-        const { path } = devices[0];
+        const { path } = descriptors[0];
         const results = await Promise.all([
             bridge.acquire({ input: { path, previous: session } }).promise,
             bridge.acquire({ input: { path, previous: session } }).promise,
