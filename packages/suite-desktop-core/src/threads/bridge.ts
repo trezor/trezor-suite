@@ -29,6 +29,7 @@ const init = (settings: TrezordNodeSettings) =>
             }),
             { serviceName: 'trezord-node' },
         ),
+        bundledVersion: process.env.VERSION,
     });
 
 createThread(init);
