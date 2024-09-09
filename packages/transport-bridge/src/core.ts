@@ -232,7 +232,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         const { path } = sessionsResult.payload;
         logger?.debug(`core: call: retrieved path ${path} for session ${session}`);
 
-        return api.runInIsolation({ read: true, write: true }, async () => {
+        return api.runInIsolation({ lock: { read: true, write: true }, path }, async () => {
             const openResult = await api.openDevice(path, false, signal);
 
             if (!openResult.success) {
@@ -303,7 +303,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         const protocol = getProtocol(protocolName);
         const { path } = sessionsResult.payload;
 
-        return api.runInIsolation({ read: true, write: false }, async () => {
+        return api.runInIsolation({ lock: { read: true, write: false }, path }, async () => {
             const openResult = await api.openDevice(path, false, signal);
             if (!openResult.success) {
                 return openResult;
