@@ -32,6 +32,7 @@ react-qr-reader
 react-select
 react-svg
 recharts
+simple-git
 storybook
 style-loader
 styled-components
