@@ -23,7 +23,7 @@ export type CoinmarketSellAction =
     | { type: typeof COINMARKET_SELL.SAVE_QUOTE_REQUEST; request: SellFiatTradeQuoteRequest }
     | { type: typeof COINMARKET_SELL.SAVE_TRANSACTION_ID; transactionId?: string }
     | { type: typeof COINMARKET_SELL.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
-    | { type: typeof COINMARKET_SELL.SET_COINMARKET_ACCOUNT; account: Account }
+    | { type: typeof COINMARKET_SELL.SET_COINMARKET_ACCOUNT; account: Account | undefined }
     | {
           type: typeof COINMARKET_SELL.SAVE_QUOTES;
           quotes: SellFiatTrade[];
@@ -126,7 +126,7 @@ export const setIsFromRedirect = (isFromRedirect: boolean): CoinmarketSellAction
     isFromRedirect,
 });
 
-export const setCoinmarketSellAccount = (account: Account): CoinmarketSellAction => ({
+export const setCoinmarketSellAccount = (account: Account | undefined): CoinmarketSellAction => ({
     type: COINMARKET_SELL.SET_COINMARKET_ACCOUNT,
     account,
 });
