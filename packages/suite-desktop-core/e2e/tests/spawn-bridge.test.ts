@@ -4,6 +4,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { launchSuite, waitForDataTestSelector } from '../support/common';
 import { onDashboardPage } from '../support/pageActions/dashboardActions';
+import { createTimeoutPromise } from '@trezor/utils';
 
 testPlaywright.describe.serial('Bridge', () => {
     const expectedBridgeVersion = '2.0.33';
@@ -46,6 +47,8 @@ testPlaywright.describe.serial('Bridge', () => {
             await waitForDataTestSelector(suite.window, '@welcome/title');
 
             // bridge is running
+            // give some time to bridge to properly start, this should not be necessary.
+            await createTimeoutPromise(5 * 1000);
             await isBridgeRunning(true);
 
             // bridge is running after renderer window is refreshed

@@ -27,7 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - TEST_FILE: "spawn-bridge spawn-bridge-daemon suite-guide wallet-discovery"
+          - TEST_FILE: "spawn-bridge.test spawn-bridge-daemon.test suite-guide.test wallet-discovery.test"
             CONTAINERS: "trezor-user-env-unix"
           - TEST_FILE: "electrum"
             CONTAINERS: "trezor-user-env-unix electrum-regtest"
