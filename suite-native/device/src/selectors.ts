@@ -13,7 +13,7 @@ import {
     selectDeviceModel,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
-    selectIsEmptyDevice,
+    selectIsDiscoveredDeviceAccountless,
     selectIsUnacquiredDevice,
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDevices,
@@ -45,9 +45,9 @@ export const selectIsDeviceReadyToUseAndAuthorized = (
 ) => {
     const isDeviceReadyToUse = selectIsDeviceReadyToUse(state);
     const isDeviceConnectedAndAuthorized = selectIsDeviceConnectedAndAuthorized(state);
-    const isEmptyDevice = selectIsEmptyDevice(state);
+    const isDiscoveredDeviceAccountless = selectIsDiscoveredDeviceAccountless(state);
 
-    return isDeviceReadyToUse && isDeviceConnectedAndAuthorized && !isEmptyDevice;
+    return isDeviceReadyToUse && isDeviceConnectedAndAuthorized && !isDiscoveredDeviceAccountless;
 };
 
 export const selectDeviceError = (

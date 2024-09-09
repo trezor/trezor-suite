@@ -11,10 +11,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import {
-    selectIsDeviceAccountless,
-    selectIsDeviceDiscoveryActive,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceNotEmpty, selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { finishPassphraseFlow } from '@suite-native/device-authorization';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -32,27 +29,25 @@ export const PassphraseLoadingScreen = () => {
 
     const dispatch = useDispatch();
 
-    const isDeviceAccountless = useSelector(selectIsDeviceAccountless);
+    const isDeviceNotEmpty = useSelector(selectIsDeviceNotEmpty);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
     useEffect(() => {
-        if (!isDeviceAccountless || (isDeviceAccountless && !isDiscoveryActive)) {
+        if (!isDiscoveryActive && isDeviceNotEmpty !== null) {
             setLoadingResult('success');
         }
-    }, [isDeviceAccountless, isDiscoveryActive]);
+    }, [isDiscoveryActive, isDeviceNotEmpty]);
 
     const handleSuccess = () => {
-        if (!isDeviceAccountless) {
-            setLoadingResult('success');
+        if (isDeviceNotEmpty) {
             analytics.report({
                 type: EventType.PassphraseFlowFinished,
                 payload: { isEmptyWallet: false },
             });
             dispatch(finishPassphraseFlow());
-        } else if (isDeviceAccountless && !isDiscoveryActive) {
-            setLoadingResult('success');
+        } else {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PassphraseEmptyWallet,
             });

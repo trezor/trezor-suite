@@ -12,6 +12,7 @@ import { formattedAccountTypeMap } from './accountsConstants';
 import {
     DeviceRootState,
     selectDevice,
+    selectDeviceState,
     selectHasOnlyPortfolioDevice,
 } from '../device/deviceReducer';
 import { deviceActions } from '../device/deviceActions';
@@ -270,6 +271,9 @@ export const selectVisibleNonEmptyDeviceAccountsByNetworkSymbol = (
         account => !account.empty || account.visible,
     );
 
+export const selectNonEmptyDeviceAccounts = (state: AccountsRootState & DeviceRootState) =>
+    selectDeviceAccounts(state).filter(account => !account.empty);
+
 export const selectAccountsByNetworkAndDeviceState = memoizeWithArgs(
     (state: AccountsRootState, deviceState: string, networkSymbol: NetworkSymbol) => {
         const accounts = selectAccounts(state);
@@ -386,7 +390,7 @@ export const selectIsDeviceAccountless = (state: AccountsRootState & DeviceRootS
     pipe(selectVisibleDeviceAccounts(state), A.isEmpty);
 
 // Selected device has no accounts and no active discovery. It can be empty portfolio device.
-export const selectIsEmptyDevice = (
+export const selectIsDiscoveredDeviceAccountless = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
     const isDeviceAccountless = selectIsDeviceAccountless(state);
@@ -397,9 +401,25 @@ export const selectIsEmptyDevice = (
 
 export const selectHasOnlyEmptyPortfolioTracker = memoize(
     (state: AccountsRootState & DeviceRootState & DiscoveryRootState) => {
-        const isEmptyDevice = selectIsEmptyDevice(state);
+        const isDiscoveredDeviceAccountless = selectIsDiscoveredDeviceAccountless(state);
         const hasOnlyPortfolioDevice = selectHasOnlyPortfolioDevice(state);
 
-        return isEmptyDevice && hasOnlyPortfolioDevice;
+        return isDiscoveredDeviceAccountless && hasOnlyPortfolioDevice;
     },
 );
+
+// If we know that device is not empty, we can return true right away.
+// Otherwise we return null and wait until discovery finishes
+export const selectIsDeviceNotEmpty = (
+    state: AccountsRootState & DeviceRootState & DiscoveryRootState,
+) => {
+    const deviceState = selectDeviceState(state);
+    const nonEmptyAccounts = selectNonEmptyDeviceAccounts(state);
+    const isDeviceDiscoveryActive = selectIsDeviceDiscoveryActive(state);
+
+    if ((isDeviceDiscoveryActive || !deviceState) && A.isEmpty(nonEmptyAccounts)) {
+        return null;
+    }
+
+    return A.isNotEmpty(nonEmptyAccounts);
+};
