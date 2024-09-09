@@ -48,6 +48,7 @@ import {
     useCoinmarketCommonOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
+import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRecomposeAndSign';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
@@ -61,6 +62,7 @@ import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { setCoinmarketModalAccount } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 
 export const useCoinmarketExchangeForm = ({
     selectedAccount,
@@ -127,6 +129,7 @@ export const useCoinmarketExchangeForm = ({
         verifyAddress: coinmarketExchangeActions.verifyAddress,
         saveSelectedQuote: coinmarketExchangeActions.saveSelectedQuote,
         setCoinmarketExchangeAccount: coinmarketExchangeActions.setCoinmarketExchangeAccount,
+        setCoinmarketModalAccount: coinmarketCommonActions.setCoinmarketModalAccount,
     });
 
     const { symbol } = account;
@@ -430,7 +433,7 @@ export const useCoinmarketExchangeForm = ({
             // swap can use different swap paths when mining tx than when estimating tx
             // the geth gas estimate may be too low
             const result = await recomposeAndSign(
-                selectedAccount.account,
+                account,
                 selectedQuote.dexTx.to,
                 selectedQuote.dexTx.value,
                 selectedQuote.partnerPaymentExtraId,
@@ -463,6 +466,8 @@ export const useCoinmarketExchangeForm = ({
     };
 
     const sendTransaction = async () => {
+        dispatch(setCoinmarketModalAccount(account));
+
         if (selectedQuote?.isDex) {
             sendDexTransaction();
 
@@ -478,7 +483,7 @@ export const useCoinmarketExchangeForm = ({
                 ? amountToSatoshi(selectedQuote.sendStringAmount, network.decimals)
                 : selectedQuote.sendStringAmount;
             const result = await recomposeAndSign(
-                selectedAccount.account,
+                account,
                 selectedQuote.sendAddress,
                 sendStringAmount,
                 selectedQuote.partnerPaymentExtraId,

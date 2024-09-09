@@ -1,12 +1,7 @@
-import { Icon, Row, Text, Tooltip } from '@trezor/components';
+import { Banner, Icon, Tooltip } from '@trezor/components';
 import { useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
-import {
-    CoinmarketWarning,
-    TooltipIcon,
-    TooltipText,
-    TooltipWrap,
-} from 'src/views/wallet/coinmarket';
+import { TooltipIcon, TooltipText, TooltipWrap } from 'src/views/wallet/coinmarket';
 import { CoinmarketExchangeProvidersInfoProps } from 'src/types/coinmarket/coinmarket';
 import { ExchangeKYCType } from 'invity-api';
 import {
@@ -15,7 +10,6 @@ import {
     KYC_NO_REFUND,
     KYC_YES_REFUND,
 } from 'src/constants/wallet/coinmarket/kyc';
-import { spacings } from '@trezor/theme';
 
 interface CoinmarketUtilsProviderProps {
     exchange?: string;
@@ -69,12 +63,5 @@ export const CoinmarketUtilsKyc = ({
         );
     }
 
-    return (
-        <CoinmarketWarning>
-            <Row alignItems="flex-start" gap={spacings.sm}>
-                <Icon name="info" size="large" color={theme.textAlertYellow} />
-                <Text>{kycPolicyTranslation}</Text>
-            </Row>
-        </CoinmarketWarning>
-    );
+    return <Banner icon="info">{kycPolicyTranslation}</Banner>;
 };
