@@ -1324,7 +1324,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_OFFER_LOOKING',
     },
     TR_COINMARKET_OFFER_NO_FOUND: {
-        defaultMessage: 'No offers available for your request.',
+        defaultMessage: 'No offers available for your request. Change amount or currency.',
         id: 'TR_COINMARKET_OFFER_NO_FOUND',
     },
     TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY: {
@@ -3978,12 +3978,30 @@ export default defineMessages({
         id: 'TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED',
         defaultMessage: 'Enabled',
     },
-    TR_TOR_ENABLED: { id: 'TR_TOR_ENABLED', defaultMessage: 'Enabled' },
-    TR_TOR_DISABLED: { id: 'TR_TOR_DISABLED', defaultMessage: 'Disabled' },
-    TR_TOR_DISABLING: { id: 'TR_TOR_DISABLING', defaultMessage: 'Disabling' },
-    TR_TOR_ENABLING: { id: 'TR_TOR_ENABLING', defaultMessage: 'Enabling' },
-    TR_TOR_ERROR: { id: 'TR_TOR_ERROR', defaultMessage: 'Error' },
-    TR_TOR_MISBEHAVING: { id: 'TR_TOR_MISBEHAVING', defaultMessage: 'Misbehaving' },
+    TR_TOR_ENABLED: {
+        id: 'TR_TOR_ENABLED',
+        defaultMessage: 'Enabled',
+    },
+    TR_TOR_DISABLED: {
+        id: 'TR_TOR_DISABLED',
+        defaultMessage: 'Disabled',
+    },
+    TR_TOR_DISABLING: {
+        id: 'TR_TOR_DISABLING',
+        defaultMessage: 'Disabling',
+    },
+    TR_TOR_ENABLING: {
+        id: 'TR_TOR_ENABLING',
+        defaultMessage: 'Enabling',
+    },
+    TR_TOR_ERROR: {
+        id: 'TR_TOR_ERROR',
+        defaultMessage: 'Error',
+    },
+    TR_TOR_MISBEHAVING: {
+        id: 'TR_TOR_MISBEHAVING',
+        defaultMessage: 'Misbehaving',
+    },
     TR_TOR_TITLE: {
         id: 'TR_TOR_TITLE',
         defaultMessage: 'Tor',
@@ -5047,7 +5065,8 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON: {
         id: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON',
-        defaultMessage: 'Enable the BNB Smart Chain without historical internal transactions.',
+        defaultMessage:
+            'Allows to enable network BNB Smart Chain. Missing historical internal transactions.',
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
@@ -8527,7 +8546,7 @@ export default defineMessages({
     },
     TR_STAKE_ETH_CARD_TITLE: {
         id: 'TR_STAKE_ETH_CARD_TITLE',
-        defaultMessage: 'The easiest way to earn {symbol}.',
+        defaultMessage: 'The easiest way to earn {symbol}',
     },
     TR_STAKE_ETH_EARN_REPEAT: {
         id: 'TR_STAKE_ETH_EARN_REPEAT',
@@ -8543,7 +8562,7 @@ export default defineMessages({
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
-        defaultMessage: 'Annual Percentage Yield',
+        defaultMessage: '*Annual Percentage Yield',
     },
     TR_STAKE_ETH_LOCK_FUNDS: {
         id: 'TR_STAKE_ETH_LOCK_FUNDS',
@@ -8610,7 +8629,7 @@ export default defineMessages({
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking currently takes {count, plural, one {# day} other {# days}}. Once completed, you can trade or send your funds.',
+            'Unstaking currently takes {count, plural, one {# day} other {# days}}. Once completed, you can trade or send it.few {',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
