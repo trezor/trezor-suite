@@ -22,19 +22,25 @@ type LastInUnion<U> =
         ? L
         : never;
 
-// Build a tuple for the object
-// Strategy - take the last key, add it to the tuple, and recurse on the rest
-// Wrap the key in a TLiteral for Typebox
-type ObjectKeysToTuple<T, Last = LastInUnion<keyof T>> = [T] extends [never]
+// TLiteral<"a" | "b"> => TLiteral<"a"> | TLiteral<"b">
+type DistributeLiterals<T extends string | number | symbol> = T extends T
+    ? T extends string | number
+        ? TLiteral<T>
+        : never
+    : never;
+
+// TLiteral<"A"> | TLiteral<"B"> => [TLiteral<"A">, TLiteral<"B".]
+type UnionToTuple<U extends TLiteral, Last = LastInUnion<U>> = [U] extends [never]
     ? []
-    : [Last] extends [never]
-      ? []
-      : Last extends string | number
-        ? [...ObjectKeysToTuple<Omit<T, Last>>, TLiteral<Last>]
-        : [];
+    : [...UnionToTuple<Exclude<U, Last>>, Last];
+
+// Explicitly make sure every element is a TLiteral
+type TLiteralGuard<T extends unknown[]> = {
+    [K in keyof T]: T[K] extends TLiteral<string | number> ? T[K] : never;
+};
 
 export interface TKeyOfEnum<T extends Record<string, string | number>>
-    extends TUnion<ObjectKeysToTuple<T>> {
+    extends TUnion<TLiteralGuard<UnionToTuple<DistributeLiterals<keyof T>>>> {
     [Hint]: 'KeyOfEnum';
 }
 

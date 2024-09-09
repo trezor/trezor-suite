@@ -98,7 +98,7 @@
         ]
     },
     "resolutions": {
-        "typescript": "5.3.3",
+        "typescript": "5.5.4",
         "react-native": "0.75.2",
         "prettier": "3.2.5",
         "type-fest": "4.24.0",
@@ -156,7 +156,7 @@
         "tsconfig-paths": "^4.2.0",
         "tslib": "^2.6.2",
         "tsx": "^4.16.3",
-        "typescript": "5.3.3",
+        "typescript": "5.5.4",
         "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {
