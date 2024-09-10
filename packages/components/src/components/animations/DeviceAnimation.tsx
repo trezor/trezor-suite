@@ -47,16 +47,16 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
         },
         videoRef,
     ) => {
-        const { THEME } = useTheme();
+        const theme = useTheme();
 
         // Animations on following devices are transparent.
-        const theme = [
+        const themeSuffix = [
             DeviceModelInternal.T2B1,
             DeviceModelInternal.T3B1,
             DeviceModelInternal.T3T1,
         ].includes(deviceModelInternal)
             ? ''
-            : `_${THEME}`;
+            : `_${theme.legacy.THEME}`;
 
         const getDeviceModelInFilename = () => {
             let deviceModel: string = deviceModelInternal;
@@ -86,7 +86,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     >
                         <source
                             src={resolveStaticPath(
-                                `videos/device/trezor_${getDeviceModelInFilename()}_${type.toLowerCase()}${theme}.webm`,
+                                `videos/device/trezor_${getDeviceModelInFilename()}_${type.toLowerCase()}${themeSuffix}.webm`,
                             )}
                             type="video/webm"
                         />
