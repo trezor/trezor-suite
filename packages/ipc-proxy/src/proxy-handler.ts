@@ -43,7 +43,7 @@ interface IpcMainHandlers<Api> {
     '/invoke': Parameters<ApiUnion<Api>>; // methodName, ...params
 }
 
-export interface ElectionIpcMainInvokeEvent {
+export interface ElectronIpcMainInvokeEvent {
     senderFrame: {
         url: string;
     };
@@ -60,14 +60,14 @@ interface ElectronIpcMain<Api> {
         channel: `${Key}${K}`,
         listener: (event: ElectronIpcMainEvent, args: IpcMainEvents<Api>[K]) => void,
     ): any;
-    on(channel: string, listener: (event: ElectionIpcMainInvokeEvent, ...args: any[]) => void): any; // just to type compatibility with original Electron.IpcMain
+    on(channel: string, listener: (event: ElectronIpcMainInvokeEvent, ...args: any[]) => void): any; // just to type compatibility with original Electron.IpcMain
     handle<K extends keyof IpcMainHandlers<Api>, Key extends string>(
         channel: `${Key}${K}`,
-        listener: (event: ElectionIpcMainInvokeEvent, args: IpcMainHandlers<Api>[K]) => void,
+        listener: (event: ElectronIpcMainInvokeEvent, args: IpcMainHandlers<Api>[K]) => void,
     ): any;
     handle(
         channel: string,
-        listener: (event: ElectionIpcMainInvokeEvent, ...args: any[]) => void,
+        listener: (event: ElectronIpcMainInvokeEvent, ...args: any[]) => void,
     ): any;
     removeAllListeners: (event?: string) => any;
     eventNames: () => (string | symbol)[];

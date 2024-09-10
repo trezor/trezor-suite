@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
 
-import { ElectionIpcMainInvokeEvent } from '../proxy-handler';
+import { ElectronIpcMainInvokeEvent } from '../proxy-handler';
 
-const ipcMainEvent: ElectionIpcMainInvokeEvent = {
+const ipcMainEvent: ElectronIpcMainInvokeEvent = {
     senderFrame: {
         url: 'http://localhost:8000/',
     },
