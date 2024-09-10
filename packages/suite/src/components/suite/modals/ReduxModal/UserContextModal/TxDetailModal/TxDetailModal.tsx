@@ -2,12 +2,8 @@ import { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { Button, NewModal } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
-import {
-    isPending,
-    findChainedTransactions,
-    getAccountKey,
-    getAccountNetwork,
-} from '@suite-common/wallet-utils';
+import { isPending, findChainedTransactions, getAccountKey } from '@suite-common/wallet-utils';
+import { networks, Network } from '@suite-common/wallet-config';
 import { useSelector } from 'src/hooks/suite';
 import {
     selectAccountByKey,
@@ -16,7 +12,7 @@ import {
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
 import { Translation, TrezorLink } from 'src/components/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { BasicTxDetails } from './BasicTxDetails';
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { ChangeFee } from './ChangeFee/ChangeFee';
@@ -92,8 +88,10 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
     const confirmations = useSelector(state =>
         selectTransactionConfirmations(state, tx.txid, accountKey),
     );
-    const account = useSelector(state => selectAccountByKey(state, accountKey));
-    const network = account && getAccountNetwork(account);
+    const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
+    const network: Network = networks[account.symbol];
+    const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
+
     const isPhishingTransaction = useSelector(state =>
         selectIsPhishingTransaction(state, tx.txid, accountKey),
     );
@@ -127,11 +125,11 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                 explorerUrl={blockchain.explorer.tx}
                 explorerUrlQueryString={blockchain.explorer.queryString}
                 tx={tx}
-                network={network!}
+                network={network}
                 confirmations={confirmations}
             />
 
-            {network?.features?.includes('rbf') && tx.rbfParams && !tx.deadline && (
+            {networkFeatures?.includes('rbf') && tx.rbfParams && !tx.deadline && (
                 <SectionActions>
                     <>
                         {section === 'CHANGE_FEE' && (
@@ -191,7 +189,8 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                 <AdvancedTxDetails
                     explorerUrl={blockchain.explorer.tx}
                     defaultTab={tab}
-                    network={network!}
+                    network={network}
+                    accountType={account.accountType}
                     tx={tx}
                     chainedTxs={chainedTxs}
                     isPhishingTransaction={isPhishingTransaction}

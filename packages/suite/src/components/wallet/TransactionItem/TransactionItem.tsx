@@ -9,7 +9,7 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { formatNetworkAmount, isTestnet, isTxFeePaid } from '@suite-common/wallet-utils';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { AccountType, Network } from '@suite-common/wallet-config';
 import { TransactionTypeIcon } from './TransactionTypeIcon';
 import { TransactionHeading } from './TransactionHeading';
 import {
@@ -85,7 +85,8 @@ interface TransactionItemProps {
     isActionDisabled?: boolean; // Used in "chained transactions" transaction detail modal
     accountMetadata?: AccountLabels;
     accountKey: string;
-    network: NetworkCompatible;
+    network: Network;
+    accountType: AccountType;
     className?: string;
     index: number;
 }
@@ -98,6 +99,7 @@ export const TransactionItem = memo(
         isActionDisabled,
         isPending,
         network,
+        accountType,
         className,
         index,
     }: TransactionItemProps) => {
@@ -106,6 +108,8 @@ export const TransactionItem = memo(
         const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
 
         const { descriptor: address, symbol } = useSelector(selectSelectedAccount) || {};
+
+        const networkFeatures = network.accountTypes[accountType]?.features ?? network.features;
 
         const dispatch = useDispatch();
         const { anchorRef, shouldHighlight } = useAnchor(
@@ -411,7 +415,7 @@ export const TransactionItem = memo(
                         </NextRow>
                         {!isActionDisabled &&
                             transaction.rbfParams &&
-                            network.features?.includes('rbf') &&
+                            networkFeatures?.includes('rbf') &&
                             !transaction?.deadline && (
                                 <NextRow>
                                     <Button

@@ -5,7 +5,7 @@ import { ChainedTransactions } from '@suite-common/wallet-types';
 
 import { TrezorLink, Translation } from 'src/components/suite';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { AccountType, Network } from '@suite-common/wallet-config';
 import { AffectedTransactionItem } from './ChangeFee/AffectedTransactionItem';
 
 const Wrapper = styled.div`
@@ -52,11 +52,12 @@ const StyledAffectedTransactionItem = styled(AffectedTransactionItem)`
 
 interface ChainedTxsProps {
     txs: ChainedTransactions;
-    network: NetworkCompatible;
+    network: Network;
+    accountType: AccountType;
     explorerUrl: string;
 }
 
-export const ChainedTxs = ({ txs, network, explorerUrl }: ChainedTxsProps) => (
+export const ChainedTxs = ({ txs, network, accountType, explorerUrl }: ChainedTxsProps) => (
     <Wrapper>
         <Header>
             <Translation id="TR_AFFECTED_TXS_HEADER" />
@@ -73,6 +74,7 @@ export const ChainedTxs = ({ txs, network, explorerUrl }: ChainedTxsProps) => (
                     key={tx.txid}
                     transaction={tx}
                     network={network}
+                    accountType={accountType}
                     isPending
                     isActionDisabled
                     accountKey={`${tx.descriptor}-${tx.symbol}-${tx.deviceState}`}
