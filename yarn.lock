@@ -9604,6 +9604,7 @@ __metadata:
     expo-image: "npm:1.12.15"
     expo-image-picker: "npm:15.0.7"
     expo-linear-gradient: "npm:13.0.2"
+    expo-linking: "npm:^6.3.1"
     expo-localization: "npm:15.0.3"
     expo-navigation-bar: "npm:3.0.7"
     expo-secure-store: "npm:13.0.2"
@@ -10184,6 +10185,15 @@ __metadata:
     react-native-reanimated: "npm:3.15.0"
     react-native-svg: "npm:15.6.0"
     react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/module-connect-popup@workspace:suite-native/module-connect-popup":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-connect-popup@workspace:suite-native/module-connect-popup"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -22388,6 +22398,16 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 10/2e05592bd9b3f156f0c5912a5cc152e80e930495d049382e4deec3103601ccc90b2e7cb5c208b51aa9d60386c5b762d40cc74cb2d1256a4605012e03d27be72a
+  languageName: node
+  linkType: hard
+
+"expo-linking@npm:^6.3.1":
+  version: 6.3.1
+  resolution: "expo-linking@npm:6.3.1"
+  dependencies:
+    expo-constants: "npm:~16.0.0"
+    invariant: "npm:^2.2.4"
+  checksum: 10/07ee4417ae6e58351797b805bd88215ceb6f89ec16c99e305db6d826925da1d1620e3baaa733a5c8848663dc2b3c39b6d375b381cf590a603a98eb671fef105d
   languageName: node
   linkType: hard
 

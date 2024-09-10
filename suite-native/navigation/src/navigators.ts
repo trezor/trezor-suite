@@ -10,6 +10,7 @@ import {
 } from '@suite-common/wallet-types';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo, TokenTransfer } from '@trezor/connect';
+import { ParsedURL } from 'expo-linking';
 
 import {
     AppTabsRoutes,
@@ -171,4 +172,7 @@ export type RootStackParamList = {
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
     [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
     [RootStackRoutes.CoinEnablingInit]: undefined;
+    [RootStackRoutes.ConnectPopup]: {
+        parsedUrl: ParsedURL;
+    };
 };
