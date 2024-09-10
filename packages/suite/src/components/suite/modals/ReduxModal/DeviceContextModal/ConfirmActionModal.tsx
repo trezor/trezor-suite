@@ -1,36 +1,48 @@
 import styled from 'styled-components';
+import { useIntl } from 'react-intl';
 
-import { H2, variables } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
+import { H2, NewModal } from '@trezor/components';
+import { ConfirmOnDevice } from '@trezor/product-components';
 import { Translation } from 'src/components/suite/Translation';
 import { DeviceConfirmImage } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
-import { DevicePromptModal, DevicePromptModalProps } from './DevicePromptModal';
+import { spacings } from '@trezor/theme';
+import messages from 'src/support/messages';
 
-const StyledDevicePromptModal = styled(DevicePromptModal)`
-    width: 360px;
+const ImageWrapper = styled.div`
+    mix-blend-mode: multiply;
+    display: flex;
+    justify-content: center;
 `;
 
-const StyledDeviceConfirmImage = styled(DeviceConfirmImage)`
-    margin-top: -30px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledH1 = styled(H2)`
-    margin-top: 12px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    text-align: center;
-`;
-
-interface ConfirmActionProps extends DevicePromptModalProps {
+interface ConfirmActionProps {
     device: TrezorDevice;
 }
 
-export const ConfirmActionModal = ({ device, ...rest }: ConfirmActionProps) => (
-    <StyledDevicePromptModal data-testid="@suite/modal/confirm-action-on-device" {...rest}>
-        <StyledDeviceConfirmImage device={device} />
+export const ConfirmActionModal = ({ device }: ConfirmActionProps) => {
+    const intl = useIntl();
+    const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
-        <StyledH1>
-            <Translation id="TR_CONFIRM_ACTION_ON_YOUR" values={{ deviceLabel: device.label }} />
-        </StyledH1>
-    </StyledDevicePromptModal>
-);
+    return (
+        <NewModal.Backdrop onClick={onCancel} data-testid="@suite/modal/confirm-action-on-device">
+            <ConfirmOnDevice
+                title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                deviceModelInternal={device?.features?.internal_model}
+                deviceUnitColor={device?.features?.unit_color}
+                onCancel={onCancel}
+            />
+            <NewModal.ModalBase size="tiny">
+                <ImageWrapper>
+                    <DeviceConfirmImage device={device} />
+                </ImageWrapper>
+                <H2
+                    align="center"
+                    margin={{ left: spacings.md, right: spacings.md, bottom: spacings.md }}
+                >
+                    <Translation id="TR_CONFIRM_ACTION_ON_YOUR" />
+                </H2>
+            </NewModal.ModalBase>
+        </NewModal.Backdrop>
+    );
+};

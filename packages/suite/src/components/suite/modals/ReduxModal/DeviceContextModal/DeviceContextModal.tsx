@@ -64,7 +64,7 @@ export const DeviceContextModal = ({
             return <TransactionReviewModal type="sign-transaction" />;
         }
         case 'ButtonRequest_Other': {
-            return <ConfirmActionModal device={device} renderer={renderer} />;
+            return <ConfirmActionModal device={device} />;
         }
         case 'ButtonRequest_FirmwareCheck':
             return <ConfirmFingerprintModal device={device} renderer={renderer} />;
@@ -82,7 +82,7 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_UnknownDerivationPath':
         case 'ButtonRequest_FirmwareUpdate':
         case 'ButtonRequest_PinEntry':
-            return <ConfirmActionModal device={device} renderer={renderer} />;
+            return <ConfirmActionModal device={device} />;
         case 'ButtonRequest_Address':
             return data ? (
                 <ConfirmAddressModal
