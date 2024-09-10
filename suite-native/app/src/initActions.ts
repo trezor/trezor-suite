@@ -5,6 +5,7 @@ import {
     initBlockchainThunk,
     initDevices,
     periodicFetchFiatRatesThunk,
+    initStakeDataThunk,
 } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
@@ -46,6 +47,7 @@ export const applicationInit = createThunk(
 
             // Create Portfolio Tracker device if it doesn't exist
             dispatch(createImportedDeviceThunk());
+            dispatch(initStakeDataThunk());
         } catch (error) {
             console.error(error);
         } finally {

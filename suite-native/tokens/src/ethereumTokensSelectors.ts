@@ -16,14 +16,14 @@ import {
     TokenSymbol,
 } from '@suite-common/wallet-types';
 import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
-import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
-
 import {
     selectCoinDefinition,
     selectFilterKnownTokens,
     selectIsSpecificCoinDefinitionKnown,
     TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
+import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
+
 import { EthereumTokenTransfer, WalletAccountTransaction } from './types';
 
 export const selectEthereumAccountTokenInfo = memoizeWithArgs(

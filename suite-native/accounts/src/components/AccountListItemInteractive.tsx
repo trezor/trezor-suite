@@ -1,21 +1,28 @@
 import { useSelector } from 'react-redux';
 
 import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';
-import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
+import { Box, Card, HStack, RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import {
-    getAccountCryptoBalanceWithStaking,
+    CryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+    FiatAmountFormatter,
+} from '@suite-native/formatters';
+import {
+    calculateCryptoBalance,
     getAccountEverstakeStakingPool,
+    getAccountTotalStakingBalance,
+    getAccountTotalStakingBalanceWei,
 } from '@suite-common/wallet-utils';
 import { SettingsSliceRootState } from '@suite-native/settings';
 import { isCoinWithTokens, selectAccountHasAnyTokensWithFiatRates } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Translation } from '@suite-native/intl';
 
 import { selectAccountFiatBalance } from '../selectors';
 import { OnSelectAccount } from '../types';
 import { AccountListItem, AccountListItemProps } from './AccountListItem';
 import { TokenList } from './TokenList';
-import { StakingItem } from './StakingItem';
+import { AccountListItemBase } from './AccountListItemBase';
 
 interface AccountListItemInteractiveProps extends AccountListItemProps {
     onSelectAccount: OnSelectAccount;
@@ -43,7 +50,10 @@ export const AccountListItemInteractive = ({
         (state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState) =>
             selectAccountFiatBalance(state, account.key),
     );
-    const cryptoBalance = getAccountCryptoBalanceWithStaking(account);
+    const cryptoBalance = calculateCryptoBalance(account);
+
+    const stakingBalanceFormatted = getAccountTotalStakingBalance(account);
+    const stakingBalance = getAccountTotalStakingBalanceWei(account);
 
     const isAccountWithStaking = !!getAccountEverstakeStakingPool(account);
     const shouldShowTokens = doesCoinSupportTokens && !hideTokens;
@@ -90,7 +100,34 @@ export const AccountListItemInteractive = ({
                 {isAccountWithStaking && (
                     <>
                         <Box style={applyStyle(separatorStyle)} />
-                        <StakingItem account={account} />
+                        <AccountListItemBase
+                            onPress={() =>
+                                onSelectAccount({
+                                    account,
+                                    hasAnyTokensWithFiatRates: false,
+                                    hasStaking: true,
+                                })
+                            }
+                            icon={<RoundedIcon name="piggyBankFilled" color="textSubdued" />}
+                            title={
+                                <Text>
+                                    <Translation id="accountList.staking" />
+                                </Text>
+                            }
+                            mainValue={
+                                <CryptoToFiatAmountFormatter
+                                    value={stakingBalance}
+                                    network={account.symbol}
+                                />
+                            }
+                            secondaryValue={
+                                <CryptoAmountFormatter
+                                    value={stakingBalanceFormatted}
+                                    network={account.symbol}
+                                    decimals={8}
+                                />
+                            }
+                        />
                     </>
                 )}
 

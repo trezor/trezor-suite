@@ -6,4 +6,5 @@ export type OnSelectAccount = (params: {
     account: Account;
     tokenAddress?: TokenAddress;
     hasAnyTokensWithFiatRates: boolean;
+    hasStaking?: boolean;
 }) => void;

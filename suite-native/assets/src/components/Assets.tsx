@@ -46,10 +46,11 @@ export const Assets = () => {
     );
 
     const handleSelectAssetsAccount: OnSelectAccount = useCallback(
-        ({ account, tokenAddress }) => {
+        ({ account, tokenAddress, hasStaking }) => {
             navigation.navigate(RootStackRoutes.AccountDetail, {
                 accountKey: account.key,
                 tokenContract: tokenAddress,
+                hasStaking,
                 closeActionType: 'back',
             });
             setSelectedAssetSymbol(null);

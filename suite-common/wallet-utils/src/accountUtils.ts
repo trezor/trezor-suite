@@ -1,3 +1,5 @@
+import { fromWei } from 'web3-utils';
+
 import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 import {
     AccountInfo,
@@ -38,8 +40,8 @@ import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
 
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
-import { getAccountTotalStakingBalance, getAccountTotalStakingBalanceWei } from './stakingUtils';
 import { isRbfTransaction } from './transactionUtils';
+import { getAccountTotalStakingBalance, getAccountTotalStakingBalanceWei } from './stakingUtils';
 
 export const isEthereumAccountSymbol = (symbol: NetworkSymbol) => symbol === 'eth';
 
@@ -604,16 +606,18 @@ export const getStakingFiatBalance = (account: Account, rate: number | undefined
     return toFiatCurrency(balanceInEther, rate, 2);
 };
 
-export const getAccountCryptoBalanceWithStakingFormatted = (account: Account) => {
-    const stakingBalanceFormatted = getAccountTotalStakingBalance(account);
-
-    return new BigNumber(account.formattedBalance).plus(stakingBalanceFormatted).toString();
-};
-
-export const getAccountCryptoBalanceWithStaking = (account: Account) => {
+export const calculateCryptoBalance = (account: Account) => {
     const stakingBalance = getAccountTotalStakingBalanceWei(account);
 
     return new BigNumber(account.availableBalance).plus(stakingBalance).toString();
+};
+
+export const calculateCryptoBalanceFormatted = (account: Account) => {
+    if (!isEthereumAccountSymbol(account.symbol)) return account.formattedBalance;
+
+    const balance = calculateCryptoBalance(account);
+
+    return fromWei(balance, 'ether');
 };
 
 export const getAccountFiatBalance = ({

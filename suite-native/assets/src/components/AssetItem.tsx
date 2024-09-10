@@ -8,7 +8,7 @@ import { CryptoIconName, CryptoIconWithPercentage, Icon } from '@suite-common/ic
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, DeviceRootState, FiatRatesRootState } from '@suite-common/wallet-core';
-import { Badge, Box, Text } from '@suite-native/atoms';
+import { Badge, Box, RoundedIcon, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -25,7 +25,7 @@ import { AccountListItemBase } from '@suite-native/accounts';
 
 import {
     selectVisibleDeviceAccountsKeysByNetworkSymbol,
-    selectVisibleDeviceAccountsWithStakingByNetworkSymbol,
+    selectHasAnyAccountWithStaking,
 } from '../assetsSelectors';
 
 type AssetItemProps = {
@@ -75,16 +75,14 @@ export const AssetItem = memo(
             ) => selectNumberOfUniqueTokensForCoinPerDevice(state, cryptoCurrencySymbol),
         );
 
-        const accountsWithStaking = useSelector(
+        const hasAnyAccountWithStaking = useSelector(
             (
                 state: AccountsRootState &
                     DeviceRootState &
                     FiatRatesRootState &
                     SettingsSliceRootState,
-            ) => selectVisibleDeviceAccountsWithStakingByNetworkSymbol(state, cryptoCurrencySymbol),
+            ) => selectHasAnyAccountWithStaking(state, cryptoCurrencySymbol),
         );
-
-        const isStaking = accountsWithStaking.length > 0;
 
         const handleAssetPress = () => {
             if (accountsPerAsset === 1 && numberOfTokens === 0) {
@@ -130,12 +128,15 @@ export const AssetItem = memo(
                                 }
                             />
                         )}
-                        {isStaking && (
-                            <Badge
-                                style={applyStyle(numberOfTokensStyle)}
-                                label={<Translation id="accountList.hasStaking" />}
-                                size="small"
-                            />
+                        {hasAnyAccountWithStaking && (
+                            <Box style={applyStyle(numberOfTokensStyle)}>
+                                <RoundedIcon
+                                    name="piggyBank"
+                                    backgroundColor="backgroundNeutralSubtleOnElevation0"
+                                    containerSize={20}
+                                    iconSize="medium"
+                                />
+                            </Box>
                         )}
                     </>
                 }

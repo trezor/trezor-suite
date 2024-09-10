@@ -11,19 +11,23 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { selectEthereumAccountTokenInfo } from '@suite-native/tokens';
 import { Screen } from '@suite-native/navigation';
 import { TransactionList } from '@suite-native/transactions';
+import { StakingInfo } from '@suite-native/staking';
 
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
 import { TokenAccountDetailScreenSubHeader } from '../components/TokenAccountDetailScreenSubHeader';
 import { TransactionListHeader } from '../components/TransactionListHeader';
+import { StakingDetailScreenHeader } from '../components/StakingDetailScreenHeader';
 
 type AccountDetailContentScreenProps = {
     accountKey: string;
     tokenContract?: TokenAddress;
+    hasStaking?: boolean;
 };
 
 export const AccountDetailContentScreen = ({
     accountKey,
     tokenContract,
+    hasStaking,
 }: AccountDetailContentScreenProps) => {
     const [areTokensIncluded, setAreTokensIncluded] = useState(false);
     const account = useSelector((state: AccountsRootState) =>
@@ -66,32 +70,38 @@ export const AccountDetailContentScreen = ({
         [accountKey, tokenContract, areTokensIncluded, toggleIncludeTokenTransactions],
     );
 
+    const getDetailScreenHeader = () => {
+        if (hasStaking) {
+            return <StakingDetailScreenHeader accountLabel={accountLabel} />;
+        } else if (token?.name) {
+            return (
+                <TokenAccountDetailScreenSubHeader tokenName={token.name} accountKey={accountKey} />
+            );
+        }
+
+        return <AccountDetailScreenHeader accountLabel={accountLabel} accountKey={accountKey} />;
+    };
+
+    const screenHeader = getDetailScreenHeader();
+
     return (
         <Screen
-            screenHeader={
-                token?.name ? (
-                    <TokenAccountDetailScreenSubHeader
-                        tokenName={token.name}
-                        accountKey={accountKey}
-                    />
-                ) : (
-                    <AccountDetailScreenHeader
-                        accountLabel={accountLabel}
-                        accountKey={accountKey}
-                    />
-                )
-            }
+            screenHeader={screenHeader}
             // The padding is handled inside the TransactionList to prevent scrollbar glitches.
             customVerticalPadding={0}
             customHorizontalPadding={0}
             isScrollable={false}
         >
-            <TransactionList
-                areTokensIncluded={areTokensIncluded}
-                accountKey={accountKey}
-                tokenContract={tokenContract}
-                listHeaderComponent={listHeaderComponent}
-            />
+            {hasStaking ? (
+                <StakingInfo accountKey={accountKey} />
+            ) : (
+                <TransactionList
+                    areTokensIncluded={areTokensIncluded}
+                    accountKey={accountKey}
+                    tokenContract={tokenContract}
+                    listHeaderComponent={listHeaderComponent}
+                />
+            )}
         </Screen>
     );
 };

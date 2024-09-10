@@ -21,6 +21,7 @@ export const AccountDetailScreen = memo(() => {
         networkSymbol,
         accountType,
         accountIndex,
+        hasStaking,
     } = route.params;
 
     const foundAccountKey = useSelector((state: AccountsRootState & DeviceRootState) =>
@@ -35,7 +36,11 @@ export const AccountDetailScreen = memo(() => {
     const accountKey = routeAccountKey ?? foundAccountKey;
 
     return accountKey ? (
-        <AccountDetailContentScreen accountKey={accountKey} tokenContract={tokenContract} />
+        <AccountDetailContentScreen
+            accountKey={accountKey}
+            tokenContract={tokenContract}
+            hasStaking={hasStaking}
+        />
     ) : (
         <AccountDetailLoadingScreen />
     );

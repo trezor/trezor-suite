@@ -10,7 +10,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import {
-    getAccountCryptoBalanceWithStakingFormatted,
+    calculateCryptoBalanceFormatted,
     getAccountEverstakeStakingPool,
     getAccountFiatBalance,
 } from '@suite-common/wallet-utils';
@@ -73,7 +73,7 @@ export const selectDeviceAssetsWithBalances = (state: AssetsRootState & DeviceRo
             shouldIncludeStaking: true,
         });
 
-        const cryptoBalanceWithStaking = getAccountCryptoBalanceWithStakingFormatted(account);
+        const cryptoBalanceWithStaking = calculateCryptoBalanceFormatted(account);
 
         return {
             symbol: account.symbol,
@@ -120,4 +120,16 @@ export const selectVisibleDeviceAccountsWithStakingByNetworkSymbol = (
     );
 
     return accounts;
+};
+
+export const selectHasAnyAccountWithStaking = (
+    state: AccountsRootState & DeviceRootState,
+    networkSymbol: NetworkSymbol | null,
+) => {
+    const accountsWithStaking = selectVisibleDeviceAccountsWithStakingByNetworkSymbol(
+        state,
+        networkSymbol,
+    );
+
+    return accountsWithStaking.length > 0;
 };

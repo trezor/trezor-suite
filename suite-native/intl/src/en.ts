@@ -93,7 +93,6 @@ export const en = {
         numberOfTokens: '+{numberOfTokens} tokens',
         tokens: 'Tokens',
         staking: 'Staking',
-        hasStaking: '+Staking',
     },
     assets: {
         dashboard: {
@@ -908,6 +907,20 @@ export const en = {
                 successMessage: 'Everything is ready, you can send the transaction now.',
                 submitButton: 'Send transaction',
             },
+        },
+    },
+    staking: {
+        totalStakePending: 'Total stake pending',
+        staked: 'Staked',
+        rewards: 'Rewards',
+        apy: 'Annual percentage yield',
+        transactionPending: 'Transaction pending',
+        addingToStakingPool: 'Adding to staking pool',
+        stakingCanBeManaged: 'Staking can be currently managed only in',
+        trezorDesktop: 'Trezor Suite for desktop.',
+        stakingBottomSheet: {
+            title: 'To manage your staked funds, please use Trezor Suite for desktop.',
+            description: 'We currently support staking as view-only in Trezor Suite Lite.',
         },
     },
 };

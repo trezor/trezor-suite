@@ -7,7 +7,7 @@ import { Icon, IconName } from '@suite-common/icons';
 import { Box } from './Box';
 import { Text } from './Text';
 
-export type AlertBoxVariant = 'info' | 'success' | 'warning' | 'error';
+export type AlertBoxVariant = 'info' | 'success' | 'warning' | 'error' | 'pending';
 
 type AlertBoxStyle = {
     backgroundColor: Color;
@@ -61,6 +61,11 @@ const variantToColorMap = {
         contentColor: 'textAlertRed',
         borderColor: 'backgroundAlertRedSubtleOnElevationNegative',
     },
+    pending: {
+        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        contentColor: 'iconAlertYellow',
+        borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
+    },
 } as const satisfies Record<AlertBoxVariant, AlertBoxStyle>;
 
 const variantToIconName = {
@@ -68,6 +73,7 @@ const variantToIconName = {
     success: 'checkCircle',
     warning: 'warningTriangle',
     error: 'warningCircle',
+    pending: 'spinnerGap',
 } as const satisfies Record<AlertBoxVariant, IconName>;
 
 export type AlertBoxProps = {

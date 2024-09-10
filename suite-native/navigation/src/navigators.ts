@@ -36,6 +36,7 @@ export type CloseActionType = 'back' | 'close';
 type AccountDetailParams = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
+    hasStaking?: boolean;
     closeActionType: CloseActionType;
 } & AddCoinFlowParams;
 

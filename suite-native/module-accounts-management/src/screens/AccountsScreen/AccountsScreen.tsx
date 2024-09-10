@@ -21,11 +21,12 @@ export const AccountsScreen = () => {
 
     const [accountsFilterValue, setAccountsFilterValue] = useState<string>('');
 
-    const handleSelectAccount: OnSelectAccount = ({ account, tokenAddress }) => {
+    const handleSelectAccount: OnSelectAccount = ({ account, tokenAddress, hasStaking }) => {
         navigation.navigate(RootStackRoutes.AccountDetail, {
             accountKey: account.key,
             tokenContract: tokenAddress,
             closeActionType: 'back',
+            hasStaking,
         });
     };
 

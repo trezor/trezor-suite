@@ -34,6 +34,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
         "@suite-native/settings": "workspace:*",
+        "@suite-native/staking": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@trezor/styles": "workspace:*",

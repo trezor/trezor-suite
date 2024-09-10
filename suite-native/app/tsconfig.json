@@ -61,6 +61,7 @@
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../transactions" },
+        { "path": "../staking" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/react-native-usb"
