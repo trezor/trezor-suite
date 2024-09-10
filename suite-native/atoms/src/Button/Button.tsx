@@ -12,6 +12,7 @@ import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import { TestProps } from '../types';
 import { HStack } from '../Stack';
+import { Loader } from '../Loader';
 
 // Using ReactElement instead of ReactNode to exclude string and have type check on IconName
 // and also because string needs to be rendered in the <Text> element anyway
@@ -39,6 +40,7 @@ export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressO
     size?: ButtonSize;
     style?: NativeStyleObject;
     isDisabled?: boolean;
+    isLoading?: boolean;
 } & MergeExclusive<{ viewLeft?: ButtonAccessory }, { viewRight?: ButtonAccessory }> &
     TestProps;
 
@@ -260,6 +262,7 @@ export const Button = ({
     colorScheme = 'primary',
     size = 'medium',
     isDisabled = false,
+    isLoading = false,
     ...pressableProps
 }: ButtonProps) => {
     const [isPressed, setIsPressed] = useState(false);
@@ -297,25 +300,33 @@ export const Button = ({
                     style,
                 ]}
             >
-                <HStack alignItems="center">
-                    {viewLeft && (
-                        <ButtonAccessoryView
-                            element={viewLeft}
-                            iconColor={iconColor}
-                            iconSize={size}
-                        />
-                    )}
-                    <Text textAlign="center" variant={buttonToTextSizeMap[size]} color={textColor}>
-                        {children}
-                    </Text>
-                    {viewRight && (
-                        <ButtonAccessoryView
-                            element={viewRight}
-                            iconColor={iconColor}
-                            iconSize={size}
-                        />
-                    )}
-                </HStack>
+                {isLoading ? (
+                    <Loader color={textColor} />
+                ) : (
+                    <HStack alignItems="center">
+                        {viewLeft && (
+                            <ButtonAccessoryView
+                                element={viewLeft}
+                                iconColor={iconColor}
+                                iconSize={size}
+                            />
+                        )}
+                        <Text
+                            textAlign="center"
+                            variant={buttonToTextSizeMap[size]}
+                            color={textColor}
+                        >
+                            {children}
+                        </Text>
+                        {viewRight && (
+                            <ButtonAccessoryView
+                                element={viewRight}
+                                iconColor={iconColor}
+                                iconSize={size}
+                            />
+                        )}
+                    </HStack>
+                )}
             </Animated.View>
         </Pressable>
     );
