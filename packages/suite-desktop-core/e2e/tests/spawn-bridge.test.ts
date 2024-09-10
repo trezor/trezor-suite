@@ -41,6 +41,13 @@ testPlaywright.describe.serial('Bridge', () => {
         const { version } = json;
         expectPlaywright(version).toEqual(expectedBridgeVersion);
 
+        // bridge is running after renderer window is refreshed
+        await suite.window.reload();
+        await suite.window.title();
+        // bridge is running
+        const bridgeRes2 = await request.get('http://127.0.0.1:21325/status/');
+        await expectPlaywright(bridgeRes2).toBeOK();
+
         await suite.electronApp.close();
 
         // bridge is not running
