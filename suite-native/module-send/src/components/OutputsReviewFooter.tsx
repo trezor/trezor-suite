@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import Animated, { SlideInDown } from 'react-native-reanimated';
+import { useState } from 'react';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -53,6 +54,7 @@ export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) 
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const { applyStyle } = useNativeStyles();
+    const [isSendInProgress, setIsSendInProgress] = useState(false);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -65,6 +67,7 @@ export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) 
     if (!signedTransaction || !account) return <ConfirmOnTrezorImage />;
 
     const handleSendTransaction = async () => {
+        setIsSendInProgress(true);
         const sendResponse = await dispatch(sendTransactionAndCleanupSendFormThunk({ account }));
 
         if (isFulfilled(sendResponse)) {
@@ -78,6 +81,7 @@ export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) 
     return (
         <Animated.View style={applyStyle(footerStyle)} entering={SlideInDown}>
             <Button
+                isLoading={isSendInProgress}
                 accessibilityRole="button"
                 accessibilityLabel="validate send form"
                 testID="@send/send-transaction-button"
