@@ -1,6 +1,7 @@
 react-native
 expo
 expo-constants
+expo-linking
 expo-localization
 react-fela
 fela
