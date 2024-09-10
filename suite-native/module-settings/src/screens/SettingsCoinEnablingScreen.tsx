@@ -9,9 +9,9 @@ import { Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { useTranslate } from '@suite-native/intl';
 import { BtcOnlyCoinEnablingContent, DiscoveryCoinsFilter } from '@suite-native/coin-enabling';
 import { Box } from '@suite-native/atoms';
-import { selectIsBitcoinOnlyDevice } from '@suite-common/wallet-core';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import {
-    selectDiscoverySupportedNetworks,
+    selectDiscoveryNetworkSymbols,
     selectEnabledDiscoveryNetworkSymbols,
     setEnabledDiscoveryNetworkSymbols,
     setIsCoinEnablingInitFinished,
@@ -40,14 +40,14 @@ export const SettingsCoinEnablingScreen = () => {
     const { translate } = useTranslate();
 
     const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
-    const availableNetworks = useSelector(selectDiscoverySupportedNetworks);
-    const isBitcoinOnlyDevice = useSelector(selectIsBitcoinOnlyDevice);
+    const availableNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
+    const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const viewOnlyDevicesAccountsNetworkSymbols = useSelector(
         selectViewOnlyDevicesAccountsNetworkSymbols,
     );
 
     //testnets can be enabled and we want to show networks that case
-    const showNetworks = availableNetworks.length > 1 || !isBitcoinOnlyDevice;
+    const showNetworks = availableNetworkSymbols.length > 1 || !hasBitcoinOnlyFirmware;
 
     useEffect(() => {
         // in case the user has view only devices and gets to the settings

@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsBitcoinOnlyDevice } from '@suite-common/wallet-core';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
 import { selectShouldShowCoinEnablingInitFlow } from '@suite-native/coin-enabling';
 import {
@@ -27,7 +27,7 @@ export const useCoinEnablingInitialCheck = () => {
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.CoinEnablingInit>>();
     const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
 
-    const isBitcoinOnlyDevice = useSelector(selectIsBitcoinOnlyDevice);
+    const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const shouldShowCoinEnablingInitFlow = useSelector(selectShouldShowCoinEnablingInitFlow);
     const viewOnlyDevicesAccountsNetworkSymbols = useSelector(
@@ -43,7 +43,7 @@ export const useCoinEnablingInitialCheck = () => {
         if (shouldShowCoinEnablingInitFlow && canShowCoinEnablingInitFlow) {
             let timeoutId: ReturnType<typeof setTimeout>;
             //if btc only device, just run discovery for btc and do not show the UI
-            if (isBitcoinOnlyDevice) {
+            if (hasBitcoinOnlyFirmware) {
                 dispatch(setEnabledDiscoveryNetworkSymbols(['btc']));
                 dispatch(setIsCoinEnablingInitFinished(true));
                 dispatch(applyDiscoveryChangesThunk());
@@ -68,7 +68,7 @@ export const useCoinEnablingInitialCheck = () => {
         }
     }, [
         dispatch,
-        isBitcoinOnlyDevice,
+        hasBitcoinOnlyFirmware,
         isCoinEnablingActive,
         navigation,
         viewOnlyDevicesAccountsNetworkSymbols,
