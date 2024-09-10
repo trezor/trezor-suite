@@ -47,6 +47,7 @@ const Wrapper = styled.div<{ $isAnimationTriggered?: boolean }>`
 
 const InnerContainer = styled.div`
     position: relative;
+    width: 100%;
     display: flex;
     align-items: center;
     cursor: pointer;
