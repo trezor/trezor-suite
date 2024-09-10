@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Box, HStack } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { selectDeviceInstances, selectDeviceState } from '@suite-common/wallet-core';
+import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/wallet-core';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -41,7 +41,7 @@ export const DeviceSwitch = () => {
     const { applyStyle } = useNativeStyles();
 
     const deviceState = useSelector(selectDeviceState);
-    const wallets = useSelector(selectDeviceInstances);
+    const numberOfDevices = useSelector(selectNumberOfDeviceInstances);
 
     const { setIsDeviceManagerVisible, isDeviceManagerVisible } = useDeviceManager();
 
@@ -57,7 +57,7 @@ export const DeviceSwitch = () => {
                         <DeviceItemContent
                             deviceState={deviceState}
                             headerTextVariant="highlight"
-                            variant={wallets.length > 1 ? 'walletDetail' : 'simple'}
+                            variant={numberOfDevices > 1 ? 'walletDetail' : 'simple'}
                             isSubHeaderForceHidden={true}
                         />
                     )}

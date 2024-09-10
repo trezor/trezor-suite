@@ -144,15 +144,14 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;
 
-export const selectAccountsByDeviceState = memoizeWithArgs(
-    (state: AccountsRootState, deviceState: string): Account[] =>
-        pipe(
-            selectAccounts(state),
-            A.filter(account => account.deviceState === deviceState),
-        ) as Account[],
-    // cache up to 3 devices to make sure it works correctly
-    { size: 3 },
-);
+export const selectAccountsByDeviceState = (
+    state: AccountsRootState,
+    deviceState: string,
+): Account[] =>
+    pipe(
+        selectAccounts(state),
+        A.filter(account => account.deviceState === deviceState),
+    ) as Account[];
 
 export const selectAccountsByDeviceStateAndNetworkSymbol = (
     state: AccountsRootState,

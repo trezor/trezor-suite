@@ -14,6 +14,7 @@
         "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/icons-deprecated": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/analytics": "workspace:*",

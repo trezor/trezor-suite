@@ -12,6 +12,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 
 import { DeviceItemIcon } from './DeviceItemIcon';
 import { SimpleDeviceItemContent } from './SimpleDeviceItemContent';
@@ -57,9 +58,19 @@ export const DeviceItemContent = React.memo(
         const { translate } = useTranslate();
         const { applyStyle } = useNativeStyles();
 
-        const device = useSelector((state: DeviceRootState) =>
-            selectDeviceByState(state, deviceState),
-        );
+        const device = useSelectorDeepComparison((state: DeviceRootState) => {
+            // select only what is needed to avoid unnecessary rerenders
+            const d = selectDeviceByState(state, deviceState);
+            if (!d) return null;
+
+            return {
+                id: d.id,
+                name: d.name,
+                label: d.label,
+                walletNumber: d.walletNumber,
+                useEmptyPassphrase: d.useEmptyPassphrase,
+            };
+        });
         const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
 
         const isPortfolioTrackerDevice = device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
