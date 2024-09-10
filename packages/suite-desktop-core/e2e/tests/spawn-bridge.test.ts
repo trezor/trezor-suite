@@ -5,6 +5,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { launchSuite, waitForDataTestSelector } from '../support/common';
 
 testPlaywright.describe.serial('Bridge', () => {
+    const expectedBridgeVersion = '2.0.33';
     testPlaywright.beforeAll(async () => {
         // We make sure that bridge from trezor-user-env is stopped.
         // So we properly test the electron app starting node-bridge module.
@@ -29,6 +30,16 @@ testPlaywright.describe.serial('Bridge', () => {
         // bridge is running
         const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
         await expectPlaywright(bridgeRes1).toBeOK();
+
+        const response = await request.post('http://127.0.0.1:21325/', {
+            headers: {
+                Origin: 'https://wallet.trezor.io',
+            },
+        });
+
+        const json = await response.json();
+        const { version } = json;
+        expectPlaywright(version).toEqual(expectedBridgeVersion);
 
         await suite.electronApp.close();
 
