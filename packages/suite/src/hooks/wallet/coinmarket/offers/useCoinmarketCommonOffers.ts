@@ -1,7 +1,7 @@
 import { useTimer } from '@trezor/react-utils';
 import { useDevice } from 'src/hooks/suite';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import {
     CoinmarketTradeBuyType,
     CoinmarketTradeDetailMapProps,
@@ -16,14 +16,6 @@ import {
     CoinmarketOffersMapProps,
 } from 'src/types/coinmarket/coinmarketOffers';
 import { useServerEnvironment } from 'src/hooks/wallet/coinmarket/useServerEnviroment';
-import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
-import {
-    FORM_EXCHANGE_DEX,
-    FORM_EXCHANGE_TYPE,
-    FORM_RATE_FLOATING,
-    FORM_RATE_TYPE,
-} from 'src/constants/wallet/coinmarket/form';
-import { getCexQuotesByRateType } from 'src/utils/wallet/coinmarket/exchangeUtils';
 
 export const isCoinmarketBuyOffers = (
     offersContext: CoinmarketOffersMapProps[keyof CoinmarketOffersMapProps],
@@ -77,31 +69,6 @@ export const useCoinmarketCommonOffers = ({
         setCallInProgress,
         checkQuotesTimer,
     };
-};
-
-export const useFilteredQuotesByRateTypeAndExchangeType = (
-    context: CoinmarketFormContextValues<CoinmarketTradeType>,
-) => {
-    const { quotes } = context;
-    const isExchange = isCoinmarketExchangeOffers(context);
-    const exchangeType = isExchange ? context.getValues(FORM_EXCHANGE_TYPE) : undefined;
-    const rateType = isExchange ? context.getValues(FORM_RATE_TYPE) : undefined;
-    const dexQuotes = isExchange ? context.dexQuotes : undefined;
-    const floatingQuotes = isExchange
-        ? getCexQuotesByRateType(FORM_RATE_FLOATING, context.quotes, context.exchangeInfo)
-        : undefined;
-    const dexAndFloatingQuotes = useMemo(
-        () => [...(dexQuotes ?? []), ...(floatingQuotes ?? [])],
-        [dexQuotes, floatingQuotes],
-    );
-
-    return useMemo(
-        () =>
-            exchangeType === FORM_EXCHANGE_DEX || rateType === FORM_RATE_FLOATING
-                ? dexAndFloatingQuotes
-                : quotes,
-        [exchangeType, rateType, dexAndFloatingQuotes, quotes],
-    );
 };
 
 export const CoinmarketOffersContext =

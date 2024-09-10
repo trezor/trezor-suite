@@ -627,6 +627,7 @@ export const useCoinmarketExchangeForm = ({
         timer,
         callInProgress,
         exchangeInfo,
+        allQuotes: innerQuotes,
         quotes: filteredCexQuotes,
         dexQuotes,
         quotesRequest,

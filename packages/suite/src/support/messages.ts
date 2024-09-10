@@ -650,6 +650,47 @@ export default defineMessages({
         defaultMessage: 'Decentralized exchange offer',
         id: 'TR_EXCHANGE_DEX',
     },
+    TR_COINMARKET_EXCHANGE_FIXED_OFFERS_HEADING: {
+        defaultMessage: 'Fixed-rate CEX',
+        id: 'TR_COINMARKET_EXCHANGE_FIXED_OFFERS_HEADING',
+    },
+    TR_COINMARKET_EXCHANGE_FLOAT_OFFERS_HEADING: {
+        defaultMessage: 'Floating-rate CEX',
+        id: 'TR_COINMARKET_EXCHANGE_FLOAT_OFFERS_HEADING',
+    },
+    TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING: {
+        defaultMessage: 'DEX',
+        id: 'TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING',
+    },
+    TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP: {
+        defaultMessage:
+            'Decentralized exchange - trade crypto through blockchain transactions without a centralized intermediary.',
+        id: 'TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP',
+    },
+    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_KYC_ALL: {
+        defaultMessage: 'All KYC options',
+        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_KYC_ALL',
+    },
+    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_NO_KYC: {
+        defaultMessage: 'KYC never required',
+        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_NO_KYC',
+    },
+    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_ALL: {
+        defaultMessage: 'All CEX and DEX offers',
+        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_ALL',
+    },
+    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX: {
+        defaultMessage: 'Fixed-rate CEX',
+        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX',
+    },
+    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX: {
+        defaultMessage: 'Floating-rate CEX',
+        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX',
+    },
+    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_DEX: {
+        defaultMessage: 'DEX',
+        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_DEX',
+    },
     TR_SELL_STATUS_ERROR: {
         defaultMessage: 'Rejected',
         id: 'TR_SELL_STATUS_ERROR',

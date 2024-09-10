@@ -54,10 +54,20 @@ import {
 import { AccountsState } from '@suite-common/wallet-core';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import {
+    EXCHANGE_COMPARATOR_KYC_FILTER,
+    EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
+    EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC,
+    EXCHANGE_COMPARATOR_RATE_FILTER,
+    EXCHANGE_COMPARATOR_RATE_FILTER_ALL,
+    EXCHANGE_COMPARATOR_RATE_FILTER_DEX,
+    EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX,
+    EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
     FORM_EXCHANGE_CEX,
     FORM_EXCHANGE_DEX,
+    FORM_EXCHANGE_TYPE,
     FORM_RATE_FIXED,
     FORM_RATE_FLOATING,
+    FORM_RATE_TYPE,
 } from 'src/constants/wallet/coinmarket/form';
 
 export interface CoinmarketBuyFormProps {
@@ -88,12 +98,23 @@ export interface CoinmarketSellFormProps extends FormState {
 export type RateType = typeof FORM_RATE_FIXED | typeof FORM_RATE_FLOATING;
 export type ExchangeType = typeof FORM_EXCHANGE_CEX | typeof FORM_EXCHANGE_DEX;
 
+export type KycFilter =
+    | typeof EXCHANGE_COMPARATOR_KYC_FILTER_ALL
+    | typeof EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC;
+export type RateTypeFilter =
+    | typeof EXCHANGE_COMPARATOR_RATE_FILTER_ALL
+    | typeof EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX
+    | typeof EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX
+    | typeof EXCHANGE_COMPARATOR_RATE_FILTER_DEX;
+
 export interface CoinmarketExchangeFormProps extends FormState {
     receiveCryptoSelect: CoinmarketCryptoListProps | null;
     sendCryptoSelect: CoinmarketAccountOptionsGroupOptionProps | undefined;
     amountInCrypto: boolean;
-    rateType: RateType;
-    exchangeType: ExchangeType;
+    [FORM_RATE_TYPE]: RateType;
+    [FORM_EXCHANGE_TYPE]: ExchangeType;
+    [EXCHANGE_COMPARATOR_KYC_FILTER]: KycFilter;
+    [EXCHANGE_COMPARATOR_RATE_FILTER]: RateTypeFilter;
 }
 
 export type CoinmarketBuySellFormProps = CoinmarketBuyFormProps | CoinmarketSellFormProps;
@@ -218,6 +239,7 @@ export interface CoinmarketExchangeFormContextProps
     defaultCurrency: Option;
     amountLimits?: CryptoAmountLimits;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
+    allQuotes: ExchangeTrade[] | undefined;
     quotes: ExchangeTrade[] | undefined;
     dexQuotes: ExchangeTrade[] | undefined;
     quotesRequest: ExchangeTradeQuoteRequest | undefined;

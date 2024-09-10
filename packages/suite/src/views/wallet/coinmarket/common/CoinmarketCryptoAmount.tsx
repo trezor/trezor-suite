@@ -30,7 +30,7 @@ export const CoinmarketCryptoAmount = ({
             <Row alignItems="center">
                 {displayLogo && (
                     <LogoWrapper>
-                        <CoinmarketCoinLogo cryptoId={cryptoId} margin={{ right: spacings.sm }} />
+                        <CoinmarketCoinLogo cryptoId={cryptoId} margin={{ right: spacings.xs }} />
                     </LogoWrapper>
                 )}
                 {symbol}
@@ -43,7 +43,7 @@ export const CoinmarketCryptoAmount = ({
             <Row alignItems="center">
                 {displayLogo && (
                     <LogoWrapper>
-                        <CoinmarketCoinLogo cryptoId={cryptoId} margin={{ right: spacings.sm }} />
+                        <CoinmarketCoinLogo cryptoId={cryptoId} margin={{ right: spacings.xs }} />
                     </LogoWrapper>
                 )}
                 <FormattedCryptoAmount

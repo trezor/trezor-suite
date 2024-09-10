@@ -10,11 +10,22 @@ import { useSelector } from 'src/hooks/suite';
 import {
     CoinmarketExchangeFormDefaultValuesProps,
     ExchangeType,
+    KycFilter,
     RateType,
+    RateTypeFilter,
 } from 'src/types/coinmarket/coinmarketForm';
 import { FormState, Output } from '@suite-common/wallet-types';
 import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormDefaultValues';
-import { FORM_EXCHANGE_CEX, FORM_RATE_FIXED } from 'src/constants/wallet/coinmarket/form';
+import {
+    EXCHANGE_COMPARATOR_KYC_FILTER,
+    EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
+    EXCHANGE_COMPARATOR_RATE_FILTER,
+    EXCHANGE_COMPARATOR_RATE_FILTER_ALL,
+    FORM_EXCHANGE_CEX,
+    FORM_EXCHANGE_TYPE,
+    FORM_RATE_FIXED,
+    FORM_RATE_TYPE,
+} from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { coinmarketGetExchangeReceiveCryptoId } from 'src/utils/wallet/coinmarket/exchangeUtils';
 
@@ -65,8 +76,11 @@ export const useCoinmarketExchangeFormDefaultValues = (
             amountInCrypto: true,
             sendCryptoSelect: defaultSendCryptoSelect,
             receiveCryptoSelect: defaultReceiveCryptoSelect,
-            rateType: FORM_RATE_FIXED as RateType,
-            exchangeType: FORM_EXCHANGE_CEX as ExchangeType,
+            [FORM_RATE_TYPE]: FORM_RATE_FIXED as RateType,
+            [FORM_EXCHANGE_TYPE]: FORM_EXCHANGE_CEX as ExchangeType,
+            [EXCHANGE_COMPARATOR_RATE_FILTER]:
+                EXCHANGE_COMPARATOR_RATE_FILTER_ALL as RateTypeFilter,
+            [EXCHANGE_COMPARATOR_KYC_FILTER]: EXCHANGE_COMPARATOR_KYC_FILTER_ALL as KycFilter,
         }),
         [defaultFormState, defaultSendCryptoSelect, defaultReceiveCryptoSelect],
     );
