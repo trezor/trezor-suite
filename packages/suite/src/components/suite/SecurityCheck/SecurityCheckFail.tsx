@@ -1,23 +1,21 @@
 import styled from 'styled-components';
 
-import { Button, H2, Row, Text, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import { Button, Divider, H2, Row, Text } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { TREZOR_SUPPORT_FW_CHECK_FAILED } from '@trezor/urls';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { SecurityChecklist } from '../../../views/onboarding/steps/SecurityCheck/SecurityChecklist';
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 
-const TopSection = styled.div<{ $elevation: Elevation }>`
-    border-bottom: 1px solid ${mapElevationToBorder};
+const TopSection = styled.div`
     margin-top: ${spacingsPx.xs};
-    padding-bottom: ${spacingsPx.xl};
+    margin-bottom: ${spacingsPx.xl};
     width: 100%;
 `;
 
-const StyledTrezorLink = styled(TrezorLink)`
-    /* flex-grow has no effect on a link, display is set to contents so that it can be read from the child */
-    display: contents;
+const Flex = styled.div`
+    flex: 1;
 `;
 
 const checklistItems = [
@@ -50,30 +48,29 @@ export const SecurityCheckFail = ({ goBack, useSoftMessaging }: SecurityCheckFai
         ? 'TR_DEVICE_COMPROMISED_TEXT_SOFT'
         : 'TR_DEVICE_COMPROMISED_TEXT';
 
-    const { elevation } = useElevation();
-
     return (
         <SecurityCheckLayout isFailed>
-            <TopSection $elevation={elevation}>
-                <H2>
+            <TopSection>
+                <H2 margin={{ bottom: spacings.sm }}>
                     <Translation id={heading} />
                 </H2>
                 <Text variant="tertiary">
                     <Translation id={text} />
                 </Text>
             </TopSection>
+            <Divider margin={{ top: spacings.zero, bottom: spacings.xl }} />
             <SecurityChecklist items={checklistItems} />
             <Row flexWrap="wrap" gap={spacings.xl} width="100%">
                 {goBack && (
-                    <Button variant="tertiary" onClick={goBack}>
+                    <Button variant="tertiary" onClick={goBack} size="large">
                         <Translation id="TR_BACK" />
                     </Button>
                 )}
-                <StyledTrezorLink variant="nostyle" href={supportChatUrl}>
-                    <Button>
+                <Flex>
+                    <Button href={supportChatUrl} isFullWidth size="large">
                         <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
                     </Button>
-                </StyledTrezorLink>
+                </Flex>
             </Row>
         </SecurityCheckLayout>
     );

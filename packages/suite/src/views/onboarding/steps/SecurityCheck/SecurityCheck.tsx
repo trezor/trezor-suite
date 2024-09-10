@@ -4,8 +4,8 @@ import styled, { useTheme } from 'styled-components';
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions, selectDevice, selectDevices } from '@suite-common/wallet-core';
-import { useElevation, Button, Column, Icon, H2, Text, Tooltip } from '@trezor/components';
-import { Elevation, mapElevationToBorder, spacingsPx, typography } from '@trezor/theme';
+import { Button, Column, Icon, H2, Text, Tooltip, Divider } from '@trezor/components';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { TREZOR_RESELLERS_URL, TREZOR_URL } from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -26,10 +26,8 @@ const StyledCard = styled(CollapsibleOnboardingCard)`
     padding: ${spacingsPx.md};
 `;
 
-const DeviceNameSection = styled.div<{ $elevation: Elevation }>`
-    border-bottom: 1px solid ${mapElevationToBorder};
+const DeviceNameSection = styled.div`
     margin: ${spacingsPx.xs} 0 ${spacingsPx.xl};
-    padding-bottom: ${spacingsPx.xl};
     width: 100%;
 `;
 
@@ -54,6 +52,10 @@ const Underline = styled.span`
     }
 `;
 
+const Flex = styled.div`
+    flex: 1;
+`;
+
 const TimeEstimateWrapper = styled.div`
     ${typography.label}
     display: flex;
@@ -64,12 +66,10 @@ const TimeEstimateWrapper = styled.div`
     margin-top: 1px;
 `;
 
-const Buttons = styled.div<{ $elevation: Elevation }>`
+const Buttons = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: ${spacingsPx.xl};
-    padding-top: ${spacingsPx.xl};
-    border-top: 2px solid ${mapElevationToBorder};
 `;
 
 const StyledTrezorLink = styled(TrezorLink)`
@@ -159,8 +159,6 @@ const SecurityCheckContent = ({
     const theme = useTheme();
     const dispatch = useDispatch();
 
-    const { elevation } = useElevation();
-
     const deviceStatus = getConnectedDeviceStatus(device);
     const initialized = deviceStatus === 'initialized';
     const isRecoveryInProgress = recovery.status === 'in-progress';
@@ -205,7 +203,7 @@ const SecurityCheckContent = ({
     ) : (
         <SecurityCheckLayout>
             <Column alignItems="flex-start">
-                <DeviceNameSection $elevation={elevation}>
+                <DeviceNameSection>
                     <Text variant="tertiary">
                         <Translation id="TR_YOU_HAVE_CONNECTED" />
                     </Text>
@@ -214,36 +212,43 @@ const SecurityCheckContent = ({
                         <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
                     </OnboardingButtonSkip>
                 </DeviceNameSection>
-                <H2>
+                <Divider margin={{ top: spacings.zero, bottom: spacings.xl }} />
+                <H2 margin={{ top: spacings.md }}>
                     <Translation id={headingText} />
                 </H2>
                 <SecurityChecklist items={checklistItems} />
             </Column>
-            <Buttons $elevation={elevation}>
-                <Button variant="tertiary" onClick={toggleView}>
+            <Buttons>
+                <Button variant="tertiary" onClick={toggleView} size="large">
                     <Translation id={secondaryButtonText} />
                 </Button>
-                {initialized ? (
-                    <Button
-                        data-testid="@onboarding/exit-app-button"
-                        onClick={handleContinueButtonClick}
-                    >
-                        <Translation id="TR_YES_CONTINUE" />
-                    </Button>
-                ) : (
-                    <Button
-                        onClick={handleSetupButtonClick}
-                        data-testid="@analytics/continue-button"
-                    >
-                        <Column>
-                            <Translation id={primaryButtonTopText} />
-                            <TimeEstimateWrapper>
-                                <Icon size={12} name="clock" color={theme.iconOnPrimary} />
-                                <Translation id="TR_TAKES_N_MINUTES" />
-                            </TimeEstimateWrapper>
-                        </Column>
-                    </Button>
-                )}
+                <Flex>
+                    {initialized ? (
+                        <Button
+                            data-testid="@onboarding/exit-app-button"
+                            onClick={handleContinueButtonClick}
+                            isFullWidth
+                            size="large"
+                        >
+                            <Translation id="TR_YES_CONTINUE" />
+                        </Button>
+                    ) : (
+                        <Button
+                            onClick={handleSetupButtonClick}
+                            data-testid="@analytics/continue-button"
+                            isFullWidth
+                            size="large"
+                        >
+                            <Column>
+                                <Translation id={primaryButtonTopText} />
+                                <TimeEstimateWrapper>
+                                    <Icon size={12} name="clock" color={theme.iconOnPrimary} />
+                                    <Translation id="TR_TAKES_N_MINUTES" />
+                                </TimeEstimateWrapper>
+                            </Column>
+                        </Button>
+                    )}
+                </Flex>
             </Buttons>
         </SecurityCheckLayout>
     );

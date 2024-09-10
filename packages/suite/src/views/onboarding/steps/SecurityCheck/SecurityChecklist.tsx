@@ -20,7 +20,7 @@ export const SecurityChecklist = ({ items }: SecurityChecklistProps) => {
         <Column
             alignItems="flex-start"
             gap={spacings.xl}
-            margin={{ top: spacings.xl, bottom: spacings.xl }}
+            margin={{ top: spacings.xl, bottom: spacings.xxxxl }}
         >
             {items.map(item => (
                 <Row key={item.icon} gap={spacings.xl}>
