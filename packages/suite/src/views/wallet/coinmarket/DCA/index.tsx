@@ -101,7 +101,7 @@ const FeatureItem = ({ icon, featureNumber }: FeatureItemProps) => (
 
 const DCALanding = (props: UseCoinmarketProps) => {
     const currentTheme = useSelector(state => state.suite.settings.theme.variant);
-    const isLightTheme = currentTheme === 'light';
+    const isLightTheme = currentTheme !== 'dark';
 
     return (
         <CoinmarketLayout selectedAccount={props.selectedAccount}>
