@@ -10,9 +10,10 @@ import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useDevice, useFirmware } from 'src/hooks/suite';
 import { AbortButton } from 'src/components/suite/modals/AbortButton';
 import { ConfirmOnDevice } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
 
 const StyledModal = styled(Modal)`
-    width: 580px;
+    width: 600px;
 
     ${Modal.Body} {
         padding: 38px 22px 6px;
@@ -95,12 +96,6 @@ const StyledConfirmImage = styled(DeviceConfirmImage)`
     flex: 0 0 200px;
     width: 200px;
     height: 200px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Heading = styled(H2)`
-    margin-bottom: 16px;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const StyledWebUsbButton = styled(WebUsbButton)`
@@ -269,9 +264,9 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                 )}
 
                 <Content>
-                    <Heading>
+                    <H2 margin={{ bottom: spacings.md }}>
                         <Translation id={getHeading()} />
-                    </Heading>
+                    </H2>
 
                     {!isRebootDone ? (
                         <>
