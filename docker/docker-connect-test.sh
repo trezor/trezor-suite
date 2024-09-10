@@ -48,8 +48,6 @@ FIRMWARE_URL=""
 INCLUDED_METHODS=""
 EXCLUDED_METHODS=""
 DOCKER=true
-# TODO: DOCKER_PATH appears unused. Remove or export?
-DOCKER_PATH="docker"
 USE_TX_CACHE=true
 USE_WS_CACHE=true
 PATTERN=""
@@ -58,13 +56,10 @@ RANDOMIZE=false
 
 # user options
 OPTIND=2
-while getopts ":p:i:e:f:u:m:D:hdcr" opt; do
+while getopts ":p:i:e:f:u:m:hdcr" opt; do
   case $opt in
   d)
     DOCKER=false
-    ;;
-  D)
-    DOCKER_PATH="$OPTARG"
     ;;
   c)
     USE_TX_CACHE=false
@@ -103,8 +98,6 @@ while getopts ":p:i:e:f:u:m:D:hdcr" opt; do
 done
 shift $((OPTIND - 1))
 
-export DOCKER_PATH
-
 if [[ $ENVIRONMENT == "node" ]]; then
   SCRIPT="yarn workspace @trezor/connect test:e2e:node"
 else
@@ -124,7 +117,7 @@ export TESTS_FIRMWARE_MODEL=$FIRMWARE_MODEL
 export TESTS_RANDOM=$RANDOMIZE
 
 runDocker() {
-  docker compose -f ./docker/docker-compose.connect-test.yml up --abort-on-container-exit
+  docker compose -f ./docker/docker-compose.connect-test.yml up -d
 }
 
 run() {
@@ -142,10 +135,10 @@ run() {
 
   if [ $DOCKER = true ]; then
     runDocker
-  else
-    $SCRIPT
+
   fi
 
+  $SCRIPT
 }
 
 run
