@@ -45,14 +45,14 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
         },
         videoRef,
     ) => {
-        const { THEME } = useTheme();
+        const theme = useTheme();
 
         // T2B1, T3T1 animations are transparent
-        const theme = [DeviceModelInternal.T2B1, DeviceModelInternal.T3T1].includes(
+        const themeSuffix = [DeviceModelInternal.T2B1, DeviceModelInternal.T3T1].includes(
             deviceModelInternal,
         )
             ? ''
-            : `_${THEME}`;
+            : `_${theme.legacy.THEME}`;
 
         return (
             <AnimationWrapper height={height} width={width} shape={shape} {...props}>
@@ -68,7 +68,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     >
                         <source
                             src={resolveStaticPath(
-                                `videos/device/trezor_${deviceModelInternal.toLowerCase()}_${type.toLowerCase()}${theme}.webm`,
+                                `videos/device/trezor_${deviceModelInternal.toLowerCase()}_${type.toLowerCase()}${themeSuffix}.webm`,
                             )}
                             type="video/webm"
                         />
