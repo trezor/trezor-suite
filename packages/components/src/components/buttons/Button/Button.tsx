@@ -160,6 +160,7 @@ export const Button = ({
     return (
         <ButtonContainer
             as={isLink ? 'a' : 'button'}
+            target={isLink ? target || '_blank' : undefined}
             href={href}
             $variant={variant}
             $size={size}
