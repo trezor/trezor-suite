@@ -542,34 +542,35 @@ const onCallDevice = async (
 
     const shouldRetry = ['web', 'webextension'].includes(env);
     // find device
-    let device: Device;
-    try {
-        device = await initDevice(context, method.devicePath);
-    } catch (error) {
-        if (error.code === 'Transport_Missing') {
-            // wait for popup handshake
-            await waitForPopup(context);
-            // show message about transport
-            sendCoreMessage(createUiMessage(UI.TRANSPORT));
+    let tempDevice: Device | undefined;
+    while (!tempDevice) {
+        try {
+            tempDevice = await initDevice(context, method.devicePath);
+        } catch (error) {
+            if (error.code === 'Transport_Missing') {
+                // wait for popup handshake
+                await waitForPopup(context);
+                // show message about transport
+                sendCoreMessage(createUiMessage(UI.TRANSPORT));
 
-            // Retry initDevice again
-            // NOTE: this should change after multi-transports refactor, where transport will be always alive
-            if (deviceList.pendingConnection() && shouldRetry) {
-                while (deviceList.pendingConnection()) {
-                    await deviceList.pendingConnection();
+                // Retry initDevice again
+                // NOTE: this should change after multi-transports refactor, where transport will be always alive
+                if (deviceList.pendingConnection() && shouldRetry) {
+                    while (deviceList.pendingConnection()) {
+                        await deviceList.pendingConnection();
+                    }
+                    continue;
                 }
-
-                // call onCallDevice again recursively
-                return await onCallDevice(context, message, method);
+            } else {
+                // cancel popup request
+                sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
             }
-        } else {
-            // cancel popup request
-            sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
+            // TODO: this should not be returned here before user agrees on "read" perms...
+            sendCoreMessage(createResponseMessage(responseID, false, { error }));
+            throw error;
         }
-        // TODO: this should not be returned here before user agrees on "read" perms...
-        sendCoreMessage(createResponseMessage(responseID, false, { error }));
-        throw error;
     }
+    const device = tempDevice;
 
     method.setDevice(device);
 
