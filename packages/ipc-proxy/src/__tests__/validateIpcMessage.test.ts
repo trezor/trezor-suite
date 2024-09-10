@@ -1,4 +1,4 @@
-import { ElectionIpcMainInvokeEvent } from '../proxy-handler';
+import { ElectronIpcMainInvokeEvent } from '../proxy-handler';
 import { validateIpcMessage } from '../validateIpcMessage';
 
 const createSenderFrame = (url: string) => ({ senderFrame: { url } });
@@ -35,7 +35,7 @@ describe(validateIpcMessage.name, () => {
 
     it('fails for invalid senderFrame', () => {
         const subject = () => {
-            validateIpcMessage({} as ElectionIpcMainInvokeEvent);
+            validateIpcMessage({} as ElectronIpcMainInvokeEvent);
         };
 
         expect(subject).toThrow('Invalid ipcEvent: {}');

@@ -1,7 +1,7 @@
 import { BrowserWindow, dialog } from 'electron';
 
 import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { ElectionIpcMainInvokeEvent } from '@trezor/ipc-proxy/src/proxy-handler';
+import { ElectronIpcMainInvokeEvent } from '@trezor/ipc-proxy/src/proxy-handler';
 
 import { ipcMain } from './typed-electron';
 import { APP_SRC } from './libs/constants';
@@ -22,7 +22,7 @@ const showDialog = async (mainWindow: BrowserWindow) => {
 
 export const hangDetect = (mainWindow: BrowserWindow, statePatch?: Record<string, any>) => {
     const { logger } = global;
-    const handshakeHandler = (ipcEvent: ElectionIpcMainInvokeEvent) => {
+    const handshakeHandler = (ipcEvent: ElectronIpcMainInvokeEvent) => {
         validateIpcMessage(ipcEvent);
 
         return Promise.resolve({});
