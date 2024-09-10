@@ -30,7 +30,7 @@ export const mapVariantToIconBorderColor = ({ $variant, theme }: MapArgs): CSSCo
 
 export const mapModalSizeToWidth = (size: NewModalSize) => {
     const widthMap: Record<NewModalSize, number> = {
-        tiny: 440,
+        tiny: 400,
         small: 600,
         medium: 680,
         large: 760,
