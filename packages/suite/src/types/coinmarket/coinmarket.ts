@@ -155,6 +155,7 @@ export type CoinmarketUtilsProvidersProps = {
 export interface CoinmarketInfoProps {
     cryptoIdToPlatformName: (cryptoId: CryptoId) => string | undefined;
     cryptoIdToCoinSymbol: (cryptoId: CryptoId) => string | undefined;
+    cryptoIdToNativeCoinSymbol: (cryptoId: CryptoId) => string | undefined;
     buildCryptoOptions: (
         cryptoIds: Set<CryptoId>,
         excludedCryptoIds?: Set<CryptoId>,

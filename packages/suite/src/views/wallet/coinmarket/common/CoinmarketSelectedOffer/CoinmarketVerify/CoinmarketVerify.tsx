@@ -67,7 +67,7 @@ interface CoinmarketVerifyProps {
 
 export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: CoinmarketVerifyProps) => {
     const { translationString } = useTranslation();
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const { cryptoIdToCoinSymbol, cryptoIdToNativeCoinSymbol } = useCoinmarketInfo();
     const context = useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
     const { callInProgress, device, verifyAddress, addressVerified, confirmTrade } = context;
     const exchangeQuote = isCoinmarketExchangeOffers(context) ? context.selectedQuote : null;
@@ -100,7 +100,8 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
         required: translationString('TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED'),
         validate: value => {
             if (selectedAccountOption?.type === 'NON_SUITE' && currency) {
-                if (value && !addressValidator.validate(value, currency)) {
+                const symbol = cryptoIdToNativeCoinSymbol(currency);
+                if (value && !addressValidator.validate(value, symbol)) {
                     return translationString('TR_EXCHANGE_RECEIVING_ADDRESS_INVALID');
                 }
             }
