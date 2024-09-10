@@ -93,7 +93,9 @@ describe('settings reducer', () => {
         const info: InfoResponse = {
             platforms: {
                 ethereum: {
+                    id: 'ethereum',
                     name: 'Ethereum',
+                    nativeCoinSymbol: 'eth',
                 },
             },
             coins: {
