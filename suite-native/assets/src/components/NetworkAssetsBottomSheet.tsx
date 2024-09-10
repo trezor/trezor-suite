@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import React from 'react';
 
 import { BottomSheet } from '@suite-native/atoms';
 import {
@@ -15,21 +16,19 @@ type NetworkAssetsBottomSheetProps = {
     onClose: () => void;
 };
 
-export const NetworkAssetsBottomSheet = ({
-    networkSymbol,
-    onSelectAccount,
-    onClose,
-}: NetworkAssetsBottomSheetProps) => {
-    const groupedNetworkAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectDeviceNetworkAccountsGroupedByAccountType(state, networkSymbol),
-    );
+export const NetworkAssetsBottomSheet = React.memo(
+    ({ networkSymbol, onSelectAccount, onClose }: NetworkAssetsBottomSheetProps) => {
+        const groupedNetworkAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
+            selectDeviceNetworkAccountsGroupedByAccountType(state, networkSymbol),
+        );
 
-    return (
-        <BottomSheet title="Select Account" isVisible onClose={onClose}>
-            <GroupedByTypeAccountsList
-                groupedAccounts={groupedNetworkAccounts}
-                onSelectAccount={onSelectAccount}
-            />
-        </BottomSheet>
-    );
-};
+        return (
+            <BottomSheet title="Select Account" isVisible onClose={onClose}>
+                <GroupedByTypeAccountsList
+                    groupedAccounts={groupedNetworkAccounts}
+                    onSelectAccount={onSelectAccount}
+                />
+            </BottomSheet>
+        );
+    },
+);

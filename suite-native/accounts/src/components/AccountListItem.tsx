@@ -1,18 +1,19 @@
-import { useSelector } from 'react-redux';
 import { TouchableOpacityProps } from 'react-native';
+import { useSelector } from 'react-redux';
+import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import {
-    AccountsRootState,
-    FiatRatesRootState,
-    selectFormattedAccountType,
-} from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 import { Badge, RoundedIcon } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { SettingsSliceRootState } from '@suite-native/settings';
-import { isCoinWithTokens, selectNumberOfAccountTokensWithFiatRates } from '@suite-native/tokens';
+import {
+    isCoinWithTokens,
+    selectAccountHasAnyKnownToken,
+    selectNumberOfAccountTokensWithFiatRates,
+    TokensRootState,
+} from '@suite-native/tokens';
 
 import { AccountListItemBase } from './AccountListItemBase';
 
@@ -23,6 +24,20 @@ export type AccountListItemProps = {
     onPress?: TouchableOpacityProps['onPress'];
     disabled?: boolean;
 };
+
+const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
+    const numberOfTokens = useSelector((state: TokensRootState) =>
+        selectNumberOfAccountTokensWithFiatRates(state, accountKey),
+    );
+
+    return (
+        <Badge
+            elevation="1"
+            size="small"
+            label={<Translation id="accountList.numberOfTokens" values={{ numberOfTokens }} />}
+        />
+    );
+});
 
 export const AccountListItem = ({
     account,
@@ -36,14 +51,13 @@ export const AccountListItem = ({
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );
-    const numberOfTokens = useSelector(
-        (state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState) =>
-            selectNumberOfAccountTokensWithFiatRates(state, account.key),
+    const accountHasAnyTokens = useSelector((state: TokensRootState) =>
+        selectAccountHasAnyKnownToken(state, account.key),
     );
 
     const doesCoinSupportTokens = isCoinWithTokens(account.symbol);
     const shouldShowAccountLabel = !doesCoinSupportTokens || hideTokens;
-    const shouldShowTokenBadge = numberOfTokens > 0 && hideTokens;
+    const shouldShowTokenBadge = accountHasAnyTokens && hideTokens;
 
     return (
         <AccountListItemBase
@@ -62,18 +76,7 @@ export const AccountListItem = ({
                     {formattedAccountType && (
                         <Badge label={formattedAccountType} size="small" elevation="1" />
                     )}
-                    {shouldShowTokenBadge && (
-                        <Badge
-                            elevation="1"
-                            size="small"
-                            label={
-                                <Translation
-                                    id="accountList.numberOfTokens"
-                                    values={{ numberOfTokens }}
-                                />
-                            }
-                        />
-                    )}
+                    {shouldShowTokenBadge && <TokenBadge accountKey={account.key} />}
                 </>
             }
             mainValue={

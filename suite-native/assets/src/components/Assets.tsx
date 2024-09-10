@@ -1,10 +1,9 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { calculateAssetsPercentage } from '@suite-common/assets';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDeviceAuthorized, selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
@@ -18,7 +17,7 @@ import {
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 
-import { AssetType, selectDeviceAssetsWithBalances } from '../assetsSelectors';
+import { selectDeviceNetworksWithAssets } from '../assetsSelectors';
 import { AssetItem } from './AssetItem';
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
 import { NetworkAssetsBottomSheet } from './NetworkAssetsBottomSheet';
@@ -32,18 +31,13 @@ type NavigationProp = TabToStackCompositeNavigationProp<
 export const Assets = () => {
     const navigation = useNavigation<NavigationProp>();
 
-    const deviceAssetsData = useSelectorDeepComparison(selectDeviceAssetsWithBalances);
+    const deviceNetworks = useSelectorDeepComparison(selectDeviceNetworksWithAssets);
 
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isLoading = isDiscoveryActive || !isDeviceAuthorized;
 
     const [selectedAssetSymbol, setSelectedAssetSymbol] = useState<NetworkSymbol | null>(null);
-
-    const assetsDataWithPercentage = useMemo(
-        () => calculateAssetsPercentage<AssetType>(deviceAssetsData),
-        [deviceAssetsData],
-    );
 
     const handleSelectAssetsAccount: OnSelectAccount = useCallback(
         ({ account, tokenAddress }) => {
@@ -64,22 +58,18 @@ export const Assets = () => {
     return (
         <>
             <Card noPadding>
-                {assetsDataWithPercentage.map(asset => (
-                    <Animated.View entering={isLoading ? FadeInDown : undefined} key={asset.symbol}>
+                {deviceNetworks.map(networkSymbol => (
+                    <Animated.View
+                        entering={isLoading ? FadeInDown : undefined}
+                        key={networkSymbol}
+                    >
                         <AssetItem
-                            iconName={asset.symbol}
-                            cryptoCurrencySymbol={asset.symbol}
-                            fiatBalance={asset.fiatBalance}
-                            fiatPercentage={asset.fiatPercentage}
-                            fiatPercentageOffset={asset.fiatPercentageOffset}
-                            cryptoCurrencyValue={asset.assetBalance}
+                            cryptoCurrencySymbol={networkSymbol}
                             onPress={setSelectedAssetSymbol}
                         />
                     </Animated.View>
                 ))}
-                {isLoading && (
-                    <DiscoveryAssetsLoader numberOfAssets={assetsDataWithPercentage.length} />
-                )}
+                {isLoading && <DiscoveryAssetsLoader numberOfAssets={deviceNetworks.length} />}
             </Card>
             {selectedAssetSymbol && (
                 <NetworkAssetsBottomSheet

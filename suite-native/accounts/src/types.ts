@@ -5,5 +5,5 @@ export type GroupedByTypeAccounts = Record<string, [Account, ...Account[]]>;
 export type OnSelectAccount = (params: {
     account: Account;
     tokenAddress?: TokenAddress;
-    hasAnyTokensWithFiatRates: boolean;
+    hasAnyKnownTokens: boolean;
 }) => void;

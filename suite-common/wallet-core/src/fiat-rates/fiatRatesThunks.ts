@@ -94,7 +94,7 @@ const fetchFn: Record<RateTypeWithoutHistoric, typeof fetchCurrentFiatRates> = {
 };
 
 type UpdateCurrentFiatRatesThunkPayload = {
-    ticker: TickerId;
+    tickers: TickerId[];
     localCurrency: FiatCurrencyCode;
     fetchAttemptTimestamp: Timestamp;
     rateType: RateTypeWithoutHistoric;
@@ -104,39 +104,47 @@ type UpdateCurrentFiatRatesThunkPayload = {
 export const updateFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/updateFiatRates`,
     async (
-        { ticker, localCurrency, rateType, forceFetchToken }: UpdateCurrentFiatRatesThunkPayload,
+        { tickers, localCurrency, rateType, forceFetchToken }: UpdateCurrentFiatRatesThunkPayload,
         { getState },
     ) => {
-        if (isTestnet(ticker.symbol)) {
-            throw new Error('Testnet');
-        }
-
-        const hasCoinDefinitions = getNetworkFeatures(ticker.symbol).includes('coin-definitions');
-        if (ticker.tokenAddress && hasCoinDefinitions && !forceFetchToken) {
-            const isTokenKnown = selectIsSpecificCoinDefinitionKnown(
-                getState(),
-                ticker.symbol,
-                ticker.tokenAddress,
-            );
-
-            if (!isTokenKnown) {
-                throw new Error('Missing token definition');
+        const fetchRate = async (ticker: TickerId) => {
+            if (isTestnet(ticker.symbol)) {
+                throw new Error('Testnet');
             }
-        }
 
-        const isElectrumBackend = selectIsElectrumBackendSelected(getState(), ticker.symbol);
+            const hasCoinDefinitions = getNetworkFeatures(ticker.symbol).includes(
+                'coin-definitions',
+            );
+            if (ticker.tokenAddress && hasCoinDefinitions && !forceFetchToken) {
+                const isTokenKnown = selectIsSpecificCoinDefinitionKnown(
+                    getState(),
+                    ticker.symbol,
+                    ticker.tokenAddress,
+                );
 
-        const rate = await fetchFn[rateType]({
-            ticker,
-            localCurrency,
-            isElectrumBackend,
-        });
+                if (!isTokenKnown) {
+                    throw new Error('Missing token definition');
+                }
+            }
 
-        if (!rate) {
-            throw new Error('Failed to fetch fiat rates');
-        }
+            const isElectrumBackend = selectIsElectrumBackendSelected(getState(), ticker.symbol);
 
-        return rate;
+            const rate = await fetchFn[rateType]({
+                ticker,
+                localCurrency,
+                isElectrumBackend,
+            });
+
+            if (!rate) {
+                throw new Error('Failed to fetch fiat rates');
+            }
+
+            return rate;
+        };
+
+        const rates = await Promise.allSettled(tickers.map(fetchRate));
+
+        return rates;
     },
 );
 
@@ -170,17 +178,15 @@ export const fetchFiatRatesThunk = createThunk(
             rateType,
         );
 
-        return Promise.allSettled(
-            tickers.map(ticker =>
-                dispatch(
-                    updateFiatRatesThunk({
-                        ticker,
-                        localCurrency,
-                        rateType,
-                        fetchAttemptTimestamp: Date.now() as Timestamp,
-                    }),
-                ),
-            ),
+        if (tickers.length === 0) return;
+
+        return dispatch(
+            updateFiatRatesThunk({
+                tickers,
+                localCurrency,
+                rateType,
+                fetchAttemptTimestamp: Date.now() as Timestamp,
+            }),
         );
     },
 );

@@ -109,19 +109,20 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             const localCurrency = selectLocalCurrency(getState());
 
             const { tokens, symbol } = action.payload;
-            tokens?.forEach(token => {
+            const tickers = tokens?.map(token => ({
+                symbol,
+                tokenAddress: token.contract as TokenAddress,
+            }));
+            if (tickers) {
                 dispatch(
                     updateFiatRatesThunk({
-                        ticker: {
-                            symbol,
-                            tokenAddress: token.contract as TokenAddress,
-                        },
+                        tickers,
                         rateType: 'current',
                         localCurrency,
                         fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),
                 );
-            });
+            }
         }
 
         return next(action);

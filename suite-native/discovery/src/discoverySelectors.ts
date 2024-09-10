@@ -1,13 +1,17 @@
-import { pipe, A, D } from '@mobily/ts-belt';
+import { A, D, O, pipe, S } from '@mobily/ts-belt';
 
 import {
+    selectIsSpecificCoinDefinitionKnown,
     TokenDefinitionsRootState,
-    selectValidTokensByDeviceStateAndNetworkSymbol,
 } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    LIMIT as ACCOUNTS_LIMIT,
+    AccountsRootState,
     DeviceRootState,
     DiscoveryRootState,
+    selectAccountsByNetworkAndDeviceState,
+    selectDeviceAccounts,
     selectDeviceAuthFailed,
     selectDeviceDiscovery,
     selectDeviceFirmwareVersion,
@@ -19,13 +23,7 @@ import {
     selectIsDeviceUnlocked,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { LIMIT as ACCOUNTS_LIMIT } from '@suite-common/wallet-core';
-import {
-    AccountsRootState,
-    selectAccountsByDeviceStateAndNetworkSymbol,
-    selectDeviceAccounts,
-} from '@suite-common/wallet-core';
-import { TokenSymbol, TokenAddress } from '@suite-common/wallet-types';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { isFirmwareVersionSupported } from '@suite-native/device';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 
@@ -37,6 +35,42 @@ import {
 } from './discoveryConfigSlice';
 import { getNetworksWithUnfinishedDiscovery } from './utils';
 
+export const selectValidTokensByDeviceStateAndNetworkSymbol = (
+    state: TokenDefinitionsRootState & DeviceRootState & AccountsRootState,
+    deviceState: string,
+    networkSymbol: NetworkSymbol,
+) => {
+    const accountsByDeviceStateAndNetworkSymbol = selectAccountsByNetworkAndDeviceState(
+        state,
+        deviceState,
+        networkSymbol,
+    );
+
+    return pipe(
+        accountsByDeviceStateAndNetworkSymbol,
+        A.filter(account => account.symbol === networkSymbol),
+        A.map(account => account.tokens),
+        A.flat,
+
+        A.filterMap(token => {
+            if (token?.contract === undefined) {
+                return O.None;
+            }
+
+            const tokenContract = token.contract as TokenAddress;
+            const tokenSymbol = token.symbol as TokenSymbol;
+
+            if (selectIsSpecificCoinDefinitionKnown(state, networkSymbol, tokenContract)) {
+                return O.Some(`${tokenContract}:${tokenSymbol}`);
+            }
+        }),
+
+        // Don't use A.uniq(By) because it's slow for large arrays
+        t => Array.from(new Set<string>(t)),
+        A.map(S.split(':')),
+    ) as Array<[TokenAddress, TokenSymbol]>;
+};
+
 export const selectDiscoveryAccountsAnalytics = (
     state: AccountsRootState & DeviceRootState & TokenDefinitionsRootState,
     deviceState: string,
@@ -47,20 +81,17 @@ export const selectDiscoveryAccountsAnalytics = (
         D.mapWithKey((networkSymbol, accounts) => {
             const numberOfAccounts = accounts?.length ?? 0;
 
-            const accountsByDeviceStateAndNetworkSymbol =
-                selectAccountsByDeviceStateAndNetworkSymbol(state, deviceState, networkSymbol);
-
             const validTokens = selectValidTokensByDeviceStateAndNetworkSymbol(
                 state,
-                accountsByDeviceStateAndNetworkSymbol,
+                deviceState,
                 networkSymbol as NetworkSymbol,
             );
 
             if (A.isNotEmpty(validTokens)) {
                 return {
                     numberOfAccounts,
-                    tokenSymbols: validTokens.map(token => token.symbol as TokenSymbol),
-                    tokenAddresses: validTokens.map(token => token.contract as TokenAddress),
+                    tokenSymbols: validTokens.map(([_, tokenSymbol]) => tokenSymbol),
+                    tokenAddresses: validTokens.map(([tokenAddress, _]) => tokenAddress),
                 };
             }
 

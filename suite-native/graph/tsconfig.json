@@ -13,6 +13,9 @@
             "path": "../../suite-common/suite-types"
         },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {

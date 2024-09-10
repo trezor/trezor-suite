@@ -54,9 +54,11 @@ export const useSendFormImport = ({
                 // fetch fiat rate for new currencies in the csv
                 const updateFiatRatesResult = await dispatch(
                     updateFiatRatesThunk({
-                        ticker: {
-                            symbol: network.symbol as NetworkSymbol,
-                        },
+                        tickers: [
+                            {
+                                symbol: network.symbol as NetworkSymbol,
+                            },
+                        ],
                         localCurrency: currency as FiatCurrencyCode,
                         rateType: 'current',
                         fetchAttemptTimestamp: Date.now() as Timestamp,

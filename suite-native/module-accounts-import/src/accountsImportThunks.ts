@@ -97,9 +97,11 @@ export const getAccountInfoThunk = createThunk<
                 }),
                 dispatch(
                     updateFiatRatesThunk({
-                        ticker: {
-                            symbol: networkSymbol,
-                        },
+                        tickers: [
+                            {
+                                symbol: networkSymbol,
+                            },
+                        ],
                         rateType: 'current',
                         localCurrency: fiatCurrency,
                         fetchAttemptTimestamp: Date.now() as Timestamp,
@@ -110,24 +112,24 @@ export const getAccountInfoThunk = createThunk<
             if (fetchedAccountInfo?.success) {
                 // fetch fiat rates for all tokens of newly discovered account
                 // Even that there is check in updateFiatRatesThunk, it is better to do it here and do not dispatch thunk at all because it has some overhead and sometimes there could be lot of tokens
-                const knownToknes = selectFilterKnownTokens(
+                const knownTokens = selectFilterKnownTokens(
                     getState(),
                     networkSymbol,
                     fetchedAccountInfo.payload.tokens ?? [],
                 );
 
-                knownToknes.forEach(token =>
-                    dispatch(
-                        updateFiatRatesThunk({
-                            ticker: {
-                                symbol: networkSymbol,
-                                tokenAddress: token.contract as TokenAddress,
-                            },
-                            rateType: 'current',
-                            localCurrency: fiatCurrency,
-                            fetchAttemptTimestamp: Date.now() as Timestamp,
-                        }),
-                    ),
+                const tickers = knownTokens.map(token => ({
+                    symbol: networkSymbol,
+                    tokenAddress: token.contract as TokenAddress,
+                }));
+
+                dispatch(
+                    updateFiatRatesThunk({
+                        tickers,
+                        rateType: 'current',
+                        localCurrency: fiatCurrency,
+                        fetchAttemptTimestamp: Date.now() as Timestamp,
+                    }),
                 );
 
                 return fetchedAccountInfo.payload;

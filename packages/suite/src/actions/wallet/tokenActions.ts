@@ -19,10 +19,12 @@ export const addToken =
 
         dispatch(
             updateFiatRatesThunk({
-                ticker: {
-                    symbol: account.symbol,
-                    tokenAddress: tokenInfo[0].contract as TokenAddress,
-                },
+                tickers: [
+                    {
+                        symbol: account.symbol,
+                        tokenAddress: tokenInfo[0].contract as TokenAddress,
+                    },
+                ],
                 localCurrency,
                 rateType: 'current',
                 fetchAttemptTimestamp: Date.now() as Timestamp,

@@ -14,7 +14,6 @@ import {
     AccountsRootState,
     BlockchainRootState,
     selectAccountByKey,
-    selectDeviceMainnetAccounts,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
@@ -30,6 +29,7 @@ import {
     setAccountGraphTimeframe,
     setPortfolioGraphTimeframe,
 } from './slice';
+import { selectPortfolioGraphAccountItems } from './selectors';
 
 const useWatchTimeframeChangeForAnalytics = (
     timeframeHours: TimeframeHoursValue,
@@ -144,7 +144,7 @@ export const useGraphForSingleAccount = ({
 
 export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphParams) => {
     const dispatch = useDispatch();
-    const accounts = useSelector(selectDeviceMainnetAccounts);
+    const accountItems = useSelector(selectPortfolioGraphAccountItems);
     const portfolioGraphTimeframe = useSelector(selectPortfolioGraphTimeframe);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, 'btc'),
@@ -152,17 +152,6 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
 
     const { startOfTimeFrameDate, endOfTimeFrameDate } =
         useGetTimeFrameForHistoryHours(portfolioGraphTimeframe);
-
-    const accountItems = useMemo<AccountItem[]>(
-        () =>
-            accounts.map(account => ({
-                coin: account.symbol,
-                descriptor: account.descriptor,
-                identity: tryGetAccountIdentity(account),
-                accountKey: account.key,
-            })),
-        [accounts],
-    );
 
     const handleSelectPortfolioTimeframe = useCallback(
         (timeframeHours: TimeframeHoursValue) => {
@@ -188,7 +177,7 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
 
     return {
         ...graphForAccounts,
-        isAnyMainnetAccountPresent: A.isNotEmpty(accounts),
+        isAnyMainnetAccountPresent: A.isNotEmpty(accountItems),
         timeframe: portfolioGraphTimeframe,
         onSelectTimeFrame: handleSelectPortfolioTimeframe,
     };

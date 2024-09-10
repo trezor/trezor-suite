@@ -181,10 +181,12 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
                         onChange(selected.value);
                         await dispatch(
                             updateFiatRatesThunk({
-                                ticker: {
-                                    symbol: account.symbol as NetworkSymbol,
-                                    tokenAddress: selected.value as TokenAddress,
-                                },
+                                tickers: [
+                                    {
+                                        symbol: account.symbol as NetworkSymbol,
+                                        tokenAddress: selected.value as TokenAddress,
+                                    },
+                                ],
                                 localCurrency: currencyValue.value as FiatCurrencyCode,
                                 rateType: 'current',
                                 fetchAttemptTimestamp: Date.now() as Timestamp,

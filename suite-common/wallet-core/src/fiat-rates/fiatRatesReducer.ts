@@ -16,72 +16,85 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     (builder, extra) => {
         builder
             .addCase(updateFiatRatesThunk.pending, (state, action) => {
-                const { ticker, localCurrency, rateType } = action.meta.arg;
-                const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
-                let currentRate = state[rateType]?.[fiatRateKey];
+                const { tickers, localCurrency, rateType } = action.meta.arg;
+                tickers.forEach(ticker => {
+                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+                    let currentRate = state[rateType]?.[fiatRateKey];
 
-                if (isTestnet(ticker.symbol)) {
-                    return;
-                }
+                    if (isTestnet(ticker.symbol)) {
+                        return;
+                    }
 
-                if (currentRate) {
-                    currentRate = {
-                        ...currentRate,
-                        isLoading: true,
-                        error: null,
-                    };
-                } else {
-                    currentRate = {
-                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                        lastTickerTimestamp: 0 as Timestamp,
-                        isLoading: true,
-                        error: null,
-                        ticker,
-                    };
-                }
-                state[rateType][fiatRateKey] = currentRate;
+                    if (currentRate) {
+                        currentRate = {
+                            ...currentRate,
+                            isLoading: true,
+                            error: null,
+                        };
+                    } else {
+                        currentRate = {
+                            lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                            lastTickerTimestamp: 0 as Timestamp,
+                            isLoading: true,
+                            error: null,
+                            ticker,
+                        };
+                    }
+                    state[rateType][fiatRateKey] = currentRate;
+                });
             })
             .addCase(updateFiatRatesThunk.fulfilled, (state, action) => {
                 if (!action.payload) return;
 
-                const { ticker, localCurrency, rateType, fetchAttemptTimestamp } = action.meta.arg;
-                const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+                const { tickers, localCurrency, rateType, fetchAttemptTimestamp } = action.meta.arg;
 
-                const currentRate = state[rateType]?.[fiatRateKey];
+                // action.payload is iterator so we need for loop (nothing else works in Hermes (React Native))
+                let index = -1;
+                for (const result of action.payload) {
+                    index++;
 
-                // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
-                if (!currentRate) {
-                    return;
+                    const ticker = tickers[index];
+
+                    if (isTestnet(ticker.symbol)) {
+                        return;
+                    }
+
+                    if (result.status === 'rejected') {
+                        const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+                        const currentRate = state[rateType]?.[fiatRateKey];
+
+                        // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
+                        if (!currentRate) {
+                            return;
+                        }
+
+                        state[rateType][fiatRateKey] = {
+                            ...currentRate,
+                            isLoading: false,
+                            error: result.reason || `Failed to update ${ticker.symbol} fiat rate.`,
+                        };
+
+                        return;
+                    }
+
+                    const rate = result.value;
+                    const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+
+                    const currentRate = state[rateType]?.[fiatRateKey];
+
+                    // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
+                    if (!currentRate) {
+                        return;
+                    }
+                    state[rateType][fiatRateKey] = {
+                        ...currentRate,
+                        rate: rate.rate,
+                        lastTickerTimestamp: (rate.lastTickerTimestamp * 1000) as Timestamp,
+                        lastSuccessfulFetchTimestamp: fetchAttemptTimestamp,
+                        isLoading: false,
+                        error: null,
+                    };
                 }
-
-                state[rateType][fiatRateKey] = {
-                    ...currentRate,
-                    rate: action.payload.rate,
-                    lastTickerTimestamp: (action.payload.lastTickerTimestamp * 1000) as Timestamp,
-                    lastSuccessfulFetchTimestamp: fetchAttemptTimestamp,
-                    isLoading: false,
-                    error: null,
-                };
-            })
-            .addCase(updateFiatRatesThunk.rejected, (state, action) => {
-                const { ticker, localCurrency, rateType } = action.meta.arg;
-                const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
-                const currentRate = state[rateType]?.[fiatRateKey];
-
-                if (isTestnet(ticker.symbol)) {
-                    return;
-                }
-
-                // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
-                if (!currentRate) {
-                    return;
-                }
-
-                state[rateType][fiatRateKey] = {
-                    ...currentRate,
-                    isLoading: false,
-                    error: action.error.message || `Failed to update ${ticker.symbol} fiat rate.`,
-                };
             })
             .addCase(updateTxsFiatRatesThunk.fulfilled, (state, action) => {
                 if (!action.payload) return;

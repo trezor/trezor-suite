@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { TextProps } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -14,22 +16,19 @@ type FiatAmountFormatterProps = FormatterProps<string | null> &
         isDiscreetText?: boolean;
     };
 
-export const FiatAmountFormatter = ({
-    network,
-    value,
-    isDiscreetText = true,
-    ...textProps
-}: FiatAmountFormatterProps) => {
-    const { FiatAmountFormatter: formatter } = useFormatters();
+export const FiatAmountFormatter = React.memo(
+    ({ network, value, isDiscreetText = true, ...textProps }: FiatAmountFormatterProps) => {
+        const { FiatAmountFormatter: formatter } = useFormatters();
 
-    if (!!network && isTestnet(network)) {
-        return <EmptyAmountText />;
-    }
-    if (value === null) {
-        return <EmptyAmountSkeleton />;
-    }
+        if (!!network && isTestnet(network)) {
+            return <EmptyAmountText />;
+        }
+        if (value === null) {
+            return <EmptyAmountSkeleton />;
+        }
 
-    const formattedValue = formatter.format(value);
+        const formattedValue = formatter.format(value);
 
-    return <AmountText value={formattedValue} isDiscreetText={isDiscreetText} {...textProps} />;
-};
+        return <AmountText value={formattedValue} isDiscreetText={isDiscreetText} {...textProps} />;
+    },
+);

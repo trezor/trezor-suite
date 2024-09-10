@@ -198,10 +198,12 @@ export const FiatInput = ({ output, outputId, labelHoverRight, labelRight }: Fia
                 // Get (fresh) fiat rates for newly selected currency
                 const updateFiatRatesResult = await dispatch(
                     updateFiatRatesThunk({
-                        ticker: {
-                            symbol: account.symbol as NetworkSymbol,
-                            tokenAddress: token?.contract as TokenAddress,
-                        },
+                        tickers: [
+                            {
+                                symbol: account.symbol as NetworkSymbol,
+                                tokenAddress: token?.contract as TokenAddress,
+                            },
+                        ],
                         localCurrency: selected.value as FiatCurrencyCode,
                         rateType: 'current',
                         fetchAttemptTimestamp: Date.now() as Timestamp,
