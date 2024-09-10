@@ -1,5 +1,6 @@
 react-native
 expo
+expo-linking
 expo-localization
 react-fela
 fela
