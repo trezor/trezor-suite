@@ -17,7 +17,6 @@
 export const getTestElement = (selector: string, options?: Parameters<typeof cy.get>[1]) =>
     cy.get(`[data-testid="${selector}"]`, options);
 
-export const getConfirmActionOnDeviceModal = () =>
-    cy.getTestElement('@suite/modal/confirm-action-on-device');
+export const getConfirmActionOnDeviceModal = () => cy.getTestElement('@prompts/confirm-on-device');
 
 export const hoverTestElement = (selector: string) => cy.getTestElement(selector).realHover();

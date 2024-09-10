@@ -28,7 +28,7 @@ describe('Passphrase cancel', () => {
             cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
             cy.getTestElement('@passphrase/input').type('abc');
             cy.getTestElement('@passphrase/hidden/submit-button').click();
-            cy.getTestElement('@suite/modal/confirm-action-on-device');
+            cy.getTestElement('@prompts/confirm-on-device');
 
             cy.getTestElement('@confirm-on-device/close-button').click();
             cy.getTestElement('@toast/auth-failed');

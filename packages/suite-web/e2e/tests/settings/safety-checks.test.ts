@@ -60,7 +60,7 @@ describe('Safety Checks Settings', () => {
                 const targetValue = b.attr('data-testid');
                 console.log(`Changing safety_checks to ${targetValue})`);
                 cy.getTestElement('@safety-checks-apply').click();
-                cy.getTestElement('@suite/modal/confirm-action-on-device');
+                cy.getTestElement('@prompts/confirm-on-device');
                 cy.task('pressYes');
 
                 cy.getTestElement('@settings/device/safety-checks-button').click({
