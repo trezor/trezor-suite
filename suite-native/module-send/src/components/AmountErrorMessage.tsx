@@ -4,13 +4,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { getOutputFieldName } from '../utils';
 
-const MESSAGE_DEFAULT_OFFSET = 110;
-const MESSAGE_FIATLESS_OFFSET = 62;
-
-const errorStyle = prepareNativeStyle<{ isFiatDisplayed: boolean }>((_, { isFiatDisplayed }) => ({
-    position: 'absolute',
-    top: isFiatDisplayed ? MESSAGE_DEFAULT_OFFSET : MESSAGE_FIATLESS_OFFSET,
-}));
+const errorStyle = prepareNativeStyle<{ isFiatDisplayed: boolean }>(
+    (utils, { isFiatDisplayed }) => ({
+        marginHorizontal: isFiatDisplayed ? utils.spacings.medium : 0,
+    }),
+);
 
 export const AmountErrorMessage = ({
     outputIndex,
@@ -23,9 +21,9 @@ export const AmountErrorMessage = ({
     const amountField = useField({
         name: getOutputFieldName(outputIndex, 'amount'),
     });
-    const { isDirty, errorMessage } = amountField;
+    const { errorMessage } = amountField;
 
-    if (!isDirty || !errorMessage) return null;
+    if (!errorMessage) return null;
 
     return (
         <Hint variant="error" style={applyStyle(errorStyle, { isFiatDisplayed })}>

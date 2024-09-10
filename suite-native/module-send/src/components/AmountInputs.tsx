@@ -29,8 +29,8 @@ const SCALE_UNFOCUSED = 0.9;
 const TRANSLATE_Y_FOCUSED = 0;
 const TRANSLATE_Y_UNFOCUSED = 55;
 
-const DEFAULT_INPUTS_WRAPPER_HEIGHT = 116;
-const FIATLESS_INPUTS_WRAPPER_HEIGHT = 80;
+const DEFAULT_INPUTS_WRAPPER_HEIGHT = 108;
+const FIATLESS_INPUTS_WRAPPER_HEIGHT = 60;
 
 const inputsWrapperStyle = prepareNativeStyle<{ isFiatDisplayed: boolean }>(
     (_, { isFiatDisplayed }) => ({
@@ -105,7 +105,6 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
                     isDisabled={!isCryptoSelected}
                     networkSymbol={networkSymbol}
                 />
-
                 {isFiatDisplayed && (
                     <>
                         <SwitchAmountsButton onPress={handleSwitchInputs} />
@@ -119,8 +118,8 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
                         />
                     </>
                 )}
-                <AmountErrorMessage outputIndex={index} isFiatDisplayed={isFiatDisplayed} />
             </Box>
+            <AmountErrorMessage outputIndex={index} isFiatDisplayed={isFiatDisplayed} />
         </VStack>
     );
 };
