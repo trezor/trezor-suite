@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite';
 import { useElevation, variables } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction, ChainedTransactions } from '@suite-common/wallet-types';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { AccountType, Network } from '@suite-common/wallet-config';
 import { AmountDetails } from './AmountDetails';
 import { IODetails } from './IODetails/IODetails';
 import { ChainedTxs } from '../ChainedTxs';
@@ -50,7 +50,8 @@ export type TabID = 'amount' | 'io' | 'chained';
 
 interface AdvancedTxDetailsProps {
     defaultTab?: TabID;
-    network: NetworkCompatible;
+    network: Network;
+    accountType: AccountType;
     tx: WalletAccountTransaction;
     chainedTxs?: ChainedTransactions;
     explorerUrl: string;
@@ -60,6 +61,7 @@ interface AdvancedTxDetailsProps {
 export const AdvancedTxDetails = ({
     defaultTab,
     network,
+    accountType,
     tx,
     chainedTxs,
     explorerUrl,
@@ -74,7 +76,14 @@ export const AdvancedTxDetails = ({
     } else if (selectedTab === 'io' && network.networkType !== 'ripple') {
         content = <IODetails tx={tx} isPhishingTransaction={isPhishingTransaction} />;
     } else if (selectedTab === 'chained' && chainedTxs) {
-        content = <ChainedTxs txs={chainedTxs} explorerUrl={explorerUrl} network={network} />;
+        content = (
+            <ChainedTxs
+                txs={chainedTxs}
+                explorerUrl={explorerUrl}
+                network={network}
+                accountType={accountType}
+            />
+        );
     }
     const { elevation } = useElevation();
 
