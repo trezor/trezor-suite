@@ -17,19 +17,22 @@ import type {
 } from '../types';
 import { DeviceModelInternal } from '../types';
 
+// undefined releases should never happen for official firmware, only custom
 const releases = Object.values(DeviceModelInternal).reduce(
     (acc, key) => ({ ...acc, [key]: [] }),
-    {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease[]>,
+    {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease[] | undefined>,
 );
 
 export const parseFirmware = (json: any, deviceModel: DeviceModelInternal) => {
     Object.keys(json).forEach(key => {
         const release = json[key];
-        releases[deviceModel].push({
+        releases[deviceModel]?.push({
             ...release,
         });
     });
 };
+
+export const getReleases = (deviceModel: DeviceModelInternal) => releases[deviceModel] || [];
 
 const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => {
     // releases are already filtered, so they can be considered "safe".
@@ -191,7 +194,7 @@ const getSafeReleases = ({ features, releases }: GetInfoProps) => {
  * @param releases
  */
 export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | null => {
-    if (!Array.isArray(releases)) {
+    if (!Array.isArray(releases) || releases.length < 1) {
         // no available releases - should never happen for official firmware, only custom
         return null;
     }
@@ -255,7 +258,7 @@ export const getFirmwareStatus = (features: Features) => {
 
     const info = getInfo({
         features,
-        releases: releases[features?.internal_model],
+        releases: getReleases(features?.internal_model),
     });
 
     // should never happen for official firmware, see getInfo
@@ -271,7 +274,5 @@ export const getFirmwareStatus = (features: Features) => {
 export const getRelease = (features: Features) =>
     getInfo({
         features,
-        releases: releases[features?.internal_model],
+        releases: getReleases(features?.internal_model),
     });
-
-export const getReleases = (deviceModel: DeviceModelInternal) => releases[deviceModel];

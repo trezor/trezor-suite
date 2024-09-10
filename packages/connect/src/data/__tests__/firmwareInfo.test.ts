@@ -13,6 +13,9 @@ describe('data/firmwareInfo', () => {
             url: expect.any(String),
             url_bitcoinonly: expect.any(String),
         });
+
+        // custom model
+        expect(getReleases(2000 as any)).toEqual([]);
     });
 
     test('getFirmwareStatus', () => {
