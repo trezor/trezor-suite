@@ -2,12 +2,17 @@ import { getNetworkByCoingeckoNativeId, networks } from '@suite-common/wallet-co
 import { CoinInfo, CryptoId } from 'invity-api';
 import { useCallback } from 'react';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import addressValidator from '@trezor/address-validator';
 import {
     CoinmarketCryptoListProps,
     CoinmarketInfoProps,
     CoinmarketOptionsGroupProps,
 } from 'src/types/coinmarket/coinmarket';
 import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+
+const supportedAddressValidatorSymbols = new Set(
+    addressValidator.getCurrencies().map(c => c.symbol),
+);
 
 function toCryptoOption(cryptoId: CryptoId, coinInfo: CoinInfo): CoinmarketCryptoListProps {
     return {
@@ -23,6 +28,15 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
     const cryptoIdToPlatformName = useCallback(
         (cryptoId: CryptoId) => platforms[cryptoId]?.name,
         [platforms],
+    );
+
+    const cryptoIdToNativeCoinSymbol = useCallback(
+        (cryptoId: CryptoId) => {
+            const { networkId } = parseCryptoId(cryptoId);
+
+            return platforms[networkId]?.nativeCoinSymbol ?? coins[networkId]?.symbol;
+        },
+        [platforms, coins],
     );
 
     const cryptoIdToCoinSymbol = useCallback(
@@ -46,6 +60,11 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                 }
 
                 if (excludedCryptoIds?.has(cryptoId)) {
+                    return;
+                }
+
+                const nativeCoinSymbol = cryptoIdToNativeCoinSymbol(cryptoId);
+                if (!nativeCoinSymbol || !supportedAddressValidatorSymbols.has(nativeCoinSymbol)) {
                     return;
                 }
 
@@ -77,7 +96,7 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                 ...tokenGroups,
             ];
         },
-        [coins, cryptoIdToPlatformName],
+        [coins, cryptoIdToPlatformName, cryptoIdToNativeCoinSymbol],
     );
 
     const buildDefaultCryptoOption = useCallback(
@@ -101,6 +120,7 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
     return {
         cryptoIdToPlatformName,
         cryptoIdToCoinSymbol,
+        cryptoIdToNativeCoinSymbol,
         buildCryptoOptions,
         buildDefaultCryptoOption,
     };
