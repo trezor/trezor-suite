@@ -56,6 +56,12 @@ export const useOnDeviceReadyNavigation = () => {
             (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) ||
             (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isCoinEnablingInitFinished)
         ) {
+            if (navigation.canGoBack()) {
+                // NOTE: we don't want to go back to the home screen if Connect Popup is opened
+                navigation.goBack();
+
+                return;
+            }
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {

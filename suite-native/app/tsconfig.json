@@ -48,6 +48,7 @@
         },
         { "path": "../module-add-accounts" },
         { "path": "../module-authorize-device" },
+        { "path": "../module-connect-popup" },
         { "path": "../module-dev-utils" },
         { "path": "../module-home" },
         { "path": "../module-onboarding" },

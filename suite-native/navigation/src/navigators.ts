@@ -1,5 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { RequireAllOrNone } from 'type-fest';
+import { ParsedURL } from 'expo-linking';
 
 import {
     AccountKey,
@@ -171,4 +172,7 @@ export type RootStackParamList = {
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
     [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
     [RootStackRoutes.CoinEnablingInit]: undefined;
+    [RootStackRoutes.ConnectPopup]: {
+        parsedUrl: ParsedURL;
+    };
 };

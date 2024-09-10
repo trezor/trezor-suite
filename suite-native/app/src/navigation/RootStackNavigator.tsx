@@ -22,6 +22,7 @@ import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts'
 import { DeviceInfoModalScreen, useHandleDeviceConnection } from '@suite-native/device';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
+import { ConnectPopupScreen, useConnectPopup } from '@suite-native/module-connect-popup';
 
 import { AppTabNavigator } from './AppTabNavigator';
 import { useCoinEnablingInitialCheck } from '../hooks/useCoinEnablingInitialCheck';
@@ -31,6 +32,7 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 export const RootStackNavigator = () => {
     useHandleDeviceConnection();
     useCoinEnablingInitialCheck();
+    useConnectPopup();
 
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
 
@@ -96,6 +98,14 @@ export const RootStackNavigator = () => {
                 }}
             />
             <RootStack.Screen name={RootStackRoutes.SendStack} component={SendStackNavigator} />
+
+            <RootStack.Screen
+                name={RootStackRoutes.ConnectPopup}
+                component={ConnectPopupScreen}
+                options={{
+                    presentation: 'fullScreenModal',
+                }}
+            />
         </RootStack.Navigator>
     );
 };

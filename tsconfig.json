@@ -84,6 +84,9 @@
             "path": "suite-native/module-authorize-device"
         },
         {
+            "path": "suite-native/module-connect-popup"
+        },
+        {
             "path": "suite-native/module-dev-utils"
         },
         { "path": "suite-native/module-home" },
