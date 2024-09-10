@@ -19,7 +19,7 @@ describe.skip('T1B1 - Device settings', () => {
         cy.passThroughInitialRun();
 
         cy.getTestElement('@settings/device/pin-switch').click({ force: true });
-        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
 
         cy.enterPinOnBlindMatrix('1');
@@ -37,7 +37,7 @@ describe.skip('T1B1 - Device settings', () => {
         cy.passThroughInitialRun();
 
         cy.getTestElement('@settings/device/pin-switch').click({ force: true });
-        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
         cy.getTestElement('@pin/input/1').click();
 
@@ -49,7 +49,7 @@ describe.skip('T1B1 - Device settings', () => {
         cy.getTestElement('@pin/submit-button').click();
         cy.getTestElement('@pin-mismatch').matchImageSnapshot('pin-mismatch');
         cy.getTestElement('@pin-mismatch/try-again-button').click();
-        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
     });
 
@@ -72,7 +72,7 @@ describe.skip('T1B1 - Device settings', () => {
         cy.getTestElement('@settings/device/homescreen').scrollIntoView();
         cy.getTestElement('@settings/device/homescreen-gallery').click();
         cy.get('#doge').click();
-        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.getTestElement('@prompts/confirm-on-device');
         cy.wait(2000);
         cy.task('pressYes');
         cy.wait(2000);

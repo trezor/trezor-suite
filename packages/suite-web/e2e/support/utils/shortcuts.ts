@@ -73,7 +73,7 @@ export const passThroughInitMetadata = (provider: 'dropbox' | 'google') => {
 
 export const passThroughSetPin = () => {
     cy.getTestElement('@onboarding/set-pin-button').click();
-    cy.getTestElement('@suite/modal/confirm-action-on-device');
+    cy.getTestElement('@prompts/confirm-on-device');
     cy.task('pressYes');
     cy.task('inputEmu', '1');
     cy.task('inputEmu', '1');

@@ -23,7 +23,7 @@ describe('Recovery - dry run', () => {
         cy.getTestElement('@recovery/user-understands-checkbox').click();
         cy.getTestElement('@recovery/start-button').click();
         cy.task('pressYes');
-        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.getTestElement('@prompts/confirm-on-device');
 
         /* reinitialize process on device reconnect */
         cy.log(
@@ -34,7 +34,7 @@ describe('Recovery - dry run', () => {
         cy.getTestElement('@recovery/close-button', { timeout: 30000 }).click();
         cy.getTestElement('@connect-device-prompt');
         cy.task('startEmu', { wipe: false });
-        cy.getTestElement('@suite/modal/confirm-action-on-device', { timeout: 20000 });
+        cy.getTestElement('@prompts/confirm-on-device', { timeout: 20000 });
         cy.task('pressYes');
         cy.log('At this moment, communication with device should be re-established');
 
@@ -47,7 +47,7 @@ describe('Recovery - dry run', () => {
         cy.safeReload().task('stopBridge').task('startBridge');
         cy.wait(2000);
 
-        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.getTestElement('@prompts/confirm-on-device');
         cy.task('pressYes');
         cy.task('selectNumOfWordsEmu', 12);
         cy.task('pressYes');
