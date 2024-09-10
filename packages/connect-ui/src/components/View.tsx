@@ -2,18 +2,9 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { H3, Paragraph, variables } from '@trezor/components';
+import { H3, Paragraph } from '@trezor/components';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Title = styled(H3)`
-    font-size: 19px;
-    color: #333;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-align: center;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledP = styled(Paragraph)`
+const Description = styled.div`
     margin: 0 20%;
     color: #757575;
 `;
@@ -54,8 +45,12 @@ type ViewPropsLoose = ViewPropsBase & {
 export const View = (props: ViewPropsStrict | ViewPropsLoose) => (
     <Wrapper>
         <div>
-            {'title' in props && <Title>{props.title}</Title>}
-            {'description' in props && <StyledP>{props.description}</StyledP>}
+            {'title' in props && <H3 align="center">{props.title}</H3>}
+            {'description' in props && (
+                <Description>
+                    <Paragraph>{props.description}</Paragraph>
+                </Description>
+            )}
         </div>
         <Body>{'children' in props ? props.children : <> {props.image}</>}</Body>
 
