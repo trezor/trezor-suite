@@ -4,36 +4,36 @@ import CoinmarketOffersItem from './CoinmarketOffersItem';
 import {
     isCoinmarketExchangeOffers,
     useCoinmarketOffersContext,
-    useFilteredQuotesByRateTypeAndExchangeType,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { CoinmarketOffersExchange } from './CoinmarketOffersExchange';
 
 const CoinmarketOffers = () => {
     const context = useCoinmarketOffersContext();
-    const { type } = context;
-    const quotes = useFilteredQuotesByRateTypeAndExchangeType(context);
+    const { type, quotes } = context;
     const hasLoadingFailed = !quotes;
     const noOffers = hasLoadingFailed || quotes.length === 0;
     const bestRatedQuote = getBestRatedQuote(quotes, type);
+
+    const offers = isCoinmarketExchangeOffers(context) ? (
+        <CoinmarketOffersExchange />
+    ) : (
+        quotes?.map(quote => (
+            <CoinmarketOffersItem
+                key={quote?.orderId}
+                quote={quote}
+                isBestRate={bestRatedQuote?.orderId === quote?.orderId}
+            />
+        ))
+    );
 
     return (
         <>
             <CoinmarketHeader
                 title="TR_COINMARKET_SHOW_OFFERS"
                 titleTimer="TR_COINMARKET_OFFERS_REFRESH"
-                showTimerNextToTitle={isCoinmarketExchangeOffers(context)}
             />
-            {noOffers ? (
-                <CoinmarketOffersEmpty />
-            ) : (
-                quotes.map(quote => (
-                    <CoinmarketOffersItem
-                        key={quote?.orderId}
-                        quote={quote}
-                        isBestRate={bestRatedQuote?.orderId === quote?.orderId}
-                    />
-                ))
-            )}
+            {noOffers ? <CoinmarketOffersEmpty /> : offers}
         </>
     );
 };

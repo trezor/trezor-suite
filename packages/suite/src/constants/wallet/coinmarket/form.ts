@@ -28,3 +28,13 @@ export const FORM_RATE_FLOATING = 'floating';
 export const FORM_EXCHANGE_TYPE = 'exchangeType';
 export const FORM_EXCHANGE_CEX = 'CEX';
 export const FORM_EXCHANGE_DEX = 'DEX';
+
+export const EXCHANGE_COMPARATOR_RATE_FILTER = 'exchangeComparatorRateFilter';
+export const EXCHANGE_COMPARATOR_RATE_FILTER_ALL = 'all';
+export const EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX = 'fixedCex';
+export const EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX = 'floatingCex';
+export const EXCHANGE_COMPARATOR_RATE_FILTER_DEX = 'dex';
+
+export const EXCHANGE_COMPARATOR_KYC_FILTER = 'exchangeComparatorKycFilter';
+export const EXCHANGE_COMPARATOR_KYC_FILTER_ALL = 'all';
+export const EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC = 'noKyc';

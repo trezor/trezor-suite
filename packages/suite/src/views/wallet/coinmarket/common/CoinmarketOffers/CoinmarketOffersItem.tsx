@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import { Badge, Button, Card, Row } from '@trezor/components';
+import styled, { useTheme } from 'styled-components';
+import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import CoinmarketUtilsPrice from '../CoinmarketUtils/CoinmarketUtilsPrice';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
@@ -36,7 +36,7 @@ const OfferColumn = styled.div`
     flex: none;
 `;
 
-const OfferColumn1 = styled(OfferColumn)`
+const ExchangeNameOfferColumn = styled(OfferColumn)`
     width: 27.3%;
     justify-content: center;
 
@@ -49,7 +49,7 @@ const OfferColumn1 = styled(OfferColumn)`
     }
 `;
 
-const OfferColumn2 = styled(OfferColumn)`
+const AmountOfferColumn = styled(OfferColumn)`
     width: 100%;
     flex: auto;
     justify-content: center;
@@ -65,7 +65,7 @@ const OfferColumn2 = styled(OfferColumn)`
     }
 `;
 
-const OfferColumn3 = styled(OfferColumn)`
+const ActionsOfferColumn = styled(OfferColumn)`
     justify-content: center;
 
     ${SCREEN_QUERY.BELOW_DESKTOP} {
@@ -79,28 +79,7 @@ const OfferProvider = styled(CoinmarketUtilsProvider)<{ $isMargined?: boolean }>
     ${({ $isMargined }) => ($isMargined ? 'margin-top: auto;' : '')}
 `;
 
-const OfferBadgeWrap = styled.div`
-    display: flex;
-    align-items: center;
-    width: 100%;
-    flex-wrap: wrap;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const OfferBadge = styled(Badge)`
-    margin-right: ${spacingsPx.xs};
-    margin-bottom: ${spacingsPx.xs};
-`;
-
-const OfferBadgeInfo = styled.div`
-    ${typography.label};
-    margin-bottom: ${spacingsPx.xs};
-    padding: ${spacingsPx.xxxs} 0;
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
+const ButtonWrapper = styled.div`
     width: 180px;
 
     ${SCREEN_QUERY.BELOW_LAPTOP} {
@@ -114,6 +93,7 @@ export interface CoinmarketOffersItemProps {
 }
 
 const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
+    const theme = useTheme();
     const context = useCoinmarketOffersContext();
     const { callInProgress } = context;
     const providers = getProvidersInfoProps(context);
@@ -130,20 +110,24 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
         <CoinmarketTestWrapper data-testid="@coinmarket/offers/quote">
             <Card margin={{ top: spacings.md }} minHeight={100}>
                 <Offer>
-                    <OfferColumn1>
+                    <ExchangeNameOfferColumn>
                         {tagsExist && (
-                            <OfferBadgeWrap>
-                                {tag && <OfferBadge variant="tertiary">{tag}</OfferBadge>}
-                                {infoNote && <OfferBadgeInfo>{infoNote}</OfferBadgeInfo>}
-                            </OfferBadgeWrap>
+                            <Row alignItems="center" flexWrap="wrap" gap={spacings.xs}>
+                                {tag && <Badge variant="tertiary">{tag}</Badge>}
+                                {infoNote && (
+                                    <Text typographyStyle="label" color={theme.textSubdued}>
+                                        {infoNote}
+                                    </Text>
+                                )}
+                            </Row>
                         )}
                         <OfferProvider
                             exchange={exchange}
                             providers={providers}
                             $isMargined={tagsExist}
                         />
-                    </OfferColumn1>
-                    <OfferColumn2>
+                    </ExchangeNameOfferColumn>
+                    <AmountOfferColumn>
                         <Row alignItems="flex-end">
                             <CoinmarketUtilsPrice {...cryptoAmountProps} />
                             {isCoinmarketExchangeOffers(context) && (
@@ -154,32 +138,35 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                                 />
                             )}
                         </Row>
-                    </OfferColumn2>
-                    <OfferColumn3>
-                        {quote.status === 'LOGIN_REQUEST' ? (
-                            <StyledButton onClick={() => selectQuote(quote)}>
-                                <Translation id="TR_LOGIN_PROCEED" />
-                            </StyledButton>
-                        ) : (
-                            <StyledButton
-                                isLoading={callInProgress}
-                                isDisabled={!!quote.error || callInProgress}
-                                onClick={() => selectQuote(quote)}
-                                data-testid="@coinmarket/offers/get-this-deal-button"
-                            >
-                                <Translation
-                                    id={
-                                        isCoinmarketSellOffers(context) &&
-                                        context.needToRegisterOrVerifyBankAccount(
-                                            quote as SellFiatTrade,
-                                        )
-                                            ? 'TR_SELL_REGISTER'
-                                            : 'TR_COINMARKET_OFFERS_SELECT'
-                                    }
-                                />
-                            </StyledButton>
-                        )}
-                    </OfferColumn3>
+                    </AmountOfferColumn>
+                    <ActionsOfferColumn>
+                        <ButtonWrapper>
+                            {quote.status === 'LOGIN_REQUEST' ? (
+                                <Button isFullWidth onClick={() => selectQuote(quote)}>
+                                    <Translation id="TR_LOGIN_PROCEED" />
+                                </Button>
+                            ) : (
+                                <Button
+                                    isFullWidth
+                                    isLoading={callInProgress}
+                                    isDisabled={!!quote.error || callInProgress}
+                                    onClick={() => selectQuote(quote)}
+                                    data-testid="@coinmarket/offers/get-this-deal-button"
+                                >
+                                    <Translation
+                                        id={
+                                            isCoinmarketSellOffers(context) &&
+                                            context.needToRegisterOrVerifyBankAccount(
+                                                quote as SellFiatTrade,
+                                            )
+                                                ? 'TR_SELL_REGISTER'
+                                                : 'TR_COINMARKET_OFFERS_SELECT'
+                                        }
+                                    />
+                                </Button>
+                            )}
+                        </ButtonWrapper>
+                    </ActionsOfferColumn>
                 </Offer>
             </Card>
         </CoinmarketTestWrapper>

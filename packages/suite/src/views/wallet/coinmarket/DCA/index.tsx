@@ -93,7 +93,9 @@ const FeatureItem = ({ icon, featureNumber }: FeatureItemProps) => (
                 <Translation id={`TR_COINMARKET_DCA_FEATURE_${featureNumber}_SUBHEADING`} />
             </Text>
             <Paragraph>
-                <Translation id={`TR_COINMARKET_DCA_FEATURE_${featureNumber}_DESCRIPTION`} />
+                <Text color={palette.lightWhiteAlpha1000}>
+                    <Translation id={`TR_COINMARKET_DCA_FEATURE_${featureNumber}_DESCRIPTION`} />
+                </Text>
             </Paragraph>
         </div>
     </Row>

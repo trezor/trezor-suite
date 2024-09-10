@@ -6,9 +6,7 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
-    isCoinmarketBuyOffers,
     isCoinmarketExchangeOffers,
-    isCoinmarketSellOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
@@ -22,24 +20,7 @@ const Header = styled.div`
 `;
 
 const HeaderTop = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    ${SCREEN_QUERY.BELOW_TABLET} {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const HeaderH2 = styled(H2)`
-    flex: auto;
-    width: 100%;
-
-    ${SCREEN_QUERY.BELOW_TABLET} {
-        padding-bottom: ${spacingsPx.xs};
-    }
+    margin-bottom: ${spacingsPx.xl};
 `;
 
 const HeaderBottom = styled.div`
@@ -51,7 +32,6 @@ const HeaderBottom = styled.div`
     ${SCREEN_QUERY.BELOW_TABLET} {
         flex-direction: column;
         align-items: flex-start;
-        margin-top: 0;
     }
 `;
 
@@ -75,43 +55,33 @@ const CoinmarketHeaderSummaryWrap = styled(CoinmarketHeaderSummary)`
 interface CoinmarketHeaderProps {
     title: ExtendedMessageDescriptor['id'];
     titleTimer: ExtendedMessageDescriptor['id'];
-    showTimerNextToTitle?: boolean;
 }
 
-const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: CoinmarketHeaderProps) => {
+const CoinmarketHeader = ({ title, titleTimer }: CoinmarketHeaderProps) => {
     const context = useCoinmarketOffersContext();
     const { timer, quotes } = context;
     const headerProps = getCryptoQuoteAmountProps(quotes?.[0], context);
 
-    const Timer = () => (
-        <CoinmarketRefreshTime
-            isLoading={timer.isLoading}
-            refetchInterval={InvityAPIReloadQuotesAfterSeconds}
-            seconds={timer.timeSpend.seconds}
-            label={<Translation id={titleTimer} />}
-        />
-    );
-
     return (
         <Header>
             <HeaderTop>
-                <HeaderH2>
+                <H2>
                     <Translation id={title} />
-                </HeaderH2>
-                {showTimerNextToTitle && <Timer />}
+                </H2>
             </HeaderTop>
+            {headerProps && isCoinmarketExchangeOffers(context) && (
+                <CoinmarketHeaderSummaryWrap {...headerProps} />
+            )}
             <HeaderBottom>
-                {(isCoinmarketBuyOffers(context) || isCoinmarketSellOffers(context)) && (
-                    <CoinmarketHeaderFilter />
-                )}
-                {headerProps && isCoinmarketExchangeOffers(context) && (
-                    <CoinmarketHeaderSummaryWrap {...headerProps} />
-                )}
-                {!showTimerNextToTitle && (
-                    <HeaderCoinmarketRefreshTime>
-                        <Timer />
-                    </HeaderCoinmarketRefreshTime>
-                )}
+                <CoinmarketHeaderFilter />
+                <HeaderCoinmarketRefreshTime>
+                    <CoinmarketRefreshTime
+                        isLoading={timer.isLoading}
+                        refetchInterval={InvityAPIReloadQuotesAfterSeconds}
+                        seconds={timer.timeSpend.seconds}
+                        label={<Translation id={titleTimer} />}
+                    />
+                </HeaderCoinmarketRefreshTime>
             </HeaderBottom>
         </Header>
     );

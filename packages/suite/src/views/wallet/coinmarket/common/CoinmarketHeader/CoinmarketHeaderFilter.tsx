@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import CoinmarketFormInputPaymentMethod from '../CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
 import CoinmarketFormInputCountry from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
-import { CoinmarketTradeBuySellType } from 'src/types/coinmarket/coinmarket';
 import {
     isCoinmarketBuyOffers,
+    isCoinmarketExchangeOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import {
@@ -20,11 +20,8 @@ import {
     FORM_SEND_CRYPTO_CURRENCY_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
 import { CoinmarketFormInputFiatCrypto } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiatCrypto';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-`;
+import { CoinmarketOffersExchangeFiltersPanel } from './CoinmarketOffersExchangeFiltersPanel';
+import { Row } from '@trezor/components';
 
 const InputWrapper = styled.div`
     width: 254px;
@@ -33,10 +30,18 @@ const InputWrapper = styled.div`
 `;
 
 const CoinmarketHeaderFilter = () => {
-    const context = useCoinmarketOffersContext<CoinmarketTradeBuySellType>();
+    const context = useCoinmarketOffersContext();
+
+    if (isCoinmarketExchangeOffers(context)) {
+        return (
+            <Row data-testid="@coinmarket/filter" flexWrap="wrap">
+                <CoinmarketOffersExchangeFiltersPanel />
+            </Row>
+        );
+    }
 
     return (
-        <Wrapper data-testid="@coinmarket/filter">
+        <Row data-testid="@coinmarket/filter" flexWrap="wrap">
             {isCoinmarketBuyOffers(context) ? (
                 <InputWrapper>
                     <CoinmarketFormInputFiatCrypto<CoinmarketBuyFormProps>
@@ -64,7 +69,7 @@ const CoinmarketHeaderFilter = () => {
             <InputWrapper>
                 <CoinmarketFormInputCountry />
             </InputWrapper>
-        </Wrapper>
+        </Row>
     );
 };
 
