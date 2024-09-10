@@ -147,36 +147,38 @@ const NewModalBase = ({
                     onClick={e => e.stopPropagation()}
                     data-testid={dataTest}
                 >
-                    <Header>
-                        {onBackClick && (
-                            <IconButton
-                                variant="tertiary"
-                                icon="caretLeft"
-                                data-testid="@modal/back-button"
-                                onClick={onBackClick}
-                                size="small"
-                            />
-                        )}
-
-                        <HeadingContainer>
-                            {heading && <Heading>{heading}</Heading>}
-                            {description && (
-                                <Text variant="tertiary" typographyStyle="hint">
-                                    {description}
-                                </Text>
+                    {(onBackClick || onCancel || heading || description) && (
+                        <Header>
+                            {onBackClick && (
+                                <IconButton
+                                    variant="tertiary"
+                                    icon="caretLeft"
+                                    data-testid="@modal/back-button"
+                                    onClick={onBackClick}
+                                    size="small"
+                                />
                             )}
-                        </HeadingContainer>
 
-                        {onCancel && (
-                            <IconButton
-                                variant="tertiary"
-                                icon="close"
-                                data-testid="@modal/close-button"
-                                onClick={onCancel}
-                                size="small"
-                            />
-                        )}
-                    </Header>
+                            <HeadingContainer>
+                                {heading && <Heading>{heading}</Heading>}
+                                {description && (
+                                    <Text variant="tertiary" typographyStyle="hint">
+                                        {description}
+                                    </Text>
+                                )}
+                            </HeadingContainer>
+
+                            {onCancel && (
+                                <IconButton
+                                    variant="tertiary"
+                                    icon="close"
+                                    data-testid="@modal/close-button"
+                                    onClick={onCancel}
+                                    size="small"
+                                />
+                            )}
+                        </Header>
+                    )}
                     <ShadowContainer>
                         <ShadowTop backgroundColor={modalBackgroundColor} />
                         <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
