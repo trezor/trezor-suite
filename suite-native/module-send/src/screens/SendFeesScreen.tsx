@@ -5,8 +5,9 @@ import { VStack } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 
 import { SendFeesForm } from '../components/SendFeesForm';
-import { SendFormScreenWrapper } from '../components/SendFormScreenWrapper';
+import { SendScreen } from '../components/SendScreen';
 import { RecipientsSummary } from '../components/RecipientsSummary';
+import { AccountBalanceScreenHeader } from '../components/SendScreenSubHeader';
 
 export const SendFeesScreen = ({
     route: { params },
@@ -20,11 +21,11 @@ export const SendFeesScreen = ({
     if (!account) return;
 
     return (
-        <SendFormScreenWrapper accountKey={accountKey}>
+        <SendScreen screenHeader={<AccountBalanceScreenHeader accountKey={accountKey} />}>
             <VStack spacing="extraLarge" flex={1}>
                 <RecipientsSummary accountKey={accountKey} />
                 <SendFeesForm accountKey={accountKey} feeLevels={feeLevels} />
             </VStack>
-        </SendFormScreenWrapper>
+        </SendScreen>
     );
 };

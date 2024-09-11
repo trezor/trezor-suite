@@ -1,13 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
-import {
-    Screen,
-    ScreenSubHeader,
-    SendStackParamList,
-    SendStackRoutes,
-    StackProps,
-} from '@suite-native/navigation';
+import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 import { Box, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
@@ -17,7 +11,6 @@ import {
     cancelSignSendFormTransactionThunk,
 } from '@suite-common/wallet-core';
 import { ConfirmOnTrezorImage } from '@suite-native/device';
-import { useNativeStyles } from '@trezor/styles';
 import { Text } from '@suite-native/atoms';
 
 import {
@@ -25,13 +18,14 @@ import {
     selectIsOutputsReviewInProgress,
 } from '../selectors';
 import { AddressReviewStepList } from '../components/AddressReviewStepList';
+import { SendScreen } from '../components/SendScreen';
+import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
 
 export const SendAddressReviewScreen = ({
     route,
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>) => {
     const { accountKey } = route.params;
-    const { utils } = useNativeStyles();
     const dispatch = useDispatch();
     const { translate } = useTranslate();
 
@@ -66,13 +60,17 @@ export const SendAddressReviewScreen = ({
     });
 
     return (
-        <Screen
-            customHorizontalPadding={utils.spacings.medium}
-            subheader={<ScreenSubHeader content={translate('moduleSend.review.outputs.title')} />}
+        <SendScreen
+            screenHeader={
+                <SendScreenSubHeader
+                    content={translate('moduleSend.review.outputs.title')}
+                    closeActionType={isReviewInProgress ? 'close' : 'back'}
+                />
+            }
             // TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965
             footer={isReviewInProgress && <ConfirmOnTrezorImage />}
         >
-            <Box flex={1} justifyContent="space-between">
+            <Box flex={1} justifyContent="space-between" marginTop="medium">
                 <VStack justifyContent="center" alignItems="center" spacing="large">
                     <Text variant="titleSmall">
                         <Translation id="moduleSend.review.address.title" />
@@ -80,6 +78,6 @@ export const SendAddressReviewScreen = ({
                     <AddressReviewStepList />
                 </VStack>
             </Box>
-        </Screen>
+        </SendScreen>
     );
 };

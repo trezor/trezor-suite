@@ -8,30 +8,29 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { GoBackIcon } from './GoBackIcon';
 import { CloseActionType } from '../navigators';
 
-type ScreenSubHeaderProps = RequireOneOrNone<
+export type ScreenSubHeaderProps = RequireOneOrNone<
     {
         content?: ReactNode;
         rightIcon?: ReactNode;
         leftIcon?: ReactNode;
         closeActionType?: CloseActionType;
+        customHorizontalPadding?: number;
     },
     'leftIcon' | 'closeActionType'
 >;
 
 const ICON_SIZE = 48;
 
-const headerStyle = prepareNativeStyle(utils => {
-    const padding = utils.spacings.small;
-
-    return {
+const headerStyle = prepareNativeStyle<{ customHorizontalPadding?: number }>(
+    (utils, { customHorizontalPadding }) => ({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding,
+        padding: customHorizontalPadding || utils.spacings.small,
         backgroundColor: utils.colors.backgroundSurfaceElevation0,
-        height: ICON_SIZE + padding * 2,
-    };
-});
+        height: ICON_SIZE + utils.spacings.medium,
+    }),
+);
 
 const iconWrapperStyle = prepareNativeStyle(() => ({
     width: ICON_SIZE,
@@ -43,11 +42,12 @@ export const ScreenSubHeader = ({
     rightIcon,
     leftIcon,
     closeActionType,
+    customHorizontalPadding,
 }: ScreenSubHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Box style={applyStyle(headerStyle)}>
+        <Box style={applyStyle(headerStyle, { customHorizontalPadding })}>
             <Box style={applyStyle(iconWrapperStyle)}>
                 {leftIcon || <GoBackIcon closeActionType={closeActionType} />}
             </Box>
