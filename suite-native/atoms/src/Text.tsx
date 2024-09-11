@@ -8,6 +8,7 @@ import {
 
 // @ts-expect-error This is not public RN API but it will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
 import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
+import { D } from '@mobily/ts-belt';
 
 import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
 import { Color, TypographyStyle } from '@trezor/theme';
@@ -42,6 +43,7 @@ type TextStyleProps = {
     variant: TypographyStyle;
     color: Color;
     textAlign: TextStyle['textAlign'];
+    fontScale: number;
 };
 
 export const TITLE_MAX_FONT_MULTIPLIER = 1.5;
@@ -50,7 +52,7 @@ export const TEXT_MAX_FONT_MULTIPLIER = 2;
 const getAccessibilityFontScale = () => {
     const fontScale = PixelRatio.getFontScale();
 
-    return fontScale < TEXT_MAX_FONT_MULTIPLIER ? fontScale : TEXT_MAX_FONT_MULTIPLIER;
+    return Math.min(fontScale, TEXT_MAX_FONT_MULTIPLIER);
 };
 
 /**
@@ -73,11 +75,23 @@ const variantToMaxFontSizeMultiplier = {
     label: TEXT_MAX_FONT_MULTIPLIER,
 } as const satisfies Record<TypographyStyle, number>;
 
-const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, textAlign }) => ({
-    ...utils.typography[variant],
-    color: utils.colors[color],
-    textAlign,
-}));
+const variantToFontScale = D.map(variantToMaxFontSizeMultiplier, maxFontSizeMultiplier =>
+    Math.min(ACCESSIBILITY_FONTSIZE_MULTIPLIER, maxFontSizeMultiplier),
+);
+
+const textStyle = prepareNativeStyle<TextStyleProps>(
+    (utils, { variant, color, textAlign, fontScale }) => {
+        const baseTypography = utils.typography[variant];
+
+        return {
+            ...baseTypography,
+            color: utils.colors[color],
+            textAlign,
+            fontSize: baseTypography.fontSize * fontScale,
+            lineHeight: baseTypography.lineHeight * fontScale,
+        };
+    },
+);
 
 export const Text = ({
     variant = 'body',
@@ -88,12 +102,14 @@ export const Text = ({
     ...otherProps
 }: TextProps) => {
     const { applyStyle } = useNativeStyles();
-    const maxFontSizeMultiplier = variantToMaxFontSizeMultiplier[variant];
+    const fontScale = variantToFontScale[variant];
 
     return (
         <DefaultTextComponent
-            style={[applyStyle(textStyle, { variant, color, textAlign }), style]}
-            maxFontSizeMultiplier={maxFontSizeMultiplier}
+            style={[applyStyle(textStyle, { variant, color, textAlign, fontScale }), style]}
+            // Manually handle font scaling due to a bug on some Android devices.
+            // Setting maxFontSizeMultiplier, lineHeight, and letterSpacing together can cause extra line breaks.
+            allowFontScaling={false}
             {...otherProps}
         >
             {children}
