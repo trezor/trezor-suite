@@ -19,7 +19,7 @@ import { AssetFiatBalance } from '@suite-common/assets';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { AssetTable, AssetTableRowType } from './components/AssetTable';
-import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, Network, NetworkSymbol } from '@suite-common/wallet-config';
 
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
@@ -90,11 +90,11 @@ export const AssetsView = () => {
         assets[a.symbol].push(a);
     });
 
-    const networks = Object.keys(assets);
+    const assetNetworkSymbols = Object.keys(assets) as NetworkSymbol[];
 
-    const assetsData: AssetTableRowType[] = networks
+    const assetsData: AssetTableRowType[] = assetNetworkSymbols
         .map(symbol => {
-            const network = networksCompatibility.find(n => n.symbol === symbol && !n.accountType);
+            const network: Network = networks[symbol];
             if (!network) {
                 console.error('unknown network');
 
@@ -115,7 +115,8 @@ export const AssetsView = () => {
     const assetsFiatBalances = useAssetsFiatBalances(assetsData, assets);
     const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
-    const isError = discoveryStatus && discoveryStatus.status === 'exception' && !networks.length;
+    const isError =
+        discoveryStatus && discoveryStatus.status === 'exception' && !assetNetworkSymbols.length;
 
     const goToCoinsSettings = () => dispatch(goto('settings-coins'));
     const setTable = () => dispatch(setFlag('dashboardAssetsGridMode', false));

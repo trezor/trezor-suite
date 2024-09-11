@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { Network } from '@suite-common/wallet-config';
 import { selectVisibleNonEmptyDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { Icon, SkeletonRectangle } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -25,12 +25,12 @@ const WalletNumber = styled.div`
 `;
 
 interface AssetCoinNameProps {
-    network: NetworkCompatible;
+    network: Network;
 }
 
 export const AssetCoinName = ({ network }: AssetCoinNameProps) => {
     const { symbol, name } = network;
-    const selectedAccounts = useSelector((state: any) =>
+    const selectedAccounts = useSelector(state =>
         selectVisibleNonEmptyDeviceAccountsByNetworkSymbol(state, symbol),
     );
 
