@@ -1,8 +1,9 @@
-import { css, useTheme } from 'styled-components';
+import { DefaultTheme, css, useTheme } from 'styled-components';
 
-import { Colors, spacings, spacingsPx } from '@trezor/theme';
+import { Color, Colors, Elevation, spacings, spacingsPx } from '@trezor/theme';
 import type { UIHorizontalAlignment, UISize, UIVariant } from '../../config/types';
 import { hexToRgba } from '@suite-common/suite-utils';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 const SUBTLE_ALPHA = 0.12;
 const SUBTLE_ALPHA_HOVER = 0.2;
@@ -59,6 +60,36 @@ export const getIconColor = ({
     }
 };
 
+export type ButtonState = 'normal' | 'hover';
+
+export const mapElevationToBackgroundToken = ({ $elevation }: { $elevation: Elevation }): Color =>
+    `backgroundSurfaceElevation${$elevation === -1 ? 'Negative' : $elevation}`;
+
+const mapElevationToButtonBackground = ({
+    elevation,
+    theme,
+    state,
+}: {
+    elevation: Elevation;
+    theme: DefaultTheme;
+    state: ButtonState;
+}) => {
+    const capitalizedState = capitalizeFirstLetter(state);
+
+    const map: Record<Elevation, Color> = {
+        '-1': `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation3`, // For example left menu is negative elevation
+
+        // Button lies always on elevation so for example Button that lies has elevation 0, lies on elevation -1.
+        // This is why the values here a shifted by 1.
+        0: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevationNegative`,
+        1: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation0`,
+        2: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation1`,
+        3: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation2`,
+    };
+
+    return theme[map[elevation]];
+};
+
 export const getIconSize = (size: ButtonSize) => {
     switch (size) {
         case 'large':
@@ -78,6 +109,7 @@ export const getIconSize = (size: ButtonSize) => {
 export const useVariantStyle = (
     variant: ButtonVariant,
     isSubtle: boolean,
+    elevation: Elevation,
 ): ReturnType<typeof css> => {
     const theme = useTheme();
 
@@ -88,8 +120,16 @@ export const useVariantStyle = (
             text: theme.textOnPrimary,
         },
         tertiary: {
-            background: theme.backgroundTertiaryDefaultOnElevation0,
-            backgroundHover: theme.backgroundTertiaryPressedOnElevation0,
+            background: mapElevationToButtonBackground({
+                elevation,
+                theme,
+                state: 'normal',
+            }),
+            backgroundHover: mapElevationToButtonBackground({
+                elevation,
+                theme,
+                state: 'hover',
+            }),
             text: theme.textOnTertiary,
         },
         info: {

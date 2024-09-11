@@ -6,6 +6,7 @@ import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonS
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT } from '../../Tooltip/TooltipDelay';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { Icon, IconName } from '../../Icon/Icon';
+import { useElevation } from '../../ElevationContext/ElevationContext';
 
 const IconButtonContainer = styled(ButtonContainer)`
     position: relative;
@@ -62,6 +63,8 @@ export const IconButton = ({
         e.stopPropagation();
     };
 
+    const { elevation } = useElevation();
+
     return (
         <Tooltip
             content={label}
@@ -75,6 +78,7 @@ export const IconButton = ({
                 disabled={isDisabled || isLoading}
                 onClick={handleClick}
                 $isSubtle={isSubtle}
+                $elevation={elevation}
                 {...rest}
             >
                 {!isLoading && icon && IconComponent}

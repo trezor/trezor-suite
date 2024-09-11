@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import { borders, Elevation, spacingsPx, typography } from '@trezor/theme';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,
@@ -20,6 +20,7 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { Icon, IconName } from '../../Icon/Icon';
+import { useElevation } from '../../ElevationContext/ElevationContext';
 
 export const allowedButtonFrameProps = [
     'margin',
@@ -29,6 +30,7 @@ export const allowedButtonFrameProps = [
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
 type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
+    $elevation: Elevation;
     $variant: ButtonVariant;
     $size: ButtonSize;
     $iconAlignment?: IconAlignment;
@@ -56,7 +58,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     border: 1px solid transparent;
 
     ${getFocusShadowStyle()}
-    ${({ $variant, $isSubtle }) => useVariantStyle($variant, $isSubtle)}
+    ${({ $variant, $isSubtle, $elevation }) => useVariantStyle($variant, $isSubtle, $elevation)}
 
     &:disabled {
         background: ${({ theme }) => theme.backgroundNeutralDisabled};
@@ -157,6 +159,8 @@ export const Button = ({
 
     const isLink = href !== undefined;
 
+    const { elevation } = useElevation();
+
     return (
         <ButtonContainer
             as={isLink ? 'a' : 'button'}
@@ -170,6 +174,7 @@ export const Button = ({
             $isSubtle={isSubtle}
             type={type}
             $hasIcon={!!icon || isLoading}
+            $elevation={elevation}
             {...rest}
             onClick={isDisabled ? undefined : rest?.onClick}
             {...frameProps}
