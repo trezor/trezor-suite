@@ -75,6 +75,12 @@ export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
 export const getNetworkOptional = (symbol?: string) =>
     symbol && isNetworkSymbol(symbol) ? getNetwork(symbol) : undefined;
 
+export const isAccountOfNetwork = (
+    network: Network,
+    accountType: string,
+): accountType is AccountType =>
+    network.accountTypes.hasOwnProperty(accountType) || accountType === 'normal';
+
 export const getNetworkByCoingeckoId = (coingeckoId: string) =>
     networksCollection.find(n => n.coingeckoId === coingeckoId);
 

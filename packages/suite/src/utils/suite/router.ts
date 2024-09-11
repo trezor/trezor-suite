@@ -1,5 +1,5 @@
 import { Route } from '@suite-common/suite-types';
-import { networksCompatibility } from '@suite-common/wallet-config';
+import { isAccountOfNetwork, getNetworkOptional } from '@suite-common/wallet-config';
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
 import routes, { RouterAppWithParams } from 'src/constants/suite/routes';
@@ -49,20 +49,22 @@ export const getApp = (url: string) => {
 const validateWalletParams = (url: string): CommonWalletParams => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
-    const [symbol, index, type] = hash.split('/').filter(p => p.length > 0);
-    if (!symbol || !index) return;
-    const network = networksCompatibility.find(
-        n => n.symbol === symbol && (n.accountType || 'normal') === (type || 'normal'),
-    );
+    const [symbol, index, rawAccountType] = hash.split('/').filter(p => p.length > 0);
+    if (!index) return;
 
+    const network = getNetworkOptional(symbol);
     if (!network) return;
+
+    const accountType = rawAccountType || 'normal';
+    if (!isAccountOfNetwork(network, accountType)) return;
+
     const accountIndex = parseInt(index, 10);
     if (Number.isNaN(accountIndex)) return;
 
     return {
         symbol: network.symbol,
         accountIndex,
-        accountType: network.accountType || 'normal',
+        accountType,
     };
 };
 
