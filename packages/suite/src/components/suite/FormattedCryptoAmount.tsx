@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isNetworkSymbol, Network, networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
@@ -13,7 +13,6 @@ import {
 import { isSignValuePositive } from '@suite-common/formatters';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
-import { networksCompatibility } from '@suite-common/wallet-config';
 
 const Container = styled.span`
     max-width: 100%;
@@ -55,8 +54,9 @@ export const FormattedCryptoAmount = ({
     }
 
     const lowerCaseSymbol = symbol?.toLowerCase();
-    const { features: networkFeatures, testnet: isTestnet } =
-        networksCompatibility.find(network => network.symbol === lowerCaseSymbol) ?? {};
+    const matchedNetwork: Network | undefined =
+        lowerCaseSymbol && isNetworkSymbol(lowerCaseSymbol) ? networks[lowerCaseSymbol] : undefined;
+    const { features: networkFeatures, testnet: isTestnet } = matchedNetwork ?? {};
 
     const areSatsSupported = !!networkFeatures?.includes('amount-unit');
 
