@@ -9,7 +9,7 @@ export { Checkbox, type CheckboxProps } from './components/form/Checkbox/Checkbo
 export * from './components/animations/DeviceAnimation';
 export * from './components/animations/LottieAnimation';
 export * from './components/AssetShareIndicator/AssetShareIndicator';
-export { AssetLogo } from './components/AssetLogo/AssetLogo';
+export { AssetLogo, type AssetLogoProps } from './components/AssetLogo/AssetLogo';
 export * from './components/CoinLogo/CoinLogo';
 export * from './components/Flag/Flag';
 export * from './components/TrezorLogo/TrezorLogo';
@@ -75,7 +75,7 @@ export * from './components/typography/Paragraph/Paragraph';
 export * from './components/typography/Text/Text';
 export * from './components/typography/TruncateWithTooltip/TruncateWithTooltip';
 export * from './components/Banner/Banner';
-export { Table } from './components/Table/Table';
+export { Table, type TableProps } from './components/Table/Table';
 export { StoryColumn, StoryWrapper } from './support/Story';
 
 export * from './constants/keyboardEvents';

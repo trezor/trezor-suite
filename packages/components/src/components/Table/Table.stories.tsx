@@ -17,18 +17,22 @@ export default meta;
 export const Table: StoryObj = {
     render: props => (
         <TableComponent {...props}>
-            <TableComponent.HeaderRow>
-                <TableComponent.HeaderCell>Token</TableComponent.HeaderCell>
-                <TableComponent.HeaderCell>Balance</TableComponent.HeaderCell>
-                <TableComponent.HeaderCell>Price</TableComponent.HeaderCell>
-            </TableComponent.HeaderRow>
-            {EXAMPLE_TOKENS.map((token, i) => (
-                <TableComponent.Row key={i}>
-                    <TableComponent.Cell>{token.name}</TableComponent.Cell>
-                    <TableComponent.Cell>{token.balance}</TableComponent.Cell>
-                    <TableComponent.Cell>{token.price}</TableComponent.Cell>
+            <TableComponent.Header>
+                <TableComponent.Row>
+                    <TableComponent.Cell>Token</TableComponent.Cell>
+                    <TableComponent.Cell>Balance</TableComponent.Cell>
+                    <TableComponent.Cell align="right">Price</TableComponent.Cell>
                 </TableComponent.Row>
-            ))}
+            </TableComponent.Header>
+            <TableComponent.Body>
+                {EXAMPLE_TOKENS.map((token, i) => (
+                    <TableComponent.Row key={i}>
+                        <TableComponent.Cell>{token.name}</TableComponent.Cell>
+                        <TableComponent.Cell>{token.balance}</TableComponent.Cell>
+                        <TableComponent.Cell align="right">{token.price}</TableComponent.Cell>
+                    </TableComponent.Row>
+                ))}
+            </TableComponent.Body>
         </TableComponent>
     ),
     args: {
