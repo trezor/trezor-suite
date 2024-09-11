@@ -22,6 +22,10 @@ const cardStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
 }));
 
+const addressStyle = prepareNativeStyle(() => ({
+    letterSpacing: 0, // negative letter spacing has to be overwritten for ellipsizeMode='middle' to work
+}));
+
 export const RecipientsSummary = ({ accountKey }: FeesRecipientsProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -45,7 +49,13 @@ export const RecipientsSummary = ({ accountKey }: FeesRecipientsProps) => {
                             <Text variant="callout">
                                 <Translation id="moduleSend.fees.recipient.singular" />
                             </Text>
-                            <Text variant="callout">{output.address}</Text>
+                            <Text
+                                ellipsizeMode="middle"
+                                numberOfLines={1}
+                                style={applyStyle(addressStyle)}
+                            >
+                                {output.address}
+                            </Text>
                         </VStack>
                         <VStack flex={0.4} alignItems="flex-end" spacing="extraSmall">
                             <CryptoToFiatAmountFormatter

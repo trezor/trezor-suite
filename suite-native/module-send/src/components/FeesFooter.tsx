@@ -16,7 +16,7 @@ type FeesFooterProps = {
 const CARD_BOTTOM_PADDING = 40;
 
 const footerWrapperStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.small,
+    marginBottom: utils.spacings.medium,
 }));
 
 const cardStyle = prepareNativeStyle(utils => ({

@@ -851,6 +851,9 @@ export const en = {
         },
     },
     moduleSend: {
+        accountsList: {
+            title: 'Send from',
+        },
         outputs: {
             recipients: {
                 title: 'Amount & recipients',
@@ -862,7 +865,7 @@ export const en = {
         fees: {
             recipient: { singular: 'Recipient' },
             description: {
-                title: 'Mining fee',
+                title: 'Transaction fee',
                 body: 'Fees are paid directly to network miners for processing your transactions.',
             },
             levels: {

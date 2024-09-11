@@ -103,7 +103,7 @@ export const TransactionDetailScreen = ({
                 </VStack>
                 <Button
                     size="large"
-                    viewLeft="arrowUpRight"
+                    viewRight="arrowUpRight"
                     onPress={handleOpenBlockchain}
                     colorScheme="tertiaryElevation0"
                 >

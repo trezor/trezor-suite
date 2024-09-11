@@ -28,7 +28,7 @@ const headerStyle = prepareNativeStyle<{ customHorizontalPadding?: number }>(
         alignItems: 'center',
         padding: customHorizontalPadding || utils.spacings.small,
         backgroundColor: utils.colors.backgroundSurfaceElevation0,
-        height: ICON_SIZE + utils.spacings.medium,
+        height: ICON_SIZE + utils.spacings.small * 2,
     }),
 );
 

@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, useState } from 'react';
 import { Pressable, PressableProps } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { MergeExclusive } from 'type-fest';
 
@@ -73,6 +73,8 @@ export type ButtonStyleProps = {
     isDisabled: boolean;
     hasTitle?: boolean;
 };
+
+const LOADER_FADE_IN_DURATION = 500;
 
 const baseDisabledScheme: BaseButtonColorScheme = {
     backgroundColor: 'backgroundNeutralDisabled',
@@ -301,7 +303,9 @@ export const Button = ({
                 ]}
             >
                 {isLoading ? (
-                    <Loader color={textColor} />
+                    <Animated.View entering={FadeIn.duration(LOADER_FADE_IN_DURATION)}>
+                        <Loader color={textColor} />
+                    </Animated.View>
                 ) : (
                     <HStack alignItems="center">
                         {viewLeft && (

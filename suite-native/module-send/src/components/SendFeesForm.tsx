@@ -62,13 +62,15 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
     return (
         <Form form={form}>
             <Box flex={1} justifyContent="space-between">
-                <VStack spacing="small">
-                    <Text variant="titleSmall">
-                        <Translation id="moduleSend.fees.description.title" />
-                    </Text>
-                    <Text>
-                        <Translation id="moduleSend.fees.description.body" />
-                    </Text>
+                <VStack spacing="medium">
+                    <VStack spacing="extraSmall">
+                        <Text variant="titleSmall">
+                            <Translation id="moduleSend.fees.description.title" />
+                        </Text>
+                        <Text>
+                            <Translation id="moduleSend.fees.description.body" />
+                        </Text>
+                    </VStack>
                     <FeeOptionsList feeLevels={feeLevels} networkSymbol={account.symbol} />
                 </VStack>
                 <FeesFooter
