@@ -4,10 +4,8 @@ import { Button, HStack, Loader, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     ConnectDeviceSettings,
-    DeviceRootState,
-    DiscoveryRootState,
     deviceActions,
-    selectIsDiscoveryActiveByDeviceState,
+    selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
 import { useAlert } from '@suite-native/alerts';
@@ -33,9 +31,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
     const { showAlert, hideAlert } = useAlert();
     const { showToast } = useToast();
     const { applyStyle } = useNativeStyles();
-    const isDeviceDiscoveryActive = useSelector((state: DiscoveryRootState & DeviceRootState) =>
-        selectIsDiscoveryActiveByDeviceState(state, device.state),
-    );
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
 
     const walletNameLabel = device.useEmptyPassphrase ? (
         <Translation id="moduleSettings.viewOnly.wallet.standard" />
@@ -107,7 +103,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
         });
     };
 
-    const showToggleButton = device.remember || !isDeviceDiscoveryActive;
+    const showToggleButton = device.remember || !hasDiscovery;
 
     return (
         <HStack key={device.instance} style={applyStyle(walletRowStyle)}>

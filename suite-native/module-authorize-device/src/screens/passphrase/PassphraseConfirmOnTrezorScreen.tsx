@@ -15,7 +15,7 @@ import {
     deviceActions,
     selectDevice,
     selectIsDeviceConnectedAndAuthorized,
-    selectIsDeviceDiscoveryActive,
+    selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
 import { useHandlePassphraseMismatch } from '@suite-native/device-authorization';
 
@@ -35,7 +35,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
     const device = useSelector(selectDevice);
 
     // If this screen was present during authorizing device with passphrase for some feature,
@@ -45,7 +45,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
     useHandlePassphraseMismatch();
 
     useEffect(() => {
-        if (isDeviceConnectedAndAuthorized && isDiscoveryActive) {
+        if (isDeviceConnectedAndAuthorized && hasDiscovery) {
             navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseLoading);
             dispatch(
                 deviceActions.removeButtonRequests({
@@ -54,7 +54,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
                 }),
             );
         }
-    }, [device, dispatch, isDeviceConnectedAndAuthorized, isDiscoveryActive, navigation]);
+    }, [device, dispatch, isDeviceConnectedAndAuthorized, hasDiscovery, navigation]);
 
     return (
         <PassphraseScreenWrapper>

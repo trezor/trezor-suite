@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { Box, VStack } from '@suite-native/atoms';
 import { GraphFiatBalance } from '@suite-native/graph';
-import { selectIsDeviceDiscoveryActive, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
+import { selectHasDeviceDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 
 import {
     hasPriceIncreasedAtom,
@@ -12,9 +12,9 @@ import {
 } from '../portfolioGraphAtoms';
 
 export const PortfolioGraphHeader = () => {
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
-    const isLoading = isDiscoveryActive || !isDeviceAuthorized;
+    const isLoading = hasDiscovery || !isDeviceAuthorized;
 
     return (
         <Box>

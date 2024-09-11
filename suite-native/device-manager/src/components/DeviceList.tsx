@@ -15,7 +15,7 @@ import {
     selectDevice,
     selectIsDeviceConnected,
     selectInstacelessUnselectedDevices,
-    selectIsDeviceDiscoveryActive,
+    selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
 import {
     Button,
@@ -131,13 +131,13 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
     const { setIsDeviceManagerVisible } = useDeviceManager();
     const device = useSelector(selectDevice);
     const notSelectedInstancelessDevices = useSelector(selectInstacelessUnselectedDevices);
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const opacity = useSharedValue(0);
     const height = useSharedValue(0);
 
     const hasUnselectedDevices = notSelectedInstancelessDevices.length > 0;
-    const isConnectButtonVisible = !isDiscoveryActive && !isDeviceConnected;
+    const isConnectButtonVisible = !hasDiscovery && !isDeviceConnected;
 
     const handleConnectDevice = () => {
         if (device) {

@@ -18,6 +18,7 @@ import {
     selectDeviceState,
     disableAccountsThunk,
     selectFirstNormalAccountForNetworkSymbol,
+    selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
@@ -551,8 +552,8 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        const runningDiscovery = selectDeviceDiscovery(getState());
-        if (runningDiscovery) {
+        const hasDiscovery = selectHasDeviceDiscovery(getState());
+        if (hasDiscovery) {
             console.warn(
                 `Warning discovery for device ${deviceState} already exists. Skipping discovery.`,
             );
@@ -607,8 +608,8 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
 
         const device = selectDeviceByState(getState(), deviceState);
 
-        const discovery1 = selectDeviceDiscovery(getState());
-        if (discovery1) {
+        const hasDiscovery1 = selectHasDeviceDiscovery(getState());
+        if (hasDiscovery1) {
             console.warn(
                 `Warning: discovery for device ${deviceState} already exists. Skipping discovery.`,
             );
@@ -662,8 +663,8 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         );
 
         // We need to check again here because it's possible that things changed in the meantime because async thunks
-        const discovery2 = selectDeviceDiscovery(getState());
-        if (!discovery2) {
+        const hasDiscovery2 = selectHasDeviceDiscovery(getState());
+        if (!hasDiscovery2) {
             return;
         }
 

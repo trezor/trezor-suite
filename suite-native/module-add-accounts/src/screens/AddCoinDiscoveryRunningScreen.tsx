@@ -12,7 +12,7 @@ import {
     AccountsRootState,
     DeviceRootState,
     selectDeviceAccountsByNetworkSymbol,
-    selectDeviceDiscovery,
+    selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
 import {
     applyDiscoveryChangesThunk,
@@ -30,7 +30,7 @@ export const AddCoinDiscoveryRunningScreen = ({ route }) => {
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
     );
 
-    const discovery = useSelector(selectDeviceDiscovery);
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
     const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
     const { navigateToSuccessorScreen, clearNetworkWithTypeToBeAdded } = useAddCoinAccount();
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
@@ -47,7 +47,7 @@ export const AddCoinDiscoveryRunningScreen = ({ route }) => {
     const handleFinish = () => {
         const normalAccounts = accounts.filter(a => a.accountType === 'normal');
         const nonEmptyAccounts = accounts.filter(a => !a.empty);
-        if (!discovery) {
+        if (!hasDiscovery) {
             if (accounts.length > 0) {
                 setLoadingResult('success');
             }
@@ -69,16 +69,23 @@ export const AddCoinDiscoveryRunningScreen = ({ route }) => {
             networkSymbol &&
             !enabledNetworkSymbols.includes(networkSymbol) &&
             accounts.length === 0 &&
-            !discovery
+            !hasDiscovery
         ) {
             dispatch(toggleEnabledDiscoveryNetworkSymbol(networkSymbol));
             dispatch(applyDiscoveryChangesThunk());
         }
 
-        if (accounts.length > 0 && !discovery) {
+        if (accounts.length > 0 && !hasDiscovery) {
             setLoadingResult('success');
         }
-    }, [accounts.length, discovery, dispatch, enabledNetworkSymbols, loadingResult, networkSymbol]);
+    }, [
+        accounts.length,
+        hasDiscovery,
+        dispatch,
+        enabledNetworkSymbols,
+        loadingResult,
+        networkSymbol,
+    ]);
 
     return (
         <Screen>
