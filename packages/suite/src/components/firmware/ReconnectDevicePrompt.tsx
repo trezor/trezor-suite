@@ -144,18 +144,27 @@ const RebootDeviceGraphics = ({
 
     const deviceModelInternal = device?.features?.internal_model;
 
-    // T1B1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons
-    const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
-    const type =
-        deviceModelInternal === DeviceModelInternal.T1B1 &&
-        semver.valid(deviceFwVersion) &&
-        semver.satisfies(deviceFwVersion, '<1.8.0')
-            ? 'BOOTLOADER_TWO_BUTTONS'
-            : 'BOOTLOADER';
+    const getRebootType = () => {
+        // Used during intermediary update on T1B1.
+        if (device?.mode === 'bootloader') {
+            return 'NORMAL';
+        }
+        // T1B1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons.
+        const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
+        if (
+            deviceModelInternal === DeviceModelInternal.T1B1 &&
+            semver.valid(deviceFwVersion) &&
+            semver.satisfies(deviceFwVersion, '<1.8.0')
+        ) {
+            return 'BOOTLOADER_TWO_BUTTONS';
+        }
+
+        return 'BOOTLOADER';
+    };
 
     return (
         <StyledDeviceAnimation
-            type={type}
+            type={getRebootType()}
             height="220px"
             width="220px"
             shape="ROUNDED"
