@@ -1,5 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { RequireAllOrNone } from 'type-fest';
+import { ParsedURL } from 'expo-linking';
 
 import {
     AccountKey,
@@ -10,7 +11,6 @@ import {
 } from '@suite-common/wallet-types';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo, TokenTransfer } from '@trezor/connect';
-import { ParsedURL } from 'expo-linking';
 
 import {
     AppTabsRoutes,
