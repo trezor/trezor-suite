@@ -1,6 +1,6 @@
 import TrezorConnect from '../../../src';
 
-const { getController, setup, initTrezorConnect } = global.Trezor;
+import { getController, setup, initTrezorConnect } from '../../common.setup';
 
 const controller = getController();
 

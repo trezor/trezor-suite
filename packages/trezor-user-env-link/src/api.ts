@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import semverValid from 'semver/functions/valid';
 import semverRSort from 'semver/functions/rsort';
 
@@ -13,7 +15,7 @@ interface SetupEmu {
     needs_backup?: boolean;
 }
 
-interface StartEmu {
+export interface StartEmu {
     version?: string;
     wipe?: boolean;
     save_screenshots?: boolean;
@@ -58,6 +60,9 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
     private defaultFirmware?: string;
     private defaultModel: Model = 'T2T1';
 
+    public currentEmulatorSetup: Partial<SetupEmu> = {};
+    public currentEmulatorSettings: Partial<ApplySettings> = {};
+
     // todo: remove later, used in some of the tests
     public send: WebsocketClient['send'];
 
@@ -90,16 +95,28 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
             label: 'My Trevor',
             needs_backup: false,
         };
+        const finalOptions = {
+            ...defaults,
+            ...options,
+        };
+
+        if (JSON.stringify(this.currentEmulatorSetup) === JSON.stringify(finalOptions)) {
+            console.log('Emulator already set up with the same options, skipping setup');
+
+            return Promise.resolve();
+        }
 
         // before setup, stop bridge and start it again after it. it has no performance hit
         // and avoids 'wrong previous session' errors from bridge. actual setup is done
         // through udp transport if bridge transport is not available
         await this.client.send({ type: 'bridge-stop' });
+
         await this.client.send({
             type: 'emulator-setup',
-            ...defaults,
-            ...options,
+            ...finalOptions,
         });
+
+        this.currentEmulatorSetup = options;
 
         return null;
     }
@@ -147,6 +164,11 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         await this.client.send(params);
 
+        if (params.wipe) {
+            this.currentEmulatorSettings = {};
+            this.currentEmulatorSetup = {};
+        }
+
         return null;
     }
     startEmuFromUrl({ url, model, wipe }: StartEmuFromUrl) {
@@ -164,6 +186,8 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         return null;
     }
     async wipeEmu() {
+        this.currentEmulatorSettings = {};
+        this.currentEmulatorSetup = {};
         await this.client.send({ type: 'emulator-wipe' });
 
         return null;
@@ -212,10 +236,16 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         return null;
     }
     async applySettings(options: ApplySettings) {
+        if (JSON.stringify(this.currentEmulatorSettings) === JSON.stringify(options)) {
+            console.log('Emulator already has the same settings applied, skipping setup');
+
+            return Promise.resolve();
+        }
         await this.client.send({
             type: 'emulator-apply-settings',
             ...options,
         });
+        this.currentEmulatorSettings = options;
 
         return null;
     }

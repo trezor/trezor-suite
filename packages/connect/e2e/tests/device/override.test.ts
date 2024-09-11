@@ -1,8 +1,8 @@
 import TrezorConnect from '../../../src';
 
-const { getController, setup, initTrezorConnect } = global.Trezor;
+import { getController, setup, initTrezorConnect } from '../../common.setup';
 
-const controller = getController('setBusy');
+const controller = getController();
 
 describe('TrezorConnect override param', () => {
     beforeEach(async () => {

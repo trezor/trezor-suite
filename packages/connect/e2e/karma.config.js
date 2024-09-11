@@ -53,6 +53,8 @@ module.exports = config => {
         preprocessors: {
             '**/karma.setup.js': 'webpack',
             '**/common.setup.js': 'webpack',
+            '**/common.setup.ts': 'webpack',
+
             '**/__txcache__/index.js': 'TxCachePreprocessor', // use custom preprocessor from karma.plugin
             '**/data/coins.json': 'WsCachePreprocessor', // use custom preprocessor from karma.plugin
             'connect/e2e/**/*.test.ts': 'webpack',
@@ -60,6 +62,8 @@ module.exports = config => {
         files: [
             { pattern: path.resolve(__dirname, './karma.setup.js'), watched: false },
             { pattern: path.resolve(__dirname, './common.setup.js'), watched: false },
+            { pattern: path.resolve(__dirname, './common.setup.ts'), watched: false },
+
             { pattern: path.resolve(__dirname, './__txcache__/index.js'), watched: false },
             {
                 pattern: './connect-iframe/build/**/*.*',

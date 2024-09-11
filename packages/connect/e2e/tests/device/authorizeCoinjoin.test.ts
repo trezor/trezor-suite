@@ -1,8 +1,8 @@
 import TrezorConnect from '../../../src';
 
-const { getController, setup, conditionalTest, initTrezorConnect } = global.Trezor;
+import { getController, setup, conditionalTest, initTrezorConnect } from '../../common.setup';
 
-const controller = getController('applyFlags');
+const controller = getController();
 
 describe('TrezorConnect.authorizeCoinjoin', () => {
     beforeAll(async () => {
@@ -23,7 +23,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
 
         TrezorConnect.on('DEVICE_EVENT', ev => {
             if ('code' in ev.payload && ev.payload.code === 'ButtonRequest_PinEntry') {
-                controller.send({ type: 'emulator-input', value: '1234' });
+                controller.inputEmu('1234');
             }
         });
     });
