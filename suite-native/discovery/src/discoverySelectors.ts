@@ -13,7 +13,7 @@ import {
     selectAccountsByNetworkAndDeviceState,
     selectDeviceAccounts,
     selectDeviceAuthFailed,
-    selectDeviceDiscovery,
+    selectHasDeviceDiscovery,
     selectDeviceFirmwareVersion,
     selectDeviceModel,
     selectDeviceState,
@@ -152,7 +152,7 @@ export const selectCanRunDiscoveryForDevice = (
     }
 
     const isCoinEnablingInitFinished = selectIsCoinEnablingInitFinished(state);
-    const discovery = selectDeviceDiscovery(state);
+    const hasDiscovery = selectHasDeviceDiscovery(state);
     const deviceModel = selectDeviceModel(state);
     const deviceFwVersion = selectDeviceFirmwareVersion(state);
     const isDeviceConnectedAndAuthorized = selectIsDeviceConnectedAndAuthorized(state);
@@ -170,7 +170,7 @@ export const selectCanRunDiscoveryForDevice = (
 
     return (
         isCoinEnablingInitFinished &&
-        !discovery &&
+        !hasDiscovery &&
         isDeviceConnectedAndAuthorized &&
         !isPortfolioTrackerDevice &&
         !isDeviceInViewOnlyMode &&

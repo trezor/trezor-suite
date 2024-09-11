@@ -10,7 +10,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
-import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
@@ -45,7 +45,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
 
     const { applyStyle } = useNativeStyles();
 
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
 
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
 
@@ -60,10 +60,10 @@ export const PassphraseEnterOnTrezorScreen = () => {
     useHandlePassphraseMismatch();
 
     useEffect(() => {
-        if (isDiscoveryActive) {
+        if (hasDiscovery) {
             navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseLoading);
         }
-    }, [isDiscoveryActive, navigation]);
+    }, [hasDiscovery, navigation]);
 
     const handleCancel = () => {
         if (isCreatingNewWalletInstance) {

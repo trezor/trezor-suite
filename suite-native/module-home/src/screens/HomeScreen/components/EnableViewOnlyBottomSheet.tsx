@@ -6,7 +6,7 @@ import {
     selectIsPortfolioTrackerDevice,
     deviceActions,
     selectIsDeviceRemembered,
-    selectIsDeviceDiscoveryActive,
+    selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
 import { BottomSheet, Box, Button, CenteredTitleHeader, VStack } from '@suite-native/atoms';
@@ -46,7 +46,7 @@ export const EnableViewOnlyBottomSheet = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const viewOnlyCancelationTimestamp = useSelector(selectViewOnlyCancelationTimestamp);
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
     const { showToast } = useToast();
     const [isVisible, setIsVisible] = useState(false);
     const [isAvailableBiometrics, setIsAvailableBiometrics] = useState(false);
@@ -73,7 +73,7 @@ export const EnableViewOnlyBottomSheet = () => {
         !isDeviceRemembered &&
         isDeviceReadyToUseAndAuthorized &&
         !isPortfolioTrackerDevice &&
-        !isDiscoveryActive &&
+        !hasDiscovery &&
         !viewOnlyCancelationTimestamp &&
         (isBiometricsInitialSetupFinished || !isAvailableBiometrics);
 

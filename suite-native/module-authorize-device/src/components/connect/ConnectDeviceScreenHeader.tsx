@@ -14,7 +14,7 @@ import {
 import { Box, IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
-import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     selectIsCreatingNewPassphraseWallet,
@@ -40,12 +40,12 @@ export const ConnectDeviceScreenHeader = ({
     const navigation = useNavigation<NavigationProp>();
     const { showAlert, hideAlert } = useAlert();
 
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     const handleCancel = useCallback(() => {
-        if (isDiscoveryActive) {
+        if (hasDiscovery) {
             // Do not allow to cancel PIN entry while discovery is in progress
             showAlert({
                 title: <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.title" />,
@@ -75,7 +75,7 @@ export const ConnectDeviceScreenHeader = ({
     }, [
         dispatch,
         hideAlert,
-        isDiscoveryActive,
+        hasDiscovery,
         navigation,
         showAlert,
         isCreatingNewWalletInstance,

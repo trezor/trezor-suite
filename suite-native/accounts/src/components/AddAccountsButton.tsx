@@ -12,7 +12,7 @@ import {
 } from '@suite-native/navigation';
 import { IconButton } from '@suite-native/atoms';
 import {
-    selectDeviceDiscovery,
+    selectHasDeviceDiscovery,
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
@@ -30,13 +30,13 @@ export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) =>
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountsImport>>();
 
     const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
-    const discovery = useSelector(selectDeviceDiscovery);
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
     const [isDeviceConnectEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 
     const shouldShowAddAccountButton =
-        isSelectedDevicePortfolioTracker || (isDeviceConnectEnabled && !discovery);
+        isSelectedDevicePortfolioTracker || (isDeviceConnectEnabled && !hasDiscovery);
 
     const navigateToImportScreen = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
