@@ -51,7 +51,7 @@ export interface ElectionIpcMainInvokeEvent {
 
 export interface ElectronIpcMainEvent {
     // reply: (channel: string, response: any) => any; // in electron it's defined as `Function`
-    // eslint-disable-next-line @typescript-eslint/ban-types
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     reply: Function; // in electron it's defined as `Function`
 }
 

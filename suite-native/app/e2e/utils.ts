@@ -74,7 +74,7 @@ export const scrollUntilVisible = async (matcher: Detox.NativeMatcher) => {
     try {
         // Try to confirm that the element is visible without scrolling.
         await detoxExpect(element(matcher)).toBeVisible();
-    } catch (error) {
+    } catch {
         // If the element is not visible, then use the scroll to find it.
         await waitFor(element(matcher))
             .toBeVisible()

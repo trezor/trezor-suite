@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { Action, AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 import { ThunkDispatch } from '@reduxjs/toolkit';
 

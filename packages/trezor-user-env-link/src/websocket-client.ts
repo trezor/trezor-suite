@@ -87,7 +87,7 @@ export class WebsocketClient extends TypedEmitter<WebsocketClientEvents> {
             ws.emit('error', 'Websocket timeout');
             try {
                 ws.close();
-            } catch (error) {
+            } catch {
                 // empty
             }
         } else {
@@ -101,7 +101,7 @@ export class WebsocketClient extends TypedEmitter<WebsocketClientEvents> {
         if (this.ws && this.isConnected()) {
             try {
                 this.ws.close();
-            } catch (error) {
+            } catch {
                 // empty
             }
         }

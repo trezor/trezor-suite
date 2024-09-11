@@ -610,7 +610,7 @@ export const startDiscoveryThunk = createThunk(
                     await dispatch(startDiscoveryThunk()); // restart process, exclude failed coins
 
                     return;
-                } catch (error) {
+                } catch {
                     // do nothing. error will be handled in lower block
                 }
             }

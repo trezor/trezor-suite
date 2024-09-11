@@ -27,7 +27,7 @@ export const useHomeRefreshControl = ({
                 portfolioContentRef.current?.refetchGraph?.(),
                 dispatch(syncAllAccountsWithBlockchainThunk()),
             ]);
-        } catch (error) {
+        } catch {
             // Do nothing
         }
         setIsRefreshing(false);

@@ -109,7 +109,7 @@ export type StakeContextValues = UseFormReturn<StakeFormState> &
         isLoading: boolean;
     };
 
-export interface UnstakeFormState extends Omit<StakeFormState, 'setMaxOutputId'> {}
+export type UnstakeFormState = Omit<StakeFormState, 'setMaxOutputId'>;
 
 export type UnstakeContextValues = UseFormReturn<UnstakeFormState> &
     BaseStakeContextValues & {

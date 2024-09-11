@@ -37,7 +37,7 @@ export const waitForCoinjoinBackend = () =>
 
                     return resolve();
                 }
-            } catch (err) {
+            } catch {
                 process.stdout.write('.');
             }
         }

@@ -3,5 +3,5 @@ import 'styled-components';
 import { Colors } from '@trezor/theme';
 
 declare module 'styled-components' {
-    export interface DefaultTheme extends Colors {}
+    export type DefaultTheme = Colors;
 }

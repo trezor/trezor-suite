@@ -244,7 +244,7 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
                 setLoading(true);
                 try {
                     await loadIndexes(basePath, locale);
-                } catch (e) {
+                } catch {
                     setError(true);
                 }
                 setLoading(false);
@@ -262,7 +262,7 @@ export function Flexsearch({ className }: { className?: string }): ReactElement 
             setLoading(true);
             try {
                 await loadIndexes(basePath, locale);
-            } catch (e) {
+            } catch {
                 setError(true);
             }
             setLoading(false);

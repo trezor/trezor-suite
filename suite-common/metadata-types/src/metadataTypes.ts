@@ -63,6 +63,7 @@ export type Tokens = {
 /**
  * What caused the error. Use this to handle error in metadataActions
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 enum ProviderErrorReason {
     NOT_FOUND_ERROR,
     // authentication, typically expired token

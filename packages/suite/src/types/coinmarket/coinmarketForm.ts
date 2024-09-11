@@ -260,7 +260,7 @@ export interface CoinmarketFormInputLabelProps extends PropsWithChildren {
     label?: ExtendedMessageDescriptor['id'];
 }
 
-export interface CoinmarketFormInputCommonProps {}
+export type CoinmarketFormInputCommonProps = {};
 
 export interface CoinmarketFormInputDefaultProps
     extends CoinmarketFormInputLabelProps,

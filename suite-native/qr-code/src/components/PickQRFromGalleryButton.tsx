@@ -26,7 +26,7 @@ export const PickQRFromGalleryButton = ({
             const { data } = scannedResults[0];
 
             onImagePicked(data);
-        } catch (error) {
+        } catch {
             onError();
             showToast({
                 variant: 'error',

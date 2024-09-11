@@ -253,6 +253,7 @@ export interface BlockfrostUtxos {
     blockInfo: BlockContent;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare function FSend(method: 'GET_SERVER_INFO'): Promise<ServerInfo>;
 declare function FSend(
     method: 'GET_BLOCK',

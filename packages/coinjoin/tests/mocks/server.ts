@@ -183,7 +183,7 @@ const rejectRequest = (res: http.ServerResponse, code: number, error?: any) => {
         const json = JSON.stringify(error);
         res.setHeader('Content-Type', 'application/json');
         res.write(json);
-    } catch (e) {
+    } catch {
         res.write(error ?? '');
     }
     res.end();

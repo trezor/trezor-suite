@@ -173,6 +173,7 @@ export interface AvailableCurrencies {
     available_currencies: string[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare function FSend(method: 'getInfo'): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getBlock', params: { id: string }): Promise<Block>;

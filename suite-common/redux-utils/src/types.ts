@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { AnyAction, AsyncThunk, ThunkAction } from '@reduxjs/toolkit';
 
 // This SuiteCompatible types should be used only in places where you need support

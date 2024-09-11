@@ -29,7 +29,7 @@ export function Validate<T extends TSchema>(schema: T, value: unknown): value is
         Assert(schema, value);
 
         return true;
-    } catch (e) {
+    } catch {
         return false;
     }
 }

@@ -160,6 +160,7 @@ export const themeSchema = z.strictObject({
     useNextSeoProps: z.custom<() => NextSeoProps | void>(isFunction),
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const publicThemeSchema = themeSchema.deepPartial().extend({
     // to have `locale` and `text` as required properties
     i18n: i18nSchema.optional(),
