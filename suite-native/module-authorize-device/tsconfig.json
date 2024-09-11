@@ -17,6 +17,7 @@
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../device-mutex" },
+        { "path": "../discovery" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../link" },

@@ -3,10 +3,10 @@ import { ActivityIndicator } from 'react-native';
 import { Text, VStack, Box } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons-deprecated';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { useDelayedNavigation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 
 import { ConnectDeviceScreenView } from '../../components/connect/ConnectDeviceScreenView';
+import { useOnDeviceReadyNavigation } from '../../hooks/useOnDeviceReadyNavigation';
 
 const screenStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
@@ -15,7 +15,7 @@ const screenStyle = prepareNativeStyle(() => ({
 }));
 
 export const ConnectingDeviceScreen = () => {
-    useDelayedNavigation();
+    useOnDeviceReadyNavigation();
     const { applyStyle } = useNativeStyles();
 
     return (
