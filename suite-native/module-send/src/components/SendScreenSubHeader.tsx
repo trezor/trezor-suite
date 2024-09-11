@@ -17,9 +17,9 @@ type AccountBalanceScreenHeaderProps = {
     accountKey?: AccountKey;
 };
 
-export const SendScreenSubHeader = (props: ScreenSubHeaderProps) => {
-    return <ScreenSubHeader {...props} customHorizontalPadding={nativeSpacings.medium} />;
-};
+export const SendScreenSubHeader = (props: ScreenSubHeaderProps) => (
+    <ScreenSubHeader {...props} customHorizontalPadding={nativeSpacings.medium} />
+);
 
 export const AccountBalanceScreenHeader = ({ accountKey }: AccountBalanceScreenHeaderProps) => {
     const accountLabel = useSelector((state: AccountsRootState) =>

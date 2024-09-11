@@ -141,7 +141,7 @@ export const SendOutputsScreen = ({
                 formState: constructFormDraft(values),
                 composeContext: {
                     account,
-                    network: network!,
+                    network,
                     feeInfo: networkFeeInfo,
                 },
             }),
