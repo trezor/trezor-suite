@@ -251,7 +251,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             return UI.FIRMWARE_NOT_SUPPORTED;
         }
 
-        const version = device.getVersion().join('.');
+        const version = device.getVersion();
+        if (!version) return;
+
         if (
             device.firmwareStatus === 'required' ||
             !versionUtils.isNewerOrEqual(version, range.min)
