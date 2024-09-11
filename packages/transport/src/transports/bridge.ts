@@ -105,11 +105,7 @@ export class BridgeTransport extends AbstractTransport {
             this.version = response.payload.version;
 
             if (this.latestVersion) {
-                this.isOutdated = versionUtils.isNewer(
-                    this.latestVersion,
-                    // node bridge version is in format "3.0.0-bundled.24.10.0"
-                    this.version.split('-')[0],
-                );
+                this.isOutdated = versionUtils.isNewer(this.latestVersion, this.version);
             }
             this.useProtocolMessages = !!response.payload.protocolMessages;
 
