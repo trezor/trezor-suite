@@ -16,7 +16,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     applyDiscoveryChangesThunk,
-    selectEnabledDiscoveryNetworkSymbols,
+    selectDeviceEnabledDiscoveryNetworkSymbols,
     toggleEnabledDiscoveryNetworkSymbol,
 } from '@suite-native/discovery';
 
@@ -31,7 +31,7 @@ export const AddCoinDiscoveryRunningScreen = ({ route }) => {
     );
 
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
-    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
+    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const { navigateToSuccessorScreen, clearNetworkWithTypeToBeAdded } = useAddCoinAccount();
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 

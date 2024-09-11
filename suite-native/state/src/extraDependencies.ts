@@ -25,6 +25,8 @@ const transports = transportsPerDeviceType[deviceType];
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
+        // using all enabled networks even those current device does not support,
+        // otherwise disableAccountsThunk might erase accounts not supported by current device
         selectEnabledNetworks: selectEnabledDiscoveryNetworkSymbols,
         selectBitcoinAmountUnit: () => PROTO.AmountUnit.BITCOIN,
         selectLocalCurrency: selectFiatCurrencyCode,

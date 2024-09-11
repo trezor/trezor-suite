@@ -5,7 +5,7 @@ import { CryptoIcon } from '@suite-common/icons-deprecated';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Text, Switch, VStack } from '@suite-native/atoms';
 import {
-    selectEnabledDiscoveryNetworkSymbols,
+    selectDeviceEnabledDiscoveryNetworkSymbols,
     toggleEnabledDiscoveryNetworkSymbol,
 } from '@suite-native/discovery';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -57,7 +57,7 @@ export const NetworkSymbolSwitchItem = ({
 }: NetworkSymbolSwitchItemProps) => {
     const dispatch = useDispatch();
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
-    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
+    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const { applyStyle } = useNativeStyles();
     const { showToast } = useToast();
     const { showAlert } = useAlert();
