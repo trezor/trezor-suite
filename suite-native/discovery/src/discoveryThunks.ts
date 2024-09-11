@@ -37,7 +37,7 @@ import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-f
 
 import {
     selectDiscoveryInfo,
-    selectEnabledDiscoveryNetworkSymbols,
+    selectDeviceEnabledDiscoveryNetworkSymbols,
     setDiscoveryInfo,
 } from './discoveryConfigSlice';
 import {
@@ -710,7 +710,8 @@ export const applyDiscoveryChangesThunk = createThunk(
         // This might be needed in case user has View only device from before coin enabling was active
         // in such case the first normal account can be invisible. We need to make it visible.
         if (isCoinEnablingActive) {
-            const enabledDiscoveryNetworkSymbols = selectEnabledDiscoveryNetworkSymbols(getState());
+            const enabledDiscoveryNetworkSymbols =
+                selectDeviceEnabledDiscoveryNetworkSymbols(getState());
             enabledDiscoveryNetworkSymbols.forEach(networkSymbol => {
                 const firstNormalAccount = selectFirstNormalAccountForNetworkSymbol(
                     getState(),

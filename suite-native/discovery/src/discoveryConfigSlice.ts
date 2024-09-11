@@ -131,7 +131,12 @@ export const selectIsCoinEnablingInitFinished = (
     return isCoinEnablingActive ? state.discoveryConfig.isCoinEnablingInitFinished : true;
 };
 
-export const selectEnabledDiscoveryNetworkSymbols = memoizeWithArgs(
+// this includes all networks, including those that are not supported by current device
+export const selectEnabledDiscoveryNetworkSymbols = (state: DiscoveryConfigSliceRootState) =>
+    state.discoveryConfig.enabledDiscoveryNetworkSymbols;
+
+// this includes only networks supported by current device
+export const selectDeviceEnabledDiscoveryNetworkSymbols = memoizeWithArgs(
     (
         state: DiscoveryConfigSliceRootState & DeviceRootState & FeatureFlagsRootState,
         forcedAreTestnetsEnabled?: boolean,

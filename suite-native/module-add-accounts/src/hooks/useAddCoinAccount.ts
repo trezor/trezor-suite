@@ -20,7 +20,7 @@ import {
     addAndDiscoverNetworkAccountThunk,
     selectDiscoverySupportedNetworks,
     NORMAL_ACCOUNT_TYPE,
-    selectEnabledDiscoveryNetworkSymbols,
+    selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
@@ -80,7 +80,7 @@ export const useAddCoinAccount = () => {
     );
     const device = useSelector(selectDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
-    const enabledDiscoveryNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
+    const enabledDiscoveryNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
 
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
 

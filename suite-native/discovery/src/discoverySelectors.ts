@@ -30,7 +30,7 @@ import { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import {
     DiscoveryConfigSliceRootState,
     selectDiscoverySupportedNetworks,
-    selectEnabledDiscoveryNetworkSymbols,
+    selectDeviceEnabledDiscoveryNetworkSymbols,
     selectIsCoinEnablingInitFinished,
 } from './discoveryConfigSlice';
 import { getNetworksWithUnfinishedDiscovery } from './utils';
@@ -108,7 +108,7 @@ export const selectNetworksWithUnfinishedDiscovery = (
         DiscoveryConfigSliceRootState,
     forcedAreTestnetsEnabled?: boolean,
 ) => {
-    const enabledNetworkSymbols = selectEnabledDiscoveryNetworkSymbols(
+    const enabledNetworkSymbols = selectDeviceEnabledDiscoveryNetworkSymbols(
         state,
         forcedAreTestnetsEnabled,
     );

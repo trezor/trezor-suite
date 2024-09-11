@@ -11,7 +11,7 @@ import { Screen } from '@suite-native/navigation';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
     applyDiscoveryChangesThunk,
-    selectEnabledDiscoveryNetworkSymbols,
+    selectDeviceEnabledDiscoveryNetworkSymbols,
     setIsCoinEnablingInitFinished,
 } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
@@ -67,7 +67,7 @@ export const CoinEnablingInitScreen = () => {
     const navigation = useNavigation();
 
     const { applyStyle, utils } = useNativeStyles();
-    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
+    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
 
     const handleSave = () => {
         dispatch(setIsCoinEnablingInitFinished(true));

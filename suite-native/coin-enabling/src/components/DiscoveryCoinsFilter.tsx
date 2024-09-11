@@ -10,7 +10,7 @@ import { Icon } from '@suite-common/icons-deprecated';
 import {
     applyDiscoveryChangesThunk,
     selectDiscoverySupportedNetworks,
-    selectEnabledDiscoveryNetworkSymbols,
+    selectDeviceEnabledDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
 
 import { NetworkSymbolSwitchItem } from './NetworkSymbolSwitchItem';
@@ -25,7 +25,7 @@ export const DiscoveryCoinsFilter = ({
     allowChangeAnalytics = true,
 }: DiscoveryCoinsFilterProps) => {
     const dispatch = useDispatch();
-    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
+    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const availableNetworks = useSelector(selectDiscoverySupportedNetworks);
 
     useFocusEffect(
