@@ -28,6 +28,7 @@ import {
 import { EventType, analytics } from '@suite-native/analytics';
 
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
+import { NoPassphraseButton } from './NoPassphraseButton';
 
 const FORM_CARD_PADDING = 12;
 
@@ -38,6 +39,7 @@ const SCROLL_DELAY = 100;
 type PassphraseFormProps = {
     onFocus?: () => void;
     inputLabel: string;
+    noPassphraseEnabled?: boolean;
 };
 
 const formStyle = prepareNativeStyle(utils => ({
@@ -56,7 +58,11 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => {
+export const PassphraseForm = ({
+    inputLabel,
+    onFocus,
+    noPassphraseEnabled,
+}: PassphraseFormProps) => {
     const dispatch = useDispatch();
     const scrollView = useScrollView();
     const formWrapperView = useRef<View>(null);
@@ -150,6 +156,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                                         horizontalMargin={FORM_CARD_PADDING}
                                     />
                                     <EnterPassphraseOnTrezorButton />
+                                    {noPassphraseEnabled && <NoPassphraseButton />}
                                 </VStack>
                             </Animated.View>
                         )}
