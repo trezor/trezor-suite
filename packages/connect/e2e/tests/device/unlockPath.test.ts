@@ -1,8 +1,8 @@
 import TrezorConnect from '../../../src';
 
-const { getController, setup, conditionalTest, initTrezorConnect } = global.Trezor;
+import { getController, setup, conditionalTest, initTrezorConnect } from '../../common.setup';
 
-const controller = getController('unlockPath');
+const controller = getController();
 
 describe('TrezorConnect.unlockPath', () => {
     beforeAll(async () => {

@@ -9,14 +9,7 @@ declare namespace globalThis {
     var firmwareArg: string | undefined;
     var emulatorStartOpts: {
         version: string;
-    };
-
-    var Trezor: {
-        getController: (testName?: string) => any;
-        setup: (controller: any, options: any) => any;
-        skipTest: (rules: any) => any;
-        conditionalTest: (rules: any, ...args: any[]) => any;
-        initTrezorConnect: (controller: any, options?: any) => any;
+        model: 'T1B1' | 'T2T1' | 'T2B1' | 'T3T1';
     };
 
     type LegacyResult = {

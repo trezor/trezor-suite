@@ -1,7 +1,13 @@
 import TrezorConnect from '../../../src';
 import fixtures from '../../__fixtures__';
 
-const { getController, setup, skipTest, conditionalTest, initTrezorConnect } = global.Trezor;
+import {
+    getController,
+    skipTest,
+    setup,
+    conditionalTest,
+    initTrezorConnect,
+} from '../../common.setup';
 
 let controller: ReturnType<typeof getController> | undefined;
 
@@ -21,10 +27,10 @@ describe(`TrezorConnect methods`, () => {
 
                 try {
                     if (!controller) {
-                        controller = getController(testCase.method);
-                        controller.on('error', () => {
-                            controller = undefined;
-                        });
+                        controller = getController();
+                        // controller.on('error', () => {
+                        //     controller = undefined;
+                        // });
                     }
 
                     await setup(controller, testCase.setup);
@@ -58,10 +64,6 @@ describe(`TrezorConnect methods`, () => {
                         // single test may require a different setup
                         await setup(controller, t.setup || testCase.setup);
 
-                        if (!controller.options) {
-                            controller.options = {};
-                        }
-                        controller.options.name = t.description;
                         // @ts-expect-error, string + params union
                         const result = await TrezorConnect[testCase.method](t.params);
                         let expected = t.result
