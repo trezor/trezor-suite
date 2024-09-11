@@ -11,6 +11,8 @@ type ScreenContentProps = {
     isScrollable: boolean;
     extraKeyboardAvoidingViewHeight: number;
     refreshControl?: ScrollViewProps['refreshControl'];
+    keyboardDismissMode?: ScrollViewProps['keyboardDismissMode'];
+    keyboardShouldPersistTaps?: ScrollViewProps['keyboardShouldPersistTaps'];
 };
 
 const screenContentWrapperStyle = prepareNativeStyle(() => ({ flexGrow: 1 }));
@@ -20,6 +22,8 @@ export const ScreenContentWrapper = ({
     isScrollable,
     extraKeyboardAvoidingViewHeight,
     refreshControl,
+    keyboardDismissMode,
+    keyboardShouldPersistTaps = 'always',
 }: ScreenContentProps) => {
     const scrollViewRef = useRef<ScrollView | null>(null);
     const { applyStyle } = useNativeStyles();
@@ -30,7 +34,8 @@ export const ScreenContentWrapper = ({
                 // Assign the ref of inner ScrollView.
                 scrollViewRef.current = ref as unknown as ScrollView;
             }}
-            keyboardShouldPersistTaps="always"
+            keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+            keyboardDismissMode={keyboardDismissMode}
             contentInsetAdjustmentBehavior="automatic"
             extraHeight={extraKeyboardAvoidingViewHeight}
             contentContainerStyle={applyStyle(screenContentWrapperStyle)}

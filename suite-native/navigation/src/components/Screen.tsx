@@ -29,6 +29,8 @@ type ScreenProps = {
     extraKeyboardAvoidingViewHeight?: number;
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
+    keyboardDismissMode?: ScrollViewProps['keyboardDismissMode'];
+    keyboardShouldPersistTaps?: ScrollViewProps['keyboardShouldPersistTaps'];
 };
 
 const screenContainerStyle = prepareNativeStyle<{
@@ -100,6 +102,9 @@ export const Screen = ({
     footer,
     screenHeader,
     subheader,
+    refreshControl,
+    keyboardDismissMode,
+    keyboardShouldPersistTaps,
     isScrollable = true,
     hasStatusBar = true,
     backgroundColor = 'backgroundSurfaceElevation0',
@@ -107,7 +112,6 @@ export const Screen = ({
     customHorizontalPadding = nativeSpacings.small,
     extraKeyboardAvoidingViewHeight = 0,
     hasBottomInset = true,
-    refreshControl,
 }: ScreenProps) => {
     const {
         applyStyle,
@@ -155,6 +159,8 @@ export const Screen = ({
                 isScrollable={isScrollable}
                 extraKeyboardAvoidingViewHeight={extraKeyboardAvoidingViewHeight}
                 refreshControl={refreshControl}
+                keyboardDismissMode={keyboardDismissMode}
+                keyboardShouldPersistTaps={keyboardShouldPersistTaps}
             >
                 {subheader}
                 <Box
