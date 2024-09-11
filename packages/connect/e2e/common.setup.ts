@@ -155,46 +155,36 @@ export const skipTest = (rules: string[]) => {
     const rule = rules
         .filter(skip => skip.substring(0, 1) === fwModel || skip.substring(1, 2) === fwModel) // filter rules only for current model
         .find(skip => {
-            if (!skip.search('.') && skip === fwModel) {
-                // global model
-                return true;
+            // global model
+            if (!skip.includes('.')) {
+                return skip === fwModel;
             }
 
             // is within range
-            const [from, to] = skip.split('-');
-            if (
-                !fwMaster &&
-                from &&
-                to &&
-                versionUtils.isNewerOrEqual(firmware, from) &&
-                !versionUtils.isNewer(firmware, to)
-            ) {
-                return true;
+            if (skip.includes('-')) {
+                const [from, to] = skip.split('-');
+
+                return (
+                    !fwMaster &&
+                    from &&
+                    to &&
+                    versionUtils.isNewerOrEqual(firmware, from) &&
+                    !versionUtils.isNewer(firmware, to)
+                );
             }
 
-            if (
-                !fwMaster &&
-                skip.startsWith('<') &&
-                !versionUtils.isNewerOrEqual(firmware, skip.substring(1))
-            ) {
-                // lower
-                return true;
-            }
-            if (
-                (fwMaster && skip.startsWith('>')) ||
-                (!fwMaster &&
-                    skip.startsWith('>') &&
-                    versionUtils.isNewer(firmware, skip.substring(1)))
-            ) {
-                // greater
-                return true;
-            }
-            if (!fwMaster && versionUtils.isEqual(firmware, skip)) {
-                // exact
-                return true;
+            // lower
+            if (skip.startsWith('<')) {
+                return !fwMaster && !versionUtils.isNewerOrEqual(firmware, skip.substring(1));
             }
 
-            return false;
+            // greater
+            if (skip.startsWith('>')) {
+                return fwMaster || versionUtils.isNewer(firmware, skip.substring(1));
+            }
+
+            // exact
+            return !fwMaster && versionUtils.isEqual(firmware, skip);
         });
 
     return rule;
