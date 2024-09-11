@@ -3,29 +3,23 @@ import { useEffect } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import {
-    Screen,
-    ScreenSubHeader,
-    SendStackParamList,
-    SendStackRoutes,
-    StackProps,
-} from '@suite-native/navigation';
+import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 import { VStack } from '@suite-native/atoms';
 import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
-import { useNativeStyles } from '@trezor/styles';
 
 import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
 import { SignSuccessMessage } from '../components/SignSuccessMessage';
 import { cleanupSendFormThunk } from '../sendFormThunks';
+import { SendScreen } from '../components/SendScreen';
+import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
 
 export const SendOutputsReviewScreen = ({
     route,
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputsReview>) => {
     const { accountKey } = route.params;
-    const { utils } = useNativeStyles();
     const { translate } = useTranslate();
     const dispatch = useDispatch();
 
@@ -48,10 +42,9 @@ export const SendOutputsReviewScreen = ({
     });
 
     return (
-        <Screen
-            customHorizontalPadding={utils.spacings.small}
+        <SendScreen
             screenHeader={
-                <ScreenSubHeader
+                <SendScreenSubHeader
                     content={translate('moduleSend.review.outputs.title')}
                     closeActionType="close"
                 />
@@ -62,6 +55,6 @@ export const SendOutputsReviewScreen = ({
                 <ReviewOutputItemList accountKey={accountKey} />
                 <SignSuccessMessage />
             </VStack>
-        </Screen>
+        </SendScreen>
     );
 };
