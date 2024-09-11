@@ -38,18 +38,14 @@ export interface CoinmarketVerifyAccountReturnProps {
     onChangeAccount: (account: CoinmarketVerifyFormAccountOptionProps) => void;
 }
 
-export type CoinmarketVerifyOptionsProps = Pick<
+export type CoinmarketVerifyOptionsProps = { receiveNetwork: CryptoId } & Pick<
     CoinmarketVerifyAccountReturnProps,
-    | 'receiveNetwork'
-    | 'selectAccountOptions'
-    | 'selectedAccountOption'
-    | 'onChangeAccount'
-    | 'isMenuOpen'
+    'selectAccountOptions' | 'selectedAccountOption' | 'onChangeAccount' | 'isMenuOpen'
 >;
 
 export interface CoinmarketVerifyOptionsItemProps {
     option: CoinmarketVerifyFormAccountOptionProps;
-    receiveNetwork: CryptoId | undefined;
+    receiveNetwork: CryptoId;
 }
 
 export interface CoinmarketGetSuiteReceiveAccountsProps {

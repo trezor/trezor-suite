@@ -30,6 +30,8 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
         [platforms],
     );
 
+    const cryptoIdToCoinName = useCallback((cryptoId: CryptoId) => coins[cryptoId]?.name, [coins]);
+
     const cryptoIdToNativeCoinSymbol = useCallback(
         (cryptoId: CryptoId) => {
             const { networkId } = parseCryptoId(cryptoId);
@@ -119,6 +121,7 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
 
     return {
         cryptoIdToPlatformName,
+        cryptoIdToCoinName,
         cryptoIdToCoinSymbol,
         cryptoIdToNativeCoinSymbol,
         buildCryptoOptions,

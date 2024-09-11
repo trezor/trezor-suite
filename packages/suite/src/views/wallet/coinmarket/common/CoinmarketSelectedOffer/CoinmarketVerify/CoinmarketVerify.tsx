@@ -75,7 +75,6 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
         form,
         selectedAccountOption,
         accountAddress,
-        receiveNetwork,
         selectAccountOptions,
         isMenuOpen,
         getTranslationIds,
@@ -144,7 +143,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                         />
                     </CustomLabel>
                     <CoinmarketVerifyOptions
-                        receiveNetwork={receiveNetwork ?? currency}
+                        receiveNetwork={currency}
                         selectedAccountOption={selectedAccountOption}
                         selectAccountOptions={selectAccountOptions}
                         isMenuOpen={isMenuOpen}
