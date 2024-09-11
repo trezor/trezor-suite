@@ -238,7 +238,7 @@ export const getAccountTypeName = ({ path, accountType, networkType }: getAccoun
             case 'legacy':
                 return 'TR_ACCOUNT_TYPE_LEGACY';
             case 'normal':
-                return 'TR_ACCOUNT_TYPE_NORMAL';
+                return 'TR_ACCOUNT_TYPE_DEFAULT';
         }
     } else {
         switch (accountType?.toLowerCase()) {
