@@ -60,6 +60,7 @@ export const MultiShareBackupStep1FirstInfo = ({
                         isChecked={isChecked1}
                         onClick={toggleCheckbox1}
                         variant={checkboxVariant1}
+                        data-testid={`@multi-share-backup/checkbox/1`}
                     >
                         <Translation id="TR_MULTI_SHARE_BACKUP_CHECKBOX_1" />
                     </Checkbox>
@@ -67,6 +68,7 @@ export const MultiShareBackupStep1FirstInfo = ({
                         isChecked={isChecked2}
                         onClick={toggleCheckbox2}
                         variant={checkboxVariant2}
+                        data-testid={`@multi-share-backup/checkbox/2`}
                     >
                         <Translation id="TR_MULTI_SHARE_BACKUP_CHECKBOX_2" />
                     </Checkbox>
