@@ -28,6 +28,7 @@ import {
 import { EventType, analytics } from '@suite-native/analytics';
 
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
+import { NoPassphraseButton } from './NoPassphraseButton';
 
 const FORM_CARD_PADDING = 12;
 
@@ -150,6 +151,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                                         horizontalMargin={FORM_CARD_PADDING}
                                     />
                                     <EnterPassphraseOnTrezorButton />
+                                    <NoPassphraseButton />
                                 </VStack>
                             </Animated.View>
                         )}

@@ -789,6 +789,9 @@ export const en = {
             title: 'Continue on Trezor',
             subtitle: 'Enter your passphrase on your Trezor',
         },
+        noPassphrase: {
+            button: 'No passphrase',
+        },
         loading: {
             title: 'Checking passphrase wallet for balances & transactions',
             subtitle: 'This might take up to a minute.',
