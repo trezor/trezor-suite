@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 import { CoinLogo, variables } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { CustomBackends } from './CustomBackends/CustomBackends';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 import { useSelector } from 'src/hooks/suite';
-import { networksCompatibility } from '@suite-common/wallet-config';
 
 const Section = styled.div`
     display: flex;
@@ -40,11 +39,7 @@ interface AdvancedCoinSettingsModalProps {
 
 export const AdvancedCoinSettingsModal = ({ coin, onCancel }: AdvancedCoinSettingsModalProps) => {
     const blockchain = useSelector(state => state.wallet.blockchain);
-    const network = networksCompatibility.find(network => network.symbol === coin);
-
-    if (!network) {
-        return null;
-    }
+    const network = networks[coin];
 
     const { symbol, name, features, testnet: isTestnet } = network;
     const hasCustomBackend = !!blockchain[symbol].backends.selected;
