@@ -74,7 +74,7 @@ export const CoinmarketLayout = ({
                 )}
             </WalletSubpageHeading>
 
-            <CoinmarketLayoutNavigation />
+            <CoinmarketLayoutNavigation selectedAccount={selectedAccount} />
 
             <Layout>
                 <CardWrapper>
