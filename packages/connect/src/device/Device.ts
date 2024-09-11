@@ -557,7 +557,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async checkFirmwareRevision() {
         const firmwareVersion = this.getVersion();
 
-        if (firmwareVersion.length === 0 || !this.features) {
+        if (!firmwareVersion || !this.features) {
             return; // This happens when device has no features (not yet connected)
         }
 
@@ -594,9 +594,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return this._uploadTranslationData(binary);
         }
 
+        const version = this.getVersion();
+        if (!version) {
+            throw ERRORS.TypedError('Runtime', 'changeLanguage: device version unknown');
+        }
+
         const downloadedBinary = await getLanguage({
             language,
-            version: this.getVersion(),
+            version,
             internal_model: this.features.internal_model,
         });
 
@@ -669,14 +674,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
             feat.internal_model = ensureInternalModelFeature(feat.model);
         }
 
-        const version = [
+        const version = this.getVersion();
+        const newVersion = [
             feat.major_version,
             feat.minor_version,
             feat.patch_version,
         ] satisfies VersionArray;
 
         // check if FW version or capabilities did change
-        if (!versionUtils.isEqual(version, this.getVersion() as VersionArray)) {
+        if (!version || !versionUtils.isEqual(version, newVersion)) {
             this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
             this.firmwareStatus = getFirmwareStatus(feat);
             this.firmwareRelease = getRelease(feat);
@@ -748,8 +754,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.inconsistent;
     }
 
-    getVersion(): VersionArray | [] {
-        if (!this.features) return [];
+    getVersion(): VersionArray | undefined {
+        if (!this.features) return;
 
         return [
             this.features.major_version,
@@ -759,11 +765,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     atLeast(versions: string[] | string) {
-        if (!this.features) return false;
+        const version = this.getVersion();
+        if (!this.features || !version) return false;
         const modelVersion =
             typeof versions === 'string' ? versions : versions[this.features.major_version - 1];
 
-        return versionUtils.isNewerOrEqual(this.getVersion().join('.'), modelVersion);
+        return versionUtils.isNewerOrEqual(version, modelVersion);
     }
 
     isUsed() {
