@@ -44,17 +44,17 @@ const TodayHeaderCell = ({ cryptoValue, network, historicRate }: TodayHeaderCell
 
     const fiatTotalHistoryNumeric = pipe(
         convertCryptoToFiatAmount({
-            value: cryptoValue,
+            amount: cryptoValue,
+            networkSymbol: network,
             rate: historicRate,
-            network,
         }) ?? 0,
         Number,
     );
     const fiatTotalActualNumeric = pipe(
         convertCryptoToFiatAmount({
-            value: cryptoValue,
+            amount: cryptoValue,
+            networkSymbol: network,
             rate: currentRates?.rate,
-            network,
         }),
         Number,
     );

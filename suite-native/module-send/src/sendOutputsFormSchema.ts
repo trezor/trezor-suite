@@ -10,20 +10,21 @@ export type SendFormFormContext = {
     networkSymbol?: NetworkSymbol;
     availableAccountBalance?: string;
     networkFeeInfo?: FeeInfo;
+    isValueInSats?: boolean;
 };
 
-const isAmountDust = ({
-    value,
-    networkSymbol,
-    isValueInSats,
-    networkFeeInfo,
-}: {
-    value: string;
-    networkSymbol: NetworkSymbol;
-    isValueInSats: boolean;
-    networkFeeInfo: FeeInfo;
-}) => {
-    const valueBigNumber = new BigNumber(value);
+const isAmountDust = (amount: string, context?: SendFormFormContext) => {
+    if (!amount || !context) {
+        return false;
+    }
+
+    const { networkSymbol, networkFeeInfo, isValueInSats } = context;
+
+    if (!networkSymbol || !networkFeeInfo) {
+        return false;
+    }
+
+    const amountBigNumber = new BigNumber(amount);
     const rawDust = networkFeeInfo.dustLimit?.toString();
 
     const dustThreshold =
@@ -33,27 +34,27 @@ const isAmountDust = ({
         return false;
     }
 
-    return valueBigNumber.lt(dustThreshold);
+    return amountBigNumber.lt(dustThreshold);
 };
 
-const isAmountHigherThanBalance = ({
-    value,
-    networkSymbol,
-    isValueInSats,
-    availableAccountBalance,
-}: {
-    value: string;
-    networkSymbol: NetworkSymbol;
-    isValueInSats: boolean;
-    availableAccountBalance: string;
-}) => {
+const isAmountHigherThanBalance = (amount: string, context?: SendFormFormContext) => {
+    if (!amount || !context) {
+        return false;
+    }
+
+    const { networkSymbol, networkFeeInfo, availableAccountBalance, isValueInSats } = context;
+
+    if (!networkSymbol || !networkFeeInfo || !availableAccountBalance) {
+        return false;
+    }
+
     const formattedAvailableBalance = isValueInSats
         ? availableAccountBalance
         : formatNetworkAmount(availableAccountBalance, networkSymbol);
 
-    const valueBig = new BigNumber(value);
+    const amountBigNumber = new BigNumber(amount);
 
-    return valueBig.gt(formattedAvailableBalance);
+    return amountBigNumber.gt(formattedAvailableBalance);
 };
 
 // TODO: change error messages copy when is design ready
@@ -85,36 +86,14 @@ export const sendOutputsFormValidationSchema = yup.object({
                         'is-dust-amount',
                         'The value is lower than dust threshold.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                            if (!context || !value) return false;
-                            const { networkSymbol, networkFeeInfo } = context;
-
-                            if (!networkSymbol || !networkFeeInfo) return false;
-
-                            return !isAmountDust({
-                                value,
-                                networkSymbol,
-                                isValueInSats: false,
-                                networkFeeInfo,
-                            });
+                            return !isAmountDust(value, context);
                         },
                     )
                     .test(
                         'is-higher-than-balance',
                         'Amount is higher than available balance.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                            if (!context || !value) return false;
-                            const { networkSymbol, networkFeeInfo, availableAccountBalance } =
-                                context;
-
-                            if (!networkSymbol || !networkFeeInfo || !availableAccountBalance)
-                                return false;
-
-                            return !isAmountHigherThanBalance({
-                                value,
-                                networkSymbol,
-                                isValueInSats: false,
-                                availableAccountBalance,
-                            });
+                            return !isAmountHigherThanBalance(value, context);
                         },
                     ),
                 fiat: yup.string(),

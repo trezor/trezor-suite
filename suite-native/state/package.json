@@ -31,7 +31,6 @@
         "@suite-native/module-send": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
-        "@trezor/connect": "workspace:*",
         "@trezor/transport-native": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-device": "6.0.2",

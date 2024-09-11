@@ -1,6 +1,7 @@
 import { configureStore, Middleware, StoreEnhancer } from '@reduxjs/toolkit';
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 
+import { sendFormMiddleware } from '@suite-native/module-send/src/sendFormMiddleware';
 import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { prepareButtonRequestMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
@@ -17,6 +18,7 @@ const middlewares: Middleware[] = [
     prepareDeviceMiddleware(extraDependencies),
     prepareButtonRequestMiddleware(extraDependencies),
     prepareDiscoveryMiddleware(extraDependencies),
+    sendFormMiddleware,
 ];
 
 const enhancers: Array<StoreEnhancer<any, any>> = [];

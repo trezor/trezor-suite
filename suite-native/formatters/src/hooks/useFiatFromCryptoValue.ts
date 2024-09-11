@@ -47,9 +47,9 @@ export const useFiatFromCryptoValue = ({
     }
 
     return convertCryptoToFiatAmount({
+        amount: cryptoValue,
+        networkSymbol: network,
+        isAmountInSats: !isBalance,
         rate,
-        network,
-        isBalance,
-        value: cryptoValue,
     });
 };

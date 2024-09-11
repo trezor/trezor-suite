@@ -12,12 +12,14 @@ import {
     selectSendFormDraftByAccountKey,
     sendFormActions,
     signTransactionThunk,
+    selectSendFormDrafts,
 } from '@suite-common/wallet-core';
 import {
     Account,
     AccountKey,
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
@@ -107,5 +109,20 @@ export const sendTransactionAndCleanupSendFormThunk = createThunk<
         dispatch(cleanupSendFormThunk({ accountKey: account.key }));
 
         return response.payload.payload;
+    },
+);
+
+export const removeSendFormDraftsSupportingAmountUnitThunk = createThunk(
+    `${SEND_MODULE_PREFIX}/removeSendFormDraftsSupportingAmountUnitThunk`,
+    (_, { dispatch, getState }) => {
+        const sendFormDrafts = selectSendFormDrafts(getState());
+        const accountKeys = Object.keys(sendFormDrafts);
+
+        accountKeys.forEach(accountKey => {
+            const account = selectAccountByKey(getState(), accountKey);
+            if (account && hasNetworkFeatures(account, 'amount-unit')) {
+                dispatch(sendFormActions.removeDraft({ accountKey }));
+            }
+        });
     },
 );

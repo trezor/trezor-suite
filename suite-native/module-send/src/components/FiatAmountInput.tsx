@@ -10,7 +10,8 @@ import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 import { SendAmountCurrencyLabelWrapper, sendAmountInputWrapperStyle } from './CryptoAmountInput';
 import { SendAmountInputProps } from '../types';
-import { getOutputFieldName, sendAmountTransformer } from '../utils';
+import { useSendAmountTransformers } from '../useSendAmountTransformers';
+import { getOutputFieldName } from '../utils';
 
 export const FiatAmountInput = ({
     recipientIndex,
@@ -23,10 +24,8 @@ export const FiatAmountInput = ({
     const { applyStyle } = useNativeStyles();
     const { setValue } = useFormContext();
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const converters = useCryptoFiatConverters({
-        networkSymbol,
-        isBalance: true,
-    });
+    const { fiatAmountTransformer } = useSendAmountTransformers(networkSymbol);
+    const converters = useCryptoFiatConverters({ networkSymbol });
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
     const fiatFieldName = getOutputFieldName(recipientIndex, 'fiat');
@@ -41,7 +40,7 @@ export const FiatAmountInput = ({
 
     const { onChange, onBlur, value } = useField({
         name: fiatFieldName,
-        valueTransformer: sendAmountTransformer,
+        valueTransformer: fiatAmountTransformer,
     });
 
     const handleChangeValue = (newValue: string) => {

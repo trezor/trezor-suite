@@ -32,6 +32,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { FormState } from '@suite-common/wallet-types';
 import { useForm, Form } from '@suite-native/forms';
+import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/settings';
 
 import { SendScreen } from '../components/SendScreen';
 import { SendOutputFields } from '../components/SendOutputFields';
@@ -79,6 +80,9 @@ export const SendOutputsScreen = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
+        selectIsAmountInSats(state, account?.symbol),
+    );
     const networkFeeInfo = useSelector((state: FeesRootState) =>
         selectNetworkFeeInfo(state, account?.symbol),
     );
@@ -92,7 +96,7 @@ export const SendOutputsScreen = ({
             networkFeeInfo,
             networkSymbol: account?.symbol,
             availableAccountBalance: account?.availableBalance,
-            mode: 'onChange',
+            isValueInSats: isAmountInSats,
         },
         defaultValues: {
             outputs: [
