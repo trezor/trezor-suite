@@ -1,6 +1,6 @@
 import { css, useTheme } from 'styled-components';
 
-import { Colors, spacings, spacingsPx } from '@trezor/theme';
+import { Colors, palette, spacings, spacingsPx } from '@trezor/theme';
 import type { UIHorizontalAlignment, UISize, UIVariant } from '../../config/types';
 import { hexToRgba } from '@suite-common/suite-utils';
 
@@ -80,6 +80,7 @@ export const useVariantStyle = (
     isSubtle: boolean,
 ): ReturnType<typeof css> => {
     const theme = useTheme();
+    const isDarkMode = theme.mode === 'dark';
 
     const variantsColors: Record<ButtonVariant, Record<string, string | Colors>> = {
         primary: {
@@ -88,8 +89,13 @@ export const useVariantStyle = (
             text: theme.textOnPrimary,
         },
         tertiary: {
-            background: theme.backgroundTertiaryDefaultOnElevation0,
-            backgroundHover: theme.backgroundTertiaryPressedOnElevation0,
+            // temporary hack until colors are properly defined
+            background: isDarkMode
+                ? hexToRgba(palette.lightWhiteAlpha1000, 0.16)
+                : hexToRgba(palette.lightGray1000, 0.12),
+            backgroundHover: isDarkMode
+                ? hexToRgba(palette.lightWhiteAlpha1000, 0.24)
+                : hexToRgba(palette.lightGray1000, 0.16),
             text: theme.textOnTertiary,
         },
         info: {
