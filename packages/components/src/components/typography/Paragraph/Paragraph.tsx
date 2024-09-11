@@ -1,6 +1,6 @@
 import React from 'react';
-import styled, { DefaultTheme } from 'styled-components';
-import { CSSColor, Color, typography, TypographyStyle } from '@trezor/theme';
+import styled from 'styled-components';
+import { Text, TextVariant, textVariants, allowedTextTextProps } from '../Text/Text';
 import {
     FrameProps,
     FramePropsKeys,
@@ -8,7 +8,10 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
-import { UIVariant } from '../../../config/types';
+import { TextProps, TextPropsKeys, withTextProps } from '../utils';
+
+export const allowedParagraphTextProps: TextPropsKeys[] = [...allowedTextTextProps, 'align'];
+type AllowedParagraphTextProps = Pick<TextProps, (typeof allowedParagraphTextProps)[number]>;
 
 export const allowedParagraphFrameProps = [
     'margin',
@@ -16,58 +19,28 @@ export const allowedParagraphFrameProps = [
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedParagraphFrameProps)[number]>;
 
-export const paragraphVariants = [
-    'primary',
-    'secondary',
-    'tertiary',
-    'info',
-    'warning',
-    'destructive',
-] as const;
+export const paragraphVariants = textVariants;
 
-export type ParagraphVariant = Extract<UIVariant, (typeof paragraphVariants)[number]>;
-
-export type ParagraphProps = AllowedFrameProps & {
-    typographyStyle?: TypographyStyle;
-    variant?: ParagraphVariant;
-    className?: string;
-    'data-testid'?: string;
-    children: React.ReactNode;
-};
-
-const mapVariantToColor = ({
-    $variant,
-    theme,
-}: {
-    $variant: ParagraphVariant;
-    theme: DefaultTheme;
-}): CSSColor => {
-    const colorMap: Record<ParagraphVariant, Color> = {
-        primary: 'textPrimaryDefault',
-        secondary: 'textSecondaryHighlight',
-        tertiary: 'textSubdued',
-        info: 'textAlertBlue',
-        warning: 'textAlertYellow',
-        destructive: 'textAlertRed',
+export type ParagraphProps = AllowedFrameProps &
+    AllowedParagraphTextProps & {
+        variant?: TextVariant;
+        className?: string;
+        'data-testid'?: string;
+        children: React.ReactNode;
     };
 
-    return theme[colorMap[$variant]];
-};
-
-type StyledPProps = TransientProps<AllowedFrameProps> & {
-    $typographyStyle: TypographyStyle;
-    $variant?: ParagraphVariant;
-};
-
-const P = styled.p<StyledPProps>`
-    ${({ $typographyStyle }) => typography[$typographyStyle]}
-    ${({ $variant, theme }) => $variant && `color: ${mapVariantToColor({ $variant, theme })};`}
+const P = styled.p<
+    TransientProps<AllowedFrameProps> & TransientProps<Pick<AllowedParagraphTextProps, 'align'>>
+>`
+    ${withTextProps}
     ${withFrameProps}
 `;
 
 export const Paragraph = ({
     className,
     typographyStyle = 'body',
+    textWrap,
+    align,
     'data-testid': dataTest,
     children,
     variant,
@@ -79,10 +52,12 @@ export const Paragraph = ({
         <P
             className={className}
             data-testid={dataTest}
-            {...makePropsTransient({ variant, typographyStyle })}
+            {...makePropsTransient({ align })}
             {...frameProps}
         >
-            {children}
+            <Text typographyStyle={typographyStyle} textWrap={textWrap} variant={variant}>
+                {children}
+            </Text>
         </P>
     );
 };
