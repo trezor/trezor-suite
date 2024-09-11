@@ -10,23 +10,19 @@ import {
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 import { TextProps as TextPropsCommon, TextPropsKeys, withTextProps } from '../utils';
 
-export const allowedHeadingTextProps: TextPropsKeys[] = ['typographyStyle', 'textWrap'];
+export const allowedHeadingTextProps: TextPropsKeys[] = ['typographyStyle', 'textWrap', 'align'];
 type AllowedHeadingTextProps = Pick<TextPropsCommon, (typeof allowedHeadingTextProps)[number]>;
 
 export const allowedHeadingFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedHeadingFrameProps)[number]>;
 
-type Align = 'left' | 'center' | 'right';
-
 type HeadingProps = TransientProps<AllowedFrameProps> &
     TransientProps<AllowedHeadingTextProps> & {
-        $align?: Align;
         $color?: Color;
     };
 
 const Heading = styled.h1<HeadingProps>`
     ${({ $color, theme }) => $color && `color: ${theme[$color]}`};
-    ${({ $align = 'left' }) => `text-align: ${$align};`}
 
     ${withTextProps}
     ${withFrameProps}
@@ -35,7 +31,6 @@ const Heading = styled.h1<HeadingProps>`
 type HProps = AllowedFrameProps &
     AllowedHeadingTextProps & {
         color?: Color;
-        align?: Align;
         children: React.ReactNode;
         className?: string;
         onClick?: () => void;

@@ -11,5 +11,8 @@ export type UIVariant = (typeof uiVariants)[number];
 export const uiSizes = ['large', 'medium', 'small', 'tiny'] as const;
 export type UISize = (typeof uiSizes)[number];
 
-export type UIHorizontalAlignment = 'left' | 'center' | 'right';
-export type UIVerticalAlignment = 'top' | 'center' | 'bottom';
+export const uiHorizontalAlignments = ['left', 'center', 'right'] as const;
+export type UIHorizontalAlignment = (typeof uiHorizontalAlignments)[number];
+
+export const uiVerticalAlignments = ['top', 'center', 'bottom'] as const;
+export type UIVerticalAlignment = (typeof uiVerticalAlignments)[number];

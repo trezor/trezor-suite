@@ -1,5 +1,6 @@
 import { typography, TypographyStyle, typographyStyles } from '@trezor/theme';
 import { TransientProps } from '../../utils/transientProps';
+import { UIHorizontalAlignment, uiHorizontalAlignments } from '../../config/types';
 import { css } from 'styled-components';
 
 export const textWraps = ['balance', 'break-word'];
@@ -8,13 +9,14 @@ export type TextWrap = (typeof textWraps)[number];
 export type TextProps = {
     typographyStyle?: TypographyStyle;
     textWrap?: TextWrap;
+    align?: UIHorizontalAlignment;
 };
 
 export type TextPropsKeys = keyof TextProps;
 
 type TransientTextProps = TransientProps<TextProps>;
 
-export const withTextProps = ({ $textWrap, $typographyStyle }: TransientTextProps) => {
+export const withTextProps = ({ $textWrap, $typographyStyle, $align }: TransientTextProps) => {
     return css`
         ${$textWrap &&
         css`
@@ -25,6 +27,10 @@ export const withTextProps = ({ $textWrap, $typographyStyle }: TransientTextProp
                   ${typography[$typographyStyle]}
               `
             : ''}
+        ${$align &&
+        css`
+            text-align: ${$align};
+        `}
     `;
 };
 
@@ -40,6 +46,13 @@ const getStorybookType = (key: TextPropsKeys) => {
         case 'typographyStyle':
             return {
                 options: [undefined, ...typographyStyles],
+                control: {
+                    type: 'select',
+                },
+            };
+        case 'align':
+            return {
+                options: [undefined, ...uiHorizontalAlignments],
                 control: {
                     type: 'select',
                 },
@@ -71,6 +84,7 @@ export const getTextPropsStory = (allowedTextProps: Array<TextPropsKeys>) => {
         args: {
             ...(allowedTextProps.includes('textWrap') ? { textWrap: undefined } : {}),
             ...(allowedTextProps.includes('typographyStyle') ? { typographyStyle: undefined } : {}),
+            ...(allowedTextProps.includes('align') ? { align: undefined } : {}),
         },
         argTypes,
     };

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { UIVariant } from '../../../config/types';
 import { CSSColor, Color, Colors, TypographyStyle } from '@trezor/theme';
 import { ReactNode } from 'react';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
@@ -10,6 +9,7 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { TextPropsKeys, TextWrap, withTextProps, TextProps as TextPropsCommon } from '../utils';
+import { uiVariants } from '../../../config/types';
 
 export const allowedTextTextProps = [
     'typographyStyle',
@@ -20,9 +20,8 @@ type AllowedTextTextProps = Pick<TextPropsCommon, (typeof allowedTextTextProps)[
 export const allowedTextFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextFrameProps)[number]>;
 
-export type TextVariant =
-    | Extract<UIVariant, 'primary' | 'secondary' | 'tertiary' | 'info' | 'warning' | 'destructive'>
-    | 'purple';
+export const textVariants = [...uiVariants, 'purple'] as const;
+export type TextVariant = (typeof textVariants)[number];
 
 type ExclusiveColorOrVariant =
     | { variant?: TextVariant; color?: undefined }
