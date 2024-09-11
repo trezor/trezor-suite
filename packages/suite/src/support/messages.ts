@@ -2735,9 +2735,9 @@ export default defineMessages({
         id: 'TR_ACCOUNT_TYPE_IMPORTED',
         dynamic: true,
     },
-    TR_ACCOUNT_TYPE_NORMAL: {
-        defaultMessage: 'Normal',
-        id: 'TR_ACCOUNT_TYPE_NORMAL',
+    TR_ACCOUNT_TYPE_DEFAULT: {
+        defaultMessage: 'Default',
+        id: 'TR_ACCOUNT_TYPE_DEFAULT',
         dynamic: true,
     },
     TR_ACCOUNT_TYPE_SEGWIT: {
