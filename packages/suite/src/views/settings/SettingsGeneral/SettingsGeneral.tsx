@@ -29,7 +29,7 @@ import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { AddressDisplay } from './AddressDisplay';
 import { EnableViewOnly } from './EnableViewOnly';
 import { Experimental } from './Experimental';
-import { networksCompatibility } from '@suite-common/wallet-config';
+import { networks, NetworkFeature } from '@suite-common/wallet-config';
 import { TorSnowflake } from './TorSnowflake';
 import { AutomaticUpdate } from './AutomaticUpdate';
 
@@ -47,10 +47,11 @@ export const SettingsGeneral = () => {
         selectHasExperimentalFeature('tor-snowflake'),
     );
 
-    const hasBitcoinNetworks = networksCompatibility.some(
-        ({ symbol, features }) =>
-            enabledNetworks.includes(symbol) && features?.includes('amount-unit'),
-    );
+    const hasBitcoinNetworks = enabledNetworks.some(symbol => {
+        const networkFeatures: NetworkFeature[] = networks[symbol].features;
+
+        return networkFeatures.includes('amount-unit');
+    });
 
     const isMetadataEnabled = metadata.enabled && !metadata.initiating;
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
