@@ -37,6 +37,7 @@ type HProps = AllowedFrameProps &
         color?: Color;
         align?: Align;
         children: React.ReactNode;
+        className?: string;
         onClick?: () => void;
         'data-testid'?: string;
     };
@@ -49,6 +50,7 @@ export const H1 = ({
     onClick,
     'data-testid': dataTest,
     children,
+    className,
     ...rest
 }: HProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
@@ -58,6 +60,7 @@ export const H1 = ({
             as="h1"
             onClick={onClick}
             data-testid={dataTest}
+            className={className}
             {...makePropsTransient({ color, align, typographyStyle, textWrap })}
             {...frameProps}
         >
@@ -74,6 +77,7 @@ export const H2 = ({
     onClick,
     'data-testid': dataTest,
     children,
+    className,
     ...rest
 }: HProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
@@ -83,6 +87,7 @@ export const H2 = ({
             as="h2"
             onClick={onClick}
             data-testid={dataTest}
+            className={className}
             {...makePropsTransient({ color, align, typographyStyle, textWrap })}
             {...frameProps}
         >
@@ -99,6 +104,7 @@ export const H3 = ({
     onClick,
     'data-testid': dataTest,
     children,
+    className,
     ...rest
 }: HProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
@@ -108,6 +114,7 @@ export const H3 = ({
             as="h3"
             onClick={onClick}
             data-testid={dataTest}
+            className={className}
             {...makePropsTransient({ color, align, typographyStyle, textWrap })}
             {...frameProps}
         >
