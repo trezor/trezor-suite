@@ -91,7 +91,10 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                     ),
                     bottomBarComponents: (
                         <>
-                            <Button onClick={goToStepNextStep}>
+                            <Button
+                                onClick={goToStepNextStep}
+                                data-testid="@multi-share-backup/1st-info/submit-button"
+                            >
                                 <Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />
                             </Button>
                             <LearnMoreButton
@@ -142,7 +145,10 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                     children: <MultiShareBackupStep2SecondInfo />,
                     bottomBarComponents: (
                         <>
-                            <Button onClick={enterBackup}>
+                            <Button
+                                onClick={enterBackup}
+                                data-testid="@multi-share-backup/2nd-info/submit-button"
+                            >
                                 <Translation id="TR_ENTER_EXISTING_BACKUP" />
                             </Button>
                             <LearnMoreButton url={TREZOR_SUPPORT_RECOVERY_ISSUES_URL} size="medium">
@@ -179,7 +185,10 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                     children: <MultiShareBackupStep5Done />,
                     bottomBarComponents: (
                         <>
-                            <Button onClick={handleCancel}>
+                            <Button
+                                onClick={handleCancel}
+                                data-testid="@multi-share-backup/done/got-it-button"
+                            >
                                 <Translation id="TR_GOT_IT_BUTTON" />
                             </Button>
                             <LearnMoreButton url={HELP_CENTER_KEEPING_SEED_SAFE_URL} size="medium">
