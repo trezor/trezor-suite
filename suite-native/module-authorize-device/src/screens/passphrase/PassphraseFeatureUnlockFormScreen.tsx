@@ -37,6 +37,7 @@ export const PassphraseFeatureUnlockFormScreen = () => {
                 </Text>
                 <PassphraseForm
                     inputLabel={translate('modulePassphrase.form.createWalletInputLabel')}
+                    noPassphraseEnabled
                 />
             </VStack>
         </Screen>
