@@ -6,89 +6,44 @@ import {
     isVersionArray,
 } from '../src/versionUtils';
 
-describe('versionUtils', () => {
-    describe('isNewer', () => {
-        // older
-        it('it should return false [0, 0, 1] [0, 0, 2]', () => {
-            const result = isNewer([1, 0, 1], [1, 0, 2]);
-            expect(result).toBe(false);
-        });
+const fixture = [
+    [[1, 0, 0], '1.0.0-beta'],
+    [[1, 0, 1]],
+    [[1, 0, 2], '1.0.2'],
+    [[1, 1, 1]],
+    [[1, 20, 1], '1.20.1-prerelase', '1.20.1-foo.4.5.6'],
+    [[2, 1, 1]],
+] satisfies ([number, number, number] | string)[][];
 
-        it('it should return false [0, 1, 1] [0, 2, 1]', () => {
-            const result = isNewer([1, 1, 1], [1, 2, 1]);
-            expect(result).toBe(false);
-        });
-
-        it('it should return false [1, 1, 1] [2, 1, 1]', () => {
-            const result = isNewer([1, 1, 1], [2, 1, 1]);
-            expect(result).toBe(false);
-        });
-
-        it('it should return false [1, 0, 0], [1, 0, 1]', () => {
-            const result = isNewer([1, 0, 0], [1, 0, 1]);
-            expect(result).toBe(false);
-        });
-
-        // newer
-        it('it should return true [0, 0, 2] [0, 0, 1]', () => {
-            const result = isNewer([1, 0, 2], [1, 0, 1]);
-            expect(result).toBe(true);
-        });
-
-        it('it should return true [0, 2, 1] [0, 1, 1]', () => {
-            const result = isNewer([1, 2, 1], [1, 1, 1]);
-            expect(result).toBe(true);
-        });
-
-        it('it should return true [2, 1, 1] [1, 1, 1]', () => {
-            const result = isNewer([2, 1, 1], [1, 1, 1]);
-            expect(result).toBe(true);
-        });
-
-        it('it should return true [1, 0, 1], [1, 0, 0]', () => {
-            const result = isNewer([1, 0, 1], [1, 0, 0]);
-            expect(result).toBe(true);
-        });
-
-        // equal
-        it('it should return false [1, 1, 1] [1, 1, 1]', () => {
-            const result = isNewer([1, 1, 1], [1, 1, 1]);
-            expect(result).toEqual(false);
+const testMatrix = (
+    testCase: (first: any, second: any) => any,
+    expectedResult: (firstIndex: number, secondIndex: number) => boolean,
+) => {
+    fixture.forEach((firstSet, firstIndex) => {
+        fixture.forEach((secondSet, secondIndex) => {
+            firstSet.forEach(first => {
+                secondSet.forEach(second => {
+                    const expected = expectedResult(firstIndex, secondIndex);
+                    it(`${first} and ${second} should return ${expected}`, () => {
+                        expect(testCase(first, second)).toBe(expected);
+                    });
+                });
+            });
         });
     });
+};
 
-    describe('isEqual', () => {
-        it('it should return false [1, 0, 0], [1, 0, 1]', () => {
-            const result = isEqual([1, 0, 0], [1, 0, 1]);
-            expect(result).toBe(false);
-        });
-
-        it('it should return false [1, 0, 1], [1, 0, 0]', () => {
-            const result = isEqual([1, 0, 1], [1, 0, 0]);
-            expect(result).toBe(false);
-        });
-
-        it('it should return true [1, 1, 1], [1, 1, 1]', () => {
-            const result = isEqual([1, 1, 1], [1, 1, 1]);
-            expect(result).toBe(true);
-        });
+describe('versionUtils', () => {
+    describe('isNewer', () => {
+        testMatrix(isNewer, (a, b) => a > b);
     });
 
     describe('isNewerOrEqual', () => {
-        it('it should return false [1, 0, 0], [1, 0, 1]', () => {
-            const result = isNewerOrEqual([1, 0, 0], [1, 0, 1]);
-            expect(result).toBe(false);
-        });
+        testMatrix(isNewerOrEqual, (a, b) => a >= b);
+    });
 
-        it('it should return true [1, 0, 1], [1, 0, 0]', () => {
-            const result = isNewerOrEqual([1, 0, 1], [1, 0, 0]);
-            expect(result).toBe(true);
-        });
-
-        it('it should return true [1, 1, 1], [1, 1, 1]', () => {
-            const result = isNewerOrEqual([1, 1, 1], [1, 1, 1]);
-            expect(result).toBe(true);
-        });
+    describe('isEqual', () => {
+        testMatrix(isEqual, (a, b) => a === b);
     });
 
     describe('normalizeVersion', () => {

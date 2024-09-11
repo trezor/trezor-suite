@@ -1,44 +1,27 @@
+import { throwError } from './throwError';
+
 type VersionArray = [number, number, number];
 type VersionInput = VersionArray | string;
 
-export const isVersionArray = (arr: unknown): arr is VersionArray => {
-    // Check if argument is an actual array
-    if (!Array.isArray(arr)) {
-        return false;
-    }
+export const isVersionArray = (arr: unknown): arr is VersionArray =>
+    Array.isArray(arr) &&
+    arr.length === 3 &&
+    arr.every(number => typeof number === 'number' && number >= 0);
 
-    // Array has invalid length
-    if (arr.length !== 3) {
-        return false;
-    }
+const tryParse = (version: string): VersionArray | null =>
+    version
+        .match(/^(\d+)\.(\d+)\.(\d+)([+-].*)?$/) // three groups of digits separated by dot, optionally ending with '-whatever.123.@' or '+anything.456.#'
+        ?.slice(1, 4)
+        .map(n => Number(n)) as VersionArray;
 
-    // Check for invalid numbers in the array
-    for (let i = 0; i < arr.length; i++) {
-        const versionNumber = arr[i];
-        if (typeof versionNumber !== 'number' || versionNumber < 0) {
-            return false;
-        }
-    }
+const validateArray = (version: VersionArray) => (isVersionArray(version) ? version : null);
 
-    return true;
-};
+const ensureArray = (version: VersionInput): VersionArray =>
+    (typeof version === 'string' ? tryParse(version) : validateArray(version)) ??
+    throwError(`version string is in wrong format: ${version}`);
 
-const parse = (versionArr: VersionArray) => ({
-    major: versionArr[0],
-    minor: versionArr[1],
-    patch: versionArr[2],
-});
-
-const split = (version: string) => {
-    const arr = version.split('.').map(v => Number(v));
-    if (!isVersionArray(arr)) {
-        throw new Error(`version string is in wrong format: ${version}`);
-    }
-
-    return arr;
-};
-
-const versionToString = (arr: VersionArray) => `${arr[0]}.${arr[1]}.${arr[2]}`;
+const compare = ([majorX, minorX, patchX]: VersionArray, [majorY, minorY, patchY]: VersionArray) =>
+    majorX - majorY || minorX - minorY || patchX - patchY;
 
 /**
  * Is versionX (first arg) newer than versionY (second arg)
@@ -46,22 +29,8 @@ const versionToString = (arr: VersionArray) => `${arr[0]}.${arr[1]}.${arr[2]}`;
  * - string: '1.0.0'
  * - array:  [1, 0, 0]
  */
-export const isNewer = (versionX: VersionInput, versionY: VersionInput) => {
-    const parsedX = parse(typeof versionX === 'string' ? split(versionX) : versionX);
-    const parsedY = parse(typeof versionY === 'string' ? split(versionY) : versionY);
-
-    if (parsedX.major - parsedY.major !== 0) {
-        return parsedX.major > parsedY.major;
-    }
-    if (parsedX.minor - parsedY.minor !== 0) {
-        return parsedX.minor > parsedY.minor;
-    }
-    if (parsedX.patch - parsedY.patch !== 0) {
-        return parsedX.patch > parsedY.patch;
-    }
-
-    return false;
-};
+export const isNewer = (versionX: VersionInput, versionY: VersionInput) =>
+    compare(ensureArray(versionX), ensureArray(versionY)) > 0;
 
 /**
  * Is versionX (first arg) equal versionY (second arg)
@@ -69,12 +38,8 @@ export const isNewer = (versionX: VersionInput, versionY: VersionInput) => {
  * - string: '1.0.0'
  * - array:  [1, 0, 0]
  */
-export const isEqual = (versionX: VersionInput, versionY: VersionInput) => {
-    const strX = typeof versionX === 'string' ? versionX : versionToString(versionX);
-    const strY = typeof versionY === 'string' ? versionY : versionToString(versionY);
-
-    return strX === strY;
-};
+export const isEqual = (versionX: VersionInput, versionY: VersionInput) =>
+    compare(ensureArray(versionX), ensureArray(versionY)) === 0;
 
 /**
  * Is versionX (first arg) newer or equal than versionY (second arg)
@@ -83,7 +48,7 @@ export const isEqual = (versionX: VersionInput, versionY: VersionInput) => {
  * - array:  [1, 0, 0]
  */
 export const isNewerOrEqual = (versionX: VersionInput, versionY: VersionInput) =>
-    isNewer(versionX, versionY) || isEqual(versionX, versionY);
+    compare(ensureArray(versionX), ensureArray(versionY)) >= 0;
 
 export const normalizeVersion = (version: string) =>
     // remove any zeros that are not preceded by Latin letters, decimal digits, underscores
