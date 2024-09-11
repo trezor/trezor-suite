@@ -3,7 +3,7 @@ import { DefaultTheme, css, useTheme } from 'styled-components';
 import { Color, Colors, Elevation, spacings, spacingsPx } from '@trezor/theme';
 import type { UIHorizontalAlignment, UISize, UIVariant } from '../../config/types';
 import { hexToRgba } from '@suite-common/suite-utils';
-import { capitalizeFirstLetter } from '@trezor/utils/lib';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 const SUBTLE_ALPHA = 0.12;
 const SUBTLE_ALPHA_HOVER = 0.2;
@@ -160,7 +160,6 @@ export const useVariantStyle = (
             textSubtle: theme.textAlertRed,
         },
     };
-    console.log('___', variantsColors[variant]);
 
     const colors = variantsColors[variant];
 
