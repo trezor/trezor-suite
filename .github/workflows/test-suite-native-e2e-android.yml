@@ -18,6 +18,7 @@ env:
 
 jobs:
   build_android_test_app:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_ENVIRONMENT: "debug"
@@ -79,6 +80,7 @@ jobs:
           key: android_test_build/${{ github.ref }}/${{github.run_id}}
 
   run_android_e2e_tests:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     needs: build_android_test_app
     steps:
