@@ -16,7 +16,11 @@ import {
     selectHasOnlyPortfolioDevice,
 } from '../device/deviceReducer';
 import { deviceActions } from '../device/deviceActions';
-import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
+import {
+    DiscoveryRootState,
+    selectHasDeviceDiscovery,
+    selectIsDeviceDiscoveryActive,
+} from '../discovery/discoveryReducer';
 
 export type AccountsState = Account[];
 
@@ -424,11 +428,17 @@ export const selectIsDeviceNotEmpty = (
 ) => {
     const deviceState = selectDeviceState(state);
     const nonEmptyAccounts = selectNonEmptyDeviceAccounts(state);
-    const isDeviceDiscoveryActive = selectIsDeviceDiscoveryActive(state);
+    const hasDiscovery = selectHasDeviceDiscovery(state);
 
-    if ((isDeviceDiscoveryActive || !deviceState) && A.isEmpty(nonEmptyAccounts)) {
+    const isNotEmpty = A.isNotEmpty(nonEmptyAccounts);
+
+    if (isNotEmpty) {
+        return true;
+    }
+
+    if (hasDiscovery || !deviceState) {
         return null;
     }
 
-    return A.isNotEmpty(nonEmptyAccounts);
+    return isNotEmpty;
 };

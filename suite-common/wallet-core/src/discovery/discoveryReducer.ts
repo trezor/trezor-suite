@@ -127,3 +127,6 @@ export const selectIsDiscoveryAuthConfirmationRequired = (
             discovery.status === DiscoveryStatus.COMPLETED)
     );
 };
+
+export const selectHasDeviceDiscovery = (state: DiscoveryRootState & DeviceRootState) =>
+    !!selectDeviceDiscovery(state);

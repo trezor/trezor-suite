@@ -11,7 +11,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsDeviceNotEmpty, selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectIsDeviceNotEmpty } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { finishPassphraseFlow } from '@suite-native/device-authorization';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -30,15 +30,14 @@ export const PassphraseLoadingScreen = () => {
     const dispatch = useDispatch();
 
     const isDeviceNotEmpty = useSelector(selectIsDeviceNotEmpty);
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
     useEffect(() => {
-        if (!isDiscoveryActive && isDeviceNotEmpty !== null) {
+        if (isDeviceNotEmpty !== null) {
             setLoadingResult('success');
         }
-    }, [isDiscoveryActive, isDeviceNotEmpty]);
+    }, [isDeviceNotEmpty]);
 
     const handleSuccess = () => {
         if (isDeviceNotEmpty) {
