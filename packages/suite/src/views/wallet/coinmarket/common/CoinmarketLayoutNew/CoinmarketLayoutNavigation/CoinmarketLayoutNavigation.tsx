@@ -6,6 +6,7 @@ import { Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
+import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 const List = styled.div`
     display: flex;
@@ -17,10 +18,15 @@ const SeparatorWrapper = styled.div`
     height: 42px;
 `;
 
-const CoinmarketLayoutNavigation = () => {
+interface CoinmarketLayoutNavigationProps {
+    selectedAccount: SelectedAccountLoaded;
+}
+
+const CoinmarketLayoutNavigation = ({ selectedAccount }: CoinmarketLayoutNavigationProps) => {
     const { device } = useDevice();
     const isBitcoinOnly = device?.firmwareType === FirmwareType.BitcoinOnly;
 
+    const isBtcAccount = selectedAccount.account.symbol === 'btc';
     const torStatus = useSelector(state => state.suite.torStatus);
     const isTorEnabled = getIsTorEnabled(torStatus);
     const country = useSelector(
@@ -28,7 +34,7 @@ const CoinmarketLayoutNavigation = () => {
             state.wallet.coinmarket.buy.buyInfo?.buyInfo?.country ??
             state.wallet.coinmarket.sell.sellInfo?.sellList?.country,
     );
-    const isInEEA = Boolean(!isTorEnabled && country && regional.isInEEA(country));
+    const showDCA = Boolean(isBtcAccount && !isTorEnabled && country && regional.isInEEA(country));
 
     return (
         <List>
@@ -51,7 +57,7 @@ const CoinmarketLayoutNavigation = () => {
                 />
             ) : null}
 
-            {isInEEA ? (
+            {showDCA ? (
                 <>
                     <SeparatorWrapper>
                         <Divider
