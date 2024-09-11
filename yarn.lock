@@ -10171,6 +10171,7 @@ __metadata:
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
+    "@suite-native/discovery": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
