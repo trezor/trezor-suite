@@ -58,6 +58,8 @@ module.exports = {
         'eslint-local-rules/*',
     ],
     rules: {
+        '@typescript-eslint/no-empty-object-type': 'off',
+        '@typescript-eslint/no-require-imports': 'off',
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',

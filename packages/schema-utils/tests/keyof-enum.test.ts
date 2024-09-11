@@ -31,6 +31,7 @@ describe('enum', () => {
         const b: T1 = 'B';
         expect(b).toEqual('B');
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const excluded = Type.Exclude(schema, Type.Literal('B'));
         type T2 = Static<typeof excluded>;
         // @ts-expect-error

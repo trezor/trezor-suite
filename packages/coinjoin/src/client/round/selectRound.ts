@@ -51,7 +51,7 @@ export const getRoundCandidates = ({
             // try to create new CoinjoinRound
             try {
                 return roundGenerator(round, prison, options);
-            } catch (e) {
+            } catch {
                 // constructor fails on invalid round data (highly unlikely)
                 return [];
             }

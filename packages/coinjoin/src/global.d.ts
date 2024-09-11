@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
+/* eslint-disable @typescript-eslint/no-wrapper-object-types */
 declare module 'golomb' {
     class Golomb {
         constructor();

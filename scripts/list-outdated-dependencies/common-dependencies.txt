@@ -67,7 +67,6 @@ nx
 octokit
 patch-package
 prettier
-prettier-eslint
 proxy-memoize
 raw-loader
 react

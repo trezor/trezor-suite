@@ -78,7 +78,7 @@ const CACHE_PARAMS = `${CACHE_DIR}/anonymityScoreParams.json`;
                 cached = true;
             }
         }
-    } catch (e) {
+    } catch {
         // do nothing
     }
 

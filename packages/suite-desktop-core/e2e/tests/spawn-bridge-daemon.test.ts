@@ -56,7 +56,7 @@ testPlaywright.describe.serial('Bridge', () => {
         try {
             await request.get('http://127.0.0.1:21325/status/');
             throw new Error('should have thrown!');
-        } catch (err) {
+        } catch {
             // ok
         }
     });

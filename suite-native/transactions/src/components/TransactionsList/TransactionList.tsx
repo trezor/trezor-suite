@@ -177,7 +177,7 @@ export const TransactionList = ({
         try {
             await dispatch(fetchTransactionsPageThunk({ accountKey, page, perPage: TX_PER_PAGE }));
             setPage((currentPage: number) => currentPage + 1);
-        } catch (e) {
+        } catch {
             // TODO handle error state (show retry button or something
         }
     }, [page, accountKey, dispatch]);
@@ -196,7 +196,7 @@ export const TransactionList = ({
                     }),
                 ),
             ]);
-        } catch (e) {
+        } catch {
             // Do nothing
         }
         // It's usually too fast so loading indicator only flashes for a moment, which is not nice

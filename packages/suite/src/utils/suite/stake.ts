@@ -386,7 +386,7 @@ export const prepareUnstakeEthTx = async ({
     }
 };
 
-interface PrepareClaimEthTxParams extends Omit<PrepareStakeEthTxParams, 'amount'> {}
+type PrepareClaimEthTxParams = Omit<PrepareStakeEthTxParams, 'amount'>;
 
 export const prepareClaimEthTx = async ({
     symbol,

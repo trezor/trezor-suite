@@ -411,7 +411,7 @@ const checkReferer = ({
         let domain: string;
         try {
             domain = new URL(referer).hostname;
-        } catch (err) {
+        } catch {
             logger.warn(`Invalid referer ${referer}`);
 
             return false;

@@ -40,7 +40,7 @@ const parseResult = (headers: Headers, text: string) => {
     if (headers.get('content-type')?.includes('json')) {
         try {
             return JSON.parse(text);
-        } catch (e) {
+        } catch {
             // fall down and return text
         }
     }

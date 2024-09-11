@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { ActionReducerMapBuilder, createReducer } from '@reduxjs/toolkit';
 
 import { ExtraDependenciesForReducer } from './extraDependenciesType';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 type NotFunction<T> = T extends Function ? never : T;
 
 export const createReducerWithExtraDeps =

@@ -54,7 +54,7 @@ export const events = (api: TrezorConnect) => {
 
     api.on(TRANSPORT_EVENT, event => {
         if (event.type === TRANSPORT.START) {
-            event.payload.type as string;
+            // event.payload.type as string;
             // event.payload.version;
             // event.payload.outdated;
         }
@@ -65,8 +65,8 @@ export const events = (api: TrezorConnect) => {
     api.off(TRANSPORT_EVENT, () => {});
     api.removeAllListeners(TRANSPORT_EVENT);
     api.removeAllListeners('TRANSPORT_EVENT');
-    api.on('transport-start', payload => {
-        payload.type as string;
+    api.on('transport-start', () => {
+        // payload.type as string;
     });
     api.off('transport-start', () => {});
 
@@ -115,7 +115,7 @@ export const events = (api: TrezorConnect) => {
     api.on(UI.REQUEST_UI_WINDOW, _payload => {});
 
     api.on<AccountInfo | null>(UI.BUNDLE_PROGRESS, event => {
-        event.progress as number;
+        // event.progress as number;
         event.error?.toLowerCase();
         if (event.response?.empty === false) {
             event.response.availableBalance.toLowerCase();
@@ -123,7 +123,7 @@ export const events = (api: TrezorConnect) => {
     });
 
     api.on<Address>(UI.BUNDLE_PROGRESS, event => {
-        event.progress as number;
+        // event.progress as number;
         event.error?.toLowerCase();
         event.response.serializedPath.toLowerCase();
         event.response.address.toLowerCase();
@@ -149,7 +149,7 @@ export const events = (api: TrezorConnect) => {
         }
         if (event.type === BLOCKCHAIN.BLOCK) {
             event.payload.blockHash.toLowerCase();
-            event.payload.blockHeight as number;
+            // event.payload.blockHeight as number;
         }
         if (event.type === BLOCKCHAIN.NOTIFICATION) {
             event.payload.notification.descriptor.toLowerCase();

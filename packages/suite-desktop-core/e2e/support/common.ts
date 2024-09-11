@@ -47,7 +47,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
             if (file !== 'Cache') {
                 try {
                     fse.removeSync(`${localDataDir}/${file}`);
-                } catch (error) {
+                } catch {
                     // If files does not exist do nothing.
                 }
             }

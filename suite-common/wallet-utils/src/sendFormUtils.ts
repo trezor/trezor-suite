@@ -84,7 +84,7 @@ export const calculateEthFee = (gasPrice?: string, gasLimit?: string): string =>
         if (result.isNaN()) throw new Error('NaN');
 
         return result.toFixed();
-    } catch (error) {
+    } catch {
         return '0';
     }
 };

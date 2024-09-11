@@ -26,7 +26,7 @@ const updateIcon = async (coin: CoinListData) => {
 
     try {
         new URL(coinData.image.large);
-    } catch (error) {
+    } catch {
         console.error('Invalid url:', coinData.image.large);
 
         return;
