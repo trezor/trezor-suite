@@ -9,6 +9,24 @@ export const getProtocolInfo = [
         },
     },
     {
+        description: 'should handle slash at end',
+        uri: 'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf/?amount=0.1',
+        result: {
+            scheme: 'bitcoin',
+            address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+            amount: 0.1,
+        },
+    },
+    {
+        description: 'should handle slashes after scheme and at end',
+        uri: 'bitcoin://3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf/?amount=0.1',
+        result: {
+            scheme: 'bitcoin',
+            address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+            amount: 0.1,
+        },
+    },
+    {
         description: 'should parse Dogecoin URI when address and amount are both available',
         uri: 'dogecoin:DDogepartyxxxxxxxxxxxxxxxxxxw1dfzr?amount=0.1',
         result: {

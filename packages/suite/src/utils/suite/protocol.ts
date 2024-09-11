@@ -11,6 +11,8 @@ export type CoinProtocolInfo = {
 export const isPaymentRequestProtocolScheme = (scheme: string): scheme is PROTOCOL_SCHEME =>
     Object.values(PROTOCOL_SCHEME).includes(scheme as PROTOCOL_SCHEME);
 
+const removeLeadingTrailingSlashes = (text: string) => text.replace(/^\/{0,2}|\/$/g, '');
+
 export const getProtocolInfo = (uri: string): CoinProtocolInfo | null => {
     const url = parseUri(uri);
 
@@ -33,9 +35,12 @@ export const getProtocolInfo = (uri: string): CoinProtocolInfo | null => {
             const floatAmount = Number.parseFloat(params.amount ?? '');
             const amount = !Number.isNaN(floatAmount) && floatAmount > 0 ? floatAmount : undefined;
 
+            const address =
+                removeLeadingTrailingSlashes(pathname) || removeLeadingTrailingSlashes(host);
+
             return {
                 scheme,
-                address: pathname?.replace('//', '') || host,
+                address,
                 amount,
             };
         }

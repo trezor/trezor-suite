@@ -48,7 +48,7 @@ export const handleProtocolRequest = (uri: string) => (dispatch: Dispatch) => {
                 autoClose: false,
             }),
         );
-    } else if (uri === SUITE_BRIDGE_DEEPLINK) {
+    } else if (uri?.startsWith(SUITE_BRIDGE_DEEPLINK)) {
         dispatch(routerActions.goto('suite-bridge-requested', { params: { cancelable: true } }));
     }
 };
