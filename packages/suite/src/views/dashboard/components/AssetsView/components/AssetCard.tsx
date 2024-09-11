@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { Network } from '@suite-common/wallet-config';
 
 import {
     AmountUnitSwitchWrapper,
@@ -88,7 +88,7 @@ const FailedContainer = styled.div`
 `;
 
 interface AssetCardProps {
-    network: NetworkCompatible;
+    network: Network;
     failed: boolean;
     cryptoValue: string;
     assetsFiatBalances: AssetFiatBalance[];
