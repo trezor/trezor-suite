@@ -1,0 +1,215 @@
+2024-05-03T09:45:30.383Z - INFO(main): Application starting
+2024-05-03T09:45:30.444Z - INFO(build): Info:
+2024-05-03T09:45:30.444Z - INFO(build): - Version: 24.5.0
+2024-05-03T09:45:30.444Z - INFO(build): - Electron: 27.3.5
+2024-05-03T09:45:30.444Z - INFO(build): - Node: v18.17.1
+2024-05-03T09:45:30.444Z - INFO(build): - Commit: 4fc08a996c412778ec930e31a04edff664da950a
+2024-05-03T09:45:30.444Z - INFO(build): - Dev: Yes
+2024-05-03T09:45:30.444Z - INFO(build): - Args: .
+DRI driver not from this Mesa build ('23.0.3' vs '24.0.3')
+failed to bind extensions
+DRI driver not from this Mesa build ('23.0.3' vs '24.0.3')
+failed to bind extensions
+DRI driver not from this Mesa build ('23.0.3' vs '24.0.3')
+failed to bind extensions
+2024-05-03T09:45:30.444Z - INFO(build): - CWD: /home/slesisz/Workspace/suite/packages/suite-desktop
+2024-05-03T09:45:30.672Z - DEBUG(computer): Info:
+2024-05-03T09:45:30.672Z - DEBUG(computer): - Platform: linux x64
+2024-05-03T09:45:30.672Z - DEBUG(computer): - OS: nixos 23.05
+2024-05-03T09:45:30.672Z - DEBUG(computer): - Manufacturer: Dell Inc.
+2024-05-03T09:45:30.672Z - DEBUG(computer): - Model: Latitude 5410
+2024-05-03T09:45:30.672Z - DEBUG(computer): - Virtual: No
+2024-05-03T09:45:30.672Z - DEBUG(computer): - CPU: Intel Core™ i5-8365U
+2024-05-03T09:45:30.672Z - DEBUG(computer): - Cores: 1x4(+4) @ 1.6GHz
+2024-05-03T09:45:30.672Z - DEBUG(computer): - RAM: 15.5 GB
+2024-05-03T09:45:30.674Z - DEBUG(init): Create Browser Window (1536x864)
+2024-05-03T09:45:30.697Z - INFO(modules): Initializing 24 modules
+2024-05-03T09:45:30.697Z - DEBUG(modules): Initializing event-logging
+2024-05-03T09:45:30.697Z - DEBUG(modules): Initializing event-logging/process
+2024-05-03T09:45:30.698Z - DEBUG(modules): Initializing app
+2024-05-03T09:45:30.698Z - DEBUG(modules): Initializing content
+2024-05-03T09:45:30.698Z - DEBUG(modules): Initializing crash-recover
+2024-05-03T09:45:30.698Z - DEBUG(modules): Initializing menu
+2024-05-03T09:45:30.701Z - DEBUG(modules): Initializing shortcuts
+2024-05-03T09:45:30.703Z - DEBUG(modules): Initializing request-filter
+2024-05-03T09:45:30.703Z - DEBUG(modules): Initializing external-links
+2024-05-03T09:45:30.703Z - DEBUG(modules): Initializing window-control
+2024-05-03T09:45:30.704Z - DEBUG(modules): Initializing theme
+2024-05-03T09:45:30.704Z - DEBUG(modules): Initializing http-receiver
+2024-05-03T09:45:30.704Z - DEBUG(modules): Initializing metadata
+2024-05-03T09:45:30.704Z - DEBUG(modules): Initializing bridge
+2024-05-03T09:45:30.704Z - DEBUG(modules): Initializing custom-protocols
+2024-05-03T09:45:30.860Z - DEBUG(custom-protocols): App is launched via custom protocol (Linux, Windows)
+2024-05-03T09:45:30.861Z - DEBUG(modules): Initializing auto-updater
+2024-05-03T09:45:30.862Z - INFO(auto-updater): Is looking for pre-releases? (No)
+2024-05-03T09:45:30.862Z - DEBUG(modules): Initializing store
+2024-05-03T09:45:30.863Z - DEBUG(modules): Initializing udev
+2024-05-03T09:45:30.863Z - DEBUG(modules): Initializing user-data
+2024-05-03T09:45:30.863Z - DEBUG(modules): Initializing @trezor/connect
+2024-05-03T09:45:30.863Z - INFO(@trezor/connect): Starting service
+2024-05-03T09:45:30.863Z - DEBUG(modules): Initializing dev-tools
+2024-05-03T09:45:30.868Z - DEBUG(modules): Initializing request-interceptor
+2024-05-03T09:45:30.869Z - DEBUG(modules): Initializing @trezor/coinjoin
+2024-05-03T09:45:30.870Z - DEBUG(@trezor/coinjoin): Starting service
+2024-05-03T09:45:30.870Z - DEBUG(modules): Initializing @trezor/transport-bluetooth
+2024-05-03T09:45:30.870Z - INFO(modules): All modules initialized
+2024-05-03T09:45:30.871Z - DEBUG(init): Load URL (http://localhost:8000/)
+2024-05-03T09:45:30.876Z - INFO(@trezor/coinjoin): Stopping (app quit)
+2024-05-03T09:45:30.876Z - INFO(@trezor/transport-bluetooth): Stopping (app quit)
+2024-05-03T09:45:30.909Z - DEBUG(window-control): Focus
+2024-05-03T09:45:30.915Z - DEBUG(request-filter): http://localhost:8000/ was allowed because its resource type (mainFrame) is not filtered
+2024-05-03T09:45:30.951Z - DEBUG(request-filter): http://localhost:8000/static/fonts/fonts.css was allowed because its resource type (stylesheet) is not filtered
+2024-05-03T09:45:30.953Z - DEBUG(request-filter): http://localhost:8000/js/vendors.js was allowed because its resource type (script) is not filtered
+2024-05-03T09:45:31.193Z - DEBUG(request-filter): http://localhost:8000/js/components.js was allowed because its resource type (script) is not filtered
+2024-05-03T09:45:31.229Z - DEBUG(request-filter): http://localhost:8000/js/react.js was allowed because its resource type (script) is not filtered
+2024-05-03T09:45:31.230Z - DEBUG(request-filter): http://localhost:8000/js/main.js was allowed because its resource type (script) is not filtered
+2024-05-03T09:45:31.976Z - INFO(content): Dev tools opened
+2024-05-03T09:45:31.987Z - DEBUG(request-filter): http://localhost:8000/ was allowed because its resource type (other) is not filtered
+2024-05-03T09:45:35.049Z - DEBUG(window-control): Blur
+[228271:0503/114538.087117:ERROR:gl_surface_presentation_helper.cc(260)] GetVSyncParametersIfAvailable() failed for 1 times!
+[228271:0503/114538.088331:ERROR:gl_surface_presentation_helper.cc(260)] GetVSyncParametersIfAvailable() failed for 2 times!
+[228271:0503/114538.098760:ERROR:gl_surface_presentation_helper.cc(260)] GetVSyncParametersIfAvailable() failed for 3 times!
+2024-05-03T09:45:38.129Z - DEBUG(request-filter): (2x) http://localhost:8000/static/fonts/TTSatoshi/TTSatoshi-Medium.otf was allowed because its resource type (font) is not filtered
+2024-05-03T09:45:38.160Z - INFO(build): Info:
+2024-05-03T09:45:38.160Z - INFO(build): - Version: 24.5.0
+2024-05-03T09:45:38.160Z - INFO(build): - Electron: 27.3.5
+2024-05-03T09:45:38.160Z - INFO(build): - Node: v18.17.1
+2024-05-03T09:45:38.160Z - INFO(build): - Commit: 4fc08a996c412778ec930e31a04edff664da950a
+2024-05-03T09:45:38.160Z - INFO(build): - Dev: Yes
+2024-05-03T09:45:38.160Z - INFO(build): - Args: .
+2024-05-03T09:45:38.160Z - INFO(build): - CWD: /home/slesisz/Workspace/suite/packages/suite-desktop
+2024-05-03T09:45:38.310Z - DEBUG(modules): Loading http-receiver
+2024-05-03T09:45:38.312Z - INFO(http-receiver): Starting server
+2024-05-03T09:45:38.312Z - DEBUG(modules): Loading bridge
+2024-05-03T09:45:38.313Z - DEBUG(modules): Loading auto-updater
+2024-05-03T09:45:38.313Z - DEBUG(auto-updater): Version of application before this launch: 24.5.0, current app version: 24.5.0
+2024-05-03T09:45:38.322Z - DEBUG(modules): Loading user-data
+2024-05-03T09:45:38.322Z - DEBUG(modules): Loading @trezor/connect
+2024-05-03T09:45:38.323Z - DEBUG(modules): Loading @trezor/coinjoin
+2024-05-03T09:45:38.323Z - DEBUG(modules): Loading @trezor/transport-bluetooth
+2024-05-03T09:45:38.323Z - INFO(http: 21335): Server started
+2024-05-03T09:45:38.324Z - DEBUG(modules): Loaded bridge
+2024-05-03T09:45:38.324Z - DEBUG(modules): Loaded auto-updater
+2024-05-03T09:45:38.324Z - DEBUG(modules): Loaded user-data
+2024-05-03T09:45:38.324Z - DEBUG(modules): Loaded @trezor/connect
+2024-05-03T09:45:38.324Z - DEBUG(modules): Loaded @trezor/coinjoin
+2024-05-03T09:45:38.326Z - INFO(process-trezor-ble): Starting process:
+2024-05-03T09:45:38.326Z - INFO(process-trezor-ble): - Path: /home/slesisz/Workspace/suite/packages/suite-desktop/build/static/bin/bluetooth/linux-x64/trezor-ble
+2024-05-03T09:45:38.326Z - INFO(process-trezor-ble): - Params: 
+2024-05-03T09:45:38.326Z - INFO(process-trezor-ble): - CWD: /home/slesisz/Workspace/suite/packages/suite-desktop/build/static/bin/bluetooth/linux-x64
+2024-05-03T09:45:38.335Z - DEBUG(modules): Loaded http-receiver
+ INFO  trezor_ble::server::connection_handler > Version: 0.1.0 Listening on: 127.0.0.1:21327
+2024-05-03T09:45:38.335Z - DEBUG(modules): Loaded @trezor/transport-bluetooth
+2024-05-03T09:45:38.364Z - DEBUG(computer): Info:
+2024-05-03T09:45:38.364Z - DEBUG(computer): - Platform: linux x64
+2024-05-03T09:45:38.364Z - DEBUG(computer): - OS: nixos 23.05
+2024-05-03T09:45:38.364Z - DEBUG(computer): - Manufacturer: Dell Inc.
+2024-05-03T09:45:38.364Z - DEBUG(computer): - Model: Latitude 5410
+2024-05-03T09:45:38.364Z - DEBUG(computer): - Virtual: No
+2024-05-03T09:45:38.364Z - DEBUG(computer): - CPU: Intel Core™ i5-8365U
+2024-05-03T09:45:38.364Z - DEBUG(computer): - Cores: 1x4(+4) @ 1.6GHz
+2024-05-03T09:45:38.364Z - DEBUG(computer): - RAM: 15.5 GB
+2024-05-03T09:45:38.436Z - DEBUG(@trezor/connect): Add event listener DEVICE_EVENT
+2024-05-03T09:45:38.437Z - DEBUG(@trezor/connect): Add event listener UI_EVENT
+2024-05-03T09:45:38.437Z - DEBUG(@trezor/connect): Add event listener TRANSPORT_EVENT
+2024-05-03T09:45:38.437Z - DEBUG(@trezor/connect): Add event listener BLOCKCHAIN_EVENT
+2024-05-03T09:45:38.438Z - DEBUG(@trezor/connect): call init
+2024-05-03T09:45:38.480Z - DEBUG(request-interceptor): http.request - 127.0.0.1/ with agent false
+2024-05-03T09:45:38.480Z - DEBUG(request-interceptor): net.connect - 127.0.0.1:21327
+ DEBUG tungstenite::handshake::server         > Server handshake done.
+ INFO  trezor_ble::server::connection_handler > New WebSocket connection: 127.0.0.1:50818
+2024-05-03T09:45:38.481Z - DEBUG(request-interceptor): net.Socket.connect - 127.0.0.1:21327
+2024-05-03T09:45:38.483Z - INFO(auto-updater): Update checking request (manual: No)
+2024-05-03T09:45:38.484Z - DEBUG(tor): Getting status (OFF)
+-->sending start_scan undefined
+2024-05-03T09:45:38.485Z - INFO(request-filter): https://data.trezor.io/config/develop/config.v1.jws was allowed because data.trezor.io is in the exception list
+get_adapter_info linux Ok(Output { status: ExitStatus(unix_wait_status(0)), stdout: "hci0:\tType: Primary  Bus: USB\n\tBD Address: DC:41:A9:6A:DF:A0  ACL MTU: 1021:4  SCO MTU: 96:6\n\tUP RUNNING PSCAN \n\tRX bytes:11610561 acl:412 sco:0 events:1648672 errors:0\n\tTX bytes:1105005280 acl:1643375 sco:0 commands:3879 errors:0\n\tFeatures: 0xbf 0xfe 0x0f 0xfe 0xdb 0xff 0x7b 0x87\n\tPacket type: DM1 DM3 DM5 DH1 DH3 DH5 HV1 HV2 HV3 \n\tLink policy: RSWITCH SNIFF \n\tLink mode: PERIPHERAL ACCEPT \n\tName: 'slesisz'\n\tClass: 0x7c010c\n\tService Classes: Rendering, Capturing, Object Transfer, Audio, Telephony\n\tDevice Class: Computer, Laptop\n\tHCI Version: 5.2 (0xb)  Revision: 0x20ce\n\tLMP Version: 5.2 (0xb)  Subversion: 0x20ce\n\tManufacturer: Intel Corp. (2)\n\n", stderr: "" })
+No current adapter, get_adapter Ok([Adapter { session: BluetoothSession, adapter: AdapterId { object_path: Path("/org/bluez/hci0\0") } }])
+ INFO  trezor_ble::server::message_handler    > handle_message Received message from: {"id":0,"method":{"name":"start_scan","args":[]}}
+ INFO  trezor_ble::server::message_handler    > Method: WsRequest { id: 0, method: StartScan }
+ INFO  trezor_ble::server::methods::start_scan > Clear previous scan error No discovery started
+ INFO  trezor_ble::server::message_handler     > Process response ok Success(true)
+ INFO  trezor_ble::server::connection_handler  > Adapter found. Breaking the loop.
+ INFO  trezor_ble::server::events_stream       > Scan filter Peripheral { session: BluetoothSession, device: DeviceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93\0") }, mac_address: F2:CF:49:B0:5D:AF, services: Mutex { data: {}, poisoned: false, .. } }
+ INFO  trezor_ble::server::events_stream       > DeviceDiscovered: PeripheralId(DeviceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93\0") }) : Some(Peripheral { session: BluetoothSession, device: DeviceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93\0") }, mac_address: F2:CF:49:B0:5D:AF, services: Mutex { data: {}, poisoned: false, .. } })
+ INFO  trezor_ble::server::connection_handler  > Sending notification DeviceDiscovered { uuid: "hci0/dev_47_2A_C7_95_FA_93", devices: [BluetoothDevice { name: "Trezor", connected: false, uuid: "hci0/dev_47_2A_C7_95_FA_93", address: "hci0/dev_47_2A_C7_95_FA_93" }] }
+2024-05-03T09:45:38.519Z - DEBUG(@trezor/connect): (23x) call blockchainEstimateFee
+empty lock queue
+2024-05-03T09:45:38.535Z - DEBUG(@trezor/connect): call blockchainSetCustomBackend
+2024-05-03T09:45:38.682Z - INFO(request-filter): http://localhost:8000/assets/8314c703e3041cf2bf11.svg was allowed because localhost is in the exception list
+2024-05-03T09:45:38.683Z - INFO(request-filter): http://localhost:8000/assets/7aba34a34cfa9595cf7e.svg was allowed because localhost is in the exception list
+2024-05-03T09:45:38.685Z - INFO(request-filter): http://localhost:8000/assets/815288e7d69e95322390.svg was allowed because localhost is in the exception list
+2024-05-03T09:45:38.687Z - INFO(request-filter): http://localhost:8000/assets/42dc10d2f4c924ea4535.svg was allowed because localhost is in the exception list
+2024-05-03T09:45:38.688Z - INFO(request-filter): http://localhost:8000/assets/1c39855cc6c5351f89ad.svg was allowed because localhost is in the exception list
+2024-05-03T09:45:38.689Z - INFO(request-filter): http://localhost:8000/assets/2f89ffc4c2cc493d8648.svg was allowed because localhost is in the exception list
+2024-05-03T09:45:38.698Z - INFO(request-filter): http://localhost:8000/static/videos/lottie/trezor_t2t1_connect.json was allowed because localhost is in the exception list
+2024-05-03T09:45:38.711Z - DEBUG(request-filter): http://localhost:8000/static/images/svg/onboarding-welcome-bg.svg was allowed because its resource type (image) is not filtered
+-->sending open_device hci0/dev_47_2A_C7_95_FA_93
+ INFO  trezor_ble::server::message_handler     > handle_message Received message from: {"id":1,"method":{"name":"open_device","args":"hci0/dev_47_2A_C7_95_FA_93"}}
+ INFO  trezor_ble::server::message_handler     > Method: WsRequest { id: 1, method: OpenDevice("hci0/dev_47_2A_C7_95_FA_93") }
+-->sending open_device hci0/dev_47_2A_C7_95_FA_93
+2024-05-03T09:45:55.793Z - DEBUG(window-control): Focus
+2024-05-03T09:45:57.607Z - DEBUG(window-control): Blur
+-->sending open_device hci0/dev_47_2A_C7_95_FA_93
+Error open_device connecting to peripheral, skipping: Timeout waiting for reply
+open_device [Peripheral { session: BluetoothSession, device: DeviceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93\0") }, mac_address: F2:CF:49:B0:5D:AF, services: Mutex { data: {00001801-0000-1000-8000-00805f9b34fb: ServiceInternal { info: ServiceInfo { id: ServiceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000a\0") }, uuid: 00001801-0000-1000-8000-00805f9b34fb, primary: true }, characteristics: {} }, 6e400001-b5a3-f393-e0a9-e50e24dcca9e: ServiceInternal { info: ServiceInfo { id: ServiceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e\0") }, uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, primary: true }, characteristics: {6e400002-b5a3-f393-e0a9-e50e24dcca9e: CharacteristicInternal { info: CharacteristicInfo { id: CharacteristicId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e/char000f\0") }, uuid: 6e400002-b5a3-f393-e0a9-e50e24dcca9e, flags: CharacteristicFlags(WRITE_WITHOUT_RESPONSE | WRITE) }, descriptors: {} }, 6e400003-b5a3-f393-e0a9-e50e24dcca9e: CharacteristicInternal { info: CharacteristicInfo { id: CharacteristicId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e/char0011\0") }, uuid: 6e400003-b5a3-f393-e0a9-e50e24dcca9e, flags: CharacteristicFlags(NOTIFY) }, descriptors: {00002902-0000-1000-8000-00805f9b34fb: DescriptorInfo { id: DescriptorId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e/char0011/desc0013\0") }, uuid: 00002902-0000-1000-8000-00805f9b34fb }} }} }, 0000180a-0000-1000-8000-00805f9b34fb: ServiceInternal { info: ServiceInfo { id: ServiceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000b\0") }, uuid: 0000180a-0000-1000-8000-00805f9b34fb, primary: true }, characteristics: {00002a29-0000-1000-8000-00805f9b34fb: CharacteristicInternal { info: CharacteristicInfo { id: CharacteristicId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000b/char000c\0") }, uuid: 00002a29-0000-1000-8000-00805f9b34fb, flags: CharacteristicFlags(READ) }, descriptors: {} }} }}, poisoned: false, .. } }]: {Characteristic { uuid: 00002a29-0000-1000-8000-00805f9b34fb, service_uuid: 0000180a-0000-1000-8000-00805f9b34fb, properties: CharPropFlags(READ), descriptors: {} }, Characteristic { uuid: 6e400002-b5a3-f393-e0a9-e50e24dcca9e, service_uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, properties: CharPropFlags(WRITE_WITHOUT_RESPONSE | WRITE), descriptors: {} }, Characteristic { uuid: 6e400003-b5a3-f393-e0a9-e50e24dcca9e, service_uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, properties: CharPropFlags(NOTIFY), descriptors: {Descriptor { uuid: 00002902-0000-1000-8000-00805f9b34fb, service_uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, characteristic_uuid: 6e400003-b5a3-f393-e0a9-e50e24dcca9e }} }}
+ INFO  trezor_ble::server::message_handler     > Process response ok Success(true)
+ INFO  trezor_ble::server::message_handler     > handle_message Received message from: {"id":2,"method":{"name":"open_device","args":"hci0/dev_47_2A_C7_95_FA_93"}}
+ INFO  trezor_ble::server::message_handler     > Method: WsRequest { id: 2, method: OpenDevice("hci0/dev_47_2A_C7_95_FA_93") }
+Device opened true
+Error open_device connecting to peripheral, skipping: Operation already in progress
+open_device [Peripheral { session: BluetoothSession, device: DeviceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93\0") }, mac_address: F2:CF:49:B0:5D:AF, services: Mutex { data: {00001801-0000-1000-8000-00805f9b34fb: ServiceInternal { info: ServiceInfo { id: ServiceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000a\0") }, uuid: 00001801-0000-1000-8000-00805f9b34fb, primary: true }, characteristics: {} }, 6e400001-b5a3-f393-e0a9-e50e24dcca9e: ServiceInternal { info: ServiceInfo { id: ServiceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e\0") }, uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, primary: true }, characteristics: {6e400003-b5a3-f393-e0a9-e50e24dcca9e: CharacteristicInternal { info: CharacteristicInfo { id: CharacteristicId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e/char0011\0") }, uuid: 6e400003-b5a3-f393-e0a9-e50e24dcca9e, flags: CharacteristicFlags(NOTIFY) }, descriptors: {00002902-0000-1000-8000-00805f9b34fb: DescriptorInfo { id: DescriptorId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e/char0011/desc0013\0") }, uuid: 00002902-0000-1000-8000-00805f9b34fb }} }, 6e400002-b5a3-f393-e0a9-e50e24dcca9e: CharacteristicInternal { info: CharacteristicInfo { id: CharacteristicId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e/char000f\0") }, uuid: 6e400002-b5a3-f393-e0a9-e50e24dcca9e, flags: CharacteristicFlags(WRITE_WITHOUT_RESPONSE | WRITE) }, descriptors: {} }} }, 0000180a-0000-1000-8000-00805f9b34fb: ServiceInternal { info: ServiceInfo { id: ServiceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000b\0") }, uuid: 0000180a-0000-1000-8000-00805f9b34fb, primary: true }, characteristics: {00002a29-0000-1000-8000-00805f9b34fb: CharacteristicInternal { info: CharacteristicInfo { id: CharacteristicId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000b/char000c\0") }, uuid: 00002a29-0000-1000-8000-00805f9b34fb, flags: CharacteristicFlags(READ) }, descriptors: {} }} }}, poisoned: false, .. } }]: {Characteristic { uuid: 00002a29-0000-1000-8000-00805f9b34fb, service_uuid: 0000180a-0000-1000-8000-00805f9b34fb, properties: CharPropFlags(READ), descriptors: {} }, Characteristic { uuid: 6e400002-b5a3-f393-e0a9-e50e24dcca9e, service_uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, properties: CharPropFlags(WRITE_WITHOUT_RESPONSE | WRITE), descriptors: {} }, Characteristic { uuid: 6e400003-b5a3-f393-e0a9-e50e24dcca9e, service_uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, properties: CharPropFlags(NOTIFY), descriptors: {Descriptor { uuid: 00002902-0000-1000-8000-00805f9b34fb, service_uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, characteristic_uuid: 6e400003-b5a3-f393-e0a9-e50e24dcca9e }} }}
+ INFO  trezor_ble::server::message_handler     > Process response error In Progress
+ INFO  trezor_ble::server::message_handler     > handle_message Received message from: {"id":3,"method":{"name":"open_device","args":"hci0/dev_47_2A_C7_95_FA_93"}}
+ INFO  trezor_ble::server::message_handler     > Method: WsRequest { id: 3, method: OpenDevice("hci0/dev_47_2A_C7_95_FA_93") }
+Device opened { Unexpected: 'In Progress' }
+Error open_device connecting to peripheral, skipping: Operation already in progress
+open_device [Peripheral { session: BluetoothSession, device: DeviceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93\0") }, mac_address: F2:CF:49:B0:5D:AF, services: Mutex { data: {00001801-0000-1000-8000-00805f9b34fb: ServiceInternal { info: ServiceInfo { id: ServiceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000a\0") }, uuid: 00001801-0000-1000-8000-00805f9b34fb, primary: true }, characteristics: {} }, 0000180a-0000-1000-8000-00805f9b34fb: ServiceInternal { info: ServiceInfo { id: ServiceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000b\0") }, uuid: 0000180a-0000-1000-8000-00805f9b34fb, primary: true }, characteristics: {00002a29-0000-1000-8000-00805f9b34fb: CharacteristicInternal { info: CharacteristicInfo { id: CharacteristicId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000b/char000c\0") }, uuid: 00002a29-0000-1000-8000-00805f9b34fb, flags: CharacteristicFlags(READ) }, descriptors: {} }} }, 6e400001-b5a3-f393-e0a9-e50e24dcca9e: ServiceInternal { info: ServiceInfo { id: ServiceId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e\0") }, uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, primary: true }, characteristics: {6e400003-b5a3-f393-e0a9-e50e24dcca9e: CharacteristicInternal { info: CharacteristicInfo { id: CharacteristicId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e/char0011\0") }, uuid: 6e400003-b5a3-f393-e0a9-e50e24dcca9e, flags: CharacteristicFlags(NOTIFY) }, descriptors: {00002902-0000-1000-8000-00805f9b34fb: DescriptorInfo { id: DescriptorId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e/char0011/desc0013\0") }, uuid: 00002902-0000-1000-8000-00805f9b34fb }} }, 6e400002-b5a3-f393-e0a9-e50e24dcca9e: CharacteristicInternal { info: CharacteristicInfo { id: CharacteristicId { object_path: Path("/org/bluez/hci0/dev_47_2A_C7_95_FA_93/service000e/char000f\0") }, uuid: 6e400002-b5a3-f393-e0a9-e50e24dcca9e, flags: CharacteristicFlags(WRITE_WITHOUT_RESPONSE | WRITE) }, descriptors: {} }} }}, poisoned: false, .. } }]: {Characteristic { uuid: 00002a29-0000-1000-8000-00805f9b34fb, service_uuid: 0000180a-0000-1000-8000-00805f9b34fb, properties: CharPropFlags(READ), descriptors: {} }, Characteristic { uuid: 6e400002-b5a3-f393-e0a9-e50e24dcca9e, service_uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, properties: CharPropFlags(WRITE_WITHOUT_RESPONSE | WRITE), descriptors: {} }, Characteristic { uuid: 6e400003-b5a3-f393-e0a9-e50e24dcca9e, service_uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, properties: CharPropFlags(NOTIFY), descriptors: {Descriptor { uuid: 00002902-0000-1000-8000-00805f9b34fb, service_uuid: 6e400001-b5a3-f393-e0a9-e50e24dcca9e, characteristic_uuid: 6e400003-b5a3-f393-e0a9-e50e24dcca9e }} }}
+ INFO  trezor_ble::server::message_handler     > Process response error In Progress
+Device opened { Unexpected: 'In Progress' }
+Device write <Buffer 3f 23 23 00 37 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ... 194 more bytes>
+-->sending write [
+  'hci0/dev_47_2A_C7_95_FA_93',
+  [
+    63, 35, 35, 0, 55, 0, 0, 0, 0, 0, 0, 0,
+     0,  0,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
+     0,  0,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
+     0,  0,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
+     0,  0,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
+     0,  0,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
+     0,  0,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
+     0,  0,  0, 0,  0, 0, 0, 0, 0, 0, 0, 0,
+     0,  0,  0, 0,
+    ... 144 more items
+  ]
+]
+ INFO  trezor_ble::server::message_handler     > handle_message Received message from: {"id":4,"method":{"name":"write","args":["hci0/dev_47_2A_C7_95_FA_93",[63,35,35,0,55,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]}}
+ INFO  trezor_ble::server::message_handler     > Method: WsRequest { id: 4, method: Write("hci0/dev_47_2A_C7_95_FA_93", [63, 35, 35, 0, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) }
+sending 244 - uuid: 6e400002-b5a3-f393-e0a9-e50e24dcca9e, char properties: CharPropFlags(WRITE_WITHOUT_RESPONSE | WRITE), [63, 35, 35, 0, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+thread 'tokio-runtime-worker' panicked at src/server/methods/write.rs:49:10:
+Cannot write...: Other(DbusError(D-Bus error: Not connected (org.bluez.Error.Failed)))
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/std/src/panicking.rs:645:5
+   1: core::panicking::panic_fmt
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/core/src/panicking.rs:72:14
+   2: core::result::unwrap_failed
+             at /rustc/82e1608dfa6e0b5569232559e3d385fea5a93112/library/core/src/result.rs:1653:5
+   3: trezor_ble::server::message_handler::handle_message::{{closure}}
+   4: trezor_ble::server::connection_handler::handle_connection::{{closure}}
+   5: tokio::runtime::task::core::Core<T,S>::poll
+   6: tokio::runtime::task::harness::Harness<T,S>::poll
+   7: tokio::runtime::scheduler::multi_thread::worker::Context::run_task
+   8: tokio::runtime::scheduler::multi_thread::worker::Context::run
+   9: tokio::runtime::context::set_scheduler
+  10: tokio::runtime::context::runtime::enter_runtime
+  11: tokio::runtime::scheduler::multi_thread::worker::run
+  12: <tokio::runtime::blocking::task::BlockingTask<T> as core::future::future::Future>::poll
+  13: tokio::runtime::task::core::Core<T,S>::poll
+  14: tokio::runtime::task::raw::poll
+  15: tokio::runtime::blocking::pool::Inner::run
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+-->sending open_device hci0/dev_47_2A_C7_95_FA_93
+-->sending open_device hci0/dev_47_2A_C7_95_FA_93
+-->sending open_device hci0/dev_47_2A_C7_95_FA_93
+^C/nix/store/dv3cl0q0cyi970ghzlwnj2zyz1cpss5m-electron-27.3.5/bin/electron exited with signal SIGINT
