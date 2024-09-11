@@ -72,66 +72,71 @@ export const TokensTable = ({
     const theme = useTheme();
 
     return (
-        <Table>
-            <Table.HeaderRow>
-                <Table.HeaderCell />
-                <Table.HeaderCell>
-                    <Translation id="TR_TOKEN" />
-                </Table.HeaderCell>
-                <Table.HeaderCell>
-                    <Translation id="TR_VALUES" />
-                </Table.HeaderCell>
-                {!hideRates && (
-                    <>
-                        <Table.HeaderCell align="right" margin={{ right: spacings.xl }}>
-                            <Translation id="TR_EXCHANGE_RATE" />
-                        </Table.HeaderCell>
-                        <Table.HeaderCell>
-                            <Translation id="TR_7D_CHANGE" />
-                        </Table.HeaderCell>
-                    </>
-                )}
-                <Table.HeaderCell />
-            </Table.HeaderRow>
-            <Table.Body>
-                {tokensWithBalance.length === 0 &&
-                tokensWithoutBalance.length === 0 &&
-                searchQuery ? (
-                    <NoResults>
-                        <Translation id="TR_NO_SEARCH_RESULTS" />
-                    </NoResults>
-                ) : (
-                    tokensWithBalance.map(token => (
-                        <TokenRow
-                            key={token.symbol}
-                            token={token}
-                            account={account}
-                            network={network}
-                            tokenStatusType={tokenStatusType}
-                            isUnverifiedTable={isUnverifiedTable}
-                            hideRates={hideRates}
-                        />
-                    ))
-                )}
-                {tokensWithoutBalance.length !== 0 && (
-                    <Table.Row>
-                        <Table.Cell>
-                            <Header
-                                $elevation={elevation}
-                                $isActive={isZeroBalanceOpen}
-                                onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
-                            >
-                                <ChevronContainer>
-                                    <ChevronIcon
-                                        $isActive={isZeroBalanceOpen}
-                                        size={18}
-                                        color={theme.iconSubdued}
-                                        name="chevronDown"
-                                    />
-                                </ChevronContainer>
-                                <Translation id="ZERO_BALANCE_TOKENS" />
-                            </Header>
-                            <AnimationWrapper opened={isZeroBalanceOpen}>
+        <Card paddingType="none">
+            {tokensWithBalance.length === 0 && tokensWithoutBalance.length === 0 && searchQuery ? (
+                <Paragraph
+                    typographyStyle="highlight"
+                    margin={{ top: spacings.xxl, bottom: spacings.xxl }}
+                    align="center"
+                >
+                    <Translation id="TR_NO_SEARCH_RESULTS" />
+                </Paragraph>
+            ) : (
+                <Table margin={{ top: spacings.xs, bottom: spacings.xs }} colWidths={['250px']}>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.Cell>
+                                <Translation id="TR_TOKEN" />
+                            </Table.Cell>
+                            <Table.Cell colspan={hideRates ? 2 : 1}>
+                                <Translation id="TR_VALUES" />
+                            </Table.Cell>
+                            {!hideRates && (
+                                <>
+                                    <Table.Cell align="right">
+                                        <Translation id="TR_EXCHANGE_RATE" />
+                                    </Table.Cell>
+                                    <Table.Cell colspan={2}>
+                                        <Translation id="TR_7D_CHANGE" />
+                                    </Table.Cell>
+                                </>
+                            )}
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {tokensWithBalance.map(token => (
+                            <TokenRow
+                                key={token.symbol}
+                                token={token}
+                                account={account}
+                                network={network}
+                                tokenStatusType={tokenStatusType}
+                                isUnverifiedTable={isUnverifiedTable}
+                                hideRates={hideRates}
+                            />
+                        ))}
+                        {tokensWithoutBalance.length !== 0 && (
+                            <>
+                                <Table.Row>
+                                    <Table.Cell colspan={2}>
+                                        <ZeroBalanceToggle
+                                            onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
+                                        >
+                                            <Row gap={spacings.xs} margin={{ top: spacings.md }}>
+                                                <IconWrapper $isActive={isZeroBalanceOpen}>
+                                                    <Icon
+                                                        size={18}
+                                                        variant="tertiary"
+                                                        name="chevronDown"
+                                                    />
+                                                </IconWrapper>
+                                                <Text typographyStyle="hint" variant="tertiary">
+                                                    <Translation id="ZERO_BALANCE_TOKENS" />
+                                                </Text>
+                                            </Row>
+                                        </ZeroBalanceToggle>
+                                    </Table.Cell>
+                                </Table.Row>
                                 {tokensWithoutBalance.map(token => (
                                     <TokenRow
                                         key={token.symbol}

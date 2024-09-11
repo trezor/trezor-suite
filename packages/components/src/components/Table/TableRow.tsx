@@ -1,30 +1,36 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
 import { useElevation } from '../ElevationContext/ElevationContext';
 
-export const Row = styled.tr<{ $elevation: Elevation }>`
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
-    align-items: center;
-    margin: 0 ${spacingsPx.xl};
-    padding: ${spacingsPx.lg} 0;
-    border-bottom: 1px solid ${mapElevationToBorder};
+export const Row = styled.tr<{ $elevation: Elevation; $isCollapsed: boolean }>`
+    border-top: 1px solid ${mapElevationToBorder};
 
-    &:last-child {
-        border-bottom: none;
+    &:first-child {
+        border-top: 0;
     }
+
+    ${({ $isCollapsed }) =>
+        $isCollapsed &&
+        css`
+            visibility: collapse;
+            border-top: 0;
+        `}
 `;
 
 export interface TableRowProps {
     children: ReactNode;
+    isCollapsed?: boolean;
 }
 
-export const TableRow = ({ children }: TableRowProps) => {
+export const TableRow = ({ children, isCollapsed = false }: TableRowProps) => {
     const { elevation } = useElevation();
 
-    return <Row $elevation={elevation}>{children}</Row>;
+    return (
+        <Row $elevation={elevation} $isCollapsed={isCollapsed}>
+            {children}
+        </Row>
+    );
 };

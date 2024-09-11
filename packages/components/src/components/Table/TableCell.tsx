@@ -1,55 +1,60 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { typography } from '@trezor/theme';
+import { typography, spacingsPx, Elevation, mapElevationToBackground } from '@trezor/theme';
 
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { makePropsTransient, TransientProps } from '../../utils/transientProps';
+import { useTableHeader } from './TableHeader';
+import { UIHorizontalAlignment } from '../../config/types';
+import { useElevation } from '../ElevationContext/ElevationContext';
 
-export const allowedTableCellFrameProps: FramePropsKeys[] = ['margin'];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableCellFrameProps)[number]>;
-
-export type TableCellProps = AllowedFrameProps & {
+export type TableCellProps = {
     children?: ReactNode;
-    align?: 'left' | 'right';
-    isHeader?: boolean;
-    isSmaller?: boolean;
+    colSpan?: number;
+    align?: UIHorizontalAlignment;
 };
 
-type TableCellContainerProps = {
-    $align?: 'left' | 'right';
-    $isHeader: boolean;
-    $isSmaller?: boolean;
-} & TransientProps<AllowedFrameProps>;
+const mapAlignmentToJustifyContent = (align: UIHorizontalAlignment) => {
+    const map: Record<UIHorizontalAlignment, string> = {
+        left: 'flex-start',
+        center: 'center',
+        right: 'flex-end',
+    };
 
-const TableCellContainer = styled.div<TableCellContainerProps>`
+    return map[align];
+};
+
+const Cell = styled.td<{ $isHeader: boolean; $elevation: Elevation }>`
     ${({ $isHeader }) => ($isHeader ? typography.hint : typography.body)}
     color: ${({ theme, $isHeader }) => ($isHeader ? theme.textSubdued : theme.textDefault)};
-    display: flex;
-    align-items: center;
-    justify-self: ${({ $align }) => ($align === 'right' ? 'right' : 'left')};
-    grid-column: ${({ $isSmaller }) => ($isSmaller ? 'span 1' : 'span 3')};
+    text-align: left;
+    padding: ${spacingsPx.sm} ${spacingsPx.lg};
+    max-width: 300px;
 
-    ${withFrameProps}
+    &:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        background: linear-gradient(to right, ${mapElevationToBackground} 90%, rgba(0 0 0 / 0%));
+    }
 `;
 
-export const TableCell = ({
-    children,
-    align = 'left',
-    isHeader = false,
-    isSmaller,
-    ...props
-}: TableCellProps) => {
-    const transientProps = makePropsTransient(props);
+const Content = styled.div<{ $align: UIHorizontalAlignment }>`
+    display: flex;
+    justify-content: ${({ $align }) => mapAlignmentToJustifyContent($align)};
+`;
+
+export const TableCell = ({ children, colSpan = 1, align = 'left' }: TableCellProps) => {
+    const isHeader = useTableHeader();
+    const { parentElevation } = useElevation();
 
     return (
-        <TableCellContainer
-            $isSmaller={isSmaller}
-            $align={align}
+        <Cell
+            as={isHeader ? 'th' : 'td'}
+            colSpan={colSpan}
             $isHeader={isHeader}
-            {...transientProps}
+            $elevation={parentElevation}
         >
-            {children}
-        </TableCellContainer>
+            <Content $align={align}>{children}</Content>
+        </Cell>
     );
 };
