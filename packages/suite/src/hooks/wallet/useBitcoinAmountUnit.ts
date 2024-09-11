@@ -4,8 +4,7 @@ import { selectDeviceUnavailableCapabilities } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useActions } from 'src/hooks/suite/useActions';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { networksCompatibility } from '@suite-common/wallet-config';
+import { getNetworkOptional, NetworkSymbol } from '@suite-common/wallet-config';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);
@@ -20,11 +19,7 @@ export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
 
     const areUnitsSupportedByDevice = !unavailableCapabilities?.amountUnit;
 
-    const areUnitsSupportedByNetwork =
-        symbol &&
-        networksCompatibility
-            .find(({ symbol: networkSymbol }) => networkSymbol === symbol)
-            ?.features?.includes('amount-unit');
+    const areUnitsSupportedByNetwork = getNetworkOptional(symbol)?.features.includes('amount-unit');
 
     return {
         bitcoinAmountUnit,
