@@ -6,26 +6,9 @@ import { useSelector } from 'src/hooks/suite';
 import { NoTokens } from '../../common/NoTokens';
 import { TokensTable } from '../../common/TokensTable/TokensTable';
 import { Translation } from 'src/components/suite';
-import styled from 'styled-components';
-import { spacings, spacingsPx } from '@trezor/theme';
-import { H3, Icon } from '@trezor/components';
-import { Text, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { Banner, H3, Column } from '@trezor/components';
 import { isTestnet } from '@suite-common/wallet-utils';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xxl};
-`;
-
-const UnverifiedTokens = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const UnrecognizedTokensWrapper = styled.div`
-    margin-left: ${spacingsPx.sm};
-`;
 
 interface HiddenTokensTableProps {
     selectedAccount: SelectedAccountLoaded;
@@ -51,7 +34,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
         tokens.unverifiedWithBalance.length + tokens.unverifiedWithoutBalance.length;
 
     return (
-        <Wrapper>
+        <Column gap={spacings.xxl} alignItems="stretch">
             {hiddenTokensCount === 0 && unverifiedTokensCount === 0 && (
                 <NoTokens title={<Translation id="TR_HIDDEN_TOKENS_EMPTY" />} />
             )}
@@ -67,22 +50,13 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                 />
             )}
             {unverifiedTokensCount > 0 && (
-                <UnverifiedTokens>
-                    <UnrecognizedTokensWrapper>
-                        <H3>
-                            <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR" />
-                        </H3>
-                        <Row
-                            alignItems="center"
-                            gap={spacings.xxs}
-                            margin={{ bottom: spacings.xl, top: spacings.xxs }}
-                        >
-                            <Icon variant="tertiary" size={16} name="warningTriangle" />
-                            <Text variant="tertiary" typographyStyle="hint">
-                                <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />
-                            </Text>
-                        </Row>
-                    </UnrecognizedTokensWrapper>
+                <Column alignItems="stretch" gap={spacings.sm}>
+                    <H3>
+                        <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR" />
+                    </H3>
+                    <Banner variant="warning" icon>
+                        <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />
+                    </Banner>
                     <TokensTable
                         account={account}
                         hideRates
@@ -93,8 +67,8 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                         network={network}
                         searchQuery={searchQuery}
                     />
-                </UnverifiedTokens>
+                </Column>
             )}
-        </Wrapper>
+        </Column>
     );
 };

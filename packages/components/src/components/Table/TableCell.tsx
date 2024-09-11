@@ -29,6 +29,7 @@ const Cell = styled.td<{ $isHeader: boolean; $elevation: Elevation }>`
     text-align: left;
     padding: ${spacingsPx.sm} ${spacingsPx.lg};
     max-width: 300px;
+    overflow: hidden;
 
     &:first-child {
         position: sticky;

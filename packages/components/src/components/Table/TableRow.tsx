@@ -17,6 +17,7 @@ export const Row = styled.tr<{ $elevation: Elevation; $isCollapsed: boolean }>`
         css`
             visibility: collapse;
             border-top: 0;
+            opacity: 0;
         `}
 `;
 

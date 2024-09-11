@@ -17,7 +17,6 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableFrameProps)[number
 const Container = styled.table<TransientProps<AllowedFrameProps>>`
     width: 100%;
     border-collapse: collapse;
-    overflow: hidden;
     position: relative;
 
     ${withFrameProps}

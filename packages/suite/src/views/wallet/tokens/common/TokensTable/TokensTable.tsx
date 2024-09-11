@@ -1,48 +1,22 @@
 import { useState } from 'react';
-import styled, { css, useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
 import { NetworkCompatible } from '@suite-common/wallet-config';
 import { EnhancedTokenInfo, TokenManagementAction } from '@suite-common/token-definitions';
-import { Elevation, mapElevationToBorder, spacings, spacingsPx, typography } from '@trezor/theme';
-import { Icon, Table, useElevation } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { Icon, Table, Paragraph, Card, Row, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { AnimationWrapper } from 'src/components/wallet/AnimationWrapper';
 import { TokenRow } from './TokenRow';
 
-const NoResults = styled.div`
-    ${typography.body};
-    padding: ${spacingsPx.lg};
-    text-align: center;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
-    padding: ${spacingsPx.sm};
-    border-radius: 50%;
-    transition:
-        background 0.2s,
-        transform 0.2s ease-in-out;
+const IconWrapper = styled.div<{ $isActive: boolean }>`
+    transition: transform 0.2s ease-in-out;
     transform: ${({ $isActive }) => ($isActive ? 'rotate(0)' : 'rotate(-90deg)')};
 `;
 
-const Header = styled.td<{ $elevation: Elevation; $isActive: boolean }>`
-    display: flex;
-    margin: 0 ${spacingsPx.xl};
+const ZeroBalanceToggle = styled.div`
     cursor: pointer;
-    align-items: center;
-    ${typography.label}
-    color: ${({ theme }) => theme.textSubdued};
-    ${({ $isActive, $elevation, theme }) =>
-        $isActive &&
-        css`
-            border-bottom: 1px solid ${mapElevationToBorder({ $elevation, theme })};
-        `};
-`;
-
-const ChevronContainer = styled.div`
-    width: ${spacingsPx.xxxl};
 `;
 
 interface TokensTableProps {
@@ -68,11 +42,8 @@ export const TokensTable = ({
 }: TokensTableProps) => {
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
 
-    const { elevation } = useElevation();
-    const theme = useTheme();
-
     return (
-        <Card paddingType="none">
+        <Card paddingType="none" overflow="hidden">
             {tokensWithBalance.length === 0 && tokensWithoutBalance.length === 0 && searchQuery ? (
                 <Paragraph
                     typographyStyle="highlight"
@@ -88,7 +59,7 @@ export const TokensTable = ({
                             <Table.Cell>
                                 <Translation id="TR_TOKEN" />
                             </Table.Cell>
-                            <Table.Cell colspan={hideRates ? 2 : 1}>
+                            <Table.Cell colSpan={hideRates ? 2 : 1}>
                                 <Translation id="TR_VALUES" />
                             </Table.Cell>
                             {!hideRates && (
@@ -96,7 +67,7 @@ export const TokensTable = ({
                                     <Table.Cell align="right">
                                         <Translation id="TR_EXCHANGE_RATE" />
                                     </Table.Cell>
-                                    <Table.Cell colspan={2}>
+                                    <Table.Cell colSpan={2}>
                                         <Translation id="TR_7D_CHANGE" />
                                     </Table.Cell>
                                 </>
@@ -118,7 +89,7 @@ export const TokensTable = ({
                         {tokensWithoutBalance.length !== 0 && (
                             <>
                                 <Table.Row>
-                                    <Table.Cell colspan={2}>
+                                    <Table.Cell colSpan={2}>
                                         <ZeroBalanceToggle
                                             onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
                                         >
@@ -146,13 +117,14 @@ export const TokensTable = ({
                                         tokenStatusType={tokenStatusType}
                                         isUnverifiedTable={isUnverifiedTable}
                                         hideRates={hideRates}
+                                        isCollapsed={!isZeroBalanceOpen}
                                     />
                                 ))}
-                            </AnimationWrapper>
-                        </Table.Cell>
-                    </Table.Row>
-                )}
-            </Table.Body>
-        </Table>
+                            </>
+                        )}
+                    </Table.Body>
+                </Table>
+            )}
+        </Card>
     );
 };
