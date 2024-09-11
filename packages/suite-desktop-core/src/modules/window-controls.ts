@@ -87,6 +87,6 @@ export const init: Module = ({ mainWindow }) => {
 
     ipcMain.on('app/hide', () => {
         logger.debug(SERVICE_NAME, 'Hide requested');
-        app.hide();
+        mainWindow.hide();
     });
 };
