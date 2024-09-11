@@ -34,7 +34,6 @@
         { "path": "../module-send" },
         { "path": "../settings" },
         { "path": "../storage" },
-        { "path": "../../packages/connect" },
         {
             "path": "../../packages/transport-native"
         },

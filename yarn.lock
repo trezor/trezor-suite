@@ -10510,6 +10510,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/suite-config": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -10538,7 +10539,6 @@ __metadata:
     "@suite-native/module-send": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/transport-native": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-device: "npm:6.0.2"

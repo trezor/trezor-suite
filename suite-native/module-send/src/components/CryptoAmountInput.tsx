@@ -11,7 +11,8 @@ import { Color } from '@trezor/theme';
 import { useDebounce } from '@trezor/react-utils';
 
 import { SendAmountInputProps } from '../types';
-import { getOutputFieldName, sendAmountTransformer } from '../utils';
+import { useSendAmountTransformers } from '../useSendAmountTransformers';
+import { getOutputFieldName } from '../utils';
 
 export const sendAmountInputWrapperStyle = prepareNativeStyle<{ isDisabled: boolean }>(
     (_, { isDisabled }) => ({
@@ -44,6 +45,7 @@ export const CryptoAmountInput = ({
 }: SendAmountInputProps) => {
     const { applyStyle } = useNativeStyles();
     const { setValue, trigger } = useFormContext();
+    const { cryptoAmountTransformer } = useSendAmountTransformers(networkSymbol);
     const { NetworkSymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
 
@@ -52,13 +54,10 @@ export const CryptoAmountInput = ({
 
     const { onChange, onBlur, value } = useField({
         name: cryptoFieldName,
-        valueTransformer: sendAmountTransformer,
+        valueTransformer: cryptoAmountTransformer,
     });
 
-    const converters = useCryptoFiatConverters({
-        networkSymbol,
-        isBalance: true,
-    });
+    const converters = useCryptoFiatConverters({ networkSymbol });
 
     const cryptoAnimatedStyle = useAnimatedStyle(
         () => ({
@@ -90,9 +89,7 @@ export const CryptoAmountInput = ({
                 onBlur={onBlur}
                 rightIcon={
                     <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                        {/* TODO: remove `areAmountUnitsEnabled` when are sats units supported.
-                            https://github.com/trezor/trezor-suite/issues/13823  */}
-                        {formatter.format(networkSymbol, { areAmountUnitsEnabled: false })}
+                        {formatter.format(networkSymbol)}
                     </SendAmountCurrencyLabelWrapper>
                 }
             />

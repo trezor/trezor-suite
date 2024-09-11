@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { PROTO } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { Network, networks, NetworkSymbol } from '@suite-common/wallet-config';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
@@ -53,10 +54,26 @@ export const appSettingsSlice = createSlice({
 export const selectFiatCurrencyCode = (state: SettingsSliceRootState) =>
     state.appSettings.fiatCurrencyCode;
 export const selectBitcoinUnits = (state: SettingsSliceRootState) => state.appSettings.bitcoinUnits;
+export const selectAreSatsAmountUnit = (state: SettingsSliceRootState) =>
+    selectBitcoinUnits(state) === PROTO.AmountUnit.SATOSHI;
 export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;
 export const selectViewOnlyCancelationTimestamp = (state: SettingsSliceRootState) =>
     state.appSettings.viewOnlyCancelationTimestamp;
+
+export const selectIsAmountInSats = (
+    state: SettingsSliceRootState,
+    networkSymbol: NetworkSymbol | null | undefined,
+) => {
+    if (!networkSymbol) {
+        return false;
+    }
+
+    const network: Network = networks[networkSymbol];
+    const isAmountUnitSupported = network && network.features.includes('amount-unit');
+
+    return isAmountUnitSupported && selectAreSatsAmountUnit(state);
+};
 
 export const {
     setIsOnboardingFinished,

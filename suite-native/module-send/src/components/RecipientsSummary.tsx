@@ -11,6 +11,7 @@ import { Text, VStack, Card, HStack } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
+import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/settings';
 
 type FeesRecipientsProps = {
     accountKey: AccountKey;
@@ -35,6 +36,9 @@ export const RecipientsSummary = ({ accountKey }: FeesRecipientsProps) => {
 
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
+    );
+    const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
+        selectIsAmountInSats(state, networkSymbol),
     );
 
     if (!outputs || !networkSymbol) return null;
@@ -63,14 +67,14 @@ export const RecipientsSummary = ({ accountKey }: FeesRecipientsProps) => {
                                 color="textDefault"
                                 value={output.amount}
                                 network={networkSymbol}
-                                isBalance={true}
+                                isBalance={!isAmountInSats}
                             />
                             <CryptoAmountFormatter
                                 variant="hint"
                                 color="textSubdued"
                                 value={output.amount}
                                 network={networkSymbol}
-                                isBalance={true}
+                                isBalance={!isAmountInSats}
                             />
                         </VStack>
                     </HStack>

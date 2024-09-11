@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/suite-config"
         },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
         { "path": "../../packages/connect" }
     ]
 }

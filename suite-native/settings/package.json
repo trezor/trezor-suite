@@ -13,6 +13,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/suite-config": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
         "@trezor/connect": "workspace:*"
     }
 }
