@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import { borders, Elevation, spacingsPx, typography } from '@trezor/theme';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,
@@ -15,11 +15,13 @@ import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils'
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../../utils/frameProps';
 import { Icon, IconName } from '../../Icon/Icon';
+import { useElevation } from '../../ElevationContext/ElevationContext';
 
 export const allowedButtonFrameProps: FramePropsKeys[] = ['margin'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
 type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
+    $elevation: Elevation;
     $variant: ButtonVariant;
     $size: ButtonSize;
     $iconAlignment?: IconAlignment;
@@ -46,7 +48,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     border: 1px solid transparent;
 
     ${getFocusShadowStyle()}
-    ${({ $variant, $isSubtle }) => useVariantStyle($variant, $isSubtle)}
+    ${({ $variant, $isSubtle, $elevation }) => useVariantStyle($variant, $isSubtle, $elevation)}
 
     &:disabled {
         background: ${({ theme }) => theme.backgroundNeutralDisabled};
@@ -139,6 +141,8 @@ export const Button = ({
         <Spinner size={getIconSize(size)} data-testid={`${rest['data-testid']}/spinner`} />
     );
 
+    const { elevation } = useElevation();
+
     return (
         <ButtonContainer
             $variant={variant}
@@ -149,6 +153,7 @@ export const Button = ({
             $isSubtle={isSubtle}
             type={type}
             $hasIcon={!!icon || isLoading}
+            $elevation={elevation}
             {...rest}
             onClick={isDisabled ? undefined : rest?.onClick}
             {...makePropsTransient(frameProps)}
