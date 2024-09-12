@@ -1,53 +1,35 @@
-import { useEffect } from 'react';
-import styled from 'styled-components';
-
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { Translation, Modal } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { TranslationKey } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { ThunkAction } from 'src/types/suite';
-import { Button } from '@trezor/components';
+import { Dispatch, GetState } from 'src/types/suite';
+import { Button, H3, NewModal, Paragraph } from '@trezor/components';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
-
-const StyledModal = styled(Modal)`
-    width: 520px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    flex-grow: 1;
-`;
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { useEffect } from 'react';
 
 interface ConfirmUnverifiedModalProps {
-    showUnverifiedButtonText: TranslationKey;
-    showUnverified: () => ThunkAction;
-    verify: () => ThunkAction;
+    action: {
+        event: () => (dispatch: Dispatch) => void;
+        title: TranslationKey;
+        closeAfterEventTriggered?: boolean;
+    };
+    verifyProcess?: () => (dispatch: Dispatch, getState: GetState) => Promise<void>;
     warningText: TranslationKey;
 }
 
 export const ConfirmUnverifiedModal = ({
-    showUnverifiedButtonText,
-    showUnverified,
-    verify,
+    action,
     warningText,
+    verifyProcess,
 }: ConfirmUnverifiedModalProps) => {
     const deviceLabel = useSelector(selectDeviceLabelOrName);
+    const { device } = useDevice();
     const dispatch = useDispatch();
-    const { device, isLocked } = useDevice();
-
-    // Device connected while the modal is open -> switch to verification modal.
-    useEffect(() => {
-        if (device?.connected) {
-            dispatch(verify());
-        }
-    }, [device?.connected, dispatch, verify]);
-
-    // just to make TS happy
-    if (!device) return null;
+    const { isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();
-    const isPassphraseRequired = device.connected && !device.available;
+    const isPassphraseRequired = device?.connected && !device.available;
     const deviceStatus = isPassphraseRequired
         ? 'TR_DEVICE_LABEL_IS_UNAVAILABLE'
         : 'TR_DEVICE_LABEL_IS_NOT_CONNECTED';
@@ -55,47 +37,64 @@ export const ConfirmUnverifiedModal = ({
         ? 'TR_PLEASE_ENABLE_PASSPHRASE'
         : 'TR_PLEASE_CONNECT_YOUR_DEVICE';
 
+    const handleClose = () => dispatch(onCancel());
+    const handleEvent = () => {
+        dispatch(action.event());
+
+        if (action.closeAfterEventTriggered) {
+            handleClose();
+        }
+    };
+
     const enablePassphraseAndContinue = async () => {
-        if (!device.available) {
+        if (!device?.available) {
             const result = await dispatch(applySettings({ use_passphrase: true }));
             if (!result || !result.success) return;
         }
-        dispatch(verify());
     };
-    const continueUnverified = () => dispatch(showUnverified());
-    const close = () => dispatch(onCancel());
+
+    // Device connected while the modal is open -> switch to verification modal.
+    useEffect(() => {
+        if (device?.connected && verifyProcess) {
+            dispatch(verifyProcess());
+        }
+    }, [device?.connected, dispatch, verifyProcess]);
 
     return (
-        <StyledModal
-            heading={<Translation id={deviceStatus} values={{ deviceLabel }} />}
-            isCancelable
-            onCancel={close}
-            description={
-                <Translation
-                    id={warningText}
-                    values={{ claim: <Translation id={description} /> }}
-                />
-            }
-            bottomBarComponents={
+        <NewModal
+            variant="warning"
+            size="small"
+            icon="shieldWarning"
+            onCancel={handleClose}
+            bottomContent={
                 <>
-                    <Button variant="warning" onClick={continueUnverified}>
-                        <Translation id={showUnverifiedButtonText} />
+                    <Button variant="warning" onClick={handleEvent}>
+                        <Translation id={action.title} />
                     </Button>
-
                     {isPassphraseRequired && (
-                        <StyledButton
+                        <Button
                             variant="primary"
                             onClick={enablePassphraseAndContinue}
                             isDisabled={isDeviceLocked}
                         >
                             <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />
-                        </StyledButton>
+                        </Button>
                     )}
-                    <Button onClick={close} variant="tertiary">
+                    <Button onClick={handleClose} variant="tertiary">
                         <Translation id="TR_BACK" />
                     </Button>
                 </>
             }
-        />
+        >
+            <H3>
+                <Translation id={deviceStatus} values={{ deviceLabel }} />
+            </H3>
+            <Paragraph>
+                <Translation
+                    id={warningText}
+                    values={{ claim: <Translation id={description} /> }}
+                />
+            </Paragraph>
+        </NewModal>
     );
 };

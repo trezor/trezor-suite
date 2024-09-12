@@ -59,14 +59,14 @@ interface Buy extends CoinmarketTradeCommonProps {
         symbol?: Account['symbol'];
         shouldSubmit?: boolean;
     };
-    addressVerified?: string;
+    addressVerified: string | undefined;
 }
 
 interface Exchange extends CoinmarketTradeCommonProps {
     exchangeInfo?: ExchangeInfo;
     quotesRequest?: ExchangeTradeQuoteRequest;
     quotes: ExchangeTrade[] | undefined;
-    addressVerified?: string;
+    addressVerified: string | undefined;
     coinmarketAccount?: Account;
     selectedQuote: ExchangeTrade | undefined;
 }

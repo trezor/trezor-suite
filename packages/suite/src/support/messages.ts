@@ -340,6 +340,10 @@ export default defineMessages({
         id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_6',
         dynamic: true,
     },
+    TR_CONFIRM_ADDRESS: {
+        defaultMessage: 'Confirm address',
+        id: 'TR_CONFIRM_ADDRESS',
+    },
     TR_EXCHANGE_STATUS_ERROR: {
         defaultMessage: 'Rejected',
         id: 'TR_EXCHANGE_STATUS_ERROR',
@@ -3290,6 +3294,10 @@ export default defineMessages({
     TR_SHOW_UNVERIFIED_XPUB: {
         defaultMessage: 'Show unverified public key',
         id: 'TR_SHOW_UNVERIFIED_XPUB',
+    },
+    TR_PROCEED_UNVERIFIED_ADDRESS: {
+        defaultMessage: 'Proceed with unverified address',
+        id: 'TR_PROCEED_UNVERIFIED_ADDRESS',
     },
     TR_SIGN: {
         defaultMessage: 'Sign',

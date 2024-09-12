@@ -13,6 +13,10 @@ import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/u
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { CoinmarketAddressOptions } from 'src/views/wallet/coinmarket/common/CoinmarketAddressOptions';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { useEffect } from 'react';
+import { useDispatch } from 'src/hooks/suite';
+import { COINMARKET_BUY } from 'src/actions/wallet/constants';
+import * as modalActions from 'src/actions/suite/modalActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -66,6 +70,7 @@ interface CoinmarketVerifyProps {
 }
 
 export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: CoinmarketVerifyProps) => {
+    const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const { cryptoIdToCoinSymbol, cryptoIdToNativeCoinSymbol } = useCoinmarketInfo();
     const context = useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
@@ -125,6 +130,15 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
             }
         },
     });
+
+    // close modals and reset addressVerified on device connection change
+    useEffect(() => {
+        dispatch({
+            type: COINMARKET_BUY.VERIFY_ADDRESS,
+            addressVerified: undefined,
+        });
+        dispatch(modalActions.onCancel());
+    }, [device?.connected, dispatch]);
 
     return (
         <Wrapper>
@@ -187,9 +201,10 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                         </>
                     )}
 
-                    {addressVerified && addressVerified === address && (
-                        <ConfirmedOnTrezor device={device} />
-                    )}
+                    {device?.connected &&
+                        device.available &&
+                        addressVerified &&
+                        addressVerified === address && <ConfirmedOnTrezor device={device} />}
                     {exchangeQuote?.extraFieldDescription && (
                         <Row>
                             <Input
@@ -237,7 +252,13 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                                     }
                                 }}
                             >
-                                <Translation id="TR_BUY_CONFIRM_ON_TREZOR" />
+                                <Translation
+                                    id={
+                                        device?.connected
+                                            ? 'TR_CONFIRM_ON_TREZOR'
+                                            : 'TR_CONFIRM_ADDRESS'
+                                    }
+                                />
                             </Button>
                         )}
                     {((addressVerified && addressVerified === address) ||

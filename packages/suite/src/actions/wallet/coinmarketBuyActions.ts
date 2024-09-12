@@ -30,7 +30,7 @@ export type CoinmarketBuyAction =
     | { type: typeof COINMARKET_BUY.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
     | { type: typeof COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID; transactionId: string }
     | { type: typeof COINMARKET_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
-    | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: string }
+    | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: string | undefined }
     | {
           type: typeof COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO;
           symbol: Account['symbol'];

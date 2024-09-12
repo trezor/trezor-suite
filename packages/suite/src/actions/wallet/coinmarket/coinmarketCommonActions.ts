@@ -92,9 +92,8 @@ export const verifyAddress =
         if (!connected || !available) {
             dispatch(
                 modalActions.openModal({
-                    type: 'unverified-address',
+                    type: 'unverified-address-proceed',
                     value: address,
-                    addressPath: path,
                 }),
             );
 
