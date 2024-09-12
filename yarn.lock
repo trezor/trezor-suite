@@ -9685,6 +9685,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@shopify/react-native-skia": "npm:1.3.11"
     "@suite-common/icons-deprecated": "workspace:*"
+    "@suite-native/config": "workspace:*"
     "@suite-native/intl": "workspace:^"
     "@suite-native/storage": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -10001,7 +10002,6 @@ __metadata:
   resolution: "@suite-native/helpers@workspace:suite-native/helpers"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@suite-native/config": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     expo-clipboard: "npm:6.0.3"
     react: "npm:18.2.0"
