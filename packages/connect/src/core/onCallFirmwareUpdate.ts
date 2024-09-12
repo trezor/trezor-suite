@@ -145,7 +145,11 @@ const getInstallationParams = (device: Device, params: Params) => {
         const upgrade =
             device.atLeast('2.6.3') && isUpdatingToNewerVersion && isUpdatingToEqualFirmwareType;
         const manual = !device.atLeast(['1.10.0', '2.6.0']) && !upgrade;
-        const language = device.atLeast('2.7.0');
+        const language =
+            device.atLeast('2.7.0') &&
+            // automatic language update from 2.7.2 sometimes not working on TT, probably memory issues?
+            // https://satoshilabs.slack.com/archives/CL1D61PQF/p1726148939472909
+            device.features.internal_model !== PROTO.DeviceModelInternal.T2T1;
 
         return {
             /** RebootToBootloader is not supported */
