@@ -150,7 +150,7 @@ export default {
                         address_n: "m/44'/1'/0'/0/0",
                         amount: '200000000',
                         prev_hash:
-                            'f8e2f2b4eab772f6e3743cba92db341f64b84d9c16ae375c7690fbf0bf02fc7b',
+                            '8b6890c10a3764fe6f378bc5b7e438148df176e9be1dde704ce866361149e254',
                         prev_index: 2,
                         decred_staking_spend: 0, // SSGen
                         decred_tree: 1,
@@ -159,7 +159,7 @@ export default {
                         address_n: "m/44'/1'/0'/0/0",
                         amount: '200000000',
                         prev_hash:
-                            '51bc9c71f10a81eef3caedb5333062eb4b1f70998adf02916fe98fdc04c572e8',
+                            '1f00fc54530d7c4877f5032e91b6c507f6a1531861dede2ab134e5c0b5dfe8c8',
                         prev_index: 0,
                         decred_staking_spend: 1, // SSRTX
                         decred_tree: 1,
@@ -172,11 +172,11 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['f8e2f2', '51bc9c'], true),
+                refTxs: TX_CACHE(['8b6890', '1f00fc'], true),
             },
             result: {
                 serializedTx:
-                    '01000000027bfc02bff0fb90765c37ae169c4db8641f34db92ba3c74e3f672b7eab4f2e2f80200000001ffffffffe872c504dc8fe96f9102df8a99701f4beb623033b5edcaf3ee810af1719cbc510000000001ffffffff0160fdd5170000000000001976a914819d291a2f7fbf770e784bfd78b5ce92c58e95ea88ac00000000000000000200c2eb0b0000000000000000ffffffff6b483045022100f74f652a073bdaf2197ede47b4df0d90609bbfd0dc8a94199d36ebb1429de09b022040366292a8812135ec7572a94eb6e969fa1fa97a52c03f08a337f20bc4fb71de0121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd000c2eb0b0000000000000000ffffffff6b483045022100ca385c05a008239c038e107989bbc30eec1ecd5a66e4973265eb21df034c77a9022070c3dceb24b39cb6e9f8c973572b955b37a4754e9caa704cdd37113c46e2b2970121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0',
+                    '010000000254e249113666e84c70de1dbee976f18d1438e4b7c58b376ffe64370ac190688b0200000001ffffffffc8e8dfb5c0e534b12adede611853a1f607c5b6912e03f577487c0d5354fc001f0000000001ffffffff0160fdd5170000000000001976a914819d291a2f7fbf770e784bfd78b5ce92c58e95ea88ac00000000000000000200c2eb0b0000000000000000ffffffff6b483045022100bdcb877c97d72db74eca06fefa21a7f7b00afcd5d916fce2155ed7df1ca5546102201e1f9efd7d652b449474c2c70171bfc4535544927bed62021f7334447d1ea4740121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd000c2eb0b0000000000000000ffffffff6a473044022030c5743c442bd696d19dcf73d54e95526e726de965c2e2b4b9fd70248eaae21d02201305a3bcc2bb0e33122277763990e3b48f317d61264a68d190fb8acfc004cc640121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0',
             },
             legacyResults: [
                 ...legacyResults,
@@ -191,6 +191,11 @@ export default {
                         serializedTx:
                             '010000000254e249113666e84c70de1dbee976f18d1438e4b7c58b376ffe64370ac190688b0200000001ffffffffc8e8dfb5c0e534b12adede611853a1f607c5b6912e03f577487c0d5354fc001f0000000001ffffffff0160fdd5170000000000001976a914819d291a2f7fbf770e784bfd78b5ce92c58e95ea88ac00000000000000000200c2eb0b0000000000000000ffffffff6a47304402202b7caed34aca59bfcf71a3eb6ad7bef59f61ca4df11e18b669cb78f1c77ecd320220735c06fd61a71a6f5ed487293139ef74332649002b0ccae77058f3431d21ef8f0121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd000c2eb0b0000000000000000ffffffff6b483045022100e42c0e4fd00c462e81f470cb02f880f5d175b4020661fd1b46f4735be6c1796a022059f5e7cc7aa6027ec3e227eaff267f1ecf64c217f82c58a363f8738b5b101be90121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0',
                     },
+                },
+                {
+                    // https://github.com/trezor/trezor-firmware/pull/2703/
+                    rules: ['<2.8.2'],
+                    success: false,
                 },
             ],
         },
