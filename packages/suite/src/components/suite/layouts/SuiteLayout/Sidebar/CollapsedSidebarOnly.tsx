@@ -1,17 +1,15 @@
 import React from 'react';
-import styled from 'styled-components';
-import { isExpandedSidebar } from './consts';
-
-const Container = styled.div`
-    @container ${isExpandedSidebar} {
-        display: none;
-    }
-`;
+import { SIDEBAR_COLLAPSED_WIDTH } from './consts';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
 type Props = {
     children: React.ReactNode;
 };
 
 export const CollapsedSidebarOnly = ({ children }: Props) => {
-    return <Container>{children}</Container>;
+    const { sidebarWidth } = useResponsiveContext();
+
+    if (sidebarWidth && sidebarWidth > SIDEBAR_COLLAPSED_WIDTH) return null;
+
+    return children;
 };

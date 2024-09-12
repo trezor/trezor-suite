@@ -7,8 +7,9 @@ import { QuickActions } from './QuickActions/QuickActions';
 import { ElevationUp, ResizableBox, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } from '@trezor/theme';
 import { useActions, useSelector } from 'src/hooks/suite';
-import * as suiteActions from 'src/actions/suite/suiteActions';
 import { TrafficLightOffset } from '../../../TrafficLightOffset';
+import { setSidebarWidth as setSidebarWidthInRedux } from '../../../../../actions/suite/suiteActions';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
     display: flex;
@@ -32,21 +33,32 @@ const Content = styled.div`
 export const Sidebar = () => {
     const { elevation } = useElevation();
 
-    const sidebarWidth = useSelector(state => state.suite.settings.sidebarWidth);
-    const { setSidebarWidth } = useActions({
-        setSidebarWidth: (width: number) => suiteActions.setSidebarWidth({ width }),
+    const sidebarWidthFromRedux = useSelector(state => state.suite.settings.sidebarWidth);
+
+    const actions = useActions({
+        setSidebarWidth: (width: number) => setSidebarWidthInRedux({ width }),
     });
+
+    const { setSidebarWidth, sidebarWidth } = useResponsiveContext();
+
+    const handleSidebarWidthChanged = (width: number) => {
+        actions.setSidebarWidth(width);
+    };
+    const handleSidebarWidthUpdate = (width: number) => {
+        setSidebarWidth(width);
+    };
 
     return (
         <Wrapper>
             <ResizableBox
                 directions={['right']}
-                width={sidebarWidth}
+                width={sidebarWidth || sidebarWidthFromRedux}
                 minWidth={84}
                 maxWidth={600}
                 zIndex={zIndices.draggableComponent}
                 updateHeightOnWindowResize
-                onWidthResizeEnd={setSidebarWidth}
+                onWidthResizeEnd={handleSidebarWidthChanged}
+                onWidthResizeMove={handleSidebarWidthUpdate}
                 disabledWidthInterval={[84, 240]}
             >
                 <Container $elevation={elevation}>

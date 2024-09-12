@@ -1,4 +1,4 @@
-import { useRef, useState, ReactNode } from 'react';
+import { useRef, useState, ReactNode, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 
 import {
@@ -26,6 +26,10 @@ import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAppShortcuts } from './useAppShortcuts';
+import {
+    ResponsiveContextProvider,
+    useResponsiveContext,
+} from 'src/support/suite/ResponsiveContext';
 
 export const SCROLL_WRAPPER_ID = 'layout-scroll';
 export const Wrapper = styled.div`
@@ -89,7 +93,7 @@ export const ContentWrapper = styled.div`
     }
 `;
 
-export const MainBar = styled.div`
+export const MainContentContainer = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -99,6 +103,40 @@ export const MainBar = styled.div`
         overflow-x: hidden;
     }
 `;
+
+type MainContentProps = {
+    children: ReactNode;
+};
+
+export const MainContent = ({ children }: MainContentProps) => {
+    const { contentWidth } = useResponsiveContext();
+    const ref = useRef<HTMLDivElement>(null);
+    console.log('___!!!', contentWidth);
+    const { setContentWidth, sidebarWidth } = useResponsiveContext();
+
+    const updateContainerWidth = useCallback(() => {
+        if (ref.current) {
+            const { current } = ref;
+            const boundingRect = current?.getBoundingClientRect();
+            const { width } = boundingRect;
+            setContentWidth(width);
+        }
+    }, [setContentWidth]);
+
+    useEffect(() => {
+        updateContainerWidth();
+
+        window.addEventListener('resize', updateContainerWidth);
+        window.addEventListener('orientationchange', updateContainerWidth);
+
+        return () => {
+            window.removeEventListener('resize', updateContainerWidth);
+            window.removeEventListener('orientationchange', updateContainerWidth);
+        };
+    }, [ref, setContentWidth, sidebarWidth, updateContainerWidth]);
+
+    return <MainContentContainer ref={ref}>{children}</MainContentContainer>;
+};
 
 interface SuiteLayoutProps {
     children: ReactNode;
@@ -123,50 +161,52 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
         <ElevationContext baseElevation={-1}>
             <Wrapper ref={wrapperRef} data-testid="@suite-layout">
                 <PageWrapper>
-                    <NewModal.Provider>
-                        <ModalContextProvider>
-                            <Metadata title={title} />
+                    <ResponsiveContextProvider>
+                        <NewModal.Provider>
+                            <ModalContextProvider>
+                                <Metadata title={title} />
 
-                            <ModalSwitcher />
+                                <ModalSwitcher />
 
-                            <CoinjoinBars />
+                                <CoinjoinBars />
 
-                            {isMobileLayout && <MobileMenu />}
+                                {isMobileLayout && <MobileMenu />}
 
-                            <DiscoveryProgress />
+                                <DiscoveryProgress />
 
-                            <LayoutContext.Provider value={setLayoutPayload}>
-                                <Body data-testid="@suite-layout/body">
-                                    <Columns>
-                                        {!isMobileLayout && (
-                                            <ElevationDown>
-                                                <Sidebar />
-                                            </ElevationDown>
-                                        )}
-                                        <MainBar>
-                                            <SuiteBanners />
-                                            <AppWrapper
-                                                data-testid="@app"
-                                                ref={scrollRef}
-                                                id={SCROLL_WRAPPER_ID}
-                                            >
-                                                <ElevationUp>
-                                                    {isMobileLayout && isAccountPage && (
-                                                        <MobileAccountsMenu />
-                                                    )}
-                                                    {TopMenu && <TopMenu />}
+                                <LayoutContext.Provider value={setLayoutPayload}>
+                                    <Body data-testid="@suite-layout/body">
+                                        <Columns>
+                                            {!isMobileLayout && (
+                                                <ElevationDown>
+                                                    <Sidebar />
+                                                </ElevationDown>
+                                            )}
+                                            <MainContent>
+                                                <SuiteBanners />
+                                                <AppWrapper
+                                                    data-testid="@app"
+                                                    ref={scrollRef}
+                                                    id={SCROLL_WRAPPER_ID}
+                                                >
+                                                    <ElevationUp>
+                                                        {isMobileLayout && isAccountPage && (
+                                                            <MobileAccountsMenu />
+                                                        )}
+                                                        {TopMenu && <TopMenu />}
 
-                                                    <ContentWrapper>{children}</ContentWrapper>
-                                                </ElevationUp>
-                                            </AppWrapper>
-                                        </MainBar>
-                                    </Columns>
-                                </Body>
-                            </LayoutContext.Provider>
+                                                        <ContentWrapper>{children}</ContentWrapper>
+                                                    </ElevationUp>
+                                                </AppWrapper>
+                                            </MainContent>
+                                        </Columns>
+                                    </Body>
+                                </LayoutContext.Provider>
 
-                            {!isMobileLayout && <GuideButton />}
-                        </ModalContextProvider>
-                    </NewModal.Provider>
+                                {!isMobileLayout && <GuideButton />}
+                            </ModalContextProvider>
+                        </NewModal.Provider>
+                    </ResponsiveContextProvider>
                 </PageWrapper>
 
                 <GuideRouter />
