@@ -81,7 +81,7 @@ const Item = ({
     title: TranslationKey;
     icon: IconName;
     currentRoute?: Route['name'];
-    count: number;
+    count?: number;
 }) => (
     <NavListItem
         nameId={title}
@@ -147,7 +147,7 @@ export const TokensLayoutNavigation = ({
                     route="wallet-tokens-hidden"
                     title="TR_HIDDEN"
                     icon="hide"
-                    count={tokens.hiddenWithBalance.length}
+                    count={tokens.hiddenWithBalance.length || undefined}
                     currentRoute={routeName}
                 />
             </List>
