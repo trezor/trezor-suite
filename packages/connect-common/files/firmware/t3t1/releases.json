@@ -1,6 +1,32 @@
 [
     {
         "required": false,
+        "version": [2, 8, 3],
+        "min_firmware_version": [2, 7, 2],
+        "min_bootloader_version": [2, 1, 6],
+        "bootloader_version": [2, 1, 8],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-PT"],
+        "url": "firmware/t3t1/trezor-t3t1-2.8.3.bin",
+        "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.8.3-bitcoinonly.bin",
+        "fingerprint": "0de51126c17cc0ac623800638dc851c0abd5b787cad5f3aa5843ea2c4cf8248a",
+        "fingerprint_bitcoinonly": "9eaf99a9420d2a3b9377102eb06b938f5a1886ecb06cccde7fd3cb7a39e1abd7",
+        "firmware_revision": "7f373ae71eca855dd41b4a0fdcc7cadaa13a8281",
+        "changelog": [
+            "## Added",
+            "- Added reassuring screen when entering empty passphrase on device.",
+            "- Improved ETH send and staking flow.",
+            "- Redesigned FIDO2 UI.",
+
+            "## Changed",
+            "- Renamed MATIC to POL, following a network upgrade",
+
+            "## Fixed",
+            "- Fix persistent word when going to previous word during recovery process.",
+            "- Added missing info about remaining shares in super-shamir recovery."
+        ]
+    },
+    {
+        "required": false,
         "version": [2, 8, 1],
         "min_firmware_version": [2, 7, 2],
         "min_bootloader_version": [2, 1, 6],
