@@ -1,8 +1,10 @@
 #!/bin/bash
 
+FIREBASE_VERSION="${FIREBASE_VERSION:-v13.16.0}"
+
 distribute_develop_apk() {
     # Install Firebase CLI
-    curl -sL https://firebase.tools | bash
+    curl -sL https://firebase.tools | sed "s/latest/$FIREBASE_VERSION/" | bash
 
     release_notes="Last commit hash: $EAS_BUILD_GIT_COMMIT_HASH"
     echo "$EAS_BUILD_GIT_COMMIT_HASH"
