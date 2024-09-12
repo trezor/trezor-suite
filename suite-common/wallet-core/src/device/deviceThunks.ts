@@ -660,7 +660,7 @@ const deviceConnectThunksMap: Record<
     (payload: DeviceConnectActionPayload) => AnyAction
 > = {
     [DEVICE.CONNECT]: deviceActions.connectDevice,
-    [DEVICE.CONNECT_UNACQUIRED]: deviceActions.connectDevice,
+    [DEVICE.CONNECT_UNACQUIRED]: deviceActions.connectUnacquiredDevice,
 };
 
 type DeviceConnectThunksParams = {
