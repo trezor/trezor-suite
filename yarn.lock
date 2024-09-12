@@ -9919,6 +9919,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:18.2.0"
