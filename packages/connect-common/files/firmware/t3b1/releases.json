@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "required": false,
+        "version": [2, 8, 3],
+        "min_firmware_version": [2, 8, 3],
+        "min_bootloader_version": [2, 1, 8],
+        "bootloader_version": [2, 1, 8],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-PT"],
+        "url": "firmware/t3b1/trezor-t3b1-2.8.3.bin",
+        "url_bitcoinonly": "firmware/t3b1/trezor-t3b1-2.8.3-bitcoinonly.bin",
+        "fingerprint": "b659bdc5ddce208d46ce649fc7a8995ae49541c7c41a88ddaac5dfc038ffb5de",
+        "fingerprint_bitcoinonly": "070a61b2a8653e4f9857810b6610d0a15f76ba627c7b6e5654a6de9a1c529049",
+        "firmware_revision": "7f373ae71eca855dd41b4a0fdcc7cadaa13a8281",
+        "changelog": [
+            "## Changed",
+            "- Renamed MATIC to POL, following a network upgrade",
+            "## Fixed",
+            "- Fix persistent word when going to previous word during recovery process.",
+            "- Fix display orientation south. "
+        ]
+    }
+]
