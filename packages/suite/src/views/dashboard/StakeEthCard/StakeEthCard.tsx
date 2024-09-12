@@ -13,7 +13,7 @@ import {
 } from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation, StakingFeature } from 'src/components/suite';
-import { Footer } from './components/Footer';
+import { StakeEthCardFooter } from './StakeEthCardFooter/StakeEthCardFooter';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
@@ -135,7 +135,7 @@ export const StakeEthCard = () => {
 
                         <Divider />
 
-                        <Footer
+                        <StakeEthCardFooter
                             accountIndex={ethAccountWithSufficientBalanceForStaking?.index}
                             hideSection={closeBanner}
                         />

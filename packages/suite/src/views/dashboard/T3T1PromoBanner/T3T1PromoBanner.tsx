@@ -14,7 +14,7 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 import { colorVariants } from '@trezor/theme';
 import { rgba } from 'polished';
 import { T3T1PromoLogo } from './T3T1PromoLogo';
-import { bannerAnimationConfig } from './banner-animations';
+import { bannerAnimationConfig } from '../banner-animations';
 
 const BannerWrapper = styled(motion.div)`
     display: grid;

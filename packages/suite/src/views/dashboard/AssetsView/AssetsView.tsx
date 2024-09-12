@@ -13,12 +13,12 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 
-import { AssetCard, AssetCardSkeleton } from './components/AssetCard';
+import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { AssetTable, AssetTableRowType } from './components/AssetTable';
+import { AssetTable, AssetTableRowType } from './AssetTable/AssetTable';
 import { networks, Network, NetworkSymbol } from '@suite-common/wallet-config';
 
 const InfoMessage = styled.div`

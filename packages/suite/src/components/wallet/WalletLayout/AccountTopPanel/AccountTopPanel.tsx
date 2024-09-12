@@ -7,7 +7,7 @@ import { CoinLogo, SkeletonCircle, SkeletonRectangle } from '@trezor/components'
 
 import { FormattedCryptoAmount, AmountUnitSwitchWrapper } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { FiatHeader } from 'src/views/dashboard/components/FiatHeader';
+import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 

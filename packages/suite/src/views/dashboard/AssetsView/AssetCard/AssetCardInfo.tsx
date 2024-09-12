@@ -1,38 +1,34 @@
 import { Network } from '@suite-common/wallet-config';
 import React from 'react';
-import styled from 'styled-components';
 import { AssetFiatBalance } from '@suite-common/assets';
-import { AssetCoinLogo, AssetCoinLogoSkeleton } from './AssetCoinLogo';
-import { AssetCoinName, AssetCoinNameSkeleton } from './AssetCoinName';
+import { AssetCoinLogo, AssetCoinLogoSkeleton } from '../AssetCoinLogo';
+import { AssetCoinName, AssetCoinNameSkeleton } from '../AssetCoinName';
+import { Row } from '@trezor/components';
 
-interface AssetInfoSkeletonProps {
-    animate?: boolean;
-}
-
-const Flex = styled.div`
-    display: flex;
-`;
-
-interface AssetInfoProps {
+type AssetInfoProps = {
     network: Network;
     assetsFiatBalances?: AssetFiatBalance[];
     index?: number;
-}
+};
 
 export const AssetCardInfo = ({ network, assetsFiatBalances, index }: AssetInfoProps) => (
-    <Flex>
+    <Row>
         <AssetCoinLogo
             symbol={network.symbol}
             index={index}
             assetsFiatBalances={assetsFiatBalances}
         />
         <AssetCoinName network={network} />
-    </Flex>
+    </Row>
 );
 
+type AssetInfoSkeletonProps = {
+    animate?: boolean;
+};
+
 export const AssetCardInfoSkeleton = ({ animate }: AssetInfoSkeletonProps) => (
-    <Flex>
+    <Row>
         <AssetCoinLogoSkeleton />
         <AssetCoinNameSkeleton animate={animate} />
-    </Flex>
+    </Row>
 );

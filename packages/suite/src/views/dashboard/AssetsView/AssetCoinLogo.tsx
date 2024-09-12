@@ -16,13 +16,13 @@ const LogoWrapper = styled.div`
     align-items: center;
 `;
 
-interface CoinLogoProps {
+type AssetCoinLogoProps = {
     symbol: NetworkSymbol;
     assetsFiatBalances?: AssetFiatBalance[];
     index?: number;
-}
+};
 
-export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: CoinLogoProps) => {
+export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: AssetCoinLogoProps) => {
     const locale = useSelector(selectLanguage);
 
     const assetPercentage = assetsFiatBalances

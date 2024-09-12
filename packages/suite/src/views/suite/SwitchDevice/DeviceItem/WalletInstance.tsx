@@ -21,7 +21,7 @@ import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer'
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { FiatHeader } from 'src/views/dashboard/components/FiatHeader';
+import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useState } from 'react';
 import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConfirmation';
 import { ContentType } from '../types';

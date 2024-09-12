@@ -5,12 +5,12 @@ import { useAccountSearch, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { spacings } from '@trezor/theme';
 
-interface FooterProps {
+type StakeEthCardFooterProps = {
     accountIndex: number | undefined;
     hideSection: () => void;
-}
+};
 
-export const Footer = ({ accountIndex = 0, hideSection }: FooterProps) => {
+export const StakeEthCardFooter = ({ accountIndex = 0, hideSection }: StakeEthCardFooterProps) => {
     const dispatch = useDispatch();
     const { setCoinFilter, setSearchString } = useAccountSearch();
     const goToEthStakingTab = () => {
