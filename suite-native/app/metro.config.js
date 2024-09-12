@@ -54,6 +54,14 @@ const config = {
                 };
             }
 
+            if (process.env.IS_DETOX_BUILD && moduleName === '@trezor/connect') {
+                // Mock some Trezor Connect methods to avoid network flakiness during e2e tests.
+                return {
+                    filePath: require.resolve('./e2e/mocks/trezor-connect.js'),
+                    type: 'sourceFile',
+                };
+            }
+
             // Optionally, chain to the standard Metro resolver.
             return context.resolveRequest(context, moduleName, platform);
         },
