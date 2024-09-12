@@ -25,7 +25,7 @@ import {
 
 import { icons } from '@suite-common/icons-deprecated';
 import { useNativeStyles } from '@trezor/styles';
-import { ENDLESS_ANIMATION_VALUE } from '@suite-native/helpers';
+import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
 
 const ROUNDED_CORNER_SIZE = 15;
 
