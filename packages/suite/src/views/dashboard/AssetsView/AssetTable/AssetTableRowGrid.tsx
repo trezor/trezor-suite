@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { borders, mapElevationToBackground } from '@trezor/theme';
-import { styledHoverOnParentOfArrowIcon } from './ArrowIcon';
+import { styledHoverOnParentOfArrowIcon } from '../ArrowIcon';
 import { Elevation, nextElevation } from '@trezor/theme/src/elevation';
 import { useElevation } from '@trezor/components';
 import { HTMLAttributes } from 'react';

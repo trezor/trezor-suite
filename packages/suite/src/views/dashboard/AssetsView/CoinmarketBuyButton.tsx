@@ -6,12 +6,15 @@ import { useDispatch, useAccountSearch } from 'src/hooks/suite';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { MouseEvent } from 'react';
 
-interface BuyButtonProps {
+type CoinmarketBuyButtonProps = {
     symbol: NetworkSymbol;
     'data-testid'?: string;
-}
+};
 
-export const CoinmarketBuyButton = ({ symbol, 'data-testid': dataTest }: BuyButtonProps) => {
+export const CoinmarketBuyButton = ({
+    symbol,
+    'data-testid': dataTest,
+}: CoinmarketBuyButtonProps) => {
     const dispatch = useDispatch();
     const { setCoinFilter, setSearchString } = useAccountSearch();
 

@@ -41,11 +41,10 @@ const ErrorMessage = styled.div`
     text-align: center;
 `;
 
-interface DashboardGraphProps {
+type DashboardGraphProps = {
     accounts: Account[];
-}
+};
 
-// DashboardGraph.whyDidYouRender = true;
 export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
     const { error, isLoading, selectedRange } = useSelector(state => state.wallet.graph);
     const selectedDevice = useSelector(selectDevice);

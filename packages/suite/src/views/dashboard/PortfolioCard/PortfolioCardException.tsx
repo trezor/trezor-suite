@@ -102,11 +102,6 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
     );
 };
 
-interface ExceptionProps {
-    exception: Extract<DiscoveryStatusType, { status: 'exception' }>;
-    discovery?: Discovery;
-}
-
 const getAccountError = (accountError: string) => {
     if (accountError === 'All backends are down') {
         return <Translation id="TR_CONNECTION_LOST" />;
@@ -136,7 +131,12 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
     return <>{details}</>;
 };
 
-export const Exception = ({ exception, discovery }: ExceptionProps) => {
+type PortfolioCardExceptionProps = {
+    exception: Extract<DiscoveryStatusType, { status: 'exception' }>;
+    discovery?: Discovery;
+};
+
+export const PortfolioCardException = ({ exception, discovery }: PortfolioCardExceptionProps) => {
     const dispatch = useDispatch();
 
     switch (exception.type) {

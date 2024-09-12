@@ -1,4 +1,3 @@
-import { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { variables, H3, Image } from '@trezor/components';
 import { Translation } from 'src/components/suite';
@@ -37,10 +36,8 @@ const StyledImage = styled(Image)`
     margin-bottom: 24px;
 `;
 
-type EmptyWalletProps = HTMLAttributes<HTMLDivElement>;
-
-export const EmptyWallet = (props: EmptyWalletProps) => (
-    <Wrapper {...props} data-testid="@dashboard/wallet-ready">
+export const EmptyWallet = () => (
+    <Wrapper data-testid="@dashboard/wallet-ready">
         <StyledImage image="UNI_SUCCESS" />
         <Content>
             <Title>
