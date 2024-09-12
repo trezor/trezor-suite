@@ -88,7 +88,6 @@ const getPlugins = (): ExpoPlugins => {
                 photosPermission:
                     'Allow $(PRODUCT_NAME) to access your photos to let you import QR code images.',
                 microphonePermission: false,
-                cameraPermission: false,
             },
         ],
         [
