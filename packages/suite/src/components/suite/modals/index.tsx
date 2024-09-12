@@ -18,6 +18,8 @@ export { ImportTransactionModal } from './ReduxModal/UserContextModal/ImportTran
 export { ConfirmEvmExplanationModal } from './ConfirmEvmExplanationModal';
 export { ConfirmUnverifiedModal } from './ReduxModal/UserContextModal/ConfirmUnverifiedModal';
 export { ConfirmUnverifiedAddressModal } from './ReduxModal/UserContextModal/ConfirmUnverifiedAddressModal';
+export { ConfirmUnverifiedXpubModal } from './ReduxModal/UserContextModal/ConfirmUnverifiedXpubModal';
+export { ConfirmUnverifiedProceedModal } from './ReduxModal/UserContextModal/ConfirmUnverifiedProceedModal';
 export { AddAccountModal } from './ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
 export { QrScannerModal } from './ReduxModal/UserContextModal/QrScannerModal';
 export { BackgroundGalleryModal } from './ReduxModal/UserContextModal/BackgroundGalleryModal';

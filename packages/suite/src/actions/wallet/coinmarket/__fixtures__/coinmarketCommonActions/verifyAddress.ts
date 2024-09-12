@@ -124,9 +124,8 @@ export const VERIFY_BUY_ADDRESS_FIXTURES = [
             action: {
                 type: MODAL.OPEN_USER_CONTEXT,
                 payload: {
-                    type: 'unverified-address',
+                    type: 'unverified-address-proceed',
                     value: XRP_ACCOUNT.descriptor,
-                    addressPath: XRP_ACCOUNT.path,
                 },
             },
         },

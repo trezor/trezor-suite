@@ -18,6 +18,10 @@ export type UserContextPayload =
           type: 'unverified-xpub';
       }
     | {
+          type: 'unverified-address-proceed';
+          value: string;
+      }
+    | {
           type: 'address';
           value: string;
           addressPath: string;

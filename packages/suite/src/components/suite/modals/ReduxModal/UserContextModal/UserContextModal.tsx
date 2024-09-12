@@ -27,8 +27,6 @@ import {
     CriticalCoinjoinPhaseModal,
     CoinjoinSuccessModal,
     MoreRoundsNeededModal,
-    ConfirmUnverifiedModal,
-    ConfirmUnverifiedAddressModal,
     UnecoCoinjoinModal,
     AuthenticateDeviceModal,
     AuthenticateDeviceFailModal,
@@ -39,9 +37,11 @@ import {
     ClaimModal,
     CopyAddressModal,
     UnhideTokenModal,
+    ConfirmUnverifiedAddressModal,
+    ConfirmUnverifiedXpubModal,
+    ConfirmUnverifiedProceedModal,
 } from 'src/components/suite/modals';
 import type { AcquiredDevice } from 'src/types/suite';
-import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
 import type { ReduxModalProps } from '../ReduxModal';
 import { CryptoId } from 'invity-api';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
@@ -74,18 +74,12 @@ export const UserContextModal = ({
                 <ConfirmUnverifiedAddressModal
                     addressPath={payload.addressPath}
                     value={payload.value}
-                    onCancel={onCancel}
                 />
             );
         case 'unverified-xpub':
-            return (
-                <ConfirmUnverifiedModal
-                    showUnverifiedButtonText="TR_SHOW_UNVERIFIED_XPUB"
-                    warningText="TR_XPUB_PHISHING_WARNING"
-                    verify={showXpub}
-                    showUnverified={openXpubModal}
-                />
-            );
+            return <ConfirmUnverifiedXpubModal />;
+        case 'unverified-address-proceed':
+            return <ConfirmUnverifiedProceedModal value={payload.value} />;
         case 'address':
             return <ConfirmAddressModal {...payload} onCancel={onCancel} />;
         case 'xpub':

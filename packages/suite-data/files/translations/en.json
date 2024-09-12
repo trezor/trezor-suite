@@ -1700,6 +1700,7 @@
   "TR_SHOW_MORE_ADDRESSES": "Show more ({count})",
   "TR_SHOW_UNVERIFIED_ADDRESS": "Show unverified address",
   "TR_SHOW_UNVERIFIED_XPUB": "Show unverified public key",
+  "TR_PROCEED_UNVERIFIED_ADDRESS": "Proceed with unverified address",
   "TR_SIDEBAR_ADD_COIN": "Add a coin",
   "TR_SIGN": "Sign",
   "TR_SIGNATURE": "Signature",
