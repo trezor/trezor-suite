@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { HStack, Text, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -27,64 +27,70 @@ const headerStyle = prepareNativeStyle(_ => ({
     overflow: 'visible',
 }));
 
-export const SimpleDeviceItemContent = ({
-    deviceState,
-    headerTextVariant,
-    header,
-    isPortfolioTrackerDevice,
-    isSubHeaderForceHidden,
-}: SimpleDeviceItemContentProps) => {
-    const { applyStyle } = useNativeStyles();
-    const device = useSelector((state: DeviceRootState) => selectDeviceByState(state, deviceState));
-    const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
+export const SimpleDeviceItemContent = React.memo(
+    ({
+        deviceState,
+        headerTextVariant,
+        header,
+        isPortfolioTrackerDevice,
+        isSubHeaderForceHidden,
+    }: SimpleDeviceItemContentProps) => {
+        const { applyStyle } = useNativeStyles();
+        const deviceIsConnected = useSelector(
+            // selecting only connected device property prevents unnecessary rerenders
+            (state: DeviceRootState) => selectDeviceByState(state, deviceState)?.connected ?? null,
+        );
+        const hasOnlyEmptyPortfolioTracker = useSelector(selectHasOnlyEmptyPortfolioTracker);
 
-    if (!device) {
-        return null;
-    }
+        // device not found, should not happen
+        if (deviceIsConnected === null) {
+            return null;
+        }
 
-    const isPortfolioTrackerSubHeaderVisible =
-        isPortfolioTrackerDevice && !hasOnlyEmptyPortfolioTracker && !isSubHeaderForceHidden;
+        const isPortfolioTrackerSubHeaderVisible =
+            isPortfolioTrackerDevice && !hasOnlyEmptyPortfolioTracker && !isSubHeaderForceHidden;
 
-    const isConnectionStateVisible = !isPortfolioTrackerDevice && !hasOnlyEmptyPortfolioTracker;
+        const isConnectionStateVisible = !isPortfolioTrackerDevice && !hasOnlyEmptyPortfolioTracker;
 
-    return (
-        <>
-            <Text
-                variant={headerTextVariant}
-                ellipsizeMode="tail"
-                numberOfLines={1}
-                style={applyStyle(headerStyle)}
-            >
-                {hasOnlyEmptyPortfolioTracker ? (
-                    <Translation id="deviceManager.defaultHeader" />
-                ) : (
-                    header
-                )}
-            </Text>
-            <Box>
-                {isPortfolioTrackerSubHeaderVisible && (
-                    <Text variant="hint" color="textSubdued">
-                        <Translation id="deviceManager.status.portfolioTracker" />
-                    </Text>
-                )}
-                {isConnectionStateVisible && (
-                    <HStack alignItems="center" spacing="small">
-                        <ConnectionDot isConnected={device.connected} />
-                        <Text
-                            variant="hint"
-                            color={device.connected ? 'textSecondaryHighlight' : 'textSubdued'}
-                        >
-                            <Translation
-                                id={
-                                    device.connected
-                                        ? 'deviceManager.status.connected'
-                                        : 'deviceManager.status.disconnected'
-                                }
-                            />
+        return (
+            <>
+                <Text
+                    variant={headerTextVariant}
+                    ellipsizeMode="tail"
+                    numberOfLines={1}
+                    style={applyStyle(headerStyle)}
+                >
+                    {hasOnlyEmptyPortfolioTracker ? (
+                        <Translation id="deviceManager.defaultHeader" />
+                    ) : (
+                        header
+                    )}
+                </Text>
+                <Box>
+                    {isPortfolioTrackerSubHeaderVisible && (
+                        <Text variant="hint" color="textSubdued">
+                            <Translation id="deviceManager.status.portfolioTracker" />
                         </Text>
-                    </HStack>
-                )}
-            </Box>
-        </>
-    );
-};
+                    )}
+                    {isConnectionStateVisible && (
+                        <HStack alignItems="center" spacing="small">
+                            <ConnectionDot isConnected={deviceIsConnected} />
+                            <Text
+                                variant="hint"
+                                color={deviceIsConnected ? 'textSecondaryHighlight' : 'textSubdued'}
+                            >
+                                <Translation
+                                    id={
+                                        deviceIsConnected
+                                            ? 'deviceManager.status.connected'
+                                            : 'deviceManager.status.disconnected'
+                                    }
+                                />
+                            </Text>
+                        </HStack>
+                    )}
+                </Box>
+            </>
+        );
+    },
+);

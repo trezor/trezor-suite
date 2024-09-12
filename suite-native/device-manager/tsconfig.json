@@ -6,6 +6,9 @@
             "path": "../../suite-common/icons-deprecated"
         },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         {

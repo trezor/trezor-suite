@@ -950,6 +950,12 @@ export const selectDeviceInstances = memoize((state: DeviceRootState) => {
     return getDeviceInstances(device, allDevices);
 });
 
+export const selectNumberOfDeviceInstances = (state: DeviceRootState) => {
+    const deviceInstances = selectDeviceInstances(state);
+
+    return deviceInstances.length;
+};
+
 export const selectInstacelessUnselectedDevices = memoize((state: DeviceRootState) => {
     const device = selectDevice(state);
     const allDevices = selectDevices(state);
