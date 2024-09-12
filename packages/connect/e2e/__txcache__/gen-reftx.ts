@@ -20,11 +20,13 @@ const inputsMap = (input: TxInput) => ({
     sequence: input.sequence,
     prev_hash: bufferUtils.reverseBuffer(input.hash).toString('hex'),
     script_sig: input.script.toString('hex'),
+    decred_tree: input.decredTree,
 });
 
 const binOutputsMap = (output: TxOutput) => ({
     amount: output.value,
     script_pubkey: output.script.toString('hex'),
+    decred_script_version: output.decredVersion,
 });
 
 const refTxArg: Partial<RefTransaction> = {
