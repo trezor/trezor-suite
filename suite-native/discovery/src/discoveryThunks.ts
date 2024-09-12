@@ -19,6 +19,7 @@ import {
     disableAccountsThunk,
     selectFirstNormalAccountForNetworkSymbol,
     selectHasDeviceDiscovery,
+    filterUnavailableAccountTypes,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
@@ -30,6 +31,7 @@ import {
     NetworkSymbol,
     getNetworkType,
     NetworkAccount,
+    NetworkType,
 } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
@@ -453,18 +455,6 @@ const discoverNetworkBatchThunk = createThunk(
 
         const lastDiscoveredAccountIndex = (round - 1) * batchSize;
 
-        // Skip Cardano legacy/ledger account types if device does not support it.
-        const isIncompatibleCardanoType =
-            network.networkType === 'cardano' &&
-            (accountType === 'ledger' || accountType === 'legacy') &&
-            !discovery.availableCardanoDerivations?.includes(accountType);
-
-        if (isIncompatibleCardanoType) {
-            dispatch(finishNetworkTypeDiscoveryThunk());
-
-            return;
-        }
-
         const chunkBundle: Array<DiscoveryItem> = [];
 
         A.makeWithIndex(batchSize, batchIndex => {
@@ -573,13 +563,26 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
-        const networksSymbols = networks.map(network => network.symbol);
+        // Some cardano derivation may not be supported by the device. We need to exclude them from total count.
+        const isAvailableAccount = (networkType: NetworkType, accountType: AccountType) =>
+            networkType !== 'cardano' ||
+            (availableCardanoDerivations as string[]).includes(accountType);
 
-        const discoveryNetworksTotalCount = networksSymbols.length;
+        const discoveryNetworksTotalCount = networks.reduce((count, network) => {
+            count += isAvailableAccount(network.networkType, NORMAL_ACCOUNT_TYPE) ? 1 : 0;
+
+            const availableAccountTypes = Object.values(network.accountTypes).filter(
+                ({ accountType }) => isAvailableAccount(network.networkType, accountType),
+            );
+
+            return count + availableAccountTypes.length;
+        }, 0);
 
         if (discoveryNetworksTotalCount < 1) {
             return;
         }
+
+        const networksSymbols = networks.map(network => network.symbol);
 
         dispatch(
             createDiscovery({
@@ -659,10 +662,21 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
                 ).unwrap()) ?? [];
         }
 
+        // filter out cardano-type networks, if none of their derivations are available
+        const networksFiltered = networksWithUnfinishedDiscovery.filter(
+            network =>
+                network.networkType !== 'cardano' ||
+                // first try normal derivation, if it's not available, try other derivations
+                availableCardanoDerivations.includes(NORMAL_ACCOUNT_TYPE) ||
+                filterUnavailableAccountTypes(network).some(({ accountType }: NetworkAccount) =>
+                    (availableCardanoDerivations as string[]).includes(accountType),
+                ),
+        );
+
         await dispatch(
             createDescriptorPreloadedDiscoveryThunk({
                 deviceState,
-                networks: networksWithUnfinishedDiscovery,
+                networks: networksFiltered,
                 availableCardanoDerivations,
             }),
         );
@@ -674,7 +688,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         }
 
         // Start discovery for every network (normal account)
-        networksWithUnfinishedDiscovery.forEach(network => {
+        networksFiltered.forEach(network => {
             dispatch(
                 discoverNetworkBatchThunk({
                     deviceState,
@@ -683,8 +697,9 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
                 }),
             );
 
-            // Start discovery for every other account of the network
-            Object.values(network.accountTypes)
+            // Start discovery for every other accountType of the network, if they are supported
+            filterUnavailableAccountTypes(network)
+                // with Cardano, we only get here if there are at least some accountTypes available, so discover those ones.
                 .filter(
                     ({ accountType }: NetworkAccount) =>
                         network.networkType !== 'cardano' ||

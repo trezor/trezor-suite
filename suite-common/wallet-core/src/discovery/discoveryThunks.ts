@@ -12,9 +12,10 @@ import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     networksCompatibility,
-    networks,
     NetworkSymbol,
+    NetworkAccount,
     Network,
+    networksCollection,
 } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
@@ -45,7 +46,7 @@ export const filterUnavailableNetworks = (
     enabledNetworks: NetworkSymbol[],
     device?: TrezorDevice,
 ): Network[] =>
-    Object.values(networks).filter((n: Network) => {
+    networksCollection.filter(n => {
         const firmwareVersion = getFirmwareVersion(device);
         const internalModel = device?.features?.internal_model;
 
@@ -63,9 +64,19 @@ export const filterUnavailableNetworks = (
         );
     });
 
+export const filterUnavailableAccountTypes = (
+    network: Network,
+    device?: TrezorDevice,
+): NetworkAccount[] =>
+    Object.values(network.accountTypes).filter(
+        networkAccount =>
+            isTrezorConnectBackendType(networkAccount.backendType) && // exclude accounts with unsupported backend type
+            !device?.unavailableCapabilities?.[networkAccount.accountType!], // exclude by account types (ex: taproot)
+    );
+
 /**
  * @deprecated Old implementation, temporarily duplicated here for suite, while the new one is used in suite-native
- * Partially replaced by filterUnavailableNetworks, TODO create also filterUnavailableAccounts to fully replace it
+ * Fully replaced by combined use of filterUnavailableNetworks and filterUnavailableAccountTypes
  */
 export const filterUnavailableNetworksCompatible = (
     enabledNetworks: NetworkSymbol[],

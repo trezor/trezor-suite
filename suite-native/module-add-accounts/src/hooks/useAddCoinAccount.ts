@@ -18,7 +18,6 @@ import {
 } from '@suite-common/wallet-core';
 import {
     addAndDiscoverNetworkAccountThunk,
-    selectDiscoverySupportedNetworks,
     NORMAL_ACCOUNT_TYPE,
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
@@ -73,7 +72,6 @@ export const useAddCoinAccount = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
 
-    const supportedNetworks = useSelector(selectDiscoverySupportedNetworks);
     const supportedNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccounts(state),
@@ -121,9 +119,6 @@ export const useAddCoinAccount = () => {
     }: {
         networkSymbol: NetworkSymbol;
     }) => availableNetworkAccountTypes.get(networkSymbol) ?? [NORMAL_ACCOUNT_TYPE];
-
-    const getNetworkToAdd = ({ networkSymbol }: { networkSymbol: NetworkSymbol }) =>
-        supportedNetworks.filter(network => network.symbol === networkSymbol)[0];
 
     const getAccountTypeToBeAddedName = () =>
         networkSymbolWithTypeToBeAdded
@@ -243,7 +238,7 @@ export const useAddCoinAccount = () => {
             return;
         }
 
-        const network = getNetworkToAdd({ networkSymbol });
+        const network = networks[networkSymbol];
 
         //If the account already exists, but is invisible, make it visible
         if (firstHiddenEmptyAccount) {
