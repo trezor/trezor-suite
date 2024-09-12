@@ -30,7 +30,7 @@ const FooterContent = styled.div`
 export type CoinmarketTermsModalProps = {
     decision: Deferred<boolean>;
     onCancel: () => void;
-    type: 'BUY' | 'SELL' | 'COINMARKET_SWAP' | 'COINMARKET_SWAP_DEX';
+    type: 'BUY' | 'SELL' | 'EXCHANGE' | 'EXCHANGE_DEX';
     provider?: string;
     cryptoCurrency?: CryptoId;
     toCryptoCurrency?: CryptoId;

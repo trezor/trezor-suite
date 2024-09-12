@@ -399,8 +399,8 @@ export const coinmarketGetAmountLabels = ({
     const youWillGet = 'TR_COINMARKET_YOU_WILL_GET';
     const youWillPay = 'TR_COINMARKET_YOU_WILL_PAY';
     const youReceive = 'TR_COINMARKET_YOU_RECEIVE';
-    const exchange = 'TR_COINMARKET_SWAP';
-    const exchangeAmount = 'TR_COINMARKET_SWAP_AMOUNT';
+    const exchange = 'TR_COINMARKET_EXCHANGE';
+    const exchangeAmount = 'TR_COINMARKET_EXCHANGE_AMOUNT';
 
     if (type === 'exchange') {
         return {
@@ -451,10 +451,10 @@ export const coinmarketGetSectionActionLabel = (
     type: CoinmarketTradeType,
 ): Extract<
     ExtendedMessageDescriptor['id'],
-    'TR_BUY' | 'TR_COINMARKET_SELL' | 'TR_COINMARKET_SWAP'
+    'TR_BUY' | 'TR_COINMARKET_SELL' | 'TR_COINMARKET_EXCHANGE'
 > => {
     if (type === 'buy') return 'TR_BUY';
     if (type === 'sell') return 'TR_COINMARKET_SELL';
 
-    return 'TR_COINMARKET_SWAP';
+    return 'TR_COINMARKET_EXCHANGE';
 };

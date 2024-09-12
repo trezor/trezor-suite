@@ -138,7 +138,7 @@ export const UserContextModal = ({
             return (
                 <CoinmarketTermsModal
                     onCancel={onCancel}
-                    type="COINMARKET_SWAP"
+                    type="EXCHANGE"
                     decision={payload.decision}
                     provider={payload.provider}
                     toCryptoCurrency={payload.toCryptoCurrency as CryptoId}
@@ -149,7 +149,7 @@ export const UserContextModal = ({
             return (
                 <CoinmarketTermsModal
                     onCancel={onCancel}
-                    type="COINMARKET_SWAP_DEX"
+                    type="EXCHANGE_DEX"
                     decision={payload.decision}
                     provider={payload.provider}
                     toCryptoCurrency={payload.toCryptoCurrency as CryptoId}

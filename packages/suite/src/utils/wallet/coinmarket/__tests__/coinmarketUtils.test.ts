@@ -280,10 +280,10 @@ describe('coinmarket utils', () => {
         });
 
         expect(coinmarketGetAmountLabels({ type: 'exchange', amountInCrypto: false })).toEqual({
-            inputLabel: 'TR_COINMARKET_SWAP_AMOUNT',
+            inputLabel: 'TR_COINMARKET_EXCHANGE_AMOUNT',
             offerLabel: 'TR_COINMARKET_YOU_GET',
             labelComparatorOffer: 'TR_COINMARKET_YOU_WILL_GET',
-            sendLabel: 'TR_COINMARKET_SWAP',
+            sendLabel: 'TR_COINMARKET_EXCHANGE',
             receiveLabel: 'TR_COINMARKET_YOU_RECEIVE',
         });
     });

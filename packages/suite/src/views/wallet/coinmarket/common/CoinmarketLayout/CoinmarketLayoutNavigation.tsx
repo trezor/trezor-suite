@@ -64,11 +64,7 @@ export const CoinmarketLayoutNavigation = () => {
             <Item route="wallet-coinmarket-sell" title="TR_NAV_SELL" icon="minus" />
 
             {!isBitcoinOnly ? (
-                <Item
-                    route="wallet-coinmarket-exchange"
-                    title="TR_COINMARKET_SWAP"
-                    icon="arrowsClockwise"
-                />
+                <Item route="wallet-coinmarket-exchange" title="TR_NAV_EXCHANGE" icon="trade" />
             ) : null}
         </List>
     );

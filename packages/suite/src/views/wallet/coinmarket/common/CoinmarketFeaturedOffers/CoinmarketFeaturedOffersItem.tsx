@@ -94,7 +94,7 @@ const actionButtonText = (
         return <Translation id="TR_COINMARKET_SELL" />;
     }
     if (isCoinmarketExchangeOffers(context)) {
-        return <Translation id="TR_COINMARKET_SWAP" />;
+        return <Translation id="TR_COINMARKET_EXCHANGE" />;
     }
 };
 
