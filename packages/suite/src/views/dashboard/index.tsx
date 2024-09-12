@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { breakpointMediaQueries } from '@trezor/styles';
 import { useLayout } from 'src/hooks/suite';
-import { AssetsView } from './components/AssetsView';
-import PortfolioCard from './components/PortfolioCard';
-import { PromoBanner } from './components/PromoBanner';
-import { T3T1PromoBanner } from './components/T3T1PromoBanner';
+import { AssetsView } from './AssetsView/AssetsView';
+import { PortfolioCard } from './PortfolioCard/PortfolioCard';
+import { PromoBanner } from './PromoBanner';
+import { T3T1PromoBanner } from './T3T1PromoBanner/T3T1PromoBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { StakeEthCard } from './components/StakeEthCard/StakeEthCard';
-import { DashboardPassphraseBanner } from './components/DashboardPassphraseBanner';
+import { StakeEthCard } from './StakeEthCard/StakeEthCard';
+import { DashboardPassphraseBanner } from './DashboardPassphraseBanner';
 import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`

@@ -10,7 +10,6 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { Card, H2, Icon, Row, SkeletonRectangle, variables } from '@trezor/components';
@@ -18,8 +17,9 @@ import { useDispatch } from 'react-redux';
 import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { AssetFiatBalance } from '@suite-common/assets';
-import { FiatHeader } from '../../FiatHeader';
-import { ArrowIcon, styledHoverOnParentOfArrowIcon } from './ArrowIcon';
+import { FiatHeader } from 'src/components/wallet/FiatHeader';
+import { ArrowIcon, styledHoverOnParentOfArrowIcon } from '../ArrowIcon';
+import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
@@ -87,13 +87,13 @@ const FailedContainer = styled.div`
     }
 `;
 
-interface AssetCardProps {
+type AssetCardProps = {
     network: Network;
     failed: boolean;
     cryptoValue: string;
     assetsFiatBalances: AssetFiatBalance[];
     index?: number;
-}
+};
 
 export const AssetCard = ({
     network,

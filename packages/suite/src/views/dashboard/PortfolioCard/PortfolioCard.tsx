@@ -10,10 +10,10 @@ import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils';
 
-import { Header } from './components/Header';
-import { Exception } from './components/Exception';
-import { EmptyWallet } from './components/EmptyWallet';
-import { DashboardGraph } from './components/DashboardGraph';
+import { PortfolioCardHeader } from './PortfolioCardHeader';
+import { PortfolioCardException } from './PortfolioCardException';
+import { EmptyWallet } from './EmptyWallet';
+import { DashboardGraph } from './DashboardGraph';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
@@ -43,7 +43,7 @@ const Wrapper = styled.div`
     display: flex;
 `;
 
-const PortfolioCard = memo(() => {
+export const PortfolioCard = memo(() => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
@@ -68,7 +68,7 @@ const PortfolioCard = memo(() => {
 
     let body = null;
     if (discoveryStatus && discoveryStatus.status === 'exception') {
-        body = <Exception exception={discoveryStatus} discovery={discovery} />;
+        body = <PortfolioCardException exception={discoveryStatus} discovery={discovery} />;
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
         body = dashboardGraphHidden ? null : (
             <SkeletonTransactionsGraphWrapper>
@@ -151,7 +151,7 @@ const PortfolioCard = memo(() => {
         >
             <Card paddingType="none">
                 {discoveryStatus && discoveryStatus.status === 'exception' ? null : (
-                    <Header
+                    <PortfolioCardHeader
                         showGraphControls={showGraphControls}
                         hideBorder={!body}
                         fiatAmount={fiatAmount}
@@ -170,5 +170,3 @@ const PortfolioCard = memo(() => {
         </DashboardSection>
     );
 });
-
-export default PortfolioCard;

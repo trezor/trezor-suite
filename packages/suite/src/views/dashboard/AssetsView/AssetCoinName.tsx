@@ -24,9 +24,9 @@ const WalletNumber = styled.div`
     ${typography.hint};
 `;
 
-interface AssetCoinNameProps {
+type AssetCoinNameProps = {
     network: Network;
-}
+};
 
 export const AssetCoinName = ({ network }: AssetCoinNameProps) => {
     const { symbol, name } = network;
@@ -45,9 +45,9 @@ export const AssetCoinName = ({ network }: AssetCoinNameProps) => {
     );
 };
 
-interface AssetCoinNameSkeletonProps {
+type AssetCoinNameSkeletonProps = {
     animate?: boolean;
-}
+};
 
 export const AssetCoinNameSkeleton = ({ animate }: AssetCoinNameSkeletonProps) => (
     <div>

@@ -10,16 +10,16 @@ import {
     Translation,
     TrendTicker,
 } from 'src/components/suite';
-import { CoinmarketBuyButton } from 'src/views/dashboard/components/CoinmarketBuyButton';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { useAccountSearch, useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
 import { spacingsPx, typography } from '@trezor/theme';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { AssetTableRowGrid } from './AssetTableRowGrid';
-import { ArrowIcon } from './ArrowIcon';
-import { AssetCoinLogo, AssetCoinLogoSkeleton } from './AssetCoinLogo';
-import { AssetCoinName } from './AssetCoinName';
+import { ArrowIcon } from '../ArrowIcon';
+import { AssetCoinLogo, AssetCoinLogoSkeleton } from '../AssetCoinLogo';
+import { AssetCoinName } from '../AssetCoinName';
+import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
 
 const Coin = styled.div`
     white-space: nowrap;

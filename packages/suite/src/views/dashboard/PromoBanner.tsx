@@ -137,13 +137,13 @@ const QR = styled(QrCode)`
 
 type QrType = 'app-store' | 'play-store';
 
-interface StoreBadgeProps {
+type StoreBadgeProps = {
     url: string;
     image: 'APP_STORE' | 'PLAY_STORE';
     type: QrType;
     analyticsPayload: 'ios' | 'android';
     shownQRState: [QrType | undefined, (type: QrType | undefined) => void];
-}
+};
 
 const StoreBadge = ({
     url,

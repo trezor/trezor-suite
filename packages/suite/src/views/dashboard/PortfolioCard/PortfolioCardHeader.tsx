@@ -7,7 +7,7 @@ import { GraphRangeSelector, Translation } from 'src/components/suite';
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
-import { FiatHeader } from '../../FiatHeader';
+import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div<{ $hideBorder: boolean }>`
@@ -44,7 +44,7 @@ const WalletEmptyButton = styled(Button)`
     min-width: 120px;
 `;
 
-export interface HeaderProps {
+export type PortfolioCardHeaderProps = {
     fiatAmount: string;
     localCurrency: string;
     isWalletEmpty: boolean;
@@ -56,9 +56,9 @@ export interface HeaderProps {
     hideBorder: boolean;
     receiveClickHandler: () => void;
     buyClickHandler: () => void;
-}
+};
 
-export const Header = ({
+export const PortfolioCardHeader = ({
     fiatAmount,
     localCurrency,
     isWalletEmpty,
@@ -70,7 +70,7 @@ export const Header = ({
     hideBorder,
     receiveClickHandler,
     buyClickHandler,
-}: HeaderProps) => {
+}: PortfolioCardHeaderProps) => {
     const accounts = useFastAccounts();
 
     const onSelectedRange = useCallback(
