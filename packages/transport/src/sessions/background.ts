@@ -31,6 +31,43 @@ type DescriptorsDict = Record<string, Descriptor>;
 // in nodeusb, enumeration operation takes ~3 seconds
 const lockDuration = 1000 * 4;
 
+const createLockManager = () => {
+    // if lock is set, somebody is doing something with device. we have to wait
+    const locksQueue: { id: ReturnType<typeof setTimeout>; dfd: Deferred<void> }[] = [];
+
+    const abort = () => locksQueue.forEach(lock => clearTimeout(lock.id));
+
+    const lockAndWait = async () => {
+        // todo: create a deferred with built-in timeout functionality (util)
+        const dfd = createDeferred();
+
+        // to ensure that communication with device will not get stuck forever,
+        // lock times out:
+        // - if cleared by client (enumerateDone)
+        // - after n second automatically
+        const timeout = setTimeout(dfd.resolve, lockDuration);
+
+        const beforeMe = locksQueue.slice();
+
+        locksQueue.push({ id: timeout, dfd });
+
+        if (beforeMe.length) {
+            await Promise.all(beforeMe.map(lock => lock.dfd.promise));
+        }
+    };
+
+    const unlock = () => {
+        const lock = locksQueue[0];
+        if (lock) {
+            lock.dfd.resolve(undefined);
+            clearTimeout(lock.id);
+            locksQueue.shift();
+        }
+    };
+
+    return { abort, lockAndWait, unlock };
+};
+
 export class SessionsBackground extends TypedEmitter<{
     /**
      * updated descriptors (session has changed)
@@ -43,10 +80,9 @@ export class SessionsBackground extends TypedEmitter<{
      */
     private descriptors: DescriptorsDict = {};
 
-    // if lock is set, somebody is doing something with device. we have to wait
-    private locksQueue: { id: ReturnType<typeof setTimeout>; dfd: Deferred<void> }[] = [];
-    private locksTimeoutQueue: ReturnType<typeof setTimeout>[] = [];
     private lastSessionId = 0;
+
+    private readonly lockManager = createLockManager();
 
     public async handleMessage<M extends HandleMessageParams>(
         message: M,
@@ -154,11 +190,11 @@ export class SessionsBackground extends TypedEmitter<{
             return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
         }
 
-        await this.waitInQueue();
+        await this.lockManager.lockAndWait();
 
         // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
         if (previous !== this.descriptors[payload.path]?.session) {
-            this.clearLock();
+            this.lockManager.unlock();
 
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
@@ -181,7 +217,7 @@ export class SessionsBackground extends TypedEmitter<{
      * - assign client a new "session". this session will be used in all subsequent communication
      */
     private acquireDone(payload: AcquireDoneRequest) {
-        this.clearLock();
+        this.lockManager.unlock();
         if (!this.descriptors[payload.path]) {
             return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
         }
@@ -202,7 +238,7 @@ export class SessionsBackground extends TypedEmitter<{
         }
         const { path } = pathResult.payload;
 
-        await this.waitInQueue();
+        await this.lockManager.lockAndWait();
 
         return this.success({ path });
     }
@@ -210,7 +246,7 @@ export class SessionsBackground extends TypedEmitter<{
     private releaseDone(payload: ReleaseDoneRequest) {
         this.descriptors[payload.path].session = null;
 
-        this.clearLock();
+        this.lockManager.unlock();
 
         return Promise.resolve(this.success({ descriptors: Object.values(this.descriptors) }));
     }
@@ -234,48 +270,6 @@ export class SessionsBackground extends TypedEmitter<{
         return this.success({ path });
     }
 
-    private startLock() {
-        // todo: create a deferred with built-in timeout functionality (util)
-        const dfd = createDeferred();
-
-        // to ensure that communication with device will not get stuck forever,
-        // lock times out:
-        // - if cleared by client (enumerateDone)
-        // - after n second automatically
-        const timeout = setTimeout(() => {
-            dfd.resolve(undefined);
-        }, lockDuration);
-
-        this.locksQueue.push({ id: timeout, dfd });
-        this.locksTimeoutQueue.push(timeout);
-
-        return this.locksQueue.length - 1;
-    }
-
-    private clearLock() {
-        const lock = this.locksQueue[0];
-        if (lock) {
-            this.locksQueue[0].dfd.resolve(undefined);
-            this.locksQueue.shift();
-            clearTimeout(this.locksTimeoutQueue[0]);
-            this.locksTimeoutQueue.shift();
-        }
-    }
-
-    private async waitForUnlocked(myIndex: number) {
-        if (myIndex > 0) {
-            const beforeMe = this.locksQueue.slice(0, myIndex);
-            if (beforeMe.length) {
-                await Promise.all(beforeMe.map(lock => lock.dfd.promise));
-            }
-        }
-    }
-
-    private async waitInQueue() {
-        const myIndex = this.startLock();
-        await this.waitForUnlocked(myIndex);
-    }
-
     private filterDisconnectedDevices(prevDevices: Descriptor[], paths: string[]) {
         return prevDevices.filter(d => !paths.find(p => d.path === p));
     }
@@ -295,8 +289,7 @@ export class SessionsBackground extends TypedEmitter<{
     }
 
     dispose() {
-        this.locksQueue.forEach(lock => clearTimeout(lock.id));
-        this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
+        this.lockManager.abort();
         this.descriptors = {};
         this.lastSessionId = 0;
     }
