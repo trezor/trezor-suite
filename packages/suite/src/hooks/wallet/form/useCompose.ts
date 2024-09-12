@@ -27,6 +27,7 @@ const DEFAULT_FIELD = 'outputs.0.amount';
 interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
     state: ComposeActionContext;
     defaultField?: FieldPath<TFieldValues>;
+    disableInitialCompose?: boolean;
 }
 
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)
@@ -37,6 +38,7 @@ export const useCompose = <TFieldValues extends FormState>({
     getValues,
     formState: { errors },
     clearErrors,
+    disableInitialCompose,
     ...props
 }: Props<TFieldValues>) => {
     const [isLoading, setLoading] = useState(false);
@@ -219,10 +221,10 @@ export const useCompose = <TFieldValues extends FormState>({
 
     // trigger initial compose process
     useEffect(() => {
-        if (state && composeRequestIDRef.current === 0) {
+        if (state && composeRequestIDRef.current === 0 && !disableInitialCompose) {
             composeRequest();
         }
-    }, [state, composeRequest]);
+    }, [state, disableInitialCompose, composeRequest]);
 
     // handle composedLevels change
     useEffect(() => {

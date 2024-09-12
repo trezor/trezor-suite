@@ -62,6 +62,7 @@ export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchange
     } = useCompose({
         ...methods,
         state,
+        disableInitialCompose: true, // prevent composing transaction with 0 amount
     });
 
     // sub-hook, FeeLevels handler
