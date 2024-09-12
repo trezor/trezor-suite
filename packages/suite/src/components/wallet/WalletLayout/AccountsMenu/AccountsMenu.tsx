@@ -74,6 +74,7 @@ export const AccountsMenu = () => {
                             device={device}
                         />
                     </Row>
+                    <CoinsFilter />
                 </ExpandedSidebarOnly>
                 <CollapsedSidebarOnly>
                     <Column alignItems="center" margin={{ bottom: spacings.sm }}>
@@ -84,7 +85,6 @@ export const AccountsMenu = () => {
                         />
                     </Column>
                 </CollapsedSidebarOnly>
-                <CoinsFilter />
             </Header>
             <ShadowContainer>
                 <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />

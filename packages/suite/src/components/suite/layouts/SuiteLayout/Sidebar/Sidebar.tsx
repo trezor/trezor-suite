@@ -7,7 +7,6 @@ import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } f
 
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { useActions, useSelector } from 'src/hooks/suite';
-import * as suiteActions from 'src/actions/suite/suiteActions';
 
 import { QuickActions } from './QuickActions/QuickActions';
 import { Navigation } from './Navigation';
@@ -15,6 +14,8 @@ import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { TrafficLightOffset } from '../../../TrafficLightOffset';
 import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
 import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
+import { setSidebarWidth as setSidebarWidthInRedux } from '../../../../../actions/suite/suiteActions';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
     display: flex;
@@ -42,10 +43,20 @@ export const Sidebar = () => {
     const { elevation } = useElevation();
     const { updateStatusDevice, updateStatusSuite } = useUpdateStatus();
 
-    const sidebarWidth = useSelector(state => state.suite.settings.sidebarWidth);
-    const { setSidebarWidth } = useActions({
-        setSidebarWidth: (width: number) => suiteActions.setSidebarWidth({ width }),
+    const sidebarWidthFromRedux = useSelector(state => state.suite.settings.sidebarWidth);
+
+    const actions = useActions({
+        setSidebarWidth: (width: number) => setSidebarWidthInRedux({ width }),
     });
+
+    const { setSidebarWidth, sidebarWidth } = useResponsiveContext();
+
+    const handleSidebarWidthChanged = (width: number) => {
+        actions.setSidebarWidth(width);
+    };
+    const handleSidebarWidthUpdate = (width: number) => {
+        setSidebarWidth(width);
+    };
 
     const onNotificationBannerClosed = () => {
         if (updateStatusSuite !== 'up-to-date') {
@@ -64,12 +75,13 @@ export const Sidebar = () => {
         <Wrapper>
             <ResizableBox
                 directions={['right']}
-                width={sidebarWidth}
+                width={sidebarWidth || sidebarWidthFromRedux}
                 minWidth={84}
                 maxWidth={600}
                 zIndex={zIndices.draggableComponent}
                 updateHeightOnWindowResize
-                onWidthResizeEnd={setSidebarWidth}
+                onWidthResizeEnd={handleSidebarWidthChanged}
+                onWidthResizeMove={handleSidebarWidthUpdate}
                 disabledWidthInterval={[84, 240]}
             >
                 <Container $elevation={elevation}>

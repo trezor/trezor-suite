@@ -27,6 +27,8 @@ export type ResizableBoxProps = {
     zIndex?: ZIndexValues;
     onWidthResizeEnd?: (width: number) => void;
     onHeightResizeEnd?: (height: number) => void;
+    onWidthResizeMove?: (width: number) => void;
+    onHeightResizeMove?: (height: number) => void;
     disabledWidthInterval?: DisabledInterval;
     disabledHeightInterval?: DisabledInterval;
 };
@@ -219,6 +221,8 @@ export const ResizableBox = ({
     zIndex = zIndices.draggableComponent,
     onWidthResizeEnd,
     onHeightResizeEnd,
+    onWidthResizeMove,
+    onHeightResizeMove,
     disabledWidthInterval,
     disabledHeightInterval,
 }: ResizableBoxProps) => {
@@ -322,25 +326,23 @@ export const ResizableBox = ({
         }
 
         document.onmousemove = event => {
-            if (isResizing && direction !== null && resizeCooldown() === true) {
+            if (isResizing && direction !== null && resizeCooldown()) {
                 resize(event);
+                onWidthResizeMove?.(newWidth);
+                onHeightResizeMove?.(newHeight);
             }
         };
 
         document.onmouseup = () => {
             if (isResizing) {
                 setIsResizing(false);
-                if (onWidthResizeEnd) {
-                    onWidthResizeEnd(newWidth);
-                }
-                if (onHeightResizeEnd) {
-                    onHeightResizeEnd(newHeight);
-                }
+                onWidthResizeEnd?.(newWidth);
+                onHeightResizeEnd?.(newHeight);
             }
         };
 
         window.onresize = () => {
-            if (resizeCooldown() === true) {
+            if (resizeCooldown()) {
                 const { windowHeight, windowWidth } = getSafeWindowSize();
                 if (updateHeightOnWindowResize) {
                     setNewHeight(getMaxResult(maxHeight, windowHeight));
@@ -359,7 +361,9 @@ export const ResizableBox = ({
         newHeight,
         newWidth,
         onHeightResizeEnd,
+        onHeightResizeMove,
         onWidthResizeEnd,
+        onWidthResizeMove,
         resizableBoxRef,
         resize,
         resizeCooldown,
