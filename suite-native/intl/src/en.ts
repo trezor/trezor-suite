@@ -548,7 +548,7 @@ export const en = {
                 coinDisabled: '{coin} disabled',
             },
             btcOnly: {
-                title: 'This device is BTC only.',
+                title: 'Your Trezor is BTC only.',
                 subtitle: 'So what exactly are you looking for?',
             },
             oneNetworkSymbolAlert: {
