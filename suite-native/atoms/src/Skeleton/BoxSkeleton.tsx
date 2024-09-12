@@ -20,6 +20,7 @@ import {
 import { useNativeStyles } from '@trezor/styles';
 import { Color, nativeBorders } from '@trezor/theme';
 
+import { ENDLESS_ANIMATION_VALUE } from '../constants';
 import { SurfaceElevation } from '../types';
 
 type BoxSkeletonProps = {
@@ -56,7 +57,10 @@ export const BoxSkeleton = ({
     const progress = useSharedValue(0);
 
     useEffect(() => {
-        progress.value = withRepeat(withTiming(width, { duration: ANIMATION_DURATION }), -1);
+        progress.value = withRepeat(
+            withTiming(width, { duration: ANIMATION_DURATION }),
+            ENDLESS_ANIMATION_VALUE,
+        );
     }, [width, progress]);
 
     const position = useDerivedValue(() => [

@@ -12,7 +12,7 @@ import { Canvas, Circle, vec, SweepGradient } from '@shopify/react-native-skia';
 
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Color } from '@trezor/theme';
-import { ENDLESS_ANIMATION_VALUE } from '@suite-native/helpers';
+import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
 
 type TransactionIconSpinnerProps = {
     size: number;

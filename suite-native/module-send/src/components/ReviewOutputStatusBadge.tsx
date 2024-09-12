@@ -9,7 +9,7 @@ import Animated, {
 import { Icon } from '@suite-common/icons-deprecated';
 import { ReviewOutputState } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { ENDLESS_ANIMATION_VALUE } from '@suite-native/helpers';
+import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
 
 const BADGE_SIZE = 14;
 const ANIMATION_DURATION = 550;
