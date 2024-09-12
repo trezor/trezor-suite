@@ -46,6 +46,10 @@ To test the app in the release mode, you need to build the app with the release 
 
 Some tests use Trezor-user-env to simulate the Trezor device. To make these tests work locally, make sure that the trezor-user-env is up and running. To do so, follow the [trezor-user-env documentation](https://github.com/trezor/trezor-user-env/blob/master/README.md).
 
+## Mocking
+
+To make the tests as much standalone and independent on third party services as possible, we are mocking some parts of the app. The mocks are located in the `/mocks` folder.
+
 ## GitHub CI
 
 Android E2E test run on GitHub CI on every PR that is labeled with a `mobile-app` tag. The workflow is described in the [.github/workflows/native-test-e2e-android.yml](../../../.github/workflows/native-test-e2e-android.yml) file.
