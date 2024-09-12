@@ -56,11 +56,11 @@ describe('Go through onboarding and connect Trezor.', () => {
 
             await waitFor(element(by.id('skip-view-only-mode')))
                 .toBeVisible()
-                .withTimeout(60000); // communication between connected Trezor and app takes some time.
+                .withTimeout(90000); // Wait for discovery to finish
 
             await element(by.id('skip-view-only-mode')).tap();
 
-            await detoxExpect(element(by.id('@home/portfolio/graph'))); // discovery finished and graph is visible
+            await detoxExpect(element(by.id('@home/portfolio/graph')));
         } else {
             await detoxExpect(element(by.text('Hi there!'))).toBeVisible();
             await detoxExpect(element(by.text('Get started'))).toBeVisible();
