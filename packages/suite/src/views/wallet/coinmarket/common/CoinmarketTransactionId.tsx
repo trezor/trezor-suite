@@ -1,52 +1,31 @@
 import styled from 'styled-components';
-import { variables, Button } from '@trezor/components';
+import { Button, Row } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { typography } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-const Wrapper = styled.div`
-    display: flex;
-    margin-top: 10px;
-    align-items: center;
-    justify-content: space-between;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const Left = styled.div`
-    display: flex;
-    padding-right: 10px;
-    align-items: center;
-`;
-
-const Right = styled.div``;
-
-const Label = styled.div`
-    text-transform: capitalize;
+const LabelWrapper = styled.div`
+    width: 100%;
+    flex: auto;
+    padding-right: ${spacingsPx.sm};
     ${typography.label}
-    padding-right: 3px;
-    white-space: nowrap;
-`;
-
-const Value = styled.div`
-    max-width: 220px;
+    color: ${({ theme }) => theme.textSubdued};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 `;
 
-interface CoinmarketTransactionIdTransactionIdProps {
+const ButtonWrapper = styled.div`
+    flex: none;
+`;
+
+interface CoinmarketTransactionIdProps {
     transactionId: string;
-    className?: string;
 }
 
-export const CoinmarketTransactionId = ({
-    transactionId,
-    className,
-}: CoinmarketTransactionIdTransactionIdProps) => {
+export const CoinmarketTransactionId = ({ transactionId }: CoinmarketTransactionIdProps) => {
     const dispatch = useDispatch();
     const copy = () => {
         const result = copyToClipboard(transactionId);
@@ -56,18 +35,15 @@ export const CoinmarketTransactionId = ({
     };
 
     return (
-        <Wrapper className={className}>
-            <Left>
-                <Label>
-                    <Translation id="TR_BUY_TRANS_ID" />
-                </Label>
-                <Value>{transactionId}</Value>
-            </Left>
-            <Right>
+        <Row alignItems="center" justifyContent="space-between" margin={{ top: spacings.sm }}>
+            <LabelWrapper>
+                <Translation id="TR_BUY_TRANS_ID" /> {transactionId}
+            </LabelWrapper>
+            <ButtonWrapper>
                 <Button size="tiny" variant="tertiary" onClick={copy}>
                     <Translation id="TR_COPY_TO_CLIPBOARD_TX_ID" />
                 </Button>
-            </Right>
-        </Wrapper>
+            </ButtonWrapper>
+        </Row>
     );
 };
