@@ -5,7 +5,6 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
     [FeatureFlagEnum.IsSendEnabled]: 'Send',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
-    [FeatureFlagEnum.IsCoinEnablingActive]: 'Coin Enabling',
     [FeatureFlagEnum.IsPolygonEnabled]: 'Polygon',
 } as const satisfies Record<FeatureFlagEnum, string>;
 

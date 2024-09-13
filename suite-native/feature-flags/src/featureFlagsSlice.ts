@@ -7,7 +7,6 @@ export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
     IsSendEnabled: 'isSendEnabled',
     IsRegtestEnabled: 'isRegtestEnabled',
-    IsCoinEnablingActive: 'isCoinEnablingActive',
     IsPolygonEnabled: 'IsPolygonEnabled',
 } as const;
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -22,7 +21,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsDeviceConnectEnabled]: isAndroid() || isDebugEnv(),
     [FeatureFlag.IsSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
-    [FeatureFlag.IsCoinEnablingActive]: isDevelopOrDebugEnv() && !isDetoxTestBuild(),
     [FeatureFlag.IsPolygonEnabled]: false,
 };
 
@@ -30,7 +28,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
     FeatureFlag.IsSendEnabled,
     FeatureFlag.IsRegtestEnabled,
-    FeatureFlag.IsCoinEnablingActive,
     FeatureFlag.IsPolygonEnabled,
 ];
 

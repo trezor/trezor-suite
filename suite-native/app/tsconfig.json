@@ -40,7 +40,6 @@
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../discovery" },
-        { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../message-system" },
         { "path": "../module-accounts-import" },

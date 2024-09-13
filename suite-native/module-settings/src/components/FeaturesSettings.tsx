@@ -27,7 +27,6 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
-    const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
 
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
 
@@ -66,18 +65,14 @@ export const FeaturesSettings = () => {
                     testID="@settings/view-only"
                 />
             )}
-            {isCoinEnablingActive && (
-                <SettingsSectionItem
-                    iconName="coins"
-                    title={<Translation id="moduleSettings.items.features.coinEnabling.title" />}
-                    subtitle={
-                        <Translation id="moduleSettings.items.features.coinEnabling.subtitle" />
-                    }
-                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsCoinEnabling)}
-                    isLoading={hasDiscovery}
-                    testID="@settings/coin-enabling"
-                />
-            )}
+            <SettingsSectionItem
+                iconName="coins"
+                title={<Translation id="moduleSettings.items.features.coinEnabling.title" />}
+                subtitle={<Translation id="moduleSettings.items.features.coinEnabling.subtitle" />}
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsCoinEnabling)}
+                isLoading={hasDiscovery}
+                testID="@settings/coin-enabling"
+            />
         </SettingsSection>
     );
 };

@@ -122,14 +122,7 @@ export const selectDiscoveryNetworkSymbols = memoizeWithArgs(
 
 export const selectIsCoinEnablingInitFinished = (
     state: DiscoveryConfigSliceRootState & FeatureFlagsRootState,
-) => {
-    const isCoinEnablingActive = selectIsFeatureFlagEnabled(
-        state,
-        FeatureFlag.IsCoinEnablingActive,
-    );
-
-    return isCoinEnablingActive ? state.discoveryConfig.isCoinEnablingInitFinished : true;
-};
+) => state.discoveryConfig.isCoinEnablingInitFinished;
 
 // this includes all networks, including those that are not supported by current device
 export const selectEnabledDiscoveryNetworkSymbols = (state: DiscoveryConfigSliceRootState) =>
@@ -140,22 +133,10 @@ export const selectDeviceEnabledDiscoveryNetworkSymbols = memoizeWithArgs(
     (
         state: DiscoveryConfigSliceRootState & DeviceRootState & FeatureFlagsRootState,
         forcedAreTestnetsEnabled?: boolean,
-    ) => {
-        const supportedNetworkSymbols = selectDiscoveryNetworkSymbols(
-            state,
-            forcedAreTestnetsEnabled,
-        );
-        const isCoinEnablingActive = selectIsFeatureFlagEnabled(
-            state,
-            FeatureFlag.IsCoinEnablingActive,
-        );
-
-        return supportedNetworkSymbols.filter(s =>
-            isCoinEnablingActive
-                ? state.discoveryConfig.enabledDiscoveryNetworkSymbols.includes(s)
-                : true,
-        );
-    },
+    ) =>
+        selectDiscoveryNetworkSymbols(state, forcedAreTestnetsEnabled).filter(s =>
+            state.discoveryConfig.enabledDiscoveryNetworkSymbols.includes(s),
+        ),
     { size: 2 },
 );
 
