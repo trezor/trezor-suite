@@ -1,4 +1,4 @@
-name: "[Release] suite config"
+name: "[Release] suite message system config"
 
 permissions:
   id-token: write # for fetching the OIDC token
@@ -6,6 +6,7 @@ permissions:
 
 on:
   workflow_dispatch:
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
