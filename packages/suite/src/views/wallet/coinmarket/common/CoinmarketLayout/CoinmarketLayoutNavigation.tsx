@@ -67,7 +67,7 @@ export const CoinmarketLayoutNavigation = () => {
                 <Item
                     route="wallet-coinmarket-exchange"
                     title="TR_COINMARKET_SWAP"
-                    icon="arrowsClockwise"
+                    icon="arrowsLeftRight"
                 />
             ) : null}
         </List>
