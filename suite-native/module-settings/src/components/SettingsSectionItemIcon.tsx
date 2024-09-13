@@ -1,13 +1,11 @@
+import { Box, RoundedIcon } from '@suite-native/atoms';
 import { IconName } from '@suite-common/icons-deprecated';
 
-import { Box } from '../Box';
-import { RoundedIcon } from '../RoundedIcon';
-
-type ListItemIconProps = {
+type SettingsSectionItemIconProps = {
     iconName: IconName;
 };
 
-export const ListItemIcon = ({ iconName }: ListItemIconProps) => (
+export const SettingsSectionItemIcon = ({ iconName }: SettingsSectionItemIconProps) => (
     <Box justifyContent="center" alignItems="center" marginRight="medium">
         <RoundedIcon name={iconName} color="iconSubdued" iconSize="mediumLarge" />
     </Box>

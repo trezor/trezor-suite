@@ -5,8 +5,8 @@ import { Icon, IconName, IconSize } from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { Box } from '../Box';
-import { Text } from '../Text';
+import { Box } from './Box';
+import { Text } from './Text';
 
 const iconBackgroundStyle = prepareNativeStyle<{ color: Color; borderColor: Color }>(
     (utils, { color, borderColor }) => ({
