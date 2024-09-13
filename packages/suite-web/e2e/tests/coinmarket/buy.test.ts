@@ -93,7 +93,7 @@ describe('Coinmarket buy', () => {
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
 
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1200, 768).resetDb();
         cy.interceptInvityApi();
         cy.prefixedVisit('/', {
             onBeforeLoad: (win: Window) => {

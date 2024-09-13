@@ -9,6 +9,7 @@ import {
     IconButton,
     IconButtonProps,
     IconName,
+    variables,
 } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -23,6 +24,13 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
+`;
+
+// instant without computing the layout
+const ShowOnLargeDesktopWrapper = styled.div`
+    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
+        display: none;
+    }
 `;
 
 type ActionItem = {
@@ -63,6 +71,8 @@ export const HeaderActions = () => {
 
     const dispatch = useDispatch();
     const { device } = useDevice();
+    const layoutSize = useSelector(state => state.resize.size);
+    const showCoinmarketButtons = layoutSize === 'XLARGE';
 
     const accountType = account?.accountType || routerParams?.accountType || '';
 
@@ -86,6 +96,15 @@ export const HeaderActions = () => {
             icon: 'pencilUnderscored',
             // show dots when acc missing as they are hidden only in case of XRP
             isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
+        },
+        {
+            id: 'wallet-coinmarket-buy',
+            callback: () => {
+                goToWithAnalytics('wallet-coinmarket-buy', { preserveParams: true });
+            },
+            title: <Translation id="TR_COINMARKET_BUY_AND_SELL" />,
+            icon: 'currencyCircleDollar',
+            isHidden: showCoinmarketButtons,
         },
     ];
 
@@ -123,18 +142,22 @@ export const HeaderActions = () => {
 
             {isCoinmarketAvailable && (
                 <AppNavigationTooltip>
-                    <ButtonComponent
-                        icon="currencyCircleDollar"
-                        onClick={() => {
-                            goToWithAnalytics('wallet-coinmarket-buy', { preserveParams: true });
-                        }}
-                        data-testid="@wallet/menu/wallet-coinmarket-buy"
-                        variant="tertiary"
-                        size="small"
-                        isDisabled={isAccountLoading}
-                    >
-                        <Translation id="TR_COINMARKET_BUY_AND_SELL" />
-                    </ButtonComponent>
+                    <ShowOnLargeDesktopWrapper>
+                        <ButtonComponent
+                            icon="currencyCircleDollar"
+                            onClick={() => {
+                                goToWithAnalytics('wallet-coinmarket-buy', {
+                                    preserveParams: true,
+                                });
+                            }}
+                            data-testid="@wallet/menu/wallet-coinmarket-buy"
+                            variant="tertiary"
+                            size="small"
+                            isDisabled={isAccountLoading}
+                        >
+                            <Translation id="TR_COINMARKET_BUY_AND_SELL" />
+                        </ButtonComponent>
+                    </ShowOnLargeDesktopWrapper>
                     <ButtonComponent
                         icon="arrowsLeftRight"
                         onClick={() => {
