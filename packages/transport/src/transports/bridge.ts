@@ -1,4 +1,9 @@
-import { versionUtils, createDeferred, Deferred, createTimeoutPromise } from '@trezor/utils';
+import {
+    versionUtils,
+    createDeferred,
+    createTimeoutPromise,
+    createExtendablePromise,
+} from '@trezor/utils';
 import {
     PROTOCOL_MALFORMED,
     bridge as protocolBridge,
@@ -78,10 +83,10 @@ export class BridgeTransport extends AbstractTransport {
     private url: string;
 
     /**
-     * means that /acquire call is in progress. this is used to postpone /listen call so that it can be
-     * fired with updated descriptor
+     * tracks whether at least one /acquire call is in progress. this is used to postpone /listen call
+     * so that it can be fired with updated descriptor
      */
-    protected acquirePromise?: Deferred<boolean>;
+    protected readonly acquirePromises = createExtendablePromise<boolean | undefined>();
 
     public name = 'BridgeTransport' as const;
 
@@ -147,10 +152,11 @@ export class BridgeTransport extends AbstractTransport {
                 }
                 await createTimeoutPromise(1000);
             } else {
-                const acquirePromiseResult = (await this.acquirePromise?.promise) ?? true;
-                delete this.acquirePromise;
+                // undefined means no acquire in progress, bool means whether
+                // all awaited acquires failed or not
+                const allAcquiresFailed = await this.acquirePromises.wait(undefined);
 
-                if (acquirePromiseResult) {
+                if (!allAcquiresFailed) {
                     this.handleDescriptorsChange(response.payload);
                 }
             }
@@ -173,10 +179,17 @@ export class BridgeTransport extends AbstractTransport {
                     this.listenPromise[input.path] = createDeferred();
                 }
 
-                // it is not quaranteed that /listen response will arrive after /acquire response (although in majority of cases it does)
+                // it is not guaranteed that /listen response will arrive after /acquire response(s) (although in majority of cases it does)
                 // so, in order to be able to keep the logic "acquire -> wait for listen response -> return from acquire" we need to wait
-                // for /acquire response before resolving listenPromise
-                this.acquirePromise = createDeferred();
+                // for /acquire response(s) before resolving listenPromise
+                const { promise, resolve } = createDeferred<boolean>();
+                this.acquirePromises.extend(allAcquiresFailed =>
+                    promise.then(
+                        acquireSuccessful =>
+                            (allAcquiresFailed || allAcquiresFailed === undefined) &&
+                            !acquireSuccessful,
+                    ),
+                );
 
                 const response = await this.post('/acquire', {
                     params: `${input.path}/${previous}`,
@@ -187,12 +200,12 @@ export class BridgeTransport extends AbstractTransport {
                     if (this.listenPromise[input.path]) {
                         delete this.listenPromise[input.path];
                     }
-                    this.acquirePromise.resolve(response.success);
+                    resolve(response.success);
 
                     return response;
                 }
 
-                this.acquirePromise.resolve(response.success);
+                resolve(response.success);
                 this.acquiredUnconfirmed[input.path] = response.payload;
 
                 if (!this.listenPromise[input.path]) {
@@ -354,7 +367,7 @@ export class BridgeTransport extends AbstractTransport {
 
     public stop() {
         super.stop();
-        this.acquirePromise = undefined;
+        this.acquirePromises.dispose();
     }
 
     /**
