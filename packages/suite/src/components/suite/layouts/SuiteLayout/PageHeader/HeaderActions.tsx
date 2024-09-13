@@ -124,7 +124,7 @@ export const HeaderActions = () => {
             {isCoinmarketAvailable && (
                 <AppNavigationTooltip>
                     <ButtonComponent
-                        icon="coinVertical"
+                        icon="currencyCircleDollar"
                         onClick={() => {
                             goToWithAnalytics('wallet-coinmarket-buy', { preserveParams: true });
                         }}
@@ -136,7 +136,7 @@ export const HeaderActions = () => {
                         <Translation id="TR_COINMARKET_BUY_AND_SELL" />
                     </ButtonComponent>
                     <ButtonComponent
-                        icon="arrowsClockwise"
+                        icon="arrowsLeftRight"
                         onClick={() => {
                             goToWithAnalytics('wallet-coinmarket-exchange', {
                                 preserveParams: true,

@@ -53,7 +53,7 @@ const CoinmarketLayoutNavigation = ({ selectedAccount }: CoinmarketLayoutNavigat
                 <CoinmarketLayoutNavigationItem
                     route="wallet-coinmarket-exchange"
                     title="TR_COINMARKET_SWAP"
-                    icon="arrowsClockwise"
+                    icon="arrowsLeftRight"
                 />
             ) : null}
 
