@@ -64,6 +64,7 @@ export const UserContextModal = ({
                     device={payload.device as AcquiredDevice}
                     symbol={payload.symbol}
                     noRedirect={payload.noRedirect}
+                    isCoinjoinDisabled={payload.isCoinjoinDisabled}
                     onCancel={onCancel}
                 />
             );

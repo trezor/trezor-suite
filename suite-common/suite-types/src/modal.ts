@@ -38,6 +38,7 @@ export type UserContextPayload =
           device: TrezorDevice;
           symbol?: Account['symbol'];
           noRedirect?: boolean;
+          isCoinjoinDisabled?: boolean;
       }
     | {
           type: 'device-background-gallery';
