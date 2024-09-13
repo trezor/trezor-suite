@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
@@ -10,24 +12,26 @@ import {
 } from '@suite-native/navigation';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
 import { isDevButtonVisibleAtom } from './ProductionDebug';
+
+type NavigationProp = StackToStackCompositeNavigationProps<
+    SettingsStackParamList,
+    SettingsStackRoutes.Settings,
+    RootStackParamList
+>;
 
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
     const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
 
-    const navigation =
-        useNavigation<
-            StackToStackCompositeNavigationProps<
-                SettingsStackParamList,
-                SettingsStackRoutes.Settings,
-                RootStackParamList
-            >
-        >();
+    const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+
+    const navigation = useNavigation<NavigationProp>();
 
     const handleNavigation = (routeName: SettingsStackRoutes): void => {
         navigation.navigate(routeName);
@@ -70,6 +74,7 @@ export const FeaturesSettings = () => {
                         <Translation id="moduleSettings.items.features.coinEnabling.subtitle" />
                     }
                     onPress={() => handleNavigation(SettingsStackRoutes.SettingsCoinEnabling)}
+                    isLoading={hasDiscovery}
                     testID="@settings/coin-enabling"
                 />
             )}

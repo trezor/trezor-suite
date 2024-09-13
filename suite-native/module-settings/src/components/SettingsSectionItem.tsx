@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 
 import { Box } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-common/icons-deprecated';
@@ -13,10 +13,11 @@ export type SettingsSectionItemProps = {
     title: ReactNode;
     subtitle?: ReactNode;
     onPress?: () => void;
+    isLoading?: boolean;
     testID?: string;
 };
 
-const listItemRightArrowContainerStyle = prepareNativeStyle(utils => ({
+const listItemRightContainerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: utils.spacings.medium,
@@ -28,16 +29,23 @@ export const SettingsSectionItem = ({
     iconName,
     onPress,
     testID,
+    isLoading,
 }: SettingsSectionItemProps) => {
-    const { applyStyle } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
+
+    const isDisabled = !onPress || isLoading;
 
     return (
-        <TouchableOpacity disabled={!onPress} onPress={onPress} testID={testID}>
+        <TouchableOpacity disabled={isDisabled} onPress={onPress} testID={testID}>
             <Box flexDirection="row">
                 <SettingsSectionItemIcon iconName={iconName} />
                 <SettingsSectionItemText title={title} subtitle={subtitle} />
-                <View style={applyStyle(listItemRightArrowContainerStyle)}>
-                    <Icon name="circleRightLight" color="iconPrimaryDefault" />
+                <View style={applyStyle(listItemRightContainerStyle)}>
+                    {isLoading ? (
+                        <ActivityIndicator size="small" color={utils.colors.iconSubdued} />
+                    ) : (
+                        <Icon name="circleRightLight" color="iconPrimaryDefault" />
+                    )}
                 </View>
             </Box>
         </TouchableOpacity>
