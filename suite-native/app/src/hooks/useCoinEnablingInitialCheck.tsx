@@ -17,7 +17,6 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 export const useCoinEnablingInitialCheck = () => {
@@ -25,7 +24,6 @@ export const useCoinEnablingInitialCheck = () => {
 
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.CoinEnablingInit>>();
-    const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
 
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
@@ -36,8 +34,7 @@ export const useCoinEnablingInitialCheck = () => {
 
     const wasInitScreenShown = useRef(false);
 
-    const canShowCoinEnablingInitFlow =
-        isOnboardingFinished && isCoinEnablingActive && !wasInitScreenShown.current;
+    const canShowCoinEnablingInitFlow = isOnboardingFinished && !wasInitScreenShown.current;
 
     useEffect(() => {
         if (shouldShowCoinEnablingInitFlow && canShowCoinEnablingInitFlow) {
@@ -69,7 +66,6 @@ export const useCoinEnablingInitialCheck = () => {
     }, [
         dispatch,
         hasBitcoinOnlyFirmware,
-        isCoinEnablingActive,
         navigation,
         viewOnlyDevicesAccountsNetworkSymbols,
         shouldShowCoinEnablingInitFlow,

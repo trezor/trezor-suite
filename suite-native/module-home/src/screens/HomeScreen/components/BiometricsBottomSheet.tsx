@@ -17,7 +17,6 @@ import {
 } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { selectIsCoinEnablingInitFinished } from '@suite-native/discovery';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 const SHOW_TIMEOUT = 1500;
 
@@ -49,7 +48,6 @@ export const BiometricsBottomSheet = () => {
 
     const isPortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
-    const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
 
     const [isVisible, setIsVisible] = useState(false);
 
@@ -59,16 +57,12 @@ export const BiometricsBottomSheet = () => {
         const checkBiometrics = async () => {
             const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 
-            // if coin enabling is active, we need to wait for it to finish before showing the biometrics modal
-            const isCoinEnablingSetupFinished = isCoinEnablingActive
-                ? isCoinEnablingInitFinished
-                : true;
-
             // if real device is authorized, it is ready only if coin enabling setup was finished.
             // if no real device is authorized, set to true
             const isReadyWithCoinEnabling =
-                isDeviceAuthorized && !isPortfolioTracker ? isCoinEnablingSetupFinished : true;
+                isDeviceAuthorized && !isPortfolioTracker ? isCoinEnablingInitFinished : true;
 
+            // we need to wait for biometrics and coin enabling init to finish before showing the biometrics modal
             if (isBiometricsAvailable && !isBiometricsOptionEnabled && isReadyWithCoinEnabling) {
                 timerId = setTimeout(() => {
                     if (isMounted) {
@@ -88,7 +82,6 @@ export const BiometricsBottomSheet = () => {
         };
     }, [
         isBiometricsOptionEnabled,
-        isCoinEnablingActive,
         isCoinEnablingInitFinished,
         isDeviceAuthorized,
         isPortfolioTracker,

@@ -33,7 +33,6 @@ import {
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
-import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 
 import {
     selectDiscoveryInfo,
@@ -326,18 +325,12 @@ const discoverAccountsByDescriptorThunk = createThunk(
                 if (accountInfo.empty) {
                     isFinalRound = true;
                 }
-                const isCoinEnablingActive = selectIsFeatureFlagEnabled(
-                    getState(),
-                    FeatureFlag.IsCoinEnablingActive,
-                );
 
                 const isVisible =
                     // If the account is not empty, it should be visible.
                     !accountInfo.empty ||
-                    // If the feature flag is enabled, first normal account should be visible.
-                    (isCoinEnablingActive &&
-                        bundleItem.accountType === 'normal' &&
-                        bundleItem.index === 0);
+                    // first normal account should be visible every time
+                    (bundleItem.accountType === 'normal' && bundleItem.index === 0);
 
                 dispatch(
                     accountsActions.createIndexLabeledAccount({
@@ -715,28 +708,22 @@ export const discoveryCheckThunk = createThunk(
 export const applyDiscoveryChangesThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/applyDiscoveryChangesThunk`,
     (_, { dispatch, getState }) => {
-        const isCoinEnablingActive = selectIsFeatureFlagEnabled(
-            getState(),
-            FeatureFlag.IsCoinEnablingActive,
-        );
-
-        // Make sure that first normal account is visible for enabled networks when coin enabling is active
+        // Make sure that first normal account is visible for enabled networks
         // This might be needed in case user has View only device from before coin enabling was active
         // in such case the first normal account can be invisible. We need to make it visible.
-        if (isCoinEnablingActive) {
-            const enabledDiscoveryNetworkSymbols =
-                selectDeviceEnabledDiscoveryNetworkSymbols(getState());
-            enabledDiscoveryNetworkSymbols.forEach(networkSymbol => {
-                const firstNormalAccount = selectFirstNormalAccountForNetworkSymbol(
-                    getState(),
-                    networkSymbol,
-                );
+        const enabledDiscoveryNetworkSymbols =
+            selectDeviceEnabledDiscoveryNetworkSymbols(getState());
+        enabledDiscoveryNetworkSymbols.forEach(networkSymbol => {
+            const firstNormalAccount = selectFirstNormalAccountForNetworkSymbol(
+                getState(),
+                networkSymbol,
+            );
 
-                if (firstNormalAccount && !firstNormalAccount.visible) {
-                    dispatch(accountsActions.changeAccountVisibility(firstNormalAccount, true));
-                }
-            });
-        }
+            if (firstNormalAccount && !firstNormalAccount.visible) {
+                dispatch(accountsActions.changeAccountVisibility(firstNormalAccount, true));
+            }
+        });
+
         dispatch(disableAccountsThunk());
         dispatch(discoveryCheckThunk());
     },
