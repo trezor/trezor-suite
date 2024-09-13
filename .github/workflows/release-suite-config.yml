@@ -6,26 +6,20 @@ permissions:
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: "Release environment"
-        type: choice
-        options:
-          - develop-message
-          - production-message
-        required: true
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   release-config:
-    if: github.repository == 'trezor/trezor-suite'
-    environment: ${{ github.event.inputs.environment }}
+    if: ${{ github.repository == 'trezor/trezor-suite' && (github.ref == 'refs/heads/release-message-system-production' || github.ref == 'refs/heads/release-message-system-develop') }}
+    environment: ${{ github.ref == 'refs/heads/release-message-system-production' && 'production-message' || 'develop-message' }}
     runs-on: ubuntu-latest
     env:
+      RELEASE_ENV: ${{ github.ref == 'refs/heads/release-message-system-production' && 'production' || 'develop' }}
       AWS_REGION: "eu-central-1"
       AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
+      ROLE_TO_ASSUME: ${{ github.ref == 'refs/heads/release-message-system-production' && 'arn:aws:iam::538326561891:role/gh_actions_suite_production_message' || 'arn:aws:iam::538326561891:role/gh_actions_suite_develop_message' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,32 +27,18 @@ jobs:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ github.event.inputs.environment == 'develop-message' && 'arn:aws:iam::538326561891:role/gh_actions_suite_develop_message' || 'arn:aws:iam::538326561891:role/gh_actions_suite_production_message' }}
+          role-to-assume: ${{ env.ROLE_TO_ASSUME  }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Build and sign ${{ github.event.inputs.environment }} config
-        if: ${{ github.event.inputs.environment == 'develop-message' && github.ref == 'refs/heads/develop' }}
-        run: |
-          yarn install
-          yarn message-system-sign-config
-
-      - name: Build and sign ${{ github.event.inputs.environment }} message-system config file
-        if: ${{ github.event.inputs.environment == 'production-message' && github.ref == 'refs/heads/develop' }}
+      - name: Build and sign ${{ env.RELEASE_ENV }} message-system config file
         env:
-          IS_CODESIGN_BUILD: "true"
+          IS_CODESIGN_BUILD: ${{ env.RELEASE_ENV == 'production' && 'true' || 'false' }}
           JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
         run: |
           yarn install
           yarn message-system-sign-config
 
-      - name: Upload ${{ github.event.inputs.environment }} message-system config file
-        if: ${{ github.ref == 'refs/heads/develop' }}
+      - name: Upload ${{ env.RELEASE_ENV }}  message-system config file
         run: |
-          if [ '${{ github.event.inputs.environment }}' == 'production-message' ]
-          then
-            aws s3 cp suite-common/message-system/files/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws --cache-control no-cache
-            aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/stable/*'
-          else
-            aws s3 cp suite-common/message-system/files/config.v1.jws s3://data.trezor.io/config/develop/config.v1.jws --cache-control no-cache
-            aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/develop/*'
-          fi
+          aws s3 cp suite-common/message-system/files/config.v1.jws s3://data.trezor.io/config/${{ env.RELEASE_ENV == 'production' && 'stable' || 'develop'}}/config.v1.jws --cache-control no-cache
+          aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/${{ env.RELEASE_ENV == 'production' && 'stable' || 'develop'}}/*'
