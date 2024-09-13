@@ -233,6 +233,7 @@ export const CoinmarketAmountWrapper = styled.div`
     gap: ${spacingsPx.xs};
     ${typography.titleMedium}
     line-height: unset;
+    padding: ${spacingsPx.xxxs} ${spacingsPx.zero};
 
     ${SCREEN_QUERY.BELOW_DESKTOP} {
         font-size: 28px;
@@ -253,6 +254,7 @@ export const CoinmarketAmountWrapperText = styled.div`
     font-variant-numeric: tabular-nums;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1;
 `;
 
 export const CoinmarketInfoLeftColumn = styled.div`
