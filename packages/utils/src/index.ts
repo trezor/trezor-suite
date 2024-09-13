@@ -15,6 +15,7 @@ export * from './createCooldown';
 export * from './createDeferred';
 export * from './createDeferredManager';
 export * from './createLazy';
+export * from './createExtendablePromise';
 export * from './createTimeoutPromise';
 export * from './getLocaleSeparators';
 export * from './getNumberFromPixelString';
