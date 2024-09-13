@@ -10,7 +10,6 @@ import {
     Radio,
     CheckBox,
     Switch,
-    ListItem,
     IconButton,
     InputWrapper,
     Input,
@@ -335,23 +334,6 @@ export const DemoScreen = () => {
                         </Box>
                     </Box>
                     <NumPadButton value={2} onPress={() => null} />
-                    <Box marginVertical="medium">
-                        <ListItem
-                            iconName="warningCircle"
-                            title="Some Really and I mean really really Long Headline"
-                            subtitle="Description of that headlineDescription of that headlineDescription of that headlineDescription of that headline"
-                            hasRightArrow={false}
-                        />
-                    </Box>
-                    <Box marginVertical="medium">
-                        <ListItem
-                            iconName="placeholder"
-                            title="Not wrapped example with long and I mean really long Headline"
-                            subtitle="Description of that not wrapped example with long and I mean really long Headline"
-                            hasRightArrow
-                            isTextTruncated
-                        />
-                    </Box>
                     <Box marginTop="medium" marginBottom="medium">
                         <Text>AlertBox:</Text>
                         <VStack spacing="medium">

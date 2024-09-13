@@ -2,8 +2,8 @@ import { Alert } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
-import { getEnv, isDebugEnv, isDevelopOrDebugEnv } from '@suite-native/config';
-import { Button, Card, ListItem, VStack } from '@suite-native/atoms';
+import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
+import { Button, Card, VStack, TitleHeader } from '@suite-native/atoms';
 import {
     Screen,
     StackProps,
@@ -27,12 +27,10 @@ export const DevUtilsScreen = ({
             <VStack>
                 <Card>
                     <VStack spacing="medium">
-                        {!isDebugEnv() && (
-                            <ListItem
-                                subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash()}`}
-                                title="Build version"
-                            />
-                        )}
+                        <TitleHeader
+                            title="Build version"
+                            subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash() || 'N/A in debug build'}`}
+                        />
                         {isDevelopOrDebugEnv() && (
                             <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                                 See Component Demo
