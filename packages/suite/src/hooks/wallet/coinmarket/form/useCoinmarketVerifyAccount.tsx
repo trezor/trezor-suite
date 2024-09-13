@@ -91,6 +91,7 @@ const getSuiteReceiveAccounts = ({
         const isVisibleAccount = (account: Account) => account.visible;
         const isFirstNormalAccount = (account: Account) =>
             account.accountType === 'normal' && account.index === 0;
+        const isCoinjoinAccount = (account: Account) => account.accountType === 'coinjoin';
 
         if (receiveNetworks.length > 0) {
             // Get accounts of the current symbol belonging to the current device.
@@ -98,6 +99,7 @@ const getSuiteReceiveAccounts = ({
                 account =>
                     isSameDevice(account) &&
                     isSameNetwork(account) &&
+                    !isCoinjoinAccount(account) &&
                     (isDebugAndIsAccountDebugOnly(account) || isNotDebugOnlyAccount(account)) &&
                     (isNotEmptyAccount(account) ||
                         isVisibleAccount(account) ||
@@ -177,6 +179,7 @@ const useCoinmarketVerifyAccount = ({
                     device,
                     symbol: receiveNetwork,
                     noRedirect: true,
+                    isCoinjoinDisabled: true,
                 }),
             );
 
