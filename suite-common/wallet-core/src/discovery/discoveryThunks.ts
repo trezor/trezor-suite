@@ -302,6 +302,7 @@ export const getAvailableCardanoDerivationsThunk = createThunk(
             keepSession: true,
             skipFinalReload: true,
             path: "m/1852'/1815'/0'",
+            useCardanoDerivation: true,
         };
         const icarusPubKeyResult = await TrezorConnect.cardanoGetPublicKey({
             ...commonParams,
