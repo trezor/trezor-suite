@@ -24,11 +24,16 @@ const Wrapper = styled.div`
 export const Dashboard = () => {
     useLayout('Home', PageHeader);
 
+    const b:number = "type check fail";
+
+    console.log('what')
+
     return (
         <Wrapper data-testid="@dashboard/index">
             <DashboardPassphraseBanner />
             <PortfolioCard />
             <T3T1PromoBanner />
+            {b}
             <AssetsView />
             <StakeEthCard />
             <PromoBanner />
