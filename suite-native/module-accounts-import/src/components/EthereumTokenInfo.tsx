@@ -1,13 +1,15 @@
 import { useSelector } from 'react-redux';
 
 import { CryptoIcon } from '@suite-common/icons-deprecated';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import {
+    TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { selectEthereumTokenIsKnown } from '@suite-native/tokens';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 
@@ -27,7 +29,7 @@ export const EthereumTokenInfo = ({
     contract,
 }: EthereumTokenInfoProps) => {
     const ethereumSymbolHasFiatRates = useSelector((state: TokenDefinitionsRootState) =>
-        selectEthereumTokenIsKnown(state, contract),
+        selectIsSpecificCoinDefinitionKnown(state, 'eth', contract),
     );
 
     if (!symbol || !balance || !name || !ethereumSymbolHasFiatRates) return null;

@@ -1,7 +1,10 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 import { memoizeWithArgs } from 'proxy-memoize';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import {
+    selectIsSpecificCoinDefinitionKnown,
+    TokenDefinitionsRootState,
+} from '@suite-common/token-definitions';
 import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectTransactionByTxidAndAccountKey,
@@ -9,7 +12,6 @@ import {
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { selectEthereumTokenIsKnown } from '@suite-native/tokens';
 
 import { AddressesType, VinVoutAddress } from './types';
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';
@@ -135,7 +137,9 @@ export const selectTransactionInputAndOutputTransfers = memoizeWithArgs(
 
         const tokenTransfers: TransactionTranfer[] = pipe(
             tokens,
-            A.filter(({ contract }) => selectEthereumTokenIsKnown(state, contract as TokenAddress)),
+            A.filter(({ contract }) =>
+                selectIsSpecificCoinDefinitionKnown(state, 'eth', contract as TokenAddress),
+            ),
             A.map(({ from, to, amount, symbol, decimals }) => ({
                 inputs: [{ address: from }],
                 outputs: [{ address: to, amount }],

@@ -42,7 +42,6 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../settings" },
-        { "path": "../tokens" },
         { "path": "../video-assets" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
