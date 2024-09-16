@@ -19,9 +19,9 @@ describe('bridge', () => {
 
         const abortController = new AbortController();
         bridge = new BridgeTransport({ messages, signal: abortController.signal });
-        await bridge.init().promise;
+        await bridge.init();
 
-        const enumerateResult = await bridge.enumerate().promise;
+        const enumerateResult = await bridge.enumerate();
         assertSuccess(enumerateResult);
         expect(enumerateResult).toMatchObject({
             success: true,
@@ -41,7 +41,7 @@ describe('bridge', () => {
 
         const acquireResult = await bridge.acquire({
             input: { path: descriptors[0].path, previous: session },
-        }).promise;
+        });
         assertSuccess(acquireResult);
         expect(acquireResult).toEqual({
             success: true,
@@ -57,7 +57,7 @@ describe('bridge', () => {
     });
 
     test(`call(GetFeatures)`, async () => {
-        const message = await bridge.call({ session, name: 'GetFeatures', data: {} }).promise;
+        const message = await bridge.call({ session, name: 'GetFeatures', data: {} });
         expect(message).toMatchObject({
             success: true,
             payload: {
@@ -70,10 +70,10 @@ describe('bridge', () => {
     });
 
     test(`send(GetFeatures) - receive`, async () => {
-        const sendResponse = await bridge.send({ session, name: 'GetFeatures', data: {} }).promise;
+        const sendResponse = await bridge.send({ session, name: 'GetFeatures', data: {} });
         expect(sendResponse).toEqual({ success: true, payload: undefined });
 
-        const receiveResponse = await bridge.receive({ session }).promise;
+        const receiveResponse = await bridge.receive({ session });
 
         expect(receiveResponse).toMatchObject({
             success: true,
@@ -92,7 +92,7 @@ describe('bridge', () => {
             session,
             name: 'RebootToBootloader',
             data: {},
-        }).promise;
+        });
         expect(callResponse).toMatchObject({
             success: true,
             payload: {
@@ -101,10 +101,10 @@ describe('bridge', () => {
         });
 
         // cancel RebootToBootloader procedure
-        await bridge.send({ session, name: 'Cancel', data: {} }).promise;
+        await bridge.send({ session, name: 'Cancel', data: {} });
 
         // receive response
-        const receiveResponse = await bridge.receive({ session }).promise;
+        const receiveResponse = await bridge.receive({ session });
 
         expect(receiveResponse).toMatchObject({
             success: true,
@@ -121,7 +121,7 @@ describe('bridge', () => {
             session,
             name: 'GetFeatures',
             data: {},
-        }).promise;
+        });
         expect(message).toMatchObject({
             success: true,
             payload: {
@@ -137,13 +137,13 @@ describe('bridge', () => {
     if (!env.USE_NODE_BRIDGE || env.USE_HW) {
         test(`send(RebootToBootloader) - send(Cancel) - receive`, async () => {
             // special case - a procedure on device is initiated by SEND method.
-            await bridge.send({ session, name: 'RebootToBootloader', data: {} }).promise;
+            await bridge.send({ session, name: 'RebootToBootloader', data: {} });
 
             // cancel RebootToBootloader procedure
-            await bridge.send({ session, name: 'Cancel', data: {} }).promise;
+            await bridge.send({ session, name: 'Cancel', data: {} });
 
             // receive response
-            const receiveResponse1 = await bridge.receive({ session }).promise;
+            const receiveResponse1 = await bridge.receive({ session });
 
             // we did 2x send, but no read. it means that now the next receive read the response from the first send
             expect(receiveResponse1).toMatchObject({
@@ -154,7 +154,7 @@ describe('bridge', () => {
             });
 
             // and the next receive read the response from the second send
-            const receiveResponse2 = await bridge.receive({ session }).promise;
+            const receiveResponse2 = await bridge.receive({ session });
             expect(receiveResponse2).toMatchObject({
                 success: true,
                 payload: {
@@ -170,8 +170,8 @@ describe('bridge', () => {
     test(`concurrent acquire`, async () => {
         const { path } = descriptors[0];
         const results = await Promise.all([
-            bridge.acquire({ input: { path, previous: session } }).promise,
-            bridge.acquire({ input: { path, previous: session } }).promise,
+            bridge.acquire({ input: { path, previous: session } }),
+            bridge.acquire({ input: { path, previous: session } }),
         ]);
         expect(results).toIncludeAllPartialMembers([
             { success: true, payload: `${Number.parseInt(session) + 1}` },
@@ -184,11 +184,11 @@ describe('bridge', () => {
     // todo: udp not implemented correctly yet in new bridge
     if (!env.USE_NODE_BRIDGE || env.USE_HW) {
         test(`concurrent receive - other call in progress`, async () => {
-            await bridge.send({ session, name: 'GetFeatures', data: {} }).promise;
+            await bridge.send({ session, name: 'GetFeatures', data: {} });
 
             const results = await Promise.all([
-                bridge.receive({ session }).promise,
-                bridge.receive({ session }).promise,
+                bridge.receive({ session }),
+                bridge.receive({ session }),
             ]);
 
             expect(results).toIncludeAllPartialMembers([
@@ -200,8 +200,8 @@ describe('bridge', () => {
 
     test(`concurrent call - other call in progress`, async () => {
         const results = await Promise.all([
-            bridge.call({ session, name: 'GetFeatures', data: {} }).promise,
-            bridge.call({ session, name: 'GetFeatures', data: {} }).promise,
+            bridge.call({ session, name: 'GetFeatures', data: {} }),
+            bridge.call({ session, name: 'GetFeatures', data: {} }),
         ]);
         expect(results).toIncludeAllPartialMembers([
             { success: true, payload: { type: 'Features', message: expect.any(Object) } },
@@ -211,8 +211,8 @@ describe('bridge', () => {
 
     test(`concurrent receive and send`, async () => {
         const results = await Promise.all([
-            bridge.receive({ session }).promise,
-            bridge.send({ session, name: 'GetFeatures', data: {} }).promise,
+            bridge.receive({ session }),
+            bridge.send({ session, name: 'GetFeatures', data: {} }),
         ]);
 
         expect(results).toIncludeAllPartialMembers([
@@ -223,8 +223,8 @@ describe('bridge', () => {
 
     test(`concurrent send and receive`, async () => {
         const results = await Promise.all([
-            bridge.send({ session, name: 'GetFeatures', data: {} }).promise,
-            bridge.receive({ session }).promise,
+            bridge.send({ session, name: 'GetFeatures', data: {} }),
+            bridge.receive({ session }),
         ]);
 
         expect(results).toIncludeAllPartialMembers([
@@ -235,11 +235,11 @@ describe('bridge', () => {
 
     test(`concurrent send`, async () => {
         const results = await Promise.all([
-            bridge.send({ session, name: 'GetFeatures', data: {} }).promise,
-            bridge.send({ session, name: 'GetFeatures', data: {} }).promise,
+            bridge.send({ session, name: 'GetFeatures', data: {} }),
+            bridge.send({ session, name: 'GetFeatures', data: {} }),
         ]);
-        await bridge.receive({ session }).promise;
-        await bridge.receive({ session }).promise;
+        await bridge.receive({ session });
+        await bridge.receive({ session });
         expect(results).toMatchObject([
             { success: true, payload: undefined },
             { success: true, payload: undefined },
@@ -248,8 +248,8 @@ describe('bridge', () => {
 
     test(`concurrent send and call`, async () => {
         const results = await Promise.all([
-            bridge.send({ session, name: 'GetFeatures', data: {} }).promise,
-            bridge.call({ session, name: 'GetFeatures', data: {} }).promise,
+            bridge.send({ session, name: 'GetFeatures', data: {} }),
+            bridge.call({ session, name: 'GetFeatures', data: {} }),
         ]);
 
         expect(results).toIncludeAllPartialMembers([
@@ -263,10 +263,10 @@ describe('bridge', () => {
         test('acquire (wrong session) and concurrent call. what has priority in error handling?', async () => {
             const results = await Promise.all([
                 // send a session which is wrong
-                bridge.call({ session: '123', name: 'GetFeatures', data: {} }).promise,
+                bridge.call({ session: '123', name: 'GetFeatures', data: {} }),
                 // and send two conflicting calls at the same time
-                bridge.call({ session, name: 'GetFeatures', data: {} }).promise,
-                bridge.call({ session, name: 'GetFeatures', data: {} }).promise,
+                bridge.call({ session, name: 'GetFeatures', data: {} }),
+                bridge.call({ session, name: 'GetFeatures', data: {} }),
             ]);
 
             expect(results[0]).toMatchObject({
@@ -283,7 +283,7 @@ describe('bridge', () => {
     }
 
     test('concurrent enumerate', async () => {
-        const results = await Promise.all([bridge.enumerate().promise, bridge.enumerate().promise]);
+        const results = await Promise.all([bridge.enumerate(), bridge.enumerate()]);
         expect(results).toIncludeAllPartialMembers([
             { success: true, payload: expect.any(Array) },
             { success: true, payload: expect.any(Array) },
@@ -292,8 +292,8 @@ describe('bridge', () => {
 
     test('call and enumerate', async () => {
         const results = await Promise.all([
-            bridge.call({ session, name: 'GetFeatures', data: {} }).promise,
-            bridge.enumerate().promise,
+            bridge.call({ session, name: 'GetFeatures', data: {} }),
+            bridge.enumerate(),
         ]);
         expect(results).toIncludeAllPartialMembers([
             { success: true, payload: { type: 'Features', message: expect.any(Object) } },
@@ -305,15 +305,15 @@ describe('bridge', () => {
     if (!env.USE_NODE_BRIDGE || env.USE_HW) {
         test('send and enumerate, receive and enumerate', async () => {
             const results = await Promise.all([
-                bridge.send({ session, name: 'GetFeatures', data: {} }).promise,
-                bridge.enumerate().promise,
+                bridge.send({ session, name: 'GetFeatures', data: {} }),
+                bridge.enumerate(),
             ]);
             expect(results).toIncludeAllPartialMembers([
                 { success: true, payload: undefined },
                 { success: true, payload: expect.any(Array) },
             ]);
 
-            await Promise.all([bridge.receive({ session }).promise, bridge.enumerate().promise]);
+            await Promise.all([bridge.receive({ session }), bridge.enumerate()]);
         });
     }
 });

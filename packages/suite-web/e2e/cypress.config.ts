@@ -163,12 +163,12 @@ export default defineConfig({
                         messages,
                         signal: abortController.signal,
                     });
-                    await bridge.init().promise;
-                    const enumerateRes = await bridge.enumerate().promise;
+                    await bridge.init();
+                    const enumerateRes = await bridge.enumerate();
                     if (!enumerateRes.success) return null;
                     await bridge.acquire({
                         input: { path: enumerateRes.payload[0].path, previous: null },
-                    }).promise;
+                    });
 
                     return null;
                 },

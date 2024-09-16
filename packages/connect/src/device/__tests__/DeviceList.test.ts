@@ -90,14 +90,13 @@ describe('DeviceList', () => {
 
     it('.init() throws async error from transport.init()', async () => {
         const transport = createTestTransport();
-        jest.spyOn(transport, 'init').mockImplementation(() => ({
-            promise: Promise.resolve({
+        jest.spyOn(transport, 'init').mockImplementation(() =>
+            Promise.resolve({
                 success: false,
                 error: 'unexpected error',
                 message: '',
             } as const),
-            abort: () => {},
-        }));
+        );
 
         list.setTransports([transport]);
         list.init({ pendingTransportEvent: true });
@@ -109,14 +108,13 @@ describe('DeviceList', () => {
 
     it('.init() throws async error from transport.enumerate()', async () => {
         const transport = createTestTransport();
-        jest.spyOn(transport, 'enumerate').mockImplementation(() => ({
-            promise: Promise.resolve({
+        jest.spyOn(transport, 'enumerate').mockImplementation(() =>
+            Promise.resolve({
                 success: false,
                 error: 'unexpected error',
                 message: '',
             } as const),
-            abort: () => {},
-        }));
+        );
 
         list.setTransports([transport]);
         list.init({ pendingTransportEvent: true });

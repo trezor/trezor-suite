@@ -29,7 +29,7 @@ describe('bridge', () => {
      * set bridge1 and bridge2 descriptors and start listening
      */
     const enumerateAndListen = async () => {
-        const result = await bridge1.enumerate().promise;
+        const result = await bridge1.enumerate();
         expect(result.success).toBe(true);
 
         if (result.success) {
@@ -67,8 +67,8 @@ describe('bridge', () => {
         bridge1 = new BridgeTransport({ messages, signal: abortController.signal });
         bridge2 = new BridgeTransport({ messages, signal: abortController.signal });
 
-        await bridge1.init().promise;
-        await bridge2.init().promise;
+        await bridge1.init();
+        await bridge2.init();
     });
 
     test('2 clients. one acquires and releases, the other one is watching', async () => {
@@ -79,7 +79,7 @@ describe('bridge', () => {
 
         const session1 = await bridge1.acquire({
             input: { previous: null, path: descriptors[0].path },
-        }).promise;
+        });
         expect(session1).toEqual({
             success: true,
             payload: '1',
@@ -105,7 +105,7 @@ describe('bridge', () => {
             return;
         }
 
-        await bridge1.release({ path: descriptors[0].path, session: session1.payload }).promise;
+        await bridge1.release({ path: descriptors[0].path, session: session1.payload });
 
         await wait();
 
@@ -124,7 +124,7 @@ describe('bridge', () => {
 
         const session2 = await bridge2.acquire({
             input: { previous: null, path: descriptors[0].path },
-        }).promise;
+        });
         expect(session2).toEqual({ success: true, payload: '2' });
     });
 
@@ -136,7 +136,7 @@ describe('bridge', () => {
 
         const session1 = await bridge1.acquire({
             input: { previous: null, path: descriptors[0].path },
-        }).promise;
+        });
 
         expect(session1).toEqual({ success: true, payload: '1' });
         if (!session1.success) {
@@ -148,7 +148,7 @@ describe('bridge', () => {
         // bridge 2 steals session
         const session2 = await bridge2.acquire({
             input: { previous: session1.payload, path: descriptors[0].path },
-        }).promise;
+        });
 
         expect(session2).toEqual({ success: true, payload: '2' });
 
@@ -176,21 +176,21 @@ describe('bridge', () => {
             const { path } = descriptors[0];
             const session1 = await bridge1.acquire({
                 input: { previous: null, path },
-            }).promise;
+            });
 
             expect(session1).toEqual({ success: true, payload: '1' });
             if (!session1.success) {
                 throw new Error("session1 wasn't acquired");
             }
 
-            const receive1res = bridge1.receive({ session: session1.payload }).promise;
+            const receive1res = bridge1.receive({ session: session1.payload });
 
             await wait();
 
             // bridge 2 steals session
             const session2 = await bridge2.acquire({
                 input: { previous: session1.payload, path },
-            }).promise;
+            });
 
             expect(receive1res).resolves.toMatchObject({
                 success: false,
@@ -204,10 +204,9 @@ describe('bridge', () => {
             expect(session2).toEqual({ success: true, payload: '2' });
 
             // send ping
-            await bridge2.send({ session: session2.payload, name: 'GetFeatures', data: {} })
-                .promise;
+            await bridge2.send({ session: session2.payload, name: 'GetFeatures', data: {} });
             // receive success
-            const receive2Res = await bridge2.receive({ session: session2.payload }).promise;
+            const receive2Res = await bridge2.receive({ session: session2.payload });
 
             expect(receive2Res).toMatchObject({
                 success: true,
@@ -219,8 +218,8 @@ describe('bridge', () => {
     }
 
     test('2 clients enumerate at the same time', async () => {
-        const promise1 = bridge1.enumerate().promise;
-        const promise2 = bridge2.enumerate().promise;
+        const promise1 = bridge1.enumerate();
+        const promise2 = bridge2.enumerate();
 
         const results = await Promise.all([promise1, promise2]);
 

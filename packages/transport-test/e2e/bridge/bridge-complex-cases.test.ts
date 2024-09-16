@@ -25,15 +25,15 @@ describe('restarting bridge', () => {
 
         const abortController = new AbortController();
         bridge = new BridgeTransport({ messages, signal: abortController.signal });
-        await bridge.init().promise;
+        await bridge.init();
 
-        const enumerateResult = await bridge.enumerate().promise;
+        const enumerateResult = await bridge.enumerate();
         assertSuccess(enumerateResult);
         descriptors = enumerateResult.payload;
 
         const acquireResult = await bridge.acquire({
             input: { path: descriptors[0].path, previous: session },
-        }).promise;
+        });
         assertSuccess(acquireResult);
         session = acquireResult.payload;
     });
@@ -46,16 +46,16 @@ describe('restarting bridge', () => {
 
     // This scenario crashes the old bridge (2.0.33) on Mac. New bridge seems to be performing correctly
     test('Bridge stops while device is acquired then starts again and client tries to force acquire device', async () => {
-        await bridge.send({ session, name: 'GetFeatures', data: {} }).promise;
+        await bridge.send({ session, name: 'GetFeatures', data: {} });
 
         await TrezorUserEnvLink.stopBridge();
         await TrezorUserEnvLink.startEmu();
         await TrezorUserEnvLink.startBridge();
         const abortController = new AbortController();
         bridge = new BridgeTransport({ messages, signal: abortController.signal });
-        await bridge.init().promise;
+        await bridge.init();
 
-        const enumerateResult = await bridge.enumerate().promise;
+        const enumerateResult = await bridge.enumerate();
         assertSuccess(enumerateResult);
         expect(enumerateResult).toMatchObject({
             success: true,
@@ -76,7 +76,7 @@ describe('restarting bridge', () => {
                 // so maybe it is not about send at all? it looks like that only one send is enough to cause it
                 previous: null,
             },
-        }).promise;
+        });
 
         // old bridge is crashed and only if using HW, not emu.
         if (!env.USE_NODE_BRIDGE && env.USE_HW) {
@@ -85,7 +85,7 @@ describe('restarting bridge', () => {
             return;
         } else {
             // new bridge received some nice fixes and now we can continue
-            const enumerateResult2 = await bridge.enumerate().promise;
+            const enumerateResult2 = await bridge.enumerate();
             expect(enumerateResult2).toMatchObject({
                 success: true,
                 payload: [
