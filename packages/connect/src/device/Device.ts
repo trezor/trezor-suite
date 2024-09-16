@@ -27,6 +27,7 @@ import {
     FirmwareType,
     VersionArray,
     KnownDevice,
+    StaticSessionId,
 } from '../types';
 import { models } from '../data/models';
 import { getLanguage } from '../data/getLanguage';
@@ -495,7 +496,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         const expectedState = this.getState()?.staticSessionId;
         const state = await this.getCommands().getDeviceState();
-        const uniqueState = `${state}@${this.features.device_id || 'device_id'}:${this.instance}`;
+        const uniqueState: StaticSessionId = `${state}@${this.features.device_id}:${this.instance}`;
         if (this.features.session_id) {
             this.setState({ sessionId: this.features.session_id });
         }

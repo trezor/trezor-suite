@@ -29,9 +29,12 @@ export enum FirmwareType {
     Regular = 'regular',
 }
 
+export type StaticSessionId = `${string}@${string}:${number}`;
+
 export type DeviceState = {
     sessionId?: string; // dynamic value: Features.session_id
-    staticSessionId?: string; // constant value: 1st testnet address
+    // ${first testnet address}@${device.features.device_id}:${device.instance}
+    staticSessionId?: StaticSessionId;
 };
 
 // NOTE: unavailableCapabilities is an object with information what is NOT supported by this device.
@@ -64,7 +67,7 @@ export type KnownDevice = {
     status: DeviceStatus;
     mode: DeviceMode;
     _state?: DeviceState; // TODO: breaking change in next major release
-    state?: string;
+    state?: DeviceState['staticSessionId'];
     features: PROTO.Features;
     unavailableCapabilities: UnavailableCapabilities;
     availableTranslations: string[];
