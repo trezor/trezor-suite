@@ -25,12 +25,24 @@ import {
     mapModalSizeToWidth,
 } from './utils';
 import { Icon, IconName } from '../Icon/Icon';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
+
+export const allowedNewModalFrameProps = ['height'] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedNewModalFrameProps)[number]>;
 
 const NEW_MODAL_CONTENT_ID = 'modal-content';
 const MODAL_ELEVATION = 0;
 const ICON_SIZE = 40;
 
-const Container = styled.div<{ $elevation: Elevation; $size: NewModalSize }>`
+const Container = styled.div<
+    TransientProps<AllowedFrameProps> & { $elevation: Elevation; $size: NewModalSize }
+>`
     display: flex;
     flex-direction: column;
     position: relative;
@@ -43,6 +55,8 @@ const Container = styled.div<{ $elevation: Elevation; $size: NewModalSize }>`
     overflow: hidden;
     background: ${mapElevationToBackground};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
+
+    ${withFrameProps}
 `;
 
 const Header = styled.header`
@@ -103,7 +117,7 @@ const IconWrapper = styled.div<{ $variant: NewModalVariant; $size: number; $isPu
     margin-top: ${({ $isPushedTop }) => ($isPushedTop ? `-${spacingsPx.md}` : 0)};
 `;
 
-interface NewModalProps {
+type NewModalProps = AllowedFrameProps & {
     children?: ReactNode;
     variant?: NewModalVariant;
     heading?: ReactNode;
@@ -115,7 +129,7 @@ interface NewModalProps {
     alignment?: NewModalAlignment;
     size?: NewModalSize;
     'data-testid'?: string;
-}
+};
 
 const NewModalBase = ({
     children,
@@ -128,7 +142,9 @@ const NewModalBase = ({
     onBackClick,
     onCancel,
     'data-testid': dataTest = '@modal',
+    ...rest
 }: NewModalProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedNewModalFrameProps);
     const { scrollElementRef, onScroll, ShadowContainer, ShadowTop, ShadowBottom } =
         useScrollShadow();
     const modalBackgroundColor = mapElevationToBackgroundToken({ $elevation: MODAL_ELEVATION });
@@ -148,6 +164,7 @@ const NewModalBase = ({
                     $size={size}
                     onClick={e => e.stopPropagation()}
                     data-testid={dataTest}
+                    {...frameProps}
                 >
                     {hasHeader && (
                         <Header>

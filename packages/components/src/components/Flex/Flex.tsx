@@ -144,6 +144,7 @@ export type FlexProps = AllowedFrameProps & {
     /** @deprecated Use only is case of absolute desperation. Prefer keep it according to elevation. */
     dividerColor?: string;
     className?: string;
+    onClick?: () => void;
     'data-testid'?: string;
 };
 
@@ -160,6 +161,7 @@ const Flex = ({
     'data-testid': dataTestId,
     hasDivider = false,
     dividerColor,
+    onClick,
     ...rest
 }: FlexProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedFlexFrameProps);
@@ -182,6 +184,7 @@ const Flex = ({
                 dividerColor,
                 elevation,
             })}
+            onClick={onClick}
             {...frameProps}
         >
             {children}

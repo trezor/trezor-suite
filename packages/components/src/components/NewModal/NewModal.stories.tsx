@@ -1,8 +1,14 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { NewModal as ModalComponent, NewModalProps, variables } from '../../index';
+import {
+    allowedNewModalFrameProps,
+    NewModal as ModalComponent,
+    NewModalProps,
+    variables,
+} from '../../index';
 import { ThemeProvider } from 'styled-components';
 import { intermediaryTheme } from '../../index';
+import { getFramePropsStory } from '../../utils/frameProps';
 
 const Buttons = () => (
     <>
@@ -48,6 +54,7 @@ export const NewModal: StoryObj<NewModalProps> = {
         onCancel: 'withCallback' as unknown as () => void,
         onBackClick: 'withCallback' as unknown as () => void,
         alignment: { x: 'center', y: 'center' },
+        ...getFramePropsStory(allowedNewModalFrameProps).args,
     },
     argTypes: {
         variant: {
@@ -141,6 +148,7 @@ export const NewModal: StoryObj<NewModalProps> = {
                 'bottom right': { x: 'right', y: 'bottom' },
             },
         },
+        ...getFramePropsStory(allowedNewModalFrameProps).argTypes,
     },
     parameters: {
         noWrapper: true,
