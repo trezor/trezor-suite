@@ -88,6 +88,7 @@ const waitForReconnectedDevice = async (
                 i,
             }),
         );
+
         await createTimeoutPromise(2000);
         try {
             const path = deviceList.getFirstDevicePath();
@@ -379,6 +380,9 @@ export const onCallFirmwareUpdate = async ({
                   })
                 : null;
 
+        const disconnectedPromise = new Promise(resolve => {
+            deviceList.once('device-disconnect', resolve);
+        });
         if (!languageBlob) {
             await device.getCommands().typedCall('RebootToBootloader', 'Success', rebootParams);
         } else {
@@ -410,7 +414,11 @@ export const onCallFirmwareUpdate = async ({
                 );
             }
         }
-        await device.release();
+        log.info(
+            'onCallFirmwareUpdate',
+            'waiting for disconnected event after rebootToBootloader...',
+        );
+        await disconnectedPromise;
 
         // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
         if (device.features.major_version === 1) {
