@@ -14,9 +14,9 @@ export const Device = ({ device }: DeviceProps) => {
             case 2:
                 return 'Trezor One (WebUSB Bootloader)';
             case 3:
-                return 'Trezor model T/R';
+                return 'Trezor Model T / Trezor Safe 3 / Trezor Safe 5';
             case 4:
-                return 'Trezor model T/R Bootloader';
+                return 'Trezor Model T / Trezor Safe 3 / Trezor Safe 5  Bootloader';
             case 5:
                 return 'Emulator';
         }
