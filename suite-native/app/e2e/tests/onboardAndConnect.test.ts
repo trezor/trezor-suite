@@ -5,6 +5,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { openApp } from '../utils';
 import { onOnboarding } from '../pageObjects/onboardingActions';
+import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
 
 const TREZOR_DEVICE_LABEL = 'Trezor T - Tester';
 // Contains only one BTC account with a single transaction to make the discovery as fast as possible.
@@ -41,6 +42,17 @@ describe('Go through onboarding and connect Trezor.', () => {
 
         if (platform === 'android') {
             await TrezorUserEnvLink.startEmu();
+
+            await waitFor(element(by.id('@screen/CoinEnablingInit')))
+                .toBeVisible()
+                .withTimeout(10000);
+
+            await onCoinEnablingInit.waitForBtcToBeVisible();
+
+            await onCoinEnablingInit.enableNetwork('btc');
+            await onCoinEnablingInit.enableNetwork('eth');
+
+            await onCoinEnablingInit.save();
 
             await waitFor(element(by.id('skip-view-only-mode')))
                 .toBeVisible()
