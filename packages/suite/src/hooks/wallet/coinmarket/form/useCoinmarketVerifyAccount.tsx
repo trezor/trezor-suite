@@ -1,4 +1,4 @@
-import { isDebugOnlyAccountType, Network, networks } from '@suite-common/wallet-config';
+import { isDebugOnlyAccountType, Network, networksCollection } from '@suite-common/wallet-config';
 import { selectDevice } from '@suite-common/wallet-core';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -72,7 +72,7 @@ const getSuiteReceiveAccounts = ({
         const unavailableCapabilities = device?.unavailableCapabilities ?? {};
 
         // Is the symbol supported by the suite and the device natively?
-        const receiveNetworks = Object.values(networks).filter(
+        const receiveNetworks = networksCollection.filter(
             (n: Network) =>
                 n.symbol === receiveNetwork &&
                 !unavailableCapabilities[n.symbol] &&
