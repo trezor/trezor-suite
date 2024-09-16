@@ -282,7 +282,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                 )}
 
                 <Content>
-                    <H2 margin={{ bottom: spacings.md }}>
+                    <H2 margin={{ bottom: spacings.md }} align="center">
                         <Translation id={getHeading()} />
                     </H2>
 

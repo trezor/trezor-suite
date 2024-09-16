@@ -1,32 +1,21 @@
 import styled from 'styled-components';
+import { useIntl } from 'react-intl';
 
-import { H2, variables } from '@trezor/components';
+import { H2, NewModal, Paragraph } from '@trezor/components';
+import { ConfirmOnDevice } from '@trezor/product-components';
 import { selectIsDiscoveryAuthConfirmationRequired } from '@suite-common/wallet-core';
+import TrezorConnect from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import type { TrezorDevice } from 'src/types/suite';
-import { DevicePromptModal } from './DevicePromptModal';
+import messages from 'src/support/messages';
 
-const StyledDevicePromptModal = styled(DevicePromptModal)`
-    width: 360px;
-`;
-
-const StyledDeviceConfirmImage = styled(DeviceConfirmImage)`
-    margin-top: -30px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledH2 = styled(H2)`
-    margin-top: 12px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const Tip = styled.span`
-    margin-top: 12px;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
+const ImageWrapper = styled.div`
+    display: flex;
+    justify-content: center;
 `;
 
 interface PassphraseOnDeviceModalProps {
@@ -38,36 +27,51 @@ interface PassphraseOnDeviceModalProps {
  * @param {PassphraseOnDeviceModalProps}
  */
 export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps) => {
+    const intl = useIntl();
     const authConfirmation =
         useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
 
+    const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+
     return (
-        <StyledDevicePromptModal
-            isAbortable={false}
-            data-testid="@modal/enter-passphrase-on-device"
-        >
-            <StyledDeviceConfirmImage device={device} />
+        <NewModal.Backdrop onClick={onCancel} data-testid="@modal/enter-passphrase-on-device">
+            <ConfirmOnDevice
+                title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                deviceModelInternal={device?.features?.internal_model}
+                deviceUnitColor={device?.features?.unit_color}
+                onCancel={onCancel}
+            />
+            <NewModal.ModalBase size="tiny">
+                <ImageWrapper>
+                    <DeviceConfirmImage device={device} />
+                </ImageWrapper>
 
-            <StyledH2>
-                <Translation
-                    id={
-                        authConfirmation
-                            ? 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON'
-                            : 'TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL'
-                    }
-                    values={{ deviceLabel: device.label }}
-                />
-            </StyledH2>
+                <H2 align="center">
+                    <Translation
+                        id={
+                            authConfirmation
+                                ? 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON'
+                                : 'TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL'
+                        }
+                        values={{ deviceLabel: device.label }}
+                    />
+                </H2>
 
-            <Tip>
-                <Translation
-                    id={
-                        authConfirmation
-                            ? 'TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE'
-                            : 'TR_PASSPHRASE_CASE_SENSITIVE'
-                    }
-                />
-            </Tip>
-        </StyledDevicePromptModal>
+                <Paragraph
+                    align="center"
+                    typographyStyle="label"
+                    variant="tertiary"
+                    margin={{ top: spacings.md }}
+                >
+                    <Translation
+                        id={
+                            authConfirmation
+                                ? 'TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE'
+                                : 'TR_PASSPHRASE_CASE_SENSITIVE'
+                        }
+                    />
+                </Paragraph>
+            </NewModal.ModalBase>
+        </NewModal.Backdrop>
     );
 };
