@@ -261,6 +261,23 @@ export const en = {
             button: 'Enter PIN again',
         },
     },
+    moduleConnectPopup: {
+        title: 'Trezor Connect Mobile',
+        callback: 'Callback',
+        confirm: 'Confirm',
+        areYouSureMessage: 'Are you sure you want to continue?\nMake sure you trust the source.',
+        connectionStatus: {
+            loading: 'Loading...',
+            discoveryRunning: 'Discovery running, please wait...',
+        },
+        errors: {
+            deviceNotConnected: 'Device not connected.',
+            invalidCallback: 'Invalid callback URL',
+        },
+        bottomSheets: {
+            confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',
+        },
+    },
     moduleDevice: {
         incompatibleFirmwareModalAppendix: {
             title: 'Follow these steps',

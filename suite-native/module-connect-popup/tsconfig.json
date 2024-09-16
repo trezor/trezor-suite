@@ -3,10 +3,16 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
+        { "path": "../config" },
+        { "path": "../device" },
         { "path": "../device-manager" },
+        { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" }
     ]
