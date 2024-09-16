@@ -18,6 +18,7 @@ import {
     RootStackRoutes,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
+import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
 
 const LOADING_TIMEOUT = 2500;
 
@@ -37,6 +38,7 @@ export const useOnDeviceReadyNavigation = () => {
         selectDeviceEnabledDiscoveryNetworkSymbols,
     );
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
+    const isConnectPopupOpened = useIsConnectPopupOpened();
 
     // The connecting screen should be visible for at least 2.5 seconds before redirecting to HomeScreen.
     useEffect(() => {
@@ -56,7 +58,7 @@ export const useOnDeviceReadyNavigation = () => {
             (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) ||
             (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isCoinEnablingInitFinished)
         ) {
-            if (navigation.canGoBack()) {
+            if (navigation.canGoBack() && isConnectPopupOpened) {
                 // NOTE: we don't want to go back to the home screen if Connect Popup is opened
                 navigation.goBack();
 
@@ -76,5 +78,6 @@ export const useOnDeviceReadyNavigation = () => {
         navigation,
         deviceEnabledDiscoveryNetworkSymbols,
         isCoinEnablingInitFinished,
+        isConnectPopupOpened,
     ]);
 };

@@ -3,11 +3,13 @@ import { IconButton, Text, VStack } from '@suite-native/atoms';
 import TrezorConnect from '@trezor/connect';
 import { useAuthorizationGoBack } from '@suite-native/device-authorization';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
 
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 
 export const PassphraseFeatureUnlockFormScreen = () => {
     const { handleGoBack } = useAuthorizationGoBack();
+    const isConnectPopupOpened = useIsConnectPopupOpened();
 
     const { translate } = useTranslate();
 
@@ -37,7 +39,7 @@ export const PassphraseFeatureUnlockFormScreen = () => {
                 </Text>
                 <PassphraseForm
                     inputLabel={translate('modulePassphrase.form.createWalletInputLabel')}
-                    noPassphraseEnabled
+                    noPassphraseEnabled={isConnectPopupOpened}
                 />
             </VStack>
         </Screen>

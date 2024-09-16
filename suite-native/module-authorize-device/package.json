@@ -27,6 +27,7 @@
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
+        "@suite-native/module-connect-popup": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@suite-native/toasts": "workspace:*",
