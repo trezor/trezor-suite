@@ -1332,7 +1332,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_OFFER_LOOKING',
     },
     TR_COINMARKET_OFFER_NO_FOUND: {
-        defaultMessage: 'No offers available for your request. Change amount or currency.',
+        defaultMessage: 'No offers available for your request.',
         id: 'TR_COINMARKET_OFFER_NO_FOUND',
     },
     TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY: {
