@@ -16,10 +16,10 @@ import {
     NetworkFeature,
     NetworkSymbol,
     NetworkType,
-    Network,
     networks,
     AccountType,
     Bip43Path,
+    getNetwork,
 } from '@suite-common/wallet-config';
 import {
     Account,
@@ -488,7 +488,7 @@ export const getAllAccounts = (deviceState: string | typeof undefined, accounts:
 };
 
 /**
- * @deprecated use directly networks[symbol], you can import { networks } from '@suite-common/wallet-config'
+ * @deprecated use `networks[symbol]` (exact type) or `getNetwork` (generic type) from '@suite-common/wallet-config'
  */
 export const getNetworkCompatible = (symbol: string): NetworkCompatible | null =>
     networksCompatibility.find(c => c.symbol === symbol) || null;
@@ -1079,7 +1079,7 @@ export const getNetworkAccountFeatures = ({
     symbol,
     accountType,
 }: Pick<Account, 'symbol' | 'accountType'>): NetworkFeature[] => {
-    const matchedNetwork: Network = networks[symbol];
+    const matchedNetwork = getNetwork(symbol);
 
     return accountType === 'normal'
         ? matchedNetwork.features

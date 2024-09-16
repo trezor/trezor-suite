@@ -1,5 +1,5 @@
 import { GroupedTransactionsByDate, groupJointTransactions } from '@suite-common/wallet-utils';
-import { networks, Network } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
 import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
@@ -23,7 +23,7 @@ export const TransactionGroupedList = ({
 }: TransactionGroupedListProps) => {
     const localCurrency = useSelector(selectLocalCurrency);
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
-    const network: Network = networks[symbol];
+    const network = getNetwork(symbol);
 
     return Object.entries(transactionGroups).map(([dateKey, value], groupIndex) => (
         <TransactionsGroup

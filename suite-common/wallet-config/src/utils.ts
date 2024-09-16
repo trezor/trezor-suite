@@ -65,6 +65,16 @@ export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol]?.coing
 export const isNetworkSymbol = (symbol: NetworkSymbol | string): symbol is NetworkSymbol =>
     networks.hasOwnProperty(symbol);
 
+/**
+ * Get network object by symbol as a generic `Network` type.
+ * If you need the exact inferred type, use `networks[symbol]` directly.
+ * @param symbol
+ */
+export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
+
+export const getNetworkOptional = (symbol?: string) =>
+    symbol && isNetworkSymbol(symbol) ? getNetwork(symbol) : undefined;
+
 export const getNetworkByCoingeckoId = (coingeckoId: string) =>
     networksCollection.find(n => n.coingeckoId === coingeckoId);
 

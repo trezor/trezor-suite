@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { PROTO } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { Network, networks, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
@@ -69,7 +69,7 @@ export const selectIsAmountInSats = (
         return false;
     }
 
-    const network: Network = networks[networkSymbol];
+    const network = getNetwork(networkSymbol);
     const isAmountUnitSupported = network && network.features.includes('amount-unit');
 
     return isAmountUnitSupported && selectAreSatsAmountUnit(state);

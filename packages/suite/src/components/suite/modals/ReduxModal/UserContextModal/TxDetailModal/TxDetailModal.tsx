@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, NewModal } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { isPending, findChainedTransactions, getAccountKey } from '@suite-common/wallet-utils';
-import { networks, Network } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { useSelector } from 'src/hooks/suite';
 import {
     selectAccountByKey,
@@ -89,7 +89,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
         selectTransactionConfirmations(state, tx.txid, accountKey),
     );
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
-    const network: Network = networks[account.symbol];
+    const network = getNetwork(account.symbol);
     const networkFeatures = network.accountTypes[account.accountType]?.features ?? network.features;
 
     const isPhishingTransaction = useSelector(state =>
