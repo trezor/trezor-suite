@@ -57,6 +57,7 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
                 title={<Translation id="TR_MULTI_SHARE_BACKUP" />}
                 description={<Translation id="TR_MULTI_SHARE_BACKUP_DESCRIPTION" />}
                 buttonLink={HELP_CENTER_MULTI_SHARE_BACKUP_URL}
+                buttonTitle={<Translation id="TR_LEARN_MORE" />}
             />
             <ActionColumn>
                 <ActionButton

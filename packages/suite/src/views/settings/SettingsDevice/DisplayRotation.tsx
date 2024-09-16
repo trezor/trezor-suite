@@ -66,7 +66,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
     }
 
     const currentRotation = device?.features?.display_rotation;
-
+    console.log('currentRotation', currentRotation);
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.DisplayRotation}>
             <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />} />
