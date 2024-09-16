@@ -8,9 +8,6 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        {
-            "path": "../../suite-common/wallet-types"
-        },
         { "path": "../atoms" },
         { "path": "../config" },
         { "path": "../discovery" },
