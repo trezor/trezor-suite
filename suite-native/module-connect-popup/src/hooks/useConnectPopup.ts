@@ -32,6 +32,7 @@ export const useConnectPopup = () => {
         const navigateToInitalUrl = async () => {
             const currentUrl = await Linking.getInitialURL();
             if (currentUrl) {
+                // eslint-disable-next-line no-console
                 console.log('initial url', currentUrl);
                 navigateToConnectPopup(currentUrl);
             }
@@ -43,6 +44,7 @@ export const useConnectPopup = () => {
         // there could be when you open same deep link for second time and in that case it will be ignored
         // this could be probably handed by Linking.addEventListener
         const subscription = Linking.addEventListener('url', event => {
+            // eslint-disable-next-line no-console
             console.log('url event received', event.url);
             navigateToConnectPopup(event.url);
         });

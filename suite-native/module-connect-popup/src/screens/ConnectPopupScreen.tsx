@@ -1,9 +1,10 @@
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { useNavigation } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
-import { Box, Button, Divider, Loader, Text } from '@suite-native/atoms';
+import { Box, Button, ErrorMessage, IconButton, Loader, Text, VStack } from '@suite-native/atoms';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -13,33 +14,46 @@ import {
 } from '@suite-native/navigation';
 import { DeviceManager } from '@suite-native/device-manager';
 import {
+    deviceActions,
     selectDevice,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceDiscoveryActive,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import TrezorConnect, { UI_EVENT } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
+import { getMethod } from '@trezor/connect/src/core/method';
+import { AbstractMethod } from '@trezor/connect/src/core/AbstractMethod';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
+
+import { ButtonRequestsOverlay } from '../components/ButtonRequestsOverlay';
+import { ConnectPopupDebugOptions } from '../components/ConnectPopupDebugOptions';
+
+const callbackURLOrigin = (fullUrl: string) => {
+    const url = new URL(fullUrl);
+
+    return url.origin;
+};
 
 export const ConnectPopupScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.ConnectPopup>) => {
-    const selectedDevice = useSelector(selectDevice);
+    const navigation = useNavigation();
+
+    const dispatch = useDispatch();
+    const device = useSelector(selectDevice);
     const deviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const validDevice = deviceConnectedAndAuthorized && !isPortfolioTrackerDevice;
-
     const discoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
+    const [showDebug, setShowDebug] = useState<boolean>(false);
     const [callResult, setCallResult] = useState<any>();
     const [loading, setLoading] = useState(false);
+    const [method, setMethod] = useState<AbstractMethod<any> | undefined>();
+    const [methodError, setMethodError] = useState<string | undefined>();
 
-    const buildURL = (method: string, params: any, callback: string) => {
-        return `trezorsuitelite://connect?method=${method}&params=${encodeURIComponent(
-            JSON.stringify(params),
-        )}&callback=${encodeURIComponent(callback)}`;
-    };
-
-    const callDevice = async () => {
+    // TODO: separate this logic
+    const popupOptions = useMemo(() => {
         const { queryParams } = route.params.parsedUrl;
         if (
             !queryParams?.method ||
@@ -47,25 +61,81 @@ export const ConnectPopupScreen = ({
             !queryParams?.callback ||
             typeof queryParams?.params !== 'string' ||
             typeof queryParams?.method !== 'string' ||
+            typeof queryParams?.callback !== 'string' ||
             !TrezorConnect.hasOwnProperty(queryParams?.method)
         ) {
-            setCallResult({ error: 'Invalid params' });
+            return undefined;
+        }
+        const params = JSON.parse(queryParams.params);
+        const { method: methodName, callback } = queryParams;
+
+        return { method: methodName, params, callback };
+    }, [route.params.parsedUrl]);
+
+    useEffect(() => {
+        if (!popupOptions?.method) {
+            setMethod(undefined);
+            setMethodError('No method specified');
 
             return;
         }
-        const body = JSON.parse(queryParams.params);
+
+        setMethodError(undefined);
+        getMethod({
+            id: 0,
+            type: 'iframe-call',
+            payload: {
+                method: popupOptions?.method,
+                ...popupOptions?.params,
+            },
+        })
+            .then(async _method => {
+                _method.init();
+                await _method.initAsync?.();
+
+                if (_method.requiredPermissions.includes('management')) {
+                    setMethodError('Unsafe method');
+
+                    return;
+                }
+                // TODO: refactor to new permission?
+                if (
+                    popupOptions?.method === 'pushTransaction' ||
+                    popupOptions?.params.push === true
+                ) {
+                    setMethodError('Unsafe to push transaction');
+
+                    return;
+                }
+
+                setMethod(_method);
+            })
+            .catch(e => {
+                console.error('Error while getting method', e);
+                setMethod(undefined);
+                setMethodError(e.message);
+            });
+    }, [popupOptions?.method, popupOptions?.params]);
+
+    const callDevice = useCallback(async () => {
+        if (!popupOptions) return;
 
         setLoading(true);
         // @ts-expect-error method is dynamic
-        const response = await TrezorConnect[queryParams.method]({
-            ...body,
+        const response = await TrezorConnect[popupOptions.method]({
+            ...popupOptions.params,
         });
         setCallResult(response);
-        Linking.openURL(queryParams.callback + '?response=' + JSON.stringify(response));
+        dispatch(deviceActions.removeButtonRequests({ device }));
+        Linking.openURL(popupOptions.callback + '?response=' + JSON.stringify(response));
         setLoading(false);
-    };
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    }, [popupOptions, dispatch, device, navigation]);
 
-    useEffect(() => {
+    // Listen to Trezor UI events and log them
+    /*useEffect(() => {
         const trezorUiEvent = (event: any) => {
             console.log('Trezor UI event', event);
         };
@@ -75,70 +145,89 @@ export const ConnectPopupScreen = ({
         return () => {
             TrezorConnect.off(UI_EVENT, trezorUiEvent);
         };
-    }, []);
+    }, []);*/
+
+    const mainView = useMemo(() => {
+        if (loading) {
+            return <Loader size="large" title="Loading..." />;
+        }
+
+        if (discoveryActive) {
+            return <Loader size="large" title="Discovery running, pls wait :(" />;
+        }
+
+        if (validDevice) {
+            if (popupOptions && method) {
+                return (
+                    <VStack spacing="small" alignItems="center">
+                        <Text variant="titleSmall">
+                            {method.confirmation?.label ?? method.info}
+                        </Text>
+                        <Text>
+                            Callback:{' '}
+                            <Text color="textAlertBlue">
+                                {callbackURLOrigin(popupOptions?.callback)}
+                            </Text>
+                        </Text>
+
+                        <Text
+                            style={{
+                                textAlign: 'center',
+                                padding: 20,
+                            }}
+                            color="textSubdued"
+                        >
+                            Are you sure you want to continue?{'\n'}
+                            Make sure you trust the source.
+                        </Text>
+                        <Button onPress={callDevice}>
+                            {method.confirmation?.customConfirmButton?.label ?? 'Confirm'}
+                        </Button>
+                    </VStack>
+                );
+            }
+            if (methodError) {
+                return <ErrorMessage errorMessage={methodError} />;
+            }
+
+            return <Loader size="large" title="Loading..." />;
+        }
+    }, [validDevice, method, popupOptions, methodError, loading, discoveryActive, callDevice]);
 
     return (
         <Screen
             screenHeader={
                 <ScreenSubHeader
                     closeActionType="close"
-                    content={<Text>Connect Popup Native</Text>}
+                    content={<Text>Trezor Connect Mobile</Text>}
+                    rightIcon={
+                        isDevelopOrDebugEnv() ? (
+                            <IconButton
+                                iconName="bugBeetle"
+                                onPress={() => setShowDebug(!showDebug)}
+                                colorScheme="tertiaryElevation0"
+                                size="medium"
+                            />
+                        ) : null
+                    }
                 />
             }
         >
-            <DeviceManager />
+            <Box>
+                <DeviceManager />
+            </Box>
+
             <Box alignItems="center" justifyContent="center" flex={1}>
+                {mainView}
+            </Box>
+
+            <ButtonRequestsOverlay />
+
+            <ConnectPopupDebugOptions showDebug={showDebug} setShowDebug={setShowDebug}>
+                <Text>Device: {JSON.stringify(device, null, 2)}</Text>
                 <Text>Params: {JSON.stringify(route.params.parsedUrl.queryParams)}</Text>
                 <Text>Call result: {JSON.stringify(callResult)}</Text>
-                <Text>
-                    Device button requests: {JSON.stringify(selectedDevice?.buttonRequests)}
-                </Text>
-
-                {validDevice && <Button onPress={() => callDevice()}>Call device</Button>}
-
-                <Divider />
-
-                {discoveryActive && (
-                    <Loader size="large" title="Discovery active, please wait :(" />
-                )}
-                {loading && <Loader size="large" title="Call in progress" />}
-
-                <Divider />
-
-                <Button
-                    onPress={() => {
-                        Linking.openURL(
-                            buildURL(
-                                'getAddress',
-                                {
-                                    path: "m/49'/0'/0'/0/0",
-                                    coin: 'btc',
-                                },
-                                'https://httpbin.org/get',
-                            ),
-                        );
-                    }}
-                >
-                    getAddress test
-                </Button>
-                <Button
-                    onPress={() => {
-                        Linking.openURL(
-                            buildURL(
-                                'signMessage',
-                                {
-                                    path: "m/49'/0'/0'/0/0",
-                                    coin: 'btc',
-                                    message: 'test',
-                                },
-                                'https://httpbin.org/get',
-                            ),
-                        );
-                    }}
-                >
-                    signMessage test
-                </Button>
-            </Box>
+            </ConnectPopupDebugOptions>
         </Screen>
     );
 };
