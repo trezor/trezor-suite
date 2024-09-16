@@ -15,7 +15,8 @@ import {
 } from '../events';
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
-import type { FirmwareRange, DeviceState } from '../types';
+import type { FirmwareRange, DeviceState, StaticSessionId } from '../types';
+import { ERRORS } from '../constants';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
@@ -28,6 +29,27 @@ export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     T3T1: { min: '2.7.1', max: '0' },
 };
 
+function validateStaticSessionId(input: unknown): StaticSessionId {
+    if (typeof input !== 'string')
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            'DeviceState: invalid staticSessionId: ' + input,
+        );
+    const [firstTestnetAddress, rest] = input.split('@');
+    const [deviceId, instance] = rest.split(':');
+    if (
+        typeof firstTestnetAddress === 'string' &&
+        typeof deviceId === 'string' &&
+        typeof instance === 'string' &&
+        Number.parseInt(instance) >= 0
+    ) {
+        return input as StaticSessionId;
+    }
+    throw ERRORS.TypedError(
+        'Method_InvalidParameter',
+        'DeviceState: invalid staticSessionId: ' + input,
+    );
+}
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
     responseID: number;
 
@@ -106,12 +128,20 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.payload = payload;
         this.responseID = message.id || 0;
         this.devicePath = payload.device?.path;
+
         // expected state from method parameter.
-        // it could be null
+        // it could be undefined
         this.deviceState =
+            // eslint-disable-next-line no-nested-ternary
             typeof payload.device?.state === 'string'
-                ? { staticSessionId: payload.device.state }
-                : payload.device?.state;
+                ? { staticSessionId: validateStaticSessionId(payload.device.state) }
+                : payload.device?.state?.staticSessionId
+                  ? {
+                        staticSessionId: validateStaticSessionId(
+                            payload.device.state.staticSessionId,
+                        ),
+                    }
+                  : undefined;
         this.hasExpectedDeviceState = payload.device
             ? Object.prototype.hasOwnProperty.call(payload.device, 'state')
             : false;

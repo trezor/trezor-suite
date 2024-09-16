@@ -1,8 +1,8 @@
 import type { CommonParams, Response } from '../params';
-import type { DeviceState } from '../device';
+import type { DeviceState, StaticSessionId } from '../device';
 
 export interface DeviceStateResponse {
-    state: string;
+    state: StaticSessionId;
     _state: DeviceState;
 }
 
