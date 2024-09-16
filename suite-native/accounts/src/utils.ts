@@ -1,9 +1,8 @@
 import { A, D, G } from '@mobily/ts-belt';
 
-import { AccountType, networks } from '@suite-common/wallet-config';
+import { AccountType, getNetwork, networks } from '@suite-common/wallet-config';
 import { formattedAccountTypeMap } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { getNetworkCompatible } from '@suite-common/wallet-utils';
 import { discoverySupportedNetworks, orderedAccountTypes } from '@suite-native/config';
 
 const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>> = {
@@ -24,8 +23,8 @@ export const isFilterValueMatchingAccount = (account: Account, filterValue: stri
 
     if (isMatchingLabel) return true;
 
-    const accountNetwork = getNetworkCompatible(account.symbol);
-    const isMatchingNetworkName = accountNetwork?.name.toLowerCase().includes(lowerCaseFilterValue);
+    const accountNetwork = getNetwork(account.symbol);
+    const isMatchingNetworkName = accountNetwork.name.toLowerCase().includes(lowerCaseFilterValue);
 
     if (isMatchingNetworkName) return true;
 

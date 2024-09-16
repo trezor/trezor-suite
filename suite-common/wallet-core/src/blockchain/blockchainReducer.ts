@@ -2,9 +2,13 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { BackendType, networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    BackendType,
+    getNetworkOptional,
+    networksCompatibility,
+    NetworkSymbol,
+} from '@suite-common/wallet-config';
 import { Blockchain, BlockchainNetworks } from '@suite-common/wallet-types';
-import { getNetworkCompatible } from '@suite-common/wallet-utils';
 import {
     BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
     BlockchainBlock,
@@ -71,7 +75,7 @@ const writeIdentityConnection = (
 };
 
 const connect = (draft: BlockchainState, info: BlockchainInfo) => {
-    const network = getNetworkCompatible(info.coin.shortcut.toLowerCase());
+    const network = getNetworkOptional(info.coin.shortcut.toLowerCase());
     if (!network) return;
 
     if (info.identity) {
@@ -133,7 +137,7 @@ const error = (draft: BlockchainState, payload: BlockchainError) => {
         identity,
         coin: { shortcut: symbol },
     } = payload;
-    const network = getNetworkCompatible(symbol.toLowerCase());
+    const network = getNetworkOptional(symbol.toLowerCase());
     if (!network) return;
 
     if (identity) {
@@ -150,7 +154,7 @@ const error = (draft: BlockchainState, payload: BlockchainError) => {
 };
 
 const update = (draft: BlockchainState, block: BlockchainBlock) => {
-    const network = getNetworkCompatible(block.coin.shortcut.toLowerCase());
+    const network = getNetworkOptional(block.coin.shortcut.toLowerCase());
     if (!network) return;
 
     draft[network.symbol] = {
@@ -161,7 +165,7 @@ const update = (draft: BlockchainState, block: BlockchainBlock) => {
 };
 
 const reconnecting = (draft: BlockchainState, payload: BlockchainReconnecting) => {
-    const network = getNetworkCompatible(payload.coin.shortcut.toLowerCase());
+    const network = getNetworkOptional(payload.coin.shortcut.toLowerCase());
     if (!network) return;
 
     if (payload.identity) {

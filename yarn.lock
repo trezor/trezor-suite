@@ -9711,7 +9711,6 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft

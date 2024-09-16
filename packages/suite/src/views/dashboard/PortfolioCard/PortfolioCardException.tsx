@@ -7,7 +7,7 @@ import {
     authorizeDeviceThunk,
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
-import * as accountUtils from '@suite-common/wallet-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 import { variables, Button, H3, Image, IconName } from '@trezor/components';
 import { Discovery } from '@suite-common/wallet-types';
 
@@ -117,13 +117,13 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
     // Group all failed networks into array of errors.
     const networkError: string[] = [];
     const details = discovery.failed.reduce((value, account) => {
-        const n = accountUtils.getNetworkCompatible(account.symbol)!;
+        const network = getNetwork(account.symbol);
         if (networkError.includes(account.symbol)) return value;
         networkError.push(account.symbol);
 
         return value.concat(
             <div key={account.symbol}>
-                {n.name}: {getAccountError(account.error)}
+                {network.name}: {getAccountError(account.error)}
             </div>,
         );
     }, [] as JSX.Element[]);

@@ -1,5 +1,4 @@
 import { toWei } from 'web3-utils';
-import { G } from '@mobily/ts-belt';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
@@ -14,7 +13,6 @@ import {
     amountToSatoshi,
     formatAmount,
     isPending,
-    getNetworkCompatible,
     getAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { createThunk } from '@suite-common/redux-utils';
@@ -25,6 +23,7 @@ import {
     ExternalOutput,
 } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { getNetwork } from '@suite-common/wallet-config';
 import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 
 import { selectTransactions } from '../transactions/transactionsReducer';
@@ -242,13 +241,9 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         } = extra;
         const transactions = selectTransactions(getState());
 
-        const network = getNetworkCompatible(selectedAccount.symbol);
+        const network = getNetwork(selectedAccount.symbol);
 
-        if (
-            G.isNullable(network) ||
-            selectedAccount.networkType !== 'ethereum' ||
-            !network?.chainId
-        )
+        if (selectedAccount.networkType !== 'ethereum' || !network.chainId)
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Ethereum network mismatch.',
