@@ -2,14 +2,14 @@ import { Button } from '@trezor/components';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-import { getNetwork } from '@suite-common/wallet-utils';
+import { getNetworkCompatible } from '@suite-common/wallet-utils';
 
 interface NoTransactionsProps {
     account: Account;
 }
 
 export const NoTransactions = ({ account }: NoTransactionsProps) => {
-    const network = getNetwork(account.symbol)!;
+    const network = getNetworkCompatible(account.symbol)!;
 
     const explorerUrl = `${network.explorer.account}${account.descriptor}${network.explorer.queryString ?? ''}`;
 

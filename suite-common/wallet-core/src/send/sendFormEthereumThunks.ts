@@ -14,7 +14,7 @@ import {
     amountToSatoshi,
     formatAmount,
     isPending,
-    getNetwork,
+    getNetworkCompatible,
     getAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { createThunk } from '@suite-common/redux-utils';
@@ -242,7 +242,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         } = extra;
         const transactions = selectTransactions(getState());
 
-        const network = getNetwork(selectedAccount.symbol);
+        const network = getNetworkCompatible(selectedAccount.symbol);
 
         if (
             G.isNullable(network) ||

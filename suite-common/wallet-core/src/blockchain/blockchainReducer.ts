@@ -4,7 +4,7 @@ import { memoizeWithArgs } from 'proxy-memoize';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { BackendType, networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
 import { Blockchain, BlockchainNetworks } from '@suite-common/wallet-types';
-import { getNetwork } from '@suite-common/wallet-utils';
+import { getNetworkCompatible } from '@suite-common/wallet-utils';
 import {
     BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
     BlockchainBlock,
@@ -71,7 +71,7 @@ const writeIdentityConnection = (
 };
 
 const connect = (draft: BlockchainState, info: BlockchainInfo) => {
-    const network = getNetwork(info.coin.shortcut.toLowerCase());
+    const network = getNetworkCompatible(info.coin.shortcut.toLowerCase());
     if (!network) return;
 
     if (info.identity) {
@@ -133,7 +133,7 @@ const error = (draft: BlockchainState, payload: BlockchainError) => {
         identity,
         coin: { shortcut: symbol },
     } = payload;
-    const network = getNetwork(symbol.toLowerCase());
+    const network = getNetworkCompatible(symbol.toLowerCase());
     if (!network) return;
 
     if (identity) {
@@ -150,7 +150,7 @@ const error = (draft: BlockchainState, payload: BlockchainError) => {
 };
 
 const update = (draft: BlockchainState, block: BlockchainBlock) => {
-    const network = getNetwork(block.coin.shortcut.toLowerCase());
+    const network = getNetworkCompatible(block.coin.shortcut.toLowerCase());
     if (!network) return;
 
     draft[network.symbol] = {
@@ -161,7 +161,7 @@ const update = (draft: BlockchainState, block: BlockchainBlock) => {
 };
 
 const reconnecting = (draft: BlockchainState, payload: BlockchainReconnecting) => {
-    const network = getNetwork(payload.coin.shortcut.toLowerCase());
+    const network = getNetworkCompatible(payload.coin.shortcut.toLowerCase());
     if (!network) return;
 
     if (payload.identity) {

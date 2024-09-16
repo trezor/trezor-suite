@@ -1,7 +1,7 @@
 import { WalletParams } from 'src/types/wallet';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { getNetwork, hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { getNetworkCompatible, hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -20,7 +20,7 @@ export const AccountNavigation = () => {
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const dispatch = useDispatch();
 
-    const network = getNetwork(routerParams?.symbol || '');
+    const network = getNetworkCompatible(routerParams?.symbol || '');
     const networkType = account?.networkType || network?.networkType || '';
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {

@@ -2,7 +2,7 @@ import { NetworkCompatible } from '@suite-common/wallet-config';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { getFeeLevels, getNetwork } from '@suite-common/wallet-utils';
+import { getFeeLevels, getNetworkCompatible } from '@suite-common/wallet-utils';
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
@@ -46,7 +46,7 @@ export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchange
     const initState = useMemo(() => {
         // TODO remove NetworkCompatible type
         // getNetwork is guaranteed to find a NetworkCompatible, as it is called with symbol from an existing Network
-        const networkCompatible = getNetwork(network.symbol) as NetworkCompatible;
+        const networkCompatible = getNetworkCompatible(network.symbol) as NetworkCompatible;
 
         return { account, network: networkCompatible, feeInfo };
     }, [account, network.symbol, feeInfo]);

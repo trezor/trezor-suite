@@ -117,7 +117,7 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
     // Group all failed networks into array of errors.
     const networkError: string[] = [];
     const details = discovery.failed.reduce((value, account) => {
-        const n = accountUtils.getNetwork(account.symbol)!;
+        const n = accountUtils.getNetworkCompatible(account.symbol)!;
         if (networkError.includes(account.symbol)) return value;
         networkError.push(account.symbol);
 
