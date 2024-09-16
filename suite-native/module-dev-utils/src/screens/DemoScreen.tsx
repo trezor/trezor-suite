@@ -30,10 +30,9 @@ import {
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
-import { CryptoIcon, tokenIcons, Icon, IconName, icons } from '@suite-common/icons-deprecated';
+import { CryptoIcon, Icon } from '@suite-common/icons-deprecated';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';
-import { TokenAddress } from '@suite-common/wallet-types';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
@@ -359,40 +358,6 @@ export const DemoScreen = () => {
                                 }
                             />
                         </VStack>
-                    </Box>
-                    <Box marginTop="medium">
-                        <Text variant="titleMedium">Icons</Text>
-                        <Box flexWrap="wrap" flexDirection="row">
-                            {Object.keys(icons).map((icon: string) => (
-                                <Box
-                                    key={icon}
-                                    marginRight="large"
-                                    marginBottom="large"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                >
-                                    <Icon name={icon as IconName} />
-                                    <Text>{icon}</Text>
-                                </Box>
-                            ))}
-                        </Box>
-                    </Box>
-                    <Box marginTop="medium">
-                        <Text variant="titleMedium">Token Icons</Text>
-                        <HStack
-                            flexWrap="wrap"
-                            flexDirection="row"
-                            marginVertical="medium"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            {Object.keys(tokenIcons).map((iconContract: string) => (
-                                <CryptoIcon
-                                    key={iconContract}
-                                    symbol={iconContract as TokenAddress}
-                                />
-                            ))}
-                        </HStack>
                     </Box>
                     <VStack marginTop="medium">
                         <Text variant="titleMedium">Skeleton</Text>

@@ -10195,7 +10195,6 @@ __metadata:
     "@sentry/react-native": "npm:5.31.1"
     "@suite-common/icons-deprecated": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/discovery": "workspace:*"
