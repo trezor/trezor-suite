@@ -8,7 +8,7 @@ import {
 } from '@suite-native/formatters';
 import { Box } from '@suite-native/atoms';
 import { AccountsRootState, selectIsTestnetAccount } from '@suite-common/wallet-core';
-import { EmptyAmountText } from '@suite-native/formatters/src/components/EmptyAmountText';
+import { TestnetFiatAmount } from '@suite-native/formatters/src/components/TestnetFiatAmount';
 import { WalletAccountTransaction } from '@suite-native/tokens';
 
 import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
@@ -40,7 +40,7 @@ export const TransactionListItemValues = ({
     return (
         <>
             {isTestnetAccount ? (
-                <EmptyAmountText />
+                <TestnetFiatAmount />
             ) : (
                 <Box flexDirection="row">
                     <SignValueFormatter value={getTransactionValueSign(transaction.type)} />

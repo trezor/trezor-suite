@@ -7,8 +7,8 @@ import { isTestnet } from '@suite-common/wallet-utils';
 
 import { FormatterProps } from '../types';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
-import { EmptyAmountText } from './EmptyAmountText';
 import { AmountText } from './AmountText';
+import { TestnetFiatAmount } from './TestnetFiatAmount';
 
 type FiatAmountFormatterProps = FormatterProps<string | null> &
     TextProps & {
@@ -21,7 +21,7 @@ export const FiatAmountFormatter = React.memo(
         const { FiatAmountFormatter: formatter } = useFormatters();
 
         if (!!network && isTestnet(network)) {
-            return <EmptyAmountText />;
+            return <TestnetFiatAmount />;
         }
         if (value === null) {
             return <EmptyAmountSkeleton />;
