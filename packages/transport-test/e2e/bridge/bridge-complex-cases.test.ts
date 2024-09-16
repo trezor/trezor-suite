@@ -23,8 +23,7 @@ describe('restarting bridge', () => {
         await TrezorUserEnvLink.startEmu();
         await TrezorUserEnvLink.startBridge();
 
-        const abortController = new AbortController();
-        bridge = new BridgeTransport({ messages, signal: abortController.signal });
+        bridge = new BridgeTransport({ messages });
         await bridge.init();
 
         const enumerateResult = await bridge.enumerate();
@@ -51,8 +50,7 @@ describe('restarting bridge', () => {
         await TrezorUserEnvLink.stopBridge();
         await TrezorUserEnvLink.startEmu();
         await TrezorUserEnvLink.startBridge();
-        const abortController = new AbortController();
-        bridge = new BridgeTransport({ messages, signal: abortController.signal });
+        bridge = new BridgeTransport({ messages });
         await bridge.init();
 
         const enumerateResult = await bridge.enumerate();

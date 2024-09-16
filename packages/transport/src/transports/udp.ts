@@ -12,7 +12,7 @@ export class UdpTransport extends AbstractApiTransport {
     private readonly sessionsBackground;
 
     constructor(params: AbstractTransportParams) {
-        const { messages, logger, signal, debugLink } = params;
+        const { messages, logger, debugLink } = params;
         const sessionsBackground = new SessionsBackground();
 
         // in udp there is no synchronization yet. it depends where this transport runs (node or browser)
@@ -30,7 +30,6 @@ export class UdpTransport extends AbstractApiTransport {
             api: new UdpApi({ logger, debugLink }),
             logger,
             sessionsClient,
-            signal,
         });
         this.sessionsBackground = sessionsBackground;
     }

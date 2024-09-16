@@ -63,9 +63,8 @@ describe('bridge', () => {
         await TrezorUserEnvLink.startEmu(emulatorStartOpts);
         await TrezorUserEnvLink.startBridge();
 
-        const abortController = new AbortController();
-        bridge1 = new BridgeTransport({ messages, signal: abortController.signal });
-        bridge2 = new BridgeTransport({ messages, signal: abortController.signal });
+        bridge1 = new BridgeTransport({ messages });
+        bridge2 = new BridgeTransport({ messages });
 
         await bridge1.init();
         await bridge2.init();
