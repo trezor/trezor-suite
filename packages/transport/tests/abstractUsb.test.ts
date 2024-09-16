@@ -59,14 +59,12 @@ class TestUsbTransport extends AbstractApiTransport {
 }
 // we cant directly use abstract class (UsbTransport)
 const initTest = async () => {
-    let abortController = new AbortController();
-
     let sessionsBackground: SessionsBackground;
     let sessionsClient: SessionsClient;
     let transport: AbstractTransport;
     let testUsbApi: UsbApi;
 
-    sessionsBackground = new SessionsBackground({ signal: abortController.signal });
+    sessionsBackground = new SessionsBackground();
 
     sessionsClient = new SessionsClient({
         requestFn: params => sessionsBackground.handleMessage(params),
@@ -99,7 +97,6 @@ const initTest = async () => {
         sessionsClient,
         transport,
         testUsbApi,
-        abortController,
     };
 };
 
@@ -141,9 +138,7 @@ describe('Usb', () => {
         });
 
         it('enumerate error', async () => {
-            const abortController = new AbortController();
-
-            const sessionsBackground = new SessionsBackground({ signal: abortController.signal });
+            const sessionsBackground = new SessionsBackground();
 
             const sessionsClient = new SessionsClient({
                 requestFn: params => sessionsBackground.handleMessage(params),
@@ -174,22 +169,22 @@ describe('Usb', () => {
                 message: 'crazy error nobody expects',
             });
 
-            abortController.abort();
+            sessionsBackground.dispose();
         });
     });
 
     describe('with initiated transport', () => {
         it('listen twice -> error', async () => {
-            const { transport, abortController } = await initTest();
+            const { transport, sessionsBackground } = await initTest();
             const res1 = transport.listen();
             expect(res1.success).toEqual(true);
             const res2 = transport.listen();
             expect(res2.success).toEqual(false);
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('handleDescriptorsChange', async () => {
-            const { transport, abortController } = await initTest();
+            const { transport, sessionsBackground } = await initTest();
             const spy = jest.fn();
             transport.on('transport-update', spy);
 
@@ -202,11 +197,11 @@ describe('Usb', () => {
             expect(spy).toHaveBeenCalledWith([
                 { type: 'disconnected', descriptor: { path: '1', session: null, type: 1 } },
             ]);
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('enumerate', async () => {
-            const { transport, abortController } = await initTest();
+            const { transport, sessionsBackground } = await initTest();
             const res = await transport.enumerate();
             expect(res).toEqual({
                 success: true,
@@ -227,11 +222,11 @@ describe('Usb', () => {
                     },
                 ],
             });
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('acquire. transport is not listening', async () => {
-            const { transport, abortController } = await initTest();
+            const { transport, sessionsBackground } = await initTest();
             jest.useFakeTimers();
             const spy = jest.fn();
             transport.on('transport-update', spy);
@@ -247,12 +242,11 @@ describe('Usb', () => {
             });
 
             expect(spy).toHaveBeenCalledTimes(0);
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('acquire. transport listening. missing descriptor', async () => {
-            const { transport, sessionsClient, sessionsBackground, abortController } =
-                await initTest();
+            const { transport, sessionsClient, sessionsBackground } = await initTest();
 
             sessionsBackground.removeAllListeners();
 
@@ -277,12 +271,11 @@ describe('Usb', () => {
                 success: false,
                 error: 'device disconnected during action',
             });
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('acquire. transport listening. unexpected session', async () => {
-            const { transport, sessionsClient, sessionsBackground, abortController } =
-                await initTest();
+            const { transport, sessionsClient, sessionsBackground } = await initTest();
             sessionsBackground.removeAllListeners();
             const enumerateResult = await transport.enumerate();
             expect(enumerateResult.success).toEqual(true);
@@ -301,11 +294,11 @@ describe('Usb', () => {
 
             const res = await acquireCall;
             expect(res).toMatchObject({ success: false, error: 'wrong previous session' });
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('call error - called without acquire.', async () => {
-            const { transport, abortController } = await initTest();
+            const { transport, sessionsBackground } = await initTest();
             const res = await transport.call({
                 name: 'GetAddress',
                 data: {},
@@ -313,11 +306,11 @@ describe('Usb', () => {
                 protocol: v1Protocol,
             });
             expect(res).toEqual({ success: false, error: 'device disconnected during action' });
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('call - with valid and invalid message.', async () => {
-            const { transport, abortController } = await initTest();
+            const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } });
             expect(acquireRes.success).toEqual(true);
@@ -356,11 +349,11 @@ describe('Usb', () => {
                 message: 'no such type: Foo-bar message',
             });
 
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('send and receive.', async () => {
-            const { transport, abortController } = await initTest();
+            const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } });
             expect(acquireRes.success).toEqual(true);
@@ -392,11 +385,11 @@ describe('Usb', () => {
                     },
                 },
             });
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('send protocol-v1 with custom chunkSize', async () => {
-            const { transport, testUsbApi, abortController } = await initTest();
+            const { transport, testUsbApi, sessionsBackground } = await initTest();
             await transport.enumerate();
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } });
             expect(acquireRes.success).toEqual(true);
@@ -430,11 +423,11 @@ describe('Usb', () => {
             await send(); // bigger chunks
             expect(writeSpy).toHaveBeenCalledTimes(2);
             writeSpy.mockClear();
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('release', async () => {
-            const { transport, abortController } = await initTest();
+            const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } });
             expect(acquireRes.success).toEqual(true);
@@ -452,11 +445,11 @@ describe('Usb', () => {
                 success: true,
                 payload: undefined,
             });
-            abortController.abort();
+            sessionsBackground.dispose();
         });
 
         it('call - with use abort', async () => {
-            const { transport, abortController } = await initTest();
+            const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } });
             if (!acquireRes.success) return;
@@ -492,7 +485,7 @@ describe('Usb', () => {
                     },
                 },
             });
-            abortController.abort();
+            sessionsBackground.dispose();
         });
     });
 });
