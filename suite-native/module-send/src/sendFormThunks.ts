@@ -1,5 +1,5 @@
 import { G } from '@mobily/ts-belt';
-import { isRejected } from '@reduxjs/toolkit';
+import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -13,13 +13,16 @@ import {
     sendFormActions,
     signTransactionThunk,
     selectSendFormDrafts,
+    composeSendFormTransactionFeeLevelsThunk,
+    selectNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import {
     Account,
     AccountKey,
+    FormState,
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { getNetworkCompatible, hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
@@ -124,5 +127,41 @@ export const removeSendFormDraftsSupportingAmountUnitThunk = createThunk(
                 dispatch(sendFormActions.removeDraft({ accountKey }));
             }
         });
+    },
+);
+
+export const calculateMaxAmountWithNormalFeeThunk = createThunk<
+    string | undefined,
+    { formState: FormState; accountKey: AccountKey }
+>(
+    `${SEND_MODULE_PREFIX}/calculateMaxAmountWithNormalFeeThunk`,
+    async ({ formState, accountKey }, { dispatch, getState }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account) throw new Error('Account not found.');
+
+        const networkFeeInfo = selectNetworkFeeInfo(getState(), account.symbol);
+        const network = getNetworkCompatible(account.symbol);
+
+        if (!network || !networkFeeInfo) throw new Error('Network fees not found.');
+
+        const response = await dispatch(
+            composeSendFormTransactionFeeLevelsThunk({
+                formState: {
+                    ...formState,
+                    setMaxOutputId: 0, // Marks first outputs as the one that should be maximized.
+                },
+                composeContext: {
+                    account,
+                    network,
+                    feeInfo: networkFeeInfo,
+                },
+            }),
+        );
+
+        if (isFulfilled(response)) {
+            if (response.payload.normal.type !== 'error') {
+                return response.payload.normal.max;
+            }
+        }
     },
 );

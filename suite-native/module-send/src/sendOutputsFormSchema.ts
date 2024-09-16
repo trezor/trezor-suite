@@ -11,6 +11,7 @@ export type SendFormFormContext = {
     availableAccountBalance?: string;
     networkFeeInfo?: FeeInfo;
     isValueInSats?: boolean;
+    normalFeeMaxAmount?: string;
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -42,19 +43,20 @@ const isAmountHigherThanBalance = (amount: string, context?: SendFormFormContext
         return false;
     }
 
-    const { networkSymbol, networkFeeInfo, availableAccountBalance, isValueInSats } = context;
+    const {
+        networkSymbol,
+        networkFeeInfo,
+        availableAccountBalance,
+        normalFeeMaxAmount = '0',
+    } = context;
 
     if (!networkSymbol || !networkFeeInfo || !availableAccountBalance) {
         return false;
     }
 
-    const formattedAvailableBalance = isValueInSats
-        ? availableAccountBalance
-        : formatNetworkAmount(availableAccountBalance, networkSymbol);
-
     const amountBigNumber = new BigNumber(amount);
 
-    return amountBigNumber.gt(formattedAvailableBalance);
+    return amountBigNumber.gt(normalFeeMaxAmount);
 };
 
 // TODO: change error messages copy when is design ready
@@ -67,7 +69,7 @@ export const sendOutputsFormValidationSchema = yup.object({
                     .required()
                     .test(
                         'is-invalid-address',
-                        'Address is not valid.',
+                        'The address format is incorrect.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
                             const networkSymbol = context?.networkSymbol;
 
@@ -84,14 +86,14 @@ export const sendOutputsFormValidationSchema = yup.object({
                     .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
                     .test(
                         'is-dust-amount',
-                        'The value is lower than dust threshold.',
+                        'The value is lower than the dust limit.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
                             return !isAmountDust(value, context);
                         },
                     )
                     .test(
                         'is-higher-than-balance',
-                        'Amount is higher than available balance.',
+                        'You don’t have enough balance to send this amount.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
                             return !isAmountHigherThanBalance(value, context);
                         },

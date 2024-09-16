@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
@@ -12,7 +12,6 @@ import {
     SendRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
-    selectDevice,
     selectNetworkFeeInfo,
     selectSendFormDraftByAccountKey,
     sendFormActions,
@@ -38,11 +37,20 @@ import { SendScreen } from '../components/SendScreen';
 import { SendOutputFields } from '../components/SendOutputFields';
 import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
 import { AccountBalanceScreenHeader } from '../components/SendScreenSubHeader';
+import { calculateMaxAmountWithNormalFeeThunk } from '../sendFormThunks';
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
     padding: utils.spacings.medium,
 }));
+
+const DEFAULT_VALUES = [
+    {
+        amount: '',
+        address: '',
+        fiat: '',
+    },
+] as const satisfies SendOutputsFormValues['outputs'];
 
 // TODO: this data structure will be revisited in a follow up PR
 const constructFormDraft = ({ outputs }: SendOutputsFormValues): FormState => ({
@@ -71,11 +79,10 @@ export const SendOutputsScreen = ({
     const { applyStyle } = useNativeStyles();
     const debounce = useDebounce();
     const { showToast } = useToast();
-
     const navigation =
         useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
 
-    const device = useSelector(selectDevice);
+    const [normalFeeMaxAmount, setNormalFeeMaxAmount] = useState<string>();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -97,15 +104,10 @@ export const SendOutputsScreen = ({
             networkSymbol: account?.symbol,
             availableAccountBalance: account?.availableBalance,
             isValueInSats: isAmountInSats,
+            normalFeeMaxAmount,
         },
         defaultValues: {
-            outputs: [
-                {
-                    address: sendFormDraft?.outputs?.[0]?.address ?? '',
-                    amount: sendFormDraft?.outputs?.[0]?.amount ?? '',
-                    fiat: sendFormDraft?.outputs?.[0]?.fiat ?? '',
-                },
-            ],
+            outputs: sendFormDraft?.outputs ?? DEFAULT_VALUES,
         },
     });
 
@@ -116,6 +118,7 @@ export const SendOutputsScreen = ({
         formState: { isValid, isSubmitting },
     } = form;
     const watchedFormValues = useWatch({ control });
+    const watchedAddress = useWatch({ name: 'outputs.0.address', control });
 
     const storeFormDraftIfValid = useCallback(() => {
         dispatch(
@@ -126,20 +129,40 @@ export const SendOutputsScreen = ({
         );
     }, [accountKey, dispatch, getValues]);
 
+    // Triggered for every change of watchedFormValues.
     useEffect(() => {
-        if (watchedFormValues && isValid) debounce(storeFormDraftIfValid);
-    }, [isValid, storeFormDraftIfValid, watchedFormValues, debounce]);
+        if (isValid) debounce(storeFormDraftIfValid);
+    }, [storeFormDraftIfValid, watchedFormValues, debounce, isValid]);
+
+    const calculateNormalFeeMaxAmount = useCallback(async () => {
+        const response = await dispatch(
+            calculateMaxAmountWithNormalFeeThunk({
+                formState: constructFormDraft(getValues()),
+                accountKey,
+            }),
+        );
+
+        if (isFulfilled(response)) {
+            setNormalFeeMaxAmount(response.payload);
+        }
+    }, [getValues, accountKey, dispatch]);
+
+    useEffect(() => {
+        calculateNormalFeeMaxAmount();
+    }, [watchedAddress, calculateNormalFeeMaxAmount, networkFeeInfo]);
 
     // TODO: Fetch periodically. So if the user stays on the screen for a long time, the fee info is updated in the background.
     useEffect(() => {
         if (account) dispatch(updateFeeInfoThunk(account.symbol));
     }, [account, dispatch]);
 
-    const network = getNetworkCompatible(account!.symbol);
-
-    if (!account || !networkFeeInfo || !device || !network) return null;
+    if (!account || !networkFeeInfo) return null;
 
     const handleNavigateToReviewScreen = handleSubmit(async values => {
+        const network = getNetworkCompatible(account?.symbol);
+
+        if (!network) return;
+
         const response = await dispatch(
             composeSendFormTransactionFeeLevelsThunk({
                 formState: constructFormDraft(values),
