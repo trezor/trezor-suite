@@ -74,7 +74,7 @@ module.exports = config => {
             },
             ...(process.env.TESTS_PATTERN || '*')
                 .split(' ')
-                .map(pattern => path.resolve(__dirname, `./tests/**/${pattern.trim()}.test.ts`)),
+                .map(pattern => path.resolve(__dirname, `./tests/**/${pattern.trim()}*.ts`)),
         ],
 
         webpackMiddleware: {
