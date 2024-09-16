@@ -21,6 +21,14 @@ const devXpubs: Partial<Record<NetworkSymbol, string | DevXpub[]>> = {
     zec: 'xpub6DNsg962rV1MeqmathySUG2oKso9MfT2hMXCsMp6qemGWwD9xssVM61DfcAUUEaX2G8tjaaoKKppoKtFcSK8KVaMFHmZjAgyqod4DwXopPE',
     eth: [
         { title: 'Use dev xPub', address: '0x62270860B9a5337e46bE8563c512c9137AFa0384' },
+        {
+            title: 'Dev (not zero, no tokens, staking)',
+            address: '0x607ce71Ae895D7759141c6ae2695a2eb64e92Bb7',
+        },
+        {
+            title: 'Dev (not zero, no tokens, no staking)',
+            address: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
+        },
         { title: 'Old dev account', address: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3' },
         {
             title: 'Huge account (20k+ transactions)',
