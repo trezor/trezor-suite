@@ -1,19 +1,13 @@
-import styled from 'styled-components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { Button, Checkbox } from '@trezor/components';
-import { DialogModal } from '../Modal/DialogRenderer';
+import { H2, Card, Paragraph, NewModal, Checkbox } from '@trezor/components';
 import { AddressType } from '@suite-common/wallet-types';
 import { spacings } from '@trezor/theme';
 import { useState } from 'react';
 import { setFlag } from 'src/actions/suite/suiteActions';
-
-const StyledModal = styled(DialogModal)`
-    width: 600px;
-`;
 
 const getAddressTypeText = (addressType: AddressType) => {
     switch (addressType) {
@@ -50,34 +44,32 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
     };
 
     return (
-        <StyledModal
-            isCancelable
+        <NewModal
             onCancel={onCancel}
-            icon="warningTriangleLight"
-            iconVariant="warning"
-            bodyHeading={<Translation id="TR_NOT_YOUR_RECEIVE_ADDRRESS" />}
-            body={
+            icon="warning"
+            variant="warning"
+            bottomContent={
                 <>
-                    <Translation id={getAddressTypeText(addressType)} />
-                    <Checkbox
-                        isChecked={checked}
-                        onClick={() => setChecked(!checked)}
-                        margin={{ top: spacings.md }}
-                    >
-                        <Translation id="TR_DO_NOT_SHOW_AGAIN" />
-                    </Checkbox>
-                </>
-            }
-            bottomBarComponents={
-                <>
-                    <Button variant="warning" onClick={onCopyAddress}>
-                        <Translation id="TR_COPY_TO_CLIPBOARD" />
-                    </Button>
-                    <Button variant="tertiary" onClick={onCancel}>
+                    <NewModal.Button onClick={onCopyAddress}>
+                        <Translation id="TR_UNHIDE" />
+                    </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
-                    </Button>
+                    </NewModal.Button>
                 </>
             }
-        />
+        >
+            <H2>
+                <Translation id="TR_NOT_YOUR_RECEIVE_ADDRRESS" />
+            </H2>
+            <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
+                <Translation id={getAddressTypeText(addressType)} />
+            </Paragraph>
+            <Card margin={{ top: spacings.xl }}>
+                <Checkbox isChecked={checked} onClick={() => setChecked(!checked)}>
+                    <Translation id="TR_DO_NOT_SHOW_AGAIN" />
+                </Checkbox>
+            </Card>
+        </NewModal>
     );
 };
