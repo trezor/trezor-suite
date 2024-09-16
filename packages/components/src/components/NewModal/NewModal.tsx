@@ -91,7 +91,7 @@ const Footer = styled.footer`
     border-top: 1px solid ${({ theme }) => theme.borderElevation0};
 `;
 
-const IconWrapper = styled.div<{ $variant: NewModalVariant; $size: number }>`
+const IconWrapper = styled.div<{ $variant: NewModalVariant; $size: number; $isPushedTop: boolean }>`
     width: ${({ $size }) => $size}px;
     background: ${({ theme, $variant }) => mapVariantToIconBackground({ theme, $variant })};
     padding: ${spacingsPx.lg};
@@ -100,6 +100,7 @@ const IconWrapper = styled.div<{ $variant: NewModalVariant; $size: number }>`
         ${({ theme, $variant }) => mapVariantToIconBorderColor({ theme, $variant })};
     box-sizing: content-box;
     margin-bottom: ${spacingsPx.md};
+    margin-top: ${({ $isPushedTop }) => ($isPushedTop ? `-${spacingsPx.md}` : 0)};
 `;
 
 interface NewModalProps {
@@ -131,6 +132,7 @@ const NewModalBase = ({
     const { scrollElementRef, onScroll, ShadowContainer, ShadowTop, ShadowBottom } =
         useScrollShadow();
     const modalBackgroundColor = mapElevationToBackgroundToken({ $elevation: MODAL_ELEVATION });
+    const hasHeader = onBackClick || onCancel || heading || description;
 
     useEvent('keydown', (e: KeyboardEvent) => {
         if (onCancel && e.key === 'Escape') {
@@ -147,7 +149,7 @@ const NewModalBase = ({
                     onClick={e => e.stopPropagation()}
                     data-testid={dataTest}
                 >
-                    {(onBackClick || onCancel || heading || description) && (
+                    {hasHeader && (
                         <Header>
                             {onBackClick && (
                                 <IconButton
@@ -184,7 +186,13 @@ const NewModalBase = ({
                         <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                             <Body id={NEW_MODAL_CONTENT_ID}>
                                 {icon && (
-                                    <IconWrapper $variant={variant} $size={ICON_SIZE}>
+                                    <IconWrapper
+                                        $variant={variant}
+                                        $size={ICON_SIZE}
+                                        $isPushedTop={
+                                            !!onCancel && !heading && !description && !onBackClick
+                                        }
+                                    >
                                         <Icon name={icon} size={ICON_SIZE} variant={variant} />
                                     </IconWrapper>
                                 )}
