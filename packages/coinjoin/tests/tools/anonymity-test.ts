@@ -4,7 +4,7 @@ import fs from 'fs';
 import http from 'http';
 
 import { getAnonymityScores } from '../../src/client/analyzeTransactions';
-import { getNetwork } from '../../src/utils/settingsUtils';
+import { getCoinjoinNetwork } from '../../src/utils/settingsUtils';
 import { getAccountInfo, getAccountInfoParams } from './discovery';
 
 const [network, descriptor] = process.argv.slice(2);
@@ -92,7 +92,7 @@ const CACHE_PARAMS = `${CACHE_DIR}/anonymityScoreParams.json`;
     const anonScores = await getAnonymityScores(transactions, {
         // middlewareUrl: 'http://localhost:8081/client/',
         middlewareUrl: 'http://localhost:37128/',
-        network: getNetwork(network as any),
+        network: getCoinjoinNetwork(network as any),
         signal: new AbortController().signal,
         logger: {
             debug: () => {},

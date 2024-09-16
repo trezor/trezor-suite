@@ -4,7 +4,7 @@ import { Status } from './Status';
 import { Account } from './Account';
 import { CoinjoinPrison } from './CoinjoinPrison';
 import { CoinjoinRound } from './CoinjoinRound';
-import { getNetwork } from '../utils/settingsUtils';
+import { getCoinjoinNetwork } from '../utils/settingsUtils';
 import { redacted } from '../utils/redacted';
 import { analyzeTransactions, AnalyzeTransactionsResult } from './analyzeTransactions';
 import type {
@@ -31,7 +31,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         super();
         this.settings = Object.freeze(settings);
         this.logger = this.getLogger();
-        this.network = getNetwork(settings.network);
+        this.network = getCoinjoinNetwork(settings.network);
         this.abortController = new AbortController();
 
         this.status = new Status(settings);

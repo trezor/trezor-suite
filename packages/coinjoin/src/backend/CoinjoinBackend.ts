@@ -8,7 +8,7 @@ import { scanAccount } from './scanAccount';
 import { getAccountInfo } from './getAccountInfo';
 import { createPendingTransaction } from './createPendingTx';
 import { deriveAddresses, isTaprootAddress } from './backendUtils';
-import { getNetwork } from '../utils/settingsUtils';
+import { getCoinjoinNetwork } from '../utils/settingsUtils';
 import type { CoinjoinBackendSettings, LogEvent, Logger, LogLevel } from '../types';
 import type {
     ScanAccountParams,
@@ -37,7 +37,7 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
     constructor(settings: CoinjoinBackendSettings) {
         super();
         this.settings = Object.freeze(settings);
-        this.network = getNetwork(settings.network);
+        this.network = getCoinjoinNetwork(settings.network);
         const logger = this.getLogger();
         this.client = new CoinjoinBackendClient({ ...settings, logger });
         this.mempool = new CoinjoinMempoolController({
