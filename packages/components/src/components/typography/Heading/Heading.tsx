@@ -117,3 +117,30 @@ export const H3 = ({
         </Heading>
     );
 };
+
+export const H4 = ({
+    color,
+    align,
+    typographyStyle = 'highlight',
+    textWrap,
+    onClick,
+    'data-testid': dataTest,
+    children,
+    className,
+    ...rest
+}: HProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
+
+    return (
+        <Heading
+            as="h4"
+            onClick={onClick}
+            data-testid={dataTest}
+            className={className}
+            {...makePropsTransient({ color, align, typographyStyle, textWrap })}
+            {...frameProps}
+        >
+            {children}
+        </Heading>
+    );
+};
