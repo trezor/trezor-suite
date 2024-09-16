@@ -26,7 +26,7 @@ import {
     formatNetworkAmount,
     getPendingAccount,
     isCardanoTx,
-    getNetwork,
+    getNetworkCompatible,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { Success } from '@trezor/connect';
@@ -512,7 +512,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         { getState, dispatch, rejectWithValue },
     ) => {
         const device = selectDevice(getState());
-        const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
+        const selectedAccountNetwork = getNetworkCompatible(selectedAccount.symbol);
         if (!device) return rejectWithValue('Device not found');
 
         // native RBF is available since FW 1.9.4/2.3.5

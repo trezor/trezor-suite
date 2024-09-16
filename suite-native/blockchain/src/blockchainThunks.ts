@@ -9,7 +9,7 @@ import {
     subscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { getNetwork } from '@suite-common/wallet-utils';
+import { getNetworkCompatible } from '@suite-common/wallet-utils';
 import { BlockchainNotification } from '@trezor/connect';
 
 const BLOCKCHAIN_MODULE_PREFIX = '@suite-native/blockchain';
@@ -67,7 +67,7 @@ export const syncAllAccountsWithBlockchainThunk = createThunk(
 export const onBlockchainConnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
     async ({ symbol }: { symbol: string }, { dispatch }) => {
-        const network = getNetwork(symbol.toLowerCase());
+        const network = getNetworkCompatible(symbol.toLowerCase());
         if (!network) return;
 
         await dispatch(

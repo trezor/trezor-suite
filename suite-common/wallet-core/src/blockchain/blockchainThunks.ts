@@ -9,7 +9,7 @@ import {
     getAreSatoshisUsed,
     getBackendFromSettings,
     getCustomBackends,
-    getNetwork,
+    getNetworkCompatible,
     isTrezorConnectBackendType,
     shouldUseIdentities,
     getAccountIdentity,
@@ -101,7 +101,7 @@ export const updateFeeInfoThunk = createThunk(
         const {
             selectors: { selectFeeInfo },
         } = extra;
-        const network = getNetwork(symbol.toLowerCase());
+        const network = getNetworkCompatible(symbol.toLowerCase());
         if (!network) return;
         const blockchainInfo = selectNetworkBlockchainInfo(network.symbol)(getState());
         const feeInfo = selectFeeInfo(network.symbol)(getState());
@@ -348,7 +348,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
 export const onBlockchainConnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
     async (symbol: string, { dispatch }) => {
-        const network = getNetwork(symbol.toLowerCase());
+        const network = getNetworkCompatible(symbol.toLowerCase());
         if (!network) return;
 
         await dispatch(
@@ -365,7 +365,7 @@ export const onBlockMinedThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockMinedThunk`,
     (block: BlockchainBlock, { dispatch }) => {
         const symbol = block.coin.shortcut.toLowerCase();
-        const network = getNetwork(symbol);
+        const network = getNetworkCompatible(symbol);
 
         if (!isNetworkSymbol(symbol)) {
             return;
@@ -441,7 +441,7 @@ export const onBlockchainNotificationThunk = createThunk(
 export const onBlockchainDisconnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainDisconnectThunk`,
     (error: BlockchainError, { getState }) => {
-        const network = getNetwork(error.coin.shortcut.toLowerCase());
+        const network = getNetworkCompatible(error.coin.shortcut.toLowerCase());
         if (!network) return;
 
         const blockchain = selectBlockchainState(getState());

@@ -24,7 +24,7 @@ import {
     StackNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { getNetwork } from '@suite-common/wallet-utils';
+import { getNetworkCompatible } from '@suite-common/wallet-utils';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
@@ -135,7 +135,7 @@ export const SendOutputsScreen = ({
         if (account) dispatch(updateFeeInfoThunk(account.symbol));
     }, [account, dispatch]);
 
-    const network = getNetwork(account!.symbol);
+    const network = getNetworkCompatible(account!.symbol);
 
     if (!account || !networkFeeInfo || !device || !network) return null;
 

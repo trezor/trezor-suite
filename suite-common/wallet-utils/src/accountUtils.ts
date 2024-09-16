@@ -490,7 +490,7 @@ export const getAllAccounts = (deviceState: string | typeof undefined, accounts:
 /**
  * @deprecated use directly networks[symbol], you can import { networks } from '@suite-common/wallet-config'
  */
-export const getNetwork = (symbol: string): NetworkCompatible | null =>
+export const getNetworkCompatible = (symbol: string): NetworkCompatible | null =>
     networksCompatibility.find(c => c.symbol === symbol) || null;
 
 export const getAccountNetwork = ({
