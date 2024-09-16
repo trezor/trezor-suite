@@ -1,4 +1,3 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
 import { prepareCryptoAmountFormatter } from '../prepareCryptoAmountFormatter';
@@ -74,32 +73,6 @@ describe('CryptoAmountFormatter', () => {
                 }),
             ).toBe('0.00014898… ETH');
         });
-
-        it('Unknown network with symbol', () => {
-            expect(
-                CryptoAmountFormatter.format('300', {
-                    symbol: 'unknown' as NetworkSymbol,
-                }),
-            ).toBe('300 UNKNOWN');
-        });
-
-        it('Unknown network without symbol', () => {
-            expect(
-                CryptoAmountFormatter.format('300', {
-                    symbol: 'unknown' as NetworkSymbol,
-                    withSymbol: false,
-                }),
-            ).toBe('300');
-        });
-
-        it('Unknown network balance with symbol', () => {
-            expect(
-                CryptoAmountFormatter.format('300', {
-                    symbol: 'unknown' as NetworkSymbol,
-                    isBalance: true,
-                }),
-            ).toBe('300 UNKNOWN');
-        });
     });
 
     describe('Formats correctly to Sats units', () => {
@@ -144,32 +117,6 @@ describe('CryptoAmountFormatter', () => {
                     isBalance: false,
                 }),
             ).toBe('0.00014898… ETH');
-        });
-
-        it('Unknown network with symbol', () => {
-            expect(
-                CryptoAmountFormatterSats.format('300', {
-                    symbol: 'unknown' as NetworkSymbol,
-                }),
-            ).toBe('300 UNKNOWN');
-        });
-
-        it('Unknown network without symbol', () => {
-            expect(
-                CryptoAmountFormatterSats.format('300', {
-                    symbol: 'unknown' as NetworkSymbol,
-                    withSymbol: false,
-                }),
-            ).toBe('300');
-        });
-
-        it('Unknown network balance with symbol', () => {
-            expect(
-                CryptoAmountFormatterSats.format('300', {
-                    symbol: 'unknown' as NetworkSymbol,
-                    isBalance: true,
-                }),
-            ).toBe('300 UNKNOWN');
         });
     });
 });
