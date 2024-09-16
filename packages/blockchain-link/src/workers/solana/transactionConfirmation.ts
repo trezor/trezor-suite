@@ -19,10 +19,11 @@ const tryConfirmBySignatureStatus = async (
 
     let currentBlockHeight = await getCurrentBlockHeight();
     while (currentBlockHeight <= lastValidBlockHeight) {
-        const signatureStatus = await api.getSignatureStatus(signature);
+        const signatureStatuses = await api.getSignatureStatuses([signature]);
         if (
-            signatureStatus.value != null &&
-            signatureStatus.value.confirmationStatus === COMMITMENT
+            signatureStatuses.value.length === 1 &&
+            signatureStatuses.value[0] != null &&
+            signatureStatuses.value[0].confirmationStatus === COMMITMENT
         ) {
             return signature;
         }
