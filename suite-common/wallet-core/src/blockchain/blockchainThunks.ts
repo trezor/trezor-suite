@@ -1,5 +1,10 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { isNetworkSymbol, networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    getNetworkOptional,
+    isNetworkSymbol,
+    networksCompatibility,
+    NetworkSymbol,
+} from '@suite-common/wallet-config';
 import {
     findAccountDevice,
     findAccountsByDescriptor,
@@ -9,7 +14,6 @@ import {
     getAreSatoshisUsed,
     getBackendFromSettings,
     getCustomBackends,
-    getNetworkCompatible,
     isTrezorConnectBackendType,
     shouldUseIdentities,
     getAccountIdentity,
@@ -101,7 +105,7 @@ export const updateFeeInfoThunk = createThunk(
         const {
             selectors: { selectFeeInfo },
         } = extra;
-        const network = getNetworkCompatible(symbol.toLowerCase());
+        const network = getNetworkOptional(symbol.toLowerCase());
         if (!network) return;
         const blockchainInfo = selectNetworkBlockchainInfo(network.symbol)(getState());
         const feeInfo = selectFeeInfo(network.symbol)(getState());
@@ -348,7 +352,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
 export const onBlockchainConnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
     async (symbol: string, { dispatch }) => {
-        const network = getNetworkCompatible(symbol.toLowerCase());
+        const network = getNetworkOptional(symbol.toLowerCase());
         if (!network) return;
 
         await dispatch(
@@ -365,7 +369,7 @@ export const onBlockMinedThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockMinedThunk`,
     (block: BlockchainBlock, { dispatch }) => {
         const symbol = block.coin.shortcut.toLowerCase();
-        const network = getNetworkCompatible(symbol);
+        const network = getNetworkOptional(symbol);
 
         if (!isNetworkSymbol(symbol)) {
             return;
@@ -441,7 +445,7 @@ export const onBlockchainNotificationThunk = createThunk(
 export const onBlockchainDisconnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainDisconnectThunk`,
     (error: BlockchainError, { getState }) => {
-        const network = getNetworkCompatible(error.coin.shortcut.toLowerCase());
+        const network = getNetworkOptional(error.coin.shortcut.toLowerCase());
         if (!network) return;
 
         const blockchain = selectBlockchainState(getState());

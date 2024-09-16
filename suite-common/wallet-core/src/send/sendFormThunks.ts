@@ -16,7 +16,7 @@ import {
     PrecomposedTransactionFinalRbf,
 } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     hasNetworkFeatures,
     amountToSatoshi,
@@ -26,7 +26,6 @@ import {
     formatNetworkAmount,
     getPendingAccount,
     isCardanoTx,
-    getNetworkCompatible,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { Success } from '@trezor/connect';
@@ -512,7 +511,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         { getState, dispatch, rejectWithValue },
     ) => {
         const device = selectDevice(getState());
-        const selectedAccountNetwork = getNetworkCompatible(selectedAccount.symbol);
+        const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
         if (!device) return rejectWithValue('Device not found');
 
         // native RBF is available since FW 1.9.4/2.3.5
@@ -559,7 +558,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             !isCardanoTx(selectedAccount, enhancedPrecomposedTransaction) &&
             selectedAccount.networkType === 'ethereum' &&
             enhancedPrecomposedTransaction.token?.contract &&
-            selectedAccountNetwork?.chainId
+            selectedAccountNetwork.chainId
         ) {
             const isTokenKnown = await fetch(
                 `https://data.trezor.io/firmware/eth-definitions/chain-id/${

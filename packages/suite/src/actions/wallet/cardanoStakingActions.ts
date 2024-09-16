@@ -5,13 +5,10 @@ import { PendingStakeTx, PoolsResponse, CardanoNetwork } from 'src/types/wallet/
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { Dispatch, GetState } from 'src/types/suite';
 import { getUnixTime } from 'date-fns';
-import {
-    isPending,
-    getAccountTransactions,
-    getNetworkCompatible,
-} from '@suite-common/wallet-utils';
+import { isPending, getAccountTransactions } from '@suite-common/wallet-utils';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
 import { transactionsActions } from '@suite-common/wallet-core';
+import { getNetworkOptional } from '@suite-common/wallet-config';
 
 export type CardanoStakingAction =
     | { type: typeof CARDANO_STAKING.ADD_PENDING_STAKE_TX; pendingStakeTx: PendingStakeTx }
@@ -59,7 +56,7 @@ export const validatePendingTxOnBlock =
         // After sending staking tx (delegation or withdrawal) user needs to wait few blocks til the tx appears on the blockchain.
         // To prevent the user from sending multiple staking tx we need to track that we are waiting for confirmation for the tx that was already sent.
         // As a failsafe, we will reset `pendingStakeTx` after tx expires (ttl is set to 2 hours), allowing user to retry the action.
-        const network = getNetworkCompatible(block.coin.shortcut.toLowerCase());
+        const network = getNetworkOptional(block.coin.shortcut.toLowerCase());
         if (!network || network.networkType !== 'cardano') return;
 
         const accounts = getState().wallet.accounts.filter(

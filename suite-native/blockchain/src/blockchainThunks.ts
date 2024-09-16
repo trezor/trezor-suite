@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, isNetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import {
     blockchainActions,
     fetchAndUpdateAccountThunk,
@@ -9,7 +9,6 @@ import {
     subscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { getNetworkCompatible } from '@suite-common/wallet-utils';
 import { BlockchainNotification } from '@trezor/connect';
 
 const BLOCKCHAIN_MODULE_PREFIX = '@suite-native/blockchain';
@@ -67,7 +66,7 @@ export const syncAllAccountsWithBlockchainThunk = createThunk(
 export const onBlockchainConnectThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
     async ({ symbol }: { symbol: string }, { dispatch }) => {
-        const network = getNetworkCompatible(symbol.toLowerCase());
+        const network = getNetworkOptional(symbol.toLowerCase());
         if (!network) return;
 
         await dispatch(
