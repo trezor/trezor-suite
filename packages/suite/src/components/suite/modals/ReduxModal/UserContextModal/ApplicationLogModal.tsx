@@ -1,59 +1,56 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import { selectLogs } from '@suite-common/logger';
-import { Switch, Button, variables } from '@trezor/components';
+import {
+    Switch,
+    NewModal,
+    Card,
+    Paragraph,
+    Text,
+    Row,
+    Column,
+    H4,
+    variables,
+    useScrollShadow,
+} from '@trezor/components';
 
-import { ActionColumn, Modal, TextColumn, Translation } from 'src/components/suite';
-import { SectionItem } from 'src/components/suite/section';
+import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { getApplicationInfo, getApplicationLog, prettifyLog } from 'src/utils/suite/logsUtils';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
+
+const ScrollContainer = styled.div`
+    overflow: auto;
+`;
 
 const LogWrapper = styled.pre`
-    padding: 20px;
-    height: 380px;
+    padding: ${spacingsPx.md};
+    height: 350px;
     width: 100%;
-    overflow: auto;
-    background-color: ${({ theme }) => theme.legacy.BG_LIGHT_GREY};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
     text-align: left;
     word-break: break-all;
-    box-shadow: inset 0 0 6px -2px ${({ theme }) => theme.legacy.BG_GREY};
-    border-radius: 6px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        height: 365px;
+        height: 320px;
     }
 
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        height: 330px;
-    }
-`;
-
-const BalanceInfoSection = styled(SectionItem)`
-    margin-top: ${spacingsPx.md};
-
-    &:not(:first-child) {
-        > div {
-            border-top: 0;
-        }
+        height: 280px;
     }
 `;
 
 type ApplicationLogModalProps = { onCancel: () => void };
 
 export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
-    const htmlElement = useRef<HTMLPreElement>(null);
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
     const logs = useSelector(selectLogs);
-
     const state = useSelector(state => state);
+    const { ShadowTop, ShadowBottom, ShadowContainer, onScroll, scrollElementRef } =
+        useScrollShadow();
 
     const actionLog = getApplicationLog(logs, hideSensitiveInfo);
     const applicationInfo = getApplicationInfo(state, hideSensitiveInfo);
-
     const log = prettifyLog([applicationInfo, ...actionLog]);
 
     const download = () => {
@@ -70,34 +67,43 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
     };
 
     return (
-        <Modal
-            isCancelable
+        <NewModal
             onCancel={onCancel}
             heading={<Translation id="TR_LOG" />}
             description={<Translation id="LOG_DESCRIPTION" />}
             data-testid="@modal/application-log"
-            bottomBarComponents={
-                <Button variant="primary" onClick={download} data-testid="@log/export-button">
+            bottomContent={
+                <NewModal.Button onClick={download} data-testid="@log/export-button">
                     <Translation id="TR_EXPORT_TO_FILE" />
-                </Button>
+                </NewModal.Button>
             }
         >
-            <LogWrapper ref={htmlElement} data-testid="@log/content">
-                {log}
-            </LogWrapper>
+            <Card paddingType="none" margin={{ top: spacings.sm }} overflow="hidden">
+                <ShadowContainer>
+                    <ShadowTop backgroundColor="backgroundSurfaceElevation1" />
+                    <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
+                        <LogWrapper data-testid="@log/content">
+                            <Text typographyStyle="label">{log}</Text>
+                        </LogWrapper>
+                    </ScrollContainer>
+                    <ShadowBottom backgroundColor="backgroundSurfaceElevation1" />
+                </ShadowContainer>
+            </Card>
 
-            <BalanceInfoSection>
-                <TextColumn
-                    title={<Translation id="LOG_INCLUDE_BALANCE_TITLE" />}
-                    description={<Translation id="LOG_INCLUDE_BALANCE_DESCRIPTION" />}
+            <Row margin={{ top: spacings.xl }} gap={spacings.xxxxl}>
+                <Column gap={spacings.xxs} alignItems="flex-start">
+                    <H4>
+                        <Translation id="LOG_INCLUDE_BALANCE_TITLE" />
+                    </H4>
+                    <Paragraph variant="tertiary" typographyStyle="hint">
+                        <Translation id="LOG_INCLUDE_BALANCE_DESCRIPTION" />
+                    </Paragraph>
+                </Column>
+                <Switch
+                    isChecked={!hideSensitiveInfo}
+                    onChange={() => setHideSensitiveInfo(!hideSensitiveInfo)}
                 />
-                <ActionColumn>
-                    <Switch
-                        isChecked={!hideSensitiveInfo}
-                        onChange={() => setHideSensitiveInfo(!hideSensitiveInfo)}
-                    />
-                </ActionColumn>
-            </BalanceInfoSection>
-        </Modal>
+            </Row>
+        </NewModal>
     );
 };

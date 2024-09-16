@@ -1,9 +1,6 @@
-import styled from 'styled-components';
-
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { Button, Checkbox } from '@trezor/components';
-import { DialogModal } from '../Modal/DialogRenderer';
+import { H2, Paragraph, Card, Checkbox, NewModal } from '@trezor/components';
 import {
     DefinitionType,
     tokenDefinitionsActions,
@@ -14,10 +11,6 @@ import { useSelector } from 'src/hooks/suite';
 import { useState } from 'react';
 import { spacings } from '@trezor/theme';
 import { setFlag } from 'src/actions/suite/suiteActions';
-
-const StyledModal = styled(DialogModal)`
-    width: 600px;
-`;
 
 interface UnhideTokenModalProps {
     address: string;
@@ -48,34 +41,32 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
     };
 
     return (
-        <StyledModal
-            isCancelable
+        <NewModal
             onCancel={onCancel}
-            icon="warningTriangleLight"
-            iconVariant="warning"
-            bodyHeading={<Translation id="TR_UNHIDE_TOKEN_TITLE" />}
-            body={
+            icon="warning"
+            variant="warning"
+            bottomContent={
                 <>
-                    <Translation id="TR_UNHIDE_TOKEN_TEXT" />
-                    <Checkbox
-                        isChecked={checked}
-                        onClick={() => setChecked(!checked)}
-                        margin={{ top: spacings.md }}
-                    >
-                        <Translation id="TR_DO_NOT_SHOW_AGAIN" />
-                    </Checkbox>
-                </>
-            }
-            bottomBarComponents={
-                <>
-                    <Button variant="warning" onClick={onUnhide}>
+                    <NewModal.Button onClick={onUnhide}>
                         <Translation id="TR_UNHIDE" />
-                    </Button>
-                    <Button variant="tertiary" onClick={onCancel}>
+                    </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
-                    </Button>
+                    </NewModal.Button>
                 </>
             }
-        />
+        >
+            <H2>
+                <Translation id="TR_UNHIDE_TOKEN_TITLE" />
+            </H2>
+            <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
+                <Translation id="TR_UNHIDE_TOKEN_TEXT" />
+            </Paragraph>
+            <Card margin={{ top: spacings.xl }}>
+                <Checkbox isChecked={checked} onClick={() => setChecked(!checked)}>
+                    <Translation id="TR_DO_NOT_SHOW_AGAIN" />
+                </Checkbox>
+            </Card>
+        </NewModal>
     );
 };
