@@ -72,7 +72,7 @@ const selectDeviceAssetsWithBalances = memoize((state: AssetsRootState) => {
             localCurrency: fiatCurrencyCode,
             rates,
             // TODO: this should be removed once Trezor Suite Lite supports staking
-            shouldIncludeStaking: true,
+            shouldIncludeStaking: false,
         });
 
         return {
