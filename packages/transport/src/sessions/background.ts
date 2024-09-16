@@ -48,13 +48,6 @@ export class SessionsBackground extends TypedEmitter<{
     private locksTimeoutQueue: ReturnType<typeof setTimeout>[] = [];
     private lastSessionId = 0;
 
-    constructor({ signal }: { signal: AbortSignal }) {
-        super();
-        signal.addEventListener('abort', () => {
-            this.locksQueue.forEach(lock => clearTimeout(lock.id));
-        });
-    }
-
     public async handleMessage<M extends HandleMessageParams>(
         message: M,
     ): Promise<HandleMessageResponse<M>> {

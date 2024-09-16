@@ -42,7 +42,7 @@ const createTransportApi = (override = {}) =>
 
 export const createTestTransport = (apiMethods = {}) => {
     const { signal } = new AbortController();
-    const sessionsBackground = new SessionsBackground({ signal });
+    const sessionsBackground = new SessionsBackground();
     const sessionsClient = new SessionsClient({
         requestFn: params => sessionsBackground.handleMessage(params),
         registerBackgroundCallbacks: onDescriptorsCallback => {
