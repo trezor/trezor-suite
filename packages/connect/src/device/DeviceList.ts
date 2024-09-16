@@ -305,7 +305,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private async selectTransport([transport, ...rest]: Transport[]): Promise<Transport> {
-        const result = await transport.init().promise;
+        const result = await transport.init();
         if (result.success) return transport;
         else if (rest.length) return this.selectTransport(rest);
         else throw new Error(result.error);
@@ -333,7 +333,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
         // event until we read descriptors for the first time
-        const enumerateResult = await transport.enumerate().promise;
+        const enumerateResult = await transport.enumerate();
 
         if (!enumerateResult.success) {
             throw new Error(enumerateResult.error);
@@ -477,7 +477,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     // TODO this is fugly
     async enumerate(transport = this.transport) {
-        const res = await transport.enumerate().promise;
+        const res = await transport.enumerate();
 
         if (!res.success) {
             return;
