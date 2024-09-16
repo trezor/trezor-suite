@@ -1,2 +1,2 @@
 export * from './screens/ConnectPopupScreen';
-export * from './hooks/useConnectPopup';
+export * from './hooks/useConnectPopupNavigation';

@@ -17,7 +17,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 // TODO: will be necessary to handle if device is not connected/unlocked so we probably want to wait until user unlock device
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected
-export const useConnectPopup = () => {
+export const useConnectPopupNavigation = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const navigateToConnectPopup = useCallback(
@@ -32,6 +32,7 @@ export const useConnectPopup = () => {
         const navigateToInitalUrl = async () => {
             const currentUrl = await Linking.getInitialURL();
             if (currentUrl) {
+                // eslint-disable-next-line no-console
                 console.log('initial url', currentUrl);
                 navigateToConnectPopup(currentUrl);
             }
@@ -43,6 +44,7 @@ export const useConnectPopup = () => {
         // there could be when you open same deep link for second time and in that case it will be ignored
         // this could be probably handed by Linking.addEventListener
         const subscription = Linking.addEventListener('url', event => {
+            // eslint-disable-next-line no-console
             console.log('url event received', event.url);
             navigateToConnectPopup(event.url);
         });
