@@ -10075,7 +10075,6 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/settings": "workspace:*"
-    "@suite-native/tokens": "workspace:*"
     "@suite-native/video-assets": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"

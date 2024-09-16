@@ -1,5 +1,5 @@
 import { A, G, pipe } from '@mobily/ts-belt';
-import { memoize, memoizeWithArgs } from 'proxy-memoize';
+import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
     AccountsRootState,
@@ -18,7 +18,6 @@ import {
 import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
 import {
-    selectCoinDefinition,
     selectFilterKnownTokens,
     selectIsSpecificCoinDefinitionKnown,
     TokenDefinitionsRootState,
@@ -86,13 +85,6 @@ export const selectEthereumAccountTokenTransactions = memoizeWithArgs(
     { size: 500 },
 );
 
-export const selectEthereumTokenIsKnown = (
-    state: TokenDefinitionsRootState,
-    contract: TokenAddress,
-) => {
-    return selectIsSpecificCoinDefinitionKnown(state, 'eth', contract);
-};
-
 const selectAllAccountTokens = (
     state: AccountsRootState,
     accountKey: AccountKey,
@@ -110,7 +102,13 @@ export const selectAnyOfTokensIsKnown = (
     // It may be temping to reuse selectEthereumAccountsKnownTokens.length but this is faster
     const tokens = selectAllAccountTokens(state, ethereumAccountKey);
 
-    return A.any(tokens, token => selectEthereumTokenIsKnown(state, token.contract));
+    const result = A.any(tokens, token => {
+        const isKnown = selectIsSpecificCoinDefinitionKnown(state, 'eth', token.contract);
+
+        return isKnown;
+    });
+
+    return result;
 };
 
 const isNotZeroAmountTranfer = (tokenTranfer: TokenTransfer) =>
@@ -177,20 +175,6 @@ export const selectAccountOrTokenAccountTransactions = (
     ) as WalletAccountTransaction[];
 };
 
-export const selectUniqueEtheruemTokens = memoize((state: AccountsRootState & DeviceRootState) => {
-    const accounts = selectVisibleDeviceAccounts(state);
-
-    return pipe(
-        accounts,
-        A.filter(account => isEthereumAccountSymbol(account.symbol)),
-        A.map(account => account.tokens?.map(token => token.contract)),
-        A.flat,
-        // Don't use A.uniq(By) because it's slow for large arrays
-        t => Array.from(new Set(t)),
-        A.filter(tokenAddress => !!tokenAddress),
-    ) as TokenAddress[];
-});
-
 export const selectEthereumAccountsKnownTokens = memoizeWithArgs(
     (
         state: AccountsRootState & TokenDefinitionsRootState,
@@ -217,31 +201,16 @@ export const selectNumberOfEthereumAccountTokensWithFiatRates = (
     return tokens.length;
 };
 
-export const selectIsEthereumAccountWithTokensWithFiatRates = (
-    state: TokenDefinitionsRootState & AccountsRootState,
-    ethereumAccountKey: AccountKey,
-): boolean => {
-    return selectNumberOfEthereumAccountTokensWithFiatRates(state, ethereumAccountKey) > 0;
+export const selectHasDeviceAnyEthereumTokens = (
+    state: AccountsRootState & DeviceRootState & TokenDefinitionsRootState,
+) => {
+    const ethereumAccounts = selectVisibleDeviceAccounts(state).filter(account =>
+        isEthereumAccountSymbol(account.symbol),
+    );
+
+    return A.any(ethereumAccounts, account => {
+        const result = selectAnyOfTokensIsKnown(state, account.key);
+
+        return result;
+    });
 };
-
-export const selectNumberOfUniqueEthereumTokensPerDevice = memoize(
-    (state: AccountsRootState & DeviceRootState & TokenDefinitionsRootState) => {
-        const tokens = selectUniqueEtheruemTokens(state);
-
-        return pipe(
-            tokens,
-            A.filter(tokenAddress => !!selectCoinDefinition(state, 'eth', tokenAddress)),
-            A.length,
-        );
-    },
-);
-
-export const selectHasDeviceAnyEthereumTokens = memoize(
-    (state: AccountsRootState & DeviceRootState & TokenDefinitionsRootState) => {
-        const tokens = selectUniqueEtheruemTokens(state);
-
-        return A.some(tokens, tokenAddress =>
-            selectIsSpecificCoinDefinitionKnown(state, 'eth', tokenAddress),
-        );
-    },
-);

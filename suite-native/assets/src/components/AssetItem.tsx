@@ -20,10 +20,7 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
-import {
-    selectHasDeviceAnyTokens,
-    selectNumberOfUniqueTokensForCoinPerDevice,
-} from '@suite-native/tokens';
+import { selectHasDeviceAnyTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import {
@@ -39,7 +36,7 @@ type AssetItemProps = {
     onPress?: (symbol: NetworkSymbol) => void;
 };
 
-const numberOfTokensStyle = prepareNativeStyle(() => ({
+const tokenBadgeStyle = prepareNativeStyle(() => ({
     marginLeft: 10,
 }));
 
@@ -48,23 +45,6 @@ type NavigationType = TabToStackCompositeNavigationProp<
     AppTabsRoutes.HomeStack,
     RootStackParamList
 >;
-
-const TokenBadge = React.memo(({ networkSymbol }: { networkSymbol: NetworkSymbol }) => {
-    const numberOfTokens = useSelector(
-        (state: AccountsRootState & DeviceRootState & TokenDefinitionsRootState) =>
-            selectNumberOfUniqueTokensForCoinPerDevice(state, networkSymbol),
-    );
-    const { applyStyle } = useNativeStyles();
-
-    return (
-        <Badge
-            style={applyStyle(numberOfTokensStyle)}
-            elevation="1"
-            size="small"
-            label={<Translation id="accountList.numberOfTokens" values={{ numberOfTokens }} />}
-        />
-    );
-});
 
 const CryptoAmount = React.memo(({ network }: { network: NetworkSymbol }) => {
     const cryptoValue = useSelector((state: AssetsRootState) =>
@@ -103,6 +83,7 @@ const PercentageIcon = React.memo(({ network }: { network: NetworkSymbol }) => {
 });
 
 export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetItemProps) => {
+    const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationType>();
     const { NetworkNameFormatter } = useFormatters();
     const accountsKeysForNetworkSymbol = useSelectorDeepComparison(
@@ -142,7 +123,14 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
                         {accountsPerAsset}
                     </Text>
 
-                    {hasAnyTokens && <TokenBadge networkSymbol={cryptoCurrencySymbol} />}
+                    {hasAnyTokens && (
+                        <Badge
+                            style={applyStyle(tokenBadgeStyle)}
+                            elevation="1"
+                            size="small"
+                            label={<Translation id="generic.tokens" />}
+                        />
+                    )}
                 </>
             }
             mainValue={<FiatAmount network={cryptoCurrencySymbol} />}

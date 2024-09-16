@@ -6,30 +6,10 @@ import {
     selectAnyOfTokensIsKnown,
     selectHasDeviceAnyEthereumTokens,
     selectNumberOfEthereumAccountTokensWithFiatRates,
-    selectNumberOfUniqueEthereumTokensPerDevice,
 } from './ethereumTokensSelectors';
 import { isCoinWithTokens } from './utils';
 
 export type TokensRootState = AccountsRootState & DeviceRootState & TokenDefinitionsRootState;
-
-export const selectNumberOfUniqueTokensForCoinPerDevice = (
-    state: TokensRootState,
-    coin: NetworkSymbol,
-) => {
-    if (!isCoinWithTokens(coin)) return 0;
-
-    switch (coin) {
-        case 'eth':
-            const tokensNumber = selectNumberOfUniqueEthereumTokensPerDevice(state);
-
-            return tokensNumber;
-        default:
-            // Exhaustive check, all coin types in NETWORKS_WITH_TOKENS should be handled above
-            coin satisfies never;
-
-            return 0;
-    }
-};
 
 export const selectHasDeviceAnyTokens = (state: TokensRootState, coin: NetworkSymbol) => {
     if (!isCoinWithTokens(coin)) return false;
