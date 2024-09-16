@@ -1,7 +1,10 @@
 import { networks, networksCompatibility } from './networksConfig';
 import { AccountType, Network, NetworkFeature, Networks, NetworkSymbol } from './types';
 
-const networksCollection: Network[] = Object.values(networks);
+/**
+ * array from `networks` as a `Network[]` type instead of inferred type
+ */
+export const networksCollection: Network[] = Object.values(networks);
 
 /**
  * @deprecated See `networksCompatibility`
@@ -30,10 +33,6 @@ export const getMainnets = (debug = false, bnb = false) =>
 
 export const getTestnets = (debug = false) =>
     networksCollection.filter(n => n.testnet === true && (!n.isDebugOnlyNetwork || debug));
-
-export const ethereumTypeNetworkSymbols = networksCollection
-    .filter(n => n.networkType === 'ethereum')
-    .map(n => n.symbol);
 
 export const getTestnetSymbols = () => getTestnets().map(n => n.symbol);
 
