@@ -11,7 +11,6 @@ import { spacings } from '@trezor/theme';
 import messages from 'src/support/messages';
 
 const ImageWrapper = styled.div`
-    mix-blend-mode: multiply;
     display: flex;
     justify-content: center;
 `;
