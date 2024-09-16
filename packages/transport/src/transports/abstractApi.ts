@@ -32,15 +32,18 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         this.api = api;
     }
 
-    public init() {
-        return this.scheduleAction(async () => {
-            const handshakeRes = await this.sessionsClient.handshake();
-            this.stopped = !handshakeRes.success;
+    public init({ signal }: AbstractTransportMethodParams<'init'> = {}) {
+        return this.scheduleAction(
+            async () => {
+                const handshakeRes = await this.sessionsClient.handshake();
+                this.stopped = !handshakeRes.success;
 
-            return handshakeRes.success
-                ? this.success(undefined)
-                : this.unknownError('handshake error');
-        });
+                return handshakeRes.success
+                    ? this.success(undefined)
+                    : this.unknownError('handshake error');
+            },
+            { signal },
+        );
     }
 
     public listen() {
@@ -68,27 +71,30 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         return this.success(undefined);
     }
 
-    public enumerate() {
-        return this.scheduleAction(async signal => {
-            // enumerate usb api
-            const enumerateResult = await this.api.enumerate(signal);
+    public enumerate({ signal }: AbstractTransportMethodParams<'enumerate'> = {}) {
+        return this.scheduleAction(
+            async signal => {
+                // enumerate usb api
+                const enumerateResult = await this.api.enumerate(signal);
 
-            if (!enumerateResult.success) {
-                return enumerateResult;
-            }
-            // partial descriptors with path
-            const descriptors = enumerateResult.payload;
+                if (!enumerateResult.success) {
+                    return enumerateResult;
+                }
+                // partial descriptors with path
+                const descriptors = enumerateResult.payload;
 
-            // inform sessions background about occupied paths and get descriptors back
-            const enumerateDoneResponse = await this.sessionsClient.enumerateDone({
-                descriptors,
-            });
+                // inform sessions background about occupied paths and get descriptors back
+                const enumerateDoneResponse = await this.sessionsClient.enumerateDone({
+                    descriptors,
+                });
 
-            return this.success(enumerateDoneResponse.payload.descriptors);
-        });
+                return this.success(enumerateDoneResponse.payload.descriptors);
+            },
+            { signal },
+        );
     }
 
-    public acquire({ input }: AbstractTransportMethodParams<'acquire'>) {
+    public acquire({ input, signal }: AbstractTransportMethodParams<'acquire'>) {
         return this.scheduleAction(
             async signal => {
                 const { path } = input;
@@ -126,44 +132,47 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     delete this.listenPromise[path];
                 });
             },
-            undefined,
+            { signal },
             [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION, ERRORS.SESSION_WRONG_PREVIOUS],
         );
     }
 
-    public release({ path, session, onClose }: AbstractTransportMethodParams<'release'>) {
-        return this.scheduleAction(async () => {
-            if (this.listening) {
-                this.releaseUnconfirmed[path] = session;
-                this.listenPromise[path] = createDeferred();
-            }
-            const releaseIntentResponse = await this.sessionsClient.releaseIntent({
-                session,
-            });
-
-            if (!releaseIntentResponse.success) {
-                return this.error({ error: releaseIntentResponse.error });
-            }
-
-            const releasePromise = this.releaseDevice(releaseIntentResponse.payload.path);
-            if (onClose) return this.success(undefined);
-
-            await releasePromise;
-
-            await this.sessionsClient.releaseDone({
-                path: releaseIntentResponse.payload.path,
-            });
-
-            if (!this.listenPromise[path]) {
-                return this.success(undefined);
-            }
-
-            return this.listenPromise[path].promise
-                .then(() => this.success(undefined))
-                .finally(() => {
-                    delete this.listenPromise[path];
+    public release({ path, session, onClose, signal }: AbstractTransportMethodParams<'release'>) {
+        return this.scheduleAction(
+            async () => {
+                if (this.listening) {
+                    this.releaseUnconfirmed[path] = session;
+                    this.listenPromise[path] = createDeferred();
+                }
+                const releaseIntentResponse = await this.sessionsClient.releaseIntent({
+                    session,
                 });
-        });
+
+                if (!releaseIntentResponse.success) {
+                    return this.error({ error: releaseIntentResponse.error });
+                }
+
+                const releasePromise = this.releaseDevice(releaseIntentResponse.payload.path);
+                if (onClose) return this.success(undefined);
+
+                await releasePromise;
+
+                await this.sessionsClient.releaseDone({
+                    path: releaseIntentResponse.payload.path,
+                });
+
+                if (!this.listenPromise[path]) {
+                    return this.success(undefined);
+                }
+
+                return this.listenPromise[path].promise
+                    .then(() => this.success(undefined))
+                    .finally(() => {
+                        delete this.listenPromise[path];
+                    });
+            },
+            { signal },
+        );
     }
 
     public call({
@@ -171,6 +180,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         name,
         data,
         protocol: customProtocol,
+        signal,
     }: AbstractTransportMethodParams<'call'>) {
         return this.scheduleAction(
             async signal => {
@@ -228,11 +238,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 return readResult;
             },
-            { timeout: undefined },
+            { signal, timeout: undefined },
         );
     }
 
-    public send({ data, session, name, protocol }: AbstractTransportMethodParams<'send'>) {
+    public send({ data, session, name, protocol, signal }: AbstractTransportMethodParams<'send'>) {
         return this.scheduleAction(
             async signal => {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
@@ -262,13 +272,14 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 return sendResult;
             },
-            { timeout: undefined },
+            { signal, timeout: undefined },
         );
     }
 
     public receive({
         session,
         protocol: customProtocol,
+        signal,
     }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(
             async signal => {
@@ -296,7 +307,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 return message;
             },
-            { timeout: undefined },
+            { signal, timeout: undefined },
         );
     }
 

@@ -13,7 +13,7 @@ import { MessageFromTrezor } from '@trezor/protobuf';
 import {
     Session,
     Descriptor,
-    AbortableCall,
+    AbortableParam,
     AsyncResultWithTypedError,
     ResultWithTypedError,
     Success,
@@ -89,14 +89,16 @@ type ReadWriteError =
     | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
     | typeof ERRORS.INTERFACE_DATA_TRANSFER;
 
-export abstract class AbstractTransport extends TypedEmitter<{
+class TransportEmitter extends TypedEmitter<{
     [TRANSPORT.UPDATE]: DeviceDescriptorDiff;
     [TRANSPORT.ERROR]:
         | typeof ERRORS.HTTP_ERROR // most common error - bridge was killed
         // probably never happens, wrong shape of data came from bridge
         | typeof ERRORS.WRONG_RESULT_TYPE
         | typeof ERRORS.UNEXPECTED_ERROR;
-}> {
+}> {}
+
+export abstract class AbstractTransport extends TransportEmitter {
     public abstract name:
         | 'BridgeTransport'
         | 'NodeUsbTransport'
@@ -166,28 +168,18 @@ export abstract class AbstractTransport extends TypedEmitter<{
      */
     protected logger?: Logger;
 
-    constructor(params: AbstractTransportParams) {
-        const { messages, signal, logger } = params || {};
-
+    constructor({ messages, logger }: AbstractTransportParams) {
         super();
         this.descriptors = [];
         this.messages = protobuf.Root.fromJSON(messages || {});
-
         this.abortController = new AbortController();
-
-        const abort = () => this.abortController.abort();
-        this.abortController.signal.addEventListener('abort', () =>
-            signal.removeEventListener('abort', abort),
-        );
-        signal.addEventListener('abort', abort);
-
         this.logger = logger;
     }
 
     /**
      * Tries to initiate transport. Transport might not be available e.g. bridge not running.
      */
-    abstract init(): AbortableCall<
+    abstract init(params?: AbortableParam): AsyncResultWithTypedError<
         undefined,
         // webusb only
         | typeof ERRORS.SESSION_BACKGROUND_TIMEOUT
@@ -215,7 +207,9 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * List Trezor devices
      */
-    abstract enumerate(): AbortableCall<
+    abstract enumerate(
+        params?: AbortableParam,
+    ): AsyncResultWithTypedError<
         Descriptor[],
         | typeof ERRORS.HTTP_ERROR
         | typeof ERRORS.WRONG_RESULT_TYPE
@@ -228,7 +222,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * Acquire session
      */
-    abstract acquire({ input }: { input: AcquireInput }): AbortableCall<
+    abstract acquire(params: { input: AcquireInput } & AbortableParam): AsyncResultWithTypedError<
         Session,
         // webusb
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
@@ -249,7 +243,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * Release session
      */
-    abstract release({ path, session, onClose }: ReleaseInput): AbortableCall<
+    abstract release(params: ReleaseInput & AbortableParam): AsyncResultWithTypedError<
         void,
         | typeof ERRORS.SESSION_NOT_FOUND
         // bridge
@@ -277,32 +271,38 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * Encode data and write it to transport layer
      */
-    abstract send(params: {
-        path?: string;
-        session: Session;
-        name: string;
-        data: Record<string, unknown>;
-        protocol?: TransportProtocol;
-    }): AbortableCall<undefined, ReadWriteError>;
+    abstract send(
+        params: {
+            path?: string;
+            session: Session;
+            name: string;
+            data: Record<string, unknown>;
+            protocol?: TransportProtocol;
+        } & AbortableParam,
+    ): AsyncResultWithTypedError<undefined, ReadWriteError>;
 
     /**
      * Only read from transport
      */
-    abstract receive(params: {
-        path?: string;
-        session: Session;
-        protocol?: TransportProtocol;
-    }): AbortableCall<MessageFromTrezor, ReadWriteError>;
+    abstract receive(
+        params: {
+            path?: string;
+            session: Session;
+            protocol?: TransportProtocol;
+        } & AbortableParam,
+    ): AsyncResultWithTypedError<MessageFromTrezor, ReadWriteError>;
 
     /**
      * Send and read after that
      */
-    abstract call(params: {
-        session: Session;
-        name: string;
-        data: Record<string, unknown>;
-        protocol?: TransportProtocol;
-    }): AbortableCall<MessageFromTrezor, ReadWriteError>;
+    abstract call(
+        params: {
+            session: Session;
+            name: string;
+            data: Record<string, unknown>;
+            protocol?: TransportProtocol;
+        } & AbortableParam,
+    ): AsyncResultWithTypedError<MessageFromTrezor, ReadWriteError>;
 
     /**
      * Stop transport = remove all listeners + try to release session + cancel all requests
@@ -451,45 +451,38 @@ export abstract class AbstractTransport extends TypedEmitter<{
         return unknownError(typeof err !== 'string' ? err : new Error(err), expectedErrors);
     };
 
-    /**
-     * Create a new instance of AbortController which is also aborted by global AbortController
-     */
-    private createLocalAbortController = () => {
-        const localAbortController = new AbortController();
-        const abort = () => localAbortController.abort();
-        localAbortController.signal.addEventListener('abort', () => {
-            this.abortController.signal.removeEventListener('abort', abort);
-        });
-        this.abortController.signal.addEventListener('abort', abort);
+    private mergeAbort(signal?: AbortSignal) {
+        if (!signal) {
+            return { signal: this.abortController.signal, clear: () => {} };
+        }
+        const controller = new AbortController();
+        const onAbort = () => controller.abort();
+        signal.addEventListener('abort', onAbort);
+        this.abortController.signal.addEventListener('abort', onAbort);
+        const clear = () => {
+            signal.removeEventListener('abort', onAbort);
+            this.abortController.signal.removeEventListener('abort', onAbort);
+        };
 
-        return { signal: localAbortController.signal, abort };
-    };
+        return { signal: controller.signal, clear };
+    }
 
     protected scheduleAction = <T, E extends AnyError = never>(
         action: ScheduledAction<T>,
         params?: ScheduleActionParams,
         errors: E[] = [],
     ) => {
-        const { signal, abort } = this.createLocalAbortController();
+        const { signal, clear } = this.mergeAbort(params?.signal);
 
-        return {
-            promise: scheduleAction(action, {
-                signal,
-                timeout: ACTION_TIMEOUT,
-                ...params,
-            })
-                .catch(err =>
-                    unknownError(err, [
-                        ERRORS.ABORTED_BY_TIMEOUT,
-                        ERRORS.ABORTED_BY_SIGNAL,
-                        ...errors,
-                    ]),
-                )
-                .finally(() => {
-                    this.abortController.signal.removeEventListener('abort', abort);
-                }),
-            abort,
-        };
+        return scheduleAction(action, {
+            timeout: ACTION_TIMEOUT,
+            ...params,
+            signal,
+        })
+            .catch(err =>
+                unknownError(err, [ERRORS.ABORTED_BY_TIMEOUT, ERRORS.ABORTED_BY_SIGNAL, ...errors]),
+            )
+            .finally(clear);
     };
 }
 

@@ -92,27 +92,30 @@ export class BridgeTransport extends AbstractTransport {
         this.latestVersion = latestVersion;
     }
 
-    public init() {
-        return this.scheduleAction(async signal => {
-            const response = await this.post('/', {
-                signal,
-            });
+    public init({ signal }: AbstractTransportMethodParams<'init'> = {}) {
+        return this.scheduleAction(
+            async signal => {
+                const response = await this.post('/', {
+                    signal,
+                });
 
-            if (!response.success) {
-                return response;
-            }
+                if (!response.success) {
+                    return response;
+                }
 
-            this.version = response.payload.version;
+                this.version = response.payload.version;
 
-            if (this.latestVersion) {
-                this.isOutdated = versionUtils.isNewer(this.latestVersion, this.version);
-            }
-            this.useProtocolMessages = !!response.payload.protocolMessages;
+                if (this.latestVersion) {
+                    this.isOutdated = versionUtils.isNewer(this.latestVersion, this.version);
+                }
+                this.useProtocolMessages = !!response.payload.protocolMessages;
 
-            this.stopped = false;
+                this.stopped = false;
 
-            return this.success(undefined);
-        });
+                return this.success(undefined);
+            },
+            { signal },
+        );
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L373
@@ -155,12 +158,12 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L235
-    public enumerate() {
-        return this.scheduleAction(signal => this.post('/enumerate', { signal }));
+    public enumerate({ signal }: AbstractTransportMethodParams<'enumerate'> = {}) {
+        return this.scheduleAction(signal => this.post('/enumerate', { signal }), { signal });
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L420
-    public acquire({ input }: AbstractTransportMethodParams<'acquire'>) {
+    public acquire({ input, signal }: AbstractTransportMethodParams<'acquire'>) {
         return this.scheduleAction(
             async signal => {
                 const previous = input.previous == null ? 'null' : input.previous;
@@ -200,38 +203,41 @@ export class BridgeTransport extends AbstractTransport {
                     delete this.listenPromise[input.path];
                 });
             },
-            undefined,
+            { signal },
             [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION, ERRORS.SESSION_WRONG_PREVIOUS],
         );
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L354
-    public release({ path, session, onClose }: AbstractTransportMethodParams<'release'>) {
-        return this.scheduleAction(signal => {
-            if (this.listening && !onClose) {
-                this.releaseUnconfirmed[path] = session;
-                this.listenPromise[path] = createDeferred();
-            }
+    public release({ path, session, onClose, signal }: AbstractTransportMethodParams<'release'>) {
+        return this.scheduleAction(
+            signal => {
+                if (this.listening && !onClose) {
+                    this.releaseUnconfirmed[path] = session;
+                    this.listenPromise[path] = createDeferred();
+                }
 
-            const releasePromise = this.post('/release', {
-                params: session,
-                signal,
-            });
-
-            if (onClose) {
-                return Promise.resolve(this.success(undefined));
-            }
-
-            if (!this.listenPromise[path]) {
-                return releasePromise;
-            }
-
-            return this.listenPromise[path].promise
-                .then(() => this.success(undefined))
-                .finally(() => {
-                    delete this.listenPromise[path];
+                const releasePromise = this.post('/release', {
+                    params: session,
+                    signal,
                 });
-        });
+
+                if (onClose) {
+                    return Promise.resolve(this.success(undefined));
+                }
+
+                if (!this.listenPromise[path]) {
+                    return releasePromise;
+                }
+
+                return this.listenPromise[path].promise
+                    .then(() => this.success(undefined))
+                    .finally(() => {
+                        delete this.listenPromise[path];
+                    });
+            },
+            { signal },
+        );
     }
 
     public releaseDevice() {
@@ -257,6 +263,7 @@ export class BridgeTransport extends AbstractTransport {
         name,
         data,
         protocol: customProtocol,
+        signal,
     }: AbstractTransportMethodParams<'call'>) {
         return this.scheduleAction(
             async signal => {
@@ -282,7 +289,7 @@ export class BridgeTransport extends AbstractTransport {
                     protocol,
                 );
             },
-            { timeout: undefined },
+            { signal, timeout: undefined },
         );
     }
 
@@ -291,31 +298,36 @@ export class BridgeTransport extends AbstractTransport {
         name,
         data,
         protocol: customProtocol,
+        signal,
     }: AbstractTransportMethodParams<'send'>) {
-        return this.scheduleAction(async signal => {
-            const protocol = this.getProtocol(customProtocol);
-            const bytes = buildMessage({
-                messages: this.messages,
-                name,
-                data,
-                encode: protocol.encode,
-            });
-            const response = await this.post('/post', {
-                params: session,
-                body: this.getRequestBody(bytes, protocol),
-                signal,
-            });
-            if (!response.success) {
-                return response;
-            }
+        return this.scheduleAction(
+            async signal => {
+                const protocol = this.getProtocol(customProtocol);
+                const bytes = buildMessage({
+                    messages: this.messages,
+                    name,
+                    data,
+                    encode: protocol.encode,
+                });
+                const response = await this.post('/post', {
+                    params: session,
+                    body: this.getRequestBody(bytes, protocol),
+                    signal,
+                });
+                if (!response.success) {
+                    return response;
+                }
 
-            return this.success(undefined);
-        });
+                return this.success(undefined);
+            },
+            { signal },
+        );
     }
 
     public receive({
         session,
         protocol: customProtocol,
+        signal,
     }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(
             async signal => {
@@ -336,7 +348,7 @@ export class BridgeTransport extends AbstractTransport {
                     protocol,
                 );
             },
-            { timeout: undefined },
+            { signal, timeout: undefined },
         );
     }
 

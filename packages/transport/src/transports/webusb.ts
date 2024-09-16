@@ -1,7 +1,7 @@
 import { AbstractTransport, AbstractTransportParams } from './abstract';
 
 import { WRONG_ENVIRONMENT } from '../errors';
-import { empty, emptyAbortable, emptySync } from '../utils/resultEmpty';
+import { empty, emptySync } from '../utils/resultEmpty';
 
 // this class loads in node environment only in case of accidental use of WebusbTransport
 export class WebUsbTransport extends AbstractTransport {
@@ -12,13 +12,13 @@ export class WebUsbTransport extends AbstractTransport {
         console.error(WRONG_ENVIRONMENT);
     }
 
-    init = emptyAbortable;
-    acquire = emptyAbortable;
-    enumerate = emptyAbortable;
-    call = emptyAbortable;
-    receive = emptyAbortable;
-    send = emptyAbortable;
-    release = emptyAbortable;
+    init = empty;
+    acquire = empty;
+    enumerate = empty;
+    call = empty;
+    receive = empty;
+    send = empty;
+    release = empty;
     stop = empty;
     releaseDevice = empty;
     listen = emptySync;
