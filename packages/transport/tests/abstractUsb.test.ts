@@ -47,13 +47,11 @@ class TestUsbTransport extends AbstractApiTransport {
         messages,
         api,
         sessionsClient,
-        signal,
     }: ConstructorParameters<typeof AbstractApiTransport>[0]) {
         super({
             messages,
             api,
             sessionsClient,
-            signal,
         });
     }
 }
@@ -88,7 +86,6 @@ const initTest = async () => {
         api: testUsbApi,
         sessionsClient,
         messages,
-        signal: abortController.signal,
     });
     await transport.init();
 
@@ -125,7 +122,6 @@ describe('Usb', () => {
             const transport = new TestUsbTransport({
                 api: testUsbApi,
                 sessionsClient,
-                signal: new AbortController().signal,
             });
 
             // there are no loaded messages
@@ -157,7 +153,6 @@ describe('Usb', () => {
             const transport = new TestUsbTransport({
                 api: testUsbApi,
                 sessionsClient,
-                signal: abortController.signal,
             });
 
             await transport.init();

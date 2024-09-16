@@ -48,7 +48,6 @@ export type DeviceDescriptorDiff = DescriptorDiffItem[];
 
 export interface AbstractTransportParams {
     messages?: Record<string, any>;
-    signal: AbortSignal;
     logger?: Logger;
     debugLink?: boolean;
 }
