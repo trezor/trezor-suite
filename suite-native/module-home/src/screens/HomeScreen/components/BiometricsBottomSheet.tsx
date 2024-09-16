@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectIsDeviceAuthorized } from '@suite-common/wallet-core';
+import {
+    selectIsDeviceAuthorized,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
 import { BottomSheet, Box, Button, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -43,24 +46,30 @@ export const BiometricsBottomSheet = () => {
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const { toggleBiometricsOption } = useBiometricsSettings();
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
+
+    const isPortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
     const isCoinEnablingInitFinished = useSelector(selectIsCoinEnablingInitFinished);
     const [isCoinEnablingActive] = useFeatureFlag(FeatureFlag.IsCoinEnablingActive);
 
     const [isVisible, setIsVisible] = useState(false);
-
-    // if coin enabling is active, we need to wait for it to finish before showing the biometrics modal
-    const isCoinEnablingSetupFinished = isCoinEnablingActive ? isCoinEnablingInitFinished : true;
 
     useEffect(() => {
         let isMounted = true;
         let timerId: ReturnType<typeof setTimeout>;
         const checkBiometrics = async () => {
             const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
-            if (
-                isBiometricsAvailable &&
-                !isBiometricsOptionEnabled &&
-                isCoinEnablingSetupFinished
-            ) {
+
+            // if coin enabling is active, we need to wait for it to finish before showing the biometrics modal
+            const isCoinEnablingSetupFinished = isCoinEnablingActive
+                ? isCoinEnablingInitFinished
+                : true;
+
+            // if real device is authorized, it is ready only if coin enabling setup was finished.
+            // if no real device is authorized, set to true
+            const isReadyWithCoinEnabling =
+                isDeviceAuthorized && !isPortfolioTracker ? isCoinEnablingSetupFinished : true;
+
+            if (isBiometricsAvailable && !isBiometricsOptionEnabled && isReadyWithCoinEnabling) {
                 timerId = setTimeout(() => {
                     if (isMounted) {
                         setIsVisible(true);
@@ -77,7 +86,13 @@ export const BiometricsBottomSheet = () => {
             clearTimeout(timerId);
             isMounted = false;
         };
-    }, [isBiometricsOptionEnabled, isDeviceAuthorized, isCoinEnablingSetupFinished]);
+    }, [
+        isBiometricsOptionEnabled,
+        isCoinEnablingActive,
+        isCoinEnablingInitFinished,
+        isDeviceAuthorized,
+        isPortfolioTracker,
+    ]);
 
     const handleClose = () => {
         setIsVisible(false);
