@@ -19,7 +19,7 @@ import { AssetFiatBalance } from '@suite-common/assets';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { AssetTable, AssetTableRowType } from './AssetTable/AssetTable';
-import { networks, Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
 const InfoMessage = styled.div`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
@@ -94,7 +94,7 @@ export const AssetsView = () => {
 
     const assetsData: AssetTableRowType[] = assetNetworkSymbols
         .map(symbol => {
-            const network: Network = networks[symbol];
+            const network = getNetwork(symbol);
             if (!network) {
                 console.error('unknown network');
 
