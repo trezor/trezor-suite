@@ -164,7 +164,11 @@ export class CoreInPopup implements ConnectFactoryDependencies {
                     this._popupManager.clear();
                 }
 
-                return response;
+                return {
+                    success: response.success,
+                    payload: response.payload,
+                    device: response.device,
+                };
             }
 
             throw ERRORS.TypedError('Method_NoResponse');

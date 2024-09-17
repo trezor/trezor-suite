@@ -667,7 +667,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return response.message;
     }
 
-    _updateFeatures(feat: Features) {
+    private _updateFeatures(feat: Features) {
         const capabilities = parseCapabilities(feat);
         feat.capabilities = capabilities;
         // GetFeatures doesn't return 'session_id'

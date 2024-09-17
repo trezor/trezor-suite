@@ -47,6 +47,7 @@ export const parseMessage = <T extends CoreRequestMessage | CoreEventMessage = n
         event: messageData.event,
         type: messageData.type,
         payload: messageData.payload,
+        device: messageData.device,
     };
 
     if (typeof messageData.id === 'number') {

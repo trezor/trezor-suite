@@ -51,8 +51,15 @@ describe('TrezorConnect passphrase', () => {
             useEmptyPassphrase: true,
             path: XPUB_PATH,
         });
+        if (!xpub.success) {
+            throw new Error(`getPublicKey exception: ${xpub.payload.error}`);
+        }
         expect(xpub.payload).toMatchObject({
             xpub: 'xpub6DDUPHpUo4pcy43iJeZjbSVWGav1SMMmuWdMHiGtkK8rhKmfbomtkwW6GKs1GGAKehT6QRocrmda3WWxXawpjmwaUHfFRXuKrXSapdckEYF',
+        });
+        expect(xpub.device).toMatchObject({
+            instance: 0,
+            state: walletDefault.payload._state,
         });
 
         // get state of walletA using passphrase "a"
@@ -73,8 +80,15 @@ describe('TrezorConnect passphrase', () => {
             },
             path: XPUB_PATH,
         });
+        if (!xpubA.success) {
+            throw new Error(`getPublicKey A exception: ${xpubA.payload.error}`);
+        }
         expect(xpubA.payload).toMatchObject({
             xpub: 'xpub6CixwCVCacLWy2pdyzvcWATbm8cHRqLkmC3B335NzEVx3DBMG8mhoqyJzm62Qkv3UyN4haP7xnihe7ZR134vVGY8pjAHtGgiyD139Ro29N8',
+        });
+        expect(xpubA.device).toMatchObject({
+            instance: 1,
+            state: walletA.payload._state,
         });
 
         // get state of walletB using passphrase "b"
@@ -94,8 +108,15 @@ describe('TrezorConnect passphrase', () => {
             },
             path: XPUB_PATH,
         });
+        if (!xpubB.success) {
+            throw new Error(`getPublicKey B exception: ${xpubB.payload.error}`);
+        }
         expect(xpubB.payload).toMatchObject({
             xpub: 'xpub6CUsAXLNQXX9oGjwXi2EjL1Hp8BMPSKXsgdRHv5pgPoqb9CxncThcup7YAsbYcKMgRqDbedLCNUWzD7JhPVsEc82yYz15AYR35UGiUkXtWa',
+        });
+        expect(xpubB.device).toMatchObject({
+            instance: 2,
+            state: walletB.payload._state,
         });
 
         // generate addresses from 3 different wallets in random order using same derivation path

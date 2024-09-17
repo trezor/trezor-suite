@@ -3,12 +3,14 @@
 import { Type, TSchema, Static } from '@trezor/schema-utils';
 import { DeviceState } from './device';
 
+export interface DeviceIdentity {
+    path?: string;
+    state?: string | DeviceState;
+    instance?: number;
+}
+
 export interface CommonParams {
-    device?: {
-        path?: string;
-        state?: string | DeviceState;
-        instance?: number;
-    };
+    device?: DeviceIdentity;
     useEmptyPassphrase?: boolean;
     useEventListener?: boolean; // this param is set automatically in factory
     allowSeedlessDevice?: boolean;
@@ -44,7 +46,11 @@ export interface Success<T> {
     payload: T;
 }
 
-export type Response<T> = Promise<Success<T> | Unsuccessful>;
+export interface SuccessWithDevice<T> extends Success<T> {
+    device?: DeviceIdentity;
+}
+
+export type Response<T> = Promise<SuccessWithDevice<T> | Unsuccessful>;
 
 export type DerivationPath = string | number[];
 export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number())], {
