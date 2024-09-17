@@ -75,6 +75,10 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
         selectAreSatsAmountUnit: mockSelector('selectAreSatsAmountUnit', false),
         selectEnabledNetworks: mockSelector('selectEnabledNetworks', ['btc', 'test']),
+        selectTokenDefinitionsEnabledNetworks: mockSelector(
+            'selectTokenDefinitonsEnabledNetworks',
+            ['eth'],
+        ),
         selectLocalCurrency: mockSelector('selectLocalCurrency', 'usd'),
         selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
         selectDebugSettings: mockSelector('selectDebugSettings', {

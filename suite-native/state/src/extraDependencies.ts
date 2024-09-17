@@ -32,6 +32,8 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         // using all enabled networks even those current device does not support,
         // otherwise disableAccountsThunk might erase accounts not supported by current device
         selectEnabledNetworks: selectEnabledDiscoveryNetworkSymbols,
+        // todo: this is temporary solution to make token definitions work on native in portfolio tracker
+        selectTokenDefinitionsEnabledNetworks: () => ['eth'],
         selectBitcoinAmountUnit: selectBitcoinUnits,
         selectAreSatsAmountUnit,
         selectLocalCurrency: selectFiatCurrencyCode,

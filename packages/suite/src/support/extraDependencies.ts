@@ -75,6 +75,8 @@ export const extraDependencies: ExtraDependencies = {
         selectAreSatsAmountUnit: (state: AppState) =>
             state.wallet.settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI,
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
+        selectTokenDefinitionsEnabledNetworks: (state: AppState) =>
+            state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
