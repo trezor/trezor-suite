@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     PushTransactionError,
     deviceActions,
@@ -22,7 +23,7 @@ import {
     FormState,
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { getNetworkCompatible, hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
@@ -140,9 +141,9 @@ export const calculateMaxAmountWithNormalFeeThunk = createThunk<
         if (!account) throw new Error('Account not found.');
 
         const networkFeeInfo = selectNetworkFeeInfo(getState(), account.symbol);
-        const network = getNetworkCompatible(account.symbol);
+        const network = getNetwork(account.symbol);
 
-        if (!network || !networkFeeInfo) throw new Error('Network fees not found.');
+        if (!networkFeeInfo) throw new Error('Network fees not found.');
 
         const response = await dispatch(
             composeSendFormTransactionFeeLevelsThunk({

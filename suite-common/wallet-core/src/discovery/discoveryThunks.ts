@@ -11,7 +11,7 @@ import {
 import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
-    networksCompatibility,
+    NetworkAccount,
     NetworkSymbol,
     Network,
     networksCollection,
@@ -81,44 +81,22 @@ export const filterUnavailableAccountTypes = (
             !device?.unavailableCapabilities?.[networkAccount.accountType!], // exclude by account types (ex: taproot)
     );
 
-/**
- * @deprecated Old implementation, temporarily duplicated here for suite, while the new one is used in suite-native
- * Fully replaced by combined use of filterUnavailableNetworks and filterUnavailableAccountTypes
- */
-export const filterUnavailableNetworksCompatible = (
-    enabledNetworks: NetworkSymbol[],
-    device?: TrezorDevice,
-) =>
-    networksCompatibility.filter(n => {
-        const firmwareVersion = getFirmwareVersion(device);
-        const internalModel = device?.features?.internal_model;
-
-        const isSupportedInSuite =
-            !n.support || // support is not defined => is supported
-            !internalModel || // typescript. device undefined. => supported
-            (n.support[internalModel] && // support is defined for current device
-                versionUtils.isNewerOrEqual(firmwareVersion, n.support[internalModel])); // device version is newer or equal to support field in networks => supported
-
-        return (
-            isTrezorConnectBackendType(n.backendType) && // exclude accounts with unsupported backend type
-            enabledNetworks.includes(n.symbol) &&
-            !n.isHidden &&
-            !device?.unavailableCapabilities?.[n.accountType!] && // exclude by account types (ex: taproot)
-            !device?.unavailableCapabilities?.[n.symbol] && // exclude by network symbol (ex: xrp on T1B1)
-            isSupportedInSuite
-        );
-    });
-
 const calculateProgress =
     (discovery: Discovery) =>
     (_dispatch: any, getState: any): PartialDiscovery => {
-        const { numberOfNonCardano, numberOfCardano } = discovery.networks.reduce(
-            (acc, symbol) => {
-                if (symbol === 'ada') {
-                    acc.numberOfCardano += 1;
-                } else {
-                    acc.numberOfNonCardano += 1;
-                }
+        const device = selectDevice(getState());
+        // reconstruct networks from discovery symbols, because we need to iterate through accounts
+        const networksToCount = filterUnavailableNetworks(discovery.networks, device);
+
+        const { numberOfNonCardano, numberOfCardano } = networksToCount.reduce(
+            (acc, network) => {
+                const { symbol } = network;
+
+                // increment the appropriate counter as per symbol foreach normalized account (normal as well as all alternative accounts)
+                filterUnavailableAccountTypes(network, device).forEach(() => {
+                    if (symbol === 'ada') acc.numberOfCardano += 1;
+                    else acc.numberOfNonCardano += 1;
+                });
 
                 return acc;
             },
@@ -279,15 +257,17 @@ export const getBundleThunk = createThunk(
             return bundle;
         }
 
-        const filteredNetworks = filterUnavailableNetworksCompatible(discovery.networks, device);
-        filteredNetworks.forEach(configNetwork => {
+        const addNetworkAccountToBundle = (
+            configNetwork: Network,
+            { bip43Path, accountType }: NetworkAccount,
+        ) => {
+            const { networkType, symbol: networkSymbol } = configNetwork;
+
             // find all existed accounts
-            const accountType = configNetwork.accountType || 'normal';
             const prevAccounts = accountsByDeviceState
                 .filter(
                     account =>
-                        account.accountType === accountType &&
-                        account.symbol === configNetwork.symbol,
+                        account.accountType === accountType && account.symbol === networkSymbol,
                 )
                 .sort((a, b) => b.index - a.index);
 
@@ -295,42 +275,46 @@ export const getBundleThunk = createThunk(
             const hasEmptyAccount = prevAccounts.find(a => a.empty && !a.visible);
             // check if requested coin not failed before
             const failed = discovery.failed.find(
-                account =>
-                    account.symbol === configNetwork.symbol && account.accountType === accountType,
+                account => account.symbol === networkSymbol && account.accountType === accountType,
             );
 
             // skip legacy/ledger accounts if availableCardanoDerivations doesn't include their respective derivation
             const skipCardanoDerivation =
-                configNetwork.networkType === 'cardano' &&
-                (configNetwork.accountType === 'ledger' ||
-                    configNetwork.accountType === 'legacy') &&
-                !discovery.availableCardanoDerivations?.includes(configNetwork.accountType);
+                networkType === 'cardano' &&
+                (accountType === 'ledger' || accountType === 'legacy') &&
+                !discovery.availableCardanoDerivations?.includes(accountType);
 
             if (!hasEmptyAccount && !failed && !skipCardanoDerivation) {
                 const index = prevAccounts[0] ? prevAccounts[0].index + 1 : 0;
                 const isEvmLedgerDerivationPath =
-                    configNetwork.networkType === 'ethereum' &&
-                    configNetwork.accountType === 'ledger';
+                    networkType === 'ethereum' && accountType === 'ledger';
 
                 const pathIndex = (index + (isEvmLedgerDerivationPath ? 1 : 0)).toString();
 
                 bundle.push({
-                    path: configNetwork.bip43Path.replace('i', pathIndex),
-                    coin: configNetwork.symbol,
+                    path: bip43Path.replace('i', pathIndex),
+                    coin: networkSymbol,
                     identity: tryGetAccountIdentity({
-                        networkType: configNetwork.networkType,
+                        networkType,
                         deviceState: discovery.deviceState,
                     }),
                     details: 'txs',
                     index,
-                    pageSize: getTxsPerPage(configNetwork.networkType),
+                    pageSize: getTxsPerPage(networkType),
                     accountType,
-                    networkType: configNetwork.networkType,
+                    networkType,
                     derivationType: getDerivationType(accountType),
                     suppressBackupWarning: true,
                 });
             }
-        });
+        };
+
+        // foreach network, start discovery foreach normalized account (normal as well as all alternative accounts)
+        filterUnavailableNetworks(discovery.networks, device).forEach(configNetwork =>
+            filterUnavailableAccountTypes(configNetwork, device).forEach(configAccount =>
+                addNetworkAccountToBundle(configNetwork, configAccount),
+            ),
+        );
 
         return bundle;
     },
@@ -709,9 +693,15 @@ export const createDiscoveryThunk = createThunk(
             selectors: { selectEnabledNetworks },
         } = extra;
         const enabledNetworks = selectEnabledNetworks(getState());
-        const networksSymbols = filterUnavailableNetworksCompatible(enabledNetworks, device).map(
-            n => n.symbol,
+        const filteredNetworks = filterUnavailableNetworks(enabledNetworks, device);
+        const networksSymbols = filteredNetworks.map(n => n.symbol);
+
+        // calculate theoretical limit of accounts per enabled networks (then `calculateProgress` will gradually converge on the real number)
+        const availableConfigAccounts = filteredNetworks.reduce(
+            (count, network) => count + filterUnavailableAccountTypes(network).length,
+            0,
         );
+        const maxTotalAccounts = LIMIT * availableConfigAccounts;
 
         dispatch(
             createDiscovery({
@@ -719,7 +709,7 @@ export const createDiscoveryThunk = createThunk(
                 authConfirm: !device.useEmptyPassphrase,
                 index: 0,
                 status: DiscoveryStatus.IDLE,
-                total: LIMIT * networksSymbols.length,
+                total: maxTotalAccounts,
                 bundleSize: 0,
                 loaded: 0,
                 failed: [],
@@ -741,10 +731,9 @@ export const updateNetworkSettingsThunk = createThunk(
         discovery.forEach(d => {
             const devices = selectDevices(getState());
             const device = devices.find(dev => dev.state === d.deviceState);
-            const networksSymbols = filterUnavailableNetworksCompatible(
-                enabledNetworks,
-                device,
-            ).map(n => n.symbol);
+            const networksSymbols = filterUnavailableNetworks(enabledNetworks, device).map(
+                n => n.symbol,
+            );
 
             const progress = dispatch(
                 calculateProgress({

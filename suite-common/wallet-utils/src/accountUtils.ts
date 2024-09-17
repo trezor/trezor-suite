@@ -11,8 +11,6 @@ import {
 } from '@trezor/connect';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
-    networksCompatibility,
-    NetworkCompatible,
     NetworkFeature,
     NetworkSymbol,
     NetworkType,
@@ -486,20 +484,6 @@ export const getAllAccounts = (deviceState: string | typeof undefined, accounts:
 
     return accounts.filter(a => a.deviceState === deviceState && a.visible);
 };
-
-/**
- * @deprecated use `networks[symbol]` (exact type) or `getNetwork` (generic type) from '@suite-common/wallet-config'
- */
-export const getNetworkCompatible = (symbol: string): NetworkCompatible | null =>
-    networksCompatibility.find(c => c.symbol === symbol) || null;
-
-export const getAccountNetwork = ({
-    symbol,
-    accountType,
-}: Pick<Account, 'symbol' | 'accountType'>) =>
-    networksCompatibility.find(
-        n => n.symbol === symbol && (n.accountType || 'normal') === accountType,
-    );
 
 /**
  * Returns a string used as an index to separate txs for given account inside a transactions reducer

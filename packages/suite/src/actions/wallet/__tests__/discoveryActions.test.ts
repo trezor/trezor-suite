@@ -362,6 +362,7 @@ describe('Discovery Actions', () => {
 
             const discovery = store.getState().wallet.discovery[0];
             expect(discovery.networks).toEqual(f.discoveryNetworks);
+            expect(discovery.total).toEqual(f.discoveryMaxTotal);
         });
     });
 

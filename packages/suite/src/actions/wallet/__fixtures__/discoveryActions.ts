@@ -299,7 +299,8 @@ export const unavailableCapabilities = [
             unavailableCapabilities: { xrp: 'no-capability', taproot: 'no-support' },
         }),
         networks: ['btc', 'xrp'],
-        discoveryNetworks: ['btc', 'btc', 'btc'],
+        discoveryNetworks: ['btc'],
+        discoveryMaxTotal: 30,
     },
     {
         description: 'UnavailableCapability: Only LTC',
@@ -310,6 +311,7 @@ export const unavailableCapabilities = [
         }),
         networks: ['ltc'],
         discoveryNetworks: [],
+        discoveryMaxTotal: 0,
     },
     {
         description: 'UnavailableCapability: Device without features',
@@ -319,5 +321,6 @@ export const unavailableCapabilities = [
         }),
         networks: ['xrp'],
         discoveryNetworks: ['xrp'],
+        discoveryMaxTotal: 10,
     },
 ];

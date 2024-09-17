@@ -2,7 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     getNetworkOptional,
     isNetworkSymbol,
-    networksCompatibility,
+    networksCollection,
     NetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
@@ -62,7 +62,7 @@ export const preloadFeeInfoThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/preloadFeeInfoThunk`,
     async (_, { dispatch }) => {
         // Fetch default fee levels
-        const networks = networksCompatibility.filter(n => !n.isHidden && !n.accountType);
+        const networks = networksCollection.filter(n => !n.isHidden);
         const promises = networks.map(network =>
             TrezorConnect.blockchainEstimateFee({
                 coin: network.symbol,

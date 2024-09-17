@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { Network } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
 import {
@@ -23,7 +23,7 @@ export type ExportFileType = 'csv' | 'pdf' | 'json';
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {
     account: Account;
-    network: NetworkCompatible;
+    network: Network;
     coinFees: FeeInfo;
     localCurrencyOption: { value: FiatCurrencyCode; label: Uppercase<FiatCurrencyCode> };
     feeInfo: FeeInfo;

@@ -22,7 +22,7 @@ import {
     WalletAccountTransaction,
     BlockchainNetworks,
 } from '@suite-common/wallet-types';
-import { networksCompatibility } from '@suite-common/wallet-config';
+import { networksCollection } from '@suite-common/wallet-config';
 
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';
@@ -558,8 +558,7 @@ const intlMock = {
     formatMessage: (s: any) => s.defaultMessage,
 };
 
-const mockedBlockchainNetworks = networksCompatibility.reduce((result, network) => {
-    if (network.accountType) return result;
+const mockedBlockchainNetworks = networksCollection.reduce((result, network) => {
     result[network.symbol] = {
         connected: false,
         explorer: network.explorer,

@@ -5,7 +5,7 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import {
     BackendType,
     getNetworkOptional,
-    networksCompatibility,
+    networksCollection,
     NetworkSymbol,
 } from '@suite-common/wallet-config';
 import { Blockchain, BlockchainNetworks } from '@suite-common/wallet-types';
@@ -35,9 +35,8 @@ const initialStatePredefined: Partial<BlockchainState> = {};
 export type BlockchainRootState = { wallet: { blockchain: BlockchainState } };
 
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
-export const blockchainInitialState: BlockchainNetworks = networksCompatibility.reduce(
+export const blockchainInitialState: BlockchainNetworks = networksCollection.reduce(
     (state, network) => {
-        if (network.accountType) return state;
         state[network.symbol] = {
             connected: false,
             explorer: network.explorer,

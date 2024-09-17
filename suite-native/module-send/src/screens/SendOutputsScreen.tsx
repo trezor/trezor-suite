@@ -24,7 +24,7 @@ import {
     StackNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { getNetworkCompatible } from '@suite-common/wallet-utils';
+import { getNetwork } from '@suite-common/wallet-config';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
@@ -98,7 +98,7 @@ export const SendOutputsScreen = ({
         selectSendFormDraftByAccountKey(state, accountKey),
     );
 
-    const network = account ? getNetworkCompatible(account.symbol) : null;
+    const network = account ? getNetwork(account.symbol) : null;
 
     const form = useForm<SendOutputsFormValues>({
         validation: sendOutputsFormValidationSchema,

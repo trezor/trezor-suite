@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { NetworkSymbol, networksCompatibility } from '@suite-common/wallet-config';
+import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
 import { FeeInfo, FeeLevelLabel } from '@suite-common/wallet-types';
 import { formatDuration } from '@suite-common/suite-utils';
 import { FeeLevel } from '@trezor/connect';
@@ -18,8 +18,7 @@ export type FeesRootState = {
 };
 
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
-const initialState = networksCompatibility.reduce((state, network) => {
-    if (network.accountType) return state;
+const initialState = networksCollection.reduce((state, network) => {
     state[network.symbol] = {
         blockHeight: 0,
         blockTime: 10,

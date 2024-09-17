@@ -7,7 +7,7 @@ import {
     FormState,
 } from '@suite-common/wallet-types';
 import { TokenInfo, Unsuccessful } from '@trezor/connect';
-import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 
 export type SerializedTx = { tx: string; coin: NetworkSymbol };
@@ -15,7 +15,7 @@ export type SerializedTx = { tx: string; coin: NetworkSymbol };
 // TODO: is this still needed?
 export interface ComposeActionContext {
     account: Account;
-    network: NetworkCompatible;
+    network: Network;
     feeInfo: FeeInfo;
     excludedUtxos?: ExcludedUtxos;
     prison?: Record<string, unknown>;

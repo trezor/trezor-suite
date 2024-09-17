@@ -10,7 +10,6 @@ import {
     getBip43Type,
     getFiatValue,
     getFirstFreshAddress,
-    getNetworkCompatible,
     getTitleForNetwork,
     getTitleForCoinjoinAccount,
     getUtxoFromSignedTransaction,
@@ -135,16 +134,6 @@ describe('account utils', () => {
                 state: '1stTestnet@device_id:0',
             }),
         );
-    });
-
-    it('getSelectedNetwork', () => {
-        const res = getNetworkCompatible('btc');
-        if (res) {
-            expect(res.name).toEqual('Bitcoin');
-        } else {
-            expect(res).toBeNull();
-        }
-        expect(getNetworkCompatible('doesntexist')).toBeNull();
     });
 
     it('getAccountKey', () => {
