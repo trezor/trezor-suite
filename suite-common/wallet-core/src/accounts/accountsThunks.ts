@@ -1,6 +1,6 @@
 import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import { networksCompatibility } from '@suite-common/wallet-config';
+import { networksCollection } from '@suite-common/wallet-config';
 import {
     analyzeTransactions,
     findAccountDevice,
@@ -33,7 +33,7 @@ export const disableAccountsThunk = createThunk(
         const accounts = selectAccounts(getState());
         const enabledNetworks = selectEnabledNetworks(getState());
         // find disabled networks
-        const disabledNetworks = networksCompatibility
+        const disabledNetworks = networksCollection
             .filter(n => !enabledNetworks.includes(n.symbol) || n.isHidden)
             .map(n => n.symbol);
         // find accounts for disabled networks

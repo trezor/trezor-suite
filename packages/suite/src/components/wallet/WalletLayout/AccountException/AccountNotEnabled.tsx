@@ -1,11 +1,11 @@
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { Network } from '@suite-common/wallet-config';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
 
 interface AccountNotEnabledProps {
-    network: NetworkCompatible;
+    network: Network;
 }
 
 /**

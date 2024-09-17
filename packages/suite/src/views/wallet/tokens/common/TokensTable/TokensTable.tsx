@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { NetworkCompatible } from '@suite-common/wallet-config';
+import { Network } from '@suite-common/wallet-config';
 import { EnhancedTokenInfo, TokenManagementAction } from '@suite-common/token-definitions';
 import { spacings } from '@trezor/theme';
 import { Icon, Table, Paragraph, Card, Row, Text } from '@trezor/components';
@@ -23,7 +23,7 @@ interface TokensTableProps {
     account: Account;
     tokensWithBalance: EnhancedTokenInfo[];
     tokensWithoutBalance: EnhancedTokenInfo[];
-    network: NetworkCompatible;
+    network: Network;
     tokenStatusType: TokenManagementAction;
     hideRates?: boolean;
     searchQuery?: string;

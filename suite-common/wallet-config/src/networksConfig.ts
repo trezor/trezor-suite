@@ -648,7 +648,7 @@ type InferredNetwork = InferredNetworks[NetworkSymbol];
 /**
  * @deprecated Old network object interface for backwards copatibility.
  */
-export type NetworkCompatible = Without<InferredNetwork, 'accountTypes'> & {
+type NetworkCompatible = Without<InferredNetwork, 'accountTypes'> & {
     symbol: NetworkSymbol;
     accountType?: AccountType;
     backendType?: BackendType;

@@ -5,7 +5,8 @@ import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sen
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FormState } from '@suite-common/wallet-types';
-import { getFeeLevels, getNetworkCompatible } from '@suite-common/wallet-utils';
+import { getFeeLevels } from '@suite-common/wallet-utils';
+import { networks } from '@suite-common/wallet-config';
 import type { Account, FormOptions } from '@suite-common/wallet-types';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 
@@ -28,9 +29,7 @@ export const useCoinmarketRecomposeAndSign = () => {
             ethereumAdjustGasLimit?: string,
             options: FormOptions[] = ['broadcast'],
         ) => {
-            const network = getNetworkCompatible(account.symbol);
-
-            if (!network) return;
+            const network = networks[account.symbol];
 
             if (!composed) {
                 dispatch(

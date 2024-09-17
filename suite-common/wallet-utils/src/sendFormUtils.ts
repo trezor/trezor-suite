@@ -11,7 +11,7 @@ import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { fiatCurrencies } from '@suite-common/suite-config';
-import { Network, NetworkCompatible, NetworkType } from '@suite-common/wallet-config';
+import { Network, NetworkType } from '@suite-common/wallet-config';
 import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
 import {
     COMPOSE_ERROR_TYPES,
@@ -323,7 +323,7 @@ export const getBitcoinComposeOutputs = (
 export const getExternalComposeOutput = (
     values: Partial<FormState>,
     account: Account,
-    network: NetworkCompatible | Network, // only properties common to both are accessed here
+    network: Network,
 ) => {
     if (!values || !Array.isArray(values.outputs) || !values.outputs[0]) return;
     const out = values.outputs[0];

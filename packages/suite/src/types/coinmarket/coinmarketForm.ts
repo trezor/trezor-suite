@@ -14,7 +14,7 @@ import {
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 import type { Account } from 'src/types/wallet';
-import { Network, NetworkCompatible } from '@suite-common/wallet-config';
+import { Network } from '@suite-common/wallet-config';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { FieldValues, UseFormReturn, FieldPath } from 'react-hook-form';
 import type {
@@ -362,7 +362,7 @@ export interface CoinmarketUseComposeTransactionProps<T extends CoinmarketSellEx
 
 export interface CoinmarketUseComposeTransactionStateProps {
     account: Account;
-    network: NetworkCompatible;
+    network: Network;
     feeInfo: FeeInfo;
 }
 
