@@ -18,8 +18,8 @@ describe('Test that all external links are alive', () => {
     });
 
     Object.values(URLS)
-        .filter((url: string) => !excluded.includes(url))
-        .forEach((url: string) => {
+        .filter(url => !excluded.includes(url))
+        .forEach(url => {
             it(`HTTP GET request to ${url} should respond with range >= 200 && < 400`, async () => {
                 const response = await fetch(url);
                 expect(response.status).toBeGreaterThanOrEqual(200);
