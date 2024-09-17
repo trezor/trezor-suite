@@ -6,7 +6,7 @@
     "dependencies": {
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "usb": "^2.13.0"
+        "usb": "^2.14.0"
     },
     "pkg": {
         "outputPath": "build",
