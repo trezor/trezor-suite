@@ -65,6 +65,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         descriptor: 'descriptor1',
         symbol: 'btc',
         visible: true,
+        accountType: 'normal',
     },
     {
         deviceState: '1stTestnetAddress@device_id:0',
@@ -73,6 +74,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         descriptor: 'descriptor2',
         symbol: 'ltc',
         visible: true,
+        accountType: 'normal',
     },
     {
         deviceState: '1stTestnetAddress@device_id:0',
@@ -80,6 +82,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         descriptor: 'descriptor3',
         symbol: 'eth',
         visible: true,
+        accountType: 'normal',
         tokens: [
             // unsupported token
             {
@@ -117,6 +120,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         descriptor: 'descriptor4',
         symbol: 'btc',
         visible: true,
+        accountType: 'normal',
     },
     {
         deviceState: '1stTestnet@device_id:0',
@@ -134,6 +138,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
             },
         ],
         descriptor: 'descriptor5',
+        accountType: 'normal',
     },
     {
         deviceState: '1stTestnetAddress@device_id:0',
@@ -152,6 +157,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
             },
         ],
         descriptor: 'descriptor6',
+        accountType: 'normal',
     },
     {
         deviceState: '1stTestnetAddress@device_id:0',
@@ -170,5 +176,15 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
             },
         ],
         descriptor: 'descriptor6',
+        accountType: 'normal',
+    },
+    {
+        deviceState: '1stTestnetAddress@device_id:0',
+        formattedBalance: '1',
+        tokens: [],
+        descriptor: 'descriptor7',
+        symbol: 'btc',
+        visible: true,
+        accountType: 'coinjoin',
     },
 ];

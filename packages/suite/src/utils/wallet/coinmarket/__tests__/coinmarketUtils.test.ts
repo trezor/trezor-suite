@@ -181,7 +181,7 @@ describe('coinmarket utils', () => {
                 label,
                 options: [
                     {
-                        accountType: undefined,
+                        accountType: 'normal',
                         balance: '0',
                         cryptoName: 'Bitcoin',
                         descriptor: 'descriptor1',
@@ -195,7 +195,7 @@ describe('coinmarket utils', () => {
                 label,
                 options: [
                     {
-                        accountType: undefined,
+                        accountType: 'normal',
                         balance: '0.101213',
                         cryptoName: 'Litecoin',
                         descriptor: 'descriptor2',
@@ -209,7 +209,7 @@ describe('coinmarket utils', () => {
                 label,
                 options: [
                     {
-                        accountType: undefined,
+                        accountType: 'normal',
                         balance: '0',
                         cryptoName: 'Ethereum',
                         descriptor: 'descriptor3',
@@ -218,7 +218,7 @@ describe('coinmarket utils', () => {
                         decimals: 18,
                     },
                     {
-                        accountType: undefined,
+                        accountType: 'normal',
                         balance: '2230',
                         contractAddress: '0x1234123412341234123412341234123412341236',
                         cryptoName: 'VeChain',
@@ -233,7 +233,7 @@ describe('coinmarket utils', () => {
                 label,
                 options: [
                     {
-                        accountType: undefined,
+                        accountType: 'normal',
                         balance: '250',
                         cryptoName: 'Polygon PoS',
                         descriptor: 'descriptor6',

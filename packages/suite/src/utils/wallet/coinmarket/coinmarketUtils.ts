@@ -288,7 +288,11 @@ export const coinmarketGetSortedAccounts = ({
 }: CoinmarketGetSortedAccountsProps) => {
     if (!deviceState) return [];
 
-    return sortByCoin(accounts.filter(a => a.deviceState === deviceState && a.visible));
+    return sortByCoin(
+        accounts.filter(
+            a => a.deviceState === deviceState && a.visible && a.accountType !== 'coinjoin',
+        ),
+    );
 };
 
 export const coinmarketBuildAccountOptions = ({
