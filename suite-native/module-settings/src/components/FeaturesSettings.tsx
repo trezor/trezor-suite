@@ -57,22 +57,30 @@ export const FeaturesSettings = () => {
                 testID="@settings/privacy-and-security"
             />
             {isUsbDeviceConnectFeatureEnabled && (
-                <SettingsSectionItem
-                    iconName="bookmark"
-                    title={<Translation id="moduleSettings.items.features.viewOnly.title" />}
-                    subtitle={<Translation id="moduleSettings.items.features.viewOnly.subtitle" />}
-                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsViewOnly)}
-                    testID="@settings/view-only"
-                />
+                <>
+                    <SettingsSectionItem
+                        iconName="bookmark"
+                        title={<Translation id="moduleSettings.items.features.viewOnly.title" />}
+                        subtitle={
+                            <Translation id="moduleSettings.items.features.viewOnly.subtitle" />
+                        }
+                        onPress={() => handleNavigation(SettingsStackRoutes.SettingsViewOnly)}
+                        testID="@settings/view-only"
+                    />
+                    <SettingsSectionItem
+                        iconName="coins"
+                        title={
+                            <Translation id="moduleSettings.items.features.coinEnabling.title" />
+                        }
+                        subtitle={
+                            <Translation id="moduleSettings.items.features.coinEnabling.subtitle" />
+                        }
+                        onPress={() => handleNavigation(SettingsStackRoutes.SettingsCoinEnabling)}
+                        isLoading={hasDiscovery}
+                        testID="@settings/coin-enabling"
+                    />
+                </>
             )}
-            <SettingsSectionItem
-                iconName="coins"
-                title={<Translation id="moduleSettings.items.features.coinEnabling.title" />}
-                subtitle={<Translation id="moduleSettings.items.features.coinEnabling.subtitle" />}
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsCoinEnabling)}
-                isLoading={hasDiscovery}
-                testID="@settings/coin-enabling"
-            />
         </SettingsSection>
     );
 };
