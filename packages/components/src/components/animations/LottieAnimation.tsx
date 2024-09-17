@@ -51,7 +51,9 @@ export const LottieAnimation = ({
         };
 
         if (type === 'CONNECT') {
-            loadAnimation(`trezor_${deviceModelInternal.toLowerCase()}_connect`);
+            loadAnimation(
+                `trezor_${(deviceModelInternal === DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : deviceModelInternal).toLowerCase()}_connect`,
+            );
         } else if (type === 'BLOCK') {
             loadAnimation('cubes_line');
         } else if (type === 'MEMPOOL') {
