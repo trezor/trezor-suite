@@ -3,13 +3,13 @@ import { versionUtils } from '@trezor/utils';
 import { httpRequest } from '../../utils/assets';
 import { isStrictFeatures } from '../../utils/firmwareUtils';
 import { getInfo, GetInfoProps } from '../../data/firmwareInfo';
-import { IntermediaryVersion } from '../../types';
+import { IntermediaryVersion, VersionArray } from '../../types';
 import { getBinary } from './getBinary';
 
 interface GetBinaryForFirmwareUpgradeProps extends GetInfoProps {
     baseUrl: string;
     btcOnly?: boolean;
-    version?: number[];
+    version?: VersionArray;
     intermediaryVersion?: IntermediaryVersion;
 }
 
@@ -19,12 +19,12 @@ interface GetBinaryForFirmwareUpgradeProps extends GetInfoProps {
  * is safe.
  */
 export const getBinaryForFirmwareUpgrade = ({
-    features,
     releases,
     baseUrl,
     version,
     btcOnly,
     intermediaryVersion,
+    features,
 }: GetBinaryForFirmwareUpgradeProps) => {
     if (!isStrictFeatures(features)) {
         throw new Error('Features of unexpected shape provided');
@@ -63,5 +63,5 @@ export const getBinaryForFirmwareUpgrade = ({
         );
     }
 
-    return getBinary({ releases, baseUrl, version, btcOnly, intermediaryVersion });
+    return getBinary({ release: releaseByFirmware, baseUrl, btcOnly });
 };
