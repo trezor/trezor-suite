@@ -1,5 +1,5 @@
 import { selectDevice } from '@suite-common/wallet-core';
-import { Banner, H3, Text, Button, IconButton, Row, Column } from '@trezor/components';
+import { Banner, Text, Button, IconButton, Row, Column } from '@trezor/components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { goto } from 'src/actions/suite/routerActions';
@@ -75,9 +75,9 @@ export const DashboardPassphraseBanner = () => {
                         }
                     >
                         <Column gap={4} alignItems="flex-start" flex="1">
-                            <H3 color="textDefault">
+                            <Text typographyStyle="highlight">
                                 <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE" />
-                            </H3>
+                            </Text>
                             <Text color="textDefaultInverted">
                                 <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION" />
                             </Text>

@@ -33,6 +33,10 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
             symbol: account?.symbol,
         });
 
+    const points = [
+        <Translation id="TR_EVM_EXPLANATION_DESCRIPTION" key="TR_EVM_EXPLANATION_DESCRIPTION" />,
+    ];
+
     return (
         <CloseableBanner
             onClose={close}
@@ -45,15 +49,9 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
                     }}
                 />
             }
+            hasIcon={points.length === 1}
         >
-            <BannerPoints
-                points={[
-                    <Translation
-                        id="TR_EVM_EXPLANATION_DESCRIPTION"
-                        key="TR_EVM_EXPLANATION_DESCRIPTION"
-                    />,
-                ]}
-            />
+            <BannerPoints points={points} />
         </CloseableBanner>
     );
 };

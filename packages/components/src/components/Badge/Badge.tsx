@@ -12,10 +12,12 @@ import {
 import { TransientProps } from '../../utils/transientProps';
 import { Icon, IconName } from '../Icon/Icon';
 
+export const badgeSizes = ['medium', 'small', 'tiny'] as const satisfies UISize[];
+export type BadgeSize = Extract<UISize, (typeof badgeSizes)[number]>;
+
 export const allowedBadgeFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBadgeFrameProps)[number]>;
 
-export type BadgeSize = Extract<UISize, 'tiny' | 'small' | 'medium'>;
 type BadgeVariant = Extract<UIVariant, 'primary' | 'tertiary' | 'destructive'>;
 
 export type BadgeProps = AllowedFrameProps & {

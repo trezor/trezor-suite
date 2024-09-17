@@ -1,20 +1,20 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Icon } from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 interface BannerPointsProps {
     points: ReactNode[];
 }
 
-const Point = styled.div`
-    display: flex;
+const ListItem = styled.li`
     ${typography.hint}
     color: ${({ theme }) => theme.textSubdued};
-    gap: ${spacingsPx.md};
+    list-style-type: disc;
+    list-style-position: inside;
 
-    & + & {
-        margin-top: ${spacingsPx.xs};
+    &:only-child {
+        list-style-type: none;
+        list-style-position: unset;
     }
 `;
 
@@ -22,13 +22,10 @@ export const BannerPoints = ({ points }: BannerPointsProps) => {
     if (points.length === 0) return null;
 
     return (
-        <>
+        <ul>
             {points.map((point, i) => (
-                <Point key={i}>
-                    <Icon name="check" size={20} />
-                    {point}
-                </Point>
+                <ListItem key={`bullet-${i}-${point}`}>{point}</ListItem>
             ))}
-        </>
+        </ul>
     );
 };
