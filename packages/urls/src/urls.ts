@@ -103,6 +103,8 @@ export const HELP_CENTER_EVM_ADDRESS_CHECKSUM: Url =
     'https://trezor.io/learn/a/evm-address-checksum-in-trezor-suite';
 export const HELP_CENTER_FIRMWARE_REVISION_CHECK: Url =
     'https://trezor.io/learn/a/trezor-firmware-revision-check';
+export const HELP_CENTER_REPLACE_BY_FEE: Url =
+    'https://trezor.io/learn/a/replace-by-fee-rbf-ethereum';
 
 export const INVITY_URL: Url = 'https://invity.io/';
 export const INVITY_SCHEDULE_OF_FEES: Url = 'https://blog.invity.io/schedule-of-fees';

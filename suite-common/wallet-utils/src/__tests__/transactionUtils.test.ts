@@ -18,6 +18,7 @@ import {
     MonthKey,
     generateTransactionMonthKey,
     groupTokensTransactionsByContractAddress,
+    getTransactionWithLowestNonce,
 } from '../transactionUtils';
 
 const { getWalletTransaction } = testMocks;
@@ -99,6 +100,41 @@ describe('transaction utils', () => {
                 getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],
         });
+    });
+
+    it('getTransactionWithLowestNonce - ethereum network', () => {
+        const transactionGroups = {
+            '2019-10-3': [getWalletTransaction({ ethereumSpecific: { nonce: 1 } as any })],
+            '2019-10-4': [
+                getWalletTransaction({
+                    ethereumSpecific: { nonce: 0 },
+                } as any),
+            ],
+            '2019-8-14': [
+                getWalletTransaction({ ethereumSpecific: { nonce: 2 } as any }),
+                getWalletTransaction({ ethereumSpecific: { nonce: 3 } as any }),
+            ],
+        };
+
+        const transactionWithLowestNonce: WalletAccountTransaction | null =
+            getTransactionWithLowestNonce(transactionGroups);
+
+        expect(transactionWithLowestNonce).toStrictEqual(
+            getWalletTransaction({ ethereumSpecific: { nonce: 0 } as any }),
+        );
+    });
+
+    it('getTransactionWithLowestNonce - non ethereum network', () => {
+        const transactionGroups = {
+            '2019-10-4': [getWalletTransaction()],
+            '2019-10-3': [getWalletTransaction()],
+            '2019-8-14': [getWalletTransaction(), getWalletTransaction()],
+        };
+
+        const transactionWithLowestNonce: WalletAccountTransaction | null =
+            getTransactionWithLowestNonce(transactionGroups);
+
+        expect(transactionWithLowestNonce).toStrictEqual(null);
     });
 
     it('groupJointTransactions', () => {

@@ -1,4 +1,8 @@
-import { GroupedTransactionsByDate, groupJointTransactions } from '@suite-common/wallet-utils';
+import {
+    getTransactionWithLowestNonce,
+    GroupedTransactionsByDate,
+    groupJointTransactions,
+} from '@suite-common/wallet-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
 import { useSelector } from 'src/hooks/suite';
@@ -24,6 +28,9 @@ export const TransactionGroupedList = ({
     const localCurrency = useSelector(selectLocalCurrency);
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
     const network = getNetwork(symbol);
+
+    const transactionWithLowestNonce: WalletAccountTransaction | null =
+        getTransactionWithLowestNonce(transactionGroups);
 
     return Object.entries(transactionGroups).map(([dateKey, value], groupIndex) => (
         <TransactionsGroup
@@ -53,6 +60,11 @@ export const TransactionGroupedList = ({
                         network={network}
                         accountType={account.accountType}
                         index={index}
+                        disableBumpFee={
+                            network.networkType === 'ethereum'
+                                ? item.tx.txid !== transactionWithLowestNonce?.txid
+                                : false
+                        }
                     />
                 ),
             )}
