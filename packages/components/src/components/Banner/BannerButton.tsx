@@ -8,7 +8,12 @@ export const BannerButton = ({ children, ...rest }: ButtonProps) => {
 
     return (
         <BannerContext.Provider value={value}>
-            <Button {...rest} variant={rest.variant ?? variant} size={rest.size ?? 'small'}>
+            <Button
+                {...rest}
+                textWrap={rest.textWrap ?? false}
+                variant={rest.variant ?? variant}
+                size={rest.size ?? 'small'}
+            >
                 {children}
             </Button>
         </BannerContext.Provider>
