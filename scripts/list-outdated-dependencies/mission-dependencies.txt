@@ -1,21 +1,5 @@
-@hookform/resolvers
-react-hook-form
-@electron/notarize
-electron
-electron-builder
-electron-localshortcut
-electron-store
-electron-updater
-@types/electron-localshortcut
-electron-localshortcut
-@types/cors
-cors
-dropbox
-express
-systeminformation
+# CRYPTOGRAPHY
 golomb
-idb
-broadcast-channel
 @types/bs58
 bs58
 @types/bs58check
@@ -27,13 +11,38 @@ bip66
 bitcoin-ops
 blake-hash
 blakejs
-openpgp
 varuint-bitcoin
 int64-buffer
 minimaldata
-bcrypto
+n64
 @types/wif
 wif
 @types/uuid
-uuid
 tiny-secp256k1
+uuid
+
+# DESKTOP
+@electron/notarize
+electron
+electron-builder
+electron-localshortcut
+electron-store
+electron-updater
+@types/electron-localshortcut
+electron-localshortcut
+openpgp
+systeminformation
+
+# FORMS
+@hookform/resolvers
+react-hook-form
+
+# LABELING
+@types/cors
+cors
+dropbox
+express
+
+# STORAGE
+idb
+broadcast-channel
