@@ -242,12 +242,14 @@ export const getAccountHistoryMovementItemETH = ({
                     sentToSelf: new BigNumber(0),
                 };
 
+                const amount = new BigNumber(token.amount).div(10 ** token.decimals);
+
                 if (token.type === 'sent') {
-                    tokenSummary.sent = tokenSummary.sent.plus(token.amount);
+                    tokenSummary.sent = tokenSummary.sent.plus(amount);
                 } else if (token.type === 'recv') {
-                    tokenSummary.received = tokenSummary.received.plus(token.amount);
+                    tokenSummary.received = tokenSummary.received.plus(amount);
                 } else if (token.type === 'self') {
-                    tokenSummary.sentToSelf = tokenSummary.sentToSelf.plus(token.amount);
+                    tokenSummary.sentToSelf = tokenSummary.sentToSelf.plus(amount);
                 }
 
                 const tokenContractId = token.contract as TokenAddress;

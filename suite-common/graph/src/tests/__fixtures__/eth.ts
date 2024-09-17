@@ -2014,7 +2014,7 @@ export const ethTokenBalanceHistoryResult: Record<string, AccountHistoryMovement
         {
             time: 1720304171,
             txs: 1,
-            received: new BigNumber('200000000000000'),
+            received: new BigNumber('200000000000000').div(10 ** 8),
             sent: new BigNumber('0'),
             sentToSelf: new BigNumber('0'),
         },
@@ -2032,7 +2032,7 @@ export const ethTokenBalanceHistoryResult: Record<string, AccountHistoryMovement
         {
             time: 1669227215,
             txs: 1,
-            received: new BigNumber('4000'),
+            received: new BigNumber('4000').div(10 ** 0),
             sent: new BigNumber('0'),
             sentToSelf: new BigNumber('0'),
         },
@@ -2041,7 +2041,7 @@ export const ethTokenBalanceHistoryResult: Record<string, AccountHistoryMovement
         {
             time: 1665761171,
             txs: 1,
-            received: new BigNumber('920485180000000000'),
+            received: new BigNumber('920485180000000000').div(10 ** 18),
             sent: new BigNumber('0'),
             sentToSelf: new BigNumber('0'),
         },
@@ -2050,7 +2050,7 @@ export const ethTokenBalanceHistoryResult: Record<string, AccountHistoryMovement
         {
             time: 1665761075,
             txs: 1,
-            received: new BigNumber('16243034330000000000'),
+            received: new BigNumber('16243034330000000000').div(10 ** 18),
             sent: new BigNumber('0'),
             sentToSelf: new BigNumber('0'),
         },
@@ -2059,7 +2059,7 @@ export const ethTokenBalanceHistoryResult: Record<string, AccountHistoryMovement
         {
             time: 1665761003,
             txs: 1,
-            received: new BigNumber('997077580000000000'),
+            received: new BigNumber('997077580000000000').div(10 ** 18),
             sent: new BigNumber('0'),
             sentToSelf: new BigNumber('0'),
         },
