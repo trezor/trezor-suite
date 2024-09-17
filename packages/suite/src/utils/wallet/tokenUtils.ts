@@ -72,6 +72,9 @@ export const getTokens = (
     coinDefinitions?: TokenDefinition,
     searchQuery?: string,
 ) => {
+    // filter out NFT tokens until we implement them
+    const tokensWithoutNFTs = tokens.filter(token => !['ERC1155', 'ERC721'].includes(token.type));
+
     const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
 
     const shownWithBalance: EnhancedTokenInfo[] = [];
@@ -81,7 +84,7 @@ export const getTokens = (
     const unverifiedWithBalance: EnhancedTokenInfo[] = [];
     const unverifiedWithoutBalance: EnhancedTokenInfo[] = [];
 
-    tokens.forEach(token => {
+    tokensWithoutNFTs.forEach(token => {
         const isKnown = isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract);
         const isHidden = coinDefinitions?.hide.includes(token.contract);
         const isShown = coinDefinitions?.show.includes(token.contract);
