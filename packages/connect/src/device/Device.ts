@@ -32,6 +32,7 @@ import {
 import { models } from '../data/models';
 import { getLanguage } from '../data/getLanguage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
+import { IStateStorage } from './StateStorage';
 
 // custom log
 const _log = initLog('Device');
@@ -83,7 +84,6 @@ export interface DeviceEvents {
     [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
     [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
     [DEVICE.ACQUIRED]: () => void;
-    [DEVICE.SAVE_STATE]: (state: string) => void;
 }
 
 /**
@@ -131,6 +131,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     // DeviceState list [this.instance]: DeviceState | undefined
     private state: DeviceState[] = [];
+    private stateStorage?: IStateStorage = undefined;
 
     unavailableCapabilities: UnavailableCapabilities = {};
 
@@ -483,9 +484,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             };
 
             this.state[this.instance] = newState;
-            if (newState.sessionId && newState.sessionId !== prevState?.sessionId) {
-                this.emit(DEVICE.SAVE_STATE, newState.sessionId);
-            }
+            this.stateStorage?.saveState(this, newState);
         }
     }
 
@@ -531,6 +530,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         const { message } = await this.getCommands().typedCall('Initialize', 'Features', payload);
         this._updateFeatures(message);
+    }
+
+    initStorage(storage: IStateStorage) {
+        this.stateStorage = storage;
+        this.setState(storage.loadState(this));
     }
 
     async getFeatures() {
