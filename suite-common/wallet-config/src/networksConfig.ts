@@ -1,14 +1,6 @@
 import { DeviceModelInternal } from '@trezor/connect';
-import type { Without } from '@trezor/type-utils';
 
-import {
-    AccountType,
-    BackendType,
-    Explorer,
-    NetworkFeature,
-    Networks,
-    NetworkSymbol,
-} from './types';
+import { Networks } from './types';
 
 export const networks = {
     btc: {
@@ -641,44 +633,3 @@ export const networks = {
         coingeckoNativeId: undefined,
     },
 } as const satisfies Networks;
-
-type InferredNetworks = typeof networks;
-type InferredNetwork = InferredNetworks[NetworkSymbol];
-
-/**
- * @deprecated Old network object interface for backwards copatibility.
- */
-type NetworkCompatible = Without<InferredNetwork, 'accountTypes'> & {
-    symbol: NetworkSymbol;
-    accountType?: AccountType;
-    backendType?: BackendType;
-    testnet?: boolean;
-    isHidden?: boolean;
-    chainId?: number;
-    features?: NetworkFeature[];
-    support?: {
-        [key in DeviceModelInternal]: string;
-    };
-    isDebugOnlyNetwork?: boolean;
-    isDebugOnlyAccountType?: boolean;
-    explorer: Explorer;
-    coingeckoId?: string;
-};
-
-/**
- * @deprecated Please use `networks` instead.
- * Transforms the network object into the previously used format so we don't have to change
- * every occurence. We could gradually start to use the network object directly and in the end
- * this could be removed.
- */
-export const networksCompatibility: NetworkCompatible[] = Object.values(networks).flatMap(
-    ({ symbol, accountTypes, ...network }) => [
-        { symbol, ...network },
-        ...Object.entries(accountTypes).map(([accountType, networkOverride]) => ({
-            symbol,
-            accountType,
-            ...network,
-            ...networkOverride,
-        })),
-    ],
-);
