@@ -1,4 +1,7 @@
 import { randomBytes } from 'crypto';
+
+import { versionUtils } from '@trezor/utils';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { stripFwHeaders, calculateFirmwareHash, getBinary } from './firmware';
 import { getReleases } from '../data/firmwareInfo';
@@ -31,10 +34,20 @@ export default class CheckFirmwareAuthenticity extends AbstractMethod<
         const btcOnly = device.firmwareType === FirmwareType.BitcoinOnly;
 
         try {
+            const version = device.getVersion();
+            const release = getReleases(device.features?.internal_model).find(
+                r =>
+                    version &&
+                    versionUtils.isVersionArray(version) &&
+                    versionUtils.isEqual(r.version, version),
+            );
+            if (!release) {
+                throw ERRORS.TypedError('Runtime', 'no firmware found for this device');
+            }
+
             const fw = await getBinary({
-                releases: getReleases(device.features?.internal_model),
                 baseUrl: this.params.baseUrl ?? 'https://data.trezor.io',
-                version: device.getVersion(),
+                release,
                 btcOnly,
             });
 
