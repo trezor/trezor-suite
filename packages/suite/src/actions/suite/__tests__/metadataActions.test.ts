@@ -52,7 +52,11 @@ export const getInitialState = (state?: InitialState) => {
 
     const device = state
         ? state.device
-        : { state: 'device-state', connected: true, metadata: { status: 'disabled' } };
+        : {
+              state: '1stTestnetAddress@device_id:0',
+              connected: true,
+              metadata: { status: 'disabled' },
+          };
     const accounts = state ? state.accounts || [] : [];
     const settings = suite?.settings || { debug: {} };
     const debug = settings?.debug || {};

@@ -11,6 +11,7 @@ import {
     PrecomposedTransactionErrorCardano as PrecomposedTransactionCardanoConnectResponseError,
     PrecomposedTransactionNonFinalCardano as PrecomposedTransactionCardanoConnectResponseNonFinal,
     PrecomposedTransactionFinalCardano as PrecomposedTransactionCardanoConnectResponseFinal,
+    StaticSessionId,
 } from '@trezor/connect';
 import { NetworkCompatible, NetworkSymbol } from '@suite-common/wallet-config';
 import { TranslationKey } from '@suite-common/intl-types';
@@ -172,7 +173,7 @@ export interface RbfTransactionParams {
 }
 
 export interface WalletAccountTransaction extends AccountTransaction {
-    deviceState: string;
+    deviceState: StaticSessionId;
     descriptor: string;
     symbol: NetworkSymbol;
     rbfParams?: RbfTransactionParams;

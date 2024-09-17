@@ -1,5 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BlockchainAccountBalanceHistory } from '@trezor/connect';
+import { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 
 export interface AccountHistoryWithBalance extends BlockchainAccountBalanceHistory {
     balance: string;
@@ -7,7 +7,7 @@ export interface AccountHistoryWithBalance extends BlockchainAccountBalanceHisto
 
 export interface AccountIdentifier {
     descriptor: string;
-    deviceState: string;
+    deviceState: StaticSessionId;
     symbol: NetworkSymbol;
 }
 

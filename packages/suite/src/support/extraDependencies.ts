@@ -31,7 +31,7 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 import { METADATA, STORAGE } from '../actions/suite/constants';
-import { PROTO } from '@trezor/connect';
+import { PROTO, StaticSessionId } from '@trezor/connect';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -171,7 +171,9 @@ export const extraDependencies: ExtraDependencies = {
         },
         setDeviceMetadataReducer: (
             state,
-            { payload }: PayloadAction<{ deviceState: string; metadata: TrezorDevice['metadata'] }>,
+            {
+                payload,
+            }: PayloadAction<{ deviceState: StaticSessionId; metadata: TrezorDevice['metadata'] }>,
         ) => {
             const { deviceState, metadata } = payload;
             const index = state.devices.findIndex((d: TrezorDevice) => d.state === deviceState);
@@ -183,7 +185,7 @@ export const extraDependencies: ExtraDependencies = {
             state,
             {
                 payload,
-            }: PayloadAction<{ deviceState: string; metadata: TrezorDevice['passwords'] }>,
+            }: PayloadAction<{ deviceState: StaticSessionId; metadata: TrezorDevice['passwords'] }>,
         ) => {
             const { deviceState, metadata } = payload;
             const index = state.devices.findIndex((d: TrezorDevice) => d.state === deviceState);

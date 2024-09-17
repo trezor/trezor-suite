@@ -4,7 +4,7 @@ import * as MODAL from 'src/actions/suite/constants/modalConstants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 
 export const DEVICE = testMocks.getSuiteDevice({
-    state: 'device-state',
+    state: '1stTestnetAddress@device_id:0',
     connected: true,
     available: true,
     remember: true,
@@ -60,7 +60,7 @@ export const onCoinjoinRoundChanged = [
         connect: undefined,
         state: {
             accounts: [
-                { key: 'a', deviceState: 'device-state' },
+                { key: 'a', deviceState: '1stTestnetAddress@device_id:0' },
                 { key: 'b', deviceState: 'device-state-2' },
             ],
             selectedAccount: { key: 'a' },
@@ -103,7 +103,7 @@ export const onCoinjoinRoundChanged = [
                 devices: [DEVICE, { ...DEVICE, state: 'device-state-2', id: '2' }],
             },
             accounts: [
-                { key: 'a', deviceState: 'device-state' },
+                { key: 'a', deviceState: '1stTestnetAddress@device_id:0' },
                 { key: 'b', deviceState: 'device-state-2' },
             ],
             selectedAccount: { key: 'a' },
@@ -139,7 +139,7 @@ export const onCoinjoinRoundChanged = [
             device: {
                 devices: [{ ...DEVICE, features: { busy: true } }],
             },
-            accounts: [{ key: 'a', deviceState: 'device-state' }],
+            accounts: [{ key: 'a', deviceState: '1stTestnetAddress@device_id:0' }],
             selectedAccount: { key: 'a' },
             coinjoin: {
                 accounts: [
@@ -176,7 +176,7 @@ export const onCoinjoinRoundChanged = [
             device: {
                 devices: [{ ...DEVICE, features: { busy: false } }],
             },
-            accounts: [{ key: 'a', deviceState: 'device-state' }],
+            accounts: [{ key: 'a', deviceState: '1stTestnetAddress@device_id:0' }],
             selectedAccount: { key: 'a' },
             coinjoin: {
                 accounts: [
@@ -209,7 +209,7 @@ export const onCoinjoinRoundChanged = [
         connect: undefined,
         state: {
             devices: [{ ...DEVICE, features: { busy: false } }],
-            accounts: [{ key: 'account-A', deviceState: 'device-state' }],
+            accounts: [{ key: 'account-A', deviceState: '1stTestnetAddress@device_id:0' }],
             selectedAccount: { key: 'account-A' },
             coinjoin: {
                 accounts: [
@@ -250,7 +250,7 @@ export const onCoinjoinRoundChanged = [
             accounts: [
                 {
                     key: 'a',
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     addresses: { anonymitySet: { address: 1 } },
                     utxo: [{ address: 'address' }],
                 },
@@ -348,7 +348,7 @@ export const getOwnershipProof = [
                 ],
             },
             accounts: [
-                { key: 'account-A', deviceState: 'device-state', utxo: [] },
+                { key: 'account-A', deviceState: '1stTestnetAddress@device_id:0', utxo: [] },
                 { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
                 { key: 'account-C', deviceState: 'device-2-state', utxo: [] },
             ],
@@ -413,7 +413,7 @@ export const getOwnershipProof = [
                 devices: [DEVICE, { ...DEVICE, state: 'device-state-2' }],
             },
             accounts: [
-                { key: 'account-A', deviceState: 'device-state', utxo: [] },
+                { key: 'account-A', deviceState: '1stTestnetAddress@device_id:0', utxo: [] },
                 { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
             ],
             coinjoin: {
@@ -462,7 +462,7 @@ export const getOwnershipProof = [
                 { ...DEVICE, state: 'device-3-state', id: '3' },
             ],
             accounts: [
-                { key: 'account-A', deviceState: 'device-state', utxo: [] },
+                { key: 'account-A', deviceState: '1stTestnetAddress@device_id:0', utxo: [] },
                 { key: 'account-B', deviceState: 'device-state-2', utxo: [] },
                 { key: 'account-C', deviceState: 'device-2-state', utxo: [] },
             ],
@@ -542,7 +542,7 @@ export const signCoinjoinTx = [
             accounts: [
                 {
                     key: 'account-A',
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     utxo: [
                         {
                             txid: '123400000000000000000000000000000000000000000000000000000000dbca',
@@ -751,7 +751,7 @@ export const signCoinjoinTx = [
             accounts: [
                 {
                     key: 'account-A',
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     utxo: [
                         {
                             txid: '123400000000000000000000000000000000000000000000000000000000dbca',
@@ -850,7 +850,7 @@ export const signCoinjoinTx = [
             accounts: [
                 {
                     key: 'account-A',
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     utxo: [
                         {
                             txid: '123400000000000000000000000000000000000000000000000000000000dbca',
@@ -1076,7 +1076,7 @@ export const clientEvents = [
         description: 'RoundChanged sessionDeadline updated',
         event: 'round',
         state: {
-            accounts: [{ key: 'account-A', deviceState: 'device-state' }],
+            accounts: [{ key: 'account-A', deviceState: '1stTestnetAddress@device_id:0' }],
             coinjoin: {
                 config: {
                     averageAnonymityGainPerRound: 1,
@@ -1111,7 +1111,7 @@ export const clientEvents = [
         description: 'SessionPhase sessionPhaseQueue updated',
         event: 'session-phase',
         state: {
-            accounts: [{ key: 'account-A', deviceState: 'device-state' }],
+            accounts: [{ key: 'account-A', deviceState: '1stTestnetAddress@device_id:0' }],
             coinjoin: {
                 accounts: [{ key: 'account-A', session: SESSION }],
             },

@@ -59,7 +59,7 @@ export const coinDefinitions: TokenDefinitions[DefinitionType.COIN] = {
 
 export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
     {
-        deviceState: 'deviceState',
+        deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '0',
         tokens: [],
         descriptor: 'descriptor1',
@@ -67,7 +67,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         visible: true,
     },
     {
-        deviceState: 'deviceState',
+        deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '0.101213',
         tokens: [],
         descriptor: 'descriptor2',
@@ -75,7 +75,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         visible: true,
     },
     {
-        deviceState: 'deviceState',
+        deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '0',
         descriptor: 'descriptor3',
         symbol: 'eth',
@@ -111,7 +111,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         ],
     },
     {
-        deviceState: 'no-deviceState',
+        deviceState: '1stTestnet@device_id:0',
         formattedBalance: '0.101213',
         tokens: [],
         descriptor: 'descriptor4',
@@ -119,7 +119,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         visible: true,
     },
     {
-        deviceState: 'no-deviceState',
+        deviceState: '1stTestnet@device_id:0',
         formattedBalance: '0.101213',
         symbol: 'matic',
         visible: true,
@@ -136,7 +136,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         descriptor: 'descriptor5',
     },
     {
-        deviceState: 'deviceState',
+        deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '250',
         symbol: 'matic',
         visible: true,
@@ -154,7 +154,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         descriptor: 'descriptor6',
     },
     {
-        deviceState: 'deviceState',
+        deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '250',
         symbol: 'matic',
         visible: false,

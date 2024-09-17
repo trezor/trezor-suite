@@ -56,8 +56,8 @@ export const BTC_ACCOUNT = {
         symbol: 'btc',
         networkType: 'bitcoin',
         descriptor: 'xpub',
-        deviceState: 'deviceState',
-        key: 'xpub-btc-deviceState',
+        deviceState: '1stTestnetAddress@device_id:0',
+        key: 'xpub-btc-1stTestnetAddress@device_id:0',
         addresses: {
             change: [
                 { path: "m/44'/0'/0'/1/0", address: '1-change', transfers: 0 },
@@ -86,8 +86,8 @@ export const ETH_ACCOUNT = {
         symbol: 'eth',
         networkType: 'ethereum',
         descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
-        deviceState: 'deviceState',
-        key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-deviceState',
+        deviceState: '1stTestnetAddress@device_id:0',
+        key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-1stTestnetAddress@device_id:0',
         balance: '10000000000000000000', // 10 ETH
         availableBalance: '10000000000000000000', // 10 ETH
         misc: { nonce: '0' },
@@ -104,8 +104,8 @@ export const XRP_ACCOUNT = {
         symbol: 'xrp',
         networkType: 'ripple',
         descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
-        deviceState: 'deviceState',
-        key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-deviceState',
+        deviceState: '1stTestnetAddress@device_id:0',
+        key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-1stTestnetAddress@device_id:0',
         balance: '100000000', // 100 XRP
         availableBalance: '100000000', // 100 XRP
         misc: { reserve: '21', sequence: 0 },
@@ -119,8 +119,8 @@ export const SOL_ACCOUNT = {
         symbol: 'sol',
         networkType: 'solana',
         descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
-        deviceState: 'deviceState',
-        key: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF-sol-deviceState',
+        deviceState: '1stTestnetAddress@device_id:0',
+        key: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF-sol-1stTestnetAddress@device_id:0',
         balance: '10000000000', // 10 SOL
         availableBalance: '10000000000', // 10 SOL
         misc: {
@@ -133,7 +133,7 @@ export const SOL_ACCOUNT = {
 };
 
 const DEVICE = testMocks.getSuiteDevice({
-    state: 'deviceState',
+    state: '1stTestnetAddress@device_id:0',
     connected: true,
     available: true,
 });
@@ -340,7 +340,7 @@ const DEFAULT_DRAFT = {
 };
 
 const getDraft = (draft?: any) => ({
-    'xpub-btc-deviceState': {
+    'xpub-btc-1stTestnetAddress@device_id:0': {
         ...DEFAULT_DRAFT,
         outputs: [
             {
@@ -351,7 +351,7 @@ const getDraft = (draft?: any) => ({
         ],
         ...draft,
     },
-    '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-deviceState': {
+    '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-1stTestnetAddress@device_id:0': {
         ...DEFAULT_DRAFT,
         outputs: [
             {
@@ -362,7 +362,7 @@ const getDraft = (draft?: any) => ({
         ],
         ...draft,
     },
-    'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-deviceState': {
+    'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-1stTestnetAddress@device_id:0': {
         ...DEFAULT_DRAFT,
         outputs: [
             {
@@ -373,7 +373,7 @@ const getDraft = (draft?: any) => ({
         ],
         ...draft,
     },
-    'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF-sol-deviceState': {
+    'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF-sol-1stTestnetAddress@device_id:0': {
         ...DEFAULT_DRAFT,
         outputs: [
             {
@@ -418,7 +418,7 @@ export const addingOutputs = [
         store: {
             send: {
                 drafts: {
-                    'xpub-btc-deviceState': {
+                    'xpub-btc-1stTestnetAddress@device_id:0': {
                         ...DEFAULT_DRAFT,
                         outputs: [
                             {
@@ -478,7 +478,7 @@ export const addingOutputs = [
         store: {
             send: {
                 drafts: {
-                    'xpub-btc-deviceState': {
+                    'xpub-btc-1stTestnetAddress@device_id:0': {
                         ...DEFAULT_DRAFT,
                         outputs: [
                             {
@@ -678,7 +678,7 @@ export const setMax = [
                 accounts: [
                     {
                         targetAnonymity: 50,
-                        key: 'xpub-btc-deviceState',
+                        key: 'xpub-btc-1stTestnetAddress@device_id:0',
                     },
                 ],
             },
@@ -736,7 +736,7 @@ export const setMax = [
         store: {
             send: {
                 drafts: {
-                    'xpub-btc-deviceState': {
+                    'xpub-btc-1stTestnetAddress@device_id:0': {
                         ...DEFAULT_DRAFT,
                         outputs: [
                             {
@@ -779,7 +779,7 @@ export const setMax = [
         store: {
             send: {
                 drafts: {
-                    'xpub-btc-deviceState': {
+                    'xpub-btc-1stTestnetAddress@device_id:0': {
                         ...DEFAULT_DRAFT,
                         outputs: [
                             {

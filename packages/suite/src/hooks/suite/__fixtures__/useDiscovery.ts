@@ -42,7 +42,7 @@ export const actions = [
     {
         action: {
             type: deviceActions.updateSelectedDevice.type,
-            payload: getSuiteDevice({ state: 'deviceState' }),
+            payload: getSuiteDevice({ state: '1stTestnetAddress@device_id:0' }),
         },
         renders: 3,
         result: {
@@ -54,7 +54,7 @@ export const actions = [
         action: {
             type: discoveryActions.createDiscovery.type,
             payload: {
-                deviceState: 'deviceState',
+                deviceState: '1stTestnetAddress@device_id:0',
                 authConfirm: true,
                 status: DiscoveryStatus.IDLE,
                 total: 10,
@@ -71,7 +71,11 @@ export const actions = [
     {
         action: {
             type: discoveryActions.updateDiscovery.type,
-            payload: { deviceState: 'deviceState', status: DiscoveryStatus.RUNNING, loaded: 2 },
+            payload: {
+                deviceState: '1stTestnetAddress@device_id:0',
+                status: DiscoveryStatus.RUNNING,
+                loaded: 2,
+            },
         },
         renders: 5,
         result: {
@@ -83,7 +87,7 @@ export const actions = [
     {
         action: {
             type: discoveryActions.updateDiscovery.type,
-            payload: { deviceState: 'deviceState', authConfirm: false },
+            payload: { deviceState: '1stTestnetAddress@device_id:0', authConfirm: false },
         },
         renders: 6,
         result: {
@@ -96,7 +100,7 @@ export const actions = [
         action: {
             type: discoveryActions.updateDiscovery.type,
             payload: {
-                deviceState: 'deviceState',
+                deviceState: '1stTestnetAddress@device_id:0',
                 status: DiscoveryStatus.COMPLETED,
                 authConfirm: true,
             },
@@ -132,7 +136,7 @@ export const actions = [
     {
         action: {
             type: deviceActions.updateSelectedDevice.type,
-            payload: getSuiteDevice({ state: 'deviceState', available: false }), // available is used in one test case
+            payload: getSuiteDevice({ state: '1stTestnetAddress@device_id:0', available: false }), // available is used in one test case
         },
         renders: 10,
         result: {},
@@ -140,7 +144,7 @@ export const actions = [
     {
         action: {
             type: discoveryActions.updateDiscovery.type,
-            payload: { deviceState: 'deviceState', authConfirm: false },
+            payload: { deviceState: '1stTestnetAddress@device_id:0', authConfirm: false },
         },
         renders: 11,
         result: {
@@ -152,7 +156,7 @@ export const actions = [
         action: {
             type: discoveryActions.updateDiscovery.type,
             payload: {
-                deviceState: 'deviceState',
+                deviceState: '1stTestnetAddress@device_id:0',
                 networks: ['btc'],
                 failed: ['btc'],
             },
@@ -167,7 +171,7 @@ export const actions = [
         action: {
             type: discoveryActions.updateDiscovery.type,
             payload: {
-                deviceState: 'deviceState',
+                deviceState: '1stTestnetAddress@device_id:0',
                 failed: [],
                 error: 'some error',
             },
@@ -182,7 +186,7 @@ export const actions = [
         action: {
             type: discoveryActions.updateDiscovery.type,
             payload: {
-                deviceState: 'deviceState',
+                deviceState: '1stTestnetAddress@device_id:0',
                 networks: ['btc'],
                 errorCode: 'Device_InvalidState',
             },
@@ -197,7 +201,7 @@ export const actions = [
         action: {
             type: discoveryActions.updateDiscovery.type,
             payload: {
-                deviceState: 'deviceState',
+                deviceState: '1stTestnetAddress@device_id:0',
                 errorCode: undefined,
             },
         },

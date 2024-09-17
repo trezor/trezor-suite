@@ -418,7 +418,7 @@ const handleDeviceDisconnect = [
                 devices: [
                     getSuiteDevice({
                         path: '1',
-                        state: 'abc',
+                        state: '1stTestnetAddress@device_b_id:0',
                         remember: true,
                     }),
                 ],
@@ -436,13 +436,13 @@ const handleDeviceDisconnect = [
                     SUITE_DEVICE,
                     getSuiteDevice({
                         path: '1',
-                        state: 'cba',
+                        state: '1stTestnetAddress@device_a_id:0',
                         instance: 2,
                         remember: true,
                     }),
                     getSuiteDevice({
                         path: '1',
-                        state: 'abc',
+                        state: '1stTestnetAddress@device_b_id:0',
                         instance: 1,
                         remember: true,
                     }),
@@ -453,7 +453,7 @@ const handleDeviceDisconnect = [
         result: {
             type: deviceActions.selectDevice.type,
             payload: getSuiteDevice({
-                state: 'abc',
+                state: '1stTestnetAddress@device_b_id:0',
                 instance: 1,
                 remember: true,
             }),
@@ -799,7 +799,7 @@ const authorizeDeviceActions = [
         state: {
             selectedDevice: getSuiteDevice({
                 connected: true,
-                state: '012345',
+                state: '1stTestnetAddress@device_2_id:0',
             }),
         },
         result: authorizeDeviceThunk.rejected.type,
@@ -973,7 +973,7 @@ const authConfirm = [
     {
         description: `mismatch`,
         state: {
-            selectedDevice: getSuiteDevice({ state: 'ABCD' }),
+            selectedDevice: getSuiteDevice({ state: '1stTestnetAddress@device_ABCD_id:0' }),
         },
         result: {
             type: '@modal/open-user-context',

@@ -466,7 +466,7 @@ export const enhanceTransaction = [
             },
         },
         account: getWalletAccount({
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             symbol: 'btc',
@@ -479,7 +479,7 @@ export const enhanceTransaction = [
             blockTime: 1565797979,
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '123.00002929',
             symbol: 'btc',
@@ -558,7 +558,7 @@ export const enhanceTransaction = [
             },
         },
         account: getWalletAccount({
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             symbol: 'btc',
@@ -571,7 +571,7 @@ export const enhanceTransaction = [
             blockTime: 1565797979,
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '0.00009426',
             symbol: 'btc',
@@ -621,7 +621,7 @@ export const enhanceTransaction = [
             },
         },
         account: getWalletAccount({
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             symbol: 'btc',
@@ -634,7 +634,7 @@ export const enhanceTransaction = [
             blockTime: 1565797979,
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '0.00009426',
             symbol: 'btc',
@@ -1274,7 +1274,7 @@ export const getAccountTransactions = [
         testName: 'BTC account, 2txs',
         transactions: TXS,
         account: getWalletAccount({
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             symbol: 'btc',
@@ -1287,7 +1287,7 @@ export const getAccountTransactions = [
                 blockTime: 1565797979,
                 descriptor:
                     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-                deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                deviceState: '1stTestnetAddress@device_id:0',
                 fee: '0.00002929',
 
                 symbol: 'btc',
@@ -1305,7 +1305,7 @@ export const getAccountTransactions = [
                 blockTime: 1565797979,
                 descriptor:
                     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-                deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                deviceState: '1stTestnetAddress@device_id:0',
                 fee: '0.00000166',
 
                 symbol: 'btc',
@@ -1322,14 +1322,14 @@ export const getAccountTransactions = [
         testName: 'XRP testnet account, 2',
         transactions: TXS,
         account: getWalletAccount({
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
             symbol: 'txrp',
         }),
         result: [
             {
                 descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
-                deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                deviceState: '1stTestnetAddress@device_id:0',
                 symbol: 'txrp',
                 type: 'recv',
                 txid: 'A62FDA65E3B84FA2BED47086DB9458CFF8AF475196E327FC51DA0143BD998A9B',
@@ -1349,7 +1349,7 @@ export const getAccountTransactions = [
             },
             {
                 descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
-                deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                deviceState: '1stTestnetAddress@device_id:0',
                 symbol: 'txrp',
                 type: 'recv',
                 txid: 'DFA960521E384047E56946F9A441FB717475D132E49737A347CA8B6C80AFC84B',
@@ -1373,14 +1373,14 @@ export const getAccountTransactions = [
         testName: 'eth account, 5 txs',
         transactions: TXS,
         account: getWalletAccount({
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
             symbol: 'eth',
         }),
         result: [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
-                deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                deviceState: '1stTestnetAddress@device_id:0',
                 symbol: 'eth',
                 type: 'recv',
                 txid: '0x63635c5ca1e21d13780d5a0a66cc16dfe0b49ffb9eff191f15b3da271b1ad1d3',
@@ -1403,7 +1403,7 @@ export const getAccountTransactions = [
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
-                deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                deviceState: '1stTestnetAddress@device_id:0',
                 symbol: 'eth',
                 type: 'sent',
                 txid: '0x5f3cba8a6dee792594dcce71c5aa39a872bce57cb33e0da8db02d9f2f865806c',
@@ -1430,7 +1430,7 @@ export const getAccountTransactions = [
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
-                deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                deviceState: '1stTestnetAddress@device_id:0',
                 symbol: 'eth',
                 type: 'sent',
                 txid: '0xfaae2e7927e97002f15300c6011ca792243cbd57d574db34ccb2a9c18c272b3e',
@@ -1462,7 +1462,7 @@ export const getAccountTransactions = [
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
-                deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                deviceState: '1stTestnetAddress@device_id:0',
                 symbol: 'eth',
                 type: 'recv',
                 txid: '0x0833ce97c3f4ce6c170c94aff0acfa1cbfd528bf0d3faa06676cad7daddd2e5c',
@@ -1485,7 +1485,7 @@ export const getAccountTransactions = [
             },
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
-                deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                deviceState: '1stTestnetAddress@device_id:0',
                 symbol: 'eth',
                 type: 'recv',
                 txid: '0xcef7e6fbb7f61df35eb6dd5c26f75c15152f83298d060e4c6b6850a835e2d9cd',
@@ -1521,7 +1521,7 @@ export const getAccountTransactions = [
         testName: 'eth account, 0 txs',
         transactions: TXS,
         account: getWalletAccount({
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             descriptor: '0xf69619a3dCAA63757A6BA0AF3628f5F6C42c50d2',
             symbol: 'eth',
         }),
@@ -1537,7 +1537,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         blockTime: 1565797979,
         descriptor:
             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-        deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+        deviceState: '1stTestnetAddress@device_id:0',
         fee: '0.00002929',
         symbol: 'btc',
         targets: [],

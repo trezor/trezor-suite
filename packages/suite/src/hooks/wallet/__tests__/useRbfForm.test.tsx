@@ -152,7 +152,6 @@ describe('useRbfForm hook', () => {
             if (!callback.getContextValues) throw Error('callback.getContextValues missing');
 
             const { composedLevels } = callback.getContextValues();
-
             // check composeTransaction result
             expect(composedLevels).toMatchObject(f.composedLevels);
 

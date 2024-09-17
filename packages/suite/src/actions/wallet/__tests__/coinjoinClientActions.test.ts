@@ -322,7 +322,7 @@ describe('coinjoinClientActions', () => {
             initStore({
                 accounts: [
                     testMocks.getWalletAccount({
-                        deviceState: 'device-state',
+                        deviceState: '1stTestnetAddress@device_id:0',
                         accountType: 'coinjoin',
                         key: 'btc-account1',
                         symbol: 'btc',
@@ -399,7 +399,9 @@ describe('coinjoinClientActions', () => {
 
     it('stopCoinjoinSession with error from Trezor', async () => {
         const store = initStore({
-            accounts: [{ key: 'account-A', symbol: 'btc', deviceState: 'device-state' }],
+            accounts: [
+                { key: 'account-A', symbol: 'btc', deviceState: '1stTestnetAddress@device_id:0' },
+            ],
         } as any);
 
         testMocks.setTrezorConnectFixtures([
@@ -423,7 +425,7 @@ describe('coinjoinClientActions', () => {
                     key: 'account-A',
                     accountType: 'coinjoin',
                     symbol: 'btc',
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                 },
                 {
                     key: 'account-B',

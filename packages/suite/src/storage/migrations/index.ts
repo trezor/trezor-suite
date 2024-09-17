@@ -308,6 +308,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 28) {
         await updateAll(transaction, 'devices', device => {
             if (device.state?.includes('undefined')) {
+                // @ts-expect-error
                 device.state = device.state.replace('undefined', '0');
 
                 return device;
@@ -325,6 +326,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         accountsStoreNew.createIndex('deviceState', 'deviceState', { unique: false });
 
         accounts.forEach(account => {
+            // @ts-expect-error
             account.deviceState = account.deviceState.replace('undefined', '0');
             account.key = account.key.replace('undefined', '0');
             accountsStoreNew.add(account);
@@ -347,6 +349,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         });
 
         txs.forEach(tx => {
+            // @ts-expect-error
             tx.tx.deviceState = tx.tx.deviceState.replace('undefined', '0');
             txsStoreNew.add(tx);
         });
@@ -367,6 +370,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         graphStoreNew.createIndex('deviceState', 'account.deviceState');
 
         graphs.forEach(graph => {
+            // @ts-expect-error
             graph.account.deviceState = graph.account.deviceState.replace('undefined', '0');
             graphStoreNew.add(graph);
         });
@@ -379,6 +383,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         const discoveryStoreNew = db.createObjectStore('discovery', { keyPath: 'deviceState' });
 
         discoveries.forEach(discovery => {
+            // @ts-expect-error
             discovery.deviceState = discovery.deviceState.replace('undefined', '0');
             discoveryStoreNew.add(discovery);
         });

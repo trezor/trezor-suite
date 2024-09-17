@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { AccountInfo } from '@trezor/connect';
+import { AccountInfo, StaticSessionId } from '@trezor/connect';
 import { Account, SelectedAccountStatus, DiscoveryItem } from '@suite-common/wallet-types';
 import {
     enhanceAddresses,
@@ -30,7 +30,7 @@ const removeAccount = createAction(
 );
 
 type CreateAccountActionProps = {
-    deviceState: string;
+    deviceState: StaticSessionId;
     discoveryItem: DiscoveryItem;
     accountInfo: AccountInfo;
     imported?: boolean;

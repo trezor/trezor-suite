@@ -21,7 +21,7 @@ import {
     selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { Account, DiscoveryItem } from '@suite-common/wallet-types';
 import { getDerivationType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import {
@@ -191,7 +191,7 @@ const getCardanoSupportedAccountTypesThunk = createThunk(
         {
             deviceState,
         }: {
-            deviceState: string;
+            deviceState: StaticSessionId;
         },
         { dispatch, getState },
     ) => {
@@ -232,7 +232,7 @@ export const addAccountByDescriptorThunk = createThunk(
             bundleItem,
             identity,
         }: {
-            deviceState: string;
+            deviceState: StaticSessionId;
             bundleItem: DiscoveryDescriptorItem;
             identity?: string;
         },
@@ -292,7 +292,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
             identity,
         }: {
             descriptorsBundle: DiscoveryDescriptorItem[];
-            deviceState: string;
+            deviceState: StaticSessionId;
             identity?: string;
         },
         { dispatch, getState },
@@ -351,7 +351,7 @@ export const addAndDiscoverNetworkAccountThunk = createThunk<
     Account,
     {
         network: NetworkCompatible;
-        deviceState: string;
+        deviceState: StaticSessionId;
     },
     { rejectValue: string }
 >(
@@ -433,7 +433,7 @@ const discoverNetworkBatchThunk = createThunk(
             round = 1,
             network,
         }: {
-            deviceState: string;
+            deviceState: StaticSessionId;
             round?: number;
             network: NetworkCompatible;
         },
@@ -547,7 +547,7 @@ export const createDescriptorPreloadedDiscoveryThunk = createThunk(
             networks,
             availableCardanoDerivations,
         }: {
-            deviceState: string;
+            deviceState: StaticSessionId;
             networks: readonly NetworkCompatible[];
             availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] | undefined;
         },
@@ -600,7 +600,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         {
             forcedAreTestnetsEnabled,
             forcedDeviceState, // device state can be pushed from outside (e.g. in middleware when fetched from action)
-        }: { forcedAreTestnetsEnabled?: boolean; forcedDeviceState?: string },
+        }: { forcedAreTestnetsEnabled?: boolean; forcedDeviceState?: StaticSessionId },
         { dispatch, getState },
     ) => {
         const deviceState = forcedDeviceState ?? selectDeviceState(getState());

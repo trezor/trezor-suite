@@ -170,7 +170,7 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
     };
 };
 
-const SUITE_DEVICE = getSuiteDevice({ state: 'device-state', connected: true });
+const SUITE_DEVICE = getSuiteDevice({ state: '1stTestnetAddress@device_id:0', connected: true });
 export const getInitialState = (device = SUITE_DEVICE) => ({
     device: {
         devices: [device],
@@ -226,7 +226,7 @@ describe('Discovery Actions', () => {
 
             store.dispatch(
                 createDiscoveryThunk({
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     device: f.device || SUITE_DEVICE,
                 }),
             );
@@ -266,7 +266,7 @@ describe('Discovery Actions', () => {
 
             store.dispatch(
                 createDiscoveryThunk({
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     device: SUITE_DEVICE,
                 }),
             );
@@ -324,7 +324,7 @@ describe('Discovery Actions', () => {
 
             store.dispatch(
                 createDiscoveryThunk({
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     device: SUITE_DEVICE,
                 }),
             );
@@ -353,7 +353,7 @@ describe('Discovery Actions', () => {
             const store = initStore(state);
             store.dispatch(
                 createDiscoveryThunk({
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     device: f.device || SUITE_DEVICE,
                 }),
             );
@@ -397,13 +397,13 @@ describe('Discovery Actions', () => {
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -427,7 +427,11 @@ describe('Discovery Actions', () => {
 
     it('Update discovery which does not exist', () => {
         const store = initStore();
-        store.dispatch(discoveryActions.updateDiscovery({ deviceState: 'not-existed' }));
+        store.dispatch(
+            discoveryActions.updateDiscovery({
+                deviceState: '1stTestnetAddress@device_not-existed_id:0',
+            }),
+        );
         expect(store.getState().wallet.discovery.length).toEqual(0);
     });
 
@@ -440,7 +444,7 @@ describe('Discovery Actions', () => {
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -475,7 +479,7 @@ describe('Discovery Actions', () => {
         const store = initStore(state);
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -498,7 +502,7 @@ describe('Discovery Actions', () => {
         );
         expect(store.getState().wallet.discovery[0].failed.length).toEqual(0);
         // remove discovery
-        store.dispatch(discoveryActions.removeDiscovery('device-state'));
+        store.dispatch(discoveryActions.removeDiscovery('1stTestnetAddress@device_id:0'));
         // restart (discovery doesn't exists)
         await store.dispatch(restartDiscoveryThunk());
     });
@@ -516,12 +520,12 @@ describe('Discovery Actions', () => {
             const a = actions[actions.length - 1];
             if (a.type === discoveryActions.updateDiscovery.type && a.payload.status === 1) {
                 // catch bundle update called from 'start()' and remove discovery before TrezorConnect response
-                store.dispatch(discoveryActions.removeDiscovery('device-state'));
+                store.dispatch(discoveryActions.removeDiscovery('1stTestnetAddress@device_id:0'));
             }
         });
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -545,7 +549,7 @@ describe('Discovery Actions', () => {
                 // catch bundle update called from 'start()' and stop discovery before TrezorConnect response
                 store.dispatch(
                     discoveryActions.updateDiscovery({
-                        deviceState: 'device-state',
+                        deviceState: '1stTestnetAddress@device_id:0',
                         status: DiscoveryStatus.STOPPED,
                     }),
                 );
@@ -553,7 +557,7 @@ describe('Discovery Actions', () => {
         });
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -570,7 +574,7 @@ describe('Discovery Actions', () => {
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -596,7 +600,7 @@ describe('Discovery Actions', () => {
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -615,7 +619,7 @@ describe('Discovery Actions', () => {
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -634,7 +638,7 @@ describe('Discovery Actions', () => {
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -665,7 +669,7 @@ describe('Discovery Actions', () => {
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -698,7 +702,7 @@ describe('Discovery Actions', () => {
         const store = initStore();
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: SUITE_DEVICE,
             }),
         );
@@ -716,7 +720,7 @@ describe('Discovery Actions', () => {
         });
         const state = getInitialState();
         state.device.selectedDevice = getSuiteDevice({
-            state: 'device-state',
+            state: '1stTestnetAddress@device_id:0',
             connected: true,
             useEmptyPassphrase: false, // mandatory
         });
@@ -728,7 +732,7 @@ describe('Discovery Actions', () => {
 
         store.dispatch(
             createDiscoveryThunk({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 device: state.device.selectedDevice,
             }),
         );
@@ -736,7 +740,7 @@ describe('Discovery Actions', () => {
         expect(fn(store.getState())).toEqual(true);
 
         // remove discovery
-        store.dispatch(discoveryActions.removeDiscovery('device-state'));
+        store.dispatch(discoveryActions.removeDiscovery('1stTestnetAddress@device_id:0'));
         expect(fn(store.getState())).toEqual(undefined);
 
         // @ts-expect-error remove device from state

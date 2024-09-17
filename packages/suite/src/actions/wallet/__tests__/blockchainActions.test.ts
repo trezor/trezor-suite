@@ -58,10 +58,10 @@ export const getInitialState = (
     },
     notifications: notificationsReducer([], action),
     device: {
-        devices: [{ state: 'deviceState' }], // device is needed for notification/event
+        devices: [{ state: '1stTestnetAddress@device_id:0' }], // device is needed for notification/event
     },
     suite: {
-        device: { state: 'deviceState' }, // device is needed for notification/event
+        device: { state: '1stTestnetAddress@device_id:0' }, // device is needed for notification/event
     },
 });
 

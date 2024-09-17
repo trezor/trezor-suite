@@ -1,6 +1,6 @@
 import { AccountType, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountEntityKeys } from '@suite-common/metadata-types';
-import { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
+import { AccountInfo, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
 import {
     AddressAlias,
     ContractInfo,
@@ -80,7 +80,7 @@ export type AccountBackendSpecific =
 export type AccountKey = string;
 
 export type Account = {
-    deviceState: string;
+    deviceState: StaticSessionId;
     key: AccountKey;
     index: number;
     path: string;

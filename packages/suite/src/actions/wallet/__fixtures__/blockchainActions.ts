@@ -3,7 +3,7 @@ import { blockchainActions, transactionsActions, accountsActions } from '@suite-
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 const DEFAULT_ACCOUNT = {
-    deviceState: 'deviceState',
+    deviceState: '1stTestnetAddress@device_id:0',
     symbol: 'btc',
     networkType: 'bitcoin',
     descriptor: 'xpub',
