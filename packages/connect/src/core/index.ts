@@ -38,6 +38,7 @@ import { InteractionTimeout } from '../utils/interactionTimeout';
 import type { DeviceEvents, Device } from '../device/Device';
 import type { ConnectSettings, Device as DeviceTyped, StaticSessionId } from '../types';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
+import { WebextensionStateStorage } from '../device/StateStorage';
 
 // custom log
 const _log = initLog('Core');
@@ -631,35 +632,8 @@ const onCallDevice = async (
             createUiMessage(UI.REQUEST_PASSPHRASE_ON_DEVICE, { device: device.toMessageObject() }),
         );
     });
-    device.on(DEVICE.SAVE_STATE, (state: string) => {
-        // Persist sessionId only in case of core in popup
-        // Currently also only for webextension until we asses security implications
-        if (useCoreInPopup && env === 'webextension' && origin) {
-            storage.saveForOrigin(store => {
-                return {
-                    ...store,
-                    preferredDevice: store.preferredDevice
-                        ? {
-                              ...store.preferredDevice,
-                              internalState: state,
-                              internalStateExpiration: Date.now() + 1000 * 60 * 15, // 15 minutes
-                          }
-                        : undefined,
-                };
-            }, origin);
-        }
-    });
-
-    if (!device.getState()?.sessionId && useCoreInPopup && env === 'webextension' && origin) {
-        // Restore sessionId if available
-        const { preferredDevice } = storage.loadForOrigin(origin) || {};
-        if (
-            preferredDevice?.internalState &&
-            preferredDevice?.internalStateExpiration &&
-            preferredDevice.internalStateExpiration > new Date().getTime()
-        ) {
-            device.setState({ sessionId: preferredDevice.internalState });
-        }
+    if (useCoreInPopup && env === 'webextension' && origin) {
+        device.initStorage(new WebextensionStateStorage(origin));
     }
 
     let messageResponse: CoreEventMessage;
