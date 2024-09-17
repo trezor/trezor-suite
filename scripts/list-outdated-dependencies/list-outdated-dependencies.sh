@@ -2,11 +2,8 @@
 
 script_directory="$(dirname "${BASH_SOURCE[0]}")"
 
-# shellcheck disable=SC1091
-source "$script_directory/config.sh"
-
-DOMAINS=("common" "connect" "mission" "mobile" "qa" "trends" "usability")
-valid_arguments_hint="Valid values are: ${DOMAINS[*]}."
+domains=("common" "connect" "mission" "mobile" "qa" "trends" "usability")
+valid_arguments_hint="Valid values are: ${domains[*]}."
 
 # Check if an argument was provided
 if [ "$#" -ne 1 ]; then
@@ -29,7 +26,7 @@ contains() {
 }
 
 # Check if the provided argument is valid
-if ! contains "$1" "${DOMAINS[@]}"; then
+if ! contains "$1" "${domains[@]}"; then
   echo "Invalid argument '$1'."
   echo "$valid_arguments_hint"
   exit 1

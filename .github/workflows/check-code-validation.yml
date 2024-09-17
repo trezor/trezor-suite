@@ -126,6 +126,8 @@ jobs:
         run: yarn depcheck
       - name: Yarn Dedupe check
         run: yarn dedupe --check
+      - name: Check dependency domain lists
+        run: ./scripts/ci/list-missing-dependencies.sh
       - name: Verify Workspace Resolutions
         run: yarn check-workspace-resolutions
       - name: Msg-system Config Validation
@@ -144,7 +146,7 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
-      
+
       - name: Check releases.json files changes
         uses: dorny/paths-filter@v3
         id: changes
