@@ -2,7 +2,6 @@ react-native
 expo
 expo-constants
 expo-localization
-expo-modules-core
 react-fela
 fela
 fela-enforce-longhands
@@ -65,5 +64,6 @@ ts-jest
 @shopify/react-native-skia
 react-native-reanimated
 yup
+metro
 metro-react-native-babel-preset
 jest-expo
