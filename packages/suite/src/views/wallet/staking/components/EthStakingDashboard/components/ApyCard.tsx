@@ -1,5 +1,5 @@
 import { useTheme } from 'styled-components';
-import { Card, Icon } from '@trezor/components';
+import { Card, Column, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { AccentP, CardBottomContent, GreyP } from './styled';
 
@@ -12,14 +12,16 @@ export const ApyCard = ({ apy }: ApyCardProps) => {
 
     return (
         <Card paddingType="small">
-            <Icon name="percent" color={theme.iconSubdued} />
+            <Column alignItems="flex-start">
+                <Icon name="percent" color={theme.iconSubdued} />
 
-            <CardBottomContent>
-                <AccentP>{`${apy}%`}</AccentP>
-                <GreyP>
-                    <Translation id="TR_STAKE_APY" />
-                </GreyP>
-            </CardBottomContent>
+                <CardBottomContent>
+                    <AccentP>{`${apy}%`}</AccentP>
+                    <GreyP>
+                        <Translation id="TR_STAKE_APY" />
+                    </GreyP>
+                </CardBottomContent>
+            </Column>
         </Card>
     );
 };
