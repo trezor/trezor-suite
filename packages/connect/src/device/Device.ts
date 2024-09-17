@@ -892,7 +892,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         return {
             type: 'acquired',
-            id: this.features.device_id || null,
+            id: this.features.device_id,
             path: this.originalDescriptor.path,
             label,
             _state: this.getState(),
