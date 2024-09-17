@@ -65,6 +65,7 @@ export const UserContextModal = ({
                     symbol={payload.symbol}
                     noRedirect={payload.noRedirect}
                     isCoinjoinDisabled={payload.isCoinjoinDisabled}
+                    isBackClickDisabled={payload.isBackClickDisabled}
                     onCancel={onCancel}
                 />
             );

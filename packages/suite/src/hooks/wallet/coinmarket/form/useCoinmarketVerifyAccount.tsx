@@ -180,6 +180,7 @@ const useCoinmarketVerifyAccount = ({
                     symbol: receiveNetwork,
                     noRedirect: true,
                     isCoinjoinDisabled: true,
+                    isBackClickDisabled: true,
                 }),
             );
 
