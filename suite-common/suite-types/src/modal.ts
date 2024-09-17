@@ -39,6 +39,7 @@ export type UserContextPayload =
           symbol?: Account['symbol'];
           noRedirect?: boolean;
           isCoinjoinDisabled?: boolean;
+          isBackClickDisabled?: boolean;
       }
     | {
           type: 'device-background-gallery';
