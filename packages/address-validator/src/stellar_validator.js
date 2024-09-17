@@ -1,5 +1,5 @@
 const { addressType } = require('./crypto/utils');
-const baseX = require('base-x');
+const baseX = require('base-x').default;
 const crc = require('crc');
 const cryptoUtils = require('./crypto/utils');
 

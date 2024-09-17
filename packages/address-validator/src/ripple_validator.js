@@ -1,6 +1,6 @@
 const { addressType } = require('./crypto/utils');
 var cryptoUtils = require('./crypto/utils');
-var baseX = require('base-x');
+var baseX = require('base-x').default;
 
 var ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
 
