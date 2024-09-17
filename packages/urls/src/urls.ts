@@ -93,7 +93,7 @@ export const HELP_CENTER_EVM_ADDRESS_CHECKSUM =
 export const HELP_CENTER_FIRMWARE_REVISION_CHECK =
     'https://trezor.io/learn/a/trezor-firmware-revision-check';
 export const TREZOR_SUPPORT_FW_CHECK_FAILED =
-    'trezor.io/support/a/trezor-firmware-revision-check-failed';
+    'https://trezor.io/support/a/trezor-firmware-revision-check-failed';
 
 export const INVITY_URL = 'https://invity.io/';
 export const INVITY_SCHEDULE_OF_FEES = 'https://blog.invity.io/schedule-of-fees';
