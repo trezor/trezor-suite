@@ -194,6 +194,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 },
                 UIRequiredDeviceCapabilities: ['armv7'],
             },
+            entitlements: {
+                'aps-environment': 'development',
+            },
         },
         plugins: getPlugins(),
         extra: {
