@@ -77,7 +77,7 @@ export const TokensTable = ({
                     <Table.Body>
                         {tokensWithBalance.map(token => (
                             <TokenRow
-                                key={token.symbol}
+                                key={token.contract}
                                 token={token}
                                 account={account}
                                 network={network}
@@ -110,7 +110,7 @@ export const TokensTable = ({
                                 </Table.Row>
                                 {tokensWithoutBalance.map(token => (
                                     <TokenRow
-                                        key={token.symbol}
+                                        key={token.contract}
                                         token={token}
                                         account={account}
                                         network={network}
