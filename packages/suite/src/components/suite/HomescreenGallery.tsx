@@ -51,7 +51,9 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
         if (isLocked()) return;
 
         // original image is the default image already available in device, set it by empty string
-        const isOriginalImage = image === `original_${deviceModelInternal.toLowerCase()}`;
+        const isOriginalImage =
+            image ===
+            `original_${(deviceModelInternal === DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : deviceModelInternal).toLowerCase()}`;
 
         const hex = isOriginalImage ? '' : await imagePathToHex(imagePath, deviceModelInternal);
 

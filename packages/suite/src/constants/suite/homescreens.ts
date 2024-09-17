@@ -1,7 +1,7 @@
 import { DeviceModelInternal } from '@trezor/connect';
 
 const safe3Homescreens = [
-    'original_t2b1', // note - has to be first
+    'original_t3b1', // note - has to be first
     'blank',
     'circleweb',
     'circuit',
