@@ -27,7 +27,7 @@
         "electron-localshortcut": "^3.2.1",
         "electron-store": "8.2.0",
         "electron-updater": "6.3.4",
-        "usb": "^2.13.0"
+        "usb": "^2.14.0"
     },
     "devDependencies": {
         "@electron/notarize": "2.4.0",
