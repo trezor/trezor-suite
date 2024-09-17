@@ -165,7 +165,7 @@ export abstract class AbstractMessageChannel<
             message = message.data;
         }
 
-        const { channel, id, type, payload, success } = message;
+        const { channel, id, type, ...data } = message;
 
         // Don't verify channel in legacy mode
         if (!this.legacyMode) {
@@ -201,7 +201,7 @@ export abstract class AbstractMessageChannel<
         }
 
         if (this.messagePromises[id]) {
-            this.messagePromises[id].resolve({ id, payload, success });
+            this.messagePromises[id].resolve({ id, ...data });
             delete this.messagePromises[id];
         }
         const messagePromisesLength = Object.keys(this.messagePromises).length;

@@ -19,7 +19,7 @@ import {
     CoreEventMessage,
     CallMethodPayload,
 } from '@trezor/connect/src/events';
-import type { ConnectSettings, Manifest } from '@trezor/connect/src/types';
+import type { ConnectSettings, DeviceIdentity, Manifest } from '@trezor/connect/src/types';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
 import { config } from '@trezor/connect/src/data/config';
@@ -36,7 +36,12 @@ export class CoreInIframe implements ConnectFactoryDependencies {
 
     private _log: Log;
     private _popupManager?: popup.PopupManager;
-    private _messagePromises: DeferredManager<{ id: number; success: boolean; payload: any }>;
+    private _messagePromises: DeferredManager<{
+        id: number;
+        success: boolean;
+        payload: any;
+        device?: DeviceIdentity;
+    }>;
 
     private readonly boundHandleMessage = this.handleMessage.bind(this);
     private readonly boundDispose = this.dispose.bind(this);
@@ -96,8 +101,13 @@ export class CoreInIframe implements ConnectFactoryDependencies {
 
         switch (message.event) {
             case RESPONSE_EVENT: {
-                const { id = 0, success, payload } = message;
-                const resolved = this._messagePromises.resolve(id, { id, success, payload });
+                const { id = 0, success, payload, device } = message;
+                const resolved = this._messagePromises.resolve(id, {
+                    id,
+                    success,
+                    payload,
+                    device,
+                });
                 if (!resolved) this._log.warn(`Unknown message id ${id}`);
                 break;
             }

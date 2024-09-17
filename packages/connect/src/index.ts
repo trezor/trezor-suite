@@ -61,8 +61,8 @@ const onCoreEvent = (message: CoreEventMessage) => {
 
     switch (event) {
         case RESPONSE_EVENT: {
-            const { id = 0, success } = message;
-            const resolved = messagePromises.resolve(id, { id, success, payload });
+            const { id = 0, success, device } = message;
+            const resolved = messagePromises.resolve(id, { id, success, payload, device });
             if (!resolved) _log.warn(`Unknown message id ${id}`);
             break;
         }

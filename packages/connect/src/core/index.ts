@@ -427,7 +427,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     try {
         const response = await method.run();
 
-        return createResponseMessage(method.responseID, true, response);
+        return createResponseMessage(method.responseID, true, response, device);
     } catch (error) {
         return Promise.reject(error);
     }

@@ -1,7 +1,8 @@
 import { serializeError } from '../constants/errors';
 import type { IFRAME } from './iframe';
 import type { TrezorConnect } from '../types/api';
-import type { CommonParams } from '../types/params';
+import type { CommonParams, DeviceIdentity } from '../types/params';
+import { Device } from '../device/Device';
 
 // conditionally unwrap TrezorConnect api method Success<T> response
 type UnwrappedResponse<T> =
@@ -58,12 +59,14 @@ export interface MethodResponseMessage {
     id: number;
     success: boolean;
     payload: CallMethodResponse<keyof CallApi>;
+    device?: DeviceIdentity;
 }
 
 export const createResponseMessage = (
     id: number,
     success: boolean,
     payload: any,
+    device?: Device,
 ): MethodResponseMessage => ({
     event: RESPONSE_EVENT,
     type: RESPONSE_EVENT,
@@ -71,4 +74,11 @@ export const createResponseMessage = (
     success,
 
     payload: success ? payload : serializeError(payload),
+    device: device
+        ? {
+              path: device?.originalDescriptor.path,
+              state: device?.getState(),
+              instance: device?.instance,
+          }
+        : undefined,
 });
