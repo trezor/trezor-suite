@@ -58,7 +58,7 @@ export const AssetLogo = ({
     ...rest
 }: AssetLogoProps) => {
     const [isLoading, setIsLoading] = useState(true);
-    const [isPlaceholder, setIsPlaceholder] = useState(false);
+    const [isPlaceholder, setIsPlaceholder] = useState(!shouldTryToFetch);
     const fileName = contractAddress ? `${coingeckoId}--${contractAddress}` : coingeckoId;
     const logoUrl = getAssetLogoUrl(fileName);
 
@@ -70,7 +70,6 @@ export const AssetLogo = ({
     const handleError = () => {
         setIsPlaceholder(true);
     };
-
     useEffect(() => {
         setIsPlaceholder(!shouldTryToFetch);
     }, [shouldTryToFetch]);
