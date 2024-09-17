@@ -42,7 +42,7 @@ karma-webpack
 lodash
 @types/git-url-parse
 git-url-parse
-clsx 
+clsx
 protobufjs
 protobufjs-cli
 es6-promise
@@ -54,7 +54,7 @@ match-sorter
 zod
 esbuild
 xvfb-maybe
-scroll-into-view-if-needed // je potřeba?
+scroll-into-view-if-needed
 codemirror-json-schema
 json-stable-stringify
 @types/json-stable-stringify
@@ -63,7 +63,6 @@ intersection-observer
 semver
 node-libs-browser
 json-stable-stringify
-type-fest
 usb
 tiny-worker
 terser-webpack-plugin
@@ -91,3 +90,7 @@ events
 @types/web
 jssha
 wait-on
+@jest/types
+jest-extended
+jest-environment-node
+scroll-into-view-if-needed

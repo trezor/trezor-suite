@@ -9,7 +9,7 @@
 @storybook/client-api
 @storybook/react
 @storybook/react-webpack5
-@types/qrcode .react
+@types/qrcode.react
 @types/react-date-range
 @types/react-qr-reader
 @types/ua-parser-js
@@ -17,7 +17,6 @@ autoprefixer
 babel-plugin-styled-components
 css-in-js-utils
 css-loader
-css-minimiz
 css-minimizer-webpack-plugin
 csstype
 framer-motion

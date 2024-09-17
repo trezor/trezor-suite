@@ -30,6 +30,7 @@
 @types/webpack-plugin-serve
 @typescript-eslint/eslint-plugin
 @typescript-eslint/parser
+babel-jest
 babel-loader
 bignumber.js
 bn.js
@@ -45,6 +46,7 @@ eslint-plugin-cypress
 eslint-plugin-import
 eslint-plugin-jest
 eslint-plugin-jsx-a11y
+eslint-plugin-local-rules
 eslint-plugin-mdx
 eslint-plugin-react
 eslint-plugin-react-hooks
@@ -59,7 +61,6 @@ immer
 jest
 jest-canvas-mock
 jest-environment-jsdom
-jest-eslint
 jest-watch-typeahead
 jsdom
 minimatch
