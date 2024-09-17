@@ -60,12 +60,13 @@ export const DashboardPassphraseBanner = () => {
                         icon="asterisk"
                         rightContent={
                             <Row gap={8}>
-                                <Button onClick={handleManageClick}>
+                                <Button onClick={handleManageClick} size="small">
                                     <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON" />
                                 </Button>
                                 <IconButton
                                     icon="x"
                                     variant="tertiary"
+                                    size="small"
                                     onClick={() => {
                                         setIsVisible(false);
                                     }}
