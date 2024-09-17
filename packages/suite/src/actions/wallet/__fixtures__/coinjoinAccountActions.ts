@@ -7,7 +7,7 @@ const ACCOUNT: Partial<Account> = {
     accountType: 'coinjoin',
     backendType: 'coinjoin',
     symbol: 'btc',
-    deviceState: 'device-state',
+    deviceState: '1stTestnetAddress@device_id:0',
     key: '12345',
 };
 

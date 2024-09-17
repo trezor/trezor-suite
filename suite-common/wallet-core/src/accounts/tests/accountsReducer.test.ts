@@ -37,7 +37,7 @@ describe('Account Reducer', () => {
         const store = initStore();
         store.dispatch(
             accountsActions.createAccount({
-                deviceState: 'device-state',
+                deviceState: '1stTestnetAddress@device_id:0',
                 discoveryItem: {
                     index: 0,
                     path: "m/84'/0'/0'",

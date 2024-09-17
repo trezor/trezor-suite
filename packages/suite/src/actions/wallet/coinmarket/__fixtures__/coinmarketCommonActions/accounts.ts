@@ -4,10 +4,10 @@ export const BTC_ACCOUNT: Account = {
     networkType: 'bitcoin',
     symbol: 'btc',
     descriptor: 'btc-descriptor',
-    deviceState: 'C5B245DD2B69C7291:1',
+    deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/84'/0'/0'",
-    key: 'descriptor-btc-C5B245DD2B69C7291:1',
+    key: 'descriptor-btc-1stTestnetAddress@device_id:0',
     accountType: 'normal',
     empty: true,
     visible: true,
@@ -32,7 +32,7 @@ export const BTC_ACCOUNT: Account = {
         unconfirmed: 0,
     },
     metadata: {
-        key: 'C5B245DD2B69C7291',
+        key: '1stTestnetAddress@device_id:0',
         1: {
             fileName: '',
             aesKey: '',
@@ -47,7 +47,7 @@ export const ETH_ACCOUNT: Account = {
     symbol: 'eth',
     networkType: 'ethereum',
     descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
-    deviceState: 'deviceState',
+    deviceState: '1stTestnetAddress@device_id:0',
     key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-deviceState',
     accountType: 'normal',
     index: 0,
@@ -69,7 +69,7 @@ export const ETH_ACCOUNT: Account = {
         unconfirmed: 0,
     },
     metadata: {
-        key: 'C5B245DD2B69C7291',
+        key: '1stTestnetAddress@device_id:0',
         1: {
             fileName: '',
             aesKey: '',
@@ -84,7 +84,7 @@ export const XRP_ACCOUNT: Account = {
     symbol: 'xrp',
     networkType: 'ripple',
     descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
-    deviceState: 'deviceState',
+    deviceState: '1stTestnetAddress@device_id:0',
     key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-deviceState',
     availableBalance: '100000000000',
     accountType: 'normal',
@@ -106,7 +106,7 @@ export const XRP_ACCOUNT: Account = {
         unconfirmed: 0,
     },
     metadata: {
-        key: 'C5B245DD2B69C7291',
+        key: '1stTestnetAddress@device_id:0',
         1: {
             fileName: '',
             aesKey: '',

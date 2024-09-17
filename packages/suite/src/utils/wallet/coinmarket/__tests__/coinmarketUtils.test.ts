@@ -144,7 +144,7 @@ describe('coinmarket utils', () => {
     it('coinmarketGetSortedAccounts', () => {
         const sortedAccounts = coinmarketGetSortedAccounts({
             accounts: FIXTURE_ACCOUNTS as Account[],
-            deviceState: 'deviceState',
+            deviceState: '1stTestnetAddress@device_id:0',
         });
 
         expect(sortedAccounts).toStrictEqual([
@@ -163,7 +163,7 @@ describe('coinmarket utils', () => {
 
         const sortedAccounts = coinmarketBuildAccountOptions({
             accounts: FIXTURE_ACCOUNTS as Account[],
-            deviceState: 'deviceState',
+            deviceState: '1stTestnetAddress@device_id:0',
             accountLabels: {},
             defaultAccountLabelString,
             tokenDefinitions: { eth: { coin: coinDefinitions } },

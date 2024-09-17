@@ -42,7 +42,7 @@ const setTrezorConnectFixtures = (fixture: any) => {
 };
 
 const device = testMocks.getSuiteDevice({
-    state: 'device-state',
+    state: '1stTestnetAddress@device_id:0',
     connected: true,
     available: true,
 });

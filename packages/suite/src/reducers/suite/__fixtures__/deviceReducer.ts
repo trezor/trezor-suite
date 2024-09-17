@@ -371,7 +371,7 @@ const disconnect = [
                 getSuiteDevice({
                     path: '1',
                     remember: true,
-                    state: 'abc',
+                    state: '1stTestnet@device_id:0',
                 }),
             ],
         },
@@ -388,7 +388,7 @@ const disconnect = [
                 path: '',
                 connected: false,
                 available: false,
-                state: 'abc',
+                state: '1stTestnet@device_id:0',
             },
         ],
     },
@@ -399,13 +399,13 @@ const disconnect = [
                 getSuiteDevice({
                     path: '1',
                     remember: true,
-                    state: 'abc',
+                    state: '1stTestnet@device_id:0',
                 }),
                 getSuiteDevice({
                     path: '1',
                     remember: true,
                     instance: 1,
-                    state: 'cba',
+                    state: '1stTestnet@device_id_2:0',
                 }),
             ],
         },
@@ -423,14 +423,14 @@ const disconnect = [
                 instance: undefined,
                 connected: false,
                 available: false,
-                state: 'abc',
+                state: '1stTestnet@device_id:0',
             },
             {
                 path: '',
                 instance: 1,
                 connected: false,
                 available: false,
-                state: 'cba',
+                state: '1stTestnet@device_id_2:0',
             },
         ],
     },
@@ -1058,7 +1058,11 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
                         device_id: 'ignored-device-id',
                     },
                 ),
-                getSuiteDevice({ state: 'state', connected: true, instance: 3 }),
+                getSuiteDevice({
+                    state: '1stTestnetAddress@device_id:3',
+                    connected: true,
+                    instance: 3,
+                }),
                 SUITE_DEVICE,
                 getSuiteDevice({ instance: 1 }),
             ],
@@ -1239,7 +1243,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         initialState: {
             devices: [
                 getSuiteDevice({
-                    state: 'abc',
+                    state: '1stTestnet@device_id:0',
                 }),
             ],
         },
@@ -1248,7 +1252,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
                 type: deviceActions.rememberDevice.type,
                 payload: {
                     device: getSuiteDevice({
-                        state: 'abc',
+                        state: '1stTestnet@device_id:0',
                     }),
                     remember: true,
                     forceRemember: undefined,
@@ -1257,7 +1261,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         ],
         result: [
             getSuiteDevice({
-                state: 'abc',
+                state: '1stTestnet@device_id:0',
                 remember: true,
             }),
         ],
@@ -1267,22 +1271,22 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         initialState: {
             devices: [
                 getSuiteDevice({
-                    state: 'abc',
+                    state: '1stTestnet@device_id:0',
                 }),
                 getSuiteDevice({
-                    state: 'abc',
+                    state: '1stTestnet@device_id:0',
                     instance: 1,
                 }),
                 getSuiteDevice({
                     instance: 2,
                 }),
                 getSuiteDevice({
-                    state: 'abc',
+                    state: '1stTestnet@device_id:0',
                     instance: 3,
                 }),
                 getSuiteDevice(
                     {
-                        state: 'abc',
+                        state: '1stTestnet@device_id:0',
                         path: '2',
                     },
                     {
@@ -1296,7 +1300,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
                 type: deviceActions.rememberDevice.type,
                 payload: {
                     device: getSuiteDevice({
-                        state: 'abc',
+                        state: '1stTestnet@device_id:0',
                     }),
                     remember: true,
                     forceRemember: undefined,
@@ -1306,7 +1310,7 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
                 type: deviceActions.rememberDevice.type,
                 payload: {
                     device: getSuiteDevice({
-                        state: 'abc',
+                        state: '1stTestnet@device_id:0',
                         instance: 3,
                     }),
                     remember: true,
@@ -1316,11 +1320,11 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
         ],
         result: [
             getSuiteDevice({
-                state: 'abc',
+                state: '1stTestnet@device_id:0',
                 remember: true,
             }),
             getSuiteDevice({
-                state: 'abc',
+                state: '1stTestnet@device_id:0',
                 instance: 1,
                 remember: false,
             }),
@@ -1328,13 +1332,13 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
                 instance: 2,
             }),
             getSuiteDevice({
-                state: 'abc',
+                state: '1stTestnet@device_id:0',
                 instance: 3,
                 remember: true,
             }),
             getSuiteDevice(
                 {
-                    state: 'abc',
+                    state: '1stTestnet@device_id:0',
                     path: '2',
                 },
                 {

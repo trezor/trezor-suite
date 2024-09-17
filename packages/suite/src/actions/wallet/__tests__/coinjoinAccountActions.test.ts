@@ -19,7 +19,10 @@ jest.mock('src/services/coinjoin/coinjoinService', () => {
     return mock.mockCoinjoinService();
 });
 
-const DEVICE = testMocks.getSuiteDevice({ state: 'device-state', connected: true });
+const DEVICE = testMocks.getSuiteDevice({
+    state: '1stTestnetAddress@device_id:0',
+    connected: true,
+});
 
 const rootReducer = combineReducers({
     suite: createReducer(

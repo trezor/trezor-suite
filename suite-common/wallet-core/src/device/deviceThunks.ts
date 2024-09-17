@@ -8,6 +8,7 @@ import TrezorConnect, {
     Response as ConnectResponse,
     UI,
     DEVICE,
+    StaticSessionId,
 } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { analytics, EventType } from '@trezor/suite-analytics';
@@ -293,7 +294,7 @@ export type AuthorizeDeviceError = {
     device?: TrezorDevice;
     duplicate?: TrezorDevice;
 };
-type AuthorizeDeviceSuccess = { device: TrezorDevice; state: string };
+type AuthorizeDeviceSuccess = { device: TrezorDevice; state: StaticSessionId };
 
 export const authorizeDeviceThunk = createThunk<
     AuthorizeDeviceSuccess,

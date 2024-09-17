@@ -16,6 +16,7 @@ import * as metadataUtils from 'src/utils/suite/metadata';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 import { Account } from '@suite-common/wallet-types';
 import type { AbstractMetadataProvider, PasswordManagerState } from 'src/types/suite/metadata';
+import { StaticSessionId } from '@trezor/connect';
 
 export type MetadataAction =
     | { type: typeof METADATA.ENABLE }
@@ -24,11 +25,11 @@ export type MetadataAction =
     | { type: typeof METADATA.SET_INITIATING; payload: boolean }
     | {
           type: typeof METADATA.SET_DEVICE_METADATA;
-          payload: { deviceState: string; metadata: DeviceMetadata };
+          payload: { deviceState: StaticSessionId; metadata: DeviceMetadata };
       }
     | {
           type: typeof METADATA.SET_DEVICE_METADATA_PASSWORDS;
-          payload: { deviceState: string; metadata: DeviceMetadata };
+          payload: { deviceState: StaticSessionId; metadata: DeviceMetadata };
       }
     | {
           type: typeof METADATA.REMOVE_PROVIDER;
@@ -54,7 +55,7 @@ export type MetadataAction =
       }
     | {
           type: typeof METADATA.SET_ERROR_FOR_DEVICE;
-          payload: { deviceState: string; failed: boolean };
+          payload: { deviceState: StaticSessionId; failed: boolean };
       }
     | {
           type: typeof METADATA.ACCOUNT_ADD;

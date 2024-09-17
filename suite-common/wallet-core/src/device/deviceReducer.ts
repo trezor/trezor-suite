@@ -3,7 +3,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInstances, getStatus } from '@suite-common/suite-utils';
-import { Device, Features, UI } from '@trezor/connect';
+import { Device, Features, StaticSessionId, UI } from '@trezor/connect';
 import {
     getFirmwareVersion,
     getFirmwareVersionArray,
@@ -336,7 +336,7 @@ const changePassphraseMode = (
  * @param {string} state
  * @returns
  */
-const authDevice = (draft: State, device: TrezorDevice, state: string) => {
+const authDevice = (draft: State, device: TrezorDevice, state: StaticSessionId) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);

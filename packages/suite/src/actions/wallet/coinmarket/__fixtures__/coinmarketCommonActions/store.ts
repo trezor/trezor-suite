@@ -7,10 +7,10 @@ export const ACCOUNT: Account = {
     networkType: 'bitcoin',
     symbol: 'btc' as Account['symbol'],
     descriptor: 'btc-descriptor',
-    deviceState: 'C5B245DD2B69C7291:1',
+    deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/84'/0'/0'",
-    key: 'descriptor-btc-C5B245DD2B69C7291:1',
+    key: 'descriptor-btc-1stTestnetAddress@device_id:0',
     accountType: 'normal',
     empty: true,
     visible: true,
@@ -35,7 +35,7 @@ export const ACCOUNT: Account = {
         unconfirmed: 0,
     },
     metadata: {
-        key: 'C5B245DD2B69C7291',
+        key: '1stTestnetAddress@device_id:0',
         1: {
             fileName: '',
             aesKey: '',

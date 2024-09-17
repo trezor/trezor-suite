@@ -41,25 +41,25 @@ const sendFormReducer = prepareSendFormReducer(extraDependencies);
 // TODO: test deleting device instances on parent device forget
 
 const dev1 = getSuiteDevice({
-    state: 'state1',
+    state: '1stTestnetAddress@device_a_id:0',
     path: '1',
     instance: 1,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 const dev2 = getSuiteDevice({
-    state: 'state2',
+    state: '1stTestnetAddress@device_b_id:0',
     path: '2',
     instance: 1,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 const dev2Instance1 = getSuiteDevice({
-    state: 'state3',
+    state: '1stTestnetAddress@device_c_id:0',
     path: '2',
     instance: 2,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 const devNotRemembered = getSuiteDevice({
-    state: 'state1',
+    state: '1stTestnetAddress@device_a_id:0',
     path: '1',
     instance: 1,
 });

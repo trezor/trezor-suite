@@ -4,7 +4,7 @@ import { ACCOUNTS } from './accounts';
 
 const DISCOVERIES = [
     {
-        deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+        deviceState: '1stTestnet@device_id:0',
         index: 0,
         status: 4,
         total: 35,
@@ -17,15 +17,14 @@ const DISCOVERIES = [
 
 export const getDiscoveryProcess = [
     {
-        testName:
-            'Discovery for 7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f device',
+        testName: 'Discovery for 1stTestnet@device_id:0 device',
         discoveries: DISCOVERIES,
         device: testMocks.getSuiteDevice({
-            state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            state: '1stTestnet@device_id:0',
         }),
         result: {
             bundleSize: 0,
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnet@device_id:0',
             failed: [],
             index: 0,
             loaded: 39,
@@ -35,11 +34,10 @@ export const getDiscoveryProcess = [
         },
     },
     {
-        testName:
-            'Discovery for 1dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f device',
+        testName: 'Discovery for 1stTestnet@device_id:1 device',
         discoveries: DISCOVERIES,
         device: testMocks.getSuiteDevice({
-            state: '1dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            state: '1stTestnet@device_id:1',
         }),
         result: null,
     },

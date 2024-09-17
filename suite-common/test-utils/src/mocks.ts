@@ -33,15 +33,13 @@ import 'fake-indexeddb/auto';
  */
 // @ts-expect-error - related to backendType and status
 const getWalletAccount = (account?: Partial<Account>): Account => ({
-    deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+    deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/44'/60'/0'/0/1",
     descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
     key: `${account?.descriptor ?? '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'}-${
         account?.symbol ?? 'eth'
-    }-${
-        account?.deviceState ?? '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f'
-    }`,
+    }-${account?.deviceState ?? '1stTestnetAddress@device_id:0'}`,
     accountType: 'normal',
     networkType: 'ethereum',
     symbol: 'eth',
@@ -222,7 +220,7 @@ const getSuiteDevice = (dev?: Partial<TrezorDevice>, feat?: Partial<Features>): 
 const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAccountTransaction => ({
     descriptor:
         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-    deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+    deviceState: '1stTestnetAddress@device_id:0',
     symbol: 'btc',
     type: 'sent',
     txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',

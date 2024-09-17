@@ -13,8 +13,8 @@ export const BTC_ACCOUNT = {
         path: "m/44'/0'/0'",
         descriptor:
             'xpub6BiVtCpG9fQPxnPmHXG8PhtzQdWC2Su4qWu6XW9tpWFYhxydCLJGrWBJZ5H6qTAHdPQ7pQhtpjiYZVZARo14qHiay2fvrX996oEP42u8wZy',
-        deviceState: 'deviceState',
-        key: 'xpub-btc-deviceState',
+        deviceState: '1stTestnetAddress@device_id:0',
+        key: 'xpub-btc-1stTestnetAddress@device_id:0',
         addresses: {
             change: [
                 {

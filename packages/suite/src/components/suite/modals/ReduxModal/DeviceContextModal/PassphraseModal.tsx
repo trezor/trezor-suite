@@ -34,6 +34,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
 
     const deviceModel = useSelector(selectDeviceModel);
 
+    // @ts-expect-error device.state should not be ''
     const hasDeviceState = device.state !== undefined && device.state !== '';
 
     const onDeviceOffer = !!(

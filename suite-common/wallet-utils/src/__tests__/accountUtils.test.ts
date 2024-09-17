@@ -116,23 +116,23 @@ describe('account utils', () => {
         expect(
             findAccountDevice(
                 getWalletAccount({
-                    deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                    deviceState: '1stTestnet@device_id:0',
                     descriptor:
                         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                     symbol: 'btc',
                 }),
                 [
                     getSuiteDevice({
-                        state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                        state: '1stTestnet@device_id:0',
                     }),
                     getSuiteDevice({
-                        state: '20f91883604899768ba21ffd38d0f5f35b07f14e65355f342e4442547c0ce45e',
+                        state: '1stTestnet@device_id:3',
                     }),
                 ],
             ),
         ).toEqual(
             getSuiteDevice({
-                state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                state: '1stTestnet@device_id:0',
             }),
         );
     });
@@ -148,8 +148,8 @@ describe('account utils', () => {
     });
 
     it('getAccountKey', () => {
-        expect(getAccountKey('descriptor', 'symbol', 'deviceState')).toEqual(
-            'descriptor-symbol-deviceState',
+        expect(getAccountKey('descriptor', 'symbol', '1stTestnetAddress@device_id:0')).toEqual(
+            'descriptor-symbol-1stTestnetAddress@device_id:0',
         );
     });
 
@@ -166,7 +166,7 @@ describe('account utils', () => {
         expect(
             getAccountIdentifier(
                 getWalletAccount({
-                    deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                    deviceState: '1stTestnet@device_id:0',
                     descriptor:
                         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                     symbol: 'btc',
@@ -176,13 +176,13 @@ describe('account utils', () => {
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             symbol: 'btc',
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnet@device_id:0',
         });
     });
 
     it('accountSearchFn', () => {
         const btcAcc = getWalletAccount({
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnet@device_id:0',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             symbol: 'btc',

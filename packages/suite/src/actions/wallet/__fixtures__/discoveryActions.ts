@@ -114,7 +114,7 @@ export const fixtures = [
             success: true,
         },
         device: getSuiteDevice({
-            state: 'device-state',
+            state: '1stTestnetAddress@device_id:0',
             connected: true,
             unavailableCapabilities: { taproot: 'update-required' },
         }),
@@ -156,7 +156,7 @@ export const fixtures = [
             success: true,
         },
         device: getSuiteDevice({
-            state: 'device-state',
+            state: '1stTestnetAddress@device_id:0',
             connected: true,
             unavailableCapabilities: { xrp: 'no-capability' },
         }),
@@ -171,7 +171,7 @@ export const fixtures = [
             success: true,
         },
         device: getSuiteDevice({
-            state: 'device-state',
+            state: '1stTestnetAddress@device_id:0',
             connected: true,
             unavailableCapabilities: { xrp: 'no-capability' },
         }),
@@ -294,7 +294,7 @@ export const unavailableCapabilities = [
     {
         description: 'UnavailableCapability: Enable XRP',
         device: getSuiteDevice({
-            state: 'device-state',
+            state: '1stTestnetAddress@device_id:0',
             connected: true,
             unavailableCapabilities: { xrp: 'no-capability', taproot: 'no-support' },
         }),
@@ -304,7 +304,7 @@ export const unavailableCapabilities = [
     {
         description: 'UnavailableCapability: Only LTC',
         device: getSuiteDevice({
-            state: 'device-state',
+            state: '1stTestnetAddress@device_id:0',
             connected: true,
             unavailableCapabilities: { ltc: 'no-capability' },
         }),

@@ -2,7 +2,7 @@ import { testMocks } from '@suite-common/test-utils';
 
 export const ACCOUNTS = {
     test: {
-        deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+        deviceState: '1stTestnetAddress@device_id:0',
         index: 0,
         path: "m/84\\'/1\\'/0\\'",
         descriptor:
@@ -268,7 +268,7 @@ export const ACCOUNTS = {
     },
     txrp: {
         ...testMocks.getWalletAccount({
-            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            deviceState: '1stTestnetAddress@device_id:0',
             descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
             symbol: 'txrp',
         }),

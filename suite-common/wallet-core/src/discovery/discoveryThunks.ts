@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect, { AccountInfo, BundleProgress, UI } from '@trezor/connect';
+import TrezorConnect, { AccountInfo, BundleProgress, StaticSessionId, UI } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     tryGetAccountIdentity,
@@ -130,7 +130,7 @@ const handleProgressThunk = createThunk(
             metadataEnabled,
         }: {
             event: ProgressEvent;
-            deviceState: string;
+            deviceState: StaticSessionId;
             item: DiscoveryItem;
             metadataEnabled: boolean;
         },
@@ -290,7 +290,7 @@ export const getBundleThunk = createThunk(
 export const getAvailableCardanoDerivationsThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/getAvailableCardanoDerivations`,
     async (
-        { deviceState, device }: { deviceState: string; device: TrezorDevice },
+        { deviceState, device }: { deviceState: StaticSessionId; device: TrezorDevice },
         { dispatch },
     ): Promise<('normal' | 'legacy' | 'ledger')[] | undefined> => {
         // If icarus and icarus-trezor derivations return same pub key
@@ -653,7 +653,7 @@ export const startDiscoveryThunk = createThunk(
 export const createDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/create`,
     (
-        { deviceState, device }: { deviceState: string; device: TrezorDevice },
+        { deviceState, device }: { deviceState: StaticSessionId; device: TrezorDevice },
         { dispatch, getState, extra },
     ) => {
         const {

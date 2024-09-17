@@ -17,7 +17,10 @@ type Fixture<T extends (...a: any) => any> = {
 const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceMetadataKey']>[] = [
     {
         description: `Metadata not enabled`,
-        params: [getSuiteDevice({ state: 'a' }), METADATA_LABELING.ENCRYPTION_VERSION],
+        params: [
+            getSuiteDevice({ state: '1stTestnetAddress@device_a_id:0' }),
+            METADATA_LABELING.ENCRYPTION_VERSION,
+        ],
         initialState: {
             metadata: { enabled: false, providers: [] },
         },
@@ -32,7 +35,11 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
     {
         description: `Device not connected (remembered)`,
         params: [
-            getSuiteDevice({ state: 'device-state', connected: false, metadata: {} }),
+            getSuiteDevice({
+                state: '1stTestnetAddress@device_id:0',
+                connected: false,
+                metadata: {},
+            }),
             METADATA_LABELING.ENCRYPTION_VERSION,
         ],
         initialState: {
@@ -42,25 +49,29 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
     {
         description: `Master key successfully generated`,
         params: [
-            getSuiteDevice({ state: 'device-state', connected: true, metadata: {} }),
+            getSuiteDevice({
+                state: '1stTestnetAddress@device_id:0',
+                connected: true,
+                metadata: {},
+            }),
             METADATA_LABELING.ENCRYPTION_VERSION,
         ],
         initialState: {
             metadata: {
                 enabled: true,
             },
-            device: { state: 'device-state', connected: true, metadata: {} },
+            device: { state: '1stTestnetAddress@device_id:0', connected: true, metadata: {} },
         },
         result: [
             {
                 type: METADATA.SET_DEVICE_METADATA,
                 payload: {
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     metadata: {
                         1: {
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
-                            aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
+                                'cd1a5bac2ea44cce54f42ad387ba7fd871ebc5c5e81afeb1f9b6fa5cf9f8677a.mtdt',
+                            aesKey: '730033a116eb643d4afb80113c698cf63ac0fd811334c68d2b18c60c4f461d76',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
                     },
@@ -71,13 +82,13 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
                 payload: {
                     metadata: {
                         1: {
-                            aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
+                            aesKey: '730033a116eb643d4afb80113c698cf63ac0fd811334c68d2b18c60c4f461d76',
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
+                                'cd1a5bac2ea44cce54f42ad387ba7fd871ebc5c5e81afeb1f9b6fa5cf9f8677a.mtdt',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
                     },
-                    state: 'device-state',
+                    state: '1stTestnetAddress@device_id:0',
                 },
             },
         ],
@@ -124,7 +135,7 @@ const addDeviceMetadata = [
             metadata: { selectedProvider: { type: 'dropbox', key: 'A' }, providers: [] },
             device: { state: undefined },
         },
-        params: { type: 'walletLabel', deviceState: 'device-state' },
+        params: { type: 'walletLabel', deviceState: '1stTestnetAddress@device_id:0' },
         result: undefined,
     },
     {
@@ -132,7 +143,7 @@ const addDeviceMetadata = [
         initialState: {
             metadata: { selectedProvider: { type: 'dropbox', key: 'A' }, providers: [] },
             device: {
-                state: 'device-state',
+                state: '1stTestnetAddress@device_id:0',
                 metadata: {
                     1: {
                         aesKey: 'eb0f1f0238c7fa8018c6101f4e887b871ce07b99d01d5ea57089b82f93149557',
@@ -143,7 +154,11 @@ const addDeviceMetadata = [
                 },
             },
         },
-        params: { type: 'walletLabel', deviceState: 'device-state', value: 'Custom label' },
+        params: {
+            type: 'walletLabel',
+            deviceState: '1stTestnetAddress@device_id:0',
+            value: 'Custom label',
+        },
         result: {},
     },
 ];
@@ -426,13 +441,13 @@ const init = [
         description: 'metadata already enabled',
         initialState: {
             device: {
-                state: 'device-state',
+                state: '1stTestnetAddress@device_id:0',
                 connected: true,
                 metadata: {
                     1: {
                         fileName:
-                            'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
-                        aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
+                            'cd1a5bac2ea44cce54f42ad387ba7fd871ebc5c5e81afeb1f9b6fa5cf9f8677a.mtdt',
+                        aesKey: '730033a116eb643d4afb80113c698cf63ac0fd811334c68d2b18c60c4f461d76',
                         key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                     },
                 },
@@ -471,7 +486,7 @@ const init = [
     {
         description: 'metadata not enabled',
         initialState: {
-            device: { state: 'device-state', connected: true, metadata: {} },
+            device: { state: '1stTestnetAddress@device_id:0', connected: true, metadata: {} },
             metadata: {
                 enabled: false,
                 providers: [],
@@ -485,12 +500,12 @@ const init = [
             {
                 type: '@metadata/set-device-metadata',
                 payload: {
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     metadata: {
                         1: {
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
-                            aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
+                                'cd1a5bac2ea44cce54f42ad387ba7fd871ebc5c5e81afeb1f9b6fa5cf9f8677a.mtdt',
+                            aesKey: '730033a116eb643d4afb80113c698cf63ac0fd811334c68d2b18c60c4f461d76',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
                     },
@@ -499,13 +514,13 @@ const init = [
             {
                 type: deviceActions.updateSelectedDevice.type,
                 payload: {
-                    state: 'device-state',
+                    state: '1stTestnetAddress@device_id:0',
                     connected: true,
                     metadata: {
                         1: {
                             fileName:
-                                'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f.mtdt',
-                            aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
+                                'cd1a5bac2ea44cce54f42ad387ba7fd871ebc5c5e81afeb1f9b6fa5cf9f8677a.mtdt',
+                            aesKey: '730033a116eb643d4afb80113c698cf63ac0fd811334c68d2b18c60c4f461d76',
                             key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                         },
                     },
@@ -540,7 +555,7 @@ const disposeMetadata = [
     {
         description: '',
         initialState: {
-            device: { state: 'device-state', metadata: {} },
+            device: { state: '1stTestnetAddress@device_id:0', metadata: {} },
             metadata: {
                 providers: [
                     {
@@ -583,12 +598,12 @@ const disposeMetadataKeys = [
         description: 'keys',
         initialState: {
             device: {
-                state: 'device-state',
+                state: '1stTestnetAddress@device_id:0',
                 metadata: { 1: { fileName: 'foo', aesKey: 'bar' } },
             },
             accounts: [
                 {
-                    deviceState: 'device-state',
+                    deviceState: '1stTestnetAddress@device_id:0',
                     key: 'account-key',
                     metadata: {
                         1: {
@@ -601,9 +616,15 @@ const disposeMetadataKeys = [
         },
         params: [] as const,
         result: {
-            device: { selectedDevice: { state: 'device-state', metadata: {} } },
+            device: { selectedDevice: { state: '1stTestnetAddress@device_id:0', metadata: {} } },
             wallet: {
-                accounts: [{ deviceState: 'device-state', key: 'account-key', metadata: {} }],
+                accounts: [
+                    {
+                        deviceState: '1stTestnetAddress@device_id:0',
+                        key: 'account-key',
+                        metadata: {},
+                    },
+                ],
             },
         },
     },

@@ -64,8 +64,7 @@ describe('cardanoStakingActions', () => {
             {
                 type: CARDANO_STAKING.ADD_PENDING_STAKE_TX,
                 pendingStakeTx: {
-                    accountKey:
-                        'addr123-ada-7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+                    accountKey: 'addr123-ada-1stTestnetAddress@device_id:0',
                     txid: 'txid123',
                 },
             },

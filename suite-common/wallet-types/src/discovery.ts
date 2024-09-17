@@ -2,11 +2,12 @@ import { ObjectValues } from '@trezor/type-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { Deferred } from '@trezor/utils';
+import { StaticSessionId } from '@trezor/connect';
 
 import { Account, AccountBackendSpecific } from './account';
 
 export interface Discovery {
-    deviceState: string;
+    deviceState: StaticSessionId;
     authConfirm: boolean;
     index: number;
     total: number;
