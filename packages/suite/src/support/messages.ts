@@ -9157,4 +9157,9 @@ export default defineMessages({
         defaultMessage:
             'Setting a low fee might cause your transaction to fail or experience significant delays.',
     },
+    TR_BUMP_FEE_DISABLED_TOOLTIP: {
+        id: 'TR_BUMP_FEE_DISABLED_TOOLTIP',
+        defaultMessage:
+            'To speed up your transactions, increase the fee on the oldest (by nonce) pending transaction in the queue. Transactions must be confirmed in order. <a>Learn more</a>',
+    },
 });

@@ -2,7 +2,7 @@ import { memo, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
-import { variables, Button, Card } from '@trezor/components';
+import { variables, Button, Card, Link } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -35,6 +35,8 @@ import { BlurWrapper } from './TransactionItemBlurWrapper';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getInstantStakeType } from 'src/utils/suite/stake';
 import { isStakeTypeTx } from '@suite-common/suite-utils';
+import { Tooltip } from '@trezor/components';
+import { HELP_CENTER_REPLACE_BY_FEE } from '@trezor/urls';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const Wrapper = styled(Card)<{
@@ -88,6 +90,7 @@ interface TransactionItemProps {
     network: Network;
     accountType: AccountType;
     className?: string;
+    disableBumpFee?: boolean;
     index: number;
 }
 
@@ -101,6 +104,7 @@ export const TransactionItem = memo(
         network,
         accountType,
         className,
+        disableBumpFee,
         index,
     }: TransactionItemProps) => {
         const [limit, setLimit] = useState(0);
@@ -182,6 +186,42 @@ export const TransactionItem = memo(
         const dataTestBase = `@transaction-item/${index}${
             transaction.deadline ? '/prepending' : ''
         }`;
+
+        const BumpFeeButton = ({ isDisabled }: { isDisabled: boolean }) => (
+            <Button
+                variant="tertiary"
+                onClick={() => openTxDetailsModal(true)}
+                isDisabled={isDisabled}
+            >
+                <Translation id="TR_BUMP_FEE" />
+            </Button>
+        );
+
+        const DisabledBumpFeeButtonWithTooltip = () => (
+            <Tooltip
+                content={
+                    <div>
+                        <Translation
+                            id="TR_BUMP_FEE_DISABLED_TOOLTIP"
+                            values={{
+                                a: chunks => (
+                                    <Link
+                                        href={HELP_CENTER_REPLACE_BY_FEE}
+                                        variant="nostyle"
+                                        icon="externalLink"
+                                        type="hint"
+                                    >
+                                        {chunks}
+                                    </Link>
+                                ),
+                            }}
+                        />
+                    </div>
+                }
+            >
+                <BumpFeeButton isDisabled={true} />
+            </Tooltip>
+        );
 
         // we are using slightly different layout for 1 targets txs to better match the design
         // the only difference is that crypto amount is in the same row as tx heading/description
@@ -418,12 +458,11 @@ export const TransactionItem = memo(
                             networkFeatures?.includes('rbf') &&
                             !transaction?.deadline && (
                                 <NextRow>
-                                    <Button
-                                        variant="tertiary"
-                                        onClick={() => openTxDetailsModal(true)}
-                                    >
-                                        <Translation id="TR_BUMP_FEE" />
-                                    </Button>
+                                    {disableBumpFee ? (
+                                        <DisabledBumpFeeButtonWithTooltip />
+                                    ) : (
+                                        <BumpFeeButton isDisabled={false} />
+                                    )}
                                 </NextRow>
                             )}
                     </Content>

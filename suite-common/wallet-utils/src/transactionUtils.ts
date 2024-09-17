@@ -1034,3 +1034,21 @@ export const groupTokensTransactionsByContractAddress = (
 
     return groupedTokensTxs;
 };
+
+export const getTransactionWithLowestNonce = (
+    transactionGroups: GroupedTransactionsByDate,
+): WalletAccountTransaction | null =>
+    Object.values(transactionGroups)
+        .flat()
+        .reduce<WalletAccountTransaction | null>((lowestNonceTransaction, transaction) => {
+            if (!transaction.ethereumSpecific) return null;
+            const currentNonce = Number(transaction.ethereumSpecific?.nonce);
+            if (
+                lowestNonceTransaction === null ||
+                currentNonce < Number(lowestNonceTransaction.ethereumSpecific?.nonce)
+            ) {
+                lowestNonceTransaction = transaction;
+            }
+
+            return lowestNonceTransaction;
+        }, null);
