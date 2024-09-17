@@ -14,7 +14,8 @@
                 "distribution": "store"
             },
             "android": {
-                "distribution": "internal"
+                "distribution": "internal",
+                "resourceClass": "large"
             }
         },
         "production": {
@@ -23,7 +24,8 @@
             },
             "autoIncrement": true,
             "android": {
-                "credentialsSource": "remote"
+                "credentialsSource": "remote",
+                "resourceClass": "large"
             },
             "ios": {
                 "credentialsSource": "remote"
