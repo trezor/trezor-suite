@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { useTheme } from 'styled-components';
-import { Card, Icon } from '@trezor/components';
+import { Card, Column, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { AccentP, CardBottomContent, GreyP } from './styled';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -38,23 +38,25 @@ export const PayoutCard = ({
 
     return (
         <Card paddingType="small">
-            <Icon name="calendar" color={theme.iconSubdued} />
+            <Column alignItems="flex-start">
+                <Icon name="calendar" color={theme.iconSubdued} />
 
-            <CardBottomContent>
-                <AccentP>
-                    {payout === undefined ? (
-                        <Translation
-                            id="TR_STAKE_MAX_REWARD_DAYS"
-                            values={{ count: BACKUP_REWARD_PAYOUT_DAYS }}
-                        />
-                    ) : (
-                        <Translation id="TR_STAKE_DAYS" values={{ count: payout }} />
-                    )}
-                </AccentP>
-                <GreyP>
-                    <Translation id="TR_STAKE_NEXT_PAYOUT" />
-                </GreyP>
-            </CardBottomContent>
+                <CardBottomContent>
+                    <AccentP>
+                        {payout === undefined ? (
+                            <Translation
+                                id="TR_STAKE_MAX_REWARD_DAYS"
+                                values={{ count: BACKUP_REWARD_PAYOUT_DAYS }}
+                            />
+                        ) : (
+                            <Translation id="TR_STAKE_DAYS" values={{ count: payout }} />
+                        )}
+                    </AccentP>
+                    <GreyP>
+                        <Translation id="TR_STAKE_NEXT_PAYOUT" />
+                    </GreyP>
+                </CardBottomContent>
+            </Column>
         </Card>
     );
 };
