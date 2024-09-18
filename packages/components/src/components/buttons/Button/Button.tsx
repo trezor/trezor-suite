@@ -139,7 +139,7 @@ export const Button = ({
     children,
     target,
     href,
-    textWrap = true,
+    textWrap = false,
     ...rest
 }: ButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
