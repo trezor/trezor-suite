@@ -1,26 +1,12 @@
-import { useState, forwardRef, useRef, Ref, ReactNode } from 'react';
-import styled, { useTheme } from 'styled-components';
+import { useState, ReactNode } from 'react';
+import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
-import { Icon } from '@trezor/components';
+import { Icon, Column } from '@trezor/components';
 import { Account } from 'src/types/wallet';
 import { AnimationWrapper } from '../../AnimationWrapper';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacingsPx, spacings, typography } from '@trezor/theme';
 
-const Container = styled.div`
-    padding: ${spacingsPx.xs} 0;
-`;
-
-const HeaderWrapper = styled.div`
-    position: sticky;
-    top: 0;
-
-    /* to not overlap with the Account's focus shadow */
-    margin-bottom: ${spacingsPx.xxs};
-    z-index: 30;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
+const IconWrapper = styled.div<{ $isActive: boolean }>`
     padding: ${spacingsPx.xs};
     border-radius: 50%;
     transition:
@@ -30,20 +16,29 @@ const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
 `;
 
 const Header = styled.header<{ $isOpen: boolean; onClick?: () => void }>`
+    position: sticky;
+    top: 0;
+    z-index: 30;
     display: flex;
-    gap: ${spacingsPx.md};
-    padding: ${spacingsPx.xs};
+    gap: ${spacings.sm - 2}px;
+    padding: 0 ${spacingsPx.sm};
     cursor: ${props => (props.onClick ? 'pointer' : 'default')};
     background-color: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
     align-items: center;
-    ${typography.label}
     color: ${({ theme }) => theme.textSubdued};
-    height: 40px;
+    min-height: 40px;
+    ${typography.label}
 
     &:hover {
-        ${ChevronIcon} {
+        ${IconWrapper} {
             background: ${({ theme }) => theme.backgroundSurfaceElevation1};
         }
+    }
+`;
+
+const HeadingWrapper = styled.div`
+    &:only-child {
+        padding-left: ${spacingsPx.xxs};
     }
 `;
 
@@ -75,71 +70,74 @@ const getGroupLabel = (type: AccountGroupProps['type'], hideLabel?: boolean) => 
     }
 };
 
-export const AccountGroup = forwardRef(
-    (
-        { hasBalance, keepOpen, type, hideLabel, onUpdate, children }: AccountGroupProps,
-        _ref: Ref<HTMLDivElement>,
-    ) => {
-        const theme = useTheme();
-        const wrapperRef = useRef<HTMLDivElement>(null);
-        const [isOpen, setIsOpen] = useState(hasBalance || keepOpen);
-        const [previouslyOpen, setPreviouslyOpen] = useState(isOpen); // used to follow props changes without unnecessary rerenders
-        const [previouslyHasBalance, setPreviouslyHasBalance] = useState(hasBalance); // used to follow props changes without unnecessary rerenders
+export const AccountGroup = ({
+    hasBalance,
+    keepOpen,
+    type,
+    hideLabel,
+    onUpdate,
+    children,
+}: AccountGroupProps) => {
+    const [isOpen, setIsOpen] = useState(hasBalance || keepOpen);
+    const [previouslyOpen, setPreviouslyOpen] = useState(isOpen); // used to follow props changes without unnecessary rerenders
+    const [previouslyHasBalance, setPreviouslyHasBalance] = useState(hasBalance); // used to follow props changes without unnecessary rerenders
 
-        if (keepOpen && !previouslyOpen) {
-            setPreviouslyOpen(true);
-            setIsOpen(true);
+    if (keepOpen && !previouslyOpen) {
+        setPreviouslyOpen(true);
+        setIsOpen(true);
+    }
+
+    if (hasBalance && !previouslyHasBalance) {
+        setPreviouslyHasBalance(true);
+        setIsOpen(true);
+    }
+
+    const onClick = () => {
+        setIsOpen(!isOpen);
+        if (isOpen) {
+            setPreviouslyOpen(false);
         }
+    };
 
-        if (hasBalance && !previouslyHasBalance) {
-            setPreviouslyHasBalance(true);
-            setIsOpen(true);
-        }
+    const heading = getGroupLabel(type, hideLabel);
 
-        const onClick = () => {
-            setIsOpen(!isOpen);
-            if (isOpen) {
-                setPreviouslyOpen(false);
-            }
-        };
-
-        // Group needs to be wrapped into container (div)
-
-        const heading = getGroupLabel(type, hideLabel);
-
-        return (
-            <Container ref={wrapperRef}>
-                <HeaderWrapper>
-                    {heading !== null && (
-                        <Header
-                            $isOpen={isOpen}
-                            onClick={!keepOpen ? onClick : undefined}
-                            data-testid={`@account-menu/${type}`}
-                        >
-                            <div>
-                                {!keepOpen && (
-                                    <ChevronIcon
-                                        data-testid="@account-menu/arrow"
-                                        $isActive={isOpen}
-                                        size={18}
-                                        color={theme.iconSubdued}
-                                        name="chevronDown"
-                                    />
-                                )}
-                            </div>
-                            <Translation id={heading} />
-                        </Header>
+    return (
+        <div>
+            {heading !== null && (
+                <Header
+                    $isOpen={isOpen}
+                    onClick={!keepOpen ? onClick : undefined}
+                    data-testid={`@account-menu/${type}`}
+                >
+                    {!keepOpen && (
+                        <IconWrapper $isActive={isOpen}>
+                            <Icon
+                                data-testid="@account-menu/arrow"
+                                size={18}
+                                variant="tertiary"
+                                name="chevronDown"
+                            />
+                        </IconWrapper>
                     )}
-                </HeaderWrapper>
+                    <HeadingWrapper>
+                        <Translation id={heading} />
+                    </HeadingWrapper>
+                </Header>
+            )}
 
-                <AnimationWrapper
-                    opened={isOpen}
-                    onUpdate={onUpdate}
-                    data-testid={`@account-menu/${type}/group`}
+            <AnimationWrapper
+                opened={isOpen}
+                onUpdate={onUpdate}
+                data-testid={`@account-menu/${type}/group`}
+            >
+                <Column
+                    alignItems="stretch"
+                    gap={spacings.xxs}
+                    margin={{ left: spacings.xs, right: spacings.xs }}
                 >
                     {children}
-                </AnimationWrapper>
-            </Container>
-        );
-    },
-);
+                </Column>
+            </AnimationWrapper>
+        </div>
+    );
+};

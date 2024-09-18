@@ -7,13 +7,9 @@ import { Translation } from 'src/components/suite';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountGroup } from './AccountGroup';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
-import styled from 'styled-components';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
+import { Column } from '@trezor/components';
 import { AccountSection } from './AcccountSection';
-
-const SkeletonContainer = styled.div`
-    margin: ${spacingsPx.xs};
-`;
 
 interface AccountListProps {
     onItemClick?: () => void;
@@ -114,23 +110,19 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
 
     if (filteredAccounts.length > 0) {
         return (
-            <>
+            <Column gap={spacings.xs} alignItems="stretch" margin={{ bottom: spacings.lg }}>
                 {buildGroup('coinjoin', coinjoinAccounts)}
                 {buildGroup('normal', normalAccounts, coinjoinAccounts.length === null)}
                 {buildGroup('taproot', taprootAccounts)}
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}
                 {buildGroup('ledger', ledgerAccounts)}
-            </>
+            </Column>
         );
     }
 
     if (discoveryInProgress) {
-        return (
-            <SkeletonContainer>
-                <AccountItemSkeleton />
-            </SkeletonContainer>
-        );
+        return <AccountItemSkeleton />;
     }
 
     return (

@@ -1,37 +1,21 @@
-import styled from 'styled-components';
 import { useLoadingSkeleton } from 'src/hooks/suite';
-import { Left, Right } from './AccountItem';
-import { SkeletonCircle, SkeletonStack, SkeletonRectangle } from '@trezor/components';
-
-const Wrapper = styled.div`
-    margin-left: 18px;
-    display: flex;
-    align-items: center;
-    flex: 1;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledSkeletonStack = styled(SkeletonStack)`
-    > :last-child {
-        margin-bottom: 0;
-    }
-`;
+import { SkeletonCircle, SkeletonRectangle, Row, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 export const AccountItemSkeleton = () => {
     const { shouldAnimate } = useLoadingSkeleton();
 
     return (
-        <Wrapper data-testid="@account-menu/account-item-skeleton">
-            <Left>
-                <SkeletonCircle size="24px" />
-            </Left>
-
-            <Right>
-                <StyledSkeletonStack $col $childMargin="0px 0px 8px 0px">
-                    <SkeletonRectangle width="140px" animate={shouldAnimate} />
-                    <SkeletonRectangle animate={shouldAnimate} />
-                </StyledSkeletonStack>
-            </Right>
-        </Wrapper>
+        <Row
+            gap={spacings.md}
+            margin={{ left: spacings.xs }}
+            data-testid="@account-menu/account-item-skeleton"
+        >
+            <SkeletonCircle size="24px" />
+            <Column alignItems="flex-start" gap={spacings.xs}>
+                <SkeletonRectangle width="140px" animate={shouldAnimate} />
+                <SkeletonRectangle animate={shouldAnimate} />
+            </Column>
+        </Row>
     );
 };
