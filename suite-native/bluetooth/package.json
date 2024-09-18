@@ -16,9 +16,9 @@
         "@suite-native/storage": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/transport-native-ble": "workspace:*",
-        "expo-constants": "15.4.5",
+        "expo-constants": "16.0.2",
         "react": "18.2.0",
-        "react-native": "0.73.6",
+        "react-native": "0.75.2",
         "react-native-ble-plx": "^3.2.1",
         "react-native-permissions": "^4.1.5",
         "react-native-restart": "0.0.27"

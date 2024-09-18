@@ -65,8 +65,8 @@ export const DevUtilsScreen = ({
                             onPress={() => {
                                 nativeBleManager.eraseBondsForAllDevices();
                                 Alert.alert(
-                                    'BT bonds erased',
-                                    "Don't forget to remove the device from system BT settings or it won't be able to pair again.",
+                                    'BT bonds erased - please follow these steps:',
+                                    `1. Accept request on Trezor \n2. Restart Trezor device by cutting the power \n2. Click on "Forget device" in system settings \n3. Restart mobile app`,
                                 );
                             }}
                             colorScheme="redBold"

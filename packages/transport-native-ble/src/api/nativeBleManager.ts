@@ -398,6 +398,35 @@ class NativeBleManager {
         }
     };
 
+    // Sometimes pairing fails on Android with "Operation was cancelled" error. If that happens, we retry which usually works.
+    public connectDeviceWithRetry = async (params: {
+        deviceOrId: Device | string;
+        timeoutMs?: number;
+        maxRetries?: number;
+    }): Promise<Device> => {
+        const maxRetries = params.maxRetries || 2;
+        let retries = 0;
+
+        while (retries <= maxRetries) {
+            try {
+                return await this.connectDevice(params);
+            } catch (error: unknown) {
+                if (
+                    error instanceof Error &&
+                    error.message.includes('Operation was cancelled') &&
+                    retries < maxRetries
+                ) {
+                    retries++;
+                    console.log(`Retrying connection attempt ${retries} of ${maxRetries}`);
+                } else {
+                    throw error;
+                }
+            }
+        }
+
+        throw new Error('Max retries reached. Unable to connect to device.');
+    };
+
     public getAllConnectedDevices = async () => {
         return this.appConnectedDevices.map(d => d.bleDevice);
     };

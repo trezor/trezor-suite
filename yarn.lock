@@ -10071,9 +10071,9 @@ __metadata:
     "@suite-native/storage": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/transport-native-ble": "workspace:*"
-    expo-constants: "npm:15.4.5"
+    expo-constants: "npm:16.0.2"
     react: "npm:18.2.0"
-    react-native: "npm:0.73.6"
+    react-native: "npm:0.75.2"
     react-native-ble-plx: "npm:^3.2.1"
     react-native-permissions: "npm:^4.1.5"
     react-native-restart: "npm:0.0.27"
@@ -22731,18 +22731,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-constants@npm:15.4.5":
-  version: 15.4.5
-  resolution: "expo-constants@npm:15.4.5"
-  dependencies:
-    "@expo/config": "npm:~8.5.0"
-  peerDependencies:
-    expo: "*"
-  checksum: 10/9eb256895aa24efd41ca8c48b7dd76c03ecad4662e86c32440ea7d4162397014c80775b73db499add5e9452721f236c6ba333af93d8a277ad964f1fd938305f1
-  languageName: node
-  linkType: hard
-
-"expo-constants@npm:~16.0.0":
+"expo-constants@npm:16.0.2, expo-constants@npm:~16.0.0":
   version: 16.0.2
   resolution: "expo-constants@npm:16.0.2"
   dependencies:
