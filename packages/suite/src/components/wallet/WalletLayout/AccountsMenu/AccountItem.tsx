@@ -1,13 +1,15 @@
 import { forwardRef, Ref } from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { isTestnet } from '@suite-common/wallet-utils';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import {
     CoinLogo,
     Icon,
+    Column,
+    Row,
+    Paragraph,
     SkeletonRectangle,
-    SkeletonStack,
     TOOLTIP_DELAY_LONG,
     TruncateWithTooltip,
 } from '@trezor/components';
@@ -26,23 +28,21 @@ import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sid
 import { useFormatters } from '@suite-common/formatters';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
+const ICON_SIZE = 24;
+
 const Wrapper = styled(NavigationItemBase)<{
     $isSelected: boolean;
     $isGroupSelected?: boolean;
     $isGroup?: boolean;
 }>`
     background: ${({ theme, $isSelected }) => $isSelected && theme.backgroundSurfaceElevation1};
-    gap: 0;
+    gap: ${spacingsPx.md};
     display: flex;
     justify-content: space-between;
-    margin: 0 ${({ $isGroup }) => ($isGroup ? spacingsPx.xxs : '9px')};
-
-    & + & {
-        margin-top: ${spacingsPx.xxs};
-    }
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint};
 
     &:hover {
-        position: relative;
         background: ${({ theme, $isSelected }) =>
             !$isSelected && theme.backgroundTertiaryPressedOnElevation0};
     }
@@ -50,81 +50,27 @@ const Wrapper = styled(NavigationItemBase)<{
 
 export const Left = styled.div`
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-
-const ZIndexContainer = styled.div`
-    z-index: 20;
-`;
-
-export const Right = styled.div`
-    flex: 1;
-    flex-direction: column;
-    padding-left: ${spacingsPx.md};
-    padding-right: ${spacingsPx.xxs};
-    overflow: hidden;
-`;
-export const FiatAmount = styled.div`
-    overflow: hidden;
-    text-align: right;
-`;
-
-const Row = styled.div`
-    display: flex;
-    align-items: baseline;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
-
-const AccountName = styled.div<{ $isSelected: boolean }>`
-    display: flex;
-    gap: ${spacingsPx.xxs};
-    flex: 1;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    ${typography.hint};
-    color: ${({ theme, $isSelected }) => ($isSelected ? theme.textDefault : theme.textSubdued)};
-    line-height: 1.5;
-    font-variant-numeric: tabular-nums;
-`;
-
-const Balance = styled.div`
-    ${typography.hint};
-    color: ${({ theme }) => theme.textSubdued};
-    line-height: 1.57;
-`;
-
-const FiatValueWrapper = styled.div`
-    ${typography.hint};
-    color: ${({ theme }) => theme.textSubdued};
-    line-height: 1.57;
-`;
-
-const TokensCount = styled.div`
-    ${typography.label};
-    color: ${({ theme }) => theme.textSubdued};
-    line-height: 1.57;
 `;
 
 const TokensBadge = styled.div`
     ${typography.label};
-    color: ${({ theme }) => theme.textSubdued};
-    padding: 3px 4px;
-    min-width: 24px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 ${spacingsPx.xxs};
+    min-width: ${ICON_SIZE}px;
+    height: ${ICON_SIZE}px;
     border-radius: ${borders.radii.full};
     background: ${({ theme }) => theme.borderDashed};
-    z-index: 20;
 `;
 
 const AccountLabelContainer = styled.div`
     flex: 1;
     min-width: 60px;
-    overflow: hidden;
     color: ${({ theme }) => theme.textDefault};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `;
 
 interface AccountItemProps {
@@ -159,7 +105,6 @@ export const AccountItem = forwardRef(
         }: AccountItemProps,
         ref: Ref<HTMLDivElement>,
     ) => {
-        const theme = useTheme();
         const { FiatAmountFormatter } = useFormatters();
         const localCurrency = useSelector(selectLocalCurrency);
         const dispatch = useDispatch();
@@ -193,21 +138,15 @@ export const AccountItem = forwardRef(
             switch (type) {
                 case 'coin':
                     return (
-                        <>
-                            <ZIndexContainer>
-                                <CoinLogo size={24} symbol={symbol} />
-                            </ZIndexContainer>
+                        <Column>
+                            <CoinLogo size={ICON_SIZE} symbol={symbol} />
                             {isTokensCountShown && type === 'coin' && (
-                                <TokensCount>{tokens?.length}</TokensCount>
+                                <Paragraph typographyStyle="label">{tokens?.length}</Paragraph>
                             )}
-                        </>
+                        </Column>
                     );
                 case 'staking':
-                    return (
-                        <ZIndexContainer>
-                            <Icon name="piggyBankFilled" color={theme.iconSubdued} />
-                        </ZIndexContainer>
-                    );
+                    return <Icon name="piggyBankFilled" variant="tertiary" />;
                 case 'tokens':
                     return <TokensBadge>{tokens?.length}</TokensBadge>;
             }
@@ -232,71 +171,58 @@ export const AccountItem = forwardRef(
                 tabIndex={0}
             >
                 <Left>{getLeftComponent()}</Left>
-                <Right>
-                    <Row>
-                        <AccountName $isSelected={isSelected} data-testid={`${dataTestKey}/label`}>
-                            <AccountLabelContainer>
-                                {type === 'coin' && (
-                                    <AccountLabel
-                                        accountLabel={accountLabel}
-                                        accountType={accountType}
-                                        symbol={symbol}
-                                        index={index}
-                                    />
-                                )}
-                                {type === 'staking' && <Translation id="TR_NAV_STAKING" />}
-                                {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
-                            </AccountLabelContainer>
-                            <FiatAmount>
-                                {customFiatValue && !isTestnet(symbol) ? (
-                                    <HiddenPlaceholder>
-                                        <FiatAmountFormatter
-                                            value={customFiatValue}
-                                            currency={localCurrency}
-                                            minimumFractionDigits={0}
-                                            maximumFractionDigits={0}
-                                        />
-                                    </HiddenPlaceholder>
-                                ) : (
-                                    <FiatValue
-                                        amount={formattedBalance}
-                                        symbol={symbol}
-                                        fiatAmountFormatterOptions={{
-                                            minimumFractionDigits: 0,
-                                            maximumFractionDigits: 0,
-                                        }}
-                                    >
-                                        {({ value }) =>
-                                            value ? (
-                                                <FiatValueWrapper>
-                                                    <TruncateWithTooltip
-                                                        delayShow={TOOLTIP_DELAY_LONG}
-                                                    >
-                                                        {value}
-                                                    </TruncateWithTooltip>
-                                                </FiatValueWrapper>
-                                            ) : null
-                                        }
-                                    </FiatValue>
-                                )}
-                            </FiatAmount>
-                        </AccountName>
+                <Column flex="1" alignItems="stretch" overflow="hidden" gap={spacings.xxxs}>
+                    <Row
+                        data-testid={`${dataTestKey}/label`}
+                        gap={spacings.md}
+                        margin={{ right: spacings.xxs }}
+                        justifyContent="space-between"
+                    >
+                        <AccountLabelContainer>
+                            {type === 'coin' && (
+                                <AccountLabel
+                                    accountLabel={accountLabel}
+                                    accountType={accountType}
+                                    symbol={symbol}
+                                    index={index}
+                                />
+                            )}
+                            {type === 'staking' && <Translation id="TR_NAV_STAKING" />}
+                            {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
+                        </AccountLabelContainer>
+                        {customFiatValue && !isTestnet(symbol) ? (
+                            <HiddenPlaceholder>
+                                <FiatAmountFormatter
+                                    value={customFiatValue}
+                                    currency={localCurrency}
+                                    minimumFractionDigits={0}
+                                    maximumFractionDigits={0}
+                                />
+                            </HiddenPlaceholder>
+                        ) : (
+                            <FiatValue
+                                amount={formattedBalance}
+                                symbol={symbol}
+                                fiatAmountFormatterOptions={{
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0,
+                                }}
+                            >
+                                {({ value }) =>
+                                    value ? (
+                                        <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
+                                            {value}
+                                        </TruncateWithTooltip>
+                                    ) : null
+                                }
+                            </FiatValue>
+                        )}
                     </Row>
                     {isBalanceShown && type !== 'tokens' && (
-                        <>
-                            <Row>
-                                <Balance>
-                                    <CoinBalance value={formattedBalance} symbol={symbol} />
-                                </Balance>
-                            </Row>
-                        </>
+                        <CoinBalance value={formattedBalance} symbol={symbol} />
                     )}
                     {!isBalanceShown && (
-                        <SkeletonStack
-                            $col
-                            $margin="6px 0px 0px 0px"
-                            $childMargin="0px 0px 8px 0px"
-                        >
+                        <Column alignItems="stretch" gap={spacings.xs}>
                             <SkeletonRectangle
                                 width="100px"
                                 height="16px"
@@ -310,9 +236,9 @@ export const AccountItem = forwardRef(
                                     animate={shouldAnimate}
                                 />
                             )}
-                        </SkeletonStack>
+                        </Column>
                     )}
-                </Right>
+                </Column>
             </Wrapper>
         );
     },

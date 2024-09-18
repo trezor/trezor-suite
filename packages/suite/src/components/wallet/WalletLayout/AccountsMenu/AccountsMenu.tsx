@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
@@ -13,32 +13,24 @@ import { Translation } from 'src/components/suite';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
-import { useScrollShadow } from '@trezor/components';
+import { useScrollShadow, Row } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
     z-index: ${zIndices.expandableNavigationHeader};
-    width: 100%;
     overflow: auto;
+    gap: ${spacingsPx.sm};
 `;
 
-const MenuHeader = styled.div`
-    display: flex;
-    flex-direction: column;
+const Header = styled.div`
     border-top: 1px solid ${({ theme }) => theme.borderElevation1};
-    padding: ${spacingsPx.xs} ${spacingsPx.xs} 0 ${spacingsPx.xs};
+    padding: ${spacingsPx.sm} ${spacingsPx.xs};
+    padding-bottom: 0;
 `;
 
-const Row = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: ${spacingsPx.xs};
-`;
-
-const Scroll = styled.div`
+const ScrollContainer = styled.div`
     height: auto;
     overflow: hidden auto;
 `;
@@ -46,7 +38,6 @@ const Scroll = styled.div`
 export const AccountsMenu = () => {
     const device = useSelector(selectDevice);
     const accounts = useSelector(state => state.wallet.accounts);
-
     const { discovery } = useDiscovery();
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
         useScrollShadow();
@@ -67,8 +58,8 @@ export const AccountsMenu = () => {
 
     return (
         <Wrapper>
-            <MenuHeader>
-                <Row>
+            <Header>
+                <Row justifyContent="space-between" gap={spacings.xs}>
                     {!isEmpty && <AccountSearchBox />}
                     <AddAccountButton
                         isFullWidth={isEmpty}
@@ -76,16 +67,14 @@ export const AccountsMenu = () => {
                         device={device}
                     />
                 </Row>
-
                 <CoinsFilter />
-            </MenuHeader>
-
+            </Header>
             <ShadowContainer>
                 <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />
-                <Scroll ref={scrollElementRef} onScroll={onScroll}>
+                <ScrollContainer ref={scrollElementRef} onScroll={onScroll}>
                     <AccountsList />
                     <RefreshAfterDiscoveryNeeded />
-                </Scroll>
+                </ScrollContainer>
                 <ShadowBottom backgroundColor="backgroundSurfaceElevationNegative" />
             </ShadowContainer>
         </Wrapper>
