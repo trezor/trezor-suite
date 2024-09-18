@@ -8621,19 +8621,55 @@ export default defineMessages({
         id: 'TR_STAKE_STAKING_IN_A_NUTSHELL',
         defaultMessage: 'Staking in a nutshell',
     },
+    TR_STAKE_STAKING_PROCESS: {
+        id: 'TR_STAKE_STAKING_PROCESS',
+        defaultMessage: 'Staking process',
+    },
+    TR_STAKE_UNSTAKING_PROCESS: {
+        id: 'TR_STAKE_UNSTAKING_PROCESS',
+        defaultMessage: 'Unstaking process',
+    },
+    TR_STAKE_SIGN_TRANSACTION: {
+        id: 'TR_STAKE_SIGN_TRANSACTION',
+        defaultMessage: 'Sign transaction',
+    },
+    TR_STAKE_ENTER_THE_STAKING_POOL: {
+        id: 'TR_STAKE_ENTER_THE_STAKING_POOL',
+        defaultMessage: 'Enter the staking pool',
+    },
+    TR_STAKE_EARN_REWARDS_WEEKLY: {
+        id: 'TR_STAKE_EARN_REWARDS_WEEKLY',
+        defaultMessage: 'Earn rewards weekly',
+    },
+    TR_STAKE_SIGN_UNSTAKING_TRANSACTION: {
+        id: 'TR_STAKE_SIGN_UNSTAKING_TRANSACTION',
+        defaultMessage: 'Sign unstaking transaction',
+    },
+    TR_STAKE_LEAVE_STAKING_POOL: {
+        id: 'TR_STAKE_LEAVE_STAKING_POOL',
+        defaultMessage: 'Leave staking pool',
+    },
+    TR_STAKE_CLAIM_UNSTAKED: {
+        id: 'TR_STAKE_CLAIM_UNSTAKED',
+        defaultMessage: 'Claim unstaked {symbol}',
+    },
+    TR_STAKE_IN_ACCOUNT: {
+        id: 'TR_STAKE_IN_ACCOUNT',
+        defaultMessage: '{symbol} in account',
+    },
     TR_STAKE_STAKED_ETH_AMOUNT_LOCKED: {
         id: 'TR_STAKE_STAKED_ETH_AMOUNT_LOCKED',
-        defaultMessage: 'The staked amount of {symbol} is locked and can’t be traded or sent.',
+        defaultMessage: 'Your staked {symbol} is locked and can’t be traded or sent.',
     },
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking currently takes {count, plural, one {# day} other {# days}}. Once completed, you can trade or send your funds.',
+            'Unstaking usually takes about {count, plural, one {# day} other {# days}}. Once completed, you can claim it instantly.',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
         defaultMessage:
-            'Your rewards also earn. Keep them staked and watch your {symbol} rewards soar.',
+            'Your rewards also earn. Keep them staked and watch your {symbol} rewards grow.',
     },
     TR_STAKE_AVAILABLE: {
         id: 'TR_STAKE_AVAILABLE',
