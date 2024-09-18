@@ -239,7 +239,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                 case 'released':
                     if (!device) break;
 
-                    const methodStillRunning = !device?.getCommands()?.isDisposed();
+                    const methodStillRunning = !device.commands?.isDisposed();
                     if (methodStillRunning) {
                         device.keepTransportSession = false;
                     }
@@ -254,7 +254,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                         await resolveAfter(1000, null).promise;
                         // after device was released in another window wait for a while (the other window might
                         // have the intention of acquiring it again)
-                        // and if the device is still reelased and has never been acquired before, acquire it here.
+                        // and if the device is still released and has never been acquired before, acquire it here.
                         if (!device.isUsed() && device.isUnacquired() && !device.isInconsistent()) {
                             _log.debug('Create device from unacquired', device.toMessageObject());
                             await this._createAndSaveDevice(descriptor, transport);
