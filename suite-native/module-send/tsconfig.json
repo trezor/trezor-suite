@@ -30,6 +30,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
+        { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../device" },
         { "path": "../device-manager" },

@@ -1,45 +1,33 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Icon } from '@suite-common/icons-deprecated';
-import { BottomSheet, VStack, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useAlert } from '@suite-native/alerts';
 
 type AddressReviewHelpSheetProps = {
-    children: ReactNode;
+    body: ReactNode;
     title?: ReactNode;
     subtitle?: ReactNode;
 };
 
-export const AddressReviewHelpSheet = ({
-    children,
-    title,
-    subtitle,
-}: AddressReviewHelpSheetProps) => {
-    const [isVisible, setIsVisible] = useState(false);
+export const AddressReviewHelpSheet = ({ body, title, subtitle }: AddressReviewHelpSheetProps) => {
+    const { showAlert } = useAlert();
 
-    const handleOpen = () => setIsVisible(true);
-    const handleClose = () => setIsVisible(false);
+    const handleOpen = () =>
+        showAlert({
+            title,
+            description: subtitle,
+            appendix: body,
+            textAlign: 'left',
+            pictogramVariant: 'red',
+            primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
+            titleSpacing: 'extraSmall',
+        });
 
     return (
-        <>
-            <TouchableOpacity onPress={handleOpen}>
-                <Icon name="questionLight" size="large" color="iconSubdued" />
-            </TouchableOpacity>
-            <BottomSheet
-                isVisible={isVisible}
-                onClose={handleClose}
-                isCloseDisplayed={false}
-                title={title}
-                subtitle={subtitle}
-            >
-                <VStack spacing="large" paddingHorizontal="small">
-                    {children}
-                    <Button onPress={handleClose}>
-                        <Translation id="generic.buttons.gotIt" />
-                    </Button>
-                </VStack>
-            </BottomSheet>
-        </>
+        <TouchableOpacity onPress={handleOpen}>
+            <Icon name="questionLight" size="large" color="iconSubdued" />
+        </TouchableOpacity>
     );
 };

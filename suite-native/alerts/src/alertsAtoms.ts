@@ -4,9 +4,10 @@ import { atom } from 'jotai';
 
 import { IconName } from '@suite-common/icons-deprecated';
 import { ButtonAccessory, ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
+import { NativeSpacing } from '@trezor/theme';
 
 export type Alert = {
-    title: ReactNode;
+    title?: ReactNode;
     textAlign?: 'left' | 'center';
     description?: ReactNode;
     icon?: IconName;
@@ -20,6 +21,7 @@ export type Alert = {
     onPressSecondaryButton?: () => void;
     appendix?: ReactNode;
     testID?: string;
+    titleSpacing?: NativeSpacing;
 };
 
 export const alertAtom = atom<Alert | null>(null);

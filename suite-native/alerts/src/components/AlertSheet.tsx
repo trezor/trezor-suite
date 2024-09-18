@@ -66,6 +66,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
     const {
         title,
         textAlign = 'center',
+        titleSpacing,
         description,
         icon,
         pictogramVariant,
@@ -105,11 +106,14 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                         <Pictogram variant={pictogramVariant} icon={icon} />
                                     </Box>
                                 )}
-                                <TitleHeader
-                                    title={title}
-                                    subtitle={description}
-                                    textAlign={textAlign}
-                                />
+                                {(title || description) && (
+                                    <TitleHeader
+                                        title={title}
+                                        subtitle={description}
+                                        textAlign={textAlign}
+                                        titleSpacing={titleSpacing}
+                                    />
+                                )}
                                 {appendix}
                                 <VStack spacing="medium">
                                     <Button
