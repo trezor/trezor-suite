@@ -65,6 +65,7 @@ export type ExtraDependencies = {
         selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
         selectAreSatsAmountUnit: SuiteCompatibleSelector<boolean>;
         selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
+        selectTokenDefinitionsEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
         selectLocalCurrency: SuiteCompatibleSelector<FiatCurrencyCode>;
         selectIsPendingTransportEvent: SuiteCompatibleSelector<boolean>;
         // todo: we do not want to, so far, transfer coinjoin to @suite-common
