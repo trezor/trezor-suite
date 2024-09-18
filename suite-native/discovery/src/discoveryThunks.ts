@@ -200,22 +200,13 @@ const getCardanoSupportedAccountTypesThunk = createThunk(
             return undefined;
         }
         const availableCardanoDerivationsResponse = await requestDeviceAccess({
-            deviceCallback: async () => {
-                // calling method like getFeatures with keepSession: false (default) will make connect initialize again with useCardanoDerivation: true
-                // this also applies cardanoConnectPatch, otherwise getting Cardano derivation might fail (if useCardanoDerivation is false)
-                // If https://github.com/trezor/trezor-suite/issues/14369 is resolved, this might not be needed in the future
-                await TrezorConnect.getFeatures({
-                    device,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
-                });
-
-                return dispatch(
+            deviceCallback: () =>
+                dispatch(
                     getAvailableCardanoDerivationsThunk({
                         deviceState,
                         device,
                     }),
-                ).unwrap();
-            },
+                ).unwrap(),
         });
 
         if (availableCardanoDerivationsResponse.success) {
