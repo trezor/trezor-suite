@@ -17,6 +17,16 @@ you may use the following params:
 -i <in case -p methods, use -i to filter one connect method, such as -i binanceGetAddress>
 ```
 
+## karma test
+
+Browser console is not visible in the terminal. Use KARMA_SINGLE_RUN env variable and debug test at http://localhost:8099/debug.html in your favorite browser.
+
+For local changes to take effect build connect-iframe or connect-web depending where they were made and restart test.
+
+```
+TESTS_PATTERN="init" KARMA_SINGLE_RUN=false yarn workspace @trezor/connect test:e2e:web
+```
+
 ## Transactions cache
 
 Bitcoin-like coins `signTransaction` method require additional data about transactions referenced from used inputs.
