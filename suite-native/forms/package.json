@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@hookform/resolvers": "3.9.0",
+        "@mobily/ts-belt": "^3.13.1",
         "@suite-common/icons-deprecated": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "react": "18.2.0",

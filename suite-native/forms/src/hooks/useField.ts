@@ -1,6 +1,8 @@
 import { useController } from 'react-hook-form';
 import { useContext } from 'react';
 
+import { G } from '@mobily/ts-belt';
+
 import { FieldName } from '../types';
 import { FormContext } from '../Form';
 
@@ -35,7 +37,7 @@ export const useField = ({
 
     // Inspired by https://react-hook-form.com/advanced-usage#TransformandParse.
     // Allows to parse/transform the value before it's set to the input.
-    const transformedValue = valueTransformer(value);
+    const transformedValue = G.isString(value) ? valueTransformer(value) : '';
 
     // TODO: proper error message resolution using intl
     const errorMessage = label ? error?.message?.replace(name, label) : error?.message;

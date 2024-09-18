@@ -19,7 +19,6 @@ export const SendScreen = ({ children, footer, screenHeader, subheader }: SendSc
             screenHeader={screenHeader}
             subheader={subheader}
             footer={footer}
-            keyboardShouldPersistTaps="never"
             keyboardDismissMode="on-drag"
         >
             {children}
