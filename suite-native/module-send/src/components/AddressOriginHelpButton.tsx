@@ -41,14 +41,3 @@ export const AddressOriginHelpButton = () => {
         ></AddressReviewHelpSheet>
     );
 };
-
-// title={
-//     <VStack>
-//         <Text variant="titleSmall">
-//             <Translation id="moduleSend.review.address.originBottomSheet.title" />
-//         </Text>
-//         <Text variant="body">
-//             <Translation id="moduleSend.review.address.originBottomSheet.subtitle" />
-//         </Text>
-//     </VStack>
-// }

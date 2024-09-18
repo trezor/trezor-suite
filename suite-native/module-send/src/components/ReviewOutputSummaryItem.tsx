@@ -38,7 +38,7 @@ export const ReviewOutputSummaryItem = ({
                 title={translate('moduleSend.review.outputs.total.label')}
                 outputState={state}
             >
-                <VStack>
+                <VStack spacing="medium">
                     <ReviewOutputItemValues
                         value={totalSpent}
                         networkSymbol={networkSymbol}

@@ -45,6 +45,7 @@ const cardStyle = prepareNativeStyle<{ isFinalStep: boolean }>((utils, { isFinal
         style: {
             backgroundColor: utils.colors.backgroundPrimarySubtleOnElevation0,
             borderColor: utils.colors.backgroundPrimarySubtleOnElevationNegative,
+            ...utils.boxShadows.none,
         },
     },
 }));

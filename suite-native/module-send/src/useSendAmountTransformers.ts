@@ -5,6 +5,7 @@ import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/sett
 
 const decimalTransformer = (value: string) =>
     value
+        .replace(/,/g, '.') // remove all non-numeric characters
         .replace(/[^\d.]/g, '') // remove all non-numeric characters
         .replace(/^\./g, '') // remove '.' symbol if it is not preceded by number
         .replace(/(?<=\..*)\./g, '') // keep only first appearance of the '.' symbol

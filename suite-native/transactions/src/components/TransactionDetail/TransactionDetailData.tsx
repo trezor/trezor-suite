@@ -17,8 +17,9 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
+import { useNativeStyles } from '@trezor/styles';
 
-import { TransactionDetailSummary } from './TransactionDetailSummary';
+import { cardStyle, TransactionDetailSummary } from './TransactionDetailSummary';
 import { TransactionDetailRow } from './TransactionDetailRow';
 import { TransactionDetailIncludedCoins } from './TransactionDetailIncludedCoins';
 import { TransactionDetailSheets } from './TransactionDetailSheets';
@@ -36,6 +37,7 @@ export const TransactionDetailData = ({
 }: TransactionDetailDataProps) => {
     const { DateFormatter, TimeFormatter } = useFormatters();
     const { translate } = useTranslate();
+    const { applyStyle } = useNativeStyles();
 
     const transactionBlockTime = useSelector((state: TransactionsRootState) =>
         selectTransactionBlockTimeById(state, transaction.txid, accountKey),
@@ -81,7 +83,7 @@ export const TransactionDetailData = ({
                     }
                 />
             )}
-            <Card borderColor="borderElevation1" style={{ paddingVertical: 12 }}>
+            <Card borderColor="borderElevation1" style={applyStyle(cardStyle)}>
                 <VStack spacing="large">
                     <TransactionDetailRow title={translate('transactions.detail.feeLabel')}>
                         <Box alignItems="flex-end">

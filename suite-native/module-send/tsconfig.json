@@ -33,7 +33,6 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../device" },
-        { "path": "../device-manager" },
         { "path": "../device-mutex" },
         { "path": "../formatters" },
         { "path": "../forms" },

@@ -28,6 +28,16 @@ interface NativeBoxShadowDefinition {
 }
 
 export const nativeBoxShadows: Record<string, NativeBoxShadowDefinition> = {
+    none: {
+        elevation: 0,
+        shadowColor: 'rgba(0, 0, 0, 0)',
+        shadowOffset: {
+            height: 0,
+            width: 0,
+        },
+        shadowOpacity: 0,
+        shadowRadius: 0,
+    },
     small: {
         elevation: 2,
         shadowColor: 'rgba(0, 0, 0, 0.4)',

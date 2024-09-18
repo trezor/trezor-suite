@@ -15,8 +15,9 @@ type TransactionDetailSummaryProps = {
     tokenTransfer?: EthereumTokenTransfer;
 };
 
-const cardStyle = prepareNativeStyle(() => ({
+export const cardStyle = prepareNativeStyle(utils => ({
     paddingBottom: 12,
+    ...utils.boxShadows.none,
 }));
 
 export const TransactionDetailSummary = ({

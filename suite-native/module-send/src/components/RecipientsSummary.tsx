@@ -21,6 +21,8 @@ const cardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderElevation0,
     backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
     borderWidth: utils.borders.widths.small,
+    paddingVertical: 12,
+    ...utils.boxShadows.none,
 }));
 
 const addressStyle = prepareNativeStyle(() => ({
@@ -54,6 +56,7 @@ export const RecipientsSummary = ({ accountKey }: FeesRecipientsProps) => {
                                 <Translation id="moduleSend.fees.recipient.singular" />
                             </Text>
                             <Text
+                                variant="hint"
                                 ellipsizeMode="middle"
                                 numberOfLines={1}
                                 style={applyStyle(addressStyle)}
