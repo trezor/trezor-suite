@@ -30,7 +30,7 @@ const NEW_MODAL_CONTENT_ID = 'modal-content';
 const MODAL_ELEVATION = 0;
 const ICON_SIZE = 40;
 
-const Container = styled.div<{ $elevation: Elevation; $size: NewModalSize }>`
+const Container = styled.div<{ $elevation: Elevation; $size: NewModalSize; $customWidth?: number }>`
     display: flex;
     flex-direction: column;
     position: relative;
@@ -39,7 +39,8 @@ const Container = styled.div<{ $elevation: Elevation; $size: NewModalSize }>`
     max-width: 95%;
     min-width: 305px;
     max-height: 80vh;
-    width: ${({ $size }) => mapModalSizeToWidth($size)}px;
+    width: ${({ $size, $customWidth }) =>
+        $customWidth ? $customWidth : mapModalSizeToWidth($size)}px;
     overflow: hidden;
     background: ${mapElevationToBackground};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
@@ -113,6 +114,7 @@ interface NewModalProps {
     icon?: IconName;
     alignment?: NewModalAlignment;
     size?: NewModalSize;
+    customWidth?: number;
     'data-test'?: string;
 }
 
@@ -120,6 +122,7 @@ const NewModalBase = ({
     children,
     variant = 'primary',
     size = 'medium',
+    customWidth,
     heading,
     description,
     bottomContent,
@@ -144,6 +147,7 @@ const NewModalBase = ({
                 <Container
                     $elevation={MODAL_ELEVATION}
                     $size={size}
+                    $customWidth={customWidth}
                     onClick={e => e.stopPropagation()}
                     data-testid={dataTest}
                 >
