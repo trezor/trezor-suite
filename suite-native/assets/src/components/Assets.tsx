@@ -69,7 +69,7 @@ export const Assets = () => {
                         />
                     </Animated.View>
                 ))}
-                {isLoading && <DiscoveryAssetsLoader numberOfAssets={deviceNetworks.length} />}
+                {isLoading && <DiscoveryAssetsLoader isListEmpty={deviceNetworks.length < 1} />}
             </Card>
             {selectedAssetSymbol && (
                 <NetworkAssetsBottomSheet
