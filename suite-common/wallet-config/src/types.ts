@@ -1,4 +1,5 @@
 import { DeviceModelInternal } from '@trezor/connect';
+import { RequiredKey } from '@trezor/type-utils';
 
 export type NetworkSymbol =
     | 'btc'
@@ -73,6 +74,7 @@ type NetworkAccountWithSpecificKey<TKey extends AccountType> = {
     isDebugOnlyAccountType?: boolean;
 };
 export type NetworkAccount = NetworkAccountWithSpecificKey<AccountType>;
+export type NormalizedNetworkAccount = RequiredKey<NetworkAccount, 'features'>;
 
 export type NetworkAccountTypes = Partial<{
     [key in AccountType]: NetworkAccountWithSpecificKey<key>;
