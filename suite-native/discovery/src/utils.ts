@@ -1,6 +1,6 @@
-import { A, F } from '@mobily/ts-belt';
+import { A } from '@mobily/ts-belt';
 
-import { AccountType, Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, Network } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
 export const getNetworksWithUnfinishedDiscovery = (
@@ -32,6 +32,3 @@ export const getNetworksWithUnfinishedDiscovery = (
 
         return false;
     });
-
-export const getNetworkSymbols = (networks: readonly Network[]): NetworkSymbol[] =>
-    F.toMutable(networks.map(n => n.symbol));

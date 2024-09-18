@@ -48,7 +48,6 @@ import {
     selectNetworksWithUnfinishedDiscovery,
     selectShouldRunDiscoveryForDevice,
 } from './discoverySelectors';
-import { getNetworkSymbols } from './utils';
 
 const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
 
@@ -647,7 +646,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         dispatch(
             setDiscoveryInfo({
                 startTimestamp: performance.now(),
-                networkSymbols: getNetworkSymbols(networksWithUnfinishedDiscovery),
+                networkSymbols: networksWithUnfinishedDiscovery.map(n => n.symbol),
             }),
         );
 
