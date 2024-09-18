@@ -151,6 +151,10 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         };
 
         this.params.options = enhanceSignTx(this.params.options, coinInfo);
+
+        if (this.params.push) {
+            this.requiredPermissions.push('push_tx');
+        }
     }
 
     get info() {

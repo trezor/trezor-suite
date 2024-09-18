@@ -8,6 +8,7 @@ import type { Device, CoinInfo, BitcoinNetworkInfo, SelectFeeLevel } from '../ty
 import type { DiscoveryAccountType, DiscoveryAccount } from '../types/account';
 import type { MessageFactoryFn } from '../types/utils';
 import type { DeviceButtonRequest } from './device';
+import { MethodPermission } from '../core/AbstractMethod';
 
 export const UI_EVENT = 'UI_EVENT';
 export const UI_REQUEST = {
@@ -159,7 +160,7 @@ export interface UiRequestSetOperation {
 export interface UiRequestPermission {
     type: typeof UI_REQUEST.REQUEST_PERMISSION;
     payload: {
-        permissions: string[];
+        permissions: MethodPermission[];
         device: Device;
     };
 }

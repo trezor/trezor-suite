@@ -119,6 +119,10 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             push: typeof payload.push === 'boolean' ? payload.push : false,
             total,
         };
+
+        if (this.params.push) {
+            this.requiredPermissions.push('push_tx');
+        }
     }
 
     get info() {
