@@ -7,6 +7,7 @@ Trezor Suite native application.
 Generally it's recommended to follow official [React Native environment setup](https://reactnative.dev/docs/set-up-your-environment) guide.
 
 1. [Android Guide](https://reactnative.dev/docs/set-up-your-environment?os=macos&platform=android)
+    - If you have Linux, install `watchman` preferably using Homebrew (others methods seem to be unmaintained)
 2. [iOS Guide](https://reactnative.dev/docs/set-up-your-environment?os=macos&platform=ios)
     - Make sure you have the latest version of the Xcode command line tools installed: `xcode-select --install`
 
@@ -66,3 +67,4 @@ To reveal dev menu, you have to click at least 7 times on commit hash at the bot
 2. In case of issues with the packager, try to restart it with `--reset-cache` i.e (`yarn s --reset-cache`).
 3. Sometimes it's helpful to combine two previous points with uninstalling the app from the device/emulator.
 4. Make sure you are using pure Node or `nvm` for managing node version (other version managers like `fnm` can cause build issues on iOS).
+5. `npx react-native doctor` may help to identify issues with your environment, though not every check _has_ to pass
