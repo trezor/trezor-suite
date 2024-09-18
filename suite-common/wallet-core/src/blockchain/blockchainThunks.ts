@@ -33,6 +33,7 @@ import { selectAccounts } from '../accounts/accountsReducer';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
+import { selectNetworkFeeInfo } from '../fees/feesReducer';
 
 const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000;
 
@@ -101,16 +102,18 @@ export const preloadFeeInfoThunk = createThunk(
 // shouldn't this be in fee thunks instead?
 export const updateFeeInfoThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/updateFeeInfoThunk`,
-    async (symbol: string, { dispatch, getState, extra }) => {
-        const {
-            selectors: { selectFeeInfo },
-        } = extra;
+
+    async (symbol: string, { dispatch, getState }) => {
         const network = getNetworkOptional(symbol.toLowerCase());
         if (!network) return;
         const blockchainInfo = selectNetworkBlockchainInfo(network.symbol)(getState());
-        const feeInfo = selectFeeInfo(network.symbol)(getState());
+        const feeInfo = selectNetworkFeeInfo(getState(), network.symbol);
 
-        if (feeInfo.blockHeight > 0 && blockchainInfo.blockHeight - feeInfo.blockHeight < 10)
+        if (
+            feeInfo &&
+            feeInfo.blockHeight > 0 &&
+            blockchainInfo.blockHeight - feeInfo.blockHeight < 10
+        )
             return;
 
         let newFeeInfo;
