@@ -7,6 +7,8 @@ export interface SkeletonStackProps {
     $childMargin?: string;
     $alignItems?: string;
 }
+
+/* @deprecated Use Row or Column instead */
 export const SkeletonStack = styled.div<SkeletonStackProps>`
     display: flex;
     align-items: ${props => props.$alignItems ?? 'auto'};
