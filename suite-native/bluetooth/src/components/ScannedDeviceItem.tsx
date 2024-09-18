@@ -1,21 +1,11 @@
 import { useEffect, useState } from 'react';
-import { BleError, State as AdapterState } from 'react-native-ble-plx';
 import { Alert } from 'react-native';
 
-import { AlertBox, Box, Button, HStack, Loader, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Icon, IconName } from '@suite-common/icons-deprecated';
+import { Box, Button, HStack, Loader, Text } from '@suite-native/atoms';
+import { useActiveColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { BLEScannedDevice, nativeBleManager } from '@trezor/transport-native-ble';
-import { Icon, IconName } from '@suite-common/icons';
-import { useActiveColorScheme } from '@suite-native/theme';
-
-import {
-    BluetoothPermissionErrors,
-    useBluetoothPermissions,
-} from '../hooks/useBluetoothPermissions';
-import { BluetoothPermissionError } from './BluetoothPermissionError';
-import { useBluetoothAdapterState } from '../hooks/useBluetoothAdapterState';
-import { BluetoothAdapterStateManager } from './BluetoothAdapterStateManager';
 
 type ContainerStylePayload = {
     seenQuiteLongAgo: boolean;
@@ -63,7 +53,7 @@ export const ScannedDeviceItem = ({ device }: { device: BLEScannedDevice }) => {
     const { bleDevice } = device;
     const { applyStyle } = useNativeStyles();
     const [isConnecting, setIsConnecting] = useState(false);
-    const [rerender, setRerender] = useState(0);
+    const [_rerender, setRerender] = useState(0);
 
     // Rerender every second to update the "Last seen" text
     useEffect(() => {
@@ -79,8 +69,9 @@ export const ScannedDeviceItem = ({ device }: { device: BLEScannedDevice }) => {
     const connectDevice = async () => {
         setIsConnecting(true);
         try {
-            await nativeBleManager.connectDevice({
+            await nativeBleManager.connectDeviceWithRetry({
                 deviceOrId: bleDevice,
+                maxRetries: 2,
             });
         } catch (error) {
             alert('Error connecting to device');

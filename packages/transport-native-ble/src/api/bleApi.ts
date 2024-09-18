@@ -44,6 +44,21 @@ export class BleApi extends AbstractApi {
         };
     }
 
+    // This doesn't seems to work. Figure out why and then we can remove listener in constructor.
+    public listen() {
+        nativeBleManager.onconnect = async device => {
+            debugLog('onconnect', device.id);
+            const devicesDescriptors = await this.devicesToDescriptors();
+
+            this.emit('transport-interface-change', devicesDescriptors);
+        };
+
+        nativeBleManager.ondisconnect = async device => {
+            debugLog('ondisconnect', device.id);
+            this.emit('transport-interface-change', await this.devicesToDescriptors());
+        };
+    }
+
     public async enumerate() {
         debugLog('Transport enumeration');
         try {
@@ -61,16 +76,17 @@ export class BleApi extends AbstractApi {
         // TODO: implement proper device type
         return devices.map(d => ({ path: d.id, type: DEVICE_TYPE.TypeT2 }));
     }
-
     public async read(
         path: string,
     ): AsyncResultWithTypedError<
-        ArrayBuffer,
+        Buffer,
         | typeof ERRORS.DEVICE_NOT_FOUND
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
         | typeof ERRORS.INTERFACE_DATA_TRANSFER
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
         | typeof ERRORS.UNEXPECTED_ERROR
+        | typeof ERRORS.ABORTED_BY_SIGNAL
+        | typeof ERRORS.ABORTED_BY_TIMEOUT
     > {
         debugLog('read');
         const device = nativeBleManager.findDevice(path);
@@ -85,11 +101,13 @@ export class BleApi extends AbstractApi {
                 return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER });
             }
 
-            // convert base64 string to ArrayBuffer
-            const data = Buffer.from(res, 'base64');
+            // convert base64 string to Buffer
+            const data = Buffer.from(res, 'base64') as Buffer;
 
             return this.success(data);
         } catch (err) {
+            console.error(err);
+
             return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
         }
     }
@@ -123,5 +141,12 @@ export class BleApi extends AbstractApi {
         // BT does not need to be closed, it closed when disconnected
 
         return this.success(undefined);
+    }
+
+    public async dispose(): Promise<void> {
+        // Clean up any resources or listeners here
+        nativeBleManager.onconnect = undefined;
+        nativeBleManager.ondisconnect = undefined;
+        this.devices = [];
     }
 }
