@@ -20,6 +20,7 @@ export const icons = {
     arrowRightLine: require('../assets/icons/arrowRightLine.svg'),
     arrowRightLong: require('../assets/icons/arrowRightLong.svg'),
     arrowURightDown: require('../assets/icons/arrowURightDown.svg'),
+    arrowURightDownLight: require('../assets/icons/arrowURightDownLight.svg'),
     arrowUp: require('../assets/icons/arrowUp.svg'),
     arrowUpRight: require('../assets/icons/arrowUpRight.svg'),
     arrowsCircle: require('../assets/icons/arrowsCircle.svg'),
@@ -146,6 +147,7 @@ export const icons = {
     piggyBankFilled: require('../assets/icons/piggyBankFilled.svg'),
     pin: require('../assets/icons/pin.svg'),
     placeholder: require('../assets/icons/placeholder.svg'),
+    placeholderLight: require('../assets/icons/placeholderLight.svg'),
     play: require('../assets/icons/play.svg'),
     plugs: require('../assets/icons/plugs.svg'),
     plus: require('../assets/icons/plus.svg'),
@@ -159,6 +161,7 @@ export const icons = {
     questionMark: require('../assets/icons/questionMark.svg'),
     receive: require('../assets/icons/receive.svg'),
     receiveAlt: require('../assets/icons/receiveAlt.svg'),
+    receiveLight: require('../assets/icons/receiveLight.svg'),
     recover: require('../assets/icons/recover.svg'),
     refresh: require('../assets/icons/refresh.svg'),
     reject: require('../assets/icons/reject.svg'),
@@ -168,6 +171,7 @@ export const icons = {
     seedSingle: require('../assets/icons/seedSingle.svg'),
     send: require('../assets/icons/send.svg'),
     sendAlt: require('../assets/icons/sendAlt.svg'),
+    sendLight: require('../assets/icons/sendLight.svg'),
     settings: require('../assets/icons/settings.svg'),
     share: require('../assets/icons/share.svg'),
     shareAlt: require('../assets/icons/shareAlt.svg'),
@@ -177,6 +181,7 @@ export const icons = {
     shieldWarning: require('../assets/icons/shieldWarning.svg'),
     show: require('../assets/icons/show.svg'),
     shuffle: require('../assets/icons/shuffle.svg'),
+    shuffleLight: require('../assets/icons/shuffleLight.svg'),
     spinner: require('../assets/icons/spinner.svg'),
     stack: require('../assets/icons/stack.svg'),
     standardWallet: require('../assets/icons/standardWallet.svg'),
@@ -221,7 +226,6 @@ export const icons = {
     warningTriangleLight: require('../assets/icons/warningTriangleLight.svg'),
     wifiSlash: require('../assets/icons/wifiSlash.svg'),
 } as const;
-
 export type IconName = keyof typeof icons;
 
 export const cryptoIcons = {
