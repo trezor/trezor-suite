@@ -1,7 +1,6 @@
 // @group_wallet
 // @retry=2
 
-const SEED_SIGN = 'all all all all all all all all all all all all';
 const MESSAGE_SIGN = 'hello world';
 const SIGNATURE_SIGN =
     '0a172eaac00636dbc124c170e5afa7665cdeed65b59449ee1bbb6e57b1cfbf7971a1c88b48cacd17ec585918cd849c36a016e99ecfd757b947c732e7470b9b3d1b';
@@ -12,7 +11,7 @@ describe('Sign and verify ETH', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: false,
-            mnemonic: SEED_SIGN,
+            mnemonic: 'mnemonic_all',
         });
         cy.task('startBridge');
 

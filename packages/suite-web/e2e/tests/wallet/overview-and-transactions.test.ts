@@ -8,7 +8,7 @@ describe('Overview and transactions check', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: false,
-            mnemonic: 'all all all all all all all all all all all all',
+            mnemonic: 'mnemonic_all',
         });
         cy.task('startBridge');
 

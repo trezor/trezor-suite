@@ -18,7 +18,6 @@ test('reporting', async ({ page }) => {
     });
 
     await TrezorUserEnvLink.setupEmu({
-        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: true,
         label: 'My Trevor',

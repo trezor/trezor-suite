@@ -9,9 +9,7 @@ describe('Google api errors', () => {
     beforeEach(() => {
         cy.viewport(1440, 2560).resetDb();
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', {
-            mnemonic: 'all all all all all all all all all all all all',
-        });
+        cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
         cy.task('startBridge');
         cy.task('metadataStartProvider', provider);
         cy.prefixedVisit('/', {

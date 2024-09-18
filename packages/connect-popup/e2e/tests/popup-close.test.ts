@@ -48,7 +48,6 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     });
     log('beforeEach', 'setupEmu');
     await TrezorUserEnvLink.setupEmu({
-        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: false,
         label: 'My Trevor',

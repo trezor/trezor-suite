@@ -28,9 +28,7 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
         it(`${f.provider}-${f.desc}`, () => {
             // prepare test
             cy.task('startEmu', { wipe: true });
-            cy.task('setupEmu', {
-                mnemonic: 'all all all all all all all all all all all all',
-            });
+            cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
             cy.task('startBridge');
             cy.task('metadataStartProvider', f.provider);
             cy.clock();

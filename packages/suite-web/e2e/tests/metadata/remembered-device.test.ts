@@ -31,9 +31,7 @@ describe(
                 // prepare test
                 cy.task('stopBridge');
                 cy.task('startEmu', { wipe: true });
-                cy.task('setupEmu', {
-                    mnemonic: 'all all all all all all all all all all all all',
-                });
+                cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
                 cy.task('startBridge');
                 cy.task('metadataStartProvider', f.provider);
                 cy.task('metadataSetFileContent', {

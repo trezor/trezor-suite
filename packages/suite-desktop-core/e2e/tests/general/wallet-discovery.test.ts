@@ -1,6 +1,6 @@
 import { test as testPlaywright, ElectronApplication, Page } from '@playwright/test';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link/src';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { launchSuite } from '../../support/common';
 import { onDashboardPage } from '../../support/pageActions/dashboardActions';
@@ -13,7 +13,7 @@ testPlaywright.beforeAll(async () => {
     await TrezorUserEnvLink.startEmu({ wipe: true });
     await TrezorUserEnvLink.setupEmu({
         needs_backup: true,
-        mnemonic: 'all all all all all all all all all all all all',
+        mnemonic: 'mnemonic_all',
     });
     ({ electronApp, window } = await launchSuite());
 });

@@ -14,9 +14,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
     it(provider, () => {
         // prepare test
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', {
-            mnemonic: 'all all all all all all all all all all all all',
-        });
+        cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
         cy.task(`metadataStartProvider`, provider);
 
         cy.prefixedVisit('/', {

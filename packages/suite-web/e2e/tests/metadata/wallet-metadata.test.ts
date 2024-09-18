@@ -6,7 +6,6 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 const firmwares = ['2.3.0', '2-main'] as const;
 const provider = 'dropbox';
 
-const mnemonic = 'all all all all all all all all all all all all';
 // state corresponding to all seed
 const standardWalletState = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@355C817510C0EABF2F147145:1';
 // state corresponding to "wallet for drugs"
@@ -23,7 +22,7 @@ describe.skip('Metadata - wallet labeling', () => {
             // prepare test
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu', {
-                mnemonic,
+                mnemonic: 'mnemonic_all',
                 passphrase_protection: true,
             });
             cy.task('startBridge');

@@ -14,7 +14,7 @@ describe('Passphrase', () => {
         // back to passphrase that was used before in the session would require to type the passphrase again
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
-            mnemonic: 'all all all all all all all all all all all all',
+            mnemonic: 'mnemonic_all',
             passphrase_protection: true,
         });
         cy.task('startBridge');

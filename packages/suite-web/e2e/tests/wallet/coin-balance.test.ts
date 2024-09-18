@@ -8,7 +8,7 @@ describe('Dashboard with regtest', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: true,
-            mnemonic: 'all all all all all all all all all all all all',
+            mnemonic: 'mnemonic_all',
         });
         cy.task('startBridge');
         cy.task('sendToAddressAndMineBlock', {

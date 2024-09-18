@@ -16,7 +16,7 @@ describe('Passphrase cancel', () => {
         it(version.model + '_' + version.version, () => {
             cy.task('startEmu', { wipe: true, ...version });
             cy.task('setupEmu', {
-                mnemonic: 'all all all all all all all all all all all all',
+                mnemonic: 'mnemonic_all',
                 passphrase_protection: true,
             });
             cy.task('startBridge');
