@@ -373,14 +373,16 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const descriptors = enumerateResult.payload;
 
+        const waitForDevicesPromise =
+            initParams.pendingTransportEvent && descriptors.length
+                ? this.waitForDevices(descriptors.length, 10000)
+                : Promise.resolve();
+
         // TODO handleDescriptorChange can emit TRANSPORT.UPDATE before TRANSPORT.START is emitted, check whether acceptable
         transport.handleDescriptorsChange(descriptors);
         transport.listen();
 
-        const awaitedDevices = descriptors.length - Object.keys(this.devices).length;
-        if (awaitedDevices > 0 && initParams.pendingTransportEvent) {
-            await this.waitForDevices(awaitedDevices, 10000);
-        }
+        await waitForDevicesPromise;
 
         return transport;
     }
