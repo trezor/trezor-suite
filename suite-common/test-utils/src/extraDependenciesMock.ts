@@ -69,8 +69,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         openSwitchDeviceDialog: mockThunk('openSwitchDeviceDialog'),
     },
     selectors: {
-        selectFeeInfo: (networkSymbol: any) =>
-            mockSelector('selectFeeInfo', testMocks.fee, { networkSymbol }),
         selectDevices: mockSelector('selectDevices', []),
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
         selectAreSatsAmountUnit: mockSelector('selectAreSatsAmountUnit', false),

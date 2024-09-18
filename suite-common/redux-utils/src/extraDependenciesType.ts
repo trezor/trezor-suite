@@ -9,7 +9,6 @@ import {
     AccountKey,
     AddressDisplayOptions,
     Discovery,
-    FeeInfo,
     SelectedAccountStatus,
     WalletAccountTransaction,
     WalletType,
@@ -60,7 +59,6 @@ export type ExtraDependencies = {
         addWalletThunk: SuiteCompatibleThunk<{ walletType: WalletType; device: AcquiredDevice }>;
     };
     selectors: {
-        selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
         selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
         selectAreSatsAmountUnit: SuiteCompatibleSelector<boolean>;

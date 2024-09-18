@@ -68,8 +68,6 @@ export const extraDependencies: ExtraDependencies = {
         addWalletThunk,
     },
     selectors: {
-        selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
-            state.wallet.fees[networkSymbol],
         selectDevices: (state: AppState) => state.device.devices,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
         selectAreSatsAmountUnit: (state: AppState) =>
