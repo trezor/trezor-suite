@@ -11,7 +11,7 @@ describe('Backup success', () => {
         cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.8.1' });
         cy.task('setupEmu', {
             needs_backup: true,
-            mnemonic: 'all all all all all all all all all all all all',
+            mnemonic: 'mnemonic_all',
         });
         cy.task('startBridge');
 

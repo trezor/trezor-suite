@@ -1,8 +1,6 @@
 // @group_metadata
 // @retry=2
 
-const mnemonic = 'all all all all all all all all all all all all';
-
 describe('Metadata - cancel metadata on device', () => {
     beforeEach(() => {
         cy.viewport('macbook-15').resetDb();
@@ -12,7 +10,7 @@ describe('Metadata - cancel metadata on device', () => {
         // prepare test
         cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.7.0' });
         cy.task('setupEmu', {
-            mnemonic,
+            mnemonic: 'mnemonic_all',
             passphrase_protection: true,
         });
         cy.task('startBridge');

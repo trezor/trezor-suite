@@ -12,9 +12,7 @@ describe(`Metadata - switching between cloud providers`, () => {
     it('Start with one and switch to another', () => {
         // prepare test
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', {
-            mnemonic: 'all all all all all all all all all all all all',
-        });
+        cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
         cy.task('startBridge');
         cy.task(`metadataStartProvider`, 'dropbox');
         cy.task(`metadataStartProvider`, 'google');

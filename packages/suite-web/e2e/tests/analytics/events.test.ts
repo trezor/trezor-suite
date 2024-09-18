@@ -27,7 +27,6 @@ describe('Analytics Events', () => {
         cy.task('startEmu', { wipe: true, model: 'T2T1', version: '2.6.0' });
         cy.task('setupEmu', {
             needs_backup: false,
-            mnemonic: 'all all all all all all all all all all all all',
             passphrase_protection: true,
         });
 
@@ -89,7 +88,6 @@ describe('Analytics Events', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: false,
-            mnemonic: 'all all all all all all all all all all all all',
         });
         cy.task('startBridge');
 

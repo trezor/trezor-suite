@@ -11,7 +11,6 @@ describe('Assets', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: true,
-            mnemonic: 'all all all all all all all all all all all all',
         });
         cy.task('startBridge');
 

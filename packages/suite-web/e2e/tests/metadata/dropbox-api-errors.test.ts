@@ -10,9 +10,7 @@ describe('Dropbox api errors', () => {
 
     it('Malformed token', () => {
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', {
-            mnemonic: 'all all all all all all all all all all all all',
-        });
+        cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
         cy.task('startBridge');
         cy.task('metadataStartProvider', 'dropbox');
         // prepare some initial files
@@ -72,9 +70,7 @@ describe('Dropbox api errors', () => {
 
     it('Success after retrying GET request', () => {
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', {
-            mnemonic: 'all all all all all all all all all all all all',
-        });
+        cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
         cy.task('startBridge');
         cy.task('metadataStartProvider', 'dropbox');
         // prepare some initial files
@@ -148,9 +144,7 @@ describe('Dropbox api errors', () => {
 
     it('Incomplete data returned from provider', () => {
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', {
-            mnemonic: 'all all all all all all all all all all all all',
-        });
+        cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
         cy.task('startBridge');
         cy.task('metadataStartProvider', 'dropbox');
         // prepare some initial files

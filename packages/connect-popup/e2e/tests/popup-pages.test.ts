@@ -47,7 +47,6 @@ test('popup should display error page when device disconnected and debug mode', 
         wipe: true,
     });
     await TrezorUserEnvLink.setupEmu({
-        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: false,
         label: 'My Trevor',
@@ -113,7 +112,6 @@ test('log page should contain logs from shared worker', async ({ page, context }
         wipe: true,
     });
     await TrezorUserEnvLink.setupEmu({
-        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
         pin: '',
         passphrase_protection: false,
         label: 'My Trevor',

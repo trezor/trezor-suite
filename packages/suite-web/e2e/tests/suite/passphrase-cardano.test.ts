@@ -8,7 +8,7 @@ describe('Passphrase with cardano', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
-            mnemonic: 'all all all all all all all all all all all all',
+            mnemonic: 'mnemonic_all',
             passphrase_protection: true,
         });
         cy.task('startBridge');

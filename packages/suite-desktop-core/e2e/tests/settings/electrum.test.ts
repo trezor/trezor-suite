@@ -17,7 +17,7 @@ testPlaywright.describe.serial('Suite works with Electrum server', () => {
         await TrezorUserEnvLink.startEmu({ wipe: true });
         await TrezorUserEnvLink.setupEmu({
             needs_backup: true,
-            mnemonic: 'all all all all all all all all all all all all',
+            mnemonic: 'mnemonic_all',
         });
         ({ electronApp, window } = await launchSuite());
     });

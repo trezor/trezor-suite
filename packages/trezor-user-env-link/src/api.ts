@@ -54,13 +54,20 @@ interface ReadAndConfirmShamirMnemonicEmu {
     threshold: number;
 }
 
+export const MNEMONICS = {
+    mnemonic_all: 'all all all all all all all all all all all all',
+    mnemonic_12: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
+    mnemonic_abandon:
+        'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
+};
+
 export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> {
     private client: WebsocketClient;
     public firmwares?: Firmwares;
     private defaultFirmware?: string;
     private defaultModel: Model = 'T2T1';
 
-    public currentEmulatorSetup: Partial<SetupEmu> = {};
+    public currentEmulatorSetup?: Partial<SetupEmu> = {};
     public currentEmulatorSettings: Partial<ApplySettings> = {};
 
     // todo: remove later, used in some of the tests
@@ -85,19 +92,25 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         this.send = this.client.send.bind(this.client);
     }
 
-    public async setupEmu(options: SetupEmu) {
+    public async setupEmu(options?: SetupEmu) {
         const defaults = {
-            // some random empty seed. most of the test don't need any account history so it is better not to slow them down with all all seed
-            mnemonic:
-                'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
             pin: '',
             passphrase_protection: false,
             label: 'My Trevor',
             needs_backup: false,
         };
+
+        // fallback to empty seed. most of the test don't need any account history so it is better not to slow them down with all all seed
+        const mnemonic =
+            typeof options?.mnemonic === 'string' && options.mnemonic.indexOf(' ') > 0
+                ? options.mnemonic
+                : //   @ts-expect-error
+                  MNEMONICS[options?.mnemonic] || MNEMONICS.mnemonic_12;
+
         const finalOptions = {
             ...defaults,
             ...options,
+            mnemonic,
         };
 
         if (JSON.stringify(this.currentEmulatorSetup) === JSON.stringify(finalOptions)) {

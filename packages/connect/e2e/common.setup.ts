@@ -5,15 +5,9 @@ import {
     TrezorUserEnvLink,
     type TrezorUserEnvLinkClass,
     StartEmu,
+    MNEMONICS,
 } from '@trezor/trezor-user-env-link';
 import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
-
-const MNEMONICS = {
-    mnemonic_all: 'all all all all all all all all all all all all',
-    mnemonic_12: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
-    mnemonic_abandon:
-        'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
-};
 
 const emulatorStartOpts =
     (process.env.emulatorStartOpts as StartEmu) || global.emulatorStartOpts || {};
@@ -60,11 +54,7 @@ export const setup = async (
 
     await TrezorUserEnvLink.startEmu(emulatorStartOpts);
 
-    const mnemonic =
-        typeof options.mnemonic === 'string' && options.mnemonic.indexOf(' ') > 0
-            ? options.mnemonic
-            : //   @ts-expect-error
-              MNEMONICS[options.mnemonic] || MNEMONICS.mnemonic_all;
+    const mnemonic = options.mnemonic || MNEMONICS.mnemonic_all;
 
     await TrezorUserEnvLink.setupEmu({
         ...options,

@@ -1,7 +1,6 @@
 // @group_wallet
 // @retry=2
 
-const SEED = 'all all all all all all all all all all all all';
 const PATH = "m/84'/0'/0'/0/3";
 const ADDRESS = 'bc1q6hr68ewf72l6r7cj6ut286x0xkwg5706jq450u';
 const MESSAGE = 'hello world';
@@ -13,7 +12,7 @@ const ELECTRUM_SIGNATURE =
 describe('Sign and verify', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', { mnemonic: SEED });
+        cy.task('setupEmu', { mnemonic: 'mnemonic_all' });
         cy.task('startBridge');
 
         cy.viewport(1440, 2560).resetDb();
