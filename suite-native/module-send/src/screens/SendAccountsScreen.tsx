@@ -1,5 +1,4 @@
 import { AccountsList, OnSelectAccount } from '@suite-native/accounts';
-import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { useTranslate } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 
@@ -23,8 +22,9 @@ export const SendAccountsScreen = ({
     // TODO: move text content to @suite-native/intl package when is copy ready
     return (
         <SendScreen
-            screenHeader={<DeviceManagerScreenHeader />}
-            subheader={<SendScreenSubHeader content={translate('moduleSend.accountsList.title')} />}
+            screenHeader={
+                <SendScreenSubHeader content={translate('moduleSend.accountsList.title')} />
+            }
         >
             {/* TODO: Enable filtering same as receive screen account list has. */}
             <AccountsList
