@@ -132,13 +132,7 @@ export class TrezordNode {
         this.protocolMessages = protocolMessages ?? true;
     }
 
-    private resolveListenSubscriptions(descriptors: Descriptor[]) {
-        this.descriptors = descriptors;
-
-        if (!this.listenSubscriptions.length) {
-            return;
-        }
-
+    private checkAffectedSubscriptions() {
         const [aborted, notAborted] = arrayPartition(this.listenSubscriptions, subscription => {
             return subscription.res.destroyed;
         });
@@ -161,6 +155,16 @@ export class TrezordNode {
             subscription.res.end(str(this.descriptors));
         });
         this.listenSubscriptions = unaffected;
+    }
+
+    private resolveListenSubscriptions(nextDescriptors: Descriptor[]) {
+        this.descriptors = nextDescriptors;
+
+        if (!this.listenSubscriptions.length) {
+            return;
+        }
+
+        this.checkAffectedSubscriptions();
     }
 
     private createAbortSignal(res: Response) {
@@ -263,6 +267,7 @@ export class TrezordNode {
                         req,
                         res,
                     });
+                    this.checkAffectedSubscriptions();
                 },
             ]);
 

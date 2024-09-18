@@ -738,7 +738,7 @@ describe('http', () => {
             });
 
             test('listen aborted using client.dispose', async () => {
-                const { server, client, onListenResolvedSpy, onDebugLogSpy } =
+                const { server, client, onListenResolvedSpy } =
                     await createServerAndListeningClient();
 
                 client.dispose();
@@ -746,12 +746,6 @@ describe('http', () => {
 
                 expect(onListenResolvedSpy).not.toHaveBeenCalled();
                 await server.stop();
-
-                // this test assertion is little fragile, in case somebody adds more debug logs, we might start getting different results
-                expect(onDebugLogSpy).toHaveBeenNthCalledWith(
-                    1,
-                    'http: resolving listen subscriptions. n of aborted subscriptions: 1',
-                );
             });
         });
     });
