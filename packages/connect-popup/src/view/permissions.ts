@@ -8,14 +8,12 @@ const getPermissionText = (permissionType: string, _deviceName: string) => {
     switch (permissionType) {
         case 'read':
             return 'Read public keys from Trezor device';
-        case 'read-meta':
-            return 'Read metadata from Trezor device';
         case 'write':
             return 'Prepare Trezor device for transaction and data signing';
-        case 'write-meta':
-            return 'Write metadata to Trezor device';
         case 'management':
             return 'Modify device settings';
+        case 'push_tx':
+            return 'Broadcast transaction to the network';
         case 'custom-message':
             return 'Run custom operations';
         default:
@@ -31,6 +29,8 @@ const getPermissionTooltipText = (permissionType: string) => {
             return 'Permission needed to execute operations, such as composing a transaction, after your confirmation.';
         case 'management':
             return 'Permission needed to change device settings, such as PIN, passphrase, label or seed.';
+        case 'push_tx':
+            return 'Permission needed to broadcast a signed transaction to the network.';
         case 'custom-message':
             return 'Development tool. Use at your own risk. Allows service to send arbitrary data to your Trezor device.';
         default:

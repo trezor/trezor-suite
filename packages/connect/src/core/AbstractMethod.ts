@@ -21,6 +21,9 @@ import { ERRORS } from '../constants';
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
 
+export type MethodPermission = 'read' | 'write' | 'management' | 'push_tx';
+export type DeviceMode = typeof UI.SEEDLESS | typeof UI.BOOTLOADER | typeof UI.INITIALIZE;
+
 export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     T1B1: { min: '1.0.0', max: '0' },
     T2T1: { min: '2.0.0', max: '0' },
@@ -100,11 +103,11 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     firmwareRange: FirmwareRange;
 
-    requiredPermissions: string[];
+    requiredPermissions: MethodPermission[];
 
-    allowDeviceMode: string[]; // used in device management (like ResetDevice allow !UI.INITIALIZED)
+    allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI.INITIALIZED)
 
-    requireDeviceMode: string[];
+    requireDeviceMode: DeviceMode[];
 
     network: NETWORK.NetworkType;
 
