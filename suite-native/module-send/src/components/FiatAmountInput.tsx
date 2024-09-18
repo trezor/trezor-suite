@@ -43,9 +43,15 @@ export const FiatAmountInput = ({
         valueTransformer: fiatAmountTransformer,
     });
 
+    // Validation is assigned to the crypto field, so we need to check if that field has an error.
+    const { hasError } = useField({
+        name: cryptoFieldName,
+    });
+
     const handleChangeValue = (newValue: string) => {
-        onChange(newValue);
-        setValue(cryptoFieldName, converters?.convertFiatToCrypto?.(newValue) ?? '', {
+        const transformedValue = fiatAmountTransformer(newValue);
+        onChange(transformedValue);
+        setValue(cryptoFieldName, converters?.convertFiatToCrypto?.(transformedValue), {
             shouldValidate: true,
         });
     };
@@ -64,6 +70,7 @@ export const FiatAmountInput = ({
                 editable={!isDisabled}
                 onChangeText={handleChangeValue}
                 onBlur={onBlur}
+                hasError={!isDisabled && hasError}
                 rightIcon={
                     <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
                         {fiatCurrencyCode.toUpperCase()}

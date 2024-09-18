@@ -52,7 +52,7 @@ export const CryptoAmountInput = ({
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
     const fiatFieldName = getOutputFieldName(recipientIndex, 'fiat');
 
-    const { onChange, onBlur, value } = useField({
+    const { onChange, onBlur, value, hasError } = useField({
         name: cryptoFieldName,
         valueTransformer: cryptoAmountTransformer,
     });
@@ -68,9 +68,14 @@ export const CryptoAmountInput = ({
     );
 
     const handleChangeValue = (newValue: string) => {
-        onChange(newValue);
-        setValue(fiatFieldName, converters?.convertCryptoToFiat?.(newValue) ?? '');
+        const transformedValue = cryptoAmountTransformer(newValue);
+        onChange(transformedValue);
+        setValue(fiatFieldName, converters?.convertCryptoToFiat?.(transformedValue));
         debounce(() => trigger(cryptoFieldName));
+    };
+
+    const handleBlur = () => {
+        if (value) onBlur();
     };
 
     return (
@@ -86,7 +91,8 @@ export const CryptoAmountInput = ({
                 testID={cryptoFieldName}
                 editable={!isDisabled}
                 onChangeText={handleChangeValue}
-                onBlur={onBlur}
+                onBlur={handleBlur}
+                hasError={!isDisabled && hasError}
                 rightIcon={
                     <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
                         {formatter.format(networkSymbol)}
