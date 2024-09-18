@@ -2,31 +2,24 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = config => {
+    const singleRun = process.env.KARMA_SINGLE_RUN === 'false' ? false : true;
+
     config.set({
         basePath: path.resolve(__dirname, '../..'), // NOTE: "[monorepo-root]/packages", to have access to other packages
         hostname: 'localhost',
         port: 8099,
         autoWatch: false,
-        // to debug locally set single run to false and go to http://localhost:8099/debug.html
-        // for local changes to take effect build connect-iframe and connect-web
-        singleRun: true,
+        singleRun,
 
         client: {
             captureConsole: true,
             clearContext: true,
             useIframe: false,
             runInParent: true,
-            mocha: {
-                bail: true,
-            },
             // uncomment to disable random ordering of tests
             jasmine: {
                 random: false,
             },
-        },
-        browserConsoleLogOptions: {
-            terminal: true,
-            level: '',
         },
         browsers: [
             // 'Chrome',
@@ -74,7 +67,7 @@ module.exports = config => {
             },
             ...(process.env.TESTS_PATTERN || '*')
                 .split(' ')
-                .map(pattern => path.resolve(__dirname, `./tests/**/${pattern.trim()}.test.ts`)),
+                .map(pattern => path.resolve(__dirname, `./tests/**/${pattern.trim()}*.ts`)),
         ],
 
         webpackMiddleware: {

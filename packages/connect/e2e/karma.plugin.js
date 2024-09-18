@@ -11,25 +11,26 @@ function CustomReporter(rootConfig, logger) {
             log.info('Running @trezor/connect tests...');
             log.info('FW:', process.env.TESTS_FIRMWARE);
             log.info('Methods:', process.env.TESTS_INCLUDED_METHODS || 'All');
-        },
-
-        onSpecStart: (_browser, spec) => {
-            log.warn('onSpecStart', spec);
+            log.info('Pattern:', process.env.TESTS_PATTERN || '*');
         },
 
         onSpecComplete: (_browser, spec) => {
-            log.info(spec.success ? '✓' : '✖', spec.fullName);
-            if (!spec.success) {
-                log.info(spec);
+            if (spec.skipped) {
+                log.warn('○ skipped', spec.fullName);
+            } else if (spec.success) {
+                log.info('✓', spec.fullName);
+            } else {
+                log.error('✖', spec.fullName);
+                log.error(spec);
             }
         },
 
         onRunComplete: () => {
-            log.warn('onRunComplete');
+            log.info('onRunComplete');
         },
 
         onExit: done => {
-            log.warn('onExit');
+            log.info('onExit');
             done();
         },
     };
