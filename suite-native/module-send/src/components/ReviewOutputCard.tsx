@@ -18,6 +18,7 @@ const cardStyle = prepareNativeStyle<{ isConfirmed: boolean }>((utils, { isConfi
     marginHorizontal: utils.spacings.small,
     paddingHorizontal: utils.spacings.medium,
     paddingVertical: 12,
+    borderRadius: 12,
     extend: {
         condition: isConfirmed,
         style: {
@@ -40,10 +41,8 @@ export const ReviewOutputCard = ({ children, title, outputState }: ReviewOutputC
                     <ReviewOutputStatusBadge status={outputState} />
                     <Text variant="callout">{title}</Text>
                 </HStack>
-                <CardDivider color={dividerColor} horizontalPadding="small" />
-                <Box paddingLeft="large" paddingTop="extraSmall">
-                    {children}
-                </Box>
+                <CardDivider color={dividerColor} horizontalPadding="medium" />
+                <Box paddingLeft="large">{children}</Box>
             </VStack>
         </Card>
     );

@@ -5,8 +5,10 @@ import { BottomSheet, Box, Card, RoundedIcon, Text } from '@suite-native/atoms';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Icon } from '@suite-common/icons-deprecated';
+import { useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailListItem } from './TransactionDetailListItem';
+import { cardStyle } from './TransactionDetailSummary';
 
 type TransactionDetailIncludedCoinsProps = {
     accountKey: AccountKey;
@@ -25,21 +27,25 @@ const isSameTokenTransfer = (
 const isZeroAmountTransaction = (transaction: WalletAccountTransaction) =>
     transaction.amount.length === 0 || transaction.amount === '0';
 
-const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress: () => void }) => (
-    <Card borderColor="borderElevation1">
-        <TouchableOpacity onPress={onPress}>
-            <Box flexDirection="row" alignItems="center" justifyContent="space-between">
-                <Box flexDirection="row" alignItems="center">
-                    <Box marginRight="medium">
-                        <RoundedIcon name="treeStructure" />
+const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress: () => void }) => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <Card borderColor="borderElevation1" style={applyStyle(cardStyle)}>
+            <TouchableOpacity onPress={onPress}>
+                <Box flexDirection="row" alignItems="center" justifyContent="space-between">
+                    <Box flexDirection="row" alignItems="center">
+                        <Box marginRight="medium">
+                            <RoundedIcon name="treeStructure" />
+                        </Box>
+                        <Text>{title}</Text>
                     </Box>
-                    <Text>{title}</Text>
+                    <Icon name="circleRight" color="iconPrimaryDefault" />
                 </Box>
-                <Icon name="circleRight" color="iconPrimaryDefault" />
-            </Box>
-        </TouchableOpacity>
-    </Card>
-);
+            </TouchableOpacity>
+        </Card>
+    );
+};
 
 export const TransactionDetailIncludedCoins = ({
     accountKey,

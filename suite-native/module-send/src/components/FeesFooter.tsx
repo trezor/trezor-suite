@@ -25,6 +25,7 @@ const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
     borderColor: utils.colors.borderElevation0,
     borderWidth: utils.borders.widths.small,
+    ...utils.boxShadows.none,
 }));
 
 const buttonStyle = prepareNativeStyle(utils => ({
