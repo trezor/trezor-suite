@@ -41,7 +41,11 @@ const MODAL_ELEVATION = 0;
 const ICON_SIZE = 40;
 
 const Container = styled.div<
-    TransientProps<AllowedFrameProps> & { $elevation: Elevation; $size: NewModalSize }
+    TransientProps<AllowedFrameProps> & {
+        $elevation: Elevation;
+        $size: NewModalSize;
+        $customWidth?: number;
+    }
 >`
     display: flex;
     flex-direction: column;
@@ -128,7 +132,7 @@ type NewModalProps = AllowedFrameProps & {
     icon?: IconName;
     alignment?: NewModalAlignment;
     size?: NewModalSize;
-    'data-testid'?: string;
+    'data-test'?: string;
 };
 
 const NewModalBase = ({
