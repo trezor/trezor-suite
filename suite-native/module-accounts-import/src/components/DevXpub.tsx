@@ -29,7 +29,6 @@ const devXpubs: Partial<Record<NetworkSymbol, string | DevXpub[]>> = {
             title: 'Dev (not zero, no tokens, no staking)',
             address: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
         },
-        { title: 'Old dev account', address: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3' },
         {
             title: 'Huge account (20k+ transactions)',
             address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',

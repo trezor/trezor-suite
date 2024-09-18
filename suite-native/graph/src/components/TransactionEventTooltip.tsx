@@ -90,7 +90,8 @@ const TokenAmountTooltipFormatter = ({
                 variant="label"
                 value={value}
                 symbol={tokenSymbol}
-                decimals={tokenDecimals}
+                // decimals are already formatted in getAccountHistoryMovementItemETH
+                decimals={0}
             />
         );
     }

@@ -110,7 +110,12 @@ const getBalanceFromAccountInfo = ({
             if (contractId) {
                 const token = accountInfo.tokens?.find(t => t.contract === contractId);
 
-                return token?.balance || '0';
+                if (token && token.balance) {
+                    // this is raw value from getAccountInfo, we need to divide it by 10^decimals (in redux it's already formatted)
+                    return new BigNumber(token.balance).div(10 ** token.decimals).toFixed();
+                }
+
+                return '0';
             }
 
             return accountInfo.availableBalance;
@@ -239,9 +244,10 @@ const getAccountBalanceHistory = async ({
                 coin,
                 latestBalance,
             );
+
             historyWithBalance.push({
                 time: endTimeFrameTimestamp,
-                cryptoBalance: formatNetworkAmount(latestBalance, coin),
+                cryptoBalance: latestBalance,
             });
 
             return historyWithBalance;

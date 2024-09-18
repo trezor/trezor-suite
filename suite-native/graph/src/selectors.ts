@@ -1,5 +1,3 @@
-import { memoize } from 'proxy-memoize';
-
 import { AccountItem } from '@suite-common/graph';
 import {
     selectFilterKnownTokens,
@@ -15,23 +13,21 @@ import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 type GraphCommonRootState = DeviceRootState & AccountsRootState & TokenDefinitionsRootState;
 
-export const selectPortfolioGraphAccountItems = memoize(
-    (state: GraphCommonRootState): AccountItem[] => {
-        const accounts = selectDeviceMainnetAccounts(state);
+export const selectPortfolioGraphAccountItems = (state: GraphCommonRootState): AccountItem[] => {
+    const accounts = selectDeviceMainnetAccounts(state);
 
-        return accounts.map(account => {
-            const knownTokens = account.tokens
-                ? selectFilterKnownTokens(state, account.symbol, account.tokens)
-                : undefined;
-            const tokensFilter = knownTokens?.map(token => token.contract as TokenAddress);
+    return accounts.map(account => {
+        const knownTokens = account.tokens
+            ? selectFilterKnownTokens(state, account.symbol, account.tokens)
+            : undefined;
+        const tokensFilter = knownTokens?.map(token => token.contract as TokenAddress);
 
-            return {
-                coin: account.symbol,
-                descriptor: account.descriptor,
-                identity: tryGetAccountIdentity(account),
-                accountKey: account.key,
-                tokensFilter,
-            };
-        });
-    },
-);
+        return {
+            coin: account.symbol,
+            descriptor: account.descriptor,
+            identity: tryGetAccountIdentity(account),
+            accountKey: account.key,
+            tokensFilter,
+        };
+    });
+};
