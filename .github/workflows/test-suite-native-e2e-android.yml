@@ -7,6 +7,7 @@ on:
       - "suite-native/**"
       - "suite-common/**"
       - "packages/connect/**"
+      - ".github/workflows/test-suite-native-e2e-android.yml"
   workflow_dispatch:
 
 concurrency:
