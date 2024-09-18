@@ -3952,7 +3952,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/config-plugins@npm:8.0.8, @expo/config-plugins@npm:~8.0.0-beta.0, @expo/config-plugins@npm:~8.0.8":
+"@expo/config-plugins@npm:8.0.8, @expo/config-plugins@npm:^7.2.5 || ^8.0.0, @expo/config-plugins@npm:~8.0.0-beta.0, @expo/config-plugins@npm:~8.0.8":
   version: 8.0.8
   resolution: "@expo/config-plugins@npm:8.0.8"
   dependencies:
@@ -3975,7 +3975,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/config-plugins@npm:^7.2.5, @expo/config-plugins@npm:~7.8.2":
+"@expo/config-plugins@npm:~7.8.2":
   version: 7.8.4
   resolution: "@expo/config-plugins@npm:7.8.4"
   dependencies:
@@ -9912,7 +9912,7 @@ __metadata:
     react: "npm:18.2.0"
     react-intl: "npm:^6.6.8"
     react-native: "npm:0.75.2"
-    react-native-ble-plx: "npm:^3.1.2"
+    react-native-ble-plx: "npm:^3.2.1"
     react-native-gesture-handler: "npm:2.18.1"
     react-native-keyboard-aware-scroll-view: "npm:0.9.5"
     react-native-mmkv: "npm:2.12.2"
@@ -10026,7 +10026,7 @@ __metadata:
     expo-constants: "npm:15.4.5"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
-    react-native-ble-plx: "npm:^3.1.2"
+    react-native-ble-plx: "npm:^3.2.1"
     react-native-permissions: "npm:^4.1.5"
     react-native-restart: "npm:0.0.27"
   languageName: unknown
@@ -12406,7 +12406,7 @@ __metadata:
   resolution: "@trezor/transport-native-ble@workspace:packages/transport-native-ble"
   dependencies:
     "@trezor/transport": "workspace:*"
-    react-native-ble-plx: "npm:^3.1.2"
+    react-native-ble-plx: "npm:^3.2.1"
   languageName: unknown
   linkType: soft
 
@@ -22665,7 +22665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-font@npm:~12.0.9":
+"expo-font@npm:~12.0.10, expo-font@npm:~12.0.9":
   version: 12.0.10
   resolution: "expo-font@npm:12.0.10"
   dependencies:
@@ -22799,6 +22799,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-modules-core@npm:1.12.24":
+  version: 1.12.24
+  resolution: "expo-modules-core@npm:1.12.24"
+  dependencies:
+    invariant: "npm:^2.2.4"
+  checksum: 10/81c09bfcf7233bfb5218a65c6648d29155cee595f313857eaf5518fc4645375bacc43f8a4836d93a400301d3a0aba976be980d98fa0dff02ce60095984640215
+  languageName: node
+  linkType: hard
+
 "expo-navigation-bar@npm:3.0.7":
   version: 3.0.7
   resolution: "expo-navigation-bar@npm:3.0.7"
@@ -22881,6 +22890,31 @@ __metadata:
   bin:
     expo: bin/cli
   checksum: 10/941addf1323e3cc4950f8998922af0b798987b0559c7303d634514a985a2331457c72225806542b3f607ca70b373b349130c0e5309c3cac0411e5fd219a97663
+  languageName: node
+  linkType: hard
+
+"expo@npm:^51.0.14":
+  version: 51.0.32
+  resolution: "expo@npm:51.0.32"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.0"
+    "@expo/cli": "npm:0.18.29"
+    "@expo/config": "npm:9.0.3"
+    "@expo/config-plugins": "npm:8.0.8"
+    "@expo/metro-config": "npm:0.18.11"
+    "@expo/vector-icons": "npm:^14.0.0"
+    babel-preset-expo: "npm:~11.0.14"
+    expo-asset: "npm:~10.0.10"
+    expo-file-system: "npm:~17.0.1"
+    expo-font: "npm:~12.0.10"
+    expo-keep-awake: "npm:~13.0.2"
+    expo-modules-autolinking: "npm:1.11.2"
+    expo-modules-core: "npm:1.12.24"
+    fbemitter: "npm:^3.0.0"
+    whatwg-url-without-unicode: "npm:8.0.0-3"
+  bin:
+    expo: bin/cli
+  checksum: 10/9586f626571b1e28bfb82da79e3b77aac0da046766d52f85b8c463b2be82c0cf27df7d2536c65f25395e31898939d36d762b3c8fec6edb03a8f8dbb9cec199e5
   languageName: node
   linkType: hard
 
@@ -36254,15 +36288,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-ble-plx@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "react-native-ble-plx@npm:3.1.2"
+"react-native-ble-plx@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "react-native-ble-plx@npm:3.2.1"
   dependencies:
-    "@expo/config-plugins": "npm:^7.2.5"
+    "@expo/config-plugins": "npm:^7.2.5 || ^8.0.0"
+    expo: "npm:^51.0.14"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10/75e3960fcc8c236d0e39fe07a5abd10f617ae8e1cd4114e2179d0e33876aad0932ce229a39e768914f859b5029445b4e44e21e03d5f031cb680f9eee060e9f43
+  checksum: 10/acd9253e16cd12918114cedb3529f3f71c74e8271e6034734dcd45adf7ced206de26c4febaec0eee60588fe6228aed88dfca52543abbf9519bcfb9ee991c5c72
   languageName: node
   linkType: hard
 

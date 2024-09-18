@@ -34,7 +34,7 @@ type DeviceModelLayoutProps = {
 };
 
 const safe3Styles = {
-    fontSource: require('../../../../packages/theme/fonts/PixelOperatorMono8-Regular.ttf'),
+    fontSource: require('@trezor/theme/fonts/PixelOperatorMono8-Regular.ttf'),
     fontSize: 14,
     lineWidth: 265,
     lineHeight: 25,
@@ -43,21 +43,21 @@ const safe3Styles = {
 
 const deviceToContentStyles: Record<DeviceModelInternal | 'T3W1', DeviceModelLayoutProps> = {
     [DeviceModelInternal.T1B1]: {
-        fontSource: require('../../../../packages/theme/fonts/PixelOperatorMono8-Regular.ttf'),
+        fontSource: require('@trezor/theme/fonts/PixelOperatorMono8-Regular.ttf'),
         fontSize: 14,
         lineWidth: 295,
         lineHeight: 17,
         pagerOffset: 0,
     },
     [DeviceModelInternal.T2T1]: {
-        fontSource: require('../../../../packages/theme/fonts/RobotoMono-Regular.ttf'),
+        fontSource: require('@trezor/theme/fonts/RobotoMono-Regular.ttf'),
         fontSize: 20,
         lineWidth: 230,
         lineHeight: 25,
         pagerOffset: 60,
     },
     [DeviceModelInternal.T3T1]: {
-        fontSource: require('../../../../packages/theme/fonts/RobotoMono-Regular.ttf'),
+        fontSource: require('@trezor/theme/fonts/RobotoMono-Regular.ttf'),
         fontSize: 20,
         lineWidth: 230,
         lineHeight: 25,

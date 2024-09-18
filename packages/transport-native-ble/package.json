@@ -11,6 +11,6 @@
     },
     "dependencies": {
         "@trezor/transport": "workspace:*",
-        "react-native-ble-plx": "^3.1.2"
+        "react-native-ble-plx": "^3.2.1"
     }
 }
