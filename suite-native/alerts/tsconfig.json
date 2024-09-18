@@ -6,6 +6,7 @@
             "path": "../../suite-common/icons-deprecated"
         },
         { "path": "../atoms" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" }
     ]
 }

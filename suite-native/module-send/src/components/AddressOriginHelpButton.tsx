@@ -7,30 +7,48 @@ import { AddressReviewSheetSection } from './AddressReviewSheetSection';
 export const AddressOriginHelpButton = () => {
     return (
         <AddressReviewHelpSheet
-            title={<Translation id="moduleSend.review.address.originBottomSheet.title" />}
+            title={
+                <Text variant="titleSmall">
+                    <Translation id="moduleSend.review.address.originBottomSheet.title" />
+                </Text>
+            }
             subtitle={
-                <Text variant="body">
+                <Text>
                     <Translation id="moduleSend.review.address.originBottomSheet.subtitle" />
                 </Text>
             }
-        >
-            <AddressReviewSheetSection
-                title={
-                    <Translation id="moduleSend.review.address.originBottomSheet.exchange.header" />
-                }
-                content={
-                    <Translation id="moduleSend.review.address.originBottomSheet.exchange.body" />
-                }
-            />
+            body={
+                <>
+                    <AddressReviewSheetSection
+                        title={
+                            <Translation id="moduleSend.review.address.originBottomSheet.exchange.header" />
+                        }
+                        content={
+                            <Translation id="moduleSend.review.address.originBottomSheet.exchange.body" />
+                        }
+                    />
 
-            <AddressReviewSheetSection
-                title={
-                    <Translation id="moduleSend.review.address.originBottomSheet.person.header" />
-                }
-                content={
-                    <Translation id="moduleSend.review.address.originBottomSheet.person.body" />
-                }
-            />
-        </AddressReviewHelpSheet>
+                    <AddressReviewSheetSection
+                        title={
+                            <Translation id="moduleSend.review.address.originBottomSheet.person.header" />
+                        }
+                        content={
+                            <Translation id="moduleSend.review.address.originBottomSheet.person.body" />
+                        }
+                    />
+                </>
+            }
+        ></AddressReviewHelpSheet>
     );
 };
+
+// title={
+//     <VStack>
+//         <Text variant="titleSmall">
+//             <Translation id="moduleSend.review.address.originBottomSheet.title" />
+//         </Text>
+//         <Text variant="body">
+//             <Translation id="moduleSend.review.address.originBottomSheet.subtitle" />
+//         </Text>
+//     </VStack>
+// }
