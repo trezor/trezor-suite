@@ -120,7 +120,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private runPromise?: Deferred<void>;
     private transportSession?: Session | null;
     keepTransportSession = false;
-    private commands?: DeviceCommands;
+    public commands?: DeviceCommands;
 
     loaded = false;
 
