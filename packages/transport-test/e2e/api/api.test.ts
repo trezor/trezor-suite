@@ -9,9 +9,9 @@ import { sharedTest, success, info, debug, error } from './shared';
 const setupApisUnderTest = async () => {
     let usbInterface: ConstructorParameters<typeof UsbApi>[0]['usbInterface'];
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && 'usb' in window.navigator) {
         window.Buffer = (await import('buffer')).Buffer;
-        usbInterface = window?.navigator?.usb;
+        usbInterface = window.navigator.usb;
     } else {
         usbInterface = await import('usb').then(lib => {
             return new lib.WebUSB({ allowAllDevices: true });

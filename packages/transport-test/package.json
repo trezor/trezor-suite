@@ -8,7 +8,7 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
-        "test:e2e:bridge": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/bridge/run.ts",
+        "test:e2e:bridge": "ts-node -T -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/bridge/run.ts",
         "test:e2e:old-bridge:hw": "USE_HW=true USE_NODE_BRIDGE=false yarn test:e2e:bridge",
         "test:e2e:old-bridge:emu": "USE_HW=false USE_NODE_BRIDGE=false yarn test:e2e:bridge",
         "test:e2e:new-bridge:hw": "USE_HW=true USE_NODE_BRIDGE=true yarn test:e2e:bridge",
