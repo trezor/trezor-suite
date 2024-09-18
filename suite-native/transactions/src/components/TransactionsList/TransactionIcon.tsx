@@ -21,13 +21,13 @@ type TransactionIconProps = {
 const DEFAULT_CONTAINER_SIZE = 48;
 
 const transactionIconMap: Record<TransactionType, IconName> = {
-    recv: 'receive',
-    sent: 'send',
-    contract: 'placeholder',
-    joint: 'shuffle',
-    self: 'arrowURightDown',
-    failed: 'placeholder',
-    unknown: 'placeholder',
+    recv: 'receiveLight',
+    sent: 'sendLight',
+    contract: 'placeholderLight',
+    joint: 'shuffleLight',
+    self: 'arrowURightDownLight',
+    failed: 'placeholderLight',
+    unknown: 'placeholderLight',
 };
 
 const cryptoIconStyle = prepareNativeStyle(utils => ({
