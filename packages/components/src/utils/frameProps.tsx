@@ -3,10 +3,10 @@ import { makePropsTransient, TransientProps } from './transientProps';
 import { SpacingValues } from '@trezor/theme';
 
 type Margin = {
-    top?: SpacingValues;
-    bottom?: SpacingValues;
-    left?: SpacingValues;
-    right?: SpacingValues;
+    top?: SpacingValues | 'auto';
+    bottom?: SpacingValues | 'auto';
+    left?: SpacingValues | 'auto';
+    right?: SpacingValues | 'auto';
 };
 const overflows = [
     'auto',
