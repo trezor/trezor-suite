@@ -85,7 +85,7 @@ export const en = {
         },
     },
     accountList: {
-        numberOfTokens: '+{numberOfTokens} Tokens',
+        numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
         tokens: 'Tokens',
     },
     assets: {
