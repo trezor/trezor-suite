@@ -67,3 +67,4 @@ yup
 metro
 metro-react-native-babel-preset
 jest-expo
+intl-pluralrules

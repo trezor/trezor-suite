@@ -1,5 +1,8 @@
 import { IntlProvider as ReactIntlProvider } from 'react-intl';
 
+// Polyfill to support plural syntax
+import 'intl-pluralrules';
+
 import { en } from './en';
 
 // flatten object to single level deep like { a: { b: { c: 1 } } } => { 'a.b.c': 1 }

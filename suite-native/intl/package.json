@@ -13,6 +13,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "intl-pluralrules": "^2.0.1",
         "react": "18.2.0",
         "react-intl": "^6.6.8"
     }
