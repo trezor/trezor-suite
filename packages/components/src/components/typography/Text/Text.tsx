@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CSSColor, Color, Colors, TypographyStyle } from '@trezor/theme';
+import { CSSColor, Color, Colors } from '@trezor/theme';
 import { ReactNode } from 'react';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
 import {
@@ -8,7 +8,7 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TextPropsKeys, TextWrap, withTextProps, TextProps as TextPropsCommon } from '../utils';
+import { TextPropsKeys, withTextProps, TextProps as TextPropsCommon } from '../utils';
 import { uiVariants } from '../../../config/types';
 
 export const allowedTextTextProps = [
@@ -53,10 +53,7 @@ const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSCol
     return theme[$variant !== undefined ? variantColorMap[$variant] : 'textDefault'];
 };
 
-type StyledTextProps = {
-    $typographyStyle?: TypographyStyle;
-    $textWrap?: TextWrap;
-} & ExclusiveColorOrVariant &
+type StyledTextProps = ExclusiveColorOrVariant &
     TransientProps<AllowedFrameProps> &
     TransientProps<AllowedTextTextProps>;
 
