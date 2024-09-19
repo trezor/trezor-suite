@@ -191,6 +191,8 @@ export const ConnectPopupScreen = ({
             }
 
             return <Loader size="large" title="Loading..." />;
+        } else {
+            return <Loader size="large" title="Device not connected." />;
         }
     }, [validDevice, method, popupOptions, methodError, loading, discoveryActive, callDevice]);
 
