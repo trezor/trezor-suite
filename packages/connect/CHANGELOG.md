@@ -10,6 +10,81 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.4.1-beta.1
+
+Automatic retry for no transport issue: If the transport (bridge) is initially not available, the automatic retry feature allows the user to continue after starting the transport, without having to restart the entire flow.
+
+Additional confirmation for pushing transactions: A new permission prompts users for extra confirmation when methods push transactions to the network, ensuring a more secure experience.
+
+NodeBridge new version compatibility fix: Resolved an issue where NodeBridge version parsing failed to work with the latest Suite version. While the fix is on the Connect side, updating is recommended for improved compatibility.
+
+### Features
+
+-   When method param has a side-effect (push transaction) user is prompted for permission in connect-popup (d05fb24)
+-   User is now able to finish flow in popup even if transport (bridge) is not available when it started. (8874eb6)
+-   Connect-popup now remembers device for either 15 minutes or value of device auto_lock depending on which is higher (e6a68e0)
+-   connect-common: add FW 2.8.3 binaries for T3B1 (c32984c)
+-   connect-common: add FW 2.8.3 binaries for T3T1 (b57198a)
+-   docs(connect-explorer): step by step tutorial to build connect webextension (9d5ba70)
+-   docs(connect-explorer): add more ways to test getAccountInfo (62101d6)
+
+### Fixes:
+
+-   New NodeBridge version not parsed correctly - ignore semver labels in version utils (6501704)
+-   fw releases value for custom device model (265028d)
+-   keepSession with changing useCardanoDerivation (8c654a1)
+-   fw update: when device is disconnected during fw update as a result of RebootToBootloader call do not release it on transport layer (93da8b5)
+-   fw update: temporarily disable automatic language update for TT due to memory constraints (5d7f578)
+-   connect-explorer: doc repository base so edit page works (203a83d)
+-   connect-examples: add asterisk to match popup urls for content script (9da8b0b)
+-   connect-explorer: diagrams dark mode regression (09a5f9f)
+
+### Chores
+
+-   update device authenticity config (31ec9a2, 68254a3)
+-   remove useless setTransports (a8bd51d)
+-   gen-reftx add decred fields (f57ef60)
+-   rework gen-reftx util to ts (15e64e8)
+-   device state saving refactor (e6a68e0)
+-   remove useless null fallback (7cc0b00)
+-   StaticSessionId template literal type (a97dfae)
+-   allow preminor releases in connect (38ba9e1)
+-   unify names of Device fields (483d370)
+-   grooming in Device.state (0bfbe1c)
+-   remove TypedPayload import (DeviceCommands) from eosSignTx.ts (609f6a6)
+-   rename types in deviceCommands (a17c695)
+-   add T3B1 and T3T1 to methods config (744ede5)
+-   auto retry cycle instead of recursion (7f73cae)
+-   descriptor diff improvement (afa479e)
+-   device descriptor update (7db4bb5)
+-   test: adjust decred to 2.8.2 (f4798ef)
+-   test: e2e semver filtering fix (16cc575)
+-   test: rewrite common.setup.js to ts (62a3962)
+-   test: Extend checkFirmwareRevision test to all devices (e706d74)
+-   test: remove ADDRESS_N utility from tests (40cd370)
+-   connect-common: update coins.json via yarn update-coins (f7c16e1)
+-   connect-common: add t3b1 to coins.json (6a8b460)
+-   connect-common: change lng blob in release.json (c8a0c46)
+-   connect-explorer: make device support documentation more future-proof (ea03610)
+-   connect-explorer: remove old conversion script (11c534e)
+-   transport: don't pass signal to transports (0cb09ab)
+-   transport: sessions background without abort signal (4f6e8cf)
+-   transport: better abortable methods (583f4aa)
+
+### Deps
+
+-   @sinclair/typebox 0.31.28=>0.33.7 (43ae297)
+-   webpack from 5.93.0 to 5.94.0 (358b96d)
+-   crypto libs (a304dd5)
+-   next-theme 0.2.1=>0.3.0 (f8f5351)
+-   next 14.1.3=>14.2.6 (b364e97)
+-   @uiw/react-codemirror 4.21.25=>4.23.0 (8bcc314)
+-   codemiror-json-schema 0.7.0=>0.7.8 (d38b9a0)
+-   @playwright\* 1.45.3=>1.46.1 (492ff5f)
+-   @types/chrome; @types/web; @types/sharedworker (8e73aeb)
+-   various patch versions deps (ed3e9bf)
+-   TS 5.5 (198c91f)
+
 # 9.4.0
 
 ## connect
