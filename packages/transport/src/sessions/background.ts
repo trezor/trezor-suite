@@ -22,9 +22,13 @@ import type {
     HandleMessageParams,
     HandleMessageResponse,
 } from './types';
-import type { Descriptor, PathInternal, PathPublic, Success } from '../types';
-
+import type { Descriptor, PathInternal, Success } from '../types';
+import { PathPublic, Session } from '../types';
 import * as ERRORS from '../errors';
+
+function typedObjectKeys<T extends Record<any, any>>(obj: T): Array<keyof T> {
+    return Object.keys(obj) as Array<keyof T>;
+}
 
 type DescriptorsDict = Record<PathInternal, Descriptor>;
 
@@ -123,7 +127,7 @@ export class SessionsBackground extends TypedEmitter<{
      * - caller informs about current descriptors
      */
     private enumerateDone(payload: EnumerateDoneRequest) {
-        const disconnectedDevices = Object.keys(this.descriptors).filter(
+        const disconnectedDevices = typedObjectKeys(this.descriptors).filter(
             pathInternal => !payload.descriptors.find(d => d.path === pathInternal),
         );
 
@@ -134,7 +138,7 @@ export class SessionsBackground extends TypedEmitter<{
 
         payload.descriptors.forEach(d => {
             if (!this.pathInternalPathPublicMap[d.path]) {
-                this.pathInternalPathPublicMap[d.path] = `${(this.lastPathId += 1)}`;
+                this.pathInternalPathPublicMap[d.path] = PathPublic(`${(this.lastPathId += 1)}`);
             }
             if (!this.descriptors[d.path]) {
                 this.descriptors[d.path] = {
@@ -186,7 +190,7 @@ export class SessionsBackground extends TypedEmitter<{
         const unconfirmedSessions: DescriptorsDict = JSON.parse(JSON.stringify(this.descriptors));
 
         this.lastSessionId++;
-        unconfirmedSessions[pathInternal].session = `${this.lastSessionId}`;
+        unconfirmedSessions[pathInternal].session = Session(`${this.lastSessionId}`);
 
         return this.success({
             session: unconfirmedSessions[pathInternal].session,
@@ -206,7 +210,7 @@ export class SessionsBackground extends TypedEmitter<{
         if (!pathInternal || !this.descriptors[pathInternal]) {
             return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
         }
-        this.descriptors[pathInternal].session = `${this.lastSessionId}`;
+        this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
 
         return Promise.resolve(
             this.success({
@@ -241,7 +245,7 @@ export class SessionsBackground extends TypedEmitter<{
     }
 
     private getPathBySession({ session }: GetPathBySessionRequest) {
-        const path = Object.keys(this.descriptors).find(
+        const path = typedObjectKeys(this.descriptors).find(
             pathKey => this.descriptors[pathKey]?.session === session,
         );
 
@@ -309,7 +313,7 @@ export class SessionsBackground extends TypedEmitter<{
     }
 
     private getInternal(pathPublic: PathPublic): PathInternal | undefined {
-        return Object.keys(this.pathInternalPathPublicMap).find(
+        return typedObjectKeys(this.pathInternalPathPublicMap).find(
             internal => this.pathInternalPathPublicMap[internal] === pathPublic,
         );
     }

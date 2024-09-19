@@ -7,7 +7,7 @@ import {
     AbstractApiConstructorParams,
     DEVICE_TYPE,
 } from './abstract';
-import { DescriptorApiLevel } from '../types';
+import { DescriptorApiLevel, PathInternal } from '../types';
 import * as ERRORS from '../errors';
 
 export class UdpApi extends AbstractApi {
@@ -161,7 +161,9 @@ export class UdpApi extends AbstractApi {
 
     public async enumerate(signal?: AbortSignal) {
         // in theory we could support multiple devices, but we don't yet
-        const paths = this.debugLink ? ['127.0.0.1:21325'] : ['127.0.0.1:21324'];
+        const paths = this.debugLink
+            ? [PathInternal('127.0.0.1:21325')]
+            : [PathInternal('127.0.0.1:21324')];
 
         try {
             const enumerateResult = await Promise.all(
