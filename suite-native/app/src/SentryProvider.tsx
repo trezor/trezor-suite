@@ -2,6 +2,7 @@ import { useEffect, ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import * as Sentry from '@sentry/react-native';
+import { captureConsoleIntegration } from '@sentry/integrations';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { getEnv, isDebugEnv, isDevelopEnv } from '@suite-native/config';
@@ -15,6 +16,11 @@ const initSentry = () => {
             // We recommend adjusting this value in production.
             tracesSampleRate: 0.5,
             environment: getEnv(),
+            integrations: [
+                captureConsoleIntegration({
+                    levels: ['error'],
+                }),
+            ],
         });
     }
 };

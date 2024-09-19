@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@react-navigation/native-stack": "6.11.0",
-        "@sentry/react-native": "5.31.1",
+        "@sentry/react-native": "5.33.0",
         "@suite-common/icons-deprecated": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",

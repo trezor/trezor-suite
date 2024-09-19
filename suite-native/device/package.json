@@ -14,7 +14,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "1.9.5",
-        "@sentry/react-native": "5.31.1",
+        "@sentry/react-native": "5.33.0",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",

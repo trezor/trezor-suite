@@ -7826,66 +7826,66 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/cli-darwin@npm:2.34.0":
-  version: 2.34.0
-  resolution: "@sentry/cli-darwin@npm:2.34.0"
+"@sentry/cli-darwin@npm:2.36.1":
+  version: 2.36.1
+  resolution: "@sentry/cli-darwin@npm:2.36.1"
   conditions: os=darwin
   languageName: node
   linkType: hard
 
-"@sentry/cli-linux-arm64@npm:2.34.0":
-  version: 2.34.0
-  resolution: "@sentry/cli-linux-arm64@npm:2.34.0"
+"@sentry/cli-linux-arm64@npm:2.36.1":
+  version: 2.36.1
+  resolution: "@sentry/cli-linux-arm64@npm:2.36.1"
   conditions: (os=linux | os=freebsd) & cpu=arm64
   languageName: node
   linkType: hard
 
-"@sentry/cli-linux-arm@npm:2.34.0":
-  version: 2.34.0
-  resolution: "@sentry/cli-linux-arm@npm:2.34.0"
+"@sentry/cli-linux-arm@npm:2.36.1":
+  version: 2.36.1
+  resolution: "@sentry/cli-linux-arm@npm:2.36.1"
   conditions: (os=linux | os=freebsd) & cpu=arm
   languageName: node
   linkType: hard
 
-"@sentry/cli-linux-i686@npm:2.34.0":
-  version: 2.34.0
-  resolution: "@sentry/cli-linux-i686@npm:2.34.0"
+"@sentry/cli-linux-i686@npm:2.36.1":
+  version: 2.36.1
+  resolution: "@sentry/cli-linux-i686@npm:2.36.1"
   conditions: (os=linux | os=freebsd) & (cpu=x86 | cpu=ia32)
   languageName: node
   linkType: hard
 
-"@sentry/cli-linux-x64@npm:2.34.0":
-  version: 2.34.0
-  resolution: "@sentry/cli-linux-x64@npm:2.34.0"
+"@sentry/cli-linux-x64@npm:2.36.1":
+  version: 2.36.1
+  resolution: "@sentry/cli-linux-x64@npm:2.36.1"
   conditions: (os=linux | os=freebsd) & cpu=x64
   languageName: node
   linkType: hard
 
-"@sentry/cli-win32-i686@npm:2.34.0":
-  version: 2.34.0
-  resolution: "@sentry/cli-win32-i686@npm:2.34.0"
+"@sentry/cli-win32-i686@npm:2.36.1":
+  version: 2.36.1
+  resolution: "@sentry/cli-win32-i686@npm:2.36.1"
   conditions: os=win32 & (cpu=x86 | cpu=ia32)
   languageName: node
   linkType: hard
 
-"@sentry/cli-win32-x64@npm:2.34.0":
-  version: 2.34.0
-  resolution: "@sentry/cli-win32-x64@npm:2.34.0"
+"@sentry/cli-win32-x64@npm:2.36.1":
+  version: 2.36.1
+  resolution: "@sentry/cli-win32-x64@npm:2.36.1"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@sentry/cli@npm:2.34.0, @sentry/cli@npm:^2.22.3":
-  version: 2.34.0
-  resolution: "@sentry/cli@npm:2.34.0"
+"@sentry/cli@npm:2.36.1, @sentry/cli@npm:^2.22.3":
+  version: 2.36.1
+  resolution: "@sentry/cli@npm:2.36.1"
   dependencies:
-    "@sentry/cli-darwin": "npm:2.34.0"
-    "@sentry/cli-linux-arm": "npm:2.34.0"
-    "@sentry/cli-linux-arm64": "npm:2.34.0"
-    "@sentry/cli-linux-i686": "npm:2.34.0"
-    "@sentry/cli-linux-x64": "npm:2.34.0"
-    "@sentry/cli-win32-i686": "npm:2.34.0"
-    "@sentry/cli-win32-x64": "npm:2.34.0"
+    "@sentry/cli-darwin": "npm:2.36.1"
+    "@sentry/cli-linux-arm": "npm:2.36.1"
+    "@sentry/cli-linux-arm64": "npm:2.36.1"
+    "@sentry/cli-linux-i686": "npm:2.36.1"
+    "@sentry/cli-linux-x64": "npm:2.36.1"
+    "@sentry/cli-win32-i686": "npm:2.36.1"
+    "@sentry/cli-win32-x64": "npm:2.36.1"
     https-proxy-agent: "npm:^5.0.0"
     node-fetch: "npm:^2.6.7"
     progress: "npm:^2.0.3"
@@ -7908,7 +7908,7 @@ __metadata:
       optional: true
   bin:
     sentry-cli: bin/sentry-cli
-  checksum: 10/f3f99686bab66bb107cfa26f326a4c6e4506bbc96158f8834efcbc0769b5b8f3ab339d18bac7714192732ebab51219cbefd4c39a254efe678822dba1c4b917db
+  checksum: 10/3145e21a8b869e6a918f30c502b1233beda88fd6b74643d247d8803cbe8c5ad1a45533eaec1d354daa4356083ad86a6c862acef61f6aa8d5957a5e38128e682a
   languageName: node
   linkType: hard
 
@@ -7970,7 +7970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/integrations@npm:7.119.0, @sentry/integrations@npm:^7.100.1":
+"@sentry/integrations@npm:7.119.0, @sentry/integrations@npm:^7.100.1, @sentry/integrations@npm:^7.114.0":
   version: 7.119.0
   resolution: "@sentry/integrations@npm:7.119.0"
   dependencies:
@@ -7995,13 +7995,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/react-native@npm:5.31.1":
-  version: 5.31.1
-  resolution: "@sentry/react-native@npm:5.31.1"
+"@sentry/react-native@npm:5.33.0":
+  version: 5.33.0
+  resolution: "@sentry/react-native@npm:5.33.0"
   dependencies:
     "@sentry/babel-plugin-component-annotate": "npm:2.20.1"
     "@sentry/browser": "npm:7.119.0"
-    "@sentry/cli": "npm:2.34.0"
+    "@sentry/cli": "npm:2.36.1"
     "@sentry/core": "npm:7.119.0"
     "@sentry/hub": "npm:7.119.0"
     "@sentry/integrations": "npm:7.119.0"
@@ -8017,7 +8017,7 @@ __metadata:
       optional: true
   bin:
     sentry-expo-upload-sourcemaps: scripts/expo-upload-sourcemaps.js
-  checksum: 10/94aa53219afd2bf5da9038d6b95db27cb02729aa323bda6c1815175ff2fb61b3e427e99d8d0a409f18ec986cf63f67cd9368cab3fa7108893e99436e814a3f53
+  checksum: 10/e5566797d98425f24447b80306e2f36211f6924b0ae393e3d4746e76c45ea2fc8cb4c534e3f1579a145c7225261814a9aa7b63cbffe4e24c9b8f032cf8cb7f97
   languageName: node
   linkType: hard
 
@@ -8060,10 +8060,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:7.92.0":
-  version: 7.92.0
-  resolution: "@sentry/types@npm:7.92.0"
-  checksum: 10/b44fb4ac67dc80946483ae8197b542cfea34a509caaaadb7c3e5788ddb3913b357fa36d4c69905a05fa24ca1ac44f0297d9a14e733f30ee55aa565eb193c87ff
+"@sentry/types@npm:7.112.0":
+  version: 7.112.0
+  resolution: "@sentry/types@npm:7.112.0"
+  checksum: 10/e14c438d4f40223c903de05e1a3437aa41d7f6b2455c2fc79a29f4ac01ae4bc2bf9eb7987ee16d1c65ae3a8c4ab7b7278b59a2a1b281cac6a674d182da7db2d5
+  languageName: node
+  linkType: hard
+
+"@sentry/types@npm:7.119.0, @sentry/types@npm:^7.100.1":
+  version: 7.119.0
+  resolution: "@sentry/types@npm:7.119.0"
+  checksum: 10/231c567f7717d1d0a49fdc8a627aa28931b2b41795b1faed3c3308874b7dfb8781846b8e8e4fa7ce197e254a566c773848d4c301200611cc8583dae2f9859e99
   languageName: node
   linkType: hard
 
@@ -9538,7 +9545,8 @@ __metadata:
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@sentry/react-native": "npm:5.31.1"
+    "@sentry/integrations": "npm:^7.114.0"
+    "@sentry/react-native": "npm:5.33.0"
     "@shopify/flash-list": "npm:1.7.1"
     "@shopify/react-native-skia": "npm:1.3.11"
     "@suite-common/analytics": "workspace:*"
@@ -9838,7 +9846,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@sentry/react-native": "npm:5.31.1"
+    "@sentry/react-native": "npm:5.33.0"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -9950,7 +9958,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@sentry/react-native": "npm:5.31.1"
+    "@sentry/react-native": "npm:5.33.0"
     "@shopify/react-native-skia": "npm:1.3.11"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
@@ -10193,7 +10201,7 @@ __metadata:
   resolution: "@suite-native/module-dev-utils@workspace:suite-native/module-dev-utils"
   dependencies:
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@sentry/react-native": "npm:5.31.1"
+    "@sentry/react-native": "npm:5.33.0"
     "@suite-common/icons-deprecated": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -10384,7 +10392,7 @@ __metadata:
     "@react-navigation/bottom-tabs": "npm:6.6.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@sentry/react-native": "npm:5.31.1"
+    "@sentry/react-native": "npm:5.33.0"
     "@suite-common/icons-deprecated": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -10519,7 +10527,7 @@ __metadata:
   resolution: "@suite-native/state@workspace:suite-native/state"
   dependencies:
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@sentry/react-native": "npm:5.31.1"
+    "@sentry/react-native": "npm:5.33.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
@@ -10555,7 +10563,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@sentry/react-native": "npm:5.31.1"
+    "@sentry/react-native": "npm:5.33.0"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     bs58: "npm:^6.0.0"
