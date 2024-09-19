@@ -54,6 +54,9 @@
         { "path": "suite-native/coin-enabling" },
         { "path": "suite-native/config" },
         {
+            "path": "suite-native/connect-deeplink-example"
+        },
+        {
             "path": "suite-native/connection-status"
         },
         { "path": "suite-native/device" },
@@ -129,6 +132,7 @@
         { "path": "packages/connect" },
         { "path": "packages/connect-analytics" },
         { "path": "packages/connect-common" },
+        { "path": "packages/connect-deeplink" },
         { "path": "packages/connect-explorer" },
         {
             "path": "packages/connect-explorer-theme"

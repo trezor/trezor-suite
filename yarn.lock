@@ -9761,6 +9761,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/connect-deeplink-example@workspace:suite-native/connect-deeplink-example":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/connect-deeplink-example@workspace:suite-native/connect-deeplink-example"
+  dependencies:
+    "@babel/core": "npm:^7.20.0"
+    "@trezor/connect-deeplink": "workspace:*"
+    "@types/react": "npm:18.2.45"
+    expo: "npm:51.0.31"
+    expo-linking: "npm:^6.3.1"
+    expo-status-bar: "npm:1.12.1"
+    react: "npm:18.2.0"
+    react-native: "npm:0.75.2"
+    typescript: "npm:^5.3.3"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/connection-status@workspace:*, @suite-native/connection-status@workspace:suite-native/connection-status":
   version: 0.0.0-use.local
   resolution: "@suite-native/connection-status@workspace:suite-native/connection-status"
@@ -11181,6 +11197,15 @@ __metadata:
     tsx: "npm:^4.16.3"
   peerDependencies:
     tslib: ^2.6.2
+  languageName: unknown
+  linkType: soft
+
+"@trezor/connect-deeplink@workspace:*, @trezor/connect-deeplink@workspace:packages/connect-deeplink":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-deeplink@workspace:packages/connect-deeplink"
+  dependencies:
+    "@trezor/connect": "workspace:^"
+    "@trezor/utils": "workspace:^"
   languageName: unknown
   linkType: soft
 
