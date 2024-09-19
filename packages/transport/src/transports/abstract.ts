@@ -266,7 +266,7 @@ export abstract class AbstractTransport extends TransportEmitter {
      * For transports with native access (webusb), this informs lower transport layer
      * that device is not going to be used anymore
      */
-    abstract releaseDevice(path: string): AsyncResultWithTypedError<void, string>;
+    abstract releaseDevice(session: Session): AsyncResultWithTypedError<void, string>;
 
     /**
      * Encode data and write it to transport layer

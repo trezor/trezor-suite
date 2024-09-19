@@ -323,7 +323,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // session was acquired by another instance. but another might not have power to release interface
         // so it only notified about its session acquiral and the interrupted instance should cooperate
         // and release device too.
-        this.transport.releaseDevice(this.originalDescriptor.path);
+        if (this.originalDescriptor.session) {
+            this.transport.releaseDevice(this.originalDescriptor.session);
+        }
     }
 
     async _runInner<X>(fn: (() => Promise<X>) | undefined, options: RunOptions): Promise<void> {

@@ -11,6 +11,7 @@ import { buildMessage, createChunks, sendChunks } from '../utils/send';
 import { receiveAndParse } from '../utils/receive';
 import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
+import { Session } from '../types';
 
 interface ConstructorParams extends AbstractTransportParams {
     api: AbstractApi;
@@ -156,7 +157,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return this.error({ error: releaseIntentResponse.error });
                 }
 
-                const releasePromise = this.releaseDevice(releaseIntentResponse.payload.path);
+                const releasePromise = this.releaseDevice(session);
                 if (onClose) return this.success(undefined);
 
                 await releasePromise;
@@ -315,8 +316,18 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         );
     }
 
-    releaseDevice(path: string) {
-        return this.api.closeDevice(path);
+    releaseDevice(session: Session) {
+        return this.sessionsClient
+            .getPathBySession({
+                session,
+            })
+            .then(response => {
+                if (response.success) {
+                    return this.api.closeDevice(response.payload.path);
+                }
+
+                return this.success(undefined);
+            });
     }
 
     stop() {
