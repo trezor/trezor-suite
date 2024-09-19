@@ -6,8 +6,7 @@ The `@trezor/connect-deeplink` package provides an implementation of `@trezor/co
 
 Currently the library is still under development, only supports read-only methods and does not communicate with the production Suite Lite app.
 
-To run a dev version of the Suite mobile app follow the instructions in [@suite-native/app](https://github.com/trezor/trezor-suite/blob/develop/suite-native/app/README.md) 
-
+To run a dev version of the Suite mobile app follow the instructions in [@suite-native/app](https://github.com/trezor/trezor-suite/blob/develop/suite-native/app/README.md)
 
 ## Using the Library
 
@@ -44,4 +43,4 @@ useEffect(() => {
 
 ## Example
 
-The [connect-deeplink-example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/connect-deeplink-example) shows how to use the library in a React Native + Expo app.
+The [Connect deeplink example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/deeplink-expo) shows how to use the library in a React Native + Expo app.
