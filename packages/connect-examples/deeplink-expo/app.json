@@ -1,0 +1,13 @@
+{
+    "expo": {
+        "name": "connect-deeplink-example",
+        "slug": "connect-deeplink-example",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "userInterfaceStyle": "light",
+        "ios": {
+            "supportsTablet": true
+        },
+        "scheme": "connectdeeplinkexample"
+    }
+}

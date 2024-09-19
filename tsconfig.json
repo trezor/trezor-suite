@@ -129,6 +129,7 @@
         { "path": "packages/connect" },
         { "path": "packages/connect-analytics" },
         { "path": "packages/connect-common" },
+        { "path": "packages/connect-deeplink" },
         { "path": "packages/connect-explorer" },
         {
             "path": "packages/connect-explorer-theme"
@@ -186,6 +187,9 @@
         { "path": "packages/utxo-lib" },
         {
             "path": "packages/connect-examples/webextension-mv3-sw-ts"
+        },
+        {
+            "path": "packages/connect-examples/deeplink-expo"
         },
         {
             "path": "packages/connect-examples/electron-main-process"
