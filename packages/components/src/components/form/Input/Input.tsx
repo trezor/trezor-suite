@@ -1,7 +1,7 @@
 import { useState, Ref, ReactNode, ReactElement, InputHTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { useMeasure } from 'react-use';
-import { spacingsPx, spacings, typography } from '@trezor/theme';
+import { spacingsPx, spacings, typography, TypographyStyle } from '@trezor/theme';
 import { Icon } from '../../Icon/Icon';
 import {
     baseInputStyle,
@@ -15,6 +15,11 @@ import { InputState, InputSize } from '../inputTypes';
 import { TopAddons } from '../TopAddons';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { UIHorizontalAlignment } from '../../../config/types';
+import { TextPropsKeys, withTextProps, TextProps as TextPropsCommon } from '../../typography/utils';
+import { TransientProps } from '../../../utils/transientProps';
+
+export const allowedInputTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];
+type AllowedInputTextProps = Pick<TextPropsCommon, (typeof allowedInputTextProps)[number]>;
 
 const Wrapper = styled.div<{ $width?: number; $hasBottomPadding: boolean }>`
     display: inline-flex;
@@ -28,12 +33,13 @@ interface StyledInputProps extends BaseInputProps {
     $size: InputSize;
     $leftAddonWidth?: number;
     $rightAddonWidth?: number;
+    $isWithLabel: boolean;
 }
 
 const getExtraAddonPadding = (size: InputSize) =>
     (size === 'small' ? spacings.sm : spacings.md) + spacings.xs;
 
-const StyledInput = styled.input<StyledInputProps & { $isWithLabel: boolean }>`
+const StyledInput = styled.input<StyledInputProps & TransientProps<AllowedInputTextProps>>`
     padding: 0 ${spacingsPx.md};
     padding-left: ${({ $leftAddonWidth, $size }) =>
         $leftAddonWidth ? `${$leftAddonWidth + getExtraAddonPadding($size)}px` : undefined};
@@ -42,6 +48,7 @@ const StyledInput = styled.input<StyledInputProps & { $isWithLabel: boolean }>`
     height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
     ${baseInputStyle}
     ${({ $size }) => $size === 'small' && typography.hint};
+    ${withTextProps}
 
     &:disabled {
         pointer-events: auto;
@@ -97,6 +104,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     inputState?: InputState; // TODO: do we need this? we only have the error state right now
     innerAddonAlign?: innerAddonAlignment;
     hasBottomPadding?: boolean;
+    typographyStyle?: TypographyStyle;
     /**
      * @description the clear button replaces the addon on the right side
      */
@@ -123,6 +131,7 @@ const Input = ({
     placeholder,
     onClear,
     hasBottomPadding = true,
+    typographyStyle = 'body',
     className,
     ...rest
 }: InputProps) => {
@@ -191,6 +200,7 @@ const Input = ({
                     $leftAddonWidth={leftAddonWidth}
                     $rightAddonWidth={rightAddonWidth}
                     $isWithLabel={!!label}
+                    $typographyStyle={typographyStyle}
                     placeholder={placeholder || ''} // needed for uncontrolled inputs
                     data-testid={dataTest}
                     {...rest}
