@@ -69,6 +69,7 @@ const StyledText = styled.span<StyledTextProps>`
 type TextProps = {
     children: ReactNode;
     className?: string;
+    as?: string;
 } & ExclusiveColorOrVariant &
     AllowedFrameProps &
     AllowedTextTextProps;
@@ -80,6 +81,7 @@ export const Text = ({
     className,
     typographyStyle,
     textWrap,
+    as = 'span',
     ...rest
 }: TextProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedTextFrameProps);
@@ -88,6 +90,7 @@ export const Text = ({
         <StyledText
             {...(variant !== undefined ? { $variant: variant } : { $color: color })}
             className={className}
+            as={as}
             {...makePropsTransient({ typographyStyle, textWrap })}
             {...frameProps}
         >

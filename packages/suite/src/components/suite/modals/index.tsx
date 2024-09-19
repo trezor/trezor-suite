@@ -24,7 +24,7 @@ export { BackgroundGalleryModal } from './ReduxModal/UserContextModal/Background
 export { TxDetailModal } from './ReduxModal/UserContextModal/TxDetailModal/TxDetailModal';
 export { ApplicationLogModal } from './ReduxModal/UserContextModal/ApplicationLogModal';
 export { WipeDeviceModal } from './ReduxModal/UserContextModal/WipeDeviceModal';
-export { MetadataProviderModal } from './ReduxModal/UserContextModal/MetadataProviderModal';
+export { MetadataProviderModal } from './ReduxModal/UserContextModal/MetadataProviderModal/MetadataProviderModal';
 export { AdvancedCoinSettingsModal } from './ReduxModal/UserContextModal/AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 export { AddTokenModal } from './ReduxModal/UserContextModal/AddTokenModal';
 export { SafetyChecksModal } from './ReduxModal/UserContextModal/SafetyChecksModal';
