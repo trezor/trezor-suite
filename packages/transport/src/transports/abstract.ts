@@ -37,15 +37,13 @@ export type ReleaseInput = {
     onClose?: boolean;
 };
 
-type DescriptorDiffItem = { descriptor: Descriptor } & (
+export type DeviceDescriptorDiff = { descriptor: Descriptor } & (
     | { type: 'connected' | 'disconnected' }
     | {
           type: 'acquired' | 'released';
           subtype: 'here' | 'elsewhere';
       }
 );
-
-export type DeviceDescriptorDiff = DescriptorDiffItem[];
 
 export interface AbstractTransportParams {
     messages?: Record<string, any>;
@@ -320,7 +318,7 @@ export abstract class AbstractTransport extends TransportEmitter {
         this.releasePromise = undefined;
     }
 
-    private getDiff(nextDescriptors: Descriptor[]): DeviceDescriptorDiff {
+    private getDiff(nextDescriptors: Descriptor[]): DeviceDescriptorDiff[] {
         const oldDescriptors = new Map(this.descriptors.map(d => [getKey(d), d]));
         const newDescriptors = new Map(nextDescriptors.map(d => [getKey(d), d]));
 
@@ -419,7 +417,9 @@ export abstract class AbstractTransport extends TransportEmitter {
             }
         });
 
-        this.emit(TRANSPORT.UPDATE, diff);
+        diff.forEach(diffItem => {
+            this.emit(TRANSPORT.UPDATE, diffItem);
+        });
     }
 
     /**

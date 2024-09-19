@@ -93,12 +93,16 @@ describe('bridge', () => {
             session: Session('1'),
         });
 
-        expect(bride1spy).toHaveBeenLastCalledWith('transport-update', [
-            { type: 'acquired', subtype: 'here', descriptor: expectedDescriptor1 },
-        ]);
-        expect(bride2spy).toHaveBeenLastCalledWith('transport-update', [
-            { type: 'acquired', subtype: 'elsewhere', descriptor: expectedDescriptor1 },
-        ]);
+        expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
+            type: 'acquired',
+            subtype: 'here',
+            descriptor: expectedDescriptor1,
+        });
+        expect(bride2spy).toHaveBeenLastCalledWith('transport-update', {
+            type: 'acquired',
+            subtype: 'elsewhere',
+            descriptor: expectedDescriptor1,
+        });
 
         expect(session1.success).toBe(true);
         if (!session1.success) {
@@ -114,13 +118,17 @@ describe('bridge', () => {
             session: null,
         });
 
-        expect(bride1spy).toHaveBeenLastCalledWith('transport-update', [
-            { type: 'released', subtype: 'here', descriptor: expectedDescriptor2 },
-        ]);
+        expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
+            type: 'released',
+            subtype: 'here',
+            descriptor: expectedDescriptor2,
+        });
 
-        expect(bride2spy).toHaveBeenLastCalledWith('transport-update', [
-            { type: 'released', subtype: 'elsewhere', descriptor: expectedDescriptor2 },
-        ]);
+        expect(bride2spy).toHaveBeenLastCalledWith('transport-update', {
+            type: 'released',
+            subtype: 'elsewhere',
+            descriptor: expectedDescriptor2,
+        });
 
         const session2 = await bridge2.acquire({
             input: { previous: null, path: descriptors[0].path },
@@ -159,13 +167,17 @@ describe('bridge', () => {
 
         await wait(); // wait for event to be propagated
 
-        expect(bride1spy).toHaveBeenLastCalledWith('transport-update', [
-            { type: 'acquired', subtype: 'elsewhere', descriptor: expectedDescriptor },
-        ]);
+        expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
+            type: 'acquired',
+            subtype: 'elsewhere',
+            descriptor: expectedDescriptor,
+        });
 
-        expect(bride2spy).toHaveBeenLastCalledWith('transport-update', [
-            { type: 'acquired', subtype: 'here', descriptor: expectedDescriptor },
-        ]);
+        expect(bride2spy).toHaveBeenLastCalledWith('transport-update', {
+            type: 'acquired',
+            subtype: 'here',
+            descriptor: expectedDescriptor,
+        });
     });
 
     // todo: udp not implemented correctly yet in new bridge
