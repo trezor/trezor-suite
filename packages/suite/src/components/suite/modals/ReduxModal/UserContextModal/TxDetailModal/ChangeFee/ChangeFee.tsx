@@ -88,11 +88,13 @@ interface ChangeFeeProps extends UseRbfProps {
 
 const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     const contextValues = useRbf(props);
-    const { tx, showChained, children } = props;
+    const { tx, showChained, children, rbfParams } = props;
     const { networkType } = contextValues.account;
     const feeRate =
         networkType === 'bitcoin' ? `${tx.rbfParams?.feeRate} ${getFeeUnits(networkType)}` : null;
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
+    const prevFeeRate = networkType === 'ethereum' ? rbfParams.feeRate : undefined;
+    console.log('PREV FEE RATE: ', prevFeeRate);
 
     return (
         <RbfContext.Provider value={contextValues}>
