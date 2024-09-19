@@ -117,13 +117,15 @@ describe('Usb', () => {
 
             transport.handleDescriptorsChange([{ path: PathPublic('1'), session: null, type: 1 }]);
 
-            expect(spy).toHaveBeenCalledWith([
-                { type: 'connected', descriptor: { path: '1', session: null, type: 1 } },
-            ]);
+            expect(spy).toHaveBeenCalledWith({
+                type: 'connected',
+                descriptor: { path: '1', session: null, type: 1 },
+            });
             transport.handleDescriptorsChange([]);
-            expect(spy).toHaveBeenCalledWith([
-                { type: 'disconnected', descriptor: { path: '1', session: null, type: 1 } },
-            ]);
+            expect(spy).toHaveBeenCalledWith({
+                type: 'disconnected',
+                descriptor: { path: '1', session: null, type: 1 },
+            });
         });
 
         it('enumerate', async () => {
