@@ -59,7 +59,9 @@ export const ConnectPopupScreen = ({
         });
         setCallResult(response);
         dispatch(deviceActions.removeButtonRequests({ device }));
-        Linking.openURL(popupOptions.callback + '?response=' + JSON.stringify(response));
+        const callbackUrl = new URL(popupOptions.callback);
+        callbackUrl.searchParams.set('response', JSON.stringify(response));
+        Linking.openURL(callbackUrl.toString());
         setLoading(false);
         if (navigation.canGoBack()) {
             navigation.goBack();
