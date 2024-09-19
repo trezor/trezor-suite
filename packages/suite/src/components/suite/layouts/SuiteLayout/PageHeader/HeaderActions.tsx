@@ -3,9 +3,11 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import {
     Button,
     ButtonGroup,
+    ButtonProps,
     Dropdown,
     DropdownMenuItemProps,
     IconButton,
+    IconButtonProps,
     IconName,
 } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
@@ -32,6 +34,28 @@ type ActionItem = {
     isHidden?: boolean;
 };
 
+const ButtonComponent = ({
+    icon,
+    onClick,
+    'data-testid': dataTestId,
+    variant,
+    size,
+    isDisabled,
+    children,
+}: Pick<ButtonProps, 'onClick' | 'data-testid' | 'variant' | 'size' | 'isDisabled' | 'children'> &
+    Pick<IconButtonProps, 'icon'>) => {
+    const layoutSize = useSelector(state => state.resize.size);
+
+    const isMobileLayout = layoutSize === 'TINY';
+    const commonProps = { icon, onClick, 'data-testid': dataTestId, variant, size, isDisabled };
+
+    return isMobileLayout ? (
+        <IconButton {...commonProps} />
+    ) : (
+        <Button {...commonProps}>{children}</Button>
+    );
+};
+
 export const HeaderActions = () => {
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
@@ -39,8 +63,6 @@ export const HeaderActions = () => {
 
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const layoutSize = useSelector(state => state.resize.size);
-    const isMobileLayout = layoutSize === 'TINY';
 
     const accountType = account?.accountType || routerParams?.accountType || '';
 
@@ -72,7 +94,6 @@ export const HeaderActions = () => {
     const isCoinmarketAvailable = !['coinjoin'].includes(accountType);
     const isAccountLoading = selectedAccount.status === 'loading';
 
-    const ButtonComponent = isMobileLayout ? IconButton : Button;
     const isDeviceConnected = device?.connected && device?.available;
 
     return (

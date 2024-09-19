@@ -29,6 +29,8 @@ export const allowedButtonFrameProps = [
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
+export type IconOrComponent = IconName | JSX.Element;
+
 type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
     $elevation: Elevation;
     $variant: ButtonVariant;
@@ -115,7 +117,7 @@ export type ButtonProps = SelectedHTMLButtonProps &
         isDisabled?: boolean;
         isLoading?: boolean;
         isFullWidth?: boolean;
-        icon?: IconName;
+        icon?: IconOrComponent;
         iconSize?: number;
         iconAlignment?: IconAlignment;
         children: React.ReactNode;
@@ -125,37 +127,57 @@ export type ButtonProps = SelectedHTMLButtonProps &
         textWrap?: boolean;
     };
 
-export const Button = ({
-    variant = 'primary',
-    size = 'medium',
-    isDisabled = false,
-    isLoading = false,
-    isFullWidth = false,
-    isSubtle = false,
+export const getIcon = ({
     icon,
-    iconSize,
-    iconAlignment = 'left',
-    type = 'button',
+    size,
+    color,
+}: {
+    icon?: IconName | React.ReactElement;
+    size?: number;
+    color?: string;
+}) => {
+    if (!icon) return null;
+    if (typeof icon === 'string') {
+        return <Icon name={icon as IconName} size={size} color={color} />;
+    }
+
+    return icon;
+};
+
+export const Button = ({
+    'data-testid': dataTestId,
     children,
-    target,
+    className,
     href,
+    icon,
+    iconAlignment = 'left',
+    iconSize,
+    isDisabled = false,
+    isFullWidth = false,
+    isLoading = false,
+    isSubtle = false,
+    onClick,
+    onMouseLeave,
+    onMouseOver,
+    size = 'medium',
+    tabIndex,
+    target,
     textWrap = true,
+    title,
+    type = 'button',
+    variant = 'primary',
     ...rest
 }: ButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
     const theme = useTheme();
 
-    const IconComponent = icon ? (
-        <Icon
-            name={icon}
-            size={iconSize || getIconSize(size)}
-            color={getIconColor({ variant, isDisabled, theme, isSubtle })}
-        />
-    ) : null;
+    const IconComponent = getIcon({
+        icon,
+        size: iconSize || getIconSize(size),
+        color: getIconColor({ variant, isDisabled, theme, isSubtle }),
+    });
 
-    const Loader = (
-        <Spinner size={getIconSize(size)} data-testid={`${rest['data-testid']}/spinner`} />
-    );
+    const Loader = <Spinner size={getIconSize(size)} data-testid={`${dataTestId}/spinner`} />;
 
     const isLink = href !== undefined;
 
@@ -163,20 +185,25 @@ export const Button = ({
 
     return (
         <ButtonContainer
-            as={isLink ? 'a' : 'button'}
-            target={isLink ? target || '_blank' : undefined}
-            href={href}
-            $variant={variant}
-            $size={size}
+            $elevation={elevation}
+            $hasIcon={!!icon || isLoading}
             $iconAlignment={iconAlignment}
-            disabled={isDisabled || isLoading}
             $isFullWidth={isFullWidth}
             $isSubtle={isSubtle}
+            $size={size}
+            $variant={variant}
+            as={isLink ? 'a' : 'button'}
+            className={className}
+            data-testid={dataTestId}
+            disabled={isDisabled || isLoading}
+            href={href}
+            onClick={isDisabled ? undefined : onClick}
+            onMouseLeave={onMouseLeave}
+            onMouseOver={onMouseOver}
+            tabIndex={tabIndex}
+            target={isLink ? target || '_blank' : undefined}
+            title={title}
             type={type}
-            $hasIcon={!!icon || isLoading}
-            $elevation={elevation}
-            {...rest}
-            onClick={isDisabled ? undefined : rest?.onClick}
             {...frameProps}
         >
             {!isLoading && icon && IconComponent}

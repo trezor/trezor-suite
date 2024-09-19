@@ -1,49 +1,15 @@
 import { useState } from 'react';
-import styled from 'styled-components';
-import { Paragraph, Button, variables } from '@trezor/components';
+import { Button, NewModal, Row, Paragraph } from '@trezor/components';
 
-import { Translation, Modal } from 'src/components/suite';
+import { Translation } from 'src/components/suite/index';
 import { useDispatch } from 'src/hooks/suite';
 import { connectProvider } from 'src/actions/suite/metadataProviderActions';
 import type { Deferred } from '@trezor/utils';
 import { MetadataProviderType } from 'src/types/suite/metadata';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { spacingsPx } from '@trezor/theme';
-
-const { FONT_SIZE, FONT_WEIGHT } = variables;
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: ${spacingsPx.sm};
-`;
-
-const Error = styled.div`
-    margin-top: 8px;
-    font-size: ${FONT_SIZE.TINY};
-    color: ${({ theme }) => theme.legacy.TYPE_RED};
-`;
-
-// todo: can't use button from @trezor/components directly, probably inconsistent design again
-// background-color is not even in components color palette
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    padding: 10px;
-    font-size: ${FONT_SIZE.NORMAL};
-    background-color: ${({ theme }) => theme.legacy.BG_GREY};
-    font-weight: ${FONT_WEIGHT.DEMI_BOLD};
-    height: 42px;
-`;
-
-// todo: typography shall be unified and these ad hoc styles removed..
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledP = styled(Paragraph)`
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-`;
-
-const StyledModal = styled(Modal)`
-    width: 600px;
-`;
+import { spacings } from '@trezor/theme';
+import { DropboxLogo } from './DropboxLogo';
+import { GoogleDriveLogo } from './GoogleDriveLogo';
 
 type MetadataProviderModalProps = {
     onCancel: () => void;
@@ -84,40 +50,40 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
     };
 
     return (
-        <StyledModal
-            isCancelable
+        <NewModal
             onCancel={onModalCancel}
             heading={<Translation id="METADATA_MODAL_HEADING" />}
             data-testid="@modal/metadata-provider"
-            bottomBarComponents={
-                <Wrapper>
-                    <StyledButton
+            bottomContent={
+                <Row gap={spacings.sm} flexWrap="wrap">
+                    <Button
                         variant="tertiary"
                         onClick={() => connect('dropbox')}
                         isLoading={isLoading === 'dropbox'}
                         isDisabled={!!isLoading}
                         data-testid="@modal/metadata-provider/dropbox-button"
-                        icon="dropbox"
+                        icon={<DropboxLogo size={20} />}
+                        textWrap={false}
                     >
                         <Translation id="TR_DROPBOX" />
-                    </StyledButton>
+                    </Button>
 
                     {isFeatureFlagEnabled('GOOGLE_DRIVE_SYNC') && (
-                        <StyledButton
+                        <Button
                             variant="tertiary"
                             onClick={() => connect('google')}
                             isLoading={isLoading === 'google'}
                             isDisabled={!!isLoading}
                             data-testid="@modal/metadata-provider/google-button"
-                            icon="googleDrive"
+                            icon={<GoogleDriveLogo size={20} />}
                         >
                             <Translation id="TR_GOOGLE_DRIVE" />
-                        </StyledButton>
+                        </Button>
                     )}
 
                     {/* desktop only */}
                     {isFeatureFlagEnabled('FILE_SYSTEM_SYNC') && (
-                        <StyledButton
+                        <Button
                             variant="tertiary"
                             onClick={() => connect('fileSystem')}
                             isLoading={isLoading === 'fileSystem'}
@@ -125,15 +91,23 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                             data-testid="@modal/metadata-provider/file-system-button"
                         >
                             <Translation id="TR_LOCAL_FILE_SYSTEM" />
-                        </StyledButton>
+                        </Button>
                     )}
-                </Wrapper>
+                </Row>
             }
         >
-            <StyledP typographyStyle="hint">
+            <Paragraph typographyStyle="hint">
                 <Translation id="METADATA_MODAL_DESCRIPTION" />
-            </StyledP>
-            {error && <Error>{error}</Error>}
-        </StyledModal>
+            </Paragraph>
+            {error && (
+                <Paragraph
+                    variant="destructive"
+                    typographyStyle="label"
+                    margin={{ top: spacings.xs }}
+                >
+                    {error}
+                </Paragraph>
+            )}
+        </NewModal>
     );
 };
