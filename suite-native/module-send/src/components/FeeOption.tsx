@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
@@ -7,6 +8,7 @@ import { Text, HStack, VStack, Radio } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { FormContext } from '@suite-native/forms';
 import { TxKeyPath, Translation } from '@suite-native/intl';
+import { FeesRootState, selectNetworkFeeLevelTimeEstimate } from '@suite-common/wallet-core';
 
 import { SendFeesFormValues } from '../sendFeesFormSchema';
 import { NativeSupportedFeeLevel } from '../types';
@@ -38,9 +40,13 @@ export const FeeOption = ({
     const { watch, setValue } = useContext(FormContext);
     const selectedLevel = watch('feeLevel');
 
+    const feeTimeEstimate = useSelector((state: FeesRootState) =>
+        selectNetworkFeeLevelTimeEstimate(state, feeKey, networkSymbol),
+    );
+
     const isChecked = selectedLevel === feeKey;
 
-    const { label, timeEstimate } = feeLabelsMap[feeKey];
+    const { label } = feeLabelsMap[feeKey];
 
     const handleSelectFeeLevel = () => {
         setValue('feeLevel', feeKey, {
@@ -56,7 +62,7 @@ export const FeeOption = ({
                         <Translation id={label} />
                     </Text>
                     <Text variant="hint" color="textSubdued">
-                        <Translation id={timeEstimate} />
+                        {feeTimeEstimate}
                     </Text>
                 </VStack>
                 <VStack flex={1} alignItems="flex-end" spacing="extraSmall">
