@@ -1,7 +1,7 @@
 import { createDeferred, createTimeoutPromise } from '@trezor/utils';
 
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
-import { DescriptorApiLevel } from '../types';
+import { DescriptorApiLevel, PathInternal } from '../types';
 import {
     CONFIGURATION_ID,
     ENDPOINT_ID,
@@ -121,7 +121,7 @@ export class UsbApi extends AbstractApi {
 
     private devicesToDescriptors(): DescriptorApiLevel[] {
         return this.devices.map(d => ({
-            path: d.path,
+            path: PathInternal(d.path),
             type: this.matchDeviceType(d.device),
             product: d.device.productId,
             vendor: d.device.vendorId,

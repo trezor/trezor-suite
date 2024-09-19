@@ -5,6 +5,7 @@ import { UsbApi } from '../src/api/usb';
 import { SessionsClient } from '../src/sessions/client';
 import { SessionsBackground } from '../src/sessions/background';
 import * as messages from '@trezor/protobuf/messages.json';
+import { PathPublic, Session } from '../src/types';
 
 // create devices otherwise returned from navigator.usb.getDevices
 const createMockedDevice = (optional = {}) => ({
@@ -183,7 +184,7 @@ describe('Usb', () => {
             const spy = jest.fn();
             transport.on('transport-update', spy);
 
-            transport.handleDescriptorsChange([{ path: '1', session: null, type: 1 }]);
+            transport.handleDescriptorsChange([{ path: PathPublic('1'), session: null, type: 1 }]);
 
             expect(spy).toHaveBeenCalledWith([
                 { type: 'connected', descriptor: { path: '1', session: null, type: 1 } },
@@ -230,7 +231,9 @@ describe('Usb', () => {
 
             jest.runAllTimers();
 
-            const result = await transport.acquire({ input: { path: '1', previous: null } });
+            const result = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
             expect(result).toEqual({
                 success: true,
                 payload: '1',
@@ -254,10 +257,14 @@ describe('Usb', () => {
             transport.listen();
 
             // set some initial descriptors
-            const acquireCall = transport.acquire({ input: { path: '1', previous: null } });
+            const acquireCall = transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
 
             setTimeout(() => {
-                sessionsClient.emit('descriptors', [{ path: '321', session: '1', type: 1 }]);
+                sessionsClient.emit('descriptors', [
+                    { path: PathPublic('321'), session: Session('1'), type: 1 },
+                ]);
             }, 1);
 
             const res = await acquireCall;
@@ -280,10 +287,12 @@ describe('Usb', () => {
             transport.listen();
 
             // set some initial descriptors
-            const acquireCall = transport.acquire({ input: { path: '1', previous: null } });
+            const acquireCall = transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
             setTimeout(() => {
                 sessionsClient.emit('descriptors', [
-                    { path: '1', session: '2', type: 1, product: 21441 },
+                    { path: PathPublic('1'), session: Session('2'), type: 1, product: 21441 },
                 ]);
             }, 1);
 
@@ -297,7 +306,7 @@ describe('Usb', () => {
             const res = await transport.call({
                 name: 'GetAddress',
                 data: {},
-                session: '1',
+                session: Session('1'),
                 protocol: v1Protocol,
             });
             expect(res).toEqual({ success: false, error: 'device disconnected during action' });
@@ -307,7 +316,9 @@ describe('Usb', () => {
         it('call - with valid and invalid message.', async () => {
             const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
-            const acquireRes = await transport.acquire({ input: { path: '1', previous: null } });
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -350,7 +361,9 @@ describe('Usb', () => {
         it('send and receive.', async () => {
             const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
-            const acquireRes = await transport.acquire({ input: { path: '1', previous: null } });
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -386,7 +399,9 @@ describe('Usb', () => {
         it('send protocol-v1 with custom chunkSize', async () => {
             const { transport, testUsbApi, sessionsBackground } = await initTest();
             await transport.enumerate();
-            const acquireRes = await transport.acquire({ input: { path: '1', previous: null } });
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -424,7 +439,9 @@ describe('Usb', () => {
         it('release', async () => {
             const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
-            const acquireRes = await transport.acquire({ input: { path: '1', previous: null } });
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -433,7 +450,7 @@ describe('Usb', () => {
             // doesn't really matter what what message we send
             const res = await transport.release({
                 session: acquireRes.payload,
-                path: '123',
+                path: PathPublic('123'),
                 onClose: false,
             });
             expect(res).toEqual({
@@ -446,7 +463,9 @@ describe('Usb', () => {
         it('call - with use abort', async () => {
             const { transport, sessionsBackground } = await initTest();
             await transport.enumerate();
-            const acquireRes = await transport.acquire({ input: { path: '1', previous: null } });
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
             if (!acquireRes.success) return;
 
             const abort = new AbortController();

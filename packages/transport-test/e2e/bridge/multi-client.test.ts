@@ -1,5 +1,6 @@
 import * as messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport, Descriptor } from '@trezor/transport';
+import { Session } from '@trezor/transport/src/types';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
 import { descriptor as fixtureDescriptor, errorCase1 } from './expect';
@@ -13,7 +14,7 @@ const wait = (ms = 1000) =>
 
 const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => ({
     ...fixtureDescriptor,
-    session: '1',
+    session: Session('1'),
     ...descriptor,
 });
 
@@ -89,7 +90,7 @@ describe('bridge', () => {
 
         const expectedDescriptor1 = getDescriptor({
             path: descriptors[0].path,
-            session: '1',
+            session: Session('1'),
         });
 
         expect(bride1spy).toHaveBeenLastCalledWith('transport-update', [
@@ -153,7 +154,7 @@ describe('bridge', () => {
 
         const expectedDescriptor = getDescriptor({
             path: descriptors[0].path,
-            session: '2',
+            session: Session('2'),
         });
 
         await wait(); // wait for event to be propagated

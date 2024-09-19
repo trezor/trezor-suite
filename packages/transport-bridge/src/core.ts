@@ -8,7 +8,7 @@ import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { UsbApi } from '@trezor/transport/src/api/usb';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
-import { Session, BridgeProtocolMessage } from '@trezor/transport/src/types';
+import { Session, BridgeProtocolMessage, PathInternal } from '@trezor/transport/src/types';
 import { createProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
 import { Log } from '@trezor/utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
@@ -58,7 +58,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         signal,
         protocol,
     }: {
-        path: string;
+        path: PathInternal;
         data: string;
         signal: AbortSignal;
         protocol: TransportProtocol;
@@ -88,7 +88,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         signal,
         protocol,
     }: {
-        path: string;
+        path: PathInternal;
         signal: AbortSignal;
         protocol: TransportProtocol;
     }) => {

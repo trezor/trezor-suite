@@ -1,5 +1,6 @@
 import * as messages from '@trezor/protobuf/messages.json';
-import { BridgeTransport, Descriptor, Session } from '@trezor/transport';
+import { BridgeTransport, Descriptor } from '@trezor/transport';
+import { Session } from '@trezor/transport/src/types';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
 import { pathLength, descriptor as expectedDescriptor } from './expect';
@@ -262,7 +263,7 @@ describe('bridge', () => {
         test('acquire (wrong session) and concurrent call. what has priority in error handling?', async () => {
             const results = await Promise.all([
                 // send a session which is wrong
-                bridge.call({ session: '123', name: 'GetFeatures', data: {} }),
+                bridge.call({ session: Session('123'), name: 'GetFeatures', data: {} }),
                 // and send two conflicting calls at the same time
                 bridge.call({ session, name: 'GetFeatures', data: {} }),
                 bridge.call({ session, name: 'GetFeatures', data: {} }),
