@@ -14,7 +14,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "1.9.5",
-        "@sentry/react-native": "5.31.1",
+        "@sentry/react-native": "5.33.0",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "bs58": "^6.0.0",
