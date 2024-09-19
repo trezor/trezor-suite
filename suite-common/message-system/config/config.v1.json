@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-08-028T00:00:00+00:00",
-    "sequence": 62,
+    "timestamp": "2024-09-26T00:00:00+00:00",
+    "sequence": 63,
     "actions": [
         {
             "conditions": [
@@ -107,7 +107,7 @@
             ],
             "message": {
                 "id": "c8ca8958-7868-467f-9278-f072edc234ac",
-                "priority": 93,
+                "priority": 92,
                 "dismissible": true,
                 "variant": "info",
                 "category": "banner",
@@ -994,6 +994,75 @@
                         "tr": "Suite'i Güncelle",
                         "pt": "Atualizar Suite",
                         "uk": "Оновити Suite"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "dash": true
+                        },
+                        {
+                            "btg": true
+                        },
+                        {
+                            "nmc": true
+                        },
+                        {
+                            "vtc": true
+                        },
+                        {
+                            "dgb": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": ">=24.9.1",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "814507f2-64be-4232-9a43-abeaf5055d11",
+                "priority": 93,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "As of February 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin and DigiByte will no longer be supported in Trezor Suite. Please transfer your funds before this change takes effect.",
+                    "en": "As of February 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin and DigiByte will no longer be supported in Trezor Suite. Please transfer your funds before this change takes effect.",
+                    "es": "Desde febrero de 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin y DigiByte ya no serán compatibles con Trezor Suite. Por favor, transfiera sus fondos antes de que este cambio entre en vigor.",
+                    "cs": "Od února 2025 již nebudou v Trezor Suite podporovány tyto kryptoměny: Dash, Bitcoin Gold, Namecoin, Vertcoin a DigiByte. Přeneste prosím své prostředky předtím, než tato změna vstoupí v platnost.",
+                    "ru": "С февраля 2025 года Dash, Bitcoin Gold, Namecoin, Vertcoin и DigiByte больше не будут поддерживаться в Trezor Suite. Пожалуйста, переведите ваши средства до того, как это изменение вступит в силу.",
+                    "ja": "2025年2月より、Dash、Bitcoin Gold、Namecoin、Vertcoin、そしてDigiByteはTrezor Suiteでサポートされなくなります。この変更が有効になる前に、資金を移してください。",
+                    "hu": "2025 februárjától a Dash, Bitcoin Gold, Namecoin, Vertcoin és a DigiByte nem lesznek támogatva a Trezor Suite-ban. Kérjük, utalja át pénzeszközeit, mielőtt ez a változás életbe lép.",
+                    "it": "A partire da febbraio 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte non saranno più supportati in Trezor Suite. Si prega di trasferire i vostri fondi prima che questa modifica entri in vigore.",
+                    "fr": "À partir de février 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin et DigiByte ne seront plus pris en charge dans Trezor Suite. Veuillez transférer vos fonds avant que ce changement ne prenne effet.",
+                    "de": "Ab Februar 2025 werden Dash, Bitcoin Gold, Namecoin, Vertcoin und DigiByte in Trezor Suite nicht mehr unterstützt. Bitte übertragen Sie Ihre Gelder, bevor diese Änderung wirksam wird.",
+                    "tr": "Şubat 2025'ten itibaren Dash, Bitcoin Gold, Namecoin, Vertcoin ve DigiByte, Trezor Suite'te artık desteklenmeyecek. Lütfen bu değişiklik yürürlüğe girmeden önce fonlarınızı transfer edin.",
+                    "pt": "A partir de fevereiro de 2025, Dash, Bitcoin Gold, Namecoin, Vertcoin e DigiByte não serão mais suportados no Trezor Suite. Por favor, transfira seus fundos antes que esta mudança entre em vigor.",
+                    "uk": "Починаючи з лютого 2025 року, Dash, Bitcoin Gold, Namecoin, Vertcoin та DigiByte більше не будуть підтримуватися в Trezor Suite. Будь ласка, переведіть свої кошти до того, як ця зміна набере чинності."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/learn/a/deprecated-coins",
+                    "label": {
+                        "en-GB": "Learn More",
+                        "en": "Learn More",
+                        "es": "Más Información",
+                        "cs": "Více Informací",
+                        "ru": "Подробнее",
+                        "ja": "詳細はこちら",
+                        "hu": "További Információ",
+                        "it": "Scopri di Più",
+                        "fr": "En Savoir Plus",
+                        "de": "Mehr Erfahren",
+                        "tr": "Daha Fazla Bilgi",
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
                     }
                 }
             }
