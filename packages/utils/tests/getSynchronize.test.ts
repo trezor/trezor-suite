@@ -63,9 +63,60 @@ describe('getSynchronize', () => {
         synchronize(() =>
             sequence(['a', 3]).then(() => {
                 // 'c' registers after 'a' ended and while 'b' is running
-                delay(2).then(() => synchronize(() => sequence(['c', 3])));
+                delay(2).then(() => synchronize(() => sequence(['c', 3])).then(done));
             }),
         );
-        synchronize(() => sequence(['b', 8]).then(done));
+        synchronize(() => sequence(['b', 8]));
+    });
+
+    it('with keys', async () => {
+        let state1: any, state2: any;
+
+        await Promise.all([
+            synchronize(async () => {
+                state1 = 'a';
+                await delay(3);
+                expect(state1).toBe('a');
+
+                state1 = 'b';
+                await delay(9);
+                expect(state1).toBe('b');
+
+                state1 = 'c';
+                await delay(3);
+                expect(state1).toBe('c');
+            }, 'lock1'),
+            synchronize(async () => {
+                expect(state1).toBe('a');
+
+                state2 = 'g';
+                await delay(8);
+                expect(state2).toBe('g');
+                expect(state1).toBe('b');
+
+                state2 = 'h';
+                await delay(11);
+                expect(state2).toBe('h');
+                expect(state1).toBe('d');
+
+                state2 = 'i';
+                await delay(12);
+                expect(state2).toBe('i');
+                expect(state1).toBe('f');
+            }, 'lock2'),
+            synchronize(async () => {
+                state1 = 'd';
+                await delay(8);
+                expect(state1).toBe('d');
+
+                state1 = 'e';
+                await delay(4);
+                expect(state1).toBe('e');
+
+                state1 = 'f';
+                await delay(2);
+                expect(state1).toBe('f');
+            }, 'lock1'),
+        ]);
     });
 });
