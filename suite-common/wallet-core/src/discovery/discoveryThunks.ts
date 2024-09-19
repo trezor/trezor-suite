@@ -88,13 +88,18 @@ const calculateProgress =
         // reconstruct networks from discovery symbols, because we need to iterate through accounts
         const networksToCount = filterUnavailableNetworks(discovery.networks, device);
 
+        // number of Cardano type coins which are activated and able to be discovered
+        const numberOfCardanoCoins = discovery.networks.filter(
+            symbol => symbol === 'ada' || symbol === 'tada',
+        ).length;
+
         const { numberOfNonCardano, numberOfCardano } = networksToCount.reduce(
             (acc, network) => {
                 const { symbol } = network;
 
                 // increment the appropriate counter as per symbol foreach normalized account (normal as well as all alternative accounts)
                 filterUnavailableAccountTypes(network, device).forEach(() => {
-                    if (symbol === 'ada') acc.numberOfCardano += 1;
+                    if (symbol === 'ada' || symbol === 'tada') acc.numberOfCardano += 1;
                     else acc.numberOfNonCardano += 1;
                 });
 
@@ -107,14 +112,17 @@ const calculateProgress =
         //
         // 1) Cardano added - When Cardano is included, discovery.availableCardanoDerivations may vary (2 to 3 based on device seed length).
         //    This object might be undefined if discovery hasn't been completed yet.
-        //    To ensure the "activate coins" button appears, we set it to 1 if Cardano is enabled.
+        //    To ensure the "activate coins" button appears, we set it to numberOfCardano.
+        //    numberOfCardano is 1 or 2, depending on which Cardano networks are enabled (ada, tada).
         //
         // 2) Cardano removed - When Cardano is removed, discovery.availableCardanoDerivations might still hold a value.
         //    However, due to Math.min, it correctly resolves to 0 since numberOfCardano is 0.
         //
 
         const numberOfCardanoTotal = Math.min(
-            discovery.availableCardanoDerivations?.length ?? numberOfCardano ? 1 : 0,
+            discovery.availableCardanoDerivations?.length ?? numberOfCardano
+                ? numberOfCardanoCoins
+                : 0,
             numberOfCardano,
         );
 
