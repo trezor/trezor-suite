@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import * as Linking from 'expo-linking';
 
 import { BottomSheet, Button } from '@suite-native/atoms';
-
-import { buildURL } from '../utils/buildURL';
+import TrezorConnectDeeplink from '@trezor/connect-deeplink';
 
 type ConnectPopupDebugOptionsProps = React.PropsWithChildren<{
     showDebug: boolean;
@@ -16,6 +15,19 @@ export const ConnectPopupDebugOptions = ({
     setShowDebug,
     children,
 }: ConnectPopupDebugOptionsProps) => {
+    useEffect(() => {
+        TrezorConnectDeeplink.init({
+            manifest: {
+                email: 'info@trezor.io',
+                appUrl: '@suite-native/app',
+            },
+            deeplinkCallbackUrl: 'https://httpbin.org/get',
+            deeplinkOpen: url => {
+                Linking.openURL(url);
+            },
+        });
+    }, []);
+
     return (
         <BottomSheet
             isVisible={showDebug}
@@ -26,88 +38,65 @@ export const ConnectPopupDebugOptions = ({
             {children}
             <Button
                 onPress={() => {
-                    Linking.openURL(
-                        buildURL(
-                            'getAddress',
-                            {
-                                path: "m/49'/0'/0'/0/0",
-                                coin: 'btc',
-                            },
-                            'https://httpbin.org/get',
-                        ),
-                    );
+                    TrezorConnectDeeplink.getAddress({
+                        path: "m/49'/0'/0'/0/0",
+                        coin: 'btc',
+                    });
                 }}
             >
                 getAddress test
             </Button>
             <Button
                 onPress={() => {
-                    Linking.openURL(
-                        buildURL(
-                            'signTransaction',
+                    TrezorConnectDeeplink.signTransaction({
+                        coin: 'btc',
+                        inputs: [
                             {
-                                path: "m/49'/0'/0'/0/0",
-                                coin: 'btc',
-                                inputs: [
-                                    {
-                                        address_n: [
-                                            (44 | 0x80000000) >>> 0,
-                                            (0 | 0x80000000) >>> 0,
-                                            (0 | 0x80000000) >>> 0,
-                                            0,
-                                            5,
-                                        ],
-                                        prev_hash:
-                                            '50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d',
-                                        prev_index: 1,
-                                    },
+                                address_n: [
+                                    (44 | 0x80000000) >>> 0,
+                                    (0 | 0x80000000) >>> 0,
+                                    (0 | 0x80000000) >>> 0,
+                                    0,
+                                    5,
                                 ],
-                                outputs: [
-                                    {
-                                        address:
-                                            'bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3',
-                                        amount: '10000',
-                                        script_type: 'PAYTOADDRESS',
-                                    },
-                                ],
-                                push: false,
+                                prev_hash:
+                                    '50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d',
+                                prev_index: 1,
+                                amount: '10000',
                             },
-                            'https://httpbin.org/get',
-                        ),
-                    );
+                        ],
+                        outputs: [
+                            {
+                                address:
+                                    'bc1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qccfmv3',
+                                amount: '10000',
+                                script_type: 'PAYTOADDRESS',
+                            },
+                        ],
+                        push: false,
+                    });
                 }}
             >
                 signTransaction test
             </Button>
             <Button
                 onPress={() => {
-                    Linking.openURL(
-                        buildURL(
-                            'signMessage',
-                            {
-                                path: "m/49'/0'/0'/0/0",
-                                coin: 'btc',
-                                message: 'test',
-                            },
-                            'https://httpbin.org/get',
-                        ),
-                    );
+                    TrezorConnectDeeplink.signMessage({
+                        path: "m/49'/0'/0'/0/0",
+                        coin: 'btc',
+                        message: 'test',
+                    });
                 }}
             >
                 signMessage test
             </Button>
             <Button
                 onPress={() => {
-                    Linking.openURL(
-                        buildURL(
-                            'signMessage',
-                            {
-                                path: 'blabla',
-                                coin: 'blabla',
-                            },
-                            'https://httpbin.org/get',
-                        ),
-                    );
+                    // @ts-expect-error
+                    TrezorConnectDeeplink.signMessage({
+                        path: 'blabla',
+                        coin: 'blabla',
+                    });
                 }}
             >
                 signMessage invalid test
