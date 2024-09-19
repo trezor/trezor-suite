@@ -26,6 +26,8 @@ export interface ConnectSettingsPublic {
     coreMode?: 'auto' | 'popup' | 'iframe';
     /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
     _extendWebextensionLifetime?: boolean;
+    deeplinkOpen?: (url: string) => void;
+    deeplinkCallbackUrl?: string;
 }
 
 // internal part, not to be accepted from .init()
