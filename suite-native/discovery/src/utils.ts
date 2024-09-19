@@ -1,6 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
-import { AccountType, Network } from '@suite-common/wallet-config';
+import { Network, normalizeNetworkAccounts } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
 export const getNetworksWithUnfinishedDiscovery = (
@@ -8,11 +8,11 @@ export const getNetworksWithUnfinishedDiscovery = (
     accounts: Account[],
     accountsLimit: number,
 ) =>
-    enabledNetworks.filter(network => {
+    enabledNetworks.filter(network =>
         // if there is no account for this network -> we should have at least one account even if added via Add Coin
         // or if there is at least one visible account of this type, we should have at least one hidden account so adding funds outside of this app is detected and account shown
         // the whole network is considered undiscovered if this is found for either 'normal' account, or any of the other accountTypes
-        const isUndiscoveredAccountType = (accountType: AccountType) => {
+        normalizeNetworkAccounts(network).some(({ accountType }) => {
             const networkAccountsOfType = accounts.filter(
                 account => account.symbol === network.symbol && account.accountType === accountType,
             );
@@ -22,13 +22,5 @@ export const getNetworksWithUnfinishedDiscovery = (
                 (networkAccountsOfType.length < accountsLimit &&
                     networkAccountsOfType.every(account => account.visible))
             );
-        };
-
-        if (isUndiscoveredAccountType('normal')) return true;
-
-        Object.values(network.accountTypes).forEach(({ accountType }) => {
-            if (isUndiscoveredAccountType(accountType)) return true;
-        });
-
-        return false;
-    });
+        }),
+    );

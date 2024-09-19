@@ -5,7 +5,12 @@ import { A, pipe } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
-import { AccountType, NetworkSymbol, networks } from '@suite-common/wallet-config';
+import {
+    AccountType,
+    NetworkSymbol,
+    networks,
+    NORMAL_ACCOUNT_TYPE,
+} from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
@@ -18,7 +23,6 @@ import {
 } from '@suite-common/wallet-core';
 import {
     addAndDiscoverNetworkAccountThunk,
-    NORMAL_ACCOUNT_TYPE,
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';

@@ -13,9 +13,10 @@ import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     networksCompatibility,
     NetworkSymbol,
-    NetworkAccount,
     Network,
     networksCollection,
+    normalizeNetworkAccounts,
+    NormalizedNetworkAccount,
 } from '@suite-common/wallet-config';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
@@ -42,6 +43,9 @@ type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
 export const LIMIT = 10;
 
+/**
+ * Filter collection of activated networks to only include those supported by device & suite
+ */
 export const filterUnavailableNetworks = (
     enabledNetworks: NetworkSymbol[],
     device?: TrezorDevice,
@@ -64,13 +68,16 @@ export const filterUnavailableNetworks = (
         );
     });
 
+/**
+ * For a given network, return a collection of normalized accounts (incl. 'normal'), excluding types unsupported by device or suite
+ */
 export const filterUnavailableAccountTypes = (
     network: Network,
     device?: TrezorDevice,
-): NetworkAccount[] =>
-    Object.values(network.accountTypes).filter(
+): NormalizedNetworkAccount[] =>
+    normalizeNetworkAccounts(network).filter(
         networkAccount =>
-            isTrezorConnectBackendType(networkAccount.backendType) && // exclude accounts with unsupported backend type
+            isTrezorConnectBackendType(networkAccount.backendType) && // exclude accounts with unsupported backend type, such as coinjoin
             !device?.unavailableCapabilities?.[networkAccount.accountType!], // exclude by account types (ex: taproot)
     );
 
