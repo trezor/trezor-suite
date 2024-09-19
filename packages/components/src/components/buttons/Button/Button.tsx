@@ -30,15 +30,15 @@ export const allowedButtonFrameProps = [
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
 type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
+    $borderRadius?: typeof borders.radii.sm | typeof borders.radii.full; // Do not allow all, we want consistency
     $elevation: Elevation;
-    $variant: ButtonVariant;
-    $size: ButtonSize;
-    $iconAlignment?: IconAlignment;
     $hasIcon?: boolean;
+    $iconAlignment?: IconAlignment;
     $isFullWidth?: boolean;
     $isSubtle: boolean;
+    $size: ButtonSize;
+    $variant: ButtonVariant;
     as?: 'a' | 'button';
-    $borderRadius?: typeof borders.radii.sm | typeof borders.radii.full; // Do not allow all, we want consistency
 };
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
@@ -109,53 +109,67 @@ type ExclusiveAProps =
 export type ButtonProps = SelectedHTMLButtonProps &
     AllowedFrameProps &
     ExclusiveAProps & {
-        variant?: ButtonVariant;
+        'data-testid'?: string;
+        children: React.ReactNode;
+        className?: string;
+        icon?: IconName | React.ReactElement;
+        iconAlignment?: IconAlignment;
+        iconSize?: number;
+        isDisabled?: boolean;
+        isFullWidth?: boolean;
+        isLoading?: boolean;
         isSubtle?: boolean;
         size?: ButtonSize;
-        isDisabled?: boolean;
-        isLoading?: boolean;
-        isFullWidth?: boolean;
-        icon?: IconName;
-        iconSize?: number;
-        iconAlignment?: IconAlignment;
-        children: React.ReactNode;
-        title?: string;
-        className?: string;
-        'data-testid'?: string;
         textWrap?: boolean;
+        title?: string;
+        variant?: ButtonVariant;
     };
 
 export const Button = ({
-    variant = 'primary',
-    size = 'medium',
-    isDisabled = false,
-    isLoading = false,
-    isFullWidth = false,
-    isSubtle = false,
-    icon,
-    iconSize,
-    iconAlignment = 'left',
-    type = 'button',
+    'data-testid': dataTestId,
     children,
-    target,
+    className,
     href,
+    icon,
+    iconAlignment = 'left',
+    iconSize,
+    isDisabled = false,
+    isFullWidth = false,
+    isLoading = false,
+    isSubtle = false,
+    onClick,
+    onMouseLeave,
+    onMouseOver,
+    size = 'medium',
+    tabIndex,
+    target,
     textWrap = true,
+    title,
+    type = 'button',
+    variant = 'primary',
     ...rest
 }: ButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
     const theme = useTheme();
 
-    const IconComponent = icon ? (
-        <Icon
-            name={icon}
-            size={iconSize || getIconSize(size)}
-            color={getIconColor({ variant, isDisabled, theme, isSubtle })}
-        />
-    ) : null;
+    const getIcon = () => {
+        if (!icon) return null;
+        if (typeof icon === 'string') {
+            return (
+                <Icon
+                    name={icon}
+                    size={iconSize || getIconSize(size)}
+                    color={getIconColor({ variant, isDisabled, theme, isSubtle })}
+                />
+            );
+        }
 
-    const Loader = (
-        <Spinner size={getIconSize(size)} data-testid={`${rest['data-testid']}/spinner`} />
-    );
+        return icon;
+    };
+
+    const IconComponent = getIcon();
+
+    const Loader = <Spinner size={getIconSize(size)} data-testid={`${dataTestId}/spinner`} />;
 
     const isLink = href !== undefined;
 
@@ -163,20 +177,25 @@ export const Button = ({
 
     return (
         <ButtonContainer
-            as={isLink ? 'a' : 'button'}
-            target={isLink ? target || '_blank' : undefined}
-            href={href}
-            $variant={variant}
-            $size={size}
+            $elevation={elevation}
+            $hasIcon={!!icon || isLoading}
             $iconAlignment={iconAlignment}
-            disabled={isDisabled || isLoading}
             $isFullWidth={isFullWidth}
             $isSubtle={isSubtle}
+            $size={size}
+            $variant={variant}
+            as={isLink ? 'a' : 'button'}
+            className={className}
+            data-testid={dataTestId}
+            disabled={isDisabled || isLoading}
+            href={href}
+            onClick={isDisabled ? undefined : onClick}
+            onMouseLeave={onMouseLeave}
+            onMouseOver={onMouseOver}
+            tabIndex={tabIndex}
+            target={isLink ? target || '_blank' : undefined}
+            title={title}
             type={type}
-            $hasIcon={!!icon || isLoading}
-            $elevation={elevation}
-            {...rest}
-            onClick={isDisabled ? undefined : rest?.onClick}
             {...frameProps}
         >
             {!isLoading && icon && IconComponent}
