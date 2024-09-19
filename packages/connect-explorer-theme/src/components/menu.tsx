@@ -326,6 +326,7 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                     title: item.title,
                     type: item.type,
                     route: item.route,
+                    icon: item.kind === 'MdxPage' && item.frontMatter?.icon,
                 })}
                 <ArrowRightIcon
                     className="nx-h-[18px] nx-min-w-[18px] nx-rounded-sm nx-p-0.5 hover:nx-bg-gray-800/5 dark:hover:nx-bg-gray-100/5"
