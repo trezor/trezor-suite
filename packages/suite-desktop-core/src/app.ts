@@ -5,7 +5,7 @@ import { app, BrowserWindow } from 'electron';
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { createTimeoutPromise } from '@trezor/utils';
+import { createDeferred, createTimeoutPromise } from '@trezor/utils';
 import { isMacOs } from '@trezor/env-utils';
 
 import { ipcMain } from './typed-electron';
@@ -81,6 +81,7 @@ const init = async () => {
     const logger = new Logger();
 
     global.logger = logger;
+    logger.level = isDevEnv ? 'debug' : 'info';
 
     logger.info('main', `Application starting`);
 
@@ -140,14 +141,18 @@ const init = async () => {
     if (daemon) {
         logger.info('main', 'App is hidden, starting bridge only');
         app.dock?.hide(); // hide dock icon on macOS
-        app.once('second-instance', () => {
+        const waitForFullStart = createDeferred<void>();
+        const handleFullStart = () => {
             // Initialize the UI when the second instance is opened
             logger.warn('main', 'Second instance detected, initializing UI');
             app.dock?.show();
-            initUi({ store, daemon, quitBridgeModule });
-        });
-
-        return;
+            waitForFullStart.resolve();
+        };
+        app.on('second-instance', handleFullStart);
+        app.on('activate', handleFullStart);
+        await waitForFullStart.promise;
+        app.off('second-instance', handleFullStart);
+        app.off('activate', handleFullStart);
     }
 
     await initUi({ store, daemon, quitBridgeModule });
