@@ -4,6 +4,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Card, Text } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { QRCode } from './QRCode';
 import { XpubOverlayWarning } from './XpubQRCodeWarningOverlay';
@@ -27,9 +28,11 @@ const xpubCardTextContainerStyle = prepareNativeStyle(utils => ({
 export const XpubQRCodeCard = ({
     isXpubShown,
     qrCodeData,
+    network,
 }: {
     isXpubShown: boolean;
     qrCodeData: string;
+    network: NetworkSymbol;
 }) => {
     const { applyStyle } = useNativeStyles();
     const copyToClipboard = useCopyToClipboard();
@@ -43,7 +46,7 @@ export const XpubQRCodeCard = ({
         <Card style={applyStyle(xpubCardStyle)}>
             {isXpubShown ? (
                 <>
-                    <QRCode data={qrCodeData} />
+                    <QRCode data={qrCodeData} network={network} />
                     <Pressable
                         onLongPress={handleCopy}
                         style={applyStyle(xpubCardTextContainerStyle)}

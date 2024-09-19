@@ -71,7 +71,11 @@ export const XpubQRCodeBottomSheet = ({
     return (
         <BottomSheet title={sheetTitle} isVisible={isVisible} onClose={onClose}>
             <VStack spacing="large">
-                <XpubQRCodeCard isXpubShown={isXpubShown} qrCodeData={qrCodeData} />
+                <XpubQRCodeCard
+                    isXpubShown={isXpubShown}
+                    qrCodeData={qrCodeData}
+                    network={networkSymbol}
+                />
 
                 <Box style={applyStyle(buttonStyle)}>
                     {isXpubShown ? (
