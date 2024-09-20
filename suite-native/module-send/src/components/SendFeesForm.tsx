@@ -11,7 +11,12 @@ import {
     GeneralPrecomposedLevels,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    FeesRootState,
+    selectAccountByKey,
+    selectNetworkFeeLevelFeePerUnit,
+} from '@suite-common/wallet-core';
 import {
     SendStackParamList,
     SendStackRoutes,
@@ -48,16 +53,28 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
     const { handleSubmit, control } = form;
 
     const selectedFeeLevel = useWatch({ control, name: 'feeLevel' });
-    const feeLevelTransaction = feeLevels[selectedFeeLevel] as PrecomposedTransactionFinal;
+    const selectedFeeLevelTransaction = feeLevels[selectedFeeLevel] as PrecomposedTransactionFinal;
+
+    const feePerUnit = useSelector((state: FeesRootState) =>
+        selectNetworkFeeLevelFeePerUnit(state, selectedFeeLevel, account?.symbol),
+    );
 
     if (!account) return;
 
     const handleNavigateToReviewScreen = handleSubmit(() => {
         navigation.navigate(SendStackRoutes.SendAddressReview, {
             accountKey,
-            transaction: feeLevelTransaction,
+            transaction: selectedFeeLevelTransaction,
         });
     });
+
+    const normalFee = feeLevels.normal as PrecomposedTransactionFinal; // user is not allowed to enter this screen if normal fee is not final
+    const transactionBytes = normalFee.bytes as number;
+
+    // If trezor-connect was not able to compose the fee level, we have calculate total amount locally.
+    const mockedFee = transactionBytes * Number(feePerUnit);
+    const mockedTotalAmount = mockedFee + (Number(normalFee.totalSpent) - Number(normalFee.fee));
+    const isSubmittable = selectedFeeLevelTransaction.type === 'final';
 
     return (
         <Form form={form}>
@@ -74,8 +91,9 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
                     <FeeOptionsList feeLevels={feeLevels} networkSymbol={account.symbol} />
                 </VStack>
                 <FeesFooter
+                    isSubmittable={isSubmittable}
                     onSubmit={handleNavigateToReviewScreen}
-                    totalAmount={feeLevelTransaction.totalSpent}
+                    totalAmount={selectedFeeLevelTransaction.totalSpent ?? mockedTotalAmount}
                     networkSymbol={account.symbol}
                 />
             </Box>
