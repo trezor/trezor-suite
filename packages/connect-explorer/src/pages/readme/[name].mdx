@@ -4,7 +4,7 @@ import rehypeSectionize from '@hbsnow/rehype-sectionize';
 import remarkGemoji from 'remark-gemoji';
 
 export const getStaticPaths = () => {
-    const packages = ["connect", "connect-web", "connect-webextension"]
+    const packages = ["connect", "connect-web", "connect-webextension", "connect-mobile"]
     const paths = packages.map((name) => ({
         params: {
             name,

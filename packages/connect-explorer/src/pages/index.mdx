@@ -19,6 +19,7 @@ import {
 import IconNode from '../components/icons/IconNode';
 import IconWeb from '../components/icons/IconWeb';
 import IconExtension from '../components/icons/IconExtension';
+import IconMobile from '../components/icons/IconMobile';
 import ZoomableIllustration from '../components/ZoomableIllustration';
 
 export const SectionCard = ({ children }) => (
@@ -106,10 +107,11 @@ export const ExampleHeading = styled.h3`
 
     Depending on your environment you need to chose the right package and follow the particular guide:
 
-    <Cards>
+    <Cards num={2}>
         <Card icon={<IconNode />} title="Node.js" href="#nodejs" />
         <Card icon={<IconWeb />} title="Web" href="#web" />
         <Card icon={<IconExtension />} title="Web extension" href="#web-extension" />
+        <Card icon={<IconMobile />} title="Mobile" href="#mobile" />
     </Cards>
 
     <CollapsibleBox heading="Still unsure?" margin={{ top: spacings.md }}>
@@ -481,6 +483,138 @@ export const ExampleHeading = styled.h3`
                 To ensure your extension is displayed with its name rather than its ID, you need to open a Pull Request to include it in the `knownHosts` section of [our configuration file](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/data/config.ts#L17).
 
                 If you need more customization, refer to [init method documentation](./methods/other/init)
+
+                {<h3>How to use?</h3>}
+
+                Here is an example of how to get the device's public key:
+
+                ```javascript
+                TrezorConnect.getPublicKey({
+                    path: "m/44'/0'/0'/0/0",
+                    showOnTrezor: true,
+                });
+                ```
+
+                More methods with detailed explanation can be found on the left under the 'Coin methods' section. You can also try the Method Testing Tool, where you can try interacting with the device by yourself.
+            </Steps>
+        </CollapsibleBox>
+
+</SectionCard>
+
+<HiddenNextraHeading>
+
+### Mobile
+
+</HiddenNextraHeading>
+<SectionCard>
+    <SdkHeading className='nx-text-slate-900 dark:nx-text-slate-100'>
+        <IconMobile />
+        <SdkName>Mobile</SdkName>
+        <SdkTag>Using deep linking</SdkTag>
+        <Link href="/readme/connect-mobile" passHref legacyBehavior>
+            <Button
+                variant="tertiary"
+                size="small"
+                icon="bookOpenText"
+                target="_self"
+                href="#">
+                README
+            </Button>
+        </Link>
+        <Button
+            as="a"
+            variant="tertiary"
+            size="small"
+            icon="githubLogoAlt"
+            href="https://github.com/trezor/trezor-suite/tree/develop/packages/connect-mobile"
+            target="_blank">
+            View on Github
+        </Button>
+    </SdkHeading>
+
+    <ZoomableIllustration src="/images/schema-connect-deeplink.svg" $darkMode alt="connect schema when used in deeplink" />
+
+    <SdkContainer>
+        <SdkDescription>
+            #### About
+
+            `@trezor/connect-mobile` is a package that allows you to communicate with Trezor devices from your mobile app.
+            This package is somewhat different from the other SDKs, as it doesn't provide a direct API to the device. Instead, it uses deep linking to open the Trezor Suite app and communicate with the device.
+
+            #### Use deep linking without SDK
+
+            If you are not able to use the SDK, for example on non-supported platforms, you can still use deep linking to open the Trezor Suite app and communicate with the device.
+
+            This can be done by implementing the following specification.
+
+            <Link href="/details/deeplinking" passHref legacyBehavior>
+                <Button
+                    variant="tertiary"
+                    className="nx-mt-4 nx-mb-8"
+                    size="small"
+                    icon="arrowRight"
+                    iconAlignment="right"
+                    target="_self"
+                    href="#">
+                    Deep linking specification
+                </Button>
+            </Link>
+
+        </SdkDescription>
+        <ExamplesAside>
+            <ExampleHeading>Examples:</ExampleHeading>
+            - [Expo App example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/mobile-expo)
+        </ExamplesAside>
+    </SdkContainer>
+
+        <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
+            <Steps>
+                {<h3>Installation of the package</h3>}
+
+                Simply install the package using your preferred package manager:
+
+                ```bash
+                npm install @trezor/connect-mobile
+                # or
+                yarn add @trezor/connect-mobile
+                ```
+
+                {<h3>Initialization of the API</h3>}
+
+                ```javascript
+                import * as Linking from 'expo-linking';
+
+                TrezorConnect.init({
+                    manifest: {
+                        email: 'developer@xyz.com',
+                        appUrl: 'http://your.application.com',
+                    },
+                    deeplinkOpen: url => {
+                        Linking.openURL(url);
+                    },
+                    deeplinkCallbackUrl: Linking.createURL('/connect'),
+                });
+                ```
+
+                Trezor Connect Manifest requires that you, as a Trezor Connect integrator, share your email and application URL with us. This provides us with the ability to reach you in case of any required maintenance. This subscription is mandatory.
+
+                The deeplink SDK needs two extra parameters: `deeplinkOpen` and `deeplinkCallbackUrl`. The `deeplinkOpen` function is used to open the Trezor Suite app, and the `deeplinkCallbackUrl` is the URL that the app will redirect to after the operation is complete.
+
+                In this example, we are using the `Linking` API from Expo to open the Trezor Suite app, however this may be different depending on your mobile app's environment.
+
+                {<h3>Handling callbacks</h3>}
+
+                The app needs to pass results from the callback URL back to the SDK. This can be done by listening to the URL and passing the data to the SDK using the `handleDeeplink` method.
+
+                ```javascript
+                useEffect(() => {
+                    const subscription = Linking.addEventListener('url', event => {
+                        TrezorConnect.handleDeeplink(event.url);
+                    });
+
+                    return () => subscription?.remove();
+                }, []);
+                ```
 
                 {<h3>How to use?</h3>}
 
