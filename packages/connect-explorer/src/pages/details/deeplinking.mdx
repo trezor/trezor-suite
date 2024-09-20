@@ -1,0 +1,66 @@
+import { Callout } from 'nextra/components';
+
+# Deep linking specification
+
+To support connecting to Trezor devices from 3rd party apps on mobile devices, Trezor Suite Lite provides a communication interface via deep linking.
+
+<Callout type="info">
+    **This feature is still in beta and is subject to change. It's currently available only in
+    development builds of Trezor Suite Lite.**
+</Callout>
+
+## Base URL
+
+The base URL for deep linking is different depending on the environment.
+
+| Environment | Base URL                                               |
+| ----------- | ------------------------------------------------------ |
+| Production  | currently unavailable                                  |
+| Development | `https://dev.suite.sldev.cz/connect/develop/deeplink/` |
+| Local       | `trezorsuitelite://connect`                            |
+
+## Query parameters
+
+The method call is specified using the query parameters.
+
+| Parameter  | Type        | Required | Description                                              |
+| ---------- | ----------- | -------- | -------------------------------------------------------- |
+| `method`   | string      | yes      | The name of the Connect method to call (eg. getAddress). |
+| `params`   | JSON object | yes      | The parameters for the method call encoded as JSON.      |
+| `callback` | string      | yes      | The URL to redirect to after the method call is made.    |
+
+## Callback
+
+To receive the result of the method call, the app must specify a callback URL. The callback URL is called with the result of the method call.
+
+The following query parameters are passed in the callback URL:
+
+| Parameter  | Type        | Description                                                                 |
+| ---------- | ----------- | --------------------------------------------------------------------------- |
+| `id`       | integer     | ID of the call                                                              |
+| `response` | JSON object | Result of the method call, equivalent to the object returned by the method. |
+
+## Example
+
+Let's imagine we want to convert the following call to a deep link:
+
+```
+const address = await TrezorConnect.getAddress({
+    coin: 'btc',
+    path: "m/44'/0'/0'/0/0",
+});
+```
+
+The parameters would be:
+
+-   **method**: `getAddress`
+-   **params**: `{"coin":"btc","path":"m/44'/0'/0'/0/0"}`
+-   **callback**: `https://httpbin.org/get` (as an example)
+
+The encoded deep link URL would then be:
+
+```
+trezorsuitelite://connect?method=getAddress&params=%7B%22coin%22%3A%22btc%22%2C%22path%22%3A%22m%2F44%27%2F0%27%2F0%27%2F0%2F0%22%7D&callback=https%3A%2F%2Fhttpbin.org%2Fget
+```
+
+When the user returns to the app, the callback URL is called with the result of the method call.
