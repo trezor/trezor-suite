@@ -122,3 +122,15 @@ export const selectIsFeatureDisabled = (
 
     return typeof featureFlag === 'boolean' ? !featureFlag : defaultValue ?? false;
 };
+
+export const selectAllValidMessages = memoize((state: MessageSystemRootState) => {
+    const { validMessages, config } = state.messageSystem;
+    const allValidMessages = [
+        ...validMessages.banner,
+        ...validMessages.feature,
+        ...validMessages.modal,
+        ...validMessages.context,
+    ];
+
+    return config?.actions.map(a => a.message).filter(m => allValidMessages.includes(m.id)) || [];
+});
