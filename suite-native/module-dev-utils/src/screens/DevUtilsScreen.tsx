@@ -18,6 +18,7 @@ import { RenderingUtils } from '../components/RenderingUtils';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { TestnetsToggle } from '../components/TestnetsToggle';
 import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
+import { MessageSystemInfo } from '../components/MessageSystemInfo';
 
 export const DevUtilsScreen = ({
     navigation,
@@ -61,6 +62,7 @@ export const DevUtilsScreen = ({
                 <Card>
                     <TestnetsToggle />
                 </Card>
+                <MessageSystemInfo />
             </VStack>
         </Screen>
     );

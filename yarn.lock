@@ -10200,14 +10200,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-dev-utils@workspace:suite-native/module-dev-utils"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@sentry/react-native": "npm:5.33.0"
     "@suite-common/icons-deprecated": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/helpers": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/storage": "workspace:*"
