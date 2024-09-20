@@ -10,6 +10,7 @@
                 "EXPO_PUBLIC_ENVIRONMENT": "develop",
                 "EXPO_PUBLIC_CODESIGN_BUILD": "false"
             },
+            "channel": "develop",
             "autoIncrement": true,
             "ios": {
                 "distribution": "store"
