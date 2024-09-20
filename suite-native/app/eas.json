@@ -20,6 +20,16 @@
                 "resourceClass": "large"
             }
         },
+        "preview": {
+            "env": {
+                "EXPO_PUBLIC_ENVIRONMENT": "develop",
+                "EXPO_PUBLIC_CODESIGN_BUILD": "false"
+            },
+            "autoIncrement": true,
+            "developmentClient": true,
+            "credentialsSource": "remote",
+            "distribution": "internal"
+        },
         "production": {
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "production",
