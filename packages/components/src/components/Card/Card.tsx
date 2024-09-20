@@ -118,19 +118,33 @@ export type CardProps = AllowedFrameProps &
         forceElevation?: Elevation;
     };
 
-const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: PaddingType }>(
-    ({ children, forceElevation, paddingType, tabIndex, onClick, ...rest }, ref) => {
+const CardComponent = forwardRef<HTMLDivElement, CardProps & { $paddingType: PaddingType }>(
+    (
+        {
+            children,
+            forceElevation,
+            $paddingType,
+            onClick,
+            onMouseEnter,
+            onMouseLeave,
+            className,
+            tabIndex,
+        },
+        ref,
+    ) => {
         const { elevation } = useElevation(forceElevation);
 
         return (
             <CardContainer
                 ref={ref}
                 $elevation={elevation}
-                $paddingType={paddingType}
+                $paddingType={$paddingType}
                 $isClickable={Boolean(onClick)}
                 onClick={onClick}
+                onMouseEnter={onMouseEnter}
+                className={className}
+                onMouseLeave={onMouseLeave}
                 {...withAccessibilityProps({ tabIndex })}
-                {...rest}
             >
                 <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
             </CardContainer>
@@ -139,20 +153,38 @@ const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: Padd
 );
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ paddingType = 'normal', label, ...rest }, ref) => {
-        const props = {
-            paddingType,
-            ...rest,
+    (
+        {
+            paddingType = 'normal',
+            label,
+            onClick,
+            onMouseEnter,
+            onMouseLeave,
+            className,
+            tabIndex,
+            children,
+            ...rest
+        },
+        ref,
+    ) => {
+        const commonProps = {
+            onClick,
+            onMouseEnter,
+            onMouseLeave,
+            className,
+            tabIndex,
+            $paddingType: paddingType,
+            children,
         };
         const frameProps = pickAndPrepareFrameProps(rest, allowedCardFrameProps);
 
         return label ? (
             <Container {...frameProps}>
                 <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
-                <CardComponent {...props} ref={ref} />
+                <CardComponent {...commonProps} ref={ref} />
             </Container>
         ) : (
-            <CardComponent {...props} {...frameProps} ref={ref} />
+            <CardComponent {...commonProps} {...frameProps} ref={ref} />
         );
     },
 );
