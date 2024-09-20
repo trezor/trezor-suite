@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { Keyboard } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -159,6 +160,9 @@ export const SendOutputsScreen = ({
     if (!account || !networkFeeInfo) return null;
 
     const handleNavigateToReviewScreen = handleSubmit(async values => {
+        // Keyboard has to be dismissed here before navigating, so it's animation is not interfering with the animations on the FeesScreen.
+        Keyboard.dismiss();
+
         const network = getNetworkCompatible(account?.symbol);
 
         if (!network) return;

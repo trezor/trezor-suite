@@ -1,8 +1,8 @@
 import { D, pipe } from '@mobily/ts-belt';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
-import { Card, VStack } from '@suite-native/atoms';
+import { GeneralPrecomposedLevels, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { VStack } from '@suite-native/atoms';
 
 import { FeeOption } from './FeeOption';
 import { NativeSupportedFeeLevel } from '../types';
@@ -17,22 +17,24 @@ export const FeeOptionsList = ({
     // Remove custom fee level from the list. It is not supported in the first version of the send flow.
     const predefinedFeeLevels = pipe(
         feeLevels,
-        D.filter(value => value.type === 'final'), // for now are the invalid fee levels hidden. Will be revisited in issue: https://github.com/trezor/trezor-suite/issues/14240
         D.filterWithKey(key => key !== 'custom'),
     );
 
+    // User is not able enter the fees screen if the normal (in final state) fee is not present.
+    const normalLevel = predefinedFeeLevels.normal as PrecomposedTransactionFinal;
+    const transactionBytes = normalLevel.bytes;
+
     return (
-        <Card>
-            <VStack spacing="extraLarge">
-                {Object.entries(predefinedFeeLevels).map(([feeKey, feeLevel]) => (
-                    <FeeOption
-                        key={feeKey}
-                        feeKey={feeKey as NativeSupportedFeeLevel}
-                        feeLevel={feeLevel}
-                        networkSymbol={networkSymbol}
-                    />
-                ))}
-            </VStack>
-        </Card>
+        <VStack spacing={12}>
+            {Object.entries(predefinedFeeLevels).map(([feeKey, feeLevel]) => (
+                <FeeOption
+                    key={feeKey}
+                    feeKey={feeKey as NativeSupportedFeeLevel}
+                    feeLevel={feeLevel}
+                    networkSymbol={networkSymbol}
+                    transactionBytes={transactionBytes}
+                />
+            ))}
+        </VStack>
     );
 };

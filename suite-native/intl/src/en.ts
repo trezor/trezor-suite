@@ -869,19 +869,11 @@ export const en = {
                 body: 'Fees are paid directly to network miners for processing your transactions.',
             },
             levels: {
-                low: {
-                    label: 'Low',
-                    timeEstimate: '~ 1 hour',
-                },
-                medium: {
-                    label: 'Medium',
-                    timeEstimate: '~ 20 minutes',
-                },
-                high: {
-                    label: 'High',
-                    timeEstimate: '~ 10 minutes',
-                },
+                low: 'Low',
+                medium: 'Medium',
+                high: 'High',
             },
+            error: 'You don’t have enough balance to use this fee.',
             totalAmount: 'Total amount',
             submitButton: 'Review and sign',
         },
