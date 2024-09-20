@@ -69,6 +69,10 @@ You can override ENV variables locally using `.env.development.local` (or `.env.
 
 > You can use `EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED=true` in `.env.development.local` to debug analytics locally.
 
+## Native changes - bumping runtimeVersion
+
+Whenever you do a change in a native code (updating native dependency and so on), you have to bump `runtimeVersion` in `app.config.ts` file manually so EAS knows that it has to prepare new development build. See [Runtime Versions Expo Docs](https://docs.expo.dev/distribution/runtime-versions/). Hopefully it's just a temporary situation until [fingerprint policy](https://docs.expo.dev/eas-update/runtime-versions/#fingerprint-runtime-version-policy) is finalized. Fingerprint policy is not working well with development builds yet, waiting for SDK 52.
+
 ## Troubleshooting
 
 1. For any issues with the build, try to clean the project and rebuild it:

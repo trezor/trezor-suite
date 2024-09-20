@@ -169,16 +169,17 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: {
-            policy: 'fingerprint',
-        },
-        ...(buildType === 'develop'
-            ? {
+        runtimeVersion: '9',
+        ...(buildType === 'production'
+            ? {}
+            : {
                   updates: {
                       url: `https://u.expo.dev/${projectId}`,
+                      requestHeaders: {
+                          'expo-channel-name': buildType,
+                      },
                   },
-              }
-            : {}),
+              }),
         orientation: 'portrait',
         splash: {
             image: './assets/splash_icon.png',
