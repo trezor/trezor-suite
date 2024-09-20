@@ -1,0 +1,68 @@
+name: "[Build] suite-native preview"
+
+on:
+  push:
+    # push develop(default) branch is necessary for this action to update its fingerprint database
+    branches: [develop]
+  pull_request:
+    paths:
+      - "suite-native/**"
+      - "packages/react-native-usb/**"
+      - "packages/transport-native/**"
+      - "yarn.lock"
+      # list of paths is not complete, but it's always possible to dispatch manually
+  workflow_dispatch:
+
+jobs:
+  update:
+    if: github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private'
+    name: EAS Update
+    runs-on: ubuntu-latest
+    concurrency: fingerprint-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      EXPO_PUBLIC_ENVIRONMENT: preview
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN_DEVELOP }}
+      - name: Install libs
+        run: yarn workspaces focus @suite-native/app
+
+      - name: Check fingerprint
+        id: fingerprint
+        uses: expo/expo-github-action/fingerprint@main
+        with:
+          working-directory: suite-native/app
+
+      # Temporary workaround waiting for this fix to be published https://github.com/expo/expo/pull/31453
+      - name: Set RUNTIME_VERSION
+        run: echo "RUNTIME_VERSION=${{ steps.fingerprint.outputs.current-fingerprint.hash }}" >> $GITHUB_ENV
+
+      - name: Create preview builds if fingerprint changed
+        uses: expo/expo-github-action/preview-build@main
+        with:
+          command: eas build --profile preview --platform all --non-interactive --no-wait
+          working-directory: suite-native/app
+
+      - name: Install deps and build libs
+        run: |
+          yarn install --immutable
+          yarn message-system-sign-config
+
+      - name: Create preview update
+        uses: expo/expo-github-action/preview@v8
+        with:
+          command: eas update --auto
+          working-directory: suite-native/app

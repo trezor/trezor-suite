@@ -52,6 +52,13 @@ const appSlugs = {
     production: 'trezor-suite',
 } as const satisfies Record<BuildType, string>;
 
+const appOwners = {
+    debug: 'trezorcompany-develop',
+    preview: 'trezorcompany-develop',
+    develop: 'trezorcompany-develop',
+    production: 'trezorcompany',
+} as const satisfies Record<BuildType, string>;
+
 const projectIds = {
     develop: '7deae0c5-11be-49ff-a872-f538223c57de',
     preview: '15998f8a-e75c-4b60-959d-6f68e5ff4936',
@@ -61,6 +68,7 @@ const projectIds = {
 
 const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
 const isCI = process.env.CI == 'true' || process.env.CI == '1';
+const runtimeVersion = process.env.RUNTIME_VERSION ?? 'fingerprint';
 
 if (isCI) {
     if (!process.env.EXPO_PUBLIC_ENVIRONMENT) {
@@ -70,6 +78,15 @@ if (isCI) {
         throw new Error('Missing SENTRY_AUTH_TOKEN env variable');
     }
 }
+
+// Temporary workaround waiting for this fix to be published https://github.com/expo/expo/pull/31453
+const getRuntimeVersion = () => {
+    if (runtimeVersion === 'fingerprint') {
+        return { policy: 'fingerprint' } as const;
+    }
+
+    return runtimeVersion;
+};
 
 const getPlugins = (): ExpoPlugins => {
     const plugins = [
@@ -160,11 +177,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         name,
         scheme: buildType === 'production' ? undefined : 'trezorsuitelite',
         slug: appSlugs[buildType],
-        owner: 'trezorcompany',
+        owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: {
-            policy: 'fingerprint',
-        },
+        runtimeVersion: getRuntimeVersion(),
         ...(['develop', 'preview'].includes(buildType)
             ? {
                   updates: {
