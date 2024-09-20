@@ -169,10 +169,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: {
-            policy: 'fingerprint',
-        },
-        ...(buildType === 'develop'
+        runtimeVersion: '2',
+        ...(['develop', 'preview'].includes(buildType)
             ? {
                   updates: {
                       url: `https://u.expo.dev/${projectId}`,

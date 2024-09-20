@@ -33,7 +33,6 @@
         "adhoc": {
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "preview",
-                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "true",
                 "EXPO_PUBLIC_CODESIGN_BUILD": "false"
             },
             "autoIncrement": true,
