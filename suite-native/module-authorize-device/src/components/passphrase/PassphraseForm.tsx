@@ -39,6 +39,7 @@ const SCROLL_DELAY = 100;
 type PassphraseFormProps = {
     onFocus?: () => void;
     inputLabel: string;
+    noPassphraseEnabled?: boolean;
 };
 
 const formStyle = prepareNativeStyle(utils => ({
@@ -57,7 +58,11 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => {
+export const PassphraseForm = ({
+    inputLabel,
+    onFocus,
+    noPassphraseEnabled,
+}: PassphraseFormProps) => {
     const dispatch = useDispatch();
     const scrollView = useScrollView();
     const formWrapperView = useRef<View>(null);
@@ -151,7 +156,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                                         horizontalMargin={FORM_CARD_PADDING}
                                     />
                                     <EnterPassphraseOnTrezorButton />
-                                    <NoPassphraseButton />
+                                    {noPassphraseEnabled && <NoPassphraseButton />}
                                 </VStack>
                             </Animated.View>
                         )}
