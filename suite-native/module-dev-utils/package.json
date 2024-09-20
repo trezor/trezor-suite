@@ -11,15 +11,18 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native-stack": "6.11.0",
         "@sentry/react-native": "5.31.1",
         "@suite-common/icons-deprecated": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
+        "@suite-native/helpers": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/storage": "workspace:*",

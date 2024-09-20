@@ -6,6 +6,9 @@
             "path": "../../suite-common/icons-deprecated"
         },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
@@ -15,6 +18,7 @@
         { "path": "../config" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
+        { "path": "../helpers" },
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../storage" },
