@@ -1,20 +1,21 @@
 import { useCallback, useEffect } from 'react';
 import { Dimensions } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
-import { Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { ConnectDeviceAnimation } from '@suite-native/device';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Screen } from '@suite-native/navigation';
 import {
+    authorizeDeviceThunk,
     selectIsDeviceAuthorized,
     selectIsDeviceConnected,
-    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
+import { Text, VStack } from '@suite-native/atoms';
+import { DevicesScanner, isBluetoothEnabled } from '@suite-native/bluetooth';
+import { ConnectDeviceAnimation } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { Translation } from '@suite-native/intl';
+import { Screen } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectDeviceScreenHeader } from '../../components/connect/ConnectDeviceScreenHeader';
 
@@ -74,7 +75,11 @@ export const ConnectAndUnlockDeviceScreen = () => {
                 <Text variant="titleMedium" textAlign="center">
                     <Translation id="moduleConnectDevice.connectAndUnlockScreen.title" />
                 </Text>
-                <ConnectDeviceAnimation style={applyStyle(animationStyle)} />
+                {isBluetoothEnabled ? (
+                    <DevicesScanner />
+                ) : (
+                    <ConnectDeviceAnimation style={applyStyle(animationStyle)} />
+                )}
             </VStack>
         </Screen>
     );

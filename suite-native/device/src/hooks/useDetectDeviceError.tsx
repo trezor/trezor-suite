@@ -215,6 +215,7 @@ export const useDetectDeviceError = () => {
 
     useEffect(() => {
         if (deviceError && !isUnacquiredDevice) {
+            // console.error(deviceError);
             Sentry.captureException(new Error(`device error - ${deviceError}`));
 
             showAlert({
