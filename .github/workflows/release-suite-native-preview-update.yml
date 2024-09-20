@@ -1,0 +1,49 @@
+name: "[Release] suite-native preview update"
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    paths:
+      - "suite-native/**"
+      - "suite-common/**"
+  workflow_dispatch:
+
+  jobs:
+    update:
+      if: github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private'
+    name: EAS Update
+    environment: develop-suite-native
+    runs-on: ubuntu-latest
+    concurrency: fingerprint-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install libs
+        run: yarn workspaces focus @suite-native/app
+
+      - name: Create preview builds if fingerprint changed
+        uses: expo/expo-github-action/preview-build@main
+        working-directory: suite-native/app
+        with:
+          command: eas build --profile preview --platform all --non-interactive --no-wait
+
+      - name: Create preview update
+        uses: expo/expo-github-action/preview@v8
+        working-directory: suite-native/app
+        with:
+          command: eas update --auto
