@@ -5,18 +5,20 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 
 import { suiteNativeVersion } from './package.json';
 
-type BuildType = 'debug' | 'develop' | 'production';
+type BuildType = 'debug' | 'preview' | 'develop' | 'production';
 
 type ExpoPlugins = ExpoConfig['plugins'];
 
 const bundleIdentifiers = {
     debug: 'io.trezor.suite.debug',
+    preview: 'io.trezor.suite.preview',
     develop: 'io.trezor.suite.develop',
     production: 'io.trezor.suite',
 } as const satisfies Record<BuildType, string>;
 
 const appIconsIos = {
     debug: './assets/debug/appIcon.png',
+    preview: './assets/preview/appIcon.png',
     develop: './assets/develop/appIcon.png',
     production: './assets/production/appIcon.png',
 } as const satisfies Record<BuildType, string>;
@@ -24,6 +26,9 @@ const appIconsIos = {
 const appIconsAndroid = {
     debug: {
         backgroundColor: '#2587A5',
+    },
+    preview: {
+        backgroundColor: '#E59D17',
     },
     develop: {
         backgroundColor: '#900B0B',
@@ -35,18 +40,21 @@ const appIconsAndroid = {
 
 const appNames = {
     debug: 'Trezor Suite Lite Debug',
+    preview: 'Trezor Suite Lite Preview',
     develop: 'Trezor Suite Lite Develop',
     production: 'Trezor Suite Lite',
 } as const satisfies Record<BuildType, string>;
 
 const appSlugs = {
     debug: 'trezor-suite-debug',
+    preview: 'trezor-suite-preview',
     develop: 'trezor-suite-develop',
     production: 'trezor-suite',
 } as const satisfies Record<BuildType, string>;
 
 const projectIds = {
-    develop: '3e4ea82b-6c9f-4cd3-8975-54bddda3ec2d',
+    develop: '7deae0c5-11be-49ff-a872-f538223c57de',
+    preview: '15998f8a-e75c-4b60-959d-6f68e5ff4936',
     production: 'b9bbf16c-3d44-4d58-8f0c-ba9e6265276a',
     debug: '',
 } as const satisfies Record<BuildType, string>;
@@ -157,7 +165,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         runtimeVersion: {
             policy: 'fingerprint',
         },
-        ...(buildType === 'develop'
+        ...(['develop', 'preview'].includes(buildType)
             ? {
                   updates: {
                       url: `https://u.expo.dev/${projectId}`,
