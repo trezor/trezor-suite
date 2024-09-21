@@ -6,7 +6,11 @@ import { useFormatters } from '@suite-common/formatters';
 import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { Badge, RoundedIcon } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+    FiatAmountFormatter,
+} from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     isCoinWithTokens,
@@ -19,6 +23,7 @@ import { AccountListItemBase } from './AccountListItemBase';
 
 export type AccountListItemProps = {
     account: Account;
+    fiatBalance?: string | null;
     hideTokens?: boolean;
 
     onPress?: TouchableOpacityProps['onPress'];
@@ -44,6 +49,7 @@ export const AccountListItem = ({
     onPress,
     disabled,
     hideTokens = false,
+    fiatBalance,
 }: AccountListItemProps) => {
     const { accountLabel } = account;
     const { NetworkNameFormatter } = useFormatters();
@@ -80,10 +86,18 @@ export const AccountListItem = ({
                 </>
             }
             mainValue={
-                <CryptoToFiatAmountFormatter
-                    value={account.availableBalance}
-                    network={account.symbol}
-                />
+                shouldShowTokenBadge && fiatBalance !== undefined ? (
+                    <FiatAmountFormatter
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        value={fiatBalance}
+                    />
+                ) : (
+                    <CryptoToFiatAmountFormatter
+                        value={account.availableBalance}
+                        network={account.symbol}
+                    />
+                )
             }
             secondaryValue={
                 <CryptoAmountFormatter

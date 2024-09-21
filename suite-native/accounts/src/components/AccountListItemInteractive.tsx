@@ -74,6 +74,7 @@ export const AccountListItemInteractive = ({
                     key={account.key}
                     account={account}
                     hideTokens={hideTokens}
+                    fiatBalance={fiatBalance}
                     onPress={() =>
                         onSelectAccount({
                             account,
