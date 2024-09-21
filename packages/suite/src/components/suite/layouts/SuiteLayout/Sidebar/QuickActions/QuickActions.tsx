@@ -6,6 +6,7 @@ import { CustomBackend } from './CustomBackend';
 import { DebugAndExperimental } from './DebugAndExperimental';
 import { HideBalances } from './HideBalances';
 import { UpdateStatusActionBarIcon } from './Update/UpdateStatusActionBarIcon';
+import { isCollapsedSidebar } from '../consts';
 
 const ActionsContainer = styled.div`
     display: flex;
@@ -14,6 +15,10 @@ const ActionsContainer = styled.div`
     border-top: 1px solid ${({ theme }) => theme.borderElevation1};
     padding: 0 ${spacingsPx.xs};
     align-items: stretch;
+
+    @container ${isCollapsedSidebar} {
+        flex-direction: column;
+    }
 
     > * {
         flex: 1;

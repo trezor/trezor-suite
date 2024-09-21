@@ -9,6 +9,7 @@ import { borders, spacingsPx } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
+import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
 import { Icon } from '@trezor/components';
 
 const CaretContainer = styled.div`
@@ -52,6 +53,7 @@ const InnerContainer = styled.div`
     align-items: center;
     cursor: pointer;
     gap: ${spacingsPx.md};
+    min-height: 42px;
 `;
 
 export const DeviceSelector = () => {
@@ -113,11 +115,13 @@ export const DeviceSelector = () => {
                 >
                     <SidebarDeviceStatus />
 
-                    {selectedDevice && selectedDevice.state && (
-                        <CaretContainer>
-                            <Icon size={20} name="caretCircleDown" />
-                        </CaretContainer>
-                    )}
+                    <ExpandedSidebarOnly>
+                        {selectedDevice && selectedDevice.state && (
+                            <CaretContainer>
+                                <Icon size={20} name="caretCircleDown" />
+                            </CaretContainer>
+                        )}
+                    </ExpandedSidebarOnly>
                 </InnerContainer>
             </ViewOnlyTooltip>
         </Wrapper>

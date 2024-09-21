@@ -5,12 +5,18 @@ import { NavigationItem, NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
 import { useSelector } from 'src/hooks/suite';
 import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
+import { isCollapsedSidebar } from './consts';
 
 const Nav = styled.nav`
     display: flex;
     flex-direction: column;
     gap: ${spacingsPx.xxs};
     margin: ${spacingsPx.xs};
+    align-items: stretch;
+
+    @container ${isCollapsedSidebar} {
+        align-items: center;
+    }
 `;
 
 const PasswordManagerNavItem = (props: NavigationItemProps) => {

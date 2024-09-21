@@ -35,6 +35,8 @@ export const ResizableBoxExamples: StoryObj = {
                 height={100}
                 maxWidth={400}
                 maxHeight={300}
+                disabledWidthInterval={[100, 200]}
+                disabledHeightInterval={[100, 200]}
             >
                 <Content $color="green">Resize me from bottom and/or right</Content>
             </ResizableBox>
@@ -46,6 +48,8 @@ export const ResizableBoxExamples: StoryObj = {
                     height={100}
                     maxWidth={400}
                     maxHeight={300}
+                    disabledWidthInterval={[100, 200]}
+                    disabledHeightInterval={[100, 200]}
                 >
                     <Content $color="salmon">Resize me from top and/or left</Content>
                 </ResizableBox>

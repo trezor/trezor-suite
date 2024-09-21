@@ -6,6 +6,8 @@ import { ZIndexValues, zIndices } from '@trezor/theme';
 type Direction = 'top' | 'left' | 'right' | 'bottom';
 type Directions = Array<Direction>;
 
+type DisabledInterval = [number, number];
+
 export type ResizableBoxProps = {
     children: React.ReactNode;
     directions: Directions;
@@ -21,6 +23,10 @@ export type ResizableBoxProps = {
     zIndex?: ZIndexValues;
     onWidthResizeEnd?: (width: number) => void;
     onHeightResizeEnd?: (height: number) => void;
+    onWidthResizeMove?: (width: number) => void;
+    onHeightResizeMove?: (height: number) => void;
+    disabledWidthInterval?: DisabledInterval;
+    disabledHeightInterval?: DisabledInterval;
 };
 
 type ResizerHandlersProps = {
@@ -41,7 +47,6 @@ type ResizersProps = ResizerHandlersProps & {
 const MINIMAL_BOX_SIZE = 1;
 const REACTIVE_AREA_WIDTH = 16;
 const BORDER_WIDTH = 4;
-
 const Resizers = styled.div<ResizersProps>(
     ({ $width, $minWidth, $maxWidth, $height, $minHeight, $maxHeight, $isResizing }) => `
         ${$width ? `width: ${$width}px;` : 'width: auto;'};
@@ -52,11 +57,7 @@ const Resizers = styled.div<ResizersProps>(
         ${$maxHeight && `max-height: ${$maxHeight}px;`};
         box-sizing: border-box;
         position: relative;
-        ${
-            $isResizing &&
-            `user-select: none;
-            -webkit-user-select: none;`
-        };
+        ${$isResizing && `user-select: none; -webkit-user-select: none; cursor: ${$isResizing ? 'ns-resize' : 'auto'};`};
     `,
 );
 
@@ -171,6 +172,36 @@ const getMinResult = (min: number, result: number) => (result > min ? result : m
 const getMaxResult = (max: number | undefined, result: number) =>
     max === undefined || result < max ? result : max;
 
+const isInDisabledInterval = (value: number, interval?: DisabledInterval) => {
+    return interval && value > interval[0] && value < interval[1];
+};
+
+const calculateDisabledHeightInterval = (
+    result: number,
+    disabledHeightInterval?: DisabledInterval,
+) => {
+    if (disabledHeightInterval && isInDisabledInterval(result, disabledHeightInterval)) {
+        return result < (disabledHeightInterval[0] + disabledHeightInterval[1]) / 2
+            ? disabledHeightInterval[0]
+            : disabledHeightInterval[1];
+    }
+
+    return result;
+};
+
+const calculateDisabledWidthInterval = (
+    result: number,
+    disabledWidthInterval?: DisabledInterval,
+) => {
+    if (disabledWidthInterval && isInDisabledInterval(result, disabledWidthInterval)) {
+        return result < (disabledWidthInterval[0] + disabledWidthInterval[1]) / 2
+            ? disabledWidthInterval[0]
+            : disabledWidthInterval[1];
+    }
+
+    return result;
+};
+
 export const ResizableBox = ({
     children,
     directions,
@@ -186,6 +217,10 @@ export const ResizableBox = ({
     zIndex = zIndices.draggableComponent,
     onWidthResizeEnd,
     onHeightResizeEnd,
+    onWidthResizeMove,
+    onHeightResizeMove,
+    disabledWidthInterval,
+    disabledHeightInterval,
 }: ResizableBoxProps) => {
     const resizableBoxRef = useRef<HTMLDivElement>(null);
 
@@ -213,6 +248,7 @@ export const ResizableBox = ({
 
             if (direction === 'top') {
                 result = ensureMinimalSize(-difY);
+                result = calculateDisabledHeightInterval(result, disabledHeightInterval);
 
                 if (difY < 0) {
                     setNewHeight(getMaxResult(maxHeight, result));
@@ -221,6 +257,7 @@ export const ResizableBox = ({
                 }
             } else if (direction === 'bottom') {
                 result = ensureMinimalSize(newHeight + difY);
+                result = calculateDisabledHeightInterval(result, disabledHeightInterval);
 
                 if (difY > 0) {
                     setNewHeight(getMaxResult(maxHeight, result));
@@ -229,6 +266,7 @@ export const ResizableBox = ({
                 }
             } else if (direction === 'left') {
                 result = ensureMinimalSize(-difX);
+                result = calculateDisabledWidthInterval(result, disabledWidthInterval);
 
                 if (difX < 0) {
                     setNewWidth(getMaxResult(maxWidth, result));
@@ -237,6 +275,7 @@ export const ResizableBox = ({
                 }
             } else if (direction === 'right') {
                 result = ensureMinimalSize(newWidth + difX);
+                result = calculateDisabledWidthInterval(result, disabledWidthInterval);
 
                 if (difX > 0) {
                     setNewWidth(getMaxResult(maxWidth, result));
@@ -247,7 +286,19 @@ export const ResizableBox = ({
                 return;
             }
         },
-        [direction, maxHeight, maxWidth, minHeight, minWidth, newHeight, newWidth, newX, newY],
+        [
+            newX,
+            newWidth,
+            newY,
+            newHeight,
+            direction,
+            disabledHeightInterval,
+            maxHeight,
+            minHeight,
+            disabledWidthInterval,
+            maxWidth,
+            minWidth,
+        ],
     );
 
     const startResizing = (direction: Direction) => {
@@ -271,25 +322,23 @@ export const ResizableBox = ({
         }
 
         document.onmousemove = event => {
-            if (isResizing && direction !== null && resizeCooldown() === true) {
+            if (isResizing && direction !== null && resizeCooldown()) {
                 resize(event);
+                onWidthResizeMove?.(newWidth);
+                onHeightResizeMove?.(newHeight);
             }
         };
 
         document.onmouseup = () => {
             if (isResizing) {
                 setIsResizing(false);
-                if (onWidthResizeEnd) {
-                    onWidthResizeEnd(newWidth);
-                }
-                if (onHeightResizeEnd) {
-                    onHeightResizeEnd(newHeight);
-                }
+                onWidthResizeEnd?.(newWidth);
+                onHeightResizeEnd?.(newHeight);
             }
         };
 
         window.onresize = () => {
-            if (resizeCooldown() === true) {
+            if (resizeCooldown()) {
                 if (updateHeightOnWindowResize) {
                     setNewHeight(getMaxResult(maxHeight, window.innerHeight));
                 }
@@ -307,7 +356,9 @@ export const ResizableBox = ({
         newHeight,
         newWidth,
         onHeightResizeEnd,
+        onHeightResizeMove,
         onWidthResizeEnd,
+        onWidthResizeMove,
         resizableBoxRef,
         resize,
         resizeCooldown,
