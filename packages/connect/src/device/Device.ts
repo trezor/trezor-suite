@@ -886,7 +886,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 type: 'unreadable',
                 path: this.originalDescriptor.path,
                 error: this.unreadableError, // provide error details
-                label: 'Unreadable device',
                 name: this.name,
             };
         }
@@ -894,13 +893,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return {
                 type: 'unacquired',
                 path: this.originalDescriptor.path,
-                label: 'Unacquired device',
                 name: this.name,
             };
         }
-        const defaultLabel = 'My Trezor';
-        const label =
-            this.features.label === '' || !this.features.label ? defaultLabel : this.features.label;
         let status: DeviceStatus = this.isUsedElsewhere() ? 'occupied' : 'available';
         if (this.featuresNeedsReload) status = 'used';
 
@@ -908,7 +903,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             type: 'acquired',
             id: this.features.device_id,
             path: this.originalDescriptor.path,
-            label,
             _state: this.getState(),
             state: this.getState()?.staticSessionId,
             status,
