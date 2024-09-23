@@ -1,6 +1,15 @@
 import { promiseAllSequence } from '../src/promiseAllSequence';
+import { mockTime, unmockTime } from './utils/mockTime';
 
 describe('promiseAllSequence', () => {
+    beforeEach(() => {
+        mockTime();
+    });
+
+    afterEach(() => {
+        unmockTime();
+    });
+
     it('all passed', async () => {
         const actionInnerProcess = jest.fn();
 

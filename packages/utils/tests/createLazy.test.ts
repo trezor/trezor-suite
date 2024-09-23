@@ -6,8 +6,7 @@ const returnDelayed =
         new Promise(resolve => setTimeout(() => resolve(value), ms));
 
 describe('createLazy', () => {
-    // setImmediate hacks below works only with legacyFakeTimers
-    jest.useFakeTimers({ legacyFakeTimers: true });
+    jest.useFakeTimers();
 
     it('basic', async () => {
         const initFn = jest.fn(returnDelayed(500));
@@ -20,7 +19,7 @@ describe('createLazy', () => {
         expect(lazy.get()).toEqual(undefined);
         expect(lazy.getPending()).not.toEqual(undefined);
 
-        setImmediate(() => jest.advanceTimersToNextTimer());
+        jest.advanceTimersToNextTimerAsync();
         const res = await initPromise;
 
         expect(res).toEqual('taxation');
@@ -34,7 +33,7 @@ describe('createLazy', () => {
         const disposeFn = jest.fn();
         const lazy = createLazy(initFn, disposeFn);
 
-        setImmediate(() => jest.advanceTimersToNextTimer());
+        jest.advanceTimersToNextTimerAsync();
         await lazy.getOrInit([42]);
 
         expect(lazy.get()).toEqual([42]);

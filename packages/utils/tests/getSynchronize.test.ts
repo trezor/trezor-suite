@@ -1,4 +1,5 @@
 import { getSynchronize } from '../src/getSynchronize';
+import { mockTime, unmockTime } from './utils/mockTime';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -24,6 +25,12 @@ describe('getSynchronize', () => {
     beforeEach(() => {
         state = 'init';
         synchronize = getSynchronize();
+
+        mockTime();
+    });
+
+    afterEach(() => {
+        unmockTime();
     });
 
     it('basic', async () => {
