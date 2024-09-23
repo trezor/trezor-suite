@@ -12,7 +12,7 @@ import {
     Card,
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectDevice, selectDeviceLabelOrName } from '@suite-common/wallet-core';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { QrCode } from 'src/components/suite/QrCode';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -54,6 +54,7 @@ export const ConfirmValueModal = ({
     const device = useSelector(selectDevice);
     const modalContext = useSelector(state => state.modal.context);
     const isActionAbortable = useSelector(selectIsActionAbortable);
+    const deviceLabel = useSelector(selectDeviceLabelOrName);
     const dispatch = useDispatch();
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
@@ -117,7 +118,7 @@ export const ConfirmValueModal = ({
                             <Paragraph typographyStyle="hint">
                                 <Translation
                                     id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"
-                                    values={{ deviceLabel: device?.label }}
+                                    values={{ deviceLabel }}
                                 />
                             </Paragraph>
                             <Paragraph typographyStyle="label">

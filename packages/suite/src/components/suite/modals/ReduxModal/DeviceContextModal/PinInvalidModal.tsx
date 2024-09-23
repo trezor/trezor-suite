@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 
+import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Paragraph } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
 import { DeviceConfirmImage, Modal, ModalProps } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const Divider = styled.div`
     margin-bottom: 10px;
@@ -17,17 +19,19 @@ interface PinInvalidModalProps extends ModalProps {
     device: TrezorDevice;
 }
 
-export const PinInvalidModal = ({ device, ...rest }: PinInvalidModalProps) => (
-    <StyledModal
-        heading={
-            <Translation id="TR_ENTERED_PIN_NOT_CORRECT" values={{ deviceLabel: device.label }} />
-        }
-        {...rest}
-    >
-        <DeviceConfirmImage device={device} />
-        <Divider />
-        <Paragraph typographyStyle="hint">
-            <Translation id="TR_RETRYING_DOT_DOT" />
-        </Paragraph>
-    </StyledModal>
-);
+export const PinInvalidModal = ({ device, ...rest }: PinInvalidModalProps) => {
+    const deviceLabel = useSelector(selectDeviceLabelOrName);
+
+    return (
+        <StyledModal
+            heading={<Translation id="TR_ENTERED_PIN_NOT_CORRECT" values={{ deviceLabel }} />}
+            {...rest}
+        >
+            <DeviceConfirmImage device={device} />
+            <Divider />
+            <Paragraph typographyStyle="hint">
+                <Translation id="TR_RETRYING_DOT_DOT" />
+            </Paragraph>
+        </StyledModal>
+    );
+};

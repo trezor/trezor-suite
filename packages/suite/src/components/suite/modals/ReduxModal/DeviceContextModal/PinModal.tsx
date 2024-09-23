@@ -1,10 +1,12 @@
 import TrezorConnect from '@trezor/connect';
 import styled from 'styled-components';
 
+import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Modal, ModalProps, PinMatrix, Translation } from 'src/components/suite';
 import { PIN_MATRIX_MAX_WIDTH } from 'src/components/suite/PinMatrix/PinMatrix';
 import { usePin } from 'src/hooks/suite/usePinModal';
 import { TrezorDevice } from 'src/types/suite';
+import { useSelector } from 'src/hooks/suite';
 
 const StyledModal = styled(Modal)<{ $isExtended: boolean }>`
     width: unset;
@@ -22,6 +24,7 @@ interface PinModalProps extends ModalProps {
 }
 
 export const PinModal = ({ device, ...rest }: PinModalProps) => {
+    const deviceLabel = useSelector(selectDeviceLabelOrName);
     const { isRequestingNewPinCode, isWipeCode, isPinInvalid, isModalExtended } = usePin();
 
     if (!device.features) return null;
@@ -35,7 +38,7 @@ export const PinModal = ({ device, ...rest }: PinModalProps) => {
             description={
                 <Translation
                     id="TR_THE_PIN_LAYOUT_IS_DISPLAYED"
-                    values={{ deviceLabel: device.label, b: text => <b>{text}</b> }}
+                    values={{ deviceLabel, b: text => <b>{text}</b> }}
                 />
             }
             onCancel={onCancel}

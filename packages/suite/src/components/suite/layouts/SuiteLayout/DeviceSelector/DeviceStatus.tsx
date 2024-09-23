@@ -7,6 +7,8 @@ import { TrezorDevice } from 'src/types/suite';
 import { spacingsPx } from '@trezor/theme';
 import { RotateDeviceImage } from '@trezor/components';
 import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
+import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+import { useSelector } from 'src/hooks/suite';
 
 type DeviceStatusProps = {
     deviceModel: DeviceModelInternal;
@@ -43,6 +45,8 @@ export const DeviceStatus = ({
     handleRefreshClick,
     forceConnectionInfo = false,
 }: DeviceStatusProps) => {
+    const deviceLabel = useSelector(selectDeviceLabelOrName);
+
     return (
         <Container>
             <DeviceWrapper $isLowerOpacity={deviceNeedsRefresh}>
@@ -55,7 +59,7 @@ export const DeviceStatus = ({
             </DeviceWrapper>
 
             {device && (
-                <DeviceDetail label={device.label}>
+                <DeviceDetail label={deviceLabel}>
                     <DeviceStatusText
                         onRefreshClick={handleRefreshClick}
                         device={device}

@@ -4,6 +4,7 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { useCallback } from 'react';
 import styled from 'styled-components';
+import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
 
 interface WalletLabellingProps {
     device: TrezorDevice;
@@ -34,6 +35,7 @@ export const useWalletLabeling = () => {
 
 export const useGetWalletLabel = ({ device, shouldUseDeviceLabel }: WalletLabellingProps) => {
     const { defaultAccountLabelString } = useWalletLabeling();
+    const deviceLabel = useSelector(selectDeviceLabelOrName);
     const { walletLabel } = useSelector(state => selectLabelingDataForWallet(state, device.state));
 
     let label: string | undefined;
@@ -44,7 +46,7 @@ export const useGetWalletLabel = ({ device, shouldUseDeviceLabel }: WalletLabell
     }
 
     if (shouldUseDeviceLabel) {
-        return <>{`${device.label} ${label}`}</>;
+        return <>{`${deviceLabel} ${label}`}</>;
     }
 
     if (!label) return null;
