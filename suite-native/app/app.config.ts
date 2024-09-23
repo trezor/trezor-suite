@@ -168,6 +168,29 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 monochromeImage: './assets/appIcon_android.png',
                 ...appIconAndroid,
             },
+            intentFilters:
+                buildType === 'production'
+                    ? []
+                    : [
+                          {
+                              action: 'VIEW',
+                              autoVerify: true,
+                              data: [
+                                  {
+                                      scheme: 'https',
+                                      host: 'dev.suite.sldev.cz',
+                                      pathPattern: '/connect/.*/deeplink/.*',
+                                  },
+                                  {
+                                      scheme: 'https',
+                                      host: 'dev.suite.sldev.cz',
+                                      // for branches with a slash in the name
+                                      pathPattern: '/connect/.*/.*/deeplink/.*',
+                                  },
+                              ],
+                              category: ['BROWSABLE', 'DEFAULT'],
+                          },
+                      ],
         },
         ios: {
             bundleIdentifier,

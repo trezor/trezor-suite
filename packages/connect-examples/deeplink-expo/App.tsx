@@ -35,6 +35,7 @@ export const App = () => {
                 Linking.openURL(url);
             },
             deeplinkCallbackUrl: Linking.createURL('/connect'),
+            // deeplinkUrl: 'https://dev.suite.sldev.cz/connect/develop/deeplink/',
         });
     };
 
