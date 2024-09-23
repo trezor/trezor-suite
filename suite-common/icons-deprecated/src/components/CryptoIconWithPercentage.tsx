@@ -35,6 +35,8 @@ export const CryptoIconWithPercentage = ({
 }: CryptoIconProps) => {
     const iconSvg = useSVG(cryptoIcons[iconName]);
     const { utils } = useNativeStyles();
+    // @ts-expect-error: coinsColors uses "NetworkSymbol" type. However, here we use deprecated "CryptoIconName".
+    // Not worth fixing it as this package will be removed soon.
     const percentageColor = utils.coinsColors[iconName] ?? utils.colors.textSubdued;
 
     const path = Skia.Path.Make();

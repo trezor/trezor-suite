@@ -1,6 +1,8 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import { CSSColor } from './types';
 
-export type CoinsColors = Record<string, CSSColor>;
+export type CoinsColors = Record<NetworkSymbol, CSSColor>;
 
 export const coinsColors: CoinsColors = {
     ada: '#3468d1',
@@ -21,4 +23,4 @@ export const coinsColors: CoinsColors = {
     vtc: '#1b9065',
     xrp: '#24292e',
     zec: '#f5b300',
-} as const;
+};
