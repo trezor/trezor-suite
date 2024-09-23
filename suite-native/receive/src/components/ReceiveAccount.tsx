@@ -68,7 +68,13 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
                 />
             </VStack>
 
-            {isConfirmOnTrezorReady && <ConfirmOnTrezorImage />}
+            {isConfirmOnTrezorReady && (
+                <ConfirmOnTrezorImage
+                    bottomSheetText={
+                        <Translation id="moduleReceive.bottomSheets.confirmOnDeviceMessage" />
+                    }
+                />
+            )}
         </Box>
     );
 };

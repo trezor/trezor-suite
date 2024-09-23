@@ -1,10 +1,14 @@
 import { Image, Pressable } from 'react-native';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
-import React, { useMemo, useState } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConfirmOnTrezorBottomSheet } from './ConfirmOnTrezorBottomSheet';
+
+type ConfirmOnTrezorImageProps = {
+    bottomSheetText: ReactNode;
+};
 
 const imageContainerStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
@@ -13,7 +17,7 @@ const imageContainerStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
 }));
 
-export const ConfirmOnTrezorImage = () => {
+export const ConfirmOnTrezorImage = ({ bottomSheetText }: ConfirmOnTrezorImageProps) => {
     const [isBottomSheetOpened, setIsBottomSheetOpened] = useState(false);
     const { applyStyle } = useNativeStyles();
 
@@ -39,6 +43,7 @@ export const ConfirmOnTrezorImage = () => {
                 </Pressable>
             </Animated.View>
             <ConfirmOnTrezorBottomSheet
+                text={bottomSheetText}
                 isOpened={isBottomSheetOpened}
                 onClose={handleCloseBottomSheet}
             />

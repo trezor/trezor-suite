@@ -10,7 +10,6 @@ import {
     SendRootState,
     cancelSignSendFormTransactionThunk,
 } from '@suite-common/wallet-core';
-import { ConfirmOnTrezorImage } from '@suite-native/device';
 import { Text } from '@suite-native/atoms';
 
 import {
@@ -20,6 +19,7 @@ import {
 import { AddressReviewStepList } from '../components/AddressReviewStepList';
 import { SendScreen } from '../components/SendScreen';
 import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
+import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 
 export const SendAddressReviewScreen = ({
     route,
@@ -68,7 +68,7 @@ export const SendAddressReviewScreen = ({
                 />
             }
             // TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965
-            footer={isReviewInProgress && <ConfirmOnTrezorImage />}
+            footer={isReviewInProgress && <SendConfirmOnDeviceImage />}
         >
             <Box flex={1} justifyContent="space-between" marginTop="medium">
                 <VStack justifyContent="center" alignItems="center" spacing="large">
