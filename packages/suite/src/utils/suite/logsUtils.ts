@@ -96,7 +96,6 @@ export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
     return {
         ...device,
         id: REDACTED_REPLACEMENT,
-        label: device.label ? REDACTED_REPLACEMENT : undefined,
         state: REDACTED_REPLACEMENT,
         firmwareRelease: device.firmwareRelease ? REDACTED_REPLACEMENT : undefined,
         features: device.features
@@ -227,7 +226,7 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
         .concat(selectDevices(state).filter(device => device.id === null)) // add devices in bootloader mode
         .map(device => ({
             id: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.id,
-            label: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.label,
+            label: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.features?.label,
             mode: device.mode,
             connected: device.connected,
             passphraseProtection: device.features?.passphrase_protection,
@@ -244,7 +243,7 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
         })),
     wallets: selectDevices(state).map(device => ({
         deviceId: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.id,
-        deviceLabel: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.label,
+        deviceLabel: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.features?.label,
         label:
             // eslint-disable-next-line no-nested-ternary
             device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]
