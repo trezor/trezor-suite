@@ -5,6 +5,7 @@ import { Translation } from '@suite-native/intl';
 import {
     ConnectDeviceSettings,
     deviceActions,
+    selectDeviceLabelOrName,
     selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
@@ -32,6 +33,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
     const { showToast } = useToast();
     const { applyStyle } = useNativeStyles();
     const hasDiscovery = useSelector(selectHasDeviceDiscovery);
+    const deviceLabel = useSelector(selectDeviceLabelOrName);
 
     const walletNameLabel = device.useEmptyPassphrase ? (
         <Translation id="moduleSettings.viewOnly.wallet.standard" />
@@ -87,7 +89,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
             description: (
                 <Translation
                     id="moduleSettings.viewOnly.disableDialog.subtitle"
-                    values={{ device: device.label }}
+                    values={{ device: deviceLabel }}
                 />
             ),
             primaryButtonTitle: (

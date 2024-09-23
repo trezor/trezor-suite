@@ -42,7 +42,7 @@ export const DevicesManagement = ({ onPressAbout }: AboutProps) => {
                             )}
                             <Box>
                                 <Text variant="highlight" color="textDefault">
-                                    {firstDevice.label}
+                                    {firstDevice.features.label || firstDevice.name}
                                 </Text>
                                 <HStack alignItems="center" spacing="small">
                                     <ConnectionDot isConnected={firstDevice.connected} />
