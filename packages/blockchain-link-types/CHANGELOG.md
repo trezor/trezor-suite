@@ -1,3 +1,7 @@
+# 1.2.1
+
+-   chore: remove prettier-eslint dependency, upgrade @typescript-eslint (77576f5bea)
+
 # 1.2.0
 
 -   npm-prerelease: @trezor/blockchain-link-types 1.1.1-beta.3 (2be3a59462)
