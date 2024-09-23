@@ -136,7 +136,6 @@ const getPlugins = (): ExpoPlugins => {
               ]),
         // These should come last
         './plugins/withRemoveXcodeLocalEnv.js',
-        ['./plugins/withEnvFile.js', { buildType }],
         './plugins/withRemoveiOSNotificationEntitlement.js',
     ] as ExpoPlugins;
 };
@@ -201,7 +200,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             eas: {
                 projectId,
             },
-            isDetoxTestBuild: !!process.env.IS_DETOX_BUILD,
         },
     };
 };

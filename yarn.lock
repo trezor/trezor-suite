@@ -9607,7 +9607,6 @@ __metadata:
     expo-build-properties: "npm:0.12.5"
     expo-camera: "npm:15.0.15"
     expo-clipboard: "npm:6.0.3"
-    expo-constants: "npm:16.0.2"
     expo-dev-client: "npm:4.0.25"
     expo-haptics: "npm:13.0.1"
     expo-image: "npm:1.12.15"
@@ -9763,7 +9762,6 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    expo-constants: "npm:16.0.2"
   languageName: unknown
   linkType: soft
 
@@ -22240,7 +22238,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-constants@npm:16.0.2, expo-constants@npm:~16.0.0":
+"expo-constants@npm:~16.0.0":
   version: 16.0.2
   resolution: "expo-constants@npm:16.0.2"
   dependencies:

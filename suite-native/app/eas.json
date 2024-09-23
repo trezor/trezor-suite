@@ -7,7 +7,8 @@
     "build": {
         "develop": {
             "env": {
-                "EXPO_PUBLIC_ENVIRONMENT": "develop"
+                "EXPO_PUBLIC_ENVIRONMENT": "develop",
+                "EXPO_PUBLIC_CODESIGN_BUILD": "false"
             },
             "autoIncrement": true,
             "ios": {
@@ -20,7 +21,8 @@
         },
         "production": {
             "env": {
-                "EXPO_PUBLIC_ENVIRONMENT": "production"
+                "EXPO_PUBLIC_ENVIRONMENT": "production",
+                "EXPO_PUBLIC_CODESIGN_BUILD": "true"
             },
             "autoIncrement": true,
             "android": {
@@ -33,7 +35,8 @@
         },
         "productionAPK": {
             "env": {
-                "EXPO_PUBLIC_ENVIRONMENT": "production"
+                "EXPO_PUBLIC_ENVIRONMENT": "production",
+                "EXPO_PUBLIC_CODESIGN_BUILD": "true"
             },
             "android": {
                 "credentialsSource": "remote",

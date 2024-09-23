@@ -15,14 +15,12 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  IS_DETOX_BUILD: "true"
+  NODE_ENV: "test"
 
 jobs:
   build_android_test_app:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
-    env:
-      EXPO_PUBLIC_ENVIRONMENT: "debug"
     steps:
       - name: Checkout project
         uses: actions/checkout@v4

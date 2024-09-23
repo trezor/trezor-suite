@@ -13,23 +13,23 @@ module.exports = {
         'ios.debug': {
             type: 'ios.app',
             binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/TrezorSuiteLiteDebug.app',
-            build: 'IS_DETOX_BUILD=true xcodebuild -workspace ios/TrezorSuiteLiteDebug.xcworkspace -scheme TrezorSuiteLiteDebug -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
+            build: 'NODE_ENV=test xcodebuild -workspace ios/TrezorSuiteLiteDebug.xcworkspace -scheme TrezorSuiteLiteDebug -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
         },
         'ios.release': {
             type: 'ios.app',
             binaryPath: 'ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteLiteDebug.app',
-            build: 'IS_DETOX_BUILD=true xcodebuild -workspace ios/TrezorSuiteLiteDebug.xcworkspace -scheme TrezorSuiteLiteDebug -configuration Release -sdk iphonesimulator -derivedDataPath ios/build',
+            build: 'NODE_ENV=test xcodebuild -workspace ios/TrezorSuiteLiteDebug.xcworkspace -scheme TrezorSuiteLiteDebug -configuration Release -sdk iphonesimulator -derivedDataPath ios/build',
         },
         'android.debug': {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
-            build: 'cd android && IS_DETOX_BUILD=true ./gradlew :app:assembleDebug :app:assembleAndroidTest -DtestBuildType=debug',
+            build: 'cd android && NODE_ENV=test ./gradlew :app:assembleDebug :app:assembleAndroidTest -DtestBuildType=debug',
             reversePorts: [8081, 21325, 19121],
         },
         'android.release': {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
-            build: 'cd android && IS_DETOX_BUILD=true ./gradlew :app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release',
+            build: 'cd android && NODE_ENV=test ./gradlew :app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release',
             reversePorts: [21325, 19121],
         },
     },

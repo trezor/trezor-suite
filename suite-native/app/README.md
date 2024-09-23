@@ -59,6 +59,16 @@ You can show DEV utils on production build FOR DEVELOPMENT PURPOSES ONLY – do 
 
 To reveal dev menu, you have to click at least 7 times on commit hash at the bottom of About Trezor Suite Lite page.
 
+## Environment variables
+
+How our ENV variables works is describe in [Environment variables in Expo](https://docs.expo.dev/guides/environment-variables/) documentation.
+
+ENV variables for each Expo profile are defined in `eas.json` config.
+
+You can override ENV variables locally using `.env.development.local` (or `.env.test.local` for tests) files. If you use `.env` file, it has the lowest priority. See [what other .env\* files you can use](https://github.com/bkeepers/dotenv/blob/c6e583a/README.md#what-other-env-files-can-i-use).
+
+> You can use `EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED=true` in `.env.development.local` to debug analytics locally.
+
 ## Troubleshooting
 
 1. For any issues with the build, try to clean the project and rebuild it:

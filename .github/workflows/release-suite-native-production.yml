@@ -24,7 +24,6 @@ jobs:
     environment: production-suite-native
     runs-on: ubuntu-latest
     env:
-      EXPO_PUBLIC_ENVIRONMENT: production
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -53,7 +52,6 @@ jobs:
     environment: production-suite-native
     runs-on: ubuntu-latest
     env:
-      EXPO_PUBLIC_ENVIRONMENT: production
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -82,7 +80,6 @@ jobs:
     environment: production-suite-native
     runs-on: ubuntu-latest
     env:
-      EXPO_PUBLIC_ENVIRONMENT: production
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
