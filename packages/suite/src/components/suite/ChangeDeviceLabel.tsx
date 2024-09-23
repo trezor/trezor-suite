@@ -40,7 +40,7 @@ export const ChangeDeviceLabel = ({
     const { device } = useDevice();
     const dispatch = useDispatch();
 
-    const [label, setLabel] = useState(device?.label === placeholder ? '' : device?.label);
+    const [label, setLabel] = useState(deviceLabel ?? '');
     const [error, setError] = useState<string | null>(null);
 
     const handleChange: ChangeEventHandler<HTMLInputElement> = ({ target: { value } }) => {
