@@ -251,7 +251,7 @@ export const ExampleHeading = styled.h3`
         </Button>
     </SdkHeading>
 
-    <Tabs items={['Core in iframe', 'Core in popup']}>
+    <Tabs items={['Core in iframe', 'Core in popup', 'Auto mode selection']}>
         <Tabs.Tab>
             <ZoomableIllustration
                 src="/images/schema-connect-web.svg"
@@ -264,6 +264,13 @@ export const ExampleHeading = styled.h3`
                 src="/images/schema-connect-web-core-in-popup.svg"
                 $darkMode
                 alt="connect schema when used on web"
+            />
+        </Tabs.Tab>
+        <Tabs.Tab>
+            <ZoomableIllustration
+                src="/images/schema-connect-web-core-auto.svg"
+                $darkMode
+                alt="connect auto flowchart"
             />
         </Tabs.Tab>
     </Tabs>
