@@ -1,3 +1,10 @@
+# 2.2.1
+
+-   npm-prerelease: @trezor/utxo-lib 2.2.1-beta.1 (42a5868328)
+-   chore(suite): update mission dependencies: varuint-bitcoin (e8e2e59355)
+-   chore: update crypto libs (a304dd56a1)
+-   chore(utxo-lib): remove unused util (affd7d20c3)
+
 # 2.2.0
 
 -   npm-prerelease: @trezor/utxo-lib 2.1.1-beta.1 (7173ccf5fe)
