@@ -1,4 +1,5 @@
 import { scheduleAction } from '../src/scheduleAction';
+import { mockTime, unmockTime } from './utils/mockTime';
 
 const ERR_SIGNAL = 'Aborted by signal';
 const ERR_DEADLINE = 'Aborted by deadline';
@@ -26,7 +27,12 @@ describe('scheduleAction', () => {
             return `${addings.length - removals.length} listeners not cleaned`;
     };
 
+    beforeEach(() => {
+        mockTime();
+    });
+
     afterEach(() => {
+        unmockTime();
         jest.clearAllMocks();
     });
 
@@ -60,7 +66,6 @@ describe('scheduleAction', () => {
             throw new Error('Runtime error');
         });
 
-        // note: allow certain errors?
         await expect(() => scheduleAction(spy, { deadline: Date.now() + 1000 })).rejects.toThrow(
             ERR_DEADLINE,
         );
@@ -82,7 +87,6 @@ describe('scheduleAction', () => {
             throw new Error('Runtime error');
         });
 
-        // note: allow certain errors?
         await expect(() =>
             scheduleAction(spy, { deadline: Date.now() + 1000, signal: aborter.signal }),
         ).rejects.toThrow(ERR_SIGNAL);
@@ -102,7 +106,6 @@ describe('scheduleAction', () => {
             throw new Error('Runtime error');
         });
 
-        // note: allow certain errors?
         const result = await scheduleAction(spy, { deadline: Date.now() + 1000 });
 
         expect(result).toEqual('Foo');
