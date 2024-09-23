@@ -17,6 +17,7 @@
         "prebuild:clean": "expo prebuild --clean",
         "build:e2e": "../../node_modules/.bin/detox build --configuration",
         "test:e2e": "../../node_modules/.bin/detox test --configuration",
+        "start:e2e": "NODE_ENV=test expo start --dev-client",
         "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21325 tcp:21325 && adb reverse tcp:19121 tcp:19121"
     },
     "dependencies": {
@@ -82,7 +83,6 @@
         "expo-build-properties": "0.12.5",
         "expo-camera": "15.0.15",
         "expo-clipboard": "6.0.3",
-        "expo-constants": "16.0.2",
         "expo-dev-client": "4.0.25",
         "expo-haptics": "13.0.1",
         "expo-image": "1.12.15",

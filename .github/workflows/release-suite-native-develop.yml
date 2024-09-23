@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      EXPO_PUBLIC_ENVIRONMENT: develop
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

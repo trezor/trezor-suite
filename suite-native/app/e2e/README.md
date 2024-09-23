@@ -4,7 +4,7 @@ This folder contains Detox E2E tests for the Trezor Suite mobile app. The tests 
 
 Detox configuration can be found in the [.detoxrc.js](../.detoxrc.js) file. `jest` is used as the test runner.
 
-The tests Are always executed with the env variable `IS_DETOX_BUILD` equal to `"true"`. So in case you would need to determine if the JS code is running within a test build, you can always access this variable. For example, it is used in a debug build to hide react-native LogBox, so it is not blocking the UI for the test runner.
+If you need to determine if the JS code is running within a test build, you can use `isDetoxTestBuild()` util. For example, it is used in a debug build to hide react-native LogBox, so it is not blocking the UI for the test runner.
 
 ## Running tests locally
 
@@ -22,7 +22,7 @@ With the debug config, the app is running in Expo dev-client and the JavaScript 
 3. Create a debug build:
     - (**Android**) `yarn build:e2e android.emu.debug`
     - (**iOS**) `yarn build:e2e ios.sim.debug`
-4. Run Metro server: `yarn start`
+4. Run Metro server using test ENV variables from `.evn.test`: `yarn start:e2e`
 5. While is Metro server running in a different console, execute the E2E tests:
     - (**Android**) `yarn test:e2e android.emu.debug`
     - (**iOS**) `yarn test:e2e ios.sim.debug`
