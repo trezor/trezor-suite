@@ -3,7 +3,7 @@ auto_sections: false
 icon: lightning
 ---
 
-import { Cards, Card, Steps } from 'nextra/components';
+import { Cards, Card, Steps, Tabs } from 'nextra/components';
 import styled from 'styled-components';
 import Link from 'next/link';
 
@@ -162,7 +162,7 @@ export const ExampleHeading = styled.h3`
         <SdkDescription>
             #### About
 
-            In Node.js the core SDK is loaded as a JavaScript module without any specificities.
+            In Node.js the core SDK is loaded as a JavaScript module without any specificities. This allows native or CLI applications to directly interact with Trezor devices.
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
@@ -251,14 +251,32 @@ export const ExampleHeading = styled.h3`
         </Button>
     </SdkHeading>
 
-    <ZoomableIllustration src="/images/schema-connect-web.svg" $darkMode alt="connect schema when used on web" />
+    <Tabs items={['Core in iframe', 'Core in popup']}>
+        <Tabs.Tab>
+            <ZoomableIllustration
+                src="/images/schema-connect-web.svg"
+                $darkMode
+                alt="connect schema when used on web"
+            />
+        </Tabs.Tab>
+        <Tabs.Tab>
+            <ZoomableIllustration
+                src="/images/schema-connect-web-core-in-popup.svg"
+                $darkMode
+                alt="connect schema when used on web"
+            />
+        </Tabs.Tab>
+    </Tabs>
 
     <SdkContainer>
         <SdkDescription>
             #### About
 
-            `@trezor/connect-web` imports only a thin layer with API description into your 3rd party application. When initiated, it injects iframe containing core SDK logic from trezor.io
-            into your app. User input, if needed, is served by popup.html page opened on trezor.io on behalf of your application. This way users input such as pin or passphrase is isolated from you and persistent connection between your app and core SDK is kept so events such as device connected/disconnected or blockchain subscriptions are available.
+            `@trezor/connect-web` imports only a thin layer with API description into your 3rd party application.
+            It has two modes of operation: core SDK logic can be either injected into **iframe** or opened in **popup** (more info in [init method documentation](./methods/other/init)).
+            User input, such as passphrase or PIN, is handled by the popup page opened on trezor.io, isolated from your application.
+            When using iframe persistent connection between your app and core SDK is kept so device events or blockchain subscriptions are available.
+            However iframe doesn't allow WebUSB communication, so popup is automatically preferred if [Trezor Bridge](https://trezor.io/learn/a/what-is-trezor-bridge) is not running.
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
@@ -364,10 +382,8 @@ export const ExampleHeading = styled.h3`
         <SdkDescription>
             #### About
             In case of `@trezor/connect-webextension`, TrezorConnect object is created in a service worker.
-            In this env we can't inject iframe so in order to uphold the same security model as with
-            `@trezor/connect-web` we open popup.html and load core SDK logic into it. This however does not
-            build persistent connection between SDK and 3rd party application meaning that events cannot be
-            used.
+            In this env we can't inject iframe so we use a mode similar to popup mode in `@trezor/connect-web`, where we load SDK logic in the popup.
+            This however does not build persistent connection between SDK and 3rd party application meaning that events cannot be used.
 
             #### Learn step-by-step
             Learn how to integrate the @trezor/connect-webextension package into a Chrome extension,
