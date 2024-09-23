@@ -1,3 +1,9 @@
+# 9.2.1
+
+-   npm-prerelease: @trezor/utils 9.2.1-beta.1 (dfe200874b)
+-   fix(utils): correctly removing event listeners (aa2857c305)
+-   fix(utils): ignore semver labels in version utils (e6077ac3d1)
+
 # 9.2.0
 
 -   npm-prerelease: @trezor/utils 9.1.1-beta.3 (f44360e077)
