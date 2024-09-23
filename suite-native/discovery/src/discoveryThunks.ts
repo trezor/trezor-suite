@@ -635,9 +635,22 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
             return;
         }
 
+        const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(getState());
+
+        let availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] = [];
+        if (enabledNetworks.some(network => network.networkType === 'cardano')) {
+            availableCardanoDerivations =
+                (await dispatch(
+                    getCardanoSupportedAccountTypesThunk({
+                        deviceState,
+                    }),
+                ).unwrap()) ?? [];
+        }
+
         const networksWithUnfinishedDiscovery = selectNetworksWithUnfinishedDiscovery(
             getState(),
             forcedAreTestnetsEnabled,
+            Array.from(availableCardanoDerivations),
         );
 
         // Start tracking duration and networks for analytics purposes
@@ -649,15 +662,6 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         );
 
         // Some cardano derivation are not supported by the device. We need to filter them out.
-        let availableCardanoDerivations: ('normal' | 'legacy' | 'ledger')[] = [];
-        if (networksWithUnfinishedDiscovery.some(network => network.networkType === 'cardano')) {
-            availableCardanoDerivations =
-                (await dispatch(
-                    getCardanoSupportedAccountTypesThunk({
-                        deviceState,
-                    }),
-                ).unwrap()) ?? [];
-        }
 
         // filter out cardano-type networks, if none of their derivations are available
         const networksFiltered = networksWithUnfinishedDiscovery.filter(
