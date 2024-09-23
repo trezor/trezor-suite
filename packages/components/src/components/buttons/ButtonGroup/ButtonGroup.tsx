@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { borders } from '@trezor/theme';
-import { Button, ButtonProps } from '../Button/Button';
+import { ButtonProps } from '../Button/Button';
 import { ButtonSize, ButtonVariant } from '../buttonStyleUtils';
-import { IconButton, IconButtonProps } from '../IconButton/IconButton';
+import { IconButtonProps } from '../IconButton/IconButton';
 import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
 
 const Container = styled.div<{
@@ -44,22 +44,6 @@ const Container = styled.div<{
     }
 `;
 
-const isValidChildrenElement = (children: Array<React.ReactNode>) =>
-    children.every(child => {
-        if (React.isValidElement(child)) {
-            if (child.type === Button || child.type === IconButton) {
-                return true;
-            }
-            if (child.type === Tooltip && React.isValidElement(child.props.children)) {
-                const tooltipChild = child.props.children;
-
-                return tooltipChild.type === Button || tooltipChild.type === IconButton;
-            }
-        }
-
-        return false;
-    });
-
 type AllowedChildrenPropsType = ButtonProps | IconButtonProps;
 
 interface ButtonGroupProps {
@@ -77,16 +61,6 @@ export const ButtonGroup = ({
     className,
     children,
 }: ButtonGroupProps) => {
-    const areChildrenValid = isValidChildrenElement(children);
-
-    if (!areChildrenValid) {
-        console.error(
-            'Invalid children passed to ButtonGroup. Only Button, IconButton, and Tooltip (containing Button or IconButton) are allowed.',
-        );
-
-        return null;
-    }
-
     const childrenWithProps = React.Children.map(children, child => {
         if (React.isValidElement(child)) {
             if (
