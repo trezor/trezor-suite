@@ -2,7 +2,7 @@ import { G } from '@mobily/ts-belt';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { formatNetworkAmount, isAddressValid } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, isAddressValid, isDecimalsValid } from '@suite-common/wallet-utils';
 import { FeeInfo } from '@suite-common/wallet-types';
 import { yup } from '@suite-common/validators';
 
@@ -12,6 +12,7 @@ export type SendFormFormContext = {
     networkFeeInfo?: FeeInfo;
     isValueInSats?: boolean;
     normalFeeMaxAmount?: string;
+    decimals?: number;
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -96,6 +97,15 @@ export const sendOutputsFormValidationSchema = yup.object({
                         'You don’t have enough balance to send this amount.',
                         (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
                             return !isAmountHigherThanBalance(value, context);
+                        },
+                    )
+                    .test(
+                        'too-many-decimals',
+                        'Too many decimals.',
+                        (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                            const { decimals = 8 } = context!;
+
+                            return isDecimalsValid(value, decimals);
                         },
                     ),
                 fiat: yup.string(),

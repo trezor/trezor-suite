@@ -98,6 +98,8 @@ export const SendOutputsScreen = ({
         selectSendFormDraftByAccountKey(state, accountKey),
     );
 
+    const network = account ? getNetworkCompatible(account.symbol) : null;
+
     const form = useForm<SendOutputsFormValues>({
         validation: sendOutputsFormValidationSchema,
         context: {
@@ -106,6 +108,7 @@ export const SendOutputsScreen = ({
             availableAccountBalance: account?.availableBalance,
             isValueInSats: isAmountInSats,
             normalFeeMaxAmount,
+            decimals: network?.decimals,
         },
         defaultValues: {
             outputs: sendFormDraft?.outputs ?? DEFAULT_VALUES,
@@ -162,8 +165,6 @@ export const SendOutputsScreen = ({
     const handleNavigateToReviewScreen = handleSubmit(async values => {
         // Keyboard has to be dismissed here before navigating, so it's animation is not interfering with the animations on the FeesScreen.
         Keyboard.dismiss();
-
-        const network = getNetworkCompatible(account?.symbol);
 
         if (!network) return;
 
