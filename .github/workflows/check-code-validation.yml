@@ -48,7 +48,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Type Check
-        run: yarn nx:type-check
+        run: yarn nx:type-check --output-style=stream
 
   lint:
     name: Linting and formatting
@@ -72,7 +72,7 @@ jobs:
       - name: Lint JS
         run: yarn lint:js --cache-strategy content
       - name: Lint Styles
-        run: yarn nx:lint:styles
+        run: yarn nx:lint:styles --output-style=stream
 
   unit-tests:
     name: Unit Tests
@@ -89,7 +89,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Unit Tests
-        run: yarn nx:test-unit
+        run: yarn nx:test-unit --output-style=stream
 
   build-libs-for-publishing:
     name: "Build libs for publishing"
@@ -105,7 +105,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Build Libs
-        run: yarn nx:build:libs
+        run: yarn nx:build:libs --output-style=stream
 
   other-checks:
     name: Other Checks
