@@ -3,32 +3,43 @@ import {
     DesktopUpdateState,
     UpdateState,
 } from '../../../../../../../reducers/suite/desktopUpdateReducer';
-import { UpdateStatus } from './updateQuickActionTypes';
+import { UpdateStatus, UpdateStatusSuite, UpdateStatusDevice } from './updateQuickActionTypes';
 
 type UpdateStatusData = {
     updateStatus: UpdateStatus;
-    updateStatusDevice: UpdateStatus;
-    updateStatusSuite: UpdateStatus;
+    updateStatusDevice: UpdateStatusDevice;
+    updateStatusSuite: UpdateStatusSuite;
 };
 
-const getSuiteUpdateStatus = ({ desktopUpdate }: { desktopUpdate: DesktopUpdateState }) => {
+type GetSuiteUpdateStatusArgs = {
+    desktopUpdate: DesktopUpdateState;
+};
+
+const getSuiteUpdateStatus = ({ desktopUpdate }: GetSuiteUpdateStatusArgs): UpdateStatusSuite => {
     const isSuiteJustUpdated = desktopUpdate.firstRunAfterUpdate;
-
-    const isSuiteOutdated = [UpdateState.Available, UpdateState.Downloading].includes(
-        desktopUpdate.state,
-    );
-
-    const isSuiteRestartRequired = desktopUpdate.state === UpdateState.Ready;
-
-    if (isSuiteRestartRequired) {
-        return 'restart-to-update';
+    if (isSuiteJustUpdated) {
+        return 'just-updated';
     }
 
-    if (isSuiteOutdated) {
-        return 'update-available';
+    // We don't show update-availability in case of auto-updates until the update is downloaded
+    if (desktopUpdate.isAutomaticUpdateEnabled && desktopUpdate.state === UpdateState.Ready) {
+        return 'update-downloaded-auto-restart-to-update';
     }
 
-    return isSuiteJustUpdated ? 'just-updated' : 'up-to-date';
+    if (!desktopUpdate.isAutomaticUpdateEnabled) {
+        const isUpdateAvailable = [UpdateState.Available, UpdateState.Downloading].includes(
+            desktopUpdate.state,
+        );
+        if (isUpdateAvailable) {
+            return 'update-available';
+        }
+
+        if (desktopUpdate.state === UpdateState.Ready) {
+            return 'update-downloaded-manual';
+        }
+    }
+
+    return 'up-to-date';
 };
 
 export const useUpdateStatus = (): UpdateStatusData => {
@@ -42,8 +53,11 @@ export const useUpdateStatus = (): UpdateStatusData => {
         updateStatusSuite: getSuiteUpdateStatus({ desktopUpdate }),
     };
 
-    if (common.updateStatusSuite === 'restart-to-update') {
-        return { updateStatus: 'restart-to-update', ...common };
+    if (
+        common.updateStatusSuite === 'update-downloaded-auto-restart-to-update' ||
+        common.updateStatusSuite === 'update-downloaded-manual'
+    ) {
+        return { updateStatus: common.updateStatusSuite, ...common };
     }
 
     if (

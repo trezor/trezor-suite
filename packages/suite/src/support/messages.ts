@@ -4048,6 +4048,42 @@ export default defineMessages({
         id: 'TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED',
         defaultMessage: 'Just updated ({currentVersion})',
     },
+
+    TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE',
+        defaultMessage: 'App update available',
+    },
+    TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED',
+        defaultMessage: 'App’s been updated!',
+    },
+    TR_QUICK_ACTION_UPDATE_POPOVER_APP_DOWNLOADED: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_DOWNLOADED',
+        defaultMessage: 'Suite downloaded a new Trezor update!',
+    },
+
+    TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_UPDATE_AVAILABLE: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_UPDATE_AVAILABLE',
+        defaultMessage: 'Trezor update available',
+    },
+    TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_HAS_BEEN_UPDATED: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_HAS_BEEN_UPDATED',
+        defaultMessage: 'Trezor’s been updated!',
+    },
+
+    TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
+        defaultMessage: 'Click to start update',
+    },
+    TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_RESTART_AND_UPDATE: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_RESTART_AND_UPDATE',
+        defaultMessage: 'Click to restart & update',
+    },
+    TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW',
+        defaultMessage: 'What’s new?',
+    },
+
     TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED: {
         id: 'TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED',
         defaultMessage: 'Enabled',

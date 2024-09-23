@@ -7,6 +7,8 @@ import { borders, Color, CSSColor } from '@trezor/theme';
 import { useUpdateStatus } from './useUpdateStatus';
 import { UpdateTooltip } from './UpdateTooltip';
 import {
+    mapDeviceUpdateToClick,
+    mapSuiteUpdateToClick,
     mapUpdateStatusToIcon,
     mapUpdateStatusToVariant,
     UpdateStatus,
@@ -14,9 +16,9 @@ import {
 } from './updateQuickActionTypes';
 import { isDesktop } from '@trezor/env-utils';
 import { useDispatch } from 'react-redux';
-import { goto } from 'src/actions/suite/routerActions';
-import { SettingsAnchor } from '../../../../../../../constants/suite/anchors';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
+import { UpdateNotificationBanner } from './UpdateNotificationBanner';
+import { useState } from 'react';
 
 type MapArgs = {
     $variant: UpdateVariant;
@@ -141,6 +143,8 @@ const SuiteUpdateIcon = ({ iconSize, updateStatus, variant }: SuiteUpdateIconPro
 
 export const UpdateStatusActionBarIcon = () => {
     const theme = useTheme();
+    const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
+    const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
 
     const { updateStatus, updateStatusDevice, updateStatusSuite } = useUpdateStatus();
     const { device } = useDevice();
@@ -157,46 +161,74 @@ export const UpdateStatusActionBarIcon = () => {
     }
 
     const handleOnClick = () => {
-        if (updateStatusSuite === 'update-available') {
-            dispatch(goto('settings-index', { anchor: SettingsAnchor.VersionWithUpdate }));
-        } else if (updateStatusDevice === 'update-available') {
-            dispatch(goto('settings-device', { anchor: SettingsAnchor.FirmwareVersion }));
+        if (updateStatusSuite !== 'up-to-date') {
+            mapSuiteUpdateToClick[updateStatusSuite]?.({ dispatch });
+        } else if (updateStatusDevice !== 'up-to-date') {
+            mapDeviceUpdateToClick[updateStatusDevice]?.({ dispatch });
+        }
+    };
+
+    const showBannerNotification =
+        (updateStatusSuite !== 'up-to-date' && !closedNotificationSuite) ||
+        (updateStatusDevice !== 'up-to-date' && !closedNotificationDevice);
+
+    const onNotificationBannerClosed = () => {
+        console.log('onNotificationBannerClosed');
+        console.log('updateStatusSuite', updateStatusSuite);
+        console.log('updateStatusDevice', updateStatusDevice);
+
+        if (updateStatusSuite !== 'up-to-date') {
+            setClosedNotificationSuite(true);
+        }
+        if (updateStatusDevice !== 'up-to-date') {
+            setClosedNotificationDevice(true);
         }
     };
 
     return (
-        <QuickActionButton
-            tooltip={
-                <UpdateTooltip
+        <div>
+            {showBannerNotification && (
+                <UpdateNotificationBanner
                     updateStatusDevice={updateStatusDevice}
                     updateStatusSuite={updateStatusSuite}
+                    onClose={onNotificationBannerClosed}
                 />
-            }
-            onClick={handleOnClick}
-        >
-            <ComponentWithSubIcon
-                variant={variant}
-                subIconProps={{
-                    name: updateSubIcon,
-                    color: theme.iconDefaultInverted,
-                    size: iconSizes.extraSmall,
-                }}
+            )}
+            <QuickActionButton
+                tooltip={
+                    !showBannerNotification && (
+                        <UpdateTooltip
+                            updateStatusDevice={updateStatusDevice}
+                            updateStatusSuite={updateStatusSuite}
+                        />
+                    )
+                }
+                onClick={handleOnClick}
             >
-                <UpdateIconGroup $variant={variant}>
-                    <DeviceUpdateIcon
-                        iconSize={iconSize}
-                        updateStatus={updateStatusDevice}
-                        variant={variant}
-                    />
-                    {isDesktopSuite && (
-                        <SuiteUpdateIcon
+                <ComponentWithSubIcon
+                    variant={variant}
+                    subIconProps={{
+                        name: updateSubIcon,
+                        color: theme.iconDefaultInverted,
+                        size: iconSizes.extraSmall,
+                    }}
+                >
+                    <UpdateIconGroup $variant={variant}>
+                        <DeviceUpdateIcon
                             iconSize={iconSize}
                             updateStatus={updateStatusDevice}
                             variant={variant}
                         />
-                    )}
-                </UpdateIconGroup>
-            </ComponentWithSubIcon>
-        </QuickActionButton>
+                        {isDesktopSuite && (
+                            <SuiteUpdateIcon
+                                iconSize={iconSize}
+                                updateStatus={updateStatusDevice}
+                                variant={variant}
+                            />
+                        )}
+                    </UpdateIconGroup>
+                </ComponentWithSubIcon>
+            </QuickActionButton>
+        </div>
     );
 };

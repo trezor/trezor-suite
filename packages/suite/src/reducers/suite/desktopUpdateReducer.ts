@@ -58,9 +58,9 @@ const desktopUpdateReducer = (
             case DESKTOP_UPDATE.AVAILABLE:
                 draft.state = UpdateState.Available;
                 draft.latest = action.payload;
-                draft.modalVisibility = draft.isAutomaticUpdateEnabled
-                    ? draft.modalVisibility
-                    : 'maximized';
+                // draft.modalVisibility = draft.isAutomaticUpdateEnabled
+                //     ? draft.modalVisibility
+                //     : 'maximized';
                 break;
             case DESKTOP_UPDATE.NOT_AVAILABLE:
                 draft.state = UpdateState.NotAvailable;
