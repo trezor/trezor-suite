@@ -1,3 +1,8 @@
+# 1.2.1
+
+-   npm-prerelease: @trezor/protocol 1.2.1-beta.1 (52acb3950c)
+-   feat(protocol): add `name` to TransportProtocol (5bf4c0138e)
+
 # 1.2.0
 
 -   npm-prerelease: @trezor/protocol 1.1.1-beta.1 (cdd837ba2b)
