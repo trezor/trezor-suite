@@ -7,11 +7,12 @@ import { H2, Button, variables, DeviceAnimation } from '@trezor/components';
 import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
 import { Modal, Translation, WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import { useDevice, useFirmware } from 'src/hooks/suite';
+import { useDevice, useFirmware, useSelector } from 'src/hooks/suite';
 import { AbortButton } from 'src/components/suite/modals/AbortButton';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { spacings } from '@trezor/theme';
+import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
 
 const StyledModal = styled(Modal)`
     width: 600px;
@@ -180,6 +181,7 @@ interface ReconnectDevicePromptProps {
 }
 
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
+    const deviceLabel = useSelector(selectDeviceLabelOrName);
     const { showManualReconnectPrompt, isWebUSB, status, uiEvent } = useFirmware();
     const { device } = useDevice();
 
@@ -312,7 +314,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                                 <CenteredPointText>
                                     <Translation
                                         id="TR_CONFIRM_ACTION_ON_YOUR"
-                                        values={{ deviceLabel: device?.label }}
+                                        values={{ deviceLabel }}
                                     />
                                 </CenteredPointText>
                             )}

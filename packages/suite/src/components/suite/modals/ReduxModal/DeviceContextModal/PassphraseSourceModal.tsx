@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 
 import { H2, variables } from '@trezor/components';
-import { selectIsDiscoveryAuthConfirmationRequired } from '@suite-common/wallet-core';
+import {
+    selectDeviceLabelOrName,
+    selectIsDiscoveryAuthConfirmationRequired,
+} from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite/Translation';
 import { DeviceConfirmImage } from 'src/components/suite';
@@ -30,6 +33,7 @@ interface PassphraseSourceModalProps {
 export const PassphraseSourceModal = ({ device }: PassphraseSourceModalProps) => {
     const authConfirmation =
         useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
+    const deviceLabel = useSelector(selectDeviceLabelOrName);
 
     return (
         <StyledDevicePromptModal
@@ -47,7 +51,7 @@ export const PassphraseSourceModal = ({ device }: PassphraseSourceModalProps) =>
                             ? 'TR_CONFIRM_PASSPHRASE_SOURCE'
                             : 'TR_SELECT_PASSPHRASE_SOURCE'
                     }
-                    values={{ deviceLabel: device.label }}
+                    values={{ deviceLabel }}
                 />
             </StyledH2>
         </StyledDevicePromptModal>

@@ -4,10 +4,11 @@ import styled from 'styled-components';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { Translation, Modal } from 'src/components/suite';
 import { TranslationKey } from 'src/components/suite/Translation';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { ThunkAction } from 'src/types/suite';
 import { Button } from '@trezor/components';
 import { onCancel } from 'src/actions/suite/modalActions';
+import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
 
 const StyledModal = styled(Modal)`
     width: 520px;
@@ -31,6 +32,7 @@ export const ConfirmUnverifiedModal = ({
     verify,
     warningText,
 }: ConfirmUnverifiedModalProps) => {
+    const deviceLabel = useSelector(selectDeviceLabelOrName);
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
 
@@ -65,7 +67,7 @@ export const ConfirmUnverifiedModal = ({
 
     return (
         <StyledModal
-            heading={<Translation id={deviceStatus} values={{ deviceLabel: device.label }} />}
+            heading={<Translation id={deviceStatus} values={{ deviceLabel }} />}
             isCancelable
             onCancel={close}
             description={

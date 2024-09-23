@@ -2,14 +2,15 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, Checkbox, variables } from '@trezor/components';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { spacingsPx } from '@trezor/theme';
+import { selectDeviceLabelOrName } from '@suite-common/wallet-core';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { spacingsPx } from '@trezor/theme';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCheckbox = styled(Checkbox)`
@@ -44,6 +45,7 @@ type CheckSeedStepProps = {
 };
 
 export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStepProps) => {
+    const deviceLabel = useSelector(selectDeviceLabelOrName);
     const dispatch = useDispatch();
     const { device } = useDevice();
     const [isChecked, setIsChecked] = useState(false);
@@ -55,10 +57,7 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
             !device?.features?.unfinished_backup;
 
         const noBackupHeading = (
-            <Translation
-                id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP"
-                values={{ deviceLabel: device?.label }}
-            />
+            <Translation id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP" values={{ deviceLabel }} />
         );
 
         if (willBeWiped) {
