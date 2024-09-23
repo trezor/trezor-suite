@@ -741,7 +741,7 @@ export default defineMessages({
     },
     TR_SELL_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud or any other violation of either Invity’s or the provider's Terms of service, or of any applicable regulations.",
+            "You're not using this feature for gambling, fraud, or any other violation of either Invity’s or the provider's Terms of Service or of any applicable regulations.",
         id: 'TR_SELL_MODAL_TERMS_5',
         dynamic: true,
     },
@@ -949,7 +949,7 @@ export default defineMessages({
     },
     TR_P2P_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud or any other violation of either Invity’s or the provider's Terms of service, or of any applicable regulations.",
+            "You're not using this feature for gambling, fraud, or any other violation of either Invity’s or the provider's Terms of Service or of any applicable regulations.",
         id: 'TR_P2P_MODAL_TERMS_5',
         dynamic: true,
     },
@@ -1048,7 +1048,7 @@ export default defineMessages({
     },
     TR_BUY_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud or any other violation of either Invity’s or the provider's Terms of service, or of any applicable regulations.",
+            "You're not using this feature for gambling, fraud, or any other violation of either Invity’s or the provider's Terms of Service or of any applicable regulations.",
         id: 'TR_BUY_MODAL_TERMS_5',
         dynamic: true,
     },
@@ -1332,7 +1332,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_OFFER_LOOKING',
     },
     TR_COINMARKET_OFFER_NO_FOUND: {
-        defaultMessage: 'No offers available for your request. Change amount or currency.',
+        defaultMessage: 'No offers available for your request.',
         id: 'TR_COINMARKET_OFFER_NO_FOUND',
     },
     TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY: {
@@ -1485,7 +1485,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_KYC_DEX',
     },
     TR_COINMARKET_DCA_HEADING: {
-        defaultMessage: 'Save in Bitcoin with Invity app',
+        defaultMessage: 'Save in Bitcoin with the Invity app',
         id: 'TR_COINMARKET_DCA_HEADING',
     },
     TR_COINMARKET_DCA_FEATURE_1_SUBHEADING: {
@@ -1494,7 +1494,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_COINMARKET_DCA_FEATURE_1_DESCRIPTION: {
-        defaultMessage: 'Safe & simple custodial DCA savings plan.',
+        defaultMessage: 'A safe & simple custodial DCA savings plan.',
         id: 'TR_COINMARKET_DCA_FEATURE_1_DESCRIPTION',
         dynamic: true,
     },
@@ -1504,7 +1504,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_COINMARKET_DCA_FEATURE_2_DESCRIPTION: {
-        defaultMessage: 'Withdraw to self-custody with no extra charge.',
+        defaultMessage: 'Withdraw to self-custody without extra fees.',
         id: 'TR_COINMARKET_DCA_FEATURE_2_DESCRIPTION',
         dynamic: true,
     },
@@ -1514,7 +1514,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_COINMARKET_DCA_FEATURE_3_DESCRIPTION: {
-        defaultMessage: 'Quick, streamlined, user-friendly interface.',
+        defaultMessage: 'A quick, streamlined, user-friendly interface.',
         id: 'TR_COINMARKET_DCA_FEATURE_3_DESCRIPTION',
         dynamic: true,
     },
@@ -1524,12 +1524,12 @@ export default defineMessages({
         dynamic: true,
     },
     TR_COINMARKET_DCA_FEATURE_4_DESCRIPTION: {
-        defaultMessage: 'Monitor your investment history, amount, and frequency.',
+        defaultMessage: 'Monitor your investment history, amount & frequency.',
         id: 'TR_COINMARKET_DCA_FEATURE_4_DESCRIPTION',
         dynamic: true,
     },
     TR_COINMARKET_DCA_DOWNLOAD: {
-        defaultMessage: 'Download Invity mobile app to start saving in Bitcoin',
+        defaultMessage: 'Download the Invity mobile app to start saving in Bitcoin',
         id: 'TR_COINMARKET_DCA_DOWNLOAD',
     },
     TR_COINMARKET_BUY_AND_SELL: {
@@ -3661,7 +3661,7 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_LEDGER_DESC: {
         id: 'TR_ACCOUNT_TYPE_LEDGER_DESC',
         defaultMessage:
-            'Ledger accounts are compatible with Ledger Live derivation paths, enabling smooth  migration from Ledger to Trezor.',
+            'Ledger accounts are compatible with Ledger Live derivation paths, enabling smooth migration from Ledger to Trezor.',
     },
     TR_ACCOUNT_TYPE_LEGACY_DESC: {
         id: 'TR_ACCOUNT_TYPE_LEGACY_DESC',
@@ -3968,11 +3968,11 @@ export default defineMessages({
     },
     TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE: {
         id: 'TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE',
-        defaultMessage: 'Trezor Device',
+        defaultMessage: 'Trezor device',
     },
     TR_QUICK_ACTION_TOOLTIP_UP_TO_DATE: {
         id: 'TR_QUICK_ACTION_TOOLTIP_UP_TO_DATE',
-        defaultMessage: 'Up-to-date ({currentVersion})',
+        defaultMessage: 'Up to date ({currentVersion})',
     },
     TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE: {
         id: 'TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE',
@@ -5078,7 +5078,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON: {
         id: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON',
         defaultMessage:
-            'Allows to enable network BNB Smart Chain. Missing historical internal transactions.',
+            'Enables the BNB Smart Chain network but without internal transaction data history.',
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
