@@ -10,7 +10,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.4.1-beta.1
+## 9.4.1
 
 Automatic retry for no transport issue: If the transport (bridge) is initially not available, the automatic retry feature allows the user to continue after starting the transport, without having to restart the entire flow.
 
@@ -71,7 +71,7 @@ NodeBridge new version compatibility fix: Resolved an issue where NodeBridge ver
 -   transport: sessions background without abort signal (4f6e8cf)
 -   transport: better abortable methods (583f4aa)
 
-### Deps
+### Dependencies update
 
 -   @sinclair/typebox 0.31.28=>0.33.7 (43ae297)
 -   webpack from 5.93.0 to 5.94.0 (358b96d)
@@ -84,6 +84,19 @@ NodeBridge new version compatibility fix: Resolved an issue where NodeBridge ver
 -   @types/chrome; @types/web; @types/sharedworker (8e73aeb)
 -   various patch versions deps (ed3e9bf)
 -   TS 5.5 (198c91f)
+
+-   npm-release: @trezor/blockchain-link 2.3.1
+-   npm-release: @trezor/blockchain-link-utils 1.2.1
+-   npm-release: @trezor/blockchain-link-types 1.2.1
+-   npm-release: @trezor/connect-analytics 1.2.1
+-   npm-release: @trezor/analytics 1.2.1
+-   npm-release: @trezor/connect-common 0.2.1
+-   npm-release: @trezor/transport 1.3.1
+-   npm-release: @trezor/protobuf 1.2.1
+-   npm-release: @trezor/schema-utils 1.2.1
+-   npm-release: @trezor/protocol 1.2.1
+-   npm-release: @trezor/utxo-lib 2.2.1
+-   npm-release: @trezor/utils 9.2.1
 
 # 9.4.0
 
