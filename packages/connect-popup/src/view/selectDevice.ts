@@ -5,6 +5,7 @@ import {
     POPUP,
     ERRORS,
     createUiResponse,
+    getDeviceLabelOrName,
     UiRequestSelectDevice,
     UI_EVENT,
     TRANSPORT,
@@ -163,7 +164,7 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
 
         const deviceName = document.createElement('span');
         deviceName.className = 'device-name';
-        deviceName.textContent = device.label;
+        deviceName.textContent = getDeviceLabelOrName(device);
 
         const wrapper = document.createElement('div');
         wrapper.className = 'wrapper';
@@ -207,7 +208,7 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
                     'Click to activate. This device is used by another application.';
 
                 if (device.type === 'acquired') {
-                    deviceName.textContent = device.label;
+                    deviceName.textContent = getDeviceLabelOrName(device);
                 }
             }
 

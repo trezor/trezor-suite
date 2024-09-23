@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/pin.js
 
-import { UI, createUiResponse, UiRequestDeviceAction } from '@trezor/connect';
+import { UI, createUiResponse, getDeviceLabelOrName, UiRequestDeviceAction } from '@trezor/connect';
 import { container, showView, postMessage } from './common';
 
 const isSubmitButtonDisabled = (isDisabled: boolean) => {
@@ -103,7 +103,7 @@ export const initPinView = (payload: UiRequestDeviceAction['payload']) => {
     const backspace = container.getElementsByClassName('pin-backspace')[0];
     const buttons = container.querySelectorAll<HTMLElement>('[data-value]');
 
-    deviceName.innerText = payload.device.label;
+    deviceName.innerText = getDeviceLabelOrName(payload.device);
 
     for (let i = 0; i < buttons.length; i++) {
         buttons.item(i).addEventListener('click', event => {

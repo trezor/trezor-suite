@@ -4,6 +4,7 @@ import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
 import { parseCoinsJson, getAllNetworks } from '../../data/coinInfo';
 
 import {
+    getDeviceLabelOrName,
     getUnavailableCapabilities,
     parseCapabilities,
     parseRevision,
@@ -385,6 +386,28 @@ describe('utils/deviceFeaturesUtils', () => {
         it('passes null, caused by bootloader mode, through', () => {
             // @ts-expect-error - incomplete features
             expect(parseRevision({ revision: null })).toEqual(null);
+        });
+    });
+
+    describe('getDeviceLabelOrName', () => {
+        it('returns label if it is set', () => {
+            expect(
+                getDeviceLabelOrName({
+                    // @ts-expect-error - incomplete features
+                    features: { label: 'Label' },
+                    name: 'Name',
+                }),
+            ).toEqual('Label');
+        });
+
+        it('returns name if label is not set', () => {
+            expect(
+                getDeviceLabelOrName({
+                    // @ts-expect-error - incomplete features
+                    features: { label: '' },
+                    name: 'Name',
+                }),
+            ).toEqual('Name');
         });
     });
 });

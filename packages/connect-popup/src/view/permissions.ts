@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/permissions.js
 
-import { UI, createUiResponse, UiRequestPermission } from '@trezor/connect';
+import { UI, createUiResponse, getDeviceLabelOrName, UiRequestPermission } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/connect-analytics';
 import { container, showView, postMessage, createTooltip, getState } from './common';
 
@@ -81,7 +81,7 @@ export const initPermissionsView = (payload: UiRequestPermission['payload']) => 
     hostName.innerText = settings?.hostLabel ?? settings?.origin ?? '';
     if (payload && Array.isArray(payload.permissions)) {
         payload.permissions.forEach(p => {
-            const permissionText = getPermissionText(p, payload.device.label);
+            const permissionText = getPermissionText(p, getDeviceLabelOrName(payload.device));
             const tooltipText = getPermissionTooltipText(p);
 
             const permissionItem = createPermissionItem(permissionText, tooltipText);
