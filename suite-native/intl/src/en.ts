@@ -677,6 +677,7 @@ export const en = {
     transactions: {
         title: 'Transactions',
         receive: 'Receive',
+        send: 'Send',
         status: { pending: 'Pending', confirmed: 'Confirmed' },
         phishing: {
             badge: 'Caution!',

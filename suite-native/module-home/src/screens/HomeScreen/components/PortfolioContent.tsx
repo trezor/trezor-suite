@@ -10,7 +10,6 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    SendStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
@@ -24,7 +23,6 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
-    const [isSendEnabled] = useFeatureFlag(FeatureFlag.IsSendEnabled);
 
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -34,10 +32,6 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
 
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveModal, { closeActionType: 'back' });
-    };
-
-    const handleSend = () => {
-        navigation.navigate(RootStackRoutes.SendStack, { screen: SendStackRoutes.SendAccounts });
     };
 
     return (
@@ -73,12 +67,6 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                             </Button>
                         </Box>
                     </>
-                )}
-                {/* TODO: remove this button when there is a proper design of the send flow ready */}
-                {isSendEnabled && (
-                    <Button size="large" onPress={handleSend}>
-                        Send crypto
-                    </Button>
                 )}
             </VStack>
         </VStack>

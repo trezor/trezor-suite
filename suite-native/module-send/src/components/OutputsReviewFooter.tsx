@@ -35,6 +35,12 @@ const navigateToAccountDetail = ({
                 },
             },
             {
+                name: RootStackRoutes.AccountDetail,
+                params: {
+                    accountKey,
+                },
+            },
+            {
                 name: RootStackRoutes.TransactionDetail,
                 params: {
                     accountKey,
