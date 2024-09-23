@@ -1,13 +1,19 @@
+import { ReactNode } from 'react';
+
 import { BottomSheet, Button, VStack, Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+
+type ConfirmOnTrezorBottomSheetProps = {
+    isOpened: boolean;
+    onClose: () => void;
+    text: ReactNode;
+};
 
 export const ConfirmOnTrezorBottomSheet = ({
     isOpened,
     onClose,
-}: {
-    isOpened: boolean;
-    onClose: () => void;
-}) => {
+    text,
+}: ConfirmOnTrezorBottomSheetProps) => {
     return (
         <BottomSheet
             isVisible={isOpened}
@@ -18,10 +24,10 @@ export const ConfirmOnTrezorBottomSheet = ({
             <VStack spacing="large">
                 <VStack alignItems="center">
                     <Text textAlign="center" variant="titleSmall">
-                        <Translation id="moduleReceive.bottomSheets.confirmOnTrezor.title" />
+                        <Translation id="moduleDevice.confirmOnDeviceSheetTitle" />
                     </Text>
                     <Text textAlign="center" color="textSubdued">
-                        <Translation id="moduleReceive.bottomSheets.confirmOnTrezor.description" />
+                        {text}
                     </Text>
                 </VStack>
 

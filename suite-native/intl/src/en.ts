@@ -334,6 +334,7 @@ export const en = {
                 },
             },
         },
+        confirmOnDeviceSheetTitle: 'Confirm on Trezor',
     },
     moduleReceive: {
         screenTitle: '{coinSymbol} Receive address',
@@ -374,11 +375,8 @@ export const en = {
             },
         },
         bottomSheets: {
-            confirmOnTrezor: {
-                title: 'Confirm on Trezor',
-                description:
-                    'Go to your device and verify that the receive address on your Trezor matches the one displayed here.',
-            },
+            confirmOnDeviceMessage:
+                'Go to your device and verify that the receive address on your Trezor matches the one displayed here.',
             addressMismatch: {
                 title: "Address doesn't match?",
                 description:
@@ -878,6 +876,7 @@ export const en = {
             submitButton: 'Review and sign',
         },
         review: {
+            confirmOnDeviceMessage: 'Go to your Trezor and confirm the amounts & recipients.',
             address: {
                 title: 'Check the address on your Trezor against the original to make sure it’s correct.',
                 step1: 'Go to the app or place where you originally got the address.',

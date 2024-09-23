@@ -15,8 +15,8 @@ import { Button } from '@suite-native/atoms';
 import { RootStackRoutes, AppTabsRoutes, RootStackParamList } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { ConfirmOnTrezorImage } from '@suite-native/device';
 
+import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import { sendTransactionAndCleanupSendFormThunk } from '../sendFormThunks';
 
 const navigateToAccountDetail = ({
@@ -64,7 +64,7 @@ export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) 
     {
         /* TODO: improve the illustration: https://github.com/trezor/trezor-suite/issues/13965 */
     }
-    if (!signedTransaction || !account) return <ConfirmOnTrezorImage />;
+    if (!signedTransaction || !account) return <SendConfirmOnDeviceImage />;
 
     const handleSendTransaction = async () => {
         setIsSendInProgress(true);
