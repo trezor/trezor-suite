@@ -19,11 +19,6 @@ chrome.runtime.onInstalled.addListener(details => {
         _extendWebextensionLifetime: true, // Makes the service worker in @trezor/connect-webextension stay alive longer.
     });
 
-    // Event listener for Trezor device events
-    TrezorConnect.on('DEVICE_EVENT', event => {
-        console.log('EVENT in service worker', event);
-    });
-
     // Event listener for messages from other parts of the extension
     // This code will depend on how you handle the communication between different parts of your webextension.
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

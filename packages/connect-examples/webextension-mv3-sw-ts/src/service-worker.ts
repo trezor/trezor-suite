@@ -2,7 +2,7 @@
 // Reference the Web Worker library, allowing TypeScript to recognize service worker globals
 
 // Import using ES6 module TrezorConnect and the DEVICE_EVENT constant from the Trezor Connect WebExtension package
-import TrezorConnect, { DEVICE_EVENT, DeviceEventMessage } from '@trezor/connect-webextension';
+import TrezorConnect from '@trezor/connect-webextension';
 
 // URL of the Trezor Connect
 const connectSrc = 'https://connect.trezor.io/9/';
@@ -19,11 +19,6 @@ chrome.runtime.onInstalled.addListener((details: chrome.runtime.InstalledDetails
         transports: ['BridgeTransport', 'WebUsbTransport'], // Transport protocols to be used
         connectSrc,
         _extendWebextensionLifetime: true, // Makes the service worker in @trezor/connect-webextension stay alive longer.
-    });
-
-    // Event listener for Trezor device events
-    TrezorConnect.on(DEVICE_EVENT, (event: DeviceEventMessage) => {
-        console.log('EVENT in service worker', event);
     });
 
     // Event listener for messages from other parts of the extension
