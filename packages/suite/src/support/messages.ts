@@ -634,18 +634,6 @@ export default defineMessages({
         defaultMessage: "Use an account ({symbol}) that isn't in Suite",
         id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
-    TR_EXCHANGE_CONFIRM_ON_TREZOR: {
-        defaultMessage: 'Confirm on Trezor',
-        id: 'TR_EXCHANGE_CONFIRM_ON_TREZOR',
-    },
-    TR_EXCHANGE_GO_TO_PAYMENT: {
-        defaultMessage: 'Continue transaction',
-        id: 'TR_EXCHANGE_GO_TO_PAYMENT',
-    },
-    TR_EXCHANGE_SELL: {
-        defaultMessage: 'Exchange',
-        id: 'TR_EXCHANGE_SELL',
-    },
     TR_EXCHANGE_BUY: {
         defaultMessage: 'For',
         id: 'TR_EXCHANGE_BUY',
@@ -741,7 +729,7 @@ export default defineMessages({
     },
     TR_SELL_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud or any other violation of either Invity’s or the provider's Terms of service, or of any applicable regulations.",
+            "You're not using this feature for gambling, fraud, or any other violation of either Invity’s or the provider's Terms of Service or of any applicable regulations.",
         id: 'TR_SELL_MODAL_TERMS_5',
         dynamic: true,
     },
@@ -949,7 +937,7 @@ export default defineMessages({
     },
     TR_P2P_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud or any other violation of either Invity’s or the provider's Terms of service, or of any applicable regulations.",
+            "You're not using this feature for gambling, fraud, or any other violation of either Invity’s or the provider's Terms of Service or of any applicable regulations.",
         id: 'TR_P2P_MODAL_TERMS_5',
         dynamic: true,
     },
@@ -1048,7 +1036,7 @@ export default defineMessages({
     },
     TR_BUY_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud or any other violation of either Invity’s or the provider's Terms of service, or of any applicable regulations.",
+            "You're not using this feature for gambling, fraud, or any other violation of either Invity’s or the provider's Terms of Service or of any applicable regulations.",
         id: 'TR_BUY_MODAL_TERMS_5',
         dynamic: true,
     },
@@ -1332,7 +1320,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_OFFER_LOOKING',
     },
     TR_COINMARKET_OFFER_NO_FOUND: {
-        defaultMessage: 'No offers available for your request. Change amount or currency.',
+        defaultMessage: 'No offers available for your request.',
         id: 'TR_COINMARKET_OFFER_NO_FOUND',
     },
     TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY: {
@@ -1485,7 +1473,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_KYC_DEX',
     },
     TR_COINMARKET_DCA_HEADING: {
-        defaultMessage: 'Save in Bitcoin with Invity app',
+        defaultMessage: 'Save in Bitcoin with the Invity app',
         id: 'TR_COINMARKET_DCA_HEADING',
     },
     TR_COINMARKET_DCA_FEATURE_1_SUBHEADING: {
@@ -1494,7 +1482,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_COINMARKET_DCA_FEATURE_1_DESCRIPTION: {
-        defaultMessage: 'Safe & simple custodial DCA savings plan.',
+        defaultMessage: 'A safe & simple custodial DCA savings plan.',
         id: 'TR_COINMARKET_DCA_FEATURE_1_DESCRIPTION',
         dynamic: true,
     },
@@ -1504,7 +1492,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_COINMARKET_DCA_FEATURE_2_DESCRIPTION: {
-        defaultMessage: 'Withdraw to self-custody with no extra charge.',
+        defaultMessage: 'Withdraw to self-custody without extra fees.',
         id: 'TR_COINMARKET_DCA_FEATURE_2_DESCRIPTION',
         dynamic: true,
     },
@@ -1514,7 +1502,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_COINMARKET_DCA_FEATURE_3_DESCRIPTION: {
-        defaultMessage: 'Quick, streamlined, user-friendly interface.',
+        defaultMessage: 'A quick, streamlined, user-friendly interface.',
         id: 'TR_COINMARKET_DCA_FEATURE_3_DESCRIPTION',
         dynamic: true,
     },
@@ -1524,12 +1512,12 @@ export default defineMessages({
         dynamic: true,
     },
     TR_COINMARKET_DCA_FEATURE_4_DESCRIPTION: {
-        defaultMessage: 'Monitor your investment history, amount, and frequency.',
+        defaultMessage: 'Monitor your investment history, amount & frequency.',
         id: 'TR_COINMARKET_DCA_FEATURE_4_DESCRIPTION',
         dynamic: true,
     },
     TR_COINMARKET_DCA_DOWNLOAD: {
-        defaultMessage: 'Download Invity mobile app to start saving in Bitcoin',
+        defaultMessage: 'Download the Invity mobile app to start saving in Bitcoin',
         id: 'TR_COINMARKET_DCA_DOWNLOAD',
     },
     TR_COINMARKET_BUY_AND_SELL: {
@@ -2065,10 +2053,6 @@ export default defineMessages({
     TR_YES_SETUP_MY_TREZOR: {
         defaultMessage: 'Yes, set up my Trezor',
         id: 'TR_YES_SETUP_MY_TREZOR',
-    },
-    TR_COPY_TO_CLIPBOARD: {
-        defaultMessage: 'Copy',
-        id: 'TR_COPY_TO_CLIPBOARD',
     },
     TR_UNHIDE_TOKEN_TITLE: {
         defaultMessage: 'Unhide this token?',
@@ -3241,16 +3225,6 @@ export default defineMessages({
         defaultMessage: 'Connect your Trezor to change settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
-    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS: {
-        defaultMessage:
-            'Reconnect the device without holding any buttons to access all other settings.',
-        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
-    },
-    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH: {
-        defaultMessage:
-            'Reconnect the device without touching the screen to access all other settings.',
-        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH',
-    },
     TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION: {
         defaultMessage: 'To access more coins, install <button>{regular}</button> firmware.',
         id: 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION',
@@ -3661,7 +3635,7 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_LEDGER_DESC: {
         id: 'TR_ACCOUNT_TYPE_LEDGER_DESC',
         defaultMessage:
-            'Ledger accounts are compatible with Ledger Live derivation paths, enabling smooth  migration from Ledger to Trezor.',
+            'Ledger accounts are compatible with Ledger Live derivation paths, enabling smooth migration from Ledger to Trezor.',
     },
     TR_ACCOUNT_TYPE_LEGACY_DESC: {
         id: 'TR_ACCOUNT_TYPE_LEGACY_DESC',
@@ -3968,11 +3942,11 @@ export default defineMessages({
     },
     TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE: {
         id: 'TR_QUICK_ACTION_TOOLTIP_TREZOR_DEVICE',
-        defaultMessage: 'Trezor Device',
+        defaultMessage: 'Trezor device',
     },
     TR_QUICK_ACTION_TOOLTIP_UP_TO_DATE: {
         id: 'TR_QUICK_ACTION_TOOLTIP_UP_TO_DATE',
-        defaultMessage: 'Up-to-date ({currentVersion})',
+        defaultMessage: 'Up to date ({currentVersion})',
     },
     TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE: {
         id: 'TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE',
@@ -4179,10 +4153,6 @@ export default defineMessages({
     EVENT_WALLET_CREATED: {
         id: 'EVENT_WALLET_CREATED',
         defaultMessage: 'Wallet successfully added',
-    },
-    TR_WIPE_DEVICE_HEADING: {
-        id: 'TR_WIPE_DEVICE_HEADING',
-        defaultMessage: 'Before you wipe your device...',
     },
     TR_WIPE_DEVICE_TEXT: {
         id: 'TR_WIPE_DEVICE_TEXT',
@@ -5078,7 +5048,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON: {
         id: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON',
         defaultMessage:
-            'Allows to enable network BNB Smart Chain. Missing historical internal transactions.',
+            'Enables the BNB Smart Chain network but without internal transaction data history.',
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',
@@ -5358,10 +5328,6 @@ export default defineMessages({
     TR_NAV_BUY: {
         id: 'TR_NAV_BUY',
         defaultMessage: 'Buy',
-    },
-    TR_NAV_EXCHANGE: {
-        id: 'TR_NAV_EXCHANGE',
-        defaultMessage: 'Exchange',
     },
     TR_NAV_DCA: {
         id: 'TR_NAV_DCA',
@@ -7019,10 +6985,6 @@ export default defineMessages({
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON_DISABLED',
         defaultMessage: 'Turn on',
     },
-    TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_HEADING: {
-        id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_HEADING',
-        defaultMessage: 'Essential to understand',
-    },
     TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON: {
         id: 'TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_BUTTON',
         defaultMessage: 'Turn off',
@@ -7072,17 +7034,9 @@ export default defineMessages({
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON_DISABLED',
         defaultMessage: 'Turn on',
     },
-    TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_HEADING: {
-        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_HEADING',
-        defaultMessage: 'Essential to understand',
-    },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_BUTTON',
         defaultMessage: 'Turn off',
-    },
-    TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_CHECKBOX_TITLE: {
-        id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_CHECKBOX_TITLE',
-        defaultMessage: 'I’ve read and understood the above',
     },
     TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1: {
         id: 'TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1',
@@ -8547,10 +8501,6 @@ export default defineMessages({
     TR_STAKE_ETH: {
         id: 'TR_STAKE_ETH',
         defaultMessage: 'Stake Ethereum',
-    },
-    TR_STAKE_ETH_BADGE: {
-        id: 'TR_STAKE_ETH_BADGE',
-        defaultMessage: 'New',
     },
     TR_STAKE_RESTAKED_BADGE: {
         id: 'TR_STAKE_RESTAKED_BADGE',

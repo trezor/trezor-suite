@@ -215,7 +215,6 @@
   "TR_EXCHANGE_EXTRA_FIELD": "{extraFieldName}",
   "TR_EXCHANGE_EXTRA_FIELD_INVALID": "{extraFieldName} no és vàlid",
   "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
-  "TR_EXCHANGE_MODAL_LEGAL_HEADER": "Avís Legal",
   "TR_EXCHANGE_RATE": "Preu",
   "TR_EXCHANGE_SEND_TO": "L' adreça de {providerName} ",
   "TR_FEEDBACK_CATEGORY_ACCOUNT": "Compte",
