@@ -19,7 +19,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
     private _settings: ConnectSettings;
     private messagePromises: Record<number, Deferred<any>> = {};
     private messageID = 0;
-    private schema = 'trezorsuitelite';
+    private defaultDeeplinkUrl = 'trezorsuitelite://connect';
 
     public constructor() {
         this._settings = {
@@ -48,6 +48,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
             ...parseConnectSettings({ ...this._settings, ...settings }),
             deeplinkOpen: settings.deeplinkOpen,
             deeplinkCallbackUrl: settings.deeplinkCallbackUrl,
+            deeplinkUrl: settings.deeplinkUrl || this.defaultDeeplinkUrl,
         };
 
         return Promise.resolve();
@@ -166,7 +167,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
     }
 
     private buildUrl(method: string, params: any, callback: string) {
-        return `${this.schema}://connect?method=${method}&params=${encodeURIComponent(
+        return `${this._settings.deeplinkUrl}?method=${method}&params=${encodeURIComponent(
             JSON.stringify(params),
         )}&callback=${encodeURIComponent(callback)}`;
     }

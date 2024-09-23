@@ -28,6 +28,7 @@ export interface ConnectSettingsPublic {
     _extendWebextensionLifetime?: boolean;
     deeplinkOpen?: (url: string) => void;
     deeplinkCallbackUrl?: string;
+    deeplinkUrl?: string;
 }
 
 // internal part, not to be accepted from .init()
