@@ -14,6 +14,8 @@ import { isSignValuePositive } from '@suite-common/formatters';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
+import { RedactNumericalValue } from './RedactNumericalValue';
+
 const Container = styled.span`
     max-width: 100%;
 `;
@@ -82,13 +84,20 @@ export const FormattedCryptoAmount = ({
     if (isRawString) {
         const displayedSignValue = signValue ? `${isSignValuePositive(signValue) ? '+' : '-'}` : '';
 
-        return <>{`${displayedSignValue} ${formattedValue} ${formattedSymbol}`}</>;
+        return (
+            <>
+                {displayedSignValue} <RedactNumericalValue value={formattedValue} />{' '}
+                {formattedSymbol}
+            </>
+        );
     }
 
     const content = (
         <Container className={className}>
             {!!signValue && <Sign value={signValue} />}
-            <Value data-testid={dataTest}>{formattedValue}</Value>
+            <Value data-testid={dataTest}>
+                <RedactNumericalValue value={formattedValue} />
+            </Value>
             {formattedSymbol && (
                 <>
                     {' '}

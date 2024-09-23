@@ -3,6 +3,7 @@ export * from './backendUtils';
 export * from './balanceUtils';
 export * from './cardanoUtils';
 export * from './csvParserUtils';
+export * from './discreetModeUtils';
 export * from './ethUtils';
 export * from './fiatConverterUtils';
 export * from './fiatRatesUtils';

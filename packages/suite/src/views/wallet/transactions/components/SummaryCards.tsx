@@ -9,6 +9,7 @@ import { variables } from '@trezor/components';
 import { InfoCard } from './InfoCard';
 import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
 import { sumFiatValueMap } from 'src/utils/wallet/graph';
+import { DISCREET_PLACEHOLDER, useShouldRedactNumbers } from '@suite-common/wallet-utils';
 
 const InfoCardsWrapper = styled.div`
     display: grid;
@@ -53,6 +54,13 @@ const DateWrapper = styled.span`
     white-space: nowrap;
 `;
 
+const NumberOfTransactions = ({ value }: { value: number }) => (
+    <Translation
+        id="TR_N_TRANSACTIONS"
+        values={{ value: useShouldRedactNumbers() ? DISCREET_PLACEHOLDER : value }}
+    />
+);
+
 export const SummaryCards = ({
     selectedRange,
     data,
@@ -84,7 +92,7 @@ export const SummaryCards = ({
                 isLoading={isLoading}
                 value={
                     <HiddenPlaceholder>
-                        <Translation id="TR_N_TRANSACTIONS" values={{ value: numOfTransactions }} />
+                        <NumberOfTransactions value={numOfTransactions} />
                     </HiddenPlaceholder>
                 }
                 secondaryValue={
