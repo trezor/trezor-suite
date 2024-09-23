@@ -1,3 +1,12 @@
+# 2.3.1
+
+-   npm-prerelease: @trezor/blockchain-link 2.3.1-beta.1 (a77b9e96f7)
+-   chore(blockchain-link): replace deprecated Solana api call (c1ed11bd4c)
+-   chore(deps): update @types/bytebuffer @types/sharedworker @types/web (a9eaedc0a7)
+-   fix(blockchain-link): unify SOL connection logic (55dd2790a1)
+-   chore(deps): bump webpack from 5.93.0 to 5.94.0 (358b96d708)
+-   chore(deps): update @types/chrome; @types/web; @types/sharedworker (8e73aeb59b)
+
 # 2.3.0
 
 -   npm-prerelease: @trezor/blockchain-link 2.2.1-beta.3 (9a0896e229)
