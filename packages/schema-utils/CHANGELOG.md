@@ -1,3 +1,11 @@
+# 1.2.1
+
+-   npm-prerelease: @trezor/schema-utils 1.2.1-beta.1 (557eefaa0d)
+-   chore: remove prettier-eslint dependency, upgrade @typescript-eslint (77576f5bea)
+-   feat(repo): TS 5.5 (198c91f3c4)
+-   chore(connect): update @sinclair/typebox-codegen 0.8.13=>0.10.4 (6cd1fdc8af)
+-   chore(connect): update @sinclair/typebox 0.31.28=>0.33.7 (43ae2975b3)
+
 # 1.2.0
 
 -   npm-prerelease: @trezor/schema-utils 1.1.1-beta.1 (2d695ff6e0)
