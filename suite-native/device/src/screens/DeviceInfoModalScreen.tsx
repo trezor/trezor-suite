@@ -26,10 +26,10 @@ import {
 } from '@suite-native/navigation';
 import {
     selectDevice,
+    selectDeviceLabel,
     selectDeviceModel,
     selectDeviceReleaseInfo,
     selectIsPortfolioTrackerDevice,
-    selectDeviceLabel,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -136,7 +136,7 @@ export const DeviceInfoModalScreen = () => {
                     <HStack spacing="large">
                         <Image width={92} height={151} source={deviceImageMap[deviceModel]} />
                         <VStack spacing="extraSmall" justifyContent="center">
-                            <Text variant="titleSmall">{deviceLabel}</Text>
+                            {deviceLabel && <Text variant="titleSmall">{deviceLabel}</Text>}
                             <Text variant="label" color="textSubdued">
                                 {device?.name}
                             </Text>
