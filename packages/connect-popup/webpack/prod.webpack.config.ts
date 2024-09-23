@@ -18,6 +18,7 @@ const config: webpack.Configuration = {
     entry: {
         popup: path.resolve(__dirname, '../src/index.tsx'),
         log: path.resolve(__dirname, '../src/log.tsx'),
+        deeplink: path.resolve(__dirname, '../src/deeplink.tsx'),
     },
     output: {
         filename: 'js/[name].[contenthash].js',
@@ -78,6 +79,14 @@ const config: webpack.Configuration = {
             chunks: ['popup'],
             template: `${STATIC_SRC}/popup.html`,
             filename: 'popup.html',
+            inject: false,
+            minify: false,
+            urls: URLS,
+        }),
+        new HtmlWebpackPlugin({
+            chunks: ['deeplink'],
+            template: `${STATIC_SRC}/deeplink.html`,
+            filename: 'deeplink/index.html',
             inject: false,
             minify: false,
             urls: URLS,
