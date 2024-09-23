@@ -1,3 +1,13 @@
+# 0.2.1
+
+-   npm-prerelease: @trezor/connect-common 0.2.1-beta.1 (4dc0af2640)
+-   chore(connect-common): change lng blob in release.json (c8a0c46067)
+-   chore(connect-common): add FW 2.8.3 binaries for T3B1 (c32984c54e)
+-   chore(connect-common): add FW 2.8.3 binaries for T3T1 (b57198acf7)
+-   feat: add filterCoins script, update coins (74c53f68ee)
+-   chore(connect-common): update coins.json via yarn update-coins (f7c16e1e34)
+-   chore(connect-common): add t3b1 to coins.json (6a8b460250)
+
 # 0.2.0
 
 -   npm-prerelease: @trezor/connect-common 0.1.1-beta.3 (2bf4c38c95)
