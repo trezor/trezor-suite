@@ -9470,6 +9470,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
+    "@shopify/flash-list": "npm:1.7.1"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons-deprecated": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"

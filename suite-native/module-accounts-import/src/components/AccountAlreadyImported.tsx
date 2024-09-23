@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 
 import { Box, Button, Card, Divider } from '@suite-native/atoms';
-import { AccountListItem } from '@suite-native/accounts';
+import { AccountsListItem } from '@suite-native/accounts';
 import { Account } from '@suite-common/wallet-types';
 import {
     AccountsImportStackParamList,
@@ -57,7 +57,7 @@ export const AccountAlreadyImported = ({ account }: AccountImportImportedAccount
             testID="@account-import/summary/account-already-imported"
         >
             <Card style={applyStyle(contentWrapperStyle)}>
-                {account && <AccountListItem account={account} />}
+                {account && <AccountsListItem account={account} />}
             </Card>
             <Box>
                 <Box marginBottom="large" marginTop="large">

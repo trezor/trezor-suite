@@ -9,7 +9,7 @@ import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
-import { AccountListItemBase } from '@suite-native/accounts';
+import { AccountsListItemBase } from '@suite-native/accounts';
 import { Badge, Box, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -86,9 +86,8 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationType>();
     const { NetworkNameFormatter } = useFormatters();
-    const accountsKeysForNetworkSymbol = useSelectorDeepComparison(
-        (state: AccountsRootState & DeviceRootState) =>
-            selectVisibleDeviceAccountsKeysByNetworkSymbol(state, cryptoCurrencySymbol),
+    const accountsKeysForNetworkSymbol = useSelectorDeepComparison((state: AssetsRootState) =>
+        selectVisibleDeviceAccountsKeysByNetworkSymbol(state, cryptoCurrencySymbol),
     );
 
     const accountsPerAsset = accountsKeysForNetworkSymbol.length;
@@ -109,7 +108,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
     };
 
     return (
-        <AccountListItemBase
+        <AccountsListItemBase
             disabled={!onPress}
             onPress={handleAssetPress}
             icon={<PercentageIcon network={cryptoCurrencySymbol} />}

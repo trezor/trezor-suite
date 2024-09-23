@@ -8,7 +8,7 @@ import { IconName } from '@suite-common/icons-deprecated';
 
 const PLACEHOLDER_HEIGHT = 380;
 
-type AccountListPlaceholderProps = {
+type AccountsListEmptyPlaceholderProps = {
     isFilterEmpty?: boolean;
 };
 
@@ -18,7 +18,9 @@ const titleVariant = prepareNativeStyle(_ => ({
     height: PLACEHOLDER_HEIGHT,
 }));
 
-export const AccountListPlaceholder = ({ isFilterEmpty }: AccountListPlaceholderProps) => {
+export const AccountsListEmptyPlaceholder = ({
+    isFilterEmpty,
+}: AccountsListEmptyPlaceholderProps) => {
     const { applyStyle } = useNativeStyles();
     const route = useRoute();
 
