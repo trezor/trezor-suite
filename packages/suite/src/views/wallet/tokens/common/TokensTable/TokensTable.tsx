@@ -42,6 +42,10 @@ export const TokensTable = ({
 }: TokensTableProps) => {
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
 
+    // first two columns have fixed width, the rest have variable width
+    // in case of 2nd column, it's due to HiddenPlaceholder - it changes content width when hovered
+    const colWidths = ['250px', '250px'];
+
     return (
         <Card paddingType="none" overflow="hidden">
             {tokensWithBalance.length === 0 && tokensWithoutBalance.length === 0 && searchQuery ? (
@@ -53,7 +57,7 @@ export const TokensTable = ({
                     <Translation id="TR_NO_SEARCH_RESULTS" />
                 </Paragraph>
             ) : (
-                <Table margin={{ top: spacings.xs, bottom: spacings.xs }} colWidths={['250px']}>
+                <Table margin={{ top: spacings.xs, bottom: spacings.xs }} colWidths={colWidths}>
                     <Table.Header>
                         <Table.Row>
                             <Table.Cell>

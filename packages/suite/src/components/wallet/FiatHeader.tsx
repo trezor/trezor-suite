@@ -1,6 +1,7 @@
 import { useFormatters } from '@suite-common/formatters';
 import { typography } from '@trezor/theme';
 import { HiddenPlaceholder } from 'src/components/suite';
+import { RedactNumericalValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import styled from 'styled-components';
@@ -47,10 +48,12 @@ export const FiatHeader = ({ size, fiatAmount, localCurrency }: FiatHeaderProps)
     return (
         <HiddenPlaceholder enforceIntensity={10}>
             <ValueWrapper>
-                <WholeValue $size={size}>{whole}</WholeValue>
+                <WholeValue $size={size}>
+                    <RedactNumericalValue value={whole} />
+                </WholeValue>
                 <DecimalValue $size={size}>
                     {separator}
-                    {fractional}
+                    <RedactNumericalValue value={fractional} />
                 </DecimalValue>
             </ValueWrapper>
         </HiddenPlaceholder>

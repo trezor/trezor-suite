@@ -1,3 +1,5 @@
+import { useShouldRedactNumbers } from '@suite-common/wallet-utils';
+
 export type DataContext = Record<string, unknown>;
 
 interface FormatDefinition<TInput, TOutput, TDataContext extends DataContext> {
@@ -6,6 +8,8 @@ interface FormatDefinition<TInput, TOutput, TDataContext extends DataContext> {
         value: TInput,
         /** Additional data context to be used by the formatter. */
         dataContext: Partial<TDataContext>,
+        /** Whether a component above has requested to redact the numbers for discreet mode */
+        shouldRedactNumbers?: boolean,
     ): TOutput;
 }
 
@@ -40,11 +44,11 @@ export const makeFormatter = <TInput, TOutput, TDataContext extends DataContext 
     format: FormatDefinition<TInput, TOutput, TDataContext>,
     displayName = 'Formatter',
 ): Formatter<TInput, TOutput, TDataContext> => {
-    const formatter: Formatter<TInput, TOutput, TDataContext> = props =>
-        <>{format(props.value, props)}</> ?? null;
-    formatter.displayName = displayName;
+    const FormatterComponent: Formatter<TInput, TOutput, TDataContext> = props =>
+        <>{format(props.value, props, useShouldRedactNumbers())}</> ?? null;
+    FormatterComponent.displayName = displayName;
 
-    formatter.format = (value, dataContext = {}) => format(value, dataContext);
+    FormatterComponent.format = (value, dataContext = {}) => format(value, dataContext);
 
-    return formatter;
+    return FormatterComponent;
 };

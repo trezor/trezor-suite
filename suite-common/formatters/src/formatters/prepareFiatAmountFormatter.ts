@@ -1,6 +1,7 @@
 import { FormatNumberOptions } from '@formatjs/intl';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { redactNumericalSubstring } from '@suite-common/wallet-utils';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
@@ -14,24 +15,29 @@ export const prepareFiatAmountFormatter = (config: FormatterConfig) =>
         string | number,
         string | null,
         FiatAmountFormatterDataContext<FormatNumberOptions>
-    >((value, dataContext) => {
+    >((value, dataContext, shouldRedactNumbers) => {
         const { intl, fiatCurrency } = config;
         const { style, currency, minimumFractionDigits, maximumFractionDigits } = dataContext;
         const fiatValue = new BigNumber(value);
+        const currencyForDisplay = currency ?? fiatCurrency;
 
         if (fiatValue.isNaN()) {
             return null;
         }
 
+        let formattedValue: string = '';
+
         if (fiatValue.gt(Number.MAX_SAFE_INTEGER)) {
-            return `${value} ${currency ?? fiatCurrency}`;
+            formattedValue = `${value} ${currencyForDisplay}`;
+        } else {
+            formattedValue = intl.formatNumber(fiatValue.toNumber(), {
+                ...dataContext,
+                style: style || 'currency',
+                currency: currencyForDisplay,
+                minimumFractionDigits: minimumFractionDigits ?? 2,
+                maximumFractionDigits: maximumFractionDigits ?? 2,
+            });
         }
 
-        return intl.formatNumber(fiatValue.toNumber(), {
-            ...dataContext,
-            style: style || 'currency',
-            currency: currency ?? fiatCurrency,
-            minimumFractionDigits: minimumFractionDigits ?? 2,
-            maximumFractionDigits: maximumFractionDigits ?? 2,
-        });
+        return shouldRedactNumbers ? redactNumericalSubstring(formattedValue) : formattedValue;
     }, 'FiatAmountFormatter');
