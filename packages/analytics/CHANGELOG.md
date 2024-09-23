@@ -1,3 +1,7 @@
+# 1.2.1
+
+-   npm-prerelease: @trezor/analytics 1.2.1-beta.1 (cad75cc6e6)
+
 # 1.2.0
 
 -   npm-prerelease: @trezor/analytics 1.1.1-beta.1 (69ebdd96a5)
