@@ -156,7 +156,6 @@ export const resetDevice =
 
         const defaults = {
             strength: DEVICE.DEFAULT_STRENGTH[device.features.internal_model],
-            label: DEVICE.DEFAULT_LABEL,
             skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
             passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
         };
