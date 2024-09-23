@@ -1,3 +1,10 @@
+# 1.2.1
+
+-   npm-prerelease: @trezor/protobuf 1.2.1-beta.1 (3cfd038db1)
+-   chore(connect): update @sinclair/typebox-codegen 0.8.13=>0.10.4 (6cd1fdc8af)
+-   chore(deps): update protobuf-js 7.2.6=>7.4.0 (0b937d6fe7)
+-   chore(deps): update various patch versions deps (ed3e9bfda7)
+
 # 1.2.0
 
 -   npm-prerelease: @trezor/protobuf 1.1.1-beta.2 (0639cf5bdb)
