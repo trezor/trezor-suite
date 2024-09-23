@@ -3,22 +3,26 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, Divider, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     selectIsTestnetAccount,
     selectHasAccountTransactions,
     selectAccountByKey,
+    selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 import {
     AppTabsParamList,
     RootStackParamList,
     RootStackRoutes,
+    SendStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
@@ -42,6 +46,8 @@ type AccountsNavigationProps = TabToStackCompositeNavigationProp<
     RootStackRoutes.ReceiveModal,
     RootStackParamList
 >;
+
+const SEND_NETWORK_WHITELIST: Readonly<NetworkSymbol[]> = ['btc', 'test', 'regtest'];
 
 const TransactionListHeaderContent = ({
     accountKey,
@@ -93,6 +99,7 @@ export const TransactionListHeader = memo(
         tokenContract,
     }: AccountDetailHeaderProps) => {
         const navigation = useNavigation<AccountsNavigationProps>();
+        const [isSendEnabled] = useFeatureFlag(FeatureFlag.IsSendEnabled);
 
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
@@ -103,6 +110,7 @@ export const TransactionListHeader = memo(
         const isTestnetAccount = useSelector((state: AccountsRootState) =>
             selectIsTestnetAccount(state, accountKey),
         );
+        const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
         if (!account) return null;
 
@@ -114,9 +122,23 @@ export const TransactionListHeader = memo(
             });
         };
 
+        const handleSend = () => {
+            navigation.navigate(RootStackRoutes.SendStack, {
+                screen: SendStackRoutes.SendOutputs,
+                params: {
+                    accountKey,
+                },
+            });
+        };
+
         const isTokenDetail = !!tokenContract;
         const isEthereumAccountDetail = !isTokenDetail && isEthereumAccountSymbol(account.symbol);
         const isPriceCardDisplayed = !isTestnetAccount && !isTokenDetail;
+
+        const isSendButtonDisplayed =
+            isSendEnabled &&
+            SEND_NETWORK_WHITELIST.includes(account.symbol) &&
+            !isPortfolioTrackerDevice;
 
         return (
             <Box marginBottom="small">
@@ -126,11 +148,20 @@ export const TransactionListHeader = memo(
                         tokenContract={tokenContract}
                     />
                     {accountHasTransactions && (
-                        <Box marginVertical="medium" paddingHorizontal="medium">
-                            <Button viewLeft="receive" size="large" onPress={handleReceive}>
-                                <Translation id="transactions.receive" />
-                            </Button>
-                        </Box>
+                        <HStack marginVertical="medium" paddingHorizontal="medium" flex={1}>
+                            <Box flex={1}>
+                                <Button viewLeft="receive" size="large" onPress={handleReceive}>
+                                    <Translation id="transactions.receive" />
+                                </Button>
+                            </Box>
+                            {isSendButtonDisplayed && (
+                                <Box flex={1}>
+                                    <Button viewLeft="send" size="large" onPress={handleSend}>
+                                        <Translation id="transactions.send" />
+                                    </Button>
+                                </Box>
+                            )}
+                        </HStack>
                     )}
                     {isPriceCardDisplayed && (
                         <Box marginBottom={accountHasTransactions ? undefined : 'medium'}>

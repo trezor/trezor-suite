@@ -2,8 +2,16 @@ import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
+import { useNavigation } from '@react-navigation/native';
 
-import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    SendStackParamList,
+    SendStackRoutes,
+    StackProps,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import { VStack } from '@suite-native/atoms';
 import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
@@ -15,13 +23,19 @@ import { cleanupSendFormThunk } from '../sendFormThunks';
 import { SendScreen } from '../components/SendScreen';
 import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
 
+type NavigationProps = StackToStackCompositeNavigationProps<
+    SendStackParamList,
+    SendStackRoutes.SendOutputsReview,
+    RootStackParamList
+>;
+
 export const SendOutputsReviewScreen = ({
     route,
-    navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputsReview>) => {
     const { accountKey } = route.params;
     const { translate } = useTranslate();
     const dispatch = useDispatch();
+    const navigation = useNavigation<NavigationProps>();
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', async e => {
@@ -35,7 +49,10 @@ export const SendOutputsReviewScreen = ({
                 return;
             }
             dispatch(cleanupSendFormThunk({ accountKey }));
-            navigation.popToTop();
+            navigation.navigate(RootStackRoutes.AccountDetail, {
+                accountKey,
+                closeActionType: 'back',
+            });
         });
 
         return unsubscribe;

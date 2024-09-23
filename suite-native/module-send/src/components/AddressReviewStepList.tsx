@@ -6,10 +6,12 @@ import { isRejected } from '@reduxjs/toolkit';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import {
+    RootStackParamList,
+    RootStackRoutes,
     SendStackParamList,
     SendStackRoutes,
-    StackNavigationProps,
     StackProps,
+    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -29,7 +31,11 @@ const OVERLAY_INITIAL_POSITION = 75;
 const LIST_VERTICAL_SPACING = nativeSpacings.medium;
 
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
-type NavigationProps = StackNavigationProps<SendStackParamList, SendStackRoutes.SendAddressReview>;
+type NavigationProps = StackToStackCompositeNavigationProps<
+    SendStackParamList,
+    SendStackRoutes.SendOutputsReview,
+    RootStackParamList
+>;
 
 export const AddressReviewStepList = () => {
     const route = useRoute<RouteProps>();
@@ -84,7 +90,10 @@ export const AddressReviewStepList = () => {
                     icon: 'closeCircle',
                 });
 
-                navigation.popToTop();
+                navigation.navigate(RootStackRoutes.AccountDetail, {
+                    accountKey,
+                    closeActionType: 'back',
+                });
             }
         }
     };
