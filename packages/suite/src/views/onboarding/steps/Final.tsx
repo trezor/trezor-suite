@@ -14,7 +14,6 @@ import {
 import { Translation, HomescreenGallery } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
-import { DEFAULT_LABEL } from 'src/constants/suite/device';
 import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { ChangeDeviceLabel } from 'src/components/suite/ChangeDeviceLabel';
@@ -196,11 +195,7 @@ export const FinalStep = () => {
                     )}
                     {state === 'rename' && (
                         <SetupActions>
-                            <ChangeDeviceLabel
-                                placeholder={DEFAULT_LABEL}
-                                onClick={onClick}
-                                isDeviceLocked={isDeviceLocked}
-                            />
+                            <ChangeDeviceLabel onClick={onClick} isDeviceLocked={isDeviceLocked} />
                         </SetupActions>
                     )}
 

@@ -4,12 +4,13 @@ import styled from 'styled-components';
 
 import { Button, Input } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { isAscii } from '@trezor/utils';
 import { spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
+import { selectDeviceLabel, selectDeviceName } from '@suite-common/wallet-core';
 
 const Container = styled.div<{ $isVertical?: boolean }>`
     display: flex;
@@ -25,19 +26,18 @@ const Container = styled.div<{ $isVertical?: boolean }>`
 
 interface ChangeDeviceLabelProps {
     isDeviceLocked: boolean;
-    placeholder?: string;
     isVertical?: boolean;
     onClick?: () => void;
 }
 
 export const ChangeDeviceLabel = ({
     isDeviceLocked,
-    placeholder,
     isVertical,
     onClick,
 }: ChangeDeviceLabelProps) => {
     const { translationString } = useTranslation();
-    const { device } = useDevice();
+    const deviceLabel = useSelector(selectDeviceLabel);
+    const deviceName = useSelector(selectDeviceName);
     const dispatch = useDispatch();
 
     const [label, setLabel] = useState(deviceLabel ?? '');
@@ -67,8 +67,8 @@ export const ChangeDeviceLabel = ({
         onClick?.();
     };
 
-    const isDisabled =
-        isDeviceLocked || (!placeholder && label === device?.label) || !!error || !label;
+    const isDisabled = isDeviceLocked || !label || label === deviceLabel || !!error;
+    const placeholder = deviceLabel ? undefined : deviceName;
 
     return (
         <Container $isVertical={isVertical}>
