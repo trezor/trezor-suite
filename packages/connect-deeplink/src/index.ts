@@ -14,12 +14,13 @@ import type {
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { Deferred, createDeferred } from '@trezor/utils';
 
+import { buildURL } from './buildURL';
+
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
     public eventEmitter = new EventEmitter();
     private _settings: ConnectSettings;
     private messagePromises: Record<number, Deferred<any>> = {};
     private messageID = 0;
-    private schema = 'trezorsuitelite';
 
     public constructor() {
         this._settings = {
@@ -66,7 +67,7 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
         if (!this._settings.deeplinkCallbackUrl) {
             throw new Error('TrezorConnect native requires "deeplinkCallbackUrl" setting.');
         }
-        const url = this.buildUrl(
+        const url = buildURL(
             method,
             restParams,
             `${this._settings.deeplinkCallbackUrl}/id=${this.messageID}`,
@@ -172,12 +173,6 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
 
         return Number(id);
     }
-
-    private buildUrl(method: string, params: any, callback: string) {
-        return `${this.schema}://connect?method=${method}&params=${encodeURIComponent(
-            JSON.stringify(params),
-        )}&callback=${encodeURIComponent(callback)}`;
-    }
 }
 
 const impl = new TrezorConnectDeeplink();
@@ -203,3 +198,4 @@ const TrezorConnect: TrezorConnectType & {
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
 export * from '@trezor/connect/src/exports';
+export * from './buildURL';
