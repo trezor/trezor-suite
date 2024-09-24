@@ -43,40 +43,41 @@ const createUsbMock = (optional = {}) =>
 
 class TestUsbTransport extends AbstractApiTransport {
     public name = 'WebUsbTransport' as const;
+    public sessionsClient = new SessionsClient({});
 
-    constructor({
-        messages,
-        api,
-        sessionsClient,
-    }: ConstructorParameters<typeof AbstractApiTransport>[0]) {
+    constructor({ messages, api }: ConstructorParameters<typeof AbstractApiTransport>[0]) {
         super({
             messages,
             api,
-            sessionsClient,
+        });
+    }
+
+    init() {
+        return this.scheduleAction(async () => {
+            const sessionsBackground = new SessionsBackground();
+
+            // in nodeusb there is no synchronization yet. this is a followup and needs to be decided
+            // so far, sessionsClient has direct access to sessionBackground
+            this.sessionsClient.init({
+                requestFn: args => sessionsBackground.handleMessage(args),
+                registerBackgroundCallbacks: () => {},
+            });
+
+            sessionsBackground.on('descriptors', descriptors => {
+                this.sessionsClient.emit('descriptors', descriptors);
+            });
+
+            const handshakeRes = await this.sessionsClient.handshake();
+            this.stopped = !handshakeRes.success;
+
+            return handshakeRes;
         });
     }
 }
 // we cant directly use abstract class (UsbTransport)
 const initTest = async () => {
-    let sessionsBackground: SessionsBackground;
-    let sessionsClient: SessionsClient;
     let transport: AbstractTransport;
     let testUsbApi: UsbApi;
-
-    sessionsBackground = new SessionsBackground();
-
-    sessionsClient = new SessionsClient({
-        requestFn: params => sessionsBackground.handleMessage(params),
-        registerBackgroundCallbacks: onDescriptorsCallback => {
-            sessionsBackground.on('descriptors', descriptors => {
-                onDescriptorsCallback(descriptors);
-            });
-        },
-    });
-
-    sessionsBackground.on('descriptors', descriptors => {
-        sessionsClient.emit('descriptors', descriptors);
-    });
 
     // create usb api with navigator.usb mock
     testUsbApi = new UsbApi({
@@ -85,14 +86,12 @@ const initTest = async () => {
 
     transport = new TestUsbTransport({
         api: testUsbApi,
-        sessionsClient,
         messages,
     });
-    await transport.init();
+    const initResponse = await transport.init();
+    expect(initResponse.success).toEqual(true);
 
     return {
-        sessionsBackground,
-        sessionsClient,
         transport,
         testUsbApi,
     };
@@ -108,40 +107,7 @@ describe('Usb', () => {
     afterAll(async () => {});
 
     describe('without initiated transport', () => {
-        it('init error', async () => {
-            const sessionsClient = new SessionsClient({
-                // @ts-expect-error
-                requestFn: _params => ({ type: 'meow' }),
-                registerBackgroundCallbacks: () => {},
-            });
-
-            // create usb api with navigator.usb mock
-            const testUsbApi = new UsbApi({
-                usbInterface: createUsbMock(),
-            });
-
-            const transport = new TestUsbTransport({
-                api: testUsbApi,
-                sessionsClient,
-            });
-
-            // there are no loaded messages
-            expect(transport.getMessage()).toEqual(false);
-
-            const res = await transport.init();
-            expect(res).toMatchObject({
-                success: false,
-            });
-        });
-
         it('enumerate error', async () => {
-            const sessionsBackground = new SessionsBackground();
-
-            const sessionsClient = new SessionsClient({
-                requestFn: params => sessionsBackground.handleMessage(params),
-                registerBackgroundCallbacks: () => {},
-            });
-
             // create usb api with navigator.usb mock
             const testUsbApi = new UsbApi({
                 usbInterface: createUsbMock({
@@ -153,7 +119,6 @@ describe('Usb', () => {
 
             const transport = new TestUsbTransport({
                 api: testUsbApi,
-                sessionsClient,
             });
 
             await transport.init();
@@ -164,23 +129,20 @@ describe('Usb', () => {
                 error: 'unexpected error',
                 message: 'crazy error nobody expects',
             });
-
-            sessionsBackground.dispose();
         });
     });
 
     describe('with initiated transport', () => {
         it('listen twice -> error', async () => {
-            const { transport, sessionsBackground } = await initTest();
+            const { transport } = await initTest();
             const res1 = transport.listen();
             expect(res1.success).toEqual(true);
             const res2 = transport.listen();
             expect(res2.success).toEqual(false);
-            sessionsBackground.dispose();
         });
 
         it('handleDescriptorsChange', async () => {
-            const { transport, sessionsBackground } = await initTest();
+            const { transport } = await initTest();
             const spy = jest.fn();
             transport.on('transport-update', spy);
 
@@ -193,11 +155,10 @@ describe('Usb', () => {
             expect(spy).toHaveBeenCalledWith([
                 { type: 'disconnected', descriptor: { path: '1', session: null, type: 1 } },
             ]);
-            sessionsBackground.dispose();
         });
 
         it('enumerate', async () => {
-            const { transport, sessionsBackground } = await initTest();
+            const { transport } = await initTest();
             const res = await transport.enumerate();
             expect(res).toEqual({
                 success: true,
@@ -218,11 +179,10 @@ describe('Usb', () => {
                     },
                 ],
             });
-            sessionsBackground.dispose();
         });
 
         it('acquire. transport is not listening', async () => {
-            const { transport, sessionsBackground } = await initTest();
+            const { transport } = await initTest();
             jest.useFakeTimers();
             const spy = jest.fn();
             transport.on('transport-update', spy);
@@ -240,13 +200,10 @@ describe('Usb', () => {
             });
 
             expect(spy).toHaveBeenCalledTimes(0);
-            sessionsBackground.dispose();
         });
 
         it('acquire. transport listening. missing descriptor', async () => {
-            const { transport, sessionsClient, sessionsBackground } = await initTest();
-
-            sessionsBackground.removeAllListeners();
+            const { transport } = await initTest();
 
             const enumerateResult = await transport.enumerate();
 
@@ -262,7 +219,8 @@ describe('Usb', () => {
             });
 
             setTimeout(() => {
-                sessionsClient.emit('descriptors', [
+                // @ts-expect-error (private field accessed in tests)
+                transport.sessionsClient.emit('descriptors', [
                     { path: PathPublic('321'), session: Session('1'), type: 1 },
                 ]);
             }, 1);
@@ -273,12 +231,10 @@ describe('Usb', () => {
                 success: false,
                 error: 'device disconnected during action',
             });
-            sessionsBackground.dispose();
         });
 
         it('acquire. transport listening. unexpected session', async () => {
-            const { transport, sessionsClient, sessionsBackground } = await initTest();
-            sessionsBackground.removeAllListeners();
+            const { transport } = await initTest();
             const enumerateResult = await transport.enumerate();
             expect(enumerateResult.success).toEqual(true);
             // @ts-expect-error
@@ -291,18 +247,18 @@ describe('Usb', () => {
                 input: { path: PathPublic('1'), previous: null },
             });
             setTimeout(() => {
-                sessionsClient.emit('descriptors', [
+                // @ts-expect-error (private field accessed in tests)
+                transport.sessionsClient.emit('descriptors', [
                     { path: PathPublic('1'), session: Session('2'), type: 1, product: 21441 },
                 ]);
             }, 1);
 
             const res = await acquireCall;
             expect(res).toMatchObject({ success: false, error: 'wrong previous session' });
-            sessionsBackground.dispose();
         });
 
         it('call error - called without acquire.', async () => {
-            const { transport, sessionsBackground } = await initTest();
+            const { transport } = await initTest();
             const res = await transport.call({
                 name: 'GetAddress',
                 data: {},
@@ -310,11 +266,10 @@ describe('Usb', () => {
                 protocol: v1Protocol,
             });
             expect(res).toEqual({ success: false, error: 'device disconnected during action' });
-            sessionsBackground.dispose();
         });
 
         it('call - with valid and invalid message.', async () => {
-            const { transport, sessionsBackground } = await initTest();
+            const { transport } = await initTest();
             await transport.enumerate();
             const acquireRes = await transport.acquire({
                 input: { path: PathPublic('1'), previous: null },
@@ -354,12 +309,10 @@ describe('Usb', () => {
                 error: 'unexpected error',
                 message: 'no such type: Foo-bar message',
             });
-
-            sessionsBackground.dispose();
         });
 
         it('send and receive.', async () => {
-            const { transport, sessionsBackground } = await initTest();
+            const { transport } = await initTest();
             await transport.enumerate();
             const acquireRes = await transport.acquire({
                 input: { path: PathPublic('1'), previous: null },
@@ -393,11 +346,10 @@ describe('Usb', () => {
                     },
                 },
             });
-            sessionsBackground.dispose();
         });
 
         it('send protocol-v1 with custom chunkSize', async () => {
-            const { transport, testUsbApi, sessionsBackground } = await initTest();
+            const { transport, testUsbApi } = await initTest();
             await transport.enumerate();
             const acquireRes = await transport.acquire({
                 input: { path: PathPublic('1'), previous: null },
@@ -433,11 +385,10 @@ describe('Usb', () => {
             await send(); // bigger chunks
             expect(writeSpy).toHaveBeenCalledTimes(2);
             writeSpy.mockClear();
-            sessionsBackground.dispose();
         });
 
         it('release', async () => {
-            const { transport, sessionsBackground } = await initTest();
+            const { transport } = await initTest();
             await transport.enumerate();
             const acquireRes = await transport.acquire({
                 input: { path: PathPublic('1'), previous: null },
@@ -457,11 +408,10 @@ describe('Usb', () => {
                 success: true,
                 payload: undefined,
             });
-            sessionsBackground.dispose();
         });
 
         it('call - with use abort', async () => {
-            const { transport, sessionsBackground } = await initTest();
+            const { transport } = await initTest();
             await transport.enumerate();
             const acquireRes = await transport.acquire({
                 input: { path: PathPublic('1'), previous: null },
@@ -499,7 +449,6 @@ describe('Usb', () => {
                     },
                 },
             });
-            sessionsBackground.dispose();
         });
     });
 });

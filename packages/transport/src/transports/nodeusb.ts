@@ -1,7 +1,6 @@
 import { WebUSB } from 'usb';
 import { AbstractTransportParams } from './abstract';
 import { AbstractApiTransport } from './abstractApi';
-import { SessionsClient } from '../sessions/client';
 import { SessionsBackground } from '../sessions/background';
 import { UsbApi } from '../api/usb';
 
@@ -12,22 +11,10 @@ import { UsbApi } from '../api/usb';
 export class NodeUsbTransport extends AbstractApiTransport {
     public name = 'NodeUsbTransport' as const;
 
-    private readonly sessionsBackground;
+    private readonly sessionsBackground = new SessionsBackground();
 
     constructor(params: AbstractTransportParams) {
         const { messages, logger, debugLink } = params;
-        const sessionsBackground = new SessionsBackground();
-
-        // in nodeusb there is no synchronization yet. this is a followup and needs to be decided
-        // so far, sessionsClient has direct access to sessionBackground
-        const sessionsClient = new SessionsClient({
-            requestFn: args => sessionsBackground.handleMessage(args),
-            registerBackgroundCallbacks: () => {},
-        });
-
-        sessionsBackground.on('descriptors', descriptors => {
-            sessionsClient.emit('descriptors', descriptors);
-        });
 
         super({
             messages,
@@ -38,9 +25,27 @@ export class NodeUsbTransport extends AbstractApiTransport {
                 logger,
                 debugLink,
             }),
-            sessionsClient,
         });
-        this.sessionsBackground = sessionsBackground;
+    }
+
+    public init() {
+        return this.scheduleAction(async () => {
+            // in nodeusb there is no synchronization yet. this is a followup and needs to be decided
+            // so far, sessionsClient has direct access to sessionBackground
+            this.sessionsClient.init({
+                requestFn: args => this.sessionsBackground.handleMessage(args),
+                registerBackgroundCallbacks: () => {},
+            });
+
+            this.sessionsBackground.on('descriptors', descriptors => {
+                this.sessionsClient.emit('descriptors', descriptors);
+            });
+
+            const handshakeRes = await this.sessionsClient.handshake();
+            this.stopped = !handshakeRes.success;
+
+            return handshakeRes;
+        });
     }
 
     public listen() {

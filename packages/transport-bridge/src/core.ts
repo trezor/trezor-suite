@@ -19,11 +19,11 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
     const sessionsBackground = new SessionsBackground();
 
-    const sessionsClient = new SessionsClient({
+    const sessionsClient = new SessionsClient();
+    sessionsClient.init({
         requestFn: args => sessionsBackground.handleMessage(args),
         registerBackgroundCallbacks: () => {},
     });
-
     sessionsBackground.on('descriptors', descriptors => {
         sessionsClient.emit('descriptors', descriptors);
     });

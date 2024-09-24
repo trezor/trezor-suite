@@ -15,7 +15,6 @@ import { Session } from '../types';
 
 interface ConstructorParams extends AbstractTransportParams {
     api: AbstractApi;
-    sessionsClient: (typeof SessionsClient)['prototype'];
 }
 
 /**
@@ -24,12 +23,11 @@ interface ConstructorParams extends AbstractTransportParams {
 export abstract class AbstractApiTransport extends AbstractTransport {
     // sessions client is a standardized interface for communicating with sessions backend
     // which can live in couple of context (shared worker, local module, websocket server etc)
-    private sessionsClient: ConstructorParams['sessionsClient'];
+    protected sessionsClient = new SessionsClient();
     protected api: AbstractApi;
 
-    constructor({ messages, api, sessionsClient, logger }: ConstructorParams) {
+    constructor({ messages, api, logger }: ConstructorParams) {
         super({ messages, logger });
-        this.sessionsClient = sessionsClient;
         this.api = api;
     }
 
