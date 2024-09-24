@@ -1,7 +1,7 @@
 import { versionUtils } from '@trezor/utils';
 import { PROTO } from '../constants';
 import { config } from '../data/config';
-import { Features, CoinInfo, UnavailableCapabilities, DeviceModelInternal } from '../types';
+import { Features, CoinInfo, UnavailableCapabilities, DeviceModelInternal, Device } from '../types';
 
 const DEFAULT_CAPABILITIES_T1: PROTO.Capability[] = [
     'Capability_Bitcoin',
@@ -183,3 +183,6 @@ export const ensureInternalModelFeature = (model: Features['model']): DeviceMode
             return DeviceModelInternal.T1B1;
     }
 };
+
+export const getDeviceLabelOrName = (device: Device): string =>
+    device.features?.label || device.name;

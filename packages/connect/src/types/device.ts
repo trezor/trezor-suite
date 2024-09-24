@@ -57,8 +57,6 @@ export type KnownDevice = {
     type: 'acquired';
     id: string | null;
     path: string;
-    /** @deprecated, use features.label instead */
-    label: string;
     error?: typeof undefined;
     firmware: DeviceFirmwareStatus;
     firmwareRelease?: ReleaseInfo | null;
@@ -83,8 +81,6 @@ export type UnknownDevice = {
     type: 'unacquired';
     id?: null;
     path: string;
-    /** @deprecated, use features.label instead */
-    label: string;
     error?: typeof undefined;
     features?: typeof undefined;
     firmware?: typeof undefined;
@@ -104,8 +100,6 @@ export type UnreadableDevice = {
     type: 'unreadable';
     id?: null;
     path: string;
-    /** @deprecated, use features.label instead */
-    label: string;
     error: string;
     features?: typeof undefined;
     firmware?: typeof undefined;

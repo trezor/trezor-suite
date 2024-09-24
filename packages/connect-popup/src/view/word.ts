@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/word.js
 
-import { UI, createUiResponse, UiRequestDeviceAction } from '@trezor/connect';
+import { UI, createUiResponse, getDeviceLabelOrName, UiRequestDeviceAction } from '@trezor/connect';
 import { container, showView, postMessage } from './common';
 import { bip39 } from '@trezor/crypto-utils';
 
@@ -10,7 +10,7 @@ const initWordPlainView = (payload: UiRequestDeviceAction['payload']) => {
     const deviceName = container.getElementsByClassName('device-name')[0] as HTMLElement;
     const datalist = container.getElementsByClassName('bip-words')[0] as HTMLElement;
     const input = container.getElementsByClassName('word-input')[0] as HTMLInputElement;
-    deviceName.innerText = payload.device.label;
+    deviceName.innerText = getDeviceLabelOrName(payload.device);
 
     const clearWord = () => {
         input.value = '';
@@ -101,7 +101,7 @@ const initWordMatrixView = (payload: UiRequestDeviceAction['payload']) => {
 
     const deviceName = container.getElementsByClassName('device-name')[0] as HTMLElement;
     const buttons = container.querySelectorAll('[data-value]');
-    deviceName.innerText = payload.device.label;
+    deviceName.innerText = payload.device.features?.label || payload.device.name;
 
     for (let i = 0; i < buttons.length; i++) {
         buttons.item(i).addEventListener('click', (event: Event) => {

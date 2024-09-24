@@ -88,7 +88,6 @@ export const events = (api: TrezorConnect) => {
                 //
             }
             event.payload.data?.address.toLowerCase();
-            event.payload.device.label.toLowerCase();
         }
 
         if (event.type === UI.REQUEST_PIN) {

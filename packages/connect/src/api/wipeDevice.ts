@@ -2,6 +2,7 @@
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, DEVICE } from '../events';
+import { getDeviceLabelOrName } from '../utils/deviceFeaturesUtils';
 import { getFirmwareRange } from './common/paramsValidator';
 
 export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
@@ -13,11 +14,13 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
     }
 
     get confirmation() {
+        const messageObjectDevice = this.device.toMessageObject();
+
         return {
             view: 'device-management' as const,
             customConfirmButton: {
                 className: 'wipe',
-                label: `Wipe ${this.device.toMessageObject().label}`,
+                label: `Wipe ${getDeviceLabelOrName(messageObjectDevice)}`,
             },
             label: 'Are you sure you want to wipe your device?',
         };

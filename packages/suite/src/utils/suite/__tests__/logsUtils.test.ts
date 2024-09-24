@@ -48,7 +48,6 @@ describe('logsUtils', () => {
             expect(redactDevice(device)).toEqual({
                 ...device,
                 id: REDACTED_REPLACEMENT,
-                label: REDACTED_REPLACEMENT,
                 firmwareRelease: REDACTED_REPLACEMENT,
                 state: REDACTED_REPLACEMENT,
                 metadata: REDACTED_REPLACEMENT,

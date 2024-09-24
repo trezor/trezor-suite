@@ -39,6 +39,7 @@ import type { DeviceEvents, Device } from '../device/Device';
 import type { ConnectSettings, Device as DeviceTyped, StaticSessionId } from '../types';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { WebextensionStateStorage } from '../device/StateStorage';
+import { getDeviceLabelOrName } from '../utils/deviceFeaturesUtils';
 
 // custom log
 const _log = initLog('Core');
@@ -147,11 +148,15 @@ const initDevice = async (context: CoreContext, devicePath?: string) => {
             if (uiPromises.exists(UI.RECEIVE_DEVICE)) {
                 const { payload } = await uiPromises.get(UI.RECEIVE_DEVICE);
                 if (payload.remember) {
-                    const { label, path, state } = payload.device;
+                    const { path, state } = payload.device;
                     storage.save(store => {
                         store.origin[origin] = {
                             ...store.origin[origin],
-                            preferredDevice: { label, path, state },
+                            preferredDevice: {
+                                label: getDeviceLabelOrName(payload.device),
+                                path,
+                                state,
+                            },
                         };
 
                         return store;

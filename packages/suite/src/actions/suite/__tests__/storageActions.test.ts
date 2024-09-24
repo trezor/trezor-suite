@@ -421,16 +421,16 @@ describe('Storage actions', () => {
         // store device in db
         await store.dispatch(storageActions.rememberDevice(dev1, true));
 
-        // Change device label inside a reducer
+        // Change device name inside a reducer
         await store.dispatch(
             deviceActions.updateSelectedDevice({
                 ...dev1Connected,
-                label: 'New Label',
+                name: 'New Name',
             }),
         );
 
         store.dispatch(await preloadStore());
-        expect(selectDevices(store.getState())[0].label).toBe('New Label');
+        expect(selectDevices(store.getState())[0].name).toBe('New Name');
     });
 
     it('should store graph data with the device and remove it on ACCOUNT.REMOVE (triggered by disabling the coin)', async () => {
