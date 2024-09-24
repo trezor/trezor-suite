@@ -127,15 +127,12 @@ export const AccountGroup = ({
                 </Header>
             )}
 
-            <AnimationWrapper
-                opened={isOpen}
-                onUpdate={onUpdate}
-                data-testid={`@account-menu/${type}/group`}
-            >
+            <AnimationWrapper opened={isOpen} onUpdate={onUpdate}>
                 <Column
                     alignItems="stretch"
                     gap={spacings.xxs}
                     margin={{ left: spacings.xs, right: spacings.xs }}
+                    data-testid={`@account-menu/${type}/group`}
                 >
                     {children}
                 </Column>

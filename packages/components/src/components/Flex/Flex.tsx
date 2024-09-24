@@ -144,6 +144,7 @@ export type FlexProps = AllowedFrameProps & {
     /** @deprecated Use only is case of absolute desperation. Prefer keep it according to elevation. */
     dividerColor?: string;
     className?: string;
+    'data-testid'?: string;
 };
 
 const Flex = ({
@@ -156,6 +157,7 @@ const Flex = ({
     flexWrap = 'nowrap',
     isReversed = false,
     className,
+    'data-testid': dataTestId,
     hasDivider = false,
     dividerColor,
     ...rest
@@ -167,6 +169,7 @@ const Flex = ({
     return (
         <Container
             className={className}
+            data-testid={dataTestId}
             {...makePropsTransient({
                 gap,
                 justifyContent,
