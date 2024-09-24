@@ -23,14 +23,6 @@ export const config: webpack.Configuration = {
     module: {
         rules: [
             {
-                test: (input: string) => input.includes('background-sharedworker'),
-                loader: 'worker-loader',
-                options: {
-                    worker: 'SharedWorker',
-                    filename: './workers/sessions-background-sharedworker.[contenthash].js',
-                },
-            },
-            {
                 test: /sharedLoggerWorker.ts/i,
                 use: [
                     {
