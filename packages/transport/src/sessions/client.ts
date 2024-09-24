@@ -21,22 +21,26 @@ export class SessionsClient extends TypedEmitter<{
     descriptors: Descriptor[];
 }> {
     // request method responsible for communication with sessions background.
-    private request: SessionsBackground['handleMessage'];
+    private request: SessionsBackground['handleMessage'] = () => {
+        throw new Error('SessionsClient: request method not provided');
+    };
 
     // used only for debugging - discriminating sessions clients in sessions background log
     private caller = getWeakRandomId(3);
-    private id: number;
+    private id: number = 0;
 
-    constructor({
+    public init({
         requestFn,
         registerBackgroundCallbacks,
     }: {
         requestFn: SessionsBackground['handleMessage'];
         registerBackgroundCallbacks?: RegisterBackgroundCallbacks;
     }) {
-        super();
         this.id = 0;
         this.request = params => {
+            if (!requestFn) {
+                throw new Error('SessionsClient: requestFn not provided');
+            }
             params.caller = this.caller;
             params.id = this.id;
             this.id++;

@@ -1,6 +1,5 @@
 import { AbstractTransportParams } from './abstract';
 import { AbstractApiTransport } from './abstractApi';
-import { SessionsClient } from '../sessions/client';
 import { UsbApi } from '../api/usb';
 
 import { initBackgroundInBrowser } from '../sessions/background-browser';
@@ -15,7 +14,6 @@ export class WebUsbTransport extends AbstractApiTransport {
 
     constructor(params: AbstractTransportParams) {
         const { messages, logger } = params;
-        const { requestFn, registerBackgroundCallbacks } = initBackgroundInBrowser();
 
         super({
             messages,
@@ -24,12 +22,23 @@ export class WebUsbTransport extends AbstractApiTransport {
                 logger,
             }),
             logger,
-            // sessions client with a request fn facilitating communication with a session backend (shared worker in case of webusb)
-            sessionsClient: new SessionsClient({
-                // @ts-expect-error
+        });
+    }
+
+    public init({ sessionsBackgroundUrl }: { sessionsBackgroundUrl: string }) {
+        return this.scheduleAction(async () => {
+            const { requestFn, registerBackgroundCallbacks } =
+                await initBackgroundInBrowser(sessionsBackgroundUrl);
+            // sessions client initiated with a request fn facilitating communication with a session backend (shared worker in case of webusb)
+            this.sessionsClient.init({
                 requestFn,
                 registerBackgroundCallbacks,
-            }),
+            });
+
+            const handshakeRes = await this.sessionsClient.handshake();
+            this.stopped = !handshakeRes.success;
+
+            return handshakeRes;
         });
     }
 

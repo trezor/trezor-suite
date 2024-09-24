@@ -3,35 +3,39 @@ import { AbstractTransportParams } from './abstract';
 import { UdpApi } from '../api/udp';
 import { AbstractApiTransport } from './abstractApi';
 
-import { SessionsClient } from '../sessions/client';
 import { SessionsBackground } from '../sessions/background';
-
 export class UdpTransport extends AbstractApiTransport {
     public name = 'UdpTransport' as const;
     private enumerateTimeout: ReturnType<typeof setTimeout> | undefined;
-    private readonly sessionsBackground;
+    private readonly sessionsBackground = new SessionsBackground();
 
     constructor(params: AbstractTransportParams) {
         const { messages, logger, debugLink } = params;
-        const sessionsBackground = new SessionsBackground();
-
-        // in udp there is no synchronization yet. it depends where this transport runs (node or browser)
-        const sessionsClient = new SessionsClient({
-            requestFn: args => sessionsBackground.handleMessage(args),
-            registerBackgroundCallbacks: () => {},
-        });
-
-        sessionsBackground.on('descriptors', descriptors => {
-            sessionsClient.emit('descriptors', descriptors);
-        });
 
         super({
             messages,
             api: new UdpApi({ logger, debugLink }),
             logger,
-            sessionsClient,
         });
-        this.sessionsBackground = sessionsBackground;
+    }
+
+    public init() {
+        return this.scheduleAction(async () => {
+            // in udp there is no synchronization.
+            this.sessionsClient.init({
+                requestFn: args => this.sessionsBackground.handleMessage(args),
+                registerBackgroundCallbacks: () => {},
+            });
+
+            this.sessionsBackground.on('descriptors', descriptors => {
+                this.sessionsClient.emit('descriptors', descriptors);
+            });
+
+            const handshakeRes = await this.sessionsClient.handshake();
+            this.stopped = !handshakeRes.success;
+
+            return handshakeRes;
+        });
     }
 
     public listen() {

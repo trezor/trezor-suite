@@ -1,15 +1,27 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import {
-    AbstractApiTransport,
-    UsbApi,
-    SessionsClient,
-    SessionsBackground,
-} from '@trezor/transport';
+import { AbstractApiTransport, UsbApi, SessionsBackground } from '@trezor/transport';
 import { DeviceModelInternal, type Features, type FirmwareRelease } from './src/types';
 
 class TestTransport extends AbstractApiTransport {
     name = 'TestTransport' as any;
+
+    init() {
+        return this.scheduleAction(() => {
+            const sessionsBackground = new SessionsBackground();
+            this.sessionsClient.init({
+                requestFn: params => sessionsBackground.handleMessage(params),
+                registerBackgroundCallbacks: onDescriptorsCallback => {
+                    sessionsBackground.on('descriptors', descriptors => {
+                        onDescriptorsCallback(descriptors);
+                    });
+                },
+            });
+            this.stopped = false;
+
+            return this.sessionsClient.handshake();
+        });
+    }
 }
 
 // mock of navigator.usb
@@ -41,19 +53,8 @@ const createTransportApi = (override = {}) =>
     }) as unknown as UsbApi;
 
 export const createTestTransport = (apiMethods = {}) => {
-    const sessionsBackground = new SessionsBackground();
-    const sessionsClient = new SessionsClient({
-        requestFn: params => sessionsBackground.handleMessage(params),
-        registerBackgroundCallbacks: onDescriptorsCallback => {
-            sessionsBackground.on('descriptors', descriptors => {
-                onDescriptorsCallback(descriptors);
-            });
-        },
-    });
-
     const transport = new TestTransport({
         api: createTransportApi(apiMethods),
-        sessionsClient,
     });
 
     return transport;
