@@ -37,6 +37,7 @@ export const SVG_IMAGES = {
     TREZOR_SAFE_PROMO_UNDERLINE: 'trezor-safe-promo-underline.svg',
     CONFIRM_EVM_EXPLANATION_ETH: 'confirm-evm-explanation-eth.svg',
     CONFIRM_EVM_EXPLANATION_OTHER: 'confirm-evm-explanation-other.svg',
+    GAINS_GRAPH: 'gains-graph.svg',
 } as const;
 
 export type PngImage = keyof typeof PNG_IMAGES;

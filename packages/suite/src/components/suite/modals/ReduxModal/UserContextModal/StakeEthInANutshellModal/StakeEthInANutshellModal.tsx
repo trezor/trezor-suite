@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
     Icon,
     IconName,
@@ -19,8 +21,8 @@ import { spacings } from '@trezor/theme';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { StakingInfo } from './StakingInfo';
-import { UnstakingInfo } from './UnstakingInfo';
+import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
+import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
 
 interface StakingDetails {
     id: number;
@@ -68,7 +70,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
         {
             heading: <Translation id="TR_STAKE_STAKING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE" />,
-            content: <StakingInfo account={account} />,
+            content: <StakingInfo />,
         },
         {
             heading: <Translation id="TR_STAKE_UNSTAKING_PROCESS" />,
@@ -78,7 +80,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                     <Translation id="TR_TX_FEE" />
                 </>
             ),
-            content: <UnstakingInfo account={account} />,
+            content: <UnstakingInfo />,
         },
     ];
 

@@ -15,6 +15,7 @@ import {
 import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
 import { spacings, spacingsPx } from '@trezor/theme';
+import { validateStakingMax } from 'src/utils/suite/stake';
 
 const IconWrapper = styled.div`
     transform: rotate(90deg);
@@ -53,6 +54,7 @@ export const Inputs = () => {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
             min: validateMin(translationString),
+            max: validateStakingMax(translationString),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
             reserveOrBalance: validateReserveOrBalance(translationString, {
                 account,

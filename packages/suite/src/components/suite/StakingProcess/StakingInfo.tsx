@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     selectAccountStakeTransactions,
     selectValidatorsQueue,
@@ -9,13 +10,15 @@ import { useSelector } from 'react-redux';
 import { Translation } from 'src/components/suite';
 import { getDaysToAddToPool } from 'src/utils/suite/stake';
 import { InfoRow } from './InfoRow';
-import { Account } from 'src/types/wallet';
+import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 
 interface StakingInfoProps {
-    account?: Account;
+    isExpanded?: boolean;
 }
 
-export const StakingInfo = ({ account }: StakingInfoProps) => {
+export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
+    const { account } = useSelector((state: CoinjoinRootState) => state.wallet.selectedAccount);
+
     const { data } =
         useSelector((state: StakeRootState) => selectValidatorsQueue(state, account?.symbol)) || {};
 
@@ -33,11 +36,20 @@ export const StakingInfo = ({ account }: StakingInfoProps) => {
 
     const infoRows = [
         {
-            label: <Translation id="TR_STAKE_SIGN_TRANSACTION" />,
+            heading: <Translation id="TR_STAKE_SIGN_TRANSACTION" />,
+            subheading: { isCurrentStep: true },
             content: { text: <Translation id="TR_COINMARKET_NETWORK_FEE" />, isBadge: true },
         },
         {
-            label: <Translation id="TR_STAKE_ENTER_THE_STAKING_POOL" />,
+            heading: <Translation id="TR_STAKE_ENTER_THE_STAKING_POOL" />,
+            subheading: {
+                text: (
+                    <Translation
+                        id="TR_STAKING_GETTING_READY"
+                        values={{ symbol: account.symbol.toUpperCase() }}
+                    />
+                ),
+            },
             content: {
                 text: (
                     <>
@@ -47,15 +59,16 @@ export const StakingInfo = ({ account }: StakingInfoProps) => {
             },
         },
         {
-            label: <Translation id="TR_STAKE_EARN_REWARDS_WEEKLY" />,
+            heading: <Translation id="TR_STAKE_EARN_REWARDS_WEEKLY" />,
+            subheading: { text: <Translation id="TR_STAKING_REWARDS_ARE_RESTAKED" /> },
             content: { text: `~${ethApy}% p.a.` },
         },
     ];
 
     return (
         <>
-            {infoRows.map(({ label, content }, index) => (
-                <InfoRow key={index} label={label} content={content} />
+            {infoRows.map(({ heading, content, subheading }, index) => (
+                <InfoRow key={index} {...{ heading, subheading, content, isExpanded }} />
             ))}
         </>
     );

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { Button, Divider, Paragraph, Tooltip, Banner } from '@trezor/components';
+import { Divider, Paragraph, Banner } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
@@ -11,7 +11,6 @@ import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
 import UnstakeFees from './Fees';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const GreyP = styled(Paragraph)`
@@ -48,16 +47,12 @@ const UpToDaysWrapper = styled.div`
 `;
 
 export const UnstakeEthForm = () => {
-    const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(selectSelectedAccount);
-    const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking();
 
     const {
         account,
-        isComposing,
-        formState: { isSubmitting, errors },
+        formState: { errors },
         handleSubmit,
-        watch,
         signTx,
     } = useUnstakeEthFormContext();
 
@@ -67,14 +62,9 @@ export const UnstakeEthForm = () => {
         selectValidatorsQueueData(state, account?.symbol),
     );
     const unstakingPeriod = getUnstakingPeriodInDays(validatorWithdrawTime);
-    const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
-    // used instead of formState.isValid, which is sometimes returning false even if there are no errors
-    const formIsValid = Object.keys(errors).length === 0;
 
     const { canClaim = false, claimableAmount = '0' } =
         getAccountEverstakeStakingPool(selectedAccount) ?? {};
-    const isDisabled =
-        !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT];
     const showError = inputError && inputError.type === 'compose';
@@ -119,18 +109,6 @@ export const UnstakeEthForm = () => {
                     }}
                 />
             </UpToDaysWrapper>
-            <Tooltip content={unstakingMessageContent}>
-                <Button
-                    type="submit"
-                    isFullWidth
-                    isDisabled={isDisabled || isUnstakingDisabled}
-                    isLoading={isComposing || isSubmitting}
-                    onClick={handleSubmit(signTx)}
-                    icon={isUnstakingDisabled ? 'info' : undefined}
-                >
-                    <Translation id="TR_STAKE_UNSTAKE" />
-                </Button>
-            </Tooltip>
         </form>
     );
 };

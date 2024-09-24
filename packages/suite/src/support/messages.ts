@@ -5396,6 +5396,10 @@ export default defineMessages({
         defaultMessage: 'Not enough funds',
         id: 'AMOUNT_IS_NOT_ENOUGH',
     },
+    AMOUNT_EXCEEDS_MAX: {
+        defaultMessage: 'The amount exceeds the maximum allowed value of {maxAmount}',
+        id: 'AMOUNT_EXCEEDS_MAX',
+    },
     AMOUNT_IS_NOT_IN_RANGE_DECIMALS: {
         defaultMessage: 'Maximum {decimals} decimals allowed',
         id: 'AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
@@ -7279,6 +7283,19 @@ export default defineMessages({
         id: 'TR_STAKING_WITHDRAW',
         defaultMessage: 'Withdraw',
     },
+    TR_STAKING_ESTIMATED_GAINS: {
+        id: 'TR_STAKING_ESTIMATED_GAINS',
+        defaultMessage: 'Estimated gains',
+    },
+    TR_STAKING_ONCE_YOU_CONFIRM: {
+        id: 'TR_STAKING_ONCE_YOU_CONFIRM',
+        defaultMessage: 'Once you confirm',
+    },
+    TR_STAKING_YOUR_EARNINGS: {
+        id: 'TR_STAKING_YOUR_EARNINGS',
+        defaultMessage:
+            'Your earnings are automatically restaked, allowing you to earn <a>compound interest</a>.',
+    },
     TR_STAKE_ON_EVERSTAKE: {
         id: 'TR_STAKE_ON_EVERSTAKE',
         defaultMessage: 'Stake {symbol} on Everstake?',
@@ -7388,6 +7405,26 @@ export default defineMessages({
         id: 'TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS',
         defaultMessage:
             'You received {amount} {symbol} "Instantly". {days, plural, =0 {} one {The rest will be payed out within # day.} other { The rest will be payed out within # days}}',
+    },
+    TR_STAKING_GETTING_READY: {
+        id: 'TR_STAKING_GETTING_READY',
+        defaultMessage: 'Your {symbol} is getting ready to work',
+    },
+    TR_STAKING_REWARDS_ARE_RESTAKED: {
+        id: 'TR_STAKING_REWARDS_ARE_RESTAKED',
+        defaultMessage: 'Rewards are automatically restaked',
+    },
+    TR_STAKING_YOU_ARE_HERE: {
+        id: 'TR_STAKING_YOU_ARE_HERE',
+        defaultMessage: "You're here",
+    },
+    TR_STAKING_CONSOLIDATING_FUNDS: {
+        id: 'TR_STAKING_CONSOLIDATING_FUNDS',
+        defaultMessage: 'Consolidating your {symbol} for you',
+    },
+    TR_STAKING_YOUR_UNSTAKED_FUNDS: {
+        id: 'TR_STAKING_YOUR_UNSTAKED_FUNDS',
+        defaultMessage: 'Your unstaked {symbol} is ready for you',
     },
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
@@ -8703,6 +8740,22 @@ export default defineMessages({
     TR_STAKE_APY: {
         id: 'TR_STAKE_APY',
         defaultMessage: 'Annual Percentage Yield',
+    },
+    TR_STAKE_APY_ABBR: {
+        id: 'TR_STAKE_APY_ABBR',
+        defaultMessage: 'APY',
+    },
+    TR_STAKE_WEEKLY: {
+        id: 'TR_STAKE_WEEKLY',
+        defaultMessage: 'Weekly',
+    },
+    TR_STAKE_MONTHLY: {
+        id: 'TR_STAKE_MONTHLY',
+        defaultMessage: 'Monthly',
+    },
+    TR_STAKE_YEARLY: {
+        id: 'TR_STAKE_YEARLY',
+        defaultMessage: 'Yearly',
     },
     TR_STAKE_DAYS: {
         id: 'TR_STAKE_DAYS',
