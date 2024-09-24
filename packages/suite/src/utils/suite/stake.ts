@@ -13,7 +13,11 @@ import TrezorConnect, { EthereumTransaction, Success, InternalTransfer } from '@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { STAKE_GAS_LIMIT_RESERVE, ValidatorsQueue } from '@suite-common/wallet-core';
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
-import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
+import {
+    MIN_ETH_AMOUNT_FOR_STAKING,
+    MAX_ETH_AMOUNT_FOR_STAKING,
+} from 'src/constants/suite/ethStaking';
+import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 
 // source is a required parameter for some functions in the Everstake Wallet SDK.
 // This parameter is used for some contract calls.
@@ -618,3 +622,22 @@ export const getChangedInternalTx = (
 
     return internalTransfer ?? null;
 };
+
+export const calculateGains = (input: string, apy: number, divisor: number) => {
+    const amount = new BigNumber(input).multipliedBy(apy).dividedBy(100).dividedBy(divisor);
+
+    return amount.toFixed(5, 1);
+};
+
+interface ValidateMaxOptions {
+    except?: boolean;
+}
+
+export const validateStakingMax =
+    (translationString: TranslationFunction, options?: ValidateMaxOptions) => (value: string) => {
+        if (!options?.except && value && BigNumber(value).gt(MAX_ETH_AMOUNT_FOR_STAKING)) {
+            return translationString('AMOUNT_EXCEEDS_MAX', {
+                maxAmount: MAX_ETH_AMOUNT_FOR_STAKING.toString(),
+            });
+        }
+    };
