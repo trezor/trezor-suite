@@ -14,6 +14,9 @@ const Block = styled.div`
     display: flex;
     flex-direction: column;
 `;
+const ColoredBlock = styled(Block)`
+    color: salmon;
+`;
 
 const meta: Meta = {
     title: 'Typography',
@@ -23,26 +26,31 @@ export default meta;
 export const Text: StoryObj = {
     render: props => (
         <Wrapper>
+            <ColoredBlock>
+                <TextComponent {...props}>
+                    This is just a plain text with inherited color from its parent
+                </TextComponent>
+            </ColoredBlock>
             <Block>
-                <TextComponent {...props}>This is just a plain text</TextComponent>
-            </Block>
-            <Block>
+                <TextComponent variant="default" {...props}>
+                    This is <strong>default</strong> variant
+                </TextComponent>
                 <TextComponent variant="primary" {...props}>
-                    This is <strong>primary</strong> text
+                    This is <strong>primary</strong> variant
                 </TextComponent>
                 <TextComponent variant="info" {...props}>
-                    This is <strong>info</strong> text
+                    This is <TextComponent typographyStyle="highlight">info</TextComponent> variant
                 </TextComponent>
                 <TextComponent variant="warning" {...props}>
-                    This is <strong>warning</strong> text
+                    This is <strong>warning</strong> variant
                 </TextComponent>
                 <TextComponent variant="destructive" {...props}>
-                    This is <strong>destructive</strong> text
+                    This is <strong>destructive</strong> variant
                 </TextComponent>
             </Block>
             <Block>
                 <TextComponent color="#9be887" {...props}>
-                    This is <strong>custom</strong> color text
+                    This is <strong>custom</strong> color variant
                 </TextComponent>
             </Block>
             <Block>
