@@ -1,34 +1,42 @@
-import { A, D, pipe } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 import { memoizeWithArgs } from 'proxy-memoize';
 
 import {
+    TokenDefinitionsRootState,
+    selectFilterKnownTokens,
+} from '@suite-common/token-definitions';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import {
     AccountsRootState,
     DeviceRootState,
-    selectAccounts,
-    selectVisibleDeviceAccountsByNetworkSymbol,
-    selectVisibleDeviceAccounts,
     FiatRatesRootState,
-    selectCurrentFiatRates,
     selectAccountByKey,
+    selectAccounts,
+    selectCurrentFiatRates,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
-import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { AccountKey, TokenInfoBranded } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
+import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
+import { isCoinWithTokens } from '@suite-native/tokens';
 
-import { GroupedByTypeAccounts } from './types';
+import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
     groupAccountsByNetworkAccountType,
     sortAccountsByNetworksAndAccountTypes,
 } from './utils';
 
+export type NativeAccountsRootState = AccountsRootState &
+    FiatRatesRootState &
+    SettingsSliceRootState &
+    DeviceRootState &
+    TokenDefinitionsRootState;
+
 // TODO: It searches for filterValue even in tokens without fiat rates.
 // These are currently hidden in UI, but they should be made accessible in some way.
 export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = memoizeWithArgs(
-    (
-        state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState & DeviceRootState,
-        filterValue: string,
-    ) => {
+    (state: NativeAccountsRootState, filterValue: string) => {
         const accounts = selectVisibleDeviceAccounts(state);
 
         return pipe(
@@ -40,16 +48,6 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = memoizeWi
     },
     // This selector is used only in one search component, so cache size equal to 1 is enough.
     { size: 1 },
-);
-
-export const selectDeviceNetworkAccountsGroupedByAccountType = memoizeWithArgs(
-    (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol) =>
-        pipe(
-            selectVisibleDeviceAccountsByNetworkSymbol(state, networkSymbol),
-            sortAccountsByNetworksAndAccountTypes,
-            groupAccountsByNetworkAccountType,
-        ) as GroupedByTypeAccounts,
-    { size: D.keys(networks).length },
 );
 
 export const selectIsAccountAlreadyDiscovered = (
@@ -71,10 +69,7 @@ export const selectIsAccountAlreadyDiscovered = (
         ),
     );
 
-export const selectAccountFiatBalance = (
-    state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState,
-    accountKey: string,
-) => {
+export const selectAccountFiatBalance = (state: NativeAccountsRootState, accountKey: string) => {
     const fiatRates = selectCurrentFiatRates(state);
     const account = selectAccountByKey(state, accountKey);
     const localCurrency = selectFiatCurrencyCode(state);
@@ -93,3 +88,51 @@ export const selectAccountFiatBalance = (
 
     return totalBalance;
 };
+
+const EMPTY_ARRAY: any[] = [];
+
+export const selectAccountListSections = memoizeWithArgs(
+    (state: NativeAccountsRootState, accountKey?: AccountKey | null) => {
+        if (!accountKey) return EMPTY_ARRAY;
+        const account = selectAccountByKey(state, accountKey);
+        if (!account) return EMPTY_ARRAY;
+
+        const sections: AccountSelectBottomSheetSection[] = [];
+
+        const canHasTokens = isCoinWithTokens(account.symbol);
+        const tokens = selectFilterKnownTokens(state, account.symbol, account.tokens ?? []);
+        const hasAnyKnownTokens = canHasTokens && !!tokens.length;
+
+        if (canHasTokens) {
+            sections.push({
+                type: 'sectionTitle',
+                account,
+                hasAnyKnownTokens,
+            });
+        }
+        sections.push({
+            type: 'account',
+            account,
+            isLast: !hasAnyKnownTokens,
+            isFirst: true,
+            hasAnyKnownTokens,
+        });
+
+        // TODO: staking here
+
+        if (hasAnyKnownTokens) {
+            tokens.forEach((token, index) => {
+                sections.push({
+                    type: 'token',
+                    account,
+                    token: token as TokenInfoBranded,
+                    isLast: index === tokens.length - 1,
+                });
+            });
+        }
+
+        return sections;
+    },
+    // Some reasonable number of accounts that could be in app
+    { size: 40 },
+);

@@ -18,6 +18,7 @@ export type BottomSheetProps = {
     children: ReactNode;
     title?: ReactNode;
     subtitle?: ReactNode;
+    isScrollable?: boolean;
 } & BoxProps;
 
 type WrapperStyleProps = {
@@ -46,6 +47,7 @@ export const BottomSheet = ({
     title,
     subtitle,
     children,
+    isScrollable = true,
     ...boxProps
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
@@ -112,22 +114,28 @@ export const BottomSheet = ({
                                 isCloseDisplayed={isCloseDisplayed}
                                 onCloseSheet={closeSheetAnimated}
                             />
-                            <ScrollView
-                                ref={scrollViewRef.current}
-                                waitFor={
-                                    isCloseScrollEnabled
-                                        ? panGestureRef.current
-                                        : scrollViewRef.current
-                                }
-                                onScroll={scrollEvent}
-                                keyboardShouldPersistTaps="handled"
-                            >
-                                <Animated.View>
-                                    <Box paddingHorizontal="medium" {...boxProps}>
-                                        {children}
-                                    </Box>
-                                </Animated.View>
-                            </ScrollView>
+                            {isScrollable ? (
+                                <ScrollView
+                                    ref={scrollViewRef.current}
+                                    waitFor={
+                                        isCloseScrollEnabled
+                                            ? panGestureRef.current
+                                            : scrollViewRef.current
+                                    }
+                                    onScroll={scrollEvent}
+                                    keyboardShouldPersistTaps="handled"
+                                >
+                                    <Animated.View>
+                                        <Box paddingHorizontal="medium" {...boxProps}>
+                                            {children}
+                                        </Box>
+                                    </Animated.View>
+                                </ScrollView>
+                            ) : (
+                                <Box {...boxProps} style={{ height: '100%' }}>
+                                    {children}
+                                </Box>
+                            )}
                         </Animated.View>
                     </PanGestureHandler>
                 </Pressable>

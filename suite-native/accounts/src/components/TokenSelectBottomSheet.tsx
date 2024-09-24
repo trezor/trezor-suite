@@ -1,10 +1,13 @@
+import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
+
 import { WritableAtom, useAtom } from 'jotai';
 
 import { Account } from '@suite-common/wallet-types';
-import { BottomSheet } from '@suite-native/atoms';
 
 import { OnSelectAccount } from '../types';
-import { AccountListItemInteractive } from './AccountListItemInteractive';
+import { NativeAccountsRootState, selectAccountListSections } from '../selectors';
+import { AccountSelectBottomSheet } from './AccountSelectBottomSheet';
 
 type TokenSelectBottomSheetProps = {
     bottomSheetAccountAtom: WritableAtom<Account | null, Account | null>;
@@ -17,27 +20,30 @@ export const TokenSelectBottomSheet = ({
 }: TokenSelectBottomSheetProps) => {
     const [selectedAccount, setSelectedAccount] = useAtom(bottomSheetAccountAtom);
 
-    const handleSelectAccount: OnSelectAccount = params => {
-        setSelectedAccount(null);
-        onSelectAccount(params);
-    };
+    const handleSelectAccount: OnSelectAccount = useCallback(
+        params => {
+            setSelectedAccount(null);
+            onSelectAccount(params);
+        },
+        [onSelectAccount, setSelectedAccount],
+    );
 
+    const handleClose = useCallback(() => {
+        setSelectedAccount(null);
+    }, [setSelectedAccount]);
+
+    const data = useSelector((state: NativeAccountsRootState) =>
+        selectAccountListSections(state, selectedAccount?.key),
+    );
     if (!selectedAccount) {
         return null;
     }
 
     return (
-        <BottomSheet
-            isVisible
-            onClose={() => {
-                setSelectedAccount(null);
-            }}
-        >
-            <AccountListItemInteractive
-                key={selectedAccount.key}
-                account={selectedAccount}
-                onSelectAccount={handleSelectAccount}
-            />
-        </BottomSheet>
+        <AccountSelectBottomSheet
+            onSelectAccount={handleSelectAccount}
+            data={data}
+            onClose={handleClose}
+        />
     );
 };

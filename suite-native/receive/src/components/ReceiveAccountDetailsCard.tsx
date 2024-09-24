@@ -4,7 +4,7 @@ import { G } from '@mobily/ts-belt';
 
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { AccountListItem } from '@suite-native/accounts';
+import { AccountsListItem } from '@suite-native/accounts';
 import { ErrorMessage, VStack, Card } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -37,7 +37,7 @@ export const ReceiveAccountDetailsCard = ({
                 {tokenContract ? (
                     <TokenReceiveCard contract={tokenContract} accountKey={accountKey} />
                 ) : (
-                    <AccountListItem account={account} />
+                    <AccountsListItem account={account} />
                 )}
             </Card>
         </VStack>

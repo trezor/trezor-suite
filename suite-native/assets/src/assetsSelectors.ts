@@ -1,8 +1,9 @@
-import { A, G, pipe } from '@mobily/ts-belt';
-import { memoize } from 'proxy-memoize';
+import { A, D, F, G, pipe } from '@mobily/ts-belt';
+import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { calculateAssetsPercentage } from '@suite-common/assets';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -10,8 +11,11 @@ import {
     selectCurrentFiatRates,
     selectDeviceAccounts,
     selectVisibleDeviceAccounts,
+    selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
+import { selectAccountListSections } from '@suite-native/accounts';
+import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
 import { discoverySupportedNetworks } from '@suite-native/config';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 export interface AssetType {
@@ -23,6 +27,7 @@ export interface AssetType {
 export type AssetsRootState = AccountsRootState &
     FiatRatesRootState &
     SettingsSliceRootState &
+    TokenDefinitionsRootState &
     DeviceRootState;
 
 /*
@@ -30,7 +35,7 @@ We do not memoize any of following selectors because they are using only with `u
 */
 
 export const selectVisibleDeviceAccountsKeysByNetworkSymbol = (
-    state: AccountsRootState & DeviceRootState,
+    state: AssetsRootState,
     networkSymbol: NetworkSymbol | null,
 ) => {
     if (G.isNull(networkSymbol)) return [];
@@ -57,6 +62,18 @@ export const selectDeviceNetworksWithAssets = (state: AssetsRootState) => {
         }),
     );
 };
+
+export const selectBottomSheetDeviceNetworkItems = memoizeWithArgs(
+    (state: AssetsRootState, networkSymbol: NetworkSymbol) =>
+        pipe(
+            selectVisibleDeviceAccountsByNetworkSymbol(state, networkSymbol),
+            sortAccountsByNetworksAndAccountTypes,
+            A.map(account => selectAccountListSections(state, account.key)),
+            A.flat,
+            F.toMutable,
+        ),
+    { size: D.keys(networks).length },
+);
 
 const selectDeviceAssetsWithBalances = memoize((state: AssetsRootState) => {
     const accounts = selectVisibleDeviceAccounts(state);

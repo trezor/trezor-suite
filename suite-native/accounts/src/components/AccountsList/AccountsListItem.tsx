@@ -1,6 +1,5 @@
-import { TouchableOpacityProps } from 'react-native';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
 import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
@@ -19,15 +18,21 @@ import {
     TokensRootState,
 } from '@suite-native/tokens';
 
-import { AccountListItemBase } from './AccountListItemBase';
+import { NativeAccountsRootState, selectAccountFiatBalance } from '../../selectors';
+import { OnSelectAccount } from '../../types';
+import { AccountsListItemBase } from './AccountsListItemBase';
 
 export type AccountListItemProps = {
     account: Account;
-    fiatBalance?: string | null;
     hideTokens?: boolean;
 
-    onPress?: TouchableOpacityProps['onPress'];
+    onPress?: OnSelectAccount;
     disabled?: boolean;
+
+    hasBackground?: boolean;
+    isFirst?: boolean;
+    isLast?: boolean;
+    showDivider?: boolean;
 };
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
@@ -44,12 +49,15 @@ const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
     );
 });
 
-export const AccountListItem = ({
+export const AccountsListItem = ({
     account,
     onPress,
     disabled,
     hideTokens = false,
-    fiatBalance,
+    hasBackground = false,
+    isFirst = false,
+    isLast = false,
+    showDivider = false,
 }: AccountListItemProps) => {
     const { accountLabel } = account;
     const { NetworkNameFormatter } = useFormatters();
@@ -61,13 +69,28 @@ export const AccountListItem = ({
         selectAccountHasAnyKnownToken(state, account.key),
     );
 
+    const fiatBalance = useSelector((state: NativeAccountsRootState) =>
+        selectAccountFiatBalance(state, account.key),
+    );
+
+    const handleOnPress = useCallback(() => {
+        onPress?.({
+            account,
+            hasAnyKnownTokens: accountHasAnyTokens,
+        });
+    }, [account, accountHasAnyTokens, onPress]);
+
     const doesCoinSupportTokens = isCoinWithTokens(account.symbol);
     const shouldShowAccountLabel = !doesCoinSupportTokens || hideTokens;
     const shouldShowTokenBadge = accountHasAnyTokens && hideTokens;
 
     return (
-        <AccountListItemBase
-            onPress={onPress}
+        <AccountsListItemBase
+            hasBackground={hasBackground}
+            isFirst={isFirst}
+            isLast={isLast}
+            showDivider={showDivider}
+            onPress={handleOnPress}
             disabled={disabled}
             icon={<RoundedIcon name={account.symbol} />}
             title={

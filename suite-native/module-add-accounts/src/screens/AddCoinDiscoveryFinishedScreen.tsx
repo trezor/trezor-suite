@@ -7,7 +7,7 @@ import {
     DeviceRootState,
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { AccountListItem } from '@suite-native/accounts';
+import { AccountsListItem } from '@suite-native/accounts';
 import { Card, Button, Text, TextDivider, Box } from '@suite-native/atoms';
 import { GoBackIcon, Screen, ScreenSubHeader } from '@suite-native/navigation';
 import { Account } from '@suite-common/wallet-types';
@@ -85,7 +85,7 @@ export const AddCoinDiscoveryFinishedScreen = ({ route }) => {
             </Box>
             <Card style={applyStyle(accountsStyle)}>
                 {accounts.map(account => (
-                    <AccountListItem
+                    <AccountsListItem
                         key={account.key}
                         account={account}
                         onPress={() => handleSelectedAccount(account)}
