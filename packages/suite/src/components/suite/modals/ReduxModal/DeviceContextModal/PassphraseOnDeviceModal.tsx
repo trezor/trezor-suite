@@ -38,14 +38,14 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
     const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
     return (
-        <NewModal.Backdrop onClick={onCancel} data-testid="@modal/enter-passphrase-on-device">
+        <NewModal.Backdrop onClick={onCancel}>
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                 deviceModelInternal={device?.features?.internal_model}
                 deviceUnitColor={device?.features?.unit_color}
                 onCancel={onCancel}
             />
-            <NewModal.ModalBase size="tiny">
+            <NewModal.ModalBase size="tiny" data-testid="@modal/enter-passphrase-on-device">
                 <ImageWrapper>
                     <DeviceConfirmImage device={device} />
                 </ImageWrapper>

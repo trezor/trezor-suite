@@ -33,7 +33,7 @@ export const EnterOnTrezorButton = ({ submit, value, deviceModel }: EnterOnTrezo
                         />
                     </Text>
                 </Flex>
-                <Icon name="caretLeft" color={theme.iconSubdued} />
+                <Icon name="caretRight" color={theme.iconSubdued} />
             </Row>
         </Card>
     );

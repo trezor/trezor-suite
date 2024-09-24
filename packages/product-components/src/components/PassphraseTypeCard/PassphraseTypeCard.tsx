@@ -127,10 +127,8 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
             }}
             data-testid={`@passphrase-type/${type}`}
         >
-            <Item>
-                {!singleColModal && (
-                    // only used to show options in modal where user selects wallet type
-                    // single col modal such as one for creating passphrase wallet shows only input and submit button
+            {!singleColModal && (
+                <Item>
                     <>
                         <PassphraseTypeCardHeading
                             type={type}
@@ -141,8 +139,8 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         />
                         {type === 'hidden' && <Spacer />}
                     </>
-                )}
-            </Item>
+                </Item>
+            )}
             <Item>
                 <PassphraseTypeCardContent
                     submitLabel={submitLabel}

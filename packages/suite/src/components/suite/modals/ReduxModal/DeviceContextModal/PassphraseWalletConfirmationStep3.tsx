@@ -1,6 +1,6 @@
-import { Banner, Text } from '@trezor/components';
+import { Banner, Column, H3 } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite/Translation';
-import { PassphraseHeading } from './PassphraseHeading';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
@@ -18,21 +18,12 @@ export const PassphraseWalletConfirmationStep3 = ({
     const deviceModel = useSelector(selectDeviceModel);
 
     return (
-        <>
-            <PassphraseHeading>
+        <Column gap={spacings.sm} margin={{ top: spacings.xxs }} alignItems="stretch">
+            <H3>
                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE" />
-            </PassphraseHeading>
+            </H3>
             <Banner icon="info">
-                <Translation
-                    id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING"
-                    values={{
-                        bold: chunks => (
-                            <Text variant="warning" typographyStyle="callout">
-                                {chunks}
-                            </Text>
-                        ),
-                    }}
-                />
+                <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING" />
             </Banner>
             <PassphraseTypeCard
                 type="hidden"
@@ -48,6 +39,6 @@ export const PassphraseWalletConfirmationStep3 = ({
                     />
                 }
             />
-        </>
+        </Column>
     );
 };

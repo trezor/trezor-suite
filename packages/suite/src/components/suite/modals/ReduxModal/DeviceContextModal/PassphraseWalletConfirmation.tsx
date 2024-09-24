@@ -1,11 +1,12 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
+import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 import { PassphraseWalletConfirmationStep1 } from './PassphraseWalletConfirmationStep1';
 import { PassphraseWalletConfirmationStep2 } from './PassphraseWalletConfirmationStep2';
 import { PassphraseWalletConfirmationStep3 } from './PassphraseWalletConfirmationStep3';
 import { ContentType } from './types';
+import { NewModal } from '@trezor/components';
 
 type PassphraseWalletConfirmationContentProps = {
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
@@ -70,21 +71,23 @@ export const PassphraseWalletConfirmation = ({
     };
 
     return (
-        <SwitchDeviceRenderer isCancelable onCancel={onCancel}>
-            <CardWithDevice
-                onCancel={onCancel}
-                device={device}
-                onBackButtonClick={handleBackButtonClick}
-                isFullHeaderVisible
-            >
-                <PassphraseWalletConfirmationContent
-                    onSubmit={onSubmit}
-                    onDeviceOffer={onDeviceOffer}
-                    contentType={contentType}
-                    setContentType={setContentType}
-                    onRetry={onRetry}
-                />
-            </CardWithDevice>
-        </SwitchDeviceRenderer>
+        <NewModal.Backdrop onClick={onCancel} alignment={{ x: 'left', y: 'top' }} padding={5}>
+            <SwitchDeviceModal onCancel={onCancel}>
+                <CardWithDevice
+                    onCancel={onCancel}
+                    device={device}
+                    onBackButtonClick={handleBackButtonClick}
+                    isFullHeaderVisible
+                >
+                    <PassphraseWalletConfirmationContent
+                        onSubmit={onSubmit}
+                        onDeviceOffer={onDeviceOffer}
+                        contentType={contentType}
+                        setContentType={setContentType}
+                        onRetry={onRetry}
+                    />
+                </CardWithDevice>
+            </SwitchDeviceModal>
+        </NewModal.Backdrop>
     );
 };
