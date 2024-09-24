@@ -106,19 +106,24 @@ const CardContainer = styled.div<
     ${withFrameProps}
 `;
 
-export type CardProps = AllowedFrameProps &
-    AccessibilityProps & {
-        paddingType?: PaddingType;
-        onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
-        onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
-        onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
-        children?: ReactNode;
-        className?: string;
-        label?: ReactNode;
-        forceElevation?: Elevation;
-    };
+type CommonCardProps = AccessibilityProps & {
+    paddingType?: PaddingType;
+    onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
+    onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
+    onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
+    children?: ReactNode;
+    className?: string;
+    label?: ReactNode;
+    forceElevation?: Elevation;
+};
 
-const CardComponent = forwardRef<HTMLDivElement, CardProps & { $paddingType: PaddingType }>(
+export type CardPropsWithTransientProps = CommonCardProps & TransientProps<AllowedFrameProps>;
+export type CardProps = CommonCardProps & AllowedFrameProps;
+
+const CardComponent = forwardRef<
+    HTMLDivElement,
+    CardPropsWithTransientProps & { $paddingType: PaddingType }
+>(
     (
         {
             children,
@@ -129,6 +134,7 @@ const CardComponent = forwardRef<HTMLDivElement, CardProps & { $paddingType: Pad
             onMouseLeave,
             className,
             tabIndex,
+            ...rest
         },
         ref,
     ) => {
@@ -145,6 +151,7 @@ const CardComponent = forwardRef<HTMLDivElement, CardProps & { $paddingType: Pad
                 className={className}
                 onMouseLeave={onMouseLeave}
                 {...withAccessibilityProps({ tabIndex })}
+                {...rest}
             >
                 <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
             </CardContainer>
