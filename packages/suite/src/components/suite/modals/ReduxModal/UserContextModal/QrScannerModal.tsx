@@ -1,77 +1,23 @@
 import { lazy, Suspense, useState } from 'react';
-
 import styled from 'styled-components';
 
-import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
-import { Icon, colors, Paragraph, Button, Textarea, SelectBar } from '@trezor/components';
 import { UserContextPayload } from '@suite-common/suite-types';
+import { Icon, Paragraph, NewModalProps, NewModal, Row, Column, Card } from '@trezor/components';
+import { borders, spacings } from '@trezor/theme';
+import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
 
-import { TrezorLink, Translation, Modal, BundleLoader } from 'src/components/suite';
-import { useTranslation } from 'src/hooks/suite';
+import { BundleLoader, Translation } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 
 const QrReader = lazy(() => import(/* webpackChunkName: "react-qr-reader" */ 'react-qr-reader'));
 
-const DescriptionWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 16px 16px 0;
-`;
-
-const Description = styled.div`
-    text-align: left;
-    margin-left: 16px;
-
-    & * + * {
-        margin-left: 8px;
-    }
-`;
-
-const ContentWrapper = styled.div<{ $show: boolean }>`
-    display: ${props => (props.$show ? 'flex' : 'none')};
-    flex-direction: column;
-    margin: 16px;
-    overflow: hidden;
+const ContentWrapper = styled.div`
     height: 380px;
 `;
 
-const CameraPlaceholder = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    flex: 1;
-    padding: 40px;
+const ReaderWrapper = styled.div<{ $isVisible: boolean }>`
+    display: ${({ $isVisible }) => !$isVisible && 'none'};
     height: 100%;
-    border-radius: 16px;
-    background: ${({ theme }) => theme.legacy.BG_GREY};
-`;
-
-const Error = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 0;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ErrorTitle = styled(Paragraph)`
-    text-align: center;
-    color: ${colors.legacy.TYPE_RED};
-`;
-const ErrorMessage = styled.span`
-    text-align: center;
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-`;
-
-const IconWrapper = styled.div`
-    margin-bottom: 40px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ActionButton = styled(Button)`
-    min-width: 200px;
 `;
 
 const StyledQrReader = styled(QrReader)`
@@ -84,43 +30,17 @@ const StyledQrReader = styled(QrReader)`
         padding-top: initial !important;
 
         & > video {
-            border-radius: 16px;
+            border-radius: ${borders.radii.md};
         }
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledTextarea = styled(Textarea)`
-    height: 100%;
+type QrScannerModalProps = Pick<Extract<UserContextPayload, { type: 'qr-reader' }>, 'decision'> &
+    Required<Pick<NewModalProps, 'onCancel'>>;
 
-    & > textarea {
-        flex: 1;
-    }
-`;
-
-const StyledModal = styled(Modal)`
-    ${Modal.Body} {
-        padding: 0;
-    }
-`;
-
-interface QrScannerModalProps
-    extends Omit<Extract<UserContextPayload, { type: 'qr-reader' }>, 'type'> {
-    onCancel: () => void;
-}
-
-export interface State {
-    readerLoaded: boolean;
-    error: JSX.Element | null;
-}
-
-export const QrScannerModal = ({ onCancel, decision, allowPaste }: QrScannerModalProps) => {
-    const [readerLoaded, setReaderLoaded] = useState<State['readerLoaded']>(false);
-    const [error, setError] = useState<State['error']>(null);
-    const [isPasteMode, setPasteMode] = useState(false);
-    const [text, setText] = useState('');
-
-    const { translationString } = useTranslation();
+export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
+    const [readerLoaded, setReaderLoaded] = useState(false);
+    const [error, setError] = useState<JSX.Element | null>(null);
 
     const onLoad = () => {
         setReaderLoaded(true);
@@ -154,91 +74,48 @@ export const QrScannerModal = ({ onCancel, decision, allowPaste }: QrScannerModa
     };
 
     return (
-        <StyledModal
-            isCancelable
-            onCancel={onCancel}
-            heading={<Translation id={isPasteMode ? 'TR_PASTE_URI' : 'TR_SCAN_QR_CODE'} />}
-            description={
-                <DescriptionWrapper>
-                    {allowPaste && (
-                        <SelectBar
-                            options={[
-                                { label: <Translation id="TR_PASTE_URI" />, value: 'paste' },
-                                { label: <Translation id="TR_QR_CODE" />, value: 'scan' },
-                            ]}
-                            selectedOption={isPasteMode ? 'paste' : 'scan'}
-                            onChange={value => setPasteMode(value === 'paste')}
-                        />
+        <NewModal onCancel={onCancel} heading={<Translation id="TR_SCAN_QR_CODE" />}>
+            <Column gap={spacings.md} alignItems="stretch">
+                <ContentWrapper>
+                    {error && (
+                        <Card height="100%">
+                            <Column height="100%" justifyContent="center">
+                                <Paragraph variant="destructive">
+                                    <Translation id="TR_GENERIC_ERROR_TITLE" />
+                                </Paragraph>
+                                <Paragraph>{error}</Paragraph>
+                            </Column>
+                        </Card>
                     )}
-                    {!isPasteMode && (
-                        <Description>
-                            <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
-                            <TrezorLink
-                                icon="externalLink"
-                                type="hint"
-                                href={HELP_CENTER_QR_CODE_URL}
-                            >
-                                <Translation id="TR_LEARN_MORE" />
-                            </TrezorLink>
-                        </Description>
+                    {!readerLoaded && !error && (
+                        <Card height="100%">
+                            <Column height="100%" justifyContent="center" gap={spacings.xxxl}>
+                                <Icon name="qrCode" size={100} />
+                                <Translation id="TR_PLEASE_ALLOW_YOUR_CAMERA" />
+                            </Column>
+                        </Card>
                     )}
-                </DescriptionWrapper>
-            }
-            bottomBarComponents={
-                isPasteMode ? (
-                    <ActionButton isDisabled={!text} onClick={() => handleScan(text)}>
-                        <Translation id="TR_CONFIRM" />
-                    </ActionButton>
-                ) : null
-            }
-        >
-            {isPasteMode && (
-                <ContentWrapper $show>
-                    <StyledTextarea
-                        placeholder={`${translationString('TR_PASTE_URI')}…`}
-                        onChange={e => {
-                            setText(e.target.value);
-                        }}
-                    />
+                    {!error && (
+                        <ReaderWrapper $isVisible={readerLoaded}>
+                            <Suspense fallback={<BundleLoader />}>
+                                <StyledQrReader
+                                    delay={500}
+                                    onError={handleError}
+                                    onScan={handleScan}
+                                    onLoad={onLoad}
+                                    showViewFinder={false}
+                                />
+                            </Suspense>
+                        </ReaderWrapper>
+                    )}
                 </ContentWrapper>
-            )}
-
-            {!isPasteMode && !readerLoaded && !error && (
-                <ContentWrapper $show>
-                    <CameraPlaceholder>
-                        <IconWrapper>
-                            <Icon name="qrCode" size={100} />
-                        </IconWrapper>
-                        <Translation id="TR_PLEASE_ALLOW_YOUR_CAMERA" />
-                    </CameraPlaceholder>
-                </ContentWrapper>
-            )}
-            {!isPasteMode && error && (
-                <ContentWrapper $show>
-                    <CameraPlaceholder>
-                        <Error>
-                            <ErrorTitle>
-                                <Translation id="TR_GENERIC_ERROR_TITLE" />
-                            </ErrorTitle>
-                            <ErrorMessage>{error}</ErrorMessage>
-                        </Error>
-                    </CameraPlaceholder>
-                </ContentWrapper>
-            )}
-
-            {!isPasteMode && !error && (
-                <ContentWrapper $show={readerLoaded}>
-                    <Suspense fallback={<BundleLoader />}>
-                        <StyledQrReader
-                            delay={500}
-                            onError={handleError}
-                            onScan={handleScan}
-                            onLoad={onLoad}
-                            showViewFinder={false}
-                        />
-                    </Suspense>
-                </ContentWrapper>
-            )}
-        </StyledModal>
+                <Row gap={spacings.xs} justifyContent="center">
+                    <Paragraph variant="tertiary">
+                        <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
+                    </Paragraph>
+                    <LearnMoreButton url={HELP_CENTER_QR_CODE_URL} />
+                </Row>
+            </Column>
+        </NewModal>
     );
 };
