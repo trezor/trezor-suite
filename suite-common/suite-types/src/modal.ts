@@ -8,7 +8,6 @@ export type UserContextPayload =
     | {
           type: 'qr-reader';
           decision: Deferred<string>;
-          allowPaste?: boolean;
       }
     | {
           type: 'unverified-address';

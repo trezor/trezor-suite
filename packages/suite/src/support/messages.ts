@@ -3196,10 +3196,6 @@ export default defineMessages({
         description: 'Title for the Scan QR modal dialog',
         id: 'TR_SCAN_QR_CODE',
     },
-    TR_PASTE_URI: {
-        defaultMessage: 'Paste URI',
-        id: 'TR_PASTE_URI',
-    },
     TR_YOUR_WALLET_SUCCESSFULLY_CREATED: {
         defaultMessage: 'Wallet successfully created',
         id: 'TR_YOUR_WALLET_SUCCESSFULLY_CREATED',

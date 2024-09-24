@@ -99,13 +99,7 @@ export const UserContextModal = ({
         case 'firmware-revision-opt-out':
             return <FirmwareRevisionOptOutModal onCancel={onCancel} />;
         case 'qr-reader':
-            return (
-                <QrScannerModal
-                    decision={payload.decision}
-                    allowPaste={payload.allowPaste}
-                    onCancel={onCancel}
-                />
-            );
+            return <QrScannerModal decision={payload.decision} onCancel={onCancel} />;
         case 'transaction-detail':
             return <TxDetailModal {...payload} onCancel={onCancel} />;
         case 'passphrase-duplicate':
