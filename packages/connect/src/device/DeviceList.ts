@@ -82,7 +82,7 @@ export const assertDeviceListConnected: (
     if (!deviceList.isConnected()) throw ERRORS.TypedError('Transport_Missing');
 };
 
-type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug'> & {
+type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug' | '_sessionsBackgroundUrl'> & {
     messages: Record<string, any>;
 };
 type InitParams = Pick<ConnectSettings, 'pendingTransportEvent' | 'transportReconnect'>;
@@ -115,7 +115,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.initPromise;
     }
 
-    constructor({ messages, priority, debug }: ConstructorParams) {
+    constructor({ messages, priority, debug, _sessionsBackgroundUrl }: ConstructorParams) {
         super();
 
         const transportLogger = initLog('@trezor/transport', debug);
@@ -128,6 +128,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             messages,
             logger: transportLogger,
             signal: abortController.signal,
+            _sessionsBackgroundUrl,
         };
 
         this.transports = [

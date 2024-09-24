@@ -1192,7 +1192,7 @@ export class Core extends EventEmitter {
 
         try {
             await DataManager.load(settings);
-            const { debug, priority } = DataManager.getSettings();
+            const { debug, priority, _sessionsBackgroundUrl } = DataManager.getSettings();
             const messages = DataManager.getProtobufMessages();
 
             enableLog(debug);
@@ -1206,6 +1206,7 @@ export class Core extends EventEmitter {
                 debug,
                 messages,
                 priority,
+                _sessionsBackgroundUrl,
             });
             initDeviceList(this.getCoreContext());
 
