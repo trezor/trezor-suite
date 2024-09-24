@@ -25,17 +25,15 @@ export const initBackgroundInBrowser = async (
     registerBackgroundCallbacks: RegisterBackgroundCallbacks;
 }> => {
     try {
-        const url = sessionsBackgroundUrl;
-
         // fetch to validate - failed fetch via SharedWorker constructor does not throw. It even hangs resulting in all kinds of weird behaviors
-        await fetch(url, { method: 'HEAD' }).then(response => {
+        await fetch(sessionsBackgroundUrl, { method: 'HEAD' }).then(response => {
             if (!response.ok) {
                 throw new Error(
-                    'Failed to fetch sessions-background SharedWorker from url: ' + url,
+                    `Failed to fetch sessions-background SharedWorker from url: ${sessionsBackgroundUrl}`,
                 );
             }
         });
-        const background = new SharedWorker(url, {
+        const background = new SharedWorker(sessionsBackgroundUrl, {
             name: '@trezor/connect-web transport sessions worker',
         });
 
