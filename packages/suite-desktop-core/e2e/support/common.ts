@@ -6,6 +6,9 @@ import fse from 'fs-extra';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+// specific version of legacy bridge is requested & expected
+export const LEGACY_BRIDGE_VERSION = '2.0.33';
+
 type LaunchSuiteParams = {
     rmUserData?: boolean;
     bridgeLegacyTest?: boolean;
@@ -24,7 +27,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
     const desiredLogLevel = process.env.LOGLEVEL ?? 'error';
     if (!options.bridgeDaemon) {
         // TODO: Find out why currently pw fails to see node-bridge so we default to legacy bridge.
-        await TrezorUserEnvLink.startBridge();
+        await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
     }
     const electronApp = await electron.launch({
         cwd: appDir,

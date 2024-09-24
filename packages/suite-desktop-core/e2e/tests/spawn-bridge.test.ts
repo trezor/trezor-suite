@@ -2,11 +2,10 @@ import { test as testPlaywright, expect as expectPlaywright } from '@playwright/
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-import { launchSuite, waitForDataTestSelector } from '../support/common';
+import { launchSuite, LEGACY_BRIDGE_VERSION, waitForDataTestSelector } from '../support/common';
 import { onDashboardPage } from '../support/pageActions/dashboardActions';
 
 testPlaywright.describe.serial('Bridge', () => {
-    const expectedBridgeVersion = '2.0.33';
     testPlaywright.beforeEach(async () => {
         // We make sure that bridge from trezor-user-env is stopped.
         // So we properly test the electron app starting node-bridge module.
@@ -40,7 +39,7 @@ testPlaywright.describe.serial('Bridge', () => {
 
         const json = await response.json();
         const { version } = json;
-        expectPlaywright(version).toEqual(expectedBridgeVersion);
+        expectPlaywright(version).toEqual(LEGACY_BRIDGE_VERSION);
 
         // bridge is running after renderer window is refreshed
         await suite.window.reload();
@@ -65,7 +64,7 @@ testPlaywright.describe.serial('Bridge', () => {
         async () => {
             await TrezorUserEnvLink.startEmu({ wipe: true, version: '2-latest', model: 'T2T1' });
             await TrezorUserEnvLink.setupEmu({});
-            await TrezorUserEnvLink.startBridge();
+            await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
 
             const suite = await launchSuite();
             await suite.window.title();
@@ -76,7 +75,7 @@ testPlaywright.describe.serial('Bridge', () => {
 
             await waitForDataTestSelector(suite.window, '@connect-device-prompt');
 
-            await TrezorUserEnvLink.startBridge();
+            await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
             await waitForDataTestSelector(suite.window, '@dashboard/index');
         },
     );
