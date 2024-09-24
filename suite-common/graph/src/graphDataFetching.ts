@@ -409,6 +409,19 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
             findOldestBalanceMovementTimestamp,
             fromUnixTime,
         );
+
+        // if there were no balance movements at all,
+        // findOldestBalanceMovementTimestamp resulted with start date being the same as end date
+        // use 1 year into past and return zeroes for the range
+        if (startOfTimeFrameDate.getTime() === endOfTimeFrameDate.getTime()) {
+            let startDate = startOfTimeFrameDate;
+            startDate.setDate(startDate.getHours() - 8760);
+
+            return [
+                ...getTimestampsInTimeFrame(startDate, endOfTimeFrameDate, numberOfPoints - 1),
+                getUnixTime(endOfTimeFrameDate),
+            ].map(t => ({ date: fromUnixTime(t), value: 0 }));
+        }
     }
 
     // Last timestamp must be endOfTimeFrameDate because blockchainGetAccountBalanceHistory it's not always reliable for coins like ETH.
