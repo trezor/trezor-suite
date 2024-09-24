@@ -61,6 +61,8 @@ export const MNEMONICS = {
         'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
 };
 
+export const DEFAULT_BRIDGE_VERSION = '2.0.33';
+
 export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> {
     private client: WebsocketClient;
     public firmwares?: Firmwares;
@@ -157,7 +159,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
-    async startBridge(version?: string) {
+    async startBridge(version = DEFAULT_BRIDGE_VERSION) {
         await this.client.send({ type: 'bridge-start', version });
 
         return null;
