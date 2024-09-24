@@ -14,6 +14,9 @@
             "path": "../blockchain-link-utils"
         },
         {
+            "path": "../env-utils"
+        },
+        {
             "path": "../utils"
         },
         {

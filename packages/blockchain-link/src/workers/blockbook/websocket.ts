@@ -21,6 +21,7 @@ import type {
 } from '@trezor/blockchain-link-types/src/params';
 
 import { BaseWebsocket } from '../baseWebsocket';
+import { getSuiteVersion } from '@trezor/env-utils';
 
 interface BlockbookEvents {
     block: BlockNotification;
@@ -52,7 +53,7 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
             agent: this.options.agent,
             headers: {
                 Origin: 'https://node.trezor.io',
-                'User-Agent': 'Trezor Suite',
+                'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
                 ...this.options.headers,
             },
         });
