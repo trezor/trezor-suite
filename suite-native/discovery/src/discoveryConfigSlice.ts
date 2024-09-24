@@ -92,13 +92,22 @@ export const selectDiscoverySupportedNetworks = memoizeWithArgs(
     ) => {
         const areTestnetsEnabled = forcedAreTestnetsEnabled ?? selectAreTestnetsEnabled(state);
         const isPolygonEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsPolygonEnabled);
+        const isBscEnabled = selectIsFeatureFlagEnabled(state, FeatureFlag.IsBscEnabled);
+
+        const allowlist: NetworkSymbol[] = [];
+
+        if (isPolygonEnabled) {
+            allowlist.push('matic');
+        }
+        if (isBscEnabled) {
+            allowlist.push('bnb');
+        }
 
         return pipe(
             selectDeviceSupportedNetworks(state),
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
             filterUnavailableNetworks,
-            availableNetworks =>
-                filterBlacklistedNetworks(availableNetworks, isPolygonEnabled ? ['matic'] : []),
+            availableNetworks => filterBlacklistedNetworks(availableNetworks, allowlist),
             sortNetworks,
         );
     },
