@@ -1,4 +1,5 @@
 export const uiVariants = [
+    'default',
     'primary',
     'secondary',
     'tertiary',

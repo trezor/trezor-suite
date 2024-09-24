@@ -33,6 +33,7 @@ type ExclusiveColorOrVariant =
       };
 
 const variantColorMap: Record<TextVariant, Color> = {
+    default: 'textDefault',
     primary: 'textPrimaryDefault',
     secondary: 'textSecondaryHighlight',
     tertiary: 'textSubdued',
@@ -51,7 +52,7 @@ const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSCol
         return $color;
     }
 
-    return theme[$variant !== undefined ? variantColorMap[$variant] : 'textDefault'];
+    return $variant !== undefined ? theme[variantColorMap[$variant]] : 'inherit';
 };
 
 type StyledTextProps = ExclusiveColorOrVariant &
