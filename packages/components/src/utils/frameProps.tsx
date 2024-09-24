@@ -67,10 +67,10 @@ export const withFrameProps = ({
     return css`
         ${$margin &&
         css`
-            ${$margin.top ? `margin-top: ${$margin.top}px;` : ''}
-            ${$margin.bottom ? `margin-bottom: ${$margin.bottom}px;` : ''}
-            ${$margin.left ? `margin-left: ${$margin.left}px;` : ''}
-            ${$margin.right ? `margin-right: ${$margin.right}px;` : ''}
+            ${$margin.top ? `margin-top: ${getValueWithUnit($margin.top)};` : ''}
+            ${$margin.bottom ? `margin-bottom: ${getValueWithUnit($margin.bottom)};` : ''}
+            ${$margin.left ? `margin-left: ${getValueWithUnit($margin.left)};` : ''}
+            ${$margin.right ? `margin-right: ${getValueWithUnit($margin.right)};` : ''}
         `}
 
         ${$minWidth &&
