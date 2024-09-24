@@ -12,6 +12,7 @@ import type {
 } from '@trezor/blockchain-link-types/src/params';
 
 import { BaseWebsocket } from '../baseWebsocket';
+import { getSuiteVersion } from '@trezor/env-utils';
 
 interface BlockfrostEvents {
     block: BlockContent;
@@ -25,6 +26,11 @@ export class BlockfrostAPI extends BaseWebsocket<BlockfrostEvents> {
         // options are not used in web builds (see ./src/utils/ws)
         return new WebSocket(url, {
             agent: this.options.agent,
+            headers: {
+                Origin: 'https://node.trezor.io',
+                'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
+                ...this.options.headers,
+            },
         });
     }
 
