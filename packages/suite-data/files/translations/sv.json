@@ -67,7 +67,6 @@
   "TR_CONTINUE": "Fortsätt",
   "TR_CONTINUE_ANYWAY": "Fortsätt ändå",
   "TR_CONTINUE_ON_TREZOR": "Fortsätt på Trezor",
-  "TR_COPY_TO_CLIPBOARD": "Kopiera",
   "TR_COUNT_WALLETS": "{count} {count, plural, one {plånbok} other {plånböcker}}",
   "TR_CREATE_BACKUP": "Skapa säkerhetskopia",
   "TR_CREATE_WALLET": "Skapa ny plånbok",
