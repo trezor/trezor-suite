@@ -26,6 +26,7 @@ import {
 import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 import { getBaseFee, getPriorityFee } from './fee';
 import { confirmTransactionWithResubmit } from './transactionConfirmation';
+import { getSuiteVersion } from '@trezor/env-utils';
 
 export type SolanaAPI = Connection;
 
@@ -514,7 +515,13 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
     private lazyTokens = createLazy(() => solanaUtils.getTokenMetadata());
 
     async tryConnect(url: string): Promise<SolanaAPI> {
-        const api = new Connection(url, { wsEndpoint: url.replace('https', 'wss') });
+        const api = new Connection(url, {
+            wsEndpoint: url.replace('https', 'wss'),
+            httpHeaders: {
+                Origin: 'https://node.trezor.io',
+                'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
+            },
+        });
         await api.getLatestBlockhash('finalized');
         this.post({ id: -1, type: RESPONSES.CONNECTED });
 
