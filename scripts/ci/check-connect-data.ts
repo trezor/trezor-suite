@@ -2,7 +2,7 @@ import fetch from 'cross-fetch';
 import fs from 'fs-extra';
 import path from 'path';
 import crypto from 'crypto';
-import { commit } from './helpers';
+import { comment, commit } from './helpers';
 
 const { exec } = require('./helpers');
 
@@ -80,6 +80,49 @@ const updateConfigFromJSON = async () => {
         const changes = await exec('git', ['diff', CONFIG_FILE_PATH]);
         if (changes.stdout !== '') {
             console.log('There were changes in keys.');
+
+            // Before creating the new PR with new keys we check if there was already previous one.
+            // We can delete the previous one since latest one will contain all new changes.
+            // If you need to update search query you can test in GH: https://github.com/search and
+            // use the documentation https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests
+            const prList = await exec('gh', [
+                'search',
+                'prs',
+                '--repo=trezor/trezor-suite',
+                '--head=chore/update-device-authenticity-config',
+                '--state=open',
+            ]);
+
+            console.log('prList', prList);
+
+            if (prList.stdout !== '') {
+                const prNumbers = prList.stdout.match(/(?<=\t)(\d+)(?=\t)/g);
+
+                console.log(`Found open pull requests ${prNumbers}. Closing...`);
+                for (const prNumber of prNumbers) {
+                    try {
+                        console.log(`Commenting on PR ${prNumber}`);
+                        comment({
+                            prNumber,
+                            body: `Closing this PR since we are going to create new one with latest changes in ${AUTHENTICITY_BASE_URL}`,
+                        });
+
+                        console.log(`Closing PR ${prNumber}`);
+                        await exec('gh', [
+                            'pr',
+                            'close',
+                            prNumber,
+                            '--repo',
+                            'trezor/trezor-suite',
+                        ]);
+                        console.log(`Closed PR #${prNumber}`);
+                    } catch (error) {
+                        console.error(`Failed to close PR #${prNumber}:`, error.message);
+                    }
+                }
+            } else {
+                console.log(`No open pull requests found.`);
+            }
 
             // Use the content to generate the hash in the branch so it is the same with same content.
             // If we would use the hash provided by Git it would be different because it contains date as well.
