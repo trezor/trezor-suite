@@ -1,13 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
-import {
-    Paragraph as P,
-    ParagraphProps,
-    paragraphVariants,
-    allowedParagraphFrameProps,
-    allowedParagraphTextProps,
-} from './Paragraph';
+import { Paragraph as P } from './Paragraph';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { getTextPropsStory } from '../utils';
+import { allowedTextFrameProps, allowedTextTextProps, TextProps, textVariants } from '../Text/Text';
 
 const meta: Meta = {
     title: 'Typography',
@@ -15,13 +10,13 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const Paragraph: StoryObj<ParagraphProps> = {
+export const Paragraph: StoryObj<TextProps> = {
     args: {
         typographyStyle: 'body',
         children:
             'Quos delectus veritatis est doloribus dolor. Odit fugit omnis magni ipsam quia rem aut. Et alias sint non. Consequuntur dignissimos veritatis debitis corporis esse. Quaerat voluptatem unde aut. Iusto laborum omnis quis amet atque. Sint culpa delectus non soluta temporibus saepe. Sequi saepe corrupti aliquam ut sit assumenda aspernatur consequuntur. Ut est ullam iusto facilis voluptatibus. Sit est cum quos. Quasi deleniti non fugit iste alias consequuntur. Ullam ad ut culpa est reiciendis molestiae. Reiciendis ab veritatis a totam inventore nihil voluptatem occaecati. Quisquam atque odit quia nam. Laboriosam rem et ut. Maxime qui voluptatem voluptatem.',
-        ...getFramePropsStory(allowedParagraphFrameProps).args,
-        ...getTextPropsStory(allowedParagraphTextProps).args,
+        ...getFramePropsStory(allowedTextFrameProps).args,
+        ...getTextPropsStory(allowedTextTextProps).args,
     },
     argTypes: {
         typographyStyle: {
@@ -41,9 +36,9 @@ export const Paragraph: StoryObj<ParagraphProps> = {
             control: {
                 type: 'select',
             },
-            options: paragraphVariants,
+            options: textVariants,
         },
-        ...getFramePropsStory(allowedParagraphFrameProps).argTypes,
-        ...getTextPropsStory(allowedParagraphTextProps).argTypes,
+        ...getFramePropsStory(allowedTextFrameProps).argTypes,
+        ...getTextPropsStory(allowedTextTextProps).argTypes,
     },
 };
