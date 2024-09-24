@@ -114,7 +114,7 @@ interface NewModalProps {
     icon?: IconName;
     alignment?: NewModalAlignment;
     size?: NewModalSize;
-    'data-test'?: string;
+    'data-testid'?: string;
 }
 
 const NewModalBase = ({
@@ -127,7 +127,7 @@ const NewModalBase = ({
     icon,
     onBackClick,
     onCancel,
-    'data-test': dataTest = '@modal',
+    'data-testid': dataTest = '@modal',
 }: NewModalProps) => {
     const { scrollElementRef, onScroll, ShadowContainer, ShadowTop, ShadowBottom } =
         useScrollShadow();

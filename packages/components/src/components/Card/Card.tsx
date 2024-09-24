@@ -115,6 +115,7 @@ type CommonCardProps = AccessibilityProps & {
     className?: string;
     label?: ReactNode;
     forceElevation?: Elevation;
+    'data-testid'?: string;
 };
 
 export type CardPropsWithTransientProps = CommonCardProps & TransientProps<AllowedFrameProps>;
@@ -134,6 +135,7 @@ const CardComponent = forwardRef<
             onMouseLeave,
             className,
             tabIndex,
+            'data-testid': dataTest,
             ...rest
         },
         ref,
@@ -152,6 +154,7 @@ const CardComponent = forwardRef<
                 onMouseLeave={onMouseLeave}
                 {...withAccessibilityProps({ tabIndex })}
                 {...rest}
+                data-testid={dataTest}
             >
                 <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
             </CardContainer>
@@ -170,6 +173,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
             className,
             tabIndex,
             children,
+            'data-testid': dataTest,
             ...rest
         },
         ref,
@@ -182,6 +186,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
             tabIndex,
             $paddingType: paddingType,
             children,
+            'data-testid': dataTest,
         };
         const frameProps = pickAndPrepareFrameProps(rest, allowedCardFrameProps);
 
