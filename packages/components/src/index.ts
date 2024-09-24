@@ -12,7 +12,6 @@ export * from './components/AssetShareIndicator/AssetShareIndicator';
 export { AssetLogo, type AssetLogoProps } from './components/AssetLogo/AssetLogo';
 export * from './components/CoinLogo/CoinLogo';
 export * from './components/Flag/Flag';
-export * from './components/TrezorLogo/TrezorLogo';
 export * from './components/AutoScalingInput/AutoScalingInput';
 export * from './components/Badge/Badge';
 export * from './components/buttons/Button/Button';
@@ -27,7 +26,6 @@ export {
     CollapsibleBox,
     type CollapsibleBoxProps,
 } from './components/CollapsibleBox/CollapsibleBox';
-export * from './components/RotateDeviceImage/RotateDeviceImage';
 export * from './components/DataAnalytics';
 export * from './components/Divider/Divider';
 export * from './components/Dropdown/Dropdown';
@@ -59,7 +57,6 @@ export * from './components/modals/Modal/Backdrop';
 export * from './components/modals/Modal/Modal';
 export * from './components/NewModal/NewModal';
 export * from './components/Note/Note';
-export * from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export * from './components/ResizableBox/ResizableBox';
 export * from './components/skeletons/SkeletonCircle';
 export * from './components/skeletons/SkeletonRectangle';

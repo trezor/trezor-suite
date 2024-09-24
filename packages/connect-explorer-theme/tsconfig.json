@@ -12,6 +12,7 @@
     },
     "references": [
         { "path": "../components" },
+        { "path": "../product-components" },
         { "path": "../theme" }
     ]
 }

@@ -22,13 +22,16 @@
         "@trezor/connect": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/product-components": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "framer-motion": "^11.0.3",
         "react": "18.2.0",
         "react-intl": "^6.6.8",
-        "styled-components": "^6.1.8"
+        "react-svg": "^16.1.33",
+        "styled-components": "^6.1.8",
+        "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
         "@storybook/addon-actions": "^7.6.13",

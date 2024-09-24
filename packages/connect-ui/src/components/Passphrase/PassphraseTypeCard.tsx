@@ -16,10 +16,10 @@ import {
     Input,
     Tooltip,
     TooltipProps,
-    PasswordStrengthIndicator,
     motionAnimation,
     Icon,
 } from '@trezor/components';
+import { PasswordStrengthIndicator } from '@trezor/product-components';
 
 import { WalletType } from './types';
 

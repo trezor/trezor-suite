@@ -1,7 +1,7 @@
 import React from 'react';
-import { DeviceAnimation } from '../animations/DeviceAnimation';
+import { DeviceAnimation } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
-import { Image } from '../Image/Image';
+import { Image } from '@trezor/components';
 import styled from 'styled-components';
 
 export type RotateDeviceImageProps = {

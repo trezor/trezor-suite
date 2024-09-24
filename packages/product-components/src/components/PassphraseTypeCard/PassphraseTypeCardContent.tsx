@@ -1,16 +1,8 @@
 import { isAndroid } from '@trezor/env-utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FormattedMessage, useIntl } from 'react-intl';
-import {
-    Card,
-    PasswordStrengthIndicator,
-    Column,
-    Row,
-    Input,
-    Button,
-    motionAnimation,
-    Icon,
-} from '@trezor/components';
+import { Card, Column, Row, Input, Button, motionAnimation, Icon } from '@trezor/components';
+import { PasswordStrengthIndicator } from '../PasswordStrengthIndicator/PasswordStrengthIndicator';
 import styled, { useTheme } from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { useKeyPress } from '@trezor/react-utils';

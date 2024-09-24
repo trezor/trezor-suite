@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { RotateDeviceImage, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
+import { RotateDeviceImage } from '@trezor/product-components';
 import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
 

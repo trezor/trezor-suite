@@ -11,6 +11,7 @@
         { "path": "../connect-common" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
+        { "path": "../product-components" },
         { "path": "../react-utils" },
         { "path": "../theme" },
         { "path": "../urls" },
