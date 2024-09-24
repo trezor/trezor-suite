@@ -338,7 +338,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private async selectTransport([transport, ...rest]: Transport[]): Promise<Transport> {
-        const result = await transport.init();
+        const result = await transport.init({
+            sessionsBackgroundUrl: this.transportCommonArgs._sessionsBackgroundUrl,
+        });
         if (result.success) return transport;
         else if (rest.length) return this.selectTransport(rest);
         else throw new Error(result.error);
