@@ -10219,6 +10219,7 @@ __metadata:
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-deeplink": "workspace:^"
     expo-linking: "npm:^6.3.1"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
@@ -11200,7 +11201,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-deeplink@workspace:*, @trezor/connect-deeplink@workspace:packages/connect-deeplink":
+"@trezor/connect-deeplink@workspace:*, @trezor/connect-deeplink@workspace:^, @trezor/connect-deeplink@workspace:packages/connect-deeplink":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-deeplink@workspace:packages/connect-deeplink"
   dependencies:

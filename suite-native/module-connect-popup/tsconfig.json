@@ -13,6 +13,9 @@
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../navigation" },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-deeplink"
+        }
     ]
 }

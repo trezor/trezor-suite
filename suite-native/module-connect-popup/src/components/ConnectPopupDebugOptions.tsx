@@ -5,7 +5,7 @@ import * as Linking from 'expo-linking';
 
 import { BottomSheet, Button } from '@suite-native/atoms';
 
-import { buildURL } from '../utils/buildURL';
+import { buildURL } from '@trezor/connect-deeplink';
 
 type ConnectPopupDebugOptionsProps = React.PropsWithChildren<{
     showDebug: boolean;
