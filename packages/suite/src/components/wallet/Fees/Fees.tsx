@@ -142,6 +142,9 @@ export const Fees = <TFieldValues extends FormState>({
     // Solana has only `normal` fee level, so we do not display any feeOptions since there is nothing to choose from
     const feeOptions = networkType === 'solana' ? [] : buildFeeOptions(feeInfo.levels);
 
+    const showNormalFee = showFeeWhilePending || transactionInfo?.type === 'final';
+    const shouldAnimateNormalFee = showNormalFee && !isCustomLevel;
+
     return (
         <Container>
             <FeeInfoRow>
@@ -190,11 +193,13 @@ export const Fees = <TFieldValues extends FormState>({
             )}
 
             <AnimatePresence>
-                {!isCustomLevel && (
+                {shouldAnimateNormalFee && (
                     <motion.div
-                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                        animate={{ opacity: 1, height: 'auto', marginTop: 20 }}
-                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                        animate={shouldAnimateNormalFee ? 'open' : 'closed'}
+                        variants={{
+                            open: { opacity: 1, height: 'auto', marginTop: 20 },
+                            closed: { opacity: 0, height: 0, marginTop: 0 },
+                        }}
                         transition={{
                             opacity: { duration: 0.15, ease: motionEasing.transition },
                             height: { duration: 0.2, ease: motionEasing.transition },
@@ -206,11 +211,12 @@ export const Fees = <TFieldValues extends FormState>({
                             feeInfo={feeInfo}
                             selectedLevel={selectedLevel}
                             transactionInfo={transactionInfo}
-                            showFee={showFeeWhilePending || transactionInfo?.type === 'final'}
+                            showFee={showNormalFee}
                         />
                     </motion.div>
                 )}
             </AnimatePresence>
+
             <AnimatePresence>
                 {isCustomLevel && (
                     <CustomFee
