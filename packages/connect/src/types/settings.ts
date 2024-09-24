@@ -26,6 +26,11 @@ export interface ConnectSettingsPublic {
     coreMode?: 'auto' | 'popup' | 'iframe';
     /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
     _extendWebextensionLifetime?: boolean;
+    /**
+     * for internal use only!
+     * in some exotic setups (suite-web where iframe is embedded locally), you might need to tell connect where it should search for sessions background shared-worker
+     */
+    _sessionsBackgroundUrl?: string;
     deeplinkOpen?: (url: string) => void;
     deeplinkCallbackUrl?: string;
     deeplinkUrl?: string;
