@@ -173,12 +173,11 @@ export const AccountItem = forwardRef(
                 <Left>{getLeftComponent()}</Left>
                 <Column flex="1" alignItems="stretch" overflow="hidden" gap={spacings.xxxs}>
                     <Row
-                        data-testid={`${dataTestKey}/label`}
                         gap={spacings.md}
                         margin={{ right: spacings.xxs }}
                         justifyContent="space-between"
                     >
-                        <AccountLabelContainer>
+                        <AccountLabelContainer data-testid={`${dataTestKey}/label`}>
                             {type === 'coin' && (
                                 <AccountLabel
                                     accountLabel={accountLabel}
