@@ -235,19 +235,19 @@ export default defineMessages({
     },
     TR_COINMARKET_SWAP_MODAL_TERMS_1: {
         defaultMessage:
-            "You're here to swap cryptocurrency. If you were directed to this site for any other reason, please contact support before proceeding.",
+            "I’m here to swap cryptocurrencies. If I were directed to this site for any other reason, I'll contact Trezor Support before proceeding. ",
         id: 'TR_COINMARKET_SWAP_MODAL_TERMS_1',
         dynamic: true,
     },
     TR_COINMARKET_SWAP_MODAL_TERMS_2: {
         defaultMessage:
-            "You're swapping cryptocurrency for your own account. You acknowledge that the provider's policies may require identity verification.",
+            "I want to swap cryptocurrencies for my own account. I understand that the provider's policies may require identity verification.",
         id: 'TR_COINMARKET_SWAP_MODAL_TERMS_2',
         dynamic: true,
     },
     TR_COINMARKET_SWAP_MODAL_TERMS_3: {
         defaultMessage:
-            'You understand that cryptocurrency transactions are irreversible and may not be refunded. Thus, fraudulent or accidental losses may be unrecoverable.',
+            "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
         id: 'TR_COINMARKET_SWAP_MODAL_TERMS_3',
         dynamic: true,
     },
@@ -258,7 +258,7 @@ export default defineMessages({
     },
     TR_COINMARKET_SWAP_MODAL_TERMS_4: {
         defaultMessage:
-            'You understand that Invity does not provide this service. {provider}’s terms govern the service.',
+            "I understand that Invity doesn't provide this service. It's governed by {provider}’s terms and conditions.",
         id: 'TR_COINMARKET_SWAP_MODAL_TERMS_4',
         dynamic: true,
     },
@@ -269,13 +269,13 @@ export default defineMessages({
     },
     TR_COINMARKET_SWAP_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud or any other violation of either Invity’s or the provider's Terms of service, or of any applicable regulations.",
+            "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
         id: 'TR_COINMARKET_SWAP_MODAL_TERMS_5',
         dynamic: true,
     },
     TR_COINMARKET_SWAP_MODAL_TERMS_6: {
         defaultMessage:
-            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
+            'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
         id: 'TR_COINMARKET_SWAP_MODAL_TERMS_6',
         dynamic: true,
     },
@@ -296,19 +296,19 @@ export default defineMessages({
     },
     TR_COINMARKET_SWAP_DEX_MODAL_TERMS_1: {
         defaultMessage:
-            "You're here to swap cryptocurrency using DEX (Decentralized Exchange) by using {provider}'s contract.",
+            "I want to swap cryptocurrencies using DEX (decentralized exchange) by using {provider}'s contract.",
         id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_1',
         dynamic: true,
     },
     TR_COINMARKET_SWAP_DEX_MODAL_TERMS_2: {
         defaultMessage:
-            "You're swapping cryptocurrency for your own account. You acknowledge that the provider's policies may require identity verification.",
+            "I want to swap cryptocurrencies for my own account. I understand that the provider's policies may require identity verification.",
         id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_2',
         dynamic: true,
     },
     TR_COINMARKET_SWAP_DEX_MODAL_TERMS_3: {
         defaultMessage:
-            'You understand that cryptocurrency transactions are irreversible and may not be refunded. Thus, fraudulent or accidental losses may be unrecoverable.',
+            "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
         id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_3',
         dynamic: true,
     },
@@ -319,7 +319,7 @@ export default defineMessages({
     },
     TR_COINMARKET_SWAP_DEX_MODAL_TERMS_4: {
         defaultMessage:
-            'You understand that Invity does not provide this service. {provider}’s terms govern the service.',
+            "I understand that Invity doesn't provide this service. It's governed by {provider}’s terms and conditions.",
         id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_4',
         dynamic: true,
     },
@@ -330,13 +330,13 @@ export default defineMessages({
     },
     TR_COINMARKET_SWAP_DEX_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud or any other violation of either Invity’s or the provider's Terms of service, or of any applicable regulations.",
+            "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
         id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_5',
         dynamic: true,
     },
     TR_COINMARKET_SWAP_DEX_MODAL_TERMS_6: {
         defaultMessage:
-            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
+            'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
         id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_6',
         dynamic: true,
     },
@@ -770,7 +770,7 @@ export default defineMessages({
     },
     TR_SELL_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud, or any other violation of either Invity’s or the provider's Terms of Service or of any applicable regulations.",
+            "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
         id: 'TR_SELL_MODAL_TERMS_5',
         dynamic: true,
     },
@@ -978,7 +978,7 @@ export default defineMessages({
     },
     TR_P2P_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud, or any other violation of either Invity’s or the provider's Terms of Service or of any applicable regulations.",
+            "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
         id: 'TR_P2P_MODAL_TERMS_5',
         dynamic: true,
     },
@@ -1043,19 +1043,19 @@ export default defineMessages({
     },
     TR_BUY_MODAL_TERMS_1: {
         defaultMessage:
-            "You're here to buy cryptocurrency. If you were directed to this site for any other reason, please contact {provider} support before proceeding.",
+            "I’m here to buy cryptocurrencies. If I were directed to this site for any other reason, I'll contact {provider} support before proceeding.",
         id: 'TR_BUY_MODAL_TERMS_1',
         dynamic: true,
     },
     TR_BUY_MODAL_TERMS_2: {
         defaultMessage:
-            "You're using this feature to purchase funds that will be sent to an account under your direct personal control.",
+            "I’m using this feature to buy cryptocurrencies that'll be sent to my own account.",
         id: 'TR_BUY_MODAL_TERMS_2',
         dynamic: true,
     },
     TR_BUY_MODAL_TERMS_3: {
         defaultMessage:
-            'You understand that cryptocurrency transactions are irreversible and may not be refunded. Thus, fraudulent or accidental losses may be unrecoverable.',
+            "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
         id: 'TR_BUY_MODAL_TERMS_3',
         dynamic: true,
     },
@@ -1066,7 +1066,7 @@ export default defineMessages({
     },
     TR_BUY_MODAL_TERMS_4: {
         defaultMessage:
-            'You understand that Invity does not provide this service. {provider}’s terms govern the service.',
+            "I understand that Invity doesn't provide this service. It's governed by {provider}’s terms and conditions.",
         id: 'TR_BUY_MODAL_TERMS_4',
         dynamic: true,
     },
@@ -1077,13 +1077,13 @@ export default defineMessages({
     },
     TR_BUY_MODAL_TERMS_5: {
         defaultMessage:
-            "You're not using this feature for gambling, fraud, or any other violation of either Invity’s or the provider's Terms of Service or of any applicable regulations.",
+            "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
         id: 'TR_BUY_MODAL_TERMS_5',
         dynamic: true,
     },
     TR_BUY_MODAL_TERMS_6: {
         defaultMessage:
-            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
+            'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
         id: 'TR_BUY_MODAL_TERMS_6',
         dynamic: true,
     },
@@ -1562,7 +1562,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_DCA_DOWNLOAD',
     },
     TR_COINMARKET_BUY_AND_SELL: {
-        defaultMessage: 'Buy & Sell',
+        defaultMessage: 'Buy & sell',
         id: 'TR_COINMARKET_BUY_AND_SELL',
     },
     TR_COINMARKET_SWAP: {
@@ -2990,7 +2990,7 @@ export default defineMessages({
         id: 'TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE',
     },
     TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT: {
-        defaultMessage: 'New Trezor firmware is available! Please update your device.',
+        defaultMessage: 'New Trezor firmware is available! Update your device now.',
         id: 'TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT',
     },
     TR_NO_PASSPHRASE_WALLET: {
@@ -6328,7 +6328,7 @@ export default defineMessages({
     },
     TR_UPDATE_MODAL_RESTART_NEEDED: {
         id: 'TR_UPDATE_MODAL_RESTART_NEEDED',
-        defaultMessage: 'This will restart Trezor Suite',
+        defaultMessage: 'This will restart Trezor Suite.',
     },
     SETTINGS_UPDATE_CHECKING: {
         id: 'SETTINGS_UPDATE_CHECKING',
@@ -6867,7 +6867,7 @@ export default defineMessages({
     },
     TR_WIPE_OR_UPDATE_DESCRIPTION: {
         id: 'TR_WIPE_OR_UPDATE_DESCRIPTION',
-        defaultMessage: 'Go to device settings',
+        defaultMessage: 'Go to device settings.',
     },
     TR_YOU_HAVE_CONNECTED: {
         id: 'TR_YOU_HAVE_CONNECTED',
