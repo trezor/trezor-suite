@@ -27,6 +27,10 @@ export const TREZOR_SUPPORT_RECOVERY_ISSUES_URL: Url =
     'https://trezor.io/support/a/trezor-recovery-issues';
 export const TREZOR_SUPPORT_FW_CHECK_FAILED: Url =
     'https://trezor.io/support/a/trezor-firmware-revision-check-failed';
+export const TREZOR_SUPPORT_FW_ALREADY_INSTALLED: Url =
+    'https://trezor.io/support/a/firmware-is-already-installed';
+export const TREZOR_SUPPORT_IS_MY_DEVICE_SAFE: Url =
+    'https://trezor.io/support/a/is-my-device-safe-to-use';
 
 export const HELP_CENTER_PIN_URL: Url =
     'https://trezor.io/learn/a/pin-protection-on-trezor-devices';
