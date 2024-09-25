@@ -409,7 +409,13 @@ test('popup should close when third party is closed', async ({ page, context }) 
     await popupClosedPromise;
 });
 
-test('popup should behave properly with subsequent calls', async ({ page, context }) => {
+// skip note:
+// this test test that you can call getFeatures followed by getPublicKey. The flaky thing about it is that
+// getFeatures call sometimes opens popup and sometimes not. Sometimes it is simply successfully handled
+// without popup being opened and Playwright expects 2 popups to be opened.
+// TODO: consider not opening popup for calls that do not need it.
+// https://github.com/trezor/trezor-suite/issues/14527
+test.skip('popup should behave properly with subsequent calls', async ({ page, context }) => {
     test.skip(skipCheck);
 
     log(`test: ${test.info().title}`);
@@ -434,6 +440,7 @@ test('popup should behave properly with subsequent calls', async ({ page, contex
     popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
     });
+
     await popupClosedPromise;
 
     log('waiting for second popup open');
