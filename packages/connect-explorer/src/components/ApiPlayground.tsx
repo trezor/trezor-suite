@@ -39,16 +39,9 @@ const ApiPlaygroundWrapper = styled.div`
     } */
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const CollapsibleBoxStyled = styled(CollapsibleBox)`
-    margin: 0;
-    border: 0;
-
-    /* CollapsibleBox content, fix for nested sticky elements */
-    & ${CollapsibleBox.Content} {
-        overflow: hidden scroll;
-        max-height: calc(100vh - 200px);
-    }
+const ContentWrapper = styled.div`
+    overflow: hidden scroll;
+    max-height: calc(100vh - 300px);
 `;
 
 const OptionsRow = styled(MethodContent)`
@@ -128,41 +121,42 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
 
     return (
         <ApiPlaygroundWrapper>
-            <CollapsibleBoxStyled
+            <CollapsibleBox
                 heading="Method testing tool"
                 paddingType="large"
-                isIconFlipped
                 data-testid="@api-playground/collapsible-box"
             >
-                <OptionsRow $manualMode={manualMode}>
-                    <div>
-                        {options.length > 1 && (
-                            <SelectWrapper>
-                                <Select
-                                    label="Select method"
-                                    value={{
-                                        value: selectedOption,
-                                        label: options[selectedOption].title,
-                                    }}
-                                    onChange={option => setSelectedOption(option.value)}
-                                    options={options.map((option, index) => ({
-                                        value: index,
-                                        label: option.title,
-                                    }))}
-                                />
-                            </SelectWrapper>
-                        )}
-                    </div>
-                    <div>
-                        <Switch
-                            label="Manual mode"
-                            isChecked={!!manualMode}
-                            onChange={checked => actions.onSetManualMode(!!checked)}
-                        />
-                    </div>
-                </OptionsRow>
-                <Method />
-            </CollapsibleBoxStyled>
+                <ContentWrapper>
+                    <OptionsRow $manualMode={manualMode}>
+                        <div>
+                            {options.length > 1 && (
+                                <SelectWrapper>
+                                    <Select
+                                        label="Select method"
+                                        value={{
+                                            value: selectedOption,
+                                            label: options[selectedOption].title,
+                                        }}
+                                        onChange={option => setSelectedOption(option.value)}
+                                        options={options.map((option, index) => ({
+                                            value: index,
+                                            label: option.title,
+                                        }))}
+                                    />
+                                </SelectWrapper>
+                            )}
+                        </div>
+                        <div>
+                            <Switch
+                                label="Manual mode"
+                                isChecked={!!manualMode}
+                                onChange={checked => actions.onSetManualMode(!!checked)}
+                            />
+                        </div>
+                    </OptionsRow>
+                    <Method />
+                </ContentWrapper>
+            </CollapsibleBox>
         </ApiPlaygroundWrapper>
     );
 };

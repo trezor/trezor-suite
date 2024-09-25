@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
-import { Text, Radio, Icon, useElevation } from '@trezor/components';
-import { Elevation, borders, mapElevationToBorder, spacingsPx, typography } from '@trezor/theme';
+import { Text, Radio, Icon, useElevation, Row, Column, Paragraph } from '@trezor/components';
+import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { ContentType } from '../types';
 import { AcquiredDevice } from '@suite-common/suite-types';
@@ -13,6 +13,7 @@ type ViewOnlyRadiosProps = {
     setContentType: (contentType: ContentType) => void;
     device: AcquiredDevice;
 };
+
 type ViewOnlyRadioProps = {
     title: React.ReactNode;
     children: React.ReactNode;
@@ -20,19 +21,10 @@ type ViewOnlyRadioProps = {
     isChecked: boolean;
     'data-testid'?: string;
 };
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xs};
-`;
+
 const Left = styled.div``;
 
-const Title = styled.div``;
-
 const Item = styled.div<{ $elevation: Elevation; $isChecked: boolean }>`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xs};
     border-radius: ${borders.radii.md};
     padding: ${spacingsPx.md};
     border: solid 1.5px
@@ -40,15 +32,6 @@ const Item = styled.div<{ $elevation: Elevation; $isChecked: boolean }>`
             $isChecked
                 ? theme.backgroundSecondaryDefault
                 : mapElevationToBorder({ theme, $elevation })};
-`;
-
-const SendCoinsInfo = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xxs};
-    margin: ${spacingsPx.md} auto;
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.label}
 `;
 
 export const ViewOnlyRadio = ({
@@ -59,17 +42,18 @@ export const ViewOnlyRadio = ({
     'data-testid': dataTest,
 }: ViewOnlyRadioProps) => {
     const { elevation } = useElevation();
-    const theme = useTheme();
 
     return (
         <Item onClick={onClick} $elevation={elevation} $isChecked={isChecked}>
-            <Left>
-                <Title>{title}</Title>
-                <Text typographyStyle="hint" color={theme.textSubdued}>
-                    {children}
-                </Text>
-            </Left>
-            <Radio onClick={onClick} isChecked={isChecked} data-testid={dataTest} />
+            <Row gap={spacings.sm}>
+                <Left>
+                    <Paragraph>{title}</Paragraph>
+                    <Paragraph typographyStyle="hint" variant="tertiary" textWrap="balance">
+                        {children}
+                    </Paragraph>
+                </Left>
+                <Radio onClick={onClick} isChecked={isChecked} data-testid={dataTest} />
+            </Row>
         </Item>
     );
 };
@@ -96,7 +80,7 @@ export const ViewOnlyRadios = ({
     };
 
     return (
-        <Container>
+        <Column gap={spacings.xs} alignItems="stretch">
             <ViewOnlyRadio
                 title={<Translation id="TR_VIEW_ONLY_RADIOS_ENABLED_TITLE" />}
                 onClick={() => handleConfirm(true)}
@@ -123,11 +107,12 @@ export const ViewOnlyRadios = ({
                     }}
                 />
             </ViewOnlyRadio>
-
-            <SendCoinsInfo>
+            <Row gap={spacings.xxs} justifyContent="center" margin={{ top: spacings.xs }}>
                 <Icon name="info" size={12} color={theme.iconSubdued} />
-                <Translation id="TR_VIEW_ONLY_SEND_COINS_INFO" />
-            </SendCoinsInfo>
-        </Container>
+                <Text typographyStyle="label" variant="tertiary">
+                    <Translation id="TR_VIEW_ONLY_SEND_COINS_INFO" />
+                </Text>
+            </Row>
+        </Column>
     );
 };

@@ -1,17 +1,11 @@
-import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
 
 import {
     CollapsibleBox as CollapsibleBoxComponent,
     allowedCollapsibleBoxFrameProps,
-    paddingTypes,
 } from './CollapsibleBox';
-import { action } from '@storybook/addon-actions';
+import { paddingTypes, fillTypes, headingSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
-
-const Content = styled.div`
-    width: 200px;
-`;
 
 const meta: Meta = {
     title: 'CollapsibleBox',
@@ -22,9 +16,14 @@ export default meta;
 export const CollapsibleBox: StoryObj = {
     args: {
         heading: 'Heading',
-        children: <Content>Some content</Content>,
-        isOpen: undefined,
-        onToggle: action('onToggle'),
+        children: (
+            <p>
+                Lorem ipsum odor amet, consectetuer adipiscing elit. Vel hac cras ultrices nullam
+                mattis proin. In rhoncus interdum molestie hac commodo bibendum torquent conubia.
+                Congue facilisis sollicitudin gravida mauris suspendisse hendrerit habitasse per.
+            </p>
+        ),
+        hasDivider: true,
         ...getFramePropsStory(allowedCollapsibleBoxFrameProps).args,
     },
     argTypes: {
@@ -32,13 +31,12 @@ export const CollapsibleBox: StoryObj = {
             type: 'string',
         },
         isOpen: { type: 'boolean' },
-        defaultIsOpen: { type: 'boolean' },
-        isIconFlipped: { type: 'boolean' },
+        hasDivider: { type: 'boolean' },
         fillType: {
             control: {
                 type: 'select',
             },
-            options: ['none', 'default'],
+            options: fillTypes,
         },
         paddingType: {
             control: {
@@ -46,15 +44,20 @@ export const CollapsibleBox: StoryObj = {
             },
             options: paddingTypes,
         },
-
+        headingSize: {
+            control: {
+                type: 'select',
+            },
+            options: headingSizes,
+        },
         subHeading: {
             type: 'string',
         },
-        iconLabel: {
+        toggleLabel: {
             type: 'string',
         },
+        toggleComponent: { control: { disable: true } },
         children: { control: { disable: true } },
-        onCollapse: { control: { disable: true } },
         ...getFramePropsStory(allowedCollapsibleBoxFrameProps).argTypes,
     },
 };
