@@ -21,5 +21,5 @@ yarn add @trezor/connect@"$1"
 echo import TrezorConnect from \"@trezor/connect\" >index.ts
 
 # compile with typescript
-yarn add typescript@5.3.2
-yarn tsc ./index.ts --types node --esModuleInterop
+yarn add typescript@5.5.4
+yarn tsc ./index.ts --types node --types w3c-web-usb --esModuleInterop
