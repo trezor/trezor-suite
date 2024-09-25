@@ -1,9 +1,11 @@
 import { useFormatters } from '@suite-common/formatters';
 import { typography } from '@trezor/theme';
+import { useShouldRedactNumbers } from '@suite-common/wallet-utils';
 import { HiddenPlaceholder } from 'src/components/suite';
 import { RedactNumericalValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 
 const ValueWrapper = styled.div`
@@ -26,11 +28,15 @@ const DecimalValue = styled.div<{ $size: 'large' | 'medium' }>`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-interface FiatHeaderProps {
+type FiatHeaderProps = {
     size: 'large' | 'medium';
     fiatAmount: string;
     localCurrency: string;
-}
+};
+
+// redacted value placeholder doesn't have to be displayed twice, display it only for whole value
+const HideRedactedValue = ({ children }: PropsWithChildren) =>
+    useShouldRedactNumbers() ? null : children;
 
 export const FiatHeader = ({ size, fiatAmount, localCurrency }: FiatHeaderProps) => {
     const language = useSelector(selectLanguage);
@@ -51,10 +57,12 @@ export const FiatHeader = ({ size, fiatAmount, localCurrency }: FiatHeaderProps)
                 <WholeValue $size={size}>
                     <RedactNumericalValue value={whole} />
                 </WholeValue>
-                <DecimalValue $size={size}>
-                    {separator}
-                    <RedactNumericalValue value={fractional} />
-                </DecimalValue>
+                <HideRedactedValue>
+                    <DecimalValue $size={size}>
+                        {separator}
+                        {fractional}
+                    </DecimalValue>
+                </HideRedactedValue>
             </ValueWrapper>
         </HiddenPlaceholder>
     );
