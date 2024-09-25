@@ -93,8 +93,9 @@ export const IOAddress = ({
         return null;
     }
 
+    // HiddenPlaceholder disableKeepingWidth: it isn't needed (no numbers to redact), but inline-block disrupts overflow behavior
     return (
-        <HiddenPlaceholder>
+        <HiddenPlaceholder disableKeepingWidth>
             <TextOverflowContainer
                 onMouseLeave={() => setIsClicked(false)}
                 data-testid="@tx-detail/txid-value"

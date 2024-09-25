@@ -8,11 +8,12 @@ type WrapperProps = {
     $intensity: number;
     $discreetMode: boolean;
     $minWidth?: number;
+    $disableKeepingWidth?: boolean;
 };
 
 const Wrapper = styled.span<WrapperProps>`
     font-variant-numeric: tabular-nums;
-    display: inline-block;
+    display: inline;
 
     ${({ $intensity, $discreetMode }: WrapperProps) =>
         $discreetMode &&
@@ -25,9 +26,11 @@ const Wrapper = styled.span<WrapperProps>`
             }
         `}
 
-    ${({ $minWidth }: WrapperProps) =>
-        $minWidth &&
+    ${({ $minWidth, $disableKeepingWidth }: WrapperProps) =>
+        !!$minWidth &&
+        !$disableKeepingWidth &&
         css`
+            display: inline-block;
             min-width: ${$minWidth}px;
         `}
 `;
@@ -36,7 +39,8 @@ export type HiddenPlaceholderProps = {
     enforceIntensity?: number;
     children: ReactNode;
     className?: string;
-    ['data-testid']?: string;
+    disableKeepingWidth?: boolean;
+    'data-testid'?: string;
 };
 
 /**
@@ -55,6 +59,7 @@ export const HiddenPlaceholder = ({
     children,
     enforceIntensity,
     className,
+    disableKeepingWidth,
     'data-testid': dataTestId,
 }: HiddenPlaceholderProps) => {
     const ref = useRef<HTMLSpanElement>(null);
@@ -96,6 +101,7 @@ export const HiddenPlaceholder = ({
             onMouseLeave={onMouseLeave}
             $discreetMode={discreetMode}
             $intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
+            $disableKeepingWidth={disableKeepingWidth}
             $minWidth={wrapperMinWidth}
             className={className}
             ref={ref}
