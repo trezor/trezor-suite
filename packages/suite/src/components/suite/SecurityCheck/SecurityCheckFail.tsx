@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
+import { TranslationKey } from '@suite-common/intl-types';
 import { Button, Divider, H2, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { TREZOR_SUPPORT_FW_CHECK_FAILED } from '@trezor/urls';
+import { TREZOR_SUPPORT_FW_CHECK_FAILED, Url } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
 import { SecurityChecklist } from '../../../views/onboarding/steps/SecurityCheck/SecurityChecklist';
@@ -33,20 +34,20 @@ const checklistItems = [
     },
 ] as const;
 
-const supportChatUrl = `${TREZOR_SUPPORT_FW_CHECK_FAILED}#open-chat`;
-
 interface SecurityCheckFailProps {
     goBack?: () => void;
-    useSoftMessaging?: boolean;
+    heading?: TranslationKey;
+    text?: TranslationKey;
+    supportUrl?: Url;
 }
 
-export const SecurityCheckFail = ({ goBack, useSoftMessaging }: SecurityCheckFailProps) => {
-    const heading = useSoftMessaging
-        ? 'TR_DEVICE_COMPROMISED_HEADING_SOFT'
-        : 'TR_DEVICE_COMPROMISED_HEADING';
-    const text = useSoftMessaging
-        ? 'TR_DEVICE_COMPROMISED_TEXT_SOFT'
-        : 'TR_DEVICE_COMPROMISED_TEXT';
+export const SecurityCheckFail = ({
+    goBack,
+    heading = 'TR_DEVICE_COMPROMISED_HEADING',
+    text = 'TR_DEVICE_COMPROMISED_TEXT',
+    supportUrl = TREZOR_SUPPORT_FW_CHECK_FAILED,
+}: SecurityCheckFailProps) => {
+    const chatUrl = `${supportUrl}#open-chat`;
 
     return (
         <SecurityCheckLayout isFailed>
@@ -67,7 +68,7 @@ export const SecurityCheckFail = ({ goBack, useSoftMessaging }: SecurityCheckFai
                     </Button>
                 )}
                 <Flex>
-                    <Button href={supportChatUrl} isFullWidth size="large">
+                    <Button href={chatUrl} isFullWidth size="large">
                         <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
                     </Button>
                 </Flex>
