@@ -84,7 +84,7 @@ test('input passphrase in popup and device accepts it', async () => {
     log(`test: ${test.info().title}`);
 
     log(`opening ${explorerUrl}#/method/getAddress`);
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress`));
 
     log('waiting for submit button');
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
@@ -137,7 +137,7 @@ test('input passphrase in popup and device accepts it', async () => {
 test('introduce passphrase in popup and device rejects it', async () => {
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress`));
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
@@ -181,7 +181,7 @@ test('introduce passphrase successfully next time should not ask for it', async 
 
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress`));
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
@@ -229,7 +229,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
 
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress`));
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
@@ -282,7 +282,7 @@ test('passphrase mismatch', async ({ page }) => {
 
     log('start', test.info().title);
     log('got to: ', `${url}#/method/getAddress`);
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress`));
 
     log('Trigger getAddress call');
     // this is a little hack.
