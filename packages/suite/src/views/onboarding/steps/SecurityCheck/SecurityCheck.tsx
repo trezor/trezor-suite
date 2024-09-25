@@ -6,7 +6,12 @@ import { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions, selectDevice, selectDevices } from '@suite-common/wallet-core';
 import { Button, Column, Icon, H2, Text, Tooltip, Divider } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { TREZOR_RESELLERS_URL, TREZOR_URL } from '@trezor/urls';
+import {
+    TREZOR_RESELLERS_URL,
+    TREZOR_SUPPORT_FW_ALREADY_INSTALLED,
+    TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
+    TREZOR_URL,
+} from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
@@ -170,6 +175,9 @@ const SecurityCheckContent = ({
     const headingText = isFirmwareInstalled
         ? 'TR_USED_TREZOR_BEFORE'
         : 'TR_ONBOARDING_DEVICE_CHECK';
+    const supportUrl = isFirmwareInstalled
+        ? TREZOR_SUPPORT_FW_ALREADY_INSTALLED
+        : TREZOR_SUPPORT_IS_MY_DEVICE_SAFE;
 
     const checklistItems = isFirmwareInstalled
         ? firmwareInstalledChecklist
@@ -199,7 +207,12 @@ const SecurityCheckContent = ({
     }, [initialized, isRecoveryInProgress, updateAnalytics]);
 
     return isFailed ? (
-        <SecurityCheckFail useSoftMessaging goBack={toggleView} />
+        <SecurityCheckFail
+            goBack={toggleView}
+            heading="TR_DEVICE_COMPROMISED_HEADING_SOFT"
+            text="TR_DEVICE_COMPROMISED_TEXT_SOFT"
+            supportUrl={supportUrl}
+        />
     ) : (
         <SecurityCheckLayout>
             <Column alignItems="flex-start">
