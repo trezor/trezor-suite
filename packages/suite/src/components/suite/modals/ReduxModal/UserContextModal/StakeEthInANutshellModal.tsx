@@ -1,4 +1,4 @@
-import { Icon, IconName, Paragraph, NewModal, Row, Column } from '@trezor/components';
+import { Icon, IconName, NewModal, List } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -61,22 +61,23 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                 </NewModal.Button>
             }
         >
-            <Column gap={spacings.xl} margin={{ top: spacings.sm, bottom: spacings.md }}>
+            <List
+                gap={spacings.xl}
+                bulletGap={spacings.md}
+                margin={{ top: spacings.sm, bottom: spacings.md }}
+            >
                 {STAKING_DETAILS.map(({ id, icon, translationId }) => (
-                    <Row key={id} gap={spacings.md}>
-                        <Icon name={icon} variant="primary" />
-                        <Paragraph>
-                            <Translation
-                                id={translationId}
-                                values={{
-                                    symbol: account?.symbol.toUpperCase(),
-                                    count: unstakingPeriod,
-                                }}
-                            />
-                        </Paragraph>
-                    </Row>
+                    <List.Item key={id} bulletComponent={<Icon name={icon} variant="primary" />}>
+                        <Translation
+                            id={translationId}
+                            values={{
+                                symbol: account?.symbol.toUpperCase(),
+                                count: unstakingPeriod,
+                            }}
+                        />
+                    </List.Item>
                 ))}
-            </Column>
+            </List>
         </NewModal>
     );
 };
