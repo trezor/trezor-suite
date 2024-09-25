@@ -16,9 +16,9 @@ npm init -y
 touch yarn.lock
 
 # install connect package
-yarn add @trezor/connect
+yarn add @trezor/connect@"$1"
 # prepare minimal typescript implementation
-echo import TrezorConnect from \"@trezor/connect\" > index.ts
+echo import TrezorConnect from \"@trezor/connect\" >index.ts
 
 # compile with typescript
 yarn add typescript@5.3.2
