@@ -11570,6 +11570,7 @@ __metadata:
     "@storybook/react": "npm:^7.6.13"
     "@storybook/react-webpack5": "npm:^7.6.13"
     "@suite-common/validators": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/dom-utils": "workspace:*"

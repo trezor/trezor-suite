@@ -2,11 +2,10 @@ import { ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 import { COINS } from './coins';
-
-export type CoinType = keyof typeof COINS;
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
-    symbol: CoinType;
+    symbol: NetworkSymbol;
     className?: string;
     size?: number;
     index?: number;
