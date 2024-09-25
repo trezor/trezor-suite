@@ -44,7 +44,6 @@ const Container = styled.div<
     TransientProps<AllowedFrameProps> & {
         $elevation: Elevation;
         $size: NewModalSize;
-        $customWidth?: number;
     }
 >`
     display: flex;
@@ -132,7 +131,7 @@ type NewModalProps = AllowedFrameProps & {
     icon?: IconName;
     alignment?: NewModalAlignment;
     size?: NewModalSize;
-    'data-test'?: string;
+    'data-testid'?: string;
 };
 
 const NewModalBase = ({
@@ -145,7 +144,7 @@ const NewModalBase = ({
     icon,
     onBackClick,
     onCancel,
-    'data-testid': dataTest = '@modal',
+    'data-testid': dataTestId = '@modal',
     ...rest
 }: NewModalProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedNewModalFrameProps);
@@ -167,7 +166,7 @@ const NewModalBase = ({
                     $elevation={MODAL_ELEVATION}
                     $size={size}
                     onClick={e => e.stopPropagation()}
-                    data-testid={dataTest}
+                    data-testid={dataTestId}
                     {...frameProps}
                 >
                     {hasHeader && (
