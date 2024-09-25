@@ -101,7 +101,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     log('beforeEach', 'waiting for popup load state');
     await popup.waitForLoadState('load');
 
-    if (isWebExtension || isCoreInPopup) {
+    if (isWebExtension) {
         log('beforeEach', 'waiting for select device');
         await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
         await popup.click('.select-device-list button.list');
@@ -230,8 +230,9 @@ test('when user cancels permissions in popup it closes automatically', async ({
     await popup.waitForLoadState('load');
 
     if (isCoreInPopup) {
-        await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
-        await popup.click('.select-device-list button.list');
+        // todo: this is not present locally
+        // await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
+        // await popup.click('.select-device-list button.list');
     }
 
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });

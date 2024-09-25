@@ -134,7 +134,7 @@ filteredFixtures.forEach(f => {
         });
         await popup.click("button[data-testid='@analytics/continue-button']");
 
-        if (isWebExtension || isCoreInPopup) {
+        if (isWebExtension) {
             log(f.url, 'waiting for select device');
             await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
             await popup.click('.select-device-list button.list');

@@ -104,7 +104,7 @@ test('input passphrase in popup and device accepts it', async () => {
     log('clicking on analytics continue button');
     await waitAndClick(popup, ['@analytics/continue-button']);
 
-    if (isWebExtension || isCoreInPopup) {
+    if (isWebExtension) {
         log('waiting for device list');
         await popup.waitForSelector('.select-device-list button.list');
         await popup.click('.select-device-list button.list');
@@ -152,7 +152,7 @@ test('introduce passphrase in popup and device rejects it', async () => {
     }
     await waitAndClick(popup, ['@analytics/continue-button']);
 
-    if (isWebExtension || isCoreInPopup) {
+    if (isWebExtension) {
         log('waiting for device list');
         await popup.waitForSelector('.select-device-list button.list');
         await popup.click('.select-device-list button.list');
