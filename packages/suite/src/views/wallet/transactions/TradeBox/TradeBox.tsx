@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
-import { Card, CoinLogo, Row, variables } from '@trezor/components';
+import { Card, Row, variables } from '@trezor/components';
 import { TradeBoxMenu } from './TradeBoxMenu';
 import { TradeBoxPrices } from './TradeBoxPrices';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
+import { CoinLogo } from '@trezor/product-components';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCard = styled(Card)`

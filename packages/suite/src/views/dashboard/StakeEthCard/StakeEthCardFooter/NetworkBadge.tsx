@@ -1,15 +1,17 @@
 import { ReactNode } from 'react';
-import { CoinLogo, CoinType, Paragraph, Row } from '@trezor/components';
+import { Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { CoinLogo } from '@trezor/product-components';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 type NetworkBadgeProps = {
-    logo: CoinType;
+    symbol: NetworkSymbol;
     name: ReactNode;
 };
 
-export const NetworkBadge = ({ logo, name }: NetworkBadgeProps) => (
+export const NetworkBadge = ({ symbol, name }: NetworkBadgeProps) => (
     <Row gap={spacings.xxs}>
-        <CoinLogo symbol={logo} size={16} />
+        <CoinLogo symbol={symbol} size={16} />
         <Paragraph>{name}</Paragraph>
     </Row>
 );

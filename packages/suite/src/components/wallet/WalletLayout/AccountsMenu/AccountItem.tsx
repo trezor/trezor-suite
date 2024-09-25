@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import {
-    CoinLogo,
     Icon,
     Column,
     Row,
@@ -27,6 +26,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { useFormatters } from '@suite-common/formatters';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { CoinLogo } from '@trezor/product-components';
 
 const ICON_SIZE = 24;
 

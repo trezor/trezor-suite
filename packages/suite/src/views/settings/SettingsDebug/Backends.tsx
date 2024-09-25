@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { typography } from '@trezor/theme';
-import { Button, CoinLogo } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { networks } from '@suite-common/wallet-config';
 import { ConnectionStatus } from '@suite-common/wallet-types';
 
@@ -12,6 +12,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 import { openModal } from 'src/actions/suite/modalActions';
+import { CoinLogo } from '@trezor/product-components';
 
 const CoinSection = styled.div`
     display: flex;

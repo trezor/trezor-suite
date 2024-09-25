@@ -1,4 +1,5 @@
-import { CoinLogo, Column, Icon, Row, variables } from '@trezor/components';
+import { Column, Icon, Row, variables } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx } from '@trezor/theme';
 import { AccountLabeling, Translation } from 'src/components/suite';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';

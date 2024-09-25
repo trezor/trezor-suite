@@ -1,8 +1,9 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Card, CardProps, CoinLogo, useElevation, variables } from '@trezor/components';
+import { Card, CardProps, useElevation, variables } from '@trezor/components';
 import { Elevation, mapElevationToBackground } from '@trezor/theme';
 import { HTMLAttributes, ReactNode, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
+import { CoinLogo } from '@trezor/product-components';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const EvmExplanationBoxWrapper = styled(Card)<{ $caret?: boolean; $elevation: Elevation }>`

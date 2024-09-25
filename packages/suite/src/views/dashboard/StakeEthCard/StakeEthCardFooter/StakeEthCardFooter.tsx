@@ -34,7 +34,7 @@ export const StakeEthCardFooter = ({ accountIndex = 0, hideSection }: StakeEthCa
                 <Paragraph variant="tertiary" typographyStyle="label">
                     <Translation id="TR_AVAILABLE_NOW_FOR" />
                 </Paragraph>
-                <NetworkBadge logo="eth" name={<Translation id="TR_NETWORK_ETHEREUM" />} />
+                <NetworkBadge symbol="eth" name={<Translation id="TR_NETWORK_ETHEREUM" />} />
             </div>
 
             <Row gap={spacings.xs}>

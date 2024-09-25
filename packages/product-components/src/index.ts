@@ -8,3 +8,4 @@ export { mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
 export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceImage';
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
+export { CoinLogo } from './components/CoinLogo/CoinLogo';

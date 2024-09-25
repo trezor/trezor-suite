@@ -2,13 +2,14 @@ import styled, { css } from 'styled-components';
 
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Button, CoinLogo, H3, Image, variables } from '@trezor/components';
+import { Button, H3, Image, variables } from '@trezor/components';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { Account } from '@suite-common/wallet-types';
 import { networks } from '@suite-common/wallet-config';
 import { TranslationKey } from 'src/components/suite/Translation';
 import { SUITE } from 'src/actions/suite/constants';
 import { spacingsPx } from '@trezor/theme';
+import { CoinLogo } from '@trezor/product-components';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`

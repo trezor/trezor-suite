@@ -1,7 +1,7 @@
 import { useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { CoinLogo } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';

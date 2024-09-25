@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { CoinLogo, CoinType, variables } from '../../index';
-import { StoryColumn } from '../../support/Story';
+import { CoinLogo } from '../../index';
+import { StoryColumn } from '@trezor/components';
+import { COINS } from './coins';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const CoinName = styled.div`
     margin-bottom: 0.5rem;
@@ -32,10 +34,14 @@ export const All: StoryObj = {
     render: () => (
         <StoryColumn minWidth={700}>
             <WrapperIcons>
-                {variables.COINS.map((coin: CoinType) => (
-                    <Icon key={coin}>
-                        <CoinName>{coin}</CoinName>
-                        <CoinLogo symbol={coin} data-testid={`coin-${coin}`} size={64} />
+                {Object.keys(COINS).map(symbol => (
+                    <Icon key={symbol}>
+                        <CoinName>{symbol}</CoinName>
+                        <CoinLogo
+                            symbol={symbol as NetworkSymbol}
+                            data-testid={`coin-${symbol}`}
+                            size={64}
+                        />
                     </Icon>
                 ))}
             </WrapperIcons>

@@ -1,11 +1,12 @@
 import { MouseEvent } from 'react';
 import { transparentize } from 'polished';
 import styled, { css, useTheme } from 'styled-components';
-import { variables, CoinLogo, Icon } from '@trezor/components';
+import { variables, Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
+import { CoinLogo } from '@trezor/product-components';
 
 const SettingsWrapper = styled.div<{
     $toggled: boolean;

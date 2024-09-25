@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 
-import { CoinLogo, TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
+import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
 import { motion, AnimatePresence, MotionProps } from 'framer-motion';
 import { borders, spacingsPx } from '@trezor/theme';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useSelector, useAccountSearch } from 'src/hooks/suite';
+import { CoinLogo } from '@trezor/product-components';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCoinLogo = styled(CoinLogo)<{ $isSelected?: boolean }>`
