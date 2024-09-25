@@ -3,13 +3,14 @@ import {
     AssetFiatBalanceWithPercentage,
     calculateAssetsPercentage,
 } from '@suite-common/assets';
-import { AssetShareIndicator, SkeletonCircle, Tooltip } from '@trezor/components';
+import { SkeletonCircle, Tooltip } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { spacingsPx } from '@trezor/theme';
 import styled from 'styled-components';
 import { localizePercentage } from '@suite-common/wallet-utils';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite';
+import { AssetShareIndicator } from '@trezor/product-components';
 
 const LogoWrapper = styled.div`
     padding-right: ${spacingsPx.sm};

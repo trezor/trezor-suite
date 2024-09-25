@@ -9,3 +9,4 @@ export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceIm
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export { CoinLogo } from './components/CoinLogo/CoinLogo';
+export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
