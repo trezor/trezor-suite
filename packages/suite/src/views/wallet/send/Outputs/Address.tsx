@@ -2,14 +2,7 @@ import { useCallback, useState } from 'react';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import styled, { useTheme } from 'styled-components';
 
-import {
-    Input,
-    Button,
-    IconButton,
-    CoinLogo,
-    getInputStateTextColor,
-    Icon,
-} from '@trezor/components';
+import { Input, Button, IconButton, getInputStateTextColor, Icon } from '@trezor/components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import * as URLS from '@trezor/urls';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -40,6 +33,7 @@ import { Row } from '@trezor/components';
 
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM } from '@trezor/urls';
 import { spacings } from '@trezor/theme';
+import { CoinLogo } from '@trezor/product-components';
 
 const Container = styled.div`
     position: relative;

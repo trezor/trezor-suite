@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import { Icon, variables, CoinLogo, H3, useElevation } from '@trezor/components';
+import { Icon, variables, H3, useElevation } from '@trezor/components';
 import { Translation, FormattedDateWithBullet } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { Network } from '@suite-common/wallet-config';
@@ -16,6 +16,7 @@ import {
     typography,
     spacings,
 } from '@trezor/theme';
+import { CoinLogo } from '@trezor/product-components';
 
 const Wrapper = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};

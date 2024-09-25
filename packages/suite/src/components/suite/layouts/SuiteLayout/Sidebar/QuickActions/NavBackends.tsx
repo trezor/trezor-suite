@@ -1,7 +1,7 @@
 import React, { ReactNode, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import { Dropdown, DropdownRef, CoinLogo } from '@trezor/components';
+import { Dropdown, DropdownRef } from '@trezor/components';
 import { Translation, StatusLight } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -9,6 +9,7 @@ import { BlockchainState } from '@suite-common/wallet-core';
 import type { CustomBackend } from 'src/types/wallet';
 import { openModal } from 'src/actions/suite/modalActions';
 import { spacingsPx, typography } from '@trezor/theme';
+import { CoinLogo } from '@trezor/product-components';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledDropdown = styled(Dropdown)`

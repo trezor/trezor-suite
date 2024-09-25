@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getFeeUnits, formatNetworkAmount, formatAmount, getFee } from '@suite-common/wallet-utils';
-import { Icon, CoinLogo, variables } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { formatDuration } from '@suite-common/suite-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
@@ -12,6 +12,7 @@ import { GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wal
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { NetworkType } from '@suite-common/wallet-config';
+import { CoinLogo } from '@trezor/product-components';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;

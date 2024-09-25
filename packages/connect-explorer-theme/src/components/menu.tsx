@@ -10,7 +10,8 @@ import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
-import { CoinLogo, Select, variables } from '@trezor/components';
+import { Select, variables } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
 
 import { useActiveAnchor, useConfig, useMenu } from '../contexts';
 import { renderComponent } from '../utils';

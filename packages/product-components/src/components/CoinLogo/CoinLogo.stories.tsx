@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { CoinLogo as CoinLogoComponent, CoinLogoProps, variables } from '../../index';
+import { CoinLogo as CoinLogoComponent } from '../../index';
+import { COINS } from './coins';
+import { CoinLogoProps } from './CoinLogo';
 
 const Center = styled.div`
     display: flex;
@@ -29,7 +31,7 @@ export const CoinLogo: StoryObj<CoinLogoProps> = {
             type: 'number',
         },
         symbol: {
-            options: variables.COINS,
+            options: Object.keys(COINS),
             control: {
                 type: 'select',
             },

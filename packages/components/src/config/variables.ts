@@ -1,5 +1,3 @@
-import { COINS as CoinsObject } from '../components/CoinLogo/coins';
-import { CoinType } from '../components/CoinLogo/CoinLogo';
 import { icons } from '@suite-common/icons/src/icons';
 
 export const SCREEN_SIZE = {
@@ -61,5 +59,4 @@ export const FONT_WEIGHT = {
     BOLD: 700,
 } as const;
 
-export const COINS = Object.keys(CoinsObject).sort() as CoinType[];
 export const ICONS = Object.keys(icons).sort();

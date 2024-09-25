@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-import { Card, CoinLogo, motionEasing } from '@trezor/components';
+import { Card, motionEasing } from '@trezor/components';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
 import { spacingsPx } from '@trezor/theme';
 import { networks } from '@suite-common/wallet-config';
@@ -13,6 +13,7 @@ import { Translation } from 'src/components/suite';
 import { Address } from './Address';
 import { Amount } from './Amount/Amount';
 import { OpReturn } from './OpReturn';
+import { CoinLogo } from '@trezor/product-components';
 
 const Container = styled.div<{ $height: number }>`
     height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
