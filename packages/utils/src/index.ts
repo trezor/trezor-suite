@@ -17,6 +17,7 @@ export * from './createDeferredManager';
 export * from './createLazy';
 export * from './createTimeoutPromise';
 export * from './getLocaleSeparators';
+export * from './getMutex';
 export * from './getNumberFromPixelString';
 export * from './getRandomNumberInRange';
 export * from './getSynchronize';

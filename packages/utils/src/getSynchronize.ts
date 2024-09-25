@@ -1,3 +1,5 @@
+import { getMutex } from './getMutex';
+
 /**
  * Ensures that all async actions passed to the returned function are called
  * immediately one after another, without interfering with each other.
@@ -13,26 +15,11 @@
  * synchronize(() => asyncAction3(), 'differentLockId');
  * ```
  */
-export const getSynchronize = () => {
-    const DEFAULT_ID = Symbol();
-    const locks: Record<keyof any, Promise<unknown>> = {};
+export const getSynchronize = (mutex?: ReturnType<typeof getMutex>) => {
+    const lock = mutex ?? getMutex();
 
-    return <T>(
-        action: () => T,
-        lockId: keyof any = DEFAULT_ID,
-    ): T extends Promise<unknown> ? T : Promise<T> => {
-        const newLock = (locks[lockId] ?? Promise.resolve())
-            .catch(() => {})
-            .then(action)
-            .finally(() => {
-                if (locks[lockId] === newLock) {
-                    delete locks[lockId];
-                }
-            });
-        locks[lockId] = newLock;
-
-        return newLock as any;
-    };
+    return <T>(action: () => T, lockId?: keyof any): T extends Promise<unknown> ? T : Promise<T> =>
+        lock(lockId).then(unlock => Promise.resolve().then(action).finally(unlock)) as any;
 };
 
 export type Synchronize = ReturnType<typeof getSynchronize>;
