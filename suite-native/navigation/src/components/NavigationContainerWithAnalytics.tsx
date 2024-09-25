@@ -11,12 +11,15 @@ import {
 import { analytics, EventType } from '@suite-native/analytics';
 import { useNativeStyles } from '@trezor/styles';
 
+import { useReportSendFlowExitToAnalytics } from '../useReportSendFlowExitToAnalytics';
+
 export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
     const navigationContainerRef = useNavigationContainerRef();
     const routeNameRef = useRef<string | undefined>();
     const {
         utils: { colors, isDarkColor },
     } = useNativeStyles();
+    const reportSendFlowExitToAnalytics = useReportSendFlowExitToAnalytics();
 
     const themeColors = useMemo(() => {
         // setting theme colors to match the background color of the screen to prevent white flash on screen change in dark mode
@@ -47,6 +50,9 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
     const handleStateChange = () => {
         const previousRouteName = routeNameRef.current;
         const currentRouteName = navigationContainerRef.getCurrentRoute()?.name;
+
+        // If the user abandons the send flow, this function reports from which step.
+        reportSendFlowExitToAnalytics(currentRouteName);
 
         if (previousRouteName !== currentRouteName) {
             // Save the current route name for later comparison

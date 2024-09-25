@@ -88,7 +88,11 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
                             <Translation id="moduleSend.fees.description.body" />
                         </Text>
                     </VStack>
-                    <FeeOptionsList feeLevels={feeLevels} networkSymbol={account.symbol} />
+                    <FeeOptionsList
+                        feeLevels={feeLevels}
+                        networkSymbol={account.symbol}
+                        accountKey={accountKey}
+                    />
                 </VStack>
                 <FeesFooter
                     isSubmittable={isSubmittable}

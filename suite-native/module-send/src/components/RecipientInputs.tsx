@@ -13,7 +13,7 @@ type RecipientInputsProps = {
 export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => {
     return (
         <VStack spacing="medium">
-            <AddressInput index={index} />
+            <AddressInput index={index} accountKey={accountKey} />
             <CardDivider />
             <AmountInputs index={index} accountKey={accountKey} />
         </VStack>

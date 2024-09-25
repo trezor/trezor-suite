@@ -1,10 +1,11 @@
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { DeviceModelInternal, VersionArray } from '@trezor/connect';
 
 import { EventType } from './constants';
+import { AnalyticsSendFlowStep } from './types';
 
 export type SuiteNativeAnalyticsEvent =
     | {
@@ -257,5 +258,49 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.CoinEnablingInitState;
           payload: {
               enabledNetworks: NetworkSymbol[];
+          };
+      }
+    | {
+          type: EventType.SendTransactionDispatched;
+          payload: {
+              symbol: NetworkSymbol;
+              outputsCount: number;
+              selectedFee: FeeLevelLabel;
+              tokenSymbols?: TokenSymbol[];
+              tokenAddresses?: TokenAddress[];
+              hasEthereumData?: boolean;
+              hasEthereumNonce?: boolean;
+              hasRippleDestinationTag?: boolean;
+              hasBitcoinLocktime?: boolean;
+          };
+      }
+    | {
+          type: EventType.SendAddressFilled;
+          payload: {
+              method: 'manual' | 'qr';
+          };
+      }
+    | {
+          type: EventType.SendFeeLevelChanged;
+          payload: {
+              value: FeeLevelLabel;
+          };
+      }
+    | {
+          type: EventType.SendRecipientCountChanged;
+          payload: {
+              count: number;
+          };
+      }
+    | {
+          type: EventType.SendAmountInputSwitched;
+          payload: {
+              changedTo: 'crypto' | 'fiat';
+          };
+      }
+    | {
+          type: EventType.SendFlowExited;
+          payload: {
+              step: AnalyticsSendFlowStep;
           };
       };
