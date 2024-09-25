@@ -4,7 +4,7 @@ import TrezorConnect from '@trezor/connect-web';
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { useActions } from '../hooks';
 
-export const InitButton = ({ label, behavior }) => {
+export const InitButton = () => {
     const actions = useActions({
         onSubmitInit: trezorConnectActions.onSubmitInit,
     });
