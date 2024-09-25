@@ -26,9 +26,6 @@
             "path": "../protocol"
         },
         {
-            "path": "../schema-utils"
-        },
-        {
             "path": "../transport"
         },
         {

@@ -8201,13 +8201,13 @@ __metadata:
   linkType: hard
 
 "@sinclair/typebox-codegen@npm:^0.10.4":
-  version: 0.10.4
-  resolution: "@sinclair/typebox-codegen@npm:0.10.4"
+  version: 0.10.5
+  resolution: "@sinclair/typebox-codegen@npm:0.10.5"
   dependencies:
     "@sinclair/typebox": "npm:^0.33.1"
     prettier: "npm:^2.8.7"
     typescript: "npm:^5.4.5"
-  checksum: 10/31b0096221082fec84d07d12d57a5a013f1eb0c1b59534c3c7f15f504d4469fc191388c2fc53898ca94ed16a1d4218fd6975e3d88833b06bbe4eb4d668480b9f
+  checksum: 10/99d3a370735b42f875297bc707fdbb6925d4151a297963a62e6a1721dd2ffebd925ebda146fac646ee3b59351d29cf58f25fb287ecc9a940010e902744af2592
   languageName: node
   linkType: hard
 
@@ -8218,10 +8218,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinclair/typebox@npm:^0.33.1, @sinclair/typebox@npm:^0.33.7":
-  version: 0.33.9
-  resolution: "@sinclair/typebox@npm:0.33.9"
-  checksum: 10/0ff01966523bf346f1294b3301c998ab9b304dfb518f06466f6a70bc1ccd956e37a93d9c800e9f86e3b056bbfa61865783be2d73700dbbe7d2f897b00b8d2dd6
+"@sinclair/typebox@npm:^0.33.1, @sinclair/typebox@npm:^0.33.12, @sinclair/typebox@npm:^0.33.7":
+  version: 0.33.12
+  resolution: "@sinclair/typebox@npm:0.33.12"
+  checksum: 10/3b868a540480a914fb05e939fd875f1db9d078671038786394d8ac21f1cb12f2e5e25f0cc1092925f613821d0a959a14c8c8ad35a4064639822ce5f7b83ce380
   languageName: node
   linkType: hard
 
@@ -11226,7 +11226,7 @@ __metadata:
   dependencies:
     "@codemirror/state": "npm:^6.4.1"
     "@hbsnow/rehype-sectionize": "npm:^1.0.7"
-    "@sinclair/typebox": "npm:^0.33.7"
+    "@sinclair/typebox": "npm:^0.33.12"
     "@trezor/components": "workspace:^"
     "@trezor/connect": "workspace:^"
     "@trezor/connect-explorer-theme": "workspace:^"

@@ -18,9 +18,9 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
         .array('typings')
         .boolean('test') as any;
 
-    const readOnlyGlobs = argv.readOnly || [];
-    const ignoreGlobs = argv.ignore || [];
-    const typingPaths = argv.typings || [];
+    const readOnlyGlobs: string[] = argv.readOnly || [];
+    const ignoreGlobs: string[] = argv.ignore || [];
+    const typingPaths: string[] = argv.typings || [];
     const isTesting = argv.test || false;
 
     const rootConfig = JSON.parse(fs.readFileSync(rootTsConfigLocation).toString());
@@ -131,7 +131,11 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
                         fs.readFileSync(workspaceLibConfigPath).toString(),
                     );
 
-                    workspaceLibConfig.references = nextWorkspaceReferences;
+                    workspaceLibConfig.references = nextWorkspaceReferences.filter(
+                        // Don't include reference to schema-utils due to issues with the @sinclair/typebox library
+                        // When using a reference it results in incorrect imports
+                        ({ path }) => path !== '../schema-utils',
+                    );
 
                     if (
                         !readOnlyGlobs.some((path: string) => minimatch(workspace.location, path))
