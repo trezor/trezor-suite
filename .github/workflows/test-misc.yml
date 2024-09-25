@@ -62,8 +62,10 @@ jobs:
         with:
           submodules: true
 
-      - run: ./packages/connect/e2e/test-npm-install.sh
-      - run: ./packages/connect/e2e/test-yarn-install.sh
+      - run: ./packages/connect/e2e/test-npm-install.sh beta
+      - run: ./packages/connect/e2e/test-npm-install.sh latest
+      - run: ./packages/connect/e2e/test-yarn-install.sh beta
+      - run: ./packages/connect/e2e/test-yarn-install.sh latest
 
   test-unit:
     runs-on: ubuntu-latest
