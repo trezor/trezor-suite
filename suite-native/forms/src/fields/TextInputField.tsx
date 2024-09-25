@@ -28,7 +28,10 @@ export type FieldProps = AllowedTextInputFieldProps &
     >;
 
 export const TextInputField = forwardRef<TextInput, FieldProps>(
-    ({ name, hint, onBlur, defaultValue = '', valueTransformer, ...otherProps }, ref) => {
+    (
+        { name, hint, onBlur, defaultValue = '', valueTransformer, onChangeText, ...otherProps },
+        ref,
+    ) => {
         const field = useField({
             name,
             defaultValue,
@@ -45,12 +48,19 @@ export const TextInputField = forwardRef<TextInput, FieldProps>(
             }
         };
 
+        const handleOnChange = (text: string) => {
+            onChange(text);
+            if (onChangeText) {
+                onChangeText(text);
+            }
+        };
+
         return (
             <InputWrapper error={errorMessage} hint={hint}>
                 <Input
                     {...otherProps}
                     onBlur={handleOnBlur}
-                    onChangeText={onChange}
+                    onChangeText={handleOnChange}
                     value={value}
                     hasError={hasError}
                     ref={ref}

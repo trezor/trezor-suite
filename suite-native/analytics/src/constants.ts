@@ -42,4 +42,10 @@ export enum EventType {
     PassphraseAddHiddenWallet = 'passphrase/add_hidden_wallet',
     PassphraseExit = 'passphrase/exit',
     CoinEnablingInitState = 'coin-enabling/init_state',
+    SendAddressFilled = 'send/address_filled',
+    SendAmountInputSwitched = 'send/amount_input_switched',
+    SendRecipientCountChanged = 'send/recipient_count_changed',
+    SendFeeLevelChanged = 'send/fee_level_changed',
+    SendTransactionDispatched = 'send/transaction_dispatched',
+    SendFlowExited = 'send/flow_exited',
 }

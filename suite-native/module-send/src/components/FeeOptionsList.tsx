@@ -1,19 +1,23 @@
 import { D, pipe } from '@mobily/ts-belt';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { GeneralPrecomposedLevels, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    GeneralPrecomposedLevels,
+    PrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 
 import { FeeOption } from './FeeOption';
 import { NativeSupportedFeeLevel } from '../types';
 
-export const FeeOptionsList = ({
-    feeLevels,
-    networkSymbol,
-}: {
+type FeeOptionsListProps = {
     feeLevels: GeneralPrecomposedLevels;
     networkSymbol: NetworkSymbol;
-}) => {
+    accountKey: AccountKey;
+};
+
+export const FeeOptionsList = ({ feeLevels, networkSymbol, accountKey }: FeeOptionsListProps) => {
     // Remove custom fee level from the list. It is not supported in the first version of the send flow.
     const predefinedFeeLevels = pipe(
         feeLevels,
@@ -31,6 +35,7 @@ export const FeeOptionsList = ({
                     key={feeKey}
                     feeKey={feeKey as NativeSupportedFeeLevel}
                     feeLevel={feeLevel}
+                    accountKey={accountKey}
                     networkSymbol={networkSymbol}
                     transactionBytes={transactionBytes}
                 />

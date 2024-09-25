@@ -19,6 +19,7 @@ import {
 import {
     Account,
     AccountKey,
+    FeeLevelLabel,
     FormState,
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
@@ -163,5 +164,22 @@ export const calculateMaxAmountWithNormalFeeThunk = createThunk<
                 return response.payload.normal.max;
             }
         }
+    },
+);
+
+export const updateDraftFeeLevelThunk = createThunk(
+    `${SEND_MODULE_PREFIX}/updateDraftFeeLevelThunk`,
+    (
+        { accountKey, feeLevel }: { accountKey: AccountKey; feeLevel: FeeLevelLabel },
+        { dispatch, getState },
+    ) => {
+        const draft = selectSendFormDraftByAccountKey(getState(), accountKey);
+
+        if (!draft) throw Error('Draft not found.');
+        const draftCopy = { ...draft };
+
+        draftCopy.selectedFee = feeLevel;
+
+        dispatch(sendFormActions.storeDraft({ accountKey, formState: draftCopy }));
     },
 );

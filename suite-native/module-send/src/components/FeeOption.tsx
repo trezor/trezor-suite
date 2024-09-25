@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Pressable } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { AccountKey, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { Text, HStack, VStack, Radio, Box } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { FormContext } from '@suite-native/forms';
@@ -22,10 +22,12 @@ import {
 import { Color } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { getFeeUnits } from '@suite-common/wallet-utils';
+import { analytics, EventType } from '@suite-native/analytics';
 
 import { SendFeesFormValues } from '../sendFeesFormSchema';
 import { NativeSupportedFeeLevel } from '../types';
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
+import { updateDraftFeeLevelThunk } from '../sendFormThunks';
 
 const feeLabelsMap = {
     economy: 'moduleSend.fees.levels.low',
@@ -45,20 +47,25 @@ const valuesWrapperStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.medium,
 }));
 
+type FeeOptionProps = {
+    feeKey: SendFeesFormValues['feeLevel'];
+    feeLevel: GeneralPrecomposedTransactionFinal;
+    networkSymbol: NetworkSymbol;
+    transactionBytes: number;
+    accountKey: AccountKey;
+};
+
 export const FeeOption = ({
     feeKey,
     feeLevel,
     networkSymbol,
     transactionBytes,
-}: {
-    feeKey: SendFeesFormValues['feeLevel'];
-    feeLevel: GeneralPrecomposedTransactionFinal;
-    networkSymbol: NetworkSymbol;
-    transactionBytes: number;
-}) => {
+    accountKey,
+}: FeeOptionProps) => {
     const { utils } = useNativeStyles();
     const { applyStyle } = useNativeStyles();
     const { watch, setValue } = useContext(FormContext);
+    const dispatch = useDispatch();
 
     const feeTimeEstimate = useSelector((state: FeesRootState) =>
         selectNetworkFeeLevelTimeEstimate(state, feeKey, networkSymbol),
@@ -74,6 +81,10 @@ export const FeeOption = ({
         setValue('feeLevel', feeKey, {
             shouldValidate: true,
         });
+
+        analytics.report({ type: EventType.SendFeeLevelChanged, payload: { value: feeKey } });
+
+        dispatch(updateDraftFeeLevelThunk({ accountKey, feeLevel: feeKey }));
     };
 
     const selectedLevel = watch('feeLevel');

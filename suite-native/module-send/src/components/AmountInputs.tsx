@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { analytics, EventType } from '@suite-native/analytics';
 
 import { CryptoAmountInput } from './CryptoAmountInput';
 import { FiatAmountInput } from './FiatAmountInput';
@@ -79,6 +80,11 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
 
             setTimeout(() => cryptoRef.current?.focus(), ANIMATION_DURATION);
         }
+
+        analytics.report({
+            type: EventType.SendAmountInputSwitched,
+            payload: { changedTo: isCryptoSelected ? 'fiat' : 'crypto' },
+        });
 
         setIsCryptoSelected(!isCryptoSelected);
     };
