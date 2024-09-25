@@ -214,7 +214,7 @@ test('when user cancels permissions in popup it closes automatically', async ({
 
     await popupClosedPromise;
 
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress`));
     await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
         state: 'visible',
@@ -258,7 +258,7 @@ test('device dialogue cancelled IN POPUP by user', async ({ page, context }) => 
 
     await popupClosedPromise;
 
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress`));
     await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
         state: 'visible',
@@ -333,7 +333,7 @@ test('popup should be focused when a call is in progress and user triggers new c
 
     await popupClosedPromise;
 
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress`));
     await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
         state: 'visible',
@@ -388,7 +388,7 @@ test('popup should close when third party is closed', async ({ page, context }) 
 
     await popupClosedPromise;
 
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress`));
     await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
         state: 'visible',
@@ -424,7 +424,7 @@ test('popup should behave properly with subsequent calls', async ({ page, contex
     });
     await popupClosedPromise;
 
-    await explorerPage.goto(formatUrl(explorerUrl, `test/index.html`));
+    await explorerPage.goto(formatUrl(explorerUrl, `test`));
     await waitAndClick(explorerPage, ['@testpage/init']);
     await waitAndClick(explorerPage, ['@testpage/subsequentCalls']);
     log('waiting for popup open');
