@@ -124,7 +124,7 @@ export const TroubleshootingTips = ({
         <CollapsibleBox
             paddingType="large"
             heading={cta}
-            iconLabel={label}
+            toggleLabel={label}
             defaultIsOpen={opened}
             data-testid={dataTest || '@onboarding/expand-troubleshooting-tips'}
         >

@@ -13,16 +13,6 @@ import {
 } from '@trezor/components';
 import { isFirefox } from '@trezor/env-utils';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const WhiteCollapsibleBox = styled(CollapsibleBox)`
-    background: ${({ theme }) => theme.legacy.BG_WHITE};
-    width: 500px;
-
-    ${CollapsibleBox.Content} {
-        padding: 0;
-    }
-`;
-
 export interface ErrorViewProps {
     type: 'error';
     detail: // errors that might arise when using connect-ui with connect-popup
@@ -222,6 +212,7 @@ const Text = styled.div`
 `;
 
 const TipsContainer = styled.div`
+    width: 500px;
     margin-top: 40px;
     margin-bottom: 20px;
 `;
@@ -268,8 +259,8 @@ export const ErrorView = (props: ErrorViewProps) => {
 
                 <TipsContainer>
                     {tips.map(tip => (
-                        <WhiteCollapsibleBox
-                            isOpen={tips.length === 1}
+                        <CollapsibleBox
+                            defaultIsOpen={tips.length === 1}
                             key={tip.title}
                             heading={
                                 <Heading>
@@ -288,7 +279,7 @@ export const ErrorView = (props: ErrorViewProps) => {
                                     <li key={index}>{step}</li>
                                 ))}
                             </StepsList>
-                        </WhiteCollapsibleBox>
+                        </CollapsibleBox>
                     ))}
                 </TipsContainer>
 

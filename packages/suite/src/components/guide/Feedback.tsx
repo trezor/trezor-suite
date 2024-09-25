@@ -310,9 +310,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     <Translation id="TR_GUIDE_FEEDBACK_SEND_REPORT" />
                 </Submit>
 
-                <CollapsibleBox
-                    subHeading={<Translation id="TR_GUIDE_FEEDBACK_SYSTEM_INFO_NOTICE" />}
-                >
+                <CollapsibleBox heading={<Translation id="TR_GUIDE_FEEDBACK_SYSTEM_INFO_NOTICE" />}>
                     <AnonymousDataList>
                         <AnonymousDataItem>
                             <Translation id="TR_FEEDBACK_ANALYTICS_ITEM_OS" />

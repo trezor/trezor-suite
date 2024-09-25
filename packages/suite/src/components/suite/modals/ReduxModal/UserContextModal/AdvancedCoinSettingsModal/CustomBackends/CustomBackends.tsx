@@ -50,14 +50,6 @@ const SaveButton = styled(Button)`
     align-self: center;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const TransparentCollapsibleBox = styled(CollapsibleBox)`
-    background: ${({ theme }) => theme.backgroundSurfaceElevation2};
-
-    /* to be removed when elevation context is added to the CollapsibleBox */
-    box-shadow: none;
-`;
-
 interface CustomBackendsProps {
     network: Network;
     onCancel: () => void;
@@ -177,13 +169,13 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                     </AddUrlButton>
                 )}
 
-                <TransparentCollapsibleBox
+                <CollapsibleBox
                     paddingType="large"
                     heading={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_TITLE" />}
                     margin={{ top: spacings.md }}
                 >
                     <ConnectionInfo coin={coin} />
-                </TransparentCollapsibleBox>
+                </CollapsibleBox>
 
                 <SaveButton
                     variant="primary"

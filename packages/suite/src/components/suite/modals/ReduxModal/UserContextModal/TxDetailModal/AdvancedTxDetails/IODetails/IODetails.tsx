@@ -1,13 +1,13 @@
 import { ReactElement, ReactNode } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
-import { Elevation, spacingsPx, spacings, typography } from '@trezor/theme';
+import { spacingsPx, spacings, typography } from '@trezor/theme';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
-import { Icon, CollapsibleBox, useElevation, Divider } from '@trezor/components';
+import { Icon, CollapsibleBox, Divider } from '@trezor/components';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
@@ -25,20 +25,6 @@ const Wrapper = styled.div`
     text-align: left;
     overflow: auto;
     ${blurFix}
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCollapsibleBox = styled(CollapsibleBox)<{ $elevation: Elevation }>`
-    overflow: auto;
-
-    ${CollapsibleBox.Header} {
-        padding: ${spacingsPx.md} 0;
-    }
-
-    ${CollapsibleBox.Content} {
-        border: none;
-        padding-bottom: ${spacingsPx.md};
-    }
 `;
 
 const Grid = styled.div`
@@ -441,11 +427,8 @@ const CollapsibleIOSection = ({
     opened,
     isPhishingTransaction,
 }: CollapsibleIOSectionProps) => {
-    const { elevation } = useElevation();
-
     return inputs?.length || outputs?.length ? (
-        <StyledCollapsibleBox
-            $elevation={elevation}
+        <CollapsibleBox
             heading={heading}
             defaultIsOpen={opened}
             paddingType="none"
@@ -458,7 +441,7 @@ const CollapsibleIOSection = ({
                 outputs={outputs}
                 isPhishingTransaction={isPhishingTransaction}
             />
-        </StyledCollapsibleBox>
+        </CollapsibleBox>
     ) : null;
 };
 

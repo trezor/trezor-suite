@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
@@ -10,7 +10,7 @@ import {
     sumTransactionsFiat,
 } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
-import { variables, CollapsibleBox } from '@trezor/components';
+import { CollapsibleBox } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -100,63 +100,6 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
     );
 };
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCollapsibleBox = styled(CollapsibleBox)<{ $isPending: boolean }>`
-    background-color: ${({ theme }) => theme.legacy.BG_WHITE};
-    box-shadow: none;
-    border-radius: 12px;
-    margin-bottom: 0;
-
-    ${CollapsibleBox.Header} {
-        padding: 12px 24px;
-
-        ${variables.SCREEN_QUERY.MOBILE} {
-            padding: 12px 16px;
-        }
-
-        &:not(:hover) {
-            ${CollapsibleBox.IconWrapper} {
-                margin-left: -20px;
-                opacity: 0;
-            }
-        }
-    }
-
-    ${CollapsibleBox.IconWrapper} {
-        transition: all 0.2s ease-in-out;
-        transition-property: margin-left, opacity;
-    }
-
-    ${CollapsibleBox.Heading} {
-        flex: 1;
-        align-items: initial;
-    }
-
-    ${CollapsibleBox.Content} {
-        padding: 8px;
-    }
-
-    ${({ $isPending }) =>
-        $isPending &&
-        css`
-            border-left: 8px solid ${({ theme }) => theme.legacy.TYPE_ORANGE};
-
-            > div {
-                margin-left: -8px;
-            }
-
-            ${CollapsibleBox.Content} {
-                margin-left: 8px;
-            }
-
-            ${variables.SCREEN_QUERY.MOBILE} {
-                > div {
-                    margin-left: -8px;
-                }
-            }
-        `}
-`;
-
 type CoinjoinBatchItemProps = {
     transactions: WalletAccountTransaction[];
     localCurrency: FiatCurrencyCode;
@@ -182,9 +125,8 @@ export const CoinjoinBatchItem = ({
     });
 
     return (
-        <StyledCollapsibleBox
+        <CollapsibleBox
             paddingType="large"
-            $isPending={isPending}
             heading={
                 <>
                     <TxTypeIconWrapper>
@@ -234,6 +176,6 @@ export const CoinjoinBatchItem = ({
             {transactions.map(tx => (
                 <Round key={tx.txid} transaction={tx} />
             ))}
-        </StyledCollapsibleBox>
+        </CollapsibleBox>
     );
 };
