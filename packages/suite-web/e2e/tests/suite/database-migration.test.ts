@@ -35,6 +35,7 @@ describe('Database migration', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             passphrase_protection: true,
+            mnemonic: 'mnemonic_all',
         });
         cy.task('startBridge');
         cy.resetDb();
