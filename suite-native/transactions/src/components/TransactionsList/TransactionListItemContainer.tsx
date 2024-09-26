@@ -12,7 +12,7 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Badge, Box, HStack, Text } from '@suite-native/atoms';
+import { Badge, Box, DiscreetText, HStack, Text } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import {
     selectIsPhishingTransaction,
@@ -166,8 +166,10 @@ export const TransactionListItemContainer = ({
     );
 
     const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
-    const coinSymbol = tokenTransfer?.contract ?? networkSymbol;
+    const coinSymbol = isPhishingTransaction ? undefined : tokenTransfer?.contract ?? networkSymbol;
     const transactionTitle = getTransactionTitle(transactionType, isTransactionPending);
+
+    const DateTextComponent = isPhishingTransaction ? DiscreetText : Text;
 
     return (
         <TouchableOpacity
@@ -196,9 +198,10 @@ export const TransactionListItemContainer = ({
                         </Box>
                         {hasIncludedCoins && <Badge label={includedCoinsLabel} size="small" />}
                     </HStack>
-                    <Text variant="hint" color="textSubdued">
-                        <DateTimeFormatter value={transactionBlockTime} />
-                    </Text>
+
+                    <DateTextComponent isForcedDiscreetMode={isPhishingTransaction}>
+                        {DateTimeFormatter.format(transactionBlockTime)}
+                    </DateTextComponent>
                 </Box>
             </Box>
             <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>

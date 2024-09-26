@@ -11,6 +11,7 @@ import { useDiscreetMode } from './useDiscreetMode';
 
 export type DiscreetTextProps = TextProps & {
     children?: string | null;
+    isForcedDiscreetMode?: boolean;
 };
 
 const textStyle = prepareNativeStyle((_, { isDiscreetMode }) => ({
@@ -24,6 +25,7 @@ export const DiscreetText = ({
     ellipsizeMode,
     adjustsFontSizeToFit,
     style = {},
+    isForcedDiscreetMode,
     ...restTextProps
 }: DiscreetTextProps) => {
     const { applyStyle } = useNativeStyles();
@@ -38,10 +40,11 @@ export const DiscreetText = ({
 
     const { fontSize } = typographyStylesBase[variant];
     if (!children) return null;
+    const showAsDiscreet = isDiscreetMode || !!isForcedDiscreetMode;
 
     return (
         <Box>
-            {isDiscreetMode && (
+            {showAsDiscreet && (
                 <DiscreetCanvas
                     width={width}
                     height={height}
@@ -61,7 +64,7 @@ export const DiscreetText = ({
                     adjustsFontSizeToFit={adjustsFontSizeToFit}
                     style={mergeNativeStyleObjects([
                         style,
-                        applyStyle(textStyle, { isDiscreetMode }),
+                        applyStyle(textStyle, { isDiscreetMode: showAsDiscreet }),
                     ])}
                     {...restTextProps}
                 >

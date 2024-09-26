@@ -17,6 +17,7 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         isBalance?: boolean;
         isDiscreetText?: boolean;
         decimals?: number;
+        isForcedDiscreetMode?: boolean;
     };
 
 export const CryptoAmountFormatter = React.memo(
@@ -28,7 +29,7 @@ export const CryptoAmountFormatter = React.memo(
         variant = 'hint',
         color = 'textSubdued',
         decimals,
-        ...textProps
+        ...otherProps
     }: CryptoToFiatAmountFormatterProps) => {
         const { CryptoAmountFormatter: formatter } = useFormatters();
 
@@ -61,7 +62,7 @@ export const CryptoAmountFormatter = React.memo(
                 isDiscreetText={isDiscreetText}
                 variant={variant}
                 color={color}
-                {...textProps}
+                {...otherProps}
             />
         );
     },

@@ -4,6 +4,7 @@ import { isAndroid } from '@trezor/env-utils';
 
 type AmountTextProps = {
     isDiscreetText?: boolean;
+    isForcedDiscreetMode?: boolean;
     value: string | null;
 } & TextProps;
 
@@ -18,13 +19,13 @@ const amountTextStyle = prepareNativeStyle(_ => ({
     },
 }));
 
-export const AmountText = ({ value, isDiscreetText = true, ...textProps }: AmountTextProps) => {
+export const AmountText = ({ value, isDiscreetText = true, ...otherProps }: AmountTextProps) => {
     const { applyStyle } = useNativeStyles();
 
     const TextComponent = isDiscreetText ? DiscreetText : Text;
 
     return (
-        <TextComponent style={applyStyle(amountTextStyle)} {...textProps}>
+        <TextComponent style={applyStyle(amountTextStyle)} {...otherProps}>
             {value}
         </TextComponent>
     );
