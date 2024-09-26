@@ -341,6 +341,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         if (!response.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
+                connectErrorCode: response.payload.code,
                 message: response.payload.error,
             });
         }

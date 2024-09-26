@@ -53,6 +53,7 @@ export type ComposeFeeLevelsError = {
 
 export type SignTransactionError = {
     error: 'sign-transaction-failed';
+    connectErrorCode?: string;
     message?: string;
 };
 

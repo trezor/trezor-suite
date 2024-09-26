@@ -42,9 +42,12 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../settings" },
+        { "path": "../toasts" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/theme" }
     ]
 }

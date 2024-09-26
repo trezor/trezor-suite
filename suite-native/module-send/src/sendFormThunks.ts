@@ -1,4 +1,3 @@
-import { G } from '@mobily/ts-belt';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
@@ -16,6 +15,7 @@ import {
     selectSendFormDrafts,
     composeSendFormTransactionFeeLevelsThunk,
     selectNetworkFeeInfo,
+    SignTransactionError,
 } from '@suite-common/wallet-core';
 import {
     Account,
@@ -24,29 +24,31 @@ import {
     FormState,
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
 
-export const signTransactionNativeThunk = createThunk(
+export const signTransactionNativeThunk = createThunk<
+    BlockbookTransaction | undefined,
+    {
+        accountKey: AccountKey;
+        feeLevel: GeneralPrecomposedTransactionFinal;
+    },
+    { rejectValue: SignTransactionError | undefined }
+>(
     `${SEND_MODULE_PREFIX}/signTransactionNativeThunk`,
-    async (
-        {
-            accountKey,
-            feeLevel,
-        }: {
-            accountKey: AccountKey;
-            feeLevel: GeneralPrecomposedTransactionFinal;
-        },
-        { dispatch, rejectWithValue, fulfillWithValue, getState },
-    ) => {
+    async ({ accountKey, feeLevel }, { dispatch, rejectWithValue, fulfillWithValue, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
         const formState = selectSendFormDraftByAccountKey(getState(), accountKey);
         const device = selectDevice(getState());
 
-        if (!account) return rejectWithValue('Account not found.');
-        if (!formState) return rejectWithValue('Form draft not found.');
+        if (!account || !formState)
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Account or form draft not found.',
+            });
 
         // prepare transaction with select fee level
         const precomposedTransaction = await dispatch(
@@ -58,8 +60,11 @@ export const signTransactionNativeThunk = createThunk(
         ).unwrap();
 
         if (!precomposedTransaction)
-            return rejectWithValue('Thunk prepareTransactionForSigningThunk failed.');
-        const signTransactionResponse = await requestPrioritizedDeviceAccess({
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Unable to precompose transaction for signing.',
+            });
+        const deviceAccessResponse = await requestPrioritizedDeviceAccess({
             deviceCallback: () =>
                 dispatch(
                     signTransactionThunk({
@@ -67,16 +72,22 @@ export const signTransactionNativeThunk = createThunk(
                         precomposedTransaction,
                         selectedAccount: account,
                     }),
-                ).unwrap(),
+                ),
         });
 
-        if (
-            !signTransactionResponse.success ||
-            G.isNullable(signTransactionResponse.payload?.signedTx)
-        ) {
+        if (!deviceAccessResponse.success) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Prioritized device access failed.',
+            });
+        }
+
+        const signTransactionResponse = deviceAccessResponse.payload;
+
+        if (isRejected(signTransactionResponse)) {
             dispatch(deviceActions.removeButtonRequests({ device }));
 
-            return rejectWithValue('Device failed to sign the transaction.');
+            return rejectWithValue(signTransactionResponse.payload);
         }
 
         return fulfillWithValue(signTransactionResponse.payload.signedTx);

@@ -241,6 +241,7 @@ export const signRippleSendFormTransactionThunk = createThunk<
             // catch manual error from TransactionReviewModal
             return rejectWithValue({
                 error: 'sign-transaction-failed',
+                connectErrorCode: response.payload.code,
                 message: response.payload.error,
             });
         }
