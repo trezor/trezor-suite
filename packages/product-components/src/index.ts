@@ -1,6 +1,11 @@
 export {
     SelectAssetModal,
     type SelectAssetModalProps,
+    type SelectAssetSearchCategoryType,
+    type SelectAssetNetworkProps,
+    type SelectAssetOptionProps,
+    type SelectAssetOptionGroupProps,
+    type SelectAssetOptionCurrencyProps,
 } from './components/SelectAssetModal/SelectAssetModal';
 export { PassphraseTypeCard } from './components/PassphraseTypeCard/PassphraseTypeCard';
 export { ConfirmOnDevice } from './components/ConfirmOnDevice/ConfirmOnDevice';

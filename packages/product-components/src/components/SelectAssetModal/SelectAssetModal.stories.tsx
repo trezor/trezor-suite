@@ -3,6 +3,8 @@ import { SelectAssetModal as SelectAssetModalComponent, SelectAssetModalProps } 
 import { ThemeProvider } from 'styled-components';
 import { intermediaryTheme, NewModal } from '@trezor/components';
 import { action } from '@storybook/addon-actions';
+import { IntlProvider } from 'react-intl';
+import { selectAssetModalOptions, selectAssetModalNetworks } from './mockData';
 
 const meta: Meta = {
     title: 'SelectAssetModal',
@@ -11,7 +13,9 @@ const meta: Meta = {
         Story => (
             <ThemeProvider theme={intermediaryTheme.dark}>
                 <NewModal.Provider>
-                    <Story />
+                    <IntlProvider locale="en">
+                        <Story />
+                    </IntlProvider>
                 </NewModal.Provider>
             </ThemeProvider>
         ),
@@ -22,7 +26,10 @@ export default meta;
 export const SelectAssetModal: StoryObj<SelectAssetModalProps> = {
     args: {
         onSelectAssetModal: action('onSelectAssetModal'),
-        onFavoriteClick: action('onFavoriteClick'),
+        // onFavoriteClick: undefined,
+        onClose: action('onClose'),
+        options: selectAssetModalOptions,
+        networkCategories: selectAssetModalNetworks,
     },
     argTypes: {},
 };

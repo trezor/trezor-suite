@@ -344,6 +344,39 @@ export default defineMessages({
         defaultMessage: 'Confirm address',
         id: 'TR_CONFIRM_ADDRESS',
     },
+    TR_ALL_NETWORKS: {
+        defaultMessage: 'All networks ({networkCount})',
+        id: 'TR_ALL_NETWORKS',
+    },
+    TR_ALL_NETWORKS_TOOLTIP: {
+        defaultMessage:
+            'View tokens from all {networkCount} networks. Use the buttons on the right to filter by top networks.',
+        id: 'TR_ALL_NETWORKS_TOOLTIP',
+    },
+    TR_SELECT_TOKEN: {
+        defaultMessage: 'Select a token',
+        id: 'TR_SELECT_TOKEN',
+    },
+    TR_SELECT_NAME_OR_ADDRESS: {
+        defaultMessage: 'Search by name, symbol, network or contract address',
+        id: 'TR_SELECT_NAME_OR_ADDRESS',
+    },
+    TR_TOKEN_NOT_FOUND: {
+        defaultMessage: 'Token not found',
+        id: 'TR_TOKEN_NOT_FOUND',
+    },
+    TR_TOKEN_NOT_FOUND_ON_NETWORK: {
+        defaultMessage: 'Token not found on the {networkName} network',
+        id: 'TR_TOKEN_NOT_FOUND_ON_NETWORK',
+    },
+    TR_TOKEN_TRY_DIFFERENT_SEARCH: {
+        defaultMessage: 'Please try a different search.',
+        id: 'TR_TOKEN_TRY_DIFFERENT_SEARCH',
+    },
+    TR_TOKEN_TRY_DIFFERENT_SEARCH_OR_SWITCH: {
+        defaultMessage: 'Please try a different search or switch to another network.',
+        id: 'TR_TOKEN_TRY_DIFFERENT_SEARCH_OR_SWITCH',
+    },
     TR_EXCHANGE_STATUS_ERROR: {
         defaultMessage: 'Rejected',
         id: 'TR_EXCHANGE_STATUS_ERROR',

@@ -1,6 +1,6 @@
 import {
     CoinmarketAccountOptionsGroupOptionProps,
-    CoinmarketCryptoListProps,
+    CoinmarketCryptoSelectItemProps,
     CoinmarketGetCryptoQuoteAmountProps,
     CoinmarketGetProvidersInfoProps,
     CoinmarketPaymentMethodListProps,
@@ -74,7 +74,7 @@ export interface CoinmarketBuyFormProps {
     fiatInput?: string;
     cryptoInput?: string;
     currencySelect: Option;
-    cryptoSelect: CoinmarketCryptoListProps;
+    cryptoSelect: CoinmarketCryptoSelectItemProps;
     countrySelect: Option;
     paymentMethod?: CoinmarketPaymentMethodListProps;
     amountInCrypto: boolean;
@@ -108,7 +108,7 @@ export type RateTypeFilter =
     | typeof EXCHANGE_COMPARATOR_RATE_FILTER_DEX;
 
 export interface CoinmarketExchangeFormProps extends FormState {
-    receiveCryptoSelect: CoinmarketCryptoListProps | null;
+    receiveCryptoSelect: CoinmarketCryptoSelectItemProps | null;
     sendCryptoSelect: CoinmarketAccountOptionsGroupOptionProps | undefined;
     amountInCrypto: boolean;
     [FORM_RATE_TYPE]: RateType;
@@ -299,7 +299,6 @@ export interface CoinmarketFormInputCryptoSelectProps<TFieldValues extends Field
     cryptoSelectName: FieldPath<TFieldValues>;
     supportedCryptoCurrencies: Set<CryptoId> | undefined;
     methods: UseFormReturn<TFieldValues>;
-    openMenuOnInput?: boolean;
 }
 
 export interface CoinmarketFormInputFiatCryptoProps<TFieldValues extends FieldValues> {
