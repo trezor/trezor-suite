@@ -3,13 +3,14 @@ import TrezorConnect, { DEVICE } from '@trezor/connect-web';
 import * as ACTIONS from '../actions/index';
 import { TrezorConnectDevice, Action, Field } from '../types';
 
-type ConnectState = {
+export type ConnectState = {
     devices: TrezorConnectDevice[];
     selectedDevice?: string;
     options?: Parameters<(typeof TrezorConnect)['init']>[0];
     isHandshakeConfirmed: boolean;
     isInitSuccess: boolean;
     initError?: string;
+    deeplink?: boolean;
 };
 
 const initialState: ConnectState = {
@@ -19,6 +20,7 @@ const initialState: ConnectState = {
     isHandshakeConfirmed: false,
     isInitSuccess: false,
     initError: undefined,
+    deeplink: false,
 };
 
 const findDeviceIndexByPath = (devices: TrezorConnectDevice[], path: string): number =>
@@ -102,6 +104,7 @@ export default function connect(state: ConnectState = initialState, action: Acti
                 initError: undefined,
                 isInitSuccess: true,
                 options: action.payload,
+                deeplink: action.deeplink,
             };
         case ACTIONS.ON_HANDSHAKE_CONFIRMED:
             return {

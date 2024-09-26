@@ -18,6 +18,7 @@
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../connect-explorer-theme" },
+        { "path": "../connect-mobile" },
         { "path": "../connect-web" },
         { "path": "../connect-webextension" },
         { "path": "../protobuf" },

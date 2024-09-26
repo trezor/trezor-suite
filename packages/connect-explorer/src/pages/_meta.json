@@ -9,5 +9,9 @@
     "test": {
         "title": "Test",
         "display": "hidden"
+    },
+    "callback": {
+        "title": "Callback",
+        "display": "hidden"
     }
 }
