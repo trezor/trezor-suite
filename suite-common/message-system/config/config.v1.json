@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-09-10T00:00:00+00:00",
-    "sequence": 63,
+    "timestamp": "2024-09-25T00:00:00+00:00",
+    "sequence": 64,
     "actions": [
         {
             "conditions": [
@@ -1051,6 +1051,75 @@
                         "tr": "Suite'i Güncelle",
                         "pt": "Atualizar Suite",
                         "uk": "Оновити Suite"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "dash": true
+                        },
+                        {
+                            "bitcoin gold": true
+                        },
+                        {
+                            "namecoin": true
+                        },
+                        {
+                            "vertcoin": true
+                        },
+                        {
+                            "digibyte": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": ">=24.9.1",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "11af66ba-2fea-4f56-80b4-3c92e723e2f6",
+                "priority": 93,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "As of February 2025, DASH, BTG, NMC, VTC and DGB will no longer be supported in Trezor Suite. Please transfer your funds before this change takes effect.",
+                    "en": "Starting February 2025, DASH, BTG, NMC, VTC, and DGB will no longer be supported in Trezor Suite. Please transfer your funds before this change takes effect.",
+                    "es": "A partir de febrero de 2025, DASH, BTG, NMC, VTC y DGB ya no serán compatibles con Trezor Suite. Por favor, transfiera sus fondos antes de que este cambio entre en vigor.",
+                    "cs": "Od února 2025 již nebudou DASH, BTG, NMC, VTC a DGB podporovány v Trezor Suite. Prosím, převeďte své prostředky předtím, než tato změna vstoupí v platnost.",
+                    "ru": "Начиная с февраля 2025 года, DASH, BTG, NMC, VTC и DGB больше не будут поддерживаться в Trezor Suite. Пожалуйста, переведите свои средства до вступления этого изменения в силу.",
+                    "ja": "2025年2月より、DASH、BTG、NMC、VTC、DGBはTrezor Suiteでサポートされなくなります。この変更が有効になる前に、資金を移動してください。",
+                    "hu": "2025 februárjától a DASH, BTG, NMC, VTC és DGB már nem lesz támogatott a Trezor Suite-ban. Kérjük, utalja át a pénzeszközeit, mielőtt ez a változás életbe lép.",
+                    "it": "A partire da febbraio 2025, DASH, BTG, NMC, VTC e DGB non saranno più supportati su Trezor Suite. Si prega di trasferire i vostri fondi prima che questo cambiamento entri in vigore.",
+                    "fr": "À partir de février 2025, DASH, BTG, NMC, VTC et DGB ne seront plus pris en charge dans Trezor Suite. Veuillez transférer vos fonds avant que ce changement ne prenne effet.",
+                    "de": "Ab Februar 2025 werden DASH, BTG, NMC, VTC und DGB in Trezor Suite nicht mehr unterstützt. Bitte transferieren Sie Ihre Gelder, bevor diese Änderung in Kraft tritt.",
+                    "tr": "Şubat 2025 itibarıyla, DASH, BTG, NMC, VTC ve DGB Trezor Suite'te artık desteklenmeyecektir. Lütfen bu değişiklik yürürlüğe girmeden önce fonlarınızı transfer edin.",
+                    "pt": "A partir de fevereiro de 2025, DASH, BTG, NMC, VTC e DGB não serão mais suportados no Trezor Suite. Por favor, transfira seus fundos antes que esta mudança entre em vigor.",
+                    "uk": "З лютого 2025 року DASH, BTG, NMC, VTC та DGB більше не будуть підтримуватися в Trezor Suite. Будь ласка, переведіть свої кошти до того, як ця зміна набуде чинності."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://trezor.io/learn/a/suite-coins-deprecation",
+                    "label": {
+                        "en-GB": "Learn More",
+                        "en": "Learn More",
+                        "es": "Más Información",
+                        "cs": "Více Informací",
+                        "ru": "Подробнее",
+                        "ja": "詳細はこちら",
+                        "hu": "További Információ",
+                        "it": "Scopri di Più",
+                        "fr": "En Savoir Plus",
+                        "de": "Mehr Erfahren",
+                        "tr": "Daha Fazla Bilgi",
+                        "pt": "Saiba Mais",
+                        "uk": "Дізнатись більше"
                     }
                 }
             }
