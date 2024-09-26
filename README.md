@@ -10,7 +10,7 @@ Welcome to the Trezor Suite repository! This repository contains the source code
 
 # Development
 
-Development is not possible on Windows. This can be circumvented by tools such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install), see our [guide](https://docs.trezor.io/trezor-suite/misc/WSL.html).
+Development is not possible on Windows. This can be circumvented by tools such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install), see our [guide](https://docs.trezor.io/trezor-suite/misc/development-on-windows.html).
 
 ### Prerequisities
 
@@ -27,6 +27,8 @@ Development is not possible on Windows. This can be circumvented by tools such a
 -   `nvm install`
 -   `yarn`
 -   `yarn build:libs`
+
+For troubleshooting of common issues, [see guide](https://docs.trezor.io/trezor-suite/misc/suite-setup-troubleshooting.html).
 
 It's recommended to enable `git config --global submodule.recurse true` so you don't need to run `git submodule update --init --recursive` every time when submodules are updated.
 

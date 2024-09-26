@@ -19,6 +19,8 @@ In WSL:
 
 Proceed with the [general readme instructions](../../README.md#trezor-suite-trezorsuite).
 
+See general [setup troubleshooting docs](./suite-setup-troubleshooting.md) if necessary.
+
 ## Connecting USB device
 
 On Windows, run `usbipd list`, find the bus id of the Trezor device, e.g. `2-1`.

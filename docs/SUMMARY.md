@@ -88,4 +88,5 @@
     -   [development on Windows](./misc/development-on-windows.md)
     -   [device naming](./misc/device-naming.md)
     -   [review](./misc/review.md)
+    -   [suite setup troubleshooting](./misc/suite-setup-troubleshooting)
     -   [videos](./misc/videos.md)
