@@ -9,6 +9,7 @@ import TrezorConnect, {
 import { getSynchronize } from '@trezor/utils';
 import { deviceConnectThunks } from '@suite-common/wallet-core';
 import { resolveStaticPath } from '@suite-common/suite-utils';
+import { isNative } from '@trezor/env-utils';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
 
@@ -112,15 +113,16 @@ export const connectInitThunk = createThunk(
         // note:
         // this way, for local development you will get http://localhost:8000/static/connect/workers/sessions-background-sharedworker.js which is still the not-shared shared-worker
         // meaning that testing it together with connect-explorer dev build (http://localhost:8088/workers/sessions-background-sharedworker.js) will not work locally.
-        // in production however, both suite and connect are served from the same domain (trezor.io, sldev.cz) so it will work as expected.
-        const sessionsBackground =
-            typeof window !== 'undefined'
-                ? window.location.origin +
-                  resolveStaticPath(
-                      'connect/workers/sessions-background-sharedworker.js',
-                      `${process.env.ASSET_PREFIX || ''}`,
-                  )
-                : undefined;
+        // in production however, suite and connect are served from the same domain (trezor.io, sldev.cz) so it will work as expected.
+        let sessionsBackground: string | undefined;
+        if (typeof window !== 'undefined' && !isNative()) {
+            sessionsBackground =
+                window.location.origin +
+                resolveStaticPath(
+                    'connect/workers/sessions-background-sharedworker.js',
+                    `${process.env.ASSET_PREFIX || ''}`,
+                );
+        }
 
         try {
             await TrezorConnect.init({
