@@ -1,7 +1,7 @@
 import { QRCodeSVG } from 'qrcode.react';
 import styled from 'styled-components';
 
-import { Icon, Tooltip, colors, variables } from '@trezor/components';
+import { Icon, Tooltip, variables, intermediaryTheme } from '@trezor/components';
 import { Translation } from './Translation';
 
 export const QRCODE_SIZE = 384;
@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 
     /* some qr code scanners can't recognize qr codes on dark background, having white border around helps with this */
     padding: ${QRCODE_PADDING}px;
-    background: ${colors.legacy.BG_WHITE};
+    background: ${intermediaryTheme.light.legacy.BG_WHITE};
     max-width: ${QRCODE_SIZE}px;
     position: relative;
 
@@ -56,8 +56,8 @@ interface QrCodeProps {
 export const QrCode = ({ value, className, bgColor, fgColor, showMessage }: QrCodeProps) => (
     <Wrapper className={className}>
         <QRCodeSVG
-            bgColor={bgColor || colors.legacy.BG_WHITE}
-            fgColor={fgColor || colors.legacy.TYPE_DARK_GREY}
+            bgColor={bgColor || intermediaryTheme.light.legacy.BG_WHITE}
+            fgColor={fgColor || intermediaryTheme.light.legacy.TYPE_DARK_GREY}
             level="Q"
             size={QRCODE_SIZE}
             value={value}
@@ -74,7 +74,7 @@ export const QrCode = ({ value, className, bgColor, fgColor, showMessage }: QrCo
                     <StyledIcon
                         name="info"
                         size={12}
-                        color={fgColor || colors.legacy.TYPE_DARK_GREY}
+                        color={fgColor || intermediaryTheme.light.legacy.TYPE_DARK_GREY}
                     />
                 </StyledTooltip>
             </Message>

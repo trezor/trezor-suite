@@ -3,7 +3,14 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, CollapsibleBox, colors, Icon, IconName, variables } from '@trezor/components';
+import {
+    Button,
+    CollapsibleBox,
+    Icon,
+    IconName,
+    intermediaryTheme,
+    variables,
+} from '@trezor/components';
 import { isFirefox } from '@trezor/env-utils';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
@@ -204,13 +211,13 @@ const InnerWrapper = styled.div`
 `;
 
 const H = styled.h1`
-    color: ${colors.legacy.TYPE_RED};
+    color: ${intermediaryTheme.light.legacy.TYPE_RED};
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const Text = styled.div`
-    color: ${colors.legacy.TYPE_LIGHT_GREY};
+    color: ${intermediaryTheme.light.legacy.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
@@ -240,7 +247,7 @@ const HeadingText = styled.div`
 `;
 
 const HeadingH1 = styled.div`
-    color: ${colors.legacy.TYPE_DARK_GREY};
+    color: ${intermediaryTheme.light.legacy.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     margin-bottom: 4px;
