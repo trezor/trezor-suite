@@ -22,13 +22,19 @@ export const SendStackNavigator = () => (
         <SendStack.Screen name={SendStackRoutes.SendAccounts} component={SendAccountsScreen} />
         <SendStack.Screen name={SendStackRoutes.SendOutputs} component={SendOutputsScreen} />
         <SendStack.Screen name={SendStackRoutes.SendFees} component={SendFeesScreen} />
-        <SendStack.Screen
-            name={SendStackRoutes.SendAddressReview}
-            component={SendAddressReviewScreen}
-        />
-        <SendStack.Screen
-            name={SendStackRoutes.SendOutputsReview}
-            component={SendOutputsReviewScreen}
-        />
+        <SendStack.Group
+            screenOptions={{
+                gestureEnabled: false, // To not interrupt send review by back navigation.
+            }}
+        >
+            <SendStack.Screen
+                name={SendStackRoutes.SendAddressReview}
+                component={SendAddressReviewScreen}
+            />
+            <SendStack.Screen
+                name={SendStackRoutes.SendOutputsReview}
+                component={SendOutputsReviewScreen}
+            />
+        </SendStack.Group>
     </SendStack.Navigator>
 );

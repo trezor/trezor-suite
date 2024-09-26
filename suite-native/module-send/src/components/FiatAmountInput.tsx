@@ -10,7 +10,7 @@ import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 import { SendAmountCurrencyLabelWrapper, sendAmountInputWrapperStyle } from './CryptoAmountInput';
 import { SendAmountInputProps } from '../types';
-import { useSendAmountTransformers } from '../useSendAmountTransformers';
+import { useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
 import { getOutputFieldName } from '../utils';
 
 export const FiatAmountInput = ({

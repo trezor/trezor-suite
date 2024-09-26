@@ -11,7 +11,7 @@ import { Color } from '@trezor/theme';
 import { useDebounce } from '@trezor/react-utils';
 
 import { SendAmountInputProps } from '../types';
-import { useSendAmountTransformers } from '../useSendAmountTransformers';
+import { useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
 import { getOutputFieldName } from '../utils';
 
 export const sendAmountInputWrapperStyle = prepareNativeStyle<{ isDisabled: boolean }>(
