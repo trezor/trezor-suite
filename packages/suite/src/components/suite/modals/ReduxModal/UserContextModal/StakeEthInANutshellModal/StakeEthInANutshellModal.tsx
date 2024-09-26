@@ -1,23 +1,26 @@
-import { Icon, IconName, Paragraph, NewModal, Row, Column, useElevation } from '@trezor/components';
+import {
+    Icon,
+    IconName,
+    Paragraph,
+    NewModal,
+    Badge,
+    List,
+    Column,
+    Row,
+    Text,
+    Divider,
+    CollapsibleBox,
+} from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import styled from 'styled-components';
-
-import { Process } from './Process';
 import { StakingInfo } from './StakingInfo';
 import { UnstakingInfo } from './UnstakingInfo';
-
-const Processes = styled.div<{ $elevation: Elevation }>`
-    margin-top: ${spacingsPx.md};
-    padding: ${spacingsPx.md} ${spacingsPx.zero} ${spacingsPx.zero};
-    border-top: 1px solid ${mapElevationToBorder};
-`;
 
 interface StakingDetails {
     id: number;
@@ -49,14 +52,12 @@ interface StakeEthInANutshellModalProps {
 
 export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalProps) => {
     const account = useSelector(selectSelectedAccount);
+    const dispatch = useDispatch();
     const { validatorWithdrawTime } = useSelector(state =>
         selectValidatorsQueueData(state, account?.symbol),
     );
 
     const unstakingPeriod = getUnstakingPeriodInDays(validatorWithdrawTime);
-
-    const dispatch = useDispatch();
-    const { elevation } = useElevation();
 
     const proceedToEverstakeModal = () => {
         onCancel();
@@ -92,15 +93,15 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                 </NewModal.Button>
             }
         >
-            <Column
-                gap={spacings.xl}
-                margin={{ top: spacings.sm, bottom: spacings.md }}
-                alignItems="flex-start"
+            <List
+                gap={spacings.lg}
+                bulletGap={spacings.md}
+                typographyStyle="hint"
+                margin={{ top: spacings.xs }}
             >
                 {STAKING_DETAILS.map(({ id, icon, translationId }) => (
-                    <Row key={id} gap={spacings.md}>
-                        <Icon name={icon} variant="primary" />
-                        <Paragraph typographyStyle="hint" variant="tertiary">
+                    <List.Item key={id} bulletComponent={<Icon name={icon} variant="primary" />}>
+                        <Paragraph variant="tertiary">
                             <Translation
                                 id={translationId}
                                 values={{
@@ -109,21 +110,30 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                                 }}
                             />
                         </Paragraph>
-                    </Row>
+                    </List.Item>
+                ))}
+            </List>
+            <Divider margin={{ top: spacings.xl, bottom: spacings.md }} />
+            <Column alignItems="stretch" gap={spacings.lg}>
+                {processes.map(({ heading, badge, content }, index) => (
+                    <CollapsibleBox
+                        key={index}
+                        heading={
+                            <Row gap={spacings.xs}>
+                                <Text variant="tertiary">{heading}</Text>
+                                <Badge size="tiny">{badge}</Badge>
+                            </Row>
+                        }
+                        fillType="none"
+                        paddingType="none"
+                        hasDivider={false}
+                    >
+                        <List isOrdered bulletGap={spacings.sm} gap={spacings.md}>
+                            {content}
+                        </List>
+                    </CollapsibleBox>
                 ))}
             </Column>
-            <Processes $elevation={elevation}>
-                <Column alignItems="normal" gap={spacings.md}>
-                    {processes.map((process, index) => (
-                        <Process
-                            key={index}
-                            heading={process.heading}
-                            badge={process.badge}
-                            content={process.content}
-                        />
-                    ))}
-                </Column>
-            </Processes>
         </NewModal>
     );
 };
