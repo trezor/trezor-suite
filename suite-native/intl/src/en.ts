@@ -903,6 +903,7 @@ export const en = {
                 title: 'Are you sure you’d like to cancel sending the transaction?',
                 continueButton: 'Continue editing',
             },
+            lockedToast: 'Device is locked.',
             address: {
                 title: 'Check the address on your Trezor against the original to make sure it’s correct.',
                 step1: 'Go to the app or place where you originally got the address.',

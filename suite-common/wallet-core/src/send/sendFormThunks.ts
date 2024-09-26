@@ -397,7 +397,7 @@ export const signTransactionThunk = createThunk<
         precomposedTransaction: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
         selectedAccount: Account;
     },
-    { rejectValue: SignTransactionError }
+    { rejectValue: SignTransactionError | undefined }
 >(
     `${SEND_MODULE_PREFIX}/signTransactionThunk`,
     async (
@@ -468,10 +468,7 @@ export const signTransactionThunk = createThunk<
                 }),
             );
 
-            return rejectWithValue({
-                error: 'sign-transaction-failed',
-                message,
-            });
+            return rejectWithValue(response?.payload);
         }
 
         const { serializedTx } = response.payload;

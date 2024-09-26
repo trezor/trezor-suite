@@ -156,7 +156,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             });
 
         // todo: add chunkify once we allow it for Cardano
-        const res = await TrezorConnect.cardanoSignTransaction({
+        const response = await TrezorConnect.cardanoSignTransaction({
             signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
             device: {
                 path: device.path,
@@ -175,13 +175,14 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             derivationType: getDerivationType(accountType),
         });
 
-        if (!res.success) {
+        if (!response.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                message: res.payload.error,
+                connectErrorCode: response.payload.code,
+                message: response.payload.error,
             });
         }
 
-        return { serializedTx: res.payload.serializedTx };
+        return { serializedTx: response.payload.serializedTx };
     },
 );
