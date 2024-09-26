@@ -18,6 +18,7 @@ const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0;
 
 export const TransportBackends = () => {
     const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
+    const transport = useSelector(state => state.suite.transport);
     const [bridgeProcess, setBridgeProcess] = useState<Process>({ service: false, process: false });
     const [bridgeSettings, setBridgeSettings] = useState<BridgeSettings | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -68,10 +69,15 @@ export const TransportBackends = () => {
                 />
             </SectionItem>
             <SectionItem data-testid="@settings/debug/processes/Bridge">
-                <TextColumn title="Bridge running" />
+                <TextColumn
+                    title="Bridge server"
+                    description={
+                        transport?.version ? `version: ${transport.version}` : 'not running'
+                    }
+                />
                 <ActionColumn>
                     <Checkbox
-                        isChecked={bridgeProcess.process === true}
+                        isChecked={bridgeProcess.process}
                         onClick={() => {
                             desktopApi.toggleBridge();
                         }}
@@ -80,7 +86,7 @@ export const TransportBackends = () => {
             </SectionItem>
             <SectionItem data-testid="@settings/debug/processes/bridgeLegacy">
                 <TextColumn
-                    title="Use legacy bridge"
+                    title="Use legacy Bridge"
                     description="Legacy trezord-go will be spawned as a subprocess"
                 />
                 <ActionColumn>
@@ -96,7 +102,10 @@ export const TransportBackends = () => {
                 </ActionColumn>
             </SectionItem>
             <SectionItem data-testid="@settings/debug/processes/runOnStartUp">
-                <TextColumn title="Run on startup" />
+                <TextColumn
+                    title="Run on startup"
+                    description="This is useful for testing of other Transport clients"
+                />
                 <ActionColumn>
                     <Checkbox
                         isChecked={!bridgeSettings.doNotStartOnStartup}

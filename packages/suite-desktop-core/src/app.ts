@@ -18,7 +18,7 @@ import { clearAppCache, initUserData } from './libs/user-data';
 import { initSentry } from './libs/sentry';
 import { initModules, mainThreadEmitter } from './modules';
 import { init as initTorModule } from './modules/tor';
-import { init as initBridgeModule } from './modules/bridge';
+import { init as initBridgeModule, initUi as initBridgeUi } from './modules/bridge';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
 import { Logger } from './libs/logger';
@@ -181,6 +181,13 @@ const initUi = async ({
     // init modules
     const interceptor = createInterceptor();
     const { loadModules, quitModules } = initModules({
+        mainWindowProxy,
+        store,
+        interceptor,
+        mainThreadEmitter,
+    });
+    // TODO: each module probably should have 2 exports - one to be initiated in the main layer and one to be initiated in UI layer?
+    initBridgeUi({
         mainWindowProxy,
         store,
         interceptor,
