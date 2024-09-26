@@ -1,9 +1,13 @@
+import { useSelector } from 'react-redux';
+
 import { AccountKey } from '@suite-common/wallet-types';
 import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { selectIsPhishingTransaction, TransactionsRootState } from '@suite-common/wallet-core';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
@@ -34,6 +38,11 @@ export const TokenTransferListItemValues = ({
         tokenAddress: tokenTransfer.contract,
     });
 
+    const isPhishingTransaction = useSelector(
+        (state: TokenDefinitionsRootState & TransactionsRootState) =>
+            selectIsPhishingTransaction(state, transaction.txid, accountKey),
+    );
+
     return (
         <>
             <EthereumTokenToFiatAmountFormatter
@@ -45,6 +54,7 @@ export const TokenTransferListItemValues = ({
                 ellipsizeMode="tail"
                 historicRate={historicRate}
                 useHistoricRate
+                isForcedDiscreetMode={isPhishingTransaction}
             />
             <EthereumTokenAmountFormatter
                 value={tokenTransfer.amount}
@@ -52,6 +62,7 @@ export const TokenTransferListItemValues = ({
                 decimals={tokenTransfer.decimals}
                 numberOfLines={1}
                 ellipsizeMode="tail"
+                isForcedDiscreetMode={isPhishingTransaction}
             />
         </>
     );

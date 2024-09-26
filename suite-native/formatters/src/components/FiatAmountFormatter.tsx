@@ -14,10 +14,11 @@ type FiatAmountFormatterProps = FormatterProps<string | null> &
     TextProps & {
         network?: NetworkSymbol;
         isDiscreetText?: boolean;
+        isForcedDiscreetMode?: boolean;
     };
 
 export const FiatAmountFormatter = React.memo(
-    ({ network, value, isDiscreetText = true, ...textProps }: FiatAmountFormatterProps) => {
+    ({ network, value, isDiscreetText = true, ...otherProps }: FiatAmountFormatterProps) => {
         const { FiatAmountFormatter: formatter } = useFormatters();
 
         if (!!network && isTestnet(network)) {
@@ -29,6 +30,8 @@ export const FiatAmountFormatter = React.memo(
 
         const formattedValue = formatter.format(value);
 
-        return <AmountText value={formattedValue} isDiscreetText={isDiscreetText} {...textProps} />;
+        return (
+            <AmountText value={formattedValue} isDiscreetText={isDiscreetText} {...otherProps} />
+        );
     },
 );

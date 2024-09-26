@@ -15,6 +15,7 @@ type EthereumTokenToFiatAmountFormatterProps = {
     signValue?: SignValue;
     historicRate?: number;
     useHistoricRate?: boolean;
+    isForcedDiscreetMode?: boolean;
 } & FormatterProps<number | string> &
     TextProps;
 

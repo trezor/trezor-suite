@@ -7,9 +7,15 @@ import {
     SignValueFormatter,
 } from '@suite-native/formatters';
 import { Box } from '@suite-native/atoms';
-import { AccountsRootState, selectIsTestnetAccount } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectIsPhishingTransaction,
+    selectIsTestnetAccount,
+    TransactionsRootState,
+} from '@suite-common/wallet-core';
 import { EmptyAmountText } from '@suite-native/formatters/src/components/EmptyAmountText';
 import { WalletAccountTransaction } from '@suite-native/tokens';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -35,6 +41,11 @@ export const TransactionListItemValues = ({
         selectIsTestnetAccount(state, accountKey),
     );
 
+    const isPhishingTransaction = useSelector(
+        (state: TokenDefinitionsRootState & TransactionsRootState) =>
+            selectIsPhishingTransaction(state, transaction.txid, accountKey),
+    );
+
     const historicRate = useTransactionFiatRate({ accountKey, transaction });
 
     return (
@@ -44,12 +55,12 @@ export const TransactionListItemValues = ({
             ) : (
                 <Box flexDirection="row">
                     <SignValueFormatter value={getTransactionValueSign(transaction.type)} />
-
                     <CryptoToFiatAmountFormatter
                         value={transaction.amount}
                         network={transaction.symbol}
                         historicRate={historicRate}
                         useHistoricRate
+                        isForcedDiscreetMode={isPhishingTransaction}
                     />
                 </Box>
             )}
@@ -60,6 +71,7 @@ export const TransactionListItemValues = ({
                 isBalance={false}
                 numberOfLines={1}
                 adjustsFontSizeToFit
+                isForcedDiscreetMode={isPhishingTransaction}
             />
         </>
     );
@@ -85,6 +97,8 @@ export const TransactionListItem = ({
                 txid={transaction.txid}
                 tokenTransfer={transaction.tokens[0]}
                 includedCoinsCount={transaction.tokens.length - 1}
+                isFirst={isFirst}
+                isLast={isLast}
             />
         );
 

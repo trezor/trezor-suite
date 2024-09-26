@@ -10,6 +10,7 @@ type EthereumTokenAmountFormatterProps = {
     symbol: TokenSymbol | null;
     isDiscreetText?: boolean;
     decimals?: number;
+    isForcedDiscreetMode?: boolean;
 } & FormatterProps<number | string> &
     TextProps;
 
