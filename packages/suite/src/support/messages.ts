@@ -6369,6 +6369,18 @@ export default defineMessages({
         id: 'TR_UPDATE_MODAL_AVAILABLE_HEADING',
         defaultMessage: 'Update available',
     },
+    TR_UPDATE_MODAL_YOUR_VERSION: {
+        id: 'TR_UPDATE_MODAL_YOUR_VERSION',
+        defaultMessage: 'Your version: v{version}',
+    },
+    TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES: {
+        id: 'TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES',
+        defaultMessage: 'Enable automatic updates',
+    },
+    TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES_NEW_TAG: {
+        id: 'TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES_NEW_TAG',
+        defaultMessage: 'New',
+    },
     TR_UPDATE_MODAL_NOT_NOW: {
         id: 'TR_UPDATE_MODAL_NOT_NOW',
         defaultMessage: 'Not now',
@@ -6397,13 +6409,18 @@ export default defineMessages({
         id: 'TR_MANAGE',
         defaultMessage: 'manage',
     },
-    TR_VERSION_HAS_BEEN_RELEASED: {
+    TR_VERSION_HAS_RELEASED: {
         id: 'TR_VERSION_HAS_BEEN_RELEASED',
-        defaultMessage: 'Version {version} has been released!',
+        defaultMessage: 'v {version} has released!',
     },
-    TR_CHANGELOG_ON_GITHUB: {
-        id: 'TR_CHANGELOG_ON_GITHUB',
-        defaultMessage: 'Changelog on GitHub',
+    TR_READ_ALL_ON_GITHUB: {
+        id: 'TR_READ_ALL_ON_GITHUB',
+        defaultMessage: 'Read all on Github',
+    },
+    TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE: {
+        id: 'TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE',
+        defaultMessage:
+            'We’re constantly working to improve your Trezor experience, here’s what has changed:',
     },
     TR_UPDATE_MODAL_UPDATE_DOWNLOADED: {
         id: 'TR_UPDATE_MODAL_UPDATE_DOWNLOADED',

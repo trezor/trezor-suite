@@ -18,7 +18,6 @@ import {
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { Available } from './DesktopUpdater/Available';
 import { Downloading } from './DesktopUpdater/Downloading';
@@ -35,12 +34,6 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
     const { desktopUpdate } = useSelector(state => state);
 
     const desktopUpdateState = desktopUpdate.state;
-
-    const routeName = useSelector(selectRouteName);
-
-    // Closing a modal opened by auto updater outside of device settings might confuse some users,
-    // especially on app start if closing it unexpectedly by clicking outside.
-    const isSettingsRoute = routeName === 'settings-index';
 
     useEffect(() => {
         desktopApi.on('update/allow-prerelease', params => dispatch(allowPrerelease(params)));
@@ -119,9 +112,9 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
             case UpdateState.Available:
                 return (
                     <Available
-                        hideWindow={hideWindow}
+                        onCancel={hideWindow}
                         latest={desktopUpdate.latest}
-                        isCancelable={isSettingsRoute}
+                        isAutomaticUpdateEnabled={desktopUpdate.isAutomaticUpdateEnabled}
                     />
                 );
             case UpdateState.Downloading:

@@ -18,8 +18,6 @@ export const SVG_IMAGES = {
     DEVICE_ANOTHER_SESSION: 'device-another-session.svg',
     CONNECT_DEVICE: 'connect-device.svg',
     ERROR_404: 'error-404.svg',
-    EARLY_ACCESS: 'early-access.svg',
-    EARLY_ACCESS_DISABLE: 'early-access-disable.svg',
     INVITY_LOGO: 'invity-logo.svg',
     COINMARKET_AVATAR: 'coinmarket-avatar.svg',
     COINMARKET_SUCCESS: 'coinmarket-success.svg',

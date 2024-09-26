@@ -1,41 +1,67 @@
+import { ReactNode } from 'react';
+
 import styled from 'styled-components';
 
-import { Button, H2, Link, Markdown } from '@trezor/components';
+import {
+    Card,
+    Checkbox,
+    Column,
+    ElevationUp,
+    Icon,
+    Link,
+    Markdown,
+    NewModal,
+    Paragraph,
+    Row,
+    Text,
+    useElevation,
+} from '@trezor/components';
 import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
-import { borders } from '@trezor/theme';
+import { borders, Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation, Modal } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { getReleaseUrl } from 'src/services/github';
 import { download } from 'src/actions/suite/desktopUpdateActions';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const GreenH2 = styled(H2)`
-    text-align: left;
-    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
-`;
-
-const ChangelogWrapper = styled.div`
-    margin: 20px 0;
-    background: ${({ theme }) => theme.legacy.BG_GREY};
-    border-radius: ${borders.radii.xs};
+const ChangelogWrapper = styled.div<{ $elevation: Elevation }>`
+    background-color: ${({ theme, $elevation }) => mapElevationToBackground({ theme, $elevation })};
+    border-radius: ${borders.radii.md};
     max-height: 400px;
     overflow-y: auto;
-    padding: 16px 20px;
+    padding: ${spacingsPx.md} ${spacingsPx.xl};
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLink = styled(Link)`
-    align-self: start;
+const GrayTag = styled.div`
+    border-radius: ${borders.radii.full};
+    background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
+    padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
-const StyledModal = styled(Modal)`
-    ${Modal.BottomBar} {
-        > * {
-            flex: 1;
-        }
-    }
+const GreenTag = styled.div`
+    display: flex;
+    align-items: center;
+    gap: ${spacingsPx.xxs};
+    border-radius: ${borders.radii.full};
+    background-color: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
+    padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
 `;
+
+const NewTag = () => (
+    <GreenTag>
+        <Icon name="sparkleFilled" variant="primary" size="small" />
+        <Text variant="primary">
+            <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES_NEW_TAG" />
+        </Text>
+    </GreenTag>
+);
+
+const Changelog = ({ children }: { children: ReactNode }) => {
+    const { elevation } = useElevation();
+
+    return <ChangelogWrapper $elevation={elevation}>{children}</ChangelogWrapper>;
+};
 
 interface VersionNameProps {
     latestVersion?: string;
@@ -43,30 +69,28 @@ interface VersionNameProps {
 }
 
 const getVersionName = ({ latestVersion, prerelease }: VersionNameProps): string => {
-    if (!latestVersion) {
-        // fallback for undefined version
+    if (latestVersion === undefined) {
         return '';
     }
-    if (!prerelease) {
-        // regular case
+
+    if (prerelease !== undefined) {
         return latestVersion;
     }
+
     if (!latestVersion.includes('-')) {
-        // add beta label for pre-releases, but prevent versions like '21.10.1-alpha-beta'
         return `${latestVersion}-beta`;
     }
 
-    // fallback for pre-release versions already including some pre-release components
     return latestVersion;
 };
 
 interface AvailableProps {
-    hideWindow: () => void;
-    isCancelable: boolean;
-    latest?: UpdateInfo;
+    onCancel: () => void;
+    latest: UpdateInfo | undefined;
+    isAutomaticUpdateEnabled: boolean;
 }
 
-export const Available = ({ hideWindow, isCancelable, latest }: AvailableProps) => {
+export const Available = ({ onCancel, latest, isAutomaticUpdateEnabled }: AvailableProps) => {
     const dispatch = useDispatch();
 
     const downloadUpdate = () => {
@@ -74,46 +98,80 @@ export const Available = ({ hideWindow, isCancelable, latest }: AvailableProps) 
         desktopApi.downloadUpdate();
     };
 
+    const suiteCurrentVersion = process.env.VERSION || '';
+    const suiteNewVersion = getVersionName({
+        latestVersion: latest?.version,
+        prerelease: !!latest?.prerelease,
+    });
+
+    const handleToggleAutoUpdateClick = () =>
+        desktopApi.setAutomaticUpdateEnabled(!isAutomaticUpdateEnabled);
+
     return (
-        <StyledModal
+        <NewModal
             heading={<Translation id="TR_UPDATE_MODAL_AVAILABLE_HEADING" />}
-            isCancelable={isCancelable}
-            onCancel={hideWindow}
-            bottomBarComponents={
+            description={
+                <Translation
+                    id="TR_UPDATE_MODAL_YOUR_VERSION"
+                    values={{ version: suiteCurrentVersion }}
+                />
+            }
+            onCancel={onCancel}
+            bottomContent={
                 <>
-                    <Button onClick={hideWindow} variant="tertiary">
-                        <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
-                    </Button>
-                    <Button onClick={downloadUpdate} variant="primary">
+                    <NewModal.Button onClick={downloadUpdate} variant="primary">
                         <Translation id="TR_UPDATE_MODAL_START_DOWNLOAD" />
-                    </Button>
+                    </NewModal.Button>
+                    <NewModal.Button onClick={onCancel} variant="tertiary">
+                        <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
+                    </NewModal.Button>
                 </>
             }
         >
-            <GreenH2>
-                <Translation
-                    id="TR_VERSION_HAS_BEEN_RELEASED"
-                    values={{
-                        version: getVersionName({
-                            latestVersion: latest?.version,
-                            prerelease: !!latest?.prerelease,
-                        }),
-                    }}
-                />
-            </GreenH2>
+            <Column gap={spacings.xs} alignItems="start">
+                <div>
+                    <Paragraph typographyStyle="highlight" variant="primary">
+                        <Translation
+                            id="TR_VERSION_HAS_RELEASED"
+                            values={{ version: suiteNewVersion }}
+                        />
+                    </Paragraph>
+                    <Paragraph typographyStyle="hint" variant="tertiary">
+                        <Translation id="TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE" />
+                    </Paragraph>
+                </div>
 
-            <ChangelogWrapper>
-                {latest?.changelog ? (
-                    <Markdown>{latest?.changelog}</Markdown>
-                ) : (
-                    <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
-                )}
-            </ChangelogWrapper>
-            <StyledLink variant="nostyle" href={getReleaseUrl(latest?.version ?? '')}>
-                <Button variant="tertiary" icon="github">
-                    <Translation id="TR_CHANGELOG_ON_GITHUB" />
-                </Button>
-            </StyledLink>
-        </StyledModal>
+                <ElevationUp>
+                    <Changelog>
+                        {latest?.changelog ? (
+                            <Markdown>{latest?.changelog}</Markdown>
+                        ) : (
+                            <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
+                        )}
+                    </Changelog>
+                </ElevationUp>
+
+                <Row justifyContent="space-between" width="100%">
+                    <Link variant="nostyle" href={getReleaseUrl(latest?.version ?? '')}>
+                        <GrayTag>
+                            <Translation id="TR_READ_ALL_ON_GITHUB" />
+                        </GrayTag>
+                    </Link>
+
+                    {latest?.releaseDate && <Text variant="tertiary">{latest?.releaseDate}</Text>}
+                </Row>
+
+                <ElevationUp>
+                    <Card>
+                        <Row justifyContent="start" gap={spacings.xs}>
+                            <Checkbox onClick={handleToggleAutoUpdateClick}>
+                                <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES" />
+                            </Checkbox>
+                            <NewTag />
+                        </Row>
+                    </Card>
+                </ElevationUp>
+            </Column>
+        </NewModal>
     );
 };
