@@ -1065,9 +1065,7 @@ export const getNetworkAccountFeatures = ({
 }: Pick<Account, 'symbol' | 'accountType'>): NetworkFeature[] => {
     const matchedNetwork = getNetwork(symbol);
 
-    return accountType === 'normal'
-        ? matchedNetwork.features
-        : matchedNetwork.accountTypes[accountType]?.features ?? [];
+    return matchedNetwork.accountTypes[accountType]?.features ?? matchedNetwork.features;
 };
 
 export const hasNetworkFeatures = (

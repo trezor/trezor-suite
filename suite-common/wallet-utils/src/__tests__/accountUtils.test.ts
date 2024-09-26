@@ -217,11 +217,9 @@ describe('account utils', () => {
 
     it('getNetworkAccountFeatures', () => {
         const btcAcc = getWalletAccount({ symbol: 'btc' });
-
         const btcTaprootAcc = getWalletAccount({ symbol: 'btc', accountType: 'taproot' });
-
+        const btcLegacy = getWalletAccount({ symbol: 'btc', accountType: 'legacy' });
         const ethAcc = getWalletAccount();
-
         const coinjoinAcc = getWalletAccount({ symbol: 'regtest', accountType: 'coinjoin' });
 
         expect(getNetworkAccountFeatures(btcAcc)).toEqual(['rbf', 'sign-verify', 'amount-unit']);
@@ -235,6 +233,8 @@ describe('account utils', () => {
             'staking',
         ]);
         expect(getNetworkAccountFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);
+        // when account does not have features defined, take them from root network object
+        expect(getNetworkAccountFeatures(btcLegacy)).toEqual(getNetworkAccountFeatures(btcAcc));
     });
 
     it('hasNetworkFeatures', () => {
