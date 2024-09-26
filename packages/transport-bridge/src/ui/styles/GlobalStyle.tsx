@@ -1,9 +1,8 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, DefaultTheme } from 'styled-components';
 
 import { typography } from '@trezor/theme';
-import type { SuiteThemeColors } from '@trezor/components';
 
-export const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
+export const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     #app {
         display: flex;
         flex-direction: column;

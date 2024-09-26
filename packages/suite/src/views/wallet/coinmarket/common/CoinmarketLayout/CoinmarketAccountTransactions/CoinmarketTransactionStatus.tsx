@@ -1,9 +1,9 @@
-import styled, { useTheme } from 'styled-components';
+import styled, { DefaultTheme, useTheme } from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/coinmarket/buyUtils';
 import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/coinmarket/sellUtils';
-import { variables, Icon, SuiteThemeColors } from '@trezor/components';
+import { variables, Icon } from '@trezor/components';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
@@ -18,7 +18,7 @@ const Text = styled.div`
     padding-top: 1px;
 `;
 
-const getBuyTradeData = (status: BuyTradeStatus, theme: SuiteThemeColors) => {
+const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {
     const message = getBuyStatusMessage(status);
     switch (message) {
         case 'TR_BUY_STATUS_PENDING':
@@ -50,7 +50,7 @@ const getBuyTradeData = (status: BuyTradeStatus, theme: SuiteThemeColors) => {
     }
 };
 
-const getSellTradeData = (status: SellTradeStatus, theme: SuiteThemeColors) => {
+const getSellTradeData = (status: SellTradeStatus, theme: DefaultTheme) => {
     const message = getSellStatusMessage(status);
     switch (message) {
         case 'TR_SELL_STATUS_PENDING':
@@ -75,7 +75,7 @@ const getSellTradeData = (status: SellTradeStatus, theme: SuiteThemeColors) => {
     }
 };
 
-const getExchangeTradeData = (status: ExchangeTradeStatus, theme: SuiteThemeColors) => {
+const getExchangeTradeData = (status: ExchangeTradeStatus, theme: DefaultTheme) => {
     const message = getExchangeStatusMessage(status);
     switch (message) {
         case 'TR_EXCHANGE_STATUS_CONFIRMING':

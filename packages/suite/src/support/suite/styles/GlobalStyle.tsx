@@ -1,9 +1,8 @@
 import { typography } from '@trezor/theme';
 import animations from './animations';
-import { SuiteThemeColors } from '@trezor/components';
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, DefaultTheme } from 'styled-components';
 
-const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
+const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     #app {
         display: flex;
         flex-direction: column;
@@ -51,7 +50,6 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
     }
 
     ${animations}
-
     /* https://floating-ui.com/docs/misc#handling-large-content */
     .floating {
         max-width: calc(100vw - 10px);

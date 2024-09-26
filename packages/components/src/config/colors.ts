@@ -1,10 +1,10 @@
+import { boxShadows, colorVariants } from '@trezor/theme';
+
 // TODO: button hover color could be derived from its based color by applying something like opacity/darkening
 // same goes for gradients
 
-import { boxShadows, colorVariants } from '@trezor/theme';
-
-type LightThemeProps = typeof THEME.light;
-type DarkThemeProps = typeof THEME.dark;
+type LightThemeProps = typeof intermediaryTheme.light;
+type DarkThemeProps = typeof intermediaryTheme.dark;
 
 // extracts values for common props (eg. NEUE_BG_GREEN: "#00854D" | "#e3ede0")
 type CommonThemeProps = {
@@ -19,6 +19,7 @@ export type SuiteThemeColors = CommonThemeProps &
     Partial<PropsOnlyInDarkTheme> &
     Partial<PropsOnlyInLightTheme>;
 
+/** @deprecated Do NOT export it! Use intermediaryTheme instead! */
 const THEME = {
     light: {
         legacy: {
