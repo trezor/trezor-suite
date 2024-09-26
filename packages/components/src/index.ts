@@ -3,7 +3,6 @@ import { THEME, intermediaryTheme, SuiteThemeColors } from './config/colors';
 export * as variables from './config/variables';
 export * as animations from './config/animations';
 export { motionAnimation, motionEasing } from './config/motion';
-export * from './support/ThemeProvider';
 
 export { Checkbox, type CheckboxProps } from './components/form/Checkbox/Checkbox';
 export * from './components/animations/DeviceAnimation';
