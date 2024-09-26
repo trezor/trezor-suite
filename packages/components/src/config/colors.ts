@@ -19,7 +19,7 @@ export type SuiteThemeColors = CommonThemeProps &
     Partial<PropsOnlyInDarkTheme> &
     Partial<PropsOnlyInLightTheme>;
 
-export const THEME = {
+const THEME = {
     light: {
         legacy: {
             THEME: 'light',
