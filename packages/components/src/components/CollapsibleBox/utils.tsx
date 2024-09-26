@@ -22,7 +22,7 @@ export const mapPaddingTypeToHeaderPadding = ({ $paddingType }: PaddingMapArgs):
 
 export const mapPaddingTypeToContentPadding = ({ $paddingType }: PaddingMapArgs): string => {
     const paddingMap: Record<PaddingType, string> = {
-        none: `${spacingsPx.xs} 0 0`,
+        none: `${spacingsPx.sm} 0 0`,
         normal: `${spacingsPx.lg} ${spacingsPx.md}`,
         large: `${spacingsPx.xl}`,
     };
