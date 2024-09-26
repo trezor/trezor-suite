@@ -1,0 +1,20 @@
+import { useEffect } from 'react';
+import { Button } from '@trezor/components';
+
+export const CallbackHandler = () => {
+    useEffect(() => {
+        const bc = new BroadcastChannel('trezor_connect_callback');
+        bc.postMessage({ type: 'popup_callback', url: window.location.href });
+    }, []);
+
+    return <div></div>;
+
+};
+
+# Trezor Connect Callback
+
+Callback received. You can close this window now.
+
+<Button onClick={() => window.close()}>Close</Button>
+
+<CallbackHandler />

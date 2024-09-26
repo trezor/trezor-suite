@@ -11336,6 +11336,7 @@ __metadata:
     "@trezor/components": "workspace:^"
     "@trezor/connect": "workspace:^"
     "@trezor/connect-explorer-theme": "workspace:^"
+    "@trezor/connect-mobile": "workspace:^"
     "@trezor/connect-web": "workspace:^"
     "@trezor/connect-webextension": "workspace:^"
     "@trezor/protobuf": "workspace:^"
@@ -11398,7 +11399,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-mobile@workspace:*, @trezor/connect-mobile@workspace:packages/connect-mobile":
+"@trezor/connect-mobile@workspace:*, @trezor/connect-mobile@workspace:^, @trezor/connect-mobile@workspace:packages/connect-mobile":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-mobile@workspace:packages/connect-mobile"
   dependencies:
