@@ -2,13 +2,12 @@ import { Controller } from 'react-hook-form';
 import { Select, useElevation } from '@trezor/components';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
-    CoinmarketOptionsGroupProps,
+    CoinmarketCryptoSelectItemProps,
+    CoinmarketTradeBuyExchangeType,
 } from 'src/types/coinmarket/coinmarket';
-import { Translation } from 'src/components/suite';
 import { useMemo, useState } from 'react';
 import {
     CoinmarketFormOption,
-    CoinmarketFormOptionGroupLabel,
     CoinmarketFormOptionLabel,
     CoinmarketFormOptionLabelLong,
     CoinmarketFormOptionLogo,
@@ -20,12 +19,16 @@ import {
     CoinmarketExchangeFormProps,
     CoinmarketFormInputCryptoSelectProps,
 } from 'src/types/coinmarket/coinmarketForm';
-import { createFilter } from 'react-select';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { CryptoId } from 'invity-api';
+import { SelectAssetModal } from '@trezor/product-components';
+import { networks, NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    FORM_CRYPTO_CURRENCY_SELECT,
+    FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+} from 'src/constants/wallet/coinmarket/form';
 
 export const CoinmarketFormInputCryptoSelect = <
     TFieldValues extends CoinmarketBuyFormProps | CoinmarketExchangeFormProps,
@@ -34,17 +37,15 @@ export const CoinmarketFormInputCryptoSelect = <
     cryptoSelectName,
     supportedCryptoCurrencies,
     methods,
-    openMenuOnInput,
 }: CoinmarketFormInputCryptoSelectProps<TFieldValues>) => {
-    const context = useCoinmarketFormContext();
+    const context = useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
     const { buildCryptoOptions, cryptoIdToPlatformName } = useCoinmarketInfo();
     const { elevation } = useElevation();
     const { control } = methods;
+    const [isModalActive, setIsModalActive] = useState(false);
 
-    const [isOpen, setIsOpen] = useState(false);
-    const [isFocus, setIsFocus] = useState(false);
     const sendCryptoSelectValue = isCoinmarketExchangeOffers(context)
-        ? (context.getValues()?.sendCryptoSelect?.value as CryptoId)
+        ? context.getValues()?.sendCryptoSelect?.value
         : null;
 
     const options = useMemo(
@@ -56,40 +57,55 @@ export const CoinmarketFormInputCryptoSelect = <
         [buildCryptoOptions, supportedCryptoCurrencies, sendCryptoSelectValue],
     );
 
+    const handleSelectChange = (selectedCryptoId: string) => {
+        const findOption = options.find(
+            option => option.type === 'currency' && option.value === selectedCryptoId,
+        ) as CoinmarketCryptoSelectItemProps | undefined;
+
+        if (!findOption) return;
+
+        if (isCoinmarketExchangeOffers(context)) {
+            context.setValue(FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, findOption);
+        } else {
+            context.setValue(FORM_CRYPTO_CURRENCY_SELECT, findOption);
+        }
+
+        setIsModalActive(false);
+    };
+
+    const getNetworks = () => {
+        const networksToSelect: NetworkSymbol[] = ['eth', 'sol', 'matic', 'bnb'];
+        const networkAllKeys = Object.keys(networks) as NetworkSymbol[];
+        const networkKeys = networkAllKeys.filter(item => networksToSelect.includes(item));
+        const networksSelected = networkKeys.map(networkKey => ({
+            name: networks[networkKey].name,
+            symbol: networks[networkKey].symbol,
+            coingeckoId: networks[networkKey].coingeckoId,
+            coingeckoNativeId: networks[networkKey].coingeckoNativeId,
+        }));
+
+        return networksSelected;
+    };
+
     return (
         <>
             <CoinmarketFormInputLabel label={label} />
+            {isModalActive && (
+                <SelectAssetModal
+                    options={options}
+                    networkCategories={getNetworks()}
+                    onSelectAssetModal={handleSelectChange}
+                    onClose={() => setIsModalActive(false)}
+                />
+            )}
             <Controller
                 name={cryptoSelectName}
                 control={control}
-                render={({ field: { onChange, value } }) => (
+                render={({ field: { value } }) => (
                     <Select
-                        value={isFocus ? '' : value}
-                        placeholder={<Translation id="TR_TRADE_ENTER_COIN" />}
+                        value={value}
                         options={options}
-                        onInputChange={inputValue => {
-                            setIsOpen(inputValue.length > 1);
-                        }}
-                        onFocus={() => setIsFocus(true)}
-                        onBlur={() => setIsFocus(false)}
-                        menuIsOpen={openMenuOnInput ? isOpen : undefined}
-                        onChange={(option, ref) => {
-                            onChange(option);
-                            ref?.blur();
-                        }}
-                        filterOption={createFilter<CoinmarketAccountOptionsGroupOptionProps>({
-                            stringify: option => `${option.label} ${option.data.cryptoName}`,
-                        })}
-                        formatGroupLabel={group => {
-                            const { translationId, networkName } =
-                                group as CoinmarketOptionsGroupProps;
-
-                            return (
-                                <CoinmarketFormOptionGroupLabel>
-                                    <Translation id={translationId} values={{ networkName }} />
-                                </CoinmarketFormOptionGroupLabel>
-                            );
-                        }}
+                        onMenuOpen={() => setIsModalActive(true)}
                         formatOptionLabel={(option: CoinmarketAccountOptionsGroupOptionProps) => {
                             const { networkId, contractAddress } = parseCryptoId(option.value);
                             const platform = cryptoIdToPlatformName(networkId);
@@ -113,7 +129,7 @@ export const CoinmarketFormInputCryptoSelect = <
                         }}
                         data-testid="@coinmarket/form/select-crypto"
                         isClearable={false}
-                        isSearchable
+                        menuIsOpen={false}
                     />
                 )}
             />

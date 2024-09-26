@@ -1,5 +1,5 @@
 import { spacings, spacingsPx } from '@trezor/theme';
-import { AssetLogo, Badge, Column, Icon, Row, Text } from '@trezor/components';
+import { Badge, Column, Icon, Row, Text } from '@trezor/components';
 import styled, { useTheme } from 'styled-components';
 
 const ClickableContainer = styled.div`
@@ -11,43 +11,67 @@ const ClickableContainer = styled.div`
         background: ${({ theme }) => theme.backgroundTertiaryPressedOnElevation0};
     }
 `;
+
 const IconWrapper = styled.div`
     cursor: pointer;
 `;
 
+const TextWrapper = styled.div`
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const BadgeWrapper = styled.div`
+    flex: none;
+`;
+
 type AssetItemProps = {
-    handleClick: (selectedAsset: string) => void;
+    cryptoId: string;
     name: string;
     symbol: string;
-    badge: string;
+    badge: string | undefined;
+    logo: JSX.Element;
     isFavorite?: boolean;
+    handleClick: (selectedAsset: string) => void;
     onFavoriteClick?: (isFavorite: boolean) => void;
 };
+
 export const AssetItem = ({
-    handleClick,
+    cryptoId,
     name,
     symbol,
     badge,
+    logo,
     isFavorite = false,
+    handleClick,
     onFavoriteClick,
 }: AssetItemProps) => {
     const theme = useTheme();
 
-    const handleFavoriteClick = () => onFavoriteClick?.(isFavorite);
+    const handleFavoriteClick = onFavoriteClick ? () => onFavoriteClick(isFavorite) : undefined;
 
     return (
-        <ClickableContainer onClick={() => handleClick(symbol)}>
-            <Row gap={spacings.sm} margin={{ right: spacings.md }}>
-                <AssetLogo size={24} coingeckoId="bitcoin" placeholder="btc" />
+        <ClickableContainer onClick={() => handleClick(cryptoId)}>
+            <Row gap={spacings.sm}>
+                {logo}
                 <Column flex="1" alignItems="stretch">
-                    <Text typographyStyle="body">{name}</Text>
+                    <Row gap={spacings.xs} alignItems="center">
+                        <TextWrapper>
+                            <Text typographyStyle="body" textWrap="nowrap">
+                                {name}
+                            </Text>
+                        </TextWrapper>
+                        {badge && (
+                            <BadgeWrapper>
+                                <Badge>{badge}</Badge>
+                            </BadgeWrapper>
+                        )}
+                    </Row>
                     <Text typographyStyle="hint" variant="tertiary">
                         {symbol}
                     </Text>
                 </Column>
-                <div>
-                    <Badge>{badge}</Badge>
-                </div>
+
                 {handleFavoriteClick && (
                     <IconWrapper>
                         {isFavorite ? (

@@ -4,9 +4,9 @@ import { useCallback } from 'react';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import addressValidator from '@trezor/address-validator';
 import {
-    CoinmarketCryptoListProps,
+    CoinmarketCryptoSelectItemProps,
+    CoinmarketCryptoSelectOptionProps,
     CoinmarketInfoProps,
-    CoinmarketOptionsGroupProps,
 } from 'src/types/coinmarket/coinmarket';
 import { parseCryptoId, testnetToProdCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
@@ -14,13 +14,34 @@ const supportedAddressValidatorSymbols = new Set(
     addressValidator.getCurrencies().map(c => c.symbol),
 );
 
-function toCryptoOption(cryptoId: CryptoId, coinInfo: CoinInfo): CoinmarketCryptoListProps {
+function toCryptoOption(cryptoId: CryptoId, coinInfo: CoinInfo): CoinmarketCryptoSelectItemProps {
+    const { networkId, contractAddress } = parseCryptoId(cryptoId);
+
     return {
+        type: 'currency',
         value: cryptoId,
         label: coinInfo.symbol.toUpperCase(),
         cryptoName: coinInfo.name,
+        coingeckoId: networkId,
+        contractAddress,
     };
 }
+
+const sortPopularCurrencies = (
+    a: CoinmarketCryptoSelectItemProps,
+    b: CoinmarketCryptoSelectItemProps,
+) => {
+    const order = ['bitcoin', 'ethereum', 'litecoin', 'cardano', 'solana'];
+
+    const indexA = order.indexOf(a.coingeckoId);
+    const indexB = order.indexOf(b.coingeckoId);
+
+    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+
+    return 0;
+};
 
 export const useCoinmarketInfo = (): CoinmarketInfoProps => {
     const { platforms = {}, coins = {} } = useSelector(state => state.wallet.coinmarket.info);
@@ -50,10 +71,10 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
         (
             cryptoIds: Set<CryptoId>,
             excludedCryptoIds?: Set<CryptoId>,
-        ): CoinmarketOptionsGroupProps[] => {
-            const popularCurrencies: CoinmarketCryptoListProps[] = [];
-            const otherCurrencies: CoinmarketCryptoListProps[] = [];
-            const tokenGroups: CoinmarketOptionsGroupProps[] = [];
+        ): CoinmarketCryptoSelectOptionProps[] => {
+            const popularCurrencies: CoinmarketCryptoSelectItemProps[] = [];
+            const otherCurrencies: CoinmarketCryptoSelectItemProps[] = [];
+            const tokenGroups: CoinmarketCryptoSelectOptionProps[][] = [];
 
             cryptoIds.forEach(cryptoId => {
                 const coinInfo = coins[cryptoId];
@@ -81,23 +102,43 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                     otherCurrencies.push(option);
                 } else {
                     const networkName = cryptoIdToPlatformName(networkId) || networkId;
-                    let tokenGroup = tokenGroups.find(g => g.networkName === networkName);
+                    const tokenGroup = tokenGroups.find(group =>
+                        group.find(item => item.networkName === networkName),
+                    );
+                    const optionWithNetwork = {
+                        ...option,
+                        networkName,
+                        coingeckoId: networkId,
+                        contractAddress,
+                    };
+
                     if (!tokenGroup) {
-                        tokenGroup = {
-                            translationId: 'TR_COINMARKET_NETWORK_TOKENS',
-                            networkName,
-                            options: [],
-                        };
-                        tokenGroups.push(tokenGroup);
+                        tokenGroups.push([
+                            {
+                                type: 'group',
+                                label: 'TR_COINMARKET_NETWORK_TOKENS',
+                                coingeckoId: networkId,
+                                networkName,
+                            },
+                            {
+                                ...optionWithNetwork,
+                            },
+                        ]);
+                    } else {
+                        tokenGroup.push(optionWithNetwork);
                     }
-                    tokenGroup.options.push(option);
                 }
             });
 
+            popularCurrencies.sort(sortPopularCurrencies);
+
             return [
-                { translationId: 'TR_COINMARKET_POPULAR_CURRENCIES', options: popularCurrencies },
-                { translationId: 'TR_COINMARKET_OTHER_CURRENCIES', options: otherCurrencies },
-                ...tokenGroups,
+                { type: 'group', label: 'TR_COINMARKET_POPULAR_CURRENCIES' },
+                ...popularCurrencies,
+                { type: 'group', label: 'TR_COINMARKET_OTHER_CURRENCIES' },
+                ...otherCurrencies,
+
+                ...tokenGroups.flat(),
             ];
         },
         [coins, cryptoIdToPlatformName, cryptoIdToNativeCoinSymbol],
@@ -111,12 +152,15 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
             }
 
             const { coingeckoId, name } = networks.btc;
-
-            return {
-                value: coingeckoId as CryptoId,
+            const item: CoinmarketCryptoSelectItemProps = {
+                type: 'currency',
+                value: cryptoId,
                 label: 'BTC',
                 cryptoName: name,
+                coingeckoId,
             };
+
+            return item;
         },
         [coins],
     );

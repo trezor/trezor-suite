@@ -45,7 +45,8 @@ export const VirtualizedList: StoryFn = () => {
                 onScrollEnd={() => {
                     setEnd(end + 1000);
                 }}
-                height={400}
+                listHeight={400}
+                listMinHeight={180}
                 renderItem={(_item: any, index: number) => <Item>content {index}</Item>}
             />
         </Container>

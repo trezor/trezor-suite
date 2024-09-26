@@ -37,6 +37,11 @@ import { Timer } from '@trezor/react-utils';
 import { AccountsState } from '@suite-common/wallet-core';
 import { TokenDefinitionsState } from '@suite-common/token-definitions';
 import { AssetLogoProps } from '@trezor/components';
+import {
+    SelectAssetOptionCurrencyProps,
+    SelectAssetOptionGroupProps,
+    SelectAssetOptionProps,
+} from '@trezor/product-components/src/components/SelectAssetModal/SelectAssetModal';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
@@ -160,8 +165,8 @@ export interface CoinmarketInfoProps {
     buildCryptoOptions: (
         cryptoIds: Set<CryptoId>,
         excludedCryptoIds?: Set<CryptoId>,
-    ) => CoinmarketOptionsGroupProps[];
-    buildDefaultCryptoOption: (cryptoId: CryptoId | undefined) => CoinmarketCryptoListProps;
+    ) => CoinmarketCryptoSelectOptionProps[];
+    buildDefaultCryptoOption: (cryptoId: CryptoId | undefined) => CoinmarketCryptoSelectItemProps;
 }
 
 export interface CoinmarketCoinLogoProps {
@@ -171,11 +176,12 @@ export interface CoinmarketCoinLogoProps {
     className?: string;
 }
 
-export interface CoinmarketOptionsGroupProps {
-    translationId: ExtendedMessageDescriptor['id'];
-    networkName?: string;
-    options: CoinmarketCryptoListProps[];
+export interface CoinmarketCryptoSelectItemProps
+    extends Omit<SelectAssetOptionCurrencyProps, 'value'> {
+    value: CryptoId;
 }
+export interface CoinmarketCryptoSelectGroupProps extends SelectAssetOptionGroupProps {}
+export type CoinmarketCryptoSelectOptionProps = SelectAssetOptionProps;
 
 export interface CoinmarketGetSortedAccountsProps {
     accounts: AccountsState;
@@ -197,7 +203,10 @@ export interface CoinmarketBuildAccountOptionsProps extends CoinmarketGetSortedA
     tokenDefinitions: Partial<TokenDefinitionsState>;
 }
 
-export interface CoinmarketAccountOptionsGroupOptionProps extends CoinmarketCryptoListProps {
+export interface CoinmarketAccountOptionsGroupOptionProps {
+    value: CryptoId;
+    label: string; // token shortcut
+    cryptoName: string | undefined; // full name
     balance: string;
     descriptor: string;
     decimals: number;

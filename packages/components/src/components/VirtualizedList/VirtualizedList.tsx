@@ -1,3 +1,4 @@
+import { isChanged } from '@suite-common/suite-utils';
 import React, { useState, useEffect, useCallback, forwardRef, useRef } from 'react';
 import styled from 'styled-components';
 
@@ -22,8 +23,16 @@ const BEFORE_AFTER_BUFFER_COUNT = 100;
 const LOAD_MORE_BUFFER_COUNT = 100;
 const ESTIMATED_ITEM_HEIGHT = 40;
 
-const Container = styled.div<{ $height: number | string }>`
+interface ContainerProps {
+    $height: number | string;
+    $minHeight: number | string;
+}
+
+const Container = styled.div<ContainerProps>`
     height: ${({ $height }) => (typeof $height === 'number' ? `${$height}px` : $height)};
+    min-height: ${({ $minHeight }) =>
+        typeof $minHeight === 'number' ? `${$minHeight}px` : $minHeight};
+
     width: 100%;
     overflow-y: auto;
     position: relative;
@@ -44,13 +53,21 @@ type VirtualizedListProps<T> = {
     items: Array<T & { height: number }>;
     onScroll?: (e: Event) => void;
     onScrollEnd: () => void;
-    height: number | string;
+    listHeight: number | string;
+    listMinHeight: number | string;
     renderItem: (item: T, index: number) => React.ReactNode;
 };
 
 export const VirtualizedList = forwardRef<HTMLDivElement, VirtualizedListProps<any>>(
     <T,>(
-        { items: initialItems, onScroll, onScrollEnd, height, renderItem }: VirtualizedListProps<T>,
+        {
+            items: initialItems,
+            onScroll,
+            onScrollEnd,
+            listHeight,
+            listMinHeight,
+            renderItem,
+        }: VirtualizedListProps<T>,
         ref: React.Ref<HTMLDivElement>,
     ) => {
         const newRef = useRef<HTMLDivElement>(null);
@@ -62,9 +79,19 @@ export const VirtualizedList = forwardRef<HTMLDivElement, VirtualizedListProps<a
         const [totalHeight, setTotalHeight] = useState(0);
         const debouncedOnScrollEnd = debounce(onScrollEnd, 1000);
 
+        const resetScroll = useCallback(() => {
+            if (!containerRef.current) return;
+
+            containerRef.current.scrollTop = 0;
+        }, [containerRef]);
+
         useEffect(() => {
-            setItems(initialItems);
-        }, [initialItems]);
+            if (isChanged(items, initialItems)) {
+                setItems(initialItems);
+                resetScroll();
+            }
+        }, [initialItems, items, resetScroll]);
+
         useEffect(() => {
             const heights = items.map(item => calculateItemHeight(item));
             setItemHeights(heights);
@@ -123,7 +150,7 @@ export const VirtualizedList = forwardRef<HTMLDivElement, VirtualizedListProps<a
         }, [containerRef, handleScroll]);
 
         return (
-            <Container ref={containerRef} $height={height}>
+            <Container ref={containerRef} $height={listHeight} $minHeight={listMinHeight}>
                 <Content style={{ height: `${totalHeight}px` }}>
                     {itemHeights.slice(startIndex, endIndex).map((height, index) => {
                         const itemIndex = startIndex + index;
