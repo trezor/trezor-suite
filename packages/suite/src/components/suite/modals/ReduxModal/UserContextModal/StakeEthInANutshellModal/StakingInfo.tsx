@@ -53,10 +53,10 @@ export const StakingInfo = ({ account }: StakingInfoProps) => {
     ];
 
     return (
-        <ol>
+        <>
             {infoRows.map(({ label, content }, index) => (
                 <InfoRow key={index} label={label} content={content} />
             ))}
-        </ol>
+        </>
     );
 };
