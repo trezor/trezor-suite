@@ -59,23 +59,15 @@ class TrezordNodeProcess implements BridgeInterface {
     }
 
     status() {
+        if (!this.proxy.running) {
+            return Promise.resolve({ service: false, process: false });
+        }
+
         return this.proxy
             .request('status', [])
             .catch(() => ({ service: false, process: this.proxy.running }));
     }
 }
-
-const handleBridgeStatus = async (bridge: BridgeInterface) => {
-    const { logger } = global;
-
-    logger.info('bridge', `Getting status`);
-    const status = await bridge.status();
-    logger.info('bridge', `Toggling bridge. Status: ${JSON.stringify(status)}`);
-
-    ipcMain.emit('bridge/status', status);
-
-    return status;
-};
 
 const start = async (bridge: BridgeInterface) => {
     if (bridgeLegacy) {
@@ -112,44 +104,65 @@ const shouldUseLegacyBridge = (store: Dependencies['store']) => {
     return legacyBridgeReasonRollout;
 };
 
-const load = async (bridge: BridgeInterface, store: Dependencies['store']) => {
+let bridge: BridgeInterface;
+let legacyBridge: BridgeInterface;
+let nodeBridge: BridgeInterface;
+
+const loadBridge = async (store: Dependencies['store']) => {
     const { logger } = global;
+    legacyBridge = new BridgeProcess();
+    nodeBridge = new TrezordNodeProcess();
 
-    ipcMain.handle('bridge/toggle', async ipcEvent => {
-        validateIpcMessage(ipcEvent);
+    bridge = shouldUseLegacyBridge(store) ? legacyBridge : nodeBridge;
 
-        const status = await handleBridgeStatus(bridge);
-        try {
-            if (status.service) {
-                await bridge.stop();
-            } else {
-                await start(bridge);
-            }
+    if (store.getBridgeSettings().doNotStartOnStartup) {
+        return;
+    }
 
-            return { success: true };
-        } catch (error) {
-            return { success: false, error };
-        } finally {
-            handleBridgeStatus(bridge);
-        }
-    });
+    try {
+        logger.info(
+            SERVICE_NAME,
+            `Starting (Legacy: ${b2t(bridgeLegacy)}, Test: ${b2t(bridgeTest)}, Dev: ${b2t(bridgeDev)})`,
+        );
+        await start(bridge);
+    } catch (err) {
+        bridge.stop();
+        logger.error(SERVICE_NAME, `Start failed: ${err.message}`);
+    }
+};
 
-    ipcMain.handle('bridge/get-status', async ipcEvent => {
-        validateIpcMessage(ipcEvent);
+type BridgeModule = ({ store }: Pick<Dependencies, 'store'>) => {
+    onLoad: () => void;
+    onQuit: () => Promise<void>;
+};
 
-        try {
-            const status = await bridge.status();
+export const init: BridgeModule = ({ store }) => {
+    let loaded = false;
 
-            return { success: true, payload: status };
-        } catch (error) {
-            return { success: false, error };
-        }
-    });
+    const onLoad = () => {
+        if (loaded) return;
+        loaded = true;
 
+        return scheduleAction(() => loadBridge(store), { timeout: 3000 }).catch(err => {
+            // Error ignored, user will see transport error afterwards
+            logger.error(SERVICE_NAME, `Failed to load: ${err.message}`);
+        });
+    };
+
+    const onQuit = async () => {
+        await bridge?.stop();
+    };
+
+    return { onLoad, onQuit };
+};
+
+export const initUi = ({ store, mainWindowProxy }: Dependencies) => {
     ipcMain.handle(
         'bridge/change-settings',
-        (ipcEvent, payload: { doNotStartOnStartup: boolean; legacy?: boolean }) => {
+        async (ipcEvent, payload: { doNotStartOnStartup: boolean; legacy?: boolean }) => {
             validateIpcMessage(ipcEvent);
+
+            const oldSettings = store.getBridgeSettings();
 
             try {
                 store.setBridgeSettings(payload);
@@ -158,7 +171,20 @@ const load = async (bridge: BridgeInterface, store: Dependencies['store']) => {
             } catch (error) {
                 return { success: false, error };
             } finally {
-                ipcMain.emit('bridge/settings', store.getBridgeSettings());
+                const newSettings = store.getBridgeSettings();
+
+                if (oldSettings.legacy !== payload.legacy) {
+                    const wasBridgeRunning = await bridge.status();
+                    if (wasBridgeRunning.service) {
+                        await bridge.stop();
+                    }
+                    bridge = shouldUseLegacyBridge(store) ? legacyBridge : nodeBridge;
+                    if (wasBridgeRunning.service) {
+                        await start(bridge);
+                    }
+                }
+
+                mainWindowProxy?.getInstance()?.webContents.send('bridge/settings', newSettings);
             }
         },
     );
@@ -173,47 +199,46 @@ const load = async (bridge: BridgeInterface, store: Dependencies['store']) => {
         }
     });
 
-    if (store.getBridgeSettings().doNotStartOnStartup) {
-        return;
-    }
+    const handleBridgeStatus = async () => {
+        const { logger } = global;
 
-    try {
-        logger.info(
-            SERVICE_NAME,
-            `Starting (Legacy: ${b2t(bridgeLegacy)}, Test: ${b2t(bridgeTest)}, Dev: ${b2t(bridgeDev)})`,
-        );
-        await start(bridge);
-        handleBridgeStatus(bridge);
-    } catch (err) {
-        bridge.stop();
-        logger.error(SERVICE_NAME, `Start failed: ${err.message}`);
-    }
-};
+        logger.info('bridge', `Getting status`);
+        const status = await bridge.status();
+        logger.info('bridge', `Toggling bridge. Status: ${JSON.stringify(status)}`);
 
-type BridgeModule = ({ store }: Pick<Dependencies, 'store'>) => {
-    onLoad: () => void;
-    onQuit: () => Promise<void>;
-};
+        mainWindowProxy.getInstance()?.webContents.send('bridge/status', status);
 
-export const init: BridgeModule = ({ store }) => {
-    let loaded = false;
-    let bridge: BridgeInterface;
-
-    const onLoad = () => {
-        if (loaded) return;
-        loaded = true;
-
-        bridge = shouldUseLegacyBridge(store) ? new BridgeProcess() : new TrezordNodeProcess();
-
-        return scheduleAction(() => load(bridge, store), { timeout: 3000 }).catch(err => {
-            // Error ignored, user will see transport error afterwards
-            logger.error(SERVICE_NAME, `Failed to load: ${err.message}`);
-        });
+        return status;
     };
 
-    const onQuit = async () => {
-        await bridge?.stop();
-    };
+    ipcMain.handle('bridge/toggle', async ipcEvent => {
+        validateIpcMessage(ipcEvent);
 
-    return { onLoad, onQuit };
+        const status = await handleBridgeStatus();
+        try {
+            if (status.service) {
+                await bridge.stop();
+            } else {
+                await start(bridge);
+            }
+
+            return { success: true };
+        } catch (error) {
+            return { success: false, error };
+        } finally {
+            handleBridgeStatus();
+        }
+    });
+
+    ipcMain.handle('bridge/get-status', async ipcEvent => {
+        validateIpcMessage(ipcEvent);
+
+        try {
+            const status = await bridge.status();
+
+            return { success: true, payload: status };
+        } catch (error) {
+            return { success: false, error };
+        }
+    });
 };
