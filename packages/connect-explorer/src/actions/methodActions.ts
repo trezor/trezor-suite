@@ -2,6 +2,7 @@ import { TSchema } from '@sinclair/typebox';
 import JSON5 from 'json5';
 
 import TrezorConnect from '@trezor/connect-web';
+import TrezorConnectMobile from '@trezor/connect-mobile';
 import { getDeepValue } from '@trezor/schema-utils/src/utils';
 
 import { GetState, Dispatch, Field } from '../types';
@@ -80,10 +81,11 @@ export const onSetManualMode = (manualMode: boolean) => ({
 });
 
 export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { method } = getState();
+    const { method, connect } = getState();
     if (!method?.name) throw new Error('method name not specified');
     dispatch({ type: SET_METHOD_PROCESSING, payload: true });
-    const connectMethod = TrezorConnect[method.name];
+    const trezorConnectImpl = connect.deeplink ? TrezorConnectMobile : TrezorConnect;
+    const connectMethod = trezorConnectImpl[method.name];
     if (typeof connectMethod !== 'function') {
         dispatch(
             onResponse({

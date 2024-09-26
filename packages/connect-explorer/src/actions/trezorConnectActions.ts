@@ -5,6 +5,8 @@ import TrezorConnect, {
     WEBEXTENSION,
 } from '@trezor/connect-web';
 
+import TrezorConnectMobile from '@trezor/connect-mobile';
+
 import { TrezorConnectDevice, Dispatch, Field, GetState } from '../types';
 
 import * as ACTIONS from './index';
@@ -15,7 +17,7 @@ export type TrezorConnectAction =
     | { type: typeof DEVICE.CONNECT; device: TrezorConnectDevice }
     | { type: typeof DEVICE.CONNECT_UNACQUIRED; device: TrezorConnectDevice }
     | { type: typeof DEVICE.DISCONNECT; device: TrezorConnectDevice }
-    | { type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions }
+    | { type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions; deeplink: boolean }
     | { type: typeof ACTIONS.ON_HANDSHAKE_CONFIRMED }
     | { type: typeof ACTIONS.ON_INIT_ERROR; payload: string }
     | {
@@ -143,6 +145,7 @@ export const init =
         // Get default coreMode from URL params (?core-mode=auto)
         const urlParams = new URLSearchParams(window.location.search);
         const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'auto';
+        const deeplink = urlParams.get('deeplink') === 'true';
 
         const connectOptions = {
             coreMode,
@@ -160,20 +163,39 @@ export const init =
         };
 
         try {
-            await TrezorConnect.init(connectOptions);
+            if (deeplink) {
+                await TrezorConnectMobile.init({
+                    ...connectOptions,
+                    deeplinkOpen(url) {
+                        window.open(url, '_blank');
+                    },
+                    deeplinkCallbackUrl:
+                        (process.env.CONNECT_EXPLORER_FULL_URL || window.location.origin) +
+                        '/callback',
+                });
+                const bc = new BroadcastChannel('trezor_connect_callback');
+                bc.onmessage = e => {
+                    if (e.data.type === 'popup_callback') {
+                        TrezorConnectMobile.handleDeeplink(e.data.url);
+                    }
+                };
+            } else {
+                await TrezorConnect.init(connectOptions);
+            }
         } catch (err) {
             dispatch({ type: ACTIONS.ON_INIT_ERROR, payload: err.message });
 
             return;
         }
 
-        dispatch({ type: ACTIONS.ON_CHANGE_CONNECT_OPTIONS, payload: connectOptions });
+        dispatch({ type: ACTIONS.ON_CHANGE_CONNECT_OPTIONS, payload: connectOptions, deeplink });
     };
 
 export const onSubmitInit = () => async (dispatch: Dispatch, getState: GetState) => {
     const { connect } = getState();
     // Disposing TrezorConnect to init it again.
     await TrezorConnect.dispose();
+    await TrezorConnectMobile.dispose();
 
     return dispatch(init(connect.options));
 };

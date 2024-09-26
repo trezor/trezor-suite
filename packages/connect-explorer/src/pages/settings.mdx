@@ -29,6 +29,7 @@ export const Settings = () => {
         trustedHost: state.connect?.options?.trustedHost,
         connectSrc: state.connect?.options?.connectSrc,
         coreMode: state?.connect?.options?.coreMode,
+        deeplink: state?.connect?.options?.deeplink
     }));
 
     const initError = useSelector(state => state.connect?.initError);
@@ -64,6 +65,12 @@ export const Settings = () => {
             key: 'connectSrc',
             value: connectOptions?.connectSrc || '',
         },
+        {
+            name: 'mobile deeplink',
+            type: 'checkbox',
+            key: 'deeplink',
+            value: connectOptions?.deeplink || false
+        }
     ];
 
     return (

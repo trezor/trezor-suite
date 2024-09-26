@@ -123,6 +123,11 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies {
             return;
         }
 
+        if (!this.messagePromises[id]) {
+            // Most likely old ID, ignore
+            return;
+        }
+
         const responseParam = parsedUrl.searchParams.get('response');
         if (!responseParam) {
             this.messagePromises[id].resolve({
