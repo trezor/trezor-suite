@@ -13,7 +13,7 @@ import {
     differenceInMonths,
 } from 'date-fns';
 
-import { colors, variables, Dropdown, DropdownRef, Timerange } from '@trezor/components';
+import { variables, Dropdown, DropdownRef, Timerange, intermediaryTheme } from '@trezor/components';
 import { GraphRange } from 'src/types/wallet/graph';
 
 const Wrapper = styled.div`
@@ -42,7 +42,7 @@ const RangeItem = styled.div<{ $selected: boolean; $separated?: boolean }>`
     ${({ $separated }) =>
         $separated &&
         css`
-            border-left: 1px solid ${colors.legacy.TYPE_LIGHTER_GREY};
+            border-left: 1px solid ${intermediaryTheme.light.legacy.TYPE_LIGHTER_GREY};
             padding-left: 15px;
             margin-left: 15px;
             text-transform: capitalize;

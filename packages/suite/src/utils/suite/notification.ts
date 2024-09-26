@@ -1,7 +1,7 @@
 import { NotificationEntry } from '@suite-common/toast-notifications';
-import { colors } from '@trezor/components';
 import { ToastNotificationVariant, AppState } from 'src/types/suite';
 import type { NotificationViewProps } from 'src/components/suite';
+import { intermediaryTheme } from '@trezor/components';
 
 export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     switch (variant) {
@@ -20,13 +20,13 @@ export const getNotificationIcon = (variant: ToastNotificationVariant) => {
 export const getVariantColor = (variant: NotificationViewProps['variant']) => {
     switch (variant) {
         case 'info':
-            return colors.legacy.TYPE_BLUE;
+            return intermediaryTheme.light.legacy.TYPE_BLUE;
         case 'warning':
-            return colors.legacy.TYPE_ORANGE;
+            return intermediaryTheme.light.legacy.TYPE_ORANGE;
         case 'error':
-            return colors.legacy.TYPE_RED;
+            return intermediaryTheme.light.legacy.TYPE_RED;
         case 'success':
-            return colors.legacy.TYPE_GREEN;
+            return intermediaryTheme.light.legacy.TYPE_GREEN;
         case 'transparent':
         default:
             return 'transparent';

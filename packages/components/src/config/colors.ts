@@ -227,8 +227,6 @@ export const THEME = {
     },
 } as const;
 
-export const colors = THEME.light;
-
 export const intermediaryTheme = {
     light: {
         ...THEME.light,
