@@ -52,7 +52,9 @@ export const List: StoryObj = {
                     Lorem ipsum odor amet, consectetuer adipiscing elit.
                 </ListComponent.Item>
                 <ListComponent.Item>
-                    Diam sociosqu mi nisl duis aliquet faucibus venenatis nullam.
+                    Diam sociosqu mi nisl duis aliquet faucibus venenatis nullam. Leo lobortis
+                    semper himenaeos cras facilisi ac consectetur. Netus vestibulum praesent feugiat
+                    nam potenti cursus.
                 </ListComponent.Item>
                 <ListComponent.Item>
                     Rutrum varius aptent sapien at facilisis consectetur aliquam blandit.
