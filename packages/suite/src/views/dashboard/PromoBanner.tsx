@@ -7,7 +7,6 @@ import { Translation, QrCode, TrezorLink } from 'src/components/suite';
 import { isWeb } from '@trezor/env-utils';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
 import { spacingsPx } from '@trezor/theme';
 
 const Container = styled.div`
@@ -117,14 +116,9 @@ const Badge = styled(Image)<{ $isHighlighted: boolean }>`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StoreTitle = styled(Image)<{ $isDark: boolean }>`
+const StoreTitle = styled(Image)`
     display: block;
     margin: 2px auto 6px;
-    ${({ $isDark }) =>
-        $isDark &&
-        `
-            filter: invert(1);
-    `}
 `;
 
 const QR = styled(QrCode)`
@@ -154,7 +148,6 @@ const StoreBadge = ({
 }: StoreBadgeProps) => {
     const { isMobileLayout } = useLayoutSize();
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-    const currentTheme = useSelector(state => state.suite.settings.theme.variant);
 
     return (
         <StyledTooltip
@@ -162,11 +155,7 @@ const StoreBadge = ({
             disabled={isMobileLayout}
             content={
                 <div>
-                    <StoreTitle
-                        $isDark={currentTheme === 'dark'}
-                        image={`${image}_TITLE`}
-                        height={26}
-                    />
+                    <StoreTitle image={`${image}_TITLE`} height={26} />
                     <QR value={url} />
                 </div>
             }
