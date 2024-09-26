@@ -1,4 +1,4 @@
-import { THEME, intermediaryTheme, SuiteThemeColors } from './config/colors';
+import { intermediaryTheme, SuiteThemeColors } from './config/colors';
 
 export * as variables from './config/variables';
 export * as animations from './config/animations';
@@ -80,4 +80,4 @@ export * from './utils/useScrollShadow';
 export * from './utils/transientProps';
 export { useMediaQuery } from './utils/useMediaQuery';
 
-export { THEME, intermediaryTheme, type SuiteThemeColors };
+export { intermediaryTheme, type SuiteThemeColors };
