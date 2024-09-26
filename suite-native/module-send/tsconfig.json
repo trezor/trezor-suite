@@ -42,7 +42,6 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../settings" },
-        { "path": "../toasts" },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

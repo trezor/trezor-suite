@@ -27,7 +27,6 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useToast } from '@suite-native/toasts';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { FormState } from '@suite-common/wallet-types';
@@ -79,7 +78,6 @@ export const SendOutputsScreen = ({
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
     const debounce = useDebounce();
-    const { showToast } = useToast();
     const navigation =
         useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
 
@@ -187,11 +185,6 @@ export const SendOutputsScreen = ({
 
             return;
         }
-
-        // TODO: display error message based on the error code saved in the redux state
-        showToast({ variant: 'error', message: 'Something went wrong', icon: 'closeCircle' });
-
-        navigation.navigate(SendStackRoutes.SendAccounts);
     });
 
     return (

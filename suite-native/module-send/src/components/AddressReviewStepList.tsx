@@ -15,7 +15,6 @@ import {
 } from '@suite-native/navigation';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useToast } from '@suite-native/toasts';
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { nativeSpacings } from '@trezor/theme';
 
@@ -40,7 +39,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const AddressReviewStepList = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { showToast } = useToast();
     const dispatch = useDispatch();
 
     const [childHeights, setChildHeights] = useState<number[]>([]);
@@ -83,13 +81,6 @@ export const AddressReviewStepList = () => {
             );
 
             if (isRejected(response)) {
-                // TODO: display error message based on the error code
-                showToast({
-                    variant: 'error',
-                    message: 'Something went wrong',
-                    icon: 'closeCircle',
-                });
-
                 navigation.navigate(RootStackRoutes.AccountDetail, {
                     accountKey,
                     closeActionType: 'back',

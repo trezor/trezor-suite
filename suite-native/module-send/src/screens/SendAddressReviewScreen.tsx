@@ -1,15 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 import { Box, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    SendRootState,
-    cancelSignSendFormTransactionThunk,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { Text } from '@suite-native/atoms';
 
 import {
@@ -20,14 +15,16 @@ import { AddressReviewStepList } from '../components/AddressReviewStepList';
 import { SendScreen } from '../components/SendScreen';
 import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
+import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
 
 export const SendAddressReviewScreen = ({
     route,
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>) => {
     const { accountKey } = route.params;
-    const dispatch = useDispatch();
     const { translate } = useTranslate();
+
+    const showReviewCancellationAlert = useShowReviewCancellationAlert();
 
     const isAddressConfirmed = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
@@ -48,9 +45,8 @@ export const SendAddressReviewScreen = ({
     useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', e => {
             if (isReviewInProgress) {
-                //Navigation is handled by signTransactionThunk response.
-                dispatch(cancelSignSendFormTransactionThunk());
                 e.preventDefault();
+                showReviewCancellationAlert();
 
                 return;
             }

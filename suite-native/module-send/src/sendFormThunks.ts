@@ -85,11 +85,19 @@ export const signTransactionNativeThunk = createThunk(
 
 export const cleanupSendFormThunk = createThunk(
     `${SEND_MODULE_PREFIX}/cleanupSendFormThunk`,
-    ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState }) => {
+    (
+        {
+            accountKey,
+            shouldDeleteDraft = true,
+        }: { accountKey: AccountKey; shouldDeleteDraft?: boolean },
+        { dispatch, getState },
+    ) => {
         const device = selectDevice(getState());
 
         dispatch(sendFormActions.dispose());
-        dispatch(sendFormActions.removeDraft({ accountKey }));
+
+        if (shouldDeleteDraft) dispatch(sendFormActions.removeDraft({ accountKey }));
+
         dispatch(deviceActions.removeButtonRequests({ device }));
     },
 );

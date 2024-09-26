@@ -1,7 +1,6 @@
-import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { isFulfilled } from '@reduxjs/toolkit';
 import { useNavigation } from '@react-navigation/native';
 
 import {
@@ -13,15 +12,15 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { VStack } from '@suite-native/atoms';
-import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 
 import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
 import { SignSuccessMessage } from '../components/SignSuccessMessage';
-import { cleanupSendFormThunk } from '../sendFormThunks';
 import { SendScreen } from '../components/SendScreen';
 import { SendScreenSubHeader } from '../components/SendScreenSubHeader';
+import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
+import { cleanupSendFormThunk } from '../sendFormThunks';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
@@ -34,25 +33,26 @@ export const SendOutputsReviewScreen = ({
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputsReview>) => {
     const { accountKey } = route.params;
     const { translate } = useTranslate();
-    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
+    const showReviewCancellationAlert = useShowReviewCancellationAlert();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', async e => {
-            if (e.data.action.type === 'GO_BACK') {
-                e.preventDefault();
-            }
-            const response = await dispatch(cancelSignSendFormTransactionThunk());
-            if (isFulfilled(response)) {
-                // If success navigation is handled by signTransactionThunk call on SendAddressReviewScreen.
+            // We want to modify only behavior of back button actions.
+            if (e.data.action.type !== 'GO_BACK') return;
 
-                return;
+            e.preventDefault();
+
+            const { wasReviewCanceled } = await showReviewCancellationAlert();
+
+            if (wasReviewCanceled) {
+                dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: false }));
+                navigation.navigate(RootStackRoutes.AccountDetail, {
+                    accountKey,
+                    closeActionType: 'back',
+                });
             }
-            dispatch(cleanupSendFormThunk({ accountKey }));
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey,
-                closeActionType: 'back',
-            });
         });
 
         return unsubscribe;

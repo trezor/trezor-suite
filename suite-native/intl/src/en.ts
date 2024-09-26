@@ -898,6 +898,10 @@ export const en = {
         },
         review: {
             confirmOnDeviceMessage: 'Go to your Trezor and confirm the amounts & recipients.',
+            cancelAlert: {
+                title: 'Are you sure you’d like to cancel sending the transaction?',
+                continueButton: 'Continue editing',
+            },
             address: {
                 title: 'Check the address on your Trezor against the original to make sure it’s correct.',
                 step1: 'Go to the app or place where you originally got the address.',
