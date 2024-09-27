@@ -10,7 +10,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.4.2
+## 9.4.2-beta.1
 
 ### Features
 
@@ -29,13 +29,7 @@ Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to a
 
 -   fix(connect-explorer): icons on index page (fef3791)
 
-### Dependencies update
-
--   npm-release: @trezor/connect-common 0.2.2
--   npm-release: @trezor/transport 1.3.2
--   npm-release: @trezor/protobuf 1.2.2
-
-# 9.4.1
+## 9.4.1
 
 Automatic retry for no transport issue: If the transport (bridge) is initially not available, the automatic retry feature allows the user to continue after starting the transport, without having to restart the entire flow.
 
