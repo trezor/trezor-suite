@@ -40,7 +40,7 @@ export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBanne
             button={{
                 href: `${explorer?.tx}${txid}`,
                 children: <Translation id="TR_ANALYZE_IN_BLOCKBOOK_OPEN" />,
-                icon: 'externalLink',
+                icon: 'arrowUpRight',
                 iconAlignment: 'right',
                 size: 'small',
             }}

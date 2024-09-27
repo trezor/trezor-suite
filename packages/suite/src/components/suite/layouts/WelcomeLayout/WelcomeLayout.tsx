@@ -158,7 +158,7 @@ const Left = () => {
                                         <TrezorLink type="hint" variant="nostyle" href={SUITE_URL}>
                                             <Button
                                                 variant="tertiary"
-                                                icon="externalLink"
+                                                icon="arrowUpRight"
                                                 iconAlignment="right"
                                             >
                                                 <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
@@ -168,7 +168,7 @@ const Left = () => {
                                     <TrezorLink type="hint" variant="nostyle" href={TREZOR_URL}>
                                         <Button
                                             variant="tertiary"
-                                            icon="externalLink"
+                                            icon="arrowUpRight"
                                             iconAlignment="right"
                                         >
                                             trezor.io

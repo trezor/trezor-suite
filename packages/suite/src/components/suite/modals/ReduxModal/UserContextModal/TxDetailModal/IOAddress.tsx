@@ -126,7 +126,7 @@ export const IOAddress = ({
                             variant="nostyle"
                             href={`${explorerUrl}${txAddress}${explorerUrlQueryString}`}
                         >
-                            <Icon name="externalLink" size={12} color={theme.iconOnPrimary} />
+                            <Icon name="arrowUpRight" size={12} color={theme.iconOnPrimary} />
                         </Link>
                     </IconWrapper>
                 ) : null}

@@ -160,7 +160,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                                         >
                                             <Button
                                                 variant="tertiary"
-                                                icon="externalLink"
+                                                icon="arrowUpRight"
                                                 iconAlignment="right"
                                                 size="small"
                                             >

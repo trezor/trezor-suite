@@ -34,7 +34,7 @@ export const PassphraseWalletConfirmationStep1 = ({
                             size="tiny"
                             variant="info"
                             iconAlignment="right"
-                            icon="externalLink"
+                            icon="arrowUpRight"
                             data-testid={dataTest}
                         >
                             <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK" />

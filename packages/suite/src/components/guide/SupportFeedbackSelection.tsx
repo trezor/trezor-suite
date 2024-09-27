@@ -198,7 +198,7 @@ export const SupportFeedbackSelection = () => {
                             <Label>
                                 <LabelHeadline>
                                     <Translation id="TR_GUIDE_FORUM" />
-                                    <Icon size={20} name="externalLink" />
+                                    <Icon size={20} name="arrowUpRight" />
                                 </LabelHeadline>
                                 <LabelSubheadline>
                                     <Translation id="TR_GUIDE_FORUM_LABEL" />
@@ -212,7 +212,7 @@ export const SupportFeedbackSelection = () => {
                             <Label>
                                 <LabelHeadline>
                                     <Translation id="TR_GUIDE_SUPPORT" />
-                                    <Icon size={20} name="externalLink" />
+                                    <Icon size={20} name="arrowUpRight" />
                                 </LabelHeadline>
                             </Label>
                         </SectionButton>

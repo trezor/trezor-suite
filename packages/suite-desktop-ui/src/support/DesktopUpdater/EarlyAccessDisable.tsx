@@ -78,7 +78,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
             bottomBarComponents={
                 <>
                     <Link variant="nostyle" href={SUITE_URL}>
-                        <LinkButton icon="externalLink" iconAlignment="right">
+                        <LinkButton icon="arrowUpRight" iconAlignment="right">
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
                         </LinkButton>
                     </Link>
