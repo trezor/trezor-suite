@@ -151,11 +151,11 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                 return toCryptoOption(cryptoId, coinInfo);
             }
 
-            const { coingeckoId, name } = networks.btc;
+            const { coingeckoId, name, symbol } = networks.btc;
             const item: CoinmarketCryptoSelectItemProps = {
                 type: 'currency',
-                value: cryptoId,
-                label: 'BTC',
+                value: coingeckoId as CryptoId,
+                label: symbol.toUpperCase(),
                 cryptoName: name,
                 coingeckoId,
             };

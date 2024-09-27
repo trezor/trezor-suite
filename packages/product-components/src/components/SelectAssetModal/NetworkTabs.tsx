@@ -70,17 +70,19 @@ export const NetworkTabs = ({
                         onClick={() => {
                             if (
                                 searchCategory?.coingeckoId === network.coingeckoId &&
-                                searchCategory.coingeckoNativeId === network.coingeckoNativeId
+                                searchCategory?.coingeckoNativeId === network.coingeckoNativeId
                             ) {
                                 setSearchCategory(null);
 
                                 return;
                             }
 
-                            setSearchCategory({
-                                coingeckoId: network.coingeckoId,
-                                coingeckoNativeId: network.coingeckoNativeId,
-                            });
+                            if (network.coingeckoId) {
+                                setSearchCategory({
+                                    coingeckoId: network.coingeckoId,
+                                    coingeckoNativeId: network.coingeckoNativeId,
+                                });
+                            }
                         }}
                         key={network.coingeckoId}
                     >
