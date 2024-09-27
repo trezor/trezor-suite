@@ -1,3 +1,8 @@
+# 1.2.2
+
+-   npm-prerelease: @trezor/protobuf 1.2.2-beta.1 (2b5b794b06)
+-   fix(connect): schema-utils import in build (98d6437262)
+
 # 1.2.1
 
 -   npm-prerelease: @trezor/protobuf 1.2.1-beta.1 (3cfd038db1)
