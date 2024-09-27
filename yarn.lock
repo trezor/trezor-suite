@@ -11810,7 +11810,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
-    electron: "npm:31.6.0"
+    electron: "npm:30.3.1"
   languageName: unknown
   linkType: soft
 
@@ -11847,7 +11847,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/electron-localshortcut": "npm:^3.1.3"
     chalk: "npm:^4.1.2"
-    electron: "npm:31.6.0"
+    electron: "npm:30.3.1"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
     electron-updater: "npm:6.3.4"
@@ -11897,7 +11897,7 @@ __metadata:
   dependencies:
     "@electron/notarize": "npm:2.4.0"
     blake-hash: "npm:^2.0.0"
-    electron: "npm:31.6.0"
+    electron: "npm:30.3.1"
     electron-builder: "npm:25.0.5"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
@@ -18004,7 +18004,7 @@ __metadata:
   resolution: "connect-example-electron-main@workspace:packages/connect-examples/electron-main-process"
   dependencies:
     "@trezor/connect": "workspace:*"
-    electron: "npm:31.6.0"
+    electron: "npm:30.3.1"
     electron-builder: "npm:25.0.5"
   languageName: unknown
   linkType: soft
@@ -18013,7 +18013,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "connect-example-electron-renderer-popup@workspace:packages/connect-examples/electron-renderer-with-popup"
   dependencies:
-    electron: "npm:31.6.0"
+    electron: "npm:30.3.1"
     electron-builder: "npm:25.0.5"
   languageName: unknown
   linkType: soft
@@ -18026,7 +18026,7 @@ __metadata:
     babel-loader: "npm:^9.1.3"
     concurrently: "npm:^8.2.2"
     copy-webpack-plugin: "npm:^12.0.2"
-    electron: "npm:31.6.0"
+    electron: "npm:30.3.1"
     electron-builder: "npm:25.0.5"
     html-webpack-plugin: "npm:^5.6.0"
     terser-webpack-plugin: "npm:^5.3.9"
@@ -20502,16 +20502,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:31.6.0":
-  version: 31.6.0
-  resolution: "electron@npm:31.6.0"
+"electron@npm:30.3.1":
+  version: 30.3.1
+  resolution: "electron@npm:30.3.1"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^20.9.0"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10/ef304dd279a6f01143de000d3be420bde8f6feb5b72387c2b22e64fd97e1d5b80a0e82e4f2dee660b36a8a682e4f9cbcd2e6d2f73f5e7ba4e84d8bfb03c1d8e2
+  checksum: 10/e39ffe9f29f687c064df00fece892ca9d3bb20d54ee5ebe17fc050d0af9ef335b2bf961878f00f91ab65d4948d8ef348a528578e25bcba5094636f80675ef675
   languageName: node
   linkType: hard
 
