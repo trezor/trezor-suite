@@ -4,7 +4,7 @@ import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeQuoteRequest } 
 import useDebounce from 'react-use/lib/useDebounce';
 import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
-import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import {
     addIdsToQuotes,
@@ -82,32 +82,6 @@ export const useCoinmarketSellForm = ({
         composed,
         recomposeAndSign,
     } = useCoinmarketRecomposeAndSign();
-    const {
-        goto,
-        saveTrade,
-        saveQuotes,
-        saveSelectedQuote,
-        setIsFromRedirect,
-        saveQuoteRequest,
-        saveTransactionId,
-        openCoinmarketSellConfirmModal,
-        submitRequestForm,
-        savePaymentMethods,
-        setCoinmarketSellAccount,
-    } = useActions({
-        goto: routerActions.goto,
-        saveTrade: coinmarketSellActions.saveTrade,
-        saveQuotes: coinmarketSellActions.saveQuotes,
-        saveSelectedQuote: coinmarketSellActions.saveSelectedQuote,
-        setIsFromRedirect: coinmarketSellActions.setIsFromRedirect,
-        saveQuoteRequest: coinmarketSellActions.saveQuoteRequest,
-        saveTransactionId: coinmarketSellActions.saveTransactionId,
-        openCoinmarketSellConfirmModal: coinmarketSellActions.openCoinmarketSellConfirmModal,
-        submitRequestForm: coinmarketCommonActions.submitRequestForm,
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-        savePaymentMethods: coinmarketInfoActions.savePaymentMethods,
-        setCoinmarketSellAccount: coinmarketSellActions.setCoinmarketSellAccount,
-    });
     const { navigateToSellForm, navigateToSellOffers, navigateToSellConfirm } =
         useCoinmarketNavigation(account);
 
@@ -285,9 +259,9 @@ export const useCoinmarketSellForm = ({
                     undefined;
 
                 setInnerQuotes(quotesSuccess);
-                dispatch(saveQuotes(quotesSuccess));
-                dispatch(saveQuoteRequest(quoteRequest));
-                dispatch(savePaymentMethods(paymentMethodsFromQuotes));
+                dispatch(coinmarketSellActions.saveQuotes(quotesSuccess));
+                dispatch(coinmarketSellActions.saveQuoteRequest(quoteRequest));
+                dispatch(coinmarketInfoActions.savePaymentMethods(paymentMethodsFromQuotes));
                 setAmountLimits(limits);
 
                 if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
@@ -311,16 +285,13 @@ export const useCoinmarketSellForm = ({
             timer.reset();
         },
         [
+            values,
             timer,
             cryptoIdToCoinSymbol,
             getQuoteRequestData,
             getQuotesRequest,
-            values,
             getPaymentMethods,
             dispatch,
-            saveQuotes,
-            saveQuoteRequest,
-            savePaymentMethods,
             setValue,
             composeRequest,
         ],
@@ -337,7 +308,7 @@ export const useCoinmarketSellForm = ({
         changeFeeLevel,
         composeRequest,
         setAccountOnChange: newAccount => {
-            dispatch(setCoinmarketSellAccount(newAccount));
+            dispatch(coinmarketSellActions.setCoinmarketSellAccount(newAccount));
             setAccount(newAccount);
         },
     });
@@ -363,7 +334,7 @@ export const useCoinmarketSellForm = ({
             trade: { ...quote, refundAddress: getUnusedAddressFromAccount(account).address },
             returnUrl,
         });
-        setCallInProgress(false);
+
         if (response.trade) {
             if (response.trade.error && response.trade.status !== 'LOGIN_REQUEST') {
                 console.log(`[doSellTrade] ${response.trade.error}`);
@@ -373,6 +344,7 @@ export const useCoinmarketSellForm = ({
                         error: response.trade.error,
                     }),
                 );
+                setCallInProgress(false);
 
                 return undefined;
             }
@@ -382,13 +354,19 @@ export const useCoinmarketSellForm = ({
                 (response.trade.status === 'SUBMITTED' && provider.flow === 'PAYMENT_GATE')
             ) {
                 if (provider.flow === 'PAYMENT_GATE') {
-                    dispatch(saveTrade(response.trade, account, new Date().toISOString()));
-                    dispatch(saveTransactionId(response.trade.orderId));
-                    saveSelectedQuote(response.trade);
+                    dispatch(
+                        coinmarketSellActions.saveTrade(
+                            response.trade,
+                            account,
+                            new Date().toISOString(),
+                        ),
+                    );
+                    dispatch(coinmarketSellActions.saveTransactionId(response.trade.orderId));
+                    dispatch(coinmarketSellActions.saveSelectedQuote(response.trade));
                     setSellStep('SEND_TRANSACTION');
                 }
-                // dispatch(submitRequestForm(response.tradeForm?.form));
-                submitRequestForm(response.tradeForm?.form);
+                dispatch(coinmarketCommonActions.submitRequestForm(response.tradeForm?.form));
+                setCallInProgress(false);
 
                 return undefined;
             }
@@ -403,6 +381,7 @@ export const useCoinmarketSellForm = ({
                 error: errorMessage,
             }),
         );
+        setCallInProgress(false);
     };
     const needToRegisterOrVerifyBankAccount = (quote: SellFiatTrade) => {
         const provider =
@@ -433,13 +412,15 @@ export const useCoinmarketSellForm = ({
                 : null;
 
         if (quotesRequest) {
-            const result = await openCoinmarketSellConfirmModal(
-                provider?.companyName,
-                quote.cryptoCurrency,
+            const result = await dispatch(
+                coinmarketSellActions.openCoinmarketSellConfirmModal(
+                    provider?.companyName,
+                    quote.cryptoCurrency,
+                ),
             );
 
             if (result) {
-                saveSelectedQuote(quote);
+                dispatch(coinmarketSellActions.saveSelectedQuote(quote));
                 timer.stop();
 
                 navigateToSellConfirm();
@@ -460,7 +441,7 @@ export const useCoinmarketSellForm = ({
         const quote = { ...selectedQuote, bankAccount };
         const response = await doSellTrade(quote);
         if (response) {
-            saveSelectedQuote(response);
+            dispatch(coinmarketSellActions.saveSelectedQuote(response));
             setSellStep('SEND_TRANSACTION');
         }
     };
@@ -519,16 +500,19 @@ export const useCoinmarketSellForm = ({
                     );
                 }
 
-                dispatch(saveTrade(response, account, new Date().toISOString()));
-                dispatch(saveTransactionId(selectedQuote.orderId));
-
-                goto('wallet-coinmarket-sell-detail', {
-                    params: {
-                        symbol: account.symbol,
-                        accountIndex: account.index,
-                        accountType: account.accountType,
-                    },
-                });
+                dispatch(
+                    coinmarketSellActions.saveTrade(response, account, new Date().toISOString()),
+                );
+                dispatch(coinmarketSellActions.saveTransactionId(selectedQuote.orderId));
+                dispatch(
+                    routerActions.goto('wallet-coinmarket-sell-detail', {
+                        params: {
+                            symbol: account.symbol,
+                            accountIndex: account.index,
+                            accountType: account.accountType,
+                        },
+                    }),
+                );
             }
         } else {
             dispatch(
@@ -611,11 +595,11 @@ export const useCoinmarketSellForm = ({
 
         if (isFromRedirect) {
             if (transactionId && trade) {
-                saveSelectedQuote(trade.data);
+                dispatch(coinmarketSellActions.saveSelectedQuote(trade.data));
                 setSellStep('SEND_TRANSACTION');
             }
 
-            dispatch(setIsFromRedirect(false));
+            dispatch(coinmarketSellActions.setIsFromRedirect(false));
         }
 
         checkQuotesTimer(handleChange);
@@ -630,8 +614,6 @@ export const useCoinmarketSellForm = ({
         dispatch,
         navigateToSellForm,
         checkQuotesTimer,
-        saveSelectedQuote,
-        setIsFromRedirect,
         handleChange,
     ]);
 
@@ -676,6 +658,7 @@ export const useCoinmarketSellForm = ({
         sellStep,
         selectedQuote,
         shouldSendInSats,
+        trade,
         changeFeeLevel,
         composeRequest,
         setAmountLimits,
