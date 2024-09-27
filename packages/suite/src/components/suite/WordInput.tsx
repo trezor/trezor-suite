@@ -71,7 +71,7 @@ export const WordInput = memo(() => {
                 autoFocus
                 isSearchable
                 isClearable={false}
-                menuIsOpen
+                isMenuOpen
                 noOptionsMessage={({ inputValue }: { inputValue: string }) =>
                     translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
                 }

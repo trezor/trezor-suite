@@ -129,7 +129,7 @@ export const CoinmarketFormInputCryptoSelect = <
                         }}
                         data-testid="@coinmarket/form/select-crypto"
                         isClearable={false}
-                        menuIsOpen={false}
+                        isMenuOpen={false}
                     />
                 )}
             />

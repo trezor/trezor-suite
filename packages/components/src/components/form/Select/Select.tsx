@@ -102,7 +102,7 @@ const createSelectStyle = (
 type WrapperProps = TransientProps<
     Pick<
         SelectProps,
-        'isClean' | 'isDisabled' | 'minValueWidth' | 'size' | 'menuIsOpen' | 'isSearchable'
+        'isClean' | 'isDisabled' | 'minValueWidth' | 'size' | 'isMenuOpen' | 'isSearchable'
     >
 > & {
     $isWithLabel: boolean;
@@ -250,7 +250,7 @@ const closeMenuOnScroll = (e: Event) =>
 
 export type Option = any;
 
-interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
+interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange' | 'menuIsOpen'> {
     isClean?: boolean;
     label?: ReactNode;
     size?: InputSize;
@@ -261,6 +261,7 @@ interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     hasBottomPadding?: boolean;
     minValueWidth?: string; // TODO: should be probably removed
     inputState?: InputState;
+    isMenuOpen?: boolean;
     onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
     'data-testid'?: string;
 }
@@ -283,7 +284,7 @@ export const Select = ({
     useKeyPressScroll,
     isSearchable = false,
     minValueWidth = 'initial',
-    menuIsOpen,
+    isMenuOpen,
     inputState,
     components,
     onChange,
@@ -305,14 +306,14 @@ export const Select = ({
             if (value) {
                 onChange?.(value, selectRef.current);
 
-                if (!menuIsOpen && action === 'select-option') {
+                if (!isMenuOpen && action === 'select-option') {
                     selectRef.current?.blur();
                 }
             }
 
             return null;
         },
-        [onChange, menuIsOpen],
+        [onChange, isMenuOpen],
     );
 
     /**
@@ -343,7 +344,7 @@ export const Select = ({
             $size={size}
             $minValueWidth={minValueWidth}
             $isDisabled={isDisabled}
-            $menuIsOpen={menuIsOpen}
+            $isMenuOpen={isMenuOpen}
             $isWithLabel={!!label}
             $isWithPlaceholder={!!placeholder}
             $hasBottomPadding={hasBottomPadding === true && bottomText === null}
@@ -359,7 +360,7 @@ export const Select = ({
                 styles={createSelectStyle(theme, elevation, isRenderedInModal)}
                 onChange={handleOnChange}
                 isSearchable={isSearchable}
-                menuIsOpen={menuIsOpen}
+                menuIsOpen={isMenuOpen}
                 isDisabled={isDisabled}
                 menuPlacement="auto"
                 placeholder={placeholder || ''}

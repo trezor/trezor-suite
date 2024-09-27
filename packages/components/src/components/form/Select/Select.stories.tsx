@@ -37,7 +37,7 @@ export const Select: StoryObj<SelectProps> = {
         hasBottomPadding: true,
         size: 'large',
         minValueWidth: 'initial',
-        menuIsOpen: undefined,
+        isMenuOpen: undefined,
         useKeyPressScroll: undefined,
     },
     argTypes: {
@@ -80,7 +80,7 @@ export const Select: StoryObj<SelectProps> = {
         minValueWidth: {
             control: { type: 'text' },
         },
-        menuIsOpen: {
+        isMenuOpen: {
             control: {
                 type: 'boolean',
             },
