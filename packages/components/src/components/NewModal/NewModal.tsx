@@ -5,14 +5,14 @@ import {
     borders,
     Elevation,
     mapElevationToBackground,
-    mapElevationToBackgroundToken,
+    prevElevation,
     spacingsPx,
 } from '@trezor/theme';
 
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { Text } from '../typography/Text/Text';
 import { H3 } from '../typography/Heading/Heading';
-import { ElevationContext } from '../ElevationContext/ElevationContext';
+import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { NewModalButton } from './NewModalButton';
 import { NewModalContext } from './NewModalContext';
@@ -131,7 +131,7 @@ type NewModalProps = AllowedFrameProps & {
     'data-testid'?: string;
 };
 
-const NewModalBase = ({
+const _NewModalBase = ({
     children,
     variant = 'primary',
     size = 'medium',
@@ -147,7 +147,9 @@ const NewModalBase = ({
     const frameProps = pickAndPrepareFrameProps(rest, allowedNewModalFrameProps);
     const { scrollElementRef, onScroll, ShadowContainer, ShadowTop, ShadowBottom } =
         useScrollShadow();
-    const modalBackgroundColor = mapElevationToBackgroundToken({ $elevation: MODAL_ELEVATION });
+
+    const { elevation } = useElevation();
+
     const hasHeader = onBackClick || onCancel || heading || description;
 
     useEvent('keydown', (e: KeyboardEvent) => {
@@ -157,73 +159,77 @@ const NewModalBase = ({
     });
 
     return (
-        <ElevationContext baseElevation={MODAL_ELEVATION}>
-            <NewModalContext.Provider value={{ variant }}>
-                <Container
-                    $elevation={MODAL_ELEVATION}
-                    $size={size}
-                    onClick={e => e.stopPropagation()}
-                    data-testid={dataTest}
-                    {...frameProps}
-                >
-                    {hasHeader && (
-                        <Header>
-                            {onBackClick && (
-                                <IconButton
-                                    variant="tertiary"
-                                    icon="caretLeft"
-                                    data-testid="@modal/back-button"
-                                    onClick={onBackClick}
-                                    size="small"
-                                />
-                            )}
-
-                            <HeadingContainer>
-                                {heading && <Heading>{heading}</Heading>}
-                                {description && (
-                                    <Text variant="tertiary" typographyStyle="hint">
-                                        {description}
-                                    </Text>
-                                )}
-                            </HeadingContainer>
-
-                            {onCancel && (
-                                <IconButton
-                                    variant="tertiary"
-                                    icon="close"
-                                    data-testid="@modal/close-button"
-                                    onClick={onCancel}
-                                    size="small"
-                                />
-                            )}
-                        </Header>
+        <Container
+            $elevation={elevation}
+            $size={size}
+            onClick={e => e.stopPropagation()}
+            data-testid={dataTest}
+            {...frameProps}
+        >
+            {hasHeader && (
+                <Header>
+                    {onBackClick && (
+                        <IconButton
+                            variant="tertiary"
+                            icon="caretLeft"
+                            data-testid="@modal/back-button"
+                            onClick={onBackClick}
+                            size="small"
+                        />
                     )}
-                    <ShadowContainer>
-                        <ShadowTop backgroundColor={modalBackgroundColor} />
-                        <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                            <Body id={NEW_MODAL_CONTENT_ID}>
-                                {icon && (
-                                    <IconWrapper
-                                        $variant={variant}
-                                        $size={ICON_SIZE}
-                                        $isPushedTop={
-                                            !!onCancel && !heading && !description && !onBackClick
-                                        }
-                                    >
-                                        <Icon name={icon} size={ICON_SIZE} variant={variant} />
-                                    </IconWrapper>
-                                )}
-                                {children}
-                            </Body>
-                        </ScrollContainer>
-                        <ShadowBottom backgroundColor={modalBackgroundColor} />
-                    </ShadowContainer>
-                    {bottomContent && <Footer>{bottomContent}</Footer>}
-                </Container>
-            </NewModalContext.Provider>
-        </ElevationContext>
+
+                    <HeadingContainer>
+                        {heading && <Heading>{heading}</Heading>}
+                        {description && (
+                            <Text variant="tertiary" typographyStyle="hint">
+                                {description}
+                            </Text>
+                        )}
+                    </HeadingContainer>
+
+                    {onCancel && (
+                        <IconButton
+                            variant="tertiary"
+                            icon="close"
+                            data-testid="@modal/close-button"
+                            onClick={onCancel}
+                            size="small"
+                        />
+                    )}
+                </Header>
+            )}
+            <ShadowContainer>
+                <ShadowTop />
+                <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
+                    <Body id={NEW_MODAL_CONTENT_ID}>
+                        {icon && (
+                            <IconWrapper
+                                $variant={variant}
+                                $size={ICON_SIZE}
+                                $isPushedTop={
+                                    !!onCancel && !heading && !description && !onBackClick
+                                }
+                            >
+                                <Icon name={icon} size={ICON_SIZE} variant={variant} />
+                            </IconWrapper>
+                        )}
+                        {children}
+                    </Body>
+                </ScrollContainer>
+                <ShadowBottom />
+            </ShadowContainer>
+            {bottomContent && <Footer>{bottomContent}</Footer>}
+        </Container>
     );
 };
+
+const NewModalBase = (props: NewModalProps) => (
+    <ElevationContext baseElevation={prevElevation[MODAL_ELEVATION]}>
+        <NewModalContext.Provider value={{ variant: props.variant }}>
+            <_NewModalBase {...props} />
+        </NewModalContext.Provider>
+    </ElevationContext>
+);
 
 const NewModal = (props: NewModalProps) => {
     const { alignment, onCancel } = props;
