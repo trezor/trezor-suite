@@ -24,7 +24,6 @@ export const Anchor = forwardRef<HTMLAnchorElement, AnchorProps>(function (
         return (
             <a ref={forwardedRef} href={href} target="_blank" rel="noreferrer" {...props}>
                 {children}
-                <span className="nx-sr-only nx-select-none"> (opens in a new tab)</span>
             </a>
         );
     }
