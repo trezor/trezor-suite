@@ -9488,6 +9488,8 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/staking": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
     jotai: "npm:1.9.1"
@@ -9583,6 +9585,7 @@ __metadata:
     "@suite-native/module-receive": "workspace:*"
     "@suite-native/module-send": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
+    "@suite-native/module-staking-management": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/notifications": "workspace:*"
     "@suite-native/receive": "workspace:*"
@@ -9663,8 +9666,8 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/staking": "workspace:*"
     "@suite-native/tokens": "workspace:*"
-    "@trezor/styles": "workspace:*"
     proxy-memoize: "npm:2.0.2"
     react: "npm:^18.2.0"
     react-native: "npm:0.75.2"
@@ -10413,6 +10416,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/module-staking-management@workspace:*, @suite-native/module-staking-management@workspace:suite-native/module-staking-management":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-staking-management@workspace:suite-native/module-staking-management"
+  dependencies:
+    "@react-navigation/native": "npm:6.1.18"
+    "@suite-common/icons-deprecated": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/staking": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    react: "npm:18.2.0"
+    react-native: "npm:0.75.2"
+    react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/navigation@workspace:*, @suite-native/navigation@workspace:suite-native/navigation":
   version: 0.0.0-use.local
   resolution: "@suite-native/navigation@workspace:suite-native/navigation"
@@ -10548,6 +10571,17 @@ __metadata:
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/staking@workspace:*, @suite-native/staking@workspace:suite-native/staking":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/staking@workspace:suite-native/staking"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

@@ -40,12 +40,18 @@ export const Assets = () => {
     const [selectedAssetSymbol, setSelectedAssetSymbol] = useState<NetworkSymbol | null>(null);
 
     const handleSelectAssetsAccount: OnSelectAccount = useCallback(
-        ({ account, tokenAddress }) => {
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey: account.key,
-                tokenContract: tokenAddress,
-                closeActionType: 'back',
-            });
+        ({ account, tokenAddress, isStaking }) => {
+            if (isStaking) {
+                navigation.navigate(RootStackRoutes.StakingDetail, {
+                    accountKey: account.key,
+                });
+            } else {
+                navigation.navigate(RootStackRoutes.AccountDetail, {
+                    accountKey: account.key,
+                    tokenContract: tokenAddress,
+                    closeActionType: 'back',
+                });
+            }
             setSelectedAssetSymbol(null);
         },
         [navigation, setSelectedAssetSymbol],

@@ -32,6 +32,8 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/settings": "workspace:*",
+        "@suite-native/staking": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@trezor/styles": "workspace:*",
         "jotai": "1.9.1",

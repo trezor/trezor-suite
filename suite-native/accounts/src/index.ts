@@ -2,6 +2,7 @@ export * from './components/AddAccountsButton';
 export * from './components/AccountsList/AccountsList';
 export * from './components/AccountsList/AccountsListItem';
 export * from './components/AccountsList/AccountsListItemBase';
+export * from './components/AccountsList/StakingBadge';
 export * from './components/SearchableAccountsListScreenHeader';
 export * from './components/SelectableNetworkItem';
 export * from './components/AccountsList/AccountsListTokenItem';

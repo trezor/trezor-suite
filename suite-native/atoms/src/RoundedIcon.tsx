@@ -11,15 +11,15 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { Box } from './Box';
+import { Box, BoxProps } from './Box';
 
-type RoundedIconProps = {
+export type RoundedIconProps = {
     name: IconName | CoinSymbol;
     color?: Color;
     iconSize?: IconSize;
     containerSize?: number;
     backgroundColor?: Color;
-};
+} & BoxProps;
 
 const DEFAULT_CONTAINER_SIZE = 48;
 
@@ -47,11 +47,16 @@ export const RoundedIcon = ({
     iconSize,
     backgroundColor,
     containerSize,
+    style,
+    ...boxProps
 }: RoundedIconProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Box style={applyStyle(iconContainerStyle, { backgroundColor, containerSize })}>
+        <Box
+            style={[applyStyle(iconContainerStyle, { backgroundColor, containerSize }), style]}
+            {...boxProps}
+        >
             {name in icons ? (
                 <Icon name={name as IconName} color={color} size={iconSize} />
             ) : (

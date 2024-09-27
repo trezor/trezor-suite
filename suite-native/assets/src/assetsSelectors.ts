@@ -18,6 +18,10 @@ import { selectAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
 import { discoverySupportedNetworks } from '@suite-native/config';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
+import {
+    NativeStakingRootState,
+    selectAccountCryptoBalanceWithStaking,
+} from '@suite-native/staking';
 export interface AssetType {
     symbol: NetworkSymbol;
     assetBalance: string;
@@ -28,6 +32,7 @@ export type AssetsRootState = AccountsRootState &
     FiatRatesRootState &
     SettingsSliceRootState &
     TokenDefinitionsRootState &
+    NativeStakingRootState &
     DeviceRootState;
 
 /*
@@ -88,14 +93,12 @@ const selectDeviceAssetsWithBalances = memoize((state: AssetsRootState) => {
             account,
             localCurrency: fiatCurrencyCode,
             rates,
-            // TODO: this should be removed once Trezor Suite Lite supports staking
-            shouldIncludeStaking: false,
         });
 
         return {
             symbol: account.symbol,
             fiatValue,
-            cryptoValue: account.formattedBalance,
+            cryptoValue: selectAccountCryptoBalanceWithStaking(state, account.key),
         };
     });
 

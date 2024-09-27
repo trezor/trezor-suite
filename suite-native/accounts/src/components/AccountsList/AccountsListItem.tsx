@@ -17,14 +17,16 @@ import {
     selectNumberOfAccountTokensWithFiatRates,
     TokensRootState,
 } from '@suite-native/tokens';
+import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 
 import { NativeAccountsRootState, selectAccountFiatBalance } from '../../selectors';
 import { OnSelectAccount } from '../../types';
 import { AccountsListItemBase } from './AccountsListItemBase';
+import { StakingBadge } from './StakingBadge';
 
 export type AccountListItemProps = {
     account: Account;
-    hideTokens?: boolean;
+    isInModal?: boolean;
 
     onPress?: OnSelectAccount;
     disabled?: boolean;
@@ -53,7 +55,7 @@ export const AccountsListItem = ({
     account,
     onPress,
     disabled,
-    hideTokens = false,
+    isInModal = false,
     hasBackground = false,
     isFirst = false,
     isLast = false,
@@ -69,6 +71,10 @@ export const AccountsListItem = ({
         selectAccountHasAnyKnownToken(state, account.key),
     );
 
+    const accountHasStaking = useSelector((state: NativeStakingRootState) =>
+        selectAccountHasStaking(state, account.key),
+    );
+
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
         selectAccountFiatBalance(state, account.key),
     );
@@ -81,8 +87,9 @@ export const AccountsListItem = ({
     }, [account, accountHasAnyTokens, onPress]);
 
     const doesCoinSupportTokens = isCoinWithTokens(account.symbol);
-    const shouldShowAccountLabel = !doesCoinSupportTokens || hideTokens;
-    const shouldShowTokenBadge = accountHasAnyTokens && hideTokens;
+    const shouldShowAccountLabel = !doesCoinSupportTokens || !isInModal;
+    const shouldShowTokenBadge = accountHasAnyTokens && !isInModal;
+    const shouldShowStakingBadge = accountHasStaking && !isInModal;
 
     return (
         <AccountsListItemBase
@@ -105,6 +112,7 @@ export const AccountsListItem = ({
                     {formattedAccountType && (
                         <Badge label={formattedAccountType} size="small" elevation="1" />
                     )}
+                    {shouldShowStakingBadge && <StakingBadge />}
                     {shouldShowTokenBadge && <TokenBadge accountKey={account.key} />}
                 </>
             }

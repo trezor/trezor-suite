@@ -16,7 +16,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenInfoBranded } from '@suite-common/wallet-types';
-import { getAccountFiatBalance } from '@suite-common/wallet-utils';
+import { getAccountFiatBalance, getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import { isCoinWithTokens } from '@suite-native/tokens';
 
@@ -78,12 +78,10 @@ export const selectAccountFiatBalance = (state: NativeAccountsRootState, account
         return '0';
     }
 
-    // Staking should be true once we support it in Trezor Suite Lite
     const totalBalance = getAccountFiatBalance({
         account,
         rates: fiatRates,
         localCurrency,
-        shouldIncludeStaking: false,
     });
 
     return totalBalance;
@@ -92,7 +90,7 @@ export const selectAccountFiatBalance = (state: NativeAccountsRootState, account
 const EMPTY_ARRAY: any[] = [];
 
 export const selectAccountListSections = memoizeWithArgs(
-    (state: NativeAccountsRootState, accountKey?: AccountKey | null) => {
+    (state: NativeAccountsRootState, accountKey?: AccountKey | null, hideStaking?: boolean) => {
         if (!accountKey) return EMPTY_ARRAY;
         const account = selectAccountByKey(state, accountKey);
         if (!account) return EMPTY_ARRAY;
@@ -102,6 +100,8 @@ export const selectAccountListSections = memoizeWithArgs(
         const canHasTokens = isCoinWithTokens(account.symbol);
         const tokens = selectFilterKnownTokens(state, account.symbol, account.tokens ?? []);
         const hasAnyKnownTokens = canHasTokens && !!tokens.length;
+        const stakingBalance = getAccountTotalStakingBalance(account);
+        const hasStaking = stakingBalance !== '0' && !hideStaking;
 
         if (canHasTokens) {
             sections.push({
@@ -113,12 +113,19 @@ export const selectAccountListSections = memoizeWithArgs(
         sections.push({
             type: 'account',
             account,
-            isLast: !hasAnyKnownTokens,
+            isLast: !hasAnyKnownTokens && !hasStaking,
             isFirst: true,
             hasAnyKnownTokens,
         });
 
-        // TODO: staking here
+        if (hasStaking) {
+            sections.push({
+                type: 'staking',
+                account,
+                stakingCryptoBalance: stakingBalance,
+                isLast: !hasAnyKnownTokens,
+            });
+        }
 
         if (hasAnyKnownTokens) {
             tokens.forEach((token, index) => {

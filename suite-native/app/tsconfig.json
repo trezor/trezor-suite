@@ -55,6 +55,9 @@
         { "path": "../module-receive" },
         { "path": "../module-send" },
         { "path": "../module-settings" },
+        {
+            "path": "../module-staking-management"
+        },
         { "path": "../navigation" },
         { "path": "../notifications" },
         { "path": "../receive" },

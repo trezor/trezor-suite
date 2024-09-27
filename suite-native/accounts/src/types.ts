@@ -4,6 +4,7 @@ export type GroupedByTypeAccounts = Record<string, [Account, ...Account[]]>;
 
 export type OnSelectAccount = (params: {
     account: Account;
+    isStaking?: boolean;
     tokenAddress?: TokenAddress;
     hasAnyKnownTokens: boolean;
 }) => void;
@@ -23,6 +24,7 @@ export type AccountSelectBottomSheetSection = (
     | {
           type: 'staking';
           account: Account;
+          stakingCryptoBalance: string;
       }
     | {
           type: 'token';

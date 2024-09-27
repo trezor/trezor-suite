@@ -52,3 +52,9 @@ export const getAccountTotalStakingBalance = (account?: Account) => {
         .plus(pool?.withdrawTotalAmount ?? '0')
         .toFixed();
 };
+
+export const getEthereumCryptoBalanceWithStaking = (account: Account) => {
+    const stakingBalance = getAccountTotalStakingBalance(account);
+
+    return new BigNumber(account.formattedBalance).plus(stakingBalance).toString();
+};

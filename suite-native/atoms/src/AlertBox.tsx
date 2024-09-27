@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { ActivityIndicator } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeBorders } from '@trezor/theme';
@@ -7,7 +8,7 @@ import { Icon, IconName } from '@suite-common/icons-deprecated';
 import { Box } from './Box';
 import { Text } from './Text';
 
-export type AlertBoxVariant = 'info' | 'success' | 'warning' | 'error';
+export type AlertBoxVariant = 'info' | 'success' | 'warning' | 'loading' | 'error';
 
 type AlertBoxStyle = {
     backgroundColor: Color;
@@ -56,6 +57,11 @@ const variantToColorMap = {
         contentColor: 'iconAlertYellow',
         borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
     },
+    loading: {
+        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        contentColor: 'iconAlertYellow',
+        borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
+    },
     error: {
         backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
         contentColor: 'textAlertRed',
@@ -67,6 +73,7 @@ const variantToIconName = {
     info: 'info',
     success: 'checkCircle',
     warning: 'warningTriangle',
+    loading: 'warningTriangle',
     error: 'warningCircle',
 } as const satisfies Record<AlertBoxVariant, IconName>;
 
@@ -74,6 +81,14 @@ export type AlertBoxProps = {
     variant: AlertBoxVariant;
     title: ReactNode;
     borderRadius?: number;
+};
+
+const AlertSpinner = ({ color }: { color: Color }) => {
+    const {
+        utils: { colors },
+    } = useNativeStyles();
+
+    return <ActivityIndicator size={16} color={colors[color]} />;
 };
 
 export const AlertBox = ({
@@ -92,7 +107,11 @@ export const AlertBox = ({
                 backgroundColor,
             })}
         >
-            <Icon name={variantToIconName[variant]} color={contentColor} size="mediumLarge" />
+            {variant === 'loading' ? (
+                <AlertSpinner color={contentColor} />
+            ) : (
+                <Icon name={variantToIconName[variant]} color={contentColor} size="mediumLarge" />
+            )}
             <Text color={contentColor} variant="label" style={applyStyle(textStyle)}>
                 {title}
             </Text>

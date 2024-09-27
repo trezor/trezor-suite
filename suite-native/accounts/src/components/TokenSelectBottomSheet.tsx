@@ -12,11 +12,13 @@ import { AccountSelectBottomSheet } from './AccountSelectBottomSheet';
 type TokenSelectBottomSheetProps = {
     bottomSheetAccountAtom: WritableAtom<Account | null, Account | null>;
     onSelectAccount: OnSelectAccount;
+    isStakingPressable?: boolean;
 };
 
 export const TokenSelectBottomSheet = ({
     bottomSheetAccountAtom,
     onSelectAccount,
+    isStakingPressable = false,
 }: TokenSelectBottomSheetProps) => {
     const [selectedAccount, setSelectedAccount] = useAtom(bottomSheetAccountAtom);
 
@@ -44,6 +46,7 @@ export const TokenSelectBottomSheet = ({
             onSelectAccount={handleSelectAccount}
             data={data}
             onClose={handleClose}
+            isStakingPressable={isStakingPressable}
         />
     );
 };
