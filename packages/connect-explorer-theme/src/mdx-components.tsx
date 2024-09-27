@@ -57,13 +57,13 @@ function HeadingLink({
                 className === 'sr-only'
                     ? 'nx-sr-only'
                     : cn(
-                          'nx-font-semibold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100 first:nx-mt-2',
+                          'nx-font-semibold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100 first:nx-mt-0 nx-mb-[-4]',
                           {
-                              h2: 'nx-mt-10 nx-pb-1 nx-text-3xl',
-                              h3: 'nx-mt-8 nx-text-2xl',
-                              h4: 'nx-mt-8 nx-text-xl',
-                              h5: 'nx-mt-8 nx-text-lg',
-                              h6: 'nx-mt-8 nx-text-base',
+                              h2: 'nx-mt-8 nx-text-3xl',
+                              h3: 'nx-mt-6 nx-text-2xl',
+                              h4: 'nx-mt-6 nx-text-xl',
+                              h5: 'nx-mt-6 nx-text-lg',
+                              h6: 'nx-mt-6 nx-text-base',
                           }[Tag],
                       )
             }
@@ -196,11 +196,11 @@ export const getComponents = ({
             if (
                 !isRawLayout &&
                 props.className === 'heading' &&
-                props['data-heading-rank'] <= maxRank &&
                 frontMatter.auto_sections !== false
             ) {
                 const children = props?.children as ReactNode[];
-                if (!children || !Array.isArray(children)) return children;
+                if (!children || !Array.isArray(children) || props['data-heading-rank'] > maxRank)
+                    return children;
 
                 const showInCard = (el: ReactNode) =>
                     !(el as ReactElement).props?.['data-heading-rank'] ||
@@ -263,7 +263,7 @@ export const getComponents = ({
         table: props => (
             <Table className={cn('nextra-scrollbar nx-mt-6 nx-p-0 first:nx-mt-0')} {...props} />
         ),
-        p: props => <p className="nx-mt-6 nx-leading-7 first:nx-mt-0" {...props} />,
+        p: props => <p className="nx-mt-4 nx-leading-7 first:nx-mt-0" {...props} />,
         tr: Tr,
         th: Th,
         td: Td,
