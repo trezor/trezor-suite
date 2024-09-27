@@ -35,28 +35,14 @@ export const AccountLabel = ({
 }: AccountLabelProps) => {
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
 
-    if (accountLabel) {
-        return (
-            <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                <Row gap={spacings.sm}>
-                    <TabularNums>{accountLabel}</TabularNums>
-                    {showAccountTypeBadge && (
-                        <AccountTypeBadge
-                            accountType={accountType}
-                            size={accountTypeBadgeSize}
-                            path={path}
-                            networkType={networkType}
-                        />
-                    )}
-                </Row>
-            </TruncateWithTooltip>
-        );
-    }
-
     return (
         <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
             <Row gap={spacings.sm}>
-                {getDefaultAccountLabel({ accountType, symbol, index })}
+                {accountLabel ? (
+                    <TabularNums>{accountLabel}</TabularNums>
+                ) : (
+                    getDefaultAccountLabel({ accountType, symbol, index })
+                )}
                 {showAccountTypeBadge && (
                     <AccountTypeBadge
                         accountType={accountType}
