@@ -817,16 +817,6 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return tx;
         });
 
-        await updateAll(transaction, 'walletSettings', walletSettings => {
-            Object.keys(walletSettings.lastUsedFeeLevel).forEach(coin => {
-                if (walletSettings.lastUsedFeeLevel[coin].label === 'low') {
-                    delete walletSettings.lastUsedFeeLevel[coin];
-                }
-            });
-
-            return walletSettings;
-        });
-
         await updateAll(transaction, 'suiteSettings', suiteSettings => {
             // @ts-expect-error
             delete suiteSettings.flags.showDashboardT2B1PromoBanner;
@@ -889,5 +879,14 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         });
 
         await updateAll(transaction, 'suiteSettings', suiteSettings => suiteSettings);
+    }
+    
+    if (oldVersion < 47) {
+        await updateAll(transaction, 'walletSettings', walletSettings => {
+            // @ts-expect-error
+            delete walletSettings.lastUsedFeeLevel;
+
+            return walletSettings;
+        });
     }
 };

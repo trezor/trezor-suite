@@ -108,7 +108,6 @@ export interface FeesProps<TFieldValues extends FormState> {
     getValues: UseFormGetValues<TFieldValues>;
     errors: FieldErrors<TFieldValues>;
     changeFeeLevel: (level: FeeLevel['label']) => void;
-    changeFeeLimit?: (value: string) => void;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     label?: ExtendedMessageDescriptor['id'];
     rbfForm?: boolean;
@@ -121,7 +120,6 @@ export const Fees = <TFieldValues extends FormState>({
     feeInfo,
     control,
     changeFeeLevel,
-    changeFeeLimit,
     composedLevels,
     label,
     rbfForm,
@@ -221,7 +219,6 @@ export const Fees = <TFieldValues extends FormState>({
                         register={register}
                         getValues={getValues}
                         setValue={setValue}
-                        changeFeeLimit={changeFeeLimit}
                         composedFeePerByte={
                             (transactionInfo as PrecomposedTransactionFinal)?.feePerByte
                         }

@@ -78,24 +78,6 @@ export const changeCoinVisibility =
         });
     };
 
-export const setLastUsedFeeLevel =
-    (feeLevel?: FeeLevel) => (dispatch: Dispatch, getState: GetState) => {
-        const { selectedAccount } = getState().wallet;
-        if (selectedAccount.status !== 'loaded') return;
-        dispatch({
-            type: WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL,
-            symbol: selectedAccount.account.symbol,
-            feeLevel,
-        });
-    };
-
-export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
-    const { selectedAccount, settings } = getState().wallet;
-    if (selectedAccount.status !== 'loaded') return;
-
-    return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
-};
-
 export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAction => {
     analytics.report({
         type: EventType.SettingsGeneralChangeBitcoinUnit,

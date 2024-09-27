@@ -22,7 +22,4 @@ export interface WalletSettings {
     discreetMode: boolean;
     enabledNetworks: NetworkSymbol[];
     bitcoinAmountUnit: PROTO.AmountUnit;
-    lastUsedFeeLevel: {
-        [key: string]: Omit<FeeLevel, 'blocks'>; // Key: Network['symbol']
-    };
 }

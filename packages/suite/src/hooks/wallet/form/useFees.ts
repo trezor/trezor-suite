@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { FeeLevel } from '@trezor/connect';
-import { setLastUsedFeeLevel } from 'src/actions/settings/walletSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
 import {
     FeeInfo,
@@ -80,21 +79,8 @@ export const useFees = <TFieldValues extends FormState>({
         }
 
         // compose
-        if (updateField) {
-            if (composeRequest) {
-                composeRequest(updateField);
-            }
-            // save last used fee
-            if (
-                saveLastUsedFeeRef.current &&
-                feePerUnit &&
-                !errors.feePerUnit &&
-                !errors.feeLimit
-            ) {
-                dispatch(
-                    setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 }),
-                );
-            }
+        if (updateField && composeRequest) {
+            composeRequest(updateField);
         }
     }, [dispatch, feePerUnit, feeLimit, errors.feePerUnit, errors.feeLimit, composeRequest]);
 
@@ -151,12 +137,6 @@ export const useFees = <TFieldValues extends FormState>({
 
         // on change callback
         if (onChange) onChange(selectedFeeRef.current, level);
-
-        // save last used fee
-        if (level !== 'custom' && saveLastUsedFeeRef.current) {
-            const nextLevel = feeInfo.levels.find(l => l.label === (level || 'normal'))!;
-            dispatch(setLastUsedFeeLevel(nextLevel));
-        }
 
         selectedFeeRef.current = selectedFee;
     };
