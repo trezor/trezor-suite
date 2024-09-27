@@ -10,7 +10,33 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-## 9.4.2-beta.1
+# 9.4.2-beta.2
+
+### Features
+
+-   feat(connect): return device info with method response (a378def)
+-   docs(connect-explorer): flowchart for auto core mode (9501d3d)
+-   docs(connect-explorer): diagram and explanation for core in popup (3bbb032)
+
+### Fixes
+
+-   Fixing an issue with typescript not being able to resolve @sinclair/typebox and USB types correctly (98d6437)
+-   Fixing regression that made it impossible to acquire (steal) device session over webusb (5cf83b4)
+-   Couple of other fixes and improvements of device handling:
+
+    -   fix(connect): pending transport event fix (231899f)
+    -   fix(connect): DeviceList create devices sequentially (b4a915b)
+    -   chore(connect): use cancelableAction instead of \_cancelableRequestBySend (66c9beb)
+    -   fix(connect): Device prompts cancel action (pin, word, passphrase) (e8257f4)
+
+-   Connect Explorer fixes:
+
+    -   fix(connect-explorer): icons on index page (fef3791)
+    -   fix(connect-explorer): Button as Link not working (d788a06)
+    -   chore(connect-explorer): improve fallback schema illustration (d0619b7)
+    -   chore(connect-explorer): improve typography (f730904)
+
+# 9.4.2-beta.1
 
 ### Features
 
