@@ -1,4 +1,4 @@
-import { TextProps, Text } from '@suite-native/atoms';
+import { TextProps, Box } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { SignValue } from '@suite-common/suite-types';
@@ -44,10 +44,16 @@ export const EthereumTokenToFiatAmountFormatter = ({
     const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? 0);
 
     return signValue ? (
-        <Text ellipsizeMode={ellipsizeMode} numberOfLines={numberOfLines}>
+        <Box flexDirection="row">
             <SignValueFormatter value={signValue} />
-            <AmountText value={formattedFiatValue} isDiscreetText={isDiscreetText} {...rest} />
-        </Text>
+            <AmountText
+                value={formattedFiatValue}
+                isDiscreetText={isDiscreetText}
+                ellipsizeMode={ellipsizeMode}
+                numberOfLines={numberOfLines}
+                {...rest}
+            />
+        </Box>
     ) : (
         <AmountText
             value={formattedFiatValue}

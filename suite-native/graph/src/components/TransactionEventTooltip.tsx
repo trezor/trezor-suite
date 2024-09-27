@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { G, N } from '@mobily/ts-belt';
 
-import { Card, Text } from '@suite-native/atoms';
+import { Card, Box, Text } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     EthereumTokenAmountFormatter,
@@ -111,7 +111,7 @@ const EventTooltipRow = ({
         <Text variant="label" color="textSubdued">
             {title}
         </Text>
-        <Text>
+        <Box flexDirection="row">
             <SignValueFormatter value={signValue} variant="label" />
             {!tokenAddress ? (
                 <CryptoAmountFormatter
@@ -129,7 +129,7 @@ const EventTooltipRow = ({
                     value={value}
                 />
             )}
-        </Text>
+        </Box>
     </>
 );
 
