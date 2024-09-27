@@ -179,11 +179,7 @@ export abstract class AbstractTransport extends TransportEmitter {
     /**
      * Tries to initiate transport. Transport might not be available e.g. bridge not running.
      */
-    abstract init(
-        params?: AbortableParam & {
-            sessionsBackgroundUrl?: string;
-        },
-    ): AsyncResultWithTypedError<
+    abstract init(params?: AbortableParam): AsyncResultWithTypedError<
         undefined,
         // webusb only
         | typeof ERRORS.SESSION_BACKGROUND_TIMEOUT
