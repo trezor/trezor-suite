@@ -34,24 +34,27 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         this.api = api;
     }
 
-    public init(_args: AbstractTransportMethodParams<'init'>) {
-        return this.scheduleAction(async () => {
-            // in nodeusb there is no synchronization yet. this is a followup and needs to be decided
-            // so far, sessionsClient has direct access to sessionBackground
-            this.sessionsClient.init({
-                requestFn: args => this.sessionsBackground.handleMessage(args),
-                registerBackgroundCallbacks: () => {},
-            });
+    public init({ signal }: AbstractTransportMethodParams<'init'> = {}) {
+        return this.scheduleAction(
+            async () => {
+                // in nodeusb there is no synchronization yet. this is a followup and needs to be decided
+                // so far, sessionsClient has direct access to sessionBackground
+                this.sessionsClient.init({
+                    requestFn: args => this.sessionsBackground.handleMessage(args),
+                    registerBackgroundCallbacks: () => {},
+                });
 
-            this.sessionsBackground.on('descriptors', descriptors => {
-                this.sessionsClient.emit('descriptors', descriptors);
-            });
+                this.sessionsBackground.on('descriptors', descriptors => {
+                    this.sessionsClient.emit('descriptors', descriptors);
+                });
 
-            const handshakeRes = await this.sessionsClient.handshake();
-            this.stopped = !handshakeRes.success;
+                const handshakeRes = await this.sessionsClient.handshake();
+                this.stopped = !handshakeRes.success;
 
-            return handshakeRes;
-        });
+                return handshakeRes;
+            },
+            { signal },
+        );
     }
 
     public listen() {

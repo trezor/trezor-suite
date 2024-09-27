@@ -120,15 +120,11 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const transportLogger = initLog('@trezor/transport', debug);
 
-        // todo: this should be passed from above
-        const abortController = new AbortController();
-
         this.authPenaltyManager = createAuthPenaltyManager(priority);
         this.transportCommonArgs = {
             messages,
             logger: transportLogger,
-            signal: abortController.signal,
-            _sessionsBackgroundUrl,
+            sessionsBackgroundUrl: _sessionsBackgroundUrl,
         };
 
         this.transports = [
@@ -338,9 +334,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private async selectTransport([transport, ...rest]: Transport[]): Promise<Transport> {
-        const result = await transport.init({
-            sessionsBackgroundUrl: this.transportCommonArgs._sessionsBackgroundUrl,
-        });
+        const result = await transport.init();
         if (result.success) return transport;
         else if (rest.length) return this.selectTransport(rest);
         else throw new Error(result.error);
