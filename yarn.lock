@@ -11610,7 +11610,6 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/product-components": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
