@@ -107,6 +107,7 @@ filteredFixtures.forEach(f => {
             explorerUrl,
             `methods/${f.dir}/${method}${submethod ? '?submethod=' + submethod : ''}`,
         );
+        log('fullUrl: ', fullUrl);
         await explorerPage.goto(fullUrl);
 
         // expand method tester
