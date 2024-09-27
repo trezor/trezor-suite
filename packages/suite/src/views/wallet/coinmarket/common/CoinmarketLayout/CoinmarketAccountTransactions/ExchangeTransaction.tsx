@@ -116,8 +116,8 @@ export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTrans
     const { date, data } = trade;
     const { send, sendStringAmount, receive, receiveStringAmount, exchange } = data;
 
-    const viewDetail = async () => {
-        await dispatch(saveTransactionId(trade.key || ''));
+    const viewDetail = () => {
+        dispatch(saveTransactionId(trade.key || ''));
         dispatch(
             goto('wallet-coinmarket-exchange-detail', {
                 params: {
