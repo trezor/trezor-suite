@@ -1,8 +1,3 @@
-# 0.2.2
-
--   npm-prerelease: @trezor/connect-common 0.2.2-beta.1 (e50bf0bab0)
--   feat(connect): return device info with method response (a378def1b7)
-
 # 0.2.1
 
 -   npm-prerelease: @trezor/connect-common 0.2.1-beta.1 (4dc0af2640)
