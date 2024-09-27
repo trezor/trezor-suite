@@ -8,7 +8,7 @@ import {
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { checkFirmwareRevision } from 'src/actions/suite/suiteActions';
-
+import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 export const FirmwareRevisionCheck = () => {
     const dispatch = useDispatch();
     const isFirmwareRevisionCheckDisabled = useSelector(
@@ -43,6 +43,7 @@ export const FirmwareRevisionCheck = () => {
                         }
                     />
                 }
+                buttonLink={HELP_CENTER_FIRMWARE_REVISION_CHECK}
             />
             <ActionColumn>
                 <ActionButton
