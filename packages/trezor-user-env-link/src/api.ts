@@ -159,7 +159,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
-    async startBridge(version = DEFAULT_BRIDGE_VERSION) {
+    async startBridge(version: '2.0.32' | '2.0.33' | 'node' = DEFAULT_BRIDGE_VERSION) {
         await this.client.send({ type: 'bridge-start', version });
 
         return null;
