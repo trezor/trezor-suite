@@ -9,7 +9,7 @@ import type {
 import useDebounce from 'react-use/lib/useDebounce';
 import { amountToSatoshi, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-common/suite-utils';
-import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/coinmarketExchangeActions';
 import {
@@ -62,7 +62,6 @@ import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { setCoinmarketModalAccount } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 
 export const useCoinmarketExchangeForm = ({
     selectedAccount,
@@ -111,26 +110,6 @@ export const useCoinmarketExchangeForm = ({
         navigateToExchangeOffers,
         navigateToExchangeConfirm,
     } = useCoinmarketNavigation(account);
-
-    const {
-        saveTrade,
-        openCoinmarketExchangeConfirmModal,
-        saveTransactionId,
-        addNotification,
-        verifyAddress,
-        saveSelectedQuote,
-        setCoinmarketExchangeAccount,
-    } = useActions({
-        saveTrade: coinmarketExchangeActions.saveTrade,
-        openCoinmarketExchangeConfirmModal:
-            coinmarketExchangeActions.openCoinmarketExchangeConfirmModal,
-        saveTransactionId: coinmarketExchangeActions.saveTransactionId,
-        addNotification: notificationsActions.addToast,
-        verifyAddress: coinmarketExchangeActions.verifyAddress,
-        saveSelectedQuote: coinmarketExchangeActions.saveSelectedQuote,
-        setCoinmarketExchangeAccount: coinmarketExchangeActions.setCoinmarketExchangeAccount,
-        setCoinmarketModalAccount: coinmarketCommonActions.setCoinmarketModalAccount,
-    });
 
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
@@ -326,7 +305,7 @@ export const useCoinmarketExchangeForm = ({
         changeFeeLevel,
         composeRequest,
         setAccountOnChange: newAccount => {
-            dispatch(setCoinmarketExchangeAccount(newAccount));
+            dispatch(coinmarketExchangeActions.setCoinmarketExchangeAccount(newAccount));
             setAccount(newAccount);
         },
     });
@@ -337,14 +316,16 @@ export const useCoinmarketExchangeForm = ({
                 ? exchangeInfo?.providerInfos[quote.exchange]
                 : null;
         if (quotesRequest) {
-            const result = await openCoinmarketExchangeConfirmModal(
-                provider?.companyName,
-                quote.isDex,
-                quote.send,
-                quote.receive,
+            const result = await dispatch(
+                coinmarketExchangeActions.openCoinmarketExchangeConfirmModal(
+                    provider?.companyName,
+                    quote.isDex,
+                    quote.send,
+                    quote.receive,
+                ),
             );
             if (result) {
-                saveSelectedQuote(quote);
+                dispatch(coinmarketExchangeActions.saveSelectedQuote(quote));
 
                 navigateToExchangeConfirm();
                 timer.stop();
@@ -380,27 +361,31 @@ export const useCoinmarketExchangeForm = ({
         });
 
         if (!response) {
-            addNotification({
-                type: 'error',
-                error: 'No response from the server',
-            });
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'No response from the server',
+                }),
+            );
         } else if (
             response.error ||
             !response.status ||
             !response.orderId ||
             response.status === 'ERROR'
         ) {
-            addNotification({
-                type: 'error',
-                error: response.error || 'Error response from the server',
-            });
-            saveSelectedQuote(response);
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: response.error || 'Error response from the server',
+                }),
+            );
+            dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
         } else if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
-            saveSelectedQuote(response);
+            dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
             setExchangeStep('SEND_APPROVAL_TRANSACTION');
             ok = true;
         } else if (response.status === 'CONFIRM') {
-            saveSelectedQuote(response);
+            dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
             if (response.isDex) {
                 if (exchangeStep === 'RECEIVING_ADDRESS' || trade.approvalType === 'ZERO') {
                     setExchangeStep('SEND_APPROVAL_TRANSACTION');
@@ -413,8 +398,10 @@ export const useCoinmarketExchangeForm = ({
             ok = true;
         } else {
             // CONFIRMING, SUCCESS
-            saveTrade(response, account, new Date().toISOString());
-            saveTransactionId(response.orderId);
+            dispatch(
+                coinmarketExchangeActions.saveTrade(response, account, new Date().toISOString()),
+            );
+            dispatch(coinmarketExchangeActions.saveTransactionId(response.orderId));
             ok = true;
             navigateToExchangeDetail();
         }
@@ -449,7 +436,13 @@ export const useCoinmarketExchangeForm = ({
                 if (selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO') {
                     quote.receiveTxHash = txid;
                     quote.status = 'CONFIRMING';
-                    saveTrade(quote, account, new Date().toISOString());
+                    dispatch(
+                        coinmarketExchangeActions.saveTrade(
+                            quote,
+                            account,
+                            new Date().toISOString(),
+                        ),
+                    );
                     confirmTrade(quote.receiveAddress || '', undefined, quote);
                 } else {
                     quote.approvalSendTxHash = txid;
@@ -458,15 +451,17 @@ export const useCoinmarketExchangeForm = ({
                 }
             }
         } else {
-            addNotification({
-                type: 'error',
-                error: 'Cannot send transaction, missing data',
-            });
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Cannot send transaction, missing data',
+                }),
+            );
         }
     };
 
     const sendTransaction = async () => {
-        dispatch(setCoinmarketModalAccount(account));
+        dispatch(coinmarketCommonActions.setCoinmarketModalAccount(account));
 
         if (selectedQuote?.isDex) {
             sendDexTransaction();
@@ -494,15 +489,23 @@ export const useCoinmarketExchangeForm = ({
             );
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {
-                saveTrade(selectedQuote, account, new Date().toISOString());
-                saveTransactionId(selectedQuote.orderId);
+                dispatch(
+                    coinmarketExchangeActions.saveTrade(
+                        selectedQuote,
+                        account,
+                        new Date().toISOString(),
+                    ),
+                );
+                dispatch(coinmarketExchangeActions.saveTransactionId(selectedQuote.orderId));
                 navigateToExchangeDetail();
             }
         } else {
-            addNotification({
-                type: 'error',
-                error: 'Cannot send transaction, missing data',
-            });
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Cannot send transaction, missing data',
+                }),
+            );
         }
     };
 
@@ -649,7 +652,7 @@ export const useCoinmarketExchangeForm = ({
         goToOffers,
         setExchangeStep,
         sendTransaction,
-        verifyAddress,
+        verifyAddress: coinmarketExchangeActions.verifyAddress,
         selectQuote,
         confirmTrade,
     };
