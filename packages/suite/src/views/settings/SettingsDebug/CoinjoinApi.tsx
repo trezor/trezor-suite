@@ -40,7 +40,7 @@ const CoordinatorVersion = ({ version }: { version: CoordinatorServerProps['vers
         <CoordinatorVersionContainer>
             Build{' '}
             <Link href={`https://github.com/zkSNACKs/WalletWasabi/commit/${version.commitHash}`}>
-                <StyledButton variant="tertiary" icon="externalLink" iconAlignment="right">
+                <StyledButton variant="tertiary" icon="arrowUpRight" iconAlignment="right">
                     {version.commitHash}
                 </StyledButton>
             </Link>

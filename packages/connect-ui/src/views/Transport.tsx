@@ -46,7 +46,7 @@ export const Transport = () => {
                 <>
                     <Button
                         variant="primary"
-                        icon="externalLink"
+                        icon="arrowUpRight"
                         iconAlignment="right"
                         onClick={handleOpenSuite}
                     >

@@ -25,7 +25,7 @@ export const LearnMoreButton = ({
         textWrap={textWrap}
         variant="tertiary"
         size={size}
-        icon="externalLink"
+        icon="arrowUpRight"
         iconAlignment="right"
         className={className}
         {...buttonProps}

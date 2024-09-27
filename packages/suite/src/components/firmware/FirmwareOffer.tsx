@@ -123,7 +123,7 @@ export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOf
                                 <StyledLink
                                     type="hint"
                                     variant="nostyle"
-                                    icon="externalLink"
+                                    icon="arrowUpRight"
                                     href={changelogUrl}
                                 >
                                     <Translation id="TR_VIEW_ALL" />

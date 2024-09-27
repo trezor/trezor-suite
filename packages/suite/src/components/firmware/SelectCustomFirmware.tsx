@@ -71,7 +71,7 @@ export const SelectCustomFirmware = ({
                     <Button
                         size="tiny"
                         variant="tertiary"
-                        icon="externalLink"
+                        icon="arrowUpRight"
                         iconAlignment="right"
                     >
                         github.com

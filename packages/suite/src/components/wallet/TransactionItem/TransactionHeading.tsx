@@ -151,7 +151,7 @@ export const TransactionHeading = ({
                                         a: chunks => (
                                             <HelpLink
                                                 href={HELP_CENTER_ZERO_VALUE_ATTACKS}
-                                                icon="externalLink"
+                                                icon="arrowUpRight"
                                                 type="hint"
                                             >
                                                 {chunks}

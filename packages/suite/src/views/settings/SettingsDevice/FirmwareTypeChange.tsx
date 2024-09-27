@@ -67,7 +67,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                                             <Button
                                                 variant="tertiary"
                                                 size="tiny"
-                                                icon="externalLink"
+                                                icon="arrowUpRight"
                                                 iconAlignment="right"
                                             >
                                                 <Translation id={currentFwType} />

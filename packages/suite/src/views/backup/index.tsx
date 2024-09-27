@@ -131,7 +131,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                         <StyledImage image="UNI_ERROR" />
                         <StyledP data-testid="@backup/already-failed-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
-                            <TrezorLink icon="externalLink" href={HELP_CENTER_RECOVERY_ISSUES_URL}>
+                            <TrezorLink icon="arrowUpRight" href={HELP_CENTER_RECOVERY_ISSUES_URL}>
                                 <Translation id="TR_LEARN_MORE" />
                             </TrezorLink>
                         </StyledP>

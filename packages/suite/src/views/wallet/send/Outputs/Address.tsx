@@ -284,7 +284,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                                 <Link
                                     href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}
                                     variant="nostyle"
-                                    icon="externalLink"
+                                    icon="arrowUpRight"
                                     type="label"
                                 >
                                     {chunks}

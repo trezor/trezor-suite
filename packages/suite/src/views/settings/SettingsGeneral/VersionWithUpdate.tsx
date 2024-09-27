@@ -41,7 +41,7 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                             <Button
                                 variant="tertiary"
                                 size="tiny"
-                                icon="externalLink"
+                                icon="arrowUpRight"
                                 iconAlignment="right"
                             >
                                 {appVersion}
@@ -65,7 +65,7 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                                         <Button
                                             variant="destructive"
                                             size="tiny"
-                                            icon="externalLink"
+                                            icon="arrowUpRight"
                                             iconAlignment="right"
                                         >
                                             {desktopUpdateState.latest.version}
