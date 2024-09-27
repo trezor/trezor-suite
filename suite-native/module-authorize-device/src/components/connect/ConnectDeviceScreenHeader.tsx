@@ -8,6 +8,7 @@ import TrezorConnect from '@trezor/connect';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
+    NavigateParameters,
     RootStackParamList,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
@@ -25,6 +26,7 @@ import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
 
 type ConnectDeviceScreenHeaderProps = {
     shouldDisplayCancelButton?: boolean;
+    onCancelNavigationTarget?: NavigateParameters<RootStackParamList>;
 };
 
 type NavigationProp = StackToTabCompositeProps<
@@ -35,6 +37,7 @@ type NavigationProp = StackToTabCompositeProps<
 
 export const ConnectDeviceScreenHeader = ({
     shouldDisplayCancelButton = true,
+    onCancelNavigationTarget,
 }: ConnectDeviceScreenHeaderProps) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProp>();
@@ -68,6 +71,13 @@ export const ConnectDeviceScreenHeader = ({
             if (hasDeviceRequestedPin) {
                 TrezorConnect.cancel('pin-cancelled');
             }
+
+            if (onCancelNavigationTarget) {
+                navigation.navigate(...onCancelNavigationTarget);
+
+                return;
+            }
+
             if (navigation.canGoBack()) {
                 navigation.goBack();
             }
@@ -80,6 +90,7 @@ export const ConnectDeviceScreenHeader = ({
         showAlert,
         isCreatingNewWalletInstance,
         hasDeviceRequestedPin,
+        onCancelNavigationTarget,
     ]);
 
     // Handle hardware back button press same as cancel button

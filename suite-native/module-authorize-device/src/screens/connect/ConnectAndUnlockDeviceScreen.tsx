@@ -4,11 +4,16 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
+import {
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
+    StackProps,
+    Screen,
+} from '@suite-native/navigation';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ConnectDeviceAnimation } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Screen } from '@suite-native/navigation';
 import {
     selectIsDeviceAuthorized,
     selectIsDeviceConnected,
@@ -33,7 +38,12 @@ const animationStyle = prepareNativeStyle(() => ({
     width: '100%',
 }));
 
-export const ConnectAndUnlockDeviceScreen = () => {
+export const ConnectAndUnlockDeviceScreen = ({
+    route: { params },
+}: StackProps<
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice
+>) => {
     const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
 
@@ -64,7 +74,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
 
     return (
         <Screen
-            screenHeader={<ConnectDeviceScreenHeader />}
+            screenHeader={<ConnectDeviceScreenHeader onCancelNavigationTarget={params?.onCancelNavigationTarget} />}
             customHorizontalPadding={0}
             customVerticalPadding={0}
             hasBottomInset={false}

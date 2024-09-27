@@ -3,7 +3,11 @@ import type {
     NativeStackScreenProps,
     NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import type { ParamListBase, CompositeScreenProps } from '@react-navigation/native';
+import type {
+    ParamListBase,
+    CompositeScreenProps,
+    NavigationHelpers,
+} from '@react-navigation/native';
 import { CompositeNavigationProp } from '@react-navigation/native';
 
 import { IconName } from '@suite-common/icons-deprecated';
@@ -64,3 +68,7 @@ export type TabsOptions = {
         params?: Record<string, unknown>;
     };
 };
+
+export type NavigateParameters<TParamList extends ParamListBase = ParamListBase> = Parameters<
+    NavigationHelpers<TParamList>['navigate']
+>;
