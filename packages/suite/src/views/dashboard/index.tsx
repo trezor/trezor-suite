@@ -27,6 +27,7 @@ export const Dashboard = () => {
     return (
         <Wrapper data-testid="@dashboard/index">
             <DashboardPassphraseBanner />
+            DO NOT MERGE ME
             <PortfolioCard />
             <T3T1PromoBanner />
             <AssetsView />
