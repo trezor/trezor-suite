@@ -244,10 +244,12 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
                                 isDisabled={callInProgress}
                                 onClick={() => {
                                     if (selectedAccountOption.account && accountAddress) {
-                                        verifyAddress(
-                                            selectedAccountOption.account,
-                                            accountAddress.address,
-                                            accountAddress.path,
+                                        dispatch(
+                                            verifyAddress(
+                                                selectedAccountOption.account,
+                                                accountAddress.address,
+                                                accountAddress.path,
+                                            ),
                                         );
                                     }
                                 }}

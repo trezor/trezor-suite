@@ -30,7 +30,7 @@ import type {
 } from 'invity-api';
 import { Timer } from '@trezor/react-utils';
 import { AppState } from 'src/reducers/store';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
+import { Dispatch, ExtendedMessageDescriptor, GetState } from 'src/types/suite';
 import { PropsWithChildren } from 'react';
 import {
     AmountLimits,
@@ -162,6 +162,12 @@ export interface CoinmarketCommonFormBuySellProps {
     amountLimits?: AmountLimits;
 }
 
+type CoinmarketVerifyAccountProps = (
+    account: Account,
+    address?: string,
+    path?: string,
+) => (dispatch: Dispatch, getState: GetState) => Promise<void>;
+
 export interface CoinmarketBuyFormContextProps
     extends UseFormReturn<CoinmarketBuyFormProps>,
         CoinmarketCommonFormProps,
@@ -180,7 +186,7 @@ export interface CoinmarketBuyFormContextProps
 
     selectQuote: (quote: BuyTrade) => Promise<void>;
     confirmTrade: (address: string) => void;
-    verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
+    verifyAddress: CoinmarketVerifyAccountProps;
     removeDraft: (key: string) => void;
     setAmountLimits: (limits?: AmountLimits) => void;
 }
@@ -256,7 +262,7 @@ export interface CoinmarketExchangeFormContextProps
     confirmTrade: (address: string, extraField?: string, trade?: ExchangeTrade) => Promise<boolean>;
     sendTransaction: () => void;
     selectQuote: (quote: ExchangeTrade) => void;
-    verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
+    verifyAddress: CoinmarketVerifyAccountProps;
 }
 
 export type CoinmarketFormMapProps = {

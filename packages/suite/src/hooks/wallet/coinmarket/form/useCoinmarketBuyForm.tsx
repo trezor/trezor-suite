@@ -4,7 +4,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import type { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 import { isChanged } from '@suite-common/suite-utils';
 import { formatAmount } from '@suite-common/wallet-utils';
-import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import {
     createQuoteLink,
@@ -64,35 +64,6 @@ const useCoinmarketBuyForm = ({
         useCoinmarketCommonOffers({ selectedAccount, type });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
         useCoinmarketPaymentMethod<CoinmarketTradeBuyType>();
-    const {
-        saveTrade,
-        saveQuotes,
-        saveSelectedQuote,
-        setIsFromRedirect,
-        openCoinmarketBuyConfirmModal,
-        addNotification,
-        saveTransactionDetailId,
-        verifyAddress,
-        submitRequestForm,
-        goto,
-        savePaymentMethods,
-        saveQuoteRequest,
-        saveCachedAccountInfo,
-    } = useActions({
-        saveTrade: coinmarketBuyActions.saveTrade,
-        saveQuotes: coinmarketBuyActions.saveQuotes,
-        saveSelectedQuote: coinmarketBuyActions.saveSelectedQuote,
-        setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
-        openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
-        addNotification: notificationsActions.addToast,
-        saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
-        submitRequestForm: coinmarketCommonActions.submitRequestForm,
-        verifyAddress: coinmarketBuyActions.verifyAddress,
-        goto: routerActions.goto,
-        savePaymentMethods: coinmarketInfoActions.savePaymentMethods,
-        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
-    });
     const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =
         useCoinmarketNavigation(account);
 
@@ -266,9 +237,9 @@ const useCoinmarketBuyForm = ({
                 }
 
                 setInnerQuotes(quotesSuccess);
-                dispatch(saveQuotes(quotesSuccess));
-                dispatch(saveQuoteRequest(quoteRequest));
-                dispatch(savePaymentMethods(paymentMethodsFromQuotes));
+                dispatch(coinmarketBuyActions.saveQuotes(quotesSuccess));
+                dispatch(coinmarketBuyActions.saveQuoteRequest(quoteRequest));
+                dispatch(coinmarketInfoActions.savePaymentMethods(paymentMethodsFromQuotes));
                 setAmountLimits(limits);
 
                 if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
@@ -293,9 +264,6 @@ const useCoinmarketBuyForm = ({
             getQuotesRequest,
             getPaymentMethods,
             dispatch,
-            saveQuotes,
-            saveQuoteRequest,
-            savePaymentMethods,
             setValue,
         ],
     );
@@ -303,17 +271,26 @@ const useCoinmarketBuyForm = ({
     const goToOffers = async () => {
         await handleChange();
 
-        dispatch(saveCachedAccountInfo(account.symbol, account.index, account.accountType));
+        dispatch(
+            coinmarketBuyActions.saveCachedAccountInfo(
+                account.symbol,
+                account.index,
+                account.accountType,
+            ),
+        );
         navigateToBuyOffers();
     };
 
     const selectQuote = async (quote: BuyTrade) => {
         const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
         if (quotesRequest) {
-            const result = await openCoinmarketBuyConfirmModal(
-                provider?.companyName,
-                cryptoIdToCoinSymbol(quote.receiveCurrency!),
+            const result = await dispatch(
+                coinmarketBuyActions.openCoinmarketBuyConfirmModal(
+                    provider?.companyName,
+                    cryptoIdToCoinSymbol(quote.receiveCurrency!),
+                ),
             );
+
             if (result) {
                 // empty quoteId means the partner requests login first, requestTrade to get login screen
                 if (!quote.quoteId) {
@@ -321,7 +298,9 @@ const useCoinmarketBuyForm = ({
                     const response = await invityAPI.doBuyTrade({ trade: quote, returnUrl });
                     if (response) {
                         if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
-                            submitRequestForm(response.tradeForm.form);
+                            dispatch(
+                                coinmarketCommonActions.submitRequestForm(response.tradeForm.form),
+                            );
                         } else {
                             const errorMessage = `[doBuyTrade] ${response.trade.status} ${response.trade.error}`;
                             console.log(errorMessage);
@@ -329,13 +308,15 @@ const useCoinmarketBuyForm = ({
                     } else {
                         const errorMessage = 'No response from the server';
                         console.log(`[doBuyTrade] ${errorMessage}`);
-                        addNotification({
-                            type: 'error',
-                            error: errorMessage,
-                        });
+                        dispatch(
+                            notificationsActions.addToast({
+                                type: 'error',
+                                error: errorMessage,
+                            }),
+                        );
                     }
                 } else {
-                    saveSelectedQuote(quote);
+                    dispatch(coinmarketBuyActions.saveSelectedQuote(quote));
 
                     timer.stop();
 
@@ -364,23 +345,33 @@ const useCoinmarketBuyForm = ({
         });
 
         if (!response || !response.trade || !response.trade.paymentId) {
-            addNotification({
-                type: 'error',
-                error: 'No response from the server',
-            });
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'No response from the server',
+                }),
+            );
         } else if (response.trade.error) {
-            addNotification({
-                type: 'error',
-                error: response.trade.error,
-            });
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: response.trade.error,
+                }),
+            );
         } else {
-            saveTrade(response.trade, account, new Date().toISOString());
+            dispatch(
+                coinmarketBuyActions.saveTrade(response.trade, account, new Date().toISOString()),
+            );
             if (response.tradeForm) {
-                submitRequestForm(response.tradeForm.form);
+                dispatch(coinmarketCommonActions.submitRequestForm(response.tradeForm.form));
             }
             if (isDesktop()) {
-                saveTransactionDetailId(response.trade.paymentId);
-                goto('wallet-coinmarket-buy-detail', { params: selectedAccount.params });
+                dispatch(coinmarketBuyActions.saveTransactionDetailId(response.trade.paymentId));
+                dispatch(
+                    routerActions.goto('wallet-coinmarket-buy-detail', {
+                        params: selectedAccount.params,
+                    }),
+                );
             }
         }
         setCallInProgress(false);
@@ -451,7 +442,7 @@ const useCoinmarketBuyForm = ({
         }
 
         if (isFromRedirect && quotesRequest) {
-            setIsFromRedirect(false);
+            dispatch(coinmarketBuyActions.setIsFromRedirect(false));
         }
 
         checkQuotesTimer(handleChange);
@@ -525,7 +516,7 @@ const useCoinmarketBuyForm = ({
         selectQuote,
         confirmTrade,
         goToOffers,
-        verifyAddress,
+        verifyAddress: coinmarketBuyActions.verifyAddress,
         removeDraft,
         setAmountLimits,
     };
