@@ -78,7 +78,7 @@ export const setup = async (
     TrezorUserEnvLink.state = options;
 
     // after all is done, start bridge again
-    await TrezorUserEnvLink.startBridge();
+    await TrezorUserEnvLink.startBridge('node');
 };
 
 export const initTrezorConnect = async (
