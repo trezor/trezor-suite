@@ -1,11 +1,3 @@
-# 1.3.2
-
--   npm-prerelease: @trezor/transport 1.3.2-beta.1 (94274afa42)
--   chore(transport): add types 'node' to tsconfig.lib.json (0172914f8d)
--   chore(transport): update usb lib 2.13.0 -> 2.14.0 (04a40eae97)
--   fix(connect): steal session over webusb (5cf83b4c98)
--   chore(transport): introduce branded types for PathPublic,PathInternal and Session (756f35a5a7)
-
 # 1.3.1
 
 -   npm-prerelease: @trezor/transport 1.3.1-beta.1 (71a9c73da1)
