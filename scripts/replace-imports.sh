@@ -24,3 +24,14 @@ if grep -Rl "$SEARCH_PATTERN" "$1"; then
 else
     echo "All occurrences of '@trezor/*/src' have been successfully replaced."
 fi
+
+# Patch for Typebox import issue, where TS uses an ESM import path, but our package is CommonJS
+# @sinclair/typebox/build/esm/index.mjs -> @sinclair/typebox
+
+REGEX="s/@sinclair\/typebox\/build\/esm\/index.mjs/@sinclair\/typebox/g"
+
+if [[ "$OS" == "Darwin" ]]; then
+    find "$1" -type f -exec sed -i '' -E "$REGEX" {} +
+else
+    find "$1" -type f -exec sed -i -E "$REGEX" {} +
+fi
