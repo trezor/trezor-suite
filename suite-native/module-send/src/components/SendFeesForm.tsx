@@ -18,9 +18,12 @@ import {
     selectNetworkFeeLevelFeePerUnit,
 } from '@suite-common/wallet-core';
 import {
+    AuthorizeDeviceStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
     SendStackParamList,
     SendStackRoutes,
-    StackNavigationProps,
+    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { Translation } from '@suite-native/intl';
 
@@ -33,7 +36,11 @@ type SendFormProps = {
     feeLevels: GeneralPrecomposedLevels;
 };
 
-type SendFeesNavigationProps = StackNavigationProps<SendStackParamList, SendStackRoutes.SendFees>;
+type SendFeesNavigationProps = StackToStackCompositeNavigationProps<
+    SendStackParamList,
+    SendStackRoutes.SendFees,
+    RootStackParamList
+>;
 
 const DEFAULT_FEE = 'normal';
 
@@ -43,7 +50,6 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-
     const form = useForm<SendFeesFormValues>({
         validation: sendFeesFormValidationSchema,
         defaultValues: {
@@ -65,6 +71,23 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
         navigation.navigate(SendStackRoutes.SendAddressReview, {
             accountKey,
             transaction: selectedFeeLevelTransaction,
+        });
+
+        // In case that view only device is not connected, show connect screen first.
+        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+            params: {
+                // If user cancels, navigate back to the send fees screen.
+                onCancelNavigationTarget: [
+                    {
+                        name: RootStackRoutes.SendStack,
+                        params: {
+                            screen: SendStackRoutes.SendFees,
+                            params: { accountKey, feeLevels },
+                        },
+                    },
+                ],
+            },
         });
     });
 

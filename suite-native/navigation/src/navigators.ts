@@ -26,6 +26,7 @@ import {
     AddCoinAccountStackRoutes,
     SendStackRoutes,
 } from './routes';
+import { NavigateParameters } from './types';
 
 type AddCoinFlowParams = RequireAllOrNone<
     { networkSymbol: NetworkSymbol; accountType: AccountType; accountIndex: number },
@@ -139,7 +140,9 @@ export type AddCoinAccountStackParamList = {
 };
 
 export type AuthorizeDeviceStackParamList = {
-    [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
+    [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]:
+        | { onCancelNavigationTarget: NavigateParameters<RootStackParamList> }
+        | undefined;
     [AuthorizeDeviceStackRoutes.PinMatrix]: undefined;
     [AuthorizeDeviceStackRoutes.ConnectingDevice]: undefined;
 
