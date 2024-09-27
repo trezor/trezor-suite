@@ -134,14 +134,14 @@ test('log page should contain logs from shared worker', async ({ page, context }
         });
     }
 
-    log(`go to: ${url}#/method/verifyMessage`);
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/verifyMessage/`));
+    const verifyMessageUrl = formatUrl(explorerUrl, `methods/bitcoin/verifyMessage/`);
+    await explorerPage.goto(verifyMessageUrl);
 
     log('opening popup');
     [popup] = await openPopup(persistentContext, explorerPage, isWebExtension);
 
     await popup.waitForLoadState('load');
-    log(`loaded: ${url}#/method/verifyMessage`);
+    log(`loaded: ${verifyMessageUrl}`);
     // Open new tab to go to log.html
     const logsPage = await persistentContext.newPage();
 
