@@ -77,10 +77,10 @@ export const selectAssetModalOptions: SelectAssetOptionProps[] = [
     },
     {
         type: 'currency',
-        value: 'matic-network',
-        label: 'MATIC',
-        cryptoName: 'Polygon',
-        coingeckoId: 'matic-network',
+        value: 'polygon-pos',
+        label: 'POL',
+        cryptoName: 'Polygon PoS',
+        coingeckoId: 'polygon-pos',
     },
     {
         type: 'currency',
@@ -720,7 +720,7 @@ export const selectAssetModalOptions: SelectAssetOptionProps[] = [
     {
         type: 'currency',
         value: 'ethereum--0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0',
-        label: 'MATIC',
+        label: 'POL',
         cryptoName: 'Polygon',
         coingeckoId: 'ethereum',
         contractAddress: '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0',
@@ -1087,9 +1087,9 @@ export const selectAssetModalNetworks: SelectAssetNetworkProps[] = [
     },
     {
         name: 'Polygon PoS',
-        symbol: 'matic',
+        symbol: 'pol',
         coingeckoId: 'polygon-pos',
-        coingeckoNativeId: 'matic-network',
+        coingeckoNativeId: 'polygon-ecosystem-token',
     },
     {
         name: 'Solana',

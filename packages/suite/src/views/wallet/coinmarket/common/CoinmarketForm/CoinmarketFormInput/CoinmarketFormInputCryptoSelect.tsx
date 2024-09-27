@@ -74,7 +74,7 @@ export const CoinmarketFormInputCryptoSelect = <
     };
 
     const getNetworks = () => {
-        const networksToSelect: NetworkSymbol[] = ['eth', 'sol', 'matic', 'bnb'];
+        const networksToSelect: NetworkSymbol[] = ['eth', 'sol', 'pol', 'bnb'];
         const networkAllKeys = Object.keys(networks) as NetworkSymbol[];
         const networkKeys = networkAllKeys.filter(item => networksToSelect.includes(item));
         const networksSelected = networkKeys.map(networkKey => ({
