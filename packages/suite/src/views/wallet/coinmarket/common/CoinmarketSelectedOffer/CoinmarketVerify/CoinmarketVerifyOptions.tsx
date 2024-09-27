@@ -34,7 +34,7 @@ export const CoinmarketVerifyOptions = ({
             formatOptionLabel={option => (
                 <CoinmarketVerifyOptionsItem option={option} receiveNetwork={receiveNetwork} />
             )}
-            menuIsOpen={isMenuOpen}
+            isMenuOpen={isMenuOpen}
             isDisabled={selectAccountOptions.length === 1}
             placeholder={
                 <Translation
