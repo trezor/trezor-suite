@@ -35,6 +35,7 @@ export interface FormattedCryptoAmountProps {
     isRawString?: boolean;
     'data-testid'?: string;
     className?: string;
+    allowZero?: boolean;
 }
 
 export const FormattedCryptoAmount = ({
@@ -46,12 +47,15 @@ export const FormattedCryptoAmount = ({
     isRawString,
     'data-testid': dataTest,
     className,
+    allowZero,
 }: FormattedCryptoAmountProps) => {
     const locale = useSelector(selectLanguage);
 
     const { areSatsDisplayed } = useBitcoinAmountUnit();
 
-    if (!value) {
+    const isAllowedZero = allowZero && value === 0;
+
+    if (!value && !isAllowedZero) {
         return null;
     }
 
