@@ -11,6 +11,8 @@ import {
     networkAmountToSatoshi,
 } from '@suite-common/wallet-utils';
 import { isSignValuePositive } from '@suite-common/formatters';
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
+import { PROTO } from '@trezor/connect';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
@@ -74,7 +76,9 @@ export const FormattedCryptoAmount = ({
     if (isSatoshis) {
         formattedValue = networkAmountToSatoshi(String(value), lowerCaseSymbol as NetworkSymbol);
 
-        formattedSymbol = isTestnet ? `sat ${symbol?.toUpperCase()}` : 'sat';
+        formattedSymbol = isTestnet
+            ? `${UNIT_ABBREVIATIONS[PROTO.AmountUnit.SATOSHI]} ${formattedSymbol}`
+            : UNIT_ABBREVIATIONS[PROTO.AmountUnit.SATOSHI];
     }
 
     // format truncation + locale (used for balances) or just locale
