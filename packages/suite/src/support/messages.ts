@@ -1195,10 +1195,6 @@ export default defineMessages({
         defaultMessage: 'No transactions yet.',
         id: 'TR_BUY_NOT_TRANSACTIONS',
     },
-    TR_BUY_CONFIRM_ON_TREZOR: {
-        defaultMessage: 'Confirm on Trezor',
-        id: 'TR_BUY_CONFIRM_ON_TREZOR',
-    },
     TR_BUY_GO_TO_PAYMENT: {
         defaultMessage: 'Finish transaction',
         id: 'TR_BUY_GO_TO_PAYMENT',
@@ -3190,10 +3186,6 @@ export default defineMessages({
     TR_RETRYING_DOT_DOT: {
         defaultMessage: 'Retrying..',
         id: 'TR_RETRYING_DOT_DOT',
-    },
-    TR_QR_CODE: {
-        defaultMessage: 'QR code',
-        id: 'TR_QR_CODE',
     },
     TR_SCAN_QR_CODE: {
         defaultMessage: 'Scan QR code',
@@ -8667,17 +8659,17 @@ export default defineMessages({
     },
     TR_STAKE_STAKED_ETH_AMOUNT_LOCKED: {
         id: 'TR_STAKE_STAKED_ETH_AMOUNT_LOCKED',
-        defaultMessage: 'Your staked {symbol} is locked and can’t be traded or sent.',
+        defaultMessage: 'The staked amount of {symbol} is locked and can’t be traded or sent.',
     },
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking usually takes about {count, plural, one {# day} other {# days}}. Once completed, you can claim it instantly.',
+            'Unstaking currently takes {count, plural, one {# day} other {# days}}. Once completed, you can trade or send your funds.',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
         defaultMessage:
-            'Your rewards also earn. Keep them staked and watch your {symbol} rewards grow.',
+            'Your rewards also earn. Keep them staked and watch your {symbol} rewards soar.',
     },
     TR_STAKE_AVAILABLE: {
         id: 'TR_STAKE_AVAILABLE',

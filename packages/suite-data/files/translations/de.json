@@ -387,7 +387,7 @@
   "TR_BUY_MODAL_FOR_YOUR_SAFETY": "{cryptocurrency} mit {provider} kaufen",
   "TR_BUY_MODAL_LEGAL_HEADER": "Rechtlicher Hinweis",
   "TR_BUY_MODAL_SECURITY_HEADER": "Sicherheit geht bei Trezor vor",
-  "TR_BUY_MODAL_TERMS_1": "Du bist hier, um Kryptowährung zu kaufen. Wenn du aus einem anderen Grund auf diese Seite weitergeleitet wurdest, kontaktiere den Support von {provider}, bevor du fortfährst.",
+  "TR_BUY_MODAL_TERMS_1": "Du bist hier, um Kryptowährung zu kaufen. Wenn du aus einem anderen Grund auf diese Seite weitergeleitet wurdest, kontaktiere den {provider}-Support, bevor du fortfährst.",
   "TR_BUY_MODAL_TERMS_2": "Du nutzt diese Funktion, um Assets zu kaufen, die an ein Konto unter deiner direkten persönlichen Kontrolle gesendet werden.",
   "TR_BUY_MODAL_TERMS_3": "Dir ist klar, dass Krypto-Transaktionen unwiderruflich sind und nicht zurückerstattet werden können. Daher können betrügerische oder versehentliche Verluste permanent sein.",
   "TR_BUY_MODAL_TERMS_4": "Dir ist klar, dass Invity diesen Dienst nicht anbietet. Der Dienst unterliegt den Bedingungen von {provider}.",

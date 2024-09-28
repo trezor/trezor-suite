@@ -387,7 +387,7 @@
   "TR_BUY_MODAL_FOR_YOUR_SAFETY": "Comprar {cryptocurrency} con {provider}",
   "TR_BUY_MODAL_LEGAL_HEADER": "Aviso legal",
   "TR_BUY_MODAL_SECURITY_HEADER": "La seguridad es lo primero con tu Trezor.",
-  "TR_BUY_MODAL_TERMS_1": "Estás aquí para comprar criptomonedas. Si has llegado a este sitio por cualquier otra razón, ponte en contacto con el servicio de atención al cliente de {provider} antes de continuar.",
+  "TR_BUY_MODAL_TERMS_1": "Estás aquí para comprar criptomonedas. Si has llegado a este sitio por cualquier otra razón, ponte en contacto con el servicio de atención al cliente {provider} antes de continuar.",
   "TR_BUY_MODAL_TERMS_2": "Estás utilizando esta función para comprar fondos que se enviarán a una cuenta bajo tu control personal directo.",
   "TR_BUY_MODAL_TERMS_3": "Las transacciones con criptomonedas son irreversibles y no se pueden reembolsar. Por lo tanto, podrías no recuperar las pérdidas, ya se deban a error o a tácticas fraudulentas.",
   "TR_BUY_MODAL_TERMS_4": "Ten en cuenta Invity no proporciona este servicio, que en cambio se rige por los términos de {provider}.",
