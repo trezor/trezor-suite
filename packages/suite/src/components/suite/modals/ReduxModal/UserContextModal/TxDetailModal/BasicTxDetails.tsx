@@ -229,7 +229,7 @@ export const BasicTxDetails = ({
             <Grid>
                 {/* MINED TIME */}
                 <Title>
-                    <Icon name="calendar" size={10} />
+                    <Icon name="calendar" size={10} margin={{ right: spacings.xs }} />
                     {isConfirmed ? (
                         <Translation id="TR_MINED_TIME" />
                     ) : (
@@ -252,7 +252,7 @@ export const BasicTxDetails = ({
 
                 {/* TX ID */}
                 <Title>
-                    <Icon name="biometric" size={10} />
+                    <Icon name="biometric" size={10} margin={{ right: spacings.xs }} />
                     <Translation id="TR_TXID" />
                 </Title>
 
@@ -287,13 +287,13 @@ export const BasicTxDetails = ({
                 {tx.ethereumSpecific && (
                     <>
                         <Title>
-                            <Icon name="gas" size={10} />
+                            <Icon name="gas" size={10} margin={{ right: spacings.xs }} />
                             <Translation id="TR_GAS_LIMIT" />
                         </Title>
                         <Value>{tx.ethereumSpecific.gasLimit}</Value>
 
                         <Title>
-                            <Icon name="gas" size={10} />
+                            <Icon name="gas" size={10} margin={{ right: spacings.xs }} />
                             <Translation id="TR_GAS_USED" />
                         </Title>
                         <Value>
@@ -305,7 +305,7 @@ export const BasicTxDetails = ({
                         </Value>
 
                         <Title>
-                            <Icon name="gas" size={10} />
+                            <Icon name="gas" size={10} margin={{ right: spacings.xs }} />
                             <Translation id="TR_GAS_PRICE" />
                         </Title>
                         <Value>{`${fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei')} ${getFeeUnits(
@@ -316,7 +316,7 @@ export const BasicTxDetails = ({
                             <IconPlaceholder>#</IconPlaceholder>
                             <Translation id="TR_NONCE" />
                         </Title>
-                        <Value>{tx.ethereumSpecific.nonce}</Value>
+                        <Value>{tx.ethereumSpecific?.nonce}</Value>
                     </>
                 )}
             </Grid>
