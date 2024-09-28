@@ -114,7 +114,6 @@ export const UnecoCoinjoinModal = () => {
                                     symbol={symbol}
                                 />
                             ),
-                            b: chunk => <b>{chunk}</b>,
                         }}
                     />
                 </Explanation>

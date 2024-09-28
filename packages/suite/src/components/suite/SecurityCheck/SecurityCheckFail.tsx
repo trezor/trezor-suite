@@ -30,7 +30,7 @@ const checklistItems = [
     },
     {
         icon: 'chat',
-        content: <Translation id="TR_USE_CHAT" values={{ b: chunks => <b>{chunks}</b> }} />,
+        content: <Translation id="TR_USE_CHAT" />,
     },
 ] as const;
 

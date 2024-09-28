@@ -163,14 +163,7 @@ export const FirmwareInitial = ({
     if (bitcoinOnlyOffer) {
         // Installing Bitcoin-only firmware in onboarding
         content = {
-            heading: (
-                <Translation
-                    id="TR_INSTALL_BITCOIN_ONLY_FW"
-                    values={{
-                        bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
-                    }}
-                />
-            ),
+            heading: <Translation id="TR_INSTALL_BITCOIN_ONLY_FW" />,
             description: (
                 <Description>
                     <Translation id="TR_FIRMWARE_SUBHEADING_BITCOIN" />
@@ -187,24 +180,14 @@ export const FirmwareInitial = ({
                         onClick={() => installFirmware(FirmwareType.Regular)}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
-                        <Translation
-                            id="TR_INSTALL_REGULAR"
-                            values={{
-                                regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
-                            }}
-                        />
+                        <Translation id="TR_INSTALL_REGULAR" />
                     </FirmwareInstallButton>
 
                     <FirmwareInstallButton
                         onClick={() => installFirmware(targetType)}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
-                        <Translation
-                            id="TR_INSTALL_BITCOIN_ONLY"
-                            values={{
-                                bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
-                            }}
-                        />
+                        <Translation id="TR_INSTALL_BITCOIN_ONLY" />
                     </FirmwareInstallButton>
                 </FirmwareButtonsRow>
             ),
@@ -220,13 +203,11 @@ export const FirmwareInitial = ({
                 <Translation
                     id={subheadingId}
                     values={{
-                        i: chunks => <i>{chunks}</i>,
                         button: chunks => (
                             <TextButton onClick={() => setBitcoinOnlyOffer(true)}>
                                 {chunks}
                             </TextButton>
                         ),
-                        bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
                     }}
                 />
             ),
@@ -293,10 +274,6 @@ export const FirmwareInitial = ({
                         shouldSwitchFirmwareType,
                         isBitcoinOnlyAvailable,
                     })}
-                    values={{
-                        bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
-                        regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
-                    }}
                 />
             ),
             body: (

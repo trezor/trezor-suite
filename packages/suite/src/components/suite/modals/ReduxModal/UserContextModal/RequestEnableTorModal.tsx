@@ -78,12 +78,7 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
         >
             <>
                 <Description>
-                    <Translation
-                        id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"
-                        values={{
-                            b: chunks => <b>{chunks}</b>,
-                        }}
-                    />
+                    <Translation id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE" />
                 </Description>
                 <ItalicDescription>
                     <Translation id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE" />

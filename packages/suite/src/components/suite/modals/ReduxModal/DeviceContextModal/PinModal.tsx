@@ -36,10 +36,7 @@ export const PinModal = ({ device, ...rest }: PinModalProps) => {
         <StyledModal
             heading={<Translation id={isWipeCode ? 'TR_ENTER_WIPECODE' : 'TR_ENTER_PIN'} />}
             description={
-                <Translation
-                    id="TR_THE_PIN_LAYOUT_IS_DISPLAYED"
-                    values={{ deviceLabel, b: text => <b>{text}</b> }}
-                />
+                <Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" values={{ deviceLabel }} />
             }
             onCancel={onCancel}
             isCancelable
