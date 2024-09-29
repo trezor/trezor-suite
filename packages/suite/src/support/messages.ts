@@ -4172,6 +4172,12 @@ export default defineMessages({
             'Your wallet backup is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,
     },
+    TR_CHECK_RECOVERY_SEED_DESC_T3W1: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T3W1',
+        defaultMessage:
+            'Your wallet backup is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
+        dynamic: true,
+    },
     TR_CHECK_RECOVERY_SEED_DESC_T2B1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T2B1',
         defaultMessage:

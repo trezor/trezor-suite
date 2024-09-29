@@ -31,6 +31,7 @@ const FORMAT_MAP: { [format in FirmwareFormat]: DeviceModelInternal[] } = {
         DeviceModelInternal.T2B1,
         DeviceModelInternal.T3B1,
         DeviceModelInternal.T3T1,
+        DeviceModelInternal.T3W1,
     ],
 };
 
