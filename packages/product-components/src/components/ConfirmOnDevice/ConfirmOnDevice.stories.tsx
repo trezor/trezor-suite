@@ -106,5 +106,15 @@ export const ConfirmOnDevice: StoryFn = () => (
                 deviceModelInternal={DeviceModelInternal.T3T1}
             />
         </StoryColumn>
+        <StoryColumn minWidth={300}>
+            <ConfirmOnDeviceComponent
+                successText="Confirmed"
+                title="Confirm on T3W1"
+                steps={5}
+                activeStep={5}
+                onCancel={() => {}}
+                deviceModelInternal={DeviceModelInternal.T3W1}
+            />
+        </StoryColumn>
     </>
 );

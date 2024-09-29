@@ -181,6 +181,7 @@ export const networks = {
             [DeviceModelInternal.T2B1]: '2.6.4',
             [DeviceModelInternal.T3B1]: '2.8.1',
             [DeviceModelInternal.T3T1]: '2.7.1',
+            [DeviceModelInternal.T3W1]: '2.99.99',
         },
         customBackends: ['solana'],
         accountTypes: {
@@ -214,6 +215,7 @@ export const networks = {
             [DeviceModelInternal.T2B1]: '2.6.1',
             [DeviceModelInternal.T3B1]: '2.8.1',
             [DeviceModelInternal.T3T1]: '2.7.1',
+            [DeviceModelInternal.T3W1]: '2.99.99',
         },
         customBackends: ['blockfrost'],
         accountTypes: {
@@ -598,6 +600,7 @@ export const networks = {
             [DeviceModelInternal.T2B1]: '2.6.4',
             [DeviceModelInternal.T3B1]: '2.8.1',
             [DeviceModelInternal.T3T1]: '2.7.1',
+            [DeviceModelInternal.T3W1]: '2.99.99',
         },
         customBackends: ['solana'],
         accountTypes: {},
@@ -624,6 +627,7 @@ export const networks = {
             [DeviceModelInternal.T2B1]: '2.6.1',
             [DeviceModelInternal.T3B1]: '2.8.1',
             [DeviceModelInternal.T3T1]: '2.7.1',
+            [DeviceModelInternal.T3W1]: '2.99.99',
         },
         customBackends: ['blockfrost'],
         accountTypes: {

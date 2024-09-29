@@ -2434,6 +2434,8 @@ export const icons = {
     trezorSafe3Filled: require('../assets/trezorSafe3Filled.svg'),
     trezorSafe5: require('../assets/trezorSafe5.svg'),
     trezorSafe5Filled: require('../assets/trezorSafe5Filled.svg'),
+    trezorSafe7: require('../assets/trezorSafe7.svg'),
+    trezorSafe7Filled: require('../assets/trezorSafe7Filled.svg'),
     trezorVibrate: require('../assets/trezorVibrate.svg'),
     trezorVibrateFilled: require('../assets/trezorVibrateFilled.svg'),
     triangle: require('../assets/triangle.svg'),
