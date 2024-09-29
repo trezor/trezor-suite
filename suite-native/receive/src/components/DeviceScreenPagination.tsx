@@ -63,6 +63,14 @@ const deviceModelToSvg: Record<PaginationCompatibleDeviceModel, PaginationModelM
         paginatorPrefixY: 4,
         paginatorSuffixX: 182.5,
         paginatorSuffixY: 82,
+    },
+    [DeviceModelInternal.T3W1]: {
+        paginationPrefixSvg: require('../../assets/addressPaginationPrefixT2T1.svg'),
+        paginationSuffixSvg: require('../../assets/addressPaginationSuffixT2T1.svg'),
+        paginatorPrefixX: 0,
+        paginatorPrefixY: 4,
+        paginatorSuffixX: 182.5,
+        paginatorSuffixY: 82,
 
         pagerSvg1: require('../../assets/pager1T2T1.svg'),
         pagerSvg2: require('../../assets/pager2T2T1.svg'),

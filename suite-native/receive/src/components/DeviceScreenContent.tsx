@@ -63,6 +63,13 @@ const deviceToContentStyles: Record<DeviceModelInternal, DeviceModelLayoutProps>
         lineHeight: 25,
         pagerOffset: 60,
     },
+    [DeviceModelInternal.T3W1]: {
+        fontSource: require('../../../../packages/theme/fonts/RobotoMono-Regular.ttf'),
+        fontSize: 20,
+        lineWidth: 230,
+        lineHeight: 25,
+        pagerOffset: 60,
+    },
     [DeviceModelInternal.T2B1]: safe3Styles,
     [DeviceModelInternal.T3B1]: safe3Styles,
 };

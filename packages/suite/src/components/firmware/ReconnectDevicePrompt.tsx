@@ -138,6 +138,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
             [DeviceModelInternal.T2B1]: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
             [DeviceModelInternal.T3B1]: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
             [DeviceModelInternal.T3T1]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
+            [DeviceModelInternal.T3W1]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
         };
 
         return switchToBootloaderMap[deviceModelFromEvent];
