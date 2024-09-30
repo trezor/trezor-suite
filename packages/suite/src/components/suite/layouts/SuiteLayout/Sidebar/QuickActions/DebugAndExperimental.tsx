@@ -24,7 +24,7 @@ const DebugAndExperimentalTooltip = ({
             <TooltipRow
                 circleIconName="check"
                 variant="primary"
-                header={<Translation id="TR_EARLY_ACCESS" />}
+                header={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
                 leftItem={<Icon name="experimental" variant="purple" size={iconSizes.medium} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
@@ -34,7 +34,7 @@ const DebugAndExperimentalTooltip = ({
             <TooltipRow
                 circleIconName="check"
                 variant="primary"
-                header={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
+                header={<Translation id="TR_EARLY_ACCESS" />}
                 leftItem={<Icon name="eap" variant="warning" size={iconSizes.medium} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
