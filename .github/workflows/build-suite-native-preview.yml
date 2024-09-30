@@ -1,19 +1,22 @@
-name: "[Release] suite-native preview update"
+name: "[Build] suite-native preview"
 
 on:
   push:
+    # push develop(default) branch is necessary for this action to update its fingerprint database
     branches: [develop]
   pull_request:
     paths:
       - "suite-native/**"
-      - "suite-common/**"
+      - "packages/react-native-usb/**"
+      - "packages/transport-native/**"
+      - "yarn.lock"
+      # list of paths is not complete, but it's always possible to dispatch manually
   workflow_dispatch:
 
-  jobs:
-    update:
-      if: github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private'
+jobs:
+  update:
+    if: github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private'
     name: EAS Update
-    environment: develop-suite-native
     runs-on: ubuntu-latest
     concurrency: fingerprint-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
     env:
@@ -38,12 +41,12 @@ on:
 
       - name: Create preview builds if fingerprint changed
         uses: expo/expo-github-action/preview-build@main
-        working-directory: suite-native/app
         with:
           command: eas build --profile preview --platform all --non-interactive --no-wait
+          working-directory: suite-native/app
 
       - name: Create preview update
         uses: expo/expo-github-action/preview@v8
-        working-directory: suite-native/app
         with:
           command: eas update --auto
+          working-directory: suite-native/app
