@@ -657,19 +657,23 @@ export default defineMessages({
     TR_COINMARKET_EXCHANGE_FIXED_OFFERS_HEADING: {
         defaultMessage: 'Fixed-rate CEX',
         id: 'TR_COINMARKET_EXCHANGE_FIXED_OFFERS_HEADING',
+        dynamic: true,
     },
     TR_COINMARKET_EXCHANGE_FLOAT_OFFERS_HEADING: {
         defaultMessage: 'Floating-rate CEX',
         id: 'TR_COINMARKET_EXCHANGE_FLOAT_OFFERS_HEADING',
+        dynamic: true,
     },
     TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING: {
         defaultMessage: 'DEX',
         id: 'TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING',
+        dynamic: true,
     },
     TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP: {
         defaultMessage:
             'Decentralized exchange - trade crypto through blockchain transactions without a centralized intermediary.',
         id: 'TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP',
+        dynamic: true,
     },
     TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_KYC_ALL: {
         defaultMessage: 'All KYC options',
@@ -3290,6 +3294,7 @@ export default defineMessages({
     TR_SHOW_UNVERIFIED_ADDRESS: {
         defaultMessage: 'Show unverified address',
         id: 'TR_SHOW_UNVERIFIED_ADDRESS',
+        dynamic: true,
     },
     TR_SHOW_UNVERIFIED_XPUB: {
         defaultMessage: 'Show unverified public key',
