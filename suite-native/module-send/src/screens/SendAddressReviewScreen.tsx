@@ -44,6 +44,9 @@ export const SendAddressReviewScreen = ({
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('beforeRemove', e => {
+            // We want to modify only behavior of back button actions.
+            if (e.data.action.type !== 'GO_BACK') return;
+
             if (isReviewInProgress) {
                 e.preventDefault();
                 showReviewCancellationAlert();

@@ -19,6 +19,7 @@ import {
     selectIsNoPhysicalDeviceConnected,
     selectIsDeviceUsingPassphrase,
     authorizeDeviceThunk,
+    selectIsDeviceRemembered,
 } from '@suite-common/wallet-core';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
@@ -35,6 +36,7 @@ export const useHandleDeviceConnection = () => {
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
+    const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
@@ -42,6 +44,10 @@ export const useHandleDeviceConnection = () => {
     const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
+
+    const isSendStackFocused =
+        navigation.getState()?.routes.at(-1)?.name === RootStackRoutes.SendStack;
+    const shouldBlockSendReviewRedirect = isDeviceRemembered && isSendStackFocused;
 
     // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
@@ -59,7 +65,7 @@ export const useHandleDeviceConnection = () => {
 
             // Note: Passphrase protected device (excluding empty passphrase, e. g. standard wallet with passphrase protection on device),
             // post auth navigation is handled in @suite-native/module-passphrase for custom UX flow.
-            if (!isDeviceUsingPassphrase) {
+            if (!isDeviceUsingPassphrase && !shouldBlockSendReviewRedirect) {
                 navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                     screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
                 });
@@ -75,17 +81,19 @@ export const useHandleDeviceConnection = () => {
         isBiometricsOverlayVisible,
         navigation,
         isDeviceUsingPassphrase,
+        shouldBlockSendReviewRedirect,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and
     // set connecting screen to be displayed again on the next device connection.
     useEffect(() => {
         if (isNoPhysicalDeviceConnected && isOnboardingFinished) {
+            const previousRoute = navigation.getState()?.routes.at(-1)?.name;
+
             // This accidentally gets triggered by finishing onboarding with no device connected,
             // so this prevents from redirect being duplicated.
-            const isPreviousRouteOnboarding =
-                navigation.getState()?.routes.at(-1)?.name === RootStackRoutes.Onboarding;
-            if (isPreviousRouteOnboarding) {
+            const isPreviousRouteOnboarding = previousRoute === RootStackRoutes.Onboarding;
+            if (isPreviousRouteOnboarding || shouldBlockSendReviewRedirect) {
                 return;
             }
             navigation.navigate(RootStackRoutes.AppTabs, {
@@ -95,7 +103,12 @@ export const useHandleDeviceConnection = () => {
                 },
             });
         }
-    }, [isNoPhysicalDeviceConnected, isOnboardingFinished, navigation]);
+    }, [
+        isNoPhysicalDeviceConnected,
+        isOnboardingFinished,
+        navigation,
+        shouldBlockSendReviewRedirect,
+    ]);
 
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
     // and then continue with the interaction. For T2, PIN is entered on device, but the screen is still displayed.

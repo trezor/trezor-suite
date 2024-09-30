@@ -302,7 +302,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             // catch manual error from TransactionReviewModal
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                connectErrorCode: response.payload.code,
+                errorCode: response.payload.code,
                 message: response.payload.error,
             });
         }

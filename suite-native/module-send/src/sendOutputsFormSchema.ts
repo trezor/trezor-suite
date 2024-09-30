@@ -1,6 +1,6 @@
 import { G } from '@mobily/ts-belt';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount, isAddressValid, isDecimalsValid } from '@suite-common/wallet-utils';
 import { FeeInfo } from '@suite-common/wallet-types';

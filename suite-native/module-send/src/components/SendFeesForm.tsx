@@ -78,15 +78,13 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
             screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
             params: {
                 // If user cancels, navigate back to the send fees screen.
-                onCancelNavigationTarget: [
-                    {
-                        name: RootStackRoutes.SendStack,
-                        params: {
-                            screen: SendStackRoutes.SendFees,
-                            params: { accountKey, feeLevels },
-                        },
+                onCancelNavigationTarget: {
+                    name: RootStackRoutes.SendStack,
+                    params: {
+                        screen: SendStackRoutes.SendFees,
+                        params: { accountKey, feeLevels },
                     },
-                ],
+                },
             },
         });
     });
