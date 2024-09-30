@@ -59,7 +59,6 @@ export const checkFirmwareRevision = async ({
     deviceRevision,
     expectedRevision,
 }: CheckFirmwareRevisionParams): Promise<FirmwareRevisionCheckResult> => {
-    console.log(expectedRevision);
     if (expectedRevision === undefined) {
         if (firmwareVersion.length !== 3) {
             return failFirmwareRevisionCheck('firmware-version-unknown');
@@ -70,7 +69,6 @@ export const checkFirmwareRevision = async ({
                 firmwareVersion,
                 internalModel,
             });
-            console.log('onlineRelease', onlineRelease);
 
             if (onlineRelease?.firmware_revision === undefined) {
                 return failFirmwareRevisionCheck('firmware-version-unknown');
