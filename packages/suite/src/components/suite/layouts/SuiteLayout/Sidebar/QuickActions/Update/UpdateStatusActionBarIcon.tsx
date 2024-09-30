@@ -173,10 +173,6 @@ export const UpdateStatusActionBarIcon = () => {
         (updateStatusDevice !== 'up-to-date' && !closedNotificationDevice);
 
     const onNotificationBannerClosed = () => {
-        console.log('onNotificationBannerClosed');
-        console.log('updateStatusSuite', updateStatusSuite);
-        console.log('updateStatusDevice', updateStatusDevice);
-
         if (updateStatusSuite !== 'up-to-date') {
             setClosedNotificationSuite(true);
         }

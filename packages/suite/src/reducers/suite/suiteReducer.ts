@@ -75,6 +75,7 @@ export interface Flags {
     viewOnlyTooltipClosed: boolean;
     showUnhideTokenModal: boolean;
     showCopyAddressModal: boolean;
+    turnAutoUpdateOnNextRun: boolean;
 }
 
 export interface EvmSettings {
@@ -145,6 +146,7 @@ const initialState: SuiteState = {
         isDashboardPassphraseBannerVisible: true,
         showCopyAddressModal: true,
         showUnhideTokenModal: true,
+        turnAutoUpdateOnNextRun: false,
     },
     evmSettings: {
         confirmExplanationModalClosed: {},

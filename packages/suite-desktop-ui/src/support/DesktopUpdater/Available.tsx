@@ -20,9 +20,11 @@ import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
 import { borders, Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getReleaseUrl } from 'src/services/github';
 import { download } from 'src/actions/suite/desktopUpdateActions';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { setFlag } from 'src/actions/suite/suiteActions';
 
 const ChangelogWrapper = styled.div<{ $elevation: Elevation }>`
     background-color: ${({ theme, $elevation }) => mapElevationToBackground({ theme, $elevation })};
@@ -87,11 +89,11 @@ const getVersionName = ({ latestVersion, prerelease }: VersionNameProps): string
 interface AvailableProps {
     onCancel: () => void;
     latest: UpdateInfo | undefined;
-    isAutomaticUpdateEnabled: boolean;
 }
 
-export const Available = ({ onCancel, latest, isAutomaticUpdateEnabled }: AvailableProps) => {
+export const Available = ({ onCancel, latest }: AvailableProps) => {
     const dispatch = useDispatch();
+    const { turnAutoUpdateOnNextRun } = useSelector(selectSuiteFlags);
 
     const downloadUpdate = () => {
         dispatch(download());
@@ -105,7 +107,7 @@ export const Available = ({ onCancel, latest, isAutomaticUpdateEnabled }: Availa
     });
 
     const handleToggleAutoUpdateClick = () =>
-        desktopApi.setAutomaticUpdateEnabled(!isAutomaticUpdateEnabled);
+        dispatch(setFlag('turnAutoUpdateOnNextRun', !turnAutoUpdateOnNextRun));
 
     return (
         <NewModal
@@ -164,7 +166,10 @@ export const Available = ({ onCancel, latest, isAutomaticUpdateEnabled }: Availa
                 <ElevationUp>
                     <Card>
                         <Row justifyContent="start" gap={spacings.xs}>
-                            <Checkbox onClick={handleToggleAutoUpdateClick}>
+                            <Checkbox
+                                isChecked={turnAutoUpdateOnNextRun}
+                                onClick={handleToggleAutoUpdateClick}
+                            >
                                 <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES" />
                             </Checkbox>
                             <NewTag />

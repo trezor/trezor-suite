@@ -16,13 +16,16 @@ import * as languageActions from 'src/actions/settings/languageActions';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
-import { onSuiteReady } from './suiteActions';
+import { onSuiteReady, setFlag } from './suiteActions';
+import { desktopApi } from '@trezor/suite-desktop-api';
+import { isDesktop } from '@trezor/env-utils';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
         suite: {
             settings: { language },
             lifecycle: { status },
+            flags: { turnAutoUpdateOnNextRun },
         },
         wallet: {
             settings: { localCurrency },
@@ -35,7 +38,15 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     dispatch(initDevices());
 
-    // right after storage is loaded, we might start:
+    /**
+     * ----------------------------------------------
+     * Right after storage is loaded, we might start:
+     * ----------------------------------------------
+     *
+     * Todo: This is good place to be refactored into separate functions.
+     *       Those number-comments are very strong indicator that this code
+     *       has many responsibilities and should be split into smaller parts.
+     */
 
     // 1. init analytics
     dispatch(analyticsActions.init());
@@ -46,10 +57,16 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // 3. fetch message system config
     dispatch(initMessageSystemThunk());
 
-    // 4. redirecting user into welcome screen (if needed)
+    // 4. turn on auto updates if needed
+    if (isDesktop() && turnAutoUpdateOnNextRun) {
+        dispatch(setFlag('turnAutoUpdateOnNextRun', false));
+        desktopApi.setAutomaticUpdateEnabled(true);
+    }
+
+    // 5. redirecting user into welcome screen (if needed)
     dispatch(routerActions.initialRedirection());
 
-    // 5. init connect (could throw an error,
+    // 6. init connect (could throw an error,
     // then the error is caught in <ErrorBoundary /> in Main.tsx
     try {
         // it is necessary to unwrap the result here because init calls async thunk from redux-toolkit which is always resolved
@@ -60,15 +77,15 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         throw err;
     }
 
-    // 6. init backends
+    // 7. init backends
     await dispatch(initBlockchainThunk())
         .unwrap()
         .catch(err => console.error(err));
 
-    // 7. fetch token definitions (has to be fetched before fiat rates)
+    // 8. fetch token definitions (has to be fetched before fiat rates)
     await dispatch(periodicCheckTokenDefinitionsThunk());
 
-    // 8. init periodic fetching of fiat rates
+    // 9. init periodic fetching of fiat rates
     await dispatch(
         periodicFetchFiatRatesThunk({
             rateType: 'current',
@@ -82,20 +99,20 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         }),
     );
 
-    // 9. fetch rates for transactions with missing rates
+    // 10. fetch rates for transactions with missing rates
     await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
 
-    // 10. dispatch initial location change
+    // 11. dispatch initial location change
     dispatch(routerActions.init());
 
-    // 11. fetch metadata. metadata is not saved together with other data in storage.
+    // 12. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
     // immediately after suite start.
     dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
 
-    // 12. start fetching staking data if needed, does need to be waited
+    // 13. start fetching staking data if needed, does need to be waited
     dispatch(periodicCheckStakeDataThunk());
 
-    // 13. backend connected, suite is ready to use
+    // 14. backend connected, suite is ready to use
     dispatch(onSuiteReady());
 };
