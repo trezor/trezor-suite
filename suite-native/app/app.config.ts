@@ -52,6 +52,13 @@ const appSlugs = {
     production: 'trezor-suite',
 } as const satisfies Record<BuildType, string>;
 
+const appOwners = {
+    debug: 'trezorcompany-develop',
+    preview: 'trezorcompany-develop',
+    develop: 'trezorcompany-develop',
+    production: 'trezorcompany',
+} as const satisfies Record<BuildType, string>;
+
 const projectIds = {
     develop: '7deae0c5-11be-49ff-a872-f538223c57de',
     preview: '15998f8a-e75c-4b60-959d-6f68e5ff4936',
@@ -159,7 +166,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         ...config,
         name,
         slug: appSlugs[buildType],
-        owner: 'trezorcompany',
+        owner: appOwners[buildType],
         version: suiteNativeVersion,
         runtimeVersion: {
             policy: 'fingerprint',
