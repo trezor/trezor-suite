@@ -9,6 +9,7 @@ import {
 import { TokenInfo, Unsuccessful } from '@trezor/connect';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { ERRORS as CONNECT_ERRORS } from '@trezor/connect';
 
 export type SerializedTx = { tx: string; coin: NetworkSymbol };
 
@@ -53,7 +54,7 @@ export type ComposeFeeLevelsError = {
 
 export type SignTransactionError = {
     error: 'sign-transaction-failed';
-    connectErrorCode?: string;
+    errorCode?: CONNECT_ERRORS.ErrorCode;
     message?: string;
 };
 

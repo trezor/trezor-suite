@@ -903,6 +903,11 @@ export const en = {
                 title: 'Are you sure you’d like to cancel sending the transaction?',
                 continueButton: 'Continue editing',
             },
+            deviceDisconnectedAlert: {
+                title: 'Your Trezor has been disconnected.',
+                description: 'Reconnect your Trezor to continue.',
+                primaryButton: 'Reconnect Trezor',
+            },
             lockedToast: 'Device is locked.',
             address: {
                 title: 'Check the address on your Trezor against the original to make sure it’s correct.',

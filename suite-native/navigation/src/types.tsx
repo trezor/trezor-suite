@@ -71,4 +71,4 @@ export type TabsOptions = {
 
 export type NavigateParameters<TParamList extends ParamListBase = ParamListBase> = Parameters<
     NavigationHelpers<TParamList>['navigate']
->;
+>[0];

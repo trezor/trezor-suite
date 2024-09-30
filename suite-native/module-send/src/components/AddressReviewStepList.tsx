@@ -7,7 +7,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import {
     RootStackParamList,
-    RootStackRoutes,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
@@ -17,7 +16,6 @@ import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { nativeSpacings } from '@trezor/theme';
-import { useToast } from '@suite-native/toasts';
 
 import {
     cleanupSendFormThunk,
@@ -28,6 +26,7 @@ import { SlidingFooterOverlay } from '../components/SlidingFooterOverlay';
 import { AddressReviewStep } from '../components/AddressReviewStep';
 import { CompareAddressHelpButton } from '../components/CompareAddressHelpButton';
 import { AddressOriginHelpButton } from '../components/AddressOriginHelpButton';
+import { useHandleSendReviewFailure } from '../hooks/useHandleSendReviewFailure';
 
 const NUMBER_OF_STEPS = 3;
 const OVERLAY_INITIAL_POSITION = 75;
@@ -42,16 +41,16 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const AddressReviewStepList = () => {
     const route = useRoute<RouteProps>();
+    const { accountKey, transaction } = route.params;
     const navigation = useNavigation<NavigationProps>();
     const dispatch = useDispatch();
 
     const [childHeights, setChildHeights] = useState<number[]>([]);
     const [stepIndex, setStepIndex] = useState(0);
-    const { showToast } = useToast();
+    const handleSendReviewFailure = useHandleSendReviewFailure({ accountKey, transaction });
 
     const areAllStepsDone = stepIndex === NUMBER_OF_STEPS - 1;
     const isLayoutReady = childHeights.length === NUMBER_OF_STEPS;
-    const { accountKey, transaction } = route.params;
 
     const isAddressConfirmed = useSelector(
         (state: AccountsRootState & DeviceRootState & SendRootState) =>
@@ -74,6 +73,11 @@ export const AddressReviewStepList = () => {
         });
     };
 
+    const restartAddressReview = () => {
+        setStepIndex(0);
+        dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: false }));
+    };
+
     const handleNextStep = async () => {
         setStepIndex(prevStepIndex => prevStepIndex + 1);
 
@@ -86,33 +90,8 @@ export const AddressReviewStepList = () => {
             );
 
             if (isRejected(response)) {
-                const connectErrorCode = response.payload?.connectErrorCode;
-                // In case that the signing review is interrupted, restart the flow so user can try again.
-                if (
-                    connectErrorCode === 'Failure_PinCancelled' || // User cancelled the pin entry on device
-                    connectErrorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
-                    connectErrorCode === 'Failure_ActionCancelled' // Device got locked before the review was finished.
-                ) {
-                    showToast({
-                        message: <Translation id="moduleSend.review.lockedToast" />,
-                        variant: 'error',
-                        icon: 'closeCircle',
-                    });
-                    navigation.navigate(SendStackRoutes.SendAddressReview, {
-                        accountKey,
-                        transaction,
-                    });
-                    setStepIndex(0);
-                    dispatch(cleanupSendFormThunk({ accountKey, shouldDeleteDraft: false }));
-
-                    return;
-                }
-
-                // Review was exited or cancelled on purpose.
-                navigation.navigate(RootStackRoutes.AccountDetail, {
-                    accountKey,
-                    closeActionType: 'back',
-                });
+                restartAddressReview();
+                handleSendReviewFailure(response);
             }
         }
     };

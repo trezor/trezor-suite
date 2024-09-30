@@ -178,7 +178,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
         if (!response.success) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                connectErrorCode: response.payload.code,
+                errorCode: response.payload.code,
                 message: response.payload.error,
             });
         }

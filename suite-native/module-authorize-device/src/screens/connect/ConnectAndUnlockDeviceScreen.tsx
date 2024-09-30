@@ -74,7 +74,11 @@ export const ConnectAndUnlockDeviceScreen = ({
 
     return (
         <Screen
-            screenHeader={<ConnectDeviceScreenHeader onCancelNavigationTarget={params?.onCancelNavigationTarget} />}
+            screenHeader={
+                <ConnectDeviceScreenHeader
+                    onCancelNavigationTarget={params?.onCancelNavigationTarget}
+                />
+            }
             customHorizontalPadding={0}
             customVerticalPadding={0}
             hasBottomInset={false}

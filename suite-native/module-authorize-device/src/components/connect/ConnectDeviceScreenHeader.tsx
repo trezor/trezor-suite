@@ -73,7 +73,7 @@ export const ConnectDeviceScreenHeader = ({
             }
 
             if (onCancelNavigationTarget) {
-                navigation.navigate(...onCancelNavigationTarget);
+                navigation.navigate(onCancelNavigationTarget);
 
                 return;
             }
