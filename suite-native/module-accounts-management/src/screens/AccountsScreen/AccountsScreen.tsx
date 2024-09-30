@@ -48,6 +48,7 @@ export const AccountsScreen = () => {
                 onSelectAccount={handleSelectAccount}
                 filterValue={accountsFilterValue}
                 hideTokensIntoModal
+                isStakingPressable
             />
         </Screen>
     );

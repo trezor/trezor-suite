@@ -24,6 +24,7 @@ export const NetworkAssetsBottomSheet = React.memo(
                 data={items}
                 onClose={onClose}
                 onSelectAccount={onSelectAccount}
+                isStakingPressable
             />
         );
     },

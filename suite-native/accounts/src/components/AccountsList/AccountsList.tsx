@@ -20,12 +20,14 @@ type AccountsListProps = {
     onSelectAccount: OnSelectAccount;
     filterValue?: string;
     hideTokensIntoModal?: boolean;
+    isStakingPressable?: boolean;
 };
 
 export const AccountsList = ({
     onSelectAccount,
     filterValue = '',
     hideTokensIntoModal = false,
+    isStakingPressable = false,
 }: AccountsListProps) => {
     const groupedAccounts = useSelector((state: NativeAccountsRootState) =>
         selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, filterValue),
@@ -61,7 +63,6 @@ export const AccountsList = ({
                             <AccountsListItem
                                 key={account.key}
                                 account={account}
-                                hideTokens={hideTokensIntoModal}
                                 onPress={handleSetBottomSheetAccount}
                             />
                         ))}
@@ -71,6 +72,7 @@ export const AccountsList = ({
             <TokenSelectBottomSheet
                 bottomSheetAccountAtom={bottomSheetAccountAtom}
                 onSelectAccount={onSelectAccount}
+                isStakingPressable={isStakingPressable}
             />
         </>
     );

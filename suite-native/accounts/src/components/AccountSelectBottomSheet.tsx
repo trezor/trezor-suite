@@ -4,15 +4,18 @@ import { FlashList } from '@shopify/flash-list';
 
 import { BottomSheet } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { useToast } from '@suite-native/toasts';
 
 import { AccountSelectBottomSheetSection, OnSelectAccount } from '../types';
 import { AccountsListItem } from './AccountsList/AccountsListItem';
 import { AccountSectionTitle } from './AccountSectionTitle';
 import { AccountsListTokenItem } from './AccountsList/AccountsListTokenItem';
+import { AccountsListStakingItem } from './AccountsList/AccountsListStakingItem';
 
 type AccountSelectBottomSheetProps = {
     data: AccountSelectBottomSheetSection[];
     onSelectAccount: OnSelectAccount;
+    isStakingPressable?: boolean;
     onClose: () => void;
 };
 
@@ -21,8 +24,14 @@ const contentContainerStyle = prepareNativeStyle(utils => ({
 }));
 
 export const AccountSelectBottomSheet = React.memo(
-    ({ data, onSelectAccount, onClose }: AccountSelectBottomSheetProps) => {
+    ({
+        data,
+        onSelectAccount,
+        isStakingPressable = false,
+        onClose,
+    }: AccountSelectBottomSheetProps) => {
         const { applyStyle } = useNativeStyles();
+        const { showToast } = useToast();
 
         const renderItem = useCallback(
             ({ item }: { item: AccountSelectBottomSheetSection }) => {
@@ -35,12 +44,31 @@ export const AccountSelectBottomSheet = React.memo(
                                 {...item}
                                 hasBackground
                                 showDivider
+                                isInModal={true}
                                 onPress={() => onSelectAccount(item)}
                             />
                         );
                     case 'staking':
-                        // TODO: Implement staking section
-                        return null;
+                        return (
+                            <AccountsListStakingItem
+                                {...item}
+                                hasBackground
+                                onPress={() => {
+                                    if (isStakingPressable) {
+                                        onSelectAccount({
+                                            account: item.account,
+                                            isStaking: true,
+                                            hasAnyKnownTokens: false,
+                                        });
+                                    } else {
+                                        showToast({
+                                            variant: 'warning',
+                                            message: 'Staking is not available in this context.',
+                                        });
+                                    }
+                                }}
+                            />
+                        );
                     case 'token':
                         const { token, account } = item;
 
@@ -61,7 +89,7 @@ export const AccountSelectBottomSheet = React.memo(
                         return null;
                 }
             },
-            [onSelectAccount],
+            [isStakingPressable, onSelectAccount, showToast],
         );
 
         return (

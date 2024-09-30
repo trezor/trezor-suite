@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/icons-deprecated"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../atoms" },
+        { "path": "../formatters" },
+        { "path": "../intl" },
+        { "path": "../link" },
+        { "path": "../navigation" },
+        { "path": "../staking" },
+        { "path": "../../packages/styles" }
+    ]
+}

@@ -65,6 +65,7 @@
         "@suite-native/module-receive": "workspace:*",
         "@suite-native/module-send": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
+        "@suite-native/module-staking-management": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/notifications": "workspace:*",
         "@suite-native/receive": "workspace:*",

@@ -98,6 +98,9 @@
         {
             "path": "suite-native/module-settings"
         },
+        {
+            "path": "suite-native/module-staking-management"
+        },
         { "path": "suite-native/navigation" },
         { "path": "suite-native/notifications" },
         { "path": "suite-native/qr-code" },
@@ -106,6 +109,7 @@
         },
         { "path": "suite-native/receive" },
         { "path": "suite-native/settings" },
+        { "path": "suite-native/staking" },
         { "path": "suite-native/state" },
         { "path": "suite-native/storage" },
         { "path": "suite-native/test-utils" },
