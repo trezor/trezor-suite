@@ -18,15 +18,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
     let api: AbstractApi;
 
     const sessionsBackground = new SessionsBackground();
-
-    const sessionsClient = new SessionsClient();
-    sessionsClient.init({
-        requestFn: args => sessionsBackground.handleMessage(args),
-        registerBackgroundCallbacks: () => {},
-    });
-    sessionsBackground.on('descriptors', descriptors => {
-        sessionsClient.emit('descriptors', descriptors);
-    });
+    const sessionsClient = new SessionsClient(sessionsBackground);
 
     if (typeof apiArg === 'string') {
         api =

@@ -21,6 +21,7 @@ import type {
     GetPathBySessionRequest,
     HandleMessageParams,
     HandleMessageResponse,
+    SessionsBackgroundInterface,
 } from './types';
 import type { Descriptor, PathInternal, Success } from '../types';
 import { PathPublic, Session } from '../types';
@@ -35,13 +36,16 @@ type DescriptorsDict = Record<PathInternal, Descriptor>;
 // in nodeusb, enumeration operation takes ~3 seconds
 const lockDuration = 1000 * 4;
 
-export class SessionsBackground extends TypedEmitter<{
-    /**
-     * updated descriptors (session has changed)
-     * note: we can't send diff from here (see abstract transport) although it would make sense, because we need to support also bridge which does not use this sessions background.
-     */
-    descriptors: Descriptor[];
-}> {
+export class SessionsBackground
+    extends TypedEmitter<{
+        /**
+         * updated descriptors (session has changed)
+         * note: we can't send diff from here (see abstract transport) although it would make sense, because we need to support also bridge which does not use this sessions background.
+         */
+        descriptors: Descriptor[];
+    }>
+    implements SessionsBackgroundInterface
+{
     /**
      * Dictionary where key is path and value is Descriptor
      */
@@ -323,5 +327,6 @@ export class SessionsBackground extends TypedEmitter<{
         this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
         this.descriptors = {};
         this.lastSessionId = 0;
+        this.removeAllListeners();
     }
 }

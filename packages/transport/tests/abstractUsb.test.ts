@@ -2,8 +2,6 @@ import { v1 as v1Protocol } from '@trezor/protocol';
 import { AbstractTransport } from '../src/transports/abstract';
 import { AbstractApiTransport } from '../src/transports/abstractApi';
 import { UsbApi } from '../src/api/usb';
-import { SessionsClient } from '../src/sessions/client';
-import { SessionsBackground } from '../src/sessions/background';
 import * as messages from '@trezor/protobuf/messages.json';
 import { PathPublic, Session } from '../src/types';
 
@@ -43,37 +41,8 @@ const createUsbMock = (optional = {}) =>
 
 class TestUsbTransport extends AbstractApiTransport {
     public name = 'WebUsbTransport' as const;
-    public sessionsClient = new SessionsClient({});
-
-    constructor({ messages, api }: ConstructorParameters<typeof AbstractApiTransport>[0]) {
-        super({
-            messages,
-            api,
-        });
-    }
-
-    init() {
-        return this.scheduleAction(async () => {
-            const sessionsBackground = new SessionsBackground();
-
-            // in nodeusb there is no synchronization yet. this is a followup and needs to be decided
-            // so far, sessionsClient has direct access to sessionBackground
-            this.sessionsClient.init({
-                requestFn: args => sessionsBackground.handleMessage(args),
-                registerBackgroundCallbacks: () => {},
-            });
-
-            sessionsBackground.on('descriptors', descriptors => {
-                this.sessionsClient.emit('descriptors', descriptors);
-            });
-
-            const handshakeRes = await this.sessionsClient.handshake();
-            this.stopped = !handshakeRes.success;
-
-            return handshakeRes;
-        });
-    }
 }
+
 // we cant directly use abstract class (UsbTransport)
 const initTest = async () => {
     let transport: AbstractTransport;
