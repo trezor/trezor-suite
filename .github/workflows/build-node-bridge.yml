@@ -1,0 +1,66 @@
+name: "[Build] suite-node-bridge-bin-js"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+
+jobs:
+  node-bridge-bin-js:
+    name: Build node-bridge bin.js file
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
+
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install deps and build libs
+        run: |
+          yarn install --immutable
+
+      - name: Build bin.js file
+        run: |
+          yarn workspace @trezor/transport-bridge build:js
+
+      - name: Upload node-bridge artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: node_bridge_bin_js
+          path: |
+            packages/transport-bridge/dist/bin.js
+          retention-days: 3
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+      - name: Upload dist to dev server
+        shell: bash
+        env:
+          DEPLOY_PATH: s3://dev.suite.sldev.cz/transport-bridge/${{ steps.extract_branch.outputs.branch }}/dist
+        run: |
+          echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
+          mkdir -p tmp_build_directory
+          cp -R ./packages/transport-bridge/dist/* tmp_build_directory/
+          aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
