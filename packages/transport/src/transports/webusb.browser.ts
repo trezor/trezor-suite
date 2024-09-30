@@ -2,7 +2,13 @@ import { AbstractTransportMethodParams, AbstractTransportParams } from './abstra
 import { AbstractApiTransport } from './abstractApi';
 import { UsbApi } from '../api/usb';
 
-import { initBackgroundInBrowser } from '../sessions/background-browser';
+import { BrowserSessionsBackground } from '../sessions/background-browser';
+
+const defaultSessionsBackgroundUrl =
+    window.location.origin +
+    `${process.env.ASSET_PREFIX || ''}/workers/sessions-background-sharedworker.js`
+        // just in case so that whoever defines ASSET_PREFIX does not need to worry about trailing slashes
+        .replace(/\/+/g, '/');
 
 type WebUsbTransportParams = AbstractTransportParams & { sessionsBackgroundUrl?: string };
 
@@ -19,34 +25,36 @@ export class WebUsbTransport extends AbstractApiTransport {
     constructor({ messages, logger, sessionsBackgroundUrl }: WebUsbTransportParams) {
         super({
             messages,
-            api: new UsbApi({
-                usbInterface: navigator.usb,
-                logger,
-            }),
+            api: new UsbApi({ usbInterface: navigator.usb, logger }),
             logger,
         });
-        this.sessionsBackgroundUrl = sessionsBackgroundUrl;
+        this.sessionsBackgroundUrl = sessionsBackgroundUrl ?? defaultSessionsBackgroundUrl;
     }
 
-    public init({ signal }: AbstractTransportMethodParams<'init'> = {}) {
-        return this.scheduleAction(
-            async () => {
-                const { sessionsBackgroundUrl } = this;
-                const { requestFn, registerBackgroundCallbacks } =
-                    await initBackgroundInBrowser(sessionsBackgroundUrl);
+    private async trySetSessionsBackground() {
+        try {
+            const response = await fetch(this.sessionsBackgroundUrl, { method: 'HEAD' });
+            if (!response.ok) {
+                console.warn(
+                    `Failed to fetch sessions-background SharedWorker from url: ${this.sessionsBackgroundUrl}`,
+                );
+            } else {
+                this.sessionsBackground = new BrowserSessionsBackground(this.sessionsBackgroundUrl);
                 // sessions client initiated with a request fn facilitating communication with a session backend (shared worker in case of webusb)
-                this.sessionsClient.init({
-                    requestFn,
-                    registerBackgroundCallbacks,
-                });
+                this.sessionsClient.setBackground(this.sessionsBackground);
+            }
+        } catch (err) {
+            console.warn(
+                'Unable to load background-sharedworker. Falling back to use local module. Say bye bye to tabs synchronization. Error details: ',
+                err.message,
+            );
+        }
+    }
 
-                const handshakeRes = await this.sessionsClient.handshake();
-                this.stopped = !handshakeRes.success;
+    public async init({ signal }: AbstractTransportMethodParams<'init'> = {}) {
+        await this.trySetSessionsBackground();
 
-                return handshakeRes;
-            },
-            { signal },
-        );
+        return super.init({ signal });
     }
 
     public listen() {

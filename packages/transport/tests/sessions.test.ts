@@ -3,16 +3,14 @@ import { SessionsBackground } from '../src/sessions/background';
 import { PathInternal, PathPublic, Session } from '../src/types';
 
 describe('sessions', () => {
-    let requestFn: SessionsClient['request'];
+    let background: SessionsBackground;
 
     beforeEach(() => {
-        const background = new SessionsBackground();
-        requestFn = params => background.handleMessage(params);
+        background = new SessionsBackground();
     });
 
     test('acquire without previous enumerate', async () => {
-        const client1 = new SessionsClient();
-        client1.init({ requestFn });
+        const client1 = new SessionsClient(background);
         await client1.handshake();
 
         const acquireIntent = await client1.acquireIntent({
@@ -28,8 +26,7 @@ describe('sessions', () => {
     });
 
     test('acquire', async () => {
-        const client1 = new SessionsClient();
-        client1.init({ requestFn });
+        const client1 = new SessionsClient(background);
         await client1.handshake();
 
         await client1.enumerateDone({ descriptors: [{ path: PathInternal('abc'), type: 1 }] });
@@ -73,8 +70,7 @@ describe('sessions', () => {
     test('acquire', async () => {
         expect.assertions(3);
 
-        const client1 = new SessionsClient();
-        client1.init({ requestFn });
+        const client1 = new SessionsClient(background);
         await client1.handshake();
 
         await client1.enumerateDone({ descriptors: [{ path: PathInternal('1'), type: 1 }] });
@@ -131,8 +127,7 @@ describe('sessions', () => {
     });
 
     test('acquire - release - acquire', async () => {
-        const client1 = new SessionsClient();
-        client1.init({ requestFn });
+        const client1 = new SessionsClient(background);
         await client1.handshake();
 
         await client1.enumerateDone({ descriptors: [{ path: PathInternal('1'), type: 1 }] });

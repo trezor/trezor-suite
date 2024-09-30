@@ -9,9 +9,9 @@ import {
     ReleaseDoneRequest,
     GetPathBySessionRequest,
     AcquireDoneRequest,
-    RegisterBackgroundCallbacks,
+    SessionsBackgroundInterface,
+    HandleMessageParams,
 } from './types';
-import { SessionsBackground } from './background';
 
 /**
  * SessionsClient gives you API for communication with SessionsBackground.
@@ -20,39 +20,28 @@ import { SessionsBackground } from './background';
 export class SessionsClient extends TypedEmitter<{
     descriptors: Descriptor[];
 }> {
-    // request method responsible for communication with sessions background.
-    private request: SessionsBackground['handleMessage'] = () => {
-        throw new Error('SessionsClient: request method not provided');
-    };
-
     // used only for debugging - discriminating sessions clients in sessions background log
     private caller = getWeakRandomId(3);
-    private id: number = 0;
+    private id;
+    private background;
 
-    public init({
-        requestFn,
-        registerBackgroundCallbacks,
-    }: {
-        requestFn: SessionsBackground['handleMessage'];
-        registerBackgroundCallbacks?: RegisterBackgroundCallbacks;
-    }) {
+    constructor(background: SessionsBackgroundInterface) {
+        super();
         this.id = 0;
-        this.request = params => {
-            if (!requestFn) {
-                throw new Error('SessionsClient: requestFn not provided');
-            }
-            params.caller = this.caller;
-            params.id = this.id;
-            this.id++;
+        this.background = background;
+        background.on('descriptors', descriptors => this.emit('descriptors', descriptors));
+    }
 
-            return requestFn(params);
-        };
+    public setBackground(background: SessionsBackgroundInterface) {
+        this.background.dispose();
 
-        if (registerBackgroundCallbacks) {
-            registerBackgroundCallbacks(descriptors => {
-                this.emit('descriptors', descriptors);
-            });
-        }
+        this.id = 0;
+        this.background = background;
+        background.on('descriptors', descriptors => this.emit('descriptors', descriptors));
+    }
+
+    private request<M extends HandleMessageParams>(params: M) {
+        return this.background.handleMessage({ ...params, caller: this.caller, id: this.id++ });
     }
 
     public handshake() {

@@ -13,6 +13,7 @@ import { receiveAndParse } from '../utils/receive';
 import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
 import { Session } from '../types';
+import { SessionsBackgroundInterface } from '../sessions/types';
 
 interface ConstructorParams extends AbstractTransportParams {
     api: AbstractApi;
@@ -24,30 +25,21 @@ interface ConstructorParams extends AbstractTransportParams {
 export abstract class AbstractApiTransport extends AbstractTransport {
     // sessions client is a standardized interface for communicating with sessions backend
     // which can live in couple of context (shared worker, local module, websocket server etc)
-    protected sessionsClient = new SessionsClient();
-    private sessionsBackground = new SessionsBackground();
+    protected sessionsClient: SessionsClient;
+    protected sessionsBackground: SessionsBackgroundInterface;
 
     protected api: AbstractApi;
 
     constructor({ messages, api, logger }: ConstructorParams) {
         super({ messages, logger });
         this.api = api;
+        this.sessionsBackground = new SessionsBackground();
+        this.sessionsClient = new SessionsClient(this.sessionsBackground);
     }
 
     public init({ signal }: AbstractTransportMethodParams<'init'> = {}) {
         return this.scheduleAction(
             async () => {
-                // in nodeusb there is no synchronization yet. this is a followup and needs to be decided
-                // so far, sessionsClient has direct access to sessionBackground
-                this.sessionsClient.init({
-                    requestFn: args => this.sessionsBackground.handleMessage(args),
-                    registerBackgroundCallbacks: () => {},
-                });
-
-                this.sessionsBackground.on('descriptors', descriptors => {
-                    this.sessionsClient.emit('descriptors', descriptors);
-                });
-
                 const handshakeRes = await this.sessionsClient.handshake();
                 this.stopped = !handshakeRes.success;
 

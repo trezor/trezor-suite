@@ -111,6 +111,8 @@ export type HandleMessageResponse<P> = P extends { type: infer T }
         : never
     : never;
 
-export type RegisterBackgroundCallbacks = (
-    onDescriptorsCallback: (args: Descriptor[]) => void,
-) => void;
+export interface SessionsBackgroundInterface {
+    on(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
+    handleMessage<M extends HandleMessageParams>(message: M): Promise<HandleMessageResponse<M>>;
+    dispose(): void;
+}
