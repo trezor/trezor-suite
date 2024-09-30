@@ -12,7 +12,6 @@ import {
     selectAccountByKey,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 import {
     AppTabsParamList,
     RootStackParamList,
@@ -23,6 +22,7 @@ import {
 import { Translation } from '@suite-native/intl';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isCoinWithTokens } from '@suite-native/tokens';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
@@ -132,7 +132,7 @@ export const TransactionListHeader = memo(
         };
 
         const isTokenDetail = !!tokenContract;
-        const isEthereumAccountDetail = !isTokenDetail && isEthereumAccountSymbol(account.symbol);
+        const canHaveTokens = !isTokenDetail && isCoinWithTokens(account.symbol);
         const isPriceCardDisplayed = !isTestnetAccount && !isTokenDetail;
 
         const isSendButtonDisplayed =
@@ -181,7 +181,7 @@ export const TransactionListHeader = memo(
                     )}
                 </VStack>
 
-                {isEthereumAccountDetail && accountHasTransactions && (
+                {canHaveTokens && accountHasTransactions && (
                     <IncludeTokensToggle
                         isToggled={areTokensIncluded}
                         onToggle={toggleIncludeTokenTransactions}

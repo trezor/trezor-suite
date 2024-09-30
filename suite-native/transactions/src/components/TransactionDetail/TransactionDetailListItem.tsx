@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Box, RoundedIcon, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import {
     StackNavigationProps,
     RootStackParamList,
@@ -22,7 +22,7 @@ import {
 type TransactionDetailListItemProps = {
     accountKey: AccountKey;
     transaction: WalletAccountTransaction;
-    tokenTransfer?: EthereumTokenTransfer;
+    tokenTransfer?: TypedTokenTransfer;
     isFirst?: boolean;
     isLast?: boolean;
     onPress: () => void;

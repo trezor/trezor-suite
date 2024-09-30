@@ -12,7 +12,7 @@ import {
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -27,7 +27,7 @@ import { TransactionDetailSheets } from './TransactionDetailSheets';
 type TransactionDetailDataProps = {
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
-    tokenTransfer?: EthereumTokenTransfer;
+    tokenTransfer?: TypedTokenTransfer;
 };
 
 export const TransactionDetailData = ({

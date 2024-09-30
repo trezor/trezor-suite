@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { BottomSheet, Box, Card, RoundedIcon, Text } from '@suite-native/atoms';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Icon } from '@suite-common/icons-deprecated';
 import { useNativeStyles } from '@trezor/styles';
@@ -13,12 +13,12 @@ import { cardStyle } from './TransactionDetailSummary';
 type TransactionDetailIncludedCoinsProps = {
     accountKey: AccountKey;
     transaction: WalletAccountTransaction;
-    tokenTransfer?: EthereumTokenTransfer;
+    tokenTransfer?: TypedTokenTransfer;
 };
 
 const isSameTokenTransfer = (
-    tokenTransferA: EthereumTokenTransfer,
-    tokenTransferB: EthereumTokenTransfer,
+    tokenTransferA: TypedTokenTransfer,
+    tokenTransferB: TypedTokenTransfer,
 ) =>
     tokenTransferA.from === tokenTransferB.from &&
     tokenTransferA.to === tokenTransferB.to &&

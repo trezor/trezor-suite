@@ -20,11 +20,11 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
-import { selectHasDeviceAnyTokens } from '@suite-native/tokens';
 import {
     selectHasAnyDeviceAccountsWithStaking,
     NativeStakingRootState,
 } from '@suite-native/staking';
+import { selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
 
 import {
     AssetsRootState,
@@ -91,7 +91,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
     const accountsPerAsset = accountsKeysForNetworkSymbol.length;
     const hasAnyTokens = useSelector(
         (state: AccountsRootState & DeviceRootState & TokenDefinitionsRootState) =>
-            selectHasDeviceAnyTokens(state, cryptoCurrencySymbol),
+            selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
     const hasAnyAccountsWithStaking = useSelector((state: NativeStakingRootState) =>
         selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
