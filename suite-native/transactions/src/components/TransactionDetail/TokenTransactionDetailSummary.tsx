@@ -1,5 +1,5 @@
 import { AccountKey } from '@suite-common/wallet-types';
-import { EthereumTokenTransfer } from '@suite-native/tokens';
+import { TypedTokenTransfer } from '@suite-native/tokens';
 import { VStack } from '@suite-native/atoms';
 
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
@@ -12,7 +12,7 @@ export const TokenTransactionDetailSummary = ({
 }: {
     accountKey: AccountKey;
     txid: string;
-    tokenTransfer: EthereumTokenTransfer;
+    tokenTransfer: TypedTokenTransfer;
     onShowMore: () => void;
 }) => {
     // Token transfer has always only one address, so we need to wrap it to an array.

@@ -14,6 +14,7 @@ import {
 import { mergeDeepObject } from '@trezor/utils';
 import { NativeUsbTransport } from '@trezor/transport-native';
 import { selectEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import { NETWORK_SYMBOLS_WITH_TOKENS } from '@suite-native/tokens';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
@@ -33,7 +34,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         // otherwise disableAccountsThunk might erase accounts not supported by current device
         selectEnabledNetworks: selectEnabledDiscoveryNetworkSymbols,
         // todo: this is temporary solution to make token definitions work on native in portfolio tracker
-        selectTokenDefinitionsEnabledNetworks: () => ['eth'],
+        selectTokenDefinitionsEnabledNetworks: () => NETWORK_SYMBOLS_WITH_TOKENS,
         selectBitcoinAmountUnit: selectBitcoinUnits,
         selectAreSatsAmountUnit,
         selectLocalCurrency: selectFiatCurrencyCode,

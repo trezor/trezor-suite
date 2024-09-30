@@ -18,7 +18,7 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { useNativeStyles } from '@trezor/styles';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { TokenAddress, TokenSymbol, TransactionType } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 
@@ -92,13 +92,13 @@ export const TransactionDetailScreen = ({
                 <VStack spacing="extraLarge">
                     <TransactionDetailHeader
                         transaction={transaction}
-                        tokenTransfer={tokenTransfer as EthereumTokenTransfer}
+                        tokenTransfer={tokenTransfer as TypedTokenTransfer}
                         accountKey={accountKey}
                     />
                     <TransactionDetailData
                         transaction={transaction}
                         accountKey={accountKey}
-                        tokenTransfer={tokenTransfer as EthereumTokenTransfer}
+                        tokenTransfer={tokenTransfer as TypedTokenTransfer}
                     />
                 </VStack>
                 <Button

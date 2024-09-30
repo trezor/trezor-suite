@@ -5,7 +5,7 @@ import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { selectIsPhishingTransaction, TransactionsRootState } from '@suite-common/wallet-core';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
@@ -15,7 +15,7 @@ import { getTransactionValueSign } from '../../utils';
 
 type TokenTransferListItemProps = {
     txid: string;
-    tokenTransfer: EthereumTokenTransfer;
+    tokenTransfer: TypedTokenTransfer;
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
     includedCoinsCount?: number;
@@ -28,7 +28,7 @@ export const TokenTransferListItemValues = ({
     transaction,
     accountKey,
 }: {
-    tokenTransfer: EthereumTokenTransfer;
+    tokenTransfer: TypedTokenTransfer;
     transaction: WalletAccountTransaction;
     accountKey: AccountKey;
 }) => {

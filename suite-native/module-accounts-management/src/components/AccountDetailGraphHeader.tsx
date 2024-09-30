@@ -7,7 +7,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
-import { selectEthereumAccountTokenSymbol } from '@suite-native/tokens';
+import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import { GraphFiatBalance } from '@suite-native/graph';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
@@ -52,7 +52,7 @@ export const AccountDetailGraphHeader = ({ accountKey, tokenAddress }: AccountBa
         selectAccountByKey(state, accountKey),
     );
     const tokenSymbol = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountTokenSymbol(state, accountKey, tokenAddress),
+        selectAccountTokenSymbol(state, accountKey, tokenAddress),
     );
     const setPoint = useSetAtom(selectedPointAtom);
 
