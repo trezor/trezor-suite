@@ -109,7 +109,7 @@ export const SendOutputsScreen = ({
             decimals: network?.decimals,
         },
         defaultValues: {
-            outputs: sendFormDraft?.outputs ?? DEFAULT_VALUES,
+            outputs: DEFAULT_VALUES,
         },
     });
 
@@ -117,6 +117,8 @@ export const SendOutputsScreen = ({
         handleSubmit,
         control,
         getValues,
+        setValue,
+        trigger,
         formState: { isValid, isSubmitting },
     } = form;
     const watchedFormValues = useWatch({ control });
@@ -131,11 +133,6 @@ export const SendOutputsScreen = ({
         );
     }, [accountKey, dispatch, getValues]);
 
-    // Triggered for every change of watchedFormValues.
-    useEffect(() => {
-        if (isValid) debounce(storeFormDraftIfValid);
-    }, [storeFormDraftIfValid, watchedFormValues, debounce, isValid]);
-
     const calculateNormalFeeMaxAmount = useCallback(async () => {
         const response = await dispatch(
             calculateMaxAmountWithNormalFeeThunk({
@@ -148,6 +145,25 @@ export const SendOutputsScreen = ({
             setNormalFeeMaxAmount(response.payload);
         }
     }, [getValues, accountKey, dispatch]);
+
+    useEffect(() => {
+        const prefillValuesFromStoredDraft = async () => {
+            if (sendFormDraft?.outputs) {
+                setValue('outputs', sendFormDraft.outputs);
+                await calculateNormalFeeMaxAmount();
+                trigger();
+            }
+        };
+
+        prefillValuesFromStoredDraft();
+        // this effect should be triggered only for the first render to fill the form with the stored draft on entry.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Triggered for every change of watchedFormValues.
+    useEffect(() => {
+        if (isValid) debounce(storeFormDraftIfValid);
+    }, [storeFormDraftIfValid, watchedFormValues, debounce, isValid]);
 
     useEffect(() => {
         calculateNormalFeeMaxAmount();
@@ -210,7 +226,7 @@ export const SendOutputsScreen = ({
                 )
             }
         >
-            <Box marginTop="extraLarge" paddingBottom="xxl">
+            <Box marginTop="extraLarge" marginBottom="extraLarge">
                 <Form form={form}>
                     <Box flex={1} justifyContent="space-between">
                         <SendOutputFields accountKey={accountKey} />
