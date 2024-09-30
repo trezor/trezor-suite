@@ -1,6 +1,6 @@
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { useRef, useState } from 'react';
-import { TextInput } from 'react-native';
+import { NativeSyntheticEvent, TextInput, TextInputFocusEventData } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { VStack, HStack, Box, Text } from '@suite-native/atoms';
@@ -13,6 +13,7 @@ import {
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
+import { useScrollView } from '@suite-native/navigation';
 
 import { CryptoAmountInput } from './CryptoAmountInput';
 import { FiatAmountInput } from './FiatAmountInput';
@@ -55,6 +56,7 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
     );
 
     const [isCryptoSelected, setIsCryptoSelected] = useState(true);
+    const scrollView = useScrollView();
 
     const cryptoRef = useRef<TextInput>(null);
     const cryptoScale = useSharedValue(SCALE_FOCUSED);
@@ -89,6 +91,12 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
         setIsCryptoSelected(!isCryptoSelected);
     };
 
+    const handleInputFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+        e.target?.measureInWindow((_, y) => {
+            scrollView?.scrollTo({ x: 0, y, animated: true });
+        });
+    };
+
     if (!networkSymbol) return null;
 
     return (
@@ -110,6 +118,7 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
                     inputRef={cryptoRef}
                     isDisabled={!isCryptoSelected}
                     networkSymbol={networkSymbol}
+                    onFocus={handleInputFocus}
                 />
                 {isFiatDisplayed && (
                     <>
@@ -121,6 +130,7 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
                             inputRef={fiatRef}
                             isDisabled={isCryptoSelected}
                             networkSymbol={networkSymbol}
+                            onFocus={handleInputFocus}
                         />
                     </>
                 )}

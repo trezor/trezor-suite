@@ -41,6 +41,7 @@ export const CryptoAmountInput = ({
     scaleValue,
     translateValue,
     networkSymbol,
+    onFocus,
     isDisabled = false,
 }: SendAmountInputProps) => {
     const { applyStyle } = useNativeStyles();
@@ -92,6 +93,7 @@ export const CryptoAmountInput = ({
                 editable={!isDisabled}
                 onChangeText={handleChangeValue}
                 onBlur={handleBlur}
+                onFocus={onFocus}
                 hasError={!isDisabled && hasError}
                 rightIcon={
                     <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>

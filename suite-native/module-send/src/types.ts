@@ -1,5 +1,5 @@
 import { RefObject } from 'react';
-import { TextInput } from 'react-native';
+import { TextInput, TextInputProps } from 'react-native';
 import { SharedValue } from 'react-native-reanimated';
 
 import { FeeLevelLabel, ReviewOutput, ReviewOutputState } from '@suite-common/wallet-types';
@@ -17,4 +17,5 @@ export type SendAmountInputProps = {
     scaleValue: SharedValue<number>;
     translateValue: SharedValue<number>;
     isDisabled?: boolean;
+    onFocus?: TextInputProps['onFocus'];
 };

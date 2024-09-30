@@ -19,6 +19,7 @@ export const FiatAmountInput = ({
     translateValue,
     inputRef,
     networkSymbol,
+    onFocus,
     isDisabled = false,
 }: SendAmountInputProps) => {
     const { applyStyle } = useNativeStyles();
@@ -70,6 +71,7 @@ export const FiatAmountInput = ({
                 editable={!isDisabled}
                 onChangeText={handleChangeValue}
                 onBlur={onBlur}
+                onFocus={onFocus}
                 hasError={!isDisabled && hasError}
                 rightIcon={
                     <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
