@@ -3,7 +3,6 @@ import {
     AccountType,
     Network,
     NetworkFeature,
-    Networks,
     NetworkSymbol,
     NormalizedNetworkAccount,
 } from './types';
@@ -44,21 +43,6 @@ export const normalizeNetworkAccounts = (network: Network): NormalizedNetworkAcc
 
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
     networks[symbol]?.customBackends.some(backend => backend === 'blockbook');
-
-export const isDebugOnlyAccountType = (
-    accountType: AccountType,
-    symbol?: NetworkSymbol,
-): boolean => {
-    if (!symbol) return false;
-
-    const network = (networks as Networks)?.[symbol];
-
-    if (!network) return false;
-
-    const accountTypeInfo = network.accountTypes[accountType];
-
-    return !!accountTypeInfo?.isDebugOnlyAccountType;
-};
 
 export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.networkType;
 

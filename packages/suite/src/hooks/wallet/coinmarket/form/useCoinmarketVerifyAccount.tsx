@@ -1,4 +1,4 @@
-import { isDebugOnlyAccountType, Network, networksCollection } from '@suite-common/wallet-config';
+import { Network, networksCollection } from '@suite-common/wallet-config';
 import { selectDevice } from '@suite-common/wallet-core';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -22,6 +22,7 @@ import {
 } from 'src/types/coinmarket/coinmarketVerify';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 const getSelectAccountOptions = (
     suiteReceiveAccounts: Account[] | undefined,
@@ -79,33 +80,13 @@ const getSuiteReceiveAccounts = ({
                 ((n.isDebugOnlyNetwork && isDebug) || !n.isDebugOnlyNetwork),
         );
 
-        const isSameDevice = (account: Account) => account.deviceState === device?.state;
-        const isSameNetwork = (account: Account) => account.symbol === receiveNetwork;
-        const isDebugAndIsAccountDebugOnly = (account: Account) =>
-            isDebugOnlyAccountType(account.accountType, account.symbol) && isDebug;
-        const isNotDebugOnlyAccount = (account: Account) =>
-            !isDebugOnlyAccountType(account.accountType, account.symbol);
-        // Check if the account is not empty
-        const isNotEmptyAccount = (account: Account) => !account.empty;
-        // Check if the account is marked as visible
-        const isVisibleAccount = (account: Account) => account.visible;
-        const isFirstNormalAccount = (account: Account) =>
-            account.accountType === 'normal' && account.index === 0;
-        const isCoinjoinAccount = (account: Account) => account.accountType === 'coinjoin';
-
-        if (receiveNetworks.length > 0) {
-            // Get accounts of the current symbol belonging to the current device.
-            return accounts.filter(
-                account =>
-                    isSameDevice(account) &&
-                    isSameNetwork(account) &&
-                    !isCoinjoinAccount(account) &&
-                    (isDebugAndIsAccountDebugOnly(account) || isNotDebugOnlyAccount(account)) &&
-                    (isNotEmptyAccount(account) ||
-                        isVisibleAccount(account) ||
-                        isFirstNormalAccount(account)),
-            );
-        }
+        return filterReceiveAccounts({
+            accounts,
+            deviceState: device?.state,
+            receiveNetwork,
+            isDebug,
+            receiveNetworks,
+        });
     }
 
     return undefined;
@@ -142,6 +123,7 @@ const useCoinmarketVerifyAccount = ({
             }),
         [accounts, currency, device, isDebug, receiveNetwork],
     );
+
     const selectAccountOptions = useMemo(
         () => getSelectAccountOptions(suiteReceiveAccounts, device),
         [device, suiteReceiveAccounts],
