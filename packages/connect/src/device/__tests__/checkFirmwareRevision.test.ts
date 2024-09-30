@@ -1,3 +1,5 @@
+import { FetchError } from 'node-fetch';
+
 import { DeviceModelInternal } from '@trezor/protobuf';
 import { checkFirmwareRevision, CheckFirmwareRevisionParams } from '../checkFirmwareRevision';
 import { FirmwareRelease, FirmwareRevisionCheckResult } from '../../exports';
@@ -85,16 +87,28 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             expected: { success: false, error: 'firmware-version-unknown' },
         },
         {
-            it:
-                'returns null (NOT SUCCESS / NOT ERROR) when firmware version is not found locally, and the user is offline' +
-                'In this case. User SHALL BE warned to go ONLINE and UPGRADE before doing anything!',
+            it: 'fails with a specific error message when the check cannot be performed because the revision is not found locally and the user is offline',
             httpRequestMock: () => {
-                throw new Error('You are offline!');
+                throw new FetchError('You are offline!', 'network', {
+                    code: 'ENOTFOUND',
+                    name: 'FetchError',
+                    message: 'You are offline!',
+                });
             },
             params: createDeviceParams({
                 expectedRevision: undefined, // firmware not known by local releases.json file
             }),
             expected: { success: false, error: 'cannot-perform-check-offline' },
+        },
+        {
+            it: 'fails with a generic error message when there is an error when reading the online verison of releases.json',
+            httpRequestMock: () => {
+                throw new Error('There is an unexpected error!');
+            },
+            params: createDeviceParams({
+                expectedRevision: undefined, // firmware not known by local releases.json file
+            }),
+            expected: { success: false, error: 'other-error' },
         },
     ])(`$it`, async ({ params, expected, httpRequestMock }) => {
         if (httpRequestMock !== undefined) {

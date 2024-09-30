@@ -570,10 +570,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (
             // The check was not yet performed
             this.authenticityChecks.firmwareRevision === null ||
-            // The check was performed, but outcome cannot be surely determined (Suite is offline)
+            // The check was performed, but outcome cannot be surely determined (Suite is offline or there was an unexpected error)
             // -> recheck on every getFeatures() until the result is known
             (this.authenticityChecks.firmwareRevision.success === false &&
-                this.authenticityChecks.firmwareRevision.error === 'cannot-perform-check-offline')
+                ['cannot-perform-check-offline', 'other-error'].includes(
+                    this.authenticityChecks.firmwareRevision.error,
+                ))
         ) {
             await this.checkFirmwareRevision();
         }
