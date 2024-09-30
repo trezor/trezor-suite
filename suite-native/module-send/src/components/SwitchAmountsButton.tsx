@@ -4,6 +4,8 @@ import { Icon } from '@suite-common/icons-deprecated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
 
+type SwitchAmountsButtonProps = { onPress: () => void };
+
 const BUTTON_TOP_OFFSET = 40;
 const BUTTON_PADDING = 6;
 
@@ -24,7 +26,7 @@ const buttonStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
 }));
 
-export const SwitchAmountsButton = ({ onPress }: { onPress: () => void }) => {
+export const SwitchAmountsButton = ({ onPress }: SwitchAmountsButtonProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
