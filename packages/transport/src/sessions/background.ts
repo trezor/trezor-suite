@@ -54,7 +54,6 @@ export class SessionsBackground
 
     // if lock is set, somebody is doing something with device. we have to wait
     private locksQueue: { id: ReturnType<typeof setTimeout>; dfd: Deferred<void> }[] = [];
-    private locksTimeoutQueue: ReturnType<typeof setTimeout>[] = [];
     private lastSessionId = 0;
     private lastPathId = 0;
 
@@ -260,7 +259,16 @@ export class SessionsBackground
         return this.success({ path });
     }
 
-    private startLock() {
+    private clearLock() {
+        const lock = this.locksQueue[0];
+        if (lock) {
+            lock.dfd.resolve(undefined);
+            clearTimeout(lock.id);
+            this.locksQueue.shift();
+        }
+    }
+
+    private async waitInQueue() {
         // todo: create a deferred with built-in timeout functionality (util)
         const dfd = createDeferred();
 
@@ -268,38 +276,14 @@ export class SessionsBackground
         // lock times out:
         // - if cleared by client (enumerateDone)
         // - after n second automatically
-        const timeout = setTimeout(() => {
-            dfd.resolve(undefined);
-        }, lockDuration);
+        const timeout = setTimeout(dfd.resolve, lockDuration);
 
+        const beforeMe = this.locksQueue.slice();
         this.locksQueue.push({ id: timeout, dfd });
-        this.locksTimeoutQueue.push(timeout);
 
-        return this.locksQueue.length - 1;
-    }
-
-    private clearLock() {
-        const lock = this.locksQueue[0];
-        if (lock) {
-            this.locksQueue[0].dfd.resolve(undefined);
-            this.locksQueue.shift();
-            clearTimeout(this.locksTimeoutQueue[0]);
-            this.locksTimeoutQueue.shift();
+        if (beforeMe.length) {
+            await Promise.all(beforeMe.map(lock => lock.dfd.promise));
         }
-    }
-
-    private async waitForUnlocked(myIndex: number) {
-        if (myIndex > 0) {
-            const beforeMe = this.locksQueue.slice(0, myIndex);
-            if (beforeMe.length) {
-                await Promise.all(beforeMe.map(lock => lock.dfd.promise));
-            }
-        }
-    }
-
-    private async waitInQueue() {
-        const myIndex = this.startLock();
-        await this.waitForUnlocked(myIndex);
     }
 
     private success<T>(payload: T): Success<T> {
@@ -324,7 +308,6 @@ export class SessionsBackground
 
     dispose() {
         this.locksQueue.forEach(lock => clearTimeout(lock.id));
-        this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
         this.descriptors = {};
         this.lastSessionId = 0;
         this.removeAllListeners();

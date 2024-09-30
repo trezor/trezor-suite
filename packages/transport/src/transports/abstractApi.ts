@@ -1,11 +1,11 @@
 import { SessionsBackground } from '../sessions/background';
-import { createDeferred } from '@trezor/utils';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
 import {
     AbstractTransport,
     AbstractTransportParams,
     AbstractTransportMethodParams,
+    AcquireReleaseChange,
 } from './abstract';
 import { AbstractApi } from '../api/abstract';
 import { buildMessage, createChunks, sendChunks } from '../utils/send';
@@ -102,9 +102,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             async signal => {
                 const { path } = input;
 
-                if (this.listening) {
-                    this.listenPromise[path] = createDeferred();
-                }
+                const promise = this.listening
+                    ? new Promise<AcquireReleaseChange>(resolve =>
+                          this.acquireReleaseEmitter.once(path, resolve),
+                      )
+                    : undefined;
 
                 const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
 
@@ -112,7 +114,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return this.error({ error: acquireIntentResponse.error });
                 }
 
-                this.acquiredUnconfirmed[path] = acquireIntentResponse.payload.session;
+                this.acquireUnconfirmed[path] = acquireIntentResponse.payload.session;
 
                 const reset = !!input.previous;
                 const openDeviceResult = await this.api.openDevice(
@@ -122,22 +124,26 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 );
 
                 if (!openDeviceResult.success) {
-                    if (this.listenPromise[path]) {
-                        this.listenPromise[path].resolve(openDeviceResult);
-                    }
-
                     return openDeviceResult;
                 }
 
                 this.sessionsClient.acquireDone({ path });
 
-                if (!this.listenPromise[path]) {
+                if (!promise) {
                     return this.success(acquireIntentResponse.payload.session);
                 }
 
-                return this.listenPromise[path].promise.finally(() => {
-                    delete this.listenPromise[path];
-                });
+                const change = await promise;
+
+                if (change.type === 'device-missing') {
+                    return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
+                }
+
+                if (change.session !== acquireIntentResponse.payload.session) {
+                    return this.error({ error: ERRORS.SESSION_WRONG_PREVIOUS });
+                }
+
+                return this.success(acquireIntentResponse.payload.session);
             },
             { signal },
             [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION, ERRORS.SESSION_WRONG_PREVIOUS],
@@ -149,8 +155,14 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             async () => {
                 if (this.listening) {
                     this.releaseUnconfirmed[path] = session;
-                    this.listenPromise[path] = createDeferred();
                 }
+
+                const promise = this.listening
+                    ? new Promise<AcquireReleaseChange>(resolve =>
+                          this.acquireReleaseEmitter.once(path, resolve),
+                      )
+                    : undefined;
+
                 const releaseIntentResponse = await this.sessionsClient.releaseIntent({
                     session,
                 });
@@ -168,15 +180,18 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     path: releaseIntentResponse.payload.path,
                 });
 
-                if (!this.listenPromise[path]) {
+                if (!promise) {
                     return this.success(undefined);
                 }
 
-                return this.listenPromise[path].promise
-                    .then(() => this.success(undefined))
-                    .finally(() => {
-                        delete this.listenPromise[path];
-                    });
+                const change = await promise;
+
+                if (change.type === 'device-missing') {
+                    // TODO but it would be success before, is it ok? NO, it is success
+                    return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
+                }
+
+                return this.success(undefined);
             },
             { signal },
         );
