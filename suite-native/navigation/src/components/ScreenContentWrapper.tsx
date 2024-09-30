@@ -33,6 +33,7 @@ export const ScreenContentWrapper = ({
                 scrollViewRef.current = ref as unknown as ScrollView;
             }}
             keyboardDismissMode={keyboardDismissMode}
+            keyboardShouldPersistTaps="handled"
             contentInsetAdjustmentBehavior="automatic"
             extraHeight={extraKeyboardAvoidingViewHeight}
             contentContainerStyle={applyStyle(screenContentWrapperStyle)}
