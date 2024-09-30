@@ -35,7 +35,7 @@ jobs:
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+          token: ${{ secrets.EXPO_TOKEN_DEVELOP }}
       - name: Install libs
         run: yarn workspaces focus @suite-native/app
 
