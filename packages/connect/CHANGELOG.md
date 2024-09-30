@@ -10,7 +10,10 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.4.2-beta.2
+# 9.4.2
+
+This release fixes an issue with TypeScript and certain libraries not being resolved correctly in the previous version.
+If you are still seeing issues with USB types, please add `w3c-web-usb` to your `tsconfig.json` file under `types`.
 
 ### Features
 
@@ -36,24 +39,11 @@ Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to a
     -   chore(connect-explorer): improve fallback schema illustration (d0619b7)
     -   chore(connect-explorer): improve typography (f730904)
 
-# 9.4.2-beta.1
+### Dependencies update
 
-### Features
-
--   feat(connect): return device info with method response (a378def)
--   docs(connect-explorer): flowchart for auto core mode (9501d3d)
--   docs(connect-explorer): diagram and explanation for core in popup (3bbb032)
-
-### Fixes
-
--   Fixing an issue with typescript not being able to resolve @sinclair/typebox and USB types correctly ((98d6437))
--   Fixing regression that made it impossible to acquire (steal) device session over webusb (5cf83b4)
--   Couple of other fixes and improvements of device handling:
-
-    -   fix(connect): pending transport event fix (231899f)
-    -   fix(connect): DeviceList create devices sequentially (b4a915b)
-
--   fix(connect-explorer): icons on index page (fef3791)
+-   npm-release: @trezor/connect-common 0.2.2
+-   npm-release: @trezor/transport 1.3.2
+-   npm-release: @trezor/protobuf 1.2.2
 
 ## 9.4.1
 
