@@ -47,6 +47,7 @@ expo-secure-store
 expo-splash-screen
 expo-status-bar
 expo-system-ui
+expo-updates
 jotai
 lottie-react-native
 react-native-gesture-handler
