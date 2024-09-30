@@ -24,6 +24,7 @@ import { Downloading } from './DesktopUpdater/Downloading';
 import { Ready } from './DesktopUpdater/Ready';
 import { EarlyAccessEnable } from './DesktopUpdater/EarlyAccessEnable';
 import { EarlyAccessDisable } from './DesktopUpdater/EarlyAccessDisable';
+import { JustUpdated } from './DesktopUpdater/JustUpdated';
 
 interface DesktopUpdaterProps {
     children: ReactNode;
@@ -90,45 +91,30 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
             return false;
         }
 
-        const isEarlyAccessState = [
+        const isHackyModalOpen = [
             UpdateState.EarlyAccessDisable,
             UpdateState.EarlyAccessEnable,
+            UpdateState.JustUpdated,
         ].includes(desktopUpdateState);
 
         // Enable to setup Early Access even after updater error (when desktopUpdate.latest is undefined).
-        if (!isEarlyAccessState && !desktopUpdate.latest) {
-            return false;
-        }
-
-        return true;
+        return isHackyModalOpen || desktopUpdate.latest !== undefined;
     }, [desktopUpdate.modalVisibility, desktopUpdateState, desktopUpdate.latest]);
 
-    const getUpdateModal = () => {
-        switch (desktopUpdateState) {
-            case UpdateState.EarlyAccessEnable:
-                return <EarlyAccessEnable hideWindow={hideWindow} />;
-            case UpdateState.EarlyAccessDisable:
-                return <EarlyAccessDisable hideWindow={hideWindow} />;
-            case UpdateState.Available:
-                return (
-                    <Available
-                        onCancel={hideWindow}
-                        latest={desktopUpdate.latest}
-                        isAutomaticUpdateEnabled={desktopUpdate.isAutomaticUpdateEnabled}
-                    />
-                );
-            case UpdateState.Downloading:
-                return <Downloading hideWindow={hideWindow} progress={desktopUpdate.progress} />;
-            case UpdateState.Ready:
-                return <Ready hideWindow={hideWindow} />;
-            default:
-                return null;
-        }
+    const updateModalMap: Record<UpdateState, JSX.Element | null> = {
+        'early-access-disable': <EarlyAccessDisable hideWindow={hideWindow} />,
+        'early-access-enable': <EarlyAccessEnable hideWindow={hideWindow} />,
+        'just-updated': <JustUpdated onCancel={hideWindow} />,
+        'not-available': null,
+        available: <Available onCancel={hideWindow} latest={desktopUpdate.latest} />,
+        checking: null,
+        downloading: <Downloading hideWindow={hideWindow} progress={desktopUpdate.progress} />,
+        ready: <Ready hideWindow={hideWindow} />,
     };
 
     return (
         <>
-            {isVisible && getUpdateModal()}
+            {isVisible && updateModalMap[desktopUpdateState]}
             <ModalContextProvider isDisabled={isVisible}>{children}</ModalContextProvider>
         </>
     );

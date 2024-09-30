@@ -4066,10 +4066,6 @@ export default defineMessages({
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_UPDATE_AVAILABLE',
         defaultMessage: 'Trezor update available',
     },
-    TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_HAS_BEEN_UPDATED: {
-        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_HAS_BEEN_UPDATED',
-        defaultMessage: 'Trezor’s been updated!',
-    },
 
     TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
@@ -6369,6 +6365,10 @@ export default defineMessages({
         id: 'TR_UPDATE_MODAL_AVAILABLE_HEADING',
         defaultMessage: 'Update available',
     },
+    TR_UPDATE_MODAL_WHATS_NEW: {
+        id: 'TR_UPDATE_MODAL_WHATS_NEW',
+        defaultMessage: 'What’s new',
+    },
     TR_UPDATE_MODAL_YOUR_VERSION: {
         id: 'TR_UPDATE_MODAL_YOUR_VERSION',
         defaultMessage: 'Your version: v{version}',
@@ -6411,7 +6411,7 @@ export default defineMessages({
     },
     TR_VERSION_HAS_RELEASED: {
         id: 'TR_VERSION_HAS_BEEN_RELEASED',
-        defaultMessage: 'v {version} has released!',
+        defaultMessage: 'v{version} has released!',
     },
     TR_READ_ALL_ON_GITHUB: {
         id: 'TR_READ_ALL_ON_GITHUB',

@@ -5,6 +5,7 @@ import { DefaultTheme } from 'styled-components';
 import { goto } from '../../../../../../../actions/suite/routerActions';
 import {
     installUpdate,
+    openJustUpdatedChangelog,
     setUpdateModalVisibility,
 } from '../../../../../../../actions/suite/desktopUpdateActions';
 import { Dispatch } from '../../../../../../../types/suite';
@@ -12,7 +13,7 @@ import { Dispatch } from '../../../../../../../types/suite';
 export const updateVariants = ['tertiary', 'info', 'purple'] as const;
 export type UpdateVariant = Extract<UIVariant, (typeof updateVariants)[number]> | 'purple';
 
-export type UpdateStatusDevice = 'up-to-date' | 'update-available' | 'just-updated';
+export type UpdateStatusDevice = 'up-to-date' | 'update-available';
 
 export type UpdateStatusSuite =
     | 'up-to-date'
@@ -43,7 +44,6 @@ type OnClickCallbackCallback = ((params: { dispatch: Dispatch }) => void) | null
 
 export const mapDeviceUpdateToClick: Record<UpdateStatusDevice, OnClickCallbackCallback> = {
     'up-to-date': null,
-    'just-updated': null, // Todo: show changelog
     'update-available': ({ dispatch }) => dispatch(goto('firmware-index')),
 };
 
@@ -52,7 +52,7 @@ export const mapSuiteUpdateToClick: Record<UpdateStatusSuite, OnClickCallbackCal
     'update-downloaded-auto-restart-to-update': ({ dispatch }) =>
         dispatch(installUpdate({ shouldInstallOnQuit: false })),
     'update-downloaded-manual': ({ dispatch }) => dispatch(setUpdateModalVisibility('maximized')),
-    'just-updated': null, // Todo: show changelog
+    'just-updated': ({ dispatch }) => dispatch(openJustUpdatedChangelog()),
     'update-available': ({ dispatch }) => dispatch(setUpdateModalVisibility('maximized')),
 };
 

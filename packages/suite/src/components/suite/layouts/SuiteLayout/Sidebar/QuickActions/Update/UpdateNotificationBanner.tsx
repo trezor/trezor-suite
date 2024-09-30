@@ -49,7 +49,6 @@ type UpdateNotificationBannerProps = {
 };
 
 const mapDeviceUpdateStatusToTranslation: Record<UpdateStatusDevice, TranslationKey | null> = {
-    'just-updated': 'TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_HAS_BEEN_UPDATED',
     'up-to-date': null,
     'update-available': 'TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_UPDATE_AVAILABLE',
 };

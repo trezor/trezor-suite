@@ -1,12 +1,9 @@
-import { ReactNode } from 'react';
-
 import styled from 'styled-components';
 
 import {
     Card,
     Checkbox,
     Column,
-    ElevationUp,
     Icon,
     Link,
     Markdown,
@@ -14,10 +11,9 @@ import {
     Paragraph,
     Row,
     Text,
-    useElevation,
 } from '@trezor/components';
 import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
-import { borders, Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
+import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -25,21 +21,8 @@ import { getReleaseUrl } from 'src/services/github';
 import { download } from 'src/actions/suite/desktopUpdateActions';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
-
-const ChangelogWrapper = styled.div<{ $elevation: Elevation }>`
-    background-color: ${({ theme, $elevation }) => mapElevationToBackground({ theme, $elevation })};
-    border-radius: ${borders.radii.md};
-    max-height: 400px;
-    overflow-y: auto;
-    padding: ${spacingsPx.md} ${spacingsPx.xl};
-`;
-
-const GrayTag = styled.div`
-    border-radius: ${borders.radii.full};
-    background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
-    padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
-    color: ${({ theme }) => theme.textSubdued};
-`;
+import { Changelog, GrayTag } from './changelogComponents';
+import { getVersionName } from './getVersionName';
 
 const GreenTag = styled.div`
     display: flex;
@@ -58,33 +41,6 @@ const NewTag = () => (
         </Text>
     </GreenTag>
 );
-
-const Changelog = ({ children }: { children: ReactNode }) => {
-    const { elevation } = useElevation();
-
-    return <ChangelogWrapper $elevation={elevation}>{children}</ChangelogWrapper>;
-};
-
-interface VersionNameProps {
-    latestVersion?: string;
-    prerelease: boolean;
-}
-
-const getVersionName = ({ latestVersion, prerelease }: VersionNameProps): string => {
-    if (latestVersion === undefined) {
-        return '';
-    }
-
-    if (prerelease !== undefined) {
-        return latestVersion;
-    }
-
-    if (!latestVersion.includes('-')) {
-        return `${latestVersion}-beta`;
-    }
-
-    return latestVersion;
-};
 
 interface AvailableProps {
     onCancel: () => void;
@@ -143,15 +99,13 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                     </Paragraph>
                 </div>
 
-                <ElevationUp>
-                    <Changelog>
-                        {latest?.changelog ? (
-                            <Markdown>{latest?.changelog}</Markdown>
-                        ) : (
-                            <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
-                        )}
-                    </Changelog>
-                </ElevationUp>
+                <Changelog>
+                    {latest?.changelog ? (
+                        <Markdown>{latest?.changelog}</Markdown>
+                    ) : (
+                        <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
+                    )}
+                </Changelog>
 
                 <Row justifyContent="space-between" width="100%">
                     <Link variant="nostyle" href={getReleaseUrl(latest?.version ?? '')}>
@@ -163,19 +117,17 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                     {latest?.releaseDate && <Text variant="tertiary">{latest?.releaseDate}</Text>}
                 </Row>
 
-                <ElevationUp>
-                    <Card>
-                        <Row justifyContent="start" gap={spacings.xs}>
-                            <Checkbox
-                                isChecked={turnAutoUpdateOnNextRun}
-                                onClick={handleToggleAutoUpdateClick}
-                            >
-                                <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES" />
-                            </Checkbox>
-                            <NewTag />
-                        </Row>
-                    </Card>
-                </ElevationUp>
+                <Card>
+                    <Row justifyContent="start" gap={spacings.xs}>
+                        <Checkbox
+                            isChecked={turnAutoUpdateOnNextRun}
+                            onClick={handleToggleAutoUpdateClick}
+                        >
+                            <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES" />
+                        </Checkbox>
+                        <NewTag />
+                    </Row>
+                </Card>
             </Column>
         </NewModal>
     );

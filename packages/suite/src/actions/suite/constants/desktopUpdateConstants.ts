@@ -4,6 +4,7 @@ export const NOT_AVAILABLE = '@desktop-update/not-available';
 export const DOWNLOAD = '@desktop-update/download';
 export const DOWNLOADING = '@desktop-update/downloading';
 export const READY = '@desktop-update/ready';
+export const OPEN_JUST_UPDATED_CHANGELOG = '@desktop-update/just-updated';
 export const MODAL_VISIBILITY = '@desktop-update/modal-visibility';
 export const OPEN_EARLY_ACCESS_ENABLE = '@desktop-update/open-early-access-enable';
 export const OPEN_EARLY_ACCESS_DISABLE = '@desktop-update/open-early-access-disable';

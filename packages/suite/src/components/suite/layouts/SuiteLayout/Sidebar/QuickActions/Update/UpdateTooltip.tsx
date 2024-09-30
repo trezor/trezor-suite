@@ -50,6 +50,8 @@ const DeviceRow = ({ updateStatus }: DeviceRowProps) => {
     const firmwareCurrentVersion = getFirmwareVersion(device);
     const firmwareNewVersion = device.firmwareRelease?.release?.version?.join('.');
 
+    // TODO: make this clickable
+
     return (
         <TooltipRow
             leftItem={
@@ -84,6 +86,8 @@ const SuiteRow = ({ updateStatus }: SuiteRowProps) => {
 
     const suiteCurrentVersion = process.env.VERSION || '';
     const suiteNewVersion = desktopUpdate.latest?.version;
+
+    // TODO: make this clickable
 
     return (
         <TooltipRow
