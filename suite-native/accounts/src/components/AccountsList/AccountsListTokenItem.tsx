@@ -7,7 +7,7 @@ import {
     EthereumTokenAmountFormatter,
     EthereumTokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { getEthereumTokenName, selectEthereumAccountTokenSymbol } from '@suite-native/tokens';
+import { getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 
@@ -30,7 +30,7 @@ export const AccountsListTokenItem = ({
     isLast,
 }: AccountListTokenItemProps) => {
     const tokenSymbol = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountTokenSymbol(state, account.key, token.contract),
+        selectAccountTokenSymbol(state, account.key, token.contract),
     );
     const balance = token.balance ?? '0';
 
@@ -41,7 +41,7 @@ export const AccountsListTokenItem = ({
             isLast={isLast}
             onPress={onSelectAccount}
             icon={<RoundedIcon name={token.contract} />}
-            title={getEthereumTokenName(token.name)}
+            title={getTokenName(token.name)}
             mainValue={
                 <EthereumTokenToFiatAmountFormatter value={balance} contract={token.contract} />
             }

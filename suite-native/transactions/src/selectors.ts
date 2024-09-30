@@ -138,7 +138,11 @@ export const selectTransactionInputAndOutputTransfers = memoizeWithArgs(
         const tokenTransfers: TransactionTranfer[] = pipe(
             tokens,
             A.filter(({ contract }) =>
-                selectIsSpecificCoinDefinitionKnown(state, 'eth', contract as TokenAddress),
+                selectIsSpecificCoinDefinitionKnown(
+                    state,
+                    transaction.symbol,
+                    contract as TokenAddress,
+                ),
             ),
             A.map(({ from, to, amount, symbol, decimals }) => ({
                 inputs: [{ address: from }],

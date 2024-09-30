@@ -8,7 +8,7 @@ import {
     EthereumTokenToFiatAmountFormatter,
     SignValueFormatter,
 } from '@suite-native/formatters';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 
@@ -18,7 +18,7 @@ import { getTransactionValueSign } from '../../utils';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
-    tokenTransfer?: EthereumTokenTransfer;
+    tokenTransfer?: TypedTokenTransfer;
     accountKey: AccountKey;
 };
 

@@ -9,9 +9,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 import {
-    getEthereumTokenName,
-    selectEthereumAccountTokenInfo,
-    selectEthereumAccountTokenSymbol,
+    getTokenName,
+    selectAccountTokenInfo,
+    selectAccountTokenSymbol,
 } from '@suite-native/tokens';
 
 type TokenReceiveCardProps = {
@@ -38,16 +38,16 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
     );
 
     const token = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountTokenInfo(state, accountKey, contract),
+        selectAccountTokenInfo(state, accountKey, contract),
     );
 
     const tokenSymbol = useSelector((state: AccountsRootState) =>
-        selectEthereumAccountTokenSymbol(state, accountKey, contract),
+        selectAccountTokenSymbol(state, accountKey, contract),
     );
 
     if (!token) return <ErrorMessage errorMessage="Token not found." />;
 
-    const tokenName = getEthereumTokenName(token.name);
+    const tokenName = getTokenName(token.name);
 
     return (
         <VStack>

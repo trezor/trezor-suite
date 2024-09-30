@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Card } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import { EthereumTokenTransfer } from '@suite-native/tokens';
+import { TypedTokenTransfer } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailAddressesSheet } from './TransactionDetailAddressesSheet';
@@ -12,7 +12,7 @@ import { TokenTransactionDetailSummary } from './TokenTransactionDetailSummary';
 type TransactionDetailSummaryProps = {
     txid: string;
     accountKey: AccountKey;
-    tokenTransfer?: EthereumTokenTransfer;
+    tokenTransfer?: TypedTokenTransfer;
 };
 
 export const cardStyle = prepareNativeStyle(utils => ({
