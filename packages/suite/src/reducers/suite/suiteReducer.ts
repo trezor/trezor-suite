@@ -456,8 +456,10 @@ export const selectIsFirmwareRevisionCheckEnabledAndFailed = (
         isDeviceAcquired(device) &&
         // If `check` is null, it means that it was not performed yet.
         device.authenticityChecks?.firmwareRevision?.success === false &&
-        // If Suite is offline and we cannot perform check, the error banner shows to urge user to go online.
-        device.authenticityChecks.firmwareRevision.error !== 'cannot-perform-check-offline'
+        // If Suite is offline and cannot perform check or there is some unexpected error, an error banner is shown but Suite is otherwise unaffected.
+        !['cannot-perform-check-offline', 'other-error'].includes(
+            device.authenticityChecks.firmwareRevision.error,
+        )
     );
 };
 

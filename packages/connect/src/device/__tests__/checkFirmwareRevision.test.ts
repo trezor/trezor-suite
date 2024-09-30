@@ -101,7 +101,7 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             expected: { success: false, error: 'cannot-perform-check-offline' },
         },
         {
-            it: 'fails with a generic error message when there is an error when reading the online verison of releases.json',
+            it: 'fails with a generic error message when there is an error when reading the online version of releases.json',
             httpRequestMock: () => {
                 throw new Error('There is an unexpected error!');
             },

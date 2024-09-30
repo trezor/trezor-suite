@@ -7112,6 +7112,10 @@ export default defineMessages({
         defaultMessage:
             "Firmware revision check couldn't be performed. Go online to verify your firmware version.",
     },
+    TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR: {
+        id: 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
+        defaultMessage: 'Firmware revision check could not be performed.',
+    },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
         defaultMessage: 'Activate coins',
