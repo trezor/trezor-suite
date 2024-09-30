@@ -7447,6 +7447,14 @@ export default defineMessages({
         id: 'TR_INSTANT_STAKING',
         defaultMessage: 'Staked instantly',
     },
+    TR_STAKING_AMOUNT_STAKED_INSTANTLY: {
+        id: 'TR_STAKING_AMOUNT_STAKED_INSTANTLY',
+        defaultMessage: '{amount} {symbol} staked instantly!',
+    },
+    TR_STAKING_AMOUNT_UNSTAKED_INSTANTLY: {
+        id: 'TR_STAKING_AMOUNT_UNSTAKED_INSTANTLY',
+        defaultMessage: '{amount} {symbol} unstaked instantly!',
+    },
     TR_STAKING_INSTANT_UNSTAKING: {
         id: 'TR_INSTANT_UNSTAKING',
         defaultMessage: 'Unstaked instantly',
@@ -7454,7 +7462,7 @@ export default defineMessages({
     TR_STAKING_INSTANTLY_STAKED: {
         id: 'TR_STAKING_INSTANTLY_STAKED',
         defaultMessage:
-            "You've instantly staked {amount} {symbol}. {days, plural, =0 {} one {The remaining {symbol} is staked within # day.} other { The remaining {symbol} is staked within # days}}",
+            "You've instantly staked {amount} {symbol}. {days, plural, =0 {} one {The remaining {symbol}  will be staked within # day.} other { The remaining {symbol} will be staked within # days}}",
     },
     TR_STAKING_INSTANTLY_UNSTAKED: {
         id: 'TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS',
