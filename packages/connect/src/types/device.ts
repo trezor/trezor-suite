@@ -42,15 +42,17 @@ export type DeviceState = {
 // key = coin shortcut lowercase (ex: btc, eth, xrp) OR field declared in coins.json "supportedFirmware.capability"
 export type UnavailableCapabilities = { [key: string]: UnavailableCapability };
 
+export type FirmwareRevisionCheckError =
+    | 'revision-mismatch'
+    | 'firmware-version-unknown'
+    | 'cannot-perform-check-offline' // suite offline & release version not found locally => we cannot check with `data.trezor.io`
+    | 'other-error'; // incorrect URL, cannot parse JSON, etc.
+
 export type FirmwareRevisionCheckResult =
     | { success: true }
     | {
           success: false;
-          error:
-              | 'revision-mismatch'
-              | 'firmware-version-unknown'
-              | 'firmware-version-unknown'
-              | 'cannot-perform-check-offline'; // suite offline & release version not found locally => we cannot check with `data.trezor.io`
+          error: FirmwareRevisionCheckError;
       };
 
 export type KnownDevice = {
