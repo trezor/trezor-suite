@@ -202,7 +202,6 @@
   "TR_BUY_BUY": "구매하기",
   "TR_BUY_BUY_AGAIN": "다시 구매하기",
   "TR_BUY_CONFIRMED_ON_TREZOR": "Trezor에서 확인됨",
-  "TR_BUY_CONFIRM_ON_TREZOR": "Trezor에서 확인하기",
   "TR_BUY_DETAIL_ERROR_BUTTON": "계정으로 돌아가기",
   "TR_BUY_DETAIL_ERROR_SUPPORT": "제공업체 지원팀으로 이동",
   "TR_BUY_DETAIL_ERROR_TEXT": "죄송합니다. 거래가 실패했거나 거부되었습니다. 귀하의 결재 수단에는 청구되지 않습니다.",
