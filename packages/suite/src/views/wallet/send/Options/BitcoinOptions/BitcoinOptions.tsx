@@ -160,7 +160,7 @@ export const BitcoinOptions = () => {
                     {!utxoSelectionEnabled && (
                         <Tooltip
                             addon={
-                                <OpenGuideFromTooltip id="/5_coinjoin-and-coin-control/coin-control.md" />
+                                <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/coin-control.md" />
                             }
                             content={<Translation id="TR_COIN_CONTROL_TOOLTIP" />}
                             cursor="pointer"
