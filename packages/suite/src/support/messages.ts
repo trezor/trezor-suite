@@ -8667,17 +8667,17 @@ export default defineMessages({
     },
     TR_STAKE_STAKED_ETH_AMOUNT_LOCKED: {
         id: 'TR_STAKE_STAKED_ETH_AMOUNT_LOCKED',
-        defaultMessage: 'Your staked {symbol} is locked and can’t be traded or sent.',
+        defaultMessage: 'The staked amount of {symbol} is locked and can’t be traded or sent.',
     },
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking usually takes about {count, plural, one {# day} other {# days}}. Once completed, you can claim it instantly.',
+            'Unstaking currently takes {count, plural, one {# day} other {# days}}. Once completed, you can trade or send your funds.',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
         defaultMessage:
-            'Your rewards also earn. Keep them staked and watch your {symbol} rewards grow.',
+            'Your rewards also earn. Keep them staked and watch your {symbol} rewards soar.',
     },
     TR_STAKE_AVAILABLE: {
         id: 'TR_STAKE_AVAILABLE',
