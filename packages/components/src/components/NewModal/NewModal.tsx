@@ -12,7 +12,7 @@ import {
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { Text } from '../typography/Text/Text';
 import { H3 } from '../typography/Heading/Heading';
-import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
+import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { NewModalButton } from './NewModalButton';
 import { NewModalContext } from './NewModalContext';
@@ -168,34 +168,36 @@ const _NewModalBase = ({
         >
             {hasHeader && (
                 <Header>
-                    {onBackClick && (
-                        <IconButton
-                            variant="tertiary"
-                            icon="caretLeft"
-                            data-testid="@modal/back-button"
-                            onClick={onBackClick}
-                            size="small"
-                        />
-                    )}
-
-                    <HeadingContainer>
-                        {heading && <Heading>{heading}</Heading>}
-                        {description && (
-                            <Text variant="tertiary" typographyStyle="hint">
-                                {description}
-                            </Text>
+                    <ElevationUp>
+                        {onBackClick && (
+                            <IconButton
+                                variant="tertiary"
+                                icon="caretLeft"
+                                data-testid="@modal/back-button"
+                                onClick={onBackClick}
+                                size="small"
+                            />
                         )}
-                    </HeadingContainer>
 
-                    {onCancel && (
-                        <IconButton
-                            variant="tertiary"
-                            icon="close"
-                            data-testid="@modal/close-button"
-                            onClick={onCancel}
-                            size="small"
-                        />
-                    )}
+                        <HeadingContainer>
+                            {heading && <Heading>{heading}</Heading>}
+                            {description && (
+                                <Text variant="tertiary" typographyStyle="hint">
+                                    {description}
+                                </Text>
+                            )}
+                        </HeadingContainer>
+
+                        {onCancel && (
+                            <IconButton
+                                variant="tertiary"
+                                icon="close"
+                                data-testid="@modal/close-button"
+                                onClick={onCancel}
+                                size="small"
+                            />
+                        )}
+                    </ElevationUp>
                 </Header>
             )}
             <ShadowContainer>
@@ -213,12 +215,16 @@ const _NewModalBase = ({
                                 <Icon name={icon} size={ICON_SIZE} variant={variant} />
                             </IconWrapper>
                         )}
-                        {children}
+                        <ElevationUp>{children}</ElevationUp>
                     </Body>
                 </ScrollContainer>
                 <ShadowBottom />
             </ShadowContainer>
-            {bottomContent && <Footer>{bottomContent}</Footer>}
+            {bottomContent && (
+                <Footer>
+                    <ElevationUp>{bottomContent}</ElevationUp>
+                </Footer>
+            )}
         </Container>
     );
 };
