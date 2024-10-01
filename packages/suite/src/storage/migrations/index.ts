@@ -907,7 +907,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         await updateAll(transaction, 'suiteSettings', suiteSettings => {
             if (
                 // @ts-expect-error
-                typeof suiteSettings.evmSettings.confirmExplanationModalClosed?.matic == 'boolean'
+                typeof suiteSettings.evmSettings?.confirmExplanationModalClosed?.matic == 'boolean'
             ) {
                 suiteSettings.evmSettings.confirmExplanationModalClosed.pol =
                     // @ts-expect-error
@@ -918,7 +918,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
             if (
                 // @ts-expect-error
-                typeof suiteSettings.evmSettings.explanationBannerClosed?.matic == 'boolean'
+                typeof suiteSettings.evmSettings?.explanationBannerClosed?.matic == 'boolean'
             ) {
                 suiteSettings.evmSettings.explanationBannerClosed.pol =
                     // @ts-expect-error
