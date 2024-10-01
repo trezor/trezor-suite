@@ -40,6 +40,14 @@ jobs:
       - name: Install libs
         run: yarn workspaces focus @suite-native/app
 
+      - name: Check fingerprint
+        id: fingerprint
+        uses: expo/expo-github-action/fingerprint@main
+
+      # Temporary workaround waiting for this fix to be published https://github.com/expo/expo/pull/31453
+      - name: Set RUNTIME_VERSION
+        run: echo "RUNTIME_VERSION=${{ steps.fingerprint.outputs.current-fingerprint }}" >> $GITHUB_ENV
+
       - name: Create preview builds if fingerprint changed
         uses: expo/expo-github-action/preview-build@main
         with:
