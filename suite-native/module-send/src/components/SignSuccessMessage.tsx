@@ -26,7 +26,7 @@ export const SignSuccessMessage = () => {
 
     return (
         <Animated.View entering={SlideInDown}>
-            <VStack paddingHorizontal="large" alignItems="center" paddingBottom="large">
+            <VStack paddingHorizontal="sp24" alignItems="center" paddingBottom="sp24">
                 <ReviewSuccessSvg />
                 <Text variant="highlight" textAlign="center">
                     <Translation id="moduleSend.review.outputs.successMessage" />

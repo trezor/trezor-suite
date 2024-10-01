@@ -66,7 +66,7 @@ export const ReceiveAddressCard = ({
     return (
         <Animated.View layout={Layout}>
             <Card {...cardAlertProps}>
-                <Box paddingVertical="small">
+                <Box paddingVertical="sp8">
                     {isReceiveApproved ? (
                         <AddressQRCode address={address} />
                     ) : (

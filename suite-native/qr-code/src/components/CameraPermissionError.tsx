@@ -4,11 +4,11 @@ import { Box, Button, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const permissionTextContainerStyle = prepareNativeStyle(({ spacings }) => ({
-    paddingTop: spacings.extraLarge,
+    paddingTop: spacings.sp32,
 }));
 
 const grantPermissionButtonStyle = prepareNativeStyle(({ spacings }) => ({
-    marginTop: spacings.large,
+    marginTop: spacings.sp24,
 }));
 
 export const CameraPermissionError = () => {

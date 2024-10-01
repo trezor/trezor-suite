@@ -25,7 +25,7 @@ const GRADIENT_BACKGROUND_HEIGHT = 50;
 
 const footerOverlayStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
-    paddingTop: utils.spacings.large,
+    paddingTop: utils.spacings.sp24,
     width: '100%',
     height: '100%',
 }));

@@ -11,7 +11,7 @@ const HowItWorks = () => {
             <Text variant="callout">
                 <Translation id="moduleSettings.viewOnly.about.contentTitle" />
             </Text>
-            <Box paddingLeft="small">
+            <Box paddingLeft="sp8">
                 <Translation
                     id="moduleSettings.viewOnly.about.content"
                     values={{
@@ -49,7 +49,7 @@ export const AboutViewOnlyBottomSheet = ({ isVisible, onClose }: AboutViewOnlyBo
 
     return (
         <BottomSheet isVisible={isVisible} onClose={onClose} isCloseDisplayed={false}>
-            <VStack spacing="large" paddingHorizontal="small">
+            <VStack spacing="sp24" paddingHorizontal="sp8">
                 <TitleHeader
                     title={<Translation id="moduleSettings.viewOnly.about.title" />}
                     subtitle={<Translation id="moduleSettings.viewOnly.about.subtitle" />}

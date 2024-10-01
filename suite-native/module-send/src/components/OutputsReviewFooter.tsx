@@ -56,7 +56,7 @@ const navigateToAccountDetail = ({
 
 const footerStyle = prepareNativeStyle(utils => ({
     width: '100%',
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
 export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) => {

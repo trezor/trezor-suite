@@ -45,7 +45,7 @@ type PassphraseFormProps = {
 const formStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.large,
-    gap: utils.spacings.medium,
+    gap: utils.spacings.sp16,
 }));
 
 const cardStyle = prepareNativeStyle(_ => ({

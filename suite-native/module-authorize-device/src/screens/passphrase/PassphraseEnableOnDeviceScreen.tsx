@@ -56,7 +56,7 @@ export const PassphraseEnableOnDeviceScreen = () => {
                 </ScreenHeaderWrapper>
             }
         >
-            <VStack flex={1} justifyContent="center" alignItems="center" spacing="medium">
+            <VStack flex={1} justifyContent="center" alignItems="center" spacing="sp16">
                 <DeviceT3T1Svg />
                 <CenteredTitleHeader
                     title={<Translation id="modulePassphrase.enablePassphrase.title" />}

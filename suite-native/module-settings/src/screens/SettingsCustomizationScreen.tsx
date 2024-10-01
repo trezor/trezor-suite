@@ -13,7 +13,7 @@ export const SettingsCustomizationScreen = () => {
                 <ScreenSubHeader content={translate('moduleSettings.customization.title')} />
             }
         >
-            <Box marginHorizontal="medium">
+            <Box marginHorizontal="sp16">
                 <ColorSchemePicker />
             </Box>
         </Screen>

@@ -12,7 +12,7 @@ type RecipientInputsProps = {
 };
 export const RecipientInputs = ({ index, accountKey }: RecipientInputsProps) => {
     return (
-        <VStack spacing="medium">
+        <VStack spacing="sp16">
             <AddressInput index={index} accountKey={accountKey} />
             <CardDivider />
             <AmountInputs index={index} accountKey={accountKey} />

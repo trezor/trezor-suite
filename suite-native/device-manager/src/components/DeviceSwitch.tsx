@@ -18,8 +18,8 @@ const switchStyle = prepareNativeStyle<SwitchStyleProps>((utils, { isDeviceManag
     alignItems: 'center',
     justifyContent: 'space-between',
     height: SCREEN_HEADER_HEIGHT,
-    paddingVertical: utils.spacings.small,
-    paddingHorizontal: utils.spacings.medium,
+    paddingVertical: utils.spacings.sp8,
+    paddingHorizontal: utils.spacings.sp16,
     borderColor: utils.colors.borderElevation2,
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.round,
@@ -51,7 +51,7 @@ export const DeviceSwitch = () => {
 
     return (
         <Pressable onPress={toggleDeviceManager} style={applyStyle(switchWrapperStyle)}>
-            <HStack justifyContent="space-between" alignItems="center" spacing="medium">
+            <HStack justifyContent="space-between" alignItems="center" spacing="sp16">
                 <Box style={applyStyle(switchStyle, { isDeviceManagerVisible })}>
                     {deviceState && (
                         <DeviceItemContent

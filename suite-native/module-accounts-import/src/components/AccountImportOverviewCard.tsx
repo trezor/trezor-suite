@@ -14,7 +14,7 @@ import {
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const assetCardStyle = prepareNativeStyle(utils => ({
-    padding: utils.spacings.large,
+    padding: utils.spacings.sp24,
     borderRadius: utils.borders.radii.large,
     width: '100%',
 }));
@@ -54,10 +54,10 @@ export const AccountImportOverviewCard = ({
 
     return (
         <Card style={applyStyle(assetCardStyle)}>
-            <Box flexDirection="row" marginBottom="large" justifyContent="space-between">
+            <Box flexDirection="row" marginBottom="sp24" justifyContent="space-between">
                 <Box flexDirection="row">
                     {icon}
-                    <Box marginLeft="medium">
+                    <Box marginLeft="sp16">
                         <Text>{coinName}</Text>
                         {cryptoAmount}
                     </Box>

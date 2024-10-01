@@ -28,7 +28,7 @@ export const ScanQRBottomSheet = ({
     return (
         <BottomSheet isVisible={isVisible} onClose={onClose} title={title}>
             {isVisible && ( // conditionally rendered so the inside hooks are not triggered until is the bottom sheet displayed.
-                <VStack spacing={SPACING} paddingTop="extraLarge">
+                <VStack spacing={SPACING} paddingTop="sp32">
                     <QRCodeScanner onCodeScanned={handleCodeScanned} />
                     <PickQRFromGalleryButton onImagePicked={handleCodeScanned} onError={onClose} />
                 </VStack>

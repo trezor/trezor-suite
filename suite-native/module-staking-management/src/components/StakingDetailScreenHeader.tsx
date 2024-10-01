@@ -18,7 +18,7 @@ import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core
 const headerStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,
     alignItems: 'center',
-    gap: utils.spacings.small,
+    gap: utils.spacings.sp8,
 }));
 
 const headerTextStyle = prepareNativeStyle(() => ({

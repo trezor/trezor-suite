@@ -13,7 +13,7 @@ const toastsContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
         position: 'absolute',
         justifyContent: 'center',
         marginTop: topSafeAreaInset,
-        paddingHorizontal: utils.spacings.medium,
+        paddingHorizontal: utils.spacings.sp16,
     }),
 );
 

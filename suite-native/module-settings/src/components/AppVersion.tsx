@@ -6,7 +6,7 @@ import { getSuiteVersion, getCommitHash } from '@trezor/env-utils';
 import { ProductionDebug } from './ProductionDebug';
 
 export const AppVersion = () => (
-    <HStack marginHorizontal="medium" justifyContent="space-between">
+    <HStack marginHorizontal="sp16" justifyContent="space-between">
         <Box>
             {S.isNotEmpty(getSuiteVersion()) && (
                 <Text variant="hint" color="textDisabled">

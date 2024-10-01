@@ -31,14 +31,14 @@ const accountListItemStyle = prepareNativeStyle<{
     alignItem: 'center',
 
     paddingVertical: 12,
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
 
     extend: {
         condition: hasBackground,
         style: {
             backgroundColor: utils.colors.backgroundSurfaceElevation1,
-            paddingTop: utils.spacings.medium,
-            paddingBottom: utils.spacings.medium,
+            paddingTop: utils.spacings.sp16,
+            paddingBottom: utils.spacings.sp16,
 
             extend: [
                 {
@@ -54,7 +54,7 @@ const accountListItemStyle = prepareNativeStyle<{
                     style: {
                         borderBottomLeftRadius: utils.borders.radii.medium,
                         borderBottomRightRadius: utils.borders.radii.medium,
-                        marginBottom: utils.spacings.extraLarge,
+                        marginBottom: utils.spacings.sp32,
                         ...utils.boxShadows.small,
                     },
                 },
@@ -78,7 +78,7 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
     maxWidth: '40%',
     flexShrink: 0,
     alignItems: 'flex-end',
-    paddingLeft: utils.spacings.small,
+    paddingLeft: utils.spacings.sp8,
 }));
 
 export const AccountsListItemBase = ({
@@ -110,10 +110,10 @@ export const AccountsListItemBase = ({
             disabled={disabled}
         >
             <Box flexDirection="row" alignItems="center" flex={1}>
-                <Box marginRight="medium">{icon}</Box>
+                <Box marginRight="sp16">{icon}</Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
                     <Text>{title}</Text>
-                    <HStack spacing="extraSmall" alignItems="center">
+                    <HStack spacing="sp4" alignItems="center">
                         {badges}
                     </HStack>
                 </Box>

@@ -30,7 +30,7 @@ const wrapperStyle = prepareNativeStyle(utils => ({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: utils.spacings.large,
+    paddingTop: utils.spacings.sp24,
 }));
 const imageStyle = prepareNativeStyle(_ => ({
     maxHeight: SCREEN_HEIGHT * 0.6,

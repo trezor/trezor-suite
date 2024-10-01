@@ -17,7 +17,7 @@ export const PassphraseContentScreenWrapper = ({
 }: PassphraseContentScreenWrapperProps) => {
     return (
         <PassphraseScreenWrapper>
-            <VStack spacing="large">
+            <VStack spacing="sp24">
                 <VStack>
                     <Text variant="titleMedium">{title}</Text>
                     {subtitle && <Text>{subtitle}</Text>}

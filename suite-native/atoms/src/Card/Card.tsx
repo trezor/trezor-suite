@@ -26,7 +26,7 @@ const cardContainerStyle = prepareNativeStyle<{
 }>((utils, { isAlertDisplayed, noPadding, borderColor }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.medium,
-    padding: noPadding ? 0 : utils.spacings.medium,
+    padding: noPadding ? 0 : utils.spacings.sp16,
     ...utils.boxShadows.small,
 
     extend: [
@@ -51,8 +51,8 @@ const alertBoxWrapperStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderTopLeftRadius: utils.borders.radii.medium,
     borderTopRightRadius: utils.borders.radii.medium,
-    paddingHorizontal: utils.spacings.extraSmall,
-    paddingTop: utils.spacings.extraSmall,
+    paddingHorizontal: utils.spacings.sp4,
+    paddingTop: utils.spacings.sp4,
 }));
 
 export const Card = ({

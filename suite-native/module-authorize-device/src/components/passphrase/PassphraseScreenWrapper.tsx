@@ -14,7 +14,7 @@ export const PassphraseScreenWrapper = ({ children }: PassphraseScreenWrapperPro
 
     return (
         <Screen
-            customHorizontalPadding={utils.spacings.medium}
+            customHorizontalPadding={utils.spacings.sp16}
             screenHeader={<PassphraseScreenHeader />}
         >
             {children}

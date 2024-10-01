@@ -189,7 +189,7 @@ export const XpubScanScreen = ({
             >
                 <SelectableNetworkItem symbol={networkSymbol} />
             </HeaderedCard>
-            <VStack spacing="medium" marginHorizontal="medium">
+            <VStack spacing="sp16" marginHorizontal="sp16">
                 <View style={applyStyle(cameraStyle)}>
                     <XpubImportSection
                         onRequestCamera={handleToggleScanner}
@@ -203,7 +203,7 @@ export const XpubScanScreen = ({
                     textColor="textSubdued"
                 />
                 <Form form={form}>
-                    <VStack spacing="medium">
+                    <VStack spacing="sp16">
                         <TextInputField
                             testID="@accounts-import/sync-coins/xpub-input"
                             name="xpubAddress"

@@ -62,7 +62,7 @@ export const AccountDetailGraphHeader = ({ accountKey, tokenAddress }: AccountBa
     if (!account) return null;
 
     return (
-        <VStack spacing="extraSmall" alignItems="center">
+        <VStack spacing="sp4" alignItems="center">
             <CryptoBalance
                 accountSymbol={account.symbol}
                 tokenSymbol={tokenSymbol}

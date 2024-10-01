@@ -16,7 +16,7 @@ type XpubQRCodeBottomSheetProps = Pick<BottomSheetProps, 'isVisible'> & {
 };
 
 const buttonStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
 export const XpubQRCodeBottomSheet = ({
@@ -70,7 +70,7 @@ export const XpubQRCodeBottomSheet = ({
 
     return (
         <BottomSheet title={sheetTitle} isVisible={isVisible} onClose={onClose}>
-            <VStack spacing="large">
+            <VStack spacing="sp24">
                 <XpubQRCodeCard isXpubShown={isXpubShown} qrCodeData={qrCodeData} />
 
                 <Box style={applyStyle(buttonStyle)}>

@@ -52,7 +52,7 @@ export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
 
     if (G.isArray(xpub)) {
         return (
-            <VStack spacing="medium">
+            <VStack spacing="sp16">
                 {xpub.map(({ address, title }, index) => {
                     const testIdSuffix = index === 0 ? '' : `/${index}`;
 

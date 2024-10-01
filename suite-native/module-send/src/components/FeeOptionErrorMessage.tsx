@@ -30,7 +30,7 @@ export const FeeOptionErrorMessage = ({ isVisible }: FeeOptionErrorMessageProps)
 
     return (
         <Animated.View style={[applyStyle(errorStyle), animatedErrorStyle]}>
-            <HStack alignItems="center" spacing="small">
+            <HStack alignItems="center" spacing="sp8">
                 <Icon name="warningCircle" size="mediumLarge" color="iconAlertRed" />
                 <Text variant="hint">
                     <Translation id="moduleSend.fees.error" />

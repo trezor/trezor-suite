@@ -25,9 +25,9 @@ export const SettingsAboutUsScreen = () => {
         <Screen
             screenHeader={<ScreenSubHeader content={translate('moduleSettings.aboutUs.title')} />}
         >
-            <VStack spacing="large">
+            <VStack spacing="sp24">
                 <AboutUsBanners />
-                <Divider marginVertical="medium" />
+                <Divider marginVertical="sp16" />
                 <SettingsSection title="Legal">
                     <SettingsSectionItem
                         title="Terms & conditions"

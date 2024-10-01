@@ -25,7 +25,7 @@ import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRe
 
 const AccountDetailSettingsRow = ({ title, children }: { title: string; children: ReactNode }) => (
     <Box
-        paddingVertical="small"
+        paddingVertical="sp8"
         flexDirection="row"
         alignItems="center"
         justifyContent="space-between"
@@ -38,7 +38,7 @@ const AccountDetailSettingsRow = ({ title, children }: { title: string; children
 );
 
 const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
-    <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="flex-end">
+    <HStack spacing="sp8" flexDirection="row" alignItems="center" justifyContent="flex-end">
         <Text variant="hint">{networks[symbol].name}</Text>
         <CryptoIcon symbol={symbol} size="extraSmall" />
     </HStack>
@@ -76,7 +76,7 @@ export const AccountSettingsScreen = ({
         >
             <Box flex={1} justifyContent="space-between">
                 <Card>
-                    <VStack spacing="extraSmall">
+                    <VStack spacing="sp4">
                         <AccountDetailSettingsRow title="Coin">
                             <CryptoNameWithIcon symbol={account.symbol} />
                         </AccountDetailSettingsRow>
@@ -87,7 +87,7 @@ export const AccountSettingsScreen = ({
                         )}
                     </VStack>
                 </Card>
-                <VStack marginHorizontal="medium" spacing="medium">
+                <VStack marginHorizontal="sp16" spacing="sp16">
                     <AccountSettingsShowXpubButton accountKey={account.key} />
                     {isPortfolioTrackerDevice && (
                         <AccountSettingsRemoveCoinButton accountKey={account.key} />

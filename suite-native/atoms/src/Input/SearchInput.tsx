@@ -19,7 +19,7 @@ const inputStyle = prepareNativeStyle(utils => ({
     ...utils.typography.body,
     flex: 1,
     color: utils.colors.textOnTertiary,
-    marginLeft: utils.spacings.medium,
+    marginLeft: utils.spacings.sp16,
     lineHeight: 0,
 }));
 

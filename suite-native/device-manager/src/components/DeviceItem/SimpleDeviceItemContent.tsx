@@ -73,7 +73,7 @@ export const SimpleDeviceItemContent = React.memo(
                         </Text>
                     )}
                     {isConnectionStateVisible && (
-                        <HStack alignItems="center" spacing="small">
+                        <HStack alignItems="center" spacing="sp8">
                             <ConnectionDot isConnected={deviceIsConnected} />
                             <Text
                                 variant="hint"

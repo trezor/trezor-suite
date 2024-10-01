@@ -21,9 +21,9 @@ import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
     justifyContent: 'center',
-    paddingTop: utils.spacings.extraLarge,
-    paddingBottom: utils.spacings.large,
-    paddingHorizontal: utils.spacings.large,
+    paddingTop: utils.spacings.sp32,
+    paddingBottom: utils.spacings.sp24,
+    paddingHorizontal: utils.spacings.sp24,
 }));
 
 const buttonWrapperStyle = prepareNativeStyle(() => ({
@@ -58,10 +58,10 @@ export const EmptyPortfolioCrossroads = () => {
     };
 
     return (
-        <VStack spacing="medium" flex={1}>
+        <VStack spacing="sp16" flex={1}>
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
-                <VStack spacing="large" justifyContent="center" alignItems="center">
-                    <VStack alignItems="center" spacing="large">
+                <VStack spacing="sp24" justifyContent="center" alignItems="center">
+                    <VStack alignItems="center" spacing="sp24">
                         <ConnectTrezorSvg />
                         <VStack alignItems="center">
                             <Box>
@@ -82,8 +82,8 @@ export const EmptyPortfolioCrossroads = () => {
                 </VStack>
             </Card>
             <Card style={applyStyle(cardStyle, { flex: 1 })}>
-                <VStack spacing="large" justifyContent="center" alignItems="center">
-                    <VStack spacing="small" alignItems="center">
+                <VStack spacing="sp24" justifyContent="center" alignItems="center">
+                    <VStack spacing="sp8" alignItems="center">
                         <Text variant="titleSmall" textAlign="center">
                             <Translation id="moduleHome.emptyState.connectOrImportCrossroads.syncCoins.title" />
                         </Text>

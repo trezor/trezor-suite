@@ -21,7 +21,7 @@ type WalletRowProps = {
 };
 
 const walletRowStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 60,

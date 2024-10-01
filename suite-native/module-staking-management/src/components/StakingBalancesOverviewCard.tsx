@@ -17,19 +17,19 @@ import {
 const stakingItemStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
-    gap: utils.spacings.extraSmall,
-    paddingBottom: utils.spacings.small,
+    gap: utils.spacings.sp4,
+    paddingBottom: utils.spacings.sp8,
 }));
 
 const stakingCardStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.medium,
+    marginTop: utils.spacings.sp16,
 }));
 
 const stakingWrapperStyle = prepareNativeStyle(utils => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    paddingBottom: utils.spacings.medium,
+    paddingBottom: utils.spacings.sp16,
 }));
 
 const separatorStyle = prepareNativeStyle(utils => ({
@@ -126,7 +126,7 @@ export const StakingBalancesOverviewCard = ({
                     flexDirection="row"
                     alignItems="center"
                     justifyContent="space-between"
-                    paddingTop="medium"
+                    paddingTop="sp16"
                 >
                     <Text color="textSubdued">
                         <Translation id="staking.apy" />

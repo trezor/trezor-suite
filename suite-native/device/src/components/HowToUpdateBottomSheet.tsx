@@ -24,8 +24,8 @@ export const HowToUpdateBottomSheet = ({
 
     return (
         <BottomSheet isVisible={isVisible} onClose={onClose} title={title}>
-            <VStack spacing="large">
-                <VStack paddingHorizontal="large">
+            <VStack spacing="sp24">
+                <VStack paddingHorizontal="sp24">
                     <Text variant="callout">
                         <Translation id="deviceInfo.updateHowTo.subtitle" />
                     </Text>

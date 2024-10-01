@@ -51,8 +51,8 @@ const badgeStyle = prepareNativeStyle<BadgeStyleProps>(
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: utils.colors[backgroundColor],
-        paddingHorizontal: utils.spacings.small - (size === 'medium' ? 0 : 2),
-        paddingVertical: utils.spacings.small / 4,
+        paddingHorizontal: utils.spacings.sp8 - (size === 'medium' ? 0 : 2),
+        paddingVertical: utils.spacings.sp8 / 4,
         borderRadius: utils.borders.radii.round,
         extend: [
             {
@@ -163,7 +163,7 @@ export const Badge = ({
                 }),
                 style,
             ]}
-            spacing={utils.spacings.extraSmall}
+            spacing={utils.spacings.sp4}
         >
             {icon && badgeIcon}
             <Text color={textColor} variant={textVariant} numberOfLines={1} ellipsizeMode="tail">

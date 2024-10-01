@@ -28,13 +28,13 @@ import { DisconnectedTrezorSvg } from '../../../assets/DisconnectedTrezorSvg';
 const SHOW_TIMEOUT = 1500;
 
 const svgStyle = prepareNativeStyle(utils => ({
-    paddingTop: utils.spacings.small,
+    paddingTop: utils.spacings.sp8,
     width: '100%',
     height: 206,
 }));
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
-    gap: utils.spacings.medium,
+    gap: utils.spacings.sp16,
 }));
 
 export const EnableViewOnlyBottomSheet = () => {
@@ -139,7 +139,7 @@ export const EnableViewOnlyBottomSheet = () => {
 
     return (
         <BottomSheet isVisible={isVisible} onClose={handleClose} isCloseDisplayed={false}>
-            <VStack spacing="large" paddingHorizontal="small">
+            <VStack spacing="sp24" paddingHorizontal="sp8">
                 <Box style={applyStyle(svgStyle)}>
                     <DisconnectedTrezorSvg />
                 </Box>

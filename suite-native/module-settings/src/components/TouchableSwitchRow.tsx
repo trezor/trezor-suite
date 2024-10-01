@@ -46,7 +46,7 @@ export const TouchableSwitchRow = ({
                 flexDirection="row"
                 justifyContent="space-between"
                 alignItems="flex-start"
-                marginVertical="medium"
+                marginVertical="sp16"
             >
                 <Box style={applyStyle(contentStyle)} flexDirection="row">
                     <RoundedIcon name={iconName} color="iconSubdued" />

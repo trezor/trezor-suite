@@ -27,7 +27,7 @@ export const UnverifiedAddress = ({
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 
     return (
-        <VStack spacing="medium">
+        <VStack spacing="sp16">
             {isPortfolioTrackerDevice || isDeviceInViewOnlyMode ? (
                 <UnverifiedAddressWarning />
             ) : (

@@ -2,7 +2,7 @@ import { VStack, Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const BootloaderModalAppendix = () => (
-    <VStack spacing="large">
+    <VStack spacing="sp24">
         <VStack>
             <Text variant="callout">
                 <Translation id="moduleDevice.bootloaderModal.appendix.exit.title" />

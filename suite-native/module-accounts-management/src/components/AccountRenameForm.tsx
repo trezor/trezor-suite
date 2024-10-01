@@ -31,7 +31,7 @@ const AccountLabelFieldHint = ({ formControl }: AccountLabelFieldHintProps) => {
     const { accountLabel } = useWatch({ control: formControl });
 
     return (
-        <Box paddingLeft="small">
+        <Box paddingLeft="sp8">
             <Text variant="label" color="textSubdued">
                 {accountLabel ? accountLabel.length : 0} / {MAX_ACCOUNT_LABEL_LENGTH} letters
             </Text>
@@ -76,9 +76,9 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     });
 
     return (
-        <Box marginTop="medium">
+        <Box marginTop="sp16">
             <Form form={form}>
-                <VStack spacing="small">
+                <VStack spacing="sp8">
                     <TextInputField
                         ref={inputRef}
                         name="accountLabel"

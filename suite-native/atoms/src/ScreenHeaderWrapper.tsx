@@ -14,10 +14,10 @@ const screenHeaderWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingLeft: Math.max(insets.left, utils.spacings.medium),
-        paddingRight: Math.max(insets.right, utils.spacings.medium),
-        paddingVertical: utils.spacings.medium,
-        paddingBottom: utils.spacings.extraSmall * 3,
+        paddingLeft: Math.max(insets.left, utils.spacings.sp16),
+        paddingRight: Math.max(insets.right, utils.spacings.sp16),
+        paddingVertical: utils.spacings.sp16,
+        paddingBottom: utils.spacings.sp4 * 3,
     }),
 );
 

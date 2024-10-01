@@ -19,11 +19,11 @@ const selectableAssetContentStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     flex: 1,
-    marginLeft: utils.spacings.small + utils.spacings.extraSmall,
+    marginLeft: utils.spacings.sp8 + utils.spacings.sp4,
 }));
 
 const tokensBadgeStyle = prepareNativeStyle(utils => ({
-    paddingBottom: utils.spacings.extraSmall / 2,
+    paddingBottom: utils.spacings.sp4 / 2,
 }));
 
 export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: SelectableAssetItemProps) => {

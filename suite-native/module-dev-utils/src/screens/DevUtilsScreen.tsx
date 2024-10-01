@@ -27,7 +27,7 @@ export const DevUtilsScreen = ({
         <Screen screenHeader={<ScreenSubHeader content="DEV utils" />}>
             <VStack>
                 <Card>
-                    <VStack spacing="medium">
+                    <VStack spacing="sp16">
                         <TitleHeader
                             title="Build version"
                             subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash() || 'N/A in debug build'}`}

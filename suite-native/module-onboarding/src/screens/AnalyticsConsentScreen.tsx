@@ -32,15 +32,15 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 const titleStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
-    marginTop: utils.spacings.large,
+    marginTop: utils.spacings.sp24,
     marginBottom: 12,
-    paddingHorizontal: utils.spacings.large,
+    paddingHorizontal: utils.spacings.sp24,
 }));
 
 const subtitleStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
-    marginBottom: utils.spacings.large,
-    paddingHorizontal: utils.spacings.large,
+    marginBottom: utils.spacings.sp24,
+    paddingHorizontal: utils.spacings.sp24,
 }));
 
 const buttonsWrapperStyle = prepareNativeStyle(() => ({
@@ -50,10 +50,10 @@ const buttonsWrapperStyle = prepareNativeStyle(() => ({
 }));
 
 const cardStyle = prepareNativeStyle(utils => ({
-    marginHorizontal: utils.spacings.medium,
-    marginTop: utils.spacings.medium,
-    marginBottom: utils.spacings.extraLarge,
-    paddingHorizontal: utils.spacings.medium,
+    marginHorizontal: utils.spacings.sp16,
+    marginTop: utils.spacings.sp16,
+    marginBottom: utils.spacings.sp32,
+    paddingHorizontal: utils.spacings.sp16,
     paddingTop: 60,
     paddingBottom: 20,
     borderRadius: 20,
@@ -64,8 +64,8 @@ const cardStyle = prepareNativeStyle(utils => ({
 }));
 
 const consentInfoStyle = prepareNativeStyle(utils => ({
-    gap: utils.spacings.small,
-    paddingVertical: utils.spacings.extraSmall,
+    gap: utils.spacings.sp8,
+    paddingVertical: utils.spacings.sp4,
     alignItems: 'center',
 }));
 
@@ -76,10 +76,10 @@ const analyticsConsentStyle = prepareNativeStyle(_ => ({
 }));
 
 const consentWrapperStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
-    paddingVertical: utils.spacings.medium,
-    marginBottom: utils.spacings.small,
-    borderRadius: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
+    paddingVertical: utils.spacings.sp16,
+    marginBottom: utils.spacings.sp8,
+    borderRadius: utils.spacings.sp16,
     backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
     width: '100%',
     flexDirection: 'row',
@@ -146,7 +146,7 @@ export const AnalyticsConsentScreen = () => {
                     <Translation id="moduleOnboarding.analyticsConsentScreen.subtitle" />
                 </Text>
                 <VStack style={applyStyle(analyticsConsentStyle)}>
-                    <Stack spacing="large" paddingBottom="medium">
+                    <Stack spacing="sp24" paddingBottom="sp16">
                         <AnalyticsInfoRow
                             iconName="eyeSlash"
                             title={

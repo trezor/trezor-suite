@@ -49,7 +49,7 @@ export const TransactionDetailSheets = ({
 
     return (
         <Card style={applyStyle(cardStyle)} borderColor="borderElevation1">
-            <VStack spacing="large">
+            <VStack spacing="sp24">
                 <TransactionDetailParametersSheet
                     isVisible={expandedSheet === 'parameters'}
                     transaction={transaction}

@@ -12,9 +12,9 @@ type StepsProgressBarProps = {
 const progressBarWrapperStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: utils.spacings.small,
-    paddingHorizontal: utils.spacings.small,
-    gap: utils.spacings.extraSmall,
+    paddingVertical: utils.spacings.sp8,
+    paddingHorizontal: utils.spacings.sp8,
+    gap: utils.spacings.sp4,
     borderRadius: 10,
     borderWidth: utils.borders.widths.small,
     alignItems: 'center',

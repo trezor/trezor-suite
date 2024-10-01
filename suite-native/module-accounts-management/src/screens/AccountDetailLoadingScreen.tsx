@@ -15,7 +15,7 @@ import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const cardStyle = prepareNativeStyle(utils => ({
-    padding: utils.spacings.small,
+    padding: utils.spacings.sp8,
 }));
 
 export const AccountDetailLoadingScreen = () => {
@@ -29,12 +29,12 @@ export const AccountDetailLoadingScreen = () => {
                 <ScreenSubHeader leftIcon={<GoBackIcon closeActionType={closeActionType} />} />
             }
         >
-            <VStack spacing="extraLarge" alignItems="center">
+            <VStack spacing="sp32" alignItems="center">
                 <Card style={applyStyle(cardStyle)}>
                     <BoxSkeleton width={SCREEN_WIDTH - 32} height={70} />
                 </Card>
                 <Card style={applyStyle(cardStyle)}>
-                    <VStack spacing="large" alignItems="center" paddingHorizontal="large">
+                    <VStack spacing="sp24" alignItems="center" paddingHorizontal="sp24">
                         <BoxSkeleton width={104} height={104} borderRadius={52} />
                         <BoxSkeleton width={160} height={30} />
                         <BoxSkeleton width={200} height={24} />

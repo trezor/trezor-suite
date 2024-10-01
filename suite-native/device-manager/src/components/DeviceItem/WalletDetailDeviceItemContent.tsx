@@ -20,9 +20,9 @@ export type WalletDetailDeviceItemContentProps = {
 
 const headerStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,
-    paddingRight: utils.spacings.small,
+    paddingRight: utils.spacings.sp8,
     alignItems: 'center',
-    gap: utils.spacings.small,
+    gap: utils.spacings.sp8,
 }));
 
 const headerTextStyle = prepareNativeStyle(() => ({

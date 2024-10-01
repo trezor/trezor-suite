@@ -6,7 +6,7 @@ type SettingsSectionItemIconProps = {
 };
 
 export const SettingsSectionItemIcon = ({ iconName }: SettingsSectionItemIconProps) => (
-    <Box justifyContent="center" alignItems="center" marginRight="medium">
+    <Box justifyContent="center" alignItems="center" marginRight="sp16">
         <RoundedIcon name={iconName} color="iconSubdued" iconSize="mediumLarge" />
     </Box>
 );

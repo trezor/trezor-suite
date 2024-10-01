@@ -17,14 +17,14 @@ import { NativeStakingRootState } from '@suite-native/staking/src/types';
 const stakingItemStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
-    gap: utils.spacings.extraSmall,
+    gap: utils.spacings.sp4,
 }));
 
 const valuesContainerStyle = prepareNativeStyle(utils => ({
     maxWidth: '40%',
     flexShrink: 0,
     alignItems: 'flex-end',
-    paddingLeft: utils.spacings.small,
+    paddingLeft: utils.spacings.sp8,
 }));
 
 const getCardAlertProps = (isStakeConfirming: boolean, isStakePending: boolean) => {

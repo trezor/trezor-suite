@@ -19,9 +19,9 @@ export const ConfirmOnTrezorBottomSheet = ({
             isVisible={isOpened}
             onClose={onClose}
             isCloseDisplayed={false}
-            paddingHorizontal="large"
+            paddingHorizontal="sp24"
         >
-            <VStack spacing="large">
+            <VStack spacing="sp24">
                 <VStack alignItems="center">
                     <Text textAlign="center" variant="titleSmall">
                         <Translation id="moduleDevice.confirmOnDeviceSheetTitle" />

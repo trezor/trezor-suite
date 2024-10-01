@@ -23,7 +23,7 @@ export const SendOutputFields = ({ accountKey }: SendOutputFieldsProps) => {
     const outputsFieldArray = useFieldArray({ control, name: 'outputs' });
 
     return (
-        <VStack spacing="medium">
+        <VStack spacing="sp16">
             <Text variant="titleSmall">
                 <Translation id="moduleSend.outputs.recipients.title" />
             </Text>
@@ -31,9 +31,9 @@ export const SendOutputFields = ({ accountKey }: SendOutputFieldsProps) => {
                 {outputsFieldArray.fields.map((output, index) => (
                     <RecipientInputs key={output.id} index={index} accountKey={accountKey} />
                 ))}
-                {/* 
+                {/*
               TODO: add output (outputs.append({...})) button
-              issue: https://github.com/trezor/trezor-suite/issues/12944 
+              issue: https://github.com/trezor/trezor-suite/issues/12944
               */}
             </Card>
         </VStack>

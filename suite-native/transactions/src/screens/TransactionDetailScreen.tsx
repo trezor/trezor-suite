@@ -71,7 +71,7 @@ export const TransactionDetailScreen = ({
 
     return (
         <Screen
-            customHorizontalPadding={utils.spacings.medium}
+            customHorizontalPadding={utils.spacings.sp16}
             screenHeader={
                 <ScreenSubHeader
                     closeActionType={closeActionType}
@@ -88,8 +88,8 @@ export const TransactionDetailScreen = ({
                 />
             }
         >
-            <VStack spacing="large">
-                <VStack spacing="extraLarge">
+            <VStack spacing="sp24">
+                <VStack spacing="sp32">
                     <TransactionDetailHeader
                         transaction={transaction}
                         tokenTransfer={tokenTransfer as TypedTokenTransfer}

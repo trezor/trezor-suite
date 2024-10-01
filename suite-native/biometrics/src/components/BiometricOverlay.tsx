@@ -20,7 +20,7 @@ const bottomWrapperStyle = prepareNativeStyle(utils => ({
     marginHorizontal: 'auto',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: utils.spacings.extraSmall,
+    gap: utils.spacings.sp4,
 }));
 
 type BiometricOverlayProps = {

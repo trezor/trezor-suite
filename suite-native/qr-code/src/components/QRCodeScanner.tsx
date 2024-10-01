@@ -16,7 +16,7 @@ type QRCodeScannerProps = {
     onCodeScanned: (data: string) => void;
 };
 
-const SCANNER_SIZE = Dimensions.get('screen').width - nativeSpacings.medium * 2;
+const SCANNER_SIZE = Dimensions.get('screen').width - nativeSpacings.sp16 * 2;
 
 const cameraContainerStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
@@ -67,7 +67,7 @@ export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
 
         case PermissionStatus.GRANTED:
             return (
-                <VStack spacing="medium" justifyContent="center">
+                <VStack spacing="sp16" justifyContent="center">
                     <HStack alignItems="center" justifyContent="center">
                         <Icon
                             name="lightbulb"

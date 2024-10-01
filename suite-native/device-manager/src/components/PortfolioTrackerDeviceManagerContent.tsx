@@ -25,12 +25,12 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 const contentStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
 
-    spacing: utils.spacings.medium,
+    spacing: utils.spacings.sp16,
 
-    paddingBottom: utils.spacings.medium,
-    marginTop: utils.spacings.medium,
+    paddingBottom: utils.spacings.sp16,
+    marginTop: utils.spacings.sp16,
 }));
 
 export const PortfolioTrackerDeviceManagerContent = () => {

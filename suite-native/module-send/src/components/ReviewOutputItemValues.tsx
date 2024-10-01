@@ -19,7 +19,7 @@ export const ReviewOutputItemValues = ({
                     <Translation id={translationKey} />
                 </Text>
             </Box>
-            <VStack flex={0.45} alignItems="flex-end" spacing="extraSmall">
+            <VStack flex={0.45} alignItems="flex-end" spacing="sp4">
                 <CryptoToFiatAmountFormatter
                     variant="hint"
                     color="textDefault"

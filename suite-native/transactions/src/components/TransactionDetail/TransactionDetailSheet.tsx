@@ -34,7 +34,7 @@ const BottomSheetTrigger = ({
     return (
         <TouchableOpacity style={applyStyle(triggerStyle)} onPress={onPress}>
             <Box flexDirection="row" alignItems="center">
-                <Box marginRight="medium">
+                <Box marginRight="sp16">
                     <Icon name={iconName} color="iconDefault" size="mediumLarge" />
                 </Box>
                 <Text>{title}</Text>
@@ -61,9 +61,9 @@ export const TransactionDetailSheet = ({
             title={title}
             subtitle={`Transaction #${transactionId}`}
         >
-            <Box paddingTop="large">
+            <Box paddingTop="sp24">
                 {children}
-                <Box paddingHorizontal="small" marginTop="large">
+                <Box paddingHorizontal="sp8" marginTop="sp24">
                     <Button size="large" onPress={onVisibilityChange}>
                         Close
                     </Button>

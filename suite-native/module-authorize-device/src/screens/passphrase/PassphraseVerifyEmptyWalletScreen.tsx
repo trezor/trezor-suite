@@ -42,7 +42,7 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                 <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.description" />
             }
         >
-            <VStack spacing="medium">
+            <VStack spacing="sp16">
                 <AlertBox
                     variant="warning"
                     title={

@@ -36,7 +36,7 @@ export const TokenAccountDetailScreenSubHeader = ({
                     <Text ellipsizeMode="tail" numberOfLines={1}>
                         {tokenName}
                     </Text>
-                    <HStack spacing="extraSmall" alignItems="center">
+                    <HStack spacing="sp4" alignItems="center">
                         <CryptoIcon symbol="eth" size="extraSmall" />
                         <Text
                             variant="label"

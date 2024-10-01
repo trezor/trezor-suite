@@ -73,7 +73,7 @@ export const TransactionDetailInputsSheetSection = ({
     return (
         <Box>
             {G.isString(header) ? (
-                <Box paddingLeft="small" marginVertical="small">
+                <Box paddingLeft="sp8" marginVertical="sp8">
                     <Text color="textSubdued" variant="hint">
                         {header}
                     </Text>

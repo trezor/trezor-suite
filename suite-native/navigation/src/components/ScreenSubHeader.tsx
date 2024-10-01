@@ -26,9 +26,9 @@ const headerStyle = prepareNativeStyle<{ customHorizontalPadding?: number }>(
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: customHorizontalPadding || utils.spacings.small,
+        padding: customHorizontalPadding || utils.spacings.sp8,
         backgroundColor: utils.colors.backgroundSurfaceElevation0,
-        height: ICON_SIZE + utils.spacings.small * 2,
+        height: ICON_SIZE + utils.spacings.sp8 * 2,
     }),
 );
 

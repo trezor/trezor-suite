@@ -17,7 +17,7 @@ type SheetHeaderWrapperStyleProps = { isHeaderDisplayed: boolean };
 
 const sheetHeaderWrapperStyle = prepareNativeStyle<SheetHeaderWrapperStyleProps>(
     (utils, { isHeaderDisplayed }) => ({
-        marginBottom: utils.spacings.large,
+        marginBottom: utils.spacings.sp24,
 
         extend: {
             condition: isHeaderDisplayed,
@@ -33,9 +33,9 @@ const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
         flexDirection: isCloseDisplayed ? 'row' : 'column',
         justifyContent: 'space-between',
         alignItems: isCloseDisplayed ? 'center' : 'flex-start',
-        paddingHorizontal: utils.spacings.large,
-        paddingTop: utils.spacings.large,
-        paddingBottom: utils.spacings.medium,
+        paddingHorizontal: utils.spacings.sp24,
+        paddingTop: utils.spacings.sp24,
+        paddingBottom: utils.spacings.sp16,
     }),
 );
 
@@ -74,7 +74,7 @@ export const BottomSheetHeader = ({
 
     return (
         <Box
-            marginVertical="small"
+            marginVertical="sp8"
             style={applyStyle(sheetHeaderWrapperStyle, { isHeaderDisplayed })}
         >
             <BottomSheetGrabber />

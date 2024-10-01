@@ -9,8 +9,8 @@ const dotStyle = prepareNativeStyle<{ isSubmitted: boolean }>((utils, { isSubmit
     const color = isSubmitted ? utils.colors.textDisabled : utils.colors.textDefault;
 
     return {
-        width: utils.spacings.small,
-        height: utils.spacings.small,
+        width: utils.spacings.sp8,
+        height: utils.spacings.sp8,
         borderRadius: utils.borders.radii.round,
         borderColor: color,
         borderWidth: utils.borders.widths.small,
@@ -22,7 +22,7 @@ const enteredDigitsStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderColor: utils.colors.borderElevation1,
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
 export const PinFormProgress = () => {

@@ -103,7 +103,7 @@ export const ConnectPopupScreen = ({
                 }
 
                 return (
-                    <VStack spacing="small" alignItems="center">
+                    <VStack spacing="sp8" alignItems="center">
                         <Text variant="titleSmall">
                             {method.confirmation?.label ?? method.info}
                         </Text>

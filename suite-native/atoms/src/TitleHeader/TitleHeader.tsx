@@ -18,7 +18,7 @@ export const TitleHeader = ({
     subtitle,
     titleVariant = 'titleSmall',
     textAlign = 'left',
-    titleSpacing = 'small',
+    titleSpacing = 'sp8',
 }: TitleHeaderProps) => {
     return (
         <VStack

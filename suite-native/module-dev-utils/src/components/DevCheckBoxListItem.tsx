@@ -16,7 +16,7 @@ export const DevCheckBoxListItem = ({
             flexDirection="row"
             justifyContent="space-between"
             alignItems="center"
-            paddingVertical="small"
+            paddingVertical="sp8"
         >
             <Text variant="body">{title}</Text>
             <CheckBox isChecked={isChecked} onChange={onPress} />

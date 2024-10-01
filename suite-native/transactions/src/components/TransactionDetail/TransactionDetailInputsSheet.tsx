@@ -26,21 +26,21 @@ type InputsOutputsHeaderProps = {
 };
 
 const InputsOutputsHeader = ({ inputsCount, outputsCount }: InputsOutputsHeaderProps) => (
-    <Box flexDirection="row" justifyContent="space-between" marginBottom="medium">
-        <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="small">
+    <Box flexDirection="row" justifyContent="space-between" marginBottom="sp16">
+        <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="sp8">
             <Text variant="hint" color="textSubdued">
                 Inputs · {inputsCount}
             </Text>
-            <Box marginLeft="small">
+            <Box marginLeft="sp8">
                 <Icon name="receiveAlt" color="iconSubdued" size="medium" />
             </Box>
         </Box>
 
-        <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="large">
+        <Box flex={1} flexDirection="row" alignItems="center" paddingLeft="sp24">
             <Text variant="hint" color="textSubdued">
                 Outputs · {outputsCount}
             </Text>
-            <Box marginLeft="small">
+            <Box marginLeft="sp8">
                 <Icon name="sendAlt" color="iconSubdued" size="medium" />
             </Box>
         </Box>

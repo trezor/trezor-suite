@@ -10,7 +10,7 @@ export const SettingsFAQScreen = () => {
 
     return (
         <Screen screenHeader={<ScreenSubHeader content={translate('moduleSettings.faq.title')} />}>
-            <VStack spacing="large">
+            <VStack spacing="sp24">
                 <FAQInfoPanel />
                 <SupportCard />
             </VStack>

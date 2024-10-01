@@ -36,14 +36,14 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
     };
 
     return (
-        <VStack spacing="large">
+        <VStack spacing="sp24">
             <QRCode data={address} />
             <Pressable onLongPress={handleCopyAddress} style={applyStyle(addressContainer)}>
                 <Text variant="titleSmall" textAlign="center">
                     {address}
                 </Text>
             </Pressable>
-            <HStack spacing="small" justifyContent="center">
+            <HStack spacing="sp8" justifyContent="center">
                 <Button
                     size="small"
                     viewLeft="copy"

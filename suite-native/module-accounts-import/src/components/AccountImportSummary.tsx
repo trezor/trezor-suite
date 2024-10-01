@@ -56,7 +56,7 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
     ) : undefined;
 
     return (
-        <VStack spacing="extraLarge" flex={1}>
+        <VStack spacing="sp32" flex={1}>
             <Box flex={1} alignItems="center" justifyContent="center">
                 <PictogramTitleHeader
                     title={<Text variant="titleSmall">{title}</Text>}

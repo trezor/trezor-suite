@@ -85,7 +85,7 @@ export const DeviceManagerModal = ({
                                 <HStack
                                     justifyContent="space-between"
                                     alignItems="center"
-                                    spacing="medium"
+                                    spacing="sp16"
                                     flex={1}
                                 >
                                     {deviceState && (

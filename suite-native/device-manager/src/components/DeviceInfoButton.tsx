@@ -57,7 +57,7 @@ export const DeviceInfoButton = ({ showAsFullWidth }: DeviceInfoButtonProps) => 
             onPress={handleDeviceRedirect}
             showAsFullWidth={showAsFullWidth}
         >
-            <HStack spacing="small" style={applyStyle(contentStyle, { showAsFullWidth })}>
+            <HStack spacing="sp8" style={applyStyle(contentStyle, { showAsFullWidth })}>
                 <Icon name="infoLight" size="mediumLarge" />
                 <Text variant="hint">
                     <Translation id="deviceManager.deviceButtons.deviceInfo" />

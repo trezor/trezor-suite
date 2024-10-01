@@ -17,12 +17,12 @@ const pinMatrix = [
 const MATRIX_MARGIN = 40;
 
 const cardStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.small,
+    marginBottom: utils.spacings.sp8,
     padding: MATRIX_MARGIN,
 }));
 
 const pinProgressWrapperStyle = prepareNativeStyle(utils => ({
-    height: utils.spacings.extraLarge,
+    height: utils.spacings.sp32,
     justifyContent: 'center',
 }));
 
@@ -31,7 +31,7 @@ const loaderWrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
     height: '100%',
     margin: MATRIX_MARGIN,
-    paddingBottom: utils.spacings.extraLarge,
+    paddingBottom: utils.spacings.sp32,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
@@ -49,7 +49,7 @@ export const PinForm = () => {
 
     return (
         <Form form={form}>
-            <VStack spacing="small" alignItems="center">
+            <VStack spacing="sp8" alignItems="center">
                 <Text color="textSubdued">
                     <Translation id="moduleConnectDevice.pinScreen.form.keypadInfo" />
                 </Text>
@@ -58,9 +58,9 @@ export const PinForm = () => {
                 </Box>
             </VStack>
             <Card style={applyStyle(cardStyle)}>
-                <VStack justifyContent="center" alignItems="center" spacing="large">
+                <VStack justifyContent="center" alignItems="center" spacing="sp24">
                     {pinMatrix.map(pinRow => (
-                        <HStack key={pinRow.join('')} spacing="medium">
+                        <HStack key={pinRow.join('')} spacing="sp16">
                             {pinRow.map(value => (
                                 <PinMatrixButton key={value} value={value} />
                             ))}
@@ -69,7 +69,7 @@ export const PinForm = () => {
                 </VStack>
                 <PinFormControlButtons />
                 {form.formState.isSubmitted && (
-                    <VStack style={applyStyle(loaderWrapperStyle)} spacing="medium">
+                    <VStack style={applyStyle(loaderWrapperStyle)} spacing="sp16">
                         <Loader size="large" />
                         <Text variant="titleSmall">
                             <Translation id="moduleConnectDevice.pinScreen.form.submitting" />

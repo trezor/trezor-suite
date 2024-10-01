@@ -24,18 +24,18 @@ type AlertSheetProps = {
 const alertSheetContainerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: utils.spacings.extraLarge,
-    paddingHorizontal: utils.spacings.large,
-    paddingVertical: utils.spacings.extraLarge,
-    marginBottom: utils.spacings.extraLarge,
-    marginHorizontal: utils.spacings.small,
+    paddingTop: utils.spacings.sp32,
+    paddingHorizontal: utils.spacings.sp24,
+    paddingVertical: utils.spacings.sp32,
+    marginBottom: utils.spacings.sp32,
+    marginHorizontal: utils.spacings.sp8,
     borderRadius: utils.borders.radii.medium,
     ...utils.boxShadows.small,
 }));
 
 const alertSheetContentStyle = prepareNativeStyle(utils => ({
     width: '100%',
-    gap: utils.spacings.large,
+    gap: utils.spacings.sp24,
 }));
 
 const shakeTriggerStyle = prepareNativeStyle(_ => ({
@@ -115,7 +115,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                     />
                                 )}
                                 {appendix}
-                                <VStack spacing="medium">
+                                <VStack spacing="sp16">
                                     <Button
                                         size="medium"
                                         colorScheme={primaryButtonVariant}

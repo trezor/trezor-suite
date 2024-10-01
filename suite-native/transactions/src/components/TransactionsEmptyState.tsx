@@ -17,8 +17,8 @@ const cardStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     flex: 1,
     width: '100%',
-    paddingHorizontal: utils.spacings.large,
-    paddingVertical: utils.spacings.extraLarge,
+    paddingHorizontal: utils.spacings.sp24,
+    paddingVertical: utils.spacings.sp32,
     borderRadius: utils.borders.radii.large,
 }));
 
@@ -38,7 +38,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
     return (
         <Box style={applyStyle(wrapperStyle)}>
             <Card style={applyStyle(cardStyle)}>
-                <Box marginBottom="large" alignItems="center">
+                <Box marginBottom="sp24" alignItems="center">
                     <PictogramTitleHeader
                         variant="green"
                         icon="stack"

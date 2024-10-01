@@ -24,9 +24,9 @@ export const MessageSystemInfo = () => {
 
     return (
         <Card>
-            <VStack paddingTop="medium">
+            <VStack paddingTop="sp16">
                 <Text variant="highlight">Message system</Text>
-                <VStack spacing="small" paddingBottom="medium">
+                <VStack spacing="sp8" paddingBottom="sp16">
                     <Text variant="label">Codesign Build: {isCodesigned.toString()}</Text>
                     <Text variant="label">ConfigUrl: {remoteConfigUrl}</Text>
                     <Text variant="label">Sequence: {config?.sequence}</Text>
@@ -40,7 +40,7 @@ export const MessageSystemInfo = () => {
                     </Button>
                 </VStack>
                 <Text variant="highlight">Valid messages:</Text>
-                <VStack spacing="small">
+                <VStack spacing="sp8">
                     <Divider />
                     {allValidMessages.map(m => (
                         <VStack key={m.id}>

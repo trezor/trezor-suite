@@ -35,7 +35,7 @@ const EXTRA_BOTTOM_PADDING = 48;
 const ACCOUNT_TYPES_URL = 'https://trezor.io/learn/a/multiple-accounts-in-trezor-suite';
 
 const bulletsForKeyPath = (keyPath: TxKeyPath) => (
-    <Box paddingLeft="small">
+    <Box paddingLeft="sp8">
         <Translation
             id={keyPath}
             values={{
@@ -54,7 +54,7 @@ const bulletsForKeyPath = (keyPath: TxKeyPath) => (
 );
 
 const itemsStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.extraSmall,
+    paddingHorizontal: utils.spacings.sp4,
 }));
 
 const bottomWrapperStyle = prepareNativeStyle((_, { bottomInset }: { bottomInset: number }) => ({
@@ -70,15 +70,15 @@ const gradientStyle = prepareNativeStyle(_ => ({
 }));
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
 }));
 
 const aboutStyle = prepareNativeStyle((utils, { bottomInset }: { bottomInset: number }) => ({
-    paddingTop: utils.spacings.extraLarge,
+    paddingTop: utils.spacings.sp32,
     paddingBottom: EXTRA_BOTTOM_PADDING + GRADIENT_HEIGHT + bottomInset,
     width: '100%',
-    paddingHorizontal: utils.spacings.small,
+    paddingHorizontal: utils.spacings.sp8,
     gap: 12,
 }));
 
@@ -125,7 +125,7 @@ export const SelectAccountTypeScreen = ({
                     />
                 }
             >
-                <VStack spacing="large" style={applyStyle(itemsStyle)}>
+                <VStack spacing="sp24" style={applyStyle(itemsStyle)}>
                     {types.map(item => {
                         const { titleKey, subtitleKey, descKey } = accountTypeTranslationKeys[item];
 

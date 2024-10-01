@@ -20,7 +20,7 @@ export type SettingsSectionItemProps = {
 const listItemRightContainerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: utils.spacings.medium,
+    marginLeft: utils.spacings.sp16,
 }));
 
 export const SettingsSectionItem = ({

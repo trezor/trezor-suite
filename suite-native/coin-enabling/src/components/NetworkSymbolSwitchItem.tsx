@@ -46,7 +46,7 @@ const wrapperStyle = prepareNativeStyle(_ => ({
 }));
 
 const iconWrapperStyle = prepareNativeStyle(utils => ({
-    paddingVertical: utils.spacings.small,
+    paddingVertical: utils.spacings.sp8,
 }));
 
 export const NetworkSymbolSwitchItem = ({

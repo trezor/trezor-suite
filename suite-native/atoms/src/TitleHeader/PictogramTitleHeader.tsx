@@ -25,7 +25,7 @@ export const PictogramTitleHeader = ({
     size = 'large',
 }: PictogramTitleHeaderProps) => {
     return (
-        <VStack alignItems="center" spacing="large">
+        <VStack alignItems="center" spacing="sp24">
             <Pictogram variant={variant} icon={icon} size={size} />
             <CenteredTitleHeader title={title} subtitle={subtitle} titleVariant={titleVariant} />
         </VStack>

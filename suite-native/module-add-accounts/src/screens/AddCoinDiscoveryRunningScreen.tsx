@@ -89,9 +89,9 @@ export const AddCoinDiscoveryRunningScreen = ({ route }) => {
 
     return (
         <Screen>
-            <VStack flex={1} justifyContent="center" alignItems="center" spacing="extraLarge">
+            <VStack flex={1} justifyContent="center" alignItems="center" spacing="sp32">
                 <Spinner loadingState={loadingResult} onComplete={handleFinish} />
-                <VStack spacing="extraSmall">
+                <VStack spacing="sp4">
                     <Text variant="titleSmall" textAlign="center">
                         <Translation
                             id="moduleAddAccounts.coinDiscoveryRunningScreen.title"

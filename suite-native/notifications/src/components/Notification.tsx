@@ -36,10 +36,10 @@ const notificationContainerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: utils.spacings.extraSmall,
+    paddingVertical: utils.spacings.sp4,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundNeutralBold,
-    paddingHorizontal: utils.spacings.extraSmall,
+    paddingHorizontal: utils.spacings.sp4,
     ...utils.boxShadows.small,
 }));
 
@@ -124,10 +124,7 @@ export const Notification = ({
                         exiting={SlideOutUp.duration(EXIT_ANIMATION_DURATION)}
                     >
                         <TouchableWithoutFeedback onPress={onPress}>
-                            <HStack
-                                spacing="extraLarge"
-                                style={applyStyle(notificationContainerStyle)}
-                            >
+                            <HStack spacing="sp32" style={applyStyle(notificationContainerStyle)}>
                                 <HStack
                                     spacing={12}
                                     flexDirection="row"
@@ -139,7 +136,7 @@ export const Notification = ({
                                         {description}
                                     </Box>
                                 </HStack>
-                                <Box marginHorizontal="small">{iconRight}</Box>
+                                <Box marginHorizontal="sp8">{iconRight}</Box>
                             </HStack>
                         </TouchableWithoutFeedback>
                     </Animated.View>

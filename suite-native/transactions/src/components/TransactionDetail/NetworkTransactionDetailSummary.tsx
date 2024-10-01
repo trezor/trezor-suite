@@ -76,7 +76,7 @@ export const NetworkTransactionDetailSummary = ({
     }
 
     return (
-        <VStack spacing="large">
+        <VStack spacing="sp24">
             {A.isNotEmpty(transactionInputAddresses) && (
                 <TransactionDetailAddressesSection
                     addressesType="inputs"

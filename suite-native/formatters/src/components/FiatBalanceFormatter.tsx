@@ -13,7 +13,7 @@ type BalanceFormatterProps = FormatterProps<string | null> & { isForcedDiscreetM
 
 const wholeNumberStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,
-    marginBottom: -utils.spacings.small,
+    marginBottom: -utils.spacings.sp8,
     textAlign: 'center',
 }));
 

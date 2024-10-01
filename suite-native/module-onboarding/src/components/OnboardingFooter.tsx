@@ -9,7 +9,7 @@ import { OnboardingStackRoutes } from '@suite-native/navigation';
 
 const wrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
     marginBottom: 28,
 }));
 
@@ -33,7 +33,7 @@ export const OnboardingFooter = ({
     const buttonTitle = route.name === OnboardingStackRoutes.Welcome ? 'Get started' : 'Next';
 
     return (
-        <Stack spacing="medium" style={applyStyle(wrapperStyle)}>
+        <Stack spacing="sp16" style={applyStyle(wrapperStyle)}>
             {onBack && (
                 <Button
                     colorScheme="tertiaryElevation0"

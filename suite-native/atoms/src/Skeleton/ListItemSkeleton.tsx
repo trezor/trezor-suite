@@ -11,7 +11,7 @@ const skeletonContainer = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 12,
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
 const MAIN_ITEM_HEIGHT = 48;
@@ -32,7 +32,7 @@ export const ListItemSkeleton = () => {
         <Box style={applyStyle(skeletonContainer)}>
             <BoxSkeleton width={MAIN_ITEM_WIDTH} height={MAIN_ITEM_HEIGHT} />
 
-            <VStack spacing="small" alignItems="flex-end">
+            <VStack spacing="sp8" alignItems="flex-end">
                 <BoxSkeleton
                     width={TOP_SUB_ITEM_WIDTH}
                     height={SUBITEM_HEIGHT}

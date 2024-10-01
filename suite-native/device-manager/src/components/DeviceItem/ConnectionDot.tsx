@@ -7,8 +7,8 @@ type ConnectionDotProps = {
 };
 
 const dotStyle = prepareNativeStyle<{ isConnected: boolean }>((utils, { isConnected }) => ({
-    width: utils.spacings.small,
-    height: utils.spacings.small,
+    width: utils.spacings.sp8,
+    height: utils.spacings.sp8,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.iconDisabled,
     extend: {

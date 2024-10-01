@@ -18,7 +18,7 @@ const NetworkItemSection = ({
     onSelectItem: SelectableAssetListProps['onSelectItem'];
 }) => (
     <HeaderedCard title={title}>
-        <VStack spacing="large">
+        <VStack spacing="sp24">
             {networks.map(symbol => (
                 <SelectableNetworkItem key={symbol} symbol={symbol} onPress={onSelectItem} />
             ))}
@@ -42,7 +42,7 @@ const TestnetNetworkItemSection = ({ onSelectItem }: SelectableAssetListProps) =
 };
 
 export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => (
-    <VStack spacing="large">
+    <VStack spacing="sp24">
         <NetworkItemSection
             title="Select a coin to sync"
             networks={portfolioTrackerMainnets}

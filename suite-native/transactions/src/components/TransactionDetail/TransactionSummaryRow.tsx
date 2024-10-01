@@ -20,7 +20,7 @@ export const SummaryRow = ({
     return (
         <Box flexDirection="row" alignItems="flex-start">
             <Box style={applyStyle(summaryColumnStyle)}>{leftComponent}</Box>
-            <Box marginLeft="medium" flex={1}>
+            <Box marginLeft="sp16" flex={1}>
                 {children}
             </Box>
         </Box>

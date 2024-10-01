@@ -14,7 +14,7 @@ export type InputWrapperProps = {
 };
 
 const labelStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.small,
+    marginTop: utils.spacings.sp8,
     marginLeft: 11,
     marginBottom: 18,
 }));
