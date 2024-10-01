@@ -17,6 +17,7 @@ const settings = {
     iframeSrc: '',
     popupSrc: '',
     webusbSrc: '',
+    deeplinkUrl: '',
     version: '9.0.0',
     priority: 1,
     trustedHost: true,

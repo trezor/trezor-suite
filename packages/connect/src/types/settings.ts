@@ -33,7 +33,6 @@ export interface ConnectSettingsPublic {
     _sessionsBackgroundUrl?: string;
     deeplinkOpen?: (url: string) => void;
     deeplinkCallbackUrl?: string;
-    deeplinkUrl?: string;
     // URL for binary files such as firmware, may be local or remote. If not provided, firmware hash check won't be done.
     binFilesBaseUrl?: string;
 }
@@ -53,6 +52,7 @@ export interface ConnectSettingsInternal {
     proxy?: Proxy;
     sharedLogger?: boolean;
     useCoreInPopup?: boolean;
+    deeplinkUrl: string;
 }
 
 export type ConnectSettings = ConnectSettingsPublic & ConnectSettingsInternal;
