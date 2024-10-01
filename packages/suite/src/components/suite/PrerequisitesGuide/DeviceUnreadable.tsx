@@ -2,16 +2,18 @@ import { useState, MouseEvent } from 'react';
 import { Button } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isDesktop, isLinux } from '@trezor/env-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectDevice } from '@suite-common/wallet-core';
+
 import { Translation, TroubleshootingTips, UdevDownload } from 'src/components/suite';
 import {
-    TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
-    TROUBLESHOOTING_TIP_CABLE,
-    TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
+    TROUBLESHOOTING_TIP_UNREADABLE_HID,
+    TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE,
+    TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
-import { useDispatch } from 'src/hooks/suite';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import { useSelector, useDispatch } from 'src/hooks/suite';
 import type { TrezorDevice } from 'src/types/suite';
 
 // linux web
@@ -99,26 +101,42 @@ const UdevDesktop = () => {
 
 interface DeviceUnreadableProps {
     device?: TrezorDevice; // this should be actually UnreadableDevice, but it is not worth type casting
-    isWebUsbTransport: boolean;
 }
 
-// We don't really know what happened, show some generic help and provide link to contact a support
-export const DeviceUnreadable = ({ device, isWebUsbTransport }: DeviceUnreadableProps) => {
-    if (isWebUsbTransport) {
-        // only install bridge will help (webusb + HID device)
-        return (
-            <TroubleshootingTips
-                label={<Translation id="TR_TROUBLESHOOTING_UNREADABLE_WEBUSB" />}
-                items={[TROUBLESHOOTING_TIP_BRIDGE_STATUS, TROUBLESHOOTING_TIP_SUITE_DESKTOP]}
-                offerWebUsb
-                data-testid="@connect-device-prompt/unreadable-hid"
-            />
-        );
-    }
+/**
+ * Device was detected but @trezor/connect was not able to communicate with it. Reasons could be:
+ * - initial read from device (GetFeatures) failed because of some de-synchronization or clash with another application
+ * - device can't be communicated with using currently used transport (eg. hid / node bridge + webusb)
+ * - missing udev rule on linux
+ */
+export const DeviceUnreadable = ({ device }: DeviceUnreadableProps) => {
+    const selectedDevice = useSelector(selectDevice);
 
     // this error is dispatched by trezord when udev rules are missing
     if (isLinux() && device?.error === 'LIBUSB_ERROR_ACCESS') {
         return <> {isDesktop() ? <UdevDesktop /> : <UdevWeb />}</>;
+    }
+
+    // generic troubleshooting tips
+    const items = [
+        // closing other apps and reloading should be the first step. Either we might have made a bug and let two apps to talk
+        // to device at the same time or there might be another application in the wild not really playing according to our rules
+        TROUBLESHOOTING_TIP_RECONNECT,
+        // if on web - try installing desktop. this takes you to using bridge which should be more powerful than WebUSB
+        TROUBLESHOOTING_TIP_SUITE_DESKTOP,
+        // unfortunately we have seen reports that even old bridge might not be enough for some Windows users. So the only chance
+        // is using another computer, or maybe it would be better to say another OS
+        TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
+    ];
+
+    // only for unreadable HID devices
+    if (selectedDevice?.transportDescriptorType === 0) {
+        // If even this did not work, go to support or knowledge base
+        // 'If the last time you updated your device firmware was in 2019 and earlier please follow instructions in <a>the knowledge base</a>',
+        items.push(TROUBLESHOOTING_TIP_UNREADABLE_HID);
+        // you might have a very old device which is no longer supported current bridge
+        // if on desktop - try toggling between the 2 bridges we have available
+        items.push(TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE);
     }
 
     return (
@@ -129,12 +147,7 @@ export const DeviceUnreadable = ({ device, isWebUsbTransport }: DeviceUnreadable
                     values={{ error: device?.error }}
                 />
             }
-            items={[
-                TROUBLESHOOTING_TIP_CABLE,
-                TROUBLESHOOTING_TIP_USB,
-                TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-            ]}
-            offerWebUsb={isWebUsbTransport}
+            items={items}
             data-testid="@connect-device-prompt/unreadable-unknown"
         />
     );
