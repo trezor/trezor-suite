@@ -1,17 +1,10 @@
-import { useEffect, useState } from 'react';
-
 import { Checkbox } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { BridgeSettings } from '@trezor/suite-desktop-api/src/messages';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { useSelector } from 'src/hooks/suite';
-
-interface Process {
-    service: boolean;
-    process: boolean;
-}
+import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
 
 // note that this variable is duplicated with suite-desktop-core
 const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.01;
@@ -19,44 +12,11 @@ const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.01;
 export const TransportBackends = () => {
     const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
     const transport = useSelector(state => state.suite.transport);
-    const [bridgeProcess, setBridgeProcess] = useState<Process>({ service: false, process: false });
-    const [bridgeSettings, setBridgeSettings] = useState<BridgeSettings | null>(null);
-    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        desktopApi.getBridgeStatus().then(result => {
-            if (result.success) {
-                setBridgeProcess(result.payload);
-            }
-        });
+    const { bridgeProcess, bridgeSettings, changeBridgeSettings, bridgeDesktopApiError } =
+        useBridgeDesktopApi();
 
-        desktopApi.on('bridge/status', (status: Process) => {
-            setBridgeProcess(status);
-        });
-
-        desktopApi.getBridgeSettings().then(result => {
-            if (result.success) {
-                setBridgeSettings(result.payload);
-            } else {
-                setError(result.error);
-            }
-        });
-
-        desktopApi.on('bridge/settings', (settings: BridgeSettings) => {
-            setBridgeSettings(settings);
-        });
-
-        return () => {
-            desktopApi.removeAllListeners('bridge/status');
-            desktopApi.removeAllListeners('bridge/settings');
-        };
-    }, []);
-
-    const changeBridgeSettings = (settings: BridgeSettings) => {
-        desktopApi.changeBridgeSettings(settings);
-    };
-
-    if (error) return error;
+    if (bridgeDesktopApiError) return bridgeDesktopApiError;
 
     if (!bridgeSettings) return null;
 
