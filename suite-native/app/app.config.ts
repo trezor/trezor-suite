@@ -68,6 +68,7 @@ const projectIds = {
 
 const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
 const isCI = process.env.CI == 'true' || process.env.CI == '1';
+const runtimeVersion = process.env.RUNTIME_VERSION ?? 'fingerprint';
 
 if (isCI) {
     if (!process.env.EXPO_PUBLIC_ENVIRONMENT) {
@@ -77,6 +78,14 @@ if (isCI) {
         throw new Error('Missing SENTRY_AUTH_TOKEN env variable');
     }
 }
+
+const getRuntimeVersion = () => {
+    if (runtimeVersion === 'fingerprint') {
+        return { policy: 'fingerprint' } as const;
+    }
+
+    return runtimeVersion;
+};
 
 const getPlugins = (): ExpoPlugins => {
     const plugins = [
@@ -162,22 +171,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     const appIconIos = appIconsIos[buildType];
     const appIconAndroid = appIconsAndroid[buildType];
 
-    // Temporary degugging, remove later
-    console.log('Prebuilding', name, 'with', buildType, 'configuration', {
-        bundleIdentifier,
-        projectId,
-        suiteNativeVersion,
-    });
-
     return {
         ...config,
         name,
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: {
-            policy: 'fingerprint',
-        },
+        runtimeVersion: getRuntimeVersion(),
         ...(['develop', 'preview'].includes(buildType)
             ? {
                   updates: {
