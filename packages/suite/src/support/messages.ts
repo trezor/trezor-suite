@@ -100,12 +100,12 @@ export default defineMessages({
     },
     TR_RECONNECT_DEVICE_DESCRIPTION: {
         defaultMessage:
-            'If closing tabs and refreshing this page didn’t help, try reconnecting your Trezor.',
+            'If closing other apps that might be communicating with your Trezor and refreshing this page didn’t help, try reconnecting your Trezor.',
         id: 'TR_RECONNECT_DEVICE_DESCRIPTION',
     },
     TR_RECONNECT_DEVICE_DESCRIPTION_DESKTOP: {
         defaultMessage:
-            "If closing tabs and reopening Trezor Suite doesn't help, try reconnecting your Trezor.",
+            "If closing other apps that might be communicating with your Trezor and reopening Trezor Suite doesn't help, try reconnecting your Trezor.",
         id: 'TR_RECONNECT_DEVICE_DESCRIPTION_DESKTOP',
     },
     TR_ACQUIRE_DEVICE_TITLE: {
