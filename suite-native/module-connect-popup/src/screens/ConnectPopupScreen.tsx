@@ -46,7 +46,7 @@ export const ConnectPopupScreen = ({
     const [callResult, setCallResult] = useState<any>();
     const [loading, setLoading] = useState(false);
 
-    const popupOptions = useConnectParseParams(route.params.parsedUrl);
+    const { popupOptions, parseParamsError } = useConnectParseParams(route.params.parsedUrl);
     const { method, methodError } = useConnectMethod(popupOptions);
 
     const callDevice = useCallback(async () => {
@@ -130,6 +130,23 @@ export const ConnectPopupScreen = ({
                     </VStack>
                 );
             }
+
+            if (parseParamsError) {
+                return (
+                    <ErrorMessage
+                        errorMessage={
+                            <Translation
+                                id={
+                                    parseParamsError.code === 'Deeplink_VersionMismatch'
+                                        ? 'moduleConnectPopup.errors.versionUnsupported'
+                                        : 'moduleConnectPopup.errors.invalidParams'
+                                }
+                            />
+                        }
+                    />
+                );
+            }
+
             if (methodError) {
                 return <ErrorMessage errorMessage={methodError} />;
             }
@@ -148,7 +165,16 @@ export const ConnectPopupScreen = ({
                 />
             );
         }
-    }, [validDevice, method, popupOptions, methodError, loading, discoveryActive, callDevice]);
+    }, [
+        validDevice,
+        method,
+        popupOptions,
+        parseParamsError,
+        methodError,
+        loading,
+        discoveryActive,
+        callDevice,
+    ]);
 
     return (
         <Screen
