@@ -1728,7 +1728,6 @@ export default defineMessages({
         defaultMessage: 'Connection lost',
         id: 'TR_CONNECTION_LOST',
     },
-
     TR_UPGRADE_FIRMWARE_TO_DISCOVER_ACCOUNT_ERROR: {
         defaultMessage: 'Upgrade firmware to discover this account. (See the blue banner above.)',
         id: 'TR_UPGRADE_FIRMWARE_TO_DISCOVER_ACCOUNT_ERROR',
