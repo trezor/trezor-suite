@@ -796,15 +796,6 @@ export const selectIsPortfolioTrackerDevice = (state: DeviceRootState) => {
     return device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
 };
 
-export const selectDeviceNameById = (
-    state: DeviceRootState,
-    id: TrezorDevice['id'],
-): string | null => {
-    const device = selectDeviceById(state, id);
-
-    return device?.name ?? null;
-};
-
 export const selectDeviceLabel = (state: DeviceRootState) => {
     const device = selectDevice(state);
 
@@ -817,16 +808,19 @@ export const selectDeviceName = (state: DeviceRootState) => {
     return device?.name;
 };
 
+export const selectDeviceLabelOrNameById = (
+    state: DeviceRootState,
+    id: TrezorDevice['id'],
+): string => {
+    const device = selectDeviceById(state, id);
+
+    return device?.features?.label || device?.name || '';
+};
+
 export const selectDeviceLabelOrName = (state: DeviceRootState): string => {
-    const deviceLabel = selectDeviceLabel(state);
+    const selectedDevice = selectDevice(state);
 
-    if (deviceLabel) {
-        return deviceLabel;
-    }
-
-    const deviceName = selectDeviceName(state);
-
-    return deviceName ?? '';
+    return selectDeviceLabelOrNameById(state, selectedDevice?.id);
 };
 
 export const selectDeviceId = (state: DeviceRootState) => {
