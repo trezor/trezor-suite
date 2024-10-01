@@ -43,6 +43,8 @@ jobs:
       - name: Check fingerprint
         id: fingerprint
         uses: expo/expo-github-action/fingerprint@main
+        with:
+          working-directory: suite-native/app
 
       # Temporary workaround waiting for this fix to be published https://github.com/expo/expo/pull/31453
       - name: Set RUNTIME_VERSION
