@@ -7114,7 +7114,7 @@ export default defineMessages({
     },
     TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR: {
         id: 'TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR',
-        defaultMessage: 'Firmware revision check could not be performed.',
+        defaultMessage: "Couldn't perform firmware revision check.",
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
