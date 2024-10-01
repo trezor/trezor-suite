@@ -21,6 +21,7 @@ jobs:
     concurrency: fingerprint-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      EXPO_PUBLIC_ENVIRONMENT: preview
     permissions:
       contents: read
       pull-requests: write

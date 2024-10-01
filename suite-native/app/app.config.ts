@@ -162,6 +162,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     const appIconIos = appIconsIos[buildType];
     const appIconAndroid = appIconsAndroid[buildType];
 
+    // Temporary degugging, remove later
+    console.log('Prebuilding', name, 'with', buildType, 'configuration', {
+        bundleIdentifier,
+        projectId,
+        suiteNativeVersion,
+    });
+
     return {
         ...config,
         name,
