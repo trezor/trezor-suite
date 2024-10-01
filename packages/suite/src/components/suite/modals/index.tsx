@@ -2,7 +2,6 @@ export { PinModal } from './ReduxModal/DeviceContextModal/PinModal';
 export { PinInvalidModal } from './ReduxModal/DeviceContextModal/PinInvalidModal';
 export { PinMismatchModal } from './ReduxModal/UserContextModal/PinMismatchModal';
 export { PassphraseModal } from './ReduxModal/DeviceContextModal/PassphraseModal';
-export { PassphraseSourceModal } from './ReduxModal/DeviceContextModal/PassphraseSourceModal';
 export { PassphraseOnDeviceModal } from './ReduxModal/DeviceContextModal/PassphraseOnDeviceModal';
 export { PassphraseDuplicateModal } from './ReduxModal/UserContextModal/PassphraseDuplicateModal';
 export { ConfirmActionModal } from './ReduxModal/DeviceContextModal/ConfirmActionModal';
