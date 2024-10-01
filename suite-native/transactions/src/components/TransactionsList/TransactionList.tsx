@@ -16,7 +16,7 @@ import { groupTransactionsByDate, isPending, MonthKey } from '@suite-common/wall
 import { Box, Loader } from '@suite-native/atoms';
 import {
     TypedTokenTransfer,
-    selectAccountOrTokenAccountTransactions,
+    selectAccountOrTokenTransactions,
     WalletAccountTransaction,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -150,7 +150,7 @@ export const TransactionList = ({
     );
 
     const transactions = useSelector((state: TransactionsRootState & TokenDefinitionsRootState) =>
-        selectAccountOrTokenAccountTransactions(
+        selectAccountOrTokenTransactions(
             state,
             accountKey,
             tokenContract ?? null,

@@ -89,7 +89,7 @@ export const selectAccountTokenTransactions = memoizeWithArgs(
                 ),
             ),
         ) as WalletAccountTransaction[],
-    { size: 500 },
+    { size: 50 },
 );
 
 const selectAllAccountTokens = (
@@ -168,10 +168,10 @@ const selectAccountTransactionsWithTokensWithFiatRates = memoizeWithArgs(
                         isTransactionWithTokenTransfers(transaction)),
             ),
         ) as WalletAccountTransaction[],
-    { size: 500 },
+    { size: 50 },
 );
 
-export const selectAccountOrTokenAccountTransactions = (
+export const selectAccountOrTokenTransactions = (
     state: TransactionsRootState & TokenDefinitionsRootState,
     accountKey: AccountKey,
     tokenAddress: TokenAddress | null,
