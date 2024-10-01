@@ -9,16 +9,13 @@ on:
       - "suite-common/**"
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
-
 jobs:
   build:
     if: github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private'
     name: Install and build
     environment: develop-suite-native
     runs-on: ubuntu-latest
+    concurrency: fingerprint-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
@@ -34,16 +31,20 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Install libs
         run: yarn workspaces focus @suite-native/app
-      - name: Build on EAS Android
-        run: eas build
+      - name: Build on EAS Android if fingerprint changed
+        uses: expo/expo-github-action/preview-build@main
+        with:
+          command: eas build
           --platform android
           --profile develop
           --non-interactive
           --no-wait
           --message ${{ github.sha }}
         working-directory: suite-native/app
-      - name: Build on EAS iOS
-        run: eas build
+      - name: Build on EAS iOS if fingerprint changed
+        uses: expo/expo-github-action/preview-build@main
+        with:
+          command: eas build
           --platform ios
           --profile develop
           --non-interactive
@@ -51,3 +52,11 @@ jobs:
           --no-wait
           --message ${{ github.sha }}
         working-directory: suite-native/app
+      - name: Create preview update
+        uses: expo/expo-github-action/preview@v8
+        working-directory: suite-native/app
+        with:
+          command: eas update
+          --branch develop 
+          --channel develop 
+          -message ${{ github.sha }}

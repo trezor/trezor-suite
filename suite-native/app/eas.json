@@ -12,6 +12,7 @@
             },
             "channel": "develop",
             "autoIncrement": true,
+            "developmentClient": true,
             "ios": {
                 "distribution": "store"
             },
