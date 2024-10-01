@@ -12,6 +12,7 @@ import type {
 import type { UiEventMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
 import type { Unsuccessful } from '../types/params';
+import { ErrorCode, TrezorError } from '../constants/errors';
 
 export const CORE_EVENT = 'CORE_EVENT';
 
@@ -62,7 +63,9 @@ export const parseMessage = <T extends CoreRequestMessage | CoreEventMessage = n
 };
 
 // common response used straight from npm index (not from Core)
-export const createErrorMessage = (error: Error & { code?: string }): Unsuccessful => ({
+export const createErrorMessage = (
+    error: (Error & { code?: ErrorCode }) | TrezorError,
+): Unsuccessful => ({
     success: false,
     payload: {
         error: error.message,

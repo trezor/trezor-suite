@@ -5,7 +5,7 @@ import {
     FIRMWARE_MODULE_PREFIX,
 } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -194,7 +194,7 @@ export const changeLanguage = createThunk(
         } else {
             // Different errors for desktop/Chrome/Firefox
             const isFetchError =
-                result.payload.code === 'ENOTFOUND' ||
+                result.payload.code === ('ENOTFOUND' as ERRORS.ErrorCode) ||
                 ['Failed to fetch', 'NetworkError when attempting to fetch resource.'].includes(
                     result.payload.error,
                 );

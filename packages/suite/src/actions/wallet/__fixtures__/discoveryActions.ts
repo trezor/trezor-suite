@@ -1,8 +1,9 @@
 import { testMocks } from '@suite-common/test-utils';
+import { ERRORS } from '@trezor/connect';
 
 const { getSuiteDevice } = testMocks;
 
-export const paramsError = (error: string, code?: string) =>
+export const paramsError = (error: string, code?: ERRORS.ErrorCode) =>
     ({
         success: false,
         payload: {
