@@ -1,4 +1,4 @@
-import { isWeb, isLinux, isAndroid } from '@trezor/env-utils';
+import { isWeb, isDesktop, isLinux, isAndroid } from '@trezor/env-utils';
 
 import { Translation } from 'src/components/suite/Translation';
 import { isWebUsb } from 'src/utils/suite/transport';
@@ -57,4 +57,18 @@ export const TROUBLESHOOTING_TIP_UDEV = {
     heading: <Translation id="TR_UDEV_DOWNLOAD_TITLE" />,
     description: <UdevDescription />,
     hide: !isLinux(),
+};
+
+export const TROUBLESHOOTING_TIP_RECONNECT = {
+    key: 'device-reconnect',
+    heading: <Translation id="TR_RECONNECT_YOUR_DEVICE" />,
+    description: (
+        <Translation
+            id={
+                isDesktop()
+                    ? 'TR_RECONNECT_DEVICE_DESCRIPTION_DESKTOP'
+                    : 'TR_RECONNECT_DEVICE_DESCRIPTION'
+            }
+        />
+    ),
 };
