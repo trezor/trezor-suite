@@ -39,6 +39,9 @@ const walletMiddleware =
             api.dispatch(accountsActions.removeAccount(accounts));
         }
 
+        // propagate action to reducers, this needs to happen before addTransaction is dispatched because it needs to have account in redux already
+        next(action);
+
         if (accountsActions.createAccount.match(action)) {
             // gather transactions from account.create action
             const account = action.payload;
@@ -60,9 +63,6 @@ const walletMiddleware =
                 ),
             );
         }
-
-        // propagate action to reducers
-        next(action);
 
         if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
             api.dispatch(subscribeBlockchainThunk({ symbol: action.payload.symbol }));
