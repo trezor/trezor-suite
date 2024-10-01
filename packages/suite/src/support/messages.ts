@@ -7098,11 +7098,12 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE',
-        defaultMessage: 'Try using a different computer, if you can',
+        defaultMessage: 'Try using another computer',
     },
     TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION',
-        defaultMessage: 'With Trezor Bridge installed.',
+        defaultMessage:
+            'There might be some unexpected issue preventing your computer from talking to your device.',
     },
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE',
