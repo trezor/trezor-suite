@@ -275,6 +275,8 @@ export const en = {
         errors: {
             deviceNotConnected: 'Device not connected.',
             invalidCallback: 'Invalid callback URL',
+            invalidParams: 'Invalid parameters from calling app',
+            versionUnsupported: 'Unsupported version. Please update your Trezor Suite app.',
         },
         bottomSheets: {
             confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',

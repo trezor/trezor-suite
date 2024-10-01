@@ -49,6 +49,8 @@ export const ERROR_CODES = {
     Failure_PinCancelled: 'PIN cancelled',
     Failure_PinMismatch: 'PIN mismatch',
     Failure_WipeCodeMismatch: 'Wipe code mismatch',
+
+    Deeplink_VersionMismatch: 'Not compatible with current version of the app',
 } as const;
 
 export type ErrorCode = keyof typeof ERROR_CODES;
