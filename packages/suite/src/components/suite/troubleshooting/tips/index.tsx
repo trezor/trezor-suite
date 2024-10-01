@@ -1,9 +1,11 @@
 import { isWeb, isDesktop, isLinux, isAndroid } from '@trezor/env-utils';
+import { OLD_FW_UPDATE_URL } from '@trezor/urls';
 
+import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { isWebUsb } from 'src/utils/suite/transport';
 
-import { BridgeStatus, BridgeInstall } from './BridgeTip';
+import { BridgeStatus, BridgeInstall, BridgeToggle, Wrapper } from './BridgeTip';
 import { UdevDescription } from './UdevDescription';
 
 export const TROUBLESHOOTING_TIP_BRIDGE_STATUS = {
@@ -20,11 +22,37 @@ export const TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT = {
     hide: isWebUsb() || !isWeb(),
 };
 
+export const TROUBLESHOOTING_TIP_UNREADABLE_HID = {
+    key: 'unreadable-hid',
+    heading: <Translation id="TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_TITLE" />,
+    description: (
+        <Wrapper>
+            <Translation
+                id="TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_DESCRIPTION"
+                values={{
+                    a: chunks => (
+                        <TrezorLink variant="underline" href={OLD_FW_UPDATE_URL}>
+                            {chunks}
+                        </TrezorLink>
+                    ),
+                }}
+            />
+        </Wrapper>
+    ),
+};
+
 export const TROUBLESHOOTING_TIP_SUITE_DESKTOP = {
     key: 'suite-desktop',
     heading: <Translation id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TITLE" />,
     description: <BridgeInstall />,
     hide: !isWeb(),
+};
+
+export const TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE = {
+    key: 'suite-desktop',
+    heading: <Translation id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE_TITLE" />,
+    description: <BridgeToggle />,
+    hide: isWebUsb() || isWeb() || isAndroid(),
 };
 
 export const TROUBLESHOOTING_TIP_CABLE = {
