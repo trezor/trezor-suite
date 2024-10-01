@@ -14,12 +14,12 @@ const xpubCardStyle = prepareNativeStyle(utils => ({
     height: XPUB_CARD_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: utils.spacings.small,
-    marginTop: utils.spacings.small,
+    marginHorizontal: utils.spacings.sp8,
+    marginTop: utils.spacings.sp8,
 }));
 
 const xpubCardTextContainerStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.small,
+    marginTop: utils.spacings.sp8,
     alignItems: 'center',
     justifyContent: 'center',
 }));

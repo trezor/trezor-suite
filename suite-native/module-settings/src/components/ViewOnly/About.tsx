@@ -7,7 +7,7 @@ export type AboutProps = {
 };
 
 export const About = ({ onPressAbout }: AboutProps) => (
-    <Box marginVertical="medium" marginHorizontal="extraLarge" alignItems="center">
+    <Box marginVertical="sp16" marginHorizontal="sp32" alignItems="center">
         <Text variant="hint" textAlign="center" color="textSubdued">
             <Translation
                 id="moduleSettings.viewOnly.subtitle"

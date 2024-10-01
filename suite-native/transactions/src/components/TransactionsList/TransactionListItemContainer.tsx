@@ -64,15 +64,15 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: utils.colors.backgroundSurfaceElevation1,
-        marginHorizontal: utils.spacings.small,
-        paddingHorizontal: utils.spacings.medium,
+        marginHorizontal: utils.spacings.sp8,
+        paddingHorizontal: utils.spacings.sp16,
         paddingTop: 12,
         paddingBottom: 12,
         extend: [
             {
                 condition: isFirst,
                 style: {
-                    paddingTop: utils.spacings.medium,
+                    paddingTop: utils.spacings.sp16,
                     borderTopLeftRadius: utils.borders.radii.large / 2,
                     borderTopRightRadius: utils.borders.radii.large / 2,
                 },
@@ -80,8 +80,8 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
             {
                 condition: isLast,
                 style: {
-                    paddingBottom: utils.spacings.medium,
-                    marginBottom: utils.spacings.small,
+                    paddingBottom: utils.spacings.sp16,
+                    marginBottom: utils.spacings.sp8,
                     borderBottomLeftRadius: utils.borders.radii.large / 2,
                     borderBottomRightRadius: utils.borders.radii.large / 2,
                 },
@@ -92,7 +92,7 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
 
 const titleStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
-    gap: utils.spacings.small,
+    gap: utils.spacings.sp8,
 }));
 
 const descriptionBoxStyle = prepareNativeStyle(_ => ({
@@ -104,7 +104,7 @@ const descriptionBoxStyle = prepareNativeStyle(_ => ({
 export const valuesContainerStyle = prepareNativeStyle(utils => ({
     flexShrink: 0,
     alignItems: 'flex-end',
-    marginLeft: utils.spacings.small,
+    marginLeft: utils.spacings.sp8,
     maxWidth: '40%',
 }));
 
@@ -183,8 +183,8 @@ export const TransactionListItemContainer = ({
                     isAnimated={isTransactionPending}
                     iconColor={iconColor}
                 />
-                <Box marginLeft="medium" flex={1}>
-                    <HStack flexDirection="row" alignItems="center" spacing="extraSmall">
+                <Box marginLeft="sp16" flex={1}>
+                    <HStack flexDirection="row" alignItems="center" spacing="sp4">
                         <Box style={applyStyle(titleStyle)}>
                             <Text variant="body">{transactionTitle}</Text>
                             {isPhishingTransaction && (

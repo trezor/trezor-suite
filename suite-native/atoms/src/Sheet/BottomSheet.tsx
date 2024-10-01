@@ -31,7 +31,7 @@ const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetB
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
-    paddingBottom: Math.max(insetBottom, utils.spacings.medium),
+    paddingBottom: Math.max(insetBottom, utils.spacings.sp16),
     maxHeight: '90%',
 }));
 
@@ -126,7 +126,7 @@ export const BottomSheet = ({
                                     keyboardShouldPersistTaps="handled"
                                 >
                                     <Animated.View>
-                                        <Box paddingHorizontal="medium" {...boxProps}>
+                                        <Box paddingHorizontal="sp16" {...boxProps}>
                                             {children}
                                         </Box>
                                     </Animated.View>

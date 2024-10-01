@@ -5,8 +5,8 @@ import { useOpenLink } from '@suite-native/link';
 import { Icon } from '@suite-common/icons-deprecated';
 
 const cardStyle = prepareNativeStyle<{ backgroundColor: Color }>((utils, { backgroundColor }) => ({
-    paddingHorizontal: utils.spacings.large,
-    paddingVertical: utils.spacings.large * 2,
+    paddingHorizontal: utils.spacings.sp24,
+    paddingVertical: utils.spacings.sp24 * 2,
     backgroundColor: utils.colors[backgroundColor],
 }));
 
@@ -27,7 +27,7 @@ export const AboutUsBanners = () => {
     return (
         <VStack>
             <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundNeutralBold' })}>
-                <VStack spacing="large" style={applyStyle(stackStyle)}>
+                <VStack spacing="sp24" style={applyStyle(stackStyle)}>
                     <Icon color="iconOnPrimary" name="trezor" />
                     <Text
                         textAlign="center"
@@ -42,11 +42,11 @@ export const AboutUsBanners = () => {
                 </VStack>
             </Card>
             <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundSecondaryDefault' })}>
-                <VStack spacing="large" style={applyStyle(stackStyle)}>
+                <VStack spacing="sp24" style={applyStyle(stackStyle)}>
                     <Text color="textDefaultInverted" variant="titleMedium">
                         Follow us
                     </Text>
-                    <HStack spacing="large">
+                    <HStack spacing="sp24">
                         <IconButton
                             size="large"
                             colorScheme="tertiaryElevation1"

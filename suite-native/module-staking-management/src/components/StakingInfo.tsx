@@ -11,8 +11,8 @@ import { StakingBalancesOverviewCard } from './StakingBalancesOverviewCard';
 import { StakingUnavailableBottomSheet } from './StakingUnavailableBottomSheet';
 
 const sectionStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.small,
-    paddingVertical: utils.spacings.large,
+    paddingHorizontal: utils.spacings.sp8,
+    paddingVertical: utils.spacings.sp24,
     flex: 1,
 }));
 
@@ -50,11 +50,11 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
                 handleToggleBottomSheet={handleToggleBottomSheet}
             />
 
-            <Box marginTop="extraLarge" alignItems="center">
+            <Box marginTop="sp32" alignItems="center">
                 {/* TODO: replace with new icon once we have new package ready */}
                 {/* <Icon name="desktop" color="textSubdued" size="extraLarge" /> */}
 
-                <Box justifyContent="center" alignItems="center" marginTop="small">
+                <Box justifyContent="center" alignItems="center" marginTop="sp8">
                     <Text color="textSubdued" textAlign="center">
                         <Translation id="staking.stakingCanBeManaged" />
                     </Text>

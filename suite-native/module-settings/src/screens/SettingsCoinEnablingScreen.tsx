@@ -98,7 +98,7 @@ export const SettingsCoinEnablingScreen = () => {
             }
         >
             {showNetworks ? (
-                <Box paddingTop="large" paddingBottom="medium" paddingHorizontal="small">
+                <Box paddingTop="sp24" paddingBottom="sp16" paddingHorizontal="sp8">
                     <DiscoveryCoinsFilter />
                 </Box>
             ) : (

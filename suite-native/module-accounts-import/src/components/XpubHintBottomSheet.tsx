@@ -33,9 +33,9 @@ export const XpubHintBottomSheet = ({
 
     return (
         <BottomSheet title={title} isVisible={isVisible} onClose={handleClose}>
-            <Box paddingTop="small" justifyContent="space-between">
+            <Box paddingTop="sp8" justifyContent="space-between">
                 <Video name={video} aspectRatio={1} />
-                <VStack spacing="large" paddingTop="large">
+                <VStack spacing="sp24" paddingTop="sp24">
                     <Text color="textSubdued" textAlign="center" variant="hint">
                         <Translation
                             id={textTranslationTag}
@@ -49,7 +49,7 @@ export const XpubHintBottomSheet = ({
                         />
                     </Text>
                 </VStack>
-                <Box marginTop="extraLarge">
+                <Box marginTop="sp32">
                     <Button
                         data-testID="@accounts-import/xpub-help-modal/confirm-btn"
                         onPress={handleClose}

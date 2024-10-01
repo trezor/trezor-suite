@@ -45,7 +45,7 @@ const IconWrapper = ({ children }: { children: ReactNode }) => {
     if (!isUsbDeviceConnectFeatureEnabled) return <>{children}</>;
 
     return (
-        <Box alignSelf="center" flex={2} justifyContent="center" paddingHorizontal="small">
+        <Box alignSelf="center" flex={2} justifyContent="center" paddingHorizontal="sp8">
             {children}
         </Box>
     );

@@ -35,7 +35,7 @@ const IncludedCoinsSheetTrigger = ({ title, onPress }: { title: string; onPress:
             <TouchableOpacity onPress={onPress}>
                 <Box flexDirection="row" alignItems="center" justifyContent="space-between">
                     <Box flexDirection="row" alignItems="center">
-                        <Box marginRight="medium">
+                        <Box marginRight="sp16">
                             <RoundedIcon name="treeStructure" />
                         </Box>
                         <Text>{title}</Text>

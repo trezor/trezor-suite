@@ -24,7 +24,7 @@ import { SlidingFooterOverlay } from './SlidingFooterOverlay';
 type ReviewOutputItemListProps = { accountKey: AccountKey };
 
 const INITIAL_OFFSET = 85;
-const LIST_VERTICAL_SPACING = nativeSpacings.medium;
+const LIST_VERTICAL_SPACING = nativeSpacings.sp16;
 
 export const ReviewOutputItemList = ({ accountKey }: ReviewOutputItemListProps) => {
     const account = useSelector((state: AccountsRootState) =>

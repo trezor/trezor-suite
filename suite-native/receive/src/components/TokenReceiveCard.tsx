@@ -27,7 +27,7 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
     maxWidth: '40%',
     flexShrink: 0,
     alignItems: 'flex-end',
-    paddingLeft: utils.spacings.small,
+    paddingLeft: utils.spacings.sp8,
 }));
 
 export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps) => {
@@ -53,7 +53,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
         <VStack>
             <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                 <Box flex={1} flexDirection="row" alignItems="center">
-                    <Box marginRight="medium">
+                    <Box marginRight="sp16">
                         <RoundedIcon name={contract} />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>

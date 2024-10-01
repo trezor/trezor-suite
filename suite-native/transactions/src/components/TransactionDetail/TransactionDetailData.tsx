@@ -62,7 +62,7 @@ export const TransactionDetailData = ({
     const hasIncludedCoins = isMultiTokenTransaction || isNetworkTransactionWithTokens;
 
     return (
-        <VStack spacing="medium">
+        <VStack spacing="sp16">
             {isPhishingTransaction && (
                 <AlertBox
                     variant="error"
@@ -84,7 +84,7 @@ export const TransactionDetailData = ({
                 />
             )}
             <Card borderColor="borderElevation1" style={applyStyle(cardStyle)}>
-                <VStack spacing="large">
+                <VStack spacing="sp24">
                     <TransactionDetailRow title={translate('transactions.detail.feeLabel')}>
                         <Box alignItems="flex-end">
                             <CryptoAmountFormatter

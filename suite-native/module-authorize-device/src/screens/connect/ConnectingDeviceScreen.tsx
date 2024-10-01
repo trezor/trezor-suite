@@ -20,13 +20,13 @@ export const ConnectingDeviceScreen = () => {
 
     return (
         <ConnectDeviceScreenView style={applyStyle(screenStyle)} shouldDisplayCancelButton={false}>
-            <VStack spacing="medium" alignItems="center">
+            <VStack spacing="sp16" alignItems="center">
                 <ActivityIndicator size="large" />
                 <Box flexDirection="row" alignItems="center">
                     <Text variant="titleMedium">
                         <Translation id="moduleConnectDevice.connectingDeviceScreen.title" />
                     </Text>
-                    <Box paddingBottom="small" paddingLeft="small">
+                    <Box paddingBottom="sp8" paddingLeft="sp8">
                         <Icon name="trezor" size="extraLarge" />
                     </Box>
                 </Box>

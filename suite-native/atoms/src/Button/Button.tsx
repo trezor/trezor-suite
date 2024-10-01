@@ -180,13 +180,13 @@ export const buttonSchemeToColorsMap = {
 const sizeToDimensionsMap = {
     extraSmall: {
         minHeight: 36,
-        paddingVertical: nativeSpacings.small,
+        paddingVertical: nativeSpacings.sp8,
         paddingHorizontal: 12,
     },
     small: {
         minHeight: 40,
         paddingVertical: 10,
-        paddingHorizontal: nativeSpacings.medium,
+        paddingHorizontal: nativeSpacings.sp16,
     },
     medium: {
         minHeight: 48,
@@ -195,8 +195,8 @@ const sizeToDimensionsMap = {
     },
     large: {
         minHeight: 56,
-        paddingVertical: nativeSpacings.medium,
-        paddingHorizontal: nativeSpacings.large,
+        paddingVertical: nativeSpacings.sp16,
+        paddingHorizontal: nativeSpacings.sp24,
     },
 } as const satisfies Record<ButtonSize, NativeStyleObject>;
 

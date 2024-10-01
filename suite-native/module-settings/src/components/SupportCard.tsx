@@ -4,7 +4,7 @@ import { Button, Card, HStack, PictogramTitleHeader, Text, VStack } from '@suite
 import { Translation } from '@suite-native/intl';
 
 const supportCardStyle = prepareNativeStyle(utils => ({
-    padding: utils.spacings.extraLarge,
+    padding: utils.spacings.sp32,
 }));
 
 export const SupportCard = () => {
@@ -16,7 +16,7 @@ export const SupportCard = () => {
     return (
         <Card style={applyStyle(supportCardStyle)}>
             <HStack justifyContent="space-between">
-                <VStack spacing="medium" alignItems="flex-start" paddingTop="small">
+                <VStack spacing="sp16" alignItems="flex-start" paddingTop="sp8">
                     <Text variant="titleSmall">
                         <Translation id="moduleSettings.faq.supportCard.title" />
                     </Text>

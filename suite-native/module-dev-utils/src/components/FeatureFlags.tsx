@@ -22,7 +22,7 @@ const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
 
 export const FeatureFlags = () => (
     <Card>
-        <VStack spacing="small">
+        <VStack spacing="sp8">
             <Text variant="titleSmall">Feature Flags</Text>
             <VStack>
                 {Object.values(FeatureFlagEnum).map(featureFlag => (

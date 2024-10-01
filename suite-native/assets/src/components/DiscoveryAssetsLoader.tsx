@@ -18,7 +18,7 @@ export const DiscoveryAssetsLoader = ({ isListEmpty }: { isListEmpty: boolean })
     return (
         <>
             <ListItemSkeleton />
-            <HStack justifyContent="center" marginBottom="medium">
+            <HStack justifyContent="center" marginBottom="sp16">
                 <Icon size="mediumLarge" name="trezor" />
                 <Text variant="callout">{discoveryProgressText}</Text>
             </HStack>

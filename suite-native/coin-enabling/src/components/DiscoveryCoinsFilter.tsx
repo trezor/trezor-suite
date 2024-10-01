@@ -48,7 +48,7 @@ export const DiscoveryCoinsFilter = ({
                     allowChangeAnalytics={allowChangeAnalytics}
                 />
             ))}
-            <VStack paddingTop="small" paddingBottom="extraLarge" alignItems="center">
+            <VStack paddingTop="sp8" paddingBottom="sp32" alignItems="center">
                 <Icon name="questionLight" color="textSubdued" size="large" />
                 <Text color="textSubdued" textAlign="center">
                     <Translation id="moduleSettings.coinEnabling.bottomNote" />

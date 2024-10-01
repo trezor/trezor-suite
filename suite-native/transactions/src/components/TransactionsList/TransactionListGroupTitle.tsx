@@ -8,8 +8,8 @@ type TransactionListGroupProps = {
 };
 
 const dateTextStyle = prepareNativeStyle(utils => ({
-    marginVertical: utils.spacings.medium,
-    marginHorizontal: utils.spacings.medium,
+    marginVertical: utils.spacings.sp16,
+    marginHorizontal: utils.spacings.sp16,
 }));
 
 export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProps) => {
@@ -21,7 +21,7 @@ export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProp
             : MonthNameFormatter.format(parseTransactionMonthKey(monthKey));
 
     return (
-        <Box paddingLeft="small">
+        <Box paddingLeft="sp8">
             <Text color="textSubdued" variant="hint" style={applyStyle(dateTextStyle)}>
                 {sectionTitle}
             </Text>

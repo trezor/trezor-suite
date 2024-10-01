@@ -12,11 +12,11 @@ import { WalletRow } from './WalletRow';
 
 const cardStyle = prepareNativeStyle(utils => ({
     padding: 0,
-    marginTop: utils.spacings.large,
+    marginTop: utils.spacings.sp24,
 }));
 
 const deviceStyle = prepareNativeStyle(utils => ({
-    padding: utils.spacings.medium,
+    padding: utils.spacings.sp16,
     alignItems: 'center',
     gap: 12,
 }));
@@ -27,7 +27,7 @@ export const DevicesManagement = ({ onPressAbout }: AboutProps) => {
 
     return (
         <>
-            <Box paddingHorizontal="large">
+            <Box paddingHorizontal="sp24">
                 <About onPressAbout={onPressAbout} />
             </Box>
             {deviceGroups.map(devices => {
@@ -44,7 +44,7 @@ export const DevicesManagement = ({ onPressAbout }: AboutProps) => {
                                 <Text variant="highlight" color="textDefault">
                                     {firstDevice.features.label || firstDevice.name}
                                 </Text>
-                                <HStack alignItems="center" spacing="small">
+                                <HStack alignItems="center" spacing="sp8">
                                     <ConnectionDot isConnected={firstDevice.connected} />
                                     <Text
                                         variant="hint"

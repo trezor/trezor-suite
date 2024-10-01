@@ -36,7 +36,7 @@ import { TypographyStyle } from '@trezor/theme';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.medium,
-    padding: utils.spacings.small,
+    padding: utils.spacings.sp8,
 }));
 
 const textVariants: TypographyStyle[] = [
@@ -99,7 +99,7 @@ export const DemoScreen = () => {
 
     return (
         <Screen screenHeader={<ScreenSubHeader />}>
-            <VStack spacing="medium">
+            <VStack spacing="sp16">
                 <VStack>
                     <Text variant="titleSmall">Badge:</Text>
                     <HStack justifyContent="center" style={applyStyle(flexWrapStyle)}>
@@ -233,8 +233,8 @@ export const DemoScreen = () => {
                 <Divider />
                 <Box>
                     <SearchInput onChange={() => {}} placeholder="Type here.." />
-                    <Box marginVertical="medium">
-                        <VStack style={applyStyle(inputStackStyle)} spacing="small">
+                    <Box marginVertical="sp16">
+                        <VStack style={applyStyle(inputStackStyle)} spacing="sp8">
                             <InputWrapper label="Recipient">
                                 <Input
                                     ref={demoInputRef}
@@ -254,8 +254,8 @@ export const DemoScreen = () => {
                             </InputWrapper>
                         </VStack>
                     </Box>
-                    <Box marginVertical="medium">
-                        <VStack style={applyStyle(inputStackStyle)} spacing="small">
+                    <Box marginVertical="sp16">
+                        <VStack style={applyStyle(inputStackStyle)} spacing="sp8">
                             <InputWrapper hint="This input is not valid.">
                                 <Input
                                     value={input2Text}
@@ -266,7 +266,7 @@ export const DemoScreen = () => {
                             </InputWrapper>
                         </VStack>
                     </Box>
-                    <Box marginTop="large">
+                    <Box marginTop="sp24">
                         <Text variant="titleLarge">Title Large</Text>
                     </Box>
                     <Box>
@@ -281,16 +281,16 @@ export const DemoScreen = () => {
                         onChange={() => setIsSwitch2Active(!isSwitch2Active)}
                         isDisabled
                     />
-                    <Box marginVertical="medium">
+                    <Box marginVertical="sp16">
                         <Text>Icon:</Text>
                         <Icon name="warningCircle" size="large" />
                     </Box>
-                    <Box marginVertical="medium">
+                    <Box marginVertical="sp16">
                         <Text>Hints:</Text>
                         <Hint>Hned to mažem</Hint>
                         <Hint variant="error">Please enter a valid address dumbo</Hint>
                     </Box>
-                    <Box marginVertical="medium">
+                    <Box marginVertical="sp16">
                         <Text>Radio:</Text>
                         <Box flexDirection="row" justifyContent="space-between">
                             <Radio
@@ -309,7 +309,7 @@ export const DemoScreen = () => {
                             />
                         </Box>
                     </Box>
-                    <Box marginVertical="medium">
+                    <Box marginVertical="sp16">
                         <Text>Checkbox:</Text>
                         <Box flexDirection="row" justifyContent="space-between">
                             <CheckBox
@@ -333,9 +333,9 @@ export const DemoScreen = () => {
                         </Box>
                     </Box>
                     <NumPadButton value={2} onPress={() => null} />
-                    <Box marginTop="medium" marginBottom="medium">
+                    <Box marginTop="sp16" marginBottom="sp16">
                         <Text>AlertBox:</Text>
-                        <VStack spacing="medium">
+                        <VStack spacing="sp16">
                             <AlertBox variant="info" title="Info" />
                             <AlertBox variant="success" title="Success" />
                             <AlertBox variant="error" title="Error" />
@@ -359,7 +359,7 @@ export const DemoScreen = () => {
                             />
                         </VStack>
                     </Box>
-                    <VStack marginTop="medium">
+                    <VStack marginTop="sp16">
                         <Text variant="titleMedium">Skeleton</Text>
                         <Card>
                             <ListItemSkeleton />

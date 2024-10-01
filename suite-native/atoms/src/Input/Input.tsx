@@ -46,15 +46,15 @@ export type InputProps = TextInputProps &
     >;
 
 const INPUT_VERTICAL_PADDING =
-    Platform.OS == 'android' ? nativeSpacings.medium - 2 : nativeSpacings.medium;
+    Platform.OS == 'android' ? nativeSpacings.sp16 - 2 : nativeSpacings.sp16;
 const INPUT_WITH_LABEL_BOTTOM_PADDING =
-    Platform.OS == 'android' ? nativeSpacings.extraSmall : nativeSpacings.small;
-const INPUT_LABEL_TOP_PADDING = nativeSpacings.extraLarge;
-const INPUT_LABEL_TOP_PADDING_MINIMIZED = INPUT_LABEL_TOP_PADDING + nativeSpacings.small;
-const INPUT_WRAPPER_PADDING_HORIZONTAL = nativeSpacings.medium * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
-const INPUT_WRAPPER_PADDING_VERTICAL = nativeSpacings.medium * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+    Platform.OS == 'android' ? nativeSpacings.sp4 : nativeSpacings.sp8;
+const INPUT_LABEL_TOP_PADDING = nativeSpacings.sp32;
+const INPUT_LABEL_TOP_PADDING_MINIMIZED = INPUT_LABEL_TOP_PADDING + nativeSpacings.sp8;
+const INPUT_WRAPPER_PADDING_HORIZONTAL = nativeSpacings.sp16 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+const INPUT_WRAPPER_PADDING_VERTICAL = nativeSpacings.sp16 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED =
-    nativeSpacings.small * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+    nativeSpacings.sp8 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 const INPUT_TEXT_HEIGHT = 24 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
 
 type InputWrapperStyleProps = {
@@ -135,12 +135,12 @@ const inputStyle = prepareNativeStyle<InputStyleProps>(
         justifyContent: 'center',
         minHeight: INPUT_TEXT_HEIGHT,
         color: isDisabled ? utils.colors.textSubdued : utils.colors.textDefault,
-        left: isLeftIconDisplayed ? utils.spacings.large : 0,
+        left: isLeftIconDisplayed ? utils.spacings.sp24 : 0,
         paddingRight: isRightIconDisplayed ? 40 : 0,
         borderWidth: 0,
         flex: 1,
         // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
-        paddingTop: isLabelDisplayed ? utils.spacings.large : INPUT_VERTICAL_PADDING,
+        paddingTop: isLabelDisplayed ? utils.spacings.sp24 : INPUT_VERTICAL_PADDING,
         paddingBottom: isLabelDisplayed ? INPUT_WITH_LABEL_BOTTOM_PADDING : INPUT_VERTICAL_PADDING,
     }),
 );
@@ -158,7 +158,7 @@ const labelStyle = prepareNativeStyle(
         color: utils.colors.textSubdued,
         position: 'absolute',
         top: INPUT_LABEL_TOP_PADDING,
-        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.large : 0),
+        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.sp24 : 0),
         extend: {
             condition: isLabelMinimized,
             style: {
@@ -173,7 +173,7 @@ const placeholderStyle = prepareNativeStyle(
     (utils, { isLeftIconDisplayed }: InputLabelStyleProps) => ({
         position: 'absolute',
         top: INPUT_VERTICAL_PADDING + utils.borders.widths.large,
-        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.large : 0),
+        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.sp24 : 0),
         color: utils.colors.textSubdued,
     }),
 );
@@ -188,11 +188,11 @@ const iconStyle = prepareNativeStyle(() => ({
 
 const leftIconStyle = prepareNativeStyle(utils => ({
     marginRight: 3,
-    left: utils.spacings.small,
+    left: utils.spacings.sp8,
 }));
 
 const rightIconStyle = prepareNativeStyle(utils => ({
-    right: utils.spacings.medium,
+    right: utils.spacings.sp16,
 }));
 
 const useInputLabelAnimationStyles = ({

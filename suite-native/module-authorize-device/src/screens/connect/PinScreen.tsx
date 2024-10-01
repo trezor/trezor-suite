@@ -16,7 +16,7 @@ export const PinScreen = () => {
     return (
         <ConnectDeviceScreenView>
             {deviceModel === DeviceModelInternal.T1B1 ? (
-                <VStack spacing="medium" alignItems="center" flex={1} marginTop="large">
+                <VStack spacing="sp16" alignItems="center" flex={1} marginTop="sp24">
                     <Image source={deviceImageMap[deviceModel]} width={161} height={194} />
                     <PinForm />
                 </VStack>

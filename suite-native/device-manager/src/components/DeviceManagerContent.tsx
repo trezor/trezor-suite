@@ -36,8 +36,8 @@ const scrollViewStyle = prepareNativeStyle<{ maxHeight: number }>((_, { maxHeigh
 
 const deviceButtonsStyle = prepareNativeStyle(utils => ({
     width: '100%',
-    paddingHorizontal: utils.spacings.medium,
-    paddingBottom: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
+    paddingBottom: utils.spacings.sp16,
 }));
 
 export const DeviceManagerContent = () => {
@@ -76,7 +76,7 @@ export const DeviceManagerContent = () => {
     }
 
     // based on DeviceManagerModal header height and top offset
-    const scrollViewTopOffset = insets.top + utils.spacings.large + HEADER_HEIGHT;
+    const scrollViewTopOffset = insets.top + utils.spacings.sp24 + HEADER_HEIGHT;
     const scrollViewMaxHeight = CONTENT_MAX_HEIGHT - scrollViewTopOffset;
 
     const isAddHiddenWalletButtonVisible = !hasDiscovery && device?.connected;
@@ -104,7 +104,7 @@ export const DeviceManagerContent = () => {
                 />
 
                 {!isPortfolioTrackerDevice && (
-                    <VStack spacing={12} paddingTop="large">
+                    <VStack spacing={12} paddingTop="sp24">
                         <WalletList onSelectDevice={handleSelectDevice} />
                         <Stack
                             orientation={

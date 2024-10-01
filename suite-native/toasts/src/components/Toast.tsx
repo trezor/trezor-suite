@@ -26,15 +26,15 @@ type ToastStyle = {
 const ToastContainerStyle = prepareNativeStyle<{ backgroundColor: Color; hasIcon: boolean }>(
     (utils, { backgroundColor, hasIcon }) => ({
         backgroundColor: utils.colors[backgroundColor],
-        paddingVertical: utils.spacings.extraSmall,
-        paddingLeft: utils.spacings.extraSmall,
-        paddingRight: utils.spacings.medium,
+        paddingVertical: utils.spacings.sp4,
+        paddingLeft: utils.spacings.sp4,
+        paddingRight: utils.spacings.sp16,
         borderRadius: utils.borders.radii.round,
         extend: [
             {
                 condition: !hasIcon,
                 style: {
-                    paddingLeft: utils.spacings.medium,
+                    paddingLeft: utils.spacings.sp16,
                     paddingVertical: 14,
                 },
             },

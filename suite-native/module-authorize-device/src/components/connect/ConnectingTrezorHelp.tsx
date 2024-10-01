@@ -48,7 +48,7 @@ export const ConnectingTrezorHelp = () => {
                 subtitle={modalSubtitle}
                 onClose={toggleBottomSheet}
             >
-                <VStack padding="small">
+                <VStack padding="sp8">
                     {hasDeviceRequestedPin ? (
                         <Text>
                             <Translation

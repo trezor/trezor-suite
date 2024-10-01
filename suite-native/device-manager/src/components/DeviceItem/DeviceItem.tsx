@@ -16,7 +16,7 @@ const deviceItemWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 10,
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
 export const DeviceItem = ({ deviceState, onPress }: DeviceItemProps) => {

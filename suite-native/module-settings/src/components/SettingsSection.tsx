@@ -24,8 +24,8 @@ export const SettingsSection = ({
             flexDirection="row"
             justifyContent="space-between"
             alignItems="center"
-            marginBottom="medium"
-            marginLeft="medium"
+            marginBottom="sp16"
+            marginLeft="sp16"
         >
             <Box>
                 <Text variant="titleSmall">{title}</Text>
@@ -42,7 +42,7 @@ export const SettingsSection = ({
             )}
         </Box>
         <Card>
-            <VStack spacing="large">{children}</VStack>
+            <VStack spacing="sp24">{children}</VStack>
         </Card>
     </Box>
 );

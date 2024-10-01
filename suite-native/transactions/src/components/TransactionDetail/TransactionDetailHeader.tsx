@@ -26,7 +26,7 @@ const ICON_SIZE = 56;
 const ICON_SPINNER_WIDTH = 3;
 
 const fiatValueStyle = prepareNativeStyle(utils => ({
-    marginTop: -utils.spacings.extraSmall,
+    marginTop: -utils.spacings.sp4,
 }));
 
 export const TransactionDetailHeader = ({
@@ -49,7 +49,7 @@ export const TransactionDetailHeader = ({
     return (
         <DiscreetTextTrigger>
             <Box alignItems="center">
-                <VStack spacing="medium" alignItems="center" justifyContent="center">
+                <VStack spacing="sp16" alignItems="center" justifyContent="center">
                     <TransactionIcon
                         transactionType={type}
                         isAnimated={isPendingTx}

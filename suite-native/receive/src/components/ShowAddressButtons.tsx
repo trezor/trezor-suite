@@ -36,7 +36,7 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
     };
 
     return (
-        <VStack spacing="large">
+        <VStack spacing="sp24">
             <Button viewLeft="eye" size="large" onPress={handleShowAddress}>
                 <Translation
                     id={

@@ -47,7 +47,7 @@ const MessageBannerVariantToStyleMap = {
 const messageContainerStyle = prepareNativeStyle<{ backgroundColor: Color }>(
     (utils, { backgroundColor }) => ({
         backgroundColor: utils.colors[backgroundColor],
-        padding: utils.spacings.medium,
+        padding: utils.spacings.sp16,
         flexShrink: 1,
     }),
 );

@@ -17,9 +17,9 @@ import {
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
 const cardStyle = prepareNativeStyle(utils => ({
-    paddingTop: utils.spacings.extraLarge,
-    paddingBottom: utils.spacings.large,
-    paddingVertical: utils.spacings.large,
+    paddingTop: utils.spacings.sp32,
+    paddingBottom: utils.spacings.sp24,
+    paddingVertical: utils.spacings.sp24,
 }));
 const imageStyle = prepareNativeStyle(_ => ({
     maxHeight: SCREEN_HEIGHT * 0.25,
@@ -49,22 +49,22 @@ export const EmptyPortfolioTrackerState = () => {
     };
 
     return (
-        <VStack spacing="extraLarge">
+        <VStack spacing="sp32">
             <Card
                 alertVariant="info"
                 alertTitle={<Translation id="moduleHome.emptyState.portfolioTracker.alert" />}
                 style={applyStyle(cardStyle)}
             >
                 <VStack
-                    spacing="extraLarge"
+                    spacing="sp32"
                     alignItems="center"
                     justifyContent="center"
-                    paddingHorizontal="extraSmall"
+                    paddingHorizontal="sp4"
                 >
                     <VStack
-                        spacing="medium"
-                        paddingTop="small"
-                        paddingBottom="small"
+                        spacing="sp16"
+                        paddingTop="sp8"
+                        paddingBottom="sp8"
                         alignItems="center"
                         justifyContent="center"
                     >

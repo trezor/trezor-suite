@@ -7,7 +7,7 @@ export const UninitializedDeviceModalAppendix = () => {
             <Text variant="callout">
                 <Translation id="moduleDevice.noSeedModal.appendix.title" />
             </Text>
-            <VStack spacing="medium" paddingTop="large">
+            <VStack spacing="sp16" paddingTop="sp24">
                 <BottomSheetListItem
                     iconNumber={1}
                     translationKey="moduleDevice.noSeedModal.appendix.lines.1"

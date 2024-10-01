@@ -25,13 +25,13 @@ type EmptyWalletInfoSheetProps = {
 };
 
 const bottomSheetStyle = prepareNativeStyle(utils => ({
-    gap: utils.spacings.large,
-    paddingTop: utils.spacings.small,
+    gap: utils.spacings.sp24,
+    paddingTop: utils.spacings.sp8,
 }));
 
 const bottomSheetBottomStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
-    gap: utils.spacings.large,
+    gap: utils.spacings.sp24,
     padding: 0,
 }));
 
@@ -68,7 +68,7 @@ export const EmptyWalletInfoSheet = ({ onClose, isVisible }: EmptyWalletInfoShee
                     <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.title" />
                 }
             />
-            <VStack alignItems="center" spacing="large" padding="small">
+            <VStack alignItems="center" spacing="sp24" padding="sp8">
                 <BottomSheetListItem
                     iconName="pencilUnderscored"
                     translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup"

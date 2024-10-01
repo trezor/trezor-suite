@@ -51,7 +51,7 @@ const TooltipContainerStyle = prepareNativeStyle<{ x: number; y: number }>((_, {
 }));
 
 const TooltipCardStyle = prepareNativeStyle(utils => ({
-    paddingVertical: 1.5 * utils.spacings.small,
+    paddingVertical: 1.5 * utils.spacings.sp8,
     // fade in/out animation doesn't work for elevation (shadow) on Android
     elevation: 0,
 }));

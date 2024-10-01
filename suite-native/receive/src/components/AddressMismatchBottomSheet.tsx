@@ -22,9 +22,9 @@ export const AddressMismatchBottomSheet = ({
             isVisible={isOpened}
             onClose={onClose}
             isCloseDisplayed={false}
-            paddingHorizontal="large"
+            paddingHorizontal="sp24"
         >
-            <VStack spacing="large">
+            <VStack spacing="sp24">
                 <ReceiveAddressBottomSheetHeader
                     title={<Translation id="moduleReceive.bottomSheets.addressMismatch.title" />}
                     description={
@@ -32,7 +32,7 @@ export const AddressMismatchBottomSheet = ({
                     }
                 />
 
-                <VStack spacing="small">
+                <VStack spacing="sp8">
                     <Text variant="callout">
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.remember" />
                     </Text>
@@ -45,7 +45,7 @@ export const AddressMismatchBottomSheet = ({
                 </VStack>
 
                 <Box flex={1}>
-                    <VStack spacing="medium">
+                    <VStack spacing="sp16">
                         <Button
                             viewLeft="warningTriangle"
                             colorScheme="tertiaryElevation0"

@@ -79,8 +79,8 @@ export const SendFeesForm = ({ accountKey, feeLevels }: SendFormProps) => {
     return (
         <Form form={form}>
             <Box flex={1} justifyContent="space-between">
-                <VStack spacing="medium">
-                    <VStack spacing="extraSmall">
+                <VStack spacing="sp16">
+                    <VStack spacing="sp4">
                         <Text variant="titleSmall">
                             <Translation id="moduleSend.fees.description.title" />
                         </Text>

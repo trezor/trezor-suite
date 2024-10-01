@@ -8,8 +8,8 @@ type IncludeTokensToggleProps = {
 };
 
 export const IncludeTokensToggle = ({ isToggled, onToggle }: IncludeTokensToggleProps) => (
-    <VStack spacing="large" marginTop="small">
-        <Box marginHorizontal="large">
+    <VStack spacing="sp24" marginTop="sp8">
+        <Box marginHorizontal="sp24">
             <Toggle
                 leftLabel="Ethereum"
                 rightLabel="Include tokens"
@@ -19,7 +19,7 @@ export const IncludeTokensToggle = ({ isToggled, onToggle }: IncludeTokensToggle
         </Box>
         {isToggled && (
             <Animated.View entering={FadeIn}>
-                <Box marginHorizontal="small">
+                <Box marginHorizontal="sp8">
                     <AlertBox
                         variant="info"
                         title="Note, your Ethereum balance doesn’t include tokens."

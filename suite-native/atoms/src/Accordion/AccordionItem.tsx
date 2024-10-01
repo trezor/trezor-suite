@@ -20,7 +20,7 @@ const triggerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: utils.spacings.extraSmall,
+    paddingTop: utils.spacings.sp4,
 }));
 
 const titleStyle = prepareNativeStyle(_ => ({
@@ -35,7 +35,7 @@ const contentWrapperStyle = prepareNativeStyle(() => ({
 }));
 
 const contentStyle = prepareNativeStyle(utils => ({
-    paddingBottom: utils.spacings.small,
+    paddingBottom: utils.spacings.sp8,
 }));
 
 const accordionWrapperStyle = prepareNativeStyle(() => ({

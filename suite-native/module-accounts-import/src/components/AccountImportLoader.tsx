@@ -69,7 +69,7 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
 
     return (
         <Box style={applyStyle(loaderContainerStyle)}>
-            <Box marginBottom="large">
+            <Box marginBottom="sp24">
                 <Spinner loadingState={spinnerLoadingState} onComplete={onComplete} />
             </Box>
             <Box style={applyStyle(textContainerStyle)}>

@@ -68,7 +68,7 @@ export const SendOutputsReviewScreen = ({
             }
             footer={<OutputsReviewFooter accountKey={accountKey} />}
         >
-            <VStack flex={1} spacing="extraLarge" justifyContent="space-between">
+            <VStack flex={1} spacing="sp32" justifyContent="space-between">
                 <ReviewOutputItemList accountKey={accountKey} />
                 <SignSuccessMessage />
             </VStack>

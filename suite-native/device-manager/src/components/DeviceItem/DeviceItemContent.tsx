@@ -35,7 +35,7 @@ const contentWrapperStyle = prepareNativeStyle<{ height: number }>((utils, { hei
     flexShrink: 1,
     height: height * ACCESSIBILITY_FONTSIZE_MULTIPLIER,
     alignItems: 'center',
-    spacing: utils.spacings.medium,
+    spacing: utils.spacings.sp16,
 }));
 
 const itemStyle = prepareNativeStyle<{ isCompact: boolean }>((_, { isCompact }) => ({

@@ -22,7 +22,7 @@ export const SendFeesScreen = ({
 
     return (
         <SendScreen screenHeader={<AccountBalanceScreenHeader accountKey={accountKey} />}>
-            <VStack spacing="extraLarge" flex={1}>
+            <VStack spacing="sp32" flex={1}>
                 <RecipientsSummary accountKey={accountKey} />
                 <SendFeesForm accountKey={accountKey} feeLevels={feeLevels} />
             </VStack>

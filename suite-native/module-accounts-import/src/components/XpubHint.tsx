@@ -15,7 +15,7 @@ const sheetTriggerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: utils.spacings.large,
+    paddingVertical: utils.spacings.sp24,
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderTopWidth: utils.borders.widths.small,
     borderTopColor: utils.colors.borderElevation1,

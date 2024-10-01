@@ -14,9 +14,9 @@ const screenStyle = prepareNativeStyle(utils => ({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: utils.spacings.large,
-    paddingTop: utils.spacings.xxl,
-    paddingBottom: utils.spacings.extraLarge,
+    paddingHorizontal: utils.spacings.sp24,
+    paddingTop: utils.spacings.sp64,
+    paddingBottom: utils.spacings.sp32,
     position: 'absolute',
     left: 0,
     top: 0,
@@ -123,7 +123,7 @@ export const FeatureMessageScreen = () => {
                 />
             </Box>
 
-            <VStack spacing="medium" style={applyStyle(buttonsWrapperStyle)}>
+            <VStack spacing="sp16" style={applyStyle(buttonsWrapperStyle)}>
                 {isCtaVisible && (
                     <Button size="large" colorScheme="primary" onPress={handleCtaPress}>
                         {ctaLabel}

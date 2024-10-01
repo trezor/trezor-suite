@@ -8,7 +8,7 @@ type ScreenHeaderProps = {
 };
 
 export const ScreenHeader = ({ hasBottomPadding, children }: ScreenHeaderProps) => (
-    <ScreenHeaderWrapper marginBottom={hasBottomPadding ? 'small' : undefined}>
+    <ScreenHeaderWrapper marginBottom={hasBottomPadding ? 'sp8' : undefined}>
         {children}
     </ScreenHeaderWrapper>
 );

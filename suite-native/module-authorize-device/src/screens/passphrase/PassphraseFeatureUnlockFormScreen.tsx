@@ -33,7 +33,7 @@ export const PassphraseFeatureUnlockFormScreen = () => {
                 </ScreenHeader>
             }
         >
-            <VStack spacing="large">
+            <VStack spacing="sp24">
                 <Text variant="titleMedium">
                     <Translation id="modulePassphrase.passphraseFeatureUnlock.title" />
                 </Text>

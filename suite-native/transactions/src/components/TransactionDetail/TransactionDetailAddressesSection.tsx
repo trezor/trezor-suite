@@ -21,17 +21,17 @@ type TransactionDetailAddressesSectionProps = {
 
 const showMoreButtonContainerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
-    marginLeft: utils.spacings.extraLarge,
+    marginLeft: utils.spacings.sp32,
 }));
 const showMoreButtonStyle = prepareNativeStyle(_ => ({ flexDirection: 'row' }));
 
 const hiddenTransactionsCountStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
-    marginLeft: utils.spacings.small,
+    marginLeft: utils.spacings.sp8,
     backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation1,
     borderRadius: utils.borders.radii.round,
-    paddingHorizontal: utils.spacings.small,
-    paddingVertical: utils.spacings.small / 4,
+    paddingHorizontal: utils.spacings.sp8,
+    paddingVertical: utils.spacings.sp8 / 4,
 }));
 
 const addressTextStyle = prepareNativeStyle(_ => ({
@@ -43,21 +43,21 @@ const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     marginTop: 12,
     backgroundColor: utils.colors.backgroundSurfaceElevation2,
-    width: utils.spacings.medium,
-    height: utils.spacings.medium,
+    width: utils.spacings.sp16,
+    height: utils.spacings.sp16,
     borderRadius: utils.borders.radii.round,
 }));
 
 const stepperDotStyle = prepareNativeStyle(utils => ({
-    width: utils.spacings.extraSmall,
-    height: utils.spacings.extraSmall,
+    width: utils.spacings.sp4,
+    height: utils.spacings.sp4,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundNeutralSubdued,
 }));
 
 const coinIconWrapperStyle = prepareNativeStyle(utils => ({
     alignSelf: 'flex-start',
-    padding: utils.spacings.small * 1.5,
+    padding: utils.spacings.sp8 * 1.5,
     backgroundColor: utils.colors.backgroundSurfaceElevation2,
     borderRadius: utils.borders.radii.round,
 }));
@@ -135,7 +135,7 @@ export const TransactionDetailAddressesSection = ({
 
             {areChangeAddressesVisible && (
                 <>
-                    <CardDivider horizontalPadding="medium" />
+                    <CardDivider horizontalPadding="sp16" />
                     <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
                         <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                             <Box>

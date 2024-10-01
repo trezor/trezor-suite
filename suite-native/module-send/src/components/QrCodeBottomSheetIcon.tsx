@@ -20,7 +20,7 @@ export const QrCodeBottomSheetIcon = ({ onCodeScanned }: QrCodeBottomSheetIconPr
 
     return (
         <>
-            <TouchableOpacity onPress={toggleBottomSheet} hitSlop={utils.spacings.small}>
+            <TouchableOpacity onPress={toggleBottomSheet} hitSlop={utils.spacings.sp8}>
                 <Icon name="qrCode" size="large" />
             </TouchableOpacity>
 

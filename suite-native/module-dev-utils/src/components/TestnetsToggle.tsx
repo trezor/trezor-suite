@@ -13,7 +13,7 @@ export const TestnetsToggle = () => {
     };
 
     return (
-        <HStack flexDirection="row" alignItems="center" spacing="large">
+        <HStack flexDirection="row" alignItems="center" spacing="sp24">
             <Box flexShrink={1}>
                 <Text>Testnet coins & features</Text>
                 <Text variant="hint" color="textSubdued">

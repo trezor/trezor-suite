@@ -33,7 +33,7 @@ export const AccountSectionTitle: React.FC<AccountSectionTitleProps> = ({
     }, [account, localCurrency, rates]);
 
     return (
-        <HStack alignItems="center" justifyContent="space-between" marginBottom="medium">
+        <HStack alignItems="center" justifyContent="space-between" marginBottom="sp16">
             <Text variant="highlight">{account.accountLabel}</Text>
 
             {hasAnyKnownTokens && (

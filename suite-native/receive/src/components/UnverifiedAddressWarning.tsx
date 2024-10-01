@@ -37,7 +37,7 @@ export const UnverifiedAddressWarning = () => {
     const pictogramContentKey = isPortfolioTrackerDevice ? 'portfolioTracker' : 'viewOnly';
 
     return (
-        <Box marginVertical="medium" paddingHorizontal="medium" paddingVertical="extraLarge">
+        <Box marginVertical="sp16" paddingHorizontal="sp16" paddingVertical="sp32">
             <PictogramTitleHeader
                 variant="yellow"
                 icon="warningTriangleLight"

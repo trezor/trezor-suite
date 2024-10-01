@@ -19,7 +19,7 @@ export const UnverifiedAddressDeviceHint = () => {
 
     return (
         <Animated.View entering={FadeIn}>
-            <VStack spacing="medium">
+            <VStack spacing="sp16">
                 <Text variant="hint" color="textSubdued" textAlign="center">
                     <Translation id="moduleReceive.receiveAddressCard.deviceHint.description" />
                 </Text>

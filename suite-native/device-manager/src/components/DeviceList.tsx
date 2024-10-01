@@ -60,15 +60,15 @@ const SEPARATOR_VERTICAL_PADDING = 4;
 const SEPARATOR_HEIGHT = 26;
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
-    paddingTop: utils.spacings.small,
+    paddingHorizontal: utils.spacings.sp16,
+    paddingTop: utils.spacings.sp8,
 }));
 
 const ConnectButton = ({ isDividerVisible, onPress }: ConnectButtonProps) => {
     const { applyStyle } = useNativeStyles();
 
     return isDividerVisible ? (
-        <VStack spacing="extraSmall" paddingTop="extraSmall">
+        <VStack spacing="sp4" paddingTop="sp4">
             <TextDivider title="generic.orSeparator" />
             <Box style={applyStyle(buttonWrapperStyle)}>
                 <Button colorScheme="tertiaryElevation0" onPress={onPress}>

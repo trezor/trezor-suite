@@ -133,9 +133,9 @@ export const DeviceInfoModalScreen = () => {
         >
             <Box style={applyStyle(contentStyle)}>
                 <Card {...cardAlertProps}>
-                    <HStack spacing="large">
+                    <HStack spacing="sp24">
                         <Image width={92} height={151} source={deviceImageMap[deviceModel]} />
-                        <VStack spacing="extraSmall" justifyContent="center">
+                        <VStack spacing="sp4" justifyContent="center">
                             {deviceLabel && <Text variant="titleSmall">{deviceLabel}</Text>}
                             <Text variant="label" color="textSubdued">
                                 {device?.name}
@@ -149,7 +149,7 @@ export const DeviceInfoModalScreen = () => {
                     </HStack>
                 </Card>
             </Box>
-            <VStack spacing="medium">
+            <VStack spacing="sp16">
                 <Button
                     colorScheme="tertiaryElevation0"
                     onPress={handleAccessoriesClick}

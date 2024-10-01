@@ -15,8 +15,8 @@ type ReviewOutputCardProps = {
 const cardStyle = prepareNativeStyle<{ isConfirmed: boolean }>((utils, { isConfirmed }) => ({
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors.borderElevation1,
-    marginHorizontal: utils.spacings.small,
-    paddingHorizontal: utils.spacings.medium,
+    marginHorizontal: utils.spacings.sp8,
+    paddingHorizontal: utils.spacings.sp16,
     paddingVertical: 12,
     borderRadius: 12,
     extend: {
@@ -41,8 +41,8 @@ export const ReviewOutputCard = ({ children, title, outputState }: ReviewOutputC
                     <ReviewOutputStatusBadge status={outputState} />
                     <Text variant="callout">{title}</Text>
                 </HStack>
-                <CardDivider color={dividerColor} horizontalPadding="medium" />
-                <Box paddingLeft="large">{children}</Box>
+                <CardDivider color={dividerColor} horizontalPadding="sp16" />
+                <Box paddingLeft="sp24">{children}</Box>
             </VStack>
         </Card>
     );

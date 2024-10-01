@@ -15,7 +15,7 @@ export const OrderedListItem = ({ children, order, variant, color }: OrderedList
         <Text variant={variant} color={color}>
             {order}.
         </Text>
-        <Box flexShrink={1} paddingLeft="small">
+        <Box flexShrink={1} paddingLeft="sp8">
             <Text variant={variant} color={color}>
                 {children}
             </Text>

@@ -20,7 +20,7 @@ type AccountSelectBottomSheetProps = {
 };
 
 const contentContainerStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
 export const AccountSelectBottomSheet = React.memo(

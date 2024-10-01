@@ -35,9 +35,9 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     };
 
     return (
-        <VStack spacing="large" marginTop="small">
+        <VStack spacing="sp24" marginTop="sp8">
             <PortfolioGraph ref={ref} />
-            <VStack spacing="large" marginHorizontal="small">
+            <VStack spacing="sp24" marginHorizontal="sp8">
                 <Box>
                     <Assets />
                 </Box>

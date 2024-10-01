@@ -38,7 +38,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 const buttonsWrapperStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
     width: '100%',
-    paddingTop: utils.spacings.large,
+    paddingTop: utils.spacings.sp24,
 }));
 
 const ANIMATION_DURATION = 100;
@@ -154,7 +154,7 @@ export const PinFormControlButtons = () => {
                     exiting={FadeOut}
                     style={applyStyle(buttonsWrapperStyle)}
                 >
-                    <HStack spacing="medium" onLayout={handleOnLayout} paddingBottom="large">
+                    <HStack spacing="sp16" onLayout={handleOnLayout} paddingBottom="sp24">
                         <IconButton
                             onPress={handleDelete}
                             iconName="backspace"

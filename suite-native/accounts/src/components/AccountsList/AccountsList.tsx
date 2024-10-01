@@ -56,7 +56,7 @@ export const AccountsList = ({
 
     return (
         <>
-            <VStack spacing="medium" paddingBottom="medium">
+            <VStack spacing="sp16" paddingBottom="sp16">
                 {groups.map(([accountTypeHeader, networkAccounts]) => (
                     <Card key={accountTypeHeader} noPadding>
                         {networkAccounts.map(account => (

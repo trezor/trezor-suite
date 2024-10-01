@@ -27,7 +27,7 @@ import { AddressOriginHelpButton } from '../components/AddressOriginHelpButton';
 
 const NUMBER_OF_STEPS = 3;
 const OVERLAY_INITIAL_POSITION = 75;
-const LIST_VERTICAL_SPACING = nativeSpacings.medium;
+const LIST_VERTICAL_SPACING = nativeSpacings.sp16;
 
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
 type NavigationProps = StackToStackCompositeNavigationProps<

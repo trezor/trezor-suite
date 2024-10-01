@@ -18,7 +18,7 @@ export const PortfolioGraphHeader = () => {
 
     return (
         <Box>
-            <VStack spacing="extraSmall" alignItems="center">
+            <VStack spacing="sp4" alignItems="center">
                 {!isLoading && (
                     <GraphFiatBalance
                         selectedPointAtom={selectedPointAtom}

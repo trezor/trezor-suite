@@ -41,7 +41,7 @@ import { calculateMaxAmountWithNormalFeeThunk } from '../sendFormThunks';
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
-    padding: utils.spacings.medium,
+    padding: utils.spacings.sp16,
 }));
 
 const DEFAULT_VALUES = [
@@ -226,7 +226,7 @@ export const SendOutputsScreen = ({
                 )
             }
         >
-            <Box marginTop="extraLarge" marginBottom="extraLarge">
+            <Box marginTop="sp32" marginBottom="sp32">
                 <Form form={form}>
                     <Box flex={1} justifyContent="space-between">
                         <SendOutputFields accountKey={accountKey} />

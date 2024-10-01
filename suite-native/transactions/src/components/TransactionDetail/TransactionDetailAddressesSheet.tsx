@@ -26,8 +26,8 @@ const addressStyle = prepareNativeStyle(_ => ({ maxWidth: '90%' }));
 
 const copyContainerStyle = prepareNativeStyle(utils => ({
     flex: 1,
-    paddingTop: utils.spacings.extraSmall,
-    marginHorizontal: utils.spacings.small,
+    paddingTop: utils.spacings.sp4,
+    marginHorizontal: utils.spacings.sp8,
 }));
 
 export const formatAddressLabel = (addressType: AddressesType, count: number) => {
@@ -60,7 +60,7 @@ const AddressRow = ({ address }: { address: string }) => {
 
 const AddressesListCard = ({ addresses }: { addresses: VinVoutAddress[] }) => (
     <Card>
-        <VStack spacing="medium">
+        <VStack spacing="sp16">
             {addresses.map(({ address }) => (
                 <AddressRow key={address} address={address} />
             ))}
@@ -112,8 +112,8 @@ export const TransactionDetailAddressesSheet = ({
                     leftLabel={formatAddressLabel('inputs', inputAddresses.length)}
                     rightLabel={formatAddressLabel('outputs', outputAddresses.length)}
                 />
-                <Box marginVertical="medium">
-                    <VStack spacing="medium">
+                <Box marginVertical="sp16">
+                    <VStack spacing="sp16">
                         <AddressesListCard addresses={targetAddresses} />
 
                         {A.isNotEmpty(changeAddresses) && (
@@ -123,7 +123,7 @@ export const TransactionDetailAddressesSheet = ({
                             </>
                         )}
                     </VStack>
-                    <Box marginTop="large" paddingHorizontal="small">
+                    <Box marginTop="sp24" paddingHorizontal="sp8">
                         <Button size="large" onPress={onClose}>
                             Close
                         </Button>

@@ -22,7 +22,7 @@ export const AddressReviewHelpSheet = ({ body, title, subtitle }: AddressReviewH
             textAlign: 'left',
             pictogramVariant: 'red',
             primaryButtonTitle: <Translation id="generic.buttons.gotIt" />,
-            titleSpacing: 'extraSmall',
+            titleSpacing: 'sp4',
         });
 
     return (

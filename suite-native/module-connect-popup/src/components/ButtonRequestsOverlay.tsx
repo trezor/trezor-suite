@@ -16,7 +16,7 @@ export const ButtonRequestsOverlay = () => {
     const getButtonRequestComponent = (request: ButtonRequest) => {
         if (request.code === 'ButtonRequest_Address') {
             return (
-                <Box paddingBottom="extraLarge" key={request.code}>
+                <Box paddingBottom="sp32" key={request.code}>
                     <Text variant="body">{(request as any).data.address}</Text>
                 </Box>
             );
@@ -26,13 +26,7 @@ export const ButtonRequestsOverlay = () => {
     };
 
     return (
-        <VStack
-            spacing="large"
-            alignItems="center"
-            justifyContent="center"
-            flex={1}
-            padding="small"
-        >
+        <VStack spacing="sp24" alignItems="center" justifyContent="center" flex={1} padding="sp8">
             {selectedDevice.buttonRequests.map(request => getButtonRequestComponent(request))}
 
             <ConfirmOnTrezorImage

@@ -27,7 +27,7 @@ const dividerStyle = prepareNativeStyle<SetRequired<CardDividerProps, 'horizonta
     }),
 );
 
-export const CardDivider = ({ color, horizontalPadding = 'medium' }: CardDividerProps) => {
+export const CardDivider = ({ color, horizontalPadding = 'sp16' }: CardDividerProps) => {
     const { applyStyle } = useNativeStyles();
 
     return <Divider style={applyStyle(dividerStyle, { color, horizontalPadding })} />;

@@ -18,7 +18,7 @@ type AccountBalanceScreenHeaderProps = {
 };
 
 export const SendScreenSubHeader = (props: ScreenSubHeaderProps) => (
-    <ScreenSubHeader {...props} customHorizontalPadding={nativeSpacings.medium} />
+    <ScreenSubHeader {...props} customHorizontalPadding={nativeSpacings.sp16} />
 );
 
 export const AccountBalanceScreenHeader = ({ accountKey }: AccountBalanceScreenHeaderProps) => {
@@ -40,12 +40,12 @@ export const AccountBalanceScreenHeader = ({ accountKey }: AccountBalanceScreenH
     return (
         <SendScreenSubHeader
             content={
-                <VStack spacing="extraSmall" alignItems="center">
-                    <HStack spacing="small" alignItems="center">
+                <VStack spacing="sp4" alignItems="center">
+                    <HStack spacing="sp8" alignItems="center">
                         {networkSymbol && <CryptoIcon symbol={networkSymbol} size="extraSmall" />}
                         {accountLabel && <Text variant="highlight">{accountLabel}</Text>}
                     </HStack>
-                    <HStack spacing="extraSmall" alignItems="center">
+                    <HStack spacing="sp4" alignItems="center">
                         <CryptoAmountFormatter
                             variant="hint"
                             value={availableBalance}

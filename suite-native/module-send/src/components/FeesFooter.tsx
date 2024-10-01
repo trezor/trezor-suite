@@ -24,14 +24,14 @@ const CARD_BOTTOM_PADDING = 40;
 const BUTTON_ENTERING_DELAY = 45;
 
 const footerWrapperStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.medium,
+    marginBottom: utils.spacings.sp16,
 }));
 
 const cardStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    paddingTop: utils.spacings.small,
+    paddingTop: utils.spacings.sp8,
     backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
     borderColor: utils.colors.borderElevation0,
     borderWidth: utils.borders.widths.small,

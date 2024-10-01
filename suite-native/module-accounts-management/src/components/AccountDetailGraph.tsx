@@ -44,7 +44,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
     useEffect(setInitialSelectedPoints, [setInitialSelectedPoints]);
 
     return (
-        <VStack spacing="large">
+        <VStack spacing="sp24">
             <AccountDetailGraphHeader accountKey={accountKey} tokenAddress={tokenContract} />
 
             <Graph<FiatGraphPointWithCryptoBalance>

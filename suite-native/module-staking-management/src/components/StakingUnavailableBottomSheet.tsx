@@ -3,7 +3,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const bottomSheetElementStyle = prepareNativeStyle(utils => ({
-    marginVertical: utils.spacings.small,
+    marginVertical: utils.spacings.sp8,
 }));
 
 type StakingUnavailableBottomSheet = {
@@ -31,7 +31,7 @@ export const StakingUnavailableBottomSheet = ({
             isVisible
             isCloseDisplayed={false}
             onClose={handleToggleBottomSheet}
-            paddingHorizontal="large"
+            paddingHorizontal="sp24"
         >
             <Text
                 color="textSubdued"

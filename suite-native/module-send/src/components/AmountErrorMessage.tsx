@@ -6,7 +6,7 @@ import { getOutputFieldName } from '../utils';
 
 const errorStyle = prepareNativeStyle<{ isFiatDisplayed: boolean }>(
     (utils, { isFiatDisplayed }) => ({
-        marginHorizontal: isFiatDisplayed ? utils.spacings.medium : 0,
+        marginHorizontal: isFiatDisplayed ? utils.spacings.sp16 : 0,
     }),
 );
 

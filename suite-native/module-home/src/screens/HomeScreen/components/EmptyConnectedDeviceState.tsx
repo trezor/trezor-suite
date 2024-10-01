@@ -14,8 +14,8 @@ const cardStyle = prepareNativeStyle(utils => ({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: utils.spacings.extraLarge,
-    paddingHorizontal: utils.spacings.large,
+    paddingVertical: utils.spacings.sp32,
+    paddingHorizontal: utils.spacings.sp24,
 }));
 
 const contentStyle = prepareNativeStyle(_ => ({
@@ -38,7 +38,7 @@ export const EmptyConnectedDeviceState = () => {
 
     return (
         <Card style={applyStyle(cardStyle)}>
-            <VStack spacing="large" style={applyStyle(contentStyle)}>
+            <VStack spacing="sp24" style={applyStyle(contentStyle)}>
                 <PictogramTitleHeader
                     variant="green"
                     size="large"

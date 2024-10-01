@@ -20,9 +20,9 @@ const contentStyle = prepareNativeStyle(utils => ({
 }));
 
 const cardStyle = prepareNativeStyle(utils => ({
-    marginHorizontal: utils.spacings.medium,
-    marginTop: utils.spacings.medium,
-    paddingTop: utils.spacings.large,
+    marginHorizontal: utils.spacings.sp16,
+    marginTop: utils.spacings.sp16,
+    paddingTop: utils.spacings.sp24,
     borderRadius: 20,
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors.borderElevation1,
@@ -74,7 +74,7 @@ export const OnboardingScreen = ({
                     {children}
                 </Box>
                 {footer && (
-                    <Box alignItems="center" marginTop="large">
+                    <Box alignItems="center" marginTop="sp24">
                         {footer}
                     </Box>
                 )}

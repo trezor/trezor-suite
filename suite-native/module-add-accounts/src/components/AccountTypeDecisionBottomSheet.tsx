@@ -7,7 +7,7 @@ const ACCOUNT_TYPES_URL = 'https://trezor.io/learn/a/multiple-accounts-in-trezor
 
 const descStyle = prepareNativeStyle(utils => ({
     alignSelf: 'center',
-    paddingBottom: utils.spacings.small,
+    paddingBottom: utils.spacings.sp8,
 }));
 
 type AccountTypeDecisionBottomSheetProps = {
@@ -43,7 +43,7 @@ export const AccountTypeDecisionBottomSheet = ({
             onClose={onClose}
             isCloseDisplayed={false}
         >
-            <VStack spacing="medium">
+            <VStack spacing="sp16">
                 <Text color="textSubdued" style={applyStyle(descStyle)}>
                     <Translation
                         id="moduleAddAccounts.accountTypeDecisionBottomSheet.description"

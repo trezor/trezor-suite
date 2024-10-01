@@ -56,7 +56,7 @@ export const AddCoinAccountScreen = ({
             }
         >
             <Card>
-                <VStack spacing="large">
+                <VStack spacing="sp24">
                     {supportedNetworkSymbols.map(networkSymbol => (
                         <SelectableNetworkItem
                             key={networkSymbol}

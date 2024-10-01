@@ -47,7 +47,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 const confirmButtonStyle = prepareNativeStyle(utils => ({
-    marginBottom: utils.spacings.small,
+    marginBottom: utils.spacings.sp8,
 }));
 
 export const AccountImportSummaryForm = ({
@@ -116,7 +116,7 @@ export const AccountImportSummaryForm = ({
 
     const renderItem = useCallback(
         ({ item }: { item: TokenInfo }) => (
-            <Box marginBottom="small">
+            <Box marginBottom="sp8">
                 <EthereumTokenInfo
                     symbol={item.symbol as TokenSymbol}
                     balance={item.balance}
@@ -142,7 +142,7 @@ export const AccountImportSummaryForm = ({
                             networkSymbol={networkSymbol}
                         />
                         {knownTokens.length > 0 && (
-                            <Box marginTop="medium" marginBottom="small">
+                            <Box marginTop="sp16" marginBottom="sp8">
                                 <Text variant="titleSmall">Tokens: </Text>
                             </Box>
                         )}
@@ -150,8 +150,8 @@ export const AccountImportSummaryForm = ({
                 }
                 ListFooterComponent={
                     <>
-                        <Divider marginHorizontal="extraLarge" marginTop="large" />
-                        <Box marginHorizontal="medium" marginTop="large">
+                        <Divider marginHorizontal="sp32" marginTop="sp24" />
+                        <Box marginHorizontal="sp16" marginTop="sp24">
                             <Button
                                 testID="@account-import/coin-synced/confirm-button"
                                 onPress={handleImportAccount}

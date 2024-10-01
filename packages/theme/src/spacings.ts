@@ -27,14 +27,20 @@ export type Spacings = typeof spacings;
 export type Spacing = keyof typeof spacings;
 export type SpacingValues = Spacings[Spacing];
 
+type NativeSpacingValue = 2 | 4 | 8 | 12 | 16 | 24 | 32 | 40 | 52 | 64;
+
 export const nativeSpacings = {
-    extraSmall: 4,
-    small: 8,
-    medium: 16,
-    large: 24,
-    extraLarge: 32,
-    xxl: 64,
-} as const;
+    sp2: 2,
+    sp4: 4,
+    sp8: 8,
+    sp12: 12,
+    sp16: 16,
+    sp24: 24,
+    sp32: 32,
+    sp40: 40,
+    sp52: 52,
+    sp64: 64,
+} as const satisfies { [V in NativeSpacingValue as `sp${V}`]: V };
 
 export type NativeSpacings = typeof nativeSpacings;
 export type NativeSpacing = keyof typeof nativeSpacings;

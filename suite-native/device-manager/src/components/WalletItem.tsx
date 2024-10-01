@@ -38,7 +38,7 @@ const walletItemStyle = prepareNativeStyle<WalletItemStyleProps>(
             {
                 condition: isSelectable,
                 style: {
-                    paddingHorizontal: utils.spacings.medium,
+                    paddingHorizontal: utils.spacings.sp16,
                     backgroundColor: utils.colors.backgroundSurfaceElevation1,
                     borderWidth: utils.borders.widths.small,
                 },

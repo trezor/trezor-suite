@@ -72,7 +72,7 @@ export const AddCoinDiscoveryFinishedScreen = ({ route }) => {
         <Screen
             screenHeader={<ScreenSubHeader leftIcon={<GoBackIcon closeActionType="close" />} />}
         >
-            <Box paddingTop="large" paddingHorizontal="small" paddingBottom="extraLarge">
+            <Box paddingTop="sp24" paddingHorizontal="sp8" paddingBottom="sp32">
                 <Text variant="titleMedium">
                     <Translation
                         id={titleKey}
@@ -96,7 +96,7 @@ export const AddCoinDiscoveryFinishedScreen = ({ route }) => {
                     lineColor="borderElevation0"
                     textColor="textSubdued"
                 />
-                <Box paddingTop="small" paddingHorizontal="medium">
+                <Box paddingTop="sp8" paddingHorizontal="sp16">
                     <Button
                         colorScheme="tertiaryElevation0"
                         onPress={handleAddAccount}

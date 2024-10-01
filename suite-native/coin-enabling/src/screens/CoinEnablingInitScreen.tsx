@@ -26,14 +26,14 @@ const BUTTON_HEIGHT = 48;
 
 const headerWrapperStyle = prepareNativeStyle(utils => ({
     zIndex: 2,
-    paddingTop: utils.spacings.extraLarge,
+    paddingTop: utils.spacings.sp32,
 }));
 
 const gradientBackgroundTopStyle = prepareNativeStyle(utils => ({
     width: '100%',
-    height: utils.spacings.medium,
+    height: utils.spacings.sp16,
     position: 'absolute',
-    bottom: -utils.spacings.medium,
+    bottom: -utils.spacings.sp16,
     pointerEvents: 'none',
 }));
 
@@ -59,7 +59,7 @@ const buttonWrapperStyle = prepareNativeStyle(utils => ({
 }));
 
 const buttonStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.medium,
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
 export const CoinEnablingInitScreen = () => {
@@ -98,10 +98,10 @@ export const CoinEnablingInitScreen = () => {
 
     return (
         <Screen
-            customHorizontalPadding={utils.spacings.medium}
+            customHorizontalPadding={utils.spacings.sp16}
             screenHeader={
                 <View style={applyStyle(headerWrapperStyle)}>
-                    <VStack paddingBottom="extraLarge" paddingHorizontal="medium">
+                    <VStack paddingBottom="sp32" paddingHorizontal="sp16">
                         <Text variant="titleSmall">
                             <Translation id="moduleSettings.coinEnabling.initialSetup.title" />
                         </Text>

@@ -78,7 +78,7 @@ export const PassphraseEmptyWalletScreen = () => {
             title={<Translation id="modulePassphrase.emptyPassphraseWallet.title" />}
         >
             <Card style={applyStyle(cardStyle)}>
-                <VStack alignItems="center" spacing="medium" style={applyStyle(cardContentStyle)}>
+                <VStack alignItems="center" spacing="sp16" style={applyStyle(cardContentStyle)}>
                     <QuestionMarks />
                     <Text variant="highlight" textAlign="center">
                         <Translation id="modulePassphrase.emptyPassphraseWallet.confirmCard.description" />
@@ -94,7 +94,7 @@ export const PassphraseEmptyWalletScreen = () => {
                 textColor="textSubdued"
             />
             <VStack spacing={20}>
-                <VStack alignItems="center" spacing="extraSmall">
+                <VStack alignItems="center" spacing="sp4">
                     <Text
                         textAlign="center"
                         variant="highlight"

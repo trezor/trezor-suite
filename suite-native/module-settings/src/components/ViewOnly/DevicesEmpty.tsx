@@ -8,14 +8,14 @@ import { About, AboutProps } from './About';
 const svgWrapperStyle = prepareNativeStyle(utils => ({
     width: 180,
     height: 156,
-    paddingBottom: utils.spacings.large,
+    paddingBottom: utils.spacings.sp24,
 }));
 
 const emptyContentStyle = prepareNativeStyle(utils => ({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: utils.spacings.large,
+    paddingHorizontal: utils.spacings.sp24,
 }));
 
 export const DevicesEmpty = ({ onPressAbout }: AboutProps) => {

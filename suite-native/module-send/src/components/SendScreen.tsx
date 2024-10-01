@@ -15,7 +15,7 @@ export const SendScreen = ({ children, footer, screenHeader, subheader }: SendSc
 
     return (
         <Screen
-            customHorizontalPadding={utils.spacings.medium}
+            customHorizontalPadding={utils.spacings.sp16}
             screenHeader={screenHeader}
             subheader={subheader}
             footer={footer}

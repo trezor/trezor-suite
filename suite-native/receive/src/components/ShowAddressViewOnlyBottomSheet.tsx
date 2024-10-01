@@ -31,7 +31,7 @@ export const ShowAddressViewOnlyBottomSheet = ({
             isCloseDisplayed={false}
             onClose={handleCloseViewOnlyBottomSheet}
         >
-            <VStack spacing="large">
+            <VStack spacing="sp24">
                 <VStack alignItems="center">
                     <Text variant="titleSmall">
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.title" />
@@ -40,7 +40,7 @@ export const ShowAddressViewOnlyBottomSheet = ({
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.description" />
                     </Text>
                 </VStack>
-                <VStack spacing="medium" style={applyStyle(buttonWrapperStyle)}>
+                <VStack spacing="sp16" style={applyStyle(buttonWrapperStyle)}>
                     <Button colorScheme="yellowBold" onPress={onShowAddress}>
                         <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.primaryButton" />
                     </Button>

@@ -60,11 +60,11 @@ export const AccountAlreadyImported = ({ account }: AccountImportImportedAccount
                 {account && <AccountsListItem account={account} />}
             </Card>
             <Box>
-                <Box marginBottom="large" marginTop="large">
+                <Box marginBottom="sp24" marginTop="sp24">
                     <Divider />
                 </Box>
                 <Box>
-                    <Box marginBottom="medium">
+                    <Box marginBottom="sp16">
                         <Button
                             size="large"
                             colorScheme="tertiaryElevation0"

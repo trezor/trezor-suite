@@ -59,11 +59,11 @@ export const PassphraseConfirmOnTrezorScreen = () => {
     return (
         <PassphraseScreenWrapper>
             <VStack
-                spacing="large"
+                spacing="sp24"
                 alignItems="center"
                 justifyContent="center"
                 flex={1}
-                padding="small"
+                padding="sp8"
             >
                 <DeviceT3T1Svg />
                 <CenteredTitleHeader

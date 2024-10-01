@@ -38,19 +38,19 @@ type ScreenSubHeaderContent = {
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
-    padding: utils.spacings.small,
+    padding: utils.spacings.sp8,
 }));
 
 const LoadingReceiveAccount = () => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <VStack spacing="extraLarge" alignItems="center" paddingHorizontal="small">
+        <VStack spacing="sp32" alignItems="center" paddingHorizontal="sp8">
             <Card style={applyStyle(cardStyle)}>
                 <BoxSkeleton width={SCREEN_WIDTH - 32} height={70} />
             </Card>
             <Card style={applyStyle(cardStyle)}>
-                <VStack spacing="large" alignItems="center" paddingHorizontal="large">
+                <VStack spacing="sp24" alignItems="center" paddingHorizontal="sp24">
                     <BoxSkeleton width={SCREEN_WIDTH - 80} height={200} />
                     <BoxSkeleton width={SCREEN_WIDTH - 80} height={48} borderRadius={24} />
                 </VStack>
@@ -93,7 +93,7 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
                             values={{ coinSymbol: networkSymbol?.toUpperCase() }}
                         />
                     </Text>
-                    <HStack spacing="small" alignItems="center">
+                    <HStack spacing="sp8" alignItems="center">
                         {networkSymbol && <CryptoIcon symbol={networkSymbol} size="extraSmall" />}
                         {accountLabel && (
                             <Text variant="highlight">

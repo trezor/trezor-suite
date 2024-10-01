@@ -36,7 +36,7 @@ export const OnboardingScreenHeader = ({
 
     return (
         <Box alignItems="center" style={applyStyle(wrapperStyle)} alignSelf="center">
-            <Box marginBottom="extraLarge">
+            <Box marginBottom="sp32">
                 <StepsProgressBar
                     numberOfSteps={isUsbDeviceConnectFeatureEnabled ? 3 : 2}
                     activeStep={activeStep}
