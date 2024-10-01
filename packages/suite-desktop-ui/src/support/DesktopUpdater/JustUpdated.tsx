@@ -36,8 +36,6 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
         getReleaseNotes();
     }, [getReleaseNotes]);
 
-    // TODO: once opened just-updates is dismissed
-
     return (
         <NewModal
             heading={

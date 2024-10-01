@@ -5,7 +5,6 @@ import {
     Checkbox,
     Column,
     Icon,
-    Link,
     Markdown,
     NewModal,
     Paragraph,
@@ -17,11 +16,11 @@ import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { getReleaseUrl } from 'src/services/github';
 import { download } from 'src/actions/suite/desktopUpdateActions';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { Changelog, GrayTag } from './changelogComponents';
+
+import { Changelog } from './changelogComponents';
 import { getVersionName } from './getVersionName';
 
 const GreenTag = styled.div`
@@ -107,13 +106,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                     )}
                 </Changelog>
 
-                <Row justifyContent="space-between" width="100%">
-                    <Link variant="nostyle" href={getReleaseUrl(latest?.version ?? '')}>
-                        <GrayTag>
-                            <Translation id="TR_READ_ALL_ON_GITHUB" />
-                        </GrayTag>
-                    </Link>
-
+                <Row justifyContent="end" width="100%">
                     {latest?.releaseDate && <Text variant="tertiary">{latest?.releaseDate}</Text>}
                 </Row>
 

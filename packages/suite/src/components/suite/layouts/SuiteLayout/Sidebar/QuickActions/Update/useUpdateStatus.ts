@@ -16,8 +16,9 @@ type GetSuiteUpdateStatusArgs = {
 };
 
 const getSuiteUpdateStatus = ({ desktopUpdate }: GetSuiteUpdateStatusArgs): UpdateStatusSuite => {
-    const isSuiteJustUpdated = desktopUpdate.firstRunAfterUpdate;
-    if (isSuiteJustUpdated) {
+    const isSuiteJustUpdated = true; // desktopUpdate.firstRunAfterUpdate;
+
+    if (isSuiteJustUpdated && !desktopUpdate.justUpdatedInteractedWith) {
         return 'just-updated';
     }
 
@@ -48,8 +49,16 @@ export const useUpdateStatus = (): UpdateStatusData => {
 
     const isFirmwareOutdated = device?.firmware === 'outdated';
 
+    // If firmware is outdated and suite update download/check is in progress,
+    // we suppress the Firmware notification as it can be there just for a second and then
+    // it will be replaced with Suite update notification
+    const isSuiteUpdateInProgress = [UpdateState.Downloading, UpdateState.Checking].includes(
+        desktopUpdate.state,
+    );
+
     const common: Omit<UpdateStatusData, 'updateStatus'> = {
-        updateStatusDevice: isFirmwareOutdated ? 'update-available' : 'up-to-date',
+        updateStatusDevice:
+            isFirmwareOutdated && isSuiteUpdateInProgress ? 'update-available' : 'up-to-date',
         updateStatusSuite: getSuiteUpdateStatus({ desktopUpdate }),
     };
 

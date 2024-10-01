@@ -13,13 +13,6 @@ const ChangelogWrapper = styled.div<{ $elevation: Elevation }>`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
 `;
 
-export const GrayTag = styled.div`
-    border-radius: ${borders.radii.full};
-    background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
-    padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
 export const Changelog = ({ children }: { children: ReactNode }) => {
     const { elevation } = useElevation();
 
