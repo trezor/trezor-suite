@@ -32,7 +32,7 @@ const LANGUAGES = {
     tr: { name: 'Türkçe', en: 'Turkish', type: 'official' },
     uk: { name: 'Українська', en: 'Ukrainian', type: 'community' },
     vi: { name: 'Tiếng Việt', en: 'Vietnamese' },
-    'zh-CN': { name: '中文(简体)', en: 'Chinese Simplified', type: 'community' },
+    zh: { name: '中文(简体)', en: 'Chinese Simplified', type: 'community' },
     [TRANSLATION_PSEUDOLANGUAGE]: { name: 'TRANSLATION', en: 'TRANSLATION' },
 } as const;
 
