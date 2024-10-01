@@ -121,6 +121,9 @@ export const selectTickerFromAccounts = (
                 !ticker.tokenAddress ||
                 selectIsSpecificCoinDefinitionKnown(state, ticker.symbol, ticker.tokenAddress),
         ),
+        A.uniqBy(ticker =>
+            ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
+        ),
         F.toMutable,
     );
 };
