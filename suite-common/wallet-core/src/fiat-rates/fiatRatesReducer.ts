@@ -56,7 +56,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     const ticker = tickers[index];
 
                     if (isTestnet(ticker.symbol)) {
-                        return;
+                        continue;
                     }
 
                     if (result.status === 'rejected') {
@@ -65,7 +65,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                         // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
                         if (!currentRate) {
-                            return;
+                            continue;
                         }
 
                         state[rateType][fiatRateKey] = {
@@ -74,7 +74,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                             error: result.reason || `Failed to update ${ticker.symbol} fiat rate.`,
                         };
 
-                        return;
+                        continue;
                     }
 
                     const rate = result.value;
@@ -84,7 +84,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                     // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
                     if (!currentRate) {
-                        return;
+                        continue;
                     }
                     state[rateType][fiatRateKey] = {
                         ...currentRate,
