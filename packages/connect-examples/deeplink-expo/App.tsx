@@ -29,13 +29,13 @@ export const App = () => {
                 email: 'developer@xyz.com',
                 appUrl: 'http://your.application.com',
             },
+            connectSrc: 'https://dev.suite.sldev.cz/connect/develop/',
             deeplinkOpen: url => {
                 // eslint-disable-next-line no-console
                 console.log('deeplinkOpen', url);
                 Linking.openURL(url);
             },
             deeplinkCallbackUrl: Linking.createURL('/connect'),
-            // deeplinkUrl: 'https://dev.suite.sldev.cz/connect/develop/deeplink/',
         });
     };
 
