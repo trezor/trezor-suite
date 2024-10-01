@@ -76,7 +76,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
             onCancel={onCancel}
             bottomContent={
                 <>
-                    <NewModal.Button onClick={downloadUpdate} variant="primary">
+                    <NewModal.Button onClick={downloadUpdate}>
                         <Translation id="TR_UPDATE_MODAL_START_DOWNLOAD" />
                     </NewModal.Button>
                     <NewModal.Button onClick={onCancel} variant="tertiary">

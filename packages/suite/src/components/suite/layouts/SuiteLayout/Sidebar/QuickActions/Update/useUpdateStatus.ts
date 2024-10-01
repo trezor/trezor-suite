@@ -16,7 +16,7 @@ type GetSuiteUpdateStatusArgs = {
 };
 
 const getSuiteUpdateStatus = ({ desktopUpdate }: GetSuiteUpdateStatusArgs): UpdateStatusSuite => {
-    const isSuiteJustUpdated = true; // desktopUpdate.firstRunAfterUpdate;
+    const isSuiteJustUpdated = desktopUpdate.firstRunAfterUpdate;
 
     if (isSuiteJustUpdated && !desktopUpdate.justUpdatedInteractedWith) {
         return 'just-updated';

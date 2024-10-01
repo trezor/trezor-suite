@@ -52,6 +52,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
             iconComponent={eapIconComponent}
             heading={<Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />}
             onCancel={hideWindow}
+            variant="purple"
             bottomContent={
                 <>
                     <Button onClick={checkForUpdates}>
@@ -74,6 +75,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
             iconComponent={eapIconComponent}
             heading={<Translation id="TR_EARLY_ACCESS" />}
             onCancel={hideWindow}
+            variant="purple"
             bottomContent={
                 <Tooltip
                     maxWidth={285}

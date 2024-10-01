@@ -67,7 +67,7 @@ const mapSuiteUpdateStatusToCallToActionTranslation: Record<UpdateStatus, Transl
     'up-to-date': null,
     'update-available': 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
     'update-downloaded-auto-restart-to-update':
-        'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
+        'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_RESTART_AND_UPDATE',
     'update-downloaded-manual': 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
 };
 

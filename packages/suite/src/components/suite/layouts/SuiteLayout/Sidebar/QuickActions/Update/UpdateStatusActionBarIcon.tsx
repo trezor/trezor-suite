@@ -160,11 +160,14 @@ export const UpdateStatusActionBarIcon = () => {
         return null;
     }
 
+    const suiteOnClick = () => mapSuiteUpdateToClick[updateStatusSuite]?.({ dispatch });
+    const deviceOnClick = () => mapDeviceUpdateToClick[updateStatusDevice]?.({ dispatch });
+
     const handleOnClick = () => {
         if (updateStatusSuite !== 'up-to-date') {
-            mapSuiteUpdateToClick[updateStatusSuite]?.({ dispatch });
+            suiteOnClick();
         } else if (updateStatusDevice !== 'up-to-date') {
-            mapDeviceUpdateToClick[updateStatusDevice]?.({ dispatch });
+            deviceOnClick();
         }
     };
 
