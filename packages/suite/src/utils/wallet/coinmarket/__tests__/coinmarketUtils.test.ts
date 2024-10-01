@@ -150,9 +150,9 @@ describe('coinmarket utils', () => {
 
         expect(sortedAccounts).toStrictEqual([
             FIXTURE_ACCOUNTS[0],
-            FIXTURE_ACCOUNTS[1],
             FIXTURE_ACCOUNTS[2],
             FIXTURE_ACCOUNTS[5],
+            FIXTURE_ACCOUNTS[1],
         ]);
     });
 
@@ -197,20 +197,6 @@ describe('coinmarket utils', () => {
                 options: [
                     {
                         accountType: 'normal',
-                        balance: '0.101213',
-                        cryptoName: 'Litecoin',
-                        descriptor: 'descriptor2',
-                        label: 'LTC',
-                        value: 'litecoin',
-                        decimals: 8,
-                    },
-                ],
-            },
-            {
-                label,
-                options: [
-                    {
-                        accountType: 'normal',
                         balance: '0',
                         cryptoName: 'Ethereum',
                         descriptor: 'descriptor3',
@@ -241,6 +227,20 @@ describe('coinmarket utils', () => {
                         label: 'POL',
                         value: 'polygon-ecosystem-token',
                         decimals: 18,
+                    },
+                ],
+            },
+            {
+                label,
+                options: [
+                    {
+                        accountType: 'normal',
+                        balance: '0.101213',
+                        cryptoName: 'Litecoin',
+                        descriptor: 'descriptor2',
+                        label: 'LTC',
+                        value: 'litecoin',
+                        decimals: 8,
                     },
                 ],
             },
