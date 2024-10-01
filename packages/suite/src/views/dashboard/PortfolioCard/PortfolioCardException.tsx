@@ -7,7 +7,7 @@ import {
     authorizeDeviceThunk,
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, NetworkType } from '@suite-common/wallet-config';
 import { variables, Button, H3, Image, IconName } from '@trezor/components';
 import { Discovery } from '@suite-common/wallet-types';
 
@@ -102,9 +102,13 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
     );
 };
 
-const getAccountError = (accountError: string) => {
+const getAccountError = (accountError: string, networkType: NetworkType) => {
     if (accountError === 'All backends are down') {
         return <Translation id="TR_CONNECTION_LOST" />;
+    }
+
+    if (networkType === 'ethereum' && accountError === 'Forbidden key path') {
+        return <Translation id="TR_UPGRADE_FIRMWARE_TO_DISCOVER_ACCOUNT_ERROR" />;
     }
 
     return accountError;
@@ -121,9 +125,13 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
         if (networkError.includes(account.symbol)) return value;
         networkError.push(account.symbol);
 
+        const accountTypeDisplay =
+            account.accountType !== 'normal' ? ` ${account.accountType}` : '';
+
         return value.concat(
             <div key={account.symbol}>
-                {network.name}: {getAccountError(account.error)}
+                {network.name}
+                {accountTypeDisplay}: {getAccountError(account.error, network.networkType)}
             </div>,
         );
     }, [] as JSX.Element[]);
