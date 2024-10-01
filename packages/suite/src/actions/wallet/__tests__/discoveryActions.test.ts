@@ -17,7 +17,7 @@ import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import * as discoveryActions from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { ERRORS } from '@trezor/connect';
 
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
@@ -75,7 +75,7 @@ const setTrezorConnectFixtures = (input?: FixtureInput) => {
             if (code) {
                 delete connect.error; // reset this value, it shouldn't be used in next iteration
 
-                return paramsError(error, code);
+                return paramsError(error, code as ERRORS.ErrorCode);
             }
 
             return paramsError(error);

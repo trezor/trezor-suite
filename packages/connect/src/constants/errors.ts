@@ -42,21 +42,30 @@ export const ERROR_CODES = {
     Device_InvalidState: 'Passphrase is incorrect', // authorization error (device state comparison)
     Device_CallInProgress: 'Device call in progress', // thrown when trying to make another call while current is still running
     Device_MultipleNotSupported: 'Multiple devices are not supported', // thrown by methods which require single device
-};
+
+    Failure_ActionCancelled: 'Action cancelled by user',
+    Failure_FirmwareError: 'Firmware installation failed',
+    Failure_UnknownCode: 'Unknown error',
+    Failure_PinCancelled: 'PIN cancelled',
+    Failure_PinMismatch: 'PIN mismatch',
+    Failure_WipeCodeMismatch: 'Wipe code mismatch',
+} as const;
+
+export type ErrorCode = keyof typeof ERROR_CODES;
 
 export class TrezorError extends Error {
-    code: string;
+    code: ErrorCode;
 
     message: string;
 
-    constructor(code: string, message: string) {
+    constructor(code: ErrorCode, message: string) {
         super(message);
         this.code = code;
         this.message = message;
     }
 }
 
-export const TypedError = (id: keyof typeof ERROR_CODES, message?: string) =>
+export const TypedError = (id: ErrorCode, message?: string) =>
     new TrezorError(id, message || ERROR_CODES[id]);
 
 // serialize Error/TypeError object into payload error type (Error object/class is converted to string while sent via postMessage)

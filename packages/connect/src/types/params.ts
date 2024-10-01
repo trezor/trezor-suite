@@ -2,6 +2,7 @@
 
 import { Type, TSchema, Static } from '@trezor/schema-utils';
 import { DeviceState } from './device';
+import { ErrorCode } from '../constants/errors';
 
 export interface DeviceIdentity {
     path?: string;
@@ -38,7 +39,7 @@ export interface CommonParamsWithCoin extends CommonParams {
 
 export interface Unsuccessful {
     success: false;
-    payload: { error: string; code?: string };
+    payload: { error: string; code?: ErrorCode };
 }
 
 export interface Success<T> {
