@@ -28,6 +28,7 @@ const initialSettings: ConnectSettings = {
     timestamp: new Date().getTime(),
     interactionTimeout: 600, // 5 minutes
     sharedLogger: true,
+    deeplinkUrl: `${DEFAULT_DOMAIN}deeplink/${VERSION}/`,
 };
 
 const parseManifest = (manifest?: Manifest) => {
@@ -83,6 +84,7 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     settings.iframeSrc = `${src}iframe.html`;
     settings.popupSrc = `${src}popup.html`;
     settings.webusbSrc = `${src}webusb.html`;
+    settings.deeplinkUrl = `${src}deeplink/${VERSION}/`;
 
     if (typeof input.transportReconnect === 'boolean') {
         settings.transportReconnect = input.transportReconnect;
