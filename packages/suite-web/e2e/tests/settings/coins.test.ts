@@ -66,7 +66,7 @@ describe('Coin Settings', () => {
         cy.contains('span', 'Got it!').should('be.visible').click();
         cy.wait(500);
         // disable Bitcoin
-        cy.getTestElement('@settings/wallet/network/btc').click({ force: true });
+        cy.getTestElement('@settings/wallet/network/btc').click();
         cy.getTestElement('@settings/wallet/network/btc').should(
             'have.attr',
             'data-active',
