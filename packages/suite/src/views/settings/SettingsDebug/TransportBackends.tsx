@@ -14,7 +14,7 @@ interface Process {
 }
 
 // note that this variable is duplicated with suite-desktop-core
-const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0;
+const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.01;
 
 export const TransportBackends = () => {
     const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
@@ -124,7 +124,7 @@ export const TransportBackends = () => {
                         title="New bridge rollout"
                         description={
                             allowPrerelease
-                                ? 'New bridge is rolled out to all Trezor Suite instances that are in the Early access program.'
+                                ? 'New bridge is rolled out to all Trezor Suite instances that are in the Early access program and to a few users apart EAP.'
                                 : `New bridge is rolled out to ${NEW_BRIDGE_ROLLOUT_THRESHOLD * 100} % of Trezor Suite instances outside of Early access. Your rollout score is ${((bridgeSettings.newBridgeRollout ?? 0) * 100).toFixed()}%`
                         }
                     />
