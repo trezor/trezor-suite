@@ -4,11 +4,13 @@ import { Text, Button, VStack, HStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { useTranslate, Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { QRCode } from './QRCode';
 
 type AddressQRCodeProps = {
     address: string;
+    network: NetworkSymbol;
 };
 
 const addressContainer = prepareNativeStyle(() => ({
@@ -16,7 +18,7 @@ const addressContainer = prepareNativeStyle(() => ({
     alignItems: 'center',
 }));
 
-export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
+export const AddressQRCode = ({ address, network }: AddressQRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
@@ -37,7 +39,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
 
     return (
         <VStack spacing="large">
-            <QRCode data={address} />
+            <QRCode data={address} network={network} />
             <Pressable onLongPress={handleCopyAddress} style={applyStyle(addressContainer)}>
                 <Text variant="titleSmall" textAlign="center">
                     {address}

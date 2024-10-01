@@ -68,7 +68,7 @@ export const ReceiveAddressCard = ({
             <Card {...cardAlertProps}>
                 <Box paddingVertical="small">
                     {isReceiveApproved ? (
-                        <AddressQRCode address={address} />
+                        <AddressQRCode address={address} network={networkSymbol} />
                     ) : (
                         <UnverifiedAddress
                             address={address}
