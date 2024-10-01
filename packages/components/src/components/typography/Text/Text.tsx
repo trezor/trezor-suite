@@ -1,20 +1,26 @@
 import styled from 'styled-components';
 import { CSSColor, Color, Colors } from '@trezor/theme';
 import { ReactNode } from 'react';
-import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
+import { TransientProps } from '../../../utils/transientProps';
 import {
     FrameProps,
     FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { TextPropsKeys, withTextProps, TextProps as TextPropsCommon } from '../utils';
+import {
+    TextPropsKeys,
+    withTextProps,
+    TextProps as TextPropsCommon,
+    pickAndPrepareTextProps,
+} from '../utils';
 import { uiVariants } from '../../../config/types';
 
 export const allowedTextTextProps = [
     'typographyStyle',
     'textWrap',
     'align',
+    'ellipsisLineCount',
 ] as const satisfies TextPropsKeys[];
 type AllowedTextTextProps = Pick<TextPropsCommon, (typeof allowedTextTextProps)[number]>;
 
@@ -79,14 +85,12 @@ export const Text = ({
     color,
     children,
     className,
-    typographyStyle,
-    textWrap,
-    align,
     as = 'span',
     'data-testid': dataTest,
     ...rest
 }: TextProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedTextFrameProps);
+    const textProps = pickAndPrepareTextProps(rest, allowedTextTextProps);
 
     return (
         <StyledText
@@ -94,7 +98,7 @@ export const Text = ({
             className={className}
             as={as}
             data-testid={dataTest}
-            {...makePropsTransient({ typographyStyle, textWrap, align })}
+            {...textProps}
             {...frameProps}
         >
             {children}

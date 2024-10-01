@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Color } from '@trezor/theme';
+import { Color, TypographyStyle } from '@trezor/theme';
 import {
     FrameProps,
     FramePropsKeys,
@@ -8,9 +8,19 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { makePropsTransient, TransientProps } from '../../../utils/transientProps';
-import { TextProps as TextPropsCommon, TextPropsKeys, withTextProps } from '../utils';
+import {
+    TextProps as TextPropsCommon,
+    TextPropsKeys,
+    withTextProps,
+    pickAndPrepareTextProps,
+} from '../utils';
 
-export const allowedHeadingTextProps: TextPropsKeys[] = ['typographyStyle', 'textWrap', 'align'];
+export const allowedHeadingTextProps: TextPropsKeys[] = [
+    'typographyStyle',
+    'textWrap',
+    'align',
+    'ellipsisLineCount',
+];
 type AllowedHeadingTextProps = Pick<TextPropsCommon, (typeof allowedHeadingTextProps)[number]>;
 
 export const allowedHeadingFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -37,110 +47,39 @@ type HProps = AllowedFrameProps &
         'data-testid'?: string;
     };
 
-export const H1 = ({
-    color,
-    align,
-    typographyStyle = 'titleLarge',
-    textWrap,
-    onClick,
-    'data-testid': dataTest,
-    children,
-    className,
-    ...rest
-}: HProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
+const createHeading =
+    (as: 'h1' | 'h2' | 'h3' | 'h4', defaultTypographyStyle: TypographyStyle) =>
+    ({
+        color,
+        typographyStyle = defaultTypographyStyle,
+        onClick,
+        'data-testid': dataTestId,
+        children,
+        className,
+        ...rest
+    }: HProps) => {
+        const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
+        const textProps = pickAndPrepareTextProps(
+            { ...rest, typographyStyle },
+            allowedHeadingTextProps,
+        );
 
-    return (
-        <Heading
-            as="h1"
-            onClick={onClick}
-            data-testid={dataTest}
-            className={className}
-            {...makePropsTransient({ color, align, typographyStyle, textWrap })}
-            {...frameProps}
-        >
-            {children}
-        </Heading>
-    );
-};
+        return (
+            <Heading
+                as={as}
+                onClick={onClick}
+                data-testid={dataTestId}
+                className={className}
+                {...makePropsTransient({ color })}
+                {...frameProps}
+                {...textProps}
+            >
+                {children}
+            </Heading>
+        );
+    };
 
-export const H2 = ({
-    color,
-    align,
-    typographyStyle = 'titleMedium',
-    textWrap,
-    onClick,
-    'data-testid': dataTest,
-    children,
-    className,
-    ...rest
-}: HProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
-
-    return (
-        <Heading
-            as="h2"
-            onClick={onClick}
-            data-testid={dataTest}
-            className={className}
-            {...makePropsTransient({ color, align, typographyStyle, textWrap })}
-            {...frameProps}
-        >
-            {children}
-        </Heading>
-    );
-};
-
-export const H3 = ({
-    color,
-    align,
-    typographyStyle = 'titleSmall',
-    textWrap,
-    onClick,
-    'data-testid': dataTest,
-    children,
-    className,
-    ...rest
-}: HProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
-
-    return (
-        <Heading
-            as="h3"
-            onClick={onClick}
-            data-testid={dataTest}
-            className={className}
-            {...makePropsTransient({ color, align, typographyStyle, textWrap })}
-            {...frameProps}
-        >
-            {children}
-        </Heading>
-    );
-};
-
-export const H4 = ({
-    color,
-    align,
-    typographyStyle = 'highlight',
-    textWrap,
-    onClick,
-    'data-testid': dataTest,
-    children,
-    className,
-    ...rest
-}: HProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedHeadingFrameProps);
-
-    return (
-        <Heading
-            as="h4"
-            onClick={onClick}
-            data-testid={dataTest}
-            className={className}
-            {...makePropsTransient({ color, align, typographyStyle, textWrap })}
-            {...frameProps}
-        >
-            {children}
-        </Heading>
-    );
-};
+export const H1 = createHeading('h1', 'titleLarge');
+export const H2 = createHeading('h2', 'titleMedium');
+export const H3 = createHeading('h3', 'titleSmall');
+export const H4 = createHeading('h4', 'highlight');

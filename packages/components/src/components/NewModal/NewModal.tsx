@@ -71,13 +71,6 @@ const HeadingContainer = styled.div`
     overflow: hidden;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Heading = styled(H3)`
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-`;
-
 const ScrollContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -170,7 +163,7 @@ const _NewModalBase = ({
                         )}
 
                         <HeadingContainer>
-                            {heading && <Heading>{heading}</Heading>}
+                            {heading && <H3 ellipsisLineCount={1}>{heading}</H3>}
                             {description && (
                                 <Text variant="tertiary" typographyStyle="hint">
                                     {description}
