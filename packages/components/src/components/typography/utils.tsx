@@ -11,6 +11,7 @@ export type TextProps = {
     typographyStyle?: TypographyStyle;
     textWrap?: TextWrap;
     align?: UIHorizontalAlignment;
+    ellipsisLineCount?: number;
 };
 
 export type TextPropsKeys = keyof TextProps;
@@ -25,7 +26,12 @@ export const pickAndPrepareTextProps = (
         allowedTextProps.reduce((acc, item) => ({ ...acc, [item]: props[item] }), {}),
     );
 
-export const withTextProps = ({ $textWrap, $typographyStyle, $align }: TransientTextProps) => {
+export const withTextProps = ({
+    $textWrap,
+    $typographyStyle,
+    $align,
+    $ellipsisLineCount = 0,
+}: TransientTextProps) => {
     return css`
         ${$textWrap &&
         css`
@@ -39,6 +45,19 @@ export const withTextProps = ({ $textWrap, $typographyStyle, $align }: Transient
         ${$align &&
         css`
             text-align: ${$align};
+        `}
+        ${$ellipsisLineCount > 0 &&
+        css`
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        `}
+        ${$ellipsisLineCount > 1 &&
+        css`
+            white-space: initial;
+            -webkit-line-clamp: ${$ellipsisLineCount};
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
         `}
     `;
 };
@@ -64,6 +83,13 @@ const getStorybookType = (key: TextPropsKeys) => {
                 options: [undefined, ...uiHorizontalAlignments],
                 control: {
                     type: 'select',
+                },
+            };
+        case 'ellipsisLineCount':
+            return {
+                control: {
+                    type: 'number',
+                    min: 0,
                 },
             };
         default:
@@ -94,6 +120,7 @@ export const getTextPropsStory = (allowedTextProps: Array<TextPropsKeys>) => {
             ...(allowedTextProps.includes('textWrap') ? { textWrap: undefined } : {}),
             ...(allowedTextProps.includes('typographyStyle') ? { typographyStyle: undefined } : {}),
             ...(allowedTextProps.includes('align') ? { align: undefined } : {}),
+            ...(allowedTextProps.includes('ellipsisLineCount') ? { hasEllipsis: undefined } : {}),
         },
         argTypes,
     };
