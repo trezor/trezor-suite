@@ -1,7 +1,9 @@
+import styled from 'styled-components';
+
+import { typography } from '@trezor/theme';
+
 import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { typography } from '@trezor/theme';
-import styled from 'styled-components';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 
 const Wrapper = styled.div`
@@ -28,3 +30,18 @@ export const BridgeInstall = () => {
         </Wrapper>
     );
 };
+
+export const BridgeStatus = () => (
+    <Wrapper>
+        <Translation
+            id="TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION"
+            values={{
+                a: chunks => (
+                    <TrezorLink variant="underline" href="http://127.0.0.1:21325/status/">
+                        {chunks}
+                    </TrezorLink>
+                ),
+            }}
+        />
+    </Wrapper>
+);
