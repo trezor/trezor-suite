@@ -8334,6 +8334,10 @@ export default defineMessages({
         id: 'TR_STEP',
         defaultMessage: 'Step {number}',
     },
+    TR_STEP_OF_TOTAL: {
+        id: 'TR_STEP_OF_TOTAL',
+        defaultMessage: 'Step {index} of {total}',
+    },
     TR_COINJOIN_STEP_1_TITLE: {
         id: 'TR_COINJOIN_STEP_1_TITLE',
         defaultMessage: 'Add bitcoin',
