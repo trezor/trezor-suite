@@ -142,7 +142,9 @@ export const updateFiatRatesThunk = createThunk(
             return rate;
         };
 
-        const rates = await Promise.allSettled(tickers.map(fetchRate));
+        const rates = await Promise.allSettled(
+            tickers.filter(({ symbol }) => !isTestnet(symbol)).map(fetchRate),
+        );
 
         return rates;
     },

@@ -18,6 +18,7 @@ import {
     getFiatRateKey,
     getFiatRateKeyFromTicker,
     isNftTokenTransfer,
+    isTestnet,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import {
@@ -137,6 +138,7 @@ export const selectTickersToBeUpdated = (
         const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
 
         return (
+            !isTestnet(ticker.symbol) &&
             selectShouldUpdateFiatRate(state, currentTimestamp, fiatRateKey, rateType) &&
             !selectIsTickerLoading(state, ticker, fiatCurrency, rateType)
         );
