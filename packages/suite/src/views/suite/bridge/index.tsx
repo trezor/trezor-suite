@@ -50,12 +50,9 @@ export const BridgeUnavailable = () => {
     // if bridge is running, user will never be directed to this page, but since this page is accessible directly over /bridge url
     // it makes sense to show some meaningful information here
     if (transport?.type) {
-        // not 100%, this is true only for latest suite-desktop release
-        const isBundled = transport?.bridge?.version?.[0] === 3;
-
         const description = isWebUsb(transport)
             ? `Using WebUSB. No action required.`
-            : `Trezor Bridge HTTP server is running. ${isBundled ? 'Bundled' : 'Standalone'} version: ${transport?.bridge?.version.join('.')} `;
+            : `Trezor Bridge HTTP server is running.  Version: ${transport?.version}`;
 
         return (
             <Modal
