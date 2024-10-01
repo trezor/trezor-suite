@@ -9,7 +9,6 @@ import {
     PinModal,
     PinInvalidModal,
     PassphraseModal,
-    PassphraseSourceModal,
     PassphraseOnDeviceModal,
     ConfirmActionModal,
     ConfirmFingerprintModal,
@@ -52,8 +51,6 @@ export const DeviceContextModal = ({
             return <WordAdvancedModal count={6} renderer={renderer} />;
         case 'WordRequestType_Matrix9':
             return <WordAdvancedModal count={9} renderer={renderer} />;
-        case 'ButtonRequest_PassphraseType':
-            return <PassphraseSourceModal device={device} />;
         // T2T1 firmware
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
