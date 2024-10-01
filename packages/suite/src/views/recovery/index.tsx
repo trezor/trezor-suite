@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { getCheckBackupUrl, isDeviceAcquired } from '@suite-common/suite-utils';
-import { Button, H2, Paragraph, Image } from '@trezor/components';
+import { H2, H3, Paragraph, Image, NewModal, Card, List } from '@trezor/components';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
 import { SelectWordCount, SelectRecoveryType } from 'src/components/recovery';
-import { Loading, Translation, CheckItem, Modal } from 'src/components/suite';
+import { Loading, Translation, CheckItem } from 'src/components/suite';
 import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import {
     checkSeed,
@@ -19,56 +19,8 @@ import {
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 import type { WordCount } from 'src/types/recovery';
-import { InstructionStep } from 'src/components/suite/InstructionStep';
 import messages from 'src/support/messages';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-
-const StyledModal = styled(Modal)`
-    min-height: 450px;
-
-    ${Modal.Content} {
-        justify-content: center;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    width: 224px;
-`;
-
-const StepsContainer = styled.div`
-    margin: 40px 0;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledP = styled(Paragraph)`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    margin-bottom: 24px;
-    align-self: center;
-`;
-
-const LeftAlignedP = styled(StyledP)`
-    text-align: left;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StatusImage = styled(Image)`
-    padding-bottom: 24px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StatusTitle = styled(H2)`
-    margin: 0 0 12px;
-`;
-
-const VerticalCenter = styled.div`
-    margin-top: auto;
-    margin-bottom: auto;
-`;
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const recovery = useSelector(state => state.recovery);
@@ -102,117 +54,101 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                   'finished',
               ]
             : ['initial', 'in-progress', 'finished'];
+    const hasFinished = recovery.status === 'finished';
+    const hasError = recovery.error !== undefined;
 
     if (!isDeviceAcquired(device) || !deviceModelInternal) {
         return (
-            <Modal
+            <NewModal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
-                isCancelable
                 onCancel={onCancel}
                 data-testid="@recovery/no-device"
+                size="tiny"
             >
-                <StyledImage image="CONNECT_DEVICE" width="360" />
-            </Modal>
+                <Image image="CONNECT_DEVICE" />
+            </NewModal>
         );
     }
-
-    const actionButtons = (
-        <>
-            {recovery.status === 'initial' ? (
-                <StyledButton
-                    onClick={() =>
-                        deviceModelInternal === DeviceModelInternal.T1B1
-                            ? dispatch(setStatus('select-word-count'))
-                            : dispatch(checkSeed())
-                    }
-                    isDisabled={!understood || isLocked()}
-                    data-testid="@recovery/start-button"
-                >
-                    <Translation id="TR_START" />
-                </StyledButton>
-            ) : (
-                <StyledButton onClick={() => onCancel()}>
-                    <Translation id="TR_CLOSE" />
-                </StyledButton>
-            )}
-        </>
-    );
 
     const getStep = () => {
         const isShamirBackupAvailable =
             device?.features?.capabilities?.includes('Capability_Shamir');
 
-        // Shamir backup uses 20 and 33 word shares
-        const seedBackupLengthMessage = isShamirBackupAvailable
-            ? 'TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR'
-            : 'TR_SEED_BACKUP_LENGTH';
-
         switch (recovery.status) {
             case 'initial':
                 return (
                     <>
-                        <LeftAlignedP typographyStyle="hint">
-                            <Translation id={seedBackupLengthMessage} />
-                        </LeftAlignedP>
-
-                        <StepsContainer>
-                            <InstructionStep
-                                number="1"
-                                title={
+                        <List isOrdered gap={spacings.xxl}>
+                            <List.Item>
+                                <Paragraph typographyStyle="hint">
                                     <Translation
                                         id={`TR_CHECK_RECOVERY_SEED_DESC_${deviceModelInternal === DeviceModelInternal.T3B1 ? 'T2B1' : deviceModelInternal}`}
                                     />
-                                }
-                            >
-                                <Translation
-                                    id={
-                                        isShamirBackupAvailable
-                                            ? 'TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR'
-                                            : 'TR_SEED_BACKUP_LENGTH'
-                                    }
-                                />
-                            </InstructionStep>
-
-                            <InstructionStep
-                                number="2"
-                                title={<Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />}
-                            >
-                                <Translation
-                                    id={pickByDeviceModel(deviceModelInternal, {
-                                        default: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
-                                        [DeviceModelInternal.T1B1]: 'TR_SEED_WORDS_ENTER_COMPUTER',
-                                        [DeviceModelInternal.T2B1]: 'TR_SEED_WORDS_ENTER_BUTTONS',
-                                        [DeviceModelInternal.T3B1]: 'TR_SEED_WORDS_ENTER_BUTTONS',
-                                    })}
-                                />
-                            </InstructionStep>
-                        </StepsContainer>
-
-                        <CheckItem
-                            data-testid="@recovery/user-understands-checkbox"
-                            title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}
-                            description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
-                            isChecked={understood}
-                            link={learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
-                            onClick={() => setUnderstood(!understood)}
-                        />
+                                </Paragraph>
+                                <Paragraph
+                                    typographyStyle="label"
+                                    variant="tertiary"
+                                    margin={{ top: spacings.xxs }}
+                                >
+                                    <Translation
+                                        id={
+                                            isShamirBackupAvailable
+                                                ? 'TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR'
+                                                : 'TR_SEED_BACKUP_LENGTH'
+                                        }
+                                    />
+                                </Paragraph>
+                            </List.Item>
+                            <List.Item>
+                                <Paragraph typographyStyle="hint">
+                                    <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
+                                </Paragraph>
+                                <Paragraph
+                                    typographyStyle="label"
+                                    variant="tertiary"
+                                    margin={{ top: spacings.xxs }}
+                                >
+                                    <Translation
+                                        id={pickByDeviceModel(deviceModelInternal, {
+                                            default: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
+                                            [DeviceModelInternal.T1B1]:
+                                                'TR_SEED_WORDS_ENTER_COMPUTER',
+                                            [DeviceModelInternal.T2B1]:
+                                                'TR_SEED_WORDS_ENTER_BUTTONS',
+                                            [DeviceModelInternal.T3B1]:
+                                                'TR_SEED_WORDS_ENTER_BUTTONS',
+                                        })}
+                                    />
+                                </Paragraph>
+                            </List.Item>
+                        </List>
+                        <Card margin={{ top: spacings.xxl }}>
+                            <CheckItem
+                                data-testid="@recovery/user-understands-checkbox"
+                                title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}
+                                description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
+                                isChecked={understood}
+                                link={learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
+                                onClick={() => setUnderstood(!understood)}
+                            />
+                        </Card>
                     </>
                 );
             case 'select-word-count':
                 return (
                     <>
-                        <StatusTitle>
+                        <H3 margin={{ bottom: spacings.md }}>
                             <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
-                        </StatusTitle>
+                        </H3>
                         <SelectWordCount onSelect={onSetWordsCount} />
                     </>
                 );
             case 'select-recovery-type':
                 return (
                     <>
-                        <StatusTitle>
+                        <H3 margin={{ bottom: spacings.md }}>
                             <Translation id="TR_CHOOSE_RECOVERY_TYPE" />
-                        </StatusTitle>
+                        </H3>
                         <SelectRecoveryType onSelect={onSetRecoveryType} />
                     </>
                 );
@@ -221,9 +157,9 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 return modal.context !== '@modal/context-none' ? (
                     <>
                         {device.features.capabilities.includes('Capability_PassphraseEntry') && (
-                            <LeftAlignedP typographyStyle="hint">
+                            <Paragraph>
                                 <Translation id="TR_ENTER_SEED_WORDS_ON_DEVICE" />
-                            </LeftAlignedP>
+                            </Paragraph>
                         )}
                         <ReduxModal {...modal} />
                     </>
@@ -231,41 +167,74 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     <Loading />
                 );
             case 'finished':
-                return !recovery.error ? (
-                    <VerticalCenter>
-                        <StatusImage image="UNI_SUCCESS" />
+                return !hasError ? (
+                    <>
                         <H2 data-testid="@recovery/success-title">
                             <Translation id="TR_SEED_CHECK_SUCCESS_TITLE" />
                         </H2>
-                        <StyledP typographyStyle="hint">
+                        <Paragraph
+                            typographyStyle="hint"
+                            variant="tertiary"
+                            margin={{ top: spacings.xs }}
+                        >
                             <Translation id="TR_SEED_CHECK_SUCCESS_DESC" />
-                        </StyledP>
-                    </VerticalCenter>
+                        </Paragraph>
+                    </>
                 ) : (
-                    <VerticalCenter>
-                        <StatusImage image="UNI_ERROR" />
+                    <>
                         <H2>
                             <Translation id="TR_SEED_CHECK_FAIL_TITLE" />
                         </H2>
-                        <StyledP typographyStyle="hint">
+                        <Paragraph
+                            typographyStyle="hint"
+                            variant="tertiary"
+                            margin={{ top: spacings.xs }}
+                        >
                             <Translation
                                 id="TR_RECOVERY_ERROR"
                                 values={{ error: recovery.error }}
                             />
-                        </StyledP>
-                    </VerticalCenter>
+                        </Paragraph>
+                    </>
                 );
-            // no default
         }
     };
 
     return (
-        <StyledModal
+        <NewModal
             heading={<Translation id="TR_CHECK_RECOVERY_SEED" />}
-            totalProgressBarSteps={statesInProgressBar.length}
-            currentProgressBarStep={statesInProgressBar.findIndex(s => s === recovery.status) + 1}
-            bottomBarComponents={actionButtons}
-            isCancelable
+            description={
+                <Translation
+                    id="TR_STEP_OF_TOTAL"
+                    values={{
+                        index: statesInProgressBar.indexOf(recovery.status) + 1,
+                        total: statesInProgressBar.length,
+                    }}
+                />
+            }
+            bottomContent={
+                <>
+                    {recovery.status === 'initial' && (
+                        <NewModal.Button
+                            onClick={() =>
+                                deviceModelInternal === DeviceModelInternal.T1B1
+                                    ? dispatch(setStatus('select-word-count'))
+                                    : dispatch(checkSeed())
+                            }
+                            isDisabled={!understood || isLocked()}
+                            data-testid="@recovery/start-button"
+                        >
+                            <Translation id="TR_START" />
+                        </NewModal.Button>
+                    )}
+                    <NewModal.Button
+                        variant={hasFinished ? undefined : 'tertiary'}
+                        onClick={() => onCancel()}
+                    >
+                        <Translation id="TR_CLOSE" />
+                    </NewModal.Button>
+                </>
+            }
             onCancel={() => {
                 if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
                     TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
@@ -273,8 +242,11 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                     onCancel();
                 }
             }}
+            variant={hasFinished && hasError ? 'warning' : 'primary'}
+            // eslint-disable-next-line no-nested-ternary
+            iconName={hasFinished ? (hasError ? 'warning' : 'check') : undefined}
         >
             {getStep()}
-        </StyledModal>
+        </NewModal>
     );
 };
