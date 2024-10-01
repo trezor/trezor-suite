@@ -56,6 +56,11 @@ jobs:
           command: eas build --profile preview --platform all --non-interactive --no-wait
           working-directory: suite-native/app
 
+      - name: Install deps and build libs
+        run: |
+          yarn install --immutable
+          yarn message-system-sign-config
+
       - name: Create preview update
         uses: expo/expo-github-action/preview@v8
         with:
