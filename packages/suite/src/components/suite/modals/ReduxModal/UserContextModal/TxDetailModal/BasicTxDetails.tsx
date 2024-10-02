@@ -26,7 +26,7 @@ const Wrapper = styled.div<{ $elevation: Elevation }>`
 
 const Confirmations = styled.div`
     display: flex;
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.textDefault};
     ${typography.hint}
 `;
 
@@ -82,12 +82,6 @@ const Value = styled.div`
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums;
 `;
-
-const TxidValue = styled.div`
-    color: ${({ theme }) => theme.textDefault};
-    ${typography.label}
-`;
-
 const IconWrapper = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBorder};
     border-radius: ${borders.radii.full};
@@ -145,16 +139,11 @@ const ConfirmationStatus = styled.div<{ $confirmed: boolean; $tiny?: boolean }>`
 const Circle = styled.div`
     margin-left: ${spacingsPx.xxs};
     margin-right: ${spacingsPx.xxs};
-    color: ${({ theme }) => theme.textSubdued};
+    color: ${({ theme }) => theme.textDefault};
 `;
 
 const Timestamp = styled.span`
     white-space: nowrap;
-`;
-
-const IconPlaceholder = styled.span`
-    min-width: 10px;
-    margin-right: ${spacingsPx.xs};
 `;
 
 interface BasicTxDetailsProps {
@@ -229,7 +218,12 @@ export const BasicTxDetails = ({
             <Grid>
                 {/* MINED TIME */}
                 <Title>
-                    <Icon name="calendar" size={10} margin={{ right: spacings.xs }} />
+                    <Icon
+                        name="calendar"
+                        size={15}
+                        margin={{ right: spacings.xs }}
+                        variant="tertiary"
+                    />
                     {isConfirmed ? (
                         <Translation id="TR_MINED_TIME" />
                     ) : (
@@ -252,23 +246,31 @@ export const BasicTxDetails = ({
 
                 {/* TX ID */}
                 <Title>
-                    <Icon name="biometric" size={10} margin={{ right: spacings.xs }} />
+                    <Icon
+                        name="biometric"
+                        size={15}
+                        margin={{ right: spacings.xs }}
+                        variant="tertiary"
+                    />
                     <Translation id="TR_TXID" />
                 </Title>
 
-                <TxidValue>
-                    <IOAddress
-                        txAddress={tx.txid}
-                        explorerUrl={explorerUrl}
-                        explorerUrlQueryString={explorerUrlQueryString}
-                    />
-                </TxidValue>
+                <IOAddress
+                    txAddress={tx.txid}
+                    explorerUrl={explorerUrl}
+                    explorerUrlQueryString={explorerUrlQueryString}
+                />
 
                 {network.networkType === 'bitcoin' && (
                     <>
                         {/* Fee level */}
                         <Title>
-                            <Icon margin={{ right: spacings.xs }} name="gas" size={10} />
+                            <Icon
+                                margin={{ right: spacings.xs }}
+                                name="gas"
+                                size={15}
+                                variant="tertiary"
+                            />
                             <Translation id="TR_FEE_RATE" />
                         </Title>
 
@@ -287,13 +289,23 @@ export const BasicTxDetails = ({
                 {tx.ethereumSpecific && (
                     <>
                         <Title>
-                            <Icon name="gas" size={10} margin={{ right: spacings.xs }} />
+                            <Icon
+                                name="gasPump"
+                                size={15}
+                                margin={{ right: spacings.xs }}
+                                variant="tertiary"
+                            />
                             <Translation id="TR_GAS_LIMIT" />
                         </Title>
                         <Value>{tx.ethereumSpecific.gasLimit}</Value>
 
                         <Title>
-                            <Icon name="gas" size={10} margin={{ right: spacings.xs }} />
+                            <Icon
+                                name="gasPump"
+                                size={15}
+                                margin={{ right: spacings.xs }}
+                                variant="tertiary"
+                            />
                             <Translation id="TR_GAS_USED" />
                         </Title>
                         <Value>
@@ -305,7 +317,12 @@ export const BasicTxDetails = ({
                         </Value>
 
                         <Title>
-                            <Icon name="gas" size={10} margin={{ right: spacings.xs }} />
+                            <Icon
+                                name="gasPump"
+                                size={15}
+                                margin={{ right: spacings.xs }}
+                                variant="tertiary"
+                            />
                             <Translation id="TR_GAS_PRICE" />
                         </Title>
                         <Value>{`${fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei')} ${getFeeUnits(
@@ -313,7 +330,12 @@ export const BasicTxDetails = ({
                         )}`}</Value>
 
                         <Title>
-                            <IconPlaceholder>#</IconPlaceholder>
+                            <Icon
+                                name="hash"
+                                size={15}
+                                margin={{ right: spacings.xs }}
+                                variant="tertiary"
+                            />
                             <Translation id="TR_NONCE" />
                         </Title>
                         <Value>{tx.ethereumSpecific?.nonce}</Value>
