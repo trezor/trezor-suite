@@ -53,6 +53,37 @@ const createAuthPenaltyManager = (priority: number) => {
     return { get, add, remove, clear };
 };
 
+const createQueue = <T>() => {
+    const queue: Deferred<void, T>[] = [];
+
+    const wait = async (id: T) => {
+        const dfd = createDeferred(id);
+        const prevQueue = queue.slice();
+        queue.push(dfd);
+
+        await promiseAllSequence(prevQueue.map(pr => () => pr.promise));
+
+        // Return whether current pending action still in queue or it was
+        // removed by disconnected/acquiredElsewhere events or dispose
+        return queue.includes(dfd);
+    };
+
+    const remove = (id: T) => {
+        const index = queue.findIndex(dfd => dfd.id === id);
+        if (index >= 0) {
+            const [dfd] = queue.splice(index, 1);
+            dfd.resolve();
+        }
+    };
+
+    const dispose = () => {
+        queue.forEach(dfd => dfd.resolve());
+        queue.splice(0, queue.length);
+    };
+
+    return { wait, remove, dispose };
+};
+
 interface DeviceListEvents {
     [TRANSPORT.START]: TransportInfo;
     [TRANSPORT.ERROR]: string;
@@ -97,7 +128,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private devices: { [path: string]: Device } = {};
 
     private creatingDevicesDescriptors: { [k: string]: Descriptor } = {};
-    private createDevicesQueue: Deferred[] = [];
+    private readonly createDevicesQueue;
 
     private readonly authPenaltyManager;
 
@@ -120,6 +151,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const transportLogger = initLog('@trezor/transport', debug);
 
+        this.createDevicesQueue = createQueue<Descriptor['path']>();
         this.authPenaltyManager = createAuthPenaltyManager(priority);
         this.transportCommonArgs = {
             messages,
@@ -187,7 +219,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         // whenever descriptors change we need to update them so that we can use them
         // in subsequent transport.acquire calls
-        const path = descriptor.path.toString();
+        const { path } = descriptor;
         const device = this.devices[path] as Device | undefined;
 
         // creatingDevicesDescriptors is needed, so that if *during* creating of Device,
@@ -197,7 +229,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         switch (category.type) {
             case 'disconnected':
-                this.removeFromCreateDevicesQueue(path);
+                this.createDevicesQueue.remove(path);
 
                 if (!device) break;
 
@@ -207,7 +239,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                 break;
 
             case 'connected':
-                if (!(await this.waitForCreateDevicesQueue(path))) {
+                if (!(await this.createDevicesQueue.wait(path))) {
                     break;
                 }
 
@@ -224,12 +256,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                     this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
                 }
 
-                this.removeFromCreateDevicesQueue(path);
+                this.createDevicesQueue.remove(path);
                 break;
 
             case 'acquired':
                 if (category.subtype === 'elsewhere') {
-                    this.removeFromCreateDevicesQueue(path);
+                    this.createDevicesQueue.remove(path);
                     if (device) {
                         device.featuresNeedsReload = true;
                         device.interruptionFromOutside();
@@ -274,26 +306,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         }
 
         device?.updateDescriptor(descriptor);
-    }
-
-    private async waitForCreateDevicesQueue(path: string) {
-        const dfd = createDeferred(path);
-        const prevQueue = this.createDevicesQueue.slice();
-        this.createDevicesQueue.push(dfd);
-
-        await promiseAllSequence(prevQueue.map(pr => () => pr.promise));
-
-        // Return whether current pending action still in queue or it was
-        // removed by disconnected/acquiredElsewhere events or dispose
-        return this.createDevicesQueue.includes(dfd);
-    }
-
-    private removeFromCreateDevicesQueue(path: string) {
-        const index = this.createDevicesQueue.findIndex(dfd => dfd.id === path);
-        if (index >= 0) {
-            const [dfd] = this.createDevicesQueue.splice(index, 1);
-            dfd.resolve();
-        }
     }
 
     /**
@@ -498,8 +510,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             this.emit(DEVICE.DISCONNECT, device.toMessageObject());
         });
 
-        this.createDevicesQueue.forEach(dfd => dfd.resolve());
-        this.createDevicesQueue = [];
+        this.createDevicesQueue.dispose();
 
         // release all devices
         await Promise.all(devices.map(device => device.dispose()));
