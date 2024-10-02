@@ -22,11 +22,11 @@ export class WebUsbTransport extends AbstractApiTransport {
 
     private readonly sessionsBackgroundUrl;
 
-    constructor({ messages, logger, sessionsBackgroundUrl }: WebUsbTransportParams) {
+    constructor({ logger, sessionsBackgroundUrl, ...rest }: WebUsbTransportParams) {
         super({
-            messages,
             api: new UsbApi({ usbInterface: navigator.usb, logger }),
             logger,
+            ...rest,
         });
         this.sessionsBackgroundUrl = sessionsBackgroundUrl ?? defaultSessionsBackgroundUrl;
     }

@@ -6,14 +6,14 @@ export class NativeUsbTransport extends AbstractApiTransport {
     public name = 'NativeUsbTransport' as any;
 
     constructor(params: ConstructorParameters<typeof AbstractTransport>[0]) {
-        const { messages, logger } = params;
+        const { logger, ...rest } = params;
 
         super({
-            messages,
             api: new UsbApi({
                 usbInterface: new WebUSB(),
                 logger,
             }),
+            ...rest,
         });
     }
 
