@@ -6,7 +6,7 @@ import { ResultRow, parseTextToPagesAndLines } from './parseTextToPagesAndLines'
 import { DeviceDisplayText } from './DeviceDisplayText';
 import { DisplayPageSeparator } from './DisplayPageSeparator';
 import { handleOnCopy } from 'src/utils/suite/deviceDisplay';
-import { Icon, IconName } from '@trezor/components';
+import { Icon, IconName, IconProps } from '@trezor/components';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledNextIcon = styled(Icon)<{ $isPixelType: boolean }>`
@@ -55,7 +55,7 @@ const Row = ({
     const iconNextName: IconName = isPixelType ? 'addressPixelNext' : 'addressNext';
     const iconContinuesName: IconName = isPixelType ? 'addressPixelContinues' : 'addressContinues';
 
-    const iconConfig = {
+    const iconConfig: Pick<IconProps, 'color' | 'size'> = {
         size: isPixelType ? 10 : 20,
         color: isPixelType ? '#ffffff' : '#959596',
     };

@@ -35,7 +35,7 @@ export const Divider: StoryObj = {
             type: 'number',
         },
         color: {
-            type: 'string',
+            control: 'color',
         },
         ...getFramePropsStory(allowedDividerFrameProps).argTypes,
     },

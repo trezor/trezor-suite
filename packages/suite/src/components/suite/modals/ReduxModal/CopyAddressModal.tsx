@@ -46,7 +46,7 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
     return (
         <NewModal
             onCancel={onCancel}
-            icon="warning"
+            iconName="warning"
             variant="warning"
             bottomContent={
                 <>

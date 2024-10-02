@@ -306,7 +306,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const getBottomTextIconComponent = () => {
         if (hasAddressChecksummed) {
-            return <Icon name="check" size="medium" color="iconDisabled" />;
+            return <Icon name="check" size="medium" color={theme.iconDisabled} />;
         }
 
         if (isAddressWithLabel) {

@@ -43,7 +43,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
     return (
         <NewModal
             onCancel={onCancel}
-            icon="warning"
+            iconName="warning"
             variant="warning"
             bottomContent={
                 <>

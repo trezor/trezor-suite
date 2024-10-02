@@ -12,6 +12,7 @@ import {
     IconName as IconNameDeprecated,
 } from '@suite-common/icons-deprecated/src/webComponents';
 import { getFramePropsStory } from '../../utils/frameProps';
+
 const meta: Meta = {
     title: 'Icons',
     component: IconComponent,
@@ -54,6 +55,9 @@ export const Icon: StoryObj<IconProps> = {
             control: {
                 type: 'select',
             },
+        },
+        color: {
+            control: 'color',
         },
         size: {
             options: iconSizes,
