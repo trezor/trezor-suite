@@ -29,7 +29,7 @@ export const FeeOptionsList = ({ feeLevels, networkSymbol, accountKey }: FeeOpti
     const transactionBytes = normalLevel.bytes;
 
     return (
-        <VStack spacing={12}>
+        <VStack spacing="sp12">
             {Object.entries(predefinedFeeLevels).map(([feeKey, feeLevel]) => (
                 <FeeOption
                     key={feeKey}

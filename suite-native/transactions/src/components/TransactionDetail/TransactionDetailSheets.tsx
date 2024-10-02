@@ -28,7 +28,10 @@ const sheetToAnalyticsEventMap: Record<SheetType, TransactionSheetAnalyticsEvent
     inputs: EventType.TransactionDetailInputOutput,
 };
 
-const cardStyle = prepareNativeStyle(() => ({ paddingVertical: 12, paddingRight: 12 }));
+const cardStyle = prepareNativeStyle(utils => ({
+    paddingVertical: utils.spacings.sp12,
+    paddingRight: utils.spacings.sp12,
+}));
 
 export const TransactionDetailSheets = ({
     transaction,

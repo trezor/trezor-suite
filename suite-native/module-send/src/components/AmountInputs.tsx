@@ -100,7 +100,7 @@ export const AmountInputs = ({ index, accountKey }: AmountInputProps) => {
     if (!networkSymbol) return null;
 
     return (
-        <VStack spacing={12}>
+        <VStack spacing="sp12">
             <HStack flex={1} justifyContent="space-between" alignItems="center">
                 <Text variant="hint">
                     <Translation id="moduleSend.outputs.recipients.amountLabel" />

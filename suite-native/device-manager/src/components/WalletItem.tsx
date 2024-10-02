@@ -92,7 +92,7 @@ export const WalletItem = ({ deviceState, onPress, isSelectable = true }: Wallet
                         {walletNameLabel}
                     </Text>
                 </HStack>
-                <HStack alignItems="center" spacing={12}>
+                <HStack alignItems="center" spacing="sp12">
                     <FiatAmountFormatter
                         value={String(fiatBalance)}
                         variant="hint"

@@ -12,7 +12,7 @@ type FeeOptionErrorMessageProps = {
 const ERROR_HEIGHT = 40;
 
 const errorStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: 12,
+    paddingHorizontal: utils.spacings.sp12,
     justifyContent: 'center',
     backgroundColor: utils.colors.backgroundAlertRedSubtleOnElevation1,
     overflow: 'hidden',

@@ -15,9 +15,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
 
-const titleStyle = prepareNativeStyle(_ => ({
+const titleStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: utils.spacings.sp12,
     alignItems: 'center',
 }));
 

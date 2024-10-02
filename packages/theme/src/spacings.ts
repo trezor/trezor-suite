@@ -27,7 +27,7 @@ export type Spacings = typeof spacings;
 export type Spacing = keyof typeof spacings;
 export type SpacingValues = Spacings[Spacing];
 
-type NativeSpacingValue = 2 | 4 | 8 | 12 | 16 | 24 | 32 | 40 | 52 | 64;
+type NativeSpacingValue = 2 | 4 | 8 | 12 | 16 | 20 | 24 | 32 | 40 | 52 | 64;
 
 export const nativeSpacings = {
     sp2: 2,
@@ -35,6 +35,7 @@ export const nativeSpacings = {
     sp8: 8,
     sp12: 12,
     sp16: 16,
+    sp20: 20,
     sp24: 24,
     sp32: 32,
     sp40: 40,

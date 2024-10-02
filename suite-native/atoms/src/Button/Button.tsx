@@ -181,7 +181,7 @@ const sizeToDimensionsMap = {
     extraSmall: {
         minHeight: 36,
         paddingVertical: nativeSpacings.sp8,
-        paddingHorizontal: 12,
+        paddingHorizontal: nativeSpacings.sp12,
     },
     small: {
         minHeight: 40,
@@ -190,8 +190,8 @@ const sizeToDimensionsMap = {
     },
     medium: {
         minHeight: 48,
-        paddingVertical: 12,
-        paddingHorizontal: 20,
+        paddingVertical: nativeSpacings.sp12,
+        paddingHorizontal: nativeSpacings.sp20,
     },
     large: {
         minHeight: 56,

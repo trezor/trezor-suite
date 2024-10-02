@@ -14,7 +14,7 @@ type DeviceActionProps = {
 
 const contentStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
-    paddingVertical: 12,
+    paddingVertical: utils.spacings.sp12,
     alignItems: 'center',
     height: 44 * ACCESSIBILITY_FONTSIZE_MULTIPLIER,
     gap: utils.spacings.sp8,

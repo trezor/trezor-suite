@@ -61,7 +61,7 @@ export const AddressReviewStep = ({
     return (
         <View onLayout={onLayout}>
             <Card style={applyStyle(cardStyle, { isFinalStep: !stepNumber })}>
-                <HStack spacing={12} flexDirection="row" alignItems="center">
+                <HStack spacing="sp12" flexDirection="row" alignItems="center">
                     <OrderedListIcon {...getIconProps(stepNumber)} />
                     <Box flexShrink={1}>
                         <Text variant="callout">

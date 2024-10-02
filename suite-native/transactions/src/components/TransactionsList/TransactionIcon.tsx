@@ -32,9 +32,9 @@ const transactionIconMap: Record<TransactionType, IconName> = {
 
 const cryptoIconStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
-    right: -2,
-    bottom: -2,
-    padding: 2,
+    right: -utils.spacings.sp2,
+    bottom: -utils.spacings.sp2,
+    padding: utils.spacings.sp2,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.round,
 }));

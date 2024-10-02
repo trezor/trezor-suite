@@ -16,7 +16,7 @@ type TransactionDetailSummaryProps = {
 };
 
 export const cardStyle = prepareNativeStyle(utils => ({
-    paddingBottom: 12,
+    paddingBottom: utils.spacings.sp12,
     ...utils.boxShadows.none,
 }));
 

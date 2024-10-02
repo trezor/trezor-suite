@@ -36,7 +36,7 @@ const indicatorContainer = prepareNativeStyle(utils => ({
     maxWidth: '40%',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: utils.spacings.sp8 / 4,
+    marginTop: utils.spacings.sp2,
 }));
 
 const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorProps) => {

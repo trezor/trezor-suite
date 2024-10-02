@@ -17,7 +17,7 @@ const screenHeaderWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
         paddingLeft: Math.max(insets.left, utils.spacings.sp16),
         paddingRight: Math.max(insets.right, utils.spacings.sp16),
         paddingVertical: utils.spacings.sp16,
-        paddingBottom: utils.spacings.sp4 * 3,
+        paddingBottom: utils.spacings.sp12,
     }),
 );
 

@@ -93,7 +93,7 @@ export const PassphraseEmptyWalletScreen = () => {
                 lineColor="borderElevation0"
                 textColor="textSubdued"
             />
-            <VStack spacing={20}>
+            <VStack spacing="sp20">
                 <VStack alignItems="center" spacing="sp4">
                     <Text
                         textAlign="center"

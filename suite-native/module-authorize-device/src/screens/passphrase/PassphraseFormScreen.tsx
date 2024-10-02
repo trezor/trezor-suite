@@ -27,8 +27,8 @@ const cardTextStyle = prepareNativeStyle(_ => ({
     width: '90%',
 }));
 
-const warningIconWrapperStyle = prepareNativeStyle(_ => ({
-    paddingTop: 2,
+const warningIconWrapperStyle = prepareNativeStyle(utils => ({
+    paddingTop: utils.spacings.sp2,
 }));
 
 const animationWrapperStyle = prepareNativeStyle(() => ({
@@ -91,7 +91,7 @@ export const PassphraseFormScreen = () => {
                     <Animated.View style={animationStyle}>
                         <Box style={applyStyle(cardStyle)}>
                             <VStack spacing="sp16">
-                                <VStack spacing={12}>
+                                <VStack spacing="sp12">
                                     <HStack>
                                         <View style={applyStyle(warningIconWrapperStyle)}>
                                             <Icon

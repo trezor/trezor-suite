@@ -132,7 +132,7 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
             style={applyStyle(messageContainerStyle, { backgroundColor })}
         >
             <HStack
-                spacing={12}
+                spacing="sp12"
                 alignItems="center"
                 justifyContent="space-between"
                 style={{ maxWidth: '100%' }}
@@ -140,7 +140,7 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
                 <Box style={applyStyle(IconContainerStyle)}>
                     <Icon name={icon} color={iconColor} size="mediumLarge" />
                 </Box>
-                <VStack spacing={4} style={applyStyle(messageTextContainerStyle)}>
+                <VStack spacing="sp4" style={applyStyle(messageTextContainerStyle)}>
                     <Text color="textSubdued" variant="hint">
                         {messageContent}
                     </Text>

@@ -46,7 +46,7 @@ const IconContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
     isDefaultVariant: boolean;
 }>((utils, { backgroundColor, isDefaultVariant }) => ({
-    padding: 12,
+    padding: utils.spacings.sp12,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.transparentize(
         isDefaultVariant ? 0.75 : 0,
@@ -106,7 +106,7 @@ export const Toast = ({ toast }: ToastProps) => {
             exiting={FadeOut.duration(TOAST_ANIMATION_DURATION)}
             style={applyStyle(ToastContainerStyle, { backgroundColor, hasIcon: !!icon })}
         >
-            <HStack spacing={12} alignItems="center">
+            <HStack spacing="sp12" alignItems="center">
                 {icon && (
                     <Box
                         style={applyStyle(IconContainerStyle, {

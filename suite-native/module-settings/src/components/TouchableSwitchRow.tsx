@@ -13,8 +13,8 @@ type TouchableSwitchRowProps = {
     iconName: IconName;
 };
 
-const textStyle = prepareNativeStyle(_ => ({
-    marginLeft: 12,
+const textStyle = prepareNativeStyle(utils => ({
+    marginLeft: utils.spacings.sp12,
     flex: 1,
 }));
 

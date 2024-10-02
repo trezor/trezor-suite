@@ -51,7 +51,7 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
 
     return (
         <Box flex={1}>
-            <VStack spacing={12}>
+            <VStack spacing="sp12">
                 {isAccountDetailVisible && (
                     <ReceiveAccountDetailsCard
                         accountKey={accountKey}

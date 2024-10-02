@@ -21,7 +21,7 @@ const cardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderElevation0,
     backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
     borderWidth: utils.borders.widths.small,
-    paddingVertical: 12,
+    paddingVertical: utils.spacings.sp12,
     ...utils.boxShadows.none,
 }));
 

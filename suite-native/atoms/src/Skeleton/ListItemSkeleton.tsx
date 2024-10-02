@@ -10,7 +10,7 @@ import { VStack } from '../Stack';
 const skeletonContainer = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: utils.spacings.sp12,
     paddingHorizontal: utils.spacings.sp16,
 }));
 

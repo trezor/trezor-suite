@@ -33,10 +33,10 @@ const titleWrapperStyle = prepareNativeStyle(_ => ({
     justifyContent: 'space-between',
 }));
 
-const radioWrapperStyle = prepareNativeStyle(_ => ({
+const radioWrapperStyle = prepareNativeStyle(utils => ({
     width: '100%',
     alignItems: 'flex-end',
-    paddingTop: 12,
+    paddingTop: utils.spacings.sp12,
 }));
 
 const subtitleWrapperStyle = prepareNativeStyle(utils => ({

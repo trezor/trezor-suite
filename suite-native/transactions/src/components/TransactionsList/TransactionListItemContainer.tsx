@@ -66,8 +66,8 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
         backgroundColor: utils.colors.backgroundSurfaceElevation1,
         marginHorizontal: utils.spacings.sp8,
         paddingHorizontal: utils.spacings.sp16,
-        paddingTop: 12,
-        paddingBottom: 12,
+        paddingTop: utils.spacings.sp12,
+        paddingBottom: utils.spacings.sp12,
         extend: [
             {
                 condition: isFirst,
