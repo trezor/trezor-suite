@@ -1,9 +1,10 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
-    height: 100%;
-    padding: 15px 21px 0;
+    padding: ${spacingsPx.md} ${spacingsPx.lg} 0;
+    flex: 1;
 `;
 
 type GuideContentProps = {
