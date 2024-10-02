@@ -24,6 +24,7 @@ export const UI_REQUEST = {
     FIRMWARE_NOT_COMPATIBLE: 'ui-device_firmware_not_compatible',
     FIRMWARE_NOT_INSTALLED: 'ui-device_firmware_not_installed',
     FIRMWARE_PROGRESS: 'ui-firmware-progress',
+    CALL_IN_PROGRESS: 'ui-call_in_progress',
 
     /** connect is waiting for device to be automatically reconnected */
     FIRMWARE_RECONNECT: 'ui-firmware_reconnect',
@@ -155,6 +156,12 @@ export interface UiRequestAddressValidation {
 export interface UiRequestSetOperation {
     type: typeof UI_REQUEST.SET_OPERATION;
     payload: string;
+}
+
+// todo: is it request? not really. at least naming, ( if not category) is misleading here
+export interface UiRequestCallInProgress {
+    type: typeof UI_REQUEST.CALL_IN_PROGRESS;
+    payload: boolean;
 }
 
 export interface UiRequestPermission {
@@ -292,7 +299,8 @@ export type UiEvent =
     | FirmwareException
     | FirmwareReconnect
     | UiRequestAddressValidation
-    | UiRequestSetOperation;
+    | UiRequestSetOperation
+    | UiRequestCallInProgress;
 
 export type UiEventMessage = UiEvent & { event: typeof UI_EVENT };
 

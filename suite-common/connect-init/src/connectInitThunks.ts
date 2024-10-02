@@ -45,7 +45,9 @@ export const connectInitThunk = createThunk(
         });
 
         TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
-            // dispatch event as action
+            if (action.type === 'ui-call_in_progress') {
+                dispatch(lockDevice(action.payload));
+            }
             dispatch(action);
         });
 
@@ -100,9 +102,7 @@ export const connectInitThunk = createThunk(
             const original: any = TrezorConnect[key];
             if (!original) return;
             (TrezorConnect[key] as any) = async (params: any) => {
-                dispatch(lockDevice(true));
                 const result = await synchronize(() => original(params));
-                dispatch(lockDevice(false));
 
                 return result;
             };
