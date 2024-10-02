@@ -13,6 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     constructTransactionReviewOutputs,
+    getIsUpdatedSendFlow,
     getTransactionReviewOutputState,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
@@ -50,7 +51,11 @@ export const selectTransactionReviewOutputs = (
         precomposedTx,
     });
 
-    return outputs?.map(
+    const newFlowOutputs = getIsUpdatedSendFlow(device)
+        ? outputs
+        : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
+
+    return newFlowOutputs.map(
         (output, outputIndex) =>
             ({
                 ...output,

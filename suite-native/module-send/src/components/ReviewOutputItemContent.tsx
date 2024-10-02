@@ -24,7 +24,7 @@ export const ReviewOutputItemContent = ({
         );
     }
 
-    if (outputType === 'address') {
+    if (outputType === 'address' || outputType === 'regular_legacy') {
         const chunkedAddress = splitAddressToChunks(value).join(' ');
 
         return <Text variant="hint">{chunkedAddress}</Text>;

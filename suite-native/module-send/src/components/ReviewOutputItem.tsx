@@ -13,28 +13,33 @@ type ReviewOutputItemProps = {
     reviewOutput: StatefulReviewOutput;
     onLayout: (event: LayoutChangeEvent) => void;
 };
-type SupportedOutputType = Extract<ReviewOutputType, 'amount' | 'address'>;
 
 const outputLabelTranslationMap = {
     address: 'moduleSend.review.outputs.addressLabel',
+    regular_legacy: 'moduleSend.review.outputs.addressLabel',
     amount: 'moduleSend.review.outputs.amountLabel',
-} as const satisfies Record<SupportedOutputType, TxKeyPath>;
+} as const satisfies Partial<Record<ReviewOutputType, TxKeyPath>>;
+
+const isTranslationDefined = (
+    type: ReviewOutputType,
+): type is keyof typeof outputLabelTranslationMap => {
+    return type in outputLabelTranslationMap;
+};
 
 export const ReviewOutputItem = ({
     reviewOutput,
     networkSymbol,
     onLayout,
 }: ReviewOutputItemProps) => {
+    const { state, type, value } = reviewOutput;
     const { translate } = useTranslate();
 
-    const { state, type, value } = reviewOutput;
+    const titleTxKey = isTranslationDefined(type) ? outputLabelTranslationMap[type] : null;
+    const title = titleTxKey ? translate(titleTxKey) : type;
 
     return (
         <View onLayout={onLayout}>
-            <ReviewOutputCard
-                title={translate(outputLabelTranslationMap[type as SupportedOutputType])}
-                outputState={state}
-            >
+            <ReviewOutputCard title={title} outputState={state}>
                 <ReviewOutputItemContent
                     outputType={type}
                     networkSymbol={networkSymbol}
