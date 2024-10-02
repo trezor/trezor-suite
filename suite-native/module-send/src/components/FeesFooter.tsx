@@ -72,7 +72,7 @@ export const FeesFooter = ({
                         <Text variant="callout">
                             <Translation id="moduleSend.fees.totalAmount" />
                         </Text>
-                        <VStack spacing={2} alignItems="flex-end">
+                        <VStack spacing="sp2" alignItems="flex-end">
                             <CryptoToFiatAmountFormatter
                                 variant="callout"
                                 color="textDefault"

@@ -39,7 +39,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     };
 
     return (
-        <VStack spacing={12}>
+        <VStack spacing="sp12">
             <Text variant="hint">
                 <Translation id="moduleSend.outputs.recipients.addressLabel" />
             </Text>

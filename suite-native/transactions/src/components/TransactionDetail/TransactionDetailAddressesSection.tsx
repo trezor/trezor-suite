@@ -31,7 +31,7 @@ const hiddenTransactionsCountStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation1,
     borderRadius: utils.borders.radii.round,
     paddingHorizontal: utils.spacings.sp8,
-    paddingVertical: utils.spacings.sp8 / 4,
+    paddingVertical: utils.spacings.sp2,
 }));
 
 const addressTextStyle = prepareNativeStyle(_ => ({
@@ -41,7 +41,7 @@ const addressTextStyle = prepareNativeStyle(_ => ({
 const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 12,
+    marginTop: utils.spacings.sp12,
     backgroundColor: utils.colors.backgroundSurfaceElevation2,
     width: utils.spacings.sp16,
     height: utils.spacings.sp16,
@@ -57,7 +57,7 @@ const stepperDotStyle = prepareNativeStyle(utils => ({
 
 const coinIconWrapperStyle = prepareNativeStyle(utils => ({
     alignSelf: 'flex-start',
-    padding: utils.spacings.sp8 * 1.5,
+    padding: utils.spacings.sp12,
     backgroundColor: utils.colors.backgroundSurfaceElevation2,
     borderRadius: utils.borders.radii.round,
 }));

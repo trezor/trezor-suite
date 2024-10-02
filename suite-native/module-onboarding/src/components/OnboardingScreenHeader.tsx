@@ -10,14 +10,14 @@ type OnboardingScreenHeaderProps = {
     activeStep: number;
 };
 
-const titleStyle = prepareNativeStyle(() => ({
+const titleStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: utils.spacings.sp12,
 }));
 
-const wrapperStyle = prepareNativeStyle(() => ({
-    paddingHorizontal: 16,
-    paddingTop: 32,
+const wrapperStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.sp16,
+    paddingTop: utils.spacings.sp32,
 }));
 
 const subtitleStyle = prepareNativeStyle(() => ({

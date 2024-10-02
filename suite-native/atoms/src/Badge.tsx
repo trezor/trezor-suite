@@ -52,7 +52,7 @@ const badgeStyle = prepareNativeStyle<BadgeStyleProps>(
         justifyContent: 'center',
         backgroundColor: utils.colors[backgroundColor],
         paddingHorizontal: utils.spacings.sp8 - (size === 'medium' ? 0 : 2),
-        paddingVertical: utils.spacings.sp8 / 4,
+        paddingVertical: utils.spacings.sp2,
         borderRadius: utils.borders.radii.round,
         extend: [
             {

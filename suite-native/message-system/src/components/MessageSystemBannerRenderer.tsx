@@ -24,7 +24,7 @@ export const MessageSystemBannerRenderer = () => {
 
     return (
         <VStack
-            spacing={4}
+            spacing="sp4"
             style={applyStyle(messageBannerContainerStyle, {
                 topSafeAreaInset: topInset,
             })}

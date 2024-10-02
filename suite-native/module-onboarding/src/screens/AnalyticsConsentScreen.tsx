@@ -33,7 +33,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 const titleStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
     marginTop: utils.spacings.sp24,
-    marginBottom: 12,
+    marginBottom: utils.spacings.sp12,
     paddingHorizontal: utils.spacings.sp24,
 }));
 

@@ -19,8 +19,8 @@ const iconWrapper = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
 }));
 
-const rowContentStyle = prepareNativeStyle(_ => ({
-    marginLeft: 12,
+const rowContentStyle = prepareNativeStyle(utils => ({
+    marginLeft: utils.spacings.sp12,
     marginRight: 48,
 }));
 

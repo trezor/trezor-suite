@@ -30,7 +30,7 @@ const accountListItemStyle = prepareNativeStyle<{
     justifyContent: 'space-between',
     alignItem: 'center',
 
-    paddingVertical: 12,
+    paddingVertical: utils.spacings.sp12,
     paddingHorizontal: utils.spacings.sp16,
 
     extend: {

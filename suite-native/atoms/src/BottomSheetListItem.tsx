@@ -17,7 +17,7 @@ export const BottomSheetListItem = ({ translationKey, ...props }: BottomSheetLis
     const { applyStyle } = useNativeStyles();
 
     return (
-        <HStack spacing={12} alignItems="center">
+        <HStack spacing="sp12" alignItems="center">
             <OrderedListIcon {...props} />
             <Text style={applyStyle(listItemStyle)}>
                 <Translation id={translationKey} />

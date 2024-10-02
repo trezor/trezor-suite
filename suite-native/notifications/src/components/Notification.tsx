@@ -126,7 +126,7 @@ export const Notification = ({
                         <TouchableWithoutFeedback onPress={onPress}>
                             <HStack spacing="sp32" style={applyStyle(notificationContainerStyle)}>
                                 <HStack
-                                    spacing={12}
+                                    spacing="sp12"
                                     flexDirection="row"
                                     style={applyStyle(notificationContentStyle)}
                                 >

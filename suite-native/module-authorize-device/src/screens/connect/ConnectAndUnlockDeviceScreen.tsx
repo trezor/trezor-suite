@@ -25,11 +25,11 @@ import { ConnectDeviceScreenHeader } from '../../components/connect/ConnectDevic
 
 const ANIMATION_HEIGHT = Dimensions.get('screen').height * 0.6;
 
-const screenContentStyle = prepareNativeStyle(() => ({
+const screenContentStyle = prepareNativeStyle(utils => ({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 40,
+    paddingTop: utils.spacings.sp40,
 }));
 
 const animationStyle = prepareNativeStyle(() => ({

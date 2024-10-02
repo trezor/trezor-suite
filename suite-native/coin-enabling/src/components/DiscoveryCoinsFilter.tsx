@@ -38,7 +38,7 @@ export const DiscoveryCoinsFilter = ({
     const uniqueNetworkSymbols = [...new Set(availableNetworks.map(n => n.symbol))];
 
     return (
-        <VStack spacing={12}>
+        <VStack spacing="sp12">
             {uniqueNetworkSymbols.map((networkSymbol: NetworkSymbol) => (
                 <NetworkSymbolSwitchItem
                     key={networkSymbol}

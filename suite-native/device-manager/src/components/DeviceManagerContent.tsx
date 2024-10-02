@@ -104,7 +104,7 @@ export const DeviceManagerContent = () => {
                 />
 
                 {!isPortfolioTrackerDevice && (
-                    <VStack spacing={12} paddingTop="sp24">
+                    <VStack spacing="sp12" paddingTop="sp24">
                         <WalletList onSelectDevice={handleSelectDevice} />
                         <Stack
                             orientation={

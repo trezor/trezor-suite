@@ -14,7 +14,7 @@ export const WalletList = ({ onSelectDevice }: WalletListProps) => {
     const devices = useSelector(selectDeviceInstances);
 
     return (
-        <VStack spacing={12} paddingHorizontal="sp16">
+        <VStack spacing="sp12" paddingHorizontal="sp16">
             {devices.map(device => {
                 if (!device.state) {
                     return null;
