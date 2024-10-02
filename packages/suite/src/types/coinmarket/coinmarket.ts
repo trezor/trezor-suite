@@ -41,6 +41,7 @@ import {
     SelectAssetOptionGroupProps,
     SelectAssetOptionProps,
 } from '@trezor/product-components/src/components/SelectAssetModal/SelectAssetModal';
+import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 
 export type UseCoinmarketProps = { selectedAccount: SelectedAccountLoaded };
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
@@ -189,15 +190,11 @@ export interface CoinmarketGetSortedAccountsProps {
 
 export interface CoinmarketBuildAccountOptionsProps extends CoinmarketGetSortedAccountsProps {
     accountLabels: Record<string, string | undefined>;
-    defaultAccountLabelString: ({
+    getDefaultAccountLabel: ({
         accountType,
         symbol,
         index,
-    }: {
-        accountType: Account['accountType'];
-        symbol: Account['symbol'];
-        index?: number;
-    }) => string;
+    }: GetDefaultAccountLabelParams) => string;
     supportedCryptoIds: Set<CryptoId> | undefined;
     tokenDefinitions: Partial<TokenDefinitionsState>;
 }

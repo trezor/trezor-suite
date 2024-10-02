@@ -1,7 +1,7 @@
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
 import { useAccountSearch, useDiscovery, useSelector } from 'src/hooks/suite';
-import { selectDevice } from '@suite-common/wallet-core';
+import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import { Translation } from 'src/components/suite';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
@@ -10,6 +10,7 @@ import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { spacings } from '@trezor/theme';
 import { Column } from '@trezor/components';
 import { AccountSection } from './AcccountSection';
+import { useDefaultAccountLabel } from 'src/hooks/suite';
 
 interface AccountListProps {
     onItemClick?: () => void;
@@ -17,10 +18,11 @@ interface AccountListProps {
 
 export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const device = useSelector(selectDevice);
-    const accounts = useSelector(state => state.wallet.accounts);
+    const accounts = useSelector(selectAccounts);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLabels = useSelector(selectAccountLabels);
+    const { getDefaultAccountLabel } = useDefaultAccountLabel();
 
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const { coinFilter, searchString } = useAccountSearch();
@@ -37,7 +39,14 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
     const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
     const filteredAccounts =
         searchString || coinFilter
-            ? list.filter(a => accountSearchFn(a, searchString, coinFilter, accountLabels[a.key]))
+            ? list.filter(account => {
+                  const { key, accountType, symbol, index } = account;
+                  const accountLabel = accountLabels.hasOwnProperty(key)
+                      ? accountLabels[key]
+                      : getDefaultAccountLabel({ accountType, symbol, index });
+
+                  return accountSearchFn(account, searchString, coinFilter, accountLabel);
+              })
             : list;
 
     const filterAccountsByType = (type: Account['accountType']) =>

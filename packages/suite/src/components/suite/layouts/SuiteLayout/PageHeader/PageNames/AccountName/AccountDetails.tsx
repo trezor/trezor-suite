@@ -11,8 +11,7 @@ import {
     FiatValue,
     AmountUnitSwitchWrapper,
 } from 'src/components/suite';
-import { useAccountLabel } from 'src/components/suite/AccountLabel';
-import { useSelector } from 'src/hooks/suite';
+import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { CoinLogo } from '@trezor/product-components';
 import { isTestnet } from '@suite-common/wallet-utils';
@@ -90,7 +89,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const [shouldAnimate, setShouldAnimate] = useState(false);
     const [hasMounted, setHasMounted] = useState(false);
     const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
-    const { defaultAccountLabelString } = useAccountLabel();
+    const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { symbol, key, path, index, accountType, formattedBalance } = selectedAccount;
 
     useEffect(() => {
@@ -128,7 +127,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                         defaultValue: path,
                         value: selectedAccountLabels.accountLabel,
                     }}
-                    defaultEditableValue={defaultAccountLabelString({ accountType, symbol, index })}
+                    defaultEditableValue={getDefaultAccountLabel({ accountType, symbol, index })}
                     updateFlag={isBalanceShown}
                 />
             </AccountHeading>
