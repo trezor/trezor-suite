@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "express": "^4.19.2",
+        "express": "^4.21.0",
         "uuid": "^10.0.0",
         "ws": "^8.18.0"
     },
