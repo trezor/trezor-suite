@@ -16,9 +16,8 @@ import {
 import { CoinmarketSellFormDefaultValuesProps } from 'src/types/coinmarket/coinmarketForm';
 import { FormState, Output } from '@suite-common/wallet-types';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector, useDefaultAccountLabel } from 'src/hooks/suite';
 import { selectAccounts, selectDevice } from '@suite-common/wallet-core';
-import { useAccountLabel } from 'src/components/suite/AccountLabel';
 import {
     FORM_DEFAULT_FIAT_CURRENCY,
     FORM_DEFAULT_PAYMENT_METHOD,
@@ -30,7 +29,7 @@ export const useCoinmarketBuildAccountGroups = (
     const accounts = useSelector(selectAccounts);
     const accountLabels = useSelector(selectAccountLabels);
     const device = useSelector(selectDevice);
-    const { defaultAccountLabelString } = useAccountLabel();
+    const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { tokenDefinitions } = useSelector(state => state);
     const supportedSymbols = useSelector(state =>
         type === 'sell'
@@ -46,7 +45,7 @@ export const useCoinmarketBuildAccountGroups = (
                 accountLabels,
                 tokenDefinitions,
                 supportedCryptoIds: supportedSymbols,
-                defaultAccountLabelString,
+                getDefaultAccountLabel,
             }),
         [
             accounts,
@@ -54,7 +53,7 @@ export const useCoinmarketBuildAccountGroups = (
             accountLabels,
             device,
             tokenDefinitions,
-            defaultAccountLabelString,
+            getDefaultAccountLabel,
         ],
     );
 
