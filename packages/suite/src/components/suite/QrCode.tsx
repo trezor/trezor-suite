@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Icon, Tooltip, variables, intermediaryTheme } from '@trezor/components';
 import { Translation } from './Translation';
+import { CSSColor } from '@trezor/theme/libDev/src';
 
 export const QRCODE_SIZE = 384;
 export const QRCODE_PADDING = 12;
@@ -49,8 +50,8 @@ interface QrCodeProps {
     value: string;
     className?: string;
     showMessage?: boolean;
-    bgColor?: string;
-    fgColor?: string;
+    bgColor?: CSSColor;
+    fgColor?: CSSColor;
 }
 
 export const QrCode = ({ value, className, bgColor, fgColor, showMessage }: QrCodeProps) => (

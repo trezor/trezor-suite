@@ -1,9 +1,10 @@
 import { ReactNode } from 'react';
 import { Icon, Tooltip, IconName } from '@trezor/components';
+import { CSSColor } from '@trezor/theme';
 
 interface UtxoTagProps {
     icon: IconName;
-    iconColor: string;
+    iconColor: CSSColor;
     tooltipMessage: ReactNode;
 }
 

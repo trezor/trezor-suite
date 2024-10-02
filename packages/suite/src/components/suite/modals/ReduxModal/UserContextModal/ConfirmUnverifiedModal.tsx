@@ -64,7 +64,7 @@ export const ConfirmUnverifiedModal = ({
         <NewModal
             variant="warning"
             size="small"
-            icon="shieldWarning"
+            iconName="shieldWarning"
             onCancel={handleClose}
             bottomContent={
                 <>

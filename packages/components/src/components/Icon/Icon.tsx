@@ -34,7 +34,7 @@ export type ExclusiveColorOrVariant =
     | {
           variant?: undefined;
           /** @deprecated Use only is case of absolute desperation. Prefer using `variant`. */
-          color?: string;
+          color?: CSSColor;
       };
 
 export const allowedIconFrameProps = [
@@ -70,10 +70,7 @@ export const getColorForIconVariant = ({
     variant,
     theme,
     color,
-}: Pick<IconProps, 'color' | 'variant'> & { theme: DefaultTheme }):
-    | CSSColor
-    | 'inherit'
-    | string => {
+}: Pick<IconProps, 'color' | 'variant'> & { theme: DefaultTheme }): CSSColor => {
     if (color !== undefined) {
         return color;
     }
@@ -92,7 +89,6 @@ const SvgWrapper = styled.div<SvgWrapperProps & TransientProps<AllowedFrameProps
         css`
             cursor: pointer;
         `}
-
     path {
         fill: ${({ $variant, $color, theme }) =>
             getColorForIconVariant({ variant: $variant, color: $color, theme })};

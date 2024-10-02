@@ -46,6 +46,8 @@ export default meta;
 export const NewModal: StoryObj<NewModalProps> = {
     args: {
         variant: 'primary',
+        iconName: undefined,
+        iconComponent: undefined,
         heading: 'Modal heading',
         description: 'Modal description',
         children:
@@ -62,13 +64,30 @@ export const NewModal: StoryObj<NewModalProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['primary', 'warning', 'destructive'],
+            options: [
+                'primary',
+                'warning',
+                'destructive',
+                undefined,
+            ] satisfies NewModalProps['variant'][],
+        },
+        iconComponent: {
+            options: ['nothing', 'purple'],
+            mapping: {
+                nothing: undefined,
+                purple: (
+                    <ModalComponent.Icon
+                        iconName="eap"
+                        iconColor={{ foreground: '#550070', background: '#c458d9' }}
+                    />
+                ),
+            },
         },
         size: {
             control: {
                 type: 'radio',
             },
-            options: ['tiny', 'small', 'medium', 'large'],
+            options: ['tiny', 'small', 'medium', 'large'] satisfies NewModalProps['size'][],
         },
         heading: {
             control: 'text',
@@ -112,7 +131,7 @@ export const NewModal: StoryObj<NewModalProps> = {
                 },
             },
         },
-        icon: {
+        iconName: {
             options: ['none', ...variables.ICONS],
             mapping: {
                 ...variables.ICONS,

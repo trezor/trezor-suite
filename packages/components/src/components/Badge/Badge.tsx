@@ -18,7 +18,7 @@ export type BadgeSize = Extract<UISize, (typeof badgeSizes)[number]>;
 export const allowedBadgeFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBadgeFrameProps)[number]>;
 
-type BadgeVariant = Extract<UIVariant, 'primary' | 'tertiary' | 'destructive'>;
+export type BadgeVariant = Extract<UIVariant, 'primary' | 'tertiary' | 'destructive'>;
 
 export type BadgeProps = AllowedFrameProps & {
     size?: BadgeSize;
@@ -150,7 +150,7 @@ export const Badge = ({
                     name={icon}
                     color={
                         isDisabled
-                            ? 'iconDisabled'
+                            ? theme.iconDisabled
                             : mapVariantToIconColor({ $variant: variant, theme })
                     }
                 />

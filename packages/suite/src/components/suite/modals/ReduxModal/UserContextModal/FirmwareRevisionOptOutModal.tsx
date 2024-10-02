@@ -22,7 +22,7 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
     return (
         <NewModal
             onCancel={onCancel}
-            icon="shieldWarning"
+            iconName="shieldWarning"
             size="small"
             bottomContent={
                 <>

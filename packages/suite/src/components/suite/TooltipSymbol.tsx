@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { Icon, IconName, Tooltip } from '@trezor/components';
+import { CSSColor } from '@trezor/theme';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const InlineTooltip = styled(Tooltip)`
@@ -11,7 +12,7 @@ const InlineTooltip = styled(Tooltip)`
 type TooltipSymbolProps = {
     content: ReactNode;
     icon?: IconName;
-    iconColor?: string;
+    iconColor?: CSSColor;
     className?: string;
 };
 

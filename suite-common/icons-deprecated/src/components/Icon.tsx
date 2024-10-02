@@ -26,7 +26,8 @@ function isCSSColor(value: any): value is CSSColor {
         (value.startsWith('#') ||
             value.startsWith('rgb(') ||
             value.startsWith('rgba(') ||
-            value === 'transparent')
+            value === 'transparent' ||
+            value === 'currentColor')
     );
 }
 

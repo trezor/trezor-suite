@@ -152,6 +152,9 @@ export const AllIcons: StoryObj<IconProps> = {
                 type: 'select',
             },
         },
+        color: {
+            control: 'color',
+        },
         size: {
             options: iconSizes,
             control: {

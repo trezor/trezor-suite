@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { borders, Elevation, spacingsPx, typography } from '@trezor/theme';
+import { borders, CSSColor, Elevation, spacingsPx, typography } from '@trezor/theme';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import {
     ButtonSize,
@@ -61,7 +61,6 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
 
     ${getFocusShadowStyle()}
     ${({ $variant, $isSubtle, $elevation }) => useVariantStyle($variant, $isSubtle, $elevation)}
-
     &:disabled {
         background: ${({ theme }) => theme.backgroundNeutralDisabled};
         color: ${({ theme }) => theme.textDisabled};
@@ -127,15 +126,13 @@ export type ButtonProps = SelectedHTMLButtonProps &
         textWrap?: boolean;
     };
 
-export const getIcon = ({
-    icon,
-    size,
-    color,
-}: {
+type GetIconProps = {
     icon?: IconName | React.ReactElement;
     size?: number;
-    color?: string;
-}) => {
+    color?: CSSColor;
+};
+
+export const getIcon = ({ icon, size, color }: GetIconProps) => {
     if (!icon) return null;
     if (typeof icon === 'string') {
         return <Icon name={icon as IconName} size={size} color={color} />;

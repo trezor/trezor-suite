@@ -22,7 +22,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
     return (
         <NewModal
             onCancel={onCancel}
-            icon="shieldWarning"
+            iconName="shieldWarning"
             size="small"
             bottomContent={
                 <>

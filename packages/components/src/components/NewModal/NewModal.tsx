@@ -18,13 +18,9 @@ import { NewModalButton } from './NewModalButton';
 import { NewModalContext } from './NewModalContext';
 import { NewModalBackdrop } from './NewModalBackdrop';
 import { NewModalProvider } from './NewModalProvider';
-import type { NewModalVariant, NewModalSize, NewModalAlignment } from './types';
-import {
-    mapVariantToIconBackground,
-    mapVariantToIconBorderColor,
-    mapModalSizeToWidth,
-} from './utils';
-import { Icon, IconName } from '../Icon/Icon';
+import { NewModalSize, NewModalAlignment, NewModalVariant } from './types';
+import { mapModalSizeToWidth } from './utils';
+import { IconName } from '../Icon/Icon';
 import {
     FrameProps,
     FramePropsKeys,
@@ -32,13 +28,13 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
+import { NewModalIcon } from './NewModalIcon';
 
 export const allowedNewModalFrameProps = ['height'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedNewModalFrameProps)[number]>;
 
 const NEW_MODAL_CONTENT_ID = 'modal-content';
 const MODAL_ELEVATION = 0;
-const ICON_SIZE = 40;
 
 const Container = styled.div<
     TransientProps<AllowedFrameProps> & { $elevation: Elevation; $size: NewModalSize }
@@ -105,41 +101,33 @@ const Footer = styled.footer`
     border-top: 1px solid ${({ theme }) => theme.borderElevation0};
 `;
 
-const IconWrapper = styled.div<{ $variant: NewModalVariant; $size: number; $isPushedTop: boolean }>`
-    width: ${({ $size }) => $size}px;
-    background: ${({ theme, $variant }) => mapVariantToIconBackground({ theme, $variant })};
-    padding: ${spacingsPx.lg};
-    border-radius: ${borders.radii.full};
-    border: ${spacingsPx.sm} solid
-        ${({ theme, $variant }) => mapVariantToIconBorderColor({ theme, $variant })};
-    box-sizing: content-box;
-    margin-bottom: ${spacingsPx.md};
-    margin-top: ${({ $isPushedTop }) => ($isPushedTop ? `-${spacingsPx.md}` : 0)};
-`;
+type ExclusiveIconNameOrComponent =
+    | { iconName?: IconName; iconComponent?: undefined }
+    | { iconName?: undefined; iconComponent?: ReactNode };
 
 type NewModalProps = AllowedFrameProps & {
-    children?: ReactNode;
     variant?: NewModalVariant;
+    children?: ReactNode;
     heading?: ReactNode;
     description?: ReactNode;
     bottomContent?: ReactNode;
     onBackClick?: () => void;
     onCancel?: () => void;
     isBackdropCancelable?: boolean;
-    icon?: IconName;
     alignment?: NewModalAlignment;
     size?: NewModalSize;
     'data-testid'?: string;
-};
+} & ExclusiveIconNameOrComponent;
 
 const _NewModalBase = ({
     children,
-    variant = 'primary',
+    variant,
     size = 'medium',
     heading,
     description,
     bottomContent,
-    icon,
+    iconName,
+    iconComponent,
     onBackClick,
     onCancel,
     'data-testid': dataTest = '@modal',
@@ -205,17 +193,19 @@ const _NewModalBase = ({
                 <ShadowTop />
                 <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                     <Body id={NEW_MODAL_CONTENT_ID}>
-                        {icon && (
-                            <IconWrapper
-                                $variant={variant}
-                                $size={ICON_SIZE}
-                                $isPushedTop={
-                                    !!onCancel && !heading && !description && !onBackClick
-                                }
-                            >
-                                <Icon name={icon} size={ICON_SIZE} variant={variant} />
-                            </IconWrapper>
-                        )}
+                        {iconComponent ??
+                            (iconName && (
+                                <NewModalIcon
+                                    isPushedTop={
+                                        onCancel !== undefined &&
+                                        !heading &&
+                                        !description &&
+                                        !onBackClick
+                                    }
+                                    iconName={iconName}
+                                    variant={variant}
+                                />
+                            ))}
                         <ElevationUp>{children}</ElevationUp>
                     </Body>
                 </ScrollContainer>
@@ -229,7 +219,6 @@ const _NewModalBase = ({
         </Container>
     );
 };
-
 const NewModalBase = (props: NewModalProps) => (
     <ElevationContext baseElevation={prevElevation[MODAL_ELEVATION]}>
         <NewModalContext.Provider value={{ variant: props.variant }}>
@@ -255,6 +244,7 @@ NewModal.Button = NewModalButton;
 NewModal.Backdrop = NewModalBackdrop;
 NewModal.Provider = NewModalProvider;
 NewModal.ModalBase = NewModalBase;
+NewModal.Icon = NewModalIcon;
 
 export { NewModal, NEW_MODAL_CONTENT_ID };
 export type { NewModalProps, NewModalSize };
