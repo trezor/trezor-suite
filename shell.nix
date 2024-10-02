@@ -1,3 +1,6 @@
+# ATTENTION
+# NixOS is not fully supported, some configuration may be necessary, see comments below
+
 # pinned to nixos-24.05 on commit https://github.com/NixOS/nixpkgs/commit/759537f06e6999e141588ff1c9be7f3a5c060106
 with import
   (builtins.fetchTarball {
@@ -8,7 +11,9 @@ with import
 
 let
   # unstable packages
-  electron = electron_31; # use the same version as defined in packages/suite-desktop/package.json
+  # ATTENTION: this does not match the actual required version defined in packages/suite-desktop/package.json
+  # (the required version is not yet in NixOS repository)
+  electron = electron_31;
   nodejs = nodejs_20;
   # use older gcc. 10.2.0 with glibc 2.32 for node_modules bindings.
   # electron-builder is packing the app with glibc 2.32, bindings should not be compiled with newer version.
