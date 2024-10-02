@@ -34,7 +34,6 @@ export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     oauthServerEnvironment?: OAuthServerEnvironment;
     showDebugMenu: boolean;
-    checkFirmwareAuthenticity: boolean;
     transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
     isUnlockedBootloaderAllowed: boolean;
 }
@@ -168,7 +167,6 @@ const initialState: SuiteState = {
         debug: {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
-            checkFirmwareAuthenticity: false,
             transports: [],
             isUnlockedBootloaderAllowed: false,
         },

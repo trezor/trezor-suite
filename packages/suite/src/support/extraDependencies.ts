@@ -87,8 +87,6 @@ export const extraDependencies: ExtraDependencies = {
             selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state),
         selectRouterApp: (state: AppState) => state.router.app,
         selectRoute: (state: AppState) => state.router.route,
-        selectCheckFirmwareAuthenticity: (state: AppState) =>
-            state.suite.settings.debug.checkFirmwareAuthenticity,
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectSuiteSettings,
