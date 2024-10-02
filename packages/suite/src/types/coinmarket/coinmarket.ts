@@ -42,7 +42,7 @@ import {
     SelectAssetOptionGroupProps,
     SelectAssetOptionProps,
 } from '@trezor/product-components/src/components/SelectAssetModal/SelectAssetModal';
-import { GetDefaultAccountLabel } from 'src/hooks/suite/useDefaultAccountLabel';
+import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
@@ -191,7 +191,11 @@ export interface CoinmarketGetSortedAccountsProps {
 
 export interface CoinmarketBuildAccountOptionsProps extends CoinmarketGetSortedAccountsProps {
     accountLabels: Record<string, string | undefined>;
-    getDefaultAccountLabel: ({ accountType, symbol, index }: GetDefaultAccountLabel) => string;
+    getDefaultAccountLabel: ({
+        accountType,
+        symbol,
+        index,
+    }: GetDefaultAccountLabelParams) => string;
     supportedCryptoIds: Set<CryptoId> | undefined;
     tokenDefinitions: Partial<TokenDefinitionsState>;
 }

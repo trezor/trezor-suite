@@ -41,8 +41,9 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         searchString || coinFilter
             ? list.filter(account => {
                   const { key, accountType, symbol, index } = account;
-                  const accountLabel =
-                      accountLabels[key] || getDefaultAccountLabel({ accountType, symbol, index });
+                  const accountLabel = accountLabels.hasOwnProperty(key)
+                      ? accountLabels[key]
+                      : getDefaultAccountLabel({ accountType, symbol, index });
 
                   return accountSearchFn(account, searchString, coinFilter, accountLabel);
               })
