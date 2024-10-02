@@ -10,3 +10,16 @@ export const getPrettierConfig = async () => {
 
     return prettierConfig;
 };
+
+export const formatObjectToJson = async (value: any, stringifySpaces?: number) => {
+    const prettierConfig = await getPrettierConfig();
+    try {
+        return prettier.format(
+            JSON.stringify(value, null, stringifySpaces).replace(/\\\\/g, '/'),
+            prettierConfig,
+        );
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }
+};

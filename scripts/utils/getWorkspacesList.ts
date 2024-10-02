@@ -1,15 +1,22 @@
 import { A, D, pipe } from '@mobily/ts-belt';
 import { execSync } from 'child_process';
+import { getAffectedPackages } from './getAffectedPackages';
 
 type WorkspacePackageName = string;
-type WorkspaceItem = {
+export type WorkspaceItem = {
     location: string;
     name: WorkspacePackageName;
-    workspaceDependencies: WorkspacePackageName[];
-    mismatchedWorkspaceDependencies: WorkspacePackageName[];
+    workspaceDependencies?: WorkspacePackageName[];
+    mismatchedWorkspaceDependencies?: WorkspacePackageName[];
 };
 
+let workspacesList: Record<WorkspacePackageName, WorkspaceItem> | null = null;
 export const getWorkspacesList = (): Record<WorkspacePackageName, WorkspaceItem> => {
+    if (workspacesList) {
+        // Cache the results because this could be slow and it's always the same
+        return workspacesList;
+    }
+
     const rawList = execSync('yarn workspaces list --json --verbose')
         .toString()
         .replaceAll('}', '},');
@@ -26,5 +33,16 @@ export const getWorkspacesList = (): Record<WorkspacePackageName, WorkspaceItem>
         D.fromPairs,
     );
 
+    workspacesList = workspaces;
+
     return workspaces;
+};
+
+export const getAffectedWorkspaces = (): WorkspaceItem[] => {
+    const affectedPackages = getAffectedPackages();
+    const workspaces = getWorkspacesList();
+
+    return affectedPackages
+        .map(packageName => workspaces[packageName])
+        .filter(workspace => !!workspace);
 };
