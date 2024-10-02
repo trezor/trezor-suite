@@ -309,7 +309,7 @@ export const coinmarketBuildAccountOptions = ({
     accountLabels,
     tokenDefinitions,
     supportedCryptoIds,
-    defaultAccountLabelString,
+    getDefaultAccountLabel,
 }: CoinmarketBuildAccountOptionsProps): CoinmarketAccountsOptionsGroupProps[] => {
     const accountsSorted = coinmarketGetSortedAccounts({
         accounts,
@@ -334,7 +334,7 @@ export const coinmarketBuildAccountOptions = ({
 
         const groupLabel =
             accountLabels[account.key] ??
-            defaultAccountLabelString({
+            getDefaultAccountLabel({
                 accountType,
                 symbol: accountSymbol,
                 index,
