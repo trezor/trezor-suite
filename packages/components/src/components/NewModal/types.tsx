@@ -1,7 +1,7 @@
 import { UIVariant, UISize, UIHorizontalAlignment, UIVerticalAlignment } from '../../config/types';
 import { CSSColor } from '@trezor/theme';
 
-export type NewModalVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive'> | 'purple';
+export type NewModalVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive'>;
 
 export type NewModalSize = Extract<UISize, 'large' | 'medium' | 'small' | 'tiny'>;
 
