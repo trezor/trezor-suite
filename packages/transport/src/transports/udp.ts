@@ -8,12 +8,12 @@ export class UdpTransport extends AbstractApiTransport {
     private enumerateTimeout: ReturnType<typeof setTimeout> | undefined;
 
     constructor(params: AbstractTransportParams) {
-        const { messages, logger, debugLink } = params;
+        const { logger, debugLink, ...rest } = params;
 
         super({
-            messages,
             api: new UdpApi({ logger, debugLink }),
             logger,
+            ...rest,
         });
     }
 

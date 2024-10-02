@@ -30,8 +30,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
     protected api: AbstractApi;
 
-    constructor({ messages, api, logger }: ConstructorParams) {
-        super({ messages, logger });
+    constructor({ api, ...rest }: ConstructorParams) {
+        super(rest);
         this.api = api;
         this.sessionsBackground = new SessionsBackground();
         this.sessionsClient = new SessionsClient(this.sessionsBackground);

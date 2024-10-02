@@ -11,10 +11,9 @@ export class NodeUsbTransport extends AbstractApiTransport {
     public name = 'NodeUsbTransport' as const;
 
     constructor(params: AbstractTransportParams) {
-        const { messages, logger, debugLink } = params;
+        const { logger, debugLink, ...rest } = params;
 
         super({
-            messages,
             api: new UsbApi({
                 usbInterface: new WebUSB({
                     allowAllDevices: true, // return all devices, not only authorized
@@ -22,6 +21,7 @@ export class NodeUsbTransport extends AbstractApiTransport {
                 logger,
                 debugLink,
             }),
+            ...rest,
         });
     }
 
