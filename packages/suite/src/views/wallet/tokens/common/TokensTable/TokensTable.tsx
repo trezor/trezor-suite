@@ -16,7 +16,7 @@ const IconWrapper = styled.div<{ $isActive: boolean }>`
 `;
 
 const ZeroBalanceToggle = styled.div`
-    cursor: pointer;
+    user-select: none;
 `;
 
 interface TokensTableProps {
@@ -59,6 +59,7 @@ export const TokensTable = ({
                         { minWidth: '200px', maxWidth: '250px' },
                         { minWidth: '140px', maxWidth: '250px' }, // due to HiddenPlaceholder - it changes content width when hovered
                     ]}
+                    highlightRowOnHover={true}
                 >
                     <Table.Header>
                         <Table.Row>
@@ -94,11 +95,9 @@ export const TokensTable = ({
                         ))}
                         {tokensWithoutBalance.length !== 0 && (
                             <>
-                                <Table.Row>
-                                    <Table.Cell colSpan={2}>
-                                        <ZeroBalanceToggle
-                                            onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}
-                                        >
+                                <Table.Row onClick={() => setIsZeroBalanceOpen(!isZeroBalanceOpen)}>
+                                    <Table.Cell colSpan={5}>
+                                        <ZeroBalanceToggle>
                                             <Row gap={spacings.xs} margin={{ top: spacings.md }}>
                                                 <IconWrapper $isActive={isZeroBalanceOpen}>
                                                     <Icon

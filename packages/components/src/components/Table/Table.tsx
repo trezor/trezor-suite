@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { createContext, ReactNode, useContext } from 'react';
 import styled from 'styled-components';
 
 import { mapElevationToBackgroundToken } from '@trezor/theme';
@@ -13,6 +13,14 @@ import { useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedTableFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableFrameProps)[number]>;
+
+interface TableContextProps {
+    highlightRowOnHover: boolean;
+}
+
+const TableContext = createContext<TableContextProps>({ highlightRowOnHover: false });
+
+export const useTable = () => useContext(TableContext);
 
 const Container = styled.table<TransientProps<AllowedFrameProps>>`
     width: 100%;
@@ -33,30 +41,36 @@ export type TableProps = AllowedFrameProps & {
         minWidth?: string;
         maxWidth?: string;
     }[];
+    highlightRowOnHover?: boolean;
 };
 
-export const Table = ({ children, margin, colWidths }: TableProps) => {
+export const Table = ({ children, margin, colWidths, highlightRowOnHover = false }: TableProps) => {
     const { scrollElementRef, onScroll, ShadowContainer, ShadowRight } = useScrollShadow();
     const { parentElevation } = useElevation();
 
     return (
-        <ShadowContainer>
-            <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                <Container {...makePropsTransient({ margin })}>
-                    {colWidths && (
-                        <colgroup>
-                            {colWidths.map((widths, index) => (
-                                <col key={index} style={widths} />
-                            ))}
-                        </colgroup>
-                    )}
-                    {children}
-                </Container>
-            </ScrollContainer>
-            <ShadowRight
-                backgroundColor={mapElevationToBackgroundToken({ $elevation: parentElevation })}
-            />
-        </ShadowContainer>
+        <TableContext.Provider value={{ highlightRowOnHover }}>
+            <ShadowContainer>
+                <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
+                    <Container {...makePropsTransient({ margin })}>
+                        {colWidths && (
+                            <colgroup>
+                                {colWidths.map((widths, index) => (
+                                    <col key={index} style={widths} />
+                                ))}
+                            </colgroup>
+                        )}
+                        {children}
+                    </Container>
+                </ScrollContainer>
+                <ShadowRight
+                    backgroundColor={mapElevationToBackgroundToken({ $elevation: parentElevation })}
+                    style={{
+                        borderRadius: '16px',
+                    }}
+                />
+            </ShadowContainer>
+        </TableContext.Provider>
     );
 };
 
