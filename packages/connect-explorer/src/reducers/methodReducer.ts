@@ -46,10 +46,7 @@ const findField = (state: MethodState, field: Field<any>) => {
 
 // Update field value
 const onFieldChange = (state: MethodState, _field: Field<any>, value: any) => {
-    const newState = {
-        ...JSON.parse(JSON.stringify(state)),
-        ...state,
-    };
+    const newState = JSON.parse(JSON.stringify(state));
     const field = findField(newState, _field);
     if (!field || !isFieldBasic(field)) return state;
     field.value = value;
