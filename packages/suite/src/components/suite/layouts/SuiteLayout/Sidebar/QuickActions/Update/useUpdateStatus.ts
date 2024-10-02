@@ -58,7 +58,7 @@ export const useUpdateStatus = (): UpdateStatusData => {
 
     const common: Omit<UpdateStatusData, 'updateStatus'> = {
         updateStatusDevice:
-            isFirmwareOutdated && isSuiteUpdateInProgress ? 'update-available' : 'up-to-date',
+            isFirmwareOutdated && !isSuiteUpdateInProgress ? 'update-available' : 'up-to-date',
         updateStatusSuite: getSuiteUpdateStatus({ desktopUpdate }),
     };
 
