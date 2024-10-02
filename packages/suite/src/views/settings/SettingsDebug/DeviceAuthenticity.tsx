@@ -9,7 +9,7 @@ export const DeviceAuthenticity = () => {
     const debug = useSelector(state => state.suite.settings.debug);
 
     const handleChange = (state?: boolean) =>
-        dispatch(setDebugMode({ enableAutoupdateOnNextRun: state }));
+        dispatch(setDebugMode({ isUnlockedBootloaderAllowed: state }));
 
     return (
         <SectionItem data-testid="@settings/debug/device-authenticity/switch">
@@ -18,7 +18,7 @@ export const DeviceAuthenticity = () => {
                 description="Skip device authenticity check when bootloader is unlocked."
             />
             <ActionColumn>
-                <Switch onChange={handleChange} isChecked={!!debug.isUnlockedBootloaderAllowed} />
+                <Switch onChange={handleChange} isChecked={debug.isUnlockedBootloaderAllowed} />
             </ActionColumn>
         </SectionItem>
     );
