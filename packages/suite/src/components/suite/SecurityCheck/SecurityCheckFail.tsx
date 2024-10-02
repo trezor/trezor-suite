@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Button, Divider, H2, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { TREZOR_SUPPORT_FW_CHECK_FAILED, Url } from '@trezor/urls';
+import { Url } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
 import { SecurityChecklist } from '../../../views/onboarding/steps/SecurityCheck/SecurityChecklist';
@@ -38,14 +38,14 @@ interface SecurityCheckFailProps {
     goBack?: () => void;
     heading?: TranslationKey;
     text?: TranslationKey;
-    supportUrl?: Url;
+    supportUrl: Url;
 }
 
 export const SecurityCheckFail = ({
     goBack,
     heading = 'TR_DEVICE_COMPROMISED_HEADING',
     text = 'TR_DEVICE_COMPROMISED_TEXT',
-    supportUrl = TREZOR_SUPPORT_FW_CHECK_FAILED,
+    supportUrl,
 }: SecurityCheckFailProps) => {
     const chatUrl = `${supportUrl}#open-chat`;
 

@@ -4,14 +4,15 @@ import styled from 'styled-components';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectDevice, selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
+import { TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL } from '@trezor/urls';
 
 import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { SecurityCheckFail } from '../../../../components/suite/SecurityCheck/SecurityCheckFail';
-import { spacingsPx } from '@trezor/theme';
+import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     padding: ${spacingsPx.md};
@@ -109,7 +110,7 @@ export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
     if (isCheckFailed) {
         return (
             <StyledCard>
-                <SecurityCheckFail />
+                <SecurityCheckFail supportUrl={TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL} />
             </StyledCard>
         );
     }

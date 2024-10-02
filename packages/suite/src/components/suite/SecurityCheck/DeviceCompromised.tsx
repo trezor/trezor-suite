@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 
+import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { deviceActions } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
 import { WelcomeLayout } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
-import { SecurityCheckFail } from '../SecurityCheck/SecurityCheckFail';
-import { deviceActions } from '@suite-common/wallet-core';
+import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 
 export const DeviceCompromised = () => {
     const dispatch = useDispatch();
@@ -45,7 +46,10 @@ export const DeviceCompromised = () => {
     return (
         <WelcomeLayout>
             <Card data-testid="@device-compromised">
-                <SecurityCheckFail goBack={goToSuite} />
+                <SecurityCheckFail
+                    goBack={goToSuite}
+                    supportUrl={TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL}
+                />
             </Card>
         </WelcomeLayout>
     );
