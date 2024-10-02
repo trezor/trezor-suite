@@ -39,7 +39,7 @@ jobs:
     if: ${{ github.event.inputs.publishDesktopProduction == 'true' && github.event.inputs.desktopReleaseChannel == 'canary' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Syncing suite-desktop canary"
     environment: suite-production
-    runs-on: ubuntu-latest
+    runs-on: trezor-suite-release-runners
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -56,7 +56,7 @@ jobs:
     if: ${{ github.event.inputs.publishDesktopProduction == 'true' && github.event.inputs.desktopReleaseChannel == 'latest' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Syncing suite-desktop latest"
     environment: suite-production
-    runs-on: ubuntu-latest
+    runs-on: trezor-suite-release-runners
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -75,7 +75,7 @@ jobs:
     if: ${{ github.event.inputs.publishWebProduction == 'true' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Syncing suite-web staging to production"
     environment: suite-production
-    runs-on: ubuntu-latest
+    runs-on: trezor-suite-release-runners
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -92,7 +92,7 @@ jobs:
     if: ${{ github.event.inputs.updateStagingPercentage == 'true' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Update staging percentage"
     environment: suite-production
-    runs-on: ubuntu-latest
+    runs-on: trezor-suite-release-runners
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -88,7 +88,7 @@ jobs:
     if: github.repository == 'trezor/trezor-suite-release'
     name: Create GitHub draft release
     environment: suite-production
-    runs-on: ubuntu-latest
+    runs-on: trezor-suite-release-runners
     needs: suite-desktop
     steps:
       - name: Checkout code
@@ -113,7 +113,7 @@ jobs:
     if: github.repository == 'trezor/trezor-suite-release'
     name: Release suite-desktop auto-update to staging data.trezor.io
     environment: suite-production
-    runs-on: ubuntu-latest
+    runs-on: trezor-suite-release-runners
     needs: suite-desktop
     steps:
       - name: Checkout code
@@ -149,7 +149,7 @@ jobs:
     if: github.repository == 'trezor/trezor-suite-release'
     name: Build suite-web and deploy to staging-suite.trezor.io
     environment: suite-production
-    runs-on: ubuntu-latest
+    runs-on: trezor-suite-release-runners
     steps:
       - name: Checkout
         uses: actions/checkout@v4
