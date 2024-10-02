@@ -2,13 +2,12 @@ import styled from 'styled-components';
 
 import ReactMarkdown, { Options } from 'react-markdown';
 import { variables } from '../../config';
+import { typography } from '@trezor/theme';
 
 const StyledMarkdown = styled.div`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    line-height: 1.5;
-    padding: 0 0 32px;
+    ${typography.hint}
+
+    color: ${({ theme }) => theme.textSubdued};
 
     h1,
     h2,
@@ -16,7 +15,7 @@ const StyledMarkdown = styled.div`
     h4,
     h5,
     h6 {
-        color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+        color: ${({ theme }) => theme.textDefault};
         font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     }
 
@@ -54,7 +53,7 @@ const StyledMarkdown = styled.div`
     }
 
     a {
-        color: ${({ theme }) => theme.legacy.TYPE_GREEN};
+        color: ${({ theme }) => theme.textPrimaryDefault};
 
         &:hover {
             text-decoration: underline;
@@ -70,10 +69,8 @@ const StyledMarkdown = styled.div`
     }
 `;
 
-export const Markdown = (options: Readonly<Options>) => {
-    return (
-        <StyledMarkdown>
-            <ReactMarkdown {...options}></ReactMarkdown>
-        </StyledMarkdown>
-    );
-};
+export const Markdown = (options: Readonly<Options>) => (
+    <StyledMarkdown>
+        <ReactMarkdown {...options}></ReactMarkdown>
+    </StyledMarkdown>
+);

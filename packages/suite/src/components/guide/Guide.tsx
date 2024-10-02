@@ -12,13 +12,8 @@ import {
     GuideCategories,
     GuideSearch,
 } from 'src/components/guide';
-import { Icon } from '@trezor/components';
+import { Column, Divider, Icon } from '@trezor/components';
 
-const FeedbackBorder = styled.div`
-    height: 1px;
-    background-color: ${({ theme }) => theme.borderElevation1};
-    margin: 0 ${spacingsPx.md};
-`;
 const FeedbackLinkWrapper = styled.div`
     padding: ${spacingsPx.md};
 `;
@@ -79,25 +74,34 @@ export const Guide = () => {
     return (
         <GuideViewWrapper>
             <GuideHeader label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />} />
-            <GuideContent>
-                <GuideSearch pageRoot={indexNode} setSearchActive={setSearchActive} />
-                {!searchActive && <GuideCategories node={indexNode} />}
-            </GuideContent>
-            <FeedbackBorder />
-            <FeedbackLinkWrapper>
-                <FeedbackButton
-                    data-testid="@guide/button-feedback"
-                    onClick={handleFeedbackButtonClick}
-                >
-                    <Icon name="users" size={24} color={theme.iconOnTertiary} />
-                    <FeedbackButtonLabel>
-                        <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
-                    </FeedbackButtonLabel>
-                    <FeedbackIconWrapper>
-                        <Icon name="circleRight" size={24} color={theme.iconPrimaryDefault} />
-                    </FeedbackIconWrapper>
-                </FeedbackButton>
-            </FeedbackLinkWrapper>
+            <Column justifyContent="space-between" alignItems="stretch" height="100%">
+                <GuideContent>
+                    <GuideSearch pageRoot={indexNode} setSearchActive={setSearchActive} />
+                    {!searchActive && <GuideCategories node={indexNode} />}
+                </GuideContent>
+
+                <div>
+                    <Divider margin={{ bottom: 0, top: 0 }} />
+                    <FeedbackLinkWrapper>
+                        <FeedbackButton
+                            data-testid="@guide/button-feedback"
+                            onClick={handleFeedbackButtonClick}
+                        >
+                            <Icon name="users" size={24} color={theme.iconOnTertiary} />
+                            <FeedbackButtonLabel>
+                                <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
+                            </FeedbackButtonLabel>
+                            <FeedbackIconWrapper>
+                                <Icon
+                                    name="circleRight"
+                                    size={24}
+                                    color={theme.iconPrimaryDefault}
+                                />
+                            </FeedbackIconWrapper>
+                        </FeedbackButton>
+                    </FeedbackLinkWrapper>
+                </div>
+            </Column>
         </GuideViewWrapper>
     );
 };
