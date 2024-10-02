@@ -30,7 +30,7 @@
         "usb": "^2.14.0"
     },
     "devDependencies": {
-        "@electron/notarize": "2.4.0",
+        "@electron/notarize": "2.5.0",
         "electron": "31.6.0",
         "electron-builder": "25.0.5",
         "glob": "^10.3.10"
