@@ -9,7 +9,7 @@ export const DeviceAuthenticity = () => {
     const debug = useSelector(state => state.suite.settings.debug);
 
     const handleChange = (state?: boolean) =>
-        dispatch(setDebugMode({ isUnlockedBootloaderAllowed: state }));
+        dispatch(setDebugMode({ enableAutoupdateOnNextRun: state }));
 
     return (
         <SectionItem data-testid="@settings/debug/device-authenticity/switch">

@@ -35,14 +35,14 @@ export const isStepUsed = (step: Step, getState: GetState): boolean => {
     if (step.id === ID_AUTHENTICATE_DEVICE_STEP) {
         const {
             isDeviceAuthenticityCheckDisabled,
-            debug: { isUnlockedBootloaderAllowed },
+            debug: { enableAutoupdateOnNextRun },
         } = state.suite.settings;
 
         const isBootloaderUnlocked = device?.features?.bootloader_locked === false;
 
         return (
             !isDeviceAuthenticityCheckDisabled &&
-            (!isUnlockedBootloaderAllowed || !isBootloaderUnlocked)
+            (!enableAutoupdateOnNextRun || !isBootloaderUnlocked)
         );
     }
 

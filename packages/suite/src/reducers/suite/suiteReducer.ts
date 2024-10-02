@@ -36,7 +36,7 @@ export interface DebugModeOptions {
     showDebugMenu: boolean;
     checkFirmwareAuthenticity: boolean;
     transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
-    isUnlockedBootloaderAllowed: boolean;
+    enableAutoupdateOnNextRun: boolean;
 }
 
 export interface AutodetectSettings {
@@ -171,7 +171,7 @@ const initialState: SuiteState = {
             showDebugMenu: false,
             checkFirmwareAuthenticity: false,
             transports: [],
-            isUnlockedBootloaderAllowed: false,
+            enableAutoupdateOnNextRun: false,
         },
         autodetect: {
             language: true,

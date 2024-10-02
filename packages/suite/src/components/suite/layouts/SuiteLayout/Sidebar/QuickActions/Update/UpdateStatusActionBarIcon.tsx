@@ -163,7 +163,7 @@ export const UpdateStatusActionBarIcon = () => {
     const suiteOnClick = () => mapSuiteUpdateToClick[updateStatusSuite]?.({ dispatch });
     const deviceOnClick = () => mapDeviceUpdateToClick[updateStatusDevice]?.({ dispatch });
 
-    const handleOnClick = () => {
+    const handleClick = () => {
         if (updateStatusSuite !== 'up-to-date') {
             suiteOnClick();
         } else if (updateStatusDevice !== 'up-to-date') {
@@ -202,7 +202,7 @@ export const UpdateStatusActionBarIcon = () => {
                         />
                     )
                 }
-                onClick={handleOnClick}
+                onClick={handleClick}
             >
                 <ComponentWithSubIcon
                     variant={variant}
