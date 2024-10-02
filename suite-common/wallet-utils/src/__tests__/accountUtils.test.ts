@@ -213,6 +213,7 @@ describe('account utils', () => {
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
         ).toBe(true);
+        expect(accountSearchFn(btcAcc, '#1', undefined, 'Bitcoin #1')).toBe(true);
     });
 
     it('getNetworkAccountFeatures', () => {
