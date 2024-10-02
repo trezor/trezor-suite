@@ -447,7 +447,6 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
             'onCall: message.id or message.payload is missing',
         );
     }
-
     const {
         uiPromises,
         callMethods,
@@ -531,6 +530,8 @@ const onCallDevice = async (
     const responseID = message.id;
     const { origin, env, useCoreInPopup } = DataManager.getSettings();
 
+    sendCoreMessage(createUiMessage(UI.CALL_IN_PROGRESS, { value: true }));
+
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
         deviceList.init();
@@ -570,7 +571,6 @@ const onCallDevice = async (
     const device = tempDevice;
 
     method.setDevice(device);
-
     // find pending calls to this device
     const previousCall = callMethods.filter(
         call => call && call !== method && call.devicePath === method.devicePath,
@@ -721,6 +721,8 @@ const onCallDevice = async (
             if (!useCoreInPopup) {
                 sendCoreMessage(response);
             }
+
+            sendCoreMessage(createUiMessage(UI.CALL_IN_PROGRESS, { value: false }));
         }
     }
 };

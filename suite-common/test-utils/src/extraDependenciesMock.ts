@@ -102,6 +102,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectSuiteSettings: mockSelector('selectSuiteSettings', {
             defaultWalletLoading: 'standard',
         }),
+        selectIsDeviceLocked: mockSelector('selectIsDeviceLocked', false),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),

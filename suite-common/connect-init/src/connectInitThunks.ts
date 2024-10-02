@@ -26,6 +26,7 @@ export const connectInitThunk = createThunk(
                 selectEnabledNetworks,
                 selectIsPendingTransportEvent,
                 selectDebugSettings,
+                selectIsDeviceLocked,
             },
             actions: { lockDevice },
             utils: { connectInitSettings },
@@ -45,7 +46,9 @@ export const connectInitThunk = createThunk(
         });
 
         TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
-            // dispatch event as action
+            if (action.type === 'ui-call_in_progress') {
+                dispatch(lockDevice(action.payload.value));
+            }
             dispatch(action);
         });
 
@@ -61,50 +64,26 @@ export const connectInitThunk = createThunk(
 
         const synchronize = getSynchronize();
 
-        const wrappedMethods: Array<keyof typeof TrezorConnect> = [
-            'applySettings',
-            'authenticateDevice',
-            'authorizeCoinjoin',
-            'backupDevice',
-            'cancelCoinjoinAuthorization',
-            'cardanoGetAddress',
-            'cardanoGetPublicKey',
-            'cardanoSignTransaction',
-            'changePin',
-            'checkFirmwareAuthenticity',
-            'cipherKeyValue',
-            'ethereumGetAddress',
-            'ethereumSignTransaction',
-            'getAddress',
-            'getDeviceState',
-            'getFeatures',
-            'getOwnershipProof',
-            'getPublicKey',
-            'pushTransaction',
-            'rebootToBootloader',
-            'recoveryDevice',
-            'resetDevice',
-            'rippleGetAddress',
-            'rippleSignTransaction',
-            'setBusy',
-            'showDeviceTutorial',
-            'signTransaction',
-            'solanaGetAddress',
-            'solanaSignTransaction',
-            'unlockPath',
-            'wipeDevice',
-        ] as const;
+        const wrappedMethods = (
+            Object.keys(TrezorConnect) as Array<keyof typeof TrezorConnect>
+        ).filter(method => {
+            return (
+                ['on', 'off', 'removeAllListeners', 'uiResponse', 'dispose', 'init'].indexOf(
+                    method,
+                ) === -1
+            );
+        });
 
         wrappedMethods.forEach(key => {
             // typescript complains about params and return type, need to be "any"
             const original: any = TrezorConnect[key];
             if (!original) return;
             (TrezorConnect[key] as any) = async (params: any) => {
-                dispatch(lockDevice(true));
-                const result = await synchronize(() => original(params));
-                dispatch(lockDevice(false));
+                if (selectIsDeviceLocked(getState())) {
+                    return await synchronize(() => original(params));
+                }
 
-                return result;
+                return original(params);
             };
         });
 
