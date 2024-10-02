@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Icon, Button, LoadingContent, Card, Column } from '@trezor/components';
+import { Icon, Button, LoadingContent, Card } from '@trezor/components';
 import { selectCurrentFiatRates, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 import { DashboardSection } from 'src/components/dashboard';
@@ -203,19 +203,17 @@ export const AssetsView = () => {
                 </>
             ) : (
                 <Card paddingType="none">
-                    <Column>
-                        <AssetTable
-                            assetsData={assetsData}
-                            assetsFiatBalances={assetsFiatBalances}
-                            discoveryInProgress={discoveryInProgress}
-                        />
-                        {isError && (
-                            <InfoMessage>
-                                <Icon name="warningTriangle" color={theme.iconAlertRed} size={14} />
-                                <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
-                            </InfoMessage>
-                        )}
-                    </Column>
+                    <AssetTable
+                        assetsData={assetsData}
+                        assetsFiatBalances={assetsFiatBalances}
+                        discoveryInProgress={discoveryInProgress}
+                    />
+                    {isError && (
+                        <InfoMessage>
+                            <Icon name="warningTriangle" color={theme.iconAlertRed} size={14} />
+                            <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
+                        </InfoMessage>
+                    )}
                 </Card>
             )}
         </DashboardSection>

@@ -5,16 +5,18 @@ import {
 } from '@suite-common/assets';
 import { SkeletonCircle, Tooltip } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { spacingsPx } from '@trezor/theme';
 import styled from 'styled-components';
 import { localizePercentage } from '@suite-common/wallet-utils';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite';
 import { AssetShareIndicator } from '@trezor/product-components';
+import { spacingsPx } from '@trezor/theme';
 
 const LogoWrapper = styled.div`
-    padding-right: ${spacingsPx.sm};
+    display: flex;
+    padding-right: ${spacingsPx.md};
     align-items: center;
+    justify-content: center;
 `;
 
 type AssetCoinLogoProps = {
@@ -53,8 +55,12 @@ export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: AssetCoinLo
     );
 };
 
-export const AssetCoinLogoSkeleton = () => (
+type AssetCoinLogoSkeletonProps = {
+    animate?: boolean;
+};
+
+export const AssetCoinLogoSkeleton = ({ animate }: AssetCoinLogoSkeletonProps) => (
     <LogoWrapper>
-        <SkeletonCircle size={44} />
+        <SkeletonCircle animate={animate} size={44} />
     </LogoWrapper>
 );

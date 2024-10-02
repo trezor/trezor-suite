@@ -28,7 +28,7 @@ type AssetInfoSkeletonProps = {
 
 export const AssetCardInfoSkeleton = ({ animate }: AssetInfoSkeletonProps) => (
     <Row>
-        <AssetCoinLogoSkeleton />
+        <AssetCoinLogoSkeleton animate={animate} />
         <AssetCoinNameSkeleton animate={animate} />
     </Row>
 );
