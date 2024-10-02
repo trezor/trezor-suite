@@ -11,10 +11,24 @@ export default meta;
 export const Badge: StoryObj<BadgeProps> = {
     args: {
         children: 'Badge label',
+        isDisabled: false,
+        variant: 'primary',
         size: 'tiny',
         ...getFramePropsStory(allowedBadgeFrameProps).args,
     },
     argTypes: {
+        isDisabled: { control: 'boolean' },
+        variant: {
+            control: {
+                type: 'radio',
+            },
+            options: [
+                'primary',
+                'tertiary',
+                'destructive',
+                undefined,
+            ] satisfies BadgeProps['variant'][],
+        },
         size: {
             control: {
                 type: 'radio',

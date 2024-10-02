@@ -8,6 +8,7 @@ import { useSelector } from 'src/hooks/suite';
 import type { AccountUtxo } from '@trezor/connect';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { UtxoSelection } from './UtxoSelection';
+import { CSSColor } from '@trezor/theme';
 
 const Wrapper = styled.section`
     border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
@@ -46,7 +47,7 @@ interface UtxoSelectionListProps {
     description: ReactNode;
     heading: ReactNode;
     icon: IconName;
-    iconColor?: string;
+    iconColor?: CSSColor;
     utxos: AccountUtxo[];
     withHeader: boolean;
 }

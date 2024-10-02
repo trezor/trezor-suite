@@ -19,7 +19,7 @@ export const NoBackupModal = () => {
     return (
         <NewModal
             onCancel={close}
-            icon="warning"
+            iconName="warning"
             variant="warning"
             size="small"
             bottomContent={
