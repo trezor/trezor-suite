@@ -250,7 +250,7 @@ export const TokenRow = ({
                                                     }
                                                 />
                                             ),
-                                            icon: 'HIDE',
+                                            icon: 'eyeSlash',
                                             onClick: () =>
                                                 dispatch(
                                                     tokenDefinitionsActions.setTokenStatus({
@@ -266,7 +266,7 @@ export const TokenRow = ({
                                         },
                                         {
                                             label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
-                                            icon: 'NEWSPAPER',
+                                            icon: 'newspaper',
                                             onClick: () => {
                                                 dispatch({
                                                     type: SUITE.SET_TRANSACTION_HISTORY_PREFILL,
@@ -283,7 +283,7 @@ export const TokenRow = ({
                                         },
                                         {
                                             label: <Translation id="TR_VIEW_IN_EXPLORER" />,
-                                            icon: 'EXTERNAL_LINK',
+                                            icon: 'arrowUpRight',
                                             onClick: () => {
                                                 window.open(
                                                     getTokenExplorerUrl(network, token),
