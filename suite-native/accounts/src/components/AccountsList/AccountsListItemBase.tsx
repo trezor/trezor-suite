@@ -54,7 +54,7 @@ const accountListItemStyle = prepareNativeStyle<{
                     style: {
                         borderBottomLeftRadius: utils.borders.radii.r16,
                         borderBottomRightRadius: utils.borders.radii.r16,
-                        marginBottom: utils.spacings.sp32,
+                        marginBottom: utils.spacings.sp16,
                         ...utils.boxShadows.small,
                     },
                 },

@@ -88,6 +88,7 @@ export const en = {
         numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
         tokens: 'Tokens',
         staking: 'Staking',
+        stakingDisabled: 'Staking is not available in this context.',
     },
     assets: {
         dashboard: {

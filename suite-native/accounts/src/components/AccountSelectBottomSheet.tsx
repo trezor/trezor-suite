@@ -1,10 +1,8 @@
 import React, { useCallback } from 'react';
 
-import { FlashList } from '@shopify/flash-list';
-
-import { BottomSheet } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useToast } from '@suite-native/toasts';
+import { BottomSheetFlashList } from '@suite-native/atoms';
+import { ToastRenderer, useToast } from '@suite-native/toasts';
+import { Translation } from '@suite-native/intl';
 
 import { AccountSelectBottomSheetSection, OnSelectAccount } from '../types';
 import { AccountsListItem } from './AccountsList/AccountsListItem';
@@ -19,9 +17,7 @@ type AccountSelectBottomSheetProps = {
     onClose: () => void;
 };
 
-const contentContainerStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.sp16,
-}));
+const ESTIMATED_ITEM_SIZE = 76;
 
 export const AccountSelectBottomSheet = React.memo(
     ({
@@ -30,7 +26,6 @@ export const AccountSelectBottomSheet = React.memo(
         isStakingPressable = false,
         onClose,
     }: AccountSelectBottomSheetProps) => {
-        const { applyStyle } = useNativeStyles();
         const { showToast } = useToast();
 
         const renderItem = useCallback(
@@ -63,7 +58,9 @@ export const AccountSelectBottomSheet = React.memo(
                                     } else {
                                         showToast({
                                             variant: 'warning',
-                                            message: 'Staking is not available in this context.',
+                                            message: (
+                                                <Translation id="accountList.stakingDisabled" />
+                                            ),
                                         });
                                     }
                                 }}
@@ -93,14 +90,16 @@ export const AccountSelectBottomSheet = React.memo(
         );
 
         return (
-            <BottomSheet isVisible isCloseDisplayed={false} onClose={onClose} isScrollable={false}>
-                <FlashList
-                    data={data}
-                    renderItem={renderItem}
-                    contentContainerStyle={applyStyle(contentContainerStyle)}
-                    estimatedItemSize={76}
-                />
-            </BottomSheet>
+            <BottomSheetFlashList<AccountSelectBottomSheetSection>
+                isVisible
+                isCloseDisplayed={false}
+                onClose={onClose}
+                data={data}
+                renderItem={renderItem}
+                estimatedItemSize={ESTIMATED_ITEM_SIZE}
+                estimatedListHeight={ESTIMATED_ITEM_SIZE * data.length}
+                ExtraProvider={ToastRenderer}
+            />
         );
     },
 );
