@@ -6,6 +6,7 @@ import { typography, spacingsPx, Elevation, mapElevationToBackground } from '@tr
 import { useTableHeader } from './TableHeader';
 import { UIHorizontalAlignment } from '../../config/types';
 import { useElevation } from '../ElevationContext/ElevationContext';
+import { useTable } from './Table';
 
 export type TableCellProps = {
     children?: ReactNode;
@@ -23,7 +24,7 @@ const mapAlignmentToJustifyContent = (align: UIHorizontalAlignment) => {
     return map[align];
 };
 
-const Cell = styled.td<{ $isHeader: boolean; $elevation: Elevation }>`
+const Cell = styled.td<{ $isHeader: boolean; $elevation: Elevation; $highlight: boolean }>`
     ${({ $isHeader }) => ($isHeader ? typography.hint : typography.body)}
     color: ${({ theme, $isHeader }) => ($isHeader ? theme.textSubdued : theme.textDefault)};
     text-align: left;
@@ -47,6 +48,7 @@ const Content = styled.div<{ $align: UIHorizontalAlignment }>`
 export const TableCell = ({ children, colSpan = 1, align = 'left' }: TableCellProps) => {
     const isHeader = useTableHeader();
     const { parentElevation } = useElevation();
+    const { highlightRowOnHover } = useTable();
 
     return (
         <Cell
@@ -54,6 +56,7 @@ export const TableCell = ({ children, colSpan = 1, align = 'left' }: TableCellPr
             colSpan={colSpan}
             $isHeader={isHeader}
             $elevation={parentElevation}
+            $highlight={highlightRowOnHover}
         >
             <Content $align={align}>{children}</Content>
         </Cell>
