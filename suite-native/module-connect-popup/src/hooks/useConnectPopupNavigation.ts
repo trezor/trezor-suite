@@ -15,6 +15,8 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
+const isConnectPopupUrl = (url: string): boolean => url.startsWith('trezorsuitelite://');
+
 // TODO: will be necessary to handle if device is not connected/unlocked so we probably want to wait until user unlock device
 // we already have some modals like biometrics or coin enabled which are waiting for device to be connected
 export const useConnectPopupNavigation = () => {
@@ -31,7 +33,7 @@ export const useConnectPopupNavigation = () => {
     useEffect(() => {
         const navigateToInitalUrl = async () => {
             const currentUrl = await Linking.getInitialURL();
-            if (currentUrl) {
+            if (currentUrl && isConnectPopupUrl(currentUrl)) {
                 // eslint-disable-next-line no-console
                 console.log('initial url', currentUrl);
                 navigateToConnectPopup(currentUrl);
