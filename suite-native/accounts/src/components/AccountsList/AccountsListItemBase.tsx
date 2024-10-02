@@ -78,6 +78,7 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
     maxWidth: '40%',
     flexShrink: 0,
     alignItems: 'flex-end',
+    justifyContent: 'center',
     paddingLeft: utils.spacings.sp8,
 }));
 
