@@ -76,7 +76,6 @@ export type ExtraDependencies = {
         selectRoute: SuiteCompatibleSelector<Route | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;
         selectDeviceDiscovery: SuiteCompatibleSelector<Discovery | undefined>;
-        selectCheckFirmwareAuthenticity: SuiteCompatibleSelector<boolean>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
         selectSuiteSettings: SuiteCompatibleSelector<{

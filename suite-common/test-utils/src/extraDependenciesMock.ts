@@ -93,7 +93,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         }),
         selectLanguage: mockSelector('selectLanguage', 'en'),
         selectDeviceDiscovery: mockSelector('selectDeviceDiscovery', undefined),
-        selectCheckFirmwareAuthenticity: mockSelector('selectCheckFirmwareAuthenticity', false),
         selectAddressDisplayType: mockSelector(
             'selectAddressDisplayType',
             AddressDisplayOptions.CHUNKED,
