@@ -293,7 +293,7 @@ export const TransactionReviewSummary = ({
                 {!!tx.feeLimit && network.networkType !== 'solana' && (
                     <LeftDetailsRow>
                         <ReviewLeftDetailsLineLeft>
-                            <Icon size={12} color={theme.iconSubdued} name="gas" />
+                            <Icon size={12} color={theme.iconSubdued} name="gasPump" />
                             <Translation id="TR_GAS_LIMIT" />
                         </ReviewLeftDetailsLineLeft>
 
@@ -304,7 +304,7 @@ export const TransactionReviewSummary = ({
                 )}
                 <LeftDetailsRow>
                     <ReviewLeftDetailsLineLeft>
-                        <Icon size={12} color={theme.iconSubdued} name="gas" />
+                        <Icon size={12} color={theme.iconSubdued} name="gasPump" />
                         <Translation
                             id={feeLabelTranslationIdByNetworkTypeMap[network.networkType]}
                         />

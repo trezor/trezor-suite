@@ -1,5 +1,5 @@
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { Icon, Link } from '@trezor/components';
+import { Icon, Link, Paragraph } from '@trezor/components';
 import { useState } from 'react';
 import { copyToClipboard } from '@trezor/dom-utils';
 import styled, { css, useTheme } from 'styled-components';
@@ -34,7 +34,6 @@ const TextOverflowContainer = styled.div<{ $shouldAllowCopy?: boolean }>`
     align-items: center;
     max-width: 100%;
     overflow: hidden;
-    color: ${({ theme }) => theme.textSubdued};
     cursor: ${({ $shouldAllowCopy }) => ($shouldAllowCopy ? 'pointer' : 'cursor')};
     user-select: none;
 
@@ -95,42 +94,44 @@ export const IOAddress = ({
 
     // HiddenPlaceholder disableKeepingWidth: it isn't needed (no numbers to redact), but inline-block disrupts overflow behavior
     return (
-        <HiddenPlaceholder disableKeepingWidth>
-            <TextOverflowContainer
-                onMouseLeave={() => setIsClicked(false)}
-                data-testid="@tx-detail/txid-value"
-                id={txAddress}
-                $shouldAllowCopy={shouldAllowCopy}
-            >
-                {txAddress.length <= 5 ? (
-                    <SpanTextEnd onClick={copy}>{txAddress}</SpanTextEnd>
-                ) : (
-                    <>
-                        <SpanTextStart onClick={copy}>{txAddress.slice(0, -4)}</SpanTextStart>
-                        <SpanTextEnd onClick={copy}>{txAddress.slice(-4)}</SpanTextEnd>
-                    </>
-                )}
-                {shouldAllowCopy ? (
-                    <IconWrapper onClick={copy}>
-                        <Icon
-                            name={isClicked ? 'check' : 'copy'}
-                            size={12}
-                            color={theme.iconOnPrimary}
-                        />
-                    </IconWrapper>
-                ) : null}
-                {explorerUrl ? (
-                    <IconWrapper>
-                        <Link
-                            type="label"
-                            variant="nostyle"
-                            href={`${explorerUrl}${txAddress}${explorerUrlQueryString}`}
-                        >
-                            <Icon name="arrowUpRight" size={12} color={theme.iconOnPrimary} />
-                        </Link>
-                    </IconWrapper>
-                ) : null}
-            </TextOverflowContainer>
-        </HiddenPlaceholder>
+        <Paragraph typographyStyle="label" variant="default">
+            <HiddenPlaceholder disableKeepingWidth>
+                <TextOverflowContainer
+                    onMouseLeave={() => setIsClicked(false)}
+                    data-testid="@tx-detail/txid-value"
+                    id={txAddress}
+                    $shouldAllowCopy={shouldAllowCopy}
+                >
+                    {txAddress.length <= 5 ? (
+                        <SpanTextEnd onClick={copy}>{txAddress}</SpanTextEnd>
+                    ) : (
+                        <>
+                            <SpanTextStart onClick={copy}>{txAddress.slice(0, -4)}</SpanTextStart>
+                            <SpanTextEnd onClick={copy}>{txAddress.slice(-4)}</SpanTextEnd>
+                        </>
+                    )}
+                    {shouldAllowCopy ? (
+                        <IconWrapper onClick={copy}>
+                            <Icon
+                                name={isClicked ? 'check' : 'copy'}
+                                size={12}
+                                color={theme.iconOnPrimary}
+                            />
+                        </IconWrapper>
+                    ) : null}
+                    {explorerUrl ? (
+                        <IconWrapper>
+                            <Link
+                                type="label"
+                                variant="nostyle"
+                                href={`${explorerUrl}${txAddress}${explorerUrlQueryString}`}
+                            >
+                                <Icon name="arrowUpRight" size={12} color={theme.iconOnPrimary} />
+                            </Link>
+                        </IconWrapper>
+                    ) : null}
+                </TextOverflowContainer>
+            </HiddenPlaceholder>
+        </Paragraph>
     );
 };
