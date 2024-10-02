@@ -11,7 +11,7 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { GuideViewWrapper, GuideHeader, GuideContent } from 'src/components/guide';
+import { GuideViewWrapper, GuideHeader } from 'src/components/guide';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { borders } from '@trezor/theme';
 
@@ -141,7 +141,7 @@ export const SupportFeedbackSelection = () => {
                 back={goBack}
                 label={<Translation id="TR_GUIDE_VIEW_HEADLINES_SUPPORT_FEEDBACK_SELECTION" />}
             />
-            <GuideContent>
+            <div>
                 <Section>
                     <SectionHeader>
                         <Translation id="TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE" />
@@ -248,7 +248,7 @@ export const SupportFeedbackSelection = () => {
                         )}
                     </DetailItem>
                 </Details>
-            </GuideContent>
+            </div>
         </GuideViewWrapper>
     );
 };

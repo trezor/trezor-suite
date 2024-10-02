@@ -1,4 +1,3 @@
-import { GuideContent } from './GuideContent';
 import { GuideButton } from './GuideButton';
 import { GuideRouter } from './GuideRouter';
 import { GuideHeader } from './GuideHeader';
@@ -16,7 +15,6 @@ import { OpenGuideFromTooltip } from './OpenGuideFromTooltip';
 import { GuideMarkdown } from './GuideMarkdown';
 
 export {
-    GuideContent,
     GuideButton,
     GuideRouter,
     GuideHeader,

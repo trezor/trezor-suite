@@ -3,6 +3,7 @@ import { Markdown } from '@trezor/components';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { GuideHint } from './GuideHint';
 import { TrezorLink } from '../suite';
+import { spacings } from '@trezor/theme';
 
 interface GuideMarkdownProps {
     markdown: string | undefined;
@@ -22,6 +23,12 @@ export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
         <div ref={ref}>
             {markdown && (
                 <Markdown
+                    margin={{
+                        top: spacings.md,
+                        right: spacings.lg,
+                        bottom: spacings.xxl,
+                        left: spacings.lg,
+                    }}
                     components={{
                         a: ({ children, href }) => {
                             if (!href) {
