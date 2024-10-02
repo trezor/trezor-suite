@@ -125,6 +125,7 @@ type NewModalProps = AllowedFrameProps & {
     bottomContent?: ReactNode;
     onBackClick?: () => void;
     onCancel?: () => void;
+    isBackdropCancelable?: boolean;
     icon?: IconName;
     alignment?: NewModalAlignment;
     size?: NewModalSize;
@@ -237,12 +238,15 @@ const NewModalBase = (props: NewModalProps) => (
     </ElevationContext>
 );
 
-const NewModal = (props: NewModalProps) => {
-    const { alignment, onCancel } = props;
+const NewModal = ({ isBackdropCancelable = true, ...rest }: NewModalProps) => {
+    const { alignment, onCancel } = rest;
 
     return (
-        <NewModalBackdrop onClick={onCancel} alignment={alignment}>
-            <NewModalBase {...props} />
+        <NewModalBackdrop
+            onClick={isBackdropCancelable ? onCancel : undefined}
+            alignment={alignment}
+        >
+            <NewModalBase {...rest} />
         </NewModalBackdrop>
     );
 };
