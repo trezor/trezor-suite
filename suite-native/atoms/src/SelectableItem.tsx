@@ -12,7 +12,7 @@ import { Radio } from './Radio';
 
 const cardStyle = prepareNativeStyle((utils, { isSelected }: { isSelected: boolean }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.r16,
     padding: utils.spacings.sp16,
     ...utils.boxShadows.small,
     extend: [

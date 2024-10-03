@@ -44,16 +44,16 @@ const accountListItemStyle = prepareNativeStyle<{
                 {
                     condition: isFirst,
                     style: {
-                        borderTopLeftRadius: utils.borders.radii.medium,
-                        borderTopRightRadius: utils.borders.radii.medium,
+                        borderTopLeftRadius: utils.borders.radii.r16,
+                        borderTopRightRadius: utils.borders.radii.r16,
                         ...utils.boxShadows.small,
                     },
                 },
                 {
                     condition: isLast,
                     style: {
-                        borderBottomLeftRadius: utils.borders.radii.medium,
-                        borderBottomRightRadius: utils.borders.radii.medium,
+                        borderBottomLeftRadius: utils.borders.radii.r16,
+                        borderBottomRightRadius: utils.borders.radii.r16,
                         marginBottom: utils.spacings.sp32,
                         ...utils.boxShadows.small,
                     },

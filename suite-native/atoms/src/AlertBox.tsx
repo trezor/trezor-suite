@@ -94,7 +94,7 @@ const AlertSpinner = ({ color }: { color: Color }) => {
 export const AlertBox = ({
     title,
     variant = 'info',
-    borderRadius = nativeBorders.radii.medium,
+    borderRadius = nativeBorders.radii.r16,
 }: AlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
     const { contentColor, backgroundColor, borderColor } = variantToColorMap[variant];

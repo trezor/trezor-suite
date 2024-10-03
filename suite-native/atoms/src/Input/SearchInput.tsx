@@ -34,7 +34,7 @@ const inputWrapperStyle = prepareNativeStyle<InputStyleProps>(
         alignItems: 'center',
         height: 48,
         borderWidth: utils.borders.widths.small,
-        borderRadius: utils.borders.radii.small,
+        borderRadius: utils.borders.radii.r8,
         borderColor: utils.colors.backgroundNeutralSubtleOnElevation0,
         backgroundColor: utils.colors.backgroundNeutralSubtleOnElevation0,
         paddingLeft: 14,

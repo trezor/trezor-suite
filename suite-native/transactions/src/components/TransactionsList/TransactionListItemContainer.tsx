@@ -73,8 +73,8 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
                 condition: isFirst,
                 style: {
                     paddingTop: utils.spacings.sp16,
-                    borderTopLeftRadius: utils.borders.radii.large / 2,
-                    borderTopRightRadius: utils.borders.radii.large / 2,
+                    borderTopLeftRadius: utils.borders.radii.r12,
+                    borderTopRightRadius: utils.borders.radii.r12,
                 },
             },
             {
@@ -82,8 +82,8 @@ export const transactionListItemContainerStyle = prepareNativeStyle<TransactionL
                 style: {
                     paddingBottom: utils.spacings.sp16,
                     marginBottom: utils.spacings.sp8,
-                    borderBottomLeftRadius: utils.borders.radii.large / 2,
-                    borderBottomRightRadius: utils.borders.radii.large / 2,
+                    borderBottomLeftRadius: utils.borders.radii.r12,
+                    borderBottomRightRadius: utils.borders.radii.r12,
                 },
             },
         ],

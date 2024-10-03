@@ -34,7 +34,7 @@ const deviceFrameStyle = prepareNativeStyle(utils => ({
     width: DEVICE_SCREEN_WIDTH,
     padding: utils.spacings.sp4,
     borderWidth: utils.borders.widths.small,
-    borderRadius: utils.borders.radii.large / 2,
+    borderRadius: utils.borders.radii.r12,
     borderColor: utils.colors.borderElevation2,
 }));
 
@@ -46,7 +46,7 @@ const deviceScreenStyle = prepareNativeStyle<{ isPaginationEnabled: boolean }>(
         paddingVertical: isPaginationEnabled ? utils.spacings.sp24 : 40,
         maxWidth: DEVICE_SCREEN_WIDTH,
         backgroundColor: DEVICE_SCREEN_BACKGROUND_COLOR,
-        borderRadius: utils.borders.radii.large / 2,
+        borderRadius: utils.borders.radii.r12,
     }),
 );
 

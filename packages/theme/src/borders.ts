@@ -17,6 +17,8 @@ export const borders = {
 
 export type Borders = typeof borders;
 
+type NativeRadiusValue = 4 | 8 | 12 | 16 | 20 | 24;
+
 export const nativeBorders = {
     widths: {
         small: 1,
@@ -24,12 +26,14 @@ export const nativeBorders = {
         large: 2,
     },
     radii: {
-        extraSmall: 4,
-        small: 8,
-        medium: 16,
-        large: 24,
+        r4: 4,
+        r8: 8,
+        r12: 12,
+        r16: 16,
+        r20: 20,
+        r24: 24,
         round: 100, // Equivalent to 50% on the web
-    },
+    } satisfies { [V in NativeRadiusValue as `r${V}`]: V } & { round: 100 },
 } as const;
 
 export type NativeBorders = typeof nativeBorders;
