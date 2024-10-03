@@ -11,6 +11,7 @@ export enum DeviceModelInternal {
     T2T1 = 'T2T1',
     T2B1 = 'T2B1',
     T3T1 = 'T3T1',
+    T3W1 = 'T3W1',
 }
 
 // BinanceGetAddress
