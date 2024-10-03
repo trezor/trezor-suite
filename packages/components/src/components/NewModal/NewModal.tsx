@@ -130,6 +130,7 @@ const _NewModalBase = ({
     iconComponent,
     onBackClick,
     onCancel,
+    isBackdropCancelable,
     'data-testid': dataTest = '@modal',
     ...rest
 }: NewModalProps) => {
@@ -142,7 +143,7 @@ const _NewModalBase = ({
     const hasHeader = onBackClick || onCancel || heading || description;
 
     useEvent('keydown', (e: KeyboardEvent) => {
-        if (onCancel && e.key === 'Escape') {
+        if (isBackdropCancelable && onCancel && e.key === 'Escape') {
             onCancel?.();
         }
     });
