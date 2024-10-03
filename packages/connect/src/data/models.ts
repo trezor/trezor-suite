@@ -29,4 +29,13 @@ export const models = {
             '4': 'Bitcoin Orange',
         },
     },
+    T3W1: {
+        name: 'Trezor Safe 7',
+        colors: {
+            '1': 'Fantastic Ethereum', // TODO T3W1
+            '2': 'Lunatic Dogecoin', // TODO T3W1
+            '3': 'Galactic Litecoin', // TODO T3W1
+            '4': 'Majestic Bitcoin', // TODO T3W1
+        },
+    },
 };
