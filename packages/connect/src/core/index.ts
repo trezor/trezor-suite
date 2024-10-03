@@ -993,7 +993,13 @@ const initDeviceList = (context: CoreContext) => {
         sendCoreMessage(createDeviceMessage(DEVICE.DISCONNECT, device));
     });
 
-    deviceList.on(DEVICE.CHANGED, device => {
+    deviceList.on(DEVICE.ACQUIRED, device => {
+        // TODO resolve ACQUIRED -> CHANGED transformation
+        sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device));
+    });
+
+    deviceList.on(DEVICE.RELEASED, device => {
+        // TODO resolve RELEASED > CHANGED transformation
         sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device));
     });
 
