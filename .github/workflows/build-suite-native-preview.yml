@@ -48,12 +48,12 @@ jobs:
 
       # Temporary workaround waiting for this fix to be published https://github.com/expo/expo/pull/31453
       - name: Set RUNTIME_VERSION
-        run: echo "RUNTIME_VERSION=${{ steps.fingerprint.outputs.current-fingerprint.hash }}" >> $GITHUB_ENV
+        run: echo "RUNTIME_VERSION=${{ steps.fingerprint.outputs.current-fingerprint | jq -r '.hash }}" >> $GITHUB_ENV
 
       - name: Create preview builds if fingerprint changed
         uses: expo/expo-github-action/preview-build@main
         with:
-          command: eas build --profile preview --platform all --non-interactive --no-wait
+          command: eas build --profile preview --platform all
           working-directory: suite-native/app
 
       - name: Install deps and build libs
