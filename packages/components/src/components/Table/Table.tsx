@@ -29,7 +29,10 @@ const ScrollContainer = styled.div`
 
 export type TableProps = AllowedFrameProps & {
     children: ReactNode;
-    colWidths?: string[];
+    colWidths?: {
+        minWidth?: string;
+        maxWidth?: string;
+    }[];
 };
 
 export const Table = ({ children, margin, colWidths }: TableProps) => {
@@ -42,8 +45,8 @@ export const Table = ({ children, margin, colWidths }: TableProps) => {
                 <Container {...makePropsTransient({ margin })}>
                     {colWidths && (
                         <colgroup>
-                            {colWidths.map((width, index) => (
-                                <col key={index} style={{ minWidth: width, maxWidth: width }} />
+                            {colWidths.map((widths, index) => (
+                                <col key={index} style={widths} />
                             ))}
                         </colgroup>
                     )}

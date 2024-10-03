@@ -42,13 +42,16 @@ export const Table: StoryObj = {
     argTypes: {
         ...getFramePropsStory(allowedTableFrameProps).argTypes,
         colWidths: {
-            options: ['none', 'fixed'],
-            mapping: { none: undefined, fixed: ['150px', '400px'] },
+            options: ['none', 'secondCol300px'],
+            mapping: {
+                none: undefined,
+                secondCol300px: [{}, { minWidth: '300px', maxWidth: '300px' }],
+            },
             control: {
                 type: 'select',
                 labels: {
                     none: 'undefined',
-                    fixed: "fixed = ['150px', '400px']",
+                    secondCol300px: 'second column 300px',
                 },
             },
         },
