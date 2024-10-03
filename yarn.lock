@@ -3947,7 +3947,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/fingerprint@npm:^0.10.2":
+"@expo/fingerprint@npm:^0.10.2, @expo/fingerprint@npm:^0.10.3":
   version: 0.10.3
   resolution: "@expo/fingerprint@npm:0.10.3"
   dependencies:
@@ -9560,6 +9560,7 @@ __metadata:
     "@babel/core": "npm:^7.20.0"
     "@babel/plugin-transform-export-namespace-from": "npm:^7.23.4"
     "@config-plugins/detox": "npm:^8.0.0"
+    "@expo/fingerprint": "npm:^0.10.3"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-native-community/netinfo": "npm:11.3.2"
     "@react-native/babel-preset": "npm:^0.75.2"
