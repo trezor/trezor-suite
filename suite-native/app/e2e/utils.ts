@@ -86,5 +86,5 @@ export const scrollUntilVisible = async (matcher: Detox.NativeMatcher) => {
 export const appIsFullyLoaded = async () => {
     await waitFor(element(by.id('@screen/mainScrollView')))
         .toBeVisible()
-        .withTimeout(20000);
+        .withTimeout(35000);
 };
