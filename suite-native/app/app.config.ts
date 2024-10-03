@@ -68,7 +68,6 @@ const projectIds = {
 
 const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
 const isCI = process.env.CI == 'true' || process.env.CI == '1';
-const runtimeVersion = process.env.EXPO_PUBLIC_RUNTIME_VERSION ?? 'fingerprint';
 
 if (isCI) {
     if (!process.env.EXPO_PUBLIC_ENVIRONMENT) {
@@ -78,15 +77,6 @@ if (isCI) {
         throw new Error('Missing SENTRY_AUTH_TOKEN env variable');
     }
 }
-
-// Temporary workaround waiting for this fix to be published https://github.com/expo/expo/pull/31453
-const getRuntimeVersion = () => {
-    if (runtimeVersion === 'fingerprint') {
-        return { policy: 'fingerprint' } as const;
-    }
-
-    return runtimeVersion;
-};
 
 const getPlugins = (): ExpoPlugins => {
     const plugins = [
@@ -179,7 +169,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: getRuntimeVersion(),
+        runtimeVersion: '1',
         ...(['develop', 'preview'].includes(buildType)
             ? {
                   updates: {

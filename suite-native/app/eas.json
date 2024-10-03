@@ -30,6 +30,15 @@
             "credentialsSource": "remote",
             "distribution": "internal"
         },
+        "adhoc": {
+            "env": {
+                "EXPO_PUBLIC_ENVIRONMENT": "preview",
+                "EXPO_PUBLIC_CODESIGN_BUILD": "false"
+            },
+            "autoIncrement": true,
+            "credentialsSource": "remote",
+            "distribution": "internal"
+        },
         "production": {
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "production",
