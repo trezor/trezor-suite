@@ -1,33 +1,21 @@
 import { useCallback, useState } from 'react';
 
-import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Button, Paragraph, Tooltip, Image } from '@trezor/components';
+import {
+    Button,
+    Paragraph,
+    Tooltip,
+    NewModal,
+    Card,
+    Column,
+    NewModalIconColors,
+} from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { CheckItem, Translation, Modal } from 'src/components/suite';
-import { DialogModal } from 'src/components/suite/modals/Modal/DialogRenderer';
-
-import { Description, Divider } from './styles';
-
-const DescriptionWrapper = styled.div`
-    display: flex;
-`;
-
-const DescriptionTextWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-around;
-    margin-left: 20px;
-    text-align: left;
-`;
-
-// Checkbox has 80% max-width by default but it's nicer full width here.
-const Checkbox = styled(CheckItem)`
-    max-width: 100%;
-`;
+import { CheckItem, Translation } from 'src/components/suite';
 
 interface EarlyAccessEnableProps {
     hideWindow: () => void;
@@ -36,6 +24,8 @@ interface EarlyAccessEnableProps {
 export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
     const [understood, setUnderstood] = useState(false);
     const [enabled, setEnabled] = useState(false);
+
+    const theme = useTheme();
 
     const allowPrerelease = useCallback(() => {
         analytics.report({
@@ -50,12 +40,19 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
 
     const checkForUpdates = useCallback(() => desktopApi.checkForUpdates(true), []);
 
+    const purpleModalColorBranding: NewModalIconColors = {
+        foreground: theme.iconAlertPurple,
+        background: theme.backgroundAlertPurpleSubtleOnElevationNegative,
+    };
+
+    const eapIconComponent = <NewModal.Icon iconName="eap" iconColor={purpleModalColorBranding} />;
+
     return enabled ? (
-        <DialogModal
-            icon="check"
-            bodyHeading={<Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />}
-            body={<Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />}
-            bottomBarComponents={
+        <NewModal
+            iconComponent={eapIconComponent}
+            heading={<Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />}
+            onCancel={hideWindow}
+            bottomContent={
                 <>
                     <Button onClick={checkForUpdates}>
                         <Translation id="TR_EARLY_ACCESS_CHECK_UPDATE" />
@@ -69,13 +66,15 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                     </Button>
                 </>
             }
-        />
+        >
+            <Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />
+        </NewModal>
     ) : (
-        <Modal
+        <NewModal
+            iconComponent={eapIconComponent}
             heading={<Translation id="TR_EARLY_ACCESS" />}
-            isCancelable
             onCancel={hideWindow}
-            bottomBarComponents={
+            bottomContent={
                 <Tooltip
                     maxWidth={285}
                     content={
@@ -83,6 +82,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                     }
                 >
                     <Button
+                        variant="primary"
                         onClick={allowPrerelease}
                         isDisabled={!understood}
                         data-testid="@settings/early-access-confirm-button"
@@ -92,29 +92,24 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
                 </Tooltip>
             }
         >
-            <DescriptionWrapper>
-                <Image width={60} height={60} image="EARLY_ACCESS" />
-                <DescriptionTextWrapper>
-                    <Paragraph typographyStyle="highlight">
-                        <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE" />
-                    </Paragraph>
-                    <Description>
-                        <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION" />
-                    </Description>
-                </DescriptionTextWrapper>
-            </DescriptionWrapper>
-            <Divider />
-            <Checkbox
-                data-testid="@settings/early-access-confirm-check"
-                title={
-                    <Paragraph typographyStyle="highlight">
-                        <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK" />
-                    </Paragraph>
-                }
-                description=""
-                isChecked={understood}
-                onClick={() => setUnderstood(!understood)}
-            />
-        </Modal>
+            <Column gap={spacings.xs} alignItems="start">
+                <Paragraph typographyStyle="highlight">
+                    <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE" />
+                </Paragraph>
+                <Paragraph variant="tertiary">
+                    <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION" />
+                </Paragraph>
+
+                <Card>
+                    <CheckItem
+                        data-testid="@settings/early-access-confirm-check"
+                        title={<Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK" />}
+                        description=""
+                        isChecked={understood}
+                        onClick={() => setUnderstood(!understood)}
+                    />
+                </Card>
+            </Column>
+        </NewModal>
     );
 };
