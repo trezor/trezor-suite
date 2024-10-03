@@ -68,7 +68,7 @@ const projectIds = {
 
 const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
 const isCI = process.env.CI == 'true' || process.env.CI == '1';
-const runtimeVersion = process.env.RUNTIME_VERSION ?? 'fingerprint';
+const runtimeVersion = process.env.EXPO_PUBLIC_RUNTIME_VERSION ?? 'fingerprint';
 
 if (isCI) {
     if (!process.env.EXPO_PUBLIC_ENVIRONMENT) {
@@ -81,6 +81,8 @@ if (isCI) {
 
 // Temporary workaround waiting for this fix to be published https://github.com/expo/expo/pull/31453
 const getRuntimeVersion = () => {
+    console.log('runtimeVersion: ', runtimeVersion);
+
     if (runtimeVersion === 'fingerprint') {
         return { policy: 'fingerprint' } as const;
     }

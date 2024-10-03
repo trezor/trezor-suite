@@ -47,11 +47,11 @@ jobs:
           working-directory: suite-native/app
 
       # Temporary workaround waiting for this fix to be published https://github.com/expo/expo/pull/31453
-      - name: Set RUNTIME_VERSION
+      - name: Set EXPO_PUBLIC_RUNTIME_VERSION
         run: |
           FINGERPRINT='${{ steps.fingerprint.outputs.current-fingerprint }}'
           HASH=$(echo $FINGERPRINT | jq -r '.hash')
-          echo "RUNTIME_VERSION=$HASH" >> $GITHUB_ENV
+          echo "EXPO_PUBLIC_RUNTIME_VERSION=$HASH" >> $GITHUB_ENV
 
       - name: Create preview builds if fingerprint changed
         uses: expo/expo-github-action/preview-build@main
