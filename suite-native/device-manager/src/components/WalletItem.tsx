@@ -23,7 +23,7 @@ const walletItemStyle = prepareNativeStyle<WalletItemStyleProps>(
         justifyContent: 'space-between',
         alignItems: 'center',
         height: 60,
-        gap: 12,
+        gap: utils.spacings.sp12,
         borderRadius: 12,
         borderColor: utils.colors.borderElevation1,
         flex: 1,

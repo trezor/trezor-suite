@@ -38,12 +38,12 @@ const contentWrapperStyle = prepareNativeStyle<{ height: number }>((utils, { hei
     spacing: utils.spacings.sp16,
 }));
 
-const itemStyle = prepareNativeStyle<{ isCompact: boolean }>((_, { isCompact }) => ({
+const itemStyle = prepareNativeStyle<{ isCompact: boolean }>((utils, { isCompact }) => ({
     flexShrink: 1,
     extend: {
         condition: !isCompact,
         style: {
-            gap: 2,
+            gap: utils.spacings.sp2,
         },
     },
 }));
