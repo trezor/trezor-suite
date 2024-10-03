@@ -7,7 +7,7 @@ const DeviceModelInternal = 'DeviceModelInternal';
 
 // type rule fixes, ideally it should not be here
 const RULE_PATCH = {
-    'BackupDevice.groups': "optional", // protobuf repeated bytes are always optional (fallback to [])
+    'BackupDevice.groups': 'optional', // protobuf repeated bytes are always optional (fallback to [])
     'MultisigRedeemScriptType.nodes': 'optional', // its valid to be undefined according to implementation/tests
     'MultisigRedeemScriptType.address_n': 'optional', // its valid to be undefined according to implementation/tests
     'TxRequestDetailsType.request_index': 'required',
@@ -295,19 +295,6 @@ const SKIP = [
     'WebAuthnRemoveResidentCredential',
     'WebAuthnCredential',
     'WebAuthnCredentials',
-    'wire_in',
-    'wire_out',
-    'wire_debug_in',
-    'wire_debug_out',
-    'wire_tiny',
-    'wire_bootloader',
-    'wire_no_fsm',
-    'bitcoin_only',
-    'has_bitcoin_only_values',
-    'unstable',
-    'wire_type',
-    'experimental',
-    'include_in_bitcoin_only',
 ];
 
 module.exports = {
