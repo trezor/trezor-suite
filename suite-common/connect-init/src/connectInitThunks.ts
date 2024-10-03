@@ -6,7 +6,6 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
-import { getSynchronize } from '@trezor/utils';
 import { deviceConnectThunks } from '@suite-common/wallet-core';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { isNative } from '@trezor/env-utils';
@@ -59,8 +58,6 @@ export const connectInitThunk = createThunk(
             dispatch(action);
         });
 
-        const synchronize = getSynchronize();
-
         const wrappedMethods: Array<keyof typeof TrezorConnect> = [
             'applySettings',
             'authenticateDevice',
@@ -101,7 +98,7 @@ export const connectInitThunk = createThunk(
             if (!original) return;
             (TrezorConnect[key] as any) = async (params: any) => {
                 dispatch(lockDevice(true));
-                const result = await synchronize(() => original(params));
+                const result = await original(params);
                 dispatch(lockDevice(false));
 
                 return result;
