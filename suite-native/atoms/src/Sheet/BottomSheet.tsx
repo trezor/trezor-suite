@@ -29,8 +29,8 @@ const DEFAULT_INSET_BOTTOM = 50;
 
 const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    borderTopLeftRadius: utils.borders.radii.large,
-    borderTopRightRadius: utils.borders.radii.large,
+    borderTopLeftRadius: utils.borders.radii.r24,
+    borderTopRightRadius: utils.borders.radii.r24,
     paddingBottom: Math.max(insetBottom, utils.spacings.sp16),
     maxHeight: '90%',
 }));

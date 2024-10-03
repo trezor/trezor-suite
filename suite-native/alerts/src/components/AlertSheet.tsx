@@ -29,7 +29,7 @@ const alertSheetContainerStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp32,
     marginBottom: utils.spacings.sp32,
     marginHorizontal: utils.spacings.sp8,
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.r16,
     ...utils.boxShadows.small,
 }));
 

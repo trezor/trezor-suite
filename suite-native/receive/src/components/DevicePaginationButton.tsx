@@ -29,18 +29,18 @@ type DeviceButtonStyleProps = {
 const safe3Styles = {
     backgroundColor: DEVICE_SCREEN_BACKGROUND_COLOR,
     borderColor: DEVICE_TEXT_COLOR,
-    borderRadius: nativeBorders.radii.large / 2,
+    borderRadius: nativeBorders.radii.r12,
     borderWidth: nativeBorders.widths.large,
 } as const;
 
 const modelToStyles = {
     [DeviceModelInternal.T2T1]: {
         backgroundColor: T2B1_BUTTON_COLOR,
-        borderRadius: nativeBorders.radii.small,
+        borderRadius: nativeBorders.radii.r8,
     },
     [DeviceModelInternal.T3T1]: {
         backgroundColor: T2B1_BUTTON_COLOR,
-        borderRadius: nativeBorders.radii.small,
+        borderRadius: nativeBorders.radii.r8,
     },
     [DeviceModelInternal.T2B1]: safe3Styles,
     [DeviceModelInternal.T3B1]: safe3Styles,

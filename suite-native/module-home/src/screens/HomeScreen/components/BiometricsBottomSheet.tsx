@@ -23,7 +23,7 @@ const SHOW_TIMEOUT = 1500;
 const cardStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     textAlign: 'center',
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.r16,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     padding: utils.spacings.sp24,
     marginBottom: utils.spacings.sp24,

@@ -15,7 +15,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const assetCardStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp24,
-    borderRadius: utils.borders.radii.large,
+    borderRadius: utils.borders.radii.r24,
     width: '100%',
 }));
 
