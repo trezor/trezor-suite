@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import { COINMARKET_COMMON } from 'src/actions/wallet/constants';
-import { InvityAPIReloadDataAfterMs } from 'src/constants/wallet/coinmarket/metadata';
+import { INVITY_API_RELOAD_DATA_AFTER_MS } from 'src/constants/wallet/coinmarket/metadata';
 import invityAPI from 'src/services/suite/invityAPI';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketInfoAction from 'src/actions/wallet/coinmarketInfoActions';
@@ -34,7 +34,7 @@ const coinmarketMiddleware =
                 account &&
                 !isLoading &&
                 (isDifferentAccount ||
-                    lastLoadedTimestamp + InvityAPIReloadDataAfterMs < Date.now())
+                    lastLoadedTimestamp + INVITY_API_RELOAD_DATA_AFTER_MS < Date.now())
             ) {
                 api.dispatch(coinmarketCommonActions.setLoading(true));
 

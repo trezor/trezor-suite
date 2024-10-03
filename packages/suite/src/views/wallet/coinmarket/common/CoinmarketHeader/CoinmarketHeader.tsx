@@ -1,7 +1,7 @@
 import { H2 } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
-import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from 'src/constants/wallet/coinmarket/metadata';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
@@ -77,7 +77,7 @@ const CoinmarketHeader = ({ title, titleTimer }: CoinmarketHeaderProps) => {
                 <HeaderCoinmarketRefreshTime>
                     <CoinmarketRefreshTime
                         isLoading={timer.isLoading}
-                        refetchInterval={InvityAPIReloadQuotesAfterSeconds}
+                        refetchInterval={INVITY_API_RELOAD_QUOTES_AFTER_SECONDS}
                         seconds={timer.timeSpend.seconds}
                         label={<Translation id={titleTimer} />}
                     />

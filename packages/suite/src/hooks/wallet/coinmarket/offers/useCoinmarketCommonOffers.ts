@@ -1,6 +1,6 @@
 import { useTimer } from '@trezor/react-utils';
 import { useDevice } from 'src/hooks/suite';
-import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from 'src/constants/wallet/coinmarket/metadata';
 import { createContext, useContext, useState } from 'react';
 import {
     CoinmarketTradeBuyType,
@@ -53,7 +53,7 @@ export const useCoinmarketCommonOffers = ({
                 timer.stop();
             }
 
-            if (timer.timeSpend.seconds === InvityAPIReloadQuotesAfterSeconds) {
+            if (timer.timeSpend.seconds === INVITY_API_RELOAD_QUOTES_AFTER_SECONDS) {
                 callback();
             }
         }
