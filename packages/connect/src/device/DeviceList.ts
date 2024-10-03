@@ -455,24 +455,20 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return Device.createUnacquired(transport, descriptor, unreadableError);
     }
 
-    getDevice(path: string) {
-        return this.devices[path];
+    getDeviceCount() {
+        return Object.keys(this.devices).length;
     }
 
-    getFirstDevicePath() {
-        return this.asArray()[0].path;
-    }
-
-    asArray(): DeviceTyped[] {
-        return this.allDevices().map(device => device.toMessageObject());
-    }
-
-    allDevices(): Device[] {
+    getAllDevices(): Device[] {
         return Object.keys(this.devices).map(key => this.devices[key]);
     }
 
-    length() {
-        return this.asArray().length;
+    getOnlyDevice(): Device | undefined {
+        return this.getDeviceCount() === 1 ? Object.values(this.devices)[0] : undefined;
+    }
+
+    getDeviceByPath(path: string): Device | undefined {
+        return this.devices[path];
     }
 
     transportType() {
@@ -495,7 +491,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     async cleanup() {
         const { transport } = this;
-        const devices = this.allDevices();
+        const devices = this.getAllDevices();
 
         // @ts-expect-error will be fixed later
         this.transport = undefined;
