@@ -77,10 +77,10 @@ export const useFirmware = () => {
                 firmware.uiEvent.payload.code,
             )) ||
         // When a PIN-protected device reconnects to normal mode after installation, PIN is requested.
-        // There is a false positive in case such device is wiped (including PIN) during installation,
-        // but there is no straightforward way of detecting that. Some logic could be added to Connect, though.
+        // There is a false positive in case such device is wiped (including PIN) during custom installation.s
         (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-            originalDevice?.features?.pin_protection);
+            originalDevice?.features?.pin_protection &&
+            !deviceWillBeWiped);
 
     const showConfirmationPill =
         !showReconnectPrompt &&
