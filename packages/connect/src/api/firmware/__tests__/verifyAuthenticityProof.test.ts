@@ -28,6 +28,10 @@ const CONFIG = {
             '041b36cc98d5e3d1a20677aaf26254ef3756f27c9d63080c93ad3e7d39d3ad23bf00497b924789bc8e3f87834994e16780ad4eae7e75db1f03835ca64363e980b4',
         ],
     },
+    T3W1: {
+        rootPubKeys: ['you shall not pass'], // TODO T3W1
+        caPubKeys: ['you shall not pass'], // TODO T3W1
+    },
 } as DeviceAuthenticityConfig;
 
 describe('firmware/verifyAuthenticityProof', () => {
