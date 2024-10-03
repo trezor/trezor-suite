@@ -90,7 +90,6 @@ interface DeviceListEvents {
     [DEVICE.CONNECT]: DeviceTyped;
     [DEVICE.CONNECT_UNACQUIRED]: DeviceTyped;
     [DEVICE.DISCONNECT]: DeviceTyped;
-    [DEVICE.CHANGED]: DeviceTyped;
     [DEVICE.RELEASED]: DeviceTyped;
     [DEVICE.ACQUIRED]: DeviceTyped;
 }
@@ -270,9 +269,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
                 if (!device) break;
 
-                _log.debug('Event', DEVICE.CHANGED, device.toMessageObject());
-                this.emit(DEVICE.CHANGED, device.toMessageObject());
-
                 _log.debug('Event', DEVICE.ACQUIRED, device.toMessageObject());
                 this.emit(DEVICE.ACQUIRED, device.toMessageObject());
 
@@ -285,9 +281,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                 if (methodStillRunning) {
                     device.keepTransportSession = false;
                 }
-
-                _log.debug('Event', DEVICE.CHANGED, device.toMessageObject());
-                this.emit(DEVICE.CHANGED, device.toMessageObject());
 
                 _log.debug('Event', DEVICE.RELEASED, device.toMessageObject());
                 this.emit(DEVICE.RELEASED, device.toMessageObject());
