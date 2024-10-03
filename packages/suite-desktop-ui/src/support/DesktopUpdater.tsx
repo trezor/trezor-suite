@@ -33,6 +33,9 @@ interface DesktopUpdaterProps {
 export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
     const dispatch = useDispatch();
     const { desktopUpdate } = useSelector(state => state);
+
+    const desktopUpdateState = desktopUpdate.state;
+
     const routeName = useSelector(selectRouteName);
 
     // Closing a modal opened by auto updater outside of device settings might confuse some users,
@@ -90,14 +93,14 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         }
 
         // Non visible states
-        if ([UpdateState.Checking, UpdateState.NotAvailable].includes(desktopUpdate.state)) {
+        if ([UpdateState.Checking, UpdateState.NotAvailable].includes(desktopUpdateState)) {
             return false;
         }
 
         const isEarlyAccessState = [
             UpdateState.EarlyAccessDisable,
             UpdateState.EarlyAccessEnable,
-        ].includes(desktopUpdate.state);
+        ].includes(desktopUpdateState);
 
         // Enable to setup Early Access even after updater error (when desktopUpdate.latest is undefined).
         if (!isEarlyAccessState && !desktopUpdate.latest) {
@@ -105,10 +108,10 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         }
 
         return true;
-    }, [desktopUpdate.modalVisibility, desktopUpdate.state, desktopUpdate.latest]);
+    }, [desktopUpdate.modalVisibility, desktopUpdateState, desktopUpdate.latest]);
 
     const getUpdateModal = () => {
-        switch (desktopUpdate.state) {
+        switch (desktopUpdateState) {
             case UpdateState.EarlyAccessEnable:
                 return <EarlyAccessEnable hideWindow={hideWindow} />;
             case UpdateState.EarlyAccessDisable:
@@ -124,7 +127,7 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
             case UpdateState.Downloading:
                 return <Downloading hideWindow={hideWindow} progress={desktopUpdate.progress} />;
             case UpdateState.Ready:
-                return <Ready hideWindow={hideWindow} isCancelable={isSettingsRoute} />;
+                return <Ready hideWindow={hideWindow} />;
             default:
                 return null;
         }

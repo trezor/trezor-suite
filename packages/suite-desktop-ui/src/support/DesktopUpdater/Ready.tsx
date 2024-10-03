@@ -1,31 +1,15 @@
-import styled from 'styled-components';
+import { Button, NewModal, Paragraph, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { Button, H2, variables } from '@trezor/components';
-
-import { Translation, Modal } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { installUpdate } from 'src/actions/suite/desktopUpdateActions';
 
-const Description = styled.span`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-const StyledModal = styled(Modal)`
-    ${Modal.BottomBar} {
-        > * {
-            flex: 1;
-        }
-    }
-`;
-
 interface ReadyProps {
     hideWindow: () => void;
-    isCancelable: boolean;
 }
 
-export const Ready = ({ hideWindow, isCancelable }: ReadyProps) => {
+export const Ready = ({ hideWindow }: ReadyProps) => {
     const dispatch = useDispatch();
 
     const install = () => dispatch(installUpdate({ shouldInstallOnQuit: false }));
@@ -35,27 +19,26 @@ export const Ready = ({ hideWindow, isCancelable }: ReadyProps) => {
     };
 
     return (
-        <StyledModal
+        <NewModal
             heading={<Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />}
-            isCancelable={isCancelable}
             onCancel={installOnQuit}
-            bottomBarComponents={
-                <>
+            bottomContent={
+                <Row gap={spacings.xs}>
                     <Button onClick={installOnQuit} variant="tertiary">
                         <Translation id="TR_UPDATE_MODAL_UPDATE_ON_QUIT" />
                     </Button>
                     <Button onClick={install} variant="primary">
                         <Translation id="TR_UPDATE_MODAL_INSTALL_AND_RESTART" />
                     </Button>
-                </>
+                </Row>
             }
         >
-            <H2>
+            <Paragraph typographyStyle="highlight" variant="primary">
                 <Translation id="TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER" />
-            </H2>
-            <Description>
+            </Paragraph>
+            <Paragraph>
                 <Translation id="TR_UPDATE_MODAL_RESTART_NEEDED" />
-            </Description>
-        </StyledModal>
+            </Paragraph>
+        </NewModal>
     );
 };

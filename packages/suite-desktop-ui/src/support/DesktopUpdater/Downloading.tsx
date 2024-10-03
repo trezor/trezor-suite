@@ -4,15 +4,10 @@ import styled from 'styled-components';
 
 import { UpdateProgress } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable } from '@trezor/utils';
-import { Button, H2, ProgressBar, variables } from '@trezor/components';
+import { H2, NewModal, ProgressBar, variables, Row, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { Translation, Modal } from 'src/components/suite';
-
-import { Row } from './styles';
-
-const DownloadWrapper = styled(Row)`
-    margin-top: 16px;
-`;
+import { Translation } from 'src/components/suite';
 
 const DownloadProgress = styled.span`
     font-size: 20px;
@@ -34,11 +29,6 @@ const Text = styled(H2)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledProgressBar = styled(ProgressBar)`
-    margin-top: 16px;
-`;
-
 interface DownloadingProps {
     hideWindow: () => void;
     progress?: UpdateProgress;
@@ -56,42 +46,37 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
     }, [step]);
 
     return (
-        <Modal
-            headerComponent={
-                <Button
-                    size="small"
-                    variant="tertiary"
-                    icon="x"
-                    iconAlignment="right"
-                    onClick={hideWindow}
-                >
+        <NewModal
+            bottomContent={
+                <NewModal.Button variant="tertiary" onClick={hideWindow}>
                     <Translation id="TR_BACKGROUND_DOWNLOAD" />
-                </Button>
+                </NewModal.Button>
             }
-            onCancel={hideWindow}
         >
-            <DownloadWrapper>
-                {progress?.verifying ? (
-                    <Text>
-                        <Translation id="TR_VERIFYING_SIGNATURE" />
-                        {ellipsisArray.filter((_, k) => k < step)}
-                    </Text>
-                ) : (
-                    <>
+            <Column alignItems="start" gap={spacings.md}>
+                <Row margin={{ top: spacings.md }} justifyContent="space-between" width="100%">
+                    {progress?.verifying ? (
                         <Text>
-                            <Translation id="TR_DOWNLOADING" />
+                            <Translation id="TR_VERIFYING_SIGNATURE" />
+                            {ellipsisArray.filter((_, k) => k < step)}
                         </Text>
-                        <DownloadProgress>
-                            <ReceivedData>
-                                {bytesToHumanReadable(progress?.transferred || 0)}
-                            </ReceivedData>
-                            /<TotalData>{bytesToHumanReadable(progress?.total || 0)}</TotalData>
-                        </DownloadProgress>
-                    </>
-                )}
-            </DownloadWrapper>
+                    ) : (
+                        <>
+                            <Text>
+                                <Translation id="TR_DOWNLOADING" />
+                            </Text>
+                            <DownloadProgress>
+                                <ReceivedData>
+                                    {bytesToHumanReadable(progress?.transferred || 0)}
+                                </ReceivedData>
+                                /<TotalData>{bytesToHumanReadable(progress?.total || 0)}</TotalData>
+                            </DownloadProgress>
+                        </>
+                    )}
+                </Row>
 
-            <StyledProgressBar value={progress?.percent || 0} />
-        </Modal>
+                <ProgressBar value={progress?.percent || 0} />
+            </Column>
+        </NewModal>
     );
 };
