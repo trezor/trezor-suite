@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { FirmwareType } from '@trezor/connect';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { NavigationItem } from '../../../../../components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { variables, IconName } from '@trezor/components';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 const List = styled.div`
     display: flex;
@@ -37,8 +37,6 @@ export const CoinmarketLayoutNavigation = () => {
 
     const { device } = useDevice();
 
-    const isBitcoinOnly = device?.firmwareType === FirmwareType.BitcoinOnly;
-
     const Item = ({
         route,
         title,
@@ -63,7 +61,7 @@ export const CoinmarketLayoutNavigation = () => {
             <Item route="wallet-coinmarket-buy" title="TR_NAV_BUY" icon="plus" />
             <Item route="wallet-coinmarket-sell" title="TR_NAV_SELL" icon="minus" />
 
-            {!isBitcoinOnly ? (
+            {!hasBitcoinOnlyFirmware(device) ? (
                 <Item
                     route="wallet-coinmarket-exchange"
                     title="TR_COINMARKET_SWAP"

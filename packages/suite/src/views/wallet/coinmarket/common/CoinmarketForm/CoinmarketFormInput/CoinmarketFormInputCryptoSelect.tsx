@@ -37,6 +37,7 @@ export const CoinmarketFormInputCryptoSelect = <
     cryptoSelectName,
     supportedCryptoCurrencies,
     methods,
+    isDisabled,
 }: CoinmarketFormInputCryptoSelectProps<TFieldValues>) => {
     const context = useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
     const { buildCryptoOptions, cryptoIdToPlatformName } = useCoinmarketInfo();
@@ -130,6 +131,7 @@ export const CoinmarketFormInputCryptoSelect = <
                         data-testid="@coinmarket/form/select-crypto"
                         isClearable={false}
                         isMenuOpen={false}
+                        isDisabled={isDisabled}
                     />
                 )}
             />

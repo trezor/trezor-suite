@@ -10,7 +10,6 @@ import { arrayPartition } from '@trezor/utils';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { networks, Network, NetworkSymbol, NetworkAccount } from '@suite-common/wallet-config';
 import { CollapsibleBox, NewModal, Tooltip } from '@trezor/components';
-import { FirmwareType } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation, CoinList } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
@@ -78,7 +77,7 @@ export const AddAccountModal = ({
     const preselectedNetwork = symbol && supportedNetworks.find(n => n.symbol === symbol);
     // or in case of only btc is enabled on bitcoin-only firmware
     const bitcoinOnlyDefaultNetworkSelection =
-        device.firmwareType === FirmwareType.BitcoinOnly &&
+        hasBitcoinOnlyFirmware(device) &&
         supportedMainnets.length === 1 &&
         allTestnetNetworksDisabled
             ? networks.btc
