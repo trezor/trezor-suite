@@ -2460,12 +2460,6 @@ export type TezosSignedTx = {
     operation_hash: string;
 };
 
-// experimental_message
-export type experimental_message = {};
-
-// experimental_field
-export type experimental_field = {};
-
 // custom connect definitions
 export type MessageType = {
     BinanceGetAddress: BinanceGetAddress;
@@ -2744,8 +2738,6 @@ export type MessageType = {
     TezosBallotOp: TezosBallotOp;
     TezosSignTx: TezosSignTx;
     TezosSignedTx: TezosSignedTx;
-    experimental_message: experimental_message;
-    experimental_field: experimental_field;
 };
 
 export type MessageKey = keyof MessageType;

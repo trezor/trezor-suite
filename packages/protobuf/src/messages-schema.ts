@@ -3477,12 +3477,6 @@ export const TezosSignedTx = Type.Object(
     { $id: 'TezosSignedTx' },
 );
 
-export type experimental_message = Static<typeof experimental_message>;
-export const experimental_message = Type.Object({}, { $id: 'experimental_message' });
-
-export type experimental_field = Static<typeof experimental_field>;
-export const experimental_field = Type.Object({}, { $id: 'experimental_field' });
-
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
     {
@@ -3762,8 +3756,6 @@ export const MessageType = Type.Object(
         TezosBallotOp,
         TezosSignTx,
         TezosSignedTx,
-        experimental_message,
-        experimental_field,
     },
     { $id: 'MessageType' },
 );
