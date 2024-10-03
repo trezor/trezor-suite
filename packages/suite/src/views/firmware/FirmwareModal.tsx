@@ -33,19 +33,12 @@ const StyledModal = styled(Modal)`
 
 type FirmwareModalProps = {
     children: ReactElement;
-    deviceWillBeWiped?: boolean;
     heading: TranslationKey;
     install: () => void;
     isCustom?: boolean;
 };
 
-export const FirmwareModal = ({
-    children,
-    deviceWillBeWiped,
-    heading,
-    install,
-    isCustom,
-}: FirmwareModalProps) => {
+export const FirmwareModal = ({ children, heading, install, isCustom }: FirmwareModalProps) => {
     const {
         resetReducer,
         status,
@@ -104,13 +97,7 @@ export const FirmwareModal = ({
             case 'initial':
                 return children;
             case 'check-seed':
-                return (
-                    <CheckSeedStep
-                        onSuccess={install}
-                        onClose={onClose}
-                        willBeWiped={deviceWillBeWiped}
-                    />
-                );
+                return <CheckSeedStep onSuccess={install} onClose={onClose} />;
             case 'started':
             case 'done':
                 return (
