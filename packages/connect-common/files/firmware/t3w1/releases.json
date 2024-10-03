@@ -1,0 +1,14 @@
+[
+    {
+        "required": false,
+        "version": [2, 99, 99],
+        "min_firmware_version": [2, 99, 99],
+        "min_bootloader_version": [2, 99, 99],
+        "bootloader_version": [2, 99, 99],
+        "url": "",
+        "url_bitcoinonly": "",
+        "fingerprint": "",
+        "fingerprint_bitcoinonly": "",
+        "changelog": ""
+    }
+]
