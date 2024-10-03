@@ -179,7 +179,6 @@ export const TokenRow = ({
                         <FormattedCryptoAmount
                             value={token.balance}
                             symbol={formatTokenSymbol(token.symbol || '')}
-                            isBalance
                         />
                     </Text>
                 </Column>
