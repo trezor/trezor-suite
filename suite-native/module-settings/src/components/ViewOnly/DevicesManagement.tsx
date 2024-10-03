@@ -18,7 +18,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 const deviceStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
     alignItems: 'center',
-    gap: 12,
+    gap: utils.spacings.sp12,
 }));
 
 export const DevicesManagement = ({ onPressAbout }: AboutProps) => {

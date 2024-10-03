@@ -26,8 +26,8 @@ import { useDeviceManager } from '../hooks/useDeviceManager';
 const CONTENT_MAX_HEIGHT = Dimensions.get('window').height * 0.8;
 const HEADER_HEIGHT = 86;
 
-const scrollViewStyle = prepareNativeStyle<{ maxHeight: number }>((_, { maxHeight }) => ({
-    gap: 12,
+const scrollViewStyle = prepareNativeStyle<{ maxHeight: number }>((utils, { maxHeight }) => ({
+    gap: utils.spacings.sp12,
     flexGrow: 0,
     maxHeight,
     borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
