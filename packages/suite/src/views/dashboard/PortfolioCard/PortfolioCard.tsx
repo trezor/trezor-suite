@@ -120,7 +120,7 @@ export const PortfolioCard = memo(() => {
                         items={[
                             {
                                 key: 'group1',
-                                label: 'Graph View',
+                                label: <Translation id="TR_GRAPH_VIEW" />,
                                 options: [
                                     {
                                         label: <GraphScaleDropdownItem />,
