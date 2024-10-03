@@ -14,6 +14,8 @@ import { menuStyle } from './menuStyle';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Icon, IconName } from '../Icon/Icon';
 
+const NO_FOCUSED_ITEM = null;
+
 const addonAnimation = keyframes`
     from {
         transform: translateX(-10px);
@@ -134,16 +136,33 @@ type AddonProps = {
     onClick?: () => void;
 };
 
-type AddonComponentProps = AddonProps & {
-    isKeyboardSelected: boolean;
-    onMouseOver: () => void;
+type OnMouseEventProps<T = void> = {
+    onMouseEnter: T extends string ? (itemId: string) => void : () => void;
+    onMouseLeave: () => void;
 };
 
-const Addon = ({ label, icon, onClick, isKeyboardSelected, onMouseOver }: AddonComponentProps) => {
+type AddonComponentProps = AddonProps &
+    OnMouseEventProps & {
+        isKeyboardSelected: boolean;
+    };
+
+const Addon = ({
+    label,
+    icon,
+    onClick,
+    isKeyboardSelected,
+    onMouseEnter,
+    onMouseLeave,
+}: AddonComponentProps) => {
     const theme = useTheme();
 
     return (
-        <AddonContainer onClick={onClick} $isFocused={isKeyboardSelected} onMouseOver={onMouseOver}>
+        <AddonContainer
+            onClick={onClick}
+            $isFocused={isKeyboardSelected}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+        >
             <span>{label}</span>
             <Icon name={icon} size={spacings.sm} color={theme.iconPrimaryDefault} />
         </AddonContainer>
@@ -162,11 +181,11 @@ export type DropdownMenuItemProps = {
     'data-testid'?: string;
 };
 
-type MenuItemComponentProps = DropdownMenuItemProps & {
-    isKeyboardSelected: boolean;
-    setToggled: (toggled: boolean) => void;
-    onMouseOver: () => void;
-};
+type MenuItemComponentProps = DropdownMenuItemProps &
+    OnMouseEventProps & {
+        isKeyboardSelected: boolean;
+        setToggled: (toggled: boolean) => void;
+    };
 
 const MenuItem = ({
     icon,
@@ -177,7 +196,8 @@ const MenuItem = ({
     shouldCloseOnClick = true,
     setToggled,
     isKeyboardSelected,
-    onMouseOver,
+    onMouseEnter,
+    onMouseLeave,
     'data-testid': dataTest,
     separatorBefore,
 }: MenuItemComponentProps) => {
@@ -201,7 +221,8 @@ const MenuItem = ({
             $isDisabled={isDisabled}
             $noHoverEffect={!onClick}
             $isFocused={isKeyboardSelected}
-            onMouseOver={onMouseOver}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
             $separatorBefore={separatorBefore}
             data-testid={dataTest}
         >
@@ -218,12 +239,12 @@ export type GroupedMenuItems = {
     label?: React.ReactNode;
 };
 
-type GroupComponentProps = GroupedMenuItems & {
-    index: number;
-    keyboardFocusedItemId: string | undefined;
-    setToggled: (toggled: boolean) => void;
-    handleItemHover: (itemId: string) => void;
-};
+type GroupComponentProps = GroupedMenuItems &
+    OnMouseEventProps<string> & {
+        index: number;
+        keyboardFocusedItemId: string | undefined;
+        setToggled: (toggled: boolean) => void;
+    };
 
 const Group = ({
     options,
@@ -231,7 +252,8 @@ const Group = ({
     keyboardFocusedItemId,
     label,
     setToggled,
-    handleItemHover,
+    onMouseEnter,
+    onMouseLeave,
 }: GroupComponentProps) => (
     <>
         {label && <GroupLabel>{label}</GroupLabel>}
@@ -243,7 +265,8 @@ const Group = ({
                 <MenuItem
                     setToggled={setToggled}
                     isKeyboardSelected={itemId === keyboardFocusedItemId}
-                    onMouseOver={() => !item.isDisabled && handleItemHover(itemId)}
+                    onMouseEnter={() => !item.isDisabled && onMouseEnter(itemId)}
+                    onMouseLeave={onMouseLeave}
                     {...item}
                     key={itemId}
                 />
@@ -314,7 +337,7 @@ const getDefaultFocusItemIndex = (items: MenuProps['items'], addon: MenuProps['a
         return addon ? 1 : 0;
     }
 
-    return null;
+    return NO_FOCUSED_ITEM;
 };
 
 export type MenuAlignment =
@@ -359,7 +382,11 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
         // handle selecting an item
         useEffect(() => {
             const handleKeyDown = (e: KeyboardEvent) => {
-                if (!flatGroupItems || !flatGroupItems.length || focusedItemIndex === null) {
+                if (
+                    !flatGroupItems ||
+                    !flatGroupItems.length ||
+                    focusedItemIndex === NO_FOCUSED_ITEM
+                ) {
                     return;
                 }
 
@@ -379,7 +406,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                 }
             };
 
-            if (focusedItemIndex !== null && flatGroupItems?.length) {
+            if (focusedItemIndex !== NO_FOCUSED_ITEM && flatGroupItems?.length) {
                 document.addEventListener('keydown', handleKeyDown);
 
                 return () => {
@@ -393,16 +420,15 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
             const handleKeyDown = (e: KeyboardEvent) => {
                 if (
                     (e.key === 'ArrowUp' || e.key === 'ArrowDown') &&
-                    flatGroupItems &&
-                    flatGroupItems.length > 0 &&
-                    focusedItemIndex !== null
+                    flatGroupItems?.length &&
+                    focusedItemIndex !== NO_FOCUSED_ITEM
                 ) {
                     e.preventDefault();
                     setFocusedItemIndex(getNextIndex(e.key, flatGroupItems));
                 }
             };
 
-            if (focusedItemIndex !== null && flatGroupItems?.length) {
+            if (focusedItemIndex !== NO_FOCUSED_ITEM && flatGroupItems?.length) {
                 document.addEventListener('keydown', handleKeyDown);
 
                 return () => {
@@ -411,10 +437,14 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
             }
         }, [flatGroupItems, focusedItemIndex]);
 
-        const handleItemHover = (itemId: string) => {
+        const handleMouseEnter = (itemId: string) => {
             const itemIndex = flatGroupItems?.findIndex(({ id }) => id === itemId);
 
-            setFocusedItemIndex(itemIndex ?? null);
+            setFocusedItemIndex(itemIndex ?? NO_FOCUSED_ITEM);
+        };
+
+        const handleMouseLeave = () => {
+            setFocusedItemIndex(NO_FOCUSED_ITEM);
         };
 
         const handleAddonClick = () => {
@@ -425,7 +455,9 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
         };
 
         const keyboardFocusedItemId =
-            focusedItemIndex !== null ? flatGroupItems?.[focusedItemIndex]?.id : undefined;
+            focusedItemIndex !== NO_FOCUSED_ITEM
+                ? flatGroupItems?.[focusedItemIndex]?.id
+                : undefined;
 
         return (
             <Container
@@ -438,7 +470,8 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
             >
                 {addon && (
                     <Addon
-                        onMouseOver={() => handleItemHover('addon')}
+                        onMouseEnter={() => handleMouseEnter('addon')}
+                        onMouseLeave={handleMouseLeave}
                         isKeyboardSelected={keyboardFocusedItemId === 'addon'}
                         {...addon}
                         onClick={handleAddonClick}
@@ -452,7 +485,8 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                         setToggled={setToggled}
                         index={index}
                         keyboardFocusedItemId={keyboardFocusedItemId}
-                        handleItemHover={handleItemHover}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
                         {...group}
                         key={group.key}
                     />
