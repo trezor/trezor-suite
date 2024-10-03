@@ -2,12 +2,13 @@ import { useDispatch } from 'react-redux';
 
 import { FirmwareStatus } from '@suite-common/suite-types';
 import { firmwareUpdate, selectFirmware, firmwareActions } from '@suite-common/wallet-core';
-import { DEVICE, FirmwareType, UI } from '@trezor/connect';
+import { DEVICE, DeviceModelInternal, FirmwareType, UI } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { useSelector, useDevice, useTranslation } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { MODAL } from 'src/actions/suite/constants';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 /*
 There are three firmware update flows, depending on current firmware version:
@@ -22,11 +23,14 @@ export const useFirmware = () => {
     const firmware = useSelector(selectFirmware);
     const transport = useSelector(state => state.suite.transport);
     const modal = useSelector(state => state.modal);
+    const routeName = useSelector(selectRouteName);
     const { device } = useDevice();
 
     // Device in its state before installation is cached when installation begins.
     // Until then, access device as normal.
     const originalDevice = firmware.cachedDevice || device;
+
+    const shouldSwitchFirmwareType = routeName === 'firmware-type';
 
     // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first,
     // and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
@@ -48,7 +52,20 @@ export const useFirmware = () => {
         modal.context === MODAL.CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
 
-    const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
+    // Device may be wiped during firmware type switch because Universal and Bitcoin-only firmware have different vendor headers,
+    // except T1B1 and T2T1. There may be some false negatives here during custom installation.
+    // TODO: Determine this in Connect.
+    const willDeviceBeWiped = () => {
+        const deviceModelInternal = originalDevice?.features?.internal_model;
+
+        return (
+            shouldSwitchFirmwareType &&
+            deviceModelInternal !== undefined &&
+            ![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(deviceModelInternal)
+        );
+    };
+
+    const deviceWillBeWiped = willDeviceBeWiped();
 
     const confirmOnDevice =
         // Show the confirmation pill at the start of installation using the "wait" or "manual" method,
@@ -107,7 +124,8 @@ export const useFirmware = () => {
         return { operation: null, progress: 0 };
     };
 
-    const getTargetFirmwareType = (shouldSwitchFirmwareType: boolean) => {
+    const getTargetFirmwareType = () => {
+        const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
         const isBitcoinOnlyAvailable = !!originalDevice?.firmwareRelease?.release.url_bitcoinonly;
 
         return (isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
@@ -118,6 +136,8 @@ export const useFirmware = () => {
             ? FirmwareType.BitcoinOnly
             : FirmwareType.Regular;
     };
+
+    const targetFirmwareType = getTargetFirmwareType();
 
     return {
         ...firmware,
@@ -130,9 +150,11 @@ export const useFirmware = () => {
         resetReducer: () => dispatch(firmwareActions.resetReducer()),
         isWebUSB: isWebUsb(transport),
         showFingerprintCheck,
-        getTargetFirmwareType,
+        targetFirmwareType,
         showManualReconnectPrompt,
         confirmOnDevice,
+        shouldSwitchFirmwareType,
+        deviceWillBeWiped,
         showReconnectPrompt,
         showConfirmationPill,
     };
