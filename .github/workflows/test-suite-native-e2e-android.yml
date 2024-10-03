@@ -158,11 +158,11 @@ jobs:
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -grpc 8554
-          script: yarn test:e2e android.emu.release --headless --take-screenshots failing --record-videos failing --retries 2
+          script: yarn test:e2e android.emu.release --headless --take-screenshots failing --record-videos failing
 
       - name: "Store failed test screenshot artifacts"
         if: ${{failure()}}
         uses: actions/upload-artifact@v4
         with:
-          name: failed-android-tests-screenshots
+          name: failed-android-tests
           path: suite-native/app/artifacts

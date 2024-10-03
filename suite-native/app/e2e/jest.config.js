@@ -11,4 +11,5 @@ module.exports = {
     testEnvironment: 'detox/runners/jest/testEnvironment',
     verbose: true,
     maxWorkers: 1,
+    setupFilesAfterEnv: ['<rootDir>/e2e/jest.setup.ts'],
 };
