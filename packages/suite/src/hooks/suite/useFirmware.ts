@@ -51,10 +51,19 @@ export const useFirmware = () => {
     const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
 
     const confirmOnDevice =
-        (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-            firmware.uiEvent.payload.method !== 'wait') ||
+        // Show the confirmation pill at the start of installation using the "wait" or "manual" method,
+        // after ReconnectDevicePrompt is closed.
+        // Also in case the device is PIN-locked at the start of the process.
         (firmware.uiEvent?.type === DEVICE.BUTTON &&
-            firmware.uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
+            firmware.uiEvent.payload.code !== undefined &&
+            ['ButtonRequest_FirmwareUpdate', 'ButtonRequest_PinEntry'].includes(
+                firmware.uiEvent.payload.code,
+            )) ||
+        // When a PIN-protected device reconnects to normal mode after installation, PIN is requested.
+        // There is a false positive in case such device is wiped (including PIN) during installation,
+        // but there is no straightforward way of detecting that. Some logic could be added to Connect, though.
+        (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+            originalDevice?.features?.pin_protection);
 
     const showConfirmationPill =
         !showReconnectPrompt &&
