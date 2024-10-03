@@ -27,7 +27,7 @@ const FooterContent = styled.div`
     place-content: center space-between;
 `;
 
-export type CoinmarketTermsModalProps = {
+type CoinmarketTermsModalProps = {
     decision: Deferred<boolean>;
     onCancel: () => void;
     type: 'BUY' | 'SELL' | 'COINMARKET_SWAP' | 'COINMARKET_SWAP_DEX';
@@ -36,6 +36,7 @@ export type CoinmarketTermsModalProps = {
     toCryptoCurrency?: CryptoId;
     fromCryptoCurrency?: CryptoId;
 };
+
 export const CoinmarketTermsModal = ({
     decision,
     onCancel,

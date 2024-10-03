@@ -4,7 +4,7 @@ import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 import { CryptoId } from 'invity-api';
 
-export interface CoinmarketCryptoAmountProps {
+interface CoinmarketCryptoAmountProps {
     amount: string | number;
     cryptoId: CryptoId;
 }

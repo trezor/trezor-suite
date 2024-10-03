@@ -189,10 +189,6 @@ export default defineMessages({
         defaultMessage: 'All',
         id: 'TR_FRACTION_BUTTONS_ALL',
     },
-    TR_EXCHANGE_PROVIDER: {
-        defaultMessage: 'Provider',
-        id: 'TR_EXCHANGE_PROVIDER',
-    },
     TR_EXCHANGE_FIXED_OFFERS_INFO: {
         id: 'TR_EXCHANGE_FIXED_OFFERS_INFO',
         defaultMessage:
@@ -1306,32 +1302,6 @@ export default defineMessages({
     TR_BUY_DETAIL_WAITING_FOR_USER_GATE: {
         defaultMessage: "Go to provider's site",
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
-    },
-    TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN: {
-        defaultMessage: 'Auto-reloading in',
-        id: 'TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN',
-    },
-    TR_COINMARKET_NO_OFFERS_HEADER: {
-        defaultMessage: 'No offers',
-        id: 'TR_COINMARKET_NO_OFFERS_HEADER',
-    },
-    TR_COINMARKET_NO_OFFERS_MESSAGE: {
-        defaultMessage:
-            "Sorry, we don't have any offers at the moment. Try to reload the page or change your query.",
-        id: 'TR_COINMARKET_NO_OFFERS_MESSAGE',
-    },
-    TR_COINMARKET_NO_OFFERS_LOADING_FAILED_MESSAGE: {
-        defaultMessage:
-            "Sorry, we don't have any offers at the moment due to a server connectivity issue.",
-        id: 'TR_COINMARKET_NO_OFFERS_LOADING_FAILED_MESSAGE',
-    },
-    TR_COINMARKET_NO_OFFERS_BACK_BUTTON: {
-        defaultMessage: 'Back to Trade',
-        id: 'TR_COINMARKET_NO_OFFERS_BACK_BUTTON',
-    },
-    TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON: {
-        defaultMessage: 'Reload page',
-        id: 'TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON',
     },
     TR_COINMARKET_OFFERS_EMPTY: {
         defaultMessage: 'No offers available for your request. Change country or buy amount.',

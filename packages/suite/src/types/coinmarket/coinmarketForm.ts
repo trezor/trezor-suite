@@ -144,7 +144,7 @@ interface CoinmarketFormStateProps {
     toggleAmountInCrypto: () => void;
 }
 
-export interface CoinmarketCommonFormProps {
+interface CoinmarketCommonFormProps {
     device: AppState['device']['selectedDevice'];
     callInProgress: boolean;
     timer: Timer;
@@ -154,7 +154,7 @@ export interface CoinmarketCommonFormProps {
     goToOffers: () => Promise<void>;
 }
 
-export interface CoinmarketCommonFormBuySellProps {
+interface CoinmarketCommonFormBuySellProps {
     defaultCountry: Option;
     defaultCurrency: Option;
     defaultPaymentMethod: CoinmarketPaymentMethodListProps;
@@ -265,7 +265,7 @@ export interface CoinmarketExchangeFormContextProps
     verifyAddress: CoinmarketVerifyAccountProps;
 }
 
-export type CoinmarketFormMapProps = {
+type CoinmarketFormMapProps = {
     buy: CoinmarketBuyFormContextProps;
     sell: CoinmarketSellFormContextProps;
     exchange: CoinmarketExchangeFormContextProps;
@@ -288,17 +288,7 @@ export interface CoinmarketFormInputLabelProps extends PropsWithChildren {
     label?: ExtendedMessageDescriptor['id'];
 }
 
-export type CoinmarketFormInputCommonProps = {};
-
-export interface CoinmarketFormInputDefaultProps
-    extends CoinmarketFormInputLabelProps,
-        CoinmarketFormInputCommonProps {}
-
-export type CoinmarketFormStateMapProps = {
-    buy: CoinmarketBuyFormProps;
-    sell: CoinmarketSellFormProps;
-    exchange: CoinmarketExchangeFormProps;
-};
+export interface CoinmarketFormInputDefaultProps extends CoinmarketFormInputLabelProps {}
 
 export interface CoinmarketFormInputCryptoSelectProps<TFieldValues extends FieldValues>
     extends CoinmarketFormInputDefaultProps {
@@ -331,7 +321,7 @@ export interface CoinmarketFormInputAccountProps<TFieldValues extends FieldValue
     methods: UseFormReturn<TFieldValues>;
 }
 
-export interface CoinmarketFormInputCurrencyProps extends CoinmarketFormInputCommonProps {
+export interface CoinmarketFormInputCurrencyProps {
     isClean?: boolean;
     size?: 'small' | 'large';
     isDarkLabel?: boolean;

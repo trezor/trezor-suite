@@ -6,7 +6,7 @@ import * as coinmarketExchangeActions from '../coinmarketExchangeActions';
 import invityAPI from 'src/services/suite/invityAPI';
 import { CryptoId, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
-export const getInitialState = () => ({
+const getInitialState = () => ({
     wallet: {
         coinmarket: coinmarketReducer(undefined, { type: 'foo' } as any),
     },

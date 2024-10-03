@@ -212,9 +212,6 @@ const coinmarketReducer = (
             case COINMARKET_EXCHANGE.SAVE_QUOTE:
                 draft.exchange.selectedQuote = action.quote;
                 break;
-            case COINMARKET_EXCHANGE.CLEAR_QUOTES:
-                draft.exchange.quotes = undefined;
-                break;
             case COINMARKET_EXCHANGE.VERIFY_ADDRESS:
                 draft.exchange.addressVerified = action.addressVerified;
                 break;
@@ -238,9 +235,6 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SELL.SAVE_QUOTE:
                 draft.sell.selectedQuote = action.quote;
-                break;
-            case COINMARKET_SELL.CLEAR_QUOTES:
-                draft.sell.quotes = undefined;
                 break;
             case COINMARKET_SELL.SET_IS_FROM_REDIRECT:
                 draft.sell.isFromRedirect = action.isFromRedirect;

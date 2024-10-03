@@ -139,11 +139,7 @@ const slippageOptions = [
     },
 ];
 
-export function formatCryptoAmountAsAmount(
-    amount: number,
-    baseAmount: number,
-    decimals = 8,
-): string {
+const formatCryptoAmountAsAmount = (amount: number, baseAmount: number, decimals = 8): string => {
     let digits = 4;
     if (baseAmount < 1) {
         digits = 6;
@@ -153,7 +149,7 @@ export function formatCryptoAmountAsAmount(
     }
 
     return amount.toFixed(digits);
-}
+};
 
 export const CoinmarketOfferExchangeSendSwap = () => {
     const theme = useTheme();
