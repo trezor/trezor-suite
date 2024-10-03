@@ -1,33 +1,15 @@
 import { useCallback, useState } from 'react';
 
-import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 
 import { SUITE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Button, Image } from '@trezor/components';
+import { Button, Column, NewModal, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { NewModalIconColors } from '@trezor/components';
 
-import { Translation, Modal, TrezorLink } from 'src/components/suite';
-import { DialogModal } from 'src/components/suite/modals/Modal/DialogRenderer';
-
-import { ImageWrapper, Description, Title } from './styles';
-
-export const Link = styled(TrezorLink)`
-    width: 100%;
-`;
-
-const StyledModal = styled(Modal)`
-    ${Modal.BottomBar} {
-        > * {
-            flex: 1;
-        }
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const LinkButton = styled(Button)`
-    width: 100%;
-`;
+import { Translation, TrezorLink } from 'src/components/suite';
 
 interface EarlyAccessDisableProps {
     hideWindow: () => void;
@@ -35,6 +17,8 @@ interface EarlyAccessDisableProps {
 
 export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
     const [enabled, setEnabled] = useState(true);
+
+    const theme = useTheme();
 
     const allowPrerelease = useCallback(() => {
         analytics.report({
@@ -47,9 +31,19 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
         setEnabled(false);
     }, []);
 
+    const purpleModalColorBranding: NewModalIconColors = {
+        foreground: theme.iconAlertPurple,
+        background: theme.backgroundAlertPurpleSubtleOnElevationNegative,
+    };
+
+    const eapIconComponent = <NewModal.Icon iconName="eap" iconColor={purpleModalColorBranding} />;
+
     return enabled ? (
-        <StyledModal
-            bottomBarComponents={
+        <NewModal
+            iconComponent={eapIconComponent}
+            onCancel={hideWindow}
+            heading={<Translation id="TR_EARLY_ACCESS" />}
+            bottomContent={
                 <>
                     <Button onClick={allowPrerelease}>
                         <Translation id="TR_EARLY_ACCESS_DISABLE" />
@@ -60,33 +54,41 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
                 </>
             }
         >
-            <ImageWrapper>
-                <Image width={60} height={60} image="EARLY_ACCESS_DISABLE" />
-            </ImageWrapper>
-            <Title>
-                <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE" />
-            </Title>
-            <Description>
-                <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION" />
-            </Description>
-        </StyledModal>
+            <Column gap={spacings.xs} alignItems="start">
+                <Paragraph typographyStyle="highlight">
+                    <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE" />
+                </Paragraph>
+                <Paragraph variant="tertiary">
+                    <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION" />
+                </Paragraph>
+            </Column>
+        </NewModal>
     ) : (
-        <DialogModal
-            icon="check"
-            bodyHeading={<Translation id="TR_EARLY_ACCESS_LEFT_TITLE" />}
-            body={<Translation id="TR_EARLY_ACCESS_LEFT_DESCRIPTION" />}
-            bottomBarComponents={
+        <NewModal
+            iconComponent={eapIconComponent}
+            onCancel={hideWindow}
+            heading={<Translation id="TR_EARLY_ACCESS" />}
+            bottomContent={
                 <>
-                    <Link variant="nostyle" href={SUITE_URL}>
-                        <LinkButton icon="arrowUpRight" iconAlignment="right">
+                    <TrezorLink variant="nostyle" href={SUITE_URL}>
+                        <Button icon="arrowUpRight" iconAlignment="right" variant="primary">
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
-                        </LinkButton>
-                    </Link>
+                        </Button>
+                    </TrezorLink>
                     <Button onClick={hideWindow} variant="tertiary">
                         <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />
                     </Button>
                 </>
             }
-        />
+        >
+            <Column gap={spacings.xs} alignItems="start">
+                <Paragraph typographyStyle="highlight">
+                    <Translation id="TR_EARLY_ACCESS_LEFT_TITLE" />
+                </Paragraph>
+                <Paragraph variant="tertiary">
+                    <Translation id="TR_EARLY_ACCESS_LEFT_DESCRIPTION" />
+                </Paragraph>
+            </Column>
+        </NewModal>
     );
 };

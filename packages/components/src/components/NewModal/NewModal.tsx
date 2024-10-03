@@ -28,7 +28,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { NewModalIcon } from './NewModalIcon';
+import { NewModalIcon, type NewModalIconColors } from './NewModalIcon';
 
 export const allowedNewModalFrameProps = ['height'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedNewModalFrameProps)[number]>;
@@ -247,4 +247,4 @@ NewModal.ModalBase = NewModalBase;
 NewModal.Icon = NewModalIcon;
 
 export { NewModal, NEW_MODAL_CONTENT_ID };
-export type { NewModalProps, NewModalSize };
+export type { NewModalProps, NewModalSize, NewModalIconColors };
