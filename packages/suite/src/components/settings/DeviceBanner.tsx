@@ -62,13 +62,12 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
                     loop
                 />
                 <Column>
-                    <Title typographyStyle="highlight">
-                        {title}{' '}
+                    <Row justifyContent="space-between">
+                        <Title typographyStyle="highlight">{title}</Title>
                         {!description && isWebUsbTransport && !device?.connected && (
                             <WebUsbButton />
                         )}
-                    </Title>
-
+                    </Row>
                     {description && <Text color="textSubdued">{description}</Text>}
                 </Column>
             </Row>
