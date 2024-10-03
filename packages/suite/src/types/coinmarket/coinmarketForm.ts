@@ -305,6 +305,7 @@ export interface CoinmarketFormInputCryptoSelectProps<TFieldValues extends Field
     cryptoSelectName: FieldPath<TFieldValues>;
     supportedCryptoCurrencies: Set<CryptoId> | undefined;
     methods: UseFormReturn<TFieldValues>;
+    isDisabled?: boolean;
 }
 
 export interface CoinmarketFormInputFiatCryptoProps<TFieldValues extends FieldValues> {

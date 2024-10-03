@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { FirmwareType } from '@trezor/connect';
 import CoinmarketLayoutNavigationItem from './CoinmarketLayoutNavigationItem';
 import { Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 const List = styled.div`
     display: flex;
@@ -24,7 +24,6 @@ interface CoinmarketLayoutNavigationProps {
 
 const CoinmarketLayoutNavigation = ({ selectedAccount }: CoinmarketLayoutNavigationProps) => {
     const { device } = useDevice();
-    const isBitcoinOnly = device?.firmwareType === FirmwareType.BitcoinOnly;
 
     const isBtcAccount = selectedAccount.account.symbol === 'btc';
     const torStatus = useSelector(state => state.suite.torStatus);
@@ -49,7 +48,7 @@ const CoinmarketLayoutNavigation = ({ selectedAccount }: CoinmarketLayoutNavigat
                 icon="minus"
             />
 
-            {!isBitcoinOnly ? (
+            {!hasBitcoinOnlyFirmware(device) ? (
                 <CoinmarketLayoutNavigationItem
                     route="wallet-coinmarket-exchange"
                     title="TR_COINMARKET_SWAP"

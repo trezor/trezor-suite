@@ -1,7 +1,7 @@
 import { Route } from '@suite-common/suite-types';
 import { Account } from '@suite-common/wallet-types';
 import { Button, variables } from '@trezor/components';
-import { FirmwareType } from '@trezor/connect';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx } from '@trezor/theme';
 import { ReactNode } from 'react';
@@ -61,13 +61,7 @@ export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
     return (
         <Wrapper>
             {menuItems
-                .filter(
-                    item =>
-                        !(
-                            item.type === 'exchange' &&
-                            device?.firmwareType === FirmwareType.BitcoinOnly
-                        ),
-                )
+                .filter(item => !(item.type === 'exchange' && hasBitcoinOnlyFirmware(device)))
                 .map(item => (
                     <StyledButton
                         $isHideable={!!item.isHideable}
