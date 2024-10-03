@@ -247,7 +247,7 @@ const initialRun = [
                 isDashboardPassphraseBannerVisible: true,
                 showCopyAddressModal: true,
                 showUnhideTokenModal: true,
-                turnAutoUpdateOnNextRun: false,
+                enableAutoupdateOnNextRun: false,
             },
         },
     },

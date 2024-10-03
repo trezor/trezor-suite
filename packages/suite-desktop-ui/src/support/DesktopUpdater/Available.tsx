@@ -48,7 +48,7 @@ interface AvailableProps {
 
 export const Available = ({ onCancel, latest }: AvailableProps) => {
     const dispatch = useDispatch();
-    const { turnAutoUpdateOnNextRun } = useSelector(selectSuiteFlags);
+    const { enableAutoupdateOnNextRun } = useSelector(selectSuiteFlags);
 
     const downloadUpdate = () => {
         dispatch(download());
@@ -62,7 +62,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
     });
 
     const handleToggleAutoUpdateClick = () =>
-        dispatch(setFlag('turnAutoUpdateOnNextRun', !turnAutoUpdateOnNextRun));
+        dispatch(setFlag('enableAutoupdateOnNextRun', !enableAutoupdateOnNextRun));
 
     return (
         <NewModal
@@ -113,7 +113,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                 <Card>
                     <Row justifyContent="start" gap={spacings.xs}>
                         <Checkbox
-                            isChecked={turnAutoUpdateOnNextRun}
+                            isChecked={enableAutoupdateOnNextRun}
                             onClick={handleToggleAutoUpdateClick}
                         >
                             <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES" />

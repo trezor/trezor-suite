@@ -25,7 +25,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         suite: {
             settings: { language },
             lifecycle: { status },
-            flags: { turnAutoUpdateOnNextRun },
+            flags: { enableAutoupdateOnNextRun },
         },
         wallet: {
             settings: { localCurrency },
@@ -58,8 +58,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(initMessageSystemThunk());
 
     // 4. turn on auto updates if needed
-    if (isDesktop() && turnAutoUpdateOnNextRun) {
-        dispatch(setFlag('turnAutoUpdateOnNextRun', false));
+    if (isDesktop() && enableAutoupdateOnNextRun) {
+        dispatch(setFlag('enableAutoupdateOnNextRun', false));
         desktopApi.setAutomaticUpdateEnabled(true);
     }
 
