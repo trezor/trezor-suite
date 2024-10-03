@@ -11,7 +11,6 @@ import {
 } from '@trezor/theme';
 import { Icon } from '../Icon/Icon';
 import { Row, Column } from '../Flex/Flex';
-import { Paragraph } from '../typography/Paragraph/Paragraph';
 import { Text } from '../typography/Text/Text';
 import { motionEasing } from '../../config/motion';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
@@ -186,22 +185,24 @@ export const CollapsibleBox = ({
             <Header $paddingType={paddingType} onClick={onClick}>
                 <Row gap={spacings.xs} justifyContent="space-between">
                     <Column alignItems="flex-start">
-                        <Paragraph
+                        <Text
+                            as="div"
                             typographyStyle={mapSizeToHeadingTypography({
                                 $headingSize: headingSize,
                             })}
                         >
                             {heading}
-                        </Paragraph>
+                        </Text>
                         {subHeading && (
-                            <Paragraph
-                                variant="tertiary"
+                            <Text
+                                as="div"
                                 typographyStyle={mapSizeToSubheadingTypography({
                                     $headingSize: headingSize,
                                 })}
+                                variant="tertiary"
                             >
                                 {subHeading}
-                            </Paragraph>
+                            </Text>
                         )}
                     </Column>
                     <Toggle>
