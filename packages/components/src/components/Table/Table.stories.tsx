@@ -37,8 +37,20 @@ export const Table: StoryObj = {
     ),
     args: {
         ...getFramePropsStory(allowedTableFrameProps).args,
+        colWidths: 'none',
     },
     argTypes: {
         ...getFramePropsStory(allowedTableFrameProps).argTypes,
+        colWidths: {
+            options: ['none', 'fixed'],
+            mapping: { none: undefined, fixed: ['150px', '400px'] },
+            control: {
+                type: 'select',
+                labels: {
+                    none: 'undefined',
+                    fixed: "fixed = ['150px', '400px']",
+                },
+            },
+        },
     },
 };

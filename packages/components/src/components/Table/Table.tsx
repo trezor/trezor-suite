@@ -43,7 +43,7 @@ export const Table = ({ children, margin, colWidths }: TableProps) => {
                     {colWidths && (
                         <colgroup>
                             {colWidths.map((width, index) => (
-                                <col key={index} style={{ width }} />
+                                <col key={index} style={{ minWidth: width, maxWidth: width }} />
                             ))}
                         </colgroup>
                     )}
