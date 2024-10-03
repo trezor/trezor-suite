@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   release-coin-icons:
+    if: github.repository == 'trezor/trezor-suite'
     environment: production-icons
     runs-on: ubuntu-latest
     env:
