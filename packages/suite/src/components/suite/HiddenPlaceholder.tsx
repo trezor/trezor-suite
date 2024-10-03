@@ -8,7 +8,6 @@ type WrapperProps = {
     $intensity: number;
     $discreetMode: boolean;
     $minWidth?: number;
-    $disableKeepingWidth?: boolean;
 };
 
 const Wrapper = styled.span<WrapperProps>`
@@ -26,9 +25,8 @@ const Wrapper = styled.span<WrapperProps>`
             }
         `}
 
-    ${({ $minWidth, $disableKeepingWidth }: WrapperProps) =>
+    ${({ $minWidth }: WrapperProps) =>
         !!$minWidth &&
-        !$disableKeepingWidth &&
         css`
             display: inline-block;
             min-width: ${$minWidth}px;
@@ -95,14 +93,15 @@ export const HiddenPlaceholder = ({
         setWrapperMinWidth(undefined);
     };
 
+    const shouldEnforceMinWidth = discreetMode && !disableKeepingWidth;
+
     return (
         <Wrapper
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             $discreetMode={discreetMode}
             $intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
-            $disableKeepingWidth={disableKeepingWidth}
-            $minWidth={wrapperMinWidth}
+            $minWidth={shouldEnforceMinWidth ? wrapperMinWidth : undefined}
             className={className}
             ref={ref}
             data-testid={dataTestId}
