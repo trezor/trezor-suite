@@ -7,7 +7,7 @@ import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { FeeLevel } from '@trezor/connect';
 
-export interface OfferRedirectParams {
+interface OfferRedirectParams {
     symbol: Account['symbol'];
     index: Account['index'];
     accountType: Account['accountType'];
@@ -18,7 +18,7 @@ export interface OfferRedirectParams {
     country: string;
 }
 
-export interface SellOfferRedirectParams {
+interface SellOfferRedirectParams {
     symbol: Account['symbol'];
     index: Account['index'];
     accountType: Account['accountType'];
@@ -33,7 +33,7 @@ export interface SellOfferRedirectParams {
     feeLimit?: string;
 }
 
-export interface DetailRedirectParams {
+interface DetailRedirectParams {
     symbol: Account['symbol'];
     index: Account['index'];
     accountType: Account['accountType'];
