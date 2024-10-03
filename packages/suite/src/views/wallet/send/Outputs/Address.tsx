@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import styled, { useTheme } from 'styled-components';
 
@@ -31,7 +31,10 @@ import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
 import { Row } from '@trezor/components';
 
-import { HELP_CENTER_EVM_ADDRESS_CHECKSUM } from '@trezor/urls';
+import {
+    HELP_CENTER_EVM_ADDRESS_CHECKSUM,
+    HELP_CENTER_EVM_SEND_TO_CONTRACT_URL,
+} from '@trezor/urls';
 import { spacings } from '@trezor/theme';
 import { CoinLogo } from '@trezor/product-components';
 
@@ -61,6 +64,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [addressDeprecatedUrl, setAddressDeprecatedUrl] =
         useState<ReturnType<typeof isAddressDeprecated>>(undefined);
     const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
+    const contractAddressWarningDismissed = useRef(false);
     const dispatch = useDispatch();
     const { device } = useDevice();
     const {
@@ -74,6 +78,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         metadataEnabled,
         watch,
         setDraftSaveRequest,
+        trigger,
     } = useSendFormContext();
     const { translationString } = useTranslation();
     const { descriptor, networkType, symbol } = account;
@@ -92,8 +97,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const broadcastEnabled = options.includes('broadcast');
     const isOnline = useSelector(state => state.suite.online);
     const theme = useTheme();
+
+    useEffect(() => {
+        contractAddressWarningDismissed.current = false;
+    }, [address]);
+
     const getInputErrorState = () => {
-        if (hasAddressChecksummed) {
+        if (hasAddressChecksummed && !addressError) {
             return 'primary';
         }
         if (addressError) {
@@ -148,39 +158,56 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
     }, [amountInputName, composeTransaction, dispatch, inputName, setValue, symbol]);
 
-    const getValidationButtonProps = (): InputErrorProps['button'] => {
+    const getInputErrorProps = (): {
+        learnMoreUrl?: InputErrorProps['learnMoreUrl'];
+        buttonProps?: InputErrorProps['buttonProps'];
+    } => {
         switch (addressError?.type) {
             case 'deprecated':
-                if (addressDeprecatedUrl) {
+                return {
+                    learnMoreUrl: addressDeprecatedUrl ? URLS[addressDeprecatedUrl] : undefined,
+                };
+            case 'evmchecks':
+                if (!checkAddressCheckSum(address)) {
                     return {
-                        url: URLS[addressDeprecatedUrl],
+                        buttonProps: {
+                            onClick: () => {
+                                setValue(inputName, toChecksumAddress(address), {
+                                    shouldValidate: true,
+                                });
+
+                                setHasAddressChecksummed(true);
+                            },
+                            text: translationString('TR_CONVERT_TO_CHECKSUM_ADDRESS'),
+                        },
+                    };
+                }
+                if (!contractAddressWarningDismissed.current) {
+                    return {
+                        buttonProps: {
+                            onClick: () => {
+                                contractAddressWarningDismissed.current = true;
+                                trigger(inputName);
+                            },
+                            text: translationString('TR_I_UNDERSTAND_THE_RISK'),
+                        },
+                        learnMoreUrl: HELP_CENTER_EVM_SEND_TO_CONTRACT_URL,
                     };
                 }
 
-                return undefined;
-
-            case 'checksum':
-                return {
-                    onClick: () => {
-                        setValue(inputName, toChecksumAddress(address), {
-                            shouldValidate: true,
-                        });
-
-                        setHasAddressChecksummed(true);
-                    },
-                    text: translationString('TR_CONVERT_TO_CHECKSUM_ADDRESS'),
-                };
-
+                return {};
             case 'uppercase':
                 return {
-                    onClick: () =>
-                        setValue(inputName, address.toLowerCase(), {
-                            shouldValidate: true,
-                        }),
-                    text: translationString('TR_CONVERT_TO_LOWERCASE'),
+                    buttonProps: {
+                        onClick: () =>
+                            setValue(inputName, address.toLowerCase(), {
+                                shouldValidate: true,
+                            }),
+                        text: translationString('TR_CONVERT_TO_LOWERCASE'),
+                    },
                 };
             default:
-                return undefined;
+                return {};
         }
     };
 
@@ -220,40 +247,55 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     return translationString('RECIPIENT_IS_NOT_VALID');
                 }
             },
-            // Eth addresses are valid without checksum but Trezor displays them as checksummed.
-            checksum: async (address: string) => {
-                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
+            evmchecks: async (address: string) => {
+                if (networkType === 'ethereum') {
                     if (isOnline) {
                         const params = {
                             descriptor: address,
                             coin: symbol,
                         };
-                        // 1. If the address is used but unchecksummed, then Suite will automatically
-                        // convert the address to the correct checksummed form and inform the user as described in the OP.
                         const result = await TrezorConnect.getAccountInfo(params);
 
-                        if (result.success) {
-                            const hasHistory = result.payload.history.total !== 0;
-                            if (hasHistory) {
-                                setValue(inputName, toChecksumAddress(address), {
-                                    shouldValidate: true,
-                                });
-                                setHasAddressChecksummed(true);
+                        // 1. Validate address checksum.
+                        // Eth addresses are valid without checksum but Trezor displays them as checksummed.
+                        if (!checkAddressCheckSum(address)) {
+                            // 1. If the address is used but unchecksummed, then Suite will automatically
+                            // convert the address to the correct checksummed form and inform the user as described in the OP.
+                            if (result.success) {
+                                const hasHistory = result.payload.history.total !== 0;
+                                if (hasHistory) {
+                                    setValue(inputName, toChecksumAddress(address), {
+                                        shouldValidate: true,
+                                    });
+                                    setHasAddressChecksummed(true);
 
-                                return;
-                            }
+                                    return;
+                                }
 
-                            // 2. If the address is not checksummed at all and not found in blockbook
-                            // offer to checksum it with a button.
-                            if (!hasHistory && address === address.toLowerCase()) {
-                                return translationString('TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED');
+                                // 2. If the address is not checksummed at all and not found in blockbook
+                                // offer to checksum it with a button.
+                                if (!hasHistory && address === address.toLowerCase()) {
+                                    return translationString(
+                                        'TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED',
+                                    );
+                                }
                             }
                         }
+                        //2. Check if address is a contract address
+                        if (!contractAddressWarningDismissed.current) {
+                            if (result.success) {
+                                const isContract = result.payload.misc?.contractInfo;
+                                if (isContract) {
+                                    return translationString('TR_EVM_ADDRESS_IS_CONTRACT');
+                                }
+                            }
+                        }
+                    } else {
+                        return translationString('TR_ETH_ADDRESS_CANT_VERIFY_HISTORY');
                     }
-
-                    return translationString('TR_ETH_ADDRESS_CANT_VERIFY_HISTORY');
                 }
             },
+
             rippleToSelf: (value: string) => {
                 if (networkType === 'ripple' && value === descriptor) {
                     return translationString('RECIPIENT_CANNOT_SEND_TO_MYSELF');
@@ -274,7 +316,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const addressBottomText = isAddressWithLabel ? addressLabelComponent : null;
 
     const getBottomText = () => {
-        if (hasAddressChecksummed) {
+        if (hasAddressChecksummed && !addressError) {
             return (
                 <Row width="100%" justifyContent="flex-start" gap={spacings.xs}>
                     <Translation
@@ -296,16 +338,14 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             );
         }
         if (addressError) {
-            return (
-                <InputError message={addressError.message} button={getValidationButtonProps()} />
-            );
+            return <InputError message={addressError.message} {...getInputErrorProps()} />;
         }
 
         return addressBottomText;
     };
 
     const getBottomTextIconComponent = () => {
-        if (hasAddressChecksummed) {
+        if (hasAddressChecksummed && !addressError) {
             return <Icon name="check" size="medium" color="iconDisabled" />;
         }
 

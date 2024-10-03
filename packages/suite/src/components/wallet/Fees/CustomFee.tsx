@@ -224,7 +224,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                     >
                         <InputError
                             message={feeLimitError?.message}
-                            button={validationButtonProps}
+                            buttonProps={validationButtonProps}
                         />
                     </BottomText>
                 </div>
