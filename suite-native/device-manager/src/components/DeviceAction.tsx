@@ -20,7 +20,7 @@ const contentStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp8,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderWidth: utils.borders.widths.small,
-    borderRadius: 12,
+    borderRadius: utils.borders.radii.r12,
     borderColor: utils.colors.borderElevation1,
 }));
 

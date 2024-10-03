@@ -35,7 +35,7 @@ import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { TypographyStyle } from '@trezor/theme';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.r16,
     padding: utils.spacings.sp8,
 }));
 

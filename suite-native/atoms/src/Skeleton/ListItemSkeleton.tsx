@@ -36,12 +36,12 @@ export const ListItemSkeleton = () => {
                 <BoxSkeleton
                     width={TOP_SUB_ITEM_WIDTH}
                     height={SUBITEM_HEIGHT}
-                    borderRadius={borders.radii.extraSmall}
+                    borderRadius={borders.radii.r4}
                 />
                 <BoxSkeleton
                     width={BOTTOM_SUB_ITEM_WIDTH}
                     height={SUBITEM_HEIGHT}
-                    borderRadius={borders.radii.extraSmall}
+                    borderRadius={borders.radii.r4}
                 />
             </VStack>
         </Box>

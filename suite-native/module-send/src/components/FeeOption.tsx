@@ -37,7 +37,7 @@ const feeLabelsMap = {
 
 const wrapperStyle = prepareNativeStyle(utils => ({
     overflow: 'hidden',
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.r16,
     borderWidth: utils.borders.widths.large,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderColor: utils.colors.backgroundSurfaceElevation0,

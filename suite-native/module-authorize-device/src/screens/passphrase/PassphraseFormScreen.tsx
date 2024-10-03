@@ -15,7 +15,7 @@ const ANIMATION_DURATION = 300;
 
 const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundAlertBlueSubtleOnElevation1,
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.r16,
     borderColor: utils.colors.backgroundAlertBlueSubtleOnElevationNegative,
     borderWidth: utils.borders.widths.small,
     padding: utils.spacings.sp16,

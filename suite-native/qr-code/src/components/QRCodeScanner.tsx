@@ -19,7 +19,7 @@ type QRCodeScannerProps = {
 const SCANNER_SIZE = Dimensions.get('screen').width - 2 * nativeSpacings.sp16;
 
 const cameraContainerStyle = prepareNativeStyle(utils => ({
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.r16,
     overflow: 'hidden',
 }));
 

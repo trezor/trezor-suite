@@ -11,10 +11,10 @@ type GraphErrorProps = {
     onTryAgain: () => void;
 };
 
-const errorIconStyle = prepareNativeStyle(({ colors }) => ({
+const errorIconStyle = prepareNativeStyle(({ borders, colors }) => ({
     width: 48,
     height: 48,
-    borderRadius: 24,
+    borderRadius: borders.radii.r24,
     backgroundColor: colors.backgroundAlertYellowSubtleOnElevation1,
     borderColor: colors.backgroundAlertYellowSubtleOnElevation0,
     borderWidth: 3,

@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { ScreenHeaderWrapper, Box, HStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDeviceState } from '@suite-common/wallet-core';
+import { nativeBorders } from '@trezor/theme';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
 import { DeviceItemContent } from './DeviceItem/DeviceItemContent';
@@ -17,7 +18,7 @@ type DeviceManagerModalProps = {
     onClose?: () => void;
 };
 
-export const MANAGER_MODAL_BOTTOM_RADIUS = 12;
+export const MANAGER_MODAL_BOTTOM_RADIUS = nativeBorders.radii.r12;
 
 const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
     flex: 1,

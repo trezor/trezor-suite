@@ -18,7 +18,7 @@ const cardStyle = prepareNativeStyle<{ isConfirmed: boolean }>((utils, { isConfi
     marginHorizontal: utils.spacings.sp8,
     paddingHorizontal: utils.spacings.sp16,
     paddingVertical: utils.spacings.sp12,
-    borderRadius: 12,
+    borderRadius: utils.borders.radii.r12,
     extend: {
         condition: isConfirmed,
         style: {

@@ -48,7 +48,7 @@ export const BoxSkeleton = ({
     height,
     width,
     elevation = '1',
-    borderRadius = nativeBorders.radii.small,
+    borderRadius = nativeBorders.radii.r8,
 }: BoxSkeletonProps) => {
     const {
         utils: { colors },

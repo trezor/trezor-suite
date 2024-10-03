@@ -87,7 +87,7 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
             ? utils.colors.backgroundNeutralSubtleOnElevation1
             : utils.colors.borderInputDefault,
         borderWidth: utils.borders.widths.small,
-        borderRadius: 1.5 * utils.borders.radii.small,
+        borderRadius: utils.borders.radii.r12,
         margin: utils.borders.widths.small,
         paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
         justifyContent: 'flex-end',

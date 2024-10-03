@@ -23,7 +23,7 @@ const cardStyle = prepareNativeStyle(utils => ({
     alignItem: 'center',
     padding: utils.spacings.sp16,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderRadius: utils.borders.radii.medium,
+    borderRadius: utils.borders.radii.r16,
 }));
 
 const cardContentStyle = prepareNativeStyle(_ => ({
