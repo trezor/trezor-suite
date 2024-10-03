@@ -419,28 +419,6 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_EXCHANGE.CLEAR_QUOTES', () => {
-        expect(
-            reducer(undefined, {
-                type: COINMARKET_EXCHANGE.CLEAR_QUOTES,
-            }),
-        ).toEqual({
-            ...initialState,
-            exchange: { ...initialState.exchange, quotes: undefined },
-        });
-    });
-
-    it('COINMARKET_SELL.CLEAR_QUOTES', () => {
-        expect(
-            reducer(undefined, {
-                type: COINMARKET_SELL.CLEAR_QUOTES,
-            }),
-        ).toEqual({
-            ...initialState,
-            sell: { ...initialState.sell, quotes: undefined },
-        });
-    });
-
     it('COINMARKET_BUY.SAVE_QUOTE', () => {
         expect(
             reducer(undefined, {

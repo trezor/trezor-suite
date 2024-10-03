@@ -32,7 +32,6 @@ export type CoinmarketSellAction =
           type: typeof COINMARKET_SELL.SAVE_QUOTE;
           quote: SellFiatTrade | undefined;
       }
-    | { type: typeof COINMARKET_SELL.CLEAR_QUOTES }
     | {
           type: typeof COINMARKET_COMMON.SAVE_TRADE;
           date: string;
@@ -115,10 +114,6 @@ export const saveQuotes = (quotes: SellFiatTrade[]): CoinmarketSellAction => ({
 export const saveSelectedQuote = (quote: SellFiatTrade | undefined): CoinmarketSellAction => ({
     type: COINMARKET_SELL.SAVE_QUOTE,
     quote,
-});
-
-export const clearQuotes = (): CoinmarketSellAction => ({
-    type: COINMARKET_SELL.CLEAR_QUOTES,
 });
 
 export const setIsFromRedirect = (isFromRedirect: boolean): CoinmarketSellAction => ({
