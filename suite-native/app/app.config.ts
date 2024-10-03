@@ -81,8 +81,6 @@ if (isCI) {
 
 // Temporary workaround waiting for this fix to be published https://github.com/expo/expo/pull/31453
 const getRuntimeVersion = () => {
-    console.log('runtimeVersion: ', runtimeVersion);
-
     if (runtimeVersion === 'fingerprint') {
         return { policy: 'fingerprint' } as const;
     }
