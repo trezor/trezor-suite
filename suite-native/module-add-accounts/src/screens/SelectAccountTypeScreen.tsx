@@ -79,7 +79,7 @@ const aboutStyle = prepareNativeStyle((utils, { bottomInset }: { bottomInset: nu
     paddingBottom: EXTRA_BOTTOM_PADDING + GRADIENT_HEIGHT + bottomInset,
     width: '100%',
     paddingHorizontal: utils.spacings.sp8,
-    gap: 12,
+    gap: utils.spacings.sp12,
 }));
 
 export const SelectAccountTypeScreen = ({

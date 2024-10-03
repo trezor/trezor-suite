@@ -24,7 +24,7 @@ import { QuestionMarks } from '../../assets/passphrase/QuestionMarks';
 const cardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderElevation0,
     borderWidth: utils.borders.widths.small,
-    gap: 12,
+    gap: utils.spacings.sp12,
 }));
 
 const cardContentStyle = prepareNativeStyle(() => ({
