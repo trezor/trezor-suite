@@ -94,10 +94,7 @@ export const MainBar = styled.div`
     flex: 1;
     flex-direction: column;
     align-items: center;
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        overflow-x: hidden;
-    }
+    overflow-x: hidden;
 `;
 
 interface SuiteLayoutProps {
