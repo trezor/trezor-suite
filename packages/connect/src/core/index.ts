@@ -77,7 +77,8 @@ const initDevice = async (context: CoreContext, devicePath?: string) => {
     const origin = DataManager.getSettings('origin')!;
     const useCoreInPopup = DataManager.getSettings('useCoreInPopup');
     const { preferredDevice } = storage.load().origin[origin] || {};
-    const preferredDeviceInList = preferredDevice && deviceList.getDevice(preferredDevice.path);
+    const preferredDeviceInList =
+        preferredDevice && deviceList.getDeviceByPath(preferredDevice.path);
 
     // we detected that there is a preferred device (user stored previously) but it's not in the list anymore (disconnected now)
     // we treat this situation as implicit forget
@@ -90,14 +91,14 @@ const initDevice = async (context: CoreContext, devicePath?: string) => {
     }
 
     if (devicePath) {
-        device = deviceList.getDevice(devicePath);
+        device = deviceList.getDeviceByPath(devicePath);
         showDeviceSelection =
             !device || !!device?.unreadableError || (device.isUnacquired() && !!isUsingPopup);
     } else {
-        const devices = deviceList.asArray();
-        if (devices.length === 1 && (!isWebUsb || !isUsingPopup)) {
+        const onlyDevice = deviceList.getOnlyDevice();
+        if (onlyDevice && (!isWebUsb || !isUsingPopup)) {
             // there is only one device available. use it
-            device = deviceList.getDevice(devices[0].path);
+            device = onlyDevice;
             // Show device selection if device is unreadable or unacquired
             // Also in case of core in popup, so user can press "Remember device"
             showDeviceSelection =
@@ -124,22 +125,22 @@ const initDevice = async (context: CoreContext, devicePath?: string) => {
 
         // check again for available devices
         // there is a possible race condition before popup open
-        const devices = deviceList.asArray();
+        const onlyDevice = deviceList.getOnlyDevice();
         if (
-            devices.length === 1 &&
-            devices[0].type !== 'unreadable' &&
-            devices[0].features &&
+            onlyDevice &&
+            !onlyDevice.unreadableError &&
+            !onlyDevice.isUnacquired() &&
             !isWebUsb &&
             !useCoreInPopup
         ) {
             // there is one device available. use it
-            device = deviceList.getDevice(devices[0].path);
+            device = onlyDevice;
         } else {
             // request select device view
             sendCoreMessage(
                 createUiMessage(UI.SELECT_DEVICE, {
                     webusb: isWebUsb,
-                    devices: deviceList.asArray(),
+                    devices: deviceList.getAllDevices().map(d => d.toMessageObject()),
                 }),
             );
 
@@ -157,7 +158,7 @@ const initDevice = async (context: CoreContext, devicePath?: string) => {
                         return store;
                     });
                 }
-                device = deviceList.getDevice(payload.device.path);
+                device = deviceList.getDeviceByPath(payload.device.path);
             }
         }
     } else if (uiPromises.exists(UI.RECEIVE_DEVICE)) {
@@ -904,8 +905,8 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
         ? ERRORS.TypedError('Method_Cancel', customErrorMessage)
         : ERRORS.TypedError('Method_Interrupted');
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
-    if (deviceList.isConnected() && deviceList.asArray().length > 0) {
-        deviceList.allDevices().forEach(d => {
+    if (deviceList.isConnected() && deviceList.getDeviceCount() > 0) {
+        deviceList.getAllDevices().forEach(d => {
             d.keepTransportSession = false; // clear transportSession on release
             if (d.isUsedHere()) {
                 setOverridePromise(d.interruptionFromUser(error));
@@ -941,22 +942,22 @@ const handleDeviceSelectionChanges = (context: CoreContext, interruptDevice?: De
     // update list of devices in popup
     const promiseExists = uiPromises.exists(UI.RECEIVE_DEVICE);
     if (promiseExists && deviceList.isConnected()) {
-        const list = deviceList.asArray();
+        const onlyDevice = deviceList.getOnlyDevice();
         const isWebUsb = deviceList.transportType() === 'WebUsbTransport';
 
-        if (list.length === 1 && !isWebUsb) {
+        if (onlyDevice && !isWebUsb) {
             // there is only one device. use it
             // resolve uiPromise to looks like it's a user choice (see: handleMessage function)
             uiPromises.resolve({
                 type: UI.RECEIVE_DEVICE,
-                payload: { device: list[0] },
+                payload: { device: onlyDevice.toMessageObject() },
             });
         } else {
             // update device selection list view
             sendCoreMessage(
                 createUiMessage(UI.SELECT_DEVICE, {
                     webusb: isWebUsb,
-                    devices: list,
+                    devices: deviceList.getAllDevices().map(d => d.toMessageObject()),
                 }),
             );
         }

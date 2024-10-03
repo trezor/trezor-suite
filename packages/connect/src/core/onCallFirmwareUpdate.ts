@@ -91,8 +91,7 @@ const waitForReconnectedDevice = async (
 
         await createTimeoutPromise(2000);
         try {
-            const path = deviceList.getFirstDevicePath();
-            reconnectedDevice = deviceList.getDevice(path);
+            reconnectedDevice = deviceList.getOnlyDevice();
         } catch {}
         i++;
         log.debug('onCallFirmwareUpdate', 'waiting for device to reconnect', i);
@@ -306,7 +305,7 @@ export const onCallFirmwareUpdate = async ({
         throw ERRORS.TypedError('Runtime', 'device.firmwareRelease is not set');
     }
 
-    if (deviceList.allDevices().length > 1) {
+    if (deviceList.getDeviceCount() > 1) {
         throw ERRORS.TypedError(
             'Device_MultipleNotSupported',
             'Firmware update allowed with only 1 device connected',
