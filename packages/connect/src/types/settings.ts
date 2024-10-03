@@ -23,7 +23,7 @@ export interface ConnectSettingsPublic {
     lazyLoad?: boolean;
     interactionTimeout?: number;
     trustedHost: boolean;
-    coreMode?: 'auto' | 'popup' | 'iframe';
+    coreMode?: 'auto' | 'popup' | 'iframe' | 'suite-desktop';
     /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
     _extendWebextensionLifetime?: boolean;
     /**

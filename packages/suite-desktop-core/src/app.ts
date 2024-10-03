@@ -194,6 +194,26 @@ const initUi = async ({
         mainThreadEmitter,
     });
 
+    mainThreadEmitter.on('focus-window', () => {
+        console.log('====focus====');
+        let mainWindow = mainWindowProxy.getInstance();
+        if (!mainWindow || mainWindow.isDestroyed()) {
+            logger.info('main', 'Main window destroyed, recreating');
+            mainWindow = createMainWindow(winBounds);
+            mainWindowProxy.setInstance(mainWindow);
+        }
+
+        app.dock?.show();
+        if (isMacOs()) app.show();
+        if (!mainWindow.isVisible()) mainWindow.show();
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
+    });
+
+    mainThreadEmitter.on('blur-window', () => {
+        app.hide();
+    });
+
     app.on('second-instance', () => {
         // Someone tried to run a second instance, we should focus our window.
         logger.info('main', 'Second instance detected, focusing main window');
