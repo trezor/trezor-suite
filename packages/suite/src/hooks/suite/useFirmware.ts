@@ -68,19 +68,23 @@ export const useFirmware = () => {
     const deviceWillBeWiped = willDeviceBeWiped();
 
     const confirmOnDevice =
-        // Show the confirmation pill at the start of installation using the "wait" or "manual" method,
-        // after ReconnectDevicePrompt is closed.
+        // Show the confirmation pill before starting the installation using the "wait" or "manual" method,
+        // after ReconnectDevicePrompt is closed and user selects the option to install firmware while in bootloader.
         // Also in case the device is PIN-locked at the start of the process.
         (firmware.uiEvent?.type === DEVICE.BUTTON &&
             firmware.uiEvent.payload.code !== undefined &&
             ['ButtonRequest_FirmwareUpdate', 'ButtonRequest_PinEntry'].includes(
                 firmware.uiEvent.payload.code,
             )) ||
-        // When a PIN-protected device reconnects to normal mode after installation, PIN is requested.
-        // There is a false positive in case such device is wiped (including PIN) during custom installation.s
+        // Show the confirmation pill right after ReconnectDevicePrompt is closed while using the "wait" or "manual" method,
+        // before user selects the option to install firmware while in bootloader
+        // When a PIN-protected device reconnects to normal mode after installation, PIN is requested and the pill is shown.
+        // There is a false positive in case such device is wiped (including PIN) during custom installation.
         (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-            originalDevice?.features?.pin_protection &&
-            !deviceWillBeWiped);
+            (firmware.uiEvent.payload.target === 'bootloader' ||
+                (firmware.uiEvent.payload.target === 'normal' &&
+                    originalDevice?.features?.pin_protection &&
+                    !deviceWillBeWiped)));
 
     const showConfirmationPill =
         !showReconnectPrompt &&
