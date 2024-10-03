@@ -113,20 +113,19 @@ interface FirmwareInitialProps {
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;
-    shouldSwitchFirmwareType?: boolean;
     onClose?: () => void;
-    willBeWiped?: boolean;
 }
 
-export const FirmwareInitial = ({
-    standaloneFwUpdate = false,
-    shouldSwitchFirmwareType,
-    onClose,
-    willBeWiped,
-}: FirmwareInitialProps) => {
+export const FirmwareInitial = ({ standaloneFwUpdate = false, onClose }: FirmwareInitialProps) => {
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const { device } = useDevice();
-    const { firmwareUpdate, getTargetFirmwareType, setStatus } = useFirmware();
+    const {
+        deviceWillBeWiped,
+        firmwareUpdate,
+        setStatus,
+        shouldSwitchFirmwareType,
+        targetFirmwareType,
+    } = useFirmware();
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const devices = useSelector(selectDevices);
 
@@ -142,9 +141,7 @@ export const FirmwareInitial = ({
 
     let content;
 
-    const targetType = bitcoinOnlyOffer
-        ? FirmwareType.BitcoinOnly
-        : getTargetFirmwareType(!!shouldSwitchFirmwareType);
+    const targetType = bitcoinOnlyOffer ? FirmwareType.BitcoinOnly : targetFirmwareType;
     // Bitcoin-only firmware is only available on T2T1 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
     const isBitcoinOnlyAvailable = !!device.firmwareRelease?.release.url_bitcoinonly;
     const currentFwVersion = getFirmwareVersion(device);
@@ -301,7 +298,7 @@ export const FirmwareInitial = ({
             ),
             body: (
                 <>
-                    {willBeWiped && (
+                    {deviceWillBeWiped && (
                         <WarningListWrapper>
                             <Important>
                                 <Translation id="TR_IMPORTANT" />
@@ -324,14 +321,14 @@ export const FirmwareInitial = ({
                 </>
             ),
             innerActions: (
-                <FirmwareButtonsRow withCancelButton={willBeWiped} onClose={onClose}>
+                <FirmwareButtonsRow withCancelButton={deviceWillBeWiped} onClose={onClose}>
                     <FirmwareInstallButton
                         onClick={() =>
                             shouldCheckSeed ? setStatus('check-seed') : installFirmware(targetType)
                         }
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
-                        <Translation id={willBeWiped ? 'TR_CONTINUE' : 'TR_INSTALL'} />
+                        <Translation id={deviceWillBeWiped ? 'TR_CONTINUE' : 'TR_INSTALL'} />
                     </FirmwareInstallButton>
                 </FirmwareButtonsRow>
             ),

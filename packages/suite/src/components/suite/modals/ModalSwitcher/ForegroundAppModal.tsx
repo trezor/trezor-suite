@@ -13,13 +13,10 @@ import { FunctionComponent } from 'react';
 import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
 import { BridgeRequested } from 'src/views/suite/bridge-requested';
 
-// would not work if defined directly in the switch
-const FirmwareType = () => <FirmwareUpdate shouldSwitchFirmwareType />;
-
 const getForegroundApp = (app: ForegroundAppRoute['app']) => {
     const map: Record<ForegroundAppRoute['app'], FunctionComponent<any>> = {
         firmware: FirmwareUpdate,
-        'firmware-type': FirmwareType,
+        'firmware-type': FirmwareUpdate,
         'firmware-custom': FirmwareCustom,
         version: Version,
         bridge: BridgeUnavailable,
