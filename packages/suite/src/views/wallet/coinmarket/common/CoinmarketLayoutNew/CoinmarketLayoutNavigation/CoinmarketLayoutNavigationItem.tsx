@@ -43,11 +43,6 @@ const NavListItemWrapper = styled(NavigationItem)`
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ButtonWrapper = styled(Button)`
-    margin-left: auto;
-`;
-
 interface CoinmarketLayoutNavigationItemProps {
     route: Route['name'];
     title: TranslationKey;
@@ -68,14 +63,15 @@ const CoinmarketLayoutNavigationItem = ({
 
     if (route === transactionsRoute) {
         return (
-            <ButtonWrapper
+            <Button
                 size="small"
                 variant="tertiary"
+                margin={{ left: 'auto' }}
                 onClick={handleTransactionRoute}
                 data-testid={`@coinmarket/menu/${transactionsRoute}`}
             >
                 <Translation id={title} />
-            </ButtonWrapper>
+            </Button>
         );
     }
 

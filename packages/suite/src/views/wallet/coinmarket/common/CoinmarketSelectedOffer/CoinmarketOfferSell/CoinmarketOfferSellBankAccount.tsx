@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { QuestionTooltip, Translation } from 'src/components/suite';
-import { Button, Select, Icon } from '@trezor/components';
+import { Button, Select, Icon, Row } from '@trezor/components';
 import { BankAccount } from 'invity-api';
 import { formatIban } from 'src/utils/wallet/coinmarket/sellUtils';
 import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
@@ -91,7 +91,7 @@ const ButtonWrapper = styled.div`
     margin: ${spacingsPx.lg} 0;
 `;
 
-const Row = styled.div`
+const RowWrapper = styled.div`
     margin: ${spacingsPx.xxs} 0;
     display: flex;
 
@@ -107,23 +107,8 @@ const Left = styled.div`
     flex-wrap: wrap;
 `;
 
-const Right = styled.div`
-    display: flex;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const RegisterAnother = styled(Button)`
-    align-self: center;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    display: flex;
-    min-width: 200px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledIcon = styled(Icon)`
+const IconWrapper = styled.div`
+    flex: none;
     margin-right: ${spacingsPx.xxxs};
 `;
 
@@ -142,7 +127,7 @@ export const CoinmarketOfferSellBankAccount = () => {
     return (
         <Wrapper>
             <CardContent>
-                <Row>
+                <RowWrapper>
                     <Left>
                         <CustomLabel>
                             <LabelText>
@@ -151,18 +136,18 @@ export const CoinmarketOfferSellBankAccount = () => {
                             <StyledQuestionTooltip tooltip="TR_SELL_BANK_ACCOUNT_TOOLTIP" />
                         </CustomLabel>
                     </Left>
-                    <Right>
-                        <RegisterAnother
+                    <Row alignItems="center">
+                        <Button
                             variant="tertiary"
                             icon="plus"
                             data-testid="add-output"
                             onClick={addBankAccount}
                         >
                             <Translation id="TR_SELL_ADD_BANK_ACCOUNT" />
-                        </RegisterAnother>
-                    </Right>
-                </Row>
-                <Row>
+                        </Button>
+                    </Row>
+                </RowWrapper>
+                <RowWrapper>
                     <SelectWrapper>
                         <Select
                             onChange={(selected: BankAccount) => {
@@ -182,11 +167,13 @@ export const CoinmarketOfferSellBankAccount = () => {
                                     </AccountInfo>
                                     {option.verified ? (
                                         <AccountVerified>
-                                            <StyledIcon
-                                                color={theme.legacy.TYPE_GREEN}
-                                                size={15}
-                                                name="check"
-                                            />
+                                            <IconWrapper>
+                                                <Icon
+                                                    color={theme.legacy.TYPE_GREEN}
+                                                    size={15}
+                                                    name="check"
+                                                />
+                                            </IconWrapper>
                                             <Translation id="TR_SELL_BANK_ACCOUNT_VERIFIED" />
                                         </AccountVerified>
                                     ) : (
@@ -199,10 +186,11 @@ export const CoinmarketOfferSellBankAccount = () => {
                             isDisabled={bankAccounts.length < 2}
                         />
                     </SelectWrapper>
-                </Row>
+                </RowWrapper>
             </CardContent>
             <ButtonWrapper>
-                <StyledButton
+                <Button
+                    minWidth={200}
                     isLoading={callInProgress}
                     onClick={() => {
                         if (bankAccount) confirmTrade(bankAccount);
@@ -210,7 +198,7 @@ export const CoinmarketOfferSellBankAccount = () => {
                     isDisabled={callInProgress || !bankAccount}
                 >
                     <Translation id="TR_SELL_GO_TO_TRANSACTION" />
-                </StyledButton>
+                </Button>
             </ButtonWrapper>
         </Wrapper>
     );

@@ -26,8 +26,7 @@ import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormOption, CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
 import styled from 'styled-components';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const SelectWrapper = styled(Select)`
+const SelectWrapper = styled.div`
     /* stylelint-disable selector-class-pattern */
     .react-select__value-container {
         padding: 0;
@@ -74,29 +73,31 @@ const CoinmarketFormInputCurrency = ({
             defaultValue={defaultCurrency}
             control={control as Control<CoinmarketAllFormProps>}
             render={({ field: { onChange, value } }) => (
-                <SelectWrapper
-                    value={value}
-                    onChange={(selected: FiatCurrencyOption) => {
-                        onChange(selected);
-                        setAmountLimits(undefined);
+                <SelectWrapper>
+                    <Select
+                        value={value}
+                        onChange={(selected: FiatCurrencyOption) => {
+                            onChange(selected);
+                            setAmountLimits(undefined);
 
-                        onChangeAdditional(selected);
-                    }}
-                    options={options}
-                    formatOptionLabel={option => (
-                        <CoinmarketFormOption>
-                            <CoinmarketFormOptionLabel $isDark={isDarkLabel}>
-                                {option.label}
-                            </CoinmarketFormOptionLabel>
-                        </CoinmarketFormOption>
-                    )}
-                    data-testid="@coinmarket/form/fiat-currency-select"
-                    minValueWidth="58px"
-                    isClearable={false}
-                    isClean={isClean}
-                    size={size}
-                    isSearchable
-                />
+                            onChangeAdditional(selected);
+                        }}
+                        options={options}
+                        formatOptionLabel={option => (
+                            <CoinmarketFormOption>
+                                <CoinmarketFormOptionLabel $isDark={isDarkLabel}>
+                                    {option.label}
+                                </CoinmarketFormOptionLabel>
+                            </CoinmarketFormOption>
+                        )}
+                        data-testid="@coinmarket/form/fiat-currency-select"
+                        minValueWidth="58px"
+                        isClearable={false}
+                        isClean={isClean}
+                        size={size}
+                        isSearchable
+                    />
+                </SelectWrapper>
             )}
         />
     );

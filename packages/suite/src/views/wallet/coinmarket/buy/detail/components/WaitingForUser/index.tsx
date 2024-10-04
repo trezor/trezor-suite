@@ -8,6 +8,7 @@ import invityAPI from 'src/services/suite/invityAPI';
 import { createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
 import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { useDispatch } from 'src/hooks/suite';
+import { spacings } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -30,11 +31,6 @@ const Description = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 17px 0 10px;
     text-align: center;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const PaymentButton = styled(Button)`
-    margin-top: 30px;
 `;
 
 const getTranslations = (tradeStatus: BuyTradeStatus | undefined) => {
@@ -83,9 +79,14 @@ const WaitingForUser = ({ trade, account, providerName }: WaitingForUserProps) =
             <Description>
                 <Translation id={translations.descriptionTranslationId} values={{ providerName }} />
             </Description>
-            <PaymentButton onClick={goToPayment} isLoading={isWorking} isDisabled={isWorking}>
+            <Button
+                onClick={goToPayment}
+                isLoading={isWorking}
+                isDisabled={isWorking}
+                margin={{ top: spacings.xxl }}
+            >
                 <Translation id={translations.buttonTextTranslationId} />
-            </PaymentButton>
+            </Button>
             {/* TODO add a possibility in the future to cancel the transaction by the user */}
         </Wrapper>
     );
