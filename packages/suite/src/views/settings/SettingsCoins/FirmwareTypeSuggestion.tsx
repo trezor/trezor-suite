@@ -46,8 +46,6 @@ const FirmwareTypeSuggestionDescription = () => {
                             </Button>
                         </InlineButtonWrapper>
                     ),
-                    bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
-                    regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
                 }}
             />
         </Description>

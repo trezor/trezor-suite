@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -19,13 +19,26 @@ type OwnProps = {
 export type ExtendedMessageDescriptor = CommonExtendedMessageDescriptor;
 type MsgType = OwnProps & ExtendedMessageDescriptor;
 
+const COMMON_TRANSLATION_FORMATTERS = {
+    b: (chunks: ReactElement) => <b>{chunks}</b>,
+    i: (chunks: ReactElement) => <i>{chunks}</i>,
+};
+
 export const isMsgType = (
     props: MsgType | ReactNode | ExtendedMessageDescriptor | Date | FormatXMLElementFn,
 ): props is MsgType =>
     typeof props === 'object' && props !== null && (props as MsgType).id !== undefined;
 
 export const Translation = (props: MsgType) => {
-    const values: Record<string, any> = {};
+    const COMMON_TRANSLATION_PLACEHOLDER_MAP = {
+        bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
+        regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
+    };
+
+    const values: Record<string, any> = {
+        ...COMMON_TRANSLATION_FORMATTERS,
+        ...COMMON_TRANSLATION_PLACEHOLDER_MAP,
+    };
     // message passed via props (id, defaultMessage, values)
     Object.keys(props.values || []).forEach(key => {
         // Iterates through all values. The entry may also contain a MessageDescriptor.

@@ -26,7 +26,6 @@ export const TransactionReviewEvmExplanation = ({
                 id="TR_EVM_EXPLANATION_SEND_MODAL_DESCRIPTION"
                 values={{
                     network: network.name,
-                    b: text => <b>{text}</b>,
                 }}
             />
         </Banner>

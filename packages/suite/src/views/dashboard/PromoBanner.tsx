@@ -238,10 +238,7 @@ export const PromoBanner = () => {
             )}
 
             <MobilePromoContainer>
-                <Translation
-                    values={{ b: text => <b>{text}</b> }}
-                    id="TR_MOBILE_APP_PROMO_TEXT_FOOTER"
-                />
+                <Translation id="TR_MOBILE_APP_PROMO_TEXT_FOOTER" />
 
                 <BadgeContainer>
                     <StoreBadge
