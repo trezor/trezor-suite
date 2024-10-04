@@ -19,7 +19,7 @@ describe('coinmarket/buy utils', () => {
             minFiat: 20,
         });
         expect(getAmountLimits(QUOTE_REQUEST_CRYPTO, MIN_MAX_QUOTES_LOW)).toStrictEqual({
-            currency: 'BTC',
+            currency: 'bitcoin',
             minCrypto: 0.002,
         });
 
@@ -28,7 +28,7 @@ describe('coinmarket/buy utils', () => {
             maxFiat: 17045.0,
         });
         expect(getAmountLimits(QUOTE_REQUEST_CRYPTO, MIN_MAX_QUOTES_HIGH)).toStrictEqual({
-            currency: 'BTC',
+            currency: 'bitcoin',
             maxCrypto: 1.67212968,
         });
     });
@@ -41,11 +41,11 @@ describe('coinmarket/buy utils', () => {
         };
         // @ts-expect-error
         expect(await createQuoteLink(QUOTE_REQUEST_FIAT, accountMock)).toStrictEqual(
-            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qf/CZ/EUR/10/BTC`,
+            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qf/CZ/EUR/10/bitcoin`,
         );
         // @ts-expect-error
         expect(await createQuoteLink(QUOTE_REQUEST_CRYPTO, accountMock)).toStrictEqual(
-            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qc/CZ/EUR/0.001/BTC`,
+            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qc/CZ/EUR/0.001/bitcoin`,
         );
     });
 
