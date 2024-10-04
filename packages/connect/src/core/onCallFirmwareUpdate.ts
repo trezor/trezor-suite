@@ -14,7 +14,7 @@ import {
     stripFwHeaders,
 } from '../api/firmware';
 import { getReleases } from '../data/firmwareInfo';
-import { CommonParams, IntermediaryVersion } from '../types';
+import { CommonParams, DeviceUniquePath, IntermediaryVersion } from '../types';
 import { FIRMWARE, PROTO, ERRORS } from '../constants';
 import type { Log } from '../utils/debug';
 import type { Device } from '../device/Device';
@@ -286,7 +286,7 @@ export type Params = {
 type Context = {
     deviceList: DeviceList;
     postMessage: PostMessage;
-    initDevice: (path?: string) => Promise<Device>;
+    initDevice: (path?: DeviceUniquePath) => Promise<Device>;
     log: Log;
     abortSignal: AbortSignal;
 };
