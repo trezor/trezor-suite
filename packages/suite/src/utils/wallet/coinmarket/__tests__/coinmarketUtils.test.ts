@@ -25,11 +25,11 @@ import * as BUY_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/buyUtils'
 import * as SELL_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/sellUtils';
 import * as EXCHANGE_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';
 import { CryptoId } from 'invity-api';
-import { useAccountLabel } from 'src/components/suite/AccountLabel';
+import { useDefaultAccountLabel } from 'src/hooks/suite/useDefaultAccountLabel';
 
-jest.mock('src/components/suite/AccountLabel', () => ({
-    ...jest.requireActual('src/components/suite/AccountLabel'),
-    useAccountLabel: jest.fn(),
+jest.mock('src/hooks/suite/useDefaultAccountLabel', () => ({
+    ...jest.requireActual('src/hooks/suite/useDefaultAccountLabel'),
+    useDefaultAccountLabel: jest.fn(),
 }));
 
 describe('coinmarket utils', () => {
@@ -158,7 +158,7 @@ describe('coinmarket utils', () => {
 
     it('coinmarketBuildAccountOptions', () => {
         const label = 'mocked label';
-        const defaultAccountLabelString = (useAccountLabel as jest.Mock).mockImplementation(
+        const getDefaultAccountLabel = (useDefaultAccountLabel as jest.Mock).mockImplementation(
             () => label,
         );
 
@@ -166,7 +166,7 @@ describe('coinmarket utils', () => {
             accounts: FIXTURE_ACCOUNTS as Account[],
             deviceState: '1stTestnetAddress@device_id:0',
             accountLabels: {},
-            defaultAccountLabelString,
+            getDefaultAccountLabel,
             tokenDefinitions: { eth: { coin: coinDefinitions } },
             supportedCryptoIds: new Set([
                 'bitcoin',
