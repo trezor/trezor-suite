@@ -91,6 +91,7 @@ export interface InvokeChannels {
     'user-data/clear': () => InvokeResult;
     'user-data/open': (directory?: string) => InvokeResult;
     'udev/install': () => InvokeResult;
+    'app/auto-start/is-enabled': () => InvokeResult<boolean>;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -109,6 +110,7 @@ export interface DesktopApi {
     appFocus: DesktopApiSend<'app/focus'>;
     appHide: DesktopApiSend<'app/hide'>;
     appAutoStart: DesktopApiSend<'app/auto-start'>;
+    getAppAutoStartIsEnabled: DesktopApiInvoke<'app/auto-start/is-enabled'>;
     // Auto-updater
     checkForUpdates: DesktopApiSend<'update/check'>;
     downloadUpdate: DesktopApiSend<'update/download'>;

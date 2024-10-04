@@ -5,6 +5,8 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
+import { validateIpcMessage } from '@trezor/ipc-proxy';
+
 import { app, ipcMain } from '../typed-electron';
 
 import type { Module } from './index';
@@ -37,6 +39,14 @@ const linuxAutoStart = (enabled: boolean) => {
     }
 };
 
+const isAutoStartEnabled = () => {
+    if (process.platform === 'linux') {
+        return fs.existsSync(path.join(os.homedir(), LINUX_AUTOSTART_DIR, LINUX_AUTOSTART_FILE));
+    } else {
+        return app.getLoginItemSettings().openAtLogin;
+    }
+};
+
 export const init: Module = () => {
     const { logger } = global;
 
@@ -55,18 +65,18 @@ export const init: Module = () => {
         }
     });
 
+    ipcMain.handle('app/auto-start/is-enabled', ipcEvent => {
+        validateIpcMessage(ipcEvent);
+        const result = isAutoStartEnabled();
+
+        return { success: true, payload: result };
+    });
+
     return {
         onLoad: () => {
             // Update autostart file on Linux, since the AppImage might have been moved
-            if (process.platform === 'linux') {
-                const autostartFile = path.join(
-                    os.homedir(),
-                    LINUX_AUTOSTART_DIR,
-                    LINUX_AUTOSTART_FILE,
-                );
-                if (fs.existsSync(autostartFile)) {
-                    linuxAutoStart(true);
-                }
+            if (process.platform === 'linux' && isAutoStartEnabled()) {
+                linuxAutoStart(true);
             }
         },
     };
