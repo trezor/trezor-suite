@@ -4943,14 +4943,14 @@ export default defineMessages({
         defaultMessage:
             'For experienced users only. Use at your own risk. These features are in testing, may be unstable, and might not have long-term support.',
     },
-    TR_EXPERIMENTAL_BNB_SMART_CHAIN: {
-        id: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN',
-        defaultMessage: 'BNB Smart Chain',
+    TR_EXPERIMENTAL_OP_ETHEREUM: {
+        id: 'TR_EXPERIMENTAL_OP_ETHEREUM',
+        defaultMessage: 'Optimism',
     },
-    TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON: {
-        id: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON',
+    TR_EXPERIMENTAL_OP_ETHEREUM_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_OP_ETHEREUM_DESCRIPTION',
         defaultMessage:
-            'Enables the BNB Smart Chain network but without internal transaction data history.',
+            'Enables the Optimism network but without internal transaction data history.',
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',

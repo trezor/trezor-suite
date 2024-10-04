@@ -7,7 +7,7 @@ import { Dispatch } from '../../types/suite';
 
 export type ExperimentalFeature =
     | 'password-manager'
-    | 'bnb-smart-chain'
+    | 'optimism'
     | 'tor-snowflake'
     | 'automatic-update';
 
@@ -33,9 +33,9 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             desktopApi.setAutomaticUpdateEnabled(newValue);
         },
     },
-    'bnb-smart-chain': {
-        title: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN',
-        description: 'TR_EXPERIMENTAL_BNB_SMART_CHAIN_DESCRIPTON',
+    optimism: {
+        title: 'TR_EXPERIMENTAL_OP_ETHEREUM',
+        description: 'TR_EXPERIMENTAL_OP_ETHEREUM_DESCRIPTION',
     },
     'tor-snowflake': {
         title: 'TR_EXPERIMENTAL_TOR_SNOWFLAKE',
