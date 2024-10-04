@@ -43,15 +43,6 @@ const getNormalizedTrezorShortcut = (shortcut: string) => {
     return shortcut;
 };
 
-const getNormalizedBackendShortcut = (shortcut: string) => {
-    // Can be safely removed when both Polygon PoS Blockbooks return POL as shortcut
-    if (shortcut.toLowerCase() === 'matic') {
-        return 'pol';
-    }
-
-    return shortcut;
-};
-
 export type BlockchainOptions = {
     coinInfo: CoinInfo;
     postMessage: (message: CoreEventMessage) => void;
@@ -138,7 +129,7 @@ export class Blockchain {
         this.serverInfo = info;
 
         const trezorShortcut = getNormalizedTrezorShortcut(this.coinInfo.shortcut);
-        const backendShortcut = getNormalizedBackendShortcut(this.serverInfo.shortcut);
+        const backendShortcut = this.serverInfo.shortcut;
 
         if (trezorShortcut.toLowerCase() !== backendShortcut.toLowerCase()) {
             throw ERRORS.TypedError('Backend_Invalid');
