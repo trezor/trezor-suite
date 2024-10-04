@@ -10,9 +10,9 @@ import {
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import CoinmarketHeaderSummary from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeaderSummary';
+import { CoinmarketHeaderSummary } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeaderSummary';
 import { CoinmarketRefreshTime } from 'src/views/wallet/coinmarket/common';
-import CoinmarketHeaderFilter from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeaderFilter';
+import { CoinmarketHeaderFilter } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeaderFilter';
 
 const Header = styled.div`
     padding-top: ${spacingsPx.sm};
@@ -57,7 +57,7 @@ interface CoinmarketHeaderProps {
     titleTimer: ExtendedMessageDescriptor['id'];
 }
 
-const CoinmarketHeader = ({ title, titleTimer }: CoinmarketHeaderProps) => {
+export const CoinmarketHeader = ({ title, titleTimer }: CoinmarketHeaderProps) => {
     const context = useCoinmarketOffersContext();
     const { timer, quotes } = context;
     const headerProps = getCryptoQuoteAmountProps(quotes?.[0], context);
@@ -86,5 +86,3 @@ const CoinmarketHeader = ({ title, titleTimer }: CoinmarketHeaderProps) => {
         </Header>
     );
 };
-
-export default CoinmarketHeader;

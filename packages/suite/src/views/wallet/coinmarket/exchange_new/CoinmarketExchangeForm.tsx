@@ -3,7 +3,7 @@ import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketExchangeForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeForm';
 import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketFormLayout } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormLayout';
-import CoinmarketLayout from 'src/views/wallet/coinmarket/common/CoinmarketLayoutNew/CoinmarketLayout';
+import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayoutNew/CoinmarketLayout';
 
 const CoinmarketExchangeFormComponent = (props: UseCoinmarketProps) => {
     const coinmarketExchangeContextValue = useCoinmarketExchangeForm(props);

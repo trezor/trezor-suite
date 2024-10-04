@@ -50,7 +50,7 @@ import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-const useCoinmarketBuyForm = ({
+export const useCoinmarketBuyForm = ({
     selectedAccount,
     pageType = 'form',
 }: UseCoinmarketFormProps): CoinmarketBuyFormContextProps => {
@@ -521,5 +521,3 @@ const useCoinmarketBuyForm = ({
         setAmountLimits,
     };
 };
-
-export default useCoinmarketBuyForm;

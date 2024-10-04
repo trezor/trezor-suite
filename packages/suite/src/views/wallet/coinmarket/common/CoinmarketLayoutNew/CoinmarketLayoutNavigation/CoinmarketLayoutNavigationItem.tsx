@@ -49,7 +49,7 @@ interface CoinmarketLayoutNavigationItemProps {
     icon?: IconName;
 }
 
-const CoinmarketLayoutNavigationItem = ({
+export const CoinmarketLayoutNavigationItem = ({
     route,
     title,
     icon,
@@ -86,5 +86,3 @@ const CoinmarketLayoutNavigationItem = ({
         />
     );
 };
-
-export default CoinmarketLayoutNavigationItem;

@@ -7,7 +7,7 @@ interface CoinmarketFormSwitcherCryptoFiatProps {
     toggleAmountInCrypto: () => void;
 }
 
-const CoinmarketFormSwitcherCryptoFiat = ({
+export const CoinmarketFormSwitcherCryptoFiat = ({
     symbol,
     isDisabled,
     toggleAmountInCrypto,
@@ -28,5 +28,3 @@ const CoinmarketFormSwitcherCryptoFiat = ({
         />
     </TextButton>
 );
-
-export default CoinmarketFormSwitcherCryptoFiat;

@@ -141,7 +141,7 @@ export const initialState: State = {
     lastLoadedTimestamp: 0,
 };
 
-const coinmarketReducer = (
+export const coinmarketReducer = (
     state: State = initialState,
     action: WalletAction | SuiteAction,
 ): State =>
@@ -258,5 +258,3 @@ const coinmarketReducer = (
             // no default
         }
     });
-
-export default coinmarketReducer;

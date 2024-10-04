@@ -9,7 +9,10 @@ interface CoinmarketCryptoAmountProps {
     cryptoId: CryptoId;
 }
 
-const CoinmarketFormOfferCryptoAmount = ({ amount, cryptoId }: CoinmarketCryptoAmountProps) => {
+export const CoinmarketFormOfferCryptoAmount = ({
+    amount,
+    cryptoId,
+}: CoinmarketCryptoAmountProps) => {
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const networkSymbol = cryptoIdToCoinSymbol(cryptoId);
 
@@ -31,5 +34,3 @@ const CoinmarketFormOfferCryptoAmount = ({ amount, cryptoId }: CoinmarketCryptoA
         </CoinmarketAmountContainer>
     );
 };
-
-export default CoinmarketFormOfferCryptoAmount;

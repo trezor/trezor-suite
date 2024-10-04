@@ -5,7 +5,7 @@ import {
     CoinmarketFormInputLabelWrapper,
 } from 'src/views/wallet/coinmarket';
 
-const CoinmarketFormInputLabel = ({ label, children }: CoinmarketFormInputLabelProps) => {
+export const CoinmarketFormInputLabel = ({ label, children }: CoinmarketFormInputLabelProps) => {
     if (!label) return null;
 
     return (
@@ -17,5 +17,3 @@ const CoinmarketFormInputLabel = ({ label, children }: CoinmarketFormInputLabelP
         </CoinmarketFormInputLabelWrapper>
     );
 };
-
-export default CoinmarketFormInputLabel;

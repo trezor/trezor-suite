@@ -22,7 +22,9 @@ interface CoinmarketLayoutNavigationProps {
     selectedAccount: SelectedAccountLoaded;
 }
 
-const CoinmarketLayoutNavigation = ({ selectedAccount }: CoinmarketLayoutNavigationProps) => {
+export const CoinmarketLayoutNavigation = ({
+    selectedAccount,
+}: CoinmarketLayoutNavigationProps) => {
     const { device } = useDevice();
 
     const isBtcAccount = selectedAccount.account.symbol === 'btc';
@@ -80,5 +82,3 @@ const CoinmarketLayoutNavigation = ({ selectedAccount }: CoinmarketLayoutNavigat
         </List>
     );
 };
-
-export default CoinmarketLayoutNavigation;

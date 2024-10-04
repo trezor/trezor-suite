@@ -9,18 +9,18 @@ import {
     CoinmarketBuySellFormProps,
     CoinmarketFormInputDefaultProps,
 } from 'src/types/coinmarket/coinmarketForm';
-import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
 import {
     CoinmarketFormInputInner,
     CoinmarketFormOption,
     CoinmarketFormOptionLabel,
 } from 'src/views/wallet/coinmarket';
 import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
-import CoinmarketFormInputLoader from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLoader';
+import { CoinmarketFormInputLoader } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLoader';
 import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/coinmarket/form';
 import { Translation } from 'src/components/suite';
 
-const CoinmarketFormInputPaymentMethod = ({ label }: CoinmarketFormInputDefaultProps) => {
+export const CoinmarketFormInputPaymentMethod = ({ label }: CoinmarketFormInputDefaultProps) => {
     const {
         control,
         paymentMethods,
@@ -78,5 +78,3 @@ const CoinmarketFormInputPaymentMethod = ({ label }: CoinmarketFormInputDefaultP
         </>
     );
 };
-
-export default CoinmarketFormInputPaymentMethod;

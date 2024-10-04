@@ -1,6 +1,6 @@
-import CoinmarketOffersEmpty from './CoinmarketOffersEmpty';
-import CoinmarketHeader from '../CoinmarketHeader/CoinmarketHeader';
-import CoinmarketOffersItem from './CoinmarketOffersItem';
+import { CoinmarketOffersEmpty } from './CoinmarketOffersEmpty';
+import { CoinmarketHeader } from '../CoinmarketHeader/CoinmarketHeader';
+import { CoinmarketOffersItem } from './CoinmarketOffersItem';
 import {
     isCoinmarketExchangeOffers,
     useCoinmarketOffersContext,
@@ -8,7 +8,7 @@ import {
 import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketOffersExchange } from './CoinmarketOffersExchange';
 
-const CoinmarketOffers = () => {
+export const CoinmarketOffers = () => {
     const context = useCoinmarketOffersContext();
     const { type, quotes } = context;
     const hasLoadingFailed = !quotes;
@@ -37,5 +37,3 @@ const CoinmarketOffers = () => {
         </>
     );
 };
-
-export default CoinmarketOffers;

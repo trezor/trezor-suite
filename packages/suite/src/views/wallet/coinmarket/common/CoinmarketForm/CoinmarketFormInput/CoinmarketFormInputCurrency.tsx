@@ -33,7 +33,7 @@ const SelectWrapper = styled.div`
     }
 `;
 
-const CoinmarketFormInputCurrency = ({
+export const CoinmarketFormInputCurrency = ({
     isClean = true,
     size = 'large',
     isDarkLabel = false,
@@ -102,5 +102,3 @@ const CoinmarketFormInputCurrency = ({
         />
     );
 };
-
-export default CoinmarketFormInputCurrency;

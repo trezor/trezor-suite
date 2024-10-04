@@ -1,5 +1,5 @@
 import { Account } from 'src/types/wallet';
-import coinmarketReducer from 'src/reducers/wallet/coinmarketReducer';
+import { coinmarketReducer } from 'src/reducers/wallet/coinmarketReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { transactionsReducer } from 'src/reducers/wallet';
 

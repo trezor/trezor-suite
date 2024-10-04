@@ -11,7 +11,7 @@ import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions
 import { UI } from '@trezor/connect';
 import { ROUTER, MODAL } from 'src/actions/suite/constants';
 
-const coinmarketMiddleware =
+export const coinmarketMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
@@ -135,5 +135,3 @@ const coinmarketMiddleware =
 
         return action;
     };
-
-export default coinmarketMiddleware;

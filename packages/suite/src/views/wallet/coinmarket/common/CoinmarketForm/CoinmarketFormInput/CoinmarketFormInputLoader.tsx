@@ -16,7 +16,7 @@ const CoinmarketFormInputLoaderWrapper = styled.div<{ $elevation: Elevation }>`
     padding: 0 ${spacingsPx.md};
 `;
 
-const CoinmarketFormInputLoader = () => {
+export const CoinmarketFormInputLoader = () => {
     const { elevation } = useElevation();
 
     return (
@@ -25,5 +25,3 @@ const CoinmarketFormInputLoader = () => {
         </CoinmarketFormInputLoaderWrapper>
     );
 };
-
-export default CoinmarketFormInputLoader;

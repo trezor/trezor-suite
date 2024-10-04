@@ -17,7 +17,7 @@ import settingsReducer from './settingsReducer';
 import graphReducer from './graphReducer';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
-import coinmarketReducer from './coinmarketReducer';
+import { coinmarketReducer } from './coinmarketReducer';
 import accountSearchReducer from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';

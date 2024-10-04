@@ -13,7 +13,7 @@ import {
     CoinmarketFormOptionLogo,
     CoinmarketFormOptionNetwork,
 } from 'src/views/wallet/coinmarket';
-import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
 import {
     CoinmarketBuyFormProps,
     CoinmarketExchangeFormProps,

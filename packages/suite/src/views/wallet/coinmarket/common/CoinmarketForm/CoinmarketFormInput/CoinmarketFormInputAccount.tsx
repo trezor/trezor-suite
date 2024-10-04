@@ -7,7 +7,7 @@ import {
     CoinmarketTradeSellExchangeType,
 } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFormOptionGroupLabel } from 'src/views/wallet/coinmarket';
-import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
 import {
     CoinmarketExchangeFormProps,
     CoinmarketFormInputAccountProps,

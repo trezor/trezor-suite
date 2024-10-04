@@ -23,7 +23,7 @@ const SummaryWrap = styled.div`
     }
 `;
 
-const CoinmarketHeaderSummary = ({
+export const CoinmarketHeaderSummary = ({
     className,
     sendAmount,
     sendCurrency,
@@ -66,5 +66,3 @@ const CoinmarketHeaderSummary = ({
         </SummaryWrap>
     );
 };
-
-export default CoinmarketHeaderSummary;
