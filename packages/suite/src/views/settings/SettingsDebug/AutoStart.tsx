@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import styled from 'styled-components';
 
 import { Switch } from '@trezor/components';
@@ -5,19 +7,30 @@ import { Switch } from '@trezor/components';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { setAutoStart } from 'src/actions/suite/suiteActions';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 const PositionedSwitch = styled.div`
     align-self: center;
 `;
 
 export const AutoStart = () => {
-    const autoStartEnabled = useSelector(state => state.suite.settings.autoStart);
-    const dispatch = useDispatch();
+    const [autoStartEnabled, setAutoStartEnabled] = useState(false);
 
-    const handleChange = () => {
-        dispatch(setAutoStart(!autoStartEnabled));
+    const updateAutoStartStatus = () => {
+        desktopApi.getAppAutoStartIsEnabled().then(result => {
+            if (result.success) {
+                setAutoStartEnabled(result.payload);
+            }
+        });
+    };
+    // set initial state based on real electron settings
+    useEffect(() => {
+        updateAutoStartStatus();
+    }, []);
+
+    const handleChange = (enabled: boolean) => {
+        desktopApi.appAutoStart(enabled);
+        Promise.resolve().then(() => updateAutoStartStatus());
     };
 
     return (
@@ -31,7 +44,7 @@ export const AutoStart = () => {
                     <Switch
                         data-testid="@autostart/toggle-switch"
                         isChecked={!!autoStartEnabled}
-                        onChange={handleChange}
+                        onChange={() => handleChange(!autoStartEnabled)}
                     />
                 </PositionedSwitch>
             </ActionColumn>
