@@ -2,7 +2,6 @@ import styled, { useTheme } from 'styled-components';
 import { Badge, Button, Card, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
     isCoinmarketBuyOffers,
@@ -17,13 +16,14 @@ import {
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { SellFiatTrade } from 'invity-api';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketFeaturedOffersAmounts } from './CoinmarketFeaturedOffersAmounts';
-import { CoinmarketFeaturedOffersPaymentInfo } from './CoinmarketFeaturedOffersPaymentInfo';
 import {
     CoinmarketTradeDetailBuySellType,
     CoinmarketTradeDetailType,
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketFeaturedOffersAmounts } from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffersAmounts';
+import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
+import { CoinmarketFeaturedOffersPaymentInfo } from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffersPaymentInfo';
 
 const Offer = styled.div`
     display: flex;

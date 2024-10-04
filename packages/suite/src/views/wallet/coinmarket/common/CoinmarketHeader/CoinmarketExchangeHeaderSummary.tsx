@@ -3,11 +3,11 @@ import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/u
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useSelector } from 'src/hooks/suite';
 import { H3, Icon, Row, Text } from '@trezor/components';
-import { CoinmarketCryptoAmount } from '../CoinmarketCryptoAmount';
 import { CryptoId } from 'invity-api';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { spacings } from '@trezor/theme';
+import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 
 interface CoinmarketExchangeHeaderSummaryProps {
     sendAmount: string | number | undefined;

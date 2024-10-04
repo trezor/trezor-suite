@@ -13,7 +13,6 @@ import {
     CoinmarketTradeDetailType,
     CoinmarketUtilsProvidersProps,
 } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketFormOffersSwitcherItem } from './CoinmarketFormOffersSwitcherItem';
 import { CoinmarketExchangeFormContextProps } from 'src/types/coinmarket/coinmarketForm';
 import {
     FORM_EXCHANGE_CEX,
@@ -27,6 +26,7 @@ import {
     CoinmarketFormOfferSpinnerWrapper,
     CoinmarketSpinnerWrapper,
 } from 'src/views/wallet/coinmarket';
+import { CoinmarketFormOffersSwitcherItem } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffersSwitcherItem';
 
 const BestOffers = styled.div<{ $elevation: Elevation }>`
     padding: ${spacingsPx.xxs};

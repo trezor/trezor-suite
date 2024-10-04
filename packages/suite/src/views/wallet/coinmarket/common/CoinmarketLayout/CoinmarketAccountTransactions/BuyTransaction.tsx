@@ -23,7 +23,6 @@ import { getStatusMessage } from 'src/utils/wallet/coinmarket/buyUtils';
 import { TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import {
@@ -32,6 +31,7 @@ import {
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { CoinmarketTransactionStatus } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/CoinmarketTransactionStatus';
 
 const Wrapper = styled.div`
     display: flex;

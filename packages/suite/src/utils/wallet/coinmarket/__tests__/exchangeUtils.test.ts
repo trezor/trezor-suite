@@ -1,12 +1,12 @@
 import { CryptoId } from 'invity-api';
-import * as fixtures from '../__fixtures__/exchangeUtils';
+import * as fixtures from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';
 import {
     coinmarketGetExchangeReceiveCryptoId,
     getAmountLimits,
     getStatusMessage,
     getSuccessQuotesOrdered,
     isQuoteError,
-} from '../exchangeUtils';
+} from 'src/utils/wallet/coinmarket/exchangeUtils';
 
 const { MIN_MAX_QUOTES_OK, MIN_MAX_QUOTES_LOW, MIN_MAX_QUOTES_CANNOT_TRADE } = fixtures;
 

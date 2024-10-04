@@ -1,9 +1,7 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { CoinmarketFiatAmount } from '../CoinmarketFiatAmount';
 import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { useCoinmarketInfo } from '../../../../../hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketTradeDetailType } from 'src/types/coinmarket/coinmarket';
 import { spacingsPx } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
@@ -13,6 +11,8 @@ import {
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CryptoId } from 'invity-api';
 import { Icon } from '@trezor/components';
+import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
 const Arrow = styled.div`
     display: flex;

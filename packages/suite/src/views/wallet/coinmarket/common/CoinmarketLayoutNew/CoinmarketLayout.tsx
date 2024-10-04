@@ -5,8 +5,8 @@ import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { spacingsPx } from '@trezor/theme';
-import { CoinmarketLayoutNavigation } from './CoinmarketLayoutNavigation/CoinmarketLayoutNavigation';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { CoinmarketLayoutNavigation } from 'src/views/wallet/coinmarket/common/CoinmarketLayoutNew/CoinmarketLayoutNavigation/CoinmarketLayoutNavigation';
 
 const CoinmarketWrapper = styled.div`
     padding: 0 ${spacingsPx.lg};
