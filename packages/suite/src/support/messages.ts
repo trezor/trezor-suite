@@ -199,16 +199,6 @@ export default defineMessages({
         defaultMessage:
             "Floating rates mean that the final amount you'll get may change slightly due to fluctuations in the market between when you select the rate and when your transaction is complete. These rates are usually higher, meaning you could end up with more crypto in the end.",
     },
-    TR_EXCHANGE_DEX_OFFER_NO_FUNDS_FEES: {
-        id: 'TR_EXCHANGE_DEX_OFFER_NO_FUNDS_FEES',
-        defaultMessage:
-            'No funds remaining for the transaction fees. Please lower the exchange amount to max {symbol} {max}',
-    },
-    TR_EXCHANGE_DEX_OFFER_FEE_INFO: {
-        defaultMessage:
-            'The fees to perform this swap are estimated at {approvalFee} ({approvalFeeFiat}) for approval (if required) and {swapFee} ({swapFeeFiat}) for the swap.',
-        id: 'TR_EXCHANGE_DEX_OFFER_FEE_INFO',
-    },
     TR_EXCHANGE_FEES_INFO: {
         id: 'TR_EXCHANGE_FEES_INFO',
         defaultMessage:
@@ -748,14 +738,6 @@ export default defineMessages({
         defaultMessage: 'Order now',
         id: 'TR_ORDER_NOW',
     },
-    TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT: {
-        defaultMessage: 'Minimum is {minimum} {currency}',
-        id: 'TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT',
-    },
-    TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT: {
-        defaultMessage: 'Maximum is {maximum} {currency}',
-        id: 'TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT',
-    },
     TR_SELL_MODAL_FOR_YOUR_SAFETY: {
         defaultMessage: 'Sell {cryptocurrency} with {provider}',
         id: 'TR_SELL_MODAL_FOR_YOUR_SAFETY',
@@ -934,125 +916,6 @@ export default defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
-    TR_P2P_INFO: {
-        defaultMessage:
-            'With {peerToPeer} (P2P) technology, there is no KYC verification involved neither on the side of the buyer nor the seller. All parties are protected against fraud by secure {multisigEscrow}.',
-        id: 'TR_P2P_INFO',
-    },
-    TR_P2P_PRICE: {
-        defaultMessage: 'Price for 1 {symbol}',
-        id: 'TR_P2P_PRICE',
-    },
-    TR_P2P_PRICE_TOOLTIP: {
-        defaultMessage: '{symbol} price offered by this user.',
-        id: 'TR_P2P_PRICE_TOOLTIP',
-    },
-    TR_P2P_AMOUNT_RANGE_TOOLTIP: {
-        defaultMessage:
-            'The minimum and maximum amount for which this user is willing to sell {symbol}.',
-        id: 'TR_P2P_AMOUNT_RANGE_TOOLTIP',
-    },
-    TR_P2P_USER_REPUTATION: {
-        defaultMessage: '({rating}, {numberOfTrades})',
-        id: 'TR_P2P_USER_REPUTATION',
-    },
-    TR_P2P_TITLE_NOT_AVAILABLE: {
-        defaultMessage: 'Hey there, I’m using {providerName}!',
-        id: 'TR_P2P_TITLE_NOT_AVAILABLE',
-    },
-    TR_P2P_PAYMENT_WINDOW_TOOLTIP: {
-        defaultMessage:
-            'The transaction needs to be completed within this time limit, counting from creating a contract on the {providerName} site.',
-        id: 'TR_P2P_PAYMENT_WINDOW_TOOLTIP',
-    },
-    TR_P2P_WARNING_AMOUNT_RANGE_MINIMUM: {
-        defaultMessage:
-            'The chosen amount of {amount} is lower than the accepted minimum of {minimum}.',
-        id: 'TR_P2P_WARNING_AMOUNT_RANGE_MINIMUM',
-    },
-    TR_P2P_WARNING_AMOUNT_RANGE_MAXIMUM: {
-        defaultMessage:
-            'The chosen amount of {amount} is higher than the accepted maximum of {maximum}.',
-        id: 'TR_P2P_WARNING_AMOUNT_RANGE_MAXIMUM',
-    },
-    TR_P2P_MODAL_FOR_YOUR_SAFETY: {
-        defaultMessage: 'Peer-to-Peer Buy {cryptocurrency} with {provider}',
-        id: 'TR_P2P_MODAL_FOR_YOUR_SAFETY',
-        dynamic: true,
-    },
-    TR_P2P_MODAL_SECURITY_HEADER: {
-        defaultMessage: 'Security first with your Trezor',
-        id: 'TR_P2P_MODAL_SECURITY_HEADER',
-        dynamic: true,
-    },
-    TR_P2P_MODAL_TERMS_1: {
-        defaultMessage:
-            'You’re here to buy cryptocurrency from another person you choose using Peer-to-Peer (P2P) technology without ID verification. If you were directed to this site for any other reason, please contact support before proceeding.',
-        id: 'TR_P2P_MODAL_TERMS_1',
-        dynamic: true,
-    },
-    TR_P2P_MODAL_TERMS_2: {
-        defaultMessage:
-            'You understand that cryptocurrency transactions are irreversible and may not be refunded. Thus, fraudulent or accidental losses may be unrecoverable.',
-        id: 'TR_P2P_MODAL_TERMS_2',
-        dynamic: true,
-    },
-    TR_P2P_MODAL_VERIFIED_PARTNERS_HEADER: {
-        defaultMessage: 'Verified partners by Invity',
-        id: 'TR_P2P_MODAL_VERIFIED_PARTNERS_HEADER',
-        dynamic: true,
-    },
-    TR_P2P_MODAL_TERMS_4: {
-        defaultMessage:
-            'You understand that Invity does not provide this service. {provider}’s terms govern the service.',
-        id: 'TR_P2P_MODAL_TERMS_4',
-        dynamic: true,
-    },
-    TR_P2P_MODAL_LEGAL_HEADER: {
-        defaultMessage: 'Legal notice',
-        id: 'TR_P2P_MODAL_LEGAL_HEADER',
-        dynamic: true,
-    },
-    TR_P2P_MODAL_TERMS_5: {
-        defaultMessage:
-            "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-        id: 'TR_P2P_MODAL_TERMS_5',
-        dynamic: true,
-    },
-    TR_P2P_MODAL_TERMS_6: {
-        defaultMessage:
-            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
-        id: 'TR_P2P_MODAL_TERMS_6',
-        dynamic: true,
-    },
-    TR_P2P_MODAL_CONFIRM: {
-        defaultMessage: 'I’m ready to buy',
-        id: 'TR_P2P_MODAL_CONFIRM',
-        dynamic: true,
-    },
-    TR_P2P_GET_STARTED_INTRO: {
-        defaultMessage:
-            'You need to initiate the transaction on {providerName} – make sure to follow the steps below carefully.',
-        id: 'TR_P2P_GET_STARTED_INTRO',
-    },
-    TR_P2P_GET_STARTED_ITEM_1: {
-        defaultMessage: 'Select “Go to {providerName}” to be redirected to our partner’s website.',
-        id: 'TR_P2P_GET_STARTED_ITEM_1',
-    },
-    TR_P2P_GET_STARTED_ITEM_3: {
-        defaultMessage:
-            'Once {providerName} asks you for a release address, return here and continue.',
-        id: 'TR_P2P_GET_STARTED_ITEM_3',
-    },
-    TR_P2P_GO_TO_PROVIDER: {
-        defaultMessage: 'Go to {providerName}',
-        id: 'TR_P2P_GO_TO_PROVIDER',
-    },
-    TR_P2P_RECEIVING_ADDRESS_ALMOST_THERE: {
-        defaultMessage:
-            'Almost there! Reveal and copy your address, paste it into the “Release address” field back on {providerName}, and finalize the transaction.',
-        id: 'TR_P2P_GET_STARTED_ITEM_4',
-    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',
@@ -1172,26 +1035,6 @@ export default defineMessages({
         id: 'TR_LOGIN_PROCEED',
         defaultMessage: 'Proceed',
     },
-    TR_OFFER_ERROR_MINIMUM_CRYPTO: {
-        defaultMessage:
-            'The chosen amount of {amount} is lower than the accepted minimum of {min}.',
-        id: 'TR_OFFER_ERROR_MINIMUM_CRYPTO',
-    },
-    TR_OFFER_ERROR_MAXIMUM_CRYPTO: {
-        defaultMessage:
-            'The chosen amount of {amount} is higher than the accepted maximum of {max}.',
-        id: 'TR_OFFER_ERROR_MAXIMUM_CRYPTO',
-    },
-    TR_OFFER_ERROR_MINIMUM_FIAT: {
-        defaultMessage:
-            'The chosen amount of {amount} is lower than the accepted minimum of {min}.',
-        id: 'TR_OFFER_ERROR_MINIMUM_FIAT',
-    },
-    TR_OFFER_ERROR_MAXIMUM_FIAT: {
-        defaultMessage:
-            'The chosen amount of {amount} is higher than the accepted maximum of {max}.',
-        id: 'TR_OFFER_ERROR_MAXIMUM_FIAT',
-    },
     TR_TERMS_OF_USE_INVITY: {
         defaultMessage: 'Terms of Use',
         id: 'TR_TERMS_OF_USE_INVITY',
@@ -1227,10 +1070,6 @@ export default defineMessages({
     TR_BUY_NOT_TRANSACTIONS: {
         defaultMessage: 'No transactions yet.',
         id: 'TR_BUY_NOT_TRANSACTIONS',
-    },
-    TR_BUY_CONFIRM_ON_TREZOR: {
-        defaultMessage: 'Confirm on Trezor',
-        id: 'TR_BUY_CONFIRM_ON_TREZOR',
     },
     TR_BUY_GO_TO_PAYMENT: {
         defaultMessage: 'Finish transaction',
@@ -4587,10 +4426,6 @@ export default defineMessages({
         id: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
         defaultMessage:
             'This is the specific alphanumeric address that will receive your coins. Verify this address on your Trezor.',
-    },
-    TR_TRADE_ENTER_COIN: {
-        id: 'TR_TRADE_ENTER_COIN',
-        defaultMessage: 'Enter crypto name or symbol...',
     },
     TR_TRADE_BUYS: {
         id: 'TR_TRADE_BUYS',
