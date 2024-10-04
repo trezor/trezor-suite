@@ -38,6 +38,7 @@ import {
     FirmwareHashCheckResult,
     FirmwareHashCheckError,
     DeviceModelInternal,
+    DeviceUniquePath,
 } from '../types';
 import { models } from '../data/models';
 import { getLanguage } from '../data/getLanguage';
@@ -184,6 +185,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private useCardanoDerivation = false;
 
+    private readonly uniquePath;
+
     constructor(transport: Transport, descriptor: Descriptor) {
         super();
 
@@ -195,6 +198,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         // this will be released after first run
         this.firstRunPromise = createDeferred();
+
+        const id = Math.floor(100 * (Date.now() + Math.random())).toString(36);
+        this.uniquePath = DeviceUniquePath(id);
     }
 
     static fromDescriptor(transport: Transport, originalDescriptor: Descriptor) {
@@ -932,8 +938,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.firstRunPromise.promise;
     }
 
-    getDevicePath() {
-        return this.originalDescriptor.path;
+    getUniquePath() {
+        return this.uniquePath;
     }
 
     isT1() {
@@ -1004,12 +1010,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     // simplified object to pass via postMessage
     toMessageObject(): DeviceTyped {
-        const { path } = this.originalDescriptor;
-        const { name } = this;
-        const base = {
-            path,
-            name,
-        };
+        const { name, uniquePath: path } = this;
+        const base = { path, name };
+
         if (this.unreadableError) {
             return {
                 ...base,

@@ -7,6 +7,7 @@ import {
     Features,
     DeviceModelInternal,
     FirmwareType,
+    DeviceUniquePath,
 } from '@trezor/connect';
 import {
     TrezorDevice,
@@ -136,17 +137,17 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     ...feat,
 });
 
+type StringPath<T extends { path: DeviceUniquePath }> = Omit<T, 'path'> & { path: string };
+
 /**
  * simplified Device from '@trezor/connect'
  * @param {Partial<Device>} [dev]
  * @param {Partial<Features>} [feat]
  * @returns {Device}
  */
-const getConnectDevice = (
-    dev?: Partial<Omit<Device, 'path'> & { path: `${number}` }>,
-    feat?: Partial<Features>,
-): Device => {
-    const path = (dev && dev.path ? dev.path : '1') as `${number}` & { __type: 'PathPublic' };
+const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Features>): Device => {
+    const path = DeviceUniquePath(dev?.path ?? '1');
+
     if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
         return {
             type: 'unreadable',
@@ -203,7 +204,7 @@ const getConnectDevice = (
  * @returns {TrezorDevice}
  */
 const getSuiteDevice = (
-    dev?: Partial<Omit<TrezorDevice, 'path'> & { path: `${number}` }>,
+    dev?: Partial<StringPath<TrezorDevice>>,
     feat?: Partial<Features>,
 ): TrezorDevice => {
     const device = getConnectDevice(dev, feat);
