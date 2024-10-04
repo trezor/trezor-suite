@@ -3,7 +3,7 @@ import { versionUtils, createDeferred, Deferred, TypedEmitter } from '@trezor/ut
 import { Session } from '@trezor/transport';
 import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
 import { DeviceCommands } from './DeviceCommands';
-import { PROTO, ERRORS, NETWORK, FIRMWARE } from '../constants';
+import { PROTO, ERRORS, FIRMWARE } from '../constants';
 import {
     DEVICE,
     DeviceButtonRequestPayload,
@@ -104,61 +104,79 @@ export interface DeviceEvents {
  * @extends {EventEmitter}
  */
 export class Device extends TypedEmitter<DeviceEvents> {
-    transport: Transport;
-    protocol: TransportProtocol;
+    public readonly transport: Transport;
+    public readonly protocol: TransportProtocol;
 
-    originalDescriptor: Descriptor;
+    private originalDescriptor: Descriptor;
 
     /**
      * descriptor was detected on transport layer but sending any messages (such as GetFeatures) to it failed either
      * with some expected error, for example HID device, LIBUSB_ERROR, or it simply timeout out. such device can't be worked
      * with and user needs to take some action. for example reconnect the device, update firmware or change transport type
      */
-    unreadableError?: string;
+    private unreadableError?: string;
 
     // @ts-expect-error: strictPropertyInitialization
-    firmwareStatus: DeviceFirmwareStatus;
+    private _firmwareStatus: DeviceFirmwareStatus;
+    public get firmwareStatus() {
+        return this._firmwareStatus;
+    }
 
-    firmwareRelease?: ReleaseInfo | null;
+    private _firmwareRelease?: ReleaseInfo | null;
+    public get firmwareRelease() {
+        return this._firmwareRelease;
+    }
 
     // @ts-expect-error: strictPropertyInitialization
-    features: Features;
+    private _features: Features;
+    public get features() {
+        return this._features;
+    }
 
-    featuresNeedsReload = false;
+    private _featuresNeedsReload = false;
 
     // variables used in one workflow: acquire -> transportSession -> commands -> run -> keepTransportSession -> release
     private acquirePromise?: ReturnType<Transport['acquire']>;
     private releasePromise?: ReturnType<Transport['release']>;
     private runPromise?: Deferred<void>;
-    transportSession?: Session | null;
-    keepTransportSession = false;
+
+    private _transportSession?: Session | null;
+    public get transportSession() {
+        return this._transportSession;
+    }
+
+    private keepTransportSession = false;
     public commands?: DeviceCommands;
     private cancelableAction?: (err?: Error) => Promise<unknown>;
 
-    loaded = false;
+    private loaded = false;
 
-    inconsistent = false;
+    private inconsistent = false;
 
-    firstRunPromise: Deferred<boolean>;
-    instance = 0;
+    private firstRunPromise: Deferred<boolean>;
+    private instance = 0;
 
     // DeviceState list [this.instance]: DeviceState | undefined
     private state: DeviceState[] = [];
     private stateStorage?: IStateStorage = undefined;
 
-    unavailableCapabilities: UnavailableCapabilities = {};
+    private _unavailableCapabilities: UnavailableCapabilities = {};
+    public get unavailableCapabilities(): Readonly<UnavailableCapabilities> {
+        return this._unavailableCapabilities;
+    }
 
-    networkTypeState: NETWORK.NetworkType[] = [];
+    private _firmwareType?: FirmwareType;
+    public get firmwareType() {
+        return this._firmwareType;
+    }
 
-    firmwareType?: FirmwareType;
+    private name = 'Trezor';
 
-    name = 'Trezor';
+    private color?: string;
 
-    color?: string;
+    private availableTranslations: string[] = [];
 
-    availableTranslations: string[] = [];
-
-    authenticityChecks: NonNullable<KnownDevice['authenticityChecks']> = {
+    private authenticityChecks: NonNullable<KnownDevice['authenticityChecks']> = {
         firmwareRevision: null,
         firmwareHash: null,
     };
@@ -219,7 +237,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const transportSession = acquireResult.payload;
 
         _log.debug('Expected workflow id:', transportSession);
-        this.transportSession = transportSession;
+        this._transportSession = transportSession;
         // note: this.originalDescriptor is updated here and also in TRANSPORT.UPDATE listener.
         // I would like to update it only in one place (listener) but it some cases (unchained test),
         // listen response is not triggered by device acquire. not sure why.
@@ -253,10 +271,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
             const releaseResponse = await this.releasePromise;
             this.releasePromise = undefined;
             if (releaseResponse.success) {
-                this.transportSession = null;
+                this._transportSession = null;
                 this.originalDescriptor.session = null;
             }
         }
+    }
+
+    releaseTransportSession() {
+        this.keepTransportSession = false;
     }
 
     async cleanup() {
@@ -488,7 +510,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // and device wasn't released in previous call (example: interrupted discovery which set "keepSession" to true but never released)
             // clear "keepTransportSession" and reset "transportSession" to ensure that "initialize" will be called
             if (this.keepTransportSession) {
-                this.transportSession = null;
+                this._transportSession = null;
                 this.keepTransportSession = false;
             }
         }
@@ -789,24 +811,24 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         // check if FW version or capabilities did change
         if (!version || !versionUtils.isEqual(version, newVersion)) {
-            this.unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this.firmwareStatus = getFirmwareStatus(feat);
-            this.firmwareRelease = getRelease(feat);
+            this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
+            this._firmwareStatus = getFirmwareStatus(feat);
+            this._firmwareRelease = getRelease(feat);
 
             this.availableTranslations = this.firmwareRelease?.translations ?? [];
         }
 
-        this.features = feat;
-        this.featuresNeedsReload = false;
+        this._features = feat;
+        this._featuresNeedsReload = false;
 
         // Vendor headers have been changed in 2.6.3.
         if (feat.fw_vendor === 'Trezor Bitcoin-only') {
-            this.firmwareType = FirmwareType.BitcoinOnly;
+            this._firmwareType = FirmwareType.BitcoinOnly;
         } else if (feat.fw_vendor === 'Trezor') {
-            this.firmwareType = FirmwareType.Regular;
+            this._firmwareType = FirmwareType.Regular;
         } else if (this.getMode() !== 'bootloader') {
             // Relevant for T1B1, T2T1 and custom firmware with a different vendor header. Capabilities do not work in bootloader mode.
-            this.firmwareType =
+            this._firmwareType =
                 feat.capabilities &&
                 feat.capabilities.length > 0 &&
                 !feat.capabilities.includes('Capability_Bitcoin_like')
@@ -835,11 +857,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.features === undefined;
     }
 
+    isUnreadable() {
+        return !!this.unreadableError;
+    }
+
     disconnect() {
         // TODO: cleanup everything
         _log.debug('Disconnect cleanup');
 
-        this.transportSession = null; // set to null to prevent transport.release and cancelableAction
+        this._transportSession = null; // set to null to prevent transport.release and cancelableAction
 
         return this.interruptionFromUser(ERRORS.TypedError('Device_Disconnected'));
     }
@@ -909,6 +935,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     isT1() {
         return this.features ? this.features.major_version === 1 : false;
+    }
+
+    featuresNeedsReload() {
+        this._featuresNeedsReload = true;
     }
 
     hasUnexpectedMode(allow: string[], require: string[]) {
@@ -996,7 +1026,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const label =
             this.features.label === '' || !this.features.label ? defaultLabel : this.features.label;
         let status: DeviceStatus = this.isUsedElsewhere() ? 'occupied' : 'available';
-        if (this.featuresNeedsReload) status = 'used';
+        if (this._featuresNeedsReload) status = 'used';
 
         return {
             ...base,
