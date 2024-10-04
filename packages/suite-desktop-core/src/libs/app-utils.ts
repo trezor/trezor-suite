@@ -14,7 +14,8 @@ export const restartApp = () => {
         options.args.unshift('--appimage-extract-and-run');
     }
 
-    app.removeAllListeners('before-quit');
+    // too: not sure why it was here
+    // app.removeAllListeners('before-quit');
     app.relaunch();
     app.quit();
 };
