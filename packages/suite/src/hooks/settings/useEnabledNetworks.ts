@@ -17,9 +17,9 @@ type EnabledNetworks = {
 export const useEnabledNetworks = (): EnabledNetworks => {
     const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
     const isDebug = useSelector(selectIsDebugModeActive);
-    const bnbExperimentalFeature = useSelector(selectHasExperimentalFeature('bnb-smart-chain'));
+    const opExperimentalFeature = useSelector(selectHasExperimentalFeature('optimism'));
 
-    const mainnets = getMainnets(isDebug, bnbExperimentalFeature);
+    const mainnets = getMainnets(isDebug, opExperimentalFeature);
 
     const testnets = getTestnets(isDebug);
 
