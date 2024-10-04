@@ -19,7 +19,7 @@ import { Translation, TrezorLink } from 'src/components/suite';
 import { COINMARKET_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
 import { useSelector } from 'src/hooks/suite';
 import { variables } from '@trezor/components/src/config';
-import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayoutNew/CoinmarketLayout';
+import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayout';
 
 const IconWrapper = styled.div`
     display: flex;
