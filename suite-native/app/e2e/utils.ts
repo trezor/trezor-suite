@@ -1,7 +1,7 @@
 import { resolveConfig } from 'detox/internals';
 import { expect as detoxExpect } from 'detox';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 const APP_LAUNCH_ARGS = {
     // Do not synchronize communication with the trezor bridge and metro server running on localhost. Since the trezor
@@ -9,8 +9,6 @@ const APP_LAUNCH_ARGS = {
     detoxURLBlacklistRegex: '\\("^.*127.0.0.1.*",".*localhost.*","^*clients3\\.google\\.com*"\\)',
 };
 
-// Contains only one BTC account with a single transaction to make the discovery as fast as possible.
-const SIMPLE_SEED = 'immune enlist rule measure fan swarm mandate track point menu security fan';
 const TREZOR_DEVICE_LABEL = 'Trezor T - Tester';
 const platform = device.getPlatform();
 
@@ -94,7 +92,7 @@ export const appIsFullyLoaded = async () => {
         .withTimeout(35000);
 };
 
-export const prepareTrezorEmulator = async (seed: string = SIMPLE_SEED) => {
+export const prepareTrezorEmulator = async (seed: string = MNEMONICS.mnemonic_immune) => {
     if (platform === 'android') {
         // Prepare Trezor device for test scenario
         await TrezorUserEnvLink.disconnect();
