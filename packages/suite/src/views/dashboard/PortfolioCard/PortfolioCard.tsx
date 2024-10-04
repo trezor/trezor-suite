@@ -120,7 +120,7 @@ export const PortfolioCard = memo(() => {
                         items={[
                             {
                                 key: 'group1',
-                                label: 'Graph View',
+                                label: <Translation id="TR_GRAPH_VIEW" />,
                                 options: [
                                     {
                                         label: <GraphScaleDropdownItem />,
@@ -128,10 +128,14 @@ export const PortfolioCard = memo(() => {
                                     },
                                     {
                                         icon: dashboardGraphHidden ? 'show' : 'hide',
-                                        label: dashboardGraphHidden ? (
-                                            <Translation id="TR_SHOW_GRAPH" />
-                                        ) : (
-                                            <Translation id="TR_HIDE_GRAPH" />
+                                        label: (
+                                            <Translation
+                                                id={
+                                                    dashboardGraphHidden
+                                                        ? 'TR_SHOW_GRAPH'
+                                                        : 'TR_HIDE_GRAPH'
+                                                }
+                                            />
                                         ),
                                         shouldCloseOnClick: false,
                                         onClick: () =>
@@ -150,7 +154,7 @@ export const PortfolioCard = memo(() => {
             }
         >
             <Card paddingType="none">
-                {discoveryStatus && discoveryStatus.status === 'exception' ? null : (
+                {discoveryStatus?.status !== 'exception' && (
                     <PortfolioCardHeader
                         showGraphControls={showGraphControls}
                         hideBorder={!body}
