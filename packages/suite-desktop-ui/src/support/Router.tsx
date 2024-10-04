@@ -15,21 +15,21 @@ import WalletSend from 'src/views/wallet/send';
 import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
 import WalletSignVerify from 'src/views/wallet/sign-verify';
 import WalletAnonymize from 'src/views/wallet/anonymize';
-import WalletCoinmarketBuy from 'src/views/wallet/coinmarket/buy';
-import WalletCoinmarketBuyDetail from 'src/views/wallet/coinmarket/buy/detail';
-import WalletCoinmarketBuyOffers from 'src/views/wallet/coinmarket/buy/offers';
+import { CoinmarketBuyForm } from 'src/views/wallet/coinmarket/buy/CoinmarketBuyForm';
+import { CoinmarketBuyDetail } from 'src/views/wallet/coinmarket/buy/CoinmarketBuyDetail';
+import { CoinmarketBuyOffers } from 'src/views/wallet/coinmarket/buy/CoinmarketBuyOffers';
 import { CoinmarketBuyConfirm } from 'src/views/wallet/coinmarket/buy/CoinmarketBuyConfirm';
 import { CoinmarketSellForm } from 'src/views/wallet/coinmarket/sell_new/CoinmarketSellForm';
-import WalletCoinmarketSellDetail from 'src/views/wallet/coinmarket/sell_new/detail';
+import { CoinmarketSellDetail } from 'src/views/wallet/coinmarket/sell_new/CoinmarketSellDetail';
 import { CoinmarketSellOffers } from 'src/views/wallet/coinmarket/sell_new/CoinmarketSellOffers';
 import { CoinmarketSellConfirm } from 'src/views/wallet/coinmarket/sell_new/CoinmarketSellConfirm';
 import { CoinmarketExchangeForm } from 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeForm';
-import WalletCoinmarketExchangeDetail from 'src/views/wallet/coinmarket/exchange_new/detail';
+import { CoinmarketExchangeDetail } from 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeDetail';
 import { CoinmarketExchangeOffers } from 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeOffers';
 import { CoinmarketExchangeConfirm } from 'src/views/wallet/coinmarket/exchange_new/CoinmarketExchangeConfirm';
-import WalletCoinmarketDCA from 'src/views/wallet/coinmarket/DCA';
-import WalletCoinmarketRedirect from 'src/views/wallet/coinmarket/redirect';
-import WalletCoinmarketTransactions from 'src/views/wallet/coinmarket/transactions';
+import { CoinmarketDCALanding } from 'src/views/wallet/coinmarket/DCA/CoinmarketDCALanding';
+import { CoinmarketRedirect } from 'src/views/wallet/coinmarket/redirect/CoinmarketRedirect';
+import { CoinmarketTransactions } from 'src/views/wallet/coinmarket/transactions/CoinmarketTransactions';
 import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
@@ -50,21 +50,21 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-sign-verify': WalletSignVerify,
     'wallet-anonymize': WalletAnonymize,
 
-    'wallet-coinmarket-buy': WalletCoinmarketBuy,
-    'wallet-coinmarket-buy-detail': WalletCoinmarketBuyDetail,
-    'wallet-coinmarket-buy-offers': WalletCoinmarketBuyOffers,
+    'wallet-coinmarket-buy': CoinmarketBuyForm,
+    'wallet-coinmarket-buy-detail': CoinmarketBuyDetail,
+    'wallet-coinmarket-buy-offers': CoinmarketBuyOffers,
     'wallet-coinmarket-buy-confirm': CoinmarketBuyConfirm,
     'wallet-coinmarket-sell': CoinmarketSellForm,
-    'wallet-coinmarket-sell-detail': WalletCoinmarketSellDetail,
+    'wallet-coinmarket-sell-detail': CoinmarketSellDetail,
     'wallet-coinmarket-sell-offers': CoinmarketSellOffers,
-    'wallet-coinmarket-exchange': CoinmarketExchangeForm,
     'wallet-coinmarket-sell-confirm': CoinmarketSellConfirm,
-    'wallet-coinmarket-exchange-detail': WalletCoinmarketExchangeDetail,
+    'wallet-coinmarket-exchange': CoinmarketExchangeForm,
+    'wallet-coinmarket-exchange-detail': CoinmarketExchangeDetail,
     'wallet-coinmarket-exchange-offers': CoinmarketExchangeOffers,
     'wallet-coinmarket-exchange-confirm': CoinmarketExchangeConfirm,
-    'wallet-coinmarket-dca': WalletCoinmarketDCA,
-    'wallet-coinmarket-redirect': WalletCoinmarketRedirect,
-    'wallet-coinmarket-transactions': WalletCoinmarketTransactions,
+    'wallet-coinmarket-dca': CoinmarketDCALanding,
+    'wallet-coinmarket-redirect': CoinmarketRedirect,
+    'wallet-coinmarket-transactions': CoinmarketTransactions,
 
     'password-manager-index': PasswordManager,
 
