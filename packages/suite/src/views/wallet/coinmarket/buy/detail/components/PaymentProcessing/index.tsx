@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { variables, Spinner, Button, Link } from '@trezor/components';
 import { Translation } from 'src/components/suite/Translation';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,9 +16,8 @@ const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLink = styled(Link)`
-    margin-top: 50px;
+const LinkWrapper = styled.div`
+    margin-top: ${spacingsPx.xxxxl};
 `;
 
 interface PaymentProcessingProps {
@@ -31,11 +31,13 @@ const PaymentProcessing = ({ supportUrl }: PaymentProcessingProps) => (
             <Translation id="TR_BUY_DETAIL_PENDING_TITLE" />
         </Title>
         {supportUrl && (
-            <StyledLink href={supportUrl} target="_blank">
-                <Button variant="tertiary">
-                    <Translation id="TR_BUY_DETAIL_PENDING_SUPPORT" />
-                </Button>
-            </StyledLink>
+            <LinkWrapper>
+                <Link href={supportUrl} target="_blank">
+                    <Button variant="tertiary">
+                        <Translation id="TR_BUY_DETAIL_PENDING_SUPPORT" />
+                    </Button>
+                </Link>
+            </LinkWrapper>
         )}
     </Wrapper>
 );

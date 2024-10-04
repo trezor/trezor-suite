@@ -41,7 +41,7 @@ const CoinmarketHeaderFilter = () => {
     }
 
     return (
-        <Row data-testid="@coinmarket/filter" flexWrap="wrap">
+        <Row data-testid="@coinmarket/filter" flexWrap="wrap" alignItems="flex-start">
             {isCoinmarketBuyOffers(context) ? (
                 <InputWrapper>
                     <CoinmarketFormInputFiatCrypto<CoinmarketBuyFormProps>

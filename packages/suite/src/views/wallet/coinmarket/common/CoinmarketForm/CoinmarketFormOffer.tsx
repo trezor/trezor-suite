@@ -47,6 +47,7 @@ const CoinmarketFormOfferHeader = styled.div`
 `;
 const CoinmarketFormOfferHeaderText = styled.div``;
 
+// reason: special case for loading
 // eslint-disable-next-line local-rules/no-override-ds-component
 const CoinmarketFormOfferHeaderButton = styled(TextButton)`
     ${typography.hint};

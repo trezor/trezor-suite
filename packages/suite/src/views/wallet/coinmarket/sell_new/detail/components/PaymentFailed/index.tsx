@@ -6,6 +6,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite/Translation';
 import { goto } from 'src/actions/suite/routerActions';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,10 +32,9 @@ const Description = styled.div`
     text-align: center;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLink = styled(Link)`
-    margin-top: 30px;
-    margin-bottom: 30px;
+const LinkWrapper = styled.div`
+    margin-top: ${spacingsPx.xxl};
+    margin-bottom: ${spacingsPx.xxl};
 `;
 
 interface PaymentFailedProps {
@@ -68,11 +68,13 @@ const PaymentFailed = ({ transactionId, supportUrl, account }: PaymentFailedProp
             </Description>
             {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
             {supportUrl && (
-                <StyledLink href={supportUrl} target="_blank">
-                    <Button variant="tertiary">
-                        <Translation id="TR_SELL_DETAIL_ERROR_SUPPORT" />
-                    </Button>
-                </StyledLink>
+                <LinkWrapper>
+                    <Link href={supportUrl} target="_blank">
+                        <Button variant="tertiary">
+                            <Translation id="TR_SELL_DETAIL_ERROR_SUPPORT" />
+                        </Button>
+                    </Link>
+                </LinkWrapper>
             )}
             <Button onClick={goToSell}>
                 <Translation id="TR_SELL_DETAIL_ERROR_BUTTON" />

@@ -7,6 +7,7 @@ import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite/Translation';
 import { ExchangeProviderInfo } from 'invity-api';
 import { goto } from 'src/actions/suite/routerActions';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -32,10 +33,9 @@ const Description = styled.div`
     text-align: center;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLink = styled(Link)`
-    margin-top: 5px;
-    margin-bottom: 20px;
+const LinkWrapper = styled(Link)`
+    margin-top: ${spacingsPx.xxs};
+    margin-bottom: ${spacingsPx.lg};
 `;
 
 interface PaymentKYCProps {
@@ -70,11 +70,13 @@ const PaymentKYC = ({ transactionId, supportUrl, provider, account }: PaymentKYC
             </Description>
             {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
             {supportUrl && (
-                <StyledLink href={supportUrl} target="_blank">
-                    <Button variant="tertiary">
-                        <Translation id="TR_EXCHANGE_DETAIL_KYC_SUPPORT" />
-                    </Button>
-                </StyledLink>
+                <LinkWrapper>
+                    <Link href={supportUrl} target="_blank">
+                        <Button variant="tertiary">
+                            <Translation id="TR_EXCHANGE_DETAIL_KYC_SUPPORT" />
+                        </Button>
+                    </Link>
+                </LinkWrapper>
             )}
             {provider?.kycUrl && (
                 <Link href={provider?.kycUrl} target="_blank">

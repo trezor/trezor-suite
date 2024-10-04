@@ -1,13 +1,22 @@
 import { useState, ChangeEvent, MouseEventHandler } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
-import { Button, Icon, Input, Paragraph, SelectBar, Tooltip, variables } from '@trezor/components';
+import {
+    Button,
+    Icon,
+    Input,
+    Paragraph,
+    Row,
+    SelectBar,
+    Tooltip,
+    variables,
+} from '@trezor/components';
 import useDebounce from 'react-use/lib/useDebounce';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FieldError } from 'react-hook-form';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { TranslationKey } from '@suite-common/intl-types';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { getInputStateTextColor } from '@trezor/components';
@@ -48,7 +57,7 @@ const ButtonWrapper = styled.div`
     margin: 20px 0;
 `;
 
-const Row = styled.div`
+const RowWrapper = styled.div`
     margin: 10px 24px;
 `;
 
@@ -100,16 +109,8 @@ const SlippageSettingsButton = styled.button`
     line-height: 1;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledInput = styled(Input)`
-    align-self: center;
-    margin-left: ${spacingsPx.xs};
-
-    input {
-        display: flex;
-        flex: 1;
-        max-width: 70px;
-    }
+const InputWrapper = styled.div`
+    max-width: 70px;
 `;
 
 const SLIPPAGE_MIN = '0.01';
@@ -251,23 +252,23 @@ export const CoinmarketOfferExchangeSendSwap = () => {
 
     return (
         <Wrapper>
-            <Row>
+            <RowWrapper>
                 <LabelText>
                     <Translation id="TR_EXCHANGE_SEND_FROM" />
                 </LabelText>
                 <Value>
                     <AccountLabeling account={account} />
                 </Value>
-            </Row>
-            <Row>
+            </RowWrapper>
+            <RowWrapper>
                 <LabelText>
                     <Translation id="TR_EXCHANGE_SWAP_SEND_TO" values={translationValues} />
                 </LabelText>
                 <Value>
                     <Address>{dexTx.to}</Address>
                 </Value>
-            </Row>
-            <Row>
+            </RowWrapper>
+            <RowWrapper>
                 <LabelText>
                     <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE" />
                 </LabelText>
@@ -293,7 +294,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         </SlippageSettingsButton>
                     </RightColumn>
                 </PaddedColumns>
-            </Row>
+            </RowWrapper>
             {slippageSettings && (
                 <SlippageSettingsRow>
                     <PaddedColumns>
@@ -306,14 +307,18 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         </LeftColumn>
                         {slippage === CUSTOM_SLIPPAGE && (
                             <RightColumn>
-                                <StyledInput
-                                    value={customSlippage}
-                                    size="small"
-                                    inputState={customSlippageError && 'error'}
-                                    name="CustomSlippage"
-                                    data-testid="CustomSlippage"
-                                    onChange={changeCustomSlippage}
-                                />
+                                <Row margin={{ left: spacings.xs }} width="100%">
+                                    <InputWrapper>
+                                        <Input
+                                            value={customSlippage}
+                                            size="small"
+                                            inputState={customSlippageError && 'error'}
+                                            name="CustomSlippage"
+                                            data-testid="CustomSlippage"
+                                            onChange={changeCustomSlippage}
+                                        />
+                                    </InputWrapper>
+                                </Row>
                             </RightColumn>
                         )}
                     </PaddedColumns>
@@ -333,7 +338,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                     ) : null}
                 </SlippageSettingsRow>
             )}
-            <Row>
+            <RowWrapper>
                 <LabelText>
                     <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_SUMMARY" />
                 </LabelText>
@@ -377,15 +382,15 @@ export const CoinmarketOfferExchangeSendSwap = () => {
                         </RightColumn>
                     </Columns>
                 </PaddedValue>
-            </Row>
-            <Row>
+            </RowWrapper>
+            <RowWrapper>
                 <LabelText>
                     <Translation id="TR_EXCHANGE_SWAP_DATA" />
                 </LabelText>
                 <BreakableValue>
                     <Paragraph typographyStyle="hint">{dexTx.data}</Paragraph>
                 </BreakableValue>
-            </Row>
+            </RowWrapper>
             <ButtonWrapper>
                 <Button
                     isLoading={callInProgress}

@@ -13,8 +13,7 @@ const Wrapper = styled.div`
     flex: none;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ProgressPieWrap = styled(ProgressPie)`
+const ProgressPieWrap = styled.div`
     flex: none;
 `;
 
@@ -59,7 +58,9 @@ export const CoinmarketRefreshTime = ({
                 <Spinner size={15} />
             ) : (
                 <Wrapper>
-                    <ProgressPieWrap valueInPercents={progress} />
+                    <ProgressPieWrap>
+                        <ProgressPie valueInPercents={progress} />
+                    </ProgressPieWrap>
                     <TimerText>
                         <RefreshLabel>{label}</RefreshLabel>
                         <RefreshTime>{`0:${remaining < 10 ? '0' : ''}${remaining}`}</RefreshTime>

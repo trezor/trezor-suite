@@ -6,6 +6,7 @@ import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 import { CoinmarketProvidedByInvity } from './CoinmarketProvidedByInvity';
 import { Translation } from 'src/components/suite';
 import { borders, spacingsPx, zIndices } from '@trezor/theme';
+import { CoinmarketFooterLogoWrapper } from 'src/views/wallet/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -61,14 +62,6 @@ const BoxRight = styled.div`
     align-items: center;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const InvityLink = styled(Link)`
-    display: flex;
-    flex: 1;
-    padding-top: 1px;
-    align-items: center;
-`;
-
 const IconWrapper = styled.div`
     cursor: pointer;
     margin-left: 10px;
@@ -91,6 +84,7 @@ const linkStyle = css`
     }
 `;
 
+// reason: different design then basic Link
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLink = styled(Link)`
     ${linkStyle}
@@ -131,9 +125,11 @@ export const CoinmarketFooter = () => {
                     <FooterBox ref={menuRef}>
                         <Header>
                             <BoxLeft>
-                                <InvityLink href={INVITY_URL}>
-                                    <Image width={70} image="INVITY_LOGO" />
-                                </InvityLink>
+                                <CoinmarketFooterLogoWrapper>
+                                    <Link href={INVITY_URL} target="_blank">
+                                        <Image width={70} image="INVITY_LOGO" />
+                                    </Link>
+                                </CoinmarketFooterLogoWrapper>
                             </BoxLeft>
                             <BoxRight>
                                 <Link href={INVITY_URL}>invity.io</Link>

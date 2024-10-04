@@ -18,6 +18,7 @@ const Confirmed = styled.div`
     gap: 10px;
 `;
 
+// reason: set size of RotateDeviceImage
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledRotateDeviceImage = styled(RotateDeviceImage)`
     height: 34px;

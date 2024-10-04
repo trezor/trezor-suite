@@ -24,6 +24,7 @@ const FlagContainer = styled.div`
     margin-right: ${spacingsPx.xs};
 `;
 
+// reason: set cover size of flag for circle shape
 // eslint-disable-next-line local-rules/no-override-ds-component
 const FlagWrapper = styled(Flag)`
     position: absolute;

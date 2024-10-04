@@ -4,6 +4,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite/Translation';
 import { goto } from 'src/actions/suite/routerActions';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -29,14 +30,8 @@ const Description = styled.div`
     text-align: center;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLink = styled(Link)`
-    margin-bottom: 30px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    margin-top: 30px;
+const LinkWrapper = styled.div`
+    margin-top: ${spacingsPx.xxl};
 `;
 
 interface PaymentFailedProps {
@@ -68,15 +63,17 @@ const PaymentFailed = ({ supportUrl, account }: PaymentFailedProps) => {
                 <Translation id="TR_BUY_DETAIL_ERROR_TEXT" />
             </Description>
             {supportUrl && (
-                <StyledLink href={supportUrl} target="_blank">
-                    <Button variant="tertiary">
-                        <Translation id="TR_BUY_DETAIL_ERROR_SUPPORT" />
-                    </Button>
-                </StyledLink>
+                <LinkWrapper>
+                    <Link href={supportUrl} target="_blank">
+                        <Button variant="tertiary">
+                            <Translation id="TR_BUY_DETAIL_ERROR_SUPPORT" />
+                        </Button>
+                    </Link>
+                </LinkWrapper>
             )}
-            <StyledButton onClick={goToBuy}>
+            <Button onClick={goToBuy} margin={{ top: spacings.xxl }}>
                 <Translation id="TR_BUY_DETAIL_ERROR_BUTTON" />
-            </StyledButton>
+            </Button>
         </Wrapper>
     );
 };

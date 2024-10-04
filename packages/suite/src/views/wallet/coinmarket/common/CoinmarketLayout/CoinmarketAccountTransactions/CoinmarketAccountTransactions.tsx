@@ -7,10 +7,11 @@ import { BuyTransaction } from './BuyTransaction';
 import { SellTransaction } from './SellTransaction';
 import { ExchangeTransaction } from './ExchangeTransaction';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     margin-bottom: 48px;
-    padding: 64px 0 0;
+    padding: ${spacingsPx.xxl} 0 0;
 `;
 
 const Content = styled.div``;
@@ -24,12 +25,6 @@ const NoTransactions = styled.div`
     justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledH2 = styled(H2)`
-    flex-direction: column;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const TransactionCount = styled.div`
@@ -82,9 +77,9 @@ export const CoinmarketAccountTransactions = () => {
             {sortedAccountTransactions.length > 0 && (
                 <>
                     <Header>
-                        <StyledH2>
+                        <H2>
                             <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" />
-                        </StyledH2>
+                        </H2>
                         <p>
                             <TransactionCount>
                                 {buyTransactions.length} <Translation id="TR_TRADE_BUYS" /> •{' '}
