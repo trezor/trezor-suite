@@ -1,7 +1,12 @@
-import * as fixtures from '../__fixtures__/sellUtils';
-import { getStatusMessage, formatIban, getAmountLimits, createQuoteLink } from '../sellUtils';
+import {
+    getStatusMessage,
+    formatIban,
+    getAmountLimits,
+    createQuoteLink,
+} from 'src/utils/wallet/coinmarket/sellUtils';
 import { Account } from 'src/types/wallet';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
+import * as fixtures from 'src/utils/wallet/coinmarket/__fixtures__/sellUtils';
 
 const {
     QUOTE_REQUEST_FIAT,

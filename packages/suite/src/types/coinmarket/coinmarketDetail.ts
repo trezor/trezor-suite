@@ -2,12 +2,11 @@ import type { CoinmarketTradeCommonProps } from 'src/reducers/wallet/coinmarketR
 import type { Account } from 'src/types/wallet';
 import type { TradeType } from 'src/types/wallet/coinmarketCommonTypes';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
-
 import {
     CoinmarketTradeInfoMapProps,
     CoinmarketTradeMapProps,
     CoinmarketTradeType,
-} from './coinmarket';
+} from 'src/types/coinmarket/coinmarket';
 
 export interface CoinmarketDetailContextValues<T extends CoinmarketTradeType>
     extends CoinmarketTradeCommonProps {

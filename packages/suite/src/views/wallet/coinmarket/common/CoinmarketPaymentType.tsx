@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { BuyCryptoPaymentMethod, SellCryptoPaymentMethod } from 'invity-api';
-import { CoinmarketPaymentPlainType } from './CoinmarketPaymentPlainType';
 import invityAPI from 'src/services/suite/invityAPI';
+import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
 
 const Wrapper = styled.div`
     display: flex;

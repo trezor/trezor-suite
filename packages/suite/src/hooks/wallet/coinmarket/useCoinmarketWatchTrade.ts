@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTimeoutFn, useUnmount } from 'react-use';
 import { Trade, TradeType } from 'src/types/wallet/coinmarketCommonTypes';
-import { useFormDraft } from '../useFormDraft';
 import invityAPI from 'src/services/suite/invityAPI';
 import { saveTrade as saveBuyTrade } from 'src/actions/wallet/coinmarketBuyActions';
 import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/coinmarketExchangeActions';
@@ -21,6 +20,7 @@ import {
     CoinmarketUseWatchTradeProps,
     CoinmarketWatchTradeProps,
 } from 'src/types/coinmarket/coinmarket';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 
 export const tradeFinalStatuses: Record<TradeType, CoinmarketTradeStatusType[]> = {
     buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],

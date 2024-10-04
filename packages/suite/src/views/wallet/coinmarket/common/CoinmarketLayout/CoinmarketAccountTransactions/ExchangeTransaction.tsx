@@ -9,9 +9,9 @@ import { saveTransactionId } from 'src/actions/wallet/coinmarketExchangeActions'
 import { Account } from 'src/types/wallet';
 import { Translation, FormattedDate, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { CoinmarketTransactionStatus } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/CoinmarketTransactionStatus';
 
 const Wrapper = styled.div`
     display: flex;

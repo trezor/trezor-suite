@@ -1,12 +1,12 @@
 import { ExchangeTrade } from 'invity-api';
 import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
 import { Badge, Radio, Tooltip } from '@trezor/components';
-import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import { Translation } from 'src/components/suite';
 import styled, { css } from 'styled-components';
 import { borders, spacingsPx } from '@trezor/theme';
 import { ExchangeType } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_EXCHANGE_CEX, FORM_EXCHANGE_DEX } from 'src/constants/wallet/coinmarket/form';
+import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
 
 const Offer = styled.div<{ $isSelected: boolean }>`
     padding: ${spacingsPx.md};

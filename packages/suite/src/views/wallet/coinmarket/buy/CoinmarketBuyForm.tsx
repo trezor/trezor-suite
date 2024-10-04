@@ -1,9 +1,9 @@
 import { withSelectedAccountLoaded } from 'src/components/wallet';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketLayout } from '../common/CoinmarketLayoutNew/CoinmarketLayout';
-import { CoinmarketFormLayout } from '../common/CoinmarketForm/CoinmarketFormLayout';
 import { useCoinmarketBuyForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyForm';
 import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { CoinmarketFormLayout } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormLayout';
+import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayoutNew/CoinmarketLayout';
 
 const CoinmarketBuyComponent = (props: UseCoinmarketProps) => {
     const coinmarketBuyContextValues = useCoinmarketBuyForm(props);

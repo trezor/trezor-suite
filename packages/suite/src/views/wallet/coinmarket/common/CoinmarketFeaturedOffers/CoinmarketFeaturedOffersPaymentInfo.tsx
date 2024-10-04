@@ -4,9 +4,9 @@ import {
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 import { Translation } from 'src/components/suite';
-import { CoinmarketPaymentPlainType } from '../CoinmarketPaymentPlainType';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
+import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
 
 const PaymentInfoWrapper = styled.div`
     display: flex;

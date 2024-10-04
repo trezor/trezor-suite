@@ -1,7 +1,7 @@
-import { CoinmarketOffersItemProps } from '../CoinmarketOffers/CoinmarketOffersItem';
 import styled from 'styled-components';
 import { typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
+import { CoinmarketOffersItemProps } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersItem';
 
 const TooltipRow = styled.div`
     display: flex;

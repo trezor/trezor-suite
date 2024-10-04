@@ -3,8 +3,11 @@ import { testMocks } from '@suite-common/test-utils';
 import { MODAL } from 'src/actions/suite/constants';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE } from 'src/actions/wallet/constants';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-
-import { BTC_ACCOUNT, ETH_ACCOUNT, XRP_ACCOUNT } from './accounts';
+import {
+    BTC_ACCOUNT,
+    ETH_ACCOUNT,
+    XRP_ACCOUNT,
+} from 'src/actions/wallet/coinmarket/__fixtures__/coinmarketCommonActions/accounts';
 
 const { getSuiteDevice } = testMocks;
 const UNAVAILABLE_DEVICE = getSuiteDevice({ available: false });

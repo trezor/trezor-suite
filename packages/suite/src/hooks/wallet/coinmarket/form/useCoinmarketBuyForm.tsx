@@ -13,7 +13,6 @@ import {
 } from 'src/utils/wallet/coinmarket/buyUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
-import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
 import { CoinmarketTradeBuyType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
 import {
     addIdsToQuotes,
@@ -24,10 +23,6 @@ import {
     CoinmarketBuyFormContextProps,
     CoinmarketBuyFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
-import {
-    getFilteredSuccessQuotes,
-    useCoinmarketCommonOffers,
-} from '../offers/useCoinmarketCommonOffers';
 import * as coinmarketInfoActions from 'src/actions/wallet/coinmarketInfoActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
@@ -49,6 +44,11 @@ import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/commo
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import {
+    getFilteredSuccessQuotes,
+    useCoinmarketCommonOffers,
+} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { useCoinmarketBuyFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyFormDefaultValues';
 
 export const useCoinmarketBuyForm = ({
     selectedAccount,

@@ -3,10 +3,10 @@ import { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
-import { CoinmarketProvidedByInvity } from './CoinmarketProvidedByInvity';
 import { Translation } from 'src/components/suite';
 import { borders, spacingsPx, zIndices } from '@trezor/theme';
 import { CoinmarketFooterLogoWrapper } from 'src/views/wallet/coinmarket';
+import { CoinmarketProvidedByInvity } from 'src/views/wallet/coinmarket/common/CoinmarketFooter/CoinmarketProvidedByInvity';
 
 const Wrapper = styled.div`
     display: flex;

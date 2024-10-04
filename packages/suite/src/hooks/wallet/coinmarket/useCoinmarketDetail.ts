@@ -6,7 +6,6 @@ import {
     CoinmarketUseDetailOutputProps,
     CoinmarketUseDetailProps,
 } from 'src/types/coinmarket/coinmarketDetail';
-import { useCoinmarketWatchTrade } from './useCoinmarketWatchTrade';
 import { Trade, TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
 import {
     CoinmarketGetDetailDataProps,
@@ -16,8 +15,9 @@ import {
     CoinmarketTradeMapProps,
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
-import { useServerEnvironment } from './useServerEnviroment';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
+import { useServerEnvironment } from 'src/hooks/wallet/coinmarket/useServerEnviroment';
+import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 
 const isBuyTrade = (trade: Trade): trade is TradeBuy => trade.tradeType === 'buy';
 

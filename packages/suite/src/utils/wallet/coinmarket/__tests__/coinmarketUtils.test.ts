@@ -14,13 +14,13 @@ import {
     coinmarketGetAmountLabels,
     coinmarketGetAccountLabel,
     testnetToProdCryptoId,
-} from '../coinmarketUtils';
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     FIXTURE_ACCOUNTS,
     accountBtc,
     accountEth,
     coinDefinitions,
-} from '../__fixtures__/coinmarketUtils';
+} from 'src/utils/wallet/coinmarket/__fixtures__/coinmarketUtils';
 import * as BUY_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/buyUtils';
 import * as SELL_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/sellUtils';
 import * as EXCHANGE_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';

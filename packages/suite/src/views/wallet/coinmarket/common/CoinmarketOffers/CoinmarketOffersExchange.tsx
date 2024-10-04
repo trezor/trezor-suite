@@ -10,9 +10,9 @@ import {
     EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
 } from 'src/constants/wallet/coinmarket/form';
 import { ExchangeTrade } from 'invity-api';
-import { CoinmarketOffersExchangeQuotesByTypeSection } from './CoinmarketOffersExchangeQuotesByTypeSection';
 import { KYC_DEX, KYC_NO_KYC } from 'src/constants/wallet/coinmarket/kyc';
 import { useMemo } from 'react';
+import { CoinmarketOffersExchangeQuotesByTypeSection } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersExchangeQuotesByTypeSection';
 
 export const CoinmarketOffersExchange = () => {
     const {
