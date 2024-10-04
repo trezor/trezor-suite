@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
 import { Button } from '@trezor/components';
 
 import { spacingsPx } from '@trezor/theme';
@@ -34,7 +34,7 @@ const Row = styled.div`
 `;
 
 interface PasswordEntryProps extends PasswordEntryType {
-    devicePath: string;
+    devicePath: DeviceUniquePath;
     onEncrypted: (entry: PasswordEntryType) => void;
     formActive: number | null;
     setFormActive: (id: number | null) => void;
