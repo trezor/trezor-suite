@@ -42,12 +42,6 @@ type PassphraseFormProps = {
     noPassphraseEnabled?: boolean;
 };
 
-const formStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderRadius: utils.borders.radii.r24,
-    gap: utils.spacings.sp16,
-}));
-
 const cardStyle = prepareNativeStyle(_ => ({
     padding: FORM_CARD_PADDING,
 }));
@@ -126,7 +120,7 @@ export const PassphraseForm = ({
         <Form form={form}>
             <View ref={formWrapperView}>
                 <Card style={applyStyle(cardStyle)}>
-                    <VStack style={applyStyle(formStyle)}>
+                    <VStack spacing="sp16">
                         <SecureTextInputField
                             label={inputLabel}
                             name="passphrase"
