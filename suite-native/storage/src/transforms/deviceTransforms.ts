@@ -5,7 +5,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 
 const serializeDevice = (device: TrezorDevice): Omit<TrezorDevice, 'path'> & { path: '' } => ({
     ...device,
-    path: '',
+    path: '' as TrezorDevice['path'],
     remember: true,
     connected: false,
     buttonRequests: [],

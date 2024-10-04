@@ -1,4 +1,4 @@
-import { TrezorConnect } from '../../..';
+import { DeviceUniquePath, TrezorConnect } from '../../..';
 
 export const rippleGetAddress = async (api: TrezorConnect) => {
     // regular
@@ -31,7 +31,7 @@ export const rippleGetAddress = async (api: TrezorConnect) => {
     // with all possible params
     api.rippleGetAddress({
         device: {
-            path: '1',
+            path: DeviceUniquePath('1'),
             instance: 1,
             state: 'state@device-id:1',
         },
