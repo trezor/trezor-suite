@@ -25,7 +25,7 @@ const videoContainer = prepareNativeStyle((_, { aspectRatio }: VideoStyleProps) 
 const videoStyle = prepareNativeStyle((utils, { aspectRatio }: VideoStyleProps) => ({
     flex: 1,
     aspectRatio,
-    borderRadius: utils.borders.radii.r24,
+    borderRadius: utils.borders.radii.r20,
 }));
 
 const activityIndicatorStyle = prepareNativeStyle(_ => ({

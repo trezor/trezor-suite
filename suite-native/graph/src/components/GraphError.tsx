@@ -14,7 +14,7 @@ type GraphErrorProps = {
 const errorIconStyle = prepareNativeStyle(({ borders, colors }) => ({
     width: 48,
     height: 48,
-    borderRadius: borders.radii.r24,
+    borderRadius: borders.radii.round,
     backgroundColor: colors.backgroundAlertYellowSubtleOnElevation1,
     borderColor: colors.backgroundAlertYellowSubtleOnElevation0,
     borderWidth: 3,

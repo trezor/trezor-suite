@@ -19,7 +19,7 @@ const cardStyle = prepareNativeStyle(utils => ({
     width: '100%',
     paddingHorizontal: utils.spacings.sp24,
     paddingVertical: utils.spacings.sp32,
-    borderRadius: utils.borders.radii.r24,
+    borderRadius: utils.borders.radii.r20,
 }));
 
 const receiveButtonStyle = prepareNativeStyle(() => ({
