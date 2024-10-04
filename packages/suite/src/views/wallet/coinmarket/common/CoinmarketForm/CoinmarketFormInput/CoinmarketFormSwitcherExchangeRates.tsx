@@ -3,7 +3,7 @@ import { Radio } from '@trezor/components';
 import { variables } from '@trezor/components/src/config';
 import { Translation } from 'src/components/suite';
 import { borders, spacingsPx } from '@trezor/theme';
-import CoinmarketFormInputLabel from './CoinmarketFormInputLabel';
+import { CoinmarketFormInputLabel } from './CoinmarketFormInputLabel';
 import { CoinmarketExchangeFormProps, RateType } from 'src/types/coinmarket/coinmarketForm';
 import { UseFormSetValue } from 'react-hook-form';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';

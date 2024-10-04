@@ -29,7 +29,7 @@ interface CoinmarketFormOfferItemProps {
     isBestRate?: boolean;
 }
 
-const CoinmarketFormOfferItem = ({
+export const CoinmarketFormOfferItem = ({
     bestQuote,
     isFormLoading,
     isFormInvalid,
@@ -74,5 +74,3 @@ const CoinmarketFormOfferItem = ({
         </CoinmarketFormOfferItemWrapper>
     );
 };
-
-export default CoinmarketFormOfferItem;

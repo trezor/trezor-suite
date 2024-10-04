@@ -4,7 +4,7 @@ import {
     CoinmarketAmountWrapper,
     CoinmarketAmountWrapperText,
 } from 'src/views/wallet/coinmarket';
-import CoinmarketFormInputCurrency from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
+import { CoinmarketFormInputCurrency } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
 import styled from 'styled-components';
 
 const CoinmarketFormInputCurrencyWrapper = styled.div`
@@ -27,7 +27,7 @@ interface CoinmarketFormOfferFiatAmountProps {
     amount: string | undefined;
 }
 
-const CoinmarketFormOfferFiatAmount = ({ amount }: CoinmarketFormOfferFiatAmountProps) => {
+export const CoinmarketFormOfferFiatAmount = ({ amount }: CoinmarketFormOfferFiatAmountProps) => {
     const formattedAmount = amount?.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') ?? '';
 
     return (
@@ -43,5 +43,3 @@ const CoinmarketFormOfferFiatAmount = ({ amount }: CoinmarketFormOfferFiatAmount
         </CoinmarketAmountContainer>
     );
 };
-
-export default CoinmarketFormOfferFiatAmount;

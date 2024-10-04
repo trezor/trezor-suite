@@ -4,7 +4,7 @@ import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useC
 import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketSellForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellForm';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
-import CoinmarketOffers from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffers';
+import { CoinmarketOffers } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffers';
 import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
 
 const CoinmarketSellOffersComponent = (props: UseCoinmarketProps) => {

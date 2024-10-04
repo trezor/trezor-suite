@@ -20,7 +20,7 @@ const TooltipValue = styled.div`
 `;
 
 // IN TESTING MODE
-const CoinmarketUtilsTooltipFee = (_props: Pick<CoinmarketOffersItemProps, 'quote'>) => {
+export const CoinmarketUtilsTooltipFee = (_props: Pick<CoinmarketOffersItemProps, 'quote'>) => {
     return (
         <>
             <TooltipRow>
@@ -38,5 +38,3 @@ const CoinmarketUtilsTooltipFee = (_props: Pick<CoinmarketOffersItemProps, 'quot
         </>
     );
 };
-
-export default CoinmarketUtilsTooltipFee;

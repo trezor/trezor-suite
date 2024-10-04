@@ -1,8 +1,8 @@
 import { configureStore } from 'src/support/tests/configureStore';
 
-import coinmarketReducer, { initialState } from 'src/reducers/wallet/coinmarketReducer';
+import { coinmarketReducer, initialState } from 'src/reducers/wallet/coinmarketReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-import coinmarketMiddleware from 'src/middlewares/wallet/coinmarketMiddleware';
+import { coinmarketMiddleware } from 'src/middlewares/wallet/coinmarketMiddleware';
 import { Action } from 'src/types/suite';
 import { COINMARKET_COMMON } from 'src/actions/wallet/constants';
 import invityAPI from 'src/services/suite/invityAPI';

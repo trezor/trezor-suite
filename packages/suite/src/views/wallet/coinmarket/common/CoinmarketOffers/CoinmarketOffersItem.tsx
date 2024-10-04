@@ -3,7 +3,7 @@ import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
-import CoinmarketUtilsPrice from '../CoinmarketUtils/CoinmarketUtilsPrice';
+import { CoinmarketUtilsPrice } from '../CoinmarketUtils/CoinmarketUtilsPrice';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
     isCoinmarketExchangeOffers,
@@ -92,7 +92,7 @@ export interface CoinmarketOffersItemProps {
     isBestRate: boolean;
 }
 
-const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
+export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     const theme = useTheme();
     const context = useCoinmarketOffersContext();
     const { callInProgress } = context;
@@ -172,5 +172,3 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
         </CoinmarketTestWrapper>
     );
 };
-
-export default CoinmarketOffersItem;

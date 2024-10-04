@@ -1,6 +1,6 @@
 import { configureStore } from 'src/support/tests/configureStore';
 
-import coinmarketReducer, { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
+import { coinmarketReducer, ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import * as coinmarketCommonActions from '../coinmarketCommonActions';
 import { DEFAULT_STORE } from '../__fixtures__/coinmarketCommonActions/store';

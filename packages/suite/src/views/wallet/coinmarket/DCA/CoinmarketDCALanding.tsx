@@ -13,7 +13,7 @@ import {
 } from '@trezor/components';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { withSelectedAccountLoaded } from 'src/components/wallet';
-import CoinmarketLayout from '../common/CoinmarketLayoutNew/CoinmarketLayout';
+import { CoinmarketLayout } from '../common/CoinmarketLayoutNew/CoinmarketLayout';
 import styled from 'styled-components';
 import { borders, palette, spacings, spacingsPx } from '@trezor/theme';
 import { Translation, TrezorLink } from 'src/components/suite';
