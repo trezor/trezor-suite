@@ -103,7 +103,7 @@ export const ConnectPopupScreen = ({
                 }
 
                 return (
-                    <VStack spacing="sp8" alignItems="center">
+                    <VStack testID="@popup/deeplink-info" spacing="sp8" alignItems="center">
                         <Text variant="titleSmall">
                             {method.confirmation?.label ?? method.info}
                         </Text>
@@ -122,7 +122,7 @@ export const ConnectPopupScreen = ({
                         >
                             <Translation id="moduleConnectPopup.areYouSureMessage" />
                         </Text>
-                        <Button onPress={callDevice}>
+                        <Button testID="@popup/call-device" onPress={callDevice}>
                             {method.confirmation?.customConfirmButton?.label ?? (
                                 <Translation id="moduleConnectPopup.confirm" />
                             )}
