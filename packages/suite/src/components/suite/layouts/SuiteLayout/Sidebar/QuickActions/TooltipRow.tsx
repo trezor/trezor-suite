@@ -31,12 +31,17 @@ const IconCircleWrapper = styled.div<IconCircleWrapperProps>`
     padding: ${spacingsPx.xxxs};
 `;
 
+const Pointer = styled.div`
+    cursor: ${({ onClick }) => (onClick ? 'pointer' : undefined)};
+`;
+
 type UpdateRowProps = {
     children: ReactNode;
     leftItem: ReactNode;
     header: ReactNode;
     variant: IconVariant;
     circleIconName: IconName;
+    onClick?: () => void;
 };
 
 export const TooltipRow = ({
@@ -45,25 +50,28 @@ export const TooltipRow = ({
     header,
     variant,
     circleIconName,
+    onClick,
 }: UpdateRowProps) => {
     const theme = useTheme();
 
     return (
-        <Row gap={spacings.sm}>
-            {leftItem}
-            <Column alignItems="start">
-                <Text>{header}</Text>
-                <Row gap={spacings.xxs}>
-                    <IconCircleWrapper $variant={variant}>
-                        <Icon
-                            name={circleIconName}
-                            color={theme.iconDefaultInverted}
-                            size={iconSizes.extraSmall}
-                        />
-                    </IconCircleWrapper>
-                    <Text variant={variant}>{children}</Text>
-                </Row>
-            </Column>
-        </Row>
+        <Pointer onClick={onClick}>
+            <Row gap={spacings.sm} onClick={onClick}>
+                {leftItem}
+                <Column alignItems="start">
+                    <Text>{header}</Text>
+                    <Row gap={spacings.xxs}>
+                        <IconCircleWrapper $variant={variant}>
+                            <Icon
+                                name={circleIconName}
+                                color={theme.iconDefaultInverted}
+                                size={iconSizes.extraSmall}
+                            />
+                        </IconCircleWrapper>
+                        <Text variant={variant}>{children}</Text>
+                    </Row>
+                </Column>
+            </Row>
+        </Pointer>
     );
 };

@@ -18,7 +18,7 @@ export const DeviceAuthenticity = () => {
                 description="Skip device authenticity check when bootloader is unlocked."
             />
             <ActionColumn>
-                <Switch onChange={handleChange} isChecked={!!debug.isUnlockedBootloaderAllowed} />
+                <Switch onChange={handleChange} isChecked={debug.isUnlockedBootloaderAllowed} />
             </ActionColumn>
         </SectionItem>
     );

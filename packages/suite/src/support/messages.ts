@@ -3875,6 +3875,38 @@ export default defineMessages({
         id: 'TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED',
         defaultMessage: 'Just updated ({currentVersion})',
     },
+
+    TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE',
+        defaultMessage: 'App update available',
+    },
+    TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED',
+        defaultMessage: 'App’s been updated!',
+    },
+    TR_QUICK_ACTION_UPDATE_POPOVER_APP_DOWNLOADED: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_DOWNLOADED',
+        defaultMessage: 'Suite downloaded a new Trezor update!',
+    },
+
+    TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_UPDATE_AVAILABLE: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_TREZOR_UPDATE_AVAILABLE',
+        defaultMessage: 'Trezor update available',
+    },
+
+    TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
+        defaultMessage: 'Click to start update',
+    },
+    TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_RESTART_AND_UPDATE: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_RESTART_AND_UPDATE',
+        defaultMessage: 'Click to restart & update',
+    },
+    TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW: {
+        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW',
+        defaultMessage: 'What’s new?',
+    },
+
     TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED: {
         id: 'TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED',
         defaultMessage: 'Enabled',
@@ -6148,6 +6180,22 @@ export default defineMessages({
         id: 'TR_UPDATE_MODAL_AVAILABLE_HEADING',
         defaultMessage: 'Update available',
     },
+    TR_UPDATE_MODAL_WHATS_NEW: {
+        id: 'TR_UPDATE_MODAL_WHATS_NEW',
+        defaultMessage: 'What’s new',
+    },
+    TR_UPDATE_MODAL_YOUR_VERSION: {
+        id: 'TR_UPDATE_MODAL_YOUR_VERSION',
+        defaultMessage: 'Your version: v{version}',
+    },
+    TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES: {
+        id: 'TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES',
+        defaultMessage: 'Enable automatic updates',
+    },
+    TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES_NEW_TAG: {
+        id: 'TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES_NEW_TAG',
+        defaultMessage: 'New',
+    },
     TR_UPDATE_MODAL_NOT_NOW: {
         id: 'TR_UPDATE_MODAL_NOT_NOW',
         defaultMessage: 'Not now',
@@ -6176,13 +6224,18 @@ export default defineMessages({
         id: 'TR_MANAGE',
         defaultMessage: 'manage',
     },
-    TR_VERSION_HAS_BEEN_RELEASED: {
+    TR_VERSION_HAS_RELEASED: {
         id: 'TR_VERSION_HAS_BEEN_RELEASED',
-        defaultMessage: 'Version {version} has been released!',
+        defaultMessage: 'v{version} has released!',
     },
-    TR_CHANGELOG_ON_GITHUB: {
-        id: 'TR_CHANGELOG_ON_GITHUB',
-        defaultMessage: 'Changelog on GitHub',
+    TR_READ_ALL_ON_GITHUB: {
+        id: 'TR_READ_ALL_ON_GITHUB',
+        defaultMessage: 'Read all on Github',
+    },
+    TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE: {
+        id: 'TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE',
+        defaultMessage:
+            'We’re constantly working to improve your Trezor experience, here’s what has changed:',
     },
     TR_UPDATE_MODAL_UPDATE_DOWNLOADED: {
         id: 'TR_UPDATE_MODAL_UPDATE_DOWNLOADED',

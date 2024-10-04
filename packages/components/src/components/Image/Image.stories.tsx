@@ -10,7 +10,7 @@ export default meta;
 
 export const Image: StoryObj<ImageProps> = {
     args: {
-        image: 'EARLY_ACCESS',
+        image: 'BACKUP',
         width: undefined,
         height: undefined,
         imageSrc: undefined,

@@ -9,6 +9,8 @@ import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } f
 import { useActions, useSelector } from 'src/hooks/suite';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import { TrafficLightOffset } from '../../../TrafficLightOffset';
+import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
+import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
     display: flex;
@@ -31,10 +33,27 @@ const Content = styled.div`
 export const Sidebar = () => {
     const { elevation } = useElevation();
 
+    const {
+        updateStatusDevice,
+        updateStatusSuite,
+        showBannerNotification,
+        setClosedNotificationDevice,
+        setClosedNotificationSuite,
+    } = useUpdateStatus();
+
     const sidebarWidth = useSelector(state => state.suite.settings.sidebarWidth);
     const { setSidebarWidth } = useActions({
         setSidebarWidth: (width: number) => suiteActions.setSidebarWidth({ width }),
     });
+
+    const onNotificationBannerClosed = () => {
+        if (updateStatusSuite !== 'up-to-date') {
+            setClosedNotificationSuite(true);
+        }
+        if (updateStatusDevice !== 'up-to-date') {
+            setClosedNotificationDevice(true);
+        }
+    };
 
     return (
         <Wrapper>
@@ -54,6 +73,15 @@ export const Sidebar = () => {
                                 <DeviceSelector />
                                 <Navigation />
                                 <AccountsMenu />
+
+                                {showBannerNotification && (
+                                    <UpdateNotificationBanner
+                                        updateStatusDevice={updateStatusDevice}
+                                        updateStatusSuite={updateStatusSuite}
+                                        onClose={onNotificationBannerClosed}
+                                    />
+                                )}
+
                                 <QuickActions />
                             </Content>
                         </TrafficLightOffset>
