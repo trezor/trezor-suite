@@ -1,13 +1,5 @@
 import styled from 'styled-components';
-import {
-    variables,
-    SelectBar,
-    Paragraph,
-    TextButton,
-    Card,
-    Spinner,
-    Icon,
-} from '@trezor/components';
+import { variables, Card, Spinner } from '@trezor/components';
 import {
     Elevation,
     mapElevationToBackground,
@@ -35,6 +27,7 @@ export const CoinmarketWrapper = `
     }
 `;
 
+// reason: responsive sizes
 // eslint-disable-next-line local-rules/no-override-ds-component
 export const CoinmarketLeftWrapper = styled(Card)<{ $isWithoutPadding?: boolean }>`
     padding: ${({ $isWithoutPadding }) =>
@@ -52,6 +45,7 @@ export const CoinmarketLeftWrapper = styled(Card)<{ $isWithoutPadding?: boolean 
     }
 `;
 
+// reason: responsive sizes
 // eslint-disable-next-line local-rules/no-override-ds-component
 export const CoinmarketRightWrapper = styled(Card)`
     padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxxl};
@@ -79,76 +73,6 @@ export const Wrapper = styled.div<ResponsiveSize>`
     @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.$responsiveSize]}) {
         flex-direction: column;
     }
-`;
-
-export const FullWidthForm = styled.form`
-    width: 100%;
-`;
-
-export const Left = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-export const Right = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-`;
-
-export const Middle = styled.div<ResponsiveSize>`
-    display: flex;
-    min-width: 65px;
-    height: 48px;
-    align-items: center;
-    justify-content: center;
-
-    @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.$responsiveSize]}) {
-        padding-bottom: 27px;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-export const StyledIcon = styled(Icon)<ResponsiveSize>`
-    @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.$responsiveSize]}) {
-        transform: rotate(90deg);
-    }
-`;
-
-export const FeesWrapper = styled.div`
-    margin: 25px 0;
-    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-`;
-
-export const NoProviders = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
-`;
-
-export const FooterWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    padding-top: 30px;
-    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-direction: column;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-export const StyledSelectBar = styled(SelectBar)`
-    width: 100%;
-
-    & div div {
-        justify-content: center;
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-export const CoinmarketParagraph = styled(Paragraph)`
-    text-align: center;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
 export const CoinmarketFormInput = styled.div<{ $isWithoutPadding?: boolean }>`
@@ -208,12 +132,6 @@ export const CoinmarketFormOptionNetwork = styled.div<{ $elevation: Elevation }>
     background: ${({ theme, $elevation }) =>
         mapElevationToBackground({ theme, $elevation: nextElevation[$elevation] })};
     border-radius: 4px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-export const CoinmarketTextButton = styled(TextButton)`
-    position: relative;
-    padding: 0;
 `;
 
 export const CoinmarketAmountContainer = styled.div`
@@ -352,3 +270,10 @@ export const TooltipText = styled.div<{ $isYellow?: boolean }>`
 `;
 
 export const CoinmarketTestWrapper = styled.div``;
+
+export const CoinmarketFooterLogoWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    flex: 1;
+    padding-top: 1px;
+`;

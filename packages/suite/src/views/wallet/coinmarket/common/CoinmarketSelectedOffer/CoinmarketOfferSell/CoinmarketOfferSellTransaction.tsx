@@ -45,12 +45,6 @@ const Row = styled.div`
 
 const Address = styled.div``;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    display: flex;
-    min-width: 200px;
-`;
-
 const Title = styled.div`
     margin-top: ${spacingsPx.xl};
     font-weight: ${fontWeights.semiBold};
@@ -118,9 +112,9 @@ export const CoinmarketSelectedOfferSellTransaction = () => {
                     )}
 
                     <ButtonWrapper>
-                        <StyledButton isLoading={callInProgress} onClick={sendTransaction}>
+                        <Button minWidth={200} isLoading={callInProgress} onClick={sendTransaction}>
                             <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
-                        </StyledButton>
+                        </Button>
                     </ButtonWrapper>
                 </>
             ) : (
