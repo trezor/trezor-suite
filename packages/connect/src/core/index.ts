@@ -93,7 +93,7 @@ const initDevice = async (context: CoreContext, devicePath?: string) => {
     if (devicePath) {
         device = deviceList.getDeviceByPath(devicePath);
         showDeviceSelection =
-            !device || !!device?.unreadableError || (device.isUnacquired() && !!isUsingPopup);
+            !device || device.isUnreadable() || (device.isUnacquired() && !!isUsingPopup);
     } else {
         const onlyDevice = deviceList.getOnlyDevice();
         if (onlyDevice && (!isWebUsb || !isUsingPopup)) {
@@ -102,7 +102,7 @@ const initDevice = async (context: CoreContext, devicePath?: string) => {
             // Show device selection if device is unreadable or unacquired
             // Also in case of core in popup, so user can press "Remember device"
             showDeviceSelection =
-                !!device?.unreadableError || device.isUnacquired() || !!useCoreInPopup;
+                device.isUnreadable() || device.isUnacquired() || !!useCoreInPopup;
         } else {
             showDeviceSelection = true;
         }
@@ -128,7 +128,7 @@ const initDevice = async (context: CoreContext, devicePath?: string) => {
         const onlyDevice = deviceList.getOnlyDevice();
         if (
             onlyDevice &&
-            !onlyDevice.unreadableError &&
+            !onlyDevice.isUnreadable() &&
             !onlyDevice.isUnacquired() &&
             !isWebUsb &&
             !useCoreInPopup
@@ -247,7 +247,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         method.requireDeviceMode,
     );
     if (unexpectedMode) {
-        device.keepTransportSession = false;
+        device.releaseTransportSession();
         if (isUsingPopup) {
             // wait for popup handshake
             await waitForPopup(context);
@@ -907,7 +907,7 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
     if (deviceList.isConnected() && deviceList.getDeviceCount() > 0) {
         deviceList.getAllDevices().forEach(d => {
-            d.keepTransportSession = false; // clear transportSession on release
+            d.releaseTransportSession(); // clear transportSession on release
             if (d.isUsedHere()) {
                 setOverridePromise(d.interruptionFromUser(error));
             } else {

@@ -262,7 +262,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                 if (category.subtype === 'elsewhere') {
                     this.createDevicesQueue.remove(path);
                     if (device) {
-                        device.featuresNeedsReload = true;
+                        device.featuresNeedsReload();
                         device.interruptionFromOutside();
                     }
                 }
@@ -279,7 +279,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
                 const methodStillRunning = !device.commands?.isDisposed();
                 if (methodStillRunning) {
-                    device.keepTransportSession = false;
+                    device.releaseTransportSession();
                 }
 
                 _log.debug('Event', DEVICE.RELEASED, device.toMessageObject());
