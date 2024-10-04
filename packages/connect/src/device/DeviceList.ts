@@ -16,11 +16,13 @@ import {
 import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
 import { Device } from './Device';
-import type { ConnectSettings, Device as DeviceTyped } from '../types';
+import { ConnectSettings, DeviceUniquePath, Device as DeviceTyped } from '../types';
 
 import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
 import { resolveAfter } from '../utils/promiseUtils';
+import { typedObjectKeys } from '../types/utils';
+import { PathPublic } from '@trezor/transport/src/types';
 
 // custom log
 const _log = initLog('DeviceList');
@@ -124,11 +126,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     // array of transport that might be used in this environment
     private transports: Transport[];
 
-    private devices: { [path: string]: Device } = {};
+    private devices: Record<PathPublic, Device> = {};
+    private creatingDevicesDescriptors: Record<PathPublic, Descriptor> = {};
 
-    private creatingDevicesDescriptors: { [k: string]: Descriptor } = {};
     private readonly createDevicesQueue;
-
     private readonly authPenaltyManager;
 
     private initPromise?: Promise<void>;
@@ -150,7 +151,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         const transportLogger = initLog('@trezor/transport', debug);
 
-        this.createDevicesQueue = createQueue<Descriptor['path']>();
+        this.createDevicesQueue = createQueue<PathPublic>();
         this.authPenaltyManager = createAuthPenaltyManager(priority);
         this.transportCommonArgs = {
             messages,
@@ -453,15 +454,15 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     getAllDevices(): Device[] {
-        return Object.keys(this.devices).map(key => this.devices[key]);
+        return typedObjectKeys(this.devices).map(key => this.devices[key]);
     }
 
     getOnlyDevice(): Device | undefined {
         return this.getDeviceCount() === 1 ? Object.values(this.devices)[0] : undefined;
     }
 
-    getDeviceByPath(path: string): Device | undefined {
-        return this.devices[path];
+    getDeviceByPath(path: DeviceUniquePath): Device | undefined {
+        return this.getAllDevices().find(d => d.getUniquePath() === path);
     }
 
     transportType() {
@@ -489,7 +490,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         // @ts-expect-error will be fixed later
         this.transport = undefined;
         this.authPenaltyManager.clear();
-        Object.keys(this.devices).forEach(key => delete this.devices[key]);
+        typedObjectKeys(this.devices).forEach(key => delete this.devices[key]);
 
         this.rejectPending?.(new Error('Disposed'));
 
@@ -518,11 +519,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         }
 
         res.payload.forEach(d => {
-            if (this.devices[d.path]) {
-                this.devices[d.path].updateDescriptor(d);
-                // TODO: is this ok? transportSession should be set only as result of acquire/release
-                // this.devices[d.path].transportSession = d.session;
-            }
+            this.devices[d.path]?.updateDescriptor(d);
         });
     }
 
@@ -536,7 +533,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     // main logic
     private async handle(descriptor: Descriptor, transport: Transport) {
-        const path = descriptor.path.toString();
+        const { path } = descriptor;
         try {
             // "regular" device creation
             await this._takeAndCreateDevice(descriptor, transport);
@@ -591,7 +588,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private async _takeAndCreateDevice(descriptor: Descriptor, transport: Transport) {
         const device = Device.fromDescriptor(transport, descriptor);
-        const path = descriptor.path.toString();
+        const { path } = descriptor;
         this.devices[path] = device;
         const promise = device.run();
         await promise;
@@ -600,7 +597,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private _handleUsedElsewhere(descriptor: Descriptor, transport: Transport) {
-        const path = descriptor.path.toString();
+        const { path } = descriptor;
 
         const device = this._createUnacquiredDevice(
             this.creatingDevicesDescriptors[path],

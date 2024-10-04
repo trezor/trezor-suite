@@ -193,7 +193,10 @@ describe('DeviceList', () => {
         list.init({ pendingTransportEvent: true });
         await list.pendingConnection();
 
-        const events = eventsSpy.mock.calls.map(([event, { path }]) => [event, path]);
+        const events = eventsSpy.mock.calls.map(([event, { path }]) => [
+            event,
+            (list.getDeviceByPath(path) as any)?.originalDescriptor.path,
+        ]);
 
         // note: acquire - release - connect should be ok.
         // acquire - deviceList._takeAndCreateDevice start (run -> rurInner -> getFeatures -> release) -> deviceList._takeAndCreateDevice end => emit DEVICE.CONNECT
@@ -280,7 +283,10 @@ describe('DeviceList', () => {
         // wait for all device-connect events
         await waitForNthEventOfType(list, 'device-connect', 3);
 
-        const events = eventsSpy.mock.calls.map(([event, { path }]) => [event, path]);
+        const events = eventsSpy.mock.calls.map(([event, { path }]) => [
+            event,
+            (list.getDeviceByPath(path) as any)?.originalDescriptor.path,
+        ]);
 
         expect(events).toEqual([
             ['transport-start', undefined],

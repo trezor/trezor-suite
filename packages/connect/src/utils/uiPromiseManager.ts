@@ -1,5 +1,6 @@
 import { DEVICE, UiPromise, AnyUiPromise, UiPromiseCreator, UiPromiseResponse } from '../events';
 import { createDeferred, arrayPartition } from '@trezor/utils';
+import { DeviceUniquePath } from '../types/device';
 
 export const createUiPromiseManager = (interactionTimeout: () => void) => {
     let _uiPromises: AnyUiPromise[] = [];
@@ -36,16 +37,16 @@ export const createUiPromiseManager = (interactionTimeout: () => void) => {
         _uiPromises = [];
     };
 
-    const disconnected = (devicePath: string) => {
+    const disconnected = (devicePath: DeviceUniquePath) => {
         const [toResolve, toKeep] = arrayPartition(
             _uiPromises,
             (p): p is UiPromise<typeof DEVICE.DISCONNECT> =>
-                p.device?.getDevicePath() === devicePath && p.id === DEVICE.DISCONNECT,
+                p.device?.getUniquePath() === devicePath && p.id === DEVICE.DISCONNECT,
         );
         toResolve.forEach(p => p.resolve({ type: DEVICE.DISCONNECT }));
         _uiPromises = toKeep;
 
-        return !!toResolve.length || toKeep.some(p => p.device?.getDevicePath() === devicePath);
+        return !!toResolve.length || toKeep.some(p => p.device?.getUniquePath() === devicePath);
     };
 
     const get = <T extends UiPromiseResponse['type']>(type: T) => {

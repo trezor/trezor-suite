@@ -17,7 +17,7 @@ export interface Permission {
  */
 export interface PreferredDevice {
     label?: string;
-    path: string;
+    path: string & { __type: 'DeviceUniquePath' };
     state?: string;
     internalState?: string;
     internalStateExpiration?: number;

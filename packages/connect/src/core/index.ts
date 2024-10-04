@@ -36,7 +36,12 @@ import { initLog, enableLog, setLogWriter, LogWriter } from '../utils/debug';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { InteractionTimeout } from '../utils/interactionTimeout';
 import type { DeviceEvents, Device } from '../device/Device';
-import type { ConnectSettings, Device as DeviceTyped, StaticSessionId } from '../types';
+import type {
+    ConnectSettings,
+    Device as DeviceTyped,
+    DeviceUniquePath,
+    StaticSessionId,
+} from '../types';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { WebextensionStateStorage } from '../device/StateStorage';
 
@@ -65,7 +70,7 @@ const startInteractionTimeout = (context: CoreContext) =>
  * @returns {Promise<Device>}
  * @memberof Core
  */
-const initDevice = async (context: CoreContext, devicePath?: string) => {
+const initDevice = async (context: CoreContext, devicePath?: DeviceUniquePath) => {
     const { uiPromises, deviceList, sendCoreMessage } = context;
 
     assertDeviceListConnected(deviceList);

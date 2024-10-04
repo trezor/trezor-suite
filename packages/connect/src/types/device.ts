@@ -1,4 +1,3 @@
-import { Descriptor } from '@trezor/transport';
 import type { PROTO } from '../constants';
 import type { ReleaseInfo } from './firmware';
 
@@ -67,8 +66,11 @@ export type FirmwareHashCheckResult =
     | { success: true }
     | { success: false; error: FirmwareHashCheckError };
 
+export type DeviceUniquePath = string & { __type: 'DeviceUniquePath' };
+export const DeviceUniquePath = (id: string) => id as DeviceUniquePath;
+
 type BaseDevice = {
-    path: Descriptor['path'];
+    path: DeviceUniquePath;
     name: string;
 };
 
