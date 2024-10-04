@@ -150,7 +150,15 @@ class ReactNativeUsbModule : Module() {
             for (device in devicesList) {
                 if (usbManager.hasPermission(device)) {
                     Log.d(LOG_TAG, "Has permission, send event onDeviceConnected: $device")
-                    val webUsbDevice = openDevice(device.deviceName)
+                    
+                    val webUsbDevice = if (hasOpenedConnection(device.deviceName)) {
+                        Log.d(LOG_TAG, "Device already opened: $device")
+                        getWebUSBDevice(device)
+                    } else {
+                        Log.d(LOG_TAG, "Opening device: $device")
+                        openDevice(device.deviceName)
+                    }
+
                     sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
                     devicesHistory[device.deviceName] = webUsbDevice
                 } else if (!devicesRequestedPermissions.contains(
@@ -218,7 +226,7 @@ class ReactNativeUsbModule : Module() {
             Log.e(LOG_TAG, "Failed to open device ${device.deviceName}")
             throw Exception("Failed to open device ${device.deviceName}")
         }
-        Log.d(LOG_TAG, "Opening device ${device.deviceName}")
+
         openedConnections[device.deviceName] = usbConnection
 
         // log all endpoints for debug purposes
@@ -300,7 +308,10 @@ class ReactNativeUsbModule : Module() {
         val dataByteArray = data.split(",").map { it.toInt().toByte() }.toByteArray()
         Log.d(LOG_TAG, "dataByteArray: $dataByteArray")
         val device = getDeviceByName(deviceName)
-        val usbConnection = getOpenedConnection(deviceName)
+        val usbConnection = openedConnections.getOrPut(device.deviceName) {
+            Log.d(LOG_TAG, "Reopening device ${device.deviceName}")
+            usbManager.openDevice(device) ?: throw Exception("Failed to open device ${device.deviceName}")
+        }
 
         val usbEndpoint = device.getInterface(INTERFACE_INDEX).getEndpoint(1)
         if (usbEndpoint == null) {
@@ -315,7 +326,11 @@ class ReactNativeUsbModule : Module() {
     private fun transferIn(deviceName: String, endpointNumber: Int, length: Int): IntArray {
         Log.d(LOG_TAG, "Reading data from device $deviceName")
         val device = getDeviceByName(deviceName)
-        val usbConnection = getOpenedConnection(deviceName)
+
+        val usbConnection = openedConnections.getOrPut(device.deviceName) {
+            Log.d(LOG_TAG, "Reopening device ${device.deviceName}")
+            usbManager.openDevice(device) ?: throw Exception("Failed to open device ${device.deviceName}")
+        }
 
         val usbEndpoint = device.getInterface(INTERFACE_INDEX).getEndpoint(0)
 
