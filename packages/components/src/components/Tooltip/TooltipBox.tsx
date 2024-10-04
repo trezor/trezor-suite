@@ -29,9 +29,10 @@ const TooltipContainerStyled = styled.div<TooltipContainerStyledProps>`
     border-radius: ${TOOLTIP_BORDER_RADIUS};
     text-align: left;
     border: solid 1.5px ${palette.darkGray100};
+    margin: ${spacingsPx.xxxs};
     max-width: ${props => props.$maxWidth}px;
-    ${typography.hint}
 
+    ${typography.hint}
     > div {
         padding: ${({ $isLarge, $isWithHeader }) => getContainerPadding($isLarge, $isWithHeader)};
     }

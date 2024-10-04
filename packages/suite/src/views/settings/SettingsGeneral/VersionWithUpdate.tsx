@@ -101,11 +101,7 @@ export const VersionWithUpdate = () => {
                             <Translation id="SETTINGS_UPDATE_CHECKING" />
                         </ActionButton>
                     )}
-                    {[
-                        UpdateState.NotAvailable,
-                        UpdateState.EarlyAccessDisable,
-                        UpdateState.EarlyAccessEnable,
-                    ].includes(desktopUpdateState.state) && (
+                    {desktopUpdateState.state === UpdateState.NotAvailable && (
                         <ActionButton onClick={checkForUpdates} variant="primary">
                             <Translation id="SETTINGS_UPDATE_CHECK" />
                         </ActionButton>

@@ -1,119 +1,127 @@
 import styled from 'styled-components';
 
-import { Button, H2, Link, Markdown } from '@trezor/components';
+import {
+    Card,
+    Checkbox,
+    Column,
+    Icon,
+    Markdown,
+    NewModal,
+    Paragraph,
+    Row,
+    Text,
+} from '@trezor/components';
 import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
-import { borders } from '@trezor/theme';
+import { borders, spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation, Modal } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
-import { getReleaseUrl } from 'src/services/github';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { download } from 'src/actions/suite/desktopUpdateActions';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { setFlag } from 'src/actions/suite/suiteActions';
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const GreenH2 = styled(H2)`
-    text-align: left;
-    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
+import { Changelog } from './changelogComponents';
+import { getVersionName } from './getVersionName';
+
+const GreenTag = styled.div`
+    display: flex;
+    align-items: center;
+    gap: ${spacingsPx.xxs};
+    border-radius: ${borders.radii.full};
+    background-color: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
+    padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
 `;
 
-const ChangelogWrapper = styled.div`
-    margin: 20px 0;
-    background: ${({ theme }) => theme.legacy.BG_GREY};
-    border-radius: ${borders.radii.xs};
-    max-height: 400px;
-    overflow-y: auto;
-    padding: 16px 20px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLink = styled(Link)`
-    align-self: start;
-`;
-
-const StyledModal = styled(Modal)`
-    ${Modal.BottomBar} {
-        > * {
-            flex: 1;
-        }
-    }
-`;
-
-interface VersionNameProps {
-    latestVersion?: string;
-    prerelease: boolean;
-}
-
-const getVersionName = ({ latestVersion, prerelease }: VersionNameProps): string => {
-    if (!latestVersion) {
-        // fallback for undefined version
-        return '';
-    }
-    if (!prerelease) {
-        // regular case
-        return latestVersion;
-    }
-    if (!latestVersion.includes('-')) {
-        // add beta label for pre-releases, but prevent versions like '21.10.1-alpha-beta'
-        return `${latestVersion}-beta`;
-    }
-
-    // fallback for pre-release versions already including some pre-release components
-    return latestVersion;
-};
+const NewTag = () => (
+    <GreenTag>
+        <Icon name="sparkleFilled" variant="primary" size="small" />
+        <Text variant="primary">
+            <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES_NEW_TAG" />
+        </Text>
+    </GreenTag>
+);
 
 interface AvailableProps {
-    hideWindow: () => void;
-    isCancelable: boolean;
-    latest?: UpdateInfo;
+    onCancel: () => void;
+    latest: UpdateInfo | undefined;
 }
 
-export const Available = ({ hideWindow, isCancelable, latest }: AvailableProps) => {
+export const Available = ({ onCancel, latest }: AvailableProps) => {
     const dispatch = useDispatch();
+    const { enableAutoupdateOnNextRun } = useSelector(selectSuiteFlags);
 
     const downloadUpdate = () => {
         dispatch(download());
         desktopApi.downloadUpdate();
     };
 
+    const suiteCurrentVersion = process.env.VERSION || '';
+    const suiteNewVersion = getVersionName({
+        latestVersion: latest?.version,
+        prerelease: !!latest?.prerelease,
+    });
+
+    const handleToggleAutoUpdateClick = () =>
+        dispatch(setFlag('enableAutoupdateOnNextRun', !enableAutoupdateOnNextRun));
+
     return (
-        <StyledModal
+        <NewModal
             heading={<Translation id="TR_UPDATE_MODAL_AVAILABLE_HEADING" />}
-            isCancelable={isCancelable}
-            onCancel={hideWindow}
-            bottomBarComponents={
+            description={
+                <Translation
+                    id="TR_UPDATE_MODAL_YOUR_VERSION"
+                    values={{ version: suiteCurrentVersion }}
+                />
+            }
+            onCancel={onCancel}
+            bottomContent={
                 <>
-                    <Button onClick={hideWindow} variant="tertiary">
-                        <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
-                    </Button>
-                    <Button onClick={downloadUpdate} variant="primary">
+                    <NewModal.Button onClick={downloadUpdate}>
                         <Translation id="TR_UPDATE_MODAL_START_DOWNLOAD" />
-                    </Button>
+                    </NewModal.Button>
+                    <NewModal.Button onClick={onCancel} variant="tertiary">
+                        <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
+                    </NewModal.Button>
                 </>
             }
         >
-            <GreenH2>
-                <Translation
-                    id="TR_VERSION_HAS_BEEN_RELEASED"
-                    values={{
-                        version: getVersionName({
-                            latestVersion: latest?.version,
-                            prerelease: !!latest?.prerelease,
-                        }),
-                    }}
-                />
-            </GreenH2>
+            <Column gap={spacings.xs} alignItems="start">
+                <div>
+                    <Paragraph typographyStyle="highlight" variant="primary">
+                        <Translation
+                            id="TR_VERSION_HAS_RELEASED"
+                            values={{ version: suiteNewVersion }}
+                        />
+                    </Paragraph>
+                    <Paragraph typographyStyle="hint" variant="tertiary">
+                        <Translation id="TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE" />
+                    </Paragraph>
+                </div>
 
-            <ChangelogWrapper>
-                {latest?.changelog ? (
-                    <Markdown>{latest?.changelog}</Markdown>
-                ) : (
-                    <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
-                )}
-            </ChangelogWrapper>
-            <StyledLink variant="nostyle" href={getReleaseUrl(latest?.version ?? '')}>
-                <Button variant="tertiary" icon="github">
-                    <Translation id="TR_CHANGELOG_ON_GITHUB" />
-                </Button>
-            </StyledLink>
-        </StyledModal>
+                <Changelog>
+                    {latest?.changelog ? (
+                        <Markdown>{latest?.changelog}</Markdown>
+                    ) : (
+                        <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
+                    )}
+                </Changelog>
+
+                <Row justifyContent="end" width="100%">
+                    {latest?.releaseDate && <Text variant="tertiary">{latest?.releaseDate}</Text>}
+                </Row>
+
+                <Card>
+                    <Row justifyContent="start" gap={spacings.xs}>
+                        <Checkbox
+                            isChecked={enableAutoupdateOnNextRun}
+                            onClick={handleToggleAutoUpdateClick}
+                        >
+                            <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES" />
+                        </Checkbox>
+                        <NewTag />
+                    </Row>
+                </Card>
+            </Column>
+        </NewModal>
     );
 };

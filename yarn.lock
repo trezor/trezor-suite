@@ -11932,6 +11932,7 @@ __metadata:
     styled-components: "npm:^6.1.8"
     stylelint: "npm:^16.2.1"
     stylelint-config-standard: "npm:^36.0.0"
+    typescript-styled-plugin: "npm:^0.18.3"
   languageName: unknown
   linkType: soft
 

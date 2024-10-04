@@ -5,6 +5,8 @@ import {
     mapUpdateStatusToIcon,
     mapUpdateStatusToVariant,
     UpdateStatus,
+    UpdateStatusSuite,
+    UpdateStatusDevice,
 } from './updateQuickActionTypes';
 import { Translation } from '../../../../../Translation';
 import { spacings } from '@trezor/theme';
@@ -27,17 +29,19 @@ const SuiteIconRectangle = styled.div<{ $size: IconSize }>`
 `;
 
 const mapUpdateStatusToTranslation: Record<UpdateStatus, TranslationKey> = {
+    'update-downloaded-manual': 'TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE',
+    'update-downloaded-auto-restart-to-update': 'TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE',
     'up-to-date': 'TR_QUICK_ACTION_TOOLTIP_UP_TO_DATE',
     'update-available': 'TR_QUICK_ACTION_TOOLTIP_UPDATE_AVAILABLE',
-    'restart-to-update': 'TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE',
     'just-updated': 'TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED',
 };
 
 type DeviceRowProps = {
-    updateStatus: UpdateStatus;
+    updateStatus: UpdateStatusDevice;
+    onClick?: () => void;
 };
 
-const DeviceRow = ({ updateStatus }: DeviceRowProps) => {
+const DeviceRow = ({ updateStatus, onClick }: DeviceRowProps) => {
     const { device } = useDevice();
 
     if (device?.features === undefined) {
@@ -49,6 +53,7 @@ const DeviceRow = ({ updateStatus }: DeviceRowProps) => {
 
     return (
         <TooltipRow
+            onClick={onClick}
             leftItem={
                 <Icon
                     name={mapTrezorModelToIcon[device.features.internal_model]}
@@ -71,10 +76,11 @@ const DeviceRow = ({ updateStatus }: DeviceRowProps) => {
 };
 
 type SuiteRowProps = {
-    updateStatus: UpdateStatus;
+    updateStatus: UpdateStatusSuite;
+    onClick?: () => void;
 };
 
-const SuiteRow = ({ updateStatus }: SuiteRowProps) => {
+const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
     const theme = useTheme();
 
     const { desktopUpdate } = useSelector(state => state);
@@ -84,6 +90,7 @@ const SuiteRow = ({ updateStatus }: SuiteRowProps) => {
 
     return (
         <TooltipRow
+            onClick={onClick}
             leftItem={
                 <SuiteIconRectangle $size="medium">
                     <Icon name="trezor" size={iconSizes.small} color={theme.iconDefaultInverted} />
@@ -102,8 +109,8 @@ const SuiteRow = ({ updateStatus }: SuiteRowProps) => {
 };
 
 type UpdateTooltipProps = {
-    updateStatusDevice: UpdateStatus;
-    updateStatusSuite: UpdateStatus;
+    updateStatusDevice: UpdateStatusDevice;
+    updateStatusSuite: UpdateStatusSuite;
 };
 
 export const UpdateTooltip = ({ updateStatusDevice, updateStatusSuite }: UpdateTooltipProps) => {

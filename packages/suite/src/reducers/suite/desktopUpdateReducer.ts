@@ -26,6 +26,12 @@ export interface DesktopUpdateState {
     allowPrerelease: boolean;
     isAutomaticUpdateEnabled: boolean;
     firstRunAfterUpdate: boolean;
+
+    /**
+     * This flag suppresses the "just updated" notification state
+     * when user already interacted with it.
+     */
+    justUpdatedInteractedWith: boolean;
 }
 
 const initialState: DesktopUpdateState = {
@@ -35,6 +41,7 @@ const initialState: DesktopUpdateState = {
     allowPrerelease: false,
     isAutomaticUpdateEnabled: false,
     firstRunAfterUpdate: false,
+    justUpdatedInteractedWith: false,
 };
 
 const desktopUpdateReducer = (
@@ -58,9 +65,6 @@ const desktopUpdateReducer = (
             case DESKTOP_UPDATE.AVAILABLE:
                 draft.state = UpdateState.Available;
                 draft.latest = action.payload;
-                draft.modalVisibility = draft.isAutomaticUpdateEnabled
-                    ? draft.modalVisibility
-                    : 'maximized';
                 break;
             case DESKTOP_UPDATE.NOT_AVAILABLE:
                 draft.state = UpdateState.NotAvailable;
@@ -75,6 +79,11 @@ const desktopUpdateReducer = (
             case DESKTOP_UPDATE.READY:
                 draft.state = UpdateState.Ready;
                 draft.latest = action.payload;
+                break;
+            case DESKTOP_UPDATE.OPEN_JUST_UPDATED_CHANGELOG:
+                draft.state = UpdateState.JustUpdated;
+                draft.modalVisibility = 'maximized';
+                draft.justUpdatedInteractedWith = true;
                 break;
             case DESKTOP_UPDATE.MODAL_VISIBILITY:
                 draft.modalVisibility = action.payload;

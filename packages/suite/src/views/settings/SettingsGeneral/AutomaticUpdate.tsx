@@ -5,7 +5,6 @@ import { Switch } from '@trezor/components';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { selectHasExperimentalFeature } from '../../../reducers/suite/suiteReducer';
 import { isDesktop } from '@trezor/env-utils';
 import { useSelector } from '../../../hooks/suite';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -15,12 +14,11 @@ const PositionedSwitch = styled.div`
 `;
 
 export const AutomaticUpdate = () => {
-    const isExperimentalEnabled = useSelector(selectHasExperimentalFeature('automatic-update'));
     const isAutomaticUpdateEnabled = useSelector(
         state => state.desktopUpdate.isAutomaticUpdateEnabled,
     );
 
-    if (!isDesktop() || !isExperimentalEnabled) {
+    if (!isDesktop()) {
         return null;
     }
 
