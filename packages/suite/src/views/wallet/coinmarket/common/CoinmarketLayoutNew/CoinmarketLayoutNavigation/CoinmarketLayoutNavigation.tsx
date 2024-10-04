@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import CoinmarketLayoutNavigationItem from './CoinmarketLayoutNavigationItem';
+import { FirmwareType } from '@trezor/connect';
+import { CoinmarketLayoutNavigationItem } from './CoinmarketLayoutNavigationItem';
 import { Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { CoinmarketLayoutNavigationItem } from 'src/views/wallet/coinmarket/common/CoinmarketLayoutNew/CoinmarketLayoutNavigation/CoinmarketLayoutNavigationItem';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 const List = styled.div`

@@ -1,6 +1,5 @@
 import { H3, Icon, Row } from '@trezor/components';
 import styled from 'styled-components';
-import { CoinmarketCryptoAmount, CoinmarketFiatAmount } from '..';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarketOffers';
 import {
@@ -8,8 +7,10 @@ import {
     isCoinmarketSellOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { CoinmarketExchangeHeaderSummary } from './CoinmarketExchangeHeaderSummary';
 import { spacingsPx } from '@trezor/theme';
+import { CoinmarketExchangeHeaderSummary } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketExchangeHeaderSummary';
+import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
+import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 
 const IconWrapper = styled.div`
     margin-left: ${spacingsPx.sm};

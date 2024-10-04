@@ -11,7 +11,7 @@ import {
 } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { Margin } from 'recharts/types/util/types';
-import { CoinmarketCoinLogo } from './common/CoinmarketCoinLogo';
+import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 
 interface ResponsiveSize {
     $responsiveSize: keyof typeof variables.SCREEN_SIZE;

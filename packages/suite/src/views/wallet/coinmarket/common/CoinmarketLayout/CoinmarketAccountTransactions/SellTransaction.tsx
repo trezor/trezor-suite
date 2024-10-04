@@ -18,9 +18,9 @@ import {
 } from 'src/components/suite';
 import { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { CoinmarketTransactionStatus } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/CoinmarketTransactionStatus';
 
 const Wrapper = styled.div`
     display: flex;

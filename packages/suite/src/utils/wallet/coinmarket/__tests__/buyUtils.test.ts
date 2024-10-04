@@ -1,5 +1,10 @@
-import * as fixtures from '../__fixtures__/buyUtils';
-import { getAmountLimits, createQuoteLink, getStatusMessage, createTxLink } from '../buyUtils';
+import * as fixtures from 'src/utils/wallet/coinmarket/__fixtures__/buyUtils';
+import {
+    getAmountLimits,
+    createQuoteLink,
+    getStatusMessage,
+    createTxLink,
+} from 'src/utils/wallet/coinmarket/buyUtils';
 
 const {
     QUOTE_REQUEST_FIAT,

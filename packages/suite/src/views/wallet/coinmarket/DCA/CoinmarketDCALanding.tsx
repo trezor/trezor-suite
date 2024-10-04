@@ -13,13 +13,13 @@ import {
 } from '@trezor/components';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { withSelectedAccountLoaded } from 'src/components/wallet';
-import { CoinmarketLayout } from '../common/CoinmarketLayoutNew/CoinmarketLayout';
 import styled from 'styled-components';
 import { borders, palette, spacings, spacingsPx } from '@trezor/theme';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { COINMARKET_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
 import { useSelector } from 'src/hooks/suite';
 import { variables } from '@trezor/components/src/config';
+import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayoutNew/CoinmarketLayout';
 
 const IconWrapper = styled.div`
     display: flex;

@@ -1,6 +1,5 @@
 import { CryptoId } from 'invity-api';
 import { Column } from '@trezor/components';
-import { CoinmarketTransactionId } from 'src/views/wallet/coinmarket/common';
 import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketInfoHeader } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoHeader';
 import { CoinmarketInfoItem } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoItem';
@@ -12,6 +11,7 @@ import { CoinmarketInfoExchangeType } from 'src/views/wallet/coinmarket/common/C
 import { CoinmarketSelectedOfferInfoProps } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketUtilsKyc } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsKyc';
 import { CoinmarketExchangeProvidersInfoProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketTransactionId } from 'src/views/wallet/coinmarket/common/CoinmarketTransactionId';
 
 export const CoinmarketSelectedOfferInfo = ({
     account,

@@ -4,8 +4,8 @@ import {
     useCoinmarketDetail,
 } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketDetailSell } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailSell/CoinmarketDetailSell';
 import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
-import { CoinmarketDetailSell } from '../common/CoinmarketDetail/CoinmarketDetailSell/CoinmarketDetailSell';
 
 const CoinmarketSellDetailComponent = (props: UseCoinmarketProps) => {
     const coinmarketDetailContext = useCoinmarketDetail({

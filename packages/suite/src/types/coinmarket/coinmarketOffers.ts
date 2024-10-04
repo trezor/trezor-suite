@@ -1,10 +1,10 @@
 import { CryptoId } from 'invity-api';
-import { CoinmarketTradeType } from './coinmarket';
+import { CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 import {
     CoinmarketBuyFormContextProps,
     CoinmarketExchangeFormContextProps,
     CoinmarketSellFormContextProps,
-} from './coinmarketForm';
+} from 'src/types/coinmarket/coinmarketForm';
 
 export type CoinmarketBuyAddressOptionsType = {
     address?: string;

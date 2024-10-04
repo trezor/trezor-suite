@@ -1,10 +1,10 @@
 import { Icon, Tooltip } from '@trezor/components';
-import { CoinmarketOffersItemProps } from '../CoinmarketOffers/CoinmarketOffersItem';
 import { useTheme } from 'styled-components';
-import { CoinmarketUtilsTooltipFee } from './CoinmarketUtilsTooltipFee';
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { TooltipIcon, TooltipText, TooltipWrap } from 'src/views/wallet/coinmarket';
+import { CoinmarketUtilsTooltipFee } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsTooltipFee';
+import { CoinmarketOffersItemProps } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersItem';
 
 // IN TESTING MODE
 export const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quote'>) => {

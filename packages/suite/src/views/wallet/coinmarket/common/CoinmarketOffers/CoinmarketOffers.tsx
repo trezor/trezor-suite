@@ -1,12 +1,12 @@
-import { CoinmarketOffersEmpty } from './CoinmarketOffersEmpty';
-import { CoinmarketHeader } from '../CoinmarketHeader/CoinmarketHeader';
-import { CoinmarketOffersItem } from './CoinmarketOffersItem';
 import {
     isCoinmarketExchangeOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketOffersExchange } from './CoinmarketOffersExchange';
+import { CoinmarketHeader } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeader';
+import { CoinmarketOffersEmpty } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersEmpty';
+import { CoinmarketOffersExchange } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersExchange';
+import { CoinmarketOffersItem } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersItem';
 
 export const CoinmarketOffers = () => {
     const context = useCoinmarketOffersContext();

@@ -2,12 +2,11 @@ import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { H2, variables } from '@trezor/components';
 import styled from 'styled-components';
-
-import { BuyTransaction } from './BuyTransaction';
-import { SellTransaction } from './SellTransaction';
-import { ExchangeTransaction } from './ExchangeTransaction';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 import { spacingsPx } from '@trezor/theme';
+import { BuyTransaction } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/BuyTransaction';
+import { SellTransaction } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/SellTransaction';
+import { ExchangeTransaction } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/ExchangeTransaction';
 
 const Wrapper = styled.div`
     margin-bottom: 48px;

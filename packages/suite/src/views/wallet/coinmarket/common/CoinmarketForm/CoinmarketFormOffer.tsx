@@ -27,12 +27,12 @@ import {
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormOfferFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
 import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { CoinmarketFormOffersSwitcher } from './CoinmarketFormOffersSwitcher';
 import { ExchangeTrade } from 'invity-api';
 import { CoinmarketTradeDetailType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { CoinmarketFormOffersSwitcher } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffersSwitcher';
 
 const CoinmarketFormOfferHeader = styled.div`
     display: flex;
