@@ -1,7 +1,7 @@
 import { withSelectedAccountLoaded } from 'src/components/wallet';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import CoinmarketOffers from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffers';
+import { CoinmarketOffers } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffers';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
 import { useCoinmarketExchangeForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeForm';

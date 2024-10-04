@@ -1,6 +1,6 @@
 import { configureStore } from 'src/support/tests/configureStore';
 
-import coinmarketReducer from 'src/reducers/wallet/coinmarketReducer';
+import { coinmarketReducer } from 'src/reducers/wallet/coinmarketReducer';
 
 import * as coinmarketBuyActions from '../coinmarketBuyActions';
 import invityAPI from 'src/services/suite/invityAPI';

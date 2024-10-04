@@ -6,7 +6,7 @@ import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtil
 import styled from 'styled-components';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { borders, spacingsPx } from '@trezor/theme';
-import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
 import {
     CoinmarketBuySellFormProps,
     CoinmarketFormInputDefaultProps,
@@ -36,7 +36,7 @@ const FlagWrapper = styled(Flag)`
     object-position: 50% 50%;
 `;
 
-const CoinmarketFormInputCountry = ({ label }: CoinmarketFormInputDefaultProps) => {
+export const CoinmarketFormInputCountry = ({ label }: CoinmarketFormInputDefaultProps) => {
     const { control, setAmountLimits, defaultCountry } =
         useCoinmarketFormContext<CoinmarketTradeBuySellType>();
 
@@ -80,5 +80,3 @@ const CoinmarketFormInputCountry = ({ label }: CoinmarketFormInputDefaultProps) 
         </>
     );
 };
-
-export default CoinmarketFormInputCountry;

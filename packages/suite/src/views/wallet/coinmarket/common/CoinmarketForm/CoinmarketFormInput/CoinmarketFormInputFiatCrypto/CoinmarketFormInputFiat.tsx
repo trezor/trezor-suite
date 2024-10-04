@@ -5,7 +5,7 @@ import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useDidUpdate } from '@trezor/react-utils';
-import CoinmarketFormInputCurrency from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
+import { CoinmarketFormInputCurrency } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
 import {
     CoinmarketAllFormProps,
     CoinmarketBuyFormProps,
@@ -28,7 +28,7 @@ const CoinmarketFormInputCurrencyWrapper = styled(CoinmarketFormInputCurrency)`
     }
 `;
 
-const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormProps>({
+export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormProps>({
     cryptoInputName,
     fiatInputName,
     methods,
@@ -115,5 +115,3 @@ const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormProps>({
         />
     );
 };
-
-export default CoinmarketFormInputFiat;

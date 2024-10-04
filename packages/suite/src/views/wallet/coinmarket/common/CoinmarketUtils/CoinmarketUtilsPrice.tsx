@@ -31,7 +31,7 @@ const PriceValue = styled.div`
     }
 `;
 
-const CoinmarketUtilsPrice = ({
+export const CoinmarketUtilsPrice = ({
     amountInCrypto,
     sendAmount,
     sendCurrency,
@@ -73,5 +73,3 @@ const CoinmarketUtilsPrice = ({
         </PriceWrap>
     );
 };
-
-export default CoinmarketUtilsPrice;

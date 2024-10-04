@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
-import CoinmarketFormInputPaymentMethod from '../CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
-import CoinmarketFormInputCountry from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
+import { CoinmarketFormInputPaymentMethod } from '../CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
+import { CoinmarketFormInputCountry } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
 import {
     isCoinmarketBuyOffers,
     isCoinmarketExchangeOffers,
@@ -29,7 +29,7 @@ const InputWrapper = styled.div`
     padding: ${spacingsPx.xxs} ${spacingsPx.md} ${spacingsPx.xxs} 0;
 `;
 
-const CoinmarketHeaderFilter = () => {
+export const CoinmarketHeaderFilter = () => {
     const context = useCoinmarketOffersContext();
 
     if (isCoinmarketExchangeOffers(context)) {
@@ -72,5 +72,3 @@ const CoinmarketHeaderFilter = () => {
         </Row>
     );
 };
-
-export default CoinmarketHeaderFilter;
