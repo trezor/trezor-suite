@@ -80,9 +80,9 @@ export const createResponseMessage = (
     payload: success ? payload : serializeError(payload),
     device: device
         ? {
-              path: device?.originalDescriptor.path,
+              path: device?.getDevicePath(),
               state: device?.getState(),
-              instance: device?.instance,
+              instance: device?.getInstance(),
           }
         : undefined,
 });
