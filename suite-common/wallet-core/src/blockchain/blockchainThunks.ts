@@ -41,6 +41,7 @@ const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000;
 const CUSTOM_ACCOUNT_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
     pol: 20 * 1000,
     bnb: 20 * 1000,
+    op: 20 * 1000,
 };
 
 const getAccountSyncInterval = (symbol: NetworkSymbol) =>
