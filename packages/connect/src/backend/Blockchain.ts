@@ -40,6 +40,10 @@ const getNormalizedTrezorShortcut = (shortcut: string) => {
         return 'XRP';
     }
 
+    if (shortcut === 'OP') {
+        return 'ETH';
+    }
+
     return shortcut;
 };
 
