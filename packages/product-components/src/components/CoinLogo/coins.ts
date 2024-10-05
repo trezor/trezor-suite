@@ -13,6 +13,7 @@ export const COINS: Record<NetworkSymbol, string> = {
     etc: require('../../images/coins/etc.svg'),
     eth: require('../../images/coins/eth.svg'),
     ltc: require('../../images/coins/ltc.svg'),
+    op: require('../../images/coins/op.svg'),
     pol: require('../../images/coins/pol.svg'),
     nmc: require('../../images/coins/nmc.svg'),
     regtest: require('../../images/coins/btc_test.svg'),
