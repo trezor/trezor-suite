@@ -2780,6 +2780,10 @@ export default defineMessages({
         defaultMessage: 'BNB Smart Chain',
         id: 'TR_NETWORK_BNB',
     },
+    TR_NETWORK_OP: {
+        defaultMessage: 'Optimism',
+        id: 'TR_NETWORK_OP',
+    },
     TR_NETWORK_LITECOIN: {
         defaultMessage: 'Litecoin',
         id: 'TR_NETWORK_LITECOIN',
@@ -4950,7 +4954,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_OP_ETHEREUM_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_OP_ETHEREUM_DESCRIPTION',
         defaultMessage:
-            'Enables the Optimism network but without internal transaction data history.',
+            'Enables the Optimism network but with wrong symbol OP instead of ETH and minimum gas 1 gwei.',
     },
     TR_EXPERIMENTAL_PASSWORD_MANAGER: {
         id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER',

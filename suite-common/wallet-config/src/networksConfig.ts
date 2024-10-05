@@ -81,7 +81,6 @@ export const networks = {
         coingeckoId: 'ethereum',
         coingeckoNativeId: 'ethereum',
     },
-
     pol: {
         symbol: 'pol',
         name: 'Polygon PoS',
@@ -135,6 +134,34 @@ export const networks = {
         },
         coingeckoId: 'binance-smart-chain',
         coingeckoNativeId: 'binancecoin',
+    },
+    op: {
+        symbol: 'op',
+        name: 'Optimism',
+        networkType: 'ethereum',
+        chainId: 10,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        explorer: {
+            tx: 'https://blockbook-dev.corp.sldev.cz:9302/tx/',
+            account: 'https://blockbook-dev.corp.sldev.cz:9302/address/',
+            nft: 'https://blockbook-dev.corp.sldev.cz:9302/nft/',
+            address: 'https://blockbook-dev.corp.sldev.cz:9302/address/',
+            queryString: '',
+        },
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
+        customBackends: ['blockbook'],
+        accountTypes: {
+            ledger: {
+                // ledger (live), #1 acc is same as Trezor, so it is skipped
+                accountType: 'ledger',
+                bip43Path: "m/44'/60'/i'/0/0",
+                isDebugOnlyAccountType: true,
+            },
+        },
+        coingeckoId: 'optimistic-ethereum',
+        coingeckoNativeId: 'ethereum',
     },
     sol: {
         symbol: 'sol',
