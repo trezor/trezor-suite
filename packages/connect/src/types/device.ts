@@ -55,6 +55,16 @@ export type FirmwareRevisionCheckResult =
           error: FirmwareRevisionCheckError;
       };
 
+export type FirmwareHashCheckError =
+    | 'hash-mismatch'
+    | 'check-skipped'
+    | 'check-unsupported'
+    | 'unknown-release'
+    | 'other-error';
+export type FirmwareHashCheckResult =
+    | { success: true }
+    | { success: false; error: FirmwareHashCheckError };
+
 type BaseDevice = {
     path: string;
     name: string;
@@ -79,7 +89,7 @@ export type KnownDevice = BaseDevice & {
     availableTranslations: string[];
     authenticityChecks?: {
         firmwareRevision: FirmwareRevisionCheckResult | null;
-        // Maybe add FirmwareHashCheck result here?
+        firmwareHash: FirmwareHashCheckResult | null;
         // Maybe add AuthenticityCheck result here?
     };
 };

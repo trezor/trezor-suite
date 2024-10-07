@@ -15,7 +15,7 @@ import {
 } from '../api/firmware';
 import { getReleases } from '../data/firmwareInfo';
 import { CommonParams, IntermediaryVersion } from '../types';
-import { PROTO, ERRORS } from '../constants';
+import { FIRMWARE, PROTO, ERRORS } from '../constants';
 import type { Log } from '../utils/debug';
 import type { Device } from '../device/Device';
 import { isNewer } from '@trezor/utils/src/versionUtils';
@@ -493,7 +493,8 @@ export const onCallFirmwareUpdate = async ({
         }
     }
 
-    const checkSupported = reconnectedDevice.atLeast(['1.11.1', '2.5.1']) && !params.binary;
+    const checkSupported =
+        reconnectedDevice.atLeast(FIRMWARE.FW_HASH_SUPPORTED_VERSIONS) && !params.binary;
 
     if (checkSupported) {
         try {

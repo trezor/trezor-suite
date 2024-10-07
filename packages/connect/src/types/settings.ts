@@ -34,6 +34,8 @@ export interface ConnectSettingsPublic {
     deeplinkOpen?: (url: string) => void;
     deeplinkCallbackUrl?: string;
     deeplinkUrl?: string;
+    // URL for binary files such as firmware, may be local or remote. If not provided, firmware hash check won't be done.
+    binFilesBaseUrl?: string;
 }
 
 // internal part, not to be accepted from .init()
