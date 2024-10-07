@@ -23,7 +23,7 @@ export const deviceModelInformation: Record<
     [DeviceModelInternal.T2B1]: safe3Information,
     [DeviceModelInternal.T3B1]: safe3Information,
     [DeviceModelInternal.T3T1]: { width: 240, height: 240, supports: ['jpeg'] },
-    [DeviceModelInternal.T3W1]: { width: 240, height: 240, supports: ['jpeg'] },
+    [DeviceModelInternal.T3W1]: { width: 280, height: 520, supports: ['jpeg'] },
 };
 
 export const enum ImageValidationError {
