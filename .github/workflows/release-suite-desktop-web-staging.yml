@@ -179,7 +179,7 @@ jobs:
         run: |
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
-          yarn workspace @trezor/connect-iframe build:lib
+          NODE_ENV=production yarn workspace @trezor/connect-iframe build:lib
           yarn workspace @trezor/connect-web build
           yarn workspace @trezor/suite-web build
 
