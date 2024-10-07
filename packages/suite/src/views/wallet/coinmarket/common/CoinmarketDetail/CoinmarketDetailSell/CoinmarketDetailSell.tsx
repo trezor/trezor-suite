@@ -7,15 +7,14 @@ import {
     CoinmarketGetCryptoQuoteAmountProps,
     CoinmarketTradeSellType,
 } from 'src/types/coinmarket/coinmarket';
-import {
-    CoinmarketLeftWrapper,
-    CoinmarketRightWrapper,
-    CoinmarketWrapper,
-} from 'src/views/wallet/coinmarket';
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
 import { CoinmarketDetailSellPaymentSuccessful } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailSell/CoinmarketDetailSellPaymentSuccessful';
 import { CoinmarketDetailSellPaymentFailed } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailSell/CoinmarketDetailSellPaymentFailed';
 import { CoinmarketDetailSellPaymentPending } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailSell/CoinmarketDetailSellPaymentPending';
+import {
+    CoinmarketSideWrapper,
+    CoinmarketWrapper,
+} from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
 
 const Wrapper = styled.div`
     ${CoinmarketWrapper}
@@ -61,7 +60,7 @@ export const CoinmarketDetailSell = () => {
 
     return (
         <Wrapper>
-            <CoinmarketLeftWrapper>
+            <CoinmarketSideWrapper side="left">
                 {tradeStatus === 'SUCCESS' && (
                     <CoinmarketDetailSellPaymentSuccessful account={account} />
                 )}
@@ -73,8 +72,8 @@ export const CoinmarketDetailSell = () => {
                     />
                 )}
                 {showPending && <CoinmarketDetailSellPaymentPending supportUrl={supportUrl} />}
-            </CoinmarketLeftWrapper>
-            <CoinmarketRightWrapper>
+            </CoinmarketSideWrapper>
+            <CoinmarketSideWrapper side="right">
                 <CoinmarketSelectedOfferInfo
                     account={account}
                     providers={info?.providerInfos}
@@ -83,7 +82,7 @@ export const CoinmarketDetailSell = () => {
                     type="sell"
                     quoteAmounts={quoteAmounts}
                 />
-            </CoinmarketRightWrapper>
+            </CoinmarketSideWrapper>
         </Wrapper>
     );
 };

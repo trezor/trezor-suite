@@ -7,15 +7,14 @@ import {
     CoinmarketTradeBuyType,
 } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
-import {
-    CoinmarketLeftWrapper,
-    CoinmarketRightWrapper,
-    CoinmarketWrapper,
-} from 'src/views/wallet/coinmarket';
 import { CoinmarketDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentSuccessful';
 import { CoinmarketDetailBuyPaymentFailed } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentFailed';
 import { CoinmarketDetailBuyPaymentProcessing } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentProcessing';
 import { CoinmarketDetailBuyPaymentWaitingForUser } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentWaitingForUser';
+import {
+    CoinmarketSideWrapper,
+    CoinmarketWrapper,
+} from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
 
 const Wrapper = styled.div`
     ${CoinmarketWrapper}
@@ -62,7 +61,7 @@ export const CoinmarketDetailBuy = () => {
 
     return (
         <Wrapper>
-            <CoinmarketLeftWrapper>
+            <CoinmarketSideWrapper side="left">
                 {showError && (
                     <CoinmarketDetailBuyPaymentFailed account={account} supportUrl={supportUrl} />
                 )}
@@ -75,8 +74,8 @@ export const CoinmarketDetailBuy = () => {
                     />
                 )}
                 {showSuccess && <CoinmarketDetailBuyPaymentPaymentSuccessful account={account} />}
-            </CoinmarketLeftWrapper>
-            <CoinmarketRightWrapper>
+            </CoinmarketSideWrapper>
+            <CoinmarketSideWrapper side="right">
                 <CoinmarketSelectedOfferInfo
                     account={account}
                     selectedQuote={trade.data}
@@ -85,7 +84,7 @@ export const CoinmarketDetailBuy = () => {
                     quoteAmounts={quoteAmounts}
                     type="buy"
                 />
-            </CoinmarketRightWrapper>
+            </CoinmarketSideWrapper>
         </Wrapper>
     );
 };

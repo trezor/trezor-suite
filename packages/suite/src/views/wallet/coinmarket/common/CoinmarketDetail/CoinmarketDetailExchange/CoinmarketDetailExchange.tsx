@@ -8,16 +8,15 @@ import {
     CoinmarketTradeExchangeType,
 } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
-import {
-    CoinmarketLeftWrapper,
-    CoinmarketRightWrapper,
-    CoinmarketWrapper,
-} from 'src/views/wallet/coinmarket';
 import { CoinmarketDetailExchangePaymentSuccessful } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentSuccessful';
 import { CoinmarketDetailExchangePaymentKYC } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentKYC';
 import { CoinmarketDetailExchangePaymentFailed } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentFailed';
 import { CoinmarketDetailExchangePaymentConverting } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentConverting';
 import { CoinmarketDetailExchangePaymentSending } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentSending';
+import {
+    CoinmarketSideWrapper,
+    CoinmarketWrapper,
+} from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
 
 const Wrapper = styled.div`
     ${CoinmarketWrapper}
@@ -63,7 +62,7 @@ export const CoinmarketDetailExchange = () => {
 
     return (
         <Wrapper>
-            <CoinmarketLeftWrapper>
+            <CoinmarketSideWrapper side="left">
                 {tradeStatus === 'SUCCESS' && (
                     <CoinmarketDetailExchangePaymentSuccessful account={account} />
                 )}
@@ -85,8 +84,8 @@ export const CoinmarketDetailExchange = () => {
                     <CoinmarketDetailExchangePaymentConverting supportUrl={supportUrl} />
                 )}
                 {showSending && <CoinmarketDetailExchangePaymentSending supportUrl={supportUrl} />}
-            </CoinmarketLeftWrapper>
-            <CoinmarketRightWrapper>
+            </CoinmarketSideWrapper>
+            <CoinmarketSideWrapper side="right">
                 <CoinmarketSelectedOfferInfo
                     selectedQuote={trade.data}
                     transactionId={trade.key}
@@ -94,7 +93,7 @@ export const CoinmarketDetailExchange = () => {
                     type="exchange"
                     quoteAmounts={quoteAmounts}
                 />
-            </CoinmarketRightWrapper>
+            </CoinmarketSideWrapper>
         </Wrapper>
     );
 };

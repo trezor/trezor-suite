@@ -3,10 +3,9 @@ import { CoinmarketFormInputs } from 'src/views/wallet/coinmarket/common/Coinmar
 import { CoinmarketFormOffer } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffer';
 import { CoinmarketFeaturedOffers } from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffers';
 import {
+    CoinmarketSideWrapper,
     CoinmarketWrapper,
-    CoinmarketLeftWrapper,
-    CoinmarketRightWrapper,
-} from 'src/views/wallet/coinmarket';
+} from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
 
 const CoinmarketFormLayoutWrapper = styled.form`
     ${CoinmarketWrapper}
@@ -15,12 +14,12 @@ const CoinmarketFormLayoutWrapper = styled.form`
 export const CoinmarketFormLayout = () => (
     <>
         <CoinmarketFormLayoutWrapper>
-            <CoinmarketLeftWrapper>
+            <CoinmarketSideWrapper side="left">
                 <CoinmarketFormInputs />
-            </CoinmarketLeftWrapper>
-            <CoinmarketRightWrapper>
+            </CoinmarketSideWrapper>
+            <CoinmarketSideWrapper side="right">
                 <CoinmarketFormOffer />
-            </CoinmarketRightWrapper>
+            </CoinmarketSideWrapper>
         </CoinmarketFormLayoutWrapper>
         <CoinmarketFeaturedOffers />
     </>

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { variables, Card, Spinner } from '@trezor/components';
+import { variables, Spinner } from '@trezor/components';
 import {
     Elevation,
     mapElevationToBackground,
@@ -16,51 +16,6 @@ import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/Coinmarke
 interface ResponsiveSize {
     $responsiveSize: keyof typeof variables.SCREEN_SIZE;
 }
-
-export const CoinmarketWrapper = `
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: ${spacingsPx.xxxl};
-
-    ${SCREEN_QUERY.BELOW_LAPTOP} {
-        flex-wrap: wrap;
-    }
-`;
-
-// reason: responsive sizes
-// eslint-disable-next-line local-rules/no-override-ds-component
-export const CoinmarketLeftWrapper = styled(Card)<{ $isWithoutPadding?: boolean }>`
-    padding: ${({ $isWithoutPadding }) =>
-        $isWithoutPadding ? 0 : `${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.lg}`};
-    width: 60%;
-
-    ${SCREEN_QUERY.BELOW_DESKTOP} {
-        padding: ${spacingsPx.md};
-        width: 49%;
-    }
-
-    ${SCREEN_QUERY.BELOW_LAPTOP} {
-        width: 100%;
-        padding-bottom: ${spacingsPx.zero};
-    }
-`;
-
-// reason: responsive sizes
-// eslint-disable-next-line local-rules/no-override-ds-component
-export const CoinmarketRightWrapper = styled(Card)`
-    padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxxl};
-    width: 37%;
-
-    ${SCREEN_QUERY.BELOW_DESKTOP} {
-        padding: ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.xxl};
-        width: 49%;
-    }
-
-    ${SCREEN_QUERY.BELOW_LAPTOP} {
-        width: 100%;
-        margin-top: ${spacingsPx.sm};
-    }
-`;
 
 export const Wrapper = styled.div<ResponsiveSize>`
     display: flex;
