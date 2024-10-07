@@ -1,4 +1,6 @@
 import { nativeTypography, spacingsPx } from '@trezor/theme';
+import { useSelector } from 'src/hooks/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import {
     CoinmarketAmountContainer,
     CoinmarketAmountWrapper,
@@ -28,7 +30,8 @@ interface CoinmarketFormOfferFiatAmountProps {
 }
 
 export const CoinmarketFormOfferFiatAmount = ({ amount }: CoinmarketFormOfferFiatAmountProps) => {
-    const formattedAmount = amount?.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') ?? '';
+    const locale = useSelector(selectLanguage);
+    const formattedAmount = amount ? new Intl.NumberFormat(locale).format(Number(amount)) : '';
 
     return (
         <CoinmarketAmountContainer>
