@@ -23,6 +23,7 @@ export * from './firmware/firmwareActions';
 export * from './firmware/firmwareThunks';
 export * from './firmware/firmwareReducer';
 export * from './firmware/manualFirmwareHashCheckThunk';
+export * from './firmware/getBinFilesBaseUrlThunk';
 export * from './send/sendFormActions';
 export * from './send/sendFormReducer';
 export * from './send/sendFormThunks';

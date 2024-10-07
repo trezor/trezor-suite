@@ -1,5 +1,5 @@
 export { getBinaryForFirmwareUpgrade } from './getBinaryForFirmwareUpgrade';
-export { getBinary } from './getBinary';
+export { getBinary, getBinaryOptional } from './getBinary';
 export { getLanguage } from '../../data/getLanguage';
 export { shouldStripFwHeaders, stripFwHeaders } from './modifyFirmware';
 export { uploadFirmware } from './uploadFirmware';
