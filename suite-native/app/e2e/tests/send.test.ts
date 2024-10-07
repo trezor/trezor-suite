@@ -43,7 +43,6 @@ const prepareTransactionForOnDeviceReview = async (isFormEmpty: boolean = true) 
 
     await onSendOutputsForm.submitForm();
 
-    await onSendFees.selectFee('normal');
     await onSendFees.submitFee();
 };
 
