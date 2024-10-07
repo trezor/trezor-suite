@@ -1416,6 +1416,7 @@ export const ButtonRequest = Type.Object(
     {
         code: Type.Optional(ButtonRequestType),
         pages: Type.Optional(Type.Number()),
+        name: Type.Optional(Type.String()),
     },
     { $id: 'ButtonRequest' },
 );
@@ -1582,6 +1583,9 @@ export const EnumDebugPhysicalButton = Type.Enum(DebugPhysicalButton);
 
 export type DebugLinkResetDebugEvents = Static<typeof DebugLinkResetDebugEvents>;
 export const DebugLinkResetDebugEvents = Type.Object({}, { $id: 'DebugLinkResetDebugEvents' });
+
+export type DebugLinkOptigaSetSecMax = Static<typeof DebugLinkOptigaSetSecMax>;
+export const DebugLinkOptigaSetSecMax = Type.Object({}, { $id: 'DebugLinkOptigaSetSecMax' });
 
 export type EosGetPublicKey = Static<typeof EosGetPublicKey>;
 export const EosGetPublicKey = Type.Object(
@@ -2519,7 +2523,6 @@ export const WipeDevice = Type.Object({}, { $id: 'WipeDevice' });
 export type ResetDevice = Static<typeof ResetDevice>;
 export const ResetDevice = Type.Object(
     {
-        display_random: Type.Optional(Type.Boolean()),
         strength: Type.Optional(Type.Number()),
         passphrase_protection: Type.Optional(Type.Boolean()),
         pin_protection: Type.Optional(Type.Boolean()),
@@ -3597,6 +3600,7 @@ export const MessageType = Type.Object(
         GetECDHSessionKey,
         ECDHSessionKey,
         DebugLinkResetDebugEvents,
+        DebugLinkOptigaSetSecMax,
         EosGetPublicKey,
         EosPublicKey,
         EosTxHeader,

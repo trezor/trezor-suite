@@ -1,4 +1,7 @@
 {
+    "options": {
+        "syntax": "proto2"
+    },
     "nested": {
         "BinanceGetAddress": {
             "fields": {
@@ -2572,6 +2575,10 @@
                 "pages": {
                     "type": "uint32",
                     "id": 2
+                },
+                "name": {
+                    "type": "string",
+                    "id": 4
                 }
             },
             "nested": {
@@ -3116,6 +3123,9 @@
             }
         },
         "DebugLinkResetDebugEvents": {
+            "fields": {}
+        },
+        "DebugLinkOptigaSetSecMax": {
             "fields": {}
         },
         "EosGetPublicKey": {
@@ -4877,10 +4887,6 @@
         },
         "ResetDevice": {
             "fields": {
-                "display_random": {
-                    "type": "bool",
-                    "id": 1
-                },
                 "strength": {
                     "type": "uint32",
                     "id": 2,
@@ -8255,6 +8261,10 @@
                     "(bitcoin_only)": true,
                     "(wire_debug_in)": true
                 },
+                "MessageType_DebugLinkOptigaSetSecMax": {
+                    "(bitcoin_only)": true,
+                    "(wire_debug_in)": true
+                },
                 "MessageType_EthereumGetPublicKey": {
                     "(wire_in)": true
                 },
@@ -8785,6 +8795,7 @@
                 "MessageType_DebugLinkEraseSdCard": 9005,
                 "MessageType_DebugLinkWatchLayout": 9006,
                 "MessageType_DebugLinkResetDebugEvents": 9007,
+                "MessageType_DebugLinkOptigaSetSecMax": 9008,
                 "MessageType_EthereumGetPublicKey": 450,
                 "MessageType_EthereumPublicKey": 451,
                 "MessageType_EthereumGetAddress": 56,
