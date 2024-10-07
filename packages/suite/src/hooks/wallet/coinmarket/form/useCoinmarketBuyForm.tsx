@@ -44,11 +44,9 @@ import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/commo
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import {
-    getFilteredSuccessQuotes,
-    useCoinmarketCommonOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { getFilteredSuccessQuotes } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { useCoinmarketBuyFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyFormDefaultValues';
+import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
 export const useCoinmarketBuyForm = ({
     selectedAccount,
@@ -61,7 +59,7 @@ export const useCoinmarketBuyForm = ({
         useSelector(state => state.wallet.coinmarket.buy);
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const { callInProgress, account, timer, device, setCallInProgress, checkQuotesTimer } =
-        useCoinmarketCommonOffers({ selectedAccount, type });
+        useCoinmarketInitializer({ selectedAccount, type });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
         useCoinmarketPaymentMethod<CoinmarketTradeBuyType>();
     const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =

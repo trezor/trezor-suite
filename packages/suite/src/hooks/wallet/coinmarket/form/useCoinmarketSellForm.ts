@@ -30,10 +30,7 @@ import {
     FORM_OUTPUT_FIAT,
     FORM_PAYMENT_METHOD_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
-import {
-    getFilteredSuccessQuotes,
-    useCoinmarketCommonOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { getFilteredSuccessQuotes } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRecomposeAndSign';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
@@ -49,6 +46,7 @@ import { networks } from '@suite-common/wallet-config';
 import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
 export const useCoinmarketSellForm = ({
     selectedAccount,
@@ -74,7 +72,7 @@ export const useCoinmarketSellForm = ({
         isNotFormPage,
     });
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
-        useCoinmarketCommonOffers({ selectedAccount, type });
+        useCoinmarketInitializer({ selectedAccount, type });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
         useCoinmarketPaymentMethod<CoinmarketTradeSellType>();
     const {
