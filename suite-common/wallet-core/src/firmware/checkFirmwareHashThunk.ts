@@ -1,8 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
-import { getFwUpdateVersion, resolveStaticPath } from '@suite-common/suite-utils';
+import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { isDesktop } from '@trezor/env-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
 
 import { FIRMWARE_MODULE_PREFIX } from './firmwareActions';
@@ -29,13 +28,9 @@ export const validateFirmwareHashThunk = createThunk<
             });
         }
 
-        const desktopBinDir = extra.selectors.selectDesktopBinDir(getState());
+        const binFilesBaseUrl = extra.selectors.selectBinFilesBaseUrl(getState());
         const { useDevkit } = selectFirmware(getState());
-
-        // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
-        const baseUrl = `${isDesktop() ? desktopBinDir : resolveStaticPath('connect/data')}${
-            useDevkit ? '/devkit' : ''
-        }`;
+        const baseUrl = `${binFilesBaseUrl}${useDevkit ? '/devkit' : ''}`;
 
         const result = await TrezorConnect.checkFirmwareAuthenticity({
             // For current version of the FW (the one known by the Suite) we dont need to download it

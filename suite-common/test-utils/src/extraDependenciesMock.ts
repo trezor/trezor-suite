@@ -84,7 +84,7 @@ export const extraDependenciesMock: ExtraDependencies = {
             showDebugMenu: false,
             transports: [],
         }),
-        selectDesktopBinDir: mockSelector('selectDesktopBinDir', '/bin'),
+        selectBinFilesBaseUrl: mockSelector('selectBinFilesBaseUrl', '/bin'),
         selectRouterApp: mockSelector('selectRouterApp', ''),
         selectRoute: mockSelector('selectRoute', {} as Route),
         selectMetadata: mockSelector('selectMetadata', {}),

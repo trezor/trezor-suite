@@ -38,6 +38,7 @@ import {
 } from '@suite-common/token-definitions';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
 import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
+import { isDesktop } from '@trezor/env-utils';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -78,7 +79,13 @@ export const extraDependencies: ExtraDependencies = {
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
-        selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
+        // get URL for firmware binaries, which may be local (suite desktop) or remote (suite web)
+        selectBinFilesBaseUrl: (state: AppState) => {
+            // FW binaries on desktop are stored in "*/static/connect/data/firmware/*/*.bin" (see "connect-common" package)
+            if (isDesktop()) return state.desktop?.paths?.binDir;
+
+            return resolveStaticPath('connect/data');
+        },
         selectDevice: (state: AppState) => state.device.selectedDevice,
         selectLanguage: (state: AppState) => state.suite.settings.language,
         selectMetadata: (state: AppState) => state.metadata,

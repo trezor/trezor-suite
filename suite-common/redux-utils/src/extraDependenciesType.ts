@@ -69,7 +69,7 @@ export type ExtraDependencies = {
         // todo: we do not want to, so far, transfer coinjoin to @suite-common
         // but this is exactly what I need to get DebugModeOptions type instead of any
         selectDebugSettings: SuiteCompatibleSelector<any>;
-        selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
+        selectBinFilesBaseUrl: SuiteCompatibleSelector<string | undefined>;
         selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectLanguage: SuiteCompatibleSelector<string>;
         selectRouterApp: SuiteCompatibleSelector<string>;
