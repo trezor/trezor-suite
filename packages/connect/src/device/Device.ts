@@ -3,7 +3,7 @@ import { versionUtils, createDeferred, Deferred, TypedEmitter } from '@trezor/ut
 import { Session } from '@trezor/transport';
 import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
 import { DeviceCommands } from './DeviceCommands';
-import { PROTO, ERRORS, NETWORK } from '../constants';
+import { PROTO, ERRORS, NETWORK, FIRMWARE } from '../constants';
 import {
     DEVICE,
     DeviceButtonRequestPayload,
@@ -35,12 +35,17 @@ import {
     VersionArray,
     KnownDevice,
     StaticSessionId,
+    FirmwareHashCheckResult,
+    FirmwareHashCheckError,
+    DeviceModelInternal,
 } from '../types';
 import { models } from '../data/models';
 import { getLanguage } from '../data/getLanguage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { IStateStorage } from './StateStorage';
 import type { PromptCallback } from './prompts';
+import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
+import { randomBytes } from 'crypto';
 
 // custom log
 const _log = initLog('Device');
@@ -156,6 +161,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     authenticityChecks: NonNullable<KnownDevice['authenticityChecks']> = {
         firmwareRevision: null,
+        firmwareHash: null,
     };
 
     private useCardanoDerivation = false;
@@ -567,6 +573,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const { message } = await this.getCommands().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
 
+        if (this.authenticityChecks.firmwareHash === null) {
+            this.authenticityChecks.firmwareHash = await this.checkFirmwareHash();
+        }
+
         if (
             // The check was not yet performed
             this.authenticityChecks.firmwareRevision === null ||
@@ -593,6 +603,57 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 _log.error('change language failed silently', err);
             }
         }
+    }
+
+    async checkFirmwareHash(): Promise<FirmwareHashCheckResult | null> {
+        const createFailResult = (error: FirmwareHashCheckError) => ({ success: false, error });
+
+        const firmwareVersion = this.getVersion();
+        // device has no features (not yet connected) or no firmware
+        if (firmwareVersion === undefined || !this.features || this.features.bootloader_mode) {
+            return null;
+        }
+
+        // optional setting for `connect`, see types/settings.ts
+        const baseUrl = DataManager.getSettings('binFilesBaseUrl');
+        // Initially rolled out only for Model One; in the future we may remove that condition and do it for all models
+        const isModelOne = this.features.internal_model === DeviceModelInternal.T1B1;
+        if (baseUrl === undefined || !isModelOne) return createFailResult('check-skipped');
+
+        const checkSupported = this.atLeast(FIRMWARE.FW_HASH_SUPPORTED_VERSIONS);
+        if (!checkSupported) return createFailResult('check-unsupported');
+
+        const release = getReleases(this.features.internal_model).find(r =>
+            versionUtils.isEqual(r.version, firmwareVersion),
+        );
+        // if version is expected to support hash check, but the release is unknown, then firmware is considered unofficial
+        if (release === undefined) return createFailResult('unknown-release');
+
+        const btcOnly = this.firmwareType === FirmwareType.BitcoinOnly;
+        const binary = await getBinaryOptional({ baseUrl, btcOnly, release });
+        if (binary === null) {
+            // release was found, but not its binary - happens on desktop, where only local files are searched
+            return createFailResult('check-unsupported');
+        }
+
+        const strippedBinary = stripFwHeaders(binary);
+        const { hash: expectedHash, challenge } = calculateFirmwareHash(
+            this.features.major_version,
+            strippedBinary,
+            randomBytes(32),
+        );
+
+        const deviceResponse = await this.getCommands().typedCall(
+            'GetFirmwareHash',
+            'FirmwareHash',
+            { challenge },
+        );
+
+        if (!deviceResponse.message.hash) return createFailResult('other-error');
+
+        if (deviceResponse.message.hash !== expectedHash) return createFailResult('hash-mismatch');
+
+        return { success: true };
     }
 
     async checkFirmwareRevision() {

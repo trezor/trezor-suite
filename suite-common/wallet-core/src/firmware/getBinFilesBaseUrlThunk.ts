@@ -1,6 +1,7 @@
 import { isDesktop } from '@trezor/env-utils';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { createThunk } from '@suite-common/redux-utils';
+
 import { FIRMWARE_MODULE_PREFIX } from './firmwareActions';
 
 /**

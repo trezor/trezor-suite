@@ -13,3 +13,11 @@ export const getBinary = ({ baseUrl, btcOnly, release }: GetBinaryProps) => {
 
     return httpRequest(url, 'binary');
 };
+
+export const getBinaryOptional = (props: GetBinaryProps) => {
+    try {
+        return getBinary(props);
+    } catch (error) {
+        return null;
+    }
+};

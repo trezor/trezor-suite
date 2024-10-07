@@ -9,7 +9,7 @@ import TrezorConnect, {
 import { getSynchronize } from '@trezor/utils';
 import { deviceConnectThunks } from '@suite-common/wallet-core';
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { isNative } from '@trezor/env-utils';
+import { isDesktop, isNative } from '@trezor/env-utils';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
 
@@ -124,9 +124,16 @@ export const connectInitThunk = createThunk(
                 );
         }
 
+        // Duplicates `getBinFilesBaseUrlThunk`, because calling any other thunk would change store.getActions() history,
+        // and it would be impossible to test this thunk in isolation (many unit tests depend on it).
+        const binFilesBaseUrl = isDesktop()
+            ? extra.selectors.selectDesktopBinDir(getState())
+            : resolveStaticPath('connect/data');
+
         try {
             await TrezorConnect.init({
                 ...connectInitSettings,
+                binFilesBaseUrl,
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
                 transports: selectDebugSettings(getState()).transports,
                 _sessionsBackgroundUrl: sessionsBackground,

@@ -70,5 +70,6 @@ export const portfolioTrackerDevice: TrezorDevice = {
     remember: true,
     authenticityChecks: {
         firmwareRevision: { success: true },
+        firmwareHash: { success: true },
     },
 };
