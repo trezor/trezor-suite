@@ -155,6 +155,7 @@ export const ethereumNetworkInfoFromDefinition = (
         T2B1: '2.6.1',
         T3B1: '2.8.1',
         T3T1: '2.7.1',
+        T3W1: '2.7.1',
     },
     blockchainLink: undefined,
 });
