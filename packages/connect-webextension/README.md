@@ -24,7 +24,7 @@ For a seamless integration, especially with background processes, modify your ex
     "host_permissions": ["*://connect.trezor.io/9/*"]
     "background": {
         "service_worker": "serviceWorker.js"
-    },
+    }
 ```
 
 The content script will be injected automatically by the library using the scripting permission.
