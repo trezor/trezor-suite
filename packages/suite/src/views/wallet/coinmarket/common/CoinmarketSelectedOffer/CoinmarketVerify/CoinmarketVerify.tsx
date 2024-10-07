@@ -9,7 +9,6 @@ import { CoinmarketTradeBuyExchangeType } from 'src/types/coinmarket/coinmarket'
 import { CoinmarketVerifyOptions } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerifyOptions';
 import { CoinmarketVerifyAccountReturnProps } from 'src/types/coinmarket/coinmarketVerify';
 import { CryptoId } from 'invity-api';
-import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { CoinmarketAddressOptions } from 'src/views/wallet/coinmarket/common/CoinmarketAddressOptions';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
@@ -17,6 +16,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'src/hooks/suite';
 import { COINMARKET_BUY } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
+import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -75,7 +75,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, currency }: Coinmark
     const { cryptoIdToCoinSymbol, cryptoIdToNativeCoinSymbol } = useCoinmarketInfo();
     const context = useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
     const { callInProgress, device, verifyAddress, addressVerified, confirmTrade } = context;
-    const exchangeQuote = isCoinmarketExchangeOffers(context) ? context.selectedQuote : null;
+    const exchangeQuote = isCoinmarketExchangeContext(context) ? context.selectedQuote : null;
     const {
         form,
         selectedAccountOption,

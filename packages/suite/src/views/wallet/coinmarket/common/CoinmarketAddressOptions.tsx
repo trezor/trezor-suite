@@ -10,7 +10,6 @@ import type { Account } from 'src/types/wallet';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
-import { CoinmarketBuyAddressOptionsType } from 'src/types/coinmarket/coinmarketOffers';
 import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
 import { spacingsPx, typography } from '@trezor/theme';
 import { formatAmount } from '@suite-common/wallet-utils';
@@ -60,6 +59,10 @@ const buildOptions = (addresses: Account['addresses']) => {
     };
 
     return [unused, used];
+};
+
+type CoinmarketBuyAddressOptionsType = {
+    address?: string;
 };
 
 interface CoinmarketAddressOptionsProps<TFieldValues extends CoinmarketBuyAddressOptionsType>

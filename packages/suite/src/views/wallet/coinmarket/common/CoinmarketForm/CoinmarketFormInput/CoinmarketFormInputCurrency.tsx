@@ -9,11 +9,6 @@ import {
 } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
-    isCoinmarketBuyOffers,
-    isCoinmarketExchangeOffers,
-    isCoinmarketSellOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import {
     CoinmarketAllFormProps,
     CoinmarketFormInputCurrencyProps,
 } from 'src/types/coinmarket/coinmarketForm';
@@ -21,6 +16,9 @@ import { FiatCurrencyOption } from 'src/types/wallet/coinmarketCommonTypes';
 import {
     getFiatCurrenciesProps,
     getSelectedCurrency,
+    isCoinmarketBuyContext,
+    isCoinmarketExchangeContext,
+    isCoinmarketSellContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormOption, CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
@@ -40,7 +38,7 @@ export const CoinmarketFormInputCurrency = ({
 }: CoinmarketFormInputCurrencyProps) => {
     const context = useCoinmarketFormContext();
     const { control, setAmountLimits, defaultCurrency } = context;
-    const name = isCoinmarketBuyOffers(context) ? FORM_FIAT_CURRENCY_SELECT : FORM_OUTPUT_CURRENCY;
+    const name = isCoinmarketBuyContext(context) ? FORM_FIAT_CURRENCY_SELECT : FORM_OUTPUT_CURRENCY;
     const currentCurrency = getSelectedCurrency(context);
     const fiatCurrencies = getFiatCurrenciesProps(context);
     const currencies = fiatCurrencies?.supportedFiatCurrencies ?? null;
@@ -55,14 +53,14 @@ export const CoinmarketFormInputCurrency = ({
     );
 
     const onChangeAdditional = (option: FiatCurrencyOption) => {
-        if (isCoinmarketBuyOffers(context)) {
+        if (isCoinmarketBuyContext(context)) {
             context.setValue(
                 FORM_FIAT_INPUT,
                 fiatCurrencies?.defaultAmountsOfFiatCurrencies?.get(option.value) ?? '',
             );
         }
 
-        if (isCoinmarketExchangeOffers(context) || isCoinmarketSellOffers(context)) {
+        if (isCoinmarketExchangeContext(context) || isCoinmarketSellContext(context)) {
             context.form.helpers.onFiatCurrencyChange(option.value);
         }
     };

@@ -1,9 +1,9 @@
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketOffers } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffers';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { useCoinmarketExchangeForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeForm';
 import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
+import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const CoinmarketExchangeOffersComponent = ({ selectedAccount }: UseCoinmarketProps) => {
     const coinmarketExchangeContextValues = useCoinmarketExchangeForm({
@@ -12,10 +12,10 @@ const CoinmarketExchangeOffersComponent = ({ selectedAccount }: UseCoinmarketPro
     });
 
     return (
-        <CoinmarketOffersContext.Provider value={coinmarketExchangeContextValues}>
+        <CoinmarketFormContext.Provider value={coinmarketExchangeContextValues}>
             <CoinmarketOffers />
             <CoinmarketFooter />
-        </CoinmarketOffersContext.Provider>
+        </CoinmarketFormContext.Provider>
     );
 };
 

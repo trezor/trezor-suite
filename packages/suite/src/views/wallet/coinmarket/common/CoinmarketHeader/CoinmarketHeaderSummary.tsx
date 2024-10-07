@@ -1,16 +1,16 @@
 import { H3, Icon, Row } from '@trezor/components';
 import styled from 'styled-components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarketOffers';
-import {
-    isCoinmarketExchangeOffers,
-    isCoinmarketSellOffers,
-    useCoinmarketOffersContext,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { spacingsPx } from '@trezor/theme';
 import { CoinmarketExchangeHeaderSummary } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketExchangeHeaderSummary';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import {
+    isCoinmarketExchangeContext,
+    isCoinmarketSellContext,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarket';
 
 const IconWrapper = styled.div`
     margin-left: ${spacingsPx.sm};
@@ -31,12 +31,12 @@ export const CoinmarketHeaderSummary = ({
     receiveCurrency,
     receiveAmount,
 }: CoinmarketCryptoAmountProps) => {
-    const context = useCoinmarketOffersContext();
+    const context = useCoinmarketFormContext();
 
     return (
         <SummaryWrap className={className}>
             <Row alignItems="center">
-                {isCoinmarketSellOffers(context) && (
+                {isCoinmarketSellContext(context) && (
                     <>
                         {receiveCurrency && (
                             <H3>
@@ -56,7 +56,7 @@ export const CoinmarketHeaderSummary = ({
                     </>
                 )}
 
-                {isCoinmarketExchangeOffers(context) && (
+                {isCoinmarketExchangeContext(context) && (
                     <CoinmarketExchangeHeaderSummary
                         sendCurrency={sendCurrency}
                         sendAmount={sendAmount}

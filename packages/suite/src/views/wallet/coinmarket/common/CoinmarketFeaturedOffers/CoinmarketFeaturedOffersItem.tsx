@@ -4,14 +4,12 @@ import { Translation } from 'src/components/suite';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
-    isCoinmarketBuyOffers,
-    isCoinmarketExchangeOffers,
-    isCoinmarketSellOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
     getSelectQuoteTyped,
+    isCoinmarketBuyContext,
+    isCoinmarketExchangeContext,
+    isCoinmarketSellContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { SellFiatTrade } from 'invity-api';
@@ -84,16 +82,16 @@ const actionButtonText = (
     context: CoinmarketFormContextValues<CoinmarketTradeType>,
     quote: CoinmarketTradeDetailType,
 ) => {
-    if (isCoinmarketBuyOffers(context)) {
+    if (isCoinmarketBuyContext(context)) {
         return <Translation id="TR_BUY" />;
     }
-    if (isCoinmarketSellOffers(context)) {
+    if (isCoinmarketSellContext(context)) {
         if (context.needToRegisterOrVerifyBankAccount(quote as SellFiatTrade))
             return <Translation id="TR_SELL_REGISTER" />;
 
         return <Translation id="TR_COINMARKET_SELL" />;
     }
-    if (isCoinmarketExchangeOffers(context)) {
+    if (isCoinmarketExchangeContext(context)) {
         return <Translation id="TR_COINMARKET_SWAP" />;
     }
 };
@@ -124,7 +122,7 @@ export const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffer
                 </OfferColumn1>
                 <OfferColumn2>
                     <CoinmarketUtilsProvider exchange={quote.exchange} providers={providers} />
-                    {!isCoinmarketExchangeOffers(context) && (
+                    {!isCoinmarketExchangeContext(context) && (
                         <CoinmarketFeaturedOffersPaymentInfo
                             quote={quote as CoinmarketTradeDetailBuySellType}
                             type={type}

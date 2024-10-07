@@ -268,3 +268,12 @@ export interface CoinmarketGetPaymentMethodProps {
     paymentMethod?: BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
     paymentMethodName?: string;
 }
+
+export interface CoinmarketCryptoAmountProps {
+    amountInCrypto?: boolean | undefined;
+    sendAmount: string | number | undefined;
+    sendCurrency: CryptoId | string | undefined;
+    receiveAmount: string | number | undefined;
+    receiveCurrency: CryptoId | undefined;
+    className?: string;
+}

@@ -21,11 +21,6 @@ import {
 import { CoinmarketFormOptionLabel } from 'src/views/wallet/coinmarket';
 import { FieldErrors } from 'react-hook-form';
 import { coinmarketGetAccountLabel } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import {
-    isCoinmarketBuyOffers,
-    isCoinmarketExchangeOffers,
-    isCoinmarketSellOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { useDidUpdate } from '@trezor/react-utils';
 import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_MAX } from 'src/constants/wallet/coinmarket/form';
 import {
@@ -34,6 +29,11 @@ import {
 } from 'src/types/coinmarket/coinmarket';
 import { FormState } from '@suite-common/wallet-types';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import {
+    isCoinmarketBuyContext,
+    isCoinmarketExchangeContext,
+    isCoinmarketSellContext,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketAllFormProps>({
     cryptoInputName,
@@ -75,7 +75,7 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
                 formatter: CryptoAmountFormatter,
             }),
 
-            ...(!isCoinmarketBuyOffers(context)
+            ...(!isCoinmarketBuyContext(context)
                 ? {
                       reserveOrBalance: validateReserveOrBalance(translationString, {
                           account,
@@ -97,10 +97,10 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
         <NumberInput
             name={cryptoInputName}
             onChange={() => {
-                if (isCoinmarketSellOffers(context)) {
+                if (isCoinmarketSellContext(context)) {
                     context.setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
                 }
-                if (isCoinmarketExchangeOffers(context)) {
+                if (isCoinmarketExchangeContext(context)) {
                     context.setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
                 }
 

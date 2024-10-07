@@ -9,11 +9,11 @@ import {
     EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX,
     EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
 } from 'src/constants/wallet/coinmarket/form';
-import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { Row, Select } from '@trezor/components';
 import styled from 'styled-components';
 import { spacings } from '@trezor/theme';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const SelectWrapper = styled.div`
     width: 224px;
@@ -50,7 +50,7 @@ const offerTypeOptions = [
 ];
 
 export const CoinmarketOffersExchangeFiltersPanel = () => {
-    const context = useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
+    const context = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
     const { getValues, setValue } = context;
     const kycValue = getValues(EXCHANGE_COMPARATOR_KYC_FILTER);
     const exchangeType = getValues(EXCHANGE_COMPARATOR_RATE_FILTER);

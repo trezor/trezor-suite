@@ -22,6 +22,7 @@ import { CoinmarketTradeSellType, UseCoinmarketFormProps } from 'src/types/coinm
 import {
     CoinmarketSellFormContextProps,
     CoinmarketSellFormProps,
+    CoinmarketSellStepType,
 } from 'src/types/coinmarket/coinmarketForm';
 import { useCoinmarketSellFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellFormDefaultValues';
 import useCoinmarketPaymentMethod from 'src/hooks/wallet/coinmarket/form/useCoinmarketPaymentMethod';
@@ -37,7 +38,6 @@ import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketInfoActions from 'src/actions/wallet/coinmarketInfoActions';
-import { CoinmarketSellStepType } from 'src/types/coinmarket/coinmarketOffers';
 import { useCoinmarketFormActions } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFormActions';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 import { useCoinmarketComposeTransaction } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketComposeTransaction';

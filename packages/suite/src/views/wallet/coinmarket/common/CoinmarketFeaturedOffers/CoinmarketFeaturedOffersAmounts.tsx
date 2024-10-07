@@ -1,14 +1,14 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
-import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import {
+    getCryptoQuoteAmountProps,
+    isCoinmarketBuyContext,
+    isCoinmarketSellContext,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { CoinmarketTradeDetailType } from 'src/types/coinmarket/coinmarket';
 import { spacingsPx } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import {
-    isCoinmarketBuyOffers,
-    isCoinmarketSellOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CryptoId } from 'invity-api';
 import { Icon } from '@trezor/components';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
@@ -61,7 +61,7 @@ export const CoinmarketFeaturedOffersAmounts = ({
 
     if (!quoteProps?.receiveCurrency) return null;
 
-    if (isCoinmarketBuyOffers(context)) {
+    if (isCoinmarketBuyContext(context)) {
         return (
             <CoinmarketFeaturedOffersAmount
                 fromAmount={
@@ -81,7 +81,7 @@ export const CoinmarketFeaturedOffersAmounts = ({
         );
     }
 
-    if (isCoinmarketSellOffers(context)) {
+    if (isCoinmarketSellContext(context)) {
         return (
             <CoinmarketFeaturedOffersAmount
                 fromAmount={
