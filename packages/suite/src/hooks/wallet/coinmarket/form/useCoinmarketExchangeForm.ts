@@ -43,10 +43,7 @@ import {
     FORM_EXCHANGE_TYPE,
 } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketExchangeFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeFormDefaultValues';
-import {
-    getFilteredSuccessQuotes,
-    useCoinmarketCommonOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { getFilteredSuccessQuotes } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -62,6 +59,7 @@ import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/us
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
+import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
 export const useCoinmarketExchangeForm = ({
     selectedAccount,
@@ -86,7 +84,7 @@ export const useCoinmarketExchangeForm = ({
         isNotFormPage,
     });
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
-        useCoinmarketCommonOffers({ selectedAccount, type });
+        useCoinmarketInitializer({ selectedAccount, type });
     const { buildDefaultCryptoOption } = useCoinmarketInfo();
 
     const dispatch = useDispatch();
