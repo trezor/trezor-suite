@@ -29,6 +29,9 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },
@@ -72,7 +75,10 @@
             "path": "../../packages/react-native-usb"
         },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/theme" },
+        {
+            "path": "../../packages/trezor-user-env-link"
+        }
     ],
     "include": [".", "**.json"]
 }

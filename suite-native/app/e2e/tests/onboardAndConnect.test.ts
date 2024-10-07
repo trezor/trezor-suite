@@ -1,39 +1,21 @@
 // `expect` keyword is already used by jest.
 import { expect as detoxExpect } from 'detox';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
-import { openApp } from '../utils';
+import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
 
-const TREZOR_DEVICE_LABEL = 'Trezor T - Tester';
-// Contains only one BTC account with a single transaction to make the discovery as fast as possible.
-const SIMPLE_SEED = 'immune enlist rule measure fan swarm mandate track point menu security fan';
 const platform = device.getPlatform();
 
 describe('Go through onboarding and connect Trezor.', () => {
     beforeAll(async () => {
-        if (platform === 'android') {
-            // Prepare Trezor device for test scenario and turn it off.
-            await TrezorUserEnvLink.disconnect();
-            await TrezorUserEnvLink.connect();
-            await TrezorUserEnvLink.startEmu({ wipe: true });
-            await TrezorUserEnvLink.setupEmu({
-                label: TREZOR_DEVICE_LABEL,
-                mnemonic: SIMPLE_SEED,
-            });
-            await TrezorUserEnvLink.startBridge();
-            await TrezorUserEnvLink.stopEmu();
-        }
+        await prepareTrezorEmulator();
 
         await openApp({ newInstance: true });
     });
 
     afterAll(async () => {
-        if (platform === 'android') {
-            await TrezorUserEnvLink.stopEmu();
-        }
+        disconnectTrezorUserEnv();
         await device.terminateApp();
     });
 
@@ -41,18 +23,16 @@ describe('Go through onboarding and connect Trezor.', () => {
         await onOnboarding.finishOnboarding();
 
         if (platform === 'android') {
-            await TrezorUserEnvLink.startEmu();
-
             await waitFor(element(by.id('@screen/CoinEnablingInit')))
                 .toBeVisible()
                 .withTimeout(10000);
 
-            await onCoinEnablingInit.waitForBtcToBeVisible();
+            await onCoinEnablingInit.waitForScreen();
 
             await onCoinEnablingInit.enableNetwork('btc');
             await onCoinEnablingInit.enableNetwork('eth');
 
-            await onCoinEnablingInit.save();
+            await onCoinEnablingInit.clickOnConfirmButton();
 
             await waitFor(element(by.id('skip-view-only-mode')))
                 .toBeVisible()

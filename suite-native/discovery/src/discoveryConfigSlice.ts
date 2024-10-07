@@ -10,6 +10,7 @@ import {
 import {
     filterBlacklistedNetworks,
     filterTestnetNetworks,
+    isDetoxTestBuild,
     sortNetworks,
 } from '@suite-native/config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -36,7 +37,7 @@ export type DiscoveryConfigSliceRootState = {
 };
 
 const discoveryConfigInitialState: DiscoveryConfigState = {
-    areTestnetsEnabled: false,
+    areTestnetsEnabled: isDetoxTestBuild(),
     discoveryInfo: null,
     isCoinEnablingInitFinished: false,
     enabledDiscoveryNetworkSymbols: [],

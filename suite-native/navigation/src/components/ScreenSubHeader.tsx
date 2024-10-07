@@ -53,7 +53,7 @@ export const ScreenSubHeader = ({
                 customHorizontalPadding: nativeSpacingToNumber(customHorizontalPadding),
             })}
         >
-            <Box style={applyStyle(iconWrapperStyle)}>
+            <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-left">
                 {leftIcon || <GoBackIcon closeActionType={closeActionType} />}
             </Box>
             <Box alignItems="center">
@@ -70,7 +70,9 @@ export const ScreenSubHeader = ({
                     content
                 )}
             </Box>
-            <Box style={applyStyle(iconWrapperStyle)}>{rightIcon}</Box>
+            <Box style={applyStyle(iconWrapperStyle)} testID="@screen/sub-header/icon-right">
+                {rightIcon}
+            </Box>
         </Box>
     );
 };
