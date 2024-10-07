@@ -10368,6 +10368,7 @@ __metadata:
     "@trezor/transport": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:13.0.2"
+    jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.53.0"
     react-native: "npm:0.75.2"

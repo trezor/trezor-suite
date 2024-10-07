@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Animated, { SlideInDown } from 'react-native-reanimated';
-import { useState } from 'react';
 
+import { useAtomValue } from 'jotai';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
@@ -21,6 +22,7 @@ import { analytics, EventType } from '@suite-native/analytics';
 
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import { sendTransactionAndCleanupSendFormThunk } from '../sendFormThunks';
+import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 
 const navigateToAccountDetail = ({
     accountKey,
@@ -64,6 +66,7 @@ export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) 
     const navigation = useNavigation();
     const { applyStyle } = useNativeStyles();
     const [isSendInProgress, setIsSendInProgress] = useState(false);
+    const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -94,6 +97,7 @@ export const OutputsReviewFooter = ({ accountKey }: { accountKey: AccountKey }) 
                         symbol: account.symbol,
                         outputsCount: formValues.outputs.length,
                         selectedFee: formValues.selectedFee ?? 'normal',
+                        wasAppLeftDuringReview,
                     },
                 });
             }

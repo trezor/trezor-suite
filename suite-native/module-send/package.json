@@ -44,6 +44,7 @@
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-linear-gradient": "13.0.2",
+        "jotai": "1.9.1",
         "react": "18.2.0",
         "react-hook-form": "^7.53.0",
         "react-native": "0.75.2",
