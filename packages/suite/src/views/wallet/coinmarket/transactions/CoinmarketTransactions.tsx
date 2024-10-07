@@ -1,7 +1,6 @@
-import { withSelectedAccountLoaded } from 'src/components/wallet';
-import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { CoinmarketAccountTransactions } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketAccountTransactions/CoinmarketAccountTransactions';
+import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
 
 const CoinmarketTransactionsComponent = () => {
     return (
@@ -12,11 +11,10 @@ const CoinmarketTransactionsComponent = () => {
     );
 };
 
-export const CoinmarketTransactions = withSelectedAccountLoaded(
-    withCoinmarketLayoutWrap(CoinmarketTransactionsComponent, {
-        backRoute: 'wallet-coinmarket-buy',
-    }),
-    {
-        title: 'TR_NAV_BUY',
-    },
+export const CoinmarketTransactions = () => (
+    <CoinmarketContainer
+        title="TR_COINMARKET_LAST_TRANSACTIONS"
+        backRoute="wallet-coinmarket-buy"
+        SectionComponent={CoinmarketTransactionsComponent}
+    />
 );

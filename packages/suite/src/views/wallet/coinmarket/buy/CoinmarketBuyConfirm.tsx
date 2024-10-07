@@ -1,13 +1,12 @@
-import { withSelectedAccountLoaded } from 'src/components/wallet';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketBuyForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyForm';
 import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
 import { CoinmarketSelectedOffer } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOffer';
+import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
 
-const CoinmarketBuyConfirmComponent = (props: UseCoinmarketProps) => {
+const CoinmarketBuyConfirmComponent = ({ selectedAccount }: UseCoinmarketProps) => {
     const coinmarketBuyContextValues = useCoinmarketBuyForm({
-        ...props,
+        selectedAccount,
         pageType: 'confirm',
     });
 
@@ -18,11 +17,10 @@ const CoinmarketBuyConfirmComponent = (props: UseCoinmarketProps) => {
     );
 };
 
-export const CoinmarketBuyConfirm = withSelectedAccountLoaded(
-    withCoinmarketLayoutWrap(CoinmarketBuyConfirmComponent, {
-        backRoute: 'wallet-coinmarket-buy',
-    }),
-    {
-        title: 'TR_NAV_BUY',
-    },
+export const CoinmarketBuyConfirm = () => (
+    <CoinmarketContainer
+        title="TR_NAV_BUY"
+        backRoute="wallet-coinmarket-buy"
+        SectionComponent={CoinmarketBuyConfirmComponent}
+    />
 );
