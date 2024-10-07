@@ -191,7 +191,7 @@ jobs:
 
   create-test-releases:
     if: github.repository == 'trezor/trezor-suite-release' && github.event.inputs.createTestRelease == 'true'
-    name: Create test versions for autoupdate sudite-desktop
+    name: Create test versions for autoupdate suite-desktop
     environment: suite-production
     needs:
       - suite-desktop
