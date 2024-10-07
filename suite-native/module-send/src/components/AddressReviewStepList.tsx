@@ -126,7 +126,7 @@ export const AddressReviewStepList = () => {
                     stepHeights={childHeights}
                     initialOffset={OVERLAY_INITIAL_POSITION}
                 >
-                    <Button onPress={handleNextStep}>
+                    <Button onPress={handleNextStep} testID="@send/address-review-continue">
                         <Translation id="generic.buttons.next" />
                     </Button>
                 </SlidingFooterOverlay>
