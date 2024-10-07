@@ -1,7 +1,7 @@
 import { saveAs } from 'file-saver';
 import { PayloadAction } from '@reduxjs/toolkit';
 
-import { resolveStaticPath } from '@suite-common/suite-utils';
+// import { resolveStaticPath } from '@suite-common/suite-utils';
 import { getAccountKey, buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
 import {
     DeviceRootState,
@@ -39,12 +39,12 @@ import {
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
 import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
 
-const connectSrc = resolveStaticPath('connect/');
+// const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
 // 'https://connect.corp.sldev.cz/develop/';
 
 const connectInitSettings = {
-    connectSrc,
+    // connectSrc,
     transportReconnect: true,
     debug: false,
     popup: false,
