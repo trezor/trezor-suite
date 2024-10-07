@@ -4,14 +4,13 @@ import {
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
-import { isDesktop } from '@trezor/env-utils';
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import TrezorConnect, { Device, FirmwareType } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { selectFirmware } from './firmwareReducer';
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
+import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
 
 const handleFwHashError = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashError`,
@@ -56,11 +55,11 @@ export const firmwareUpdate = createThunk(
         }
 
         const {
-            selectors: { selectDevice, selectDesktopBinDir, selectLanguage },
+            selectors: { selectDevice, selectLanguage },
         } = extra;
 
         const device = selectDevice(getState());
-        const desktopBinDir = selectDesktopBinDir(getState());
+        const binFilesBaseUrl = await dispatch(getBinFilesBaseUrlThunk()).unwrap();
         const suiteLanguage = selectLanguage(getState());
         const { useDevkit, cachedDevice, error } = selectFirmware(getState());
 
@@ -81,10 +80,7 @@ export const firmwareUpdate = createThunk(
             dispatch(firmwareActions.cacheDevice(device));
         }
 
-        // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
-        const baseUrl = `${isDesktop() ? desktopBinDir : resolveStaticPath('connect/data')}${
-            useDevkit ? '/devkit' : ''
-        }`;
+        const baseUrl = `${binFilesBaseUrl}${useDevkit ? '/devkit' : ''}`;
 
         // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device),
         // unless the user wants to switch firmware type
