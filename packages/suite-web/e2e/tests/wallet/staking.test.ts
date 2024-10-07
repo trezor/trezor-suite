@@ -1,6 +1,8 @@
 // @group_wallet
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('ETH staking', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -14,7 +16,7 @@ describe('ETH staking', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
     });
 

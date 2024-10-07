@@ -1,5 +1,7 @@
 // @group_coinmarket
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe.skip('Coinmarket exchange', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -25,7 +27,7 @@ describe.skip('Coinmarket exchange', () => {
         });
 
         // Enables ETH account
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
         cy.getTestElement('@settings/wallet/network/eth').click();
         // cy.getTestElement('@settings/menu/close').click();

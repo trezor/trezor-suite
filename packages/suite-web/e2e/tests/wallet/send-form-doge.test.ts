@@ -1,6 +1,8 @@
 // @group_wallet
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('Doge send form with mocked blockbook', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -15,7 +17,7 @@ describe('Doge send form with mocked blockbook', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
     });
 
