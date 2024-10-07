@@ -4,7 +4,7 @@ import EventEmitter from 'events';
  * ProxyEventEmitter is an EventEmitter that allows to use multiple EventEmitters as one
  * This is used in connect-web to allow switching between iframe and core-in-popup implementations
  */
-export default class ProxyEventEmitter implements EventEmitter {
+export class ProxyEventEmitter implements EventEmitter {
     private eventEmitters: EventEmitter[];
 
     constructor(eventEmitters: EventEmitter[]) {
