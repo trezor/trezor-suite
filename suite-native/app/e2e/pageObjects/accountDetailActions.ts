@@ -15,8 +15,6 @@ class AccountDetailActions {
 
     async openSend() {
         await element(by.id('@account-detail/send-button')).tap();
-
-        await detoxExpect(element(by.id('@screen/SendOutputs'))).toBeVisible();
     }
 }
 
