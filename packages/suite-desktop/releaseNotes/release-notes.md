@@ -1,10 +1,12 @@
 ### 🎨 Improvements
 
--   The Exchange feature in the Trade section has been redesigned for easier use and improved deal offers.
--   Expanded the number of available tokens for buy, sell, and exchange (2000+ tokens).
--   Status icons in the bottom left menu have been updated for better clarity.
--   Some modal windows have been redesigned for better consistency with the app.
--   Improved discovery and clear identification of non-standard account types.
+-   MATIC has been fully migrated to POL (Polygon network update).
+-   Device and Suite update status has been added to the bottom navigation.
+-   Token lists have been enhanced across all networks.
+-   The "Hide Balances" feature has been improved for better privacy.
+-   A new, simplified token selection has been introduced in the Buy & Swap flows.
+-   The 'Trade' button has been replaced with clearer 'Buy & Sell' and 'Swap' options.
+-   Simplified Chinese has been added as a community language — thank you, contributors!
 
 ### 🔧 Bug fixes
 
