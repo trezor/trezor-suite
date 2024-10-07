@@ -1,7 +1,6 @@
 import { createContext, useContext } from 'react';
 import {
     CoinmarketTradeBuyType,
-    CoinmarketTradeDetailMapProps,
     CoinmarketTradeExchangeType,
     CoinmarketTradeSellType,
     CoinmarketTradeType,
@@ -25,10 +24,6 @@ export const isCoinmarketExchangeOffers = (
     offersContext: CoinmarketOffersMapProps[keyof CoinmarketOffersMapProps],
 ): offersContext is CoinmarketOffersMapProps[CoinmarketTradeExchangeType] =>
     offersContext.type === 'exchange';
-
-export const getFilteredSuccessQuotes = <T extends CoinmarketTradeType>(
-    quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
-) => (quotes ? quotes.filter(q => q.error === undefined) : undefined);
 
 export const CoinmarketOffersContext =
     createContext<CoinmarketOffersContextValues<CoinmarketTradeType> | null>(null);

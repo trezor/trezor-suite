@@ -16,6 +16,7 @@ import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { CoinmarketTradeBuyType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
 import {
     addIdsToQuotes,
+    coinmarketGetSuccessQuotes,
     cryptoIdToNetwork,
     filterQuotesAccordingTags,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -44,7 +45,6 @@ import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/commo
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { getFilteredSuccessQuotes } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { useCoinmarketBuyFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyFormDefaultValues';
 import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
 
@@ -217,7 +217,7 @@ export const useCoinmarketBuyForm = ({
                 );
                 // without errors
                 const quotesSuccess =
-                    getFilteredSuccessQuotes<CoinmarketTradeBuyType>(quotesDefault) ?? [];
+                    coinmarketGetSuccessQuotes<CoinmarketTradeBuyType>(quotesDefault) ?? [];
 
                 const bestQuote = quotesSuccess?.[0];
                 const bestQuotePaymentMethod = bestQuote?.paymentMethod;

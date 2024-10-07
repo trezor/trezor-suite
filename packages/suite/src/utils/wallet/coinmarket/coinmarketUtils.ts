@@ -226,6 +226,10 @@ export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
     return { tag, infoNote };
 };
 
+export const coinmarketGetSuccessQuotes = <T extends CoinmarketTradeType>(
+    quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
+) => (quotes ? quotes.filter(quote => quote.error === undefined) : undefined);
+
 export const getDefaultCountry = (country: string = regional.unknownCountry) => {
     const label = regional.countriesMap.get(country);
 

@@ -14,6 +14,7 @@ import invityAPI from 'src/services/suite/invityAPI';
 import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/coinmarketExchangeActions';
 import {
     addIdsToQuotes,
+    coinmarketGetSuccessQuotes,
     getUnusedAddressFromAccount,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
@@ -43,7 +44,6 @@ import {
     FORM_EXCHANGE_TYPE,
 } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketExchangeFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeFormDefaultValues';
-import { getFilteredSuccessQuotes } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -93,7 +93,7 @@ export const useCoinmarketExchangeForm = ({
     const [amountLimits, setAmountLimits] = useState<CryptoAmountLimits | undefined>(undefined);
 
     const [innerQuotes, setInnerQuotes] = useState<ExchangeTrade[] | undefined>(
-        getFilteredSuccessQuotes<CoinmarketTradeExchangeType>(quotes),
+        coinmarketGetSuccessQuotes<CoinmarketTradeExchangeType>(quotes),
     );
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
 
