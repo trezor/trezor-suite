@@ -1,5 +1,4 @@
 import { useTheme } from 'styled-components';
-import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useSelector } from 'src/hooks/suite';
 import { H3, Icon, Row, Text } from '@trezor/components';
@@ -8,6 +7,7 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { spacings } from '@trezor/theme';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 interface CoinmarketExchangeHeaderSummaryProps {
     sendAmount: string | number | undefined;
@@ -21,7 +21,7 @@ export const CoinmarketExchangeHeaderSummary = ({
     receiveCurrency,
 }: CoinmarketExchangeHeaderSummaryProps) => {
     const theme = useTheme();
-    const context = useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
+    const context = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
     const { account } = context;
     const { symbol } = account;
     const fee = useSelector(state => state.wallet.coinmarket.composedTransactionInfo.composed?.fee);

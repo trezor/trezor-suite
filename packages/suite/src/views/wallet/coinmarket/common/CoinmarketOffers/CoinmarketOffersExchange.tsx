@@ -1,4 +1,3 @@
-import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import {
     EXCHANGE_COMPARATOR_KYC_FILTER,
@@ -13,13 +12,14 @@ import { ExchangeTrade } from 'invity-api';
 import { KYC_DEX, KYC_NO_KYC } from 'src/constants/wallet/coinmarket/kyc';
 import { useMemo } from 'react';
 import { CoinmarketOffersExchangeQuotesByTypeSection } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersExchangeQuotesByTypeSection';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 export const CoinmarketOffersExchange = () => {
     const {
         allQuotes: quotes,
         exchangeInfo,
         getValues,
-    } = useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
+    } = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
     const exchangeTypeFilter = getValues(EXCHANGE_COMPARATOR_RATE_FILTER);
     const kycFilter = getValues(EXCHANGE_COMPARATOR_KYC_FILTER);
     const showAll = exchangeTypeFilter === EXCHANGE_COMPARATOR_RATE_FILTER_ALL;

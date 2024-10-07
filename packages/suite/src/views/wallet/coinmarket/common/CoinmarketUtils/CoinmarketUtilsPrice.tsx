@@ -2,11 +2,11 @@ import styled from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarketOffers';
 import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarket';
 
 const PriceWrap = styled.div``;
 
@@ -39,7 +39,7 @@ export const CoinmarketUtilsPrice = ({
     receiveAmount,
     receiveCurrency,
 }: CoinmarketCryptoAmountProps) => {
-    const { type } = useCoinmarketOffersContext();
+    const { type } = useCoinmarketFormContext();
 
     return (
         <PriceWrap>

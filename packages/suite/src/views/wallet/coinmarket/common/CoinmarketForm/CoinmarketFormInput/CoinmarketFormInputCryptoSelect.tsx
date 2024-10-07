@@ -22,13 +22,13 @@ import {
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { isCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { SelectAssetModal } from '@trezor/product-components';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FORM_CRYPTO_CURRENCY_SELECT,
     FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
 } from 'src/constants/wallet/coinmarket/form';
+import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 export const CoinmarketFormInputCryptoSelect = <
     TFieldValues extends CoinmarketBuyFormProps | CoinmarketExchangeFormProps,
@@ -45,7 +45,7 @@ export const CoinmarketFormInputCryptoSelect = <
     const { control } = methods;
     const [isModalActive, setIsModalActive] = useState(false);
 
-    const sendCryptoSelectValue = isCoinmarketExchangeOffers(context)
+    const sendCryptoSelectValue = isCoinmarketExchangeContext(context)
         ? context.getValues()?.sendCryptoSelect?.value
         : null;
 
@@ -65,7 +65,7 @@ export const CoinmarketFormInputCryptoSelect = <
 
         if (!findOption) return;
 
-        if (isCoinmarketExchangeOffers(context)) {
+        if (isCoinmarketExchangeContext(context)) {
             context.setValue(FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, findOption);
         } else {
             context.setValue(FORM_CRYPTO_CURRENCY_SELECT, findOption);
