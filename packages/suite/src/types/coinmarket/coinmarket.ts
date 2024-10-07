@@ -27,10 +27,9 @@ import {
     WatchExchangeTradeResponse,
     WatchSellTradeResponse,
 } from 'invity-api';
-import { Account } from '@suite-common/wallet-types';
+import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnyAction, Dispatch } from 'redux';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
-import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { AccountType } from '@suite-common/wallet-config';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import { Timer } from '@trezor/react-utils';
@@ -43,7 +42,7 @@ import {
     SelectAssetOptionProps,
 } from '@trezor/product-components/src/components/SelectAssetModal/SelectAssetModal';
 
-export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
+export type UseCoinmarketProps = { selectedAccount: SelectedAccountLoaded };
 export type UseCoinmarketCommonProps = UseCoinmarketProps & {
     type: CoinmarketTradeType;
 };

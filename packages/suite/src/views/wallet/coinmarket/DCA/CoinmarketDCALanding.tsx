@@ -12,7 +12,6 @@ import {
     Text,
 } from '@trezor/components';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
-import { withSelectedAccountLoaded } from 'src/components/wallet';
 import styled from 'styled-components';
 import { borders, palette, spacings, spacingsPx } from '@trezor/theme';
 import { Translation, TrezorLink } from 'src/components/suite';
@@ -20,6 +19,7 @@ import { COINMARKET_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
 import { useSelector } from 'src/hooks/suite';
 import { variables } from '@trezor/components/src/config';
 import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayout';
+import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
 
 const IconWrapper = styled.div`
     display: flex;
@@ -101,12 +101,12 @@ const FeatureItem = ({ icon, featureNumber }: FeatureItemProps) => (
     </Row>
 );
 
-const DCALanding = (props: UseCoinmarketProps) => {
+const DCALanding = ({ selectedAccount }: UseCoinmarketProps) => {
     const currentTheme = useSelector(state => state.suite.settings.theme.variant);
     const isLightTheme = currentTheme !== 'dark';
 
     return (
-        <CoinmarketLayout selectedAccount={props.selectedAccount}>
+        <CoinmarketLayout selectedAccount={selectedAccount}>
             <Card paddingType="small">
                 <ColumnsWrapper>
                     <Column1>
@@ -156,6 +156,6 @@ const DCALanding = (props: UseCoinmarketProps) => {
     );
 };
 
-export const CoinmarketDCALanding = withSelectedAccountLoaded(DCALanding, {
-    title: 'TR_NAV_DCA',
-});
+export const CoinmarketDCALanding = () => (
+    <CoinmarketContainer title="TR_NAV_DCA" SectionComponent={DCALanding} />
+);
