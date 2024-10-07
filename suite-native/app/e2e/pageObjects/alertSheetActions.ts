@@ -1,16 +1,16 @@
 class AlertSheetActions {
     async tapPrimaryButton() {
-        await waitFor(element(by.id('@alert-sheet/primary-button')))
-            .toBeVisible()
-            .withTimeout(10000);
-        await element(by.id('@alert-sheet/primary-button')).tap();
+        const primaryButtonElement = element(by.id('@alert-sheet/primary-button'));
+
+        await waitFor(primaryButtonElement).toBeVisible().withTimeout(10000);
+        await primaryButtonElement.tap();
     }
 
     async tapSecondaryButton() {
-        await waitFor(element(by.id('@alert-sheet/secondary-button')))
-            .toBeVisible()
-            .withTimeout(10000);
-        await element(by.id('@alert-sheet/secondary-button')).tap();
+        const secondaryButtonElement = element(by.id('@alert-sheet/secondary-button'));
+
+        await waitFor(secondaryButtonElement).toBeVisible().withTimeout(10000);
+        await secondaryButtonElement.tap();
     }
 }
 
