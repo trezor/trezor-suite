@@ -10,10 +10,10 @@ import {
     isCoinmarketExchangeOffers,
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { CoinmarketWrapper } from 'src/views/wallet/coinmarket';
 import { CoinmarketOfferSell } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferSell/CoinmarketOfferSell';
 import { CoinmarketOfferBuy } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferBuy/CoinmarketOfferBuy';
 import { CoinmarketOfferExchange } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchange';
+import { CoinmarketWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
 
 const Wrapper = styled.div`
     ${CoinmarketWrapper}
