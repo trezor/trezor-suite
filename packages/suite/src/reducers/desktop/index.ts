@@ -18,5 +18,3 @@ export const desktopReducer = (
             return state;
     }
 };
-
-export const selectDesktopBinDir = (state: DesktopState) => state?.paths?.binDir;
