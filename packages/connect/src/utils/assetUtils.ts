@@ -12,7 +12,7 @@ const firmwareAssets: Record<DeviceModelInternal, NodeRequire> = {
     [DeviceModelInternal.T3T1]: require('@trezor/connect-common/files/firmware/t3t1/releases.json'),
 };
 
-export const getAssetByUrl = (url: string) => {
+export const tryLocalAssetRequire = (url: string) => {
     const fileUrl = url.split('?')[0];
 
     switch (fileUrl) {
