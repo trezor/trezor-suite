@@ -18,7 +18,6 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         Assert(PROTO.ResetDevice, payload);
 
         this.params = {
-            display_random: payload.display_random,
             strength: payload.strength || 256,
             passphrase_protection: payload.passphrase_protection,
             pin_protection: payload.pin_protection,

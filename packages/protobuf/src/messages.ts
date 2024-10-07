@@ -10,6 +10,7 @@ export enum DeviceModelInternal {
     T1B1 = 'T1B1',
     T2T1 = 'T2T1',
     T2B1 = 'T2B1',
+    T3B1 = 'T3B1',
     T3T1 = 'T3T1',
 }
 
@@ -1025,6 +1026,7 @@ export type ButtonRequestType = keyof typeof Enum_ButtonRequestType;
 export type ButtonRequest = {
     code?: ButtonRequestType;
     pages?: number;
+    name?: string;
 };
 
 // ButtonAck
@@ -1138,6 +1140,9 @@ export enum DebugPhysicalButton {
 
 // DebugLinkResetDebugEvents
 export type DebugLinkResetDebugEvents = {};
+
+// DebugLinkOptigaSetSecMax
+export type DebugLinkOptigaSetSecMax = {};
 
 // EosGetPublicKey
 export type EosGetPublicKey = {
@@ -1793,7 +1798,6 @@ export type WipeDevice = {};
 
 // ResetDevice
 export type ResetDevice = {
-    display_random?: boolean;
     strength?: number;
     passphrase_protection?: boolean;
     pin_protection?: boolean;
@@ -2578,6 +2582,7 @@ export type MessageType = {
     GetECDHSessionKey: GetECDHSessionKey;
     ECDHSessionKey: ECDHSessionKey;
     DebugLinkResetDebugEvents: DebugLinkResetDebugEvents;
+    DebugLinkOptigaSetSecMax: DebugLinkOptigaSetSecMax;
     EosGetPublicKey: EosGetPublicKey;
     EosPublicKey: EosPublicKey;
     EosTxHeader: EosTxHeader;
