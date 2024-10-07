@@ -1,6 +1,8 @@
 // @group_device-management
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('Recovery - dry run', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -14,7 +16,7 @@ describe('Recovery - dry run', () => {
     it.skip('Communication between device and application is automatically established whenever app detects device in recovery mode', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/check-seed-button').click();

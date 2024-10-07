@@ -1,6 +1,8 @@
 // @group_wallet
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('Custom-blockbook-discovery', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -32,7 +34,7 @@ describe('Custom-blockbook-discovery', () => {
         // Test preparation
         //
         const customBTCblockbook = 'https://btc1.trezor.io';
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
 
         //
@@ -67,7 +69,7 @@ describe('Custom-blockbook-discovery', () => {
         // Test preparation
         //
         const customBTCblockbook = 'https://ltc1.trezor.io';
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
         //
         // Test execution

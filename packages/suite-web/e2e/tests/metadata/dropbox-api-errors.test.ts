@@ -2,6 +2,7 @@
 // @retry=2
 
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 describe('Dropbox api errors', () => {
     beforeEach(() => {
@@ -35,7 +36,7 @@ describe('Dropbox api errors', () => {
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
 
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/metadata-switch').click({ force: true });
 
         cy.passThroughInitMetadata('dropbox');
@@ -95,7 +96,7 @@ describe('Dropbox api errors', () => {
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
 
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/metadata-switch').click({ force: true });
 
         cy.passThroughInitMetadata('dropbox');
@@ -170,7 +171,7 @@ describe('Dropbox api errors', () => {
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
 
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/metadata-switch').click({ force: true });
 
         cy.passThroughInitMetadata('dropbox');

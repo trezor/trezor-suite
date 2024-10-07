@@ -2,6 +2,7 @@
 // @retry=2
 
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 const providers = [
     {
@@ -63,7 +64,7 @@ describe(
                 cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
                 cy.log('Go to settings and enable metadata');
-                cy.getTestElement('@suite/menu/settings').click();
+                onNavBar.openSettings();
                 cy.getTestElement('@settings/metadata-switch').click({ force: true });
                 cy.passThroughInitMetadata(f.provider);
 
@@ -80,7 +81,7 @@ describe(
                 cy.log(
                     "Now go back to settings, disconnect provider and check that we don't see metadata in app",
                 );
-                cy.getTestElement('@suite/menu/settings').click();
+                onNavBar.openSettings();
                 cy.getTestElement('@settings/metadata/disconnect-provider-button').click();
                 cy.getTestElement('@settings/metadata/connect-provider-button');
                 cy.getTestElement('@account-menu/btc/normal/0').click();
@@ -102,7 +103,7 @@ describe(
                 );
 
                 // device not saved, disable metadata
-                cy.getTestElement('@suite/menu/settings').click();
+                onNavBar.openSettings();
                 cy.getTestElement('@settings/metadata-switch').click({ force: true });
                 cy.getTestElement('@account-menu/btc/normal/0').click();
                 cy.getTestElement('@account-menu/btc/normal/0/label').should(
@@ -131,7 +132,7 @@ describe(
                 cy.getTestElement('@metadata/input').type(' edited for remembered{enter}');
 
                 cy.log('Now again, lets try disconnecting provider');
-                cy.getTestElement('@suite/menu/settings').click();
+                onNavBar.openSettings();
                 cy.getTestElement('@settings/metadata/disconnect-provider-button').click();
                 cy.getTestElement('@account-menu/btc/normal/0').click();
                 cy.log('Disconnecting removes labels');
@@ -149,7 +150,7 @@ describe(
                 cy.getTestElement('@metadata/input').type('mnau{enter}');
 
                 //  device saved, disable metadata
-                cy.getTestElement('@suite/menu/settings').click();
+                onNavBar.openSettings();
                 cy.getTestElement('@settings/metadata-switch').click({ force: true });
                 cy.getTestElement('@account-menu/btc/normal/0').click();
                 cy.log(

@@ -2,6 +2,7 @@
 // @retry=2
 
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 describe(`Metadata - switching between cloud providers`, () => {
     beforeEach(() => {
@@ -37,7 +38,7 @@ describe(`Metadata - switching between cloud providers`, () => {
         cy.getTestElement('@metadata/input').type('dropbox label {enter}');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'dropbox label');
 
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/metadata/disconnect-provider-button').click();
         cy.getTestElement('@settings/metadata/connect-provider-button').should('be.visible');
 

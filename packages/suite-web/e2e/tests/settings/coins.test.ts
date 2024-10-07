@@ -3,6 +3,7 @@
 
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType, Requests } from '../../support/types';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 let requests: Requests;
 
@@ -43,7 +44,7 @@ describe('Coin Settings', () => {
             // 'dsol', FIXME: disabled till available in trezor-user-env
         ];
 
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
 
         // only btc is selected by default;
@@ -78,7 +79,7 @@ describe('Coin Settings', () => {
         // check that there is no assets grid
         cy.get('[class^="AssetsView__Grid"] > [class^="Card"]').should('not.exist');
 
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
         // just do some clicking on switches and check result
         ['btc', ...defaultUnchecked].forEach(network => {

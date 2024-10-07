@@ -40,7 +40,7 @@ describe('Account types suite', () => {
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
 
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
         fixtures
             .filter(({ coin }) => coin !== 'btc')
@@ -118,7 +118,7 @@ describe('Account types suite', () => {
         const coins: NetworkSymbol[] = ['ada', 'eth'];
 
         // activate the coin
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
         coins.forEach((coin: NetworkSymbol) => {
             onSettingsCryptoPage.activateCoin(coin);

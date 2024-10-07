@@ -1,6 +1,8 @@
 // @group_metadata
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('Metadata - cancel metadata on device', () => {
     beforeEach(() => {
         cy.viewport('macbook-15').resetDb();
@@ -20,7 +22,7 @@ describe('Metadata - cancel metadata on device', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun({ viewOnly: false });
         cy.discoveryShouldFinish();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/metadata-switch').within(() => {
             cy.get('input').should('not.be.checked');
         });

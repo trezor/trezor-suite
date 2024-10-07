@@ -4,6 +4,7 @@
 
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType, Requests } from '../../support/types';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 let requests: Requests;
 
@@ -20,7 +21,7 @@ describe('Analytics Events', () => {
         cy.prefixedVisit('/');
 
         // go to settings and enable analytics (makes analytics enabled and initialized)
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
         cy.getTestElement('@settings/menu/close').click();
 
@@ -96,7 +97,7 @@ describe('Analytics Events', () => {
         cy.prefixedVisit('/');
 
         // change few settings to see if it is different from default values in suite-ready
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
 
         // change language
         cy.getTestElement('@settings/language-select/input').click();

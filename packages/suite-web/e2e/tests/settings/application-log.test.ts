@@ -1,6 +1,8 @@
 // @group_settings
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('ApplicationLog', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -12,7 +14,7 @@ describe('ApplicationLog', () => {
     });
 
     it('there is a button in application setting that opens modal with application logs', () => {
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/general').click({
             scrollBehavior: false,
         });

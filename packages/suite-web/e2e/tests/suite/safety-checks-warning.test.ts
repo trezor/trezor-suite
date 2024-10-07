@@ -1,5 +1,7 @@
 // group:ghatest
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 // @retry=2
 
 // TODO: enable this test once https://github.com/trezor/trezor-user-env/issues/54
@@ -31,7 +33,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
 
         // Set safety_checks to `PromptTemporarily'.

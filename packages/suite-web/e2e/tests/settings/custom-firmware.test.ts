@@ -1,4 +1,7 @@
 // @group_settings
+
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 // @retry=2
 describe('Install custom firmware', () => {
     beforeEach(() => {
@@ -22,7 +25,7 @@ describe('Install custom firmware', () => {
         //
         const testBinFile = 'trezor-2.5.1.bin';
 
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
         cy.getTestElement('@settings/device/check-seed-button').should('be.visible');
 

@@ -1,6 +1,8 @@
 // @group_suite
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('Check notification toast', () => {
     beforeEach(() => {
         cy.task('startBridge');
@@ -24,7 +26,7 @@ describe('Check notification toast', () => {
      */
     it('Check notification toast', () => {
         cy.log('turn on passphrase protection');
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
         cy.getTestElement('@settings/device/safety-checks-button').should('be.enabled');
         cy.getTestElement('@settings/device/passphrase-switch')

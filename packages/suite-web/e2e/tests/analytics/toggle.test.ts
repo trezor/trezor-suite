@@ -3,6 +3,7 @@
 
 import { EventType } from '@trezor/suite-analytics';
 import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 type Requests = ReturnType<typeof urlSearchParams>[];
 let requests: Requests;
@@ -56,7 +57,7 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
         cy.safeReload();
 
         // go to settings, analytics should not enabled and no additional analytics requests should be fired
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@analytics/toggle-switch').find('input').should('not.be.checked');
         cy.wrap(requests).should('have.length', 1);
 
@@ -136,7 +137,7 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
         cy.getTestElement('@onboarding/exit-app-button').click();
 
         // go to settings, analytics should be enabled
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
 
         // disable analytics

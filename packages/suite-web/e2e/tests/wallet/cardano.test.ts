@@ -1,6 +1,8 @@
 // @group_wallet
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('Cardano', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -65,7 +67,7 @@ describe('Cardano', () => {
         cy.getTestElement('@app').matchImageSnapshot('cardano-tokens');
 
         // lets 'hack' routing
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
         cy.getTestElement('@settings/wallet/network/tada').click();
         cy.go('back');

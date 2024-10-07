@@ -1,6 +1,8 @@
 // @group_suite
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('Test Guide', () => {
     beforeEach(() => {
         cy.viewport(1440, 2560).resetDb();
@@ -39,7 +41,7 @@ describe('Test Guide', () => {
         cy.getTestElement('@toast/user-feedback-send-success').should('be.visible');
 
         // Guide over modal
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/show-log-button').click();
         cy.getTestElement('@guide/button-close').click();
         cy.getTestElement('@guide/button-open').click();

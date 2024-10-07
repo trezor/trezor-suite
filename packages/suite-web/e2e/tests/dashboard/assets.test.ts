@@ -3,6 +3,7 @@
 
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType, Requests } from '../../support/types';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 let requests: Requests;
 
@@ -27,7 +28,7 @@ describe('Assets', () => {
         cy.discoveryShouldFinish();
 
         // enable ethereum
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
         cy.getTestElement('@settings/wallet/network/eth').click();
         cy.getTestElement('@suite/menu/suite-index').click();

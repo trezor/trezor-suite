@@ -4,6 +4,7 @@
 
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType, Requests } from '../../support/types';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 let requests: Requests;
 
@@ -27,7 +28,7 @@ describe('General settings', () => {
         cy.getTestElement('@dashboard/index').should('contain', '$0.00');
 
         // go to settings
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
 
         // close desktop banner
         cy.getTestElement('@banner/install-desktop-suite/close-button').click({
@@ -50,7 +51,7 @@ describe('General settings', () => {
         cy.getTestElement('@dashboard/index').should('contain', '€0.00');
 
         // go to settings
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
 
         // change dark mode
         cy.getTestElement('@theme/color-scheme-select/input').click();

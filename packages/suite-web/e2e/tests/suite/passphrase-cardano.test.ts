@@ -1,6 +1,8 @@
 // @group_passphrase
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 const correctPassphraseAddr =
     'addr1qx3ufjpwcx30ee73a7r29surauze6yt0jvr7c3rnahw0hnppg7qp5xvslcfucsqqayrtjhm4u66x';
 
@@ -23,7 +25,7 @@ describe('Passphrase with cardano', () => {
     it('verify cardano address behind passphrase.', () => {
         const passphrase = 'secret passphrase A';
         // enable cardano in settings
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
         cy.getTestElement('@settings/wallet/network/ada').click();
 

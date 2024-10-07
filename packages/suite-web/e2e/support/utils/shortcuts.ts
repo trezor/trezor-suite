@@ -1,6 +1,7 @@
 import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { EventPayload, Requests } from '../types';
+import { onNavBar } from '../pageObjects/topBarObject';
 
 /**
  * Shortcut to click device menu
@@ -95,7 +96,7 @@ export const toggleDebugModeInSettings = () => {
 };
 
 export const enableRegtestAndGetCoins = ({ payments = [] }) => {
-    cy.getTestElement('@suite/menu/settings').click();
+    onNavBar.openSettings();
     cy.getTestElement('@settings/menu/wallet').click();
 
     cy.toggleDebugModeInSettings();

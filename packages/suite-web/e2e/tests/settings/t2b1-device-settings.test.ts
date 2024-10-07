@@ -1,6 +1,8 @@
 // @group_settings
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 // TODOS:
 // - focus this test on testing what is different from T2T1: (background image, display rotation)
 // - implement these differences in suite in the first place. both suite and T2B1 will happily accept
@@ -51,7 +53,7 @@ describe('T2B1 - Device settings', () => {
             .should('be.visible')
             .click();
         // navigate to device settings page
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
 
         //
@@ -107,7 +109,7 @@ describe('T2B1 - Device settings', () => {
             .should('be.visible')
             .click();
         // navigate to device settings page
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/check-seed-button').should('be.enabled');
@@ -133,7 +135,7 @@ describe('T2B1 - Device settings', () => {
             .should('be.visible')
             .click();
         // navigate to device settings page
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/open-wipe-modal-button').click();
