@@ -1,15 +1,14 @@
-import { withSelectedAccountLoaded } from 'src/components/wallet';
 import {
     CoinmarketDetailContext,
     useCoinmarketDetail,
 } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
 import { CoinmarketDetailExchange } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchange';
-import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
 
-const CoinmarketExchangeDetailComponent = (props: UseCoinmarketProps) => {
+const CoinmarketExchangeDetailComponent = ({ selectedAccount }: UseCoinmarketProps) => {
     const coinmarketDetailContext = useCoinmarketDetail({
-        selectedAccount: props.selectedAccount,
+        selectedAccount,
         tradeType: 'exchange',
     });
 
@@ -20,11 +19,10 @@ const CoinmarketExchangeDetailComponent = (props: UseCoinmarketProps) => {
     );
 };
 
-export const CoinmarketExchangeDetail = withSelectedAccountLoaded(
-    withCoinmarketLayoutWrap(CoinmarketExchangeDetailComponent, {
-        backRoute: 'wallet-coinmarket-exchange',
-    }),
-    {
-        title: 'TR_COINMARKET_SWAP',
-    },
+export const CoinmarketExchangeDetail = () => (
+    <CoinmarketContainer
+        title="TR_COINMARKET_SWAP"
+        backRoute="wallet-coinmarket-exchange"
+        SectionComponent={CoinmarketExchangeDetailComponent}
+    />
 );

@@ -1,15 +1,14 @@
-import { withSelectedAccountLoaded } from 'src/components/wallet';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketSellForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketSellForm';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { CoinmarketOffers } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffers';
-import { withCoinmarketLayoutWrap } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/withCoinmarketLayoutWrap';
+import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
 
-const CoinmarketSellOffersComponent = (props: UseCoinmarketProps) => {
+const CoinmarketSellOffersComponent = ({ selectedAccount }: UseCoinmarketProps) => {
     const coinmarketSellFormContextValues = useCoinmarketSellForm({
-        ...props,
+        selectedAccount,
         pageType: 'offers',
     });
 
@@ -23,11 +22,10 @@ const CoinmarketSellOffersComponent = (props: UseCoinmarketProps) => {
         </CoinmarketFormContext.Provider>
     );
 };
-export const CoinmarketSellOffers = withSelectedAccountLoaded(
-    withCoinmarketLayoutWrap(CoinmarketSellOffersComponent, {
-        backRoute: 'wallet-coinmarket-sell',
-    }),
-    {
-        title: 'TR_NAV_SELL',
-    },
+export const CoinmarketSellOffers = () => (
+    <CoinmarketContainer
+        title="TR_NAV_SELL"
+        backRoute="wallet-coinmarket-sell"
+        SectionComponent={CoinmarketSellOffersComponent}
+    />
 );
