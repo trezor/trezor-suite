@@ -1,9 +1,10 @@
+import { useCallback, useEffect, useState } from 'react';
+import { LayoutChangeEvent, View, AppState } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { LayoutChangeEvent, View } from 'react-native';
 
+import { useSetAtom } from 'jotai';
 import { isRejected } from '@reduxjs/toolkit';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 
 import {
     RootStackParamList,
@@ -27,6 +28,7 @@ import { AddressReviewStep } from '../components/AddressReviewStep';
 import { CompareAddressHelpButton } from '../components/CompareAddressHelpButton';
 import { AddressOriginHelpButton } from '../components/AddressOriginHelpButton';
 import { useHandleSendReviewFailure } from '../hooks/useHandleSendReviewFailure';
+import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 
 const NUMBER_OF_STEPS = 3;
 const OVERLAY_INITIAL_POSITION = 75;
@@ -48,6 +50,23 @@ export const AddressReviewStepList = () => {
     const [childHeights, setChildHeights] = useState<number[]>([]);
     const [stepIndex, setStepIndex] = useState(0);
     const handleSendReviewFailure = useHandleSendReviewFailure({ accountKey, transaction });
+    const setWasAppLeftDuringReview = useSetAtom(wasAppLeftDuringReviewAtom);
+
+    useFocusEffect(
+        useCallback(() => {
+            setWasAppLeftDuringReview(false);
+
+            const subscription = AppState.addEventListener('change', nextAppState => {
+                if (nextAppState === 'background') {
+                    setWasAppLeftDuringReview(true);
+                }
+            });
+
+            return () => {
+                subscription.remove();
+            };
+        }, [setWasAppLeftDuringReview]),
+    );
 
     const areAllStepsDone = stepIndex === NUMBER_OF_STEPS - 1;
     const isLayoutReady = childHeights.length === NUMBER_OF_STEPS;

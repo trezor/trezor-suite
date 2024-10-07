@@ -266,6 +266,7 @@ export type SuiteNativeAnalyticsEvent =
               symbol: NetworkSymbol;
               outputsCount: number;
               selectedFee: FeeLevelLabel;
+              wasAppLeftDuringReview: boolean;
               tokenSymbols?: TokenSymbol[];
               tokenAddresses?: TokenAddress[];
               hasEthereumData?: boolean;
