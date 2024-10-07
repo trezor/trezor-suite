@@ -1,4 +1,4 @@
-import { CoinmarketLeftWrapper, CoinmarketRightWrapper } from 'src/views/wallet/coinmarket';
+import { CoinmarketSideWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
 
 interface CoinmarketSelectedOfferWrapperProps {
     leftChildren: React.ReactNode;
@@ -10,7 +10,9 @@ export const CoinmarketSelectedOfferWrapper = ({
     rightChildren,
 }: CoinmarketSelectedOfferWrapperProps) => (
     <>
-        <CoinmarketLeftWrapper $isWithoutPadding>{leftChildren}</CoinmarketLeftWrapper>
-        <CoinmarketRightWrapper>{rightChildren}</CoinmarketRightWrapper>
+        <CoinmarketSideWrapper side="left" isLeftSideWithoutPadding>
+            {leftChildren}
+        </CoinmarketSideWrapper>
+        <CoinmarketSideWrapper side="right">{rightChildren}</CoinmarketSideWrapper>
     </>
 );
