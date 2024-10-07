@@ -1,6 +1,8 @@
 // @group_wallet
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('Use regtest to test pending transactions', () => {
     const ADDRESS_ACCOUNT_1_INDEX_1 = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
     const ADDRESS_ACCOUNT_2_INDEX_1 = 'bcrt1q7r9yvcdgcl6wmtta58yxf29a8kc96jkyyk8fsw';
@@ -14,7 +16,7 @@ describe('Use regtest to test pending transactions', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/wallet').click();
         cy.toggleDebugModeInSettings();
         cy.getTestElement('@settings/wallet/network/btc').click({ force: true });

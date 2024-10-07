@@ -1,6 +1,8 @@
 // @group_device-management
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('Onboarding - recover wallet T2T1', () => {
     beforeEach(() => {
         cy.task('startBridge');
@@ -13,7 +15,7 @@ describe('Onboarding - recover wallet T2T1', () => {
 
         // Disable revision check. On emulator '2-main' it wont pass as it is unreleased version
         cy.getTestElement('@device-compromised').should('be.visible');
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
         cy.getTestElement('@settings/device/open-firmware-revision-check-modal-button').click();
         cy.getTestElement('@device-firmware-revision/checkbox').click();

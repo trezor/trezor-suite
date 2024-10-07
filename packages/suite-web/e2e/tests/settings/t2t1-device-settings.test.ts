@@ -1,6 +1,8 @@
 // @group_settings
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('T2T1 - Device settings', () => {
     beforeEach(() => {
         cy.viewport(1440, 2560).resetDb();
@@ -29,7 +31,7 @@ describe('T2T1 - Device settings', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         // navigate to device settings page
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
 
         //
@@ -71,7 +73,7 @@ describe('T2T1 - Device settings', () => {
 
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
 
         cy.log('Try to change device homescreen');
@@ -87,7 +89,7 @@ describe('T2T1 - Device settings', () => {
 
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
 
         cy.log('Try to change device homescreen');
@@ -104,7 +106,7 @@ describe('T2T1 - Device settings', () => {
         // navigate to device settings page
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/check-seed-button', { timeout: 10_000 }).should(
@@ -122,7 +124,7 @@ describe('T2T1 - Device settings', () => {
         // navigate to device settings page
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/open-wipe-modal-button').click();

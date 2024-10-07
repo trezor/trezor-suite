@@ -1,6 +1,8 @@
 // @group_settings
 // @retry=2
 
+import { onNavBar } from '../../support/pageObjects/topBarObject';
+
 describe('Safety Checks Settings', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -9,7 +11,7 @@ describe('Safety Checks Settings', () => {
         cy.viewport(1440, 2560).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/settings').click();
+        onNavBar.openSettings();
         cy.getTestElement('@settings/menu/device').click();
     });
 
