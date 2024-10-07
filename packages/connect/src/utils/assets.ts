@@ -3,7 +3,7 @@
 import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
 import { httpRequest as browserHttpRequest } from './assets-browser';
-import { getAssetByUrl } from './assetUtils';
+import { tryLocalAssetRequire } from './assetUtils';
 
 if (global && typeof global.fetch !== 'function') {
     global.fetch = fetch;
@@ -36,7 +36,7 @@ export function httpRequest(
     options?: RequestInit,
     skipLocalForceDownload?: boolean,
 ) {
-    const asset = skipLocalForceDownload ? null : getAssetByUrl(url);
+    const asset = skipLocalForceDownload ? null : tryLocalAssetRequire(url);
 
     if (!asset) {
         return /^https?/.test(url) ? browserHttpRequest(url, type, options) : fs.readFile(url);
