@@ -517,7 +517,13 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         return Promise.resolve();
     }
 
-    return await onCallDevice(context, message, method);
+    sendCoreMessage(createUiMessage(UI.CALL_IN_PROGRESS, { value: true }));
+
+    try {
+        return await onCallDevice(context, message, method);
+    } finally {
+        sendCoreMessage(createUiMessage(UI.CALL_IN_PROGRESS, { value: false }));
+    }
 };
 
 const onCallDevice = async (
@@ -529,8 +535,6 @@ const onCallDevice = async (
         context;
     const responseID = message.id;
     const { origin, env, useCoreInPopup } = DataManager.getSettings();
-
-    sendCoreMessage(createUiMessage(UI.CALL_IN_PROGRESS, { value: true }));
 
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
@@ -721,8 +725,6 @@ const onCallDevice = async (
             if (!useCoreInPopup) {
                 sendCoreMessage(response);
             }
-
-            sendCoreMessage(createUiMessage(UI.CALL_IN_PROGRESS, { value: false }));
         }
     }
 };
